@@ -1,14 +1,19 @@
 /**
- * Multi-source market scanner for Gold, Bitcoin, HYPE, Amazon
+ * Multi-source market scanner for Gold, Bitcoin, HYPE, Amazon, Oil
  *
  * Data sources:
- *   1. Hyperliquid  — perps for BTC, HYPE, PURR (funding, OI, price, book)
- *   2. Polymarket   — prediction markets related to these assets
- *   3. CBOE         — delayed options chains for IBIT, GLD, AMZN
- *   4. Yahoo Finance — fallback options data
+ *   1. Hyperliquid  — perps for BTC, HYPE + xyz DEX (AMZN, GOLD, BRENTOIL)
+ *   2. Polymarket   — prediction markets (price strikes, macro, outperformance)
+ *   3. CBOE         — delayed options chains for IBIT, GLD, AMZN, CL
  *
- * Usage:  npx tsx scripts/market-scanner.ts [--json]
+ * Usage:
+ *   npx tsx scripts/market-scanner.ts           # full console display
+ *   npx tsx scripts/market-scanner.ts --json    # machine-readable JSON
+ *   npx tsx scripts/market-scanner.ts --snapshot # append daily row to CSVs
  */
+
+import { writeFileSync, readFileSync, existsSync, appendFileSync, mkdirSync } from "node:fs";
+import { join } from "node:path";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -105,6 +110,8 @@ const POLYMARKET_EVENT_SLUGS = [
 const POLYMARKET_SEARCH_KEYWORDS = ["amazon stock", "AMZN"];
 
 const JSON_OUTPUT = process.argv.includes("--json");
+const SNAPSHOT_MODE = process.argv.includes("--snapshot");
+const DATA_DIR = join(import.meta.dirname ?? ".", "..", "data");
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -140,14 +147,14 @@ function pct(n: number): string {
 }
 
 function divider(title: string) {
-  if (JSON_OUTPUT) return;
+  if (JSON_OUTPUT || SNAPSHOT_MODE) return;
   console.log(`\n${"═".repeat(70)}`);
   console.log(`  ${title}`);
   console.log(`${"═".repeat(70)}`);
 }
 
 function warn(msg: string) {
-  if (!JSON_OUTPUT) console.log(`  ⚠  ${msg}`);
+  if (!JSON_OUTPUT && !SNAPSHOT_MODE) console.log(`  ⚠  ${msg}`);
 }
 
 // ─── 1. Hyperliquid ─────────────────────────────────────────────────────────
@@ -212,7 +219,7 @@ async function fetchHyperliquid() {
       askDepth5Usd: askDepth5,
     };
 
-    if (!JSON_OUTPUT) {
+    if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
       console.log(`\n  ┌─ ${coin}-PERP ─────────────────────────────────`);
       console.log(`  │  Mark Price:      $${fmt(markPx, coin === "BTC" ? 2 : 4)}`);
       console.log(`  │  Oracle Price:    $${fmt(oraclePx, coin === "BTC" ? 2 : 4)}`);
@@ -271,7 +278,7 @@ async function fetchHyperliquid() {
           source: `${dex} DEX`,
         };
 
-        if (!JSON_OUTPUT) {
+        if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
           const decimals = markPx > 1000 ? 2 : markPx > 1 ? 2 : 4;
           console.log(`\n  ┌─ ${target.coin} (${target.label}) ───────────────────────`);
           console.log(`  │  Mark Price:      $${fmt(markPx, decimals)}`);
@@ -468,7 +475,7 @@ async function fetchPolymarket() {
     }
   }
 
-  if (!JSON_OUTPUT) {
+  if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
     if (events.length === 0) {
       console.log("  No price prediction events found.");
     }
@@ -602,7 +609,7 @@ async function fetchOptions() {
 
     results[symbol] = snapshot;
 
-    if (!JSON_OUTPUT) {
+    if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
       const calls = snapshot.chains.filter((c) => c.type === "call");
       const puts = snapshot.chains.filter((c) => c.type === "put");
 
@@ -1267,7 +1274,7 @@ function impliedValuations(
   }
 
   // ── SUMMARY TABLE ──
-  if (!JSON_OUTPUT) {
+  if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
     console.log(`\n  ┌─ SUMMARY ────────────────────────────────────`);
     console.log(`  │  ${"Asset".padEnd(10)} ${"Spot".padStart(10)} ${"Opt Fwd".padStart(10)} ${"PM EV".padStart(10)} ${"Opt IV".padStart(8)} ${"PM IV".padStart(8)} ${"HL Fund".padStart(8)}`);
     console.log(`  │  ${"─".repeat(66)}`);
@@ -1359,7 +1366,7 @@ function crossAnalysis(
         )
         .reduce((s, c, _, a) => s + c.impliedVolatility / a.length, 0) ?? 0;
 
-    if (!JSON_OUTPUT) {
+    if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
       console.log(`\n  ┌─ BITCOIN Cross-Source ────────────────────────`);
       console.log(`  │  HL BTC Spot:       $${fmt(btcSpot)}`);
       console.log(`  │  HL Funding (ann):  ${pct(funding)}  ${funding > 0.15 ? "← HIGH (longs crowded)" : funding < -0.05 ? "← NEGATIVE (shorts crowded)" : "← neutral"}`);
@@ -1407,7 +1414,7 @@ function crossAnalysis(
     const funding = hl.HYPE.fundingAnnualized;
     const hypeSpot = hl.HYPE.markPx;
 
-    if (!JSON_OUTPUT) {
+    if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
       console.log(`\n  ┌─ HYPE Cross-Source ──────────────────────────`);
       console.log(`  │  HL HYPE Spot:      $${fmt(hypeSpot, 4)}`);
       console.log(`  │  HL Funding (ann):  ${pct(funding)}  ${funding > 0.3 ? "← HIGH (longs crowded)" : funding < -0.1 ? "← NEGATIVE (shorts crowded)" : "← neutral"}`);
@@ -1471,7 +1478,7 @@ function crossAnalysis(
       ? atmCalls.reduce((s, c) => s + c.impliedVolatility, 0) / atmCalls.length
       : 0;
 
-    if (!JSON_OUTPUT) {
+    if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
       console.log(`\n  ┌─ GOLD Cross-Source ───────────────────────────`);
       if (goldPerp) {
         console.log(`  │  HL Gold Perp:     $${fmt(goldPerp.markPx)} (xyz DEX)`);
@@ -1520,7 +1527,7 @@ function crossAnalysis(
       ? atmCalls.reduce((s, c) => s + c.impliedVolatility, 0) / atmCalls.length
       : 0;
 
-    if (!JSON_OUTPUT) {
+    if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
       console.log(`\n  ┌─ AMAZON / AMZN Cross-Source ─────────────────`);
       if (amznPerp) {
         console.log(`  │  HL AMZN Perp:     $${fmt(amznPerp.markPx)} (xyz DEX)`);
@@ -1560,7 +1567,7 @@ function crossAnalysis(
       ? atmCalls.reduce((s, c) => s + c.impliedVolatility, 0) / atmCalls.length
       : 0;
 
-    if (!JSON_OUTPUT) {
+    if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
       console.log(`\n  ┌─ OIL Cross-Source ───────────────────────────`);
       if (oilPerp) {
         console.log(`  │  HL Brent Perp:    $${fmt(oilPerp.markPx)} (xyz DEX)`);
@@ -1869,10 +1876,222 @@ function displayCategorySection(title: string, events: CategoryEvent[]) {
   }
 }
 
+// ─── Snapshot (daily CSV append) ─────────────────────────────────────────────
+
+const VALUATION_CSV = "daily-valuations.csv";
+const MACRO_CSV = "daily-macro.csv";
+
+const VALUATION_HEADERS = [
+  "date",
+  "btc_spot", "btc_opt_fwd_90d", "btc_pm_ev", "btc_opt_iv_30d", "btc_opt_iv_90d",
+  "btc_pm_iv", "btc_hl_funding_ann", "btc_med_max", "btc_med_min", "btc_ibit_pc_ratio",
+  "hype_spot", "hype_pm_ev", "hype_pm_iv", "hype_hl_funding_ann", "hype_hl_oi",
+  "hype_med_max", "hype_med_min",
+  "gold_gc_spot", "gold_gld_spot", "gold_opt_fwd_90d", "gold_pm_settle_ev",
+  "gold_opt_iv_30d", "gold_opt_iv_90d", "gold_pm_iv", "gold_hl_funding_ann",
+  "gold_med_max", "gold_med_min", "gold_gld_pc_ratio",
+  "amzn_stock", "amzn_hl_perp", "amzn_opt_fwd_90d", "amzn_opt_iv_30d", "amzn_opt_iv_90d",
+  "amzn_hl_funding_ann", "amzn_hl_basis_pct", "amzn_pc_ratio",
+  "oil_wti_spot", "oil_brent_spot", "oil_brent_wti_spread", "oil_opt_fwd_90d",
+  "oil_pm_settle_ev", "oil_opt_iv_30d", "oil_opt_iv_90d", "oil_pm_iv",
+  "oil_hl_funding_ann", "oil_cl_pc_ratio",
+];
+
+const MACRO_HEADERS = [
+  "date",
+  "macro_composite", "macro_label",
+  "fed_score", "fed_signal", "fed_p_at_least_one_cut", "fed_expected_cuts", "fed_median_first_cut",
+  "iran_score", "iran_signal", "iran_p_deal_ye", "iran_p_nuke_test",
+  "oil_macro_score", "oil_signal", "oil_p_settle_above_current", "oil_p_spike_120", "oil_brent_wti_spread",
+  "btc_outperform_sp500", "btc_outperform_gold", "btc_outperform_nvda", "btc_outperform_silver",
+  "gpu_h100_hit_275", "gpu_h100_hit_300",
+];
+
+function csvVal(v: number | string | null | undefined): string {
+  if (v === null || v === undefined || (typeof v === "number" && isNaN(v))) return "";
+  if (typeof v === "string") return `"${v.replace(/"/g, '""')}"`;
+  return String(v);
+}
+
+function appendCsvRow(filename: string, headers: string[], row: Record<string, any>) {
+  const filepath = join(DATA_DIR, filename);
+  if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
+  if (!existsSync(filepath)) {
+    writeFileSync(filepath, headers.join(",") + "\n");
+  }
+
+  // Skip if today's row already exists
+  const existing = readFileSync(filepath, "utf-8");
+  const todayStr = row.date ?? new Date().toISOString().slice(0, 10);
+  const lastLine = existing.trim().split("\n").pop() ?? "";
+  if (lastLine.startsWith(`"${todayStr}"`) || lastLine.startsWith(todayStr)) {
+    return;
+  }
+
+  const values = headers.map((h) => csvVal(row[h] ?? null));
+  appendFileSync(filepath, values.join(",") + "\n");
+}
+
+function pcRatioFromChains(chains: OptionQuote[]): number {
+  const putVol = chains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0);
+  const callVol = chains.filter((c) => c.type === "call").reduce((s, c) => s + c.volume, 0);
+  return callVol > 0 ? putVol / callVol : 0;
+}
+
+function writeSnapshot(
+  hl: Record<string, any>,
+  pm: PolymarketEvent[],
+  opts: Record<string, OptionsSnapshot>,
+  macro: CategoryEvent[],
+  btcOutperform: CategoryEvent[],
+  gpu: CategoryEvent[],
+) {
+  const today = new Date().toISOString().slice(0, 10);
+
+  // ── Valuations row ──
+  const btcSpot = hl.BTC?.markPx ?? null;
+  const btcIv30 = opts.IBIT ? getIVForTenor(opts.IBIT.chains, opts.IBIT.underlyingPrice, 30) : null;
+  const btcIv90 = opts.IBIT ? getIVForTenor(opts.IBIT.chains, opts.IBIT.underlyingPrice, 90) : null;
+  let btcFwd: number | null = null;
+  if (opts.IBIT && btcIv90) {
+    const f = computeForwardFromOptions(opts.IBIT.chains, opts.IBIT.underlyingPrice, btcIv90.expiry);
+    if (f && btcSpot) btcFwd = f * (btcSpot / opts.IBIT.underlyingPrice);
+  }
+  const btcEvent = pm.find((e) => e.slug.includes("bitcoin"));
+  const btcPm = btcEvent && btcSpot ? pmImpliedEVFromTouches(btcEvent.strikes, btcSpot) : null;
+
+  const hypeSpot = hl.HYPE?.markPx ?? null;
+  const hypeEvent = pm.find((e) => e.slug.includes("hyperliquid"));
+  const hypePm = hypeEvent && hypeSpot ? pmImpliedEVFromTouches(hypeEvent.strikes, hypeSpot) : null;
+
+  const goldGcSpot = hl["GOLD (GC)"]?.markPx ?? null;
+  const goldGldSpot = opts.GLD?.underlyingPrice ?? null;
+  const goldIv30 = opts.GLD ? getIVForTenor(opts.GLD.chains, opts.GLD.underlyingPrice, 30) : null;
+  const goldIv90 = opts.GLD ? getIVForTenor(opts.GLD.chains, opts.GLD.underlyingPrice, 90) : null;
+  let goldFwd: number | null = null;
+  if (opts.GLD && goldIv90) {
+    const f = computeForwardFromOptions(opts.GLD.chains, opts.GLD.underlyingPrice, goldIv90.expiry);
+    if (f && goldGcSpot && goldGldSpot) goldFwd = f * (goldGcSpot / goldGldSpot);
+  }
+  const goldSettleJun = pm.find((e) => e.slug === "gc-settle-jun-2026");
+  const goldHitJun = pm.find((e) => e.slug === "gc-hit-jun-2026");
+  const goldHitEv = goldHitJun ?? pm.find((e) => e.slug.includes("gold-gc"));
+  const goldSettleEV = goldSettleJun ? pmImpliedEVFromSettlement(goldSettleJun.strikes) : null;
+  const goldPm = goldHitEv && goldGcSpot ? pmImpliedEVFromTouches(goldHitEv.strikes, goldGcSpot) : null;
+
+  const amznStock = opts.AMZN?.underlyingPrice ?? null;
+  const amznHlPerp = hl["AMZN"]?.markPx ?? null;
+  const amznIv30 = opts.AMZN ? getIVForTenor(opts.AMZN.chains, opts.AMZN.underlyingPrice, 30) : null;
+  const amznIv90 = opts.AMZN ? getIVForTenor(opts.AMZN.chains, opts.AMZN.underlyingPrice, 90) : null;
+  let amznFwd: number | null = null;
+  if (opts.AMZN && amznIv90) amznFwd = computeForwardFromOptions(opts.AMZN.chains, amznStock!, amznIv90.expiry);
+  const amznBasis = amznHlPerp && amznStock ? ((amznHlPerp / amznStock) - 1) * 100 : null;
+
+  const oilWti = opts.CL?.underlyingPrice ?? null;
+  const oilBrent = hl["BRENT OIL"]?.markPx ?? null;
+  const oilSpread = oilBrent && oilWti ? oilBrent - oilWti : null;
+  const oilIv30 = opts.CL ? getIVForTenor(opts.CL.chains, opts.CL.underlyingPrice, 30) : null;
+  const oilIv90 = opts.CL ? getIVForTenor(opts.CL.chains, opts.CL.underlyingPrice, 90) : null;
+  let oilFwd: number | null = null;
+  if (opts.CL && oilIv90) oilFwd = computeForwardFromOptions(opts.CL.chains, oilWti!, oilIv90.expiry);
+  const clSettle = pm.find((e) => e.slug === "cl-settle-jun-2026");
+  const clHit = pm.find((e) => e.slug === "cl-hit-jun-2026");
+  const oilSettleEV = clSettle ? pmImpliedEVFromSettlement(clSettle.strikes) : null;
+  const oilPm = clHit && oilWti ? pmImpliedEVFromTouches(clHit.strikes, oilWti) : null;
+
+  const r = (v: number | null | undefined, d = 2) => v != null ? Number(v.toFixed(d)) : null;
+
+  appendCsvRow(VALUATION_CSV, VALUATION_HEADERS, {
+    date: today,
+    btc_spot: r(btcSpot, 0), btc_opt_fwd_90d: r(btcFwd, 0), btc_pm_ev: r(btcPm?.ev, 0),
+    btc_opt_iv_30d: r(btcIv30?.iv ? btcIv30.iv * 100 : null, 1),
+    btc_opt_iv_90d: r(btcIv90?.iv ? btcIv90.iv * 100 : null, 1),
+    btc_pm_iv: r(btcPm?.impliedVol ? btcPm.impliedVol * 100 : null, 1),
+    btc_hl_funding_ann: r(hl.BTC?.fundingAnnualized ? hl.BTC.fundingAnnualized * 100 : null, 2),
+    btc_med_max: r(btcPm?.medianMax, 0), btc_med_min: r(btcPm?.medianMin, 0),
+    btc_ibit_pc_ratio: r(opts.IBIT ? pcRatioFromChains(opts.IBIT.chains) : null, 3),
+    hype_spot: r(hypeSpot, 4), hype_pm_ev: r(hypePm?.ev, 2),
+    hype_pm_iv: r(hypePm?.impliedVol ? hypePm.impliedVol * 100 : null, 1),
+    hype_hl_funding_ann: r(hl.HYPE?.fundingAnnualized ? hl.HYPE.fundingAnnualized * 100 : null, 2),
+    hype_hl_oi: r(hl.HYPE?.openInterestUsd, 0),
+    hype_med_max: r(hypePm?.medianMax, 1), hype_med_min: r(hypePm?.medianMin, 1),
+    gold_gc_spot: r(goldGcSpot, 0), gold_gld_spot: r(goldGldSpot, 2),
+    gold_opt_fwd_90d: r(goldFwd, 0), gold_pm_settle_ev: r(goldSettleEV, 0),
+    gold_opt_iv_30d: r(goldIv30?.iv ? goldIv30.iv * 100 : null, 1),
+    gold_opt_iv_90d: r(goldIv90?.iv ? goldIv90.iv * 100 : null, 1),
+    gold_pm_iv: r(goldPm?.impliedVol ? goldPm.impliedVol * 100 : null, 1),
+    gold_hl_funding_ann: r(hl["GOLD (GC)"]?.fundingAnnualized ? hl["GOLD (GC)"].fundingAnnualized * 100 : null, 2),
+    gold_med_max: r(goldPm?.medianMax, 0), gold_med_min: r(goldPm?.medianMin, 0),
+    gold_gld_pc_ratio: r(opts.GLD ? pcRatioFromChains(opts.GLD.chains) : null, 3),
+    amzn_stock: r(amznStock, 2), amzn_hl_perp: r(amznHlPerp, 2),
+    amzn_opt_fwd_90d: r(amznFwd, 2),
+    amzn_opt_iv_30d: r(amznIv30?.iv ? amznIv30.iv * 100 : null, 1),
+    amzn_opt_iv_90d: r(amznIv90?.iv ? amznIv90.iv * 100 : null, 1),
+    amzn_hl_funding_ann: r(hl["AMZN"]?.fundingAnnualized ? hl["AMZN"].fundingAnnualized * 100 : null, 2),
+    amzn_hl_basis_pct: r(amznBasis, 2),
+    amzn_pc_ratio: r(opts.AMZN ? pcRatioFromChains(opts.AMZN.chains) : null, 3),
+    oil_wti_spot: r(oilWti, 2), oil_brent_spot: r(oilBrent, 2),
+    oil_brent_wti_spread: r(oilSpread, 1),
+    oil_opt_fwd_90d: r(oilFwd, 1), oil_pm_settle_ev: r(oilSettleEV, 1),
+    oil_opt_iv_30d: r(oilIv30?.iv ? oilIv30.iv * 100 : null, 1),
+    oil_opt_iv_90d: r(oilIv90?.iv ? oilIv90.iv * 100 : null, 1),
+    oil_pm_iv: r(oilPm?.impliedVol ? oilPm.impliedVol * 100 : null, 1),
+    oil_hl_funding_ann: r(hl["BRENT OIL"]?.fundingAnnualized ? hl["BRENT OIL"].fundingAnnualized * 100 : null, 2),
+    oil_cl_pc_ratio: r(opts.CL ? pcRatioFromChains(opts.CL.chains) : null, 3),
+  });
+
+  // ── Macro row ──
+  const ms = computeMacroScore(macro, pm, hl, opts);
+
+  const findOutperformP = (events: CategoryEvent[], keyword: string): number | null => {
+    for (const ev of events) {
+      const m = ev.markets.find((m) => m.question.toLowerCase().includes(keyword) && !m.closed);
+      if (m) return r(m.yesPrice * 100, 1);
+    }
+    return null;
+  };
+
+  const findGpuP = (events: CategoryEvent[], strike: string): number | null => {
+    for (const ev of events) {
+      const m = ev.markets.find((m) => m.question.includes(strike) && !m.closed);
+      if (m) return r(m.yesPrice * 100, 1);
+    }
+    return null;
+  };
+
+  appendCsvRow(MACRO_CSV, MACRO_HEADERS, {
+    date: today,
+    macro_composite: ms.composite, macro_label: ms.label,
+    fed_score: ms.fed.score, fed_signal: ms.fed.signal,
+    fed_p_at_least_one_cut: r(ms.fed.pAtLeastOneCut * 100, 1),
+    fed_expected_cuts: r(ms.fed.expectedCuts, 1),
+    fed_median_first_cut: ms.fed.medianFirstCut,
+    iran_score: ms.iran.score, iran_signal: ms.iran.signal,
+    iran_p_deal_ye: r(ms.iran.pDealByYE * 100, 1),
+    iran_p_nuke_test: r(ms.iran.pNuclearTest * 100, 1),
+    oil_macro_score: ms.oil.score, oil_signal: ms.oil.signal,
+    oil_p_settle_above_current: r(ms.oil.pSettleAboveCurrent * 100, 1),
+    oil_p_spike_120: r(ms.oil.pSpike120 * 100, 1),
+    oil_brent_wti_spread: r(ms.oil.brentWtiSpread, 1),
+    btc_outperform_sp500: findOutperformP(btcOutperform, "s&p 500"),
+    btc_outperform_gold: findOutperformP(btcOutperform, "gold"),
+    btc_outperform_nvda: findOutperformP(btcOutperform, "nvidia"),
+    btc_outperform_silver: findOutperformP(btcOutperform, "silver"),
+    gpu_h100_hit_275: findGpuP(gpu, "$2.75"),
+    gpu_h100_hit_300: findGpuP(gpu, "$3.00"),
+  });
+
+  const valPath = join(DATA_DIR, VALUATION_CSV);
+  const macPath = join(DATA_DIR, MACRO_CSV);
+  console.log(`\n  Snapshot saved for ${today}`);
+  console.log(`    ${valPath}`);
+  console.log(`    ${macPath}\n`);
+}
+
 // ─── Main ───────────────────────────────────────────────────────────────────
 
 async function main() {
-  if (!JSON_OUTPUT) {
+  if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
     console.log(`\n  Market Scanner — ${new Date().toISOString()}`);
     console.log(`  Assets: Bitcoin, HYPE, Gold, Amazon, Oil (Brent + WTI)`);
     console.log(`  Sources: Hyperliquid (native + xyz DEX), Polymarket, CBOE Options`);
@@ -1896,10 +2115,15 @@ async function main() {
     fetchCategoryEvents(GPU_SLUGS).catch(() => [] as CategoryEvent[]),
   ]);
 
+  if (SNAPSHOT_MODE) {
+    writeSnapshot(hl, pm, opts, macro, btcOutperform, gpu);
+    return;
+  }
+
   crossAnalysis(hl, pm, opts);
   impliedValuations(hl, pm, opts);
 
-  if (!JSON_OUTPUT) {
+  if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
     displayCategorySection("BITCOIN OUTPERFORMANCE", btcOutperform);
 
     // Macro: Fed + Iran + Oil (oil already in cross-source, show Fed + Iran here)
@@ -1952,7 +2176,7 @@ async function main() {
     console.log(JSON.stringify({ hyperliquid: hl, polymarket: pm, options: opts }, null, 2));
   }
 
-  if (!JSON_OUTPUT) {
+  if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
     console.log(`\n${"─".repeat(70)}`);
     console.log(`  Scan complete. Run with --json for machine-readable output.`);
     console.log(`${"─".repeat(70)}\n`);
