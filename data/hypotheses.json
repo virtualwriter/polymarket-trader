@@ -1,1 +1,78 @@
-[]
+[
+  {
+    "id": "H-001",
+    "created": "2026-04-03",
+    "description": "BTC prediction market IV consistently underpricing vs options IV creates arbitrage opportunity",
+    "conditions": {
+      "btc_pm_iv": "< 46",
+      "btc_opt_iv_90d": "> 49",
+      "ratio": "< 0.92"
+    },
+    "prediction": "BTC spot will move >2% within 3 days when PM IV underprices options IV by >8%",
+    "timeframeDays": 3,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-03",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-002",
+    "created": "2026-04-03",
+    "description": "Extreme funding rate reversals in oil indicate position unwinding and mean reversion",
+    "conditions": {
+      "oil_hl_funding_ann": "> 30",
+      "oil_brent_wti_spread": "> 24"
+    },
+    "prediction": "Oil funding will revert below 10% within 2 days after extreme spikes >30%",
+    "timeframeDays": 2,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-03",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-003",
+    "created": "2026-04-03",
+    "description": "HYPE funding rate acceleration with declining OI suggests forced liquidations",
+    "conditions": {
+      "hype_hl_funding_ann": "> 8",
+      "hype_hl_oi": "< 765000000"
+    },
+    "prediction": "HYPE spot price will decline >3% within 24 hours when funding spikes while OI drops",
+    "timeframeDays": 1,
+    "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-03",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  }
+]
