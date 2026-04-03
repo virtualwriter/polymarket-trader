@@ -982,6 +982,180 @@ interface CategoryEvent {
   totalVolume: number;
 }
 
+interface MacroScore {
+  fed: { score: number; expectedCuts: number; pAtLeastOneCut: number; medianFirstCut: string; signal: string };
+  iran: { score: number; pDealByYE: number; pNuclearTest: number; signal: string };
+  oil: { score: number; pSettleAboveCurrent: number; pSpike120: number; brentWtiSpread: number; signal: string };
+  composite: number;
+  label: string;
+}
+
+function computeMacroScore(
+  macro: CategoryEvent[],
+  pm: any[],
+  hl: Record<string, any>,
+  opts: Record<string, OptionsSnapshot>,
+): MacroScore {
+  // ── Fed Score (0-100, 100 = very dovish/bullish) ──
+  const fedCuts = macro.find((e) => e.slug === "how-many-fed-rate-cuts-in-2026");
+  const fedTiming = macro.find((e) => e.slug === "fed-rate-cut-by-629");
+
+  let expectedCuts = 0;
+  let pZeroCuts = 0;
+  if (fedCuts) {
+    const live = fedCuts.markets.filter((m) => !m.closed);
+    for (const m of live) {
+      const q = m.question.toLowerCase();
+      const noMatch = q.match(/no fed rate cut/i);
+      const numMatch = q.match(/(\d+)\s+fed rate cut/i);
+      const morMatch = q.match(/(\d+) or more/i);
+      if (noMatch) {
+        pZeroCuts = m.yesPrice;
+      } else if (morMatch) {
+        expectedCuts += parseInt(morMatch[1]) * m.yesPrice;
+      } else if (numMatch) {
+        expectedCuts += parseInt(numMatch[1]) * m.yesPrice;
+      }
+    }
+  }
+  const pAtLeastOneCut = 1 - pZeroCuts;
+
+  let medianFirstCut = "None";
+  if (fedTiming) {
+    const sorted = fedTiming.markets
+      .filter((m) => !m.closed)
+      .map((m) => {
+        const monthMatch = m.question.match(/by (\w+ \d{4})/i);
+        return { month: monthMatch?.[1] ?? m.question, p: m.yesPrice };
+      })
+      .sort((a, b) => a.p - b.p);
+    const median = sorted.find((s) => s.p >= 0.5);
+    medianFirstCut = median?.month ?? sorted[sorted.length - 1]?.month ?? "Unknown";
+  }
+
+  // Score: base is P(≥1 cut), adjusted for timing
+  const pCutBySept = fedTiming?.markets.find((m) => /september/i.test(m.question))?.yesPrice ?? 0;
+  let fedScore = pAtLeastOneCut * 80;
+  if (pCutBySept > 0.5) fedScore += 10;
+  else if (pCutBySept < 0.3) fedScore -= 10;
+  if (expectedCuts >= 2) fedScore += 10;
+  else if (expectedCuts < 1) fedScore -= 5;
+  fedScore = Math.max(0, Math.min(100, fedScore));
+
+  const fedSignal =
+    fedScore >= 70 ? "DOVISH" : fedScore >= 50 ? "MODERATELY HAWKISH" : fedScore >= 30 ? "HAWKISH" : "VERY HAWKISH";
+
+  // ── Iran Score (0-100, 100 = peace/bullish) ──
+  const iranDealYE = macro.find((e) => e.slug === "us-iran-nuclear-deal-before-2027");
+  const iranNuke = macro.find((e) => e.slug === "iran-nuclear-test-before-2027");
+
+  const pDealByYE = iranDealYE?.markets[0]?.yesPrice ?? 0;
+  const pNuclearTest = iranNuke?.markets[0]?.yesPrice ?? 0;
+
+  let iranScore = pDealByYE * 100;
+  iranScore -= pNuclearTest * 60;
+  iranScore = Math.max(0, Math.min(100, iranScore));
+
+  const iranSignal =
+    iranScore >= 60 ? "PEACE LIKELY" : iranScore >= 40 ? "UNCERTAIN" : iranScore >= 20 ? "SKEPTICAL" : "ESCALATION RISK";
+
+  // ── Oil Score (0-100, 100 = declining oil/bullish) ──
+  const clSettle = pm.find(
+    (ev: any) => ev.slug === "cl-settle-jun-2026" || ev.title?.toLowerCase().includes("settle at in june"),
+  );
+  const clHit = pm.find(
+    (ev: any) => ev.slug === "cl-hit-jun-2026" || ev.title?.toLowerCase().includes("hit__ by end of june"),
+  );
+
+  let pSettleAboveCurrent = 0.65;
+  if (clSettle) {
+    const strikes = (clSettle.strikes ?? clSettle.markets ?? []) as any[];
+    const highStrikes = strikes.filter(
+      (s: any) => (s.direction === "above" || s.dir === "above") && (s.strike ?? s.price ?? 0) >= 80,
+    );
+    if (highStrikes.length > 0) {
+      pSettleAboveCurrent = Math.max(...highStrikes.map((s: any) => s.yesPrice ?? s.yes ?? 0));
+    }
+  }
+
+  let pSpike120 = 0.78;
+  if (clHit) {
+    const strikes = (clHit.strikes ?? clHit.markets ?? []) as any[];
+    const s120 = strikes.find(
+      (s: any) => (s.strike ?? s.price ?? 0) === 120 && (s.direction === "above" || s.dir === "above"),
+    );
+    if (s120) pSpike120 = s120.yesPrice ?? s120.yes ?? 0.78;
+  }
+
+  const wtiSpot = opts["CL"]?.underlyingPrice ?? 85;
+  const brentPerp = hl["xyz:BRENTOIL"]?.ctx ? parseFloat(hl["xyz:BRENTOIL"].ctx.markPx) : 110;
+  const brentWtiSpread = brentPerp - wtiSpot;
+
+  // P(settle below current) as base, spike and spread as penalties
+  let oilScore = (1 - pSettleAboveCurrent) * 100;
+  oilScore -= pSpike120 * 20;
+  oilScore -= Math.max(0, (brentWtiSpread - 5) / 25) * 10;
+  oilScore = Math.max(0, Math.min(100, oilScore));
+
+  const oilSignal =
+    oilScore >= 60 ? "DECLINING" : oilScore >= 40 ? "STABLE" : oilScore >= 20 ? "ELEVATED" : "SPIKE RISK";
+
+  // ── Composite (Fed 40%, Oil 40%, Iran 20%) ──
+  const composite = Math.round(fedScore * 0.4 + oilScore * 0.4 + iranScore * 0.2);
+  const label =
+    composite >= 80
+      ? "VERY BULLISH"
+      : composite >= 60
+        ? "BULLISH"
+        : composite >= 45
+          ? "NEUTRAL"
+          : composite >= 30
+            ? "BEARISH"
+            : "VERY BEARISH";
+
+  return {
+    fed: { score: Math.round(fedScore), expectedCuts, pAtLeastOneCut, medianFirstCut, signal: fedSignal },
+    iran: { score: Math.round(iranScore), pDealByYE, pNuclearTest, signal: iranSignal },
+    oil: { score: Math.round(oilScore), pSettleAboveCurrent, pSpike120, brentWtiSpread, signal: oilSignal },
+    composite,
+    label,
+  };
+}
+
+function displayMacroScore(ms: MacroScore) {
+  const gauge = (score: number) => {
+    const filled = Math.round(score / 5);
+    const empty = 20 - filled;
+    const color = score >= 60 ? "▓" : score >= 40 ? "▒" : "░";
+    return color.repeat(filled) + "·".repeat(empty);
+  };
+
+  console.log(`\n${"═".repeat(70)}`);
+  console.log(`  MACRO SCORE`);
+  console.log(`${"═".repeat(70)}`);
+  console.log();
+  console.log(`  ┌─ COMPOSITE:  ${ms.composite}/100  [${ms.label}]`);
+  console.log(`  │  ${gauge(ms.composite)}  ${ms.composite}`);
+  console.log(`  │`);
+  console.log(`  │  FED POLICY      ${gauge(ms.fed.score)}  ${ms.fed.score}/100  ${ms.fed.signal}`);
+  console.log(`  │    P(≥1 cut):     ${(ms.fed.pAtLeastOneCut * 100).toFixed(1)}%`);
+  console.log(`  │    Expected cuts: ${ms.fed.expectedCuts.toFixed(1)}`);
+  console.log(`  │    Median 1st:    ${ms.fed.medianFirstCut}`);
+  console.log(`  │`);
+  console.log(`  │  IRAN / PEACE    ${gauge(ms.iran.score)}  ${ms.iran.score}/100  ${ms.iran.signal}`);
+  console.log(`  │    P(deal 2026):  ${(ms.iran.pDealByYE * 100).toFixed(1)}%`);
+  console.log(`  │    P(nuke test):  ${(ms.iran.pNuclearTest * 100).toFixed(1)}%`);
+  console.log(`  │`);
+  console.log(`  │  OIL             ${gauge(ms.oil.score)}  ${ms.oil.score}/100  ${ms.oil.signal}`);
+  console.log(`  │    P(CL>$84 Jun): ${(ms.oil.pSettleAboveCurrent * 100).toFixed(1)}%`);
+  console.log(`  │    P(CL>$120):    ${(ms.oil.pSpike120 * 100).toFixed(1)}%`);
+  console.log(`  │    Brent-WTI:     $${ms.oil.brentWtiSpread.toFixed(1)} spread`);
+  console.log(`  │`);
+  console.log(`  │  Weights: Fed 40% · Oil 40% · Iran 20%`);
+  console.log(`  │  Scale: 80+ Very Bullish │ 60-80 Bullish │ 45-60 Neutral │ 30-45 Bearish │ <30 Very Bearish`);
+  console.log(`  └────────────────────────────────────────────`);
+}
+
 const BITCOIN_OUTPERFORMANCE_SLUGS = [
   "what-will-bitcoin-outperform-in-april",
   "will-bitcoin-outperform-gold-in-2026",
@@ -1112,6 +1286,9 @@ async function main() {
     }
     console.log(`\n  ┌─ Oil macro → see OIL Cross-Source section above`);
     console.log(`  └────────────────────────────────────────────`);
+
+    const macroScore = computeMacroScore(macro, pm, hl, opts);
+    displayMacroScore(macroScore);
 
     if (gpu.length > 0) {
       displayCategorySection("GPU RENTAL COST", gpu);
