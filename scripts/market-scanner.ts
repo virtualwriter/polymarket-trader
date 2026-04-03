@@ -983,6 +983,7 @@ interface CategoryEvent {
 }
 
 const BITCOIN_OUTPERFORMANCE_SLUGS = [
+  "what-will-bitcoin-outperform-in-april",
   "will-bitcoin-outperform-gold-in-2026",
   "bitcoin-vs-gold-vs-sp-500-in-2026",
 ];
@@ -997,8 +998,7 @@ const MACRO_SLUGS = [
 ];
 
 const GPU_SLUGS: string[] = [
-  // No GPU rental cost markets found on Polymarket yet.
-  // Add slugs here when they appear.
+  "what-will-gpu-rental-prices-h100-hit-by-april-30-967",
 ];
 
 async function fetchCategoryEvents(slugs: string[]): Promise<CategoryEvent[]> {
