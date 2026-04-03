@@ -83,8 +83,8 @@ interface OptionsSnapshot {
 const HL_API = "https://api.hyperliquid.xyz/info";
 const GAMMA_API = "https://gamma-api.polymarket.com";
 
-const HL_PERP_COINS = ["BTC", "HYPE", "PURR"];
-const OPTIONS_SYMBOLS = ["IBIT", "GLD", "AMZN"];
+const HL_PERP_COINS = ["BTC", "HYPE"];
+const OPTIONS_SYMBOLS = ["IBIT", "GLD", "AMZN", "PURR", "CL"];
 
 const POLYMARKET_EVENT_SLUGS = [
   "what-price-will-bitcoin-hit-before-2027",
@@ -214,25 +214,23 @@ async function fetchHyperliquid() {
     }
   }
 
-  // Spot data for PURR if available
+  // Spot data for HYPE if available
   if (spotMetaAndCtx) {
     const spotUniverse = spotMetaAndCtx[0].universe as HLSpotToken[];
     const spotCtxs = spotMetaAndCtx[1] as any[];
-    for (const token of ["PURR", "HYPE"]) {
-      const idx = spotUniverse.findIndex((u) => u.tokens.some((t) => t.name === token));
-      if (idx !== -1 && spotCtxs[idx]) {
-        const ctx = spotCtxs[idx];
-        const midPx = ctx.midPx ? parseFloat(ctx.midPx) : null;
-        const dayVol = ctx.dayNtlVlm ? parseFloat(ctx.dayNtlVlm) : 0;
-        if (midPx && !JSON_OUTPUT) {
-          console.log(`\n  ┌─ ${token} SPOT ──────────────────────────────`);
-          console.log(`  │  Mid Price:      $${fmt(midPx, 6)}`);
-          console.log(`  │  24h Volume:     ${fmtUsd(dayVol)}`);
-          console.log(`  └────────────────────────────────────────────`);
-        }
-        if (midPx) {
-          results[`${token}_SPOT`] = { midPx, dayVolume: dayVol };
-        }
+    const idx = spotUniverse.findIndex((u) => u.tokens.some((t) => t.name === "HYPE"));
+    if (idx !== -1 && spotCtxs[idx]) {
+      const ctx = spotCtxs[idx];
+      const midPx = ctx.midPx ? parseFloat(ctx.midPx) : null;
+      const dayVol = ctx.dayNtlVlm ? parseFloat(ctx.dayNtlVlm) : 0;
+      if (midPx && !JSON_OUTPUT) {
+        console.log(`\n  ┌─ HYPE SPOT ──────────────────────────────`);
+        console.log(`  │  Mid Price:      $${fmt(midPx, 4)}`);
+        console.log(`  │  24h Volume:     ${fmtUsd(dayVol)}`);
+        console.log(`  └────────────────────────────────────────────`);
+      }
+      if (midPx) {
+        results["HYPE_SPOT"] = { midPx, dayVolume: dayVol };
       }
     }
   }
@@ -631,11 +629,6 @@ function crossAnalysis(
       console.log(`  │  HL OI:             ${fmtUsd(hl.HYPE.openInterestUsd)}`);
       console.log(`  │  HL 24h Volume:     ${fmtUsd(hl.HYPE.dayVolume)}`);
 
-      if (hl.PURR) {
-        console.log(`  │  PURR Spot:         $${fmt(hl.PURR.markPx, 6)}`);
-        console.log(`  │  PURR 24h Vol:      ${fmtUsd(hl.PURR.dayVolume)}`);
-      }
-
       if (hypeEvent) {
         console.log(`  │`);
         console.log(`  │  Polymarket implied distribution (2026):`);
@@ -726,6 +719,86 @@ function crossAnalysis(
       console.log(`  └────────────────────────────────────────────`);
     }
   }
+
+  // PURR stock options
+  if (opts.PURR) {
+    const nearest = [...new Set(opts.PURR.chains.map((c) => c.expiration))].filter(Boolean).sort()[0];
+    const nearChains = opts.PURR.chains.filter((c) => c.expiration === nearest);
+    const putVol = nearChains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0);
+    const callVol = nearChains.filter((c) => c.type === "call").reduce((s, c) => s + c.volume, 0);
+    const pcRatio = callVol > 0 ? putVol / callVol : 0;
+
+    const atmCalls = nearChains.filter(
+      (c) =>
+        c.type === "call" &&
+        Math.abs(c.strike - opts.PURR.underlyingPrice) / opts.PURR.underlyingPrice < 0.1 &&
+        c.impliedVolatility > 0
+    );
+    const atmIV = atmCalls.length > 0
+      ? atmCalls.reduce((s, c) => s + c.impliedVolatility, 0) / atmCalls.length
+      : 0;
+
+    if (!JSON_OUTPUT) {
+      console.log(`\n  ┌─ PURR Stock Options ──────────────────────────`);
+      console.log(`  │  PURR Spot:        $${fmt(opts.PURR.underlyingPrice)}`);
+      console.log(`  │  Nearest Exp:      ${nearest}`);
+      console.log(`  │  Total Chains:     ${opts.PURR.chains.length}`);
+      console.log(`  │  Put/Call Ratio:   ${fmt(pcRatio, 3)}  ${pcRatio > 1.5 ? "← heavy put buying" : pcRatio < 0.5 ? "← call-heavy" : "← balanced"}`);
+      if (atmIV > 0) {
+        console.log(`  │  ATM IV:           ${(atmIV * 100).toFixed(1)}%`);
+      }
+      console.log(`  └────────────────────────────────────────────`);
+    }
+  }
+
+  // Oil / WTI Crude (CL)
+  if (opts.CL) {
+    const nearest = [...new Set(opts.CL.chains.map((c) => c.expiration))].filter(Boolean).sort()[0];
+    const nearChains = opts.CL.chains.filter((c) => c.expiration === nearest);
+    const putVol = nearChains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0);
+    const callVol = nearChains.filter((c) => c.type === "call").reduce((s, c) => s + c.volume, 0);
+    const pcRatio = callVol > 0 ? putVol / callVol : 0;
+
+    const atmCalls = nearChains.filter(
+      (c) =>
+        c.type === "call" &&
+        Math.abs(c.strike - opts.CL.underlyingPrice) / opts.CL.underlyingPrice < 0.05 &&
+        c.impliedVolatility > 0
+    );
+    const atmIV = atmCalls.length > 0
+      ? atmCalls.reduce((s, c) => s + c.impliedVolatility, 0) / atmCalls.length
+      : 0;
+
+    if (!JSON_OUTPUT) {
+      console.log(`\n  ┌─ OIL / WTI Crude (CL) Cross-Source ─────────`);
+      console.log(`  │  WTI Spot:         $${fmt(opts.CL.underlyingPrice)}`);
+      console.log(`  │  Nearest Exp:      ${nearest}`);
+      console.log(`  │  Total Chains:     ${opts.CL.chains.length}`);
+      console.log(`  │  Put/Call Ratio:   ${fmt(pcRatio, 3)}  ${pcRatio > 1.5 ? "← heavy put buying (bearish/hedge)" : pcRatio < 0.5 ? "← call-heavy (bullish)" : "← balanced"}`);
+      if (atmIV > 0) {
+        console.log(`  │  ATM IV:           ${(atmIV * 100).toFixed(1)}%`);
+      }
+
+      // Show near-ATM strikes
+      const atm = opts.CL.underlyingPrice;
+      const nearbyCalls = nearChains
+        .filter((c) => c.type === "call" && c.strike >= atm * 0.95 && c.strike <= atm * 1.1)
+        .sort((a, b) => a.strike - b.strike)
+        .slice(0, 6);
+      if (nearbyCalls.length > 0) {
+        console.log(`  │`);
+        console.log(`  │  Near-ATM Calls (${nearest}):`);
+        console.log(`  │  ${"Strike".padEnd(10)} ${"Bid".padStart(8)} ${"Ask".padStart(8)} ${"IV".padStart(8)} ${"OI".padStart(10)}`);
+        for (const c of nearbyCalls) {
+          const marker = Math.abs(c.strike - atm) / atm < 0.01 ? " << ATM" : "";
+          console.log(
+            `  │  ${("$" + fmt(c.strike)).padEnd(10)} ${("$" + fmt(c.bid)).padStart(8)} ${("$" + fmt(c.ask)).padStart(8)} ${c.impliedVolatility > 0 ? (c.impliedVolatility * 100).toFixed(1) + "%" : "N/A".padStart(4)}${fmt(c.openInterest, 0).padStart(10)}${marker}`
+          );
+        }
+      }
+      console.log(`  └────────────────────────────────────────────`);
+    }
+  }
 }
 
 // ─── Main ───────────────────────────────────────────────────────────────────
@@ -733,8 +806,8 @@ function crossAnalysis(
 async function main() {
   if (!JSON_OUTPUT) {
     console.log(`\n  Market Scanner — ${new Date().toISOString()}`);
-    console.log(`  Assets: Gold, Bitcoin, HYPE, PURR, Amazon`);
-    console.log(`  Sources: Hyperliquid, Polymarket, CBOE/Yahoo Options`);
+    console.log(`  Assets: Bitcoin, HYPE, Gold, Amazon, PURR, Oil/WTI`);
+    console.log(`  Sources: Hyperliquid, Polymarket, CBOE Options`);
   }
 
   const [hl, pm, opts] = await Promise.all([
