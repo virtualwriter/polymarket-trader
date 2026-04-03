@@ -95,6 +95,9 @@ const POLYMARKET_EVENT_SLUGS = [
   "what-price-will-bitcoin-hit-before-2027",
   "what-price-will-hyperliquid-hit-before-2027",
   "what-will-gold-gc-hit-by-end-of-december",
+  "gc-hit-jun-2026",
+  "gc-settle-jun-2026",
+  "gc-over-under-jun-2026",
   "cl-hit-jun-2026",
   "cl-over-under-jun-2026",
   "cl-settle-jun-2026",
@@ -1043,17 +1046,27 @@ function impliedValuations(
       optFwdExpiry = iv90.expiry;
     }
 
-    const goldEvent = pm.find((e) => e.slug.includes("gold-gc"));
+    const goldHitJun = pm.find((e) => e.slug === "gc-hit-jun-2026");
+    const goldSettleJun = pm.find((e) => e.slug === "gc-settle-jun-2026");
+    const goldHitDec = pm.find((e) => e.slug.includes("gold-gc") && e.slug.includes("december"));
+    const goldEvent = goldHitJun ?? goldHitDec;
     let pmEV: number | null = null;
+    let pmSettleEV: number | null = null;
     let pmVol: number | null = null;
     let goldMedMax = 0;
+    let goldMedMin = 0;
     const funding = goldPerp?.fundingAnnualized ?? 0;
+
+    if (goldSettleJun) {
+      pmSettleEV = pmImpliedEVFromSettlement(goldSettleJun.strikes);
+    }
 
     if (goldEvent && hlSpot > 0) {
       const result = pmImpliedEVFromTouches(goldEvent.strikes, hlSpot);
-      pmEV = result.ev;
+      pmEV = pmSettleEV ?? result.ev;
       pmVol = result.impliedVol;
       goldMedMax = result.medianMax;
+      goldMedMin = result.medianMin;
     }
 
     // GLD ETF to GC futures ratio: GLD ≈ GC / 10.86 (typical trust factor)
@@ -1084,10 +1097,12 @@ function impliedValuations(
       if (iv90) console.log(`  │  90d IV:           ${(iv90.iv * 100).toFixed(1)}%  (exp ${iv90.expiry})`);
       if (optFwd) console.log(`  │  GLD Forward (90d): $${fmt(optFwd)}  (${((optFwd / gldSpot - 1) * 100).toFixed(1)}% from spot)`);
       console.log(`  │`);
-      console.log(`  │  ── Polymarket-Implied ──  (upside strikes only — no downside data)`);
-      if (pmEV) console.log(`  │  Implied EV:       $${fmt(pmEV, 0)}  (${((pmEV / hlSpot - 1) * 100).toFixed(1)}% from spot)`);
-      if (goldMedMax) console.log(`  │  Median Max Touch: $${fmt(goldMedMax, 0)}  (50% chance GC reaches this)`);
-      if (pmVol) console.log(`  │  PM Implied Vol:   ${(pmVol * 100).toFixed(1)}% ann  (upside only, likely understated)`);
+      console.log(`  │  ── Polymarket-Implied ──${goldHitJun ? "" : "  (Dec market — upside only)"}`);
+      if (pmSettleEV) console.log(`  │  Settlement EV:    $${fmt(pmSettleEV, 0)}  (Jun 2026, ${((pmSettleEV / hlSpot - 1) * 100).toFixed(1)}% from spot)`);
+      else if (pmEV) console.log(`  │  Implied EV:       $${fmt(pmEV, 0)}  (${((pmEV / hlSpot - 1) * 100).toFixed(1)}% from spot)`);
+      if (goldMedMax) console.log(`  │  Median Max Touch: $${fmt(goldMedMax, 0)}  (50% chance GC reaches this by ${goldHitJun ? "Jun" : "Dec"})`);
+      if (goldMedMin && goldMedMin < hlSpot * 0.99) console.log(`  │  Median Min Touch: $${fmt(goldMedMin, 0)}  (50% chance GC drops to this)`);
+      if (pmVol) console.log(`  │  PM Implied Vol:   ${(pmVol * 100).toFixed(1)}% ann${goldHitJun ? "" : "  (upside only, likely understated)"}`);
       console.log(`  │`);
       console.log(`  │  ── Directional ──`);
       if (hlSpot) console.log(`  │  HL Funding (ann):  ${(funding * 100).toFixed(2)}%  ${funding > 0.05 ? "(longs pay → bullish crowding)" : "(neutral)"}`);
@@ -1282,9 +1297,11 @@ function impliedValuations(
     const gldIv90 = opts.GLD ? getIVForTenor(opts.GLD.chains, opts.GLD.underlyingPrice, 90) : null;
     let gldFwd: number | null = null;
     if (opts.GLD && gldIv90) gldFwd = computeForwardFromOptions(opts.GLD.chains, opts.GLD.underlyingPrice, gldIv90.expiry);
-    const goldEv = pm.find((e) => e.slug.includes("gold-gc"));
-    const goldPmResult = goldEv && goldSpot > 0 ? pmImpliedEVFromTouches(goldEv.strikes, goldSpot) : null;
-    rows.push(["GOLD", goldSpot, gldFwd ? gldFwd * (goldSpot / (opts.GLD?.underlyingPrice ?? 1)) : null, goldPmResult?.ev ?? null, gldIv90?.iv ?? null, goldPmResult?.impliedVol ?? null, hl["GOLD (GC)"]?.fundingAnnualized ?? null]);
+    const goldHitEv = pm.find((e) => e.slug === "gc-hit-jun-2026") ?? pm.find((e) => e.slug.includes("gold-gc"));
+    const goldSettleEv = pm.find((e) => e.slug === "gc-settle-jun-2026");
+    const goldPmResult = goldHitEv && goldSpot > 0 ? pmImpliedEVFromTouches(goldHitEv.strikes, goldSpot) : null;
+    const goldPmSettleEV = goldSettleEv ? pmImpliedEVFromSettlement(goldSettleEv.strikes) : null;
+    rows.push(["GOLD", goldSpot, gldFwd ? gldFwd * (goldSpot / (opts.GLD?.underlyingPrice ?? 1)) : null, goldPmSettleEV ?? goldPmResult?.ev ?? null, gldIv90?.iv ?? null, goldPmResult?.impliedVol ?? null, hl["GOLD (GC)"]?.fundingAnnualized ?? null]);
 
     // AMZN
     const amznSpot = opts.AMZN?.underlyingPrice ?? hl["AMZN"]?.markPx ?? 0;
@@ -1429,7 +1446,9 @@ function crossAnalysis(
   }
 
   // Gold: xyz:GOLD perp + GLD options + Polymarket GC strikes
-  const goldEvent = pm.find((e) => e.slug.includes("gold-gc"));
+  const goldEventJun = pm.find((e) => e.slug === "gc-hit-jun-2026");
+  const goldEventDec = pm.find((e) => e.slug.includes("gold-gc") && e.slug.includes("december"));
+  const goldEvent = goldEventJun ?? goldEventDec;
   const goldPerp = hl["GOLD (GC)"];
   if (opts.GLD || goldEvent || goldPerp) {
     const nearest = opts.GLD
@@ -1470,7 +1489,7 @@ function crossAnalysis(
       }
       if (goldEvent) {
         console.log(`  │`);
-        console.log(`  │  Polymarket Gold (GC) strikes (Dec 2026):`);
+        console.log(`  │  Polymarket Gold (GC) strikes (${goldEventJun ? "Jun" : "Dec"} 2026):`);
         for (const s of goldEvent.strikes) {
           const prob = s.yesPrice * 100;
           console.log(
