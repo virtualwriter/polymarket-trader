@@ -863,7 +863,7 @@ Respond with ONLY valid JSON in this exact format:
   "journalEntry": "Key observations and lessons from today's analysis..."
 }`;
 
-  const models = ["claude-3-5-haiku-20241022", "claude-sonnet-4-20250514"];
+  const models = ["claude-sonnet-4-20250514", "claude-3-5-haiku-20241022"];
   for (const model of models) {
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
