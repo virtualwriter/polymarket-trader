@@ -84,7 +84,12 @@ const HL_API = "https://api.hyperliquid.xyz/info";
 const GAMMA_API = "https://gamma-api.polymarket.com";
 
 const HL_PERP_COINS = ["BTC", "HYPE"];
-const OPTIONS_SYMBOLS = ["IBIT", "GLD", "AMZN", "PURR", "CL"];
+const HL_BUILDER_COINS: { dex: string; coin: string; label: string }[] = [
+  { dex: "xyz", coin: "xyz:AMZN", label: "AMZN" },
+  { dex: "xyz", coin: "xyz:GOLD", label: "GOLD (GC)" },
+  { dex: "xyz", coin: "xyz:BRENTOIL", label: "BRENT OIL" },
+];
+const OPTIONS_SYMBOLS = ["IBIT", "GLD", "AMZN", "CL"];
 
 const POLYMARKET_EVENT_SLUGS = [
   "what-price-will-bitcoin-hit-before-2027",
@@ -215,6 +220,70 @@ async function fetchHyperliquid() {
       console.log(`  │  Best Bid/Ask:    $${fmt(bestBid, 4)} / $${fmt(bestAsk, 4)}  (spread: $${fmt(bestAsk - bestBid, 4)})`);
       console.log(`  │  Book Depth (5):  Bids ${fmtUsd(bidDepth5)} | Asks ${fmtUsd(askDepth5)}`);
       console.log(`  └────────────────────────────────────────────`);
+    }
+  }
+
+  // Builder DEX perps (equities, gold, oil on xyz)
+  const builderDexes = [...new Set(HL_BUILDER_COINS.map((c) => c.dex))];
+  for (const dex of builderDexes) {
+    try {
+      const dexMeta = await fetchJson(HL_API, { type: "metaAndAssetCtxs", dex });
+      const dexUniverse: { name: string; szDecimals: number }[] = dexMeta[0].universe;
+      const dexCtxs: any[] = dexMeta[1];
+
+      for (const target of HL_BUILDER_COINS.filter((c) => c.dex === dex)) {
+        const idx = dexUniverse.findIndex((u) => u.name === target.coin);
+        if (idx === -1) {
+          warn(`${target.coin} not found on ${dex}`);
+          continue;
+        }
+
+        const ctx = dexCtxs[idx];
+        const markPx = parseFloat(ctx.markPx);
+        const oraclePx = parseFloat(ctx.oraclePx);
+        const funding = parseFloat(ctx.funding);
+        const openInterest = parseFloat(ctx.openInterest);
+        const dayVol = parseFloat(ctx.dayNtlVlm);
+
+        let book: HLBookResponse | null = null;
+        try {
+          book = await fetchJson(HL_API, { type: "l2Book", coin: target.coin });
+        } catch {}
+
+        const bestBid = book ? parseFloat(book.levels[0][0]?.px ?? "0") : 0;
+        const bestAsk = book ? parseFloat(book.levels[1][0]?.px ?? "0") : 0;
+        const annualizedFunding = funding * 24 * 365;
+
+        results[target.label] = {
+          markPx,
+          oraclePx,
+          funding8h: funding,
+          fundingAnnualized: annualizedFunding,
+          openInterest,
+          openInterestUsd: openInterest * markPx,
+          dayVolume: dayVol,
+          bestBid,
+          bestAsk,
+          spread: bestAsk - bestBid,
+          source: `${dex} DEX`,
+        };
+
+        if (!JSON_OUTPUT) {
+          const decimals = markPx > 1000 ? 2 : markPx > 1 ? 2 : 4;
+          console.log(`\n  ┌─ ${target.coin} (${target.label}) ───────────────────────`);
+          console.log(`  │  Mark Price:      $${fmt(markPx, decimals)}`);
+          console.log(`  │  Oracle Price:    $${fmt(oraclePx, decimals)}`);
+          console.log(`  │  Funding (8h):    ${pct(funding)}  (${annualizedFunding > 0 ? "longs pay" : "shorts pay"})`);
+          console.log(`  │  Annualized:      ${pct(annualizedFunding)}`);
+          console.log(`  │  Open Interest:   ${fmt(openInterest, 0)} contracts (${fmtUsd(openInterest * markPx)})`);
+          console.log(`  │  24h Volume:      ${fmtUsd(dayVol)}`);
+          console.log(`  │  Best Bid/Ask:    $${fmt(bestBid, decimals)} / $${fmt(bestAsk, decimals)}  (spread: $${fmt(bestAsk - bestBid, decimals)})`);
+          console.log(`  │  Source:          Hyperliquid ${dex} DEX`);
+          console.log(`  └────────────────────────────────────────────`);
+        }
+      }
+    } catch (e: any) {
+      warn(`Failed to fetch ${dex} DEX data: ${e.message}`);
     }
   }
 
@@ -730,9 +799,10 @@ function crossAnalysis(
     }
   }
 
-  // Gold: GLD options + Polymarket GC strikes
+  // Gold: xyz:GOLD perp + GLD options + Polymarket GC strikes
   const goldEvent = pm.find((e) => e.slug.includes("gold-gc"));
-  if (opts.GLD || goldEvent) {
+  const goldPerp = hl["GOLD (GC)"];
+  if (opts.GLD || goldEvent || goldPerp) {
     const nearest = opts.GLD
       ? [...new Set(opts.GLD.chains.map((c) => c.expiration))].filter(Boolean).sort()[0]
       : "";
@@ -755,6 +825,12 @@ function crossAnalysis(
 
     if (!JSON_OUTPUT) {
       console.log(`\n  ┌─ GOLD Cross-Source ───────────────────────────`);
+      if (goldPerp) {
+        console.log(`  │  HL Gold Perp:     $${fmt(goldPerp.markPx)} (xyz DEX)`);
+        console.log(`  │  HL Funding (ann): ${pct(goldPerp.fundingAnnualized)}  ${goldPerp.fundingAnnualized > 0.1 ? "← longs pay" : goldPerp.fundingAnnualized < -0.05 ? "← shorts pay" : ""}`);
+        console.log(`  │  HL OI:            ${fmtUsd(goldPerp.openInterestUsd)}`);
+        console.log(`  │  HL 24h Volume:    ${fmtUsd(goldPerp.dayVolume)}`);
+      }
       if (opts.GLD) {
         console.log(`  │  GLD ETF Spot:     $${fmt(opts.GLD.underlyingPrice)}`);
         console.log(`  │  Nearest Exp:      ${nearest}`);
@@ -777,8 +853,9 @@ function crossAnalysis(
     }
   }
 
-  // Amazon: AMZN options
-  if (opts.AMZN) {
+  // Amazon: xyz:AMZN perp + AMZN options
+  const amznPerp = hl["AMZN"];
+  if (opts.AMZN || amznPerp) {
     const nearest = [...new Set(opts.AMZN.chains.map((c) => c.expiration))].filter(Boolean).sort()[0];
     const nearChains = opts.AMZN.chains.filter((c) => c.expiration === nearest);
     const putVol = nearChains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0);
@@ -797,50 +874,28 @@ function crossAnalysis(
 
     if (!JSON_OUTPUT) {
       console.log(`\n  ┌─ AMAZON / AMZN Cross-Source ─────────────────`);
-      console.log(`  │  AMZN Spot:        $${fmt(opts.AMZN.underlyingPrice)}`);
-      console.log(`  │  Nearest Exp:      ${nearest}`);
-      console.log(`  │  Put/Call Ratio:   ${fmt(pcRatio, 3)}  ${pcRatio > 1.5 ? "← heavy put buying" : pcRatio < 0.5 ? "← call-heavy" : "← balanced"}`);
-      if (atmIV > 0) {
-        console.log(`  │  ATM IV:           ${(atmIV * 100).toFixed(1)}%`);
+      if (amznPerp) {
+        console.log(`  │  HL AMZN Perp:     $${fmt(amznPerp.markPx)} (xyz DEX)`);
+        console.log(`  │  HL Funding (ann): ${pct(amznPerp.fundingAnnualized)}  ${amznPerp.fundingAnnualized < -0.1 ? "← SHORTS PAY — bearish crowding" : amznPerp.fundingAnnualized > 0.1 ? "← LONGS PAY" : ""}`);
+        console.log(`  │  HL OI:            ${fmtUsd(amznPerp.openInterestUsd)}`);
+        console.log(`  │  HL 24h Volume:    ${fmtUsd(amznPerp.dayVolume)}`);
+      }
+      if (opts.AMZN) {
+        console.log(`  │  AMZN Options:     $${fmt(opts.AMZN.underlyingPrice)}`);
+        console.log(`  │  Nearest Exp:      ${nearest}`);
+        console.log(`  │  Put/Call Ratio:   ${fmt(pcRatio, 3)}  ${pcRatio > 1.5 ? "← heavy put buying" : pcRatio < 0.5 ? "← call-heavy" : "← balanced"}`);
+        if (atmIV > 0) {
+          console.log(`  │  ATM IV:           ${(atmIV * 100).toFixed(1)}%`);
+        }
       }
       console.log(`  └────────────────────────────────────────────`);
     }
   }
 
-  // PURR stock options
-  if (opts.PURR) {
-    const nearest = [...new Set(opts.PURR.chains.map((c) => c.expiration))].filter(Boolean).sort()[0];
-    const nearChains = opts.PURR.chains.filter((c) => c.expiration === nearest);
-    const putVol = nearChains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0);
-    const callVol = nearChains.filter((c) => c.type === "call").reduce((s, c) => s + c.volume, 0);
-    const pcRatio = callVol > 0 ? putVol / callVol : 0;
-
-    const atmCalls = nearChains.filter(
-      (c) =>
-        c.type === "call" &&
-        Math.abs(c.strike - opts.PURR.underlyingPrice) / opts.PURR.underlyingPrice < 0.1 &&
-        c.impliedVolatility > 0
-    );
-    const atmIV = atmCalls.length > 0
-      ? atmCalls.reduce((s, c) => s + c.impliedVolatility, 0) / atmCalls.length
-      : 0;
-
-    if (!JSON_OUTPUT) {
-      console.log(`\n  ┌─ PURR Stock Options ──────────────────────────`);
-      console.log(`  │  PURR Spot:        $${fmt(opts.PURR.underlyingPrice)}`);
-      console.log(`  │  Nearest Exp:      ${nearest}`);
-      console.log(`  │  Total Chains:     ${opts.PURR.chains.length}`);
-      console.log(`  │  Put/Call Ratio:   ${fmt(pcRatio, 3)}  ${pcRatio > 1.5 ? "← heavy put buying" : pcRatio < 0.5 ? "← call-heavy" : "← balanced"}`);
-      if (atmIV > 0) {
-        console.log(`  │  ATM IV:           ${(atmIV * 100).toFixed(1)}%`);
-      }
-      console.log(`  └────────────────────────────────────────────`);
-    }
-  }
-
-  // Oil / WTI Crude (CL) + Polymarket CL strikes
+  // Oil: xyz:BRENTOIL perp + CL options + Polymarket CL strikes
+  const oilPerp = hl["BRENT OIL"];
   const clEvents = pm.filter((e) => e.slug.includes("cl-"));
-  if (opts.CL || clEvents.length > 0) {
+  if (opts.CL || clEvents.length > 0 || oilPerp) {
     const nearest = [...new Set(opts.CL.chains.map((c) => c.expiration))].filter(Boolean).sort()[0];
     const nearChains = opts.CL.chains.filter((c) => c.expiration === nearest);
     const putVol = nearChains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0);
@@ -858,7 +913,13 @@ function crossAnalysis(
       : 0;
 
     if (!JSON_OUTPUT) {
-      console.log(`\n  ┌─ OIL / WTI Crude (CL) Cross-Source ─────────`);
+      console.log(`\n  ┌─ OIL Cross-Source ───────────────────────────`);
+      if (oilPerp) {
+        console.log(`  │  HL Brent Perp:    $${fmt(oilPerp.markPx)} (xyz DEX)`);
+        console.log(`  │  HL Funding (ann): ${pct(oilPerp.fundingAnnualized)}  ${oilPerp.fundingAnnualized < -0.1 ? "← SHORTS PAY" : oilPerp.fundingAnnualized > 0.1 ? "← LONGS PAY" : ""}`);
+        console.log(`  │  HL OI:            ${fmtUsd(oilPerp.openInterestUsd)}`);
+        console.log(`  │  HL 24h Volume:    ${fmtUsd(oilPerp.dayVolume)}`);
+      }
       if (opts.CL) {
         console.log(`  │  WTI Spot:         $${fmt(opts.CL.underlyingPrice)}`);
         console.log(`  │  Nearest Exp:      ${nearest}`);
@@ -910,8 +971,8 @@ function crossAnalysis(
 async function main() {
   if (!JSON_OUTPUT) {
     console.log(`\n  Market Scanner — ${new Date().toISOString()}`);
-    console.log(`  Assets: Bitcoin, HYPE, Gold, Amazon, PURR, Oil/WTI`);
-    console.log(`  Sources: Hyperliquid, Polymarket, CBOE Options`);
+    console.log(`  Assets: Bitcoin, HYPE, Gold, Amazon, Oil (Brent + WTI)`);
+    console.log(`  Sources: Hyperliquid (native + xyz DEX), Polymarket, CBOE Options`);
   }
 
   const [hl, pm, opts] = await Promise.all([
