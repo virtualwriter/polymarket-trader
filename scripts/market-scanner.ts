@@ -89,8 +89,12 @@ const OPTIONS_SYMBOLS = ["IBIT", "GLD", "AMZN", "PURR", "CL"];
 const POLYMARKET_EVENT_SLUGS = [
   "what-price-will-bitcoin-hit-before-2027",
   "what-price-will-hyperliquid-hit-before-2027",
+  "what-will-gold-gc-hit-by-end-of-december",
+  "cl-hit-jun-2026",
+  "cl-over-under-jun-2026",
+  "cl-settle-jun-2026",
 ];
-const POLYMARKET_SEARCH_KEYWORDS = ["gold price", "amazon stock", "AMZN"];
+const POLYMARKET_SEARCH_KEYWORDS = ["amazon stock", "AMZN"];
 
 const JSON_OUTPUT = process.argv.includes("--json");
 
@@ -256,13 +260,39 @@ interface PolymarketEvent {
 }
 
 function parseStrike(question: string): { strike: number; direction: "above" | "below" } | null {
+  // "reach $150,000" / "hit (HIGH) $6,000" / "settle over $90"
+  const highMatch = question.match(/(?:reach|hit\s*\(HIGH\)|settle\s+over|settle\s+at\s*>\s*)\s*\$?([\d,]+)/i);
+  // "dip to $55,000" / "hit (LOW) $40" / "settle under" / "below"
+  const lowMatch = question.match(/(?:dip\s+to|hit\s*\(LOW\)|settle\s+under|below)\s*\$?([\d,]+)/i);
+  // "settle at >$84"
+  const settleAbove = question.match(/settle\s+at\s*>\s*\$?([\d,]+)/i);
+  // "settle at $63-$70" (range bucket — use midpoint)
+  const rangeMatch = question.match(/settle\s+at\s+\$?([\d,]+)\s*-\s*\$?([\d,]+)/i);
+  // "settle at <$42" or "settle at >$84"
+  const settleLt = question.match(/settle\s+at\s*<\s*\$?([\d,]+)/i);
+  const settleGt = question.match(/settle\s+at\s*>\s*\$?([\d,]+)/i);
+
+  if (highMatch) return { strike: parseFloat(highMatch[1].replace(/,/g, "")), direction: "above" };
+  if (lowMatch) return { strike: parseFloat(lowMatch[1].replace(/,/g, "")), direction: "below" };
+  if (settleAbove) return { strike: parseFloat(settleAbove[1].replace(/,/g, "")), direction: "above" };
+  if (settleGt) return { strike: parseFloat(settleGt[1].replace(/,/g, "")), direction: "above" };
+  if (settleLt) return { strike: parseFloat(settleLt[1].replace(/,/g, "")), direction: "below" };
+  if (rangeMatch) {
+    const lo = parseFloat(rangeMatch[1].replace(/,/g, ""));
+    const hi = parseFloat(rangeMatch[2].replace(/,/g, ""));
+    return { strike: (lo + hi) / 2, direction: "above" };
+  }
+
+  // Generic fallback patterns
   const reachMatch = question.match(/reach\s+\$?([\d,]+)/i);
   const aboveMatch = question.match(/above\s+\$?([\d,]+)/i);
   const belowMatch = question.match(/below\s+\$?([\d,]+)/i);
-  const dropMatch = question.match(/drop.*\$?([\d,]+)/i);
+  const dropMatch = question.match(/drop.*?\$?([\d,]+)/i);
+  const overMatch = question.match(/over\s+\$?([\d,]+)/i);
 
   if (reachMatch) return { strike: parseFloat(reachMatch[1].replace(/,/g, "")), direction: "above" };
   if (aboveMatch) return { strike: parseFloat(aboveMatch[1].replace(/,/g, "")), direction: "above" };
+  if (overMatch) return { strike: parseFloat(overMatch[1].replace(/,/g, "")), direction: "above" };
   if (belowMatch) return { strike: parseFloat(belowMatch[1].replace(/,/g, "")), direction: "below" };
   if (dropMatch) return { strike: parseFloat(dropMatch[1].replace(/,/g, "")), direction: "below" };
   return null;
@@ -273,8 +303,48 @@ async function fetchPolymarket() {
 
   const events: PolymarketEvent[] = [];
 
-  // Fetch known price-event slugs via events endpoint (paginate to find them)
-  for (let offset = 0; offset <= 600; offset += 100) {
+  // Direct lookup of known event slugs first
+  for (const slug of POLYMARKET_EVENT_SLUGS) {
+    try {
+      const url = `${GAMMA_API}/events?slug=${encodeURIComponent(slug)}`;
+      const data = await fetchJson(url);
+      if (!Array.isArray(data)) continue;
+
+      for (const event of data) {
+        const title = event.title || "";
+        const eSlug = event.slug || "";
+        const markets = event.markets || [];
+        const strikes: PriceStrike[] = [];
+        let totalVolume = 0;
+
+        for (const m of markets) {
+          const parsed = parseStrike(m.question || "");
+          if (!parsed) continue;
+          let prices: number[] = [];
+          try { prices = JSON.parse(m.outcomePrices || "[]").map(Number); } catch {}
+          const vol = parseFloat(m.volume || "0");
+          totalVolume += vol;
+          strikes.push({
+            question: m.question,
+            strike: parsed.strike,
+            direction: parsed.direction,
+            yesPrice: prices[0] ?? 0,
+            volume: vol,
+          });
+        }
+
+        strikes.sort((a, b) => b.strike - a.strike);
+        if (strikes.length > 0 && !events.find((e) => e.slug === eSlug)) {
+          events.push({ title, slug: eSlug, strikes, totalVolume });
+        }
+      }
+    } catch (e: any) {
+      warn(`Polymarket slug lookup "${slug}" failed: ${e.message}`);
+    }
+  }
+
+  // Also paginate to find keyword-matched events
+  for (let offset = 0; offset <= 1000; offset += 100) {
     try {
       const url = `${GAMMA_API}/events?closed=false&limit=100&offset=${offset}`;
       const data = await fetchJson(url);
@@ -660,10 +730,15 @@ function crossAnalysis(
     }
   }
 
-  // Gold: GLD options
-  if (opts.GLD) {
-    const nearest = [...new Set(opts.GLD.chains.map((c) => c.expiration))].filter(Boolean).sort()[0];
-    const nearChains = opts.GLD.chains.filter((c) => c.expiration === nearest);
+  // Gold: GLD options + Polymarket GC strikes
+  const goldEvent = pm.find((e) => e.slug.includes("gold-gc"));
+  if (opts.GLD || goldEvent) {
+    const nearest = opts.GLD
+      ? [...new Set(opts.GLD.chains.map((c) => c.expiration))].filter(Boolean).sort()[0]
+      : "";
+    const nearChains = opts.GLD
+      ? opts.GLD.chains.filter((c) => c.expiration === nearest)
+      : [];
     const putVol = nearChains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0);
     const callVol = nearChains.filter((c) => c.type === "call").reduce((s, c) => s + c.volume, 0);
     const pcRatio = callVol > 0 ? putVol / callVol : 0;
@@ -671,7 +746,7 @@ function crossAnalysis(
     const atmCalls = nearChains.filter(
       (c) =>
         c.type === "call" &&
-        Math.abs(c.strike - opts.GLD.underlyingPrice) / opts.GLD.underlyingPrice < 0.03 &&
+        Math.abs(c.strike - (opts.GLD?.underlyingPrice ?? 0)) / (opts.GLD?.underlyingPrice ?? 1) < 0.03 &&
         c.impliedVolatility > 0
     );
     const atmIV = atmCalls.length > 0
@@ -679,12 +754,24 @@ function crossAnalysis(
       : 0;
 
     if (!JSON_OUTPUT) {
-      console.log(`\n  ┌─ GOLD / GLD Cross-Source ────────────────────`);
-      console.log(`  │  GLD Spot:         $${fmt(opts.GLD.underlyingPrice)}`);
-      console.log(`  │  Nearest Exp:      ${nearest}`);
-      console.log(`  │  Put/Call Ratio:   ${fmt(pcRatio, 3)}  ${pcRatio > 1.5 ? "← heavy put buying (fear/hedge)" : pcRatio < 0.5 ? "← call-heavy (bullish)" : "← balanced"}`);
-      if (atmIV > 0) {
-        console.log(`  │  ATM IV:           ${(atmIV * 100).toFixed(1)}%`);
+      console.log(`\n  ┌─ GOLD Cross-Source ───────────────────────────`);
+      if (opts.GLD) {
+        console.log(`  │  GLD ETF Spot:     $${fmt(opts.GLD.underlyingPrice)}`);
+        console.log(`  │  Nearest Exp:      ${nearest}`);
+        console.log(`  │  Put/Call Ratio:   ${fmt(pcRatio, 3)}  ${pcRatio > 1.5 ? "← heavy put buying (fear/hedge)" : pcRatio < 0.5 ? "← call-heavy (bullish)" : "← balanced"}`);
+        if (atmIV > 0) {
+          console.log(`  │  ATM IV:           ${(atmIV * 100).toFixed(1)}%`);
+        }
+      }
+      if (goldEvent) {
+        console.log(`  │`);
+        console.log(`  │  Polymarket Gold (GC) strikes (Dec 2026):`);
+        for (const s of goldEvent.strikes) {
+          const prob = s.yesPrice * 100;
+          console.log(
+            `  │    GC ${s.direction === "above" ? ">" : "<"} $${fmt(s.strike, 0).padEnd(8)} ${prob.toFixed(1).padStart(5)}% YES  ${"█".repeat(Math.round(prob / 2))}`
+          );
+        }
       }
       console.log(`  └────────────────────────────────────────────`);
     }
@@ -751,8 +838,9 @@ function crossAnalysis(
     }
   }
 
-  // Oil / WTI Crude (CL)
-  if (opts.CL) {
+  // Oil / WTI Crude (CL) + Polymarket CL strikes
+  const clEvents = pm.filter((e) => e.slug.includes("cl-"));
+  if (opts.CL || clEvents.length > 0) {
     const nearest = [...new Set(opts.CL.chains.map((c) => c.expiration))].filter(Boolean).sort()[0];
     const nearChains = opts.CL.chains.filter((c) => c.expiration === nearest);
     const putVol = nearChains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0);
@@ -771,29 +859,45 @@ function crossAnalysis(
 
     if (!JSON_OUTPUT) {
       console.log(`\n  ┌─ OIL / WTI Crude (CL) Cross-Source ─────────`);
-      console.log(`  │  WTI Spot:         $${fmt(opts.CL.underlyingPrice)}`);
-      console.log(`  │  Nearest Exp:      ${nearest}`);
-      console.log(`  │  Total Chains:     ${opts.CL.chains.length}`);
-      console.log(`  │  Put/Call Ratio:   ${fmt(pcRatio, 3)}  ${pcRatio > 1.5 ? "← heavy put buying (bearish/hedge)" : pcRatio < 0.5 ? "← call-heavy (bullish)" : "← balanced"}`);
-      if (atmIV > 0) {
-        console.log(`  │  ATM IV:           ${(atmIV * 100).toFixed(1)}%`);
+      if (opts.CL) {
+        console.log(`  │  WTI Spot:         $${fmt(opts.CL.underlyingPrice)}`);
+        console.log(`  │  Nearest Exp:      ${nearest}`);
+        console.log(`  │  Total Chains:     ${opts.CL.chains.length}`);
+        console.log(`  │  Put/Call Ratio:   ${fmt(pcRatio, 3)}  ${pcRatio > 1.5 ? "← heavy put buying (bearish/hedge)" : pcRatio < 0.5 ? "← call-heavy (bullish)" : "← balanced"}`);
+        if (atmIV > 0) {
+          console.log(`  │  ATM IV:           ${(atmIV * 100).toFixed(1)}%`);
+        }
+
+        const atm = opts.CL.underlyingPrice;
+        const nearbyCalls = nearChains
+          .filter((c) => c.type === "call" && c.strike >= atm * 0.95 && c.strike <= atm * 1.1)
+          .sort((a, b) => a.strike - b.strike)
+          .slice(0, 6);
+        if (nearbyCalls.length > 0) {
+          console.log(`  │`);
+          console.log(`  │  Near-ATM Calls (${nearest}):`);
+          console.log(`  │  ${"Strike".padEnd(10)} ${"Bid".padStart(8)} ${"Ask".padStart(8)} ${"IV".padStart(8)} ${"OI".padStart(10)}`);
+          for (const c of nearbyCalls) {
+            const marker = Math.abs(c.strike - atm) / atm < 0.01 ? " << ATM" : "";
+            console.log(
+              `  │  ${("$" + fmt(c.strike)).padEnd(10)} ${("$" + fmt(c.bid)).padStart(8)} ${("$" + fmt(c.ask)).padStart(8)} ${c.impliedVolatility > 0 ? (c.impliedVolatility * 100).toFixed(1) + "%" : "N/A".padStart(4)}${fmt(c.openInterest, 0).padStart(10)}${marker}`
+            );
+          }
+        }
       }
 
-      // Show near-ATM strikes
-      const atm = opts.CL.underlyingPrice;
-      const nearbyCalls = nearChains
-        .filter((c) => c.type === "call" && c.strike >= atm * 0.95 && c.strike <= atm * 1.1)
-        .sort((a, b) => a.strike - b.strike)
-        .slice(0, 6);
-      if (nearbyCalls.length > 0) {
-        console.log(`  │`);
-        console.log(`  │  Near-ATM Calls (${nearest}):`);
-        console.log(`  │  ${"Strike".padEnd(10)} ${"Bid".padStart(8)} ${"Ask".padStart(8)} ${"IV".padStart(8)} ${"OI".padStart(10)}`);
-        for (const c of nearbyCalls) {
-          const marker = Math.abs(c.strike - atm) / atm < 0.01 ? " << ATM" : "";
-          console.log(
-            `  │  ${("$" + fmt(c.strike)).padEnd(10)} ${("$" + fmt(c.bid)).padStart(8)} ${("$" + fmt(c.ask)).padStart(8)} ${c.impliedVolatility > 0 ? (c.impliedVolatility * 100).toFixed(1) + "%" : "N/A".padStart(4)}${fmt(c.openInterest, 0).padStart(10)}${marker}`
-          );
+      if (clEvents.length > 0) {
+        for (const ev of clEvents) {
+          const liveStrikes = ev.strikes.filter((s) => s.yesPrice > 0 && s.yesPrice < 1);
+          if (liveStrikes.length === 0) continue;
+          console.log(`  │`);
+          console.log(`  │  Polymarket: ${ev.title}`);
+          for (const s of liveStrikes.slice(0, 12)) {
+            const prob = s.yesPrice * 100;
+            console.log(
+              `  │    CL ${s.direction === "above" ? ">" : "<"} $${fmt(s.strike, 0).padEnd(5)} ${prob.toFixed(1).padStart(5)}% YES  ${"█".repeat(Math.round(prob / 2))}`
+            );
+          }
         }
       }
       console.log(`  └────────────────────────────────────────────`);
