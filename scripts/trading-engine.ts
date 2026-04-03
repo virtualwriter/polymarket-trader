@@ -863,39 +863,62 @@ Respond with ONLY valid JSON in this exact format:
   "journalEntry": "Key observations and lessons from today's analysis..."
 }`;
 
-  try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 2048,
-        messages: [{ role: "user", content: prompt }],
-      }),
-    });
+  const models = ["claude-3-5-haiku-20241022", "claude-sonnet-4-20250514"];
+  for (const model of models) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        if (attempt > 0) {
+          const delay = 2000 * Math.pow(2, attempt);
+          console.log(`  [LLM] Retry ${attempt}/2 for ${model} in ${delay / 1000}s...`);
+          await new Promise((r) => setTimeout(r, delay));
+        }
 
-    if (!res.ok) {
-      console.log(`  [LLM] API error: ${res.status} ${res.statusText}`);
-      return null;
+        const res = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-key": apiKey,
+            "anthropic-version": "2023-06-01",
+          },
+          body: JSON.stringify({
+            model,
+            max_tokens: 2048,
+            messages: [{ role: "user", content: prompt }],
+          }),
+        });
+
+        if (res.status === 429) {
+          console.log(`  [LLM] Rate limited on ${model}, attempt ${attempt + 1}`);
+          continue;
+        }
+        if (res.status === 529 || res.status === 503) {
+          console.log(`  [LLM] ${model} overloaded (${res.status}), attempt ${attempt + 1}`);
+          continue;
+        }
+        if (!res.ok) {
+          console.log(`  [LLM] API error on ${model}: ${res.status} ${res.statusText}`);
+          break; // non-retryable error, try next model
+        }
+
+        const data = await res.json() as any;
+        const text = data.content?.[0]?.text ?? "";
+        const jsonMatch = text.match(/\{[\s\S]*\}/);
+        if (!jsonMatch) {
+          console.log(`  [LLM] Could not parse JSON from ${model}`);
+          break;
+        }
+
+        console.log(`  [LLM] Success with ${model}`);
+        return JSON.parse(jsonMatch[0]);
+      } catch (e: any) {
+        console.log(`  [LLM] Error with ${model}: ${e.message}`);
+        break;
+      }
     }
-
-    const data = await res.json() as any;
-    const text = data.content?.[0]?.text ?? "";
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      console.log("  [LLM] Could not parse JSON from response");
-      return null;
-    }
-
-    return JSON.parse(jsonMatch[0]);
-  } catch (e: any) {
-    console.log(`  [LLM] Error: ${e.message}`);
-    return null;
   }
+
+  console.log("  [LLM] All models exhausted, proceeding without LLM.");
+  return null;
 }
 
 // ─── Journal Writer ──────────────────────────────────────────────────────────
