@@ -686,7 +686,636 @@ async function fetchOptions() {
   return results;
 }
 
-// ─── 4. Cross-Source Analysis ───────────────────────────────────────────────
+// ─── 4. Implied Valuations & Discrepancies ──────────────────────────────────
+
+interface AssetValuation {
+  name: string;
+  spot: number;
+  spotSource: string;
+  optionsForward: number | null;
+  optionsForwardExpiry: string;
+  pmImpliedEV: number | null;
+  pmEvMethod: string;
+  ivOptions30d: number | null;
+  ivOptions90d: number | null;
+  ivPolymarket: number | null;
+  hlFundingAnn: number | null;
+  putCallRatio: number | null;
+  discrepancies: string[];
+}
+
+function getIVForTenor(
+  chains: OptionQuote[],
+  underlying: number,
+  targetDays: number,
+): { iv: number; expiry: string } | null {
+  const now = new Date();
+  const grouped = new Map<string, OptionQuote[]>();
+  for (const c of chains) {
+    if (!c.expiration) continue;
+    const arr = grouped.get(c.expiration) ?? [];
+    arr.push(c);
+    grouped.set(c.expiration, arr);
+  }
+
+  let bestExp = "";
+  let bestDiff = Infinity;
+  for (const exp of grouped.keys()) {
+    const dte = (new Date(exp).getTime() - now.getTime()) / 86400000;
+    if (dte < 2) continue;
+    const diff = Math.abs(dte - targetDays);
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      bestExp = exp;
+    }
+  }
+  if (!bestExp) return null;
+
+  const expChains = grouped.get(bestExp)!;
+  const atmCalls = expChains.filter(
+    (c) =>
+      c.type === "call" &&
+      c.impliedVolatility > 0 &&
+      c.impliedVolatility < 5 &&
+      Math.abs(c.strike - underlying) / underlying < 0.05,
+  );
+  if (atmCalls.length === 0) return null;
+  const iv = atmCalls.reduce((s, c) => s + c.impliedVolatility, 0) / atmCalls.length;
+  return { iv, expiry: bestExp };
+}
+
+function computeForwardFromOptions(
+  chains: OptionQuote[],
+  underlying: number,
+  expiry: string,
+): number | null {
+  const expChains = chains.filter((c) => c.expiration === expiry);
+  const strikes = [...new Set(expChains.map((c) => c.strike))].sort((a, b) => a - b);
+  const atmStrike = strikes.reduce(
+    (best, s) => (Math.abs(s - underlying) < Math.abs(best - underlying) ? s : best),
+    strikes[0] ?? 0,
+  );
+  if (!atmStrike) return null;
+
+  const call = expChains.find((c) => c.type === "call" && c.strike === atmStrike && c.mid > 0);
+  const put = expChains.find((c) => c.type === "put" && c.strike === atmStrike && c.mid > 0);
+  if (!call || !put) return null;
+
+  // Put-call parity: Forward = Strike + Call_mid - Put_mid
+  return atmStrike + call.mid - put.mid;
+}
+
+function pmImpliedEVFromTouches(
+  strikes: PriceStrike[],
+  spot: number,
+): { ev: number; medianMax: number; medianMin: number; impliedVol: number } {
+  // Include resolved (P=1.0) strikes as boundaries, exclude P=0
+  const above = strikes
+    .filter((s) => s.direction === "above" && s.yesPrice > 0)
+    .sort((a, b) => a.strike - b.strike);
+  const below = strikes
+    .filter((s) => s.direction === "below" && s.yesPrice > 0)
+    .sort((a, b) => b.strike - a.strike);
+
+  // For EV integration, only use forward-looking (P < 1) strikes
+  const aboveLive = above.filter((s) => s.yesPrice < 1);
+  const belowLive = below.filter((s) => s.yesPrice < 1);
+
+  // Expected maximum: E[max] = spot + ∫ P(max > x) dx (trapezoidal on above strikes)
+  let expectedMax = spot;
+  for (let i = 0; i < aboveLive.length; i++) {
+    const lo = i === 0 ? spot : aboveLive[i - 1].strike;
+    const hi = aboveLive[i].strike;
+    const pLo = i === 0 ? 1.0 : aboveLive[i - 1].yesPrice;
+    const pHi = aboveLive[i].yesPrice;
+    expectedMax += ((pLo + pHi) / 2) * (hi - lo);
+  }
+
+  // Expected minimum: E[min] = spot - ∫ P(min < x) dx
+  let expectedMin = spot;
+  for (let i = 0; i < belowLive.length; i++) {
+    const hi = i === 0 ? spot : belowLive[i - 1].strike;
+    const lo = belowLive[i].strike;
+    const pHi = i === 0 ? 1.0 : belowLive[i - 1].yesPrice;
+    const pLo = belowLive[i].yesPrice;
+    expectedMin -= ((pHi + pLo) / 2) * (hi - lo);
+  }
+
+  // Median max: interpolate where P(touch above) crosses 50%
+  // Use ALL strikes (including resolved) for proper boundary detection
+  let medianMax = spot;
+  const aboveIdx = above.findIndex((s) => s.yesPrice < 0.5);
+  if (aboveIdx > 0) {
+    const hi = above[aboveIdx - 1];
+    const lo = above[aboveIdx];
+    const frac = (0.5 - lo.yesPrice) / (hi.yesPrice - lo.yesPrice);
+    medianMax = lo.strike + frac * (hi.strike - lo.strike);
+  } else if (aboveIdx === 0) {
+    // First above strike already < 50%; median is between spot and that strike
+    const s = above[0];
+    medianMax = spot + (s.strike - spot) * (0.5 / Math.max(0.01, s.yesPrice));
+    medianMax = Math.min(medianMax, s.strike);
+  } else if (above.length > 0) {
+    medianMax = above[above.length - 1].strike;
+  }
+
+  // Median min: interpolate where P(touch below) crosses 50%
+  let medianMin = spot;
+  const belowIdx = below.findIndex((s) => s.yesPrice < 0.5);
+  if (belowIdx > 0) {
+    const hi = below[belowIdx - 1];
+    const lo = below[belowIdx];
+    const frac = (0.5 - lo.yesPrice) / (hi.yesPrice - lo.yesPrice);
+    medianMin = hi.strike - frac * (hi.strike - lo.strike);
+  } else if (belowIdx === 0) {
+    // First below strike already < 50%; median is between spot and that strike
+    const s = below[0];
+    medianMin = spot - (spot - s.strike) * (0.5 / Math.max(0.01, s.yesPrice));
+    medianMin = Math.max(medianMin, s.strike);
+  } else if (below.length > 0) {
+    medianMin = below[below.length - 1].strike;
+  }
+
+  // Implied EV: spot adjusted by the asymmetry between upside/downside touch mass
+  const upside = expectedMax - spot;
+  const downside = spot - expectedMin;
+  const ev = spot + (upside - downside) * 0.35;
+
+  // Implied annual vol from median range
+  const T = 0.75; // ~9 months remaining in 2026
+  const rangeRatio = Math.max(0.01, (medianMax - medianMin) / spot);
+  const impliedVol = rangeRatio / (Math.sqrt(T) * 1.6);
+
+  return { ev, medianMax, medianMin, impliedVol };
+}
+
+function pmImpliedEVFromSettlement(
+  strikes: PriceStrike[],
+): number | null {
+  // Settlement markets have BUCKET probabilities (not cumulative).
+  // Each strike's yesPrice = P(settle in that bucket).
+  // Above strikes are sorted desc: the highest is the top bucket (e.g., ">$84"),
+  // followed by range buckets whose lower bounds decrease.
+  const above = strikes
+    .filter((s) => s.direction === "above" && s.yesPrice > 0)
+    .sort((a, b) => b.strike - a.strike);
+  const below = strikes
+    .filter((s) => s.direction === "below" && s.yesPrice > 0)
+    .sort((a, b) => a.strike - b.strike);
+
+  if (above.length < 2) return null;
+
+  let ev = 0;
+  for (let i = 0; i < above.length; i++) {
+    let midpoint: number;
+    if (i === 0) {
+      // Top bucket: ">$X". Estimate midpoint as strike * 1.08
+      midpoint = above[i].strike * 1.08;
+    } else {
+      // Range bucket between this strike and the one above it
+      midpoint = (above[i].strike + above[i - 1].strike) / 2;
+    }
+    ev += midpoint * above[i].yesPrice;
+  }
+
+  for (const s of below) {
+    ev += s.strike * 0.9 * s.yesPrice;
+  }
+
+  return ev > 0 ? ev : null;
+}
+
+function impliedValuations(
+  hl: Record<string, any>,
+  pm: PolymarketEvent[],
+  opts: Record<string, OptionsSnapshot>,
+) {
+  if (JSON_OUTPUT) return;
+
+  divider("IMPLIED VALUATIONS & VOLATILITY");
+
+  const valuations: AssetValuation[] = [];
+
+  // ── BITCOIN ──
+  {
+    const spot = hl.BTC?.markPx ?? 0;
+    const disc: string[] = [];
+    const iv30 = opts.IBIT ? getIVForTenor(opts.IBIT.chains, opts.IBIT.underlyingPrice, 30) : null;
+    const iv90 = opts.IBIT ? getIVForTenor(opts.IBIT.chains, opts.IBIT.underlyingPrice, 90) : null;
+
+    let optFwd: number | null = null;
+    let optFwdExpiry = "";
+    if (opts.IBIT && iv90) {
+      const ibitFwd = computeForwardFromOptions(opts.IBIT.chains, opts.IBIT.underlyingPrice, iv90.expiry);
+      if (ibitFwd) {
+        const ratio = spot / opts.IBIT.underlyingPrice;
+        optFwd = ibitFwd * ratio;
+        optFwdExpiry = iv90.expiry;
+      }
+    }
+
+    const btcEvent = pm.find((e) => e.slug.includes("bitcoin"));
+    let pmEV: number | null = null;
+    let pmVol: number | null = null;
+    let medMax = 0, medMin = 0;
+    let pmMethod = "";
+    if (btcEvent) {
+      const result = pmImpliedEVFromTouches(btcEvent.strikes, spot);
+      pmEV = result.ev;
+      pmVol = result.impliedVol;
+      medMax = result.medianMax;
+      medMin = result.medianMin;
+      pmMethod = "touch-probability weighted";
+    }
+
+    const funding = hl.BTC?.fundingAnnualized ?? 0;
+
+    // Discrepancies
+    if (optFwd && pmEV && Math.abs(optFwd - pmEV) / spot > 0.05) {
+      const optDir = optFwd > spot ? "bullish" : "bearish";
+      const pmDir = pmEV > spot ? "bullish" : "bearish";
+      if (optDir !== pmDir) {
+        disc.push(`OPTIONS vs POLYMARKET: Options imply ${optDir} ($${fmt(optFwd, 0)}), Polymarket imply ${pmDir} ($${fmt(pmEV, 0)})`);
+      }
+    }
+    if (iv90 && pmVol && Math.abs(iv90.iv - pmVol) / iv90.iv > 0.25) {
+      const higher = iv90.iv > pmVol ? "Options" : "Polymarket";
+      const lower = iv90.iv > pmVol ? "Polymarket" : "Options";
+      disc.push(`VOL MISMATCH: ${higher} IV (${(Math.max(iv90.iv, pmVol) * 100).toFixed(0)}%) >> ${lower} IV (${(Math.min(iv90.iv, pmVol) * 100).toFixed(0)}%) → ${higher} tails may be OVERPRICED`);
+    }
+    if (funding < -0.05 && pmEV && pmEV > spot * 1.02) {
+      disc.push(`FUNDING vs PM: HL shorts pay (${(funding * 100).toFixed(1)}% ann) but PM is bullish → PM upside may be CHEAP`);
+    } else if (funding > 0.1 && pmEV && pmEV < spot * 0.98) {
+      disc.push(`FUNDING vs PM: HL longs pay (${(funding * 100).toFixed(1)}% ann) but PM is bearish → PM downside may be CHEAP`);
+    }
+
+    if (!JSON_OUTPUT && spot > 0) {
+      console.log(`\n  ┌─ BITCOIN (BTC) ─────────────────────────────`);
+      console.log(`  │  Spot:             $${fmt(spot, 0)}  (HL perp)`);
+      if (opts.IBIT) console.log(`  │  IBIT Spot:        $${fmt(opts.IBIT.underlyingPrice)}  (→ BTC ≈ $${fmt(spot, 0)})`);
+      console.log(`  │`);
+      console.log(`  │  ── Options-Implied ──`);
+      if (iv30) console.log(`  │  30d IV:           ${(iv30.iv * 100).toFixed(1)}%  (exp ${iv30.expiry})`);
+      if (iv90) console.log(`  │  90d IV:           ${(iv90.iv * 100).toFixed(1)}%  (exp ${iv90.expiry})`);
+      if (optFwd) console.log(`  │  Forward (90d):    $${fmt(optFwd, 0)}  (${((optFwd / spot - 1) * 100).toFixed(1)}% from spot)`);
+      console.log(`  │`);
+      console.log(`  │  ── Polymarket-Implied ──`);
+      if (pmEV) console.log(`  │  Implied EV:       $${fmt(pmEV, 0)}  (${((pmEV / spot - 1) * 100).toFixed(1)}% from spot) [${pmMethod}]`);
+      if (medMax) console.log(`  │  Median Max Touch: $${fmt(medMax, 0)}  (50% chance BTC reaches this high)`);
+      if (medMin) console.log(`  │  Median Min Touch: $${fmt(medMin, 0)}  (50% chance BTC drops this low)`);
+      if (pmVol) console.log(`  │  PM Implied Vol:   ${(pmVol * 100).toFixed(1)}% ann`);
+      console.log(`  │`);
+      console.log(`  │  ── Directional ──`);
+      console.log(`  │  HL Funding (ann):  ${(funding * 100).toFixed(2)}%  ${funding < -0.03 ? "(shorts pay → bearish crowding)" : funding > 0.1 ? "(longs pay → bullish crowding)" : "(neutral)"}`);
+      if (opts.IBIT) {
+        const pc = opts.IBIT.chains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0) /
+          Math.max(1, opts.IBIT.chains.filter((c) => c.type === "call").reduce((s, c) => s + c.volume, 0));
+        console.log(`  │  IBIT P/C Ratio:   ${pc.toFixed(3)}  ${pc > 1.2 ? "(put-heavy → hedging/bearish)" : pc < 0.6 ? "(call-heavy → bullish)" : "(balanced)"}`);
+      }
+      if (disc.length > 0) {
+        console.log(`  │`);
+        console.log(`  │  ── DISCREPANCIES ──`);
+        for (const d of disc) console.log(`  │  ⚡ ${d}`);
+      }
+      console.log(`  └────────────────────────────────────────────`);
+    }
+  }
+
+  // ── HYPE ──
+  {
+    const spot = hl.HYPE?.markPx ?? 0;
+    const disc: string[] = [];
+    const hypeEvent = pm.find((e) => e.slug.includes("hyperliquid"));
+    const funding = hl.HYPE?.fundingAnnualized ?? 0;
+
+    let pmEV: number | null = null;
+    let pmVol: number | null = null;
+    let medMax = 0, medMin = 0;
+    if (hypeEvent && spot > 0) {
+      const result = pmImpliedEVFromTouches(hypeEvent.strikes, spot);
+      pmEV = result.ev;
+      pmVol = result.impliedVol;
+      medMax = result.medianMax;
+      medMin = result.medianMin;
+    }
+
+    if (funding < -0.05 && pmEV && pmEV > spot * 1.05) {
+      disc.push(`FUNDING vs PM: Shorts crowded (${(funding * 100).toFixed(1)}% ann) but PM bullish EV ($${fmt(pmEV!, 0)}) → SHORT SQUEEZE potential`);
+    }
+
+    if (!JSON_OUTPUT && spot > 0) {
+      console.log(`\n  ┌─ HYPERLIQUID (HYPE) ────────────────────────`);
+      console.log(`  │  Spot:             $${fmt(spot, 4)}  (HL perp)`);
+      console.log(`  │  No options market (crypto-only perp)`);
+      console.log(`  │`);
+      console.log(`  │  ── Polymarket-Implied ──`);
+      if (pmEV) console.log(`  │  Implied EV:       $${fmt(pmEV, 2)}  (${((pmEV / spot - 1) * 100).toFixed(1)}% from spot)`);
+      if (medMax) console.log(`  │  Median Max Touch: $${fmt(medMax, 1)}  (50% chance HYPE reaches this)`);
+      if (medMin) console.log(`  │  Median Min Touch: $${fmt(medMin, 1)}  (50% chance HYPE drops to this)`);
+      if (pmVol) console.log(`  │  PM Implied Vol:   ${(pmVol * 100).toFixed(1)}% ann`);
+      console.log(`  │`);
+      console.log(`  │  ── Directional ──`);
+      console.log(`  │  HL Funding (ann):  ${(funding * 100).toFixed(2)}%  ${funding < -0.05 ? "(shorts pay → bearish crowding)" : funding > 0.15 ? "(longs pay → bullish crowding)" : "(neutral)"}`);
+      console.log(`  │  HL OI:             ${fmtUsd(hl.HYPE?.openInterestUsd ?? 0)}`);
+      if (disc.length > 0) {
+        console.log(`  │`);
+        console.log(`  │  ── DISCREPANCIES ──`);
+        for (const d of disc) console.log(`  │  ⚡ ${d}`);
+      }
+      console.log(`  └────────────────────────────────────────────`);
+    }
+  }
+
+  // ── GOLD ──
+  {
+    const goldPerp = hl["GOLD (GC)"];
+    const hlSpot = goldPerp?.markPx ?? 0;
+    const gldSpot = opts.GLD?.underlyingPrice ?? 0;
+    const disc: string[] = [];
+
+    const iv30 = opts.GLD ? getIVForTenor(opts.GLD.chains, gldSpot, 30) : null;
+    const iv90 = opts.GLD ? getIVForTenor(opts.GLD.chains, gldSpot, 90) : null;
+
+    let optFwd: number | null = null;
+    let optFwdExpiry = "";
+    if (opts.GLD && iv90) {
+      optFwd = computeForwardFromOptions(opts.GLD.chains, gldSpot, iv90.expiry);
+      optFwdExpiry = iv90.expiry;
+    }
+
+    const goldEvent = pm.find((e) => e.slug.includes("gold-gc"));
+    let pmEV: number | null = null;
+    let pmVol: number | null = null;
+    let goldMedMax = 0;
+    const funding = goldPerp?.fundingAnnualized ?? 0;
+
+    if (goldEvent && hlSpot > 0) {
+      const result = pmImpliedEVFromTouches(goldEvent.strikes, hlSpot);
+      pmEV = result.ev;
+      pmVol = result.impliedVol;
+      goldMedMax = result.medianMax;
+    }
+
+    // GLD ETF to GC futures ratio: GLD ≈ GC / 10.86 (typical trust factor)
+    const gcFromGLD = gldSpot * (hlSpot / gldSpot);
+    if (gldSpot > 0 && hlSpot > 0) {
+      const basisPct = ((hlSpot / gcFromGLD) - 1) * 100;
+      if (Math.abs(basisPct) > 0.5) {
+        disc.push(`HL vs CBOE BASIS: HL gold perp $${fmt(hlSpot, 0)} vs GLD-implied, ${basisPct > 0 ? "+" : ""}${basisPct.toFixed(2)}% basis`);
+      }
+    }
+
+    if (iv90 && pmVol && Math.abs(iv90.iv - pmVol) / Math.max(iv90.iv, pmVol) > 0.3) {
+      const higher = iv90.iv > pmVol ? "Options" : "Polymarket";
+      disc.push(`VOL MISMATCH: ${higher} prices higher vol → ${higher} tails may be overpriced`);
+    }
+
+    if (funding > 0.05 && pmEV && pmEV > hlSpot * 1.1) {
+      disc.push(`FUNDING CONFIRMS PM: Longs pay ${(funding * 100).toFixed(1)}% ann + PM bullish EV → consensus upside`);
+    }
+
+    if (!JSON_OUTPUT && (hlSpot > 0 || gldSpot > 0)) {
+      console.log(`\n  ┌─ GOLD (GC / GLD) ──────────────────────────`);
+      if (hlSpot) console.log(`  │  GC Perp:          $${fmt(hlSpot, 0)}  (HL xyz DEX)`);
+      if (gldSpot) console.log(`  │  GLD ETF:          $${fmt(gldSpot)}  (CBOE)`);
+      console.log(`  │`);
+      console.log(`  │  ── Options-Implied ──`);
+      if (iv30) console.log(`  │  30d IV:           ${(iv30.iv * 100).toFixed(1)}%  (exp ${iv30.expiry})`);
+      if (iv90) console.log(`  │  90d IV:           ${(iv90.iv * 100).toFixed(1)}%  (exp ${iv90.expiry})`);
+      if (optFwd) console.log(`  │  GLD Forward (90d): $${fmt(optFwd)}  (${((optFwd / gldSpot - 1) * 100).toFixed(1)}% from spot)`);
+      console.log(`  │`);
+      console.log(`  │  ── Polymarket-Implied ──  (upside strikes only — no downside data)`);
+      if (pmEV) console.log(`  │  Implied EV:       $${fmt(pmEV, 0)}  (${((pmEV / hlSpot - 1) * 100).toFixed(1)}% from spot)`);
+      if (goldMedMax) console.log(`  │  Median Max Touch: $${fmt(goldMedMax, 0)}  (50% chance GC reaches this)`);
+      if (pmVol) console.log(`  │  PM Implied Vol:   ${(pmVol * 100).toFixed(1)}% ann  (upside only, likely understated)`);
+      console.log(`  │`);
+      console.log(`  │  ── Directional ──`);
+      if (hlSpot) console.log(`  │  HL Funding (ann):  ${(funding * 100).toFixed(2)}%  ${funding > 0.05 ? "(longs pay → bullish crowding)" : "(neutral)"}`);
+      if (opts.GLD) {
+        const pc = opts.GLD.chains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0) /
+          Math.max(1, opts.GLD.chains.filter((c) => c.type === "call").reduce((s, c) => s + c.volume, 0));
+        console.log(`  │  GLD P/C Ratio:    ${pc.toFixed(3)}  ${pc > 1.2 ? "(put-heavy)" : pc < 0.6 ? "(call-heavy → bullish)" : "(balanced)"}`);
+      }
+      if (disc.length > 0) {
+        console.log(`  │`);
+        console.log(`  │  ── DISCREPANCIES ──`);
+        for (const d of disc) console.log(`  │  ⚡ ${d}`);
+      }
+      console.log(`  └────────────────────────────────────────────`);
+    }
+  }
+
+  // ── AMAZON ──
+  {
+    const amznPerp = hl["AMZN"];
+    const hlSpot = amznPerp?.markPx ?? 0;
+    const optSpot = opts.AMZN?.underlyingPrice ?? 0;
+    const disc: string[] = [];
+
+    const iv30 = opts.AMZN ? getIVForTenor(opts.AMZN.chains, optSpot, 30) : null;
+    const iv90 = opts.AMZN ? getIVForTenor(opts.AMZN.chains, optSpot, 90) : null;
+
+    let optFwd: number | null = null;
+    let optFwdExpiry = "";
+    if (opts.AMZN && iv90) {
+      optFwd = computeForwardFromOptions(opts.AMZN.chains, optSpot, iv90.expiry);
+      optFwdExpiry = iv90.expiry;
+    }
+
+    const funding = amznPerp?.fundingAnnualized ?? 0;
+
+    if (hlSpot > 0 && optSpot > 0) {
+      const basis = ((hlSpot / optSpot) - 1) * 100;
+      if (Math.abs(basis) > 0.3) {
+        disc.push(`HL vs CBOE BASIS: Perp $${fmt(hlSpot)} vs stock $${fmt(optSpot)} (${basis > 0 ? "+" : ""}${basis.toFixed(2)}% basis) → ${basis < -0.5 ? "PERP DISCOUNT (short crowding)" : basis > 0.5 ? "PERP PREMIUM" : "minor"}`);
+      }
+    }
+    if (funding < -0.1 && optSpot > 0) {
+      const pcr = opts.AMZN
+        ? opts.AMZN.chains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0) /
+          Math.max(1, opts.AMZN.chains.filter((c) => c.type === "call").reduce((s, c) => s + c.volume, 0))
+        : 0;
+      if (pcr < 0.8) {
+        disc.push(`FUNDING vs OPTIONS: HL shorts crowded (${(funding * 100).toFixed(1)}% ann) but options P/C ${pcr.toFixed(2)} is not bearish → POTENTIAL DIVERGENCE`);
+      }
+    }
+
+    if (!JSON_OUTPUT && (hlSpot > 0 || optSpot > 0)) {
+      console.log(`\n  ┌─ AMAZON (AMZN) ─────────────────────────────`);
+      if (hlSpot) console.log(`  │  HL Perp:          $${fmt(hlSpot)}  (xyz DEX)`);
+      if (optSpot) console.log(`  │  Stock:            $${fmt(optSpot)}  (CBOE)`);
+      console.log(`  │`);
+      console.log(`  │  ── Options-Implied ──`);
+      if (iv30) console.log(`  │  30d IV:           ${(iv30.iv * 100).toFixed(1)}%  (exp ${iv30.expiry})`);
+      if (iv90) console.log(`  │  90d IV:           ${(iv90.iv * 100).toFixed(1)}%  (exp ${iv90.expiry})`);
+      if (optFwd) console.log(`  │  Forward (90d):    $${fmt(optFwd)}  (${((optFwd / optSpot - 1) * 100).toFixed(1)}% from spot)`);
+      console.log(`  │`);
+      console.log(`  │  ── Directional ──`);
+      if (hlSpot) console.log(`  │  HL Funding (ann):  ${(funding * 100).toFixed(2)}%  ${funding < -0.1 ? "(shorts pay → bearish crowding)" : funding > 0.1 ? "(longs pay → bullish)" : "(neutral)"}`);
+      if (opts.AMZN) {
+        const pc = opts.AMZN.chains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0) /
+          Math.max(1, opts.AMZN.chains.filter((c) => c.type === "call").reduce((s, c) => s + c.volume, 0));
+        console.log(`  │  AMZN P/C Ratio:   ${pc.toFixed(3)}  ${pc > 1.2 ? "(put-heavy → hedging)" : pc < 0.6 ? "(call-heavy → bullish)" : "(balanced)"}`);
+      }
+      if (disc.length > 0) {
+        console.log(`  │`);
+        console.log(`  │  ── DISCREPANCIES ──`);
+        for (const d of disc) console.log(`  │  ⚡ ${d}`);
+      }
+      console.log(`  └────────────────────────────────────────────`);
+    }
+  }
+
+  // ── OIL (CL / Brent) ──
+  {
+    const brentPerp = hl["BRENT OIL"];
+    const brentSpot = brentPerp?.markPx ?? 0;
+    const wtiSpot = opts.CL?.underlyingPrice ?? 0;
+    const disc: string[] = [];
+
+    const iv30 = opts.CL ? getIVForTenor(opts.CL.chains, wtiSpot, 30) : null;
+    const iv90 = opts.CL ? getIVForTenor(opts.CL.chains, wtiSpot, 90) : null;
+
+    let optFwd: number | null = null;
+    if (opts.CL && iv90) {
+      optFwd = computeForwardFromOptions(opts.CL.chains, wtiSpot, iv90.expiry);
+    }
+
+    const clSettle = pm.find((e) => e.slug === "cl-settle-jun-2026");
+    const clHit = pm.find((e) => e.slug === "cl-hit-jun-2026");
+    const clOverUnder = pm.find((e) => e.slug === "cl-over-under-jun-2026");
+
+    let pmSettleEV: number | null = null;
+    if (clSettle) {
+      pmSettleEV = pmImpliedEVFromSettlement(clSettle.strikes);
+    }
+
+    let pmVol: number | null = null;
+    if (clHit) {
+      const result = pmImpliedEVFromTouches(clHit.strikes, wtiSpot);
+      pmVol = result.impliedVol;
+    }
+
+    const funding = brentPerp?.fundingAnnualized ?? 0;
+
+    // Brent-WTI spread
+    const spread = brentSpot - wtiSpot;
+    if (spread > 15) {
+      disc.push(`BRENT-WTI SPREAD: $${fmt(spread, 1)} (historically wide, >$15 signals geopolitical premium)`);
+    }
+
+    // HL funding vs Polymarket direction
+    if (funding < -0.15 && pmSettleEV && pmSettleEV > wtiSpot * 1.02) {
+      disc.push(`FUNDING vs PM: HL Brent shorts crowded (${(funding * 100).toFixed(1)}% ann) but PM settlement EV $${fmt(pmSettleEV, 0)} above WTI spot → SHORTS MAY BE WRONG`);
+    }
+
+    // Options forward vs PM settle EV
+    if (optFwd && pmSettleEV && Math.abs(optFwd - pmSettleEV) / wtiSpot > 0.05) {
+      disc.push(`OPTIONS vs PM: Options forward $${fmt(optFwd, 1)} vs PM settle EV $${fmt(pmSettleEV, 0)} → ${Math.abs(optFwd - pmSettleEV).toFixed(1)} gap`);
+    }
+
+    // IV comparison
+    if (iv90 && pmVol && Math.abs(iv90.iv - pmVol) / Math.max(iv90.iv, pmVol) > 0.25) {
+      const higher = iv90.iv > pmVol ? "Options" : "Polymarket";
+      disc.push(`VOL MISMATCH: ${higher} prices higher vol (Opt ${(iv90.iv * 100).toFixed(0)}% vs PM ${(pmVol * 100).toFixed(0)}%)`);
+    }
+
+    if (!JSON_OUTPUT && (brentSpot > 0 || wtiSpot > 0)) {
+      console.log(`\n  ┌─ OIL (CL / Brent) ─────────────────────────`);
+      if (wtiSpot) console.log(`  │  WTI Spot:         $${fmt(wtiSpot)}  (CBOE CL)`);
+      if (brentSpot) console.log(`  │  Brent Perp:       $${fmt(brentSpot)}  (HL xyz DEX)`);
+      if (brentSpot && wtiSpot) console.log(`  │  Brent-WTI Spread: $${fmt(spread, 1)}`);
+      console.log(`  │`);
+      console.log(`  │  ── Options-Implied ──`);
+      if (iv30) console.log(`  │  30d IV:           ${(iv30.iv * 100).toFixed(1)}%  (exp ${iv30.expiry})`);
+      if (iv90) console.log(`  │  90d IV:           ${(iv90.iv * 100).toFixed(1)}%  (exp ${iv90.expiry})`);
+      if (optFwd) console.log(`  │  Forward (90d):    $${fmt(optFwd, 1)}  (${((optFwd / wtiSpot - 1) * 100).toFixed(1)}% from WTI spot)`);
+      console.log(`  │`);
+      console.log(`  │  ── Polymarket-Implied ──`);
+      if (pmSettleEV) console.log(`  │  Settlement EV:    $${fmt(pmSettleEV, 1)}  (Jun 2026, ${((pmSettleEV / wtiSpot - 1) * 100).toFixed(1)}% from WTI spot)`);
+      if (pmVol) console.log(`  │  PM Implied Vol:   ${(pmVol * 100).toFixed(1)}% ann`);
+      console.log(`  │`);
+      console.log(`  │  ── Directional ──`);
+      if (brentSpot) console.log(`  │  HL Funding (ann):  ${(funding * 100).toFixed(2)}%  ${funding < -0.15 ? "(SHORTS PAY — heavy crowding)" : funding < -0.05 ? "(shorts pay)" : "(neutral)"}`);
+      if (opts.CL) {
+        const pc = opts.CL.chains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0) /
+          Math.max(1, opts.CL.chains.filter((c) => c.type === "call").reduce((s, c) => s + c.volume, 0));
+        console.log(`  │  CL P/C Ratio:     ${pc.toFixed(3)}  ${pc > 1.2 ? "(put-heavy → hedging downside)" : pc < 0.6 ? "(call-heavy → bullish)" : "(balanced)"}`);
+      }
+      if (disc.length > 0) {
+        console.log(`  │`);
+        console.log(`  │  ── DISCREPANCIES ──`);
+        for (const d of disc) console.log(`  │  ⚡ ${d}`);
+      }
+      console.log(`  └────────────────────────────────────────────`);
+    }
+  }
+
+  // ── SUMMARY TABLE ──
+  if (!JSON_OUTPUT) {
+    console.log(`\n  ┌─ SUMMARY ────────────────────────────────────`);
+    console.log(`  │  ${"Asset".padEnd(10)} ${"Spot".padStart(10)} ${"Opt Fwd".padStart(10)} ${"PM EV".padStart(10)} ${"Opt IV".padStart(8)} ${"PM IV".padStart(8)} ${"HL Fund".padStart(8)}`);
+    console.log(`  │  ${"─".repeat(66)}`);
+
+    const rows: [string, number, number | null, number | null, number | null, number | null, number | null][] = [];
+
+    // BTC
+    const btcSpot = hl.BTC?.markPx ?? 0;
+    const btcIv90 = opts.IBIT ? getIVForTenor(opts.IBIT.chains, opts.IBIT.underlyingPrice, 90) : null;
+    const btcEvent = pm.find((e) => e.slug.includes("bitcoin"));
+    const btcPmResult = btcEvent && btcSpot > 0 ? pmImpliedEVFromTouches(btcEvent.strikes, btcSpot) : null;
+    let btcFwd: number | null = null;
+    if (opts.IBIT && btcIv90) {
+      const ibitFwd = computeForwardFromOptions(opts.IBIT.chains, opts.IBIT.underlyingPrice, btcIv90.expiry);
+      if (ibitFwd) btcFwd = ibitFwd * (btcSpot / opts.IBIT.underlyingPrice);
+    }
+    rows.push(["BTC", btcSpot, btcFwd, btcPmResult?.ev ?? null, btcIv90?.iv ?? null, btcPmResult?.impliedVol ?? null, hl.BTC?.fundingAnnualized ?? null]);
+
+    // HYPE
+    const hypeSpot = hl.HYPE?.markPx ?? 0;
+    const hypeEvent = pm.find((e) => e.slug.includes("hyperliquid"));
+    const hypePmResult = hypeEvent && hypeSpot > 0 ? pmImpliedEVFromTouches(hypeEvent.strikes, hypeSpot) : null;
+    rows.push(["HYPE", hypeSpot, null, hypePmResult?.ev ?? null, null, hypePmResult?.impliedVol ?? null, hl.HYPE?.fundingAnnualized ?? null]);
+
+    // GOLD
+    const goldSpot = hl["GOLD (GC)"]?.markPx ?? 0;
+    const gldIv90 = opts.GLD ? getIVForTenor(opts.GLD.chains, opts.GLD.underlyingPrice, 90) : null;
+    let gldFwd: number | null = null;
+    if (opts.GLD && gldIv90) gldFwd = computeForwardFromOptions(opts.GLD.chains, opts.GLD.underlyingPrice, gldIv90.expiry);
+    const goldEv = pm.find((e) => e.slug.includes("gold-gc"));
+    const goldPmResult = goldEv && goldSpot > 0 ? pmImpliedEVFromTouches(goldEv.strikes, goldSpot) : null;
+    rows.push(["GOLD", goldSpot, gldFwd ? gldFwd * (goldSpot / (opts.GLD?.underlyingPrice ?? 1)) : null, goldPmResult?.ev ?? null, gldIv90?.iv ?? null, goldPmResult?.impliedVol ?? null, hl["GOLD (GC)"]?.fundingAnnualized ?? null]);
+
+    // AMZN
+    const amznSpot = opts.AMZN?.underlyingPrice ?? hl["AMZN"]?.markPx ?? 0;
+    const amznIv90 = opts.AMZN ? getIVForTenor(opts.AMZN.chains, amznSpot, 90) : null;
+    let amznFwd: number | null = null;
+    if (opts.AMZN && amznIv90) amznFwd = computeForwardFromOptions(opts.AMZN.chains, amznSpot, amznIv90.expiry);
+    rows.push(["AMZN", amznSpot, amznFwd, null, amznIv90?.iv ?? null, null, hl["AMZN"]?.fundingAnnualized ?? null]);
+
+    // OIL
+    const clSpot = opts.CL?.underlyingPrice ?? 0;
+    const clIv90 = opts.CL ? getIVForTenor(opts.CL.chains, clSpot, 90) : null;
+    let clFwd: number | null = null;
+    if (opts.CL && clIv90) clFwd = computeForwardFromOptions(opts.CL.chains, clSpot, clIv90.expiry);
+    const clSettleEv = pm.find((e) => e.slug === "cl-settle-jun-2026");
+    const clPmEV = clSettleEv ? pmImpliedEVFromSettlement(clSettleEv.strikes) : null;
+    const clHitEv = pm.find((e) => e.slug === "cl-hit-jun-2026");
+    const clPmVol = clHitEv && clSpot > 0 ? pmImpliedEVFromTouches(clHitEv.strikes, clSpot).impliedVol : null;
+    rows.push(["OIL(WTI)", clSpot, clFwd, clPmEV, clIv90?.iv ?? null, clPmVol, hl["BRENT OIL"]?.fundingAnnualized ?? null]);
+
+    for (const [name, spot, fwd, pmEv, optIv, pmIv, fund] of rows) {
+      const fmtVal = (v: number | null, d = 0) => v ? `$${fmt(v, d)}` : "N/A";
+      const fmtPct = (v: number | null) => v ? `${(v * 100).toFixed(0)}%` : "N/A";
+      console.log(
+        `  │  ${name.padEnd(10)} ${fmtVal(spot, spot > 1000 ? 0 : 2).padStart(10)} ${fmtVal(fwd, fwd && fwd > 1000 ? 0 : 2).padStart(10)} ${fmtVal(pmEv, pmEv && pmEv > 1000 ? 0 : 2).padStart(10)} ${fmtPct(optIv).padStart(8)} ${fmtPct(pmIv).padStart(8)} ${fund !== null ? (fund * 100).toFixed(1) + "%" : "N/A".padStart(4)}`.padEnd(75),
+      );
+    }
+    console.log(`  └────────────────────────────────────────────`);
+  }
+}
+
+// ─── 5. Cross-Source Analysis ───────────────────────────────────────────────
 
 function crossAnalysis(
   hl: Record<string, any>,
@@ -1249,6 +1878,7 @@ async function main() {
   ]);
 
   crossAnalysis(hl, pm, opts);
+  impliedValuations(hl, pm, opts);
 
   if (!JSON_OUTPUT) {
     displayCategorySection("BITCOIN OUTPERFORMANCE", btcOutperform);
