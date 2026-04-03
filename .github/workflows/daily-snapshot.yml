@@ -34,10 +34,12 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f data/daily-valuations.csv data/daily-macro.csv \
-                     data/trades.csv data/portfolio.json \
-                     data/signal-weights.json data/hypotheses.json \
-                     data/learning-journal.md
+          for f in data/daily-valuations.csv data/daily-macro.csv \
+                   data/trades.csv data/portfolio.json \
+                   data/signal-weights.json data/hypotheses.json \
+                   data/learning-journal.md; do
+            [ -f "$f" ] && git add -f "$f"
+          done
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
