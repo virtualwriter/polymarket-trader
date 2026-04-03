@@ -966,6 +966,87 @@ function crossAnalysis(
   }
 }
 
+// ─── 5. Bitcoin Outperformance ───────────────────────────────────────────────
+
+interface SimpleMarket {
+  question: string;
+  yesPrice: number;
+  volume: number;
+  closed: boolean;
+}
+
+interface CategoryEvent {
+  title: string;
+  slug: string;
+  markets: SimpleMarket[];
+  totalVolume: number;
+}
+
+const BITCOIN_OUTPERFORMANCE_SLUGS = [
+  "will-bitcoin-outperform-gold-in-2026",
+  "bitcoin-vs-gold-vs-sp-500-in-2026",
+];
+
+const MACRO_SLUGS = [
+  "how-many-fed-rate-cuts-in-2026",
+  "fed-rate-cut-by-629",
+  "what-will-the-fed-rate-be-at-the-end-of-2026",
+  "us-iran-nuclear-deal-by-june-30",
+  "us-iran-nuclear-deal-before-2027",
+  "iran-nuclear-test-before-2027",
+];
+
+const GPU_SLUGS: string[] = [
+  // No GPU rental cost markets found on Polymarket yet.
+  // Add slugs here when they appear.
+];
+
+async function fetchCategoryEvents(slugs: string[]): Promise<CategoryEvent[]> {
+  const events: CategoryEvent[] = [];
+  for (const slug of slugs) {
+    try {
+      const url = `${GAMMA_API}/events?slug=${encodeURIComponent(slug)}`;
+      const data = await fetchJson(url);
+      if (!Array.isArray(data)) continue;
+      for (const event of data) {
+        const markets: SimpleMarket[] = (event.markets || []).map((m: any) => {
+          let prices: number[] = [];
+          try { prices = JSON.parse(m.outcomePrices || "[]").map(Number); } catch {}
+          return {
+            question: m.question || "",
+            yesPrice: prices[0] ?? 0,
+            volume: parseFloat(m.volume || "0"),
+            closed: !!m.closed,
+          };
+        });
+        const totalVolume = markets.reduce((s, m) => s + m.volume, 0);
+        events.push({ title: event.title, slug: event.slug, markets, totalVolume });
+      }
+    } catch {}
+  }
+  return events;
+}
+
+function displayCategorySection(title: string, events: CategoryEvent[]) {
+  divider(title);
+  if (events.length === 0) {
+    console.log("  No markets found for this category.");
+    return;
+  }
+  for (const ev of events) {
+    const liveMarkets = ev.markets.filter((m) => !m.closed && m.yesPrice > 0 && m.yesPrice < 1);
+    if (liveMarkets.length === 0) continue;
+    console.log(`\n  ┌─ ${ev.title}  (Vol: ${fmtUsd(ev.totalVolume)})`);
+    console.log(`  │  https://polymarket.com/event/${ev.slug}`);
+    for (const m of liveMarkets.sort((a, b) => b.yesPrice - a.yesPrice)) {
+      const prob = m.yesPrice * 100;
+      const bar = "█".repeat(Math.round(prob / 2));
+      console.log(`  │  ${prob.toFixed(1).padStart(5)}%  ${bar.padEnd(30)} ${m.question.slice(0, 55)}`);
+    }
+    console.log(`  └────────────────────────────────────────────`);
+  }
+}
+
 // ─── Main ───────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -975,7 +1056,7 @@ async function main() {
     console.log(`  Sources: Hyperliquid (native + xyz DEX), Polymarket, CBOE Options`);
   }
 
-  const [hl, pm, opts] = await Promise.all([
+  const [hl, pm, opts, btcOutperform, macro, gpu] = await Promise.all([
     fetchHyperliquid().catch((e) => {
       warn(`Hyperliquid failed: ${e.message}`);
       return {} as Record<string, any>;
@@ -988,9 +1069,58 @@ async function main() {
       warn(`Options failed: ${e.message}`);
       return {} as Record<string, OptionsSnapshot>;
     }),
+    fetchCategoryEvents(BITCOIN_OUTPERFORMANCE_SLUGS).catch(() => [] as CategoryEvent[]),
+    fetchCategoryEvents(MACRO_SLUGS).catch(() => [] as CategoryEvent[]),
+    fetchCategoryEvents(GPU_SLUGS).catch(() => [] as CategoryEvent[]),
   ]);
 
   crossAnalysis(hl, pm, opts);
+
+  if (!JSON_OUTPUT) {
+    displayCategorySection("BITCOIN OUTPERFORMANCE", btcOutperform);
+
+    // Macro: Fed + Iran + Oil (oil already in cross-source, show Fed + Iran here)
+    const fedEvents = macro.filter((e) => e.slug.includes("fed"));
+    const iranEvents = macro.filter((e) => e.slug.includes("iran"));
+    divider("MACRO — Fed / Iran / Oil");
+    if (fedEvents.length > 0) {
+      for (const ev of fedEvents) {
+        const live = ev.markets.filter((m) => !m.closed && m.yesPrice > 0 && m.yesPrice < 1);
+        if (live.length === 0) continue;
+        console.log(`\n  ┌─ ${ev.title}  (Vol: ${fmtUsd(ev.totalVolume)})`);
+        console.log(`  │  https://polymarket.com/event/${ev.slug}`);
+        for (const m of live.sort((a, b) => b.yesPrice - a.yesPrice).slice(0, 8)) {
+          const prob = m.yesPrice * 100;
+          const bar = "█".repeat(Math.round(prob / 2));
+          console.log(`  │  ${prob.toFixed(1).padStart(5)}%  ${bar.padEnd(25)} ${m.question.slice(0, 58)}`);
+        }
+        console.log(`  └────────────────────────────────────────────`);
+      }
+    }
+    if (iranEvents.length > 0) {
+      for (const ev of iranEvents) {
+        const live = ev.markets.filter((m) => !m.closed && m.yesPrice > 0 && m.yesPrice < 1);
+        if (live.length === 0) continue;
+        console.log(`\n  ┌─ ${ev.title}  (Vol: ${fmtUsd(ev.totalVolume)})`);
+        for (const m of live) {
+          const prob = m.yesPrice * 100;
+          const bar = "█".repeat(Math.round(prob / 2));
+          console.log(`  │  ${prob.toFixed(1).padStart(5)}%  ${bar.padEnd(25)} ${m.question.slice(0, 58)}`);
+        }
+        console.log(`  └────────────────────────────────────────────`);
+      }
+    }
+    console.log(`\n  ┌─ Oil macro → see OIL Cross-Source section above`);
+    console.log(`  └────────────────────────────────────────────`);
+
+    if (gpu.length > 0) {
+      displayCategorySection("GPU RENTAL COST", gpu);
+    } else {
+      divider("GPU RENTAL COST");
+      console.log("  No GPU rental cost markets found on Polymarket.");
+      console.log("  (Will auto-populate when markets are created)");
+    }
+  }
 
   if (JSON_OUTPUT) {
     console.log(JSON.stringify({ hyperliquid: hl, polymarket: pm, options: opts }, null, 2));
