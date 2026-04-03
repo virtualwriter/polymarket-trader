@@ -1920,11 +1920,11 @@ function appendCsvRow(filename: string, headers: string[], row: Record<string, a
     writeFileSync(filepath, headers.join(",") + "\n");
   }
 
-  // Skip if today's row already exists
+  // Skip if this timestamp's row already exists
   const existing = readFileSync(filepath, "utf-8");
-  const todayStr = row.date ?? new Date().toISOString().slice(0, 10);
+  const ts = row.date ?? new Date().toISOString().slice(0, 13);
   const lastLine = existing.trim().split("\n").pop() ?? "";
-  if (lastLine.startsWith(`"${todayStr}"`) || lastLine.startsWith(todayStr)) {
+  if (lastLine.startsWith(`"${ts}"`) || lastLine.startsWith(ts)) {
     return;
   }
 
@@ -1946,7 +1946,7 @@ function writeSnapshot(
   btcOutperform: CategoryEvent[],
   gpu: CategoryEvent[],
 ) {
-  const today = new Date().toISOString().slice(0, 10);
+  const today = new Date().toISOString().slice(0, 13); // YYYY-MM-DDTHH for 4-hourly dedup
 
   // ── Valuations row ──
   const btcSpot = hl.BTC?.markPx ?? null;
