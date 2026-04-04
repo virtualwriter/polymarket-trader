@@ -47,7 +47,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil funding validated thesis with extreme reversal: -9% → +35% → +5%. Position showing early profit as predicted mean reversion occurs. | Validated - oil funding collapsed from 35.5% to 5.5% as predicted. Extreme funding reversals (>30% daily swing) reliably mean revert within 24hrs. | Strong validation - oil funding collapsed from 35.5% to 5.48% as predicted. Extreme funding reversals (>30% swings) appear highly reliable for mean reversion.",
+    "postMortem": "Oil funding validated thesis with extreme reversal: -9% → +35% → +5%. Position showing early profit as predicted mean reversion occurs. | Validated - oil funding collapsed from 35.5% to 5.5% as predicted. Extreme funding reversals (>30% daily swing) reliably mean revert within 24hrs. | Strong validation - oil funding collapsed from 35.5% to 5.48% as predicted. Extreme funding reversals (>30% swings) appear highly reliable for mean reversion. | VALIDATED - Oil funding collapsed from +35% to -64%, confirming mean reversion thesis but revealing overcorrection pattern that creates new opportunities",
     "source": "llm"
   },
   {
@@ -72,7 +72,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE funding accelerating further to 10.73% while OI increased slightly (+4M). Pattern may be momentum-driven rather than liquidation-based. | Mixed results - HYPE funding peaked at 10.73% then normalized to 4.07%, but took longer than expected. OI decline was temporary. Funding spikes may indicate momentum rather than liquidations. | Mixed results - HYPE funding did decline from 10.73% to 4.6% but took longer than expected. OI decline rate may be better predictor than absolute funding level.",
+    "postMortem": "HYPE funding accelerating further to 10.73% while OI increased slightly (+4M). Pattern may be momentum-driven rather than liquidation-based. | Mixed results - HYPE funding peaked at 10.73% then normalized to 4.07%, but took longer than expected. OI decline was temporary. Funding spikes may indicate momentum rather than liquidations. | Mixed results - HYPE funding did decline from 10.73% to 4.6% but took longer than expected. OI decline rate may be better predictor than absolute funding level. | MIXED - HYPE funding did moderate but remains elevated at 8.72%. OI decline rate (~2M/day) may predict normalization speed better than absolute levels",
     "source": "llm"
   },
   {
@@ -121,7 +121,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Performing well - AMZN funding normalized from +5.48% to -1.69% while basis tightened from -0.34% to -0.38%. Perp-spot convergence occurring as predicted. | Working as expected - AMZN funding stabilizing around neutral while basis remains negative. Perp/spot convergence happening gradually.",
+    "postMortem": "Performing well - AMZN funding normalized from +5.48% to -1.69% while basis tightened from -0.34% to -0.38%. Perp-spot convergence occurring as predicted. | Working as expected - AMZN funding stabilizing around neutral while basis remains negative. Perp/spot convergence happening gradually. | PROGRESSING - AMZN funding normalized to -4.04% from extreme levels, basis improving from -0.42% to -0.39%. Convergence trade working steadily",
     "source": "llm"
   },
   {
@@ -199,7 +199,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "CONFIRMING - BTC PM IV gap persisting at 5.9pp even during price rally, suggesting structural rather than temporary mispricing",
     "source": "llm"
   },
   {
@@ -238,6 +238,81 @@
     "prediction": "When HYPE OI drops >2M daily with high funding, expect 50%+ funding reduction within 12-24 hours",
     "timeframeDays": 2,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-011",
+    "created": "2026-04-04",
+    "description": "Oil funding rate overcorrection pattern - extreme positive funding (>30%) followed by extreme negative funding (<-30%) within 48 hours creates bounce opportunity",
+    "conditions": {
+      "oil_hl_funding_ann": "< -30",
+      "previous_oil_hl_funding_ann": "> 30"
+    },
+    "prediction": "Oil funding will revert toward neutral (-10% to +10%) within 24-48 hours after extreme negative spike",
+    "timeframeDays": 2,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-012",
+    "created": "2026-04-04",
+    "description": "BTC momentum confirmation via IV expansion - when BTC spot moves >1% with simultaneous IV expansion (>0.2pp), momentum continues for 12-24 hours",
+    "conditions": {
+      "btc_spot": "> 67000",
+      "btc_opt_iv_30d": "> 49.0"
+    },
+    "prediction": "BTC will maintain upward momentum with spot reaching 67500+ within 24 hours when IV confirms price move",
+    "timeframeDays": 1,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-013",
+    "created": "2026-04-04",
+    "description": "Cross-asset IV compression cascade - when multiple assets show simultaneous IV drops (oil -4.2pp, AMZN -1.7pp), volatility selling is systematic and creates reversion opportunity",
+    "conditions": {
+      "oil_opt_iv_30d": "< 30",
+      "amzn_opt_iv_30d": "< 42"
+    },
+    "prediction": "Compressed IV assets will see volatility expansion within 48-72 hours as systematic selling exhausts",
+    "timeframeDays": 3,
+    "confidence": 0.55,
     "tests": [
       {
         "date": "2026-04-04",

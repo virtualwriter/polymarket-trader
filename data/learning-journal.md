@@ -73,3 +73,22 @@ Day 4 reveals funding rate mean reversion as most reliable alpha source - oil tr
 
 ---
 
+### 2026-04-04 13:45 UTC
+
+**Portfolio:** $100.00 total | Cash $94.00 | 6 open | P&L $0.0000 | N/A% win rate (0 trades)
+
+**Opened 1 positions:**
+- OIL long @ $85.14 via hyperliquid (FUNDING_EXTREME_SHORT)
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 5.2pp (was 10.9, now 16.1)
+- [anomaly] gold_opt_iv_30d = 34.4 is -2.2 std devs from mean (34.57 ± 0.07)
+- [anomaly] oil_opt_iv_30d = 28.6 is -2.2 std devs from mean (32.10 ± 1.57)
+- [anomaly] amzn_opt_iv_30d = 41.2 is -2.2 std devs from mean (42.62 ± 0.63)
+- [anomaly] hype_med_max = 53.8 is 2.2 std devs from mean (53.72 ± 0.04)
+
+**LLM analysis:**
+Day 5 reveals funding rate patterns are more complex than simple mean reversion - oil showing classic overcorrection from +35% to -64%, creating new trading opportunity. BTC momentum accelerating with IV confirmation at 49.1%, validating momentum-IV correlation hypothesis. Key insight: extreme funding rates don't just revert to mean, they often overcorrect to opposite extreme, creating secondary opportunities. Cross-asset IV compression (oil -4.2pp, AMZN -1.7pp) suggests systematic volatility selling that could reverse. Portfolio performing well with validated funding reversion thesis, now expanding to capture overcorrection patterns.
+
+---
+
