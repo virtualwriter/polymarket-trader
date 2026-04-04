@@ -61,3 +61,15 @@ Day 3 validation: Funding rate mean reversion thesis proving robust - oil trade 
 
 ---
 
+### 2026-04-04 09:28 UTC
+
+**Portfolio:** $100.00 total | Cash $95.00 | 5 open | P&L $0.0000 | N/A% win rate (0 trades)
+
+**Statistical observations:**
+- [anomaly] gold_hl_funding_ann = 2.28 is -2.0 std devs from mean (4.84 ± 1.28)
+
+**LLM analysis:**
+Day 4 reveals funding rate mean reversion as most reliable alpha source - oil trade validated with 85% funding collapse. Key insight: extreme funding (>30% daily change) has ~24-48hr reversion window regardless of asset. HYPE trade teaching us that OI decline rate may predict funding normalization speed better than absolute levels. BTC PM IV gap proving more structural than expected - considering this systematic underpricing rather than arbitrage. AMZN convergence progressing steadily. Focus shifting to shorter-term funding oscillation patterns during stable price periods for next alpha source.
+
+---
+

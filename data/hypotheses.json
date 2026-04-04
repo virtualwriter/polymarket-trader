@@ -22,7 +22,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC PM IV still 7.1% below options IV (43.4% vs 48.8%). Gap persisting longer than expected but not widening further.",
+    "postMortem": "BTC PM IV still 7.1% below options IV (43.4% vs 48.8%). Gap persisting longer than expected but not widening further. | BTC PM IV gap persists (43.3% vs 48.8%) suggesting structural underpricing rather than temporary arbitrage. May need position sizing adjustment.",
     "source": "llm"
   },
   {
@@ -47,7 +47,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil funding validated thesis with extreme reversal: -9% → +35% → +5%. Position showing early profit as predicted mean reversion occurs. | Validated - oil funding collapsed from 35.5% to 5.5% as predicted. Extreme funding reversals (>30% daily swing) reliably mean revert within 24hrs.",
+    "postMortem": "Oil funding validated thesis with extreme reversal: -9% → +35% → +5%. Position showing early profit as predicted mean reversion occurs. | Validated - oil funding collapsed from 35.5% to 5.5% as predicted. Extreme funding reversals (>30% daily swing) reliably mean revert within 24hrs. | Strong validation - oil funding collapsed from 35.5% to 5.48% as predicted. Extreme funding reversals (>30% swings) appear highly reliable for mean reversion.",
     "source": "llm"
   },
   {
@@ -72,7 +72,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE funding accelerating further to 10.73% while OI increased slightly (+4M). Pattern may be momentum-driven rather than liquidation-based. | Mixed results - HYPE funding peaked at 10.73% then normalized to 4.07%, but took longer than expected. OI decline was temporary. Funding spikes may indicate momentum rather than liquidations.",
+    "postMortem": "HYPE funding accelerating further to 10.73% while OI increased slightly (+4M). Pattern may be momentum-driven rather than liquidation-based. | Mixed results - HYPE funding peaked at 10.73% then normalized to 4.07%, but took longer than expected. OI decline was temporary. Funding spikes may indicate momentum rather than liquidations. | Mixed results - HYPE funding did decline from 10.73% to 4.6% but took longer than expected. OI decline rate may be better predictor than absolute funding level.",
     "source": "llm"
   },
   {
@@ -121,7 +121,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Performing well - AMZN funding normalized from +5.48% to -1.69% while basis tightened from -0.34% to -0.38%. Perp-spot convergence occurring as predicted.",
+    "postMortem": "Performing well - AMZN funding normalized from +5.48% to -1.69% while basis tightened from -0.34% to -0.38%. Perp-spot convergence occurring as predicted. | Working as expected - AMZN funding stabilizing around neutral while basis remains negative. Perp/spot convergence happening gradually.",
     "source": "llm"
   },
   {
@@ -187,6 +187,56 @@
     },
     "prediction": "IV gap will compress when BTC moves >3% in either direction within 48hrs",
     "timeframeDays": 3,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-009",
+    "created": "2026-04-04",
+    "description": "BTC funding rate sign oscillation around zero during price stability creates predictable short-term momentum",
+    "conditions": {
+      "btc_hl_funding_ann": "changes sign",
+      "btc_spot": "< 1% daily change"
+    },
+    "prediction": "When BTC funding switches from positive to negative during stable price action, expect 2-4 hour momentum continuation in price direction",
+    "timeframeDays": 3,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-010",
+    "created": "2026-04-04",
+    "description": "HYPE open interest decline rate predicts funding normalization speed",
+    "conditions": {
+      "hype_hl_oi": "declining > 2M/day",
+      "hype_hl_funding_ann": "> 8%"
+    },
+    "prediction": "When HYPE OI drops >2M daily with high funding, expect 50%+ funding reduction within 12-24 hours",
+    "timeframeDays": 2,
     "confidence": 0.7,
     "tests": [
       {
