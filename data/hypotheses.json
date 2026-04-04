@@ -22,7 +22,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC PM IV still 7.1% below options IV (43.4% vs 48.8%). Gap persisting longer than expected but not widening further.",
     "source": "llm"
   },
   {
@@ -47,7 +47,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil funding validated thesis with extreme reversal: -9% → +35% → +5%. Position showing early profit as predicted mean reversion occurs.",
     "source": "llm"
   },
   {
@@ -64,6 +64,80 @@
     "tests": [
       {
         "date": "2026-04-03",
+        "triggered": true,
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "HYPE funding accelerating further to 10.73% while OI increased slightly (+4M). Pattern may be momentum-driven rather than liquidation-based.",
+    "source": "llm"
+  },
+  {
+    "id": "H-004",
+    "created": "2026-04-04",
+    "description": "Oil funding rate volatility above 30% daily swing predicts mean reversion within 24-48 hours",
+    "conditions": {
+      "oil_hl_funding_ann": "abs(current - previous) > 30"
+    },
+    "prediction": "Funding rate will revert toward zero within 2 days after extreme swing",
+    "timeframeDays": 2,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-005",
+    "created": "2026-04-04",
+    "description": "AMZN funding rate sign flip from deeply negative to positive indicates perp/spot convergence opportunity",
+    "conditions": {
+      "amzn_hl_funding_ann": "> 0",
+      "amzn_hl_basis_pct": "< -0.3"
+    },
+    "prediction": "AMZN perp will converge toward spot price as funding normalizes",
+    "timeframeDays": 3,
+    "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-006",
+    "created": "2026-04-04",
+    "description": "Gold prediction market IV compression below 16% while options IV stays above 30% creates mean reversion setup",
+    "conditions": {
+      "gold_pm_iv": "< 16",
+      "gold_opt_iv_30d": "> 30"
+    },
+    "prediction": "Gold PM IV will expand back above 18% as realized volatility increases",
+    "timeframeDays": 5,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-04",
         "triggered": true,
         "outcome": "pending",
         "actualMove": ""
