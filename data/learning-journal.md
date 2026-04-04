@@ -92,3 +92,19 @@ Day 5 reveals funding rate patterns are more complex than simple mean reversion 
 
 ---
 
+### 2026-04-04 17:22 UTC
+
+**Portfolio:** $100.00 total | Cash $94.00 | 6 open | P&L $0.0000 | N/A% win rate (0 trades)
+
+**Statistical observations:**
+- [anomaly] btc_med_min = 49464 is -2.4 std devs from mean (49758.86 ± 120.37)
+- [anomaly] hype_spot = 36.056 is 2.2 std devs from mean (35.73 ± 0.14)
+- [anomaly] hype_pm_iv = 60.1 is -2.1 std devs from mean (60.57 ± 0.22)
+- [anomaly] hype_pm_ev = 39.51 is 2.1 std devs from mean (39.35 ± 0.08)
+- [correlation_flip] BTC-GOLD correlation shifted from -0.80 to 1.00
+
+**LLM analysis:**
+Oil funding overcorrection pattern validated spectacularly - extreme positive funding leads to extreme negative funding within 48 hours, creating layered opportunities. BTC showing strong momentum with IV confirmation. Key insight: funding rate patterns have predictable secondary effects beyond simple mean reversion. BTC median minimum drop to 49464 (-344 from baseline) may signal upcoming volatility expansion. HYPE showing interesting spot-PM divergence with spot at 36.056 vs PM lagging. Cross-asset IV compression creating potential systematic reversion setup across multiple assets.
+
+---
+

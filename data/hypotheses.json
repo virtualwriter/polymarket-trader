@@ -22,7 +22,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC PM IV still 7.1% below options IV (43.4% vs 48.8%). Gap persisting longer than expected but not widening further. | BTC PM IV gap persists (43.3% vs 48.8%) suggesting structural underpricing rather than temporary arbitrage. May need position sizing adjustment.",
+    "postMortem": "BTC PM IV still 7.1% below options IV (43.4% vs 48.8%). Gap persisting longer than expected but not widening further. | BTC PM IV gap persists (43.3% vs 48.8%) suggesting structural underpricing rather than temporary arbitrage. May need position sizing adjustment. | Pattern persisting - BTC PM IV gap remains wide at 5.7pp, suggesting structural rather than temporary divergence",
     "source": "llm"
   },
   {
@@ -274,7 +274,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Validated perfectly - oil funding overcorrected from +35% to -64% exactly as predicted, creating new long opportunity",
     "source": "llm"
   },
   {
@@ -299,7 +299,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Confirming - BTC moved +0.7% with IV expansion from 48.8% to 49.1%, momentum continuing as expected",
     "source": "llm"
   },
   {
@@ -313,6 +313,81 @@
     "prediction": "Compressed IV assets will see volatility expansion within 48-72 hours as systematic selling exhausts",
     "timeframeDays": 3,
     "confidence": 0.55,
+    "tests": [
+      {
+        "date": "2026-04-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-014",
+    "created": "2026-04-04",
+    "description": "BTC median minimum floor erosion predicts volatility expansion - when btc_med_min drops >1% from previous level, IV expansion follows within 3-5 days",
+    "conditions": {
+      "btc_med_min": "< 49600",
+      "btc_opt_iv_30d": "> 48.5"
+    },
+    "prediction": "BTC IV will expand above 50% within 5 days when median minimum drops below 49600",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-015",
+    "created": "2026-04-04",
+    "description": "HYPE spot-PM divergence acceleration - when hype_spot moves >1% away from 35.7 baseline while hype_pm_ev lags, catch-up trade emerges",
+    "conditions": {
+      "hype_spot": "> 36.0",
+      "hype_pm_ev": "< 39.4"
+    },
+    "prediction": "HYPE PM will catch up to spot moves within 24-48 hours",
+    "timeframeDays": 2,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-016",
+    "created": "2026-04-04",
+    "description": "Gold futures-PM spread mean reversion - when gold_pm_settle_ev trades >200pts above gold_opt_fwd_90d, spread compresses within week",
+    "conditions": {
+      "gold_pm_settle_ev": "> 4900",
+      "gold_opt_fwd_90d": "< 4710"
+    },
+    "prediction": "Gold PM premium will compress below 150pts within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-04",
