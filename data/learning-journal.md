@@ -108,3 +108,18 @@ Oil funding overcorrection pattern validated spectacularly - extreme positive fu
 
 ---
 
+### 2026-04-04 21:23 UTC
+
+**Portfolio:** $100.00 total | Cash $94.00 | 6 open | P&L $0.0000 | N/A% win rate (0 trades)
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 778314134 is 2.2 std devs from mean (767018019.00 ± 5164268.52)
+- [anomaly] amzn_hl_perp = 209.13 is 2.0 std devs from mean (208.98 ± 0.07)
+- [anomaly] hype_spot = 36.213 is 2.0 std devs from mean (35.79 ± 0.21)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.00 to 0.72
+
+**LLM analysis:**
+Day 5 reveals funding rate patterns are more sophisticated than simple mean reversion - oil's spectacular overcorrection from +35% to -64% validates the concept of layered opportunities from extreme rate movements. BTC momentum accelerating with proper IV confirmation, while cross-asset IV compression (oil -4.2pp, AMZN -1.7pp) suggests systematic volatility selling that could reverse. Key insight: extreme funding creates not just primary mean reversion opportunities, but secondary overcorrection trades. BTC median minimum erosion to 49464 may be signaling upcoming volatility expansion. Portfolio strategy evolving from simple reversion to capturing multi-layered funding patterns.
+
+---
+

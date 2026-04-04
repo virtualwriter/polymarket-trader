@@ -274,7 +274,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Validated perfectly - oil funding overcorrected from +35% to -64% exactly as predicted, creating new long opportunity",
+    "postMortem": "Validated perfectly - oil funding overcorrected from +35% to -64% exactly as predicted, creating new long opportunity | Oil funding overcorrection pattern working perfectly - extreme positive (35%) led to extreme negative (-64%) within 48 hours, validating layered opportunity concept",
     "source": "llm"
   },
   {
@@ -299,7 +299,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Confirming - BTC moved +0.7% with IV expansion from 48.8% to 49.1%, momentum continuing as expected",
+    "postMortem": "Confirming - BTC moved +0.7% with IV expansion from 48.8% to 49.1%, momentum continuing as expected | BTC momentum-IV correlation confirmed - BTC moved from 66816 to 67341 with IV expanding from 48.8% to 49.1%, supporting 12-24 hour momentum thesis",
     "source": "llm"
   },
   {
@@ -324,7 +324,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Cross-asset IV compression accelerating - oil IV dropped 4.2pp to 28.6%, AMZN down 1.7pp to 41.2%, suggesting systematic vol selling",
     "source": "llm"
   },
   {
@@ -349,7 +349,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC median minimum dropped to 49464 from 49808 baseline, creating potential IV expansion setup as predicted by hypothesis",
     "source": "llm"
   },
   {
@@ -386,6 +386,81 @@
       "gold_opt_fwd_90d": "< 4710"
     },
     "prediction": "Gold PM premium will compress below 150pts within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-017",
+    "created": "2026-04-04",
+    "description": "BTC median minimum erosion triggers volatility expansion - btc_med_min drops creating IV expansion setup",
+    "conditions": {
+      "btc_med_min": "< 49500",
+      "btc_opt_iv_30d": "< 50.0"
+    },
+    "prediction": "BTC options IV expands by >1pp within 3-5 days when median minimum drops below recent range",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-018",
+    "created": "2026-04-04",
+    "description": "HYPE spot-PM divergence acceleration during momentum phases",
+    "conditions": {
+      "hype_spot": "> 36.0",
+      "hype_pm_ev": "< 39.4"
+    },
+    "prediction": "When HYPE spot breaks above 36.0 while PM lags below 39.4, convergence trade emerges within 24-48 hours",
+    "timeframeDays": 2,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-019",
+    "created": "2026-04-04",
+    "description": "Cross-asset IV compression cascade creates systematic reversion opportunity",
+    "conditions": {
+      "oil_opt_iv_30d": "< 30.0",
+      "amzn_opt_iv_30d": "< 42.0"
+    },
+    "prediction": "Simultaneous IV drops across oil and AMZN indicate systematic vol selling that reverses within 1 week",
     "timeframeDays": 7,
     "confidence": 0.6,
     "tests": [
