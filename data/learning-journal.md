@@ -140,3 +140,18 @@ Major breakthrough understanding funding rate dynamics - they don't just mean re
 
 ---
 
+### 2026-04-05 06:09 UTC
+
+**Portfolio:** $100.00 total | Cash $93.00 | 7 open | P&L $0.0000 | N/A% win rate (0 trades)
+
+**Statistical observations:**
+- [anomaly] btc_pm_iv = 43.8 is 2.3 std devs from mean (43.44 ± 0.16)
+- [anomaly] amzn_pc_ratio = 0.819 is -2.0 std devs from mean (0.89 ± 0.03)
+- [correlation_flip] BTC-HYPE correlation shifted from -0.46 to 0.90
+- [correlation_flip] BTC-GOLD correlation shifted from 0.15 to 0.95
+
+**LLM analysis:**
+Major breakthrough in understanding funding rate dynamics - they don't just mean revert, they create overcorrection cascades with predictable timing. Oil's +35% to -64% swing in 24 hours validates this layered opportunity structure. Put-call ratio anomalies in AMZN (-2.8 std dev) and Gold (-2.8 std dev) may signal options market repositioning ahead of moves. Key insight: extreme dislocations create not just primary reversions but secondary overcorrections that can be systematically captured. Portfolio strategy evolving from simple mean reversion to multi-stage pattern recognition across funding cycles and cross-venue divergences.
+
+---
+

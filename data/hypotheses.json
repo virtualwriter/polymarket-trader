@@ -274,7 +274,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Validated perfectly - oil funding overcorrected from +35% to -64% exactly as predicted, creating new long opportunity | Oil funding overcorrection pattern working perfectly - extreme positive (35%) led to extreme negative (-64%) within 48 hours, validating layered opportunity concept | VALIDATED PERFECTLY - Oil funding went from +35.45% to -64.06% to -39.68% to -19.6%, showing classic overcorrection pattern. This creates secondary opportunities beyond simple mean reversion.",
+    "postMortem": "Validated perfectly - oil funding overcorrected from +35% to -64% exactly as predicted, creating new long opportunity | Oil funding overcorrection pattern working perfectly - extreme positive (35%) led to extreme negative (-64%) within 48 hours, validating layered opportunity concept | VALIDATED PERFECTLY - Oil funding went from +35.45% to -64.06% to -39.68% to -19.6%, showing classic overcorrection pattern. This creates secondary opportunities beyond simple mean reversion. | VALIDATED - Oil overcorrection from +35% to -64% funding within 24 hours confirms extreme funding creates predictable secondary patterns beyond simple mean reversion",
     "source": "llm"
   },
   {
@@ -299,7 +299,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Confirming - BTC moved +0.7% with IV expansion from 48.8% to 49.1%, momentum continuing as expected | BTC momentum-IV correlation confirmed - BTC moved from 66816 to 67341 with IV expanding from 48.8% to 49.1%, supporting 12-24 hour momentum thesis | STRONG VALIDATION - BTC moved from 66931 to 67341 (+0.6%) with IV expansion from 48.8% to 49.1%, momentum sustained for multiple periods as predicted.",
+    "postMortem": "Confirming - BTC moved +0.7% with IV expansion from 48.8% to 49.1%, momentum continuing as expected | BTC momentum-IV correlation confirmed - BTC moved from 66816 to 67341 with IV expanding from 48.8% to 49.1%, supporting 12-24 hour momentum thesis | STRONG VALIDATION - BTC moved from 66931 to 67341 (+0.6%) with IV expansion from 48.8% to 49.1%, momentum sustained for multiple periods as predicted. | CONFIRMING - BTC momentum with IV expansion (49.1% up from 48.8%) during 600+ point rally validates IV-momentum correlation pattern",
     "source": "llm"
   },
   {
@@ -499,7 +499,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "PARTIAL - HYPE OI did surge to 778M (+11M) but spot momentum was mixed, suggests OI alone insufficient without clear directional catalyst",
     "source": "llm"
   },
   {
@@ -524,7 +524,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "DEVELOPING - BTC median minimum at 49464 (-344 from baseline) showing expected floor erosion, watching for IV expansion signal",
     "source": "llm"
   },
   {
@@ -539,6 +539,80 @@
     "prediction": "Gold PM premium compresses by >50pts within 7 days when vol compressed and premium elevated",
     "timeframeDays": 7,
     "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-023",
+    "created": "2026-04-05",
+    "description": "AMZN put-call ratio collapse from 0.903 to 0.819 during persistent negative funding indicates options positioning divergence from perp market stress",
+    "conditions": {
+      "amzn_pc_ratio": "< 0.85",
+      "amzn_hl_funding_ann": "< -20"
+    },
+    "prediction": "When AMZN PC ratio drops below 0.85 while funding stays below -20%, perp-spot convergence accelerates within 3-5 days",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-024",
+    "created": "2026-04-05",
+    "description": "Gold put-call ratio crash from 0.683 to 0.623 while PM premium stays elevated suggests options market repositioning ahead of gold rally",
+    "conditions": {
+      "gold_gld_pc_ratio": "< 0.65",
+      "gold_pm_settle_ev": "> 4800"
+    },
+    "prediction": "Gold PC ratio collapse below 0.65 with PM premium >4800 predicts spot rally toward PM levels within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-025",
+    "created": "2026-04-05",
+    "description": "Oil PM-futures spread convergence pattern - when oil_pm_settle_ev drops below oil_opt_fwd_90d after being elevated, funding rate normalization follows",
+    "conditions": {
+      "oil_pm_settle_ev": "< oil_opt_fwd_90d"
+    },
+    "prediction": "When oil PM settles below futures after premium period, funding rates normalize to [-10%, +10%] within 48 hours",
+    "timeframeDays": 2,
+    "confidence": 0.8,
     "tests": [
       {
         "date": "2026-04-05",
