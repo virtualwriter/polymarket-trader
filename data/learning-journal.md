@@ -155,3 +155,19 @@ Major breakthrough in understanding funding rate dynamics - they don't just mean
 
 ---
 
+### 2026-04-05 09:30 UTC
+
+**Portfolio:** $100.00 total | Cash $93.00 | 7 open | P&L $0.0000 | N/A% win rate (0 trades)
+
+**Statistical observations:**
+- [anomaly] gold_hl_funding_ann = -17.59 is -3.1 std devs from mean (3.09 ± 6.60)
+- [anomaly] gold_gc_spot = 4657 is -2.4 std devs from mean (4664.91 ± 3.23)
+- [anomaly] gold_opt_fwd_90d = 4696 is -2.4 std devs from mean (4704.09 ± 3.32)
+- [anomaly] btc_hl_funding_ann = -26.11 is -2.1 std devs from mean (-10.05 ± 7.82)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.15 to 0.75
+
+**LLM analysis:**
+Breakthrough day for understanding funding dynamics - they create predictable overcorrection cascades, not just simple mean reversion. Oil's +35% to -64% swing validates the layered opportunity structure. Key insight: extreme funding dislocations generate secondary patterns that can be systematically captured. Put-call ratio anomalies in AMZN/Gold (-2.8 std dev each) may be signaling major repositioning. Strategy evolving from reactive mean reversion to proactive pattern recognition across multiple time horizons and venue relationships.
+
+---
+

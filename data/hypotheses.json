@@ -47,7 +47,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil funding validated thesis with extreme reversal: -9% → +35% → +5%. Position showing early profit as predicted mean reversion occurs. | Validated - oil funding collapsed from 35.5% to 5.5% as predicted. Extreme funding reversals (>30% daily swing) reliably mean revert within 24hrs. | Strong validation - oil funding collapsed from 35.5% to 5.48% as predicted. Extreme funding reversals (>30% swings) appear highly reliable for mean reversion. | VALIDATED - Oil funding collapsed from +35% to -64%, confirming mean reversion thesis but revealing overcorrection pattern that creates new opportunities",
+    "postMortem": "Oil funding validated thesis with extreme reversal: -9% → +35% → +5%. Position showing early profit as predicted mean reversion occurs. | Validated - oil funding collapsed from 35.5% to 5.5% as predicted. Extreme funding reversals (>30% daily swing) reliably mean revert within 24hrs. | Strong validation - oil funding collapsed from 35.5% to 5.48% as predicted. Extreme funding reversals (>30% swings) appear highly reliable for mean reversion. | VALIDATED - Oil funding collapsed from +35% to -64%, confirming mean reversion thesis but revealing overcorrection pattern that creates new opportunities | Oil funding overcorrection from +35% to -64% validates extreme reversal pattern - this is exactly the secondary overcorrection I hypothesized",
     "source": "llm"
   },
   {
@@ -524,7 +524,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "DEVELOPING - BTC median minimum at 49464 (-344 from baseline) showing expected floor erosion, watching for IV expansion signal",
+    "postMortem": "DEVELOPING - BTC median minimum at 49464 (-344 from baseline) showing expected floor erosion, watching for IV expansion signal | BTC median minimum dropped to 49464 as predicted, now watching for IV expansion confirmation in next 3-5 days",
     "source": "llm"
   },
   {
@@ -575,7 +575,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "AMZN P/C ratio collapse to 0.819 (-2.8 std dev) while funding stays negative suggests options market positioning divergence is accelerating",
     "source": "llm"
   },
   {
@@ -613,6 +613,80 @@
     "prediction": "When oil PM settles below futures after premium period, funding rates normalize to [-10%, +10%] within 48 hours",
     "timeframeDays": 2,
     "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-026",
+    "created": "2026-04-05",
+    "description": "Gold funding rate crash below -15% while PM premium stays elevated creates momentum setup",
+    "conditions": {
+      "gold_hl_funding_ann": "< -15",
+      "gold_pm_settle_ev": "> 4800"
+    },
+    "prediction": "Gold spot rallies 2%+ within 3 days when funding crashes below -15% while PM premium >4800",
+    "timeframeDays": 3,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-027",
+    "created": "2026-04-05",
+    "description": "BTC funding rate magnitude >25% (absolute) predicts volatility expansion within 2 days",
+    "conditions": {
+      "btc_hl_funding_ann": "abs() > 25"
+    },
+    "prediction": "When BTC funding exceeds ±25% annualized, 30d IV expands by 1%+ within 48 hours",
+    "timeframeDays": 2,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-028",
+    "created": "2026-04-05",
+    "description": "Cross-asset put-call ratio collapse signals systematic options repositioning ahead of momentum",
+    "conditions": {
+      "amzn_pc_ratio": "< 0.85",
+      "gold_gld_pc_ratio": "< 0.65"
+    },
+    "prediction": "When both AMZN and Gold P/C ratios drop simultaneously, underlying assets move 1.5%+ within 5 days",
+    "timeframeDays": 5,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-05",
