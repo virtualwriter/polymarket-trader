@@ -649,7 +649,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Gold funding crashed to -17.59% as predicted, validating the extreme negative funding setup. Position working as expected. | Gold funding crashed to -17.59% while PM premium stayed elevated at +34pts above futures - pattern confirming but waiting for momentum reversal signal",
+    "postMortem": "Gold funding crashed to -17.59% as predicted, validating the extreme negative funding setup. Position working as expected. | Gold funding crashed to -17.59% while PM premium stayed elevated at +34pts above futures - pattern confirming but waiting for momentum reversal signal | TRIGGERED - Gold funding crashed to -40.94% while PM premium stays at 150+ pts above futures, setup developing",
     "source": "llm"
   },
   {
@@ -773,7 +773,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Both BTC (-15.04%) and Gold (-17.59%) hit extreme negative funding simultaneously - systematic covering signal may be imminent",
+    "postMortem": "Both BTC (-15.04%) and Gold (-17.59%) hit extreme negative funding simultaneously - systematic covering signal may be imminent | VALIDATED - BTC and Gold both hit extreme negative funding simultaneously (-26.11% and -40.94%), confirming systematic cascade pattern",
     "source": "llm"
   },
   {
@@ -799,7 +799,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "PLAYING OUT - Gold showing all three signals: spot at 4634 (-3.1 std dev), funding -40.94%, PM premium persistent at 150+ pts",
     "source": "llm"
   },
   {
@@ -838,6 +838,82 @@
     "prediction": "Coordinated bounce in both assets within 24-48 hours as systematic selling exhausts",
     "timeframeDays": 2,
     "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-035",
+    "created": "2026-04-05",
+    "description": "Brent-WTI spread expansion above 25.5 during funding extremes indicates oil market structure stress and creates convergence opportunity",
+    "conditions": {
+      "oil_brent_wti_spread": "> 25.5",
+      "oil_hl_funding_ann": "> 50"
+    },
+    "prediction": "Spread normalizes back below 25.0 within 5 days as funding stress resolves",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-036",
+    "created": "2026-04-05",
+    "description": "Gold simultaneous spot decline and funding crash while PM premium persists above 150pts indicates smart money accumulation setup",
+    "conditions": {
+      "gold_gc_spot": "< 4640",
+      "gold_hl_funding_ann": "< -30",
+      "gold_pm_settle_ev": "> gold_opt_fwd_90d + 150"
+    },
+    "prediction": "Gold rallies >2% within 7 days as forced selling exhausted and smart money positioning validates",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-037",
+    "created": "2026-04-05",
+    "description": "AMZN basis expansion beyond -0.6% while funding stays deeply negative creates perp-spot convergence pressure",
+    "conditions": {
+      "amzn_hl_basis_pct": "< -0.6",
+      "amzn_hl_funding_ann": "< -20"
+    },
+    "prediction": "Basis compresses back above -0.4% within 3 days as perp catches up to spot",
+    "timeframeDays": 3,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-05",
