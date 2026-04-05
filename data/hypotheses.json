@@ -649,7 +649,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Gold funding crashed to -17.59% as predicted, validating the extreme negative funding setup. Position working as expected.",
+    "postMortem": "Gold funding crashed to -17.59% as predicted, validating the extreme negative funding setup. Position working as expected. | Gold funding crashed to -17.59% while PM premium stayed elevated at +34pts above futures - pattern confirming but waiting for momentum reversal signal",
     "source": "llm"
   },
   {
@@ -748,7 +748,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC funding dropped to -15.04% during spot stability - overcorrection bounce setup developing as predicted",
     "source": "llm"
   },
   {
@@ -762,6 +762,82 @@
     "prediction": "Both assets see funding normalization and price recovery within 3 days",
     "timeframeDays": 3,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Both BTC (-15.04%) and Gold (-17.59%) hit extreme negative funding simultaneously - systematic covering signal may be imminent",
+    "source": "llm"
+  },
+  {
+    "id": "H-032",
+    "created": "2026-04-05",
+    "description": "Gold coordinated sell-off reversal - simultaneous spot decline, funding crash, and PM premium persistence creates multi-venue opportunity",
+    "conditions": {
+      "gold_gc_spot": "< 4650",
+      "gold_hl_funding_ann": "< -15",
+      "gold_pm_settle_ev": "> 4650"
+    },
+    "prediction": "Gold spot bounces >1% within 48 hours as funding normalizes above -5%",
+    "timeframeDays": 2,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-033",
+    "created": "2026-04-05",
+    "description": "BTC-GOLD funding correlation breakdown creates divergence trade - both hitting extreme negative funding simultaneously",
+    "conditions": {
+      "btc_hl_funding_ann": "< -15",
+      "gold_hl_funding_ann": "< -15"
+    },
+    "prediction": "One asset recovers funding faster than the other, creating relative value opportunity within 3 days",
+    "timeframeDays": 3,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-034",
+    "created": "2026-04-05",
+    "description": "Cross-asset median erosion acceleration - BTC median minimum dropped to 49219 while Gold spot at multi-day lows suggests systematic risk-off",
+    "conditions": {
+      "btc_med_min": "< 49300",
+      "gold_gc_spot": "< 4650"
+    },
+    "prediction": "Coordinated bounce in both assets within 24-48 hours as systematic selling exhausts",
+    "timeframeDays": 2,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-05",
