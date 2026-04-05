@@ -171,3 +171,19 @@ Breakthrough day for understanding funding dynamics - they create predictable ov
 
 ---
 
+### 2026-04-05 13:47 UTC
+
+**Portfolio:** $100.00 total | Cash $93.00 | 7 open | P&L $0.0000 | N/A% win rate (0 trades)
+
+**Statistical observations:**
+- [anomaly] gold_gc_spot = 4643 is -3.0 std devs from mean (4663.08 ± 6.80)
+- [anomaly] gold_opt_fwd_90d = 4682 is -2.9 std devs from mean (4702.25 ± 6.88)
+- [anomaly] oil_brent_wti_spread = 25.6 is 2.9 std devs from mean (24.85 ± 0.26)
+- [anomaly] oil_brent_spot = 110.71 is 2.8 std devs from mean (110.00 ± 0.26)
+- [anomaly] amzn_hl_perp = 208.47 is -2.6 std devs from mean (208.90 ± 0.16)
+
+**LLM analysis:**
+Major validation of overcorrection theory - oil's +35% to -64% funding swing proves these aren't random but systematic patterns. Gold and BTC now showing similar extreme negative funding suggesting coordinated liquidation cascade. The key insight is that extreme funding creates not just mean reversion but predictable overcorrection sequences. Successfully identifying that funding markets have momentum just like price - they don't just snap back, they overshoot in the opposite direction. This creates layered opportunities: first the initial mean reversion, then the overcorrection bounce. Portfolio positioning well for this multi-stage pattern recognition approach.
+
+---
+

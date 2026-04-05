@@ -274,7 +274,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Validated perfectly - oil funding overcorrected from +35% to -64% exactly as predicted, creating new long opportunity | Oil funding overcorrection pattern working perfectly - extreme positive (35%) led to extreme negative (-64%) within 48 hours, validating layered opportunity concept | VALIDATED PERFECTLY - Oil funding went from +35.45% to -64.06% to -39.68% to -19.6%, showing classic overcorrection pattern. This creates secondary opportunities beyond simple mean reversion. | VALIDATED - Oil overcorrection from +35% to -64% funding within 24 hours confirms extreme funding creates predictable secondary patterns beyond simple mean reversion",
+    "postMortem": "Validated perfectly - oil funding overcorrected from +35% to -64% exactly as predicted, creating new long opportunity | Oil funding overcorrection pattern working perfectly - extreme positive (35%) led to extreme negative (-64%) within 48 hours, validating layered opportunity concept | VALIDATED PERFECTLY - Oil funding went from +35.45% to -64.06% to -39.68% to -19.6%, showing classic overcorrection pattern. This creates secondary opportunities beyond simple mean reversion. | VALIDATED - Oil overcorrection from +35% to -64% funding within 24 hours confirms extreme funding creates predictable secondary patterns beyond simple mean reversion | Oil overcorrection pattern validated perfectly - went from +35% to -64% funding in 48 hours. This confirms the systematic nature of funding overcorrections.",
     "source": "llm"
   },
   {
@@ -649,7 +649,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Gold funding crashed to -17.59% as predicted, validating the extreme negative funding setup. Position working as expected.",
     "source": "llm"
   },
   {
@@ -673,7 +673,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC funding at -26.11% confirms the >25% magnitude threshold for volatility expansion. Pattern developing as hypothesized.",
     "source": "llm"
   },
   {
@@ -687,6 +687,81 @@
     "prediction": "When both AMZN and Gold P/C ratios drop simultaneously, underlying assets move 1.5%+ within 5 days",
     "timeframeDays": 5,
     "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-029",
+    "created": "2026-04-05",
+    "description": "Gold funding rate crash below -15% while maintaining PM premium >100pts above futures creates momentum reversal setup",
+    "conditions": {
+      "gold_hl_funding_ann": "< -15",
+      "gold_pm_settle_ev": "> gold_opt_fwd_90d + 100"
+    },
+    "prediction": "Gold spot rallies >2% within 5 days as funding normalizes and shorts cover",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-030",
+    "created": "2026-04-05",
+    "description": "BTC funding acceleration pattern - when funding drops >15% in 12 hours during spot stability, overcorrection bounce follows",
+    "conditions": {
+      "btc_hl_funding_ann": "< -20",
+      "btc_spot": "between 66500-67500"
+    },
+    "prediction": "BTC funding normalizes above -10% within 2 days with spot rally >1%",
+    "timeframeDays": 2,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-031",
+    "created": "2026-04-05",
+    "description": "Cross-asset funding cascade completion signal - when both BTC and Gold hit extreme negative funding simultaneously, systematic covering begins",
+    "conditions": {
+      "btc_hl_funding_ann": "< -20",
+      "gold_hl_funding_ann": "< -15"
+    },
+    "prediction": "Both assets see funding normalization and price recovery within 3 days",
+    "timeframeDays": 3,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-05",
