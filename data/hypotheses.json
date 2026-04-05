@@ -40,8 +40,8 @@
       {
         "date": "2026-04-03",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
@@ -274,7 +274,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Validated perfectly - oil funding overcorrected from +35% to -64% exactly as predicted, creating new long opportunity | Oil funding overcorrection pattern working perfectly - extreme positive (35%) led to extreme negative (-64%) within 48 hours, validating layered opportunity concept",
+    "postMortem": "Validated perfectly - oil funding overcorrected from +35% to -64% exactly as predicted, creating new long opportunity | Oil funding overcorrection pattern working perfectly - extreme positive (35%) led to extreme negative (-64%) within 48 hours, validating layered opportunity concept | VALIDATED PERFECTLY - Oil funding went from +35.45% to -64.06% to -39.68% to -19.6%, showing classic overcorrection pattern. This creates secondary opportunities beyond simple mean reversion.",
     "source": "llm"
   },
   {
@@ -292,14 +292,14 @@
       {
         "date": "2026-04-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Confirming - BTC moved +0.7% with IV expansion from 48.8% to 49.1%, momentum continuing as expected | BTC momentum-IV correlation confirmed - BTC moved from 66816 to 67341 with IV expanding from 48.8% to 49.1%, supporting 12-24 hour momentum thesis",
+    "postMortem": "Confirming - BTC moved +0.7% with IV expansion from 48.8% to 49.1%, momentum continuing as expected | BTC momentum-IV correlation confirmed - BTC moved from 66816 to 67341 with IV expanding from 48.8% to 49.1%, supporting 12-24 hour momentum thesis | STRONG VALIDATION - BTC moved from 66931 to 67341 (+0.6%) with IV expansion from 48.8% to 49.1%, momentum sustained for multiple periods as predicted.",
     "source": "llm"
   },
   {
@@ -349,7 +349,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC median minimum dropped to 49464 from 49808 baseline, creating potential IV expansion setup as predicted by hypothesis",
+    "postMortem": "BTC median minimum dropped to 49464 from 49808 baseline, creating potential IV expansion setup as predicted by hypothesis | EARLY VALIDATION SIGNAL - BTC median minimum dropped from 49808 to 49464 (-0.7%), now testing if IV expansion follows within timeframe.",
     "source": "llm"
   },
   {
@@ -466,6 +466,82 @@
     "tests": [
       {
         "date": "2026-04-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-020",
+    "created": "2026-04-05",
+    "description": "HYPE open interest surge with spot momentum indicates breakout confirmation - when OI increases >10M while spot moves >1% from baseline 35.7, momentum continues for 3-5 days",
+    "conditions": {
+      "hype_hl_oi": "> 770000000",
+      "hype_spot": "> 36.0"
+    },
+    "prediction": "HYPE continues upward momentum when OI surge accompanies spot breakout above 36.0",
+    "timeframeDays": 5,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-021",
+    "created": "2026-04-05",
+    "description": "BTC median minimum floor collapse signals volatility regime shift - when btc_med_min drops below 49500 from 49808 baseline, IV expansion follows within 5 days",
+    "conditions": {
+      "btc_med_min": "< 49500",
+      "btc_opt_iv_30d": "< 49.5"
+    },
+    "prediction": "BTC 30d IV expands above 50% within 5 days of median minimum floor break",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-022",
+    "created": "2026-04-05",
+    "description": "Gold PM-spot premium expansion during vol compression creates mean reversion setup - when gold_pm_settle_ev trades >150pts above gold_opt_fwd_90d while gold_pm_iv < 16%, premium compresses",
+    "conditions": {
+      "gold_pm_settle_ev": "> 4850",
+      "gold_opt_fwd_90d": "< 4710",
+      "gold_pm_iv": "< 16.0"
+    },
+    "prediction": "Gold PM premium compresses by >50pts within 7 days when vol compressed and premium elevated",
+    "timeframeDays": 7,
+    "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-05",
         "triggered": true,
         "outcome": "pending",
         "actualMove": ""

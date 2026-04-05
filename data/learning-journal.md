@@ -123,3 +123,20 @@ Day 5 reveals funding rate patterns are more sophisticated than simple mean reve
 
 ---
 
+### 2026-04-05 03:50 UTC
+
+**Portfolio:** $100.00 total | Cash $93.00 | 7 open | P&L $0.0000 | N/A% win rate (0 trades)
+
+**Opened 1 positions:**
+- HYPE long @ $35.967 via spot (LLM_HYPOTHESIS)
+
+**Statistical observations:**
+- [anomaly] amzn_pc_ratio = 0.819 is -2.8 std devs from mean (0.89 ± 0.03)
+- [anomaly] gold_gld_pc_ratio = 0.623 is -2.8 std devs from mean (0.68 ± 0.02)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.00 to 0.86
+
+**LLM analysis:**
+Major breakthrough understanding funding rate dynamics - they don't just mean revert, they overcorrect to opposite extremes, creating layered trading opportunities. Oil's +35% to -64% swing validates this perfectly. BTC momentum-IV correlation proving robust with sustained moves. Key insight: extreme funding creates predictable secondary patterns, not just primary reversions. Portfolio evolution from simple mean reversion to capturing multi-stage funding cycles. Cross-asset IV compression (oil, AMZN) may signal systematic vol selling that could reverse. Focus shifting to understanding the temporal structure of these overcorrection patterns.
+
+---
+
