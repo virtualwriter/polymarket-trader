@@ -61,6 +61,8 @@ interface ClosedTrade {
   leverage: number;
   pnl: number;
   pnlPct: number;
+  rawPnlPct: number;      // unleveraged P&L %, for counterfactual analysis
+  leverageMistake: boolean; // stopped/liquidated at Nx but would have survived at 1x
   signalType: string;
   hypothesisId: string | null;
   thesis: string;
@@ -192,6 +194,7 @@ function appendTradeCsv(trade: ClosedTrade) {
   const headers = [
     "id", "opened_at", "closed_at", "asset", "venue", "direction",
     "entry_price", "exit_price", "size", "leverage", "pnl", "pnl_pct",
+    "raw_pnl_pct", "leverage_mistake",
     "signal_type", "hypothesis_id", "thesis", "close_reason",
   ];
   if (!existsSync(file)) writeFileSync(file, headers.join(",") + "\n");
@@ -199,6 +202,7 @@ function appendTradeCsv(trade: ClosedTrade) {
     trade.id, trade.openedAt, trade.closedAt, trade.asset, trade.venue,
     trade.direction, trade.entryPrice, trade.exitPrice, trade.size,
     trade.leverage, trade.pnl.toFixed(4), trade.pnlPct.toFixed(2),
+    trade.rawPnlPct.toFixed(2), trade.leverageMistake ? "1" : "0",
     trade.signalType, trade.hypothesisId ?? "",
     `"${trade.thesis.replace(/"/g, '""')}"`, trade.closeReason,
   ];
@@ -661,10 +665,16 @@ function markToMarket(portfolio: Portfolio, latestRow: SnapshotRow): ClosedTrade
     else if (new Date(pos.expiryDate) <= new Date()) closeReason = "expiry";
 
     if (closeReason) {
+      // Leverage mistake: lost at Nx but the raw 1x move was within the stop threshold
+      const leverageMistake = lev > 1 &&
+        (closeReason === "stop" || closeReason === "liquidation") &&
+        rawPnlPct > -pos.stopPct;
+
       const trade: ClosedTrade = {
         id: pos.id, openedAt: pos.openedAt, closedAt: now, asset: pos.asset,
         venue: pos.venue, direction: pos.direction, entryPrice: pos.entryPrice,
         exitPrice: currentPrice, size: pos.size, leverage: lev, pnl, pnlPct,
+        rawPnlPct, leverageMistake,
         signalType: pos.signalType, hypothesisId: pos.hypothesisId,
         thesis: pos.thesis, closeReason,
       };
@@ -831,11 +841,12 @@ async function callLLM(
   statObs: StatObservation[],
   closedTrades: ClosedTrade[],
   journalTail: string,
+  allClosedTrades: ClosedTrade[],
 ): Promise<{
   marketAssessment: string;
   newHypotheses: Omit<Hypothesis, "id" | "tests" | "winRate" | "status" | "promotedToSignal" | "postMortem">[];
   hypothesisReviews: { id: string; observation: string }[];
-  trades: { action: "buy" | "sell"; asset: string; venue: string; direction: "long" | "short"; thesis: string }[];
+  trades: { action: "buy" | "sell"; asset: string; venue: string; direction: "long" | "short"; thesis: string; leverage?: number }[];
   journalEntry: string;
 } | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -849,6 +860,22 @@ async function callLLM(
   const activeHypotheses = hypotheses.filter((h) => h.status === "active" || h.status === "promoted");
   const killedRecently = hypotheses.filter((h) => h.status === "killed").slice(-5);
   const activeWeights = weights.filter((w) => w.trades > 0);
+
+  // Build leverage performance summary from all historical trades
+  const hlTrades = allClosedTrades.filter((t) => t.venue === "hyperliquid");
+  const hlLeveraged = hlTrades.filter((t) => t.leverage > 1);
+  const hlSpot = hlTrades.filter((t) => t.leverage === 1);
+  const mistakes = allClosedTrades.filter((t) => t.leverageMistake);
+  const hlLevWins = hlLeveraged.filter((t) => t.pnl >= 0).length;
+  const hlSpotWins = hlSpot.filter((t) => t.pnl >= 0).length;
+  const leveragePerformance = [
+    `HL leveraged trades: ${hlLeveraged.length} total, ${hlLevWins}/${hlLeveraged.length} wins (${hlLeveraged.length > 0 ? ((hlLevWins / hlLeveraged.length) * 100).toFixed(0) : "N/A"}%)`,
+    `HL 1x trades: ${hlSpot.length} total, ${hlSpotWins}/${hlSpot.length} wins (${hlSpot.length > 0 ? ((hlSpotWins / hlSpot.length) * 100).toFixed(0) : "N/A"}%)`,
+    `Leverage mistakes (stopped at Nx, would have survived at 1x): ${mistakes.length}`,
+    ...mistakes.slice(-8).map((t) =>
+      `  ⚠ ${t.asset} ${t.direction} [${t.leverage}x] ${t.closeReason} at ${t.pnlPct.toFixed(1)}% — raw 1x move was only ${t.rawPnlPct.toFixed(1)}% (would have survived at 1x)`
+    ),
+  ].join("\n");
 
   const prompt = `You are a quantitative paper trading system analyzing cross-venue market data. Your job is to:
 1. Assess the current market state
@@ -882,7 +909,14 @@ STATISTICAL OBSERVATIONS:
 ${statObs.map((o) => `  [${o.type}] ${o.description}`).join("\n") || "  None"}
 
 RECENT CLOSED TRADES:
-${closedTrades.slice(-10).map((t) => `  ${t.asset} ${t.direction} ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.signalType})`).join("\n") || "  None"}
+${closedTrades.slice(-10).map((t) => {
+    const levTag = t.leverage > 1 ? ` [${t.leverage}x]` : "";
+    const mistakeTag = t.leverageMistake ? ` ⚠LEVERAGE_MISTAKE(1x_would_be_${t.rawPnlPct.toFixed(1)}%)` : "";
+    return `  ${t.asset} ${t.direction}${levTag} ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%) [${t.signalType}]${mistakeTag}`;
+  }).join("\n") || "  None"}
+
+LEVERAGE PERFORMANCE HISTORY:
+${leveragePerformance}
 
 RECENT LEARNING JOURNAL:
 ${journalTail || "  No entries yet"}
@@ -894,9 +928,10 @@ IMPORTANT RULES:
 - Be honest about what's working and what isn't
 - If a pattern stopped working, explain WHY you think it changed
 - Trade sizes are always $1 margin, max $100 bankroll
-- Hyperliquid trades use 2x leverage (notional = $2 per $1 margin). This amplifies both gains and losses. Liquidation occurs if the position loses 100% of margin (i.e., a 50% adverse move on the underlying at 2x). Track whether leveraged trades outperform or underperform 1x trades and explain why.
-- In your journal entry, always note any observations about how leverage is affecting performance — are leveraged HL trades hitting targets faster? Getting stopped out more? Is the risk/reward better or worse than unleveraged Polymarket/spot trades?
-- Available venues: polymarket, hyperliquid (2x leverage), spot
+- Hyperliquid trades default to 2x leverage (max cap). YOU can override this per trade by setting "leverage": 1 in your trade suggestion. Use 1x when: the signal is weak/noisy, volatility is elevated, or your leverage mistake history shows a pattern being hurt by amplification. Use 2x when the signal is high-conviction and the underlying move is expected to be clean/directional.
+- "leverage_mistake" = a trade stopped out due to leverage amplification but the underlying 1x move stayed within the stop threshold. If you see repeated leverage mistakes on a signal type or asset, lower leverage or avoid HL for that setup.
+- In your journal entry, explicitly analyze leverage performance: are mistakes clustered on certain signal types or assets? Should leverage be reduced or removed for specific setups going forward?
+- Available venues: polymarket, hyperliquid (default 2x, overridable), spot (always 1x)
 - Available assets: BTC, HYPE, GOLD, AMZN, OIL
 
 Respond with ONLY valid JSON in this exact format:
@@ -914,8 +949,8 @@ Respond with ONLY valid JSON in this exact format:
     }
   ],
   "hypothesisReviews": [{"id": "H-xxx", "observation": "what happened and why"}],
-  "trades": [{"action": "buy", "asset": "BTC", "venue": "spot", "direction": "long", "thesis": "reason"}],
-  "journalEntry": "Key observations and lessons from today's analysis..."
+  "trades": [{"action": "buy", "asset": "BTC", "venue": "hyperliquid", "direction": "long", "thesis": "reason", "leverage": 2}],
+  "journalEntry": "Key observations and lessons from today's analysis, including leverage performance analysis..."
 }`;
 
   const models = ["claude-sonnet-4-20250514", "claude-3-5-haiku-20241022"];
@@ -986,6 +1021,7 @@ function writeJournalEntry(
   statObs: StatObservation[],
   llmJournal: string | null,
   portfolio: Portfolio,
+  allClosed: ClosedTrade[],
 ) {
   const now = new Date();
   const dateStr = now.toISOString().slice(0, 16).replace("T", " ");
@@ -1004,8 +1040,19 @@ function writeJournalEntry(
     for (const t of closedTrades) {
       const emoji = t.pnl >= 0 ? "✅" : "❌";
       const levTag = t.leverage > 1 ? ` [${t.leverage}x]` : "";
-      lines.push(`- ${emoji} ${t.asset} ${t.direction}${levTag} (${t.signalType}) → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
+      const mistakeTag = t.leverageMistake ? ` ⚠ LEVERAGE MISTAKE — 1x would have been ${t.rawPnlPct.toFixed(1)}%` : "";
+      lines.push(`- ${emoji} ${t.asset} ${t.direction}${levTag} (${t.signalType}) → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)${mistakeTag}`);
     }
+    lines.push("");
+  }
+
+  // Leverage running scoreboard
+  const hlTrades = allClosed.filter((t) => t.venue === "hyperliquid");
+  const hlLev = hlTrades.filter((t) => t.leverage > 1);
+  const hlMistakes = allClosed.filter((t) => t.leverageMistake);
+  if (hlTrades.length > 0) {
+    const levWins = hlLev.filter((t) => t.pnl >= 0).length;
+    lines.push(`**Leverage scoreboard (all-time HL):** ${hlLev.length} leveraged trades — ${levWins}/${hlLev.length} wins. Leverage mistakes: ${hlMistakes.length}`);
     lines.push("");
   }
 
@@ -1090,6 +1137,34 @@ function readJournalTail(lines: number = 50): string {
   return allLines.slice(-lines).join("\n");
 }
 
+function loadAllClosedTrades(): ClosedTrade[] {
+  const file = join(DATA_DIR, "trades.csv");
+  if (!existsSync(file)) return [];
+  const lines = readFileSync(file, "utf-8").trim().split("\n");
+  if (lines.length < 2) return [];
+  const headers = parseCsvLine(lines[0]);
+  return lines.slice(1).map((line) => {
+    const vals = parseCsvLine(line);
+    const get = (col: string) => vals[headers.indexOf(col)] ?? "";
+    return {
+      id: get("id"), openedAt: get("opened_at"), closedAt: get("closed_at"),
+      asset: get("asset"), venue: get("venue"), direction: get("direction"),
+      entryPrice: parseFloat(get("entry_price")) || 0,
+      exitPrice: parseFloat(get("exit_price")) || 0,
+      size: parseFloat(get("size")) || 1,
+      leverage: parseFloat(get("leverage")) || 1,
+      pnl: parseFloat(get("pnl")) || 0,
+      pnlPct: parseFloat(get("pnl_pct")) || 0,
+      rawPnlPct: parseFloat(get("raw_pnl_pct")) || 0,
+      leverageMistake: get("leverage_mistake") === "1",
+      signalType: get("signal_type"),
+      hypothesisId: get("hypothesis_id") || null,
+      thesis: get("thesis"),
+      closeReason: (get("close_reason") || "expiry") as ClosedTrade["closeReason"],
+    };
+  });
+}
+
 // ─── Main ────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -1129,10 +1204,14 @@ async function main() {
     console.log(`\n  Closed ${closedTrades.length} positions:`);
     for (const t of closedTrades) {
       const emoji = t.pnl >= 0 ? "✅" : "❌";
-      console.log(`    ${emoji} ${t.asset} ${t.direction} → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
+      const mistakeTag = t.leverageMistake ? ` ⚠ leverage mistake (1x: ${t.rawPnlPct.toFixed(1)}%)` : "";
+      console.log(`    ${emoji} ${t.asset} ${t.direction} → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)${mistakeTag}`);
       appendTradeCsv(t);
     }
   }
+
+  // Load full trade history for leverage analysis (includes trades just appended)
+  const allClosedTrades = loadAllClosedTrades();
 
   // Step 2: Update signal weights
   const weightObs = updateWeights(weights, closedTrades);
@@ -1163,7 +1242,7 @@ async function main() {
   if (!NO_LLM) {
     console.log(`\n  Calling LLM for pattern discovery...`);
     const journalTail = readJournalTail(40);
-    const llmResult = await callLLM(valRows, macroRows, portfolio, weights, hypotheses, statObs, closedTrades, journalTail);
+    const llmResult = await callLLM(valRows, macroRows, portfolio, weights, hypotheses, statObs, closedTrades, journalTail, allClosedTrades);
 
     if (llmResult) {
       console.log(`  LLM assessment: ${llmResult.marketAssessment.slice(0, 120)}`);
@@ -1196,6 +1275,9 @@ async function main() {
         const price = getAssetPrice(latestRow, lt.asset);
         if (!price) continue;
         const venue = lt.venue as Signal["venue"];
+        // LLM can specify leverage directly; default to HL_MAX_LEVERAGE for HL, 1 otherwise
+        const llmLev = typeof lt.leverage === "number" ? lt.leverage : (venue === "hyperliquid" ? HL_MAX_LEVERAGE : 1);
+        const leverage = Math.min(Math.max(1, llmLev), HL_MAX_LEVERAGE); // clamp 1–HL_MAX_LEVERAGE
         signals.push({
           type: "LLM_HYPOTHESIS", asset: lt.asset,
           venue, direction: lt.direction,
@@ -1203,7 +1285,7 @@ async function main() {
           thesis: `[LLM] ${lt.thesis}`,
           hypothesisId: null, entryPrice: price,
           targetPct: 3, stopPct: 5, expiryDays: 7,
-          leverage: venue === "hyperliquid" ? HL_MAX_LEVERAGE : 1,
+          leverage,
         });
       }
 
@@ -1224,7 +1306,7 @@ async function main() {
     }
 
     // Step 8: Write journal entry
-    writeJournalEntry(closedTrades, opened, weightObs, hypothesisObs, statObs, llmJournal, portfolio);
+    writeJournalEntry(closedTrades, opened, weightObs, hypothesisObs, statObs, llmJournal, portfolio, allClosedTrades);
 
     // Step 9: Save all state
     savePortfolio(portfolio);

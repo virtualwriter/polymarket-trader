@@ -321,3 +321,20 @@ Major validation day proving the system can distinguish between momentum and mea
 
 ---
 
+### 2026-04-06 — SYSTEM CHANGE: Adaptive Leverage Learning
+
+**Change:** The LLM can now override leverage per trade (1x or 2x). The system tracks "leverage mistakes" — trades stopped out due to leverage amplification that would have survived at 1x.
+
+**New feedback loops:**
+1. Every closed leveraged trade now records `raw_pnl_pct` (1x equivalent) alongside `pnl_pct` (leveraged)
+2. `leverage_mistake = true` when: venue=hyperliquid, leverage>1, stopped/liquidated, AND raw 1x move was within the stop threshold
+3. The LLM prompt now includes a LEVERAGE PERFORMANCE HISTORY section showing all-time leveraged vs 1x win rates and a list of recent mistakes with counterfactual returns
+4. The LLM's trade JSON can include `"leverage": 1` to explicitly de-lever a trade (capped at HL_MAX_LEVERAGE=2)
+5. Journal entries include a leverage scoreboard and flag each mistake inline
+
+**Decision rule for LLM:**
+- Use 2x when: high-conviction directional signal, funding extreme, clean momentum
+- Use 1x when: noisy/ambiguous signal, elevated vol, or the signal type has a history of leverage mistakes
+
+---
+
