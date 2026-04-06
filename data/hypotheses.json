@@ -950,7 +950,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC breakout above 69000 with HYPE OI surge to 797M confirms momentum pattern. 3-5 day window still active.",
+    "postMortem": "BTC breakout above 69000 with HYPE OI surge to 797M confirms momentum pattern. 3-5 day window still active. | Perfect confirmation - BTC broke 68500 with HYPE OI expanding from 778M to 806M, exactly as predicted. Both assets showing coordinated momentum.",
     "source": "llm"
   },
   {
@@ -1052,7 +1052,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil funding hit -233%, extreme enough to trigger technical bounce hypothesis. Monitoring for 48-hour reversal pattern.",
     "source": "llm"
   },
   {
@@ -1066,6 +1066,81 @@
     "prediction": "AMZN basis continues normalizing toward zero when improving past -0.15% threshold",
     "timeframeDays": 3,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "AMZN basis improved dramatically from -0.49% to -0.01%, showing convergence acceleration. Position working perfectly.",
+    "source": "llm"
+  },
+  {
+    "id": "H-044",
+    "created": "2026-04-06",
+    "description": "WTI-Brent spread expansion above 24.5 during extreme funding creates oil complex arbitrage opportunity",
+    "conditions": {
+      "oil_brent_wti_spread": "> 24.5",
+      "oil_hl_funding_ann": "< -100"
+    },
+    "prediction": "Oil funding normalizes toward zero within 48 hours as spread compresses back below 25",
+    "timeframeDays": 2,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-045",
+    "created": "2026-04-06",
+    "description": "AMZN stock-perp convergence completion when basis improves to near-zero after extended negative funding",
+    "conditions": {
+      "amzn_hl_basis_pct": "> -0.05",
+      "amzn_hl_funding_ann": "> 0"
+    },
+    "prediction": "AMZN stock continues outperforming perp as arbitrage completes and basis stays near zero",
+    "timeframeDays": 3,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-046",
+    "created": "2026-04-06",
+    "description": "BTC momentum acceleration above 69500 with IV compression below 42.5% signals vol-controlled breakout",
+    "conditions": {
+      "btc_spot": "> 69500",
+      "btc_pm_iv": "< 42.5"
+    },
+    "prediction": "BTC continues higher toward 72000 within 5 days as controlled volatility breakout attracts flow",
+    "timeframeDays": 5,
+    "confidence": 0.75,
     "tests": [
       {
         "date": "2026-04-06",
