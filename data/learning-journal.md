@@ -300,3 +300,24 @@ Major validation day proving the system can distinguish between momentum and mea
 
 ---
 
+### 2026-04-06 — SYSTEM CHANGE: Leverage Enabled for Hyperliquid
+
+**Change:** Hyperliquid trades now use 2x leverage (max cap). Polymarket and spot trades remain 1x.
+
+**Mechanics:**
+- Margin per trade remains $1, but notional exposure on HL is now $2
+- P&L on HL trades is amplified 2x (both gains and losses)
+- Targets/stops are now on the leveraged return (e.g., a 2% underlying move = 4% return on margin)
+- Liquidation occurs at -100% of margin (50% adverse underlying move at 2x)
+- Existing HL positions retroactively assigned 2x leverage
+
+**Rationale:** Hyperliquid perps inherently support leverage; running at 1x was underutilizing the venue. 2x is conservative enough to avoid frequent liquidations while meaningfully improving capital efficiency on conviction trades.
+
+**What to watch:**
+- Do leveraged HL trades hit targets faster or get stopped out more often?
+- Does the win rate on HL trades diverge from Polymarket/spot?
+- Is the risk-adjusted return (reward/risk ratio) better or worse with leverage?
+- Are funding rate trades (FUNDING_EXTREME_LONG/SHORT) more or less suited to leverage vs basis trades?
+
+---
+

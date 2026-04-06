@@ -19,6 +19,7 @@ const DATA_DIR = join(import.meta.dirname ?? ".", "..", "data");
 const TRADE_SIZE = 1;
 const MAX_BANKROLL = 100;
 const MAX_OPEN_POSITIONS = 15;
+const HL_MAX_LEVERAGE = 2;
 const PROMOTE_THRESHOLD = 0.65;
 const PROMOTE_MIN_TESTS = 5;
 const DEMOTE_THRESHOLD = 0.45;
@@ -38,6 +39,7 @@ interface Position {
   entryPrice: number;
   currentPrice: number;
   size: number;
+  leverage: number;
   signalType: string;
   hypothesisId: string | null;
   thesis: string;
@@ -56,12 +58,13 @@ interface ClosedTrade {
   entryPrice: number;
   exitPrice: number;
   size: number;
+  leverage: number;
   pnl: number;
   pnlPct: number;
   signalType: string;
   hypothesisId: string | null;
   thesis: string;
-  closeReason: "target" | "stop" | "expiry" | "llm_decision" | "signal_killed";
+  closeReason: "target" | "stop" | "expiry" | "llm_decision" | "signal_killed" | "liquidation";
 }
 
 interface Portfolio {
@@ -121,6 +124,7 @@ interface Signal {
   targetPct: number;
   stopPct: number;
   expiryDays: number;
+  leverage: number;
 }
 
 interface SnapshotRow {
@@ -187,14 +191,14 @@ function appendTradeCsv(trade: ClosedTrade) {
   const file = join(DATA_DIR, "trades.csv");
   const headers = [
     "id", "opened_at", "closed_at", "asset", "venue", "direction",
-    "entry_price", "exit_price", "size", "pnl", "pnl_pct",
+    "entry_price", "exit_price", "size", "leverage", "pnl", "pnl_pct",
     "signal_type", "hypothesis_id", "thesis", "close_reason",
   ];
   if (!existsSync(file)) writeFileSync(file, headers.join(",") + "\n");
   const vals = [
     trade.id, trade.openedAt, trade.closedAt, trade.asset, trade.venue,
     trade.direction, trade.entryPrice, trade.exitPrice, trade.size,
-    trade.pnl.toFixed(4), trade.pnlPct.toFixed(2),
+    trade.leverage, trade.pnl.toFixed(4), trade.pnlPct.toFixed(2),
     trade.signalType, trade.hypothesisId ?? "",
     `"${trade.thesis.replace(/"/g, '""')}"`, trade.closeReason,
   ];
@@ -211,7 +215,7 @@ function writePositionSnapshot(portfolio: Portfolio) {
   const file = join(DATA_DIR, "position-snapshots.csv");
   const headers = [
     "snapshot_time", "status", "id", "asset", "venue", "direction",
-    "entry_price", "current_price", "size", "unrealized_pnl_pct",
+    "entry_price", "current_price", "size", "leverage", "unrealized_pnl_pct",
     "unrealized_pnl_usd", "target_pct", "stop_pct", "expiry_date",
     "signal_type", "thesis", "cash", "total_realized_pnl",
     "total_trades", "win_count", "loss_count",
@@ -220,13 +224,15 @@ function writePositionSnapshot(portfolio: Portfolio) {
 
   const now = new Date().toISOString();
   for (const pos of portfolio.positions) {
-    const pnlPct = pos.direction === "long"
+    const lev = pos.leverage ?? 1;
+    const rawPnlPct = pos.direction === "long"
       ? ((pos.currentPrice - pos.entryPrice) / pos.entryPrice) * 100
       : ((pos.entryPrice - pos.currentPrice) / pos.entryPrice) * 100;
+    const pnlPct = rawPnlPct * lev;
     const pnlUsd = (pnlPct / 100) * pos.size;
     const vals = [
       now, "open", pos.id, pos.asset, pos.venue, pos.direction,
-      pos.entryPrice, pos.currentPrice, pos.size,
+      pos.entryPrice, pos.currentPrice, pos.size, lev,
       pnlPct.toFixed(2), pnlUsd.toFixed(4),
       pos.targetPct, pos.stopPct, pos.expiryDate,
       pos.signalType, `"${pos.thesis.replace(/"/g, '""')}"`,
@@ -238,7 +244,7 @@ function writePositionSnapshot(portfolio: Portfolio) {
   if (portfolio.positions.length === 0) {
     const vals = [
       now, "no_positions", "", "", "", "", "", "", "", "", "",
-      "", "", "", "", '""',
+      "", "", "", "", "", '""',
       portfolio.cash.toFixed(2), portfolio.totalRealizedPnl.toFixed(4),
       portfolio.totalTrades, portfolio.winCount, portfolio.lossCount,
     ];
@@ -249,7 +255,7 @@ function writePositionSnapshot(portfolio: Portfolio) {
 // ─── Portfolio Management ────────────────────────────────────────────────────
 
 function loadPortfolio(): Portfolio {
-  return readJson<Portfolio>("portfolio.json", {
+  const p = readJson<Portfolio>("portfolio.json", {
     cash: MAX_BANKROLL,
     positions: [],
     totalRealizedPnl: 0,
@@ -258,6 +264,10 @@ function loadPortfolio(): Portfolio {
     lossCount: 0,
     lastUpdated: new Date().toISOString(),
   });
+  for (const pos of p.positions) {
+    if (!pos.leverage) pos.leverage = pos.venue === "hyperliquid" ? HL_MAX_LEVERAGE : 1;
+  }
+  return p;
 }
 
 function savePortfolio(p: Portfolio) {
@@ -363,7 +373,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "PM_IV_GT_OPT_IV", asset: a.key, venue: "polymarket", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} PM IV (${pmIv.toFixed(1)}%) >> Options IV (${optIv.toFixed(1)}%), ratio ${ratio.toFixed(2)}. PM overpricing vol → sell PM upside.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7,
+          hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7, leverage: 1,
         });
       }
       if (ratio < 0.7 && weightMap.has("OPT_IV_GT_PM_IV")) {
@@ -373,7 +383,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "OPT_IV_GT_PM_IV", asset: a.key, venue: "polymarket", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} Options IV (${optIv.toFixed(1)}%) >> PM IV (${pmIv.toFixed(1)}%), ratio ${ratio.toFixed(2)}. PM underpricing vol → buy PM upside.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7,
+          hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7, leverage: 1,
         });
       }
     }
@@ -388,7 +398,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "FUNDING_EXTREME_LONG", asset: a.key, venue: "hyperliquid", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL funding ${funding.toFixed(1)}% annualized — crowded longs. Fade.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 4, expiryDays: 3,
+          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 4, expiryDays: 3, leverage: HL_MAX_LEVERAGE,
         });
       }
       if (funding < -15 && weightMap.has("FUNDING_EXTREME_SHORT")) {
@@ -398,7 +408,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "FUNDING_EXTREME_SHORT", asset: a.key, venue: "hyperliquid", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL funding ${funding.toFixed(1)}% annualized — crowded shorts. Buy.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 4, expiryDays: 3,
+          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 4, expiryDays: 3, leverage: HL_MAX_LEVERAGE,
         });
       }
     }
@@ -414,7 +424,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "PM_EV_ABOVE_SPOT", asset: a.key, venue: "spot", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} PM EV ($${pmEv.toFixed(0)}) is ${divergencePct.toFixed(1)}% above spot ($${spot.toFixed(0)}). Market expects upside.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 4, stopPct: 6, expiryDays: 14,
+          hypothesisId: null, entryPrice: spot, targetPct: 4, stopPct: 6, expiryDays: 14, leverage: 1,
         });
       }
       if (divergencePct < -5 && weightMap.has("PM_EV_BELOW_SPOT")) {
@@ -424,7 +434,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "PM_EV_BELOW_SPOT", asset: a.key, venue: "spot", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} PM EV ($${pmEv.toFixed(0)}) is ${divergencePct.toFixed(1)}% below spot ($${spot.toFixed(0)}). Market expects downside.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 14,
+          hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 14, leverage: 1,
         });
       }
     }
@@ -439,7 +449,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "PC_RATIO_EXTREME_HIGH", asset: a.key, venue: "spot", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy put buying → contrarian long.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5,
+          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5, leverage: 1,
         });
       }
       if (pcRatio < 0.5 && weightMap.has("PC_RATIO_EXTREME_LOW")) {
@@ -449,7 +459,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "PC_RATIO_EXTREME_LOW", asset: a.key, venue: "spot", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy call buying → contrarian short.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5,
+          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5, leverage: 1,
         });
       }
     }
@@ -466,7 +476,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "BASIS_PREMIUM", asset: a.key, venue: "hyperliquid", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL perp ($${hlPerp.toFixed(2)}) at ${basisPct.toFixed(1)}% premium to stock ($${stockSpot.toFixed(2)}). Basis convergence → short perp.`,
-          hypothesisId: null, entryPrice: hlPerp, targetPct: 1.5, stopPct: 3, expiryDays: 5,
+          hypothesisId: null, entryPrice: hlPerp, targetPct: 1.5, stopPct: 3, expiryDays: 5, leverage: HL_MAX_LEVERAGE,
         });
       }
       if (basisPct < -1.5 && weightMap.has("BASIS_DISCOUNT")) {
@@ -476,7 +486,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "BASIS_DISCOUNT", asset: a.key, venue: "hyperliquid", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL perp ($${hlPerp.toFixed(2)}) at ${basisPct.toFixed(1)}% discount to stock ($${stockSpot.toFixed(2)}). Basis convergence → long perp.`,
-          hypothesisId: null, entryPrice: hlPerp, targetPct: 1.5, stopPct: 3, expiryDays: 5,
+          hypothesisId: null, entryPrice: hlPerp, targetPct: 1.5, stopPct: 3, expiryDays: 5, leverage: HL_MAX_LEVERAGE,
         });
       }
     }
@@ -498,7 +508,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           strength, confidence: strength * w.weight,
           thesis: `Macro composite jumped +${shift} pts (${compositePrev}→${compositeNow}). Risk-on momentum → long BTC.`,
           hypothesisId: null, entryPrice: num(rows[rows.length - 1].btc_spot) ?? 0,
-          targetPct: 3, stopPct: 5, expiryDays: 7,
+          targetPct: 3, stopPct: 5, expiryDays: 7, leverage: 1,
         });
       }
       if (shift < -8 && weightMap.has("MACRO_MOMENTUM_DOWN")) {
@@ -509,7 +519,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           strength, confidence: strength * w.weight,
           thesis: `Macro composite dropped ${shift} pts (${compositePrev}→${compositeNow}). Risk-off momentum → short BTC.`,
           hypothesisId: null, entryPrice: num(rows[rows.length - 1].btc_spot) ?? 0,
-          targetPct: 3, stopPct: 5, expiryDays: 7,
+          targetPct: 3, stopPct: 5, expiryDays: 7, leverage: 1,
         });
       }
     }
@@ -637,13 +647,16 @@ function markToMarket(portfolio: Portfolio, latestRow: SnapshotRow): ClosedTrade
     if (!currentPrice) { remaining.push(pos); continue; }
 
     pos.currentPrice = currentPrice;
-    const pnlPct = pos.direction === "long"
+    const lev = pos.leverage ?? 1;
+    const rawPnlPct = pos.direction === "long"
       ? ((currentPrice - pos.entryPrice) / pos.entryPrice) * 100
-      : ((pos.entryPrice - currentPrice) / pos.entryPrice) * 100;
-    const pnl = (pnlPct / 100) * pos.size;
+      : ((pos.entryPrice - pos.currentPrice) / pos.entryPrice) * 100;
+    let pnlPct = rawPnlPct * lev;
+    let pnl = (pnlPct / 100) * pos.size;
 
     let closeReason: ClosedTrade["closeReason"] | null = null;
-    if (pnlPct >= pos.targetPct) closeReason = "target";
+    if (pnlPct <= -100) { closeReason = "liquidation"; pnlPct = -100; pnl = -pos.size; }
+    else if (pnlPct >= pos.targetPct) closeReason = "target";
     else if (pnlPct <= -pos.stopPct) closeReason = "stop";
     else if (new Date(pos.expiryDate) <= new Date()) closeReason = "expiry";
 
@@ -651,7 +664,7 @@ function markToMarket(portfolio: Portfolio, latestRow: SnapshotRow): ClosedTrade
       const trade: ClosedTrade = {
         id: pos.id, openedAt: pos.openedAt, closedAt: now, asset: pos.asset,
         venue: pos.venue, direction: pos.direction, entryPrice: pos.entryPrice,
-        exitPrice: currentPrice, size: pos.size, pnl, pnlPct,
+        exitPrice: currentPrice, size: pos.size, leverage: lev, pnl, pnlPct,
         signalType: pos.signalType, hypothesisId: pos.hypothesisId,
         thesis: pos.thesis, closeReason,
       };
@@ -692,6 +705,7 @@ function openPositions(portfolio: Portfolio, signals: Signal[]): Position[] {
       entryPrice: sig.entryPrice,
       currentPrice: sig.entryPrice,
       size: TRADE_SIZE,
+      leverage: sig.leverage,
       signalType: sig.type,
       hypothesisId: sig.hypothesisId,
       thesis: sig.thesis,
@@ -853,7 +867,7 @@ Cash: $${portfolio.cash.toFixed(2)} | Open positions: ${portfolio.positions.leng
 Win rate: ${portfolio.totalTrades > 0 ? ((portfolio.winCount / portfolio.totalTrades) * 100).toFixed(0) : "N/A"}% over ${portfolio.totalTrades} trades
 
 OPEN POSITIONS:
-${portfolio.positions.map((p) => `  ${p.asset} ${p.direction} @ ${p.entryPrice} (${p.signalType}) — ${p.thesis.slice(0, 80)}`).join("\n") || "  None"}
+${portfolio.positions.map((p) => `  ${p.asset} ${p.direction} @ ${p.entryPrice} ${p.leverage > 1 ? `(${p.leverage}x lev) ` : ""}(${p.signalType}) — ${p.thesis.slice(0, 80)}`).join("\n") || "  None"}
 
 SIGNAL PERFORMANCE:
 ${activeWeights.map((w) => `  ${w.type}: weight=${w.weight.toFixed(2)}, ${w.wins}/${w.trades} wins (${w.trades > 0 ? ((w.wins / w.trades) * 100).toFixed(0) : "N/A"}%), avg pnl=${w.avgPnlPct.toFixed(2)}%`).join("\n") || "  No trades yet"}
@@ -879,8 +893,10 @@ IMPORTANT RULES:
 - Focus on cross-venue divergences and patterns the rule-based system can't detect
 - Be honest about what's working and what isn't
 - If a pattern stopped working, explain WHY you think it changed
-- Trade sizes are always $1, max $100 bankroll
-- Available venues: polymarket, hyperliquid, spot
+- Trade sizes are always $1 margin, max $100 bankroll
+- Hyperliquid trades use 2x leverage (notional = $2 per $1 margin). This amplifies both gains and losses. Liquidation occurs if the position loses 100% of margin (i.e., a 50% adverse move on the underlying at 2x). Track whether leveraged trades outperform or underperform 1x trades and explain why.
+- In your journal entry, always note any observations about how leverage is affecting performance — are leveraged HL trades hitting targets faster? Getting stopped out more? Is the risk/reward better or worse than unleveraged Polymarket/spot trades?
+- Available venues: polymarket, hyperliquid (2x leverage), spot
 - Available assets: BTC, HYPE, GOLD, AMZN, OIL
 
 Respond with ONLY valid JSON in this exact format:
@@ -987,7 +1003,8 @@ function writeJournalEntry(
     lines.push(`**Closed ${closedTrades.length} trades:**`);
     for (const t of closedTrades) {
       const emoji = t.pnl >= 0 ? "✅" : "❌";
-      lines.push(`- ${emoji} ${t.asset} ${t.direction} (${t.signalType}) → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
+      const levTag = t.leverage > 1 ? ` [${t.leverage}x]` : "";
+      lines.push(`- ${emoji} ${t.asset} ${t.direction}${levTag} (${t.signalType}) → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
     }
     lines.push("");
   }
@@ -995,7 +1012,8 @@ function writeJournalEntry(
   if (openedPositions.length > 0) {
     lines.push(`**Opened ${openedPositions.length} positions:**`);
     for (const p of openedPositions) {
-      lines.push(`- ${p.asset} ${p.direction} @ $${p.entryPrice} via ${p.venue} (${p.signalType})`);
+      const levTag = p.leverage > 1 ? ` [${p.leverage}x]` : "";
+      lines.push(`- ${p.asset} ${p.direction} @ $${p.entryPrice} via ${p.venue}${levTag} (${p.signalType})`);
     }
     lines.push("");
   }
@@ -1177,13 +1195,15 @@ async function main() {
       for (const lt of llmResult.trades ?? []) {
         const price = getAssetPrice(latestRow, lt.asset);
         if (!price) continue;
+        const venue = lt.venue as Signal["venue"];
         signals.push({
           type: "LLM_HYPOTHESIS", asset: lt.asset,
-          venue: lt.venue as Signal["venue"], direction: lt.direction,
+          venue, direction: lt.direction,
           strength: 0.5, confidence: 0.4,
           thesis: `[LLM] ${lt.thesis}`,
           hypothesisId: null, entryPrice: price,
           targetPct: 3, stopPct: 5, expiryDays: 7,
+          leverage: venue === "hyperliquid" ? HL_MAX_LEVERAGE : 1,
         });
       }
 
@@ -1198,7 +1218,8 @@ async function main() {
     if (opened.length > 0) {
       console.log(`\n  Opened ${opened.length} new positions:`);
       for (const p of opened) {
-        console.log(`    ${p.asset} ${p.direction} @ $${p.entryPrice} via ${p.venue} (${p.signalType})`);
+        const levTag = p.leverage > 1 ? ` [${p.leverage}x]` : "";
+        console.log(`    ${p.asset} ${p.direction} @ $${p.entryPrice} via ${p.venue}${levTag} (${p.signalType})`);
       }
     }
 
@@ -1216,7 +1237,8 @@ async function main() {
   const totalValue = portfolio.cash + portfolio.positions.length * TRADE_SIZE;
   const unrealized = portfolio.positions.reduce((s, p) => {
     const dir = p.direction === "long" ? 1 : -1;
-    return s + dir * ((p.currentPrice - p.entryPrice) / p.entryPrice) * p.size;
+    const lev = p.leverage ?? 1;
+    return s + dir * ((p.currentPrice - p.entryPrice) / p.entryPrice) * p.size * lev;
   }, 0);
 
   console.log(`\n  ${"─".repeat(55)}`);
