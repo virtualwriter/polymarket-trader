@@ -207,6 +207,45 @@ function appendJournal(entry: string) {
   appendFileSync(file, entry + "\n");
 }
 
+function writePositionSnapshot(portfolio: Portfolio) {
+  const file = join(DATA_DIR, "position-snapshots.csv");
+  const headers = [
+    "snapshot_time", "status", "id", "asset", "venue", "direction",
+    "entry_price", "current_price", "size", "unrealized_pnl_pct",
+    "unrealized_pnl_usd", "target_pct", "stop_pct", "expiry_date",
+    "signal_type", "thesis", "cash", "total_realized_pnl",
+    "total_trades", "win_count", "loss_count",
+  ];
+  if (!existsSync(file)) writeFileSync(file, headers.join(",") + "\n");
+
+  const now = new Date().toISOString();
+  for (const pos of portfolio.positions) {
+    const pnlPct = pos.direction === "long"
+      ? ((pos.currentPrice - pos.entryPrice) / pos.entryPrice) * 100
+      : ((pos.entryPrice - pos.currentPrice) / pos.entryPrice) * 100;
+    const pnlUsd = (pnlPct / 100) * pos.size;
+    const vals = [
+      now, "open", pos.id, pos.asset, pos.venue, pos.direction,
+      pos.entryPrice, pos.currentPrice, pos.size,
+      pnlPct.toFixed(2), pnlUsd.toFixed(4),
+      pos.targetPct, pos.stopPct, pos.expiryDate,
+      pos.signalType, `"${pos.thesis.replace(/"/g, '""')}"`,
+      portfolio.cash.toFixed(2), portfolio.totalRealizedPnl.toFixed(4),
+      portfolio.totalTrades, portfolio.winCount, portfolio.lossCount,
+    ];
+    appendFileSync(file, vals.join(",") + "\n");
+  }
+  if (portfolio.positions.length === 0) {
+    const vals = [
+      now, "no_positions", "", "", "", "", "", "", "", "", "",
+      "", "", "", "", '""',
+      portfolio.cash.toFixed(2), portfolio.totalRealizedPnl.toFixed(4),
+      portfolio.totalTrades, portfolio.winCount, portfolio.lossCount,
+    ];
+    appendFileSync(file, vals.join(",") + "\n");
+  }
+}
+
 // ─── Portfolio Management ────────────────────────────────────────────────────
 
 function loadPortfolio(): Portfolio {
@@ -1168,6 +1207,7 @@ async function main() {
 
     // Step 9: Save all state
     savePortfolio(portfolio);
+    writePositionSnapshot(portfolio);
     saveWeights(weights);
     saveHypotheses(hypotheses);
   }
