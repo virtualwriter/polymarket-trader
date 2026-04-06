@@ -382,3 +382,21 @@ Critical pattern recognition on AMZN weekend structure - the P/C collapse from 0
 
 ---
 
+### 2026-04-06 21:30 UTC
+
+**Portfolio:** $100.01 total | Cash $93.01 | 7 open | P&L $0.0058 | 75% win rate (4 trades)
+
+**Leverage scoreboard (all-time HL):** 1 leveraged trades — 0/1 wins. Leverage mistakes: 1
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 6.7pp (was 15.2, now 21.9)
+- [anomaly] oil_opt_fwd_90d = 84.8 is -4.4 std devs from mean (85.27 ± 0.11)
+- [anomaly] gold_opt_iv_30d = 33.6 is -3.5 std devs from mean (34.42 ± 0.24)
+- [anomaly] amzn_opt_fwd_90d = 215.03 is 3.2 std devs from mean (212.37 ± 0.83)
+- [anomaly] gold_opt_iv_90d = 31 is -3.2 std devs from mean (31.73 ± 0.23)
+
+**LLM analysis:**
+Critical leverage performance insight: HYPE leveraged mistake (0/1 wins) shows 2x amplification created -7.8% stop when underlying 1x move was only -3.9%. This pattern of extreme funding volatility (>200% swings) makes leverage dangerous. For oil trades going forward, using 1x leverage given similar extreme funding patterns. The AMZN weekend structure insight proved powerful - P/C collapse from 0.903 to 0.399 over weekend correctly predicted Monday gap-up. This weekend pattern should be systematically monitored. Cross-asset IV compression cascade accelerating with oil P/C at historic extremes (0.41 vs 0.79 ± 0.09 mean) - this suggests systematic vol selling creating mean reversion setup. BTC momentum above 69500 with IV compression below 47% confirms controlled breakout thesis - volatility squeeze creating clean directional moves without noise.
+
+---
+

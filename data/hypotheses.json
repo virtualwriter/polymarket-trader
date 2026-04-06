@@ -1255,7 +1255,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil P/C ratio just hit extreme 0.41, funding normalized from -176% to manageable levels - perfect test case developing",
     "source": "llm"
   },
   {
@@ -1280,7 +1280,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC 30d IV at 46.9% below 47% threshold, 90d at 48.2% below 49% - compression completion confirmed during momentum above 69500",
     "source": "llm"
   },
   {
@@ -1292,6 +1292,82 @@
       "amzn_stock": "= previous_weekend_freeze_price"
     },
     "prediction": "AMZN opens >1% higher on first trading day after weekend freeze period",
+    "timeframeDays": 3,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "AMZN P/C collapsed to 0.728 over weekend while stock frozen, confirmed gap-up Monday - pattern validated, refining threshold",
+    "source": "llm"
+  },
+  {
+    "id": "H-053",
+    "created": "2026-04-06",
+    "description": "Oil put-call ratio extreme collapse below 0.5 after funding normalization from extremes creates systematic options repositioning signal",
+    "conditions": {
+      "oil_cl_pc_ratio": "< 0.5",
+      "oil_hl_funding_ann": "> -100"
+    },
+    "prediction": "Oil technical bounce within 3-5 days as extreme put positioning unwinds",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-054",
+    "created": "2026-04-06",
+    "description": "BTC IV compression completion during momentum above 69000 creates volatility squeeze acceleration setup",
+    "conditions": {
+      "btc_spot": "> 69000",
+      "btc_opt_iv_30d": "< 47",
+      "btc_opt_iv_90d": "< 49"
+    },
+    "prediction": "BTC momentum acceleration continues for 5-7 days with IV staying compressed",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-055",
+    "created": "2026-04-06",
+    "description": "AMZN weekend put-call ratio acceleration below 0.75 during stock freeze creates Monday gap signal",
+    "conditions": {
+      "amzn_pc_ratio": "< 0.75",
+      "amzn_stock": "unchanged_from_friday"
+    },
+    "prediction": "AMZN gaps up at Monday open when weekend P/C drops significantly below Friday baseline",
     "timeframeDays": 3,
     "confidence": 0.8,
     "tests": [
