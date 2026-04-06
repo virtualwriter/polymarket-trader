@@ -499,7 +499,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "PARTIAL - HYPE OI did surge to 778M (+11M) but spot momentum was mixed, suggests OI alone insufficient without clear directional catalyst | VALIDATED - HYPE OI surge 35M while spot +4% from baseline confirmed breakout momentum exactly as predicted",
+    "postMortem": "PARTIAL - HYPE OI did surge to 778M (+11M) but spot momentum was mixed, suggests OI alone insufficient without clear directional catalyst | VALIDATED - HYPE OI surge 35M while spot +4% from baseline confirmed breakout momentum exactly as predicted | HYPE OI expanded to 806M (+28M) during BTC breakout, validating momentum confirmation pattern. Hypothesis working as predicted.",
     "source": "llm"
   },
   {
@@ -950,7 +950,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC breakout above 69000 with HYPE OI surge to 797M confirms momentum pattern. 3-5 day window still active.",
     "source": "llm"
   },
   {
@@ -977,7 +977,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil funding hit -233% extreme, creating textbook overcorrection setup. Pattern holding - waiting for bounce confirmation.",
     "source": "llm"
   },
   {
@@ -991,6 +991,81 @@
     "prediction": "HYPE PM catches up to spot move within 2 days, IV compression continues",
     "timeframeDays": 2,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-041",
+    "created": "2026-04-06",
+    "description": "BTC post-breakout consolidation above 68500 with HYPE IV compression below 59% signals momentum continuation setup",
+    "conditions": {
+      "btc_spot": "> 68500",
+      "hype_pm_iv": "< 59.0",
+      "hype_hl_oi": "> 790000000"
+    },
+    "prediction": "BTC continues higher within 5 days when consolidating above breakout level with HYPE IV compression",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-042",
+    "created": "2026-04-06",
+    "description": "Oil funding magnitude above 200% absolute creates 48-hour technical bounce regardless of fundamental direction",
+    "conditions": {
+      "oil_hl_funding_ann": "< -200 OR > 200"
+    },
+    "prediction": "Oil reverses toward funding rate normalization within 48 hours when funding exceeds 200% magnitude",
+    "timeframeDays": 2,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-043",
+    "created": "2026-04-06",
+    "description": "AMZN perp-spot convergence acceleration when basis improves beyond -0.15% after extended negative funding",
+    "conditions": {
+      "amzn_hl_basis_pct": "> -0.15",
+      "amzn_hl_funding_ann": "< 0"
+    },
+    "prediction": "AMZN basis continues normalizing toward zero when improving past -0.15% threshold",
+    "timeframeDays": 3,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-06",
