@@ -15,8 +15,8 @@
       {
         "date": "2026-04-03",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
@@ -89,8 +89,8 @@
       {
         "date": "2026-04-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
@@ -242,8 +242,8 @@
       {
         "date": "2026-04-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
@@ -267,14 +267,14 @@
       {
         "date": "2026-04-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Validated perfectly - oil funding overcorrected from +35% to -64% exactly as predicted, creating new long opportunity | Oil funding overcorrection pattern working perfectly - extreme positive (35%) led to extreme negative (-64%) within 48 hours, validating layered opportunity concept | VALIDATED PERFECTLY - Oil funding went from +35.45% to -64.06% to -39.68% to -19.6%, showing classic overcorrection pattern. This creates secondary opportunities beyond simple mean reversion. | VALIDATED - Oil overcorrection from +35% to -64% funding within 24 hours confirms extreme funding creates predictable secondary patterns beyond simple mean reversion | Oil overcorrection pattern validated perfectly - went from +35% to -64% funding in 48 hours. This confirms the systematic nature of funding overcorrections.",
+    "postMortem": "Validated perfectly - oil funding overcorrected from +35% to -64% exactly as predicted, creating new long opportunity | Oil funding overcorrection pattern working perfectly - extreme positive (35%) led to extreme negative (-64%) within 48 hours, validating layered opportunity concept | VALIDATED PERFECTLY - Oil funding went from +35.45% to -64.06% to -39.68% to -19.6%, showing classic overcorrection pattern. This creates secondary opportunities beyond simple mean reversion. | VALIDATED - Oil overcorrection from +35% to -64% funding within 24 hours confirms extreme funding creates predictable secondary patterns beyond simple mean reversion | Oil overcorrection pattern validated perfectly - went from +35% to -64% funding in 48 hours. This confirms the systematic nature of funding overcorrections. | EXTREME VALIDATION - Oil +104% to -220% funding in <12 hours proves overcorrection pattern more violent than expected",
     "source": "llm"
   },
   {
@@ -299,7 +299,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Confirming - BTC moved +0.7% with IV expansion from 48.8% to 49.1%, momentum continuing as expected | BTC momentum-IV correlation confirmed - BTC moved from 66816 to 67341 with IV expanding from 48.8% to 49.1%, supporting 12-24 hour momentum thesis | STRONG VALIDATION - BTC moved from 66931 to 67341 (+0.6%) with IV expansion from 48.8% to 49.1%, momentum sustained for multiple periods as predicted. | CONFIRMING - BTC momentum with IV expansion (49.1% up from 48.8%) during 600+ point rally validates IV-momentum correlation pattern",
+    "postMortem": "Confirming - BTC moved +0.7% with IV expansion from 48.8% to 49.1%, momentum continuing as expected | BTC momentum-IV correlation confirmed - BTC moved from 66816 to 67341 with IV expanding from 48.8% to 49.1%, supporting 12-24 hour momentum thesis | STRONG VALIDATION - BTC moved from 66931 to 67341 (+0.6%) with IV expansion from 48.8% to 49.1%, momentum sustained for multiple periods as predicted. | CONFIRMING - BTC momentum with IV expansion (49.1% up from 48.8%) during 600+ point rally validates IV-momentum correlation pattern | PARTIALLY VALIDATED - BTC +2.4% move occurred but IV stayed flat at 49.1%. Momentum confirmed by OI expansion instead",
     "source": "llm"
   },
   {
@@ -367,8 +367,8 @@
       {
         "date": "2026-04-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
@@ -442,8 +442,8 @@
       {
         "date": "2026-04-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
@@ -499,7 +499,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "PARTIAL - HYPE OI did surge to 778M (+11M) but spot momentum was mixed, suggests OI alone insufficient without clear directional catalyst",
+    "postMortem": "PARTIAL - HYPE OI did surge to 778M (+11M) but spot momentum was mixed, suggests OI alone insufficient without clear directional catalyst | VALIDATED - HYPE OI surge 35M while spot +4% from baseline confirmed breakout momentum exactly as predicted",
     "source": "llm"
   },
   {
@@ -524,7 +524,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "DEVELOPING - BTC median minimum at 49464 (-344 from baseline) showing expected floor erosion, watching for IV expansion signal | BTC median minimum dropped to 49464 as predicted, now watching for IV expansion confirmation in next 3-5 days",
+    "postMortem": "DEVELOPING - BTC median minimum at 49464 (-344 from baseline) showing expected floor erosion, watching for IV expansion signal | BTC median minimum dropped to 49464 as predicted, now watching for IV expansion confirmation in next 3-5 days | TRIGGERED - BTC median minimum hit 49107, below 49500 threshold. IV expansion setup active",
     "source": "llm"
   },
   {
@@ -917,6 +917,83 @@
     "tests": [
       {
         "date": "2026-04-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-038",
+    "created": "2026-04-06",
+    "description": "BTC momentum breakout above 68500 with simultaneous HYPE OI expansion creates 3-5 day momentum confirmation",
+    "conditions": {
+      "btc_spot": "> 68500",
+      "hype_hl_oi": "> 800000000"
+    },
+    "prediction": "BTC continues higher toward 70000 within 3 days when OI expansion confirms breakout",
+    "timeframeDays": 3,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-039",
+    "created": "2026-04-06",
+    "description": "Oil funding magnitude >200% (absolute) creates 24-48 hour overcorrection bounce regardless of direction",
+    "conditions": {
+      "oil_hl_funding_ann": [
+        "< -200",
+        "> 200"
+      ]
+    },
+    "prediction": "Extreme oil funding normalizes toward zero within 48 hours with 50-100% retracement",
+    "timeframeDays": 2,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-040",
+    "created": "2026-04-06",
+    "description": "HYPE spot-PM convergence acceleration during breakout phases - when spot moves >3% from 35.7 baseline",
+    "conditions": {
+      "hype_spot": "> 36.5",
+      "hype_pm_iv": "< 59"
+    },
+    "prediction": "HYPE PM catches up to spot move within 2 days, IV compression continues",
+    "timeframeDays": 2,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-06",
         "triggered": true,
         "outcome": "pending",
         "actualMove": ""
