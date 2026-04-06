@@ -327,6 +327,33 @@ function defaultWeights(): SignalWeight[] {
 
 // ─── Signal Generation ───────────────────────────────────────────────────────
 
+/**
+ * Returns true if the snapshot date falls on a US market weekend (Sat or Sun).
+ * AMZN (and other US equities) don't trade on weekends — their spot price is
+ * frozen at Friday's close. Any "signal" from flat equity price over the weekend
+ * is structural, not informational. However, options IV and PC ratio CAN change
+ * on weekends (derivatives markets still reprice), so weekend IV/PC divergence
+ * while equity price is flat = genuine pre-positioning for Monday's open.
+ */
+function isWeekend(row: SnapshotRow): boolean {
+  const d = new Date(String(row.date));
+  const day = d.getUTCDay(); // 0=Sun, 6=Sat
+  return day === 0 || day === 6;
+}
+
+/**
+ * Returns true if AMZN stock appears to be in a weekend freeze:
+ * the last N snapshots all have the same amzn_stock price.
+ */
+function isAmznWeekendFreeze(rows: SnapshotRow[]): boolean {
+  if (rows.length < 2) return false;
+  // Check if we're currently on a weekend OR the last 2+ snapshots are identical
+  const latest = rows[rows.length - 1];
+  if (isWeekend(latest)) return true;
+  const prev = rows[rows.length - 2];
+  return num(latest.amzn_stock) === num(prev.amzn_stock) && isWeekend(prev);
+}
+
 function getAssetPrice(row: SnapshotRow, asset: string): number | null {
   const map: Record<string, string> = {
     BTC: "btc_spot", HYPE: "hype_spot", GOLD: "gold_gc_spot",
@@ -342,6 +369,12 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
   const prev = rows.length >= 2 ? rows[rows.length - 2] : null;
   const signals: Signal[] = [];
   const weightMap = new Map(weights.filter((w) => w.enabled).map((w) => [w.type, w]));
+
+  // AMZN weekend state — stock price is frozen at Friday close on Sat/Sun.
+  // Suppress any AMZN signal that relies on price movement; only options
+  // divergence signals (IV, PC ratio) are valid over the weekend as they
+  // reflect pre-positioning for Monday's open.
+  const amznWeekend = isAmznWeekendFreeze(rows);
 
   const assets = [
     { key: "BTC", pmIv: "btc_pm_iv", optIv30: "btc_opt_iv_30d", optIv90: "btc_opt_iv_90d",
@@ -365,10 +398,16 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
     const spot = num(latest[a.spot]);
     if (!spot) continue;
 
+    // For AMZN: suppress any signal that relies on equity price movement during
+    // weekends (Sat/Sun). The stock doesn't trade, price is stale Friday close.
+    // PC ratio and IV signals are still valid — they reflect real weekend
+    // options repositioning that predicts Monday's open direction.
+    const isAmznSuppressed = a.key === "AMZN" && amznWeekend;
+
     // PM IV vs Options IV divergence
     const pmIv = a.pmIv ? num(latest[a.pmIv]) : null;
     const optIv = a.optIv30 ? num(latest[a.optIv30]) : null;
-    if (pmIv && optIv && optIv > 0) {
+    if (pmIv && optIv && optIv > 0 && !isAmznSuppressed) {
       const ratio = pmIv / optIv;
       if (ratio > 1.3 && weightMap.has("PM_IV_GT_OPT_IV")) {
         const strength = Math.min(1, (ratio - 1.3) / 0.7);
@@ -392,9 +431,10 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
       }
     }
 
-    // Funding rate extremes
+    // Funding rate extremes — suppress for AMZN on weekends (HL perp may still
+    // move but equity price reference is stale, making basis unreliable)
     const funding = a.funding ? num(latest[a.funding]) : null;
-    if (funding !== null) {
+    if (funding !== null && !isAmznSuppressed) {
       if (funding > 15 && weightMap.has("FUNDING_EXTREME_LONG")) {
         const strength = Math.min(1, (funding - 15) / 35);
         const w = weightMap.get("FUNDING_EXTREME_LONG")!;
@@ -417,9 +457,9 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
       }
     }
 
-    // PM EV vs Spot divergence
+    // PM EV vs Spot divergence — suppress for AMZN on weekends
     const pmEv = a.pmEv ? num(latest[a.pmEv]) : null;
-    if (pmEv && spot) {
+    if (pmEv && spot && !isAmznSuppressed) {
       const divergencePct = ((pmEv - spot) / spot) * 100;
       if (divergencePct > 8 && weightMap.has("PM_EV_ABOVE_SPOT")) {
         const strength = Math.min(1, (divergencePct - 8) / 20);
@@ -443,35 +483,42 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
       }
     }
 
-    // Put/Call ratio extremes
+    // Put/Call ratio extremes — VALID on AMZN weekends (real pre-positioning signal).
+    // When AMZN is in a weekend freeze and the PC ratio shifts significantly,
+    // it reflects genuine options positioning for Monday's open — one of the
+    // highest-conviction signals available.
     const pcRatio = a.pcRatio ? num(latest[a.pcRatio]) : null;
     if (pcRatio !== null) {
+      const isWeekendPcBoost = a.key === "AMZN" && amznWeekend ? 1.2 : 1; // boost confidence for weekend pre-positioning
       if (pcRatio > 1.2 && weightMap.has("PC_RATIO_EXTREME_HIGH")) {
         const strength = Math.min(1, (pcRatio - 1.2) / 0.8);
         const w = weightMap.get("PC_RATIO_EXTREME_HIGH")!;
+        const weekendTag = a.key === "AMZN" && amznWeekend ? " [weekend pre-positioning — targets Monday open]" : "";
         signals.push({
           type: "PC_RATIO_EXTREME_HIGH", asset: a.key, venue: "spot", direction: "long",
-          strength, confidence: strength * w.weight,
-          thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy put buying → contrarian long.`,
+          strength, confidence: Math.min(0.95, strength * w.weight * isWeekendPcBoost),
+          thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy put buying → contrarian long.${weekendTag}`,
           hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5, leverage: 1,
         });
       }
       if (pcRatio < 0.5 && weightMap.has("PC_RATIO_EXTREME_LOW")) {
         const strength = Math.min(1, (0.5 - pcRatio) / 0.3);
         const w = weightMap.get("PC_RATIO_EXTREME_LOW")!;
+        const weekendTag = a.key === "AMZN" && amznWeekend ? " [weekend pre-positioning — targets Monday open]" : "";
         signals.push({
           type: "PC_RATIO_EXTREME_LOW", asset: a.key, venue: "spot", direction: "short",
-          strength, confidence: strength * w.weight,
-          thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy call buying → contrarian short.`,
+          strength, confidence: Math.min(0.95, strength * w.weight * isWeekendPcBoost),
+          thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy call buying → contrarian short.${weekendTag}`,
           hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5, leverage: 1,
         });
       }
     }
 
-    // Cross-venue basis (HL perp vs spot)
+    // Cross-venue basis (HL perp vs spot) — suppress for AMZN on weekends
+    // (stock price is stale, basis is not meaningful)
     const hlPerp = a.hlPerp ? num(latest[a.hlPerp]) : null;
     const stockSpot = a.spot === a.hlPerp ? null : num(latest[a.spot]);
-    if (hlPerp && stockSpot && a.key === "AMZN") {
+    if (hlPerp && stockSpot && a.key === "AMZN" && !isAmznSuppressed) {
       const basisPct = ((hlPerp - stockSpot) / stockSpot) * 100;
       if (basisPct > 1.5 && weightMap.has("BASIS_PREMIUM")) {
         const strength = Math.min(1, (basisPct - 1.5) / 3);
@@ -889,6 +936,8 @@ ${JSON.stringify(recentValuations, null, 1)}
 MACRO DATA (last ${recentMacro.length} snapshots):
 ${JSON.stringify(recentMacro, null, 1)}
 
+AMZN MARKET STATUS: ${isAmznWeekendFreeze(valuationRows) ? "WEEKEND — stock price frozen at Friday close. Options/PC ratio changes are pre-positioning signals for Monday open. Do NOT generate price-movement trades or hypotheses for AMZN." : "WEEKDAY — stock is live and trading normally."}
+
 PORTFOLIO:
 Cash: $${portfolio.cash.toFixed(2)} | Open positions: ${portfolio.positions.length} | Realized P&L: $${portfolio.totalRealizedPnl.toFixed(2)}
 Win rate: ${portfolio.totalTrades > 0 ? ((portfolio.winCount / portfolio.totalTrades) * 100).toFixed(0) : "N/A"}% over ${portfolio.totalTrades} trades
@@ -933,6 +982,7 @@ IMPORTANT RULES:
 - In your journal entry, explicitly analyze leverage performance: are mistakes clustered on certain signal types or assets? Should leverage be reduced or removed for specific setups going forward?
 - Available venues: polymarket, hyperliquid (default 2x, overridable), spot (always 1x)
 - Available assets: BTC, HYPE, GOLD, AMZN, OIL
+- AMZN WEEKEND STRUCTURE (critical structural knowledge): AMZN stock does NOT trade on Saturday or Sunday. Its price is frozen at Friday's closing price all weekend. This means: (1) Any flat AMZN price over a weekend is NOT a signal — it is structural. (2) However, AMZN options IV and put/call ratio DO reprice on weekends. A significant PC ratio shift while AMZN stock is flat = real pre-positioning for Monday's open. Treat weekend AMZN PC ratio changes as high-conviction directional signals for the first trading day (Monday). (3) Never generate AMZN price-movement hypotheses based on weekend data. (4) The same logic applies to other US equities if they are added in the future.
 
 Respond with ONLY valid JSON in this exact format:
 {

@@ -338,3 +338,26 @@ Major validation day proving the system can distinguish between momentum and mea
 
 ---
 
+### 2026-04-06 — STRUCTURAL LEARNING: AMZN Weekend Freeze Pattern
+
+**Discovery:** AMZN stock was $209.78 exactly across 11 consecutive snapshots (Apr 3–5). This was initially analyzed as "a signal." It is NOT. US equity markets (NYSE/NASDAQ) do not trade on Saturday or Sunday. AMZN price is frozen at Friday's closing price all weekend.
+
+**The actual signal:** While AMZN stock is frozen, the options market DOES reprice. During the Apr 3–5 weekend, the AMZN put/call ratio fell from 0.903 → 0.819 → 0.399 — a dramatic shift to call buying while the stock price appeared static. This was genuine pre-positioning by options traders ahead of Monday's open, not noise. AMZN then moved to $211.86 on Monday Apr 6.
+
+**Rule baked into the system:**
+1. Flat AMZN price on weekend = structural, not a signal → suppress price-movement signals
+2. AMZN PC ratio / IV changes on weekend = VALID pre-positioning signal → boosted confidence, target Monday open
+3. AMZN basis signals (HL perp vs stock) suppressed on weekends (stock price reference is stale)
+4. AMZN funding signals suppressed on weekends
+
+**Repeatable pattern to test each week:**
+- Friday close → record AMZN stock price, PC ratio, IV
+- Check Saturday/Sunday for PC ratio drift while stock is frozen
+- If PC ratio moves >0.1 over the weekend, expect directional move at Monday open
+- Direction: PC ratio falling (more calls) = expect stock up; PC ratio rising (more puts) = expect stock down
+- The Apr 3–5 case: PC 0.903 → 0.399 over weekend → AMZN moved from $209.78 to $211.86 Monday (confirmed)
+
+**Same logic applies to:** AMZN options IV changes over the weekend, any US equity added in future.
+
+---
+
