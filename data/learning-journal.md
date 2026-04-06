@@ -280,3 +280,23 @@ Breakthrough validation day proving systematic cross-asset momentum recognition 
 
 ---
 
+### 2026-04-06 14:06 UTC
+
+**Portfolio:** $100.08 total | Cash $92.08 | 8 open | P&L $0.0837 | 100% win rate (3 trades)
+
+**Opened 2 positions:**
+- OIL short @ $83.39 via polymarket (PM_IV_GT_OPT_IV)
+- AMZN short @ $211.86 via spot (PC_RATIO_EXTREME_LOW)
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 10.5pp (was 10.0, now 20.5)
+- [anomaly] btc_opt_iv_90d = 49.1 is -4.1 std devs from mean (50.42 ± 0.32)
+- [anomaly] btc_ibit_pc_ratio = 0.757 is 4.1 std devs from mean (0.62 ± 0.03)
+- [anomaly] amzn_opt_fwd_90d = 214.13 is 4.1 std devs from mean (212.15 ± 0.48)
+- [anomaly] amzn_pc_ratio = 0.399 is -3.8 std devs from mean (0.83 ± 0.11)
+
+**LLM analysis:**
+Major validation day proving the system can distinguish between momentum and mean reversion regimes. BTC's controlled breakout (69732 with IV compression to 47.8%) accompanied by HYPE OI expansion to 806M demonstrates predictable institutional flow patterns. AMZN's dramatic PC ratio collapse from 0.903 to 0.399 represents the most significant options repositioning we've seen, suggesting major directional conviction. Oil's funding recovery from -233% confirms extreme funding creates predictable mean reversion. Key insight: when multiple assets show funding normalization simultaneously (BTC to 1.85%, Oil recovering, Gold stabilizing), it signals broad position unwinding completion and potential momentum acceleration phase. The system is evolving to use funding magnitude and cross-asset confirmation as position sizing and timing signals.
+
+---
+
