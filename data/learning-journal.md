@@ -361,3 +361,24 @@ Major validation day proving the system can distinguish between momentum and mea
 
 ---
 
+### 2026-04-06 17:39 UTC
+
+**Portfolio:** $100.01 total | Cash $93.01 | 7 open | P&L $0.0058 | 75% win rate (4 trades)
+
+**Closed 1 trades:**
+- ❌ HYPE short [2x] (LLM_HYPOTHESIS) → stop: $-0.0779 (-7.8%) ⚠ LEVERAGE MISTAKE — 1x would have been -3.9%
+
+**Leverage scoreboard (all-time HL):** 1 leveraged trades — 0/1 wins. Leverage mistakes: 1
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 5.3pp (was 20.5, now 15.2)
+- [anomaly] oil_cl_pc_ratio = 0.41 is -4.2 std devs from mean (0.79 ± 0.09)
+- [anomaly] gold_opt_iv_90d = 31.1 is -4.2 std devs from mean (31.76 ± 0.16)
+- [anomaly] oil_opt_iv_90d = 25 is -3.6 std devs from mean (26.60 ± 0.45)
+- [anomaly] btc_opt_iv_90d = 48.5 is -3.4 std devs from mean (50.32 ± 0.53)
+
+**LLM analysis:**
+Critical pattern recognition on AMZN weekend structure - the P/C collapse from 0.903 to 0.399 over the weekend was genuine pre-positioning, not noise. This led to the confirmed gap-up Monday. The leverage performance analysis shows 0/1 wins on HL leveraged trades with one clear mistake on HYPE. For oil trades going forward, using 1x leverage given the extreme volatility in funding rates (>200% swings) where 2x amplification creates unnecessary liquidation risk. The cross-asset IV compression cascade is accelerating with oil P/C at historic extremes - this suggests systematic vol selling across assets that should create mean reversion opportunities. BTC momentum continuation above 69500 with IV compression confirms the controlled breakout thesis.
+
+---
+

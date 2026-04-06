@@ -1052,7 +1052,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil funding hit -233%, extreme enough to trigger technical bounce hypothesis. Monitoring for 48-hour reversal pattern. | Early validation signs - oil funding recovering from -233% extreme, technical bounce pattern developing",
+    "postMortem": "Oil funding hit -233%, extreme enough to trigger technical bounce hypothesis. Monitoring for 48-hour reversal pattern. | Early validation signs - oil funding recovering from -233% extreme, technical bounce pattern developing | Oil funding magnitude reached -233% and created bounce - spot moved from 85.14 to 85.43. Technical overcorrection pattern confirmed regardless of fundamentals.",
     "source": "llm"
   },
   {
@@ -1178,7 +1178,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "AMZN P/C collapsed to 0.399 then rebounded to 0.737 as predicted - weekend repositioning led to Monday gap from 209.78 to 211.86. Pattern confirmed but needs refinement for entry timing.",
     "source": "llm"
   },
   {
@@ -1204,7 +1204,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC IV compression to 47.1% during momentum above 69500 confirmed - spot moved from 69238 to 69512. Low-vol breakout pattern working as expected.",
     "source": "llm"
   },
   {
@@ -1219,6 +1219,81 @@
     "prediction": "Risk asset momentum accelerates when multiple funding rates normalize simultaneously after extremes",
     "timeframeDays": 5,
     "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-050",
+    "created": "2026-04-06",
+    "description": "Oil put-call ratio collapse below 0.5 after extreme funding periods indicates systematic options repositioning ahead of technical bounce",
+    "conditions": {
+      "oil_cl_pc_ratio": "< 0.5",
+      "oil_hl_funding_ann": "< -150 OR > 150"
+    },
+    "prediction": "Oil spot moves >2% in direction opposite to funding stress within 3-5 days",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-051",
+    "created": "2026-04-06",
+    "description": "Cross-asset IV compression completion signal - when BTC 30d IV drops below 47% during momentum phases above 69000, volatility squeeze creates acceleration",
+    "conditions": {
+      "btc_opt_iv_30d": "< 47",
+      "btc_spot": "> 69000"
+    },
+    "prediction": "BTC spot moves >3% higher within 2-3 days as compressed volatility unwinds",
+    "timeframeDays": 3,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-052",
+    "created": "2026-04-06",
+    "description": "AMZN weekend put-call ratio acceleration pattern - when P/C moves >0.3 from Friday baseline during stock freeze, Monday gap-up follows",
+    "conditions": {
+      "amzn_pc_ratio": "< 0.6",
+      "amzn_stock": "= previous_weekend_freeze_price"
+    },
+    "prediction": "AMZN opens >1% higher on first trading day after weekend freeze period",
+    "timeframeDays": 3,
+    "confidence": 0.8,
     "tests": [
       {
         "date": "2026-04-06",
