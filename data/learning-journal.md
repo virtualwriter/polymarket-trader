@@ -487,3 +487,19 @@ Leverage analysis reveals critical insight: 1/3 HL leveraged trades successful (
 
 ---
 
+### 2026-04-07 17:50 UTC
+
+**Portfolio:** $99.98 total | Cash $93.98 | 6 open | P&L $-0.0167 | 57% win rate (7 trades)
+
+**Statistical observations:**
+- [anomaly] oil_cl_pc_ratio = 2.645 is 4.6 std devs from mean (0.91 ± 0.38)
+- [anomaly] btc_ibit_pc_ratio = 1.148 is 3.9 std devs from mean (0.66 ± 0.13)
+- [anomaly] oil_opt_fwd_90d = 84.3 is -2.8 std devs from mean (85.14 ± 0.30)
+- [anomaly] oil_pm_settle_ev = 91 is 2.6 std devs from mean (86.50 ± 1.70)
+- [anomaly] gold_pm_iv = 14.9 is -2.4 std devs from mean (15.06 ± 0.06)
+
+**LLM analysis:**
+Critical lesson: Leverage discipline paying off - previous oil funding trade at 2x failed while 1x would have survived the noise. Oil complex showing extreme distress with P/C ratio at 2.645 and PM-spot gap widening to 6+ points, but these are exactly the conditions that create best contrarian setups. BTC consolidation textbook perfect - holding 68500 with IV compressing toward 47.5% trigger. AMZN weekend structure thesis continues working systematically. Key insight: funding extreme reversals work but need 1x leverage and 72+ hour patience for complex/volatile assets. Taking new oil long at 1x leverage - extreme P/C ratio (2.645) combined with PM dislocation (settle at 91 vs spot 84) creates high-conviction contrarian setup.
+
+---
+
