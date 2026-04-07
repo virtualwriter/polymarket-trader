@@ -874,7 +874,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Brent-WTI spread collapsed to 20.4 from 25+ levels, confirming oil market structure stress thesis.",
     "source": "llm"
   },
   {
@@ -1712,7 +1712,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil P/C ratio hit 2.645, validating extreme panic selling thesis. Timing looks good for contrarian reversal.",
     "source": "llm"
   },
   {
@@ -1737,7 +1737,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC P/C ratio at 1.148 confirming oversold options positioning during consolidation phase. Setup developing.",
     "source": "llm"
   },
   {
@@ -1751,6 +1751,82 @@
     "prediction": "Oil PM-spot convergence within 5 days when gap exceeds 5 points",
     "timeframeDays": 5,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-07",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-071",
+    "created": "2026-04-07",
+    "description": "Oil put-call ratio extreme above 2.0 during funding normalization creates systematic panic selling reversal within 72 hours",
+    "conditions": {
+      "oil_cl_pc_ratio": "> 2.0",
+      "oil_hl_funding_ann": "> -150"
+    },
+    "prediction": "Oil spot price bounces >2% within 3 days as extreme bearish positioning unwinds",
+    "timeframeDays": 3,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-07",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-072",
+    "created": "2026-04-07",
+    "description": "Brent-WTI spread collapse below 21 after trading above 25 indicates oil market structure breakdown and creates convergence opportunity",
+    "conditions": {
+      "oil_brent_wti_spread": "< 21",
+      "oil_hl_funding_ann": "> -200"
+    },
+    "prediction": "Brent-WTI spread recovers above 23 within 5 days as structural arbitrage corrects",
+    "timeframeDays": 5,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-07",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-073",
+    "created": "2026-04-07",
+    "description": "BTC P/C ratio spike above 1.1 with IV compression below 48% during consolidation creates volatility squeeze setup",
+    "conditions": {
+      "btc_ibit_pc_ratio": "> 1.1",
+      "btc_opt_iv_30d": "< 48",
+      "btc_spot": "> 68500"
+    },
+    "prediction": "BTC breaks above 70000 within 7 days as options positioning becomes oversold during low-vol environment",
+    "timeframeDays": 7,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-07",

@@ -503,3 +503,19 @@ Critical lesson: Leverage discipline paying off - previous oil funding trade at 
 
 ---
 
+### 2026-04-07 21:35 UTC
+
+**Portfolio:** $99.98 total | Cash $93.98 | 6 open | P&L $-0.0167 | 57% win rate (7 trades)
+
+**Statistical observations:**
+- [anomaly] oil_brent_spot = 103.44 is -4.4 std devs from mean (109.60 ± 1.39)
+- [anomaly] oil_brent_wti_spread = 20.4 is -4.2 std devs from mean (24.82 ± 1.05)
+- [anomaly] oil_opt_fwd_90d = 83.4 is -3.8 std devs from mean (85.08 ± 0.44)
+- [anomaly] oil_cl_pc_ratio = 2.436 is 3.1 std devs from mean (0.97 ± 0.47)
+- [anomaly] gold_pm_iv = 14.8 is -3.1 std devs from mean (15.05 ± 0.08)
+
+**LLM analysis:**
+Oil complex showing textbook capitulation signals: P/C ratio spiked to 2.436 (highest recorded), Brent-WTI spread collapsed 5 points to 20.4, and PM-spot gap widened to 7+ points. This is exactly the type of extreme dislocation that creates best contrarian setups. BTC consolidation holding perfectly above 68500 with P/C ratio at 1.148 confirming oversold options positioning during IV compression phase. Key learning: Previous oil trade failed due to 2x leverage during volatile normalization period - taking new oil position at 1x leverage with better entry timing at peak panic. AMZN weekend structure thesis continues working systematically with P/C positioning predicting Monday gaps.
+
+---
+
