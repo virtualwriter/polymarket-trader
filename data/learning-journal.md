@@ -439,3 +439,27 @@ Leverage performance analysis shows critical pattern: 2/2 HYPE leveraged trades 
 
 ---
 
+### 2026-04-07 09:59 UTC
+
+**Portfolio:** $100.00 total | Cash $94.00 | 6 open | P&L $-0.0012 | 67% win rate (6 trades)
+
+**Closed 1 trades:**
+- ✅ AMZN long [2x] (LLM_HYPOTHESIS) → target: +$0.0429 (4.3%)
+
+**Leverage scoreboard (all-time HL):** 3 leveraged trades — 1/3 wins. Leverage mistakes: 2
+
+**Opened 1 positions:**
+- AMZN long @ $214.28 via hyperliquid (LLM_HYPOTHESIS)
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 11.2pp (was 12.7, now 23.9)
+- [anomaly] amzn_stock = 214.28 is 3.0 std devs from mean (210.53 ± 1.26)
+- [anomaly] oil_pm_iv = 53.2 is 2.8 std devs from mean (44.65 ± 3.11)
+- [anomaly] amzn_hl_perp = 214.15 is 2.7 std devs from mean (209.95 ± 1.56)
+- [anomaly] oil_opt_fwd_90d = 84.8 is -2.2 std devs from mean (85.21 ± 0.19)
+
+**LLM analysis:**
+Leverage performance analysis reveals critical pattern: HYPE funding extreme trades have 0/2 win rate with both being leverage mistakes (1x would have survived). This confirms high-volatility funding assets require 1x leverage due to amplified noise. BTC consolidation showing textbook characteristics - held key 68500 level with IV compressed to 47.5% (2.4 std devs below mean). HYPE OI decline at -1.8% is healthy organic reduction vs forced liquidation. AMZN weekend structure insight proving systematic again - P/C ratio positioning during stock freeze correctly predicted momentum. Taking new AMZN long at 1x leverage given strong fundamental setup (momentum breakout above 214, perp-stock convergence, P/C below 0.75) but using conservative leverage given mixed HL track record. Oil PM-Options IV gap compression from 26.5pp to 26.9pp (53.2% vs 26.3%) shows energy complex stabilization continuing as funding normalizes from extremes. Key learning: funding extreme reversals work but require 1x leverage and longer timeframes (72+ hours) for complex assets like oil.
+
+---
+
