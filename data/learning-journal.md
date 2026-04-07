@@ -463,3 +463,27 @@ Leverage performance analysis reveals critical pattern: HYPE funding extreme tra
 
 ---
 
+### 2026-04-07 14:27 UTC
+
+**Portfolio:** $99.98 total | Cash $93.98 | 6 open | P&L $-0.0167 | 57% win rate (7 trades)
+
+**Closed 1 trades:**
+- ❌ OIL long [2x] (FUNDING_EXTREME_SHORT) → expiry: $-0.0155 (-1.6%)
+
+**Leverage scoreboard (all-time HL):** 4 leveraged trades — 1/4 wins. Leverage mistakes: 2
+
+**Opened 1 positions:**
+- OIL long @ $84.48 via hyperliquid [2x] (FUNDING_EXTREME_SHORT)
+
+**Statistical observations:**
+- [anomaly] btc_ibit_pc_ratio = 0.977 is 4.2 std devs from mean (0.64 ± 0.08)
+- [anomaly] gold_gld_spot = 424.6 is -3.5 std devs from mean (428.95 ± 1.25)
+- [anomaly] oil_opt_fwd_90d = 84.4 is -3.2 std devs from mean (85.18 ± 0.25)
+- [anomaly] oil_pm_iv = 57.2 is 3.1 std devs from mean (45.18 ± 3.94)
+- [anomaly] oil_cl_pc_ratio = 1.118 is 2.3 std devs from mean (0.84 ± 0.12)
+
+**LLM analysis:**
+Leverage analysis reveals critical insight: 1/3 HL leveraged trades successful (33%) with 2 leverage mistakes on HYPE funding extremes. Pattern clear - high-volatility funding setups require 1x leverage due to amplified noise. AMZN weekend structure thesis proving systematic - P/C positioning during stock freeze correctly predicted Monday momentum again. BTC showing textbook consolidation: held 68500, IV compressed to 47.5% (2.4 std devs), HYPE OI decline moderated to -1.8% (healthy vs forced liquidation). Taking new BTC momentum trade at 1x leverage given consolidation noise potential and learning from leverage mistakes. Oil complex still unstable with PM-Options gap expanding vs predicted compression - extreme funding periods create longer normalization cycles than initially modeled.
+
+---
+

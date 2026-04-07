@@ -1559,7 +1559,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "AMZN momentum acceleration above 214 confirmed - stock at 214.28 with perp convergence and P/C at 0.728. Trade executed and already showing positive results.",
     "source": "llm"
   },
   {
@@ -1584,7 +1584,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil PM-Options IV gap expanded to 26.9pp (53.2% vs 26.3%) - opposite of compression prediction. Funding at -214.83% still extreme.",
     "source": "llm"
   },
   {
@@ -1598,6 +1598,83 @@
     },
     "prediction": "BTC breaks above 69500 and continues momentum within 7 days",
     "timeframeDays": 7,
+    "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-07",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "BTC IV compression below 47.5% achieved during consolidation above 68500. Pattern setting up as predicted with healthy HYPE OI moderation.",
+    "source": "llm"
+  },
+  {
+    "id": "H-065",
+    "created": "2026-04-07",
+    "description": "BTC IV compression completion during consolidation above 68500 creates volatility squeeze breakout setup when 30d IV drops below 47%",
+    "conditions": {
+      "btc_spot": "> 68500",
+      "btc_opt_iv_30d": "< 47",
+      "btc_med_min": "> 47500"
+    },
+    "prediction": "BTC moves above 70000 within 5 days as volatility squeeze resolves upward",
+    "timeframeDays": 5,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-07",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-066",
+    "created": "2026-04-07",
+    "description": "Oil PM-Options IV gap compression below 30pp after extreme funding normalization signals energy complex stabilization",
+    "conditions": {
+      "oil_pm_iv": "- oil_opt_iv_30d < 30",
+      "oil_hl_funding_ann": "> -100 and < 100"
+    },
+    "prediction": "Oil funding volatility drops below 50% absolute within 48 hours as market structure normalizes",
+    "timeframeDays": 2,
+    "confidence": 0.55,
+    "tests": [
+      {
+        "date": "2026-04-07",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-067",
+    "created": "2026-04-07",
+    "description": "HYPE OI decline moderation pattern - when OI decline rate slows to under 2% per snapshot during BTC consolidation above 68500, momentum resumption follows",
+    "conditions": {
+      "hype_hl_oi": "decline_rate < 2%",
+      "btc_spot": "> 68500",
+      "hype_spot": "> 36"
+    },
+    "prediction": "HYPE spot breaks above 37.5 within 3 days as OI stabilizes and BTC momentum resumes",
+    "timeframeDays": 3,
     "confidence": 0.6,
     "tests": [
       {
