@@ -35,8 +35,8 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           for f in data/daily-valuations.csv data/daily-macro.csv \
-                   data/trades.csv data/position-snapshots.csv \
-                   data/portfolio.json \
+                   data/trades-detailed.csv data/position-snapshots.csv \
+                   data/instrument-snapshots.jsonl data/portfolio.json \
                    data/signal-weights.json data/hypotheses.json \
                    data/learning-journal.md; do
             [ -f "$f" ] && git add -f "$f"

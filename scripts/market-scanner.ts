@@ -324,6 +324,7 @@ async function fetchHyperliquid() {
 // ─── 2. Polymarket ──────────────────────────────────────────────────────────
 
 interface PriceStrike {
+  marketId: string;
   question: string;
   strike: number;
   direction: "above" | "below";
@@ -404,6 +405,7 @@ async function fetchPolymarket() {
           const vol = parseFloat(m.volume || "0");
           totalVolume += vol;
           strikes.push({
+            marketId: m.id || "",
             question: m.question,
             strike: parsed.strike,
             direction: parsed.direction,
@@ -456,6 +458,7 @@ async function fetchPolymarket() {
           totalVolume += vol;
 
           strikes.push({
+            marketId: m.id || "",
             question: m.question,
             strike: parsed.strike,
             direction: parsed.direction,
@@ -1880,6 +1883,31 @@ function displayCategorySection(title: string, events: CategoryEvent[]) {
 
 const VALUATION_CSV = "daily-valuations.csv";
 const MACRO_CSV = "daily-macro.csv";
+const INSTRUMENT_SNAPSHOTS_JSONL = "instrument-snapshots.jsonl";
+
+interface InstrumentSnapshotContract {
+  marketId: string;
+  question: string;
+  strike: number;
+  direction: "above" | "below";
+  yesPrice: number;
+  volume: number;
+}
+
+interface InstrumentSnapshotEvent {
+  asset: string;
+  slug: string;
+  title: string;
+  totalVolume: number;
+  contracts: InstrumentSnapshotContract[];
+}
+
+interface InstrumentSnapshotFile {
+  timestamp: string;
+  spots: Record<string, number | null>;
+  hyperliquid: Record<string, { markPx: number | null; fundingAnnualized: number | null; openInterestUsd: number | null }>;
+  polymarket: InstrumentSnapshotEvent[];
+}
 
 const VALUATION_HEADERS = [
   "date",
@@ -1930,6 +1958,35 @@ function appendCsvRow(filename: string, headers: string[], row: Record<string, a
 
   const values = headers.map((h) => csvVal(row[h] ?? null));
   appendFileSync(filepath, values.join(",") + "\n");
+}
+
+function polymarketAssetForSlug(slug: string): string | null {
+  if (slug.includes("bitcoin")) return "BTC";
+  if (slug.includes("hyperliquid")) return "HYPE";
+  if (slug.startsWith("gc-") || slug.includes("gold-gc")) return "GOLD";
+  if (slug.startsWith("cl-")) return "OIL";
+  if (slug.includes("amazon")) return "AMZN";
+  return null;
+}
+
+function appendInstrumentSnapshot(snapshot: InstrumentSnapshotFile) {
+  const filepath = join(DATA_DIR, INSTRUMENT_SNAPSHOTS_JSONL);
+  if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
+  const line = JSON.stringify(snapshot);
+  if (!existsSync(filepath)) {
+    writeFileSync(filepath, line + "\n");
+    return;
+  }
+
+  const existing = readFileSync(filepath, "utf-8").trim().split("\n");
+  const lastLine = existing[existing.length - 1];
+  if (lastLine) {
+    try {
+      const last = JSON.parse(lastLine) as InstrumentSnapshotFile;
+      if (last.timestamp === snapshot.timestamp) return;
+    } catch {}
+  }
+  appendFileSync(filepath, line + "\n");
 }
 
 function pcRatioFromChains(chains: OptionQuote[]): number {
@@ -2079,6 +2136,64 @@ function writeSnapshot(
     btc_outperform_silver: findOutperformP(btcOutperform, "silver"),
     gpu_h100_hit_275: findGpuP(gpu, "$2.75"),
     gpu_h100_hit_300: findGpuP(gpu, "$3.00"),
+  });
+
+  appendInstrumentSnapshot({
+    timestamp: today,
+    spots: {
+      BTC: r(btcSpot, 6),
+      HYPE: r(hypeSpot, 6),
+      GOLD: r(goldGcSpot, 6),
+      AMZN: r(amznStock, 6),
+      OIL: r(oilWti, 6),
+    },
+    hyperliquid: {
+      BTC: {
+        markPx: r(hl.BTC?.markPx ?? null, 6),
+        fundingAnnualized: r(hl.BTC?.fundingAnnualized ?? null, 6),
+        openInterestUsd: r(hl.BTC?.openInterestUsd ?? null, 2),
+      },
+      HYPE: {
+        markPx: r(hl.HYPE?.markPx ?? null, 6),
+        fundingAnnualized: r(hl.HYPE?.fundingAnnualized ?? null, 6),
+        openInterestUsd: r(hl.HYPE?.openInterestUsd ?? null, 2),
+      },
+      GOLD: {
+        markPx: r(hl["GOLD (GC)"]?.markPx ?? null, 6),
+        fundingAnnualized: r(hl["GOLD (GC)"]?.fundingAnnualized ?? null, 6),
+        openInterestUsd: r(hl["GOLD (GC)"]?.openInterestUsd ?? null, 2),
+      },
+      AMZN: {
+        markPx: r(hl["AMZN"]?.markPx ?? null, 6),
+        fundingAnnualized: r(hl["AMZN"]?.fundingAnnualized ?? null, 6),
+        openInterestUsd: r(hl["AMZN"]?.openInterestUsd ?? null, 2),
+      },
+      OIL: {
+        markPx: r(hl["BRENT OIL"]?.markPx ?? null, 6),
+        fundingAnnualized: r(hl["BRENT OIL"]?.fundingAnnualized ?? null, 6),
+        openInterestUsd: r(hl["BRENT OIL"]?.openInterestUsd ?? null, 2),
+      },
+    },
+    polymarket: pm
+      .map((event) => {
+        const asset = polymarketAssetForSlug(event.slug);
+        if (!asset) return null;
+        return {
+          asset,
+          slug: event.slug,
+          title: event.title,
+          totalVolume: event.totalVolume,
+          contracts: event.strikes.map((s) => ({
+            marketId: s.marketId,
+            question: s.question,
+            strike: s.strike,
+            direction: s.direction,
+            yesPrice: s.yesPrice,
+            volume: s.volume,
+          })),
+        } satisfies InstrumentSnapshotEvent;
+      })
+      .filter((event): event is InstrumentSnapshotEvent => event !== null),
   });
 
   const valPath = join(DATA_DIR, VALUATION_CSV);

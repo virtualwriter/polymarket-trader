@@ -16,10 +16,10 @@ import { join } from "node:path";
 // ─── Config ──────────────────────────────────────────────────────────────────
 
 const DATA_DIR = join(import.meta.dirname ?? ".", "..", "data");
+const INSTRUMENT_SNAPSHOTS_JSONL = "instrument-snapshots.jsonl";
 const TRADE_SIZE = 1;
 const MAX_BANKROLL = 100;
 const MAX_OPEN_POSITIONS = 15;
-const HL_MAX_LEVERAGE = 2;
 const PROMOTE_THRESHOLD = 0.65;
 const PROMOTE_MIN_TESTS = 5;
 const DEMOTE_THRESHOLD = 0.45;
@@ -39,13 +39,19 @@ interface Position {
   entryPrice: number;
   currentPrice: number;
   size: number;
-  leverage: number;
+  leverage?: number;
   signalType: string;
   hypothesisId: string | null;
   thesis: string;
   targetPct: number;
   stopPct: number;
   expiryDate: string;
+  instrumentType?: "spot" | "hl_perp" | "pm_yes" | "pm_no" | "legacy_asset";
+  instrumentId?: string;
+  instrumentLabel?: string;
+  entryUnderlyingPrice?: number;
+  currentUnderlyingPrice?: number;
+  fundingPnlAccrued?: number;
 }
 
 interface ClosedTrade {
@@ -58,15 +64,18 @@ interface ClosedTrade {
   entryPrice: number;
   exitPrice: number;
   size: number;
-  leverage: number;
+  leverage?: number;
   pnl: number;
   pnlPct: number;
-  rawPnlPct: number;      // unleveraged P&L %, for counterfactual analysis
-  leverageMistake: boolean; // stopped/liquidated at Nx but would have survived at 1x
+  marketPnl?: number;
+  fundingPnl?: number;
   signalType: string;
   hypothesisId: string | null;
   thesis: string;
-  closeReason: "target" | "stop" | "expiry" | "llm_decision" | "signal_killed" | "liquidation";
+  closeReason: "target" | "stop" | "expiry" | "llm_decision" | "signal_killed";
+  instrumentType?: string;
+  instrumentId?: string;
+  instrumentLabel?: string;
 }
 
 interface Portfolio {
@@ -126,7 +135,11 @@ interface Signal {
   targetPct: number;
   stopPct: number;
   expiryDays: number;
-  leverage: number;
+  leverage?: number;
+  contractHint?: {
+    preferredEventSlug?: string;
+    preferredDirection?: "above" | "below";
+  };
 }
 
 interface SnapshotRow {
@@ -140,6 +153,30 @@ interface StatObservation {
   assets: string[];
   magnitude: number;
   data: Record<string, number>;
+}
+
+interface InstrumentSnapshotContract {
+  marketId: string;
+  question: string;
+  strike: number;
+  direction: "above" | "below";
+  yesPrice: number;
+  volume: number;
+}
+
+interface InstrumentSnapshotEvent {
+  asset: string;
+  slug: string;
+  title: string;
+  totalVolume: number;
+  contracts: InstrumentSnapshotContract[];
+}
+
+interface InstrumentSnapshotFile {
+  timestamp: string;
+  spots: Record<string, number | null>;
+  hyperliquid: Record<string, { markPx: number | null; fundingAnnualized: number | null; openInterestUsd: number | null }>;
+  polymarket: InstrumentSnapshotEvent[];
 }
 
 // ─── File I/O ────────────────────────────────────────────────────────────────
@@ -190,19 +227,22 @@ function readCsv(filename: string): SnapshotRow[] {
 }
 
 function appendTradeCsv(trade: ClosedTrade) {
-  const file = join(DATA_DIR, "trades.csv");
+  const file = join(DATA_DIR, "trades-detailed.csv");
   const headers = [
     "id", "opened_at", "closed_at", "asset", "venue", "direction",
-    "entry_price", "exit_price", "size", "leverage", "pnl", "pnl_pct",
-    "raw_pnl_pct", "leverage_mistake",
+    "instrument_type", "instrument_id", "instrument_label",
+    "entry_price", "exit_price", "size", "leverage",
+    "pnl", "pnl_pct", "market_pnl", "funding_pnl",
     "signal_type", "hypothesis_id", "thesis", "close_reason",
   ];
   if (!existsSync(file)) writeFileSync(file, headers.join(",") + "\n");
   const vals = [
     trade.id, trade.openedAt, trade.closedAt, trade.asset, trade.venue,
-    trade.direction, trade.entryPrice, trade.exitPrice, trade.size,
-    trade.leverage, trade.pnl.toFixed(4), trade.pnlPct.toFixed(2),
-    trade.rawPnlPct.toFixed(2), trade.leverageMistake ? "1" : "0",
+    trade.direction, trade.instrumentType ?? "", trade.instrumentId ?? "",
+    `"${(trade.instrumentLabel ?? "").replace(/"/g, '""')}"`,
+    trade.entryPrice, trade.exitPrice, trade.size, trade.leverage ?? 1,
+    trade.pnl.toFixed(4), trade.pnlPct.toFixed(2),
+    (trade.marketPnl ?? trade.pnl).toFixed(4), (trade.fundingPnl ?? 0).toFixed(4),
     trade.signalType, trade.hypothesisId ?? "",
     `"${trade.thesis.replace(/"/g, '""')}"`, trade.closeReason,
   ];
@@ -215,51 +255,31 @@ function appendJournal(entry: string) {
   appendFileSync(file, entry + "\n");
 }
 
-function writePositionSnapshot(portfolio: Portfolio) {
-  const file = join(DATA_DIR, "position-snapshots.csv");
-  const headers = [
-    "snapshot_time", "status", "id", "asset", "venue", "direction",
-    "entry_price", "current_price", "size", "leverage", "unrealized_pnl_pct",
-    "unrealized_pnl_usd", "target_pct", "stop_pct", "expiry_date",
-    "signal_type", "thesis", "cash", "total_realized_pnl",
-    "total_trades", "win_count", "loss_count",
-  ];
-  if (!existsSync(file)) writeFileSync(file, headers.join(",") + "\n");
+function readInstrumentSnapshots(): InstrumentSnapshotFile[] {
+  const p = join(DATA_DIR, INSTRUMENT_SNAPSHOTS_JSONL);
+  if (!existsSync(p)) return [];
+  return readFileSync(p, "utf-8")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      try {
+        return JSON.parse(line) as InstrumentSnapshotFile;
+      } catch {
+        return null;
+      }
+    })
+    .filter((row): row is InstrumentSnapshotFile => row !== null);
+}
 
-  const now = new Date().toISOString();
-  for (const pos of portfolio.positions) {
-    const lev = pos.leverage ?? 1;
-    const rawPnlPct = pos.direction === "long"
-      ? ((pos.currentPrice - pos.entryPrice) / pos.entryPrice) * 100
-      : ((pos.entryPrice - pos.currentPrice) / pos.entryPrice) * 100;
-    const pnlPct = rawPnlPct * lev;
-    const pnlUsd = (pnlPct / 100) * pos.size;
-    const vals = [
-      now, "open", pos.id, pos.asset, pos.venue, pos.direction,
-      pos.entryPrice, pos.currentPrice, pos.size, lev,
-      pnlPct.toFixed(2), pnlUsd.toFixed(4),
-      pos.targetPct, pos.stopPct, pos.expiryDate,
-      pos.signalType, `"${pos.thesis.replace(/"/g, '""')}"`,
-      portfolio.cash.toFixed(2), portfolio.totalRealizedPnl.toFixed(4),
-      portfolio.totalTrades, portfolio.winCount, portfolio.lossCount,
-    ];
-    appendFileSync(file, vals.join(",") + "\n");
-  }
-  if (portfolio.positions.length === 0) {
-    const vals = [
-      now, "no_positions", "", "", "", "", "", "", "", "", "",
-      "", "", "", "", "", '""',
-      portfolio.cash.toFixed(2), portfolio.totalRealizedPnl.toFixed(4),
-      portfolio.totalTrades, portfolio.winCount, portfolio.lossCount,
-    ];
-    appendFileSync(file, vals.join(",") + "\n");
-  }
+function latestInstrumentSnapshot(snapshots: InstrumentSnapshotFile[]): InstrumentSnapshotFile | null {
+  return snapshots.length > 0 ? snapshots[snapshots.length - 1] : null;
 }
 
 // ─── Portfolio Management ────────────────────────────────────────────────────
 
 function loadPortfolio(): Portfolio {
-  const p = readJson<Portfolio>("portfolio.json", {
+  return readJson<Portfolio>("portfolio.json", {
     cash: MAX_BANKROLL,
     positions: [],
     totalRealizedPnl: 0,
@@ -268,10 +288,6 @@ function loadPortfolio(): Portfolio {
     lossCount: 0,
     lastUpdated: new Date().toISOString(),
   });
-  for (const pos of p.positions) {
-    if (!pos.leverage) pos.leverage = pos.venue === "hyperliquid" ? HL_MAX_LEVERAGE : 1;
-  }
-  return p;
 }
 
 function savePortfolio(p: Portfolio) {
@@ -327,33 +343,6 @@ function defaultWeights(): SignalWeight[] {
 
 // ─── Signal Generation ───────────────────────────────────────────────────────
 
-/**
- * Returns true if the snapshot date falls on a US market weekend (Sat or Sun).
- * AMZN (and other US equities) don't trade on weekends — their spot price is
- * frozen at Friday's close. Any "signal" from flat equity price over the weekend
- * is structural, not informational. However, options IV and PC ratio CAN change
- * on weekends (derivatives markets still reprice), so weekend IV/PC divergence
- * while equity price is flat = genuine pre-positioning for Monday's open.
- */
-function isWeekend(row: SnapshotRow): boolean {
-  const d = new Date(String(row.date));
-  const day = d.getUTCDay(); // 0=Sun, 6=Sat
-  return day === 0 || day === 6;
-}
-
-/**
- * Returns true if AMZN stock appears to be in a weekend freeze:
- * the last N snapshots all have the same amzn_stock price.
- */
-function isAmznWeekendFreeze(rows: SnapshotRow[]): boolean {
-  if (rows.length < 2) return false;
-  // Check if we're currently on a weekend OR the last 2+ snapshots are identical
-  const latest = rows[rows.length - 1];
-  if (isWeekend(latest)) return true;
-  const prev = rows[rows.length - 2];
-  return num(latest.amzn_stock) === num(prev.amzn_stock) && isWeekend(prev);
-}
-
 function getAssetPrice(row: SnapshotRow, asset: string): number | null {
   const map: Record<string, string> = {
     BTC: "btc_spot", HYPE: "hype_spot", GOLD: "gold_gc_spot",
@@ -363,18 +352,115 @@ function getAssetPrice(row: SnapshotRow, asset: string): number | null {
   return typeof v === "number" && v > 0 ? v : null;
 }
 
+function getHyperliquidPerpPrice(row: SnapshotRow, asset: string): number | null {
+  const map: Record<string, string> = {
+    BTC: "btc_spot",
+    HYPE: "hype_spot",
+    GOLD: "gold_gc_spot",
+    AMZN: "amzn_hl_perp",
+    OIL: "oil_brent_spot",
+  };
+  const v = row[map[asset] ?? ""];
+  return typeof v === "number" && v > 0 ? v : null;
+}
+
+function getHyperliquidFundingAnnualized(row: SnapshotRow, asset: string): number | null {
+  const map: Record<string, string> = {
+    BTC: "btc_hl_funding_ann",
+    HYPE: "hype_hl_funding_ann",
+    GOLD: "gold_hl_funding_ann",
+    AMZN: "amzn_hl_funding_ann",
+    OIL: "oil_hl_funding_ann",
+  };
+  const v = row[map[asset] ?? ""];
+  return typeof v === "number" ? v / 100 : null;
+}
+
+function preferredPolymarketEventSlugs(asset: string): string[] {
+  switch (asset) {
+    case "BTC":
+      return ["what-price-will-bitcoin-hit-before-2027"];
+    case "HYPE":
+      return ["what-price-will-hyperliquid-hit-before-2027"];
+    case "GOLD":
+      return ["gc-over-under-jun-2026", "gc-hit-jun-2026", "what-will-gold-gc-hit-by-end-of-december"];
+    case "OIL":
+      return ["cl-over-under-jun-2026", "cl-hit-jun-2026"];
+    default:
+      return [];
+  }
+}
+
+function selectPolymarketContract(
+  snapshot: InstrumentSnapshotFile,
+  asset: string,
+  underlyingSpot: number,
+  direction: "long" | "short",
+  hint?: Signal["contractHint"],
+): { event: InstrumentSnapshotEvent; contract: InstrumentSnapshotContract; instrumentType: "pm_yes" | "pm_no"; entryPrice: number } | null {
+  const preferredSlugs = hint?.preferredEventSlug ? [hint.preferredEventSlug, ...preferredPolymarketEventSlugs(asset)] : preferredPolymarketEventSlugs(asset);
+  const events = snapshot.polymarket.filter((event) => event.asset === asset);
+  const rankedEvents = preferredSlugs
+    .map((slug) => events.find((event) => event.slug === slug))
+    .filter((event): event is InstrumentSnapshotEvent => !!event);
+
+  for (const event of rankedEvents) {
+    const live = event.contracts.filter((c) => c.yesPrice > 0 && c.yesPrice < 1);
+    const above = live.filter((c) => c.direction === (hint?.preferredDirection ?? "above"));
+    const candidates = above
+      .filter((c) => c.strike >= underlyingSpot)
+      .sort((a, b) => Math.abs(a.strike - underlyingSpot) - Math.abs(b.strike - underlyingSpot) || b.volume - a.volume);
+    const contract = candidates[0] ?? above.sort((a, b) => Math.abs(a.strike - underlyingSpot) - Math.abs(b.strike - underlyingSpot) || b.volume - a.volume)[0];
+    if (!contract) continue;
+    const instrumentType = direction === "long" ? "pm_yes" : "pm_no";
+    const entryPrice = instrumentType === "pm_yes" ? contract.yesPrice : 1 - contract.yesPrice;
+    if (entryPrice <= 0) continue;
+    return { event, contract, instrumentType, entryPrice };
+  }
+
+  return null;
+}
+
+function findPolymarketContractMark(
+  snapshot: InstrumentSnapshotFile,
+  position: Position,
+): { price: number; underlyingPrice: number | null } | null {
+  const event = snapshot.polymarket.find((candidate) =>
+    candidate.slug === position.instrumentId?.split("::")[0] && candidate.contracts.some((c) => c.marketId === position.instrumentId?.split("::")[1]),
+  );
+  if (!event) return null;
+  const marketId = position.instrumentId?.split("::")[1];
+  const contract = event.contracts.find((c) => c.marketId === marketId);
+  if (!contract) return null;
+  const price = position.instrumentType === "pm_no" ? 1 - contract.yesPrice : contract.yesPrice;
+  return { price, underlyingPrice: snapshot.spots[position.asset] ?? null };
+}
+
+function estimateFundingPnlSinceOpen(position: Position, snapshots: InstrumentSnapshotFile[]): number {
+  if (position.venue !== "hyperliquid" || position.instrumentType !== "hl_perp") return 0;
+  const openedAt = new Date(position.openedAt).getTime();
+  const relevant = snapshots.filter((s) => snapshotTimeMs(s.timestamp) >= openedAt);
+  if (relevant.length < 2) return position.fundingPnlAccrued ?? 0;
+
+  let fundingPnl = 0;
+  for (let i = 0; i < relevant.length - 1; i++) {
+    const current = relevant[i];
+    const next = relevant[i + 1];
+    const fundingAnnualized = current.hyperliquid[position.asset]?.fundingAnnualized ?? 0;
+    const dtHours = (snapshotTimeMs(next.timestamp) - snapshotTimeMs(current.timestamp)) / (1000 * 60 * 60);
+    if (dtHours <= 0) continue;
+    const intervalFunding = position.size * (position.leverage ?? 1) * fundingAnnualized * (dtHours / (365 * 24));
+    fundingPnl += position.direction === "long" ? -intervalFunding : intervalFunding;
+  }
+  return fundingPnl;
+}
+
 function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights: SignalWeight[]): Signal[] {
   if (rows.length === 0) return [];
   const latest = rows[rows.length - 1];
   const prev = rows.length >= 2 ? rows[rows.length - 2] : null;
   const signals: Signal[] = [];
   const weightMap = new Map(weights.filter((w) => w.enabled).map((w) => [w.type, w]));
-
-  // AMZN weekend state — stock price is frozen at Friday close on Sat/Sun.
-  // Suppress any AMZN signal that relies on price movement; only options
-  // divergence signals (IV, PC ratio) are valid over the weekend as they
-  // reflect pre-positioning for Monday's open.
-  const amznWeekend = isAmznWeekendFreeze(rows);
 
   const assets = [
     { key: "BTC", pmIv: "btc_pm_iv", optIv30: "btc_opt_iv_30d", optIv90: "btc_opt_iv_90d",
@@ -398,16 +484,10 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
     const spot = num(latest[a.spot]);
     if (!spot) continue;
 
-    // For AMZN: suppress any signal that relies on equity price movement during
-    // weekends (Sat/Sun). The stock doesn't trade, price is stale Friday close.
-    // PC ratio and IV signals are still valid — they reflect real weekend
-    // options repositioning that predicts Monday's open direction.
-    const isAmznSuppressed = a.key === "AMZN" && amznWeekend;
-
     // PM IV vs Options IV divergence
     const pmIv = a.pmIv ? num(latest[a.pmIv]) : null;
     const optIv = a.optIv30 ? num(latest[a.optIv30]) : null;
-    if (pmIv && optIv && optIv > 0 && !isAmznSuppressed) {
+    if (pmIv && optIv && optIv > 0) {
       const ratio = pmIv / optIv;
       if (ratio > 1.3 && weightMap.has("PM_IV_GT_OPT_IV")) {
         const strength = Math.min(1, (ratio - 1.3) / 0.7);
@@ -416,7 +496,8 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "PM_IV_GT_OPT_IV", asset: a.key, venue: "polymarket", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} PM IV (${pmIv.toFixed(1)}%) >> Options IV (${optIv.toFixed(1)}%), ratio ${ratio.toFixed(2)}. PM overpricing vol → sell PM upside.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7, leverage: 1,
+          hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7,
+          contractHint: { preferredDirection: "above" },
         });
       }
       if (ratio < 0.7 && weightMap.has("OPT_IV_GT_PM_IV")) {
@@ -426,40 +507,42 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "OPT_IV_GT_PM_IV", asset: a.key, venue: "polymarket", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} Options IV (${optIv.toFixed(1)}%) >> PM IV (${pmIv.toFixed(1)}%), ratio ${ratio.toFixed(2)}. PM underpricing vol → buy PM upside.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7, leverage: 1,
+          hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7,
+          contractHint: { preferredDirection: "above" },
         });
       }
     }
 
-    // Funding rate extremes — suppress for AMZN on weekends (HL perp may still
-    // move but equity price reference is stale, making basis unreliable)
+    // Funding rate extremes
     const funding = a.funding ? num(latest[a.funding]) : null;
-    if (funding !== null && !isAmznSuppressed) {
+    if (funding !== null) {
       if (funding > 15 && weightMap.has("FUNDING_EXTREME_LONG")) {
         const strength = Math.min(1, (funding - 15) / 35);
         const w = weightMap.get("FUNDING_EXTREME_LONG")!;
+        const perpEntry = getHyperliquidPerpPrice(latest, a.key) ?? spot;
         signals.push({
           type: "FUNDING_EXTREME_LONG", asset: a.key, venue: "hyperliquid", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL funding ${funding.toFixed(1)}% annualized — crowded longs. Fade.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 4, expiryDays: 3, leverage: HL_MAX_LEVERAGE,
+          hypothesisId: null, entryPrice: perpEntry, targetPct: 2, stopPct: 4, expiryDays: 3, leverage: 1,
         });
       }
       if (funding < -15 && weightMap.has("FUNDING_EXTREME_SHORT")) {
         const strength = Math.min(1, (-funding - 15) / 35);
         const w = weightMap.get("FUNDING_EXTREME_SHORT")!;
+        const perpEntry = getHyperliquidPerpPrice(latest, a.key) ?? spot;
         signals.push({
           type: "FUNDING_EXTREME_SHORT", asset: a.key, venue: "hyperliquid", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL funding ${funding.toFixed(1)}% annualized — crowded shorts. Buy.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 4, expiryDays: 3, leverage: HL_MAX_LEVERAGE,
+          hypothesisId: null, entryPrice: perpEntry, targetPct: 2, stopPct: 4, expiryDays: 3, leverage: 1,
         });
       }
     }
 
-    // PM EV vs Spot divergence — suppress for AMZN on weekends
+    // PM EV vs Spot divergence
     const pmEv = a.pmEv ? num(latest[a.pmEv]) : null;
-    if (pmEv && spot && !isAmznSuppressed) {
+    if (pmEv && spot) {
       const divergencePct = ((pmEv - spot) / spot) * 100;
       if (divergencePct > 8 && weightMap.has("PM_EV_ABOVE_SPOT")) {
         const strength = Math.min(1, (divergencePct - 8) / 20);
@@ -468,7 +551,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "PM_EV_ABOVE_SPOT", asset: a.key, venue: "spot", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} PM EV ($${pmEv.toFixed(0)}) is ${divergencePct.toFixed(1)}% above spot ($${spot.toFixed(0)}). Market expects upside.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 4, stopPct: 6, expiryDays: 14, leverage: 1,
+          hypothesisId: null, entryPrice: spot, targetPct: 4, stopPct: 6, expiryDays: 14,
         });
       }
       if (divergencePct < -5 && weightMap.has("PM_EV_BELOW_SPOT")) {
@@ -478,47 +561,40 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "PM_EV_BELOW_SPOT", asset: a.key, venue: "spot", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} PM EV ($${pmEv.toFixed(0)}) is ${divergencePct.toFixed(1)}% below spot ($${spot.toFixed(0)}). Market expects downside.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 14, leverage: 1,
+          hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 14,
         });
       }
     }
 
-    // Put/Call ratio extremes — VALID on AMZN weekends (real pre-positioning signal).
-    // When AMZN is in a weekend freeze and the PC ratio shifts significantly,
-    // it reflects genuine options positioning for Monday's open — one of the
-    // highest-conviction signals available.
+    // Put/Call ratio extremes
     const pcRatio = a.pcRatio ? num(latest[a.pcRatio]) : null;
     if (pcRatio !== null) {
-      const isWeekendPcBoost = a.key === "AMZN" && amznWeekend ? 1.2 : 1; // boost confidence for weekend pre-positioning
       if (pcRatio > 1.2 && weightMap.has("PC_RATIO_EXTREME_HIGH")) {
         const strength = Math.min(1, (pcRatio - 1.2) / 0.8);
         const w = weightMap.get("PC_RATIO_EXTREME_HIGH")!;
-        const weekendTag = a.key === "AMZN" && amznWeekend ? " [weekend pre-positioning — targets Monday open]" : "";
         signals.push({
           type: "PC_RATIO_EXTREME_HIGH", asset: a.key, venue: "spot", direction: "long",
-          strength, confidence: Math.min(0.95, strength * w.weight * isWeekendPcBoost),
-          thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy put buying → contrarian long.${weekendTag}`,
-          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5, leverage: 1,
+          strength, confidence: strength * w.weight,
+          thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy put buying → contrarian long.`,
+          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5,
         });
       }
       if (pcRatio < 0.5 && weightMap.has("PC_RATIO_EXTREME_LOW")) {
         const strength = Math.min(1, (0.5 - pcRatio) / 0.3);
         const w = weightMap.get("PC_RATIO_EXTREME_LOW")!;
-        const weekendTag = a.key === "AMZN" && amznWeekend ? " [weekend pre-positioning — targets Monday open]" : "";
         signals.push({
           type: "PC_RATIO_EXTREME_LOW", asset: a.key, venue: "spot", direction: "short",
-          strength, confidence: Math.min(0.95, strength * w.weight * isWeekendPcBoost),
-          thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy call buying → contrarian short.${weekendTag}`,
-          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5, leverage: 1,
+          strength, confidence: strength * w.weight,
+          thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy call buying → contrarian short.`,
+          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5,
         });
       }
     }
 
-    // Cross-venue basis (HL perp vs spot) — suppress for AMZN on weekends
-    // (stock price is stale, basis is not meaningful)
+    // Cross-venue basis (HL perp vs spot)
     const hlPerp = a.hlPerp ? num(latest[a.hlPerp]) : null;
     const stockSpot = a.spot === a.hlPerp ? null : num(latest[a.spot]);
-    if (hlPerp && stockSpot && a.key === "AMZN" && !isAmznSuppressed) {
+    if (hlPerp && stockSpot && a.key === "AMZN") {
       const basisPct = ((hlPerp - stockSpot) / stockSpot) * 100;
       if (basisPct > 1.5 && weightMap.has("BASIS_PREMIUM")) {
         const strength = Math.min(1, (basisPct - 1.5) / 3);
@@ -527,7 +603,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "BASIS_PREMIUM", asset: a.key, venue: "hyperliquid", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL perp ($${hlPerp.toFixed(2)}) at ${basisPct.toFixed(1)}% premium to stock ($${stockSpot.toFixed(2)}). Basis convergence → short perp.`,
-          hypothesisId: null, entryPrice: hlPerp, targetPct: 1.5, stopPct: 3, expiryDays: 5, leverage: HL_MAX_LEVERAGE,
+          hypothesisId: null, entryPrice: hlPerp, targetPct: 1.5, stopPct: 3, expiryDays: 5, leverage: 1,
         });
       }
       if (basisPct < -1.5 && weightMap.has("BASIS_DISCOUNT")) {
@@ -537,7 +613,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           type: "BASIS_DISCOUNT", asset: a.key, venue: "hyperliquid", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL perp ($${hlPerp.toFixed(2)}) at ${basisPct.toFixed(1)}% discount to stock ($${stockSpot.toFixed(2)}). Basis convergence → long perp.`,
-          hypothesisId: null, entryPrice: hlPerp, targetPct: 1.5, stopPct: 3, expiryDays: 5, leverage: HL_MAX_LEVERAGE,
+          hypothesisId: null, entryPrice: hlPerp, targetPct: 1.5, stopPct: 3, expiryDays: 5, leverage: 1,
         });
       }
     }
@@ -559,7 +635,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           strength, confidence: strength * w.weight,
           thesis: `Macro composite jumped +${shift} pts (${compositePrev}→${compositeNow}). Risk-on momentum → long BTC.`,
           hypothesisId: null, entryPrice: num(rows[rows.length - 1].btc_spot) ?? 0,
-          targetPct: 3, stopPct: 5, expiryDays: 7, leverage: 1,
+          targetPct: 3, stopPct: 5, expiryDays: 7,
         });
       }
       if (shift < -8 && weightMap.has("MACRO_MOMENTUM_DOWN")) {
@@ -570,7 +646,7 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
           strength, confidence: strength * w.weight,
           thesis: `Macro composite dropped ${shift} pts (${compositePrev}→${compositeNow}). Risk-off momentum → short BTC.`,
           hypothesisId: null, entryPrice: num(rows[rows.length - 1].btc_spot) ?? 0,
-          targetPct: 3, stopPct: 5, expiryDays: 7, leverage: 1,
+          targetPct: 3, stopPct: 5, expiryDays: 7,
         });
       }
     }
@@ -688,42 +764,69 @@ function pearson(x: number[], y: number[]): number {
 
 // ─── Position Management ─────────────────────────────────────────────────────
 
-function markToMarket(portfolio: Portfolio, latestRow: SnapshotRow): ClosedTrade[] {
+function markToMarket(
+  portfolio: Portfolio,
+  latestRow: SnapshotRow,
+  snapshots: InstrumentSnapshotFile[],
+): ClosedTrade[] {
   const closed: ClosedTrade[] = [];
   const now = new Date().toISOString();
   const remaining: Position[] = [];
+  const latestSnapshot = latestInstrumentSnapshot(snapshots);
 
   for (const pos of portfolio.positions) {
-    const currentPrice = getAssetPrice(latestRow, pos.asset);
-    if (!currentPrice) { remaining.push(pos); continue; }
+    let currentPrice: number | null = null;
+    let underlyingPrice: number | null = getAssetPrice(latestRow, pos.asset);
+    let marketPnl = 0;
+    let fundingPnl = 0;
+
+    if (pos.instrumentType === "pm_yes" || pos.instrumentType === "pm_no") {
+      if (!latestSnapshot) { remaining.push(pos); continue; }
+      const pmMark = findPolymarketContractMark(latestSnapshot, pos);
+      if (!pmMark) { remaining.push(pos); continue; }
+      currentPrice = pmMark.price;
+      underlyingPrice = pmMark.underlyingPrice;
+      const shares = pos.size / pos.entryPrice;
+      marketPnl = shares * (currentPrice - pos.entryPrice);
+    } else if (pos.instrumentType === "hl_perp") {
+      currentPrice = getHyperliquidPerpPrice(latestRow, pos.asset);
+      if (!currentPrice) { remaining.push(pos); continue; }
+      const rawReturn = pos.direction === "long"
+        ? (currentPrice - pos.entryPrice) / pos.entryPrice
+        : (pos.entryPrice - currentPrice) / pos.entryPrice;
+      marketPnl = pos.size * (pos.leverage ?? 1) * rawReturn;
+      fundingPnl = estimateFundingPnlSinceOpen(pos, snapshots);
+    } else {
+      currentPrice = getAssetPrice(latestRow, pos.asset);
+      if (!currentPrice) { remaining.push(pos); continue; }
+      const rawReturn = pos.direction === "long"
+        ? (currentPrice - pos.entryPrice) / pos.entryPrice
+        : (pos.entryPrice - currentPrice) / pos.entryPrice;
+      marketPnl = pos.size * rawReturn;
+    }
 
     pos.currentPrice = currentPrice;
-    const lev = pos.leverage ?? 1;
-    const rawPnlPct = pos.direction === "long"
-      ? ((currentPrice - pos.entryPrice) / pos.entryPrice) * 100
-      : ((pos.entryPrice - pos.currentPrice) / pos.entryPrice) * 100;
-    let pnlPct = rawPnlPct * lev;
-    let pnl = (pnlPct / 100) * pos.size;
+    pos.currentUnderlyingPrice = underlyingPrice ?? undefined;
+    pos.fundingPnlAccrued = fundingPnl;
+    const pnl = marketPnl + fundingPnl;
+    const pnlPct = (pnl / pos.size) * 100;
 
     let closeReason: ClosedTrade["closeReason"] | null = null;
-    if (pnlPct <= -100) { closeReason = "liquidation"; pnlPct = -100; pnl = -pos.size; }
-    else if (pnlPct >= pos.targetPct) closeReason = "target";
+    if (pnlPct >= pos.targetPct) closeReason = "target";
     else if (pnlPct <= -pos.stopPct) closeReason = "stop";
     else if (new Date(pos.expiryDate) <= new Date()) closeReason = "expiry";
 
     if (closeReason) {
-      // Leverage mistake: lost at Nx but the raw 1x move was within the stop threshold
-      const leverageMistake = lev > 1 &&
-        (closeReason === "stop" || closeReason === "liquidation") &&
-        rawPnlPct > -pos.stopPct;
-
       const trade: ClosedTrade = {
         id: pos.id, openedAt: pos.openedAt, closedAt: now, asset: pos.asset,
         venue: pos.venue, direction: pos.direction, entryPrice: pos.entryPrice,
-        exitPrice: currentPrice, size: pos.size, leverage: lev, pnl, pnlPct,
-        rawPnlPct, leverageMistake,
+        exitPrice: currentPrice, size: pos.size, leverage: pos.leverage ?? 1, pnl, pnlPct,
+        marketPnl, fundingPnl,
         signalType: pos.signalType, hypothesisId: pos.hypothesisId,
         thesis: pos.thesis, closeReason,
+        instrumentType: pos.instrumentType,
+        instrumentId: pos.instrumentId,
+        instrumentLabel: pos.instrumentLabel,
       };
       closed.push(trade);
       portfolio.cash += pos.size + pnl;
@@ -739,8 +842,78 @@ function markToMarket(portfolio: Portfolio, latestRow: SnapshotRow): ClosedTrade
   return closed;
 }
 
-function openPositions(portfolio: Portfolio, signals: Signal[]): Position[] {
+function buildPositionFromSignal(
+  signal: Signal,
+  latestRow: SnapshotRow,
+  latestSnapshot: InstrumentSnapshotFile | null,
+): Position | null {
+  const expiry = new Date();
+  expiry.setDate(expiry.getDate() + signal.expiryDays);
+  const underlyingPrice = getAssetPrice(latestRow, signal.asset) ?? signal.entryPrice;
+
+  const base: Position = {
+    id: `T-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    openedAt: new Date().toISOString(),
+    asset: signal.asset,
+    venue: signal.venue,
+    direction: signal.direction,
+    entryPrice: signal.entryPrice,
+    currentPrice: signal.entryPrice,
+    currentUnderlyingPrice: underlyingPrice,
+    entryUnderlyingPrice: underlyingPrice,
+    size: TRADE_SIZE,
+    leverage: signal.leverage ?? 1,
+    signalType: signal.type,
+    hypothesisId: signal.hypothesisId,
+    thesis: signal.thesis,
+    targetPct: signal.targetPct,
+    stopPct: signal.stopPct,
+    expiryDate: expiry.toISOString(),
+  };
+
+  if (signal.venue === "spot") {
+    return { ...base, instrumentType: "spot", instrumentLabel: `${signal.asset} spot` };
+  }
+
+  if (signal.venue === "hyperliquid") {
+    const perpPrice = getHyperliquidPerpPrice(latestRow, signal.asset);
+    if (!perpPrice) return null;
+    return {
+      ...base,
+      entryPrice: perpPrice,
+      currentPrice: perpPrice,
+      instrumentType: "hl_perp",
+      instrumentId: signal.asset,
+      instrumentLabel: `HL ${signal.asset} perp`,
+      fundingPnlAccrued: 0,
+    };
+  }
+
+  if (signal.venue === "polymarket") {
+    if (!latestSnapshot) return null;
+    const selected = selectPolymarketContract(latestSnapshot, signal.asset, underlyingPrice, signal.direction, signal.contractHint);
+    if (!selected) return null;
+    return {
+      ...base,
+      entryPrice: selected.entryPrice,
+      currentPrice: selected.entryPrice,
+      instrumentType: selected.instrumentType,
+      instrumentId: `${selected.event.slug}::${selected.contract.marketId}`,
+      instrumentLabel: `${selected.event.slug} — ${selected.instrumentType === "pm_yes" ? "YES" : "NO"} — ${selected.contract.question}`,
+    };
+  }
+
+  return { ...base, instrumentType: "legacy_asset" };
+}
+
+function openPositions(
+  portfolio: Portfolio,
+  signals: Signal[],
+  latestRow: SnapshotRow,
+  snapshots: InstrumentSnapshotFile[],
+): Position[] {
   const opened: Position[] = [];
+  const latestSnapshot = latestInstrumentSnapshot(snapshots);
   for (const sig of signals) {
     if (portfolio.positions.length >= MAX_OPEN_POSITIONS) break;
     if (portfolio.cash < TRADE_SIZE) break;
@@ -750,26 +923,8 @@ function openPositions(portfolio: Portfolio, signals: Signal[]): Position[] {
     const dup = portfolio.positions.find((p) => p.asset === sig.asset && p.direction === sig.direction);
     if (dup) continue;
 
-    const expiry = new Date();
-    expiry.setDate(expiry.getDate() + sig.expiryDays);
-
-    const pos: Position = {
-      id: `T-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-      openedAt: new Date().toISOString(),
-      asset: sig.asset,
-      venue: sig.venue,
-      direction: sig.direction,
-      entryPrice: sig.entryPrice,
-      currentPrice: sig.entryPrice,
-      size: TRADE_SIZE,
-      leverage: sig.leverage,
-      signalType: sig.type,
-      hypothesisId: sig.hypothesisId,
-      thesis: sig.thesis,
-      targetPct: sig.targetPct,
-      stopPct: sig.stopPct,
-      expiryDate: expiry.toISOString(),
-    };
+    const pos = buildPositionFromSignal(sig, latestRow, latestSnapshot);
+    if (!pos) continue;
 
     portfolio.cash -= TRADE_SIZE;
     portfolio.positions.push(pos);
@@ -825,7 +980,65 @@ function updateWeights(weights: SignalWeight[], closedTrades: ClosedTrade[]): st
 
 // ─── Hypothesis Evaluation ───────────────────────────────────────────────────
 
-function evaluateHypotheses(hypotheses: Hypothesis[], latestRow: SnapshotRow): string[] {
+function inferHypothesisAsset(hypothesis: Hypothesis): string | null {
+  const keys = Object.keys(hypothesis.conditions).join(" ").toLowerCase();
+  const text = `${hypothesis.description} ${hypothesis.prediction} ${keys}`.toLowerCase();
+  if (text.includes("btc") || text.includes("bitcoin")) return "BTC";
+  if (text.includes("hype") || text.includes("hyperliquid")) return "HYPE";
+  if (text.includes("gold")) return "GOLD";
+  if (text.includes("amzn") || text.includes("amazon")) return "AMZN";
+  if (text.includes("oil") || text.includes("brent") || text.includes("wti")) return "OIL";
+  return null;
+}
+
+function evaluateHypothesisTest(hypothesis: Hypothesis, startRow: SnapshotRow, endRow: SnapshotRow): { outcome: "win" | "loss"; actualMove: string } {
+  const prediction = hypothesis.prediction.toLowerCase();
+  const percentMatch = prediction.match(/>(\d+(?:\.\d+)?)%/);
+  const thresholdPct = percentMatch ? parseFloat(percentMatch[1]) : 2;
+
+  if (prediction.includes("funding")) {
+    const conditionKey = Object.keys(hypothesis.conditions).find((key) => key.includes("_hl_funding_ann"));
+    if (!conditionKey) return { outcome: "loss", actualMove: "No funding key found" };
+    const start = num(startRow[conditionKey]);
+    const end = num(endRow[conditionKey]);
+    if (start === null || end === null) return { outcome: "loss", actualMove: "Missing funding history" };
+    if (prediction.includes("below")) {
+      const target = prediction.match(/below\s+(\d+(?:\.\d+)?)/);
+      const level = target ? parseFloat(target[1]) : 10;
+      return {
+        outcome: end < level ? "win" : "loss",
+        actualMove: `Funding moved ${start.toFixed(1)}% → ${end.toFixed(1)}%`,
+      };
+    }
+  }
+
+  const asset = inferHypothesisAsset(hypothesis);
+  if (!asset) return { outcome: "loss", actualMove: "Could not infer asset" };
+  const startPx = getAssetPrice(startRow, asset);
+  const endPx = getAssetPrice(endRow, asset);
+  if (!startPx || !endPx) return { outcome: "loss", actualMove: "Missing price history" };
+  const movePct = ((endPx - startPx) / startPx) * 100;
+
+  if (prediction.includes("decline") || prediction.includes("drop") || prediction.includes("down")) {
+    return {
+      outcome: movePct <= -thresholdPct ? "win" : "loss",
+      actualMove: `${asset} moved ${movePct.toFixed(2)}% (${startPx} → ${endPx})`,
+    };
+  }
+  if (prediction.includes("move")) {
+    return {
+      outcome: Math.abs(movePct) >= thresholdPct ? "win" : "loss",
+      actualMove: `${asset} moved ${movePct.toFixed(2)}% (${startPx} → ${endPx})`,
+    };
+  }
+
+  return {
+    outcome: movePct >= thresholdPct ? "win" : "loss",
+    actualMove: `${asset} moved ${movePct.toFixed(2)}% (${startPx} → ${endPx})`,
+  };
+}
+
+function evaluateHypotheses(hypotheses: Hypothesis[], valuationRows: SnapshotRow[]): string[] {
   const observations: string[] = [];
   const now = new Date();
 
@@ -838,11 +1051,16 @@ function evaluateHypotheses(hypotheses: Hypothesis[], latestRow: SnapshotRow): s
       const testDate = new Date(test.date);
       const elapsed = (now.getTime() - testDate.getTime()) / (1000 * 60 * 60 * 24);
       if (elapsed < h.timeframeDays) continue;
-
-      // Evaluate — simplified: check if the asset moved in predicted direction
-      // Real evaluation would parse the prediction string more carefully
-      test.outcome = "loss"; // default
-      test.actualMove = "evaluation pending — insufficient price history";
+      const startRow = valuationRows.find((row) => row.date.startsWith(test.date));
+      const endRow = valuationRows[valuationRows.length - 1];
+      if (!startRow || !endRow) {
+        test.outcome = "loss";
+        test.actualMove = "Missing valuation history";
+        continue;
+      }
+      const result = evaluateHypothesisTest(h, startRow, endRow);
+      test.outcome = result.outcome;
+      test.actualMove = result.actualMove;
     }
 
     // Update win rate
@@ -882,18 +1100,18 @@ function evaluateHypotheses(hypotheses: Hypothesis[], latestRow: SnapshotRow): s
 async function callLLM(
   valuationRows: SnapshotRow[],
   macroRows: SnapshotRow[],
+  instrumentSnapshots: InstrumentSnapshotFile[],
   portfolio: Portfolio,
   weights: SignalWeight[],
   hypotheses: Hypothesis[],
   statObs: StatObservation[],
   closedTrades: ClosedTrade[],
   journalTail: string,
-  allClosedTrades: ClosedTrade[],
 ): Promise<{
   marketAssessment: string;
   newHypotheses: Omit<Hypothesis, "id" | "tests" | "winRate" | "status" | "promotedToSignal" | "postMortem">[];
   hypothesisReviews: { id: string; observation: string }[];
-  trades: { action: "buy" | "sell"; asset: string; venue: string; direction: "long" | "short"; thesis: string; leverage?: number }[];
+  trades: { action: "buy" | "sell"; asset: string; venue: string; direction: "long" | "short"; thesis: string }[];
   journalEntry: string;
 } | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -904,25 +1122,10 @@ async function callLLM(
 
   const recentValuations = valuationRows.slice(-14);
   const recentMacro = macroRows.slice(-14);
+  const recentInstruments = instrumentSnapshots.slice(-4);
   const activeHypotheses = hypotheses.filter((h) => h.status === "active" || h.status === "promoted");
   const killedRecently = hypotheses.filter((h) => h.status === "killed").slice(-5);
   const activeWeights = weights.filter((w) => w.trades > 0);
-
-  // Build leverage performance summary from all historical trades
-  const hlTrades = allClosedTrades.filter((t) => t.venue === "hyperliquid");
-  const hlLeveraged = hlTrades.filter((t) => t.leverage > 1);
-  const hlSpot = hlTrades.filter((t) => t.leverage === 1);
-  const mistakes = allClosedTrades.filter((t) => t.leverageMistake);
-  const hlLevWins = hlLeveraged.filter((t) => t.pnl >= 0).length;
-  const hlSpotWins = hlSpot.filter((t) => t.pnl >= 0).length;
-  const leveragePerformance = [
-    `HL leveraged trades: ${hlLeveraged.length} total, ${hlLevWins}/${hlLeveraged.length} wins (${hlLeveraged.length > 0 ? ((hlLevWins / hlLeveraged.length) * 100).toFixed(0) : "N/A"}%)`,
-    `HL 1x trades: ${hlSpot.length} total, ${hlSpotWins}/${hlSpot.length} wins (${hlSpot.length > 0 ? ((hlSpotWins / hlSpot.length) * 100).toFixed(0) : "N/A"}%)`,
-    `Leverage mistakes (stopped at Nx, would have survived at 1x): ${mistakes.length}`,
-    ...mistakes.slice(-8).map((t) =>
-      `  ⚠ ${t.asset} ${t.direction} [${t.leverage}x] ${t.closeReason} at ${t.pnlPct.toFixed(1)}% — raw 1x move was only ${t.rawPnlPct.toFixed(1)}% (would have survived at 1x)`
-    ),
-  ].join("\n");
 
   const prompt = `You are a quantitative paper trading system analyzing cross-venue market data. Your job is to:
 1. Assess the current market state
@@ -936,14 +1139,15 @@ ${JSON.stringify(recentValuations, null, 1)}
 MACRO DATA (last ${recentMacro.length} snapshots):
 ${JSON.stringify(recentMacro, null, 1)}
 
-AMZN MARKET STATUS: ${isAmznWeekendFreeze(valuationRows) ? "WEEKEND — stock price frozen at Friday close. Options/PC ratio changes are pre-positioning signals for Monday open. Do NOT generate price-movement trades or hypotheses for AMZN." : "WEEKDAY — stock is live and trading normally."}
+INSTRUMENT SNAPSHOTS (last ${recentInstruments.length} runs):
+${JSON.stringify(recentInstruments, null, 1)}
 
 PORTFOLIO:
 Cash: $${portfolio.cash.toFixed(2)} | Open positions: ${portfolio.positions.length} | Realized P&L: $${portfolio.totalRealizedPnl.toFixed(2)}
 Win rate: ${portfolio.totalTrades > 0 ? ((portfolio.winCount / portfolio.totalTrades) * 100).toFixed(0) : "N/A"}% over ${portfolio.totalTrades} trades
 
 OPEN POSITIONS:
-${portfolio.positions.map((p) => `  ${p.asset} ${p.direction} @ ${p.entryPrice} ${p.leverage > 1 ? `(${p.leverage}x lev) ` : ""}(${p.signalType}) — ${p.thesis.slice(0, 80)}`).join("\n") || "  None"}
+${portfolio.positions.map((p) => `  ${p.asset} ${p.direction} via ${p.venue} / ${p.instrumentType ?? "legacy"} @ ${p.entryPrice} [${p.instrumentLabel ?? "n/a"}] (${p.signalType}) — ${p.thesis.slice(0, 100)}`).join("\n") || "  None"}
 
 SIGNAL PERFORMANCE:
 ${activeWeights.map((w) => `  ${w.type}: weight=${w.weight.toFixed(2)}, ${w.wins}/${w.trades} wins (${w.trades > 0 ? ((w.wins / w.trades) * 100).toFixed(0) : "N/A"}%), avg pnl=${w.avgPnlPct.toFixed(2)}%`).join("\n") || "  No trades yet"}
@@ -958,14 +1162,7 @@ STATISTICAL OBSERVATIONS:
 ${statObs.map((o) => `  [${o.type}] ${o.description}`).join("\n") || "  None"}
 
 RECENT CLOSED TRADES:
-${closedTrades.slice(-10).map((t) => {
-    const levTag = t.leverage > 1 ? ` [${t.leverage}x]` : "";
-    const mistakeTag = t.leverageMistake ? ` ⚠LEVERAGE_MISTAKE(1x_would_be_${t.rawPnlPct.toFixed(1)}%)` : "";
-    return `  ${t.asset} ${t.direction}${levTag} ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%) [${t.signalType}]${mistakeTag}`;
-  }).join("\n") || "  None"}
-
-LEVERAGE PERFORMANCE HISTORY:
-${leveragePerformance}
+${closedTrades.slice(-10).map((t) => `  ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (market=${(t.marketPnl ?? t.pnl).toFixed(4)}, funding=${(t.fundingPnl ?? 0).toFixed(4)}) [${t.instrumentLabel ?? "n/a"}]`).join("\n") || "  None"}
 
 RECENT LEARNING JOURNAL:
 ${journalTail || "  No entries yet"}
@@ -976,13 +1173,13 @@ IMPORTANT RULES:
 - Focus on cross-venue divergences and patterns the rule-based system can't detect
 - Be honest about what's working and what isn't
 - If a pattern stopped working, explain WHY you think it changed
-- Trade sizes are always $1 margin, max $100 bankroll
-- Hyperliquid trades default to 2x leverage (max cap). YOU can override this per trade by setting "leverage": 1 in your trade suggestion. Use 1x when: the signal is weak/noisy, volatility is elevated, or your leverage mistake history shows a pattern being hurt by amplification. Use 2x when the signal is high-conviction and the underlying move is expected to be clean/directional.
-- "leverage_mistake" = a trade stopped out due to leverage amplification but the underlying 1x move stayed within the stop threshold. If you see repeated leverage mistakes on a signal type or asset, lower leverage or avoid HL for that setup.
-- In your journal entry, explicitly analyze leverage performance: are mistakes clustered on certain signal types or assets? Should leverage be reduced or removed for specific setups going forward?
-- Available venues: polymarket, hyperliquid (default 2x, overridable), spot (always 1x)
+- Trade sizes are always $1, max $100 bankroll
+- Available venues: polymarket, hyperliquid, spot
 - Available assets: BTC, HYPE, GOLD, AMZN, OIL
-- AMZN WEEKEND STRUCTURE (critical structural knowledge): AMZN stock does NOT trade on Saturday or Sunday. Its price is frozen at Friday's closing price all weekend. This means: (1) Any flat AMZN price over a weekend is NOT a signal — it is structural. (2) However, AMZN options IV and put/call ratio DO reprice on weekends. A significant PC ratio shift while AMZN stock is flat = real pre-positioning for Monday's open. Treat weekend AMZN PC ratio changes as high-conviction directional signals for the first trading day (Monday). (3) Never generate AMZN price-movement hypotheses based on weekend data. (4) The same logic applies to other US equities if they are added in the future.
+- Polymarket trades are real contract simulations: long = buy YES, short = buy NO on a specific contract
+- Hyperliquid trades are perp simulations and include funding carry in realized P&L
+- Spot trades are marked only to the underlying spot price
+- Prefer polymarket only for assets with explicit contracts in the instrument snapshots
 
 Respond with ONLY valid JSON in this exact format:
 {
@@ -999,66 +1196,43 @@ Respond with ONLY valid JSON in this exact format:
     }
   ],
   "hypothesisReviews": [{"id": "H-xxx", "observation": "what happened and why"}],
-  "trades": [{"action": "buy", "asset": "BTC", "venue": "hyperliquid", "direction": "long", "thesis": "reason", "leverage": 2}],
-  "journalEntry": "Key observations and lessons from today's analysis, including leverage performance analysis..."
+  "trades": [{"action": "buy", "asset": "BTC", "venue": "spot", "direction": "long", "thesis": "reason"}],
+  "journalEntry": "Key observations and lessons from today's analysis..."
 }`;
 
-  const models = ["claude-sonnet-4-20250514", "claude-3-5-haiku-20241022"];
-  for (const model of models) {
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        if (attempt > 0) {
-          const delay = 2000 * Math.pow(2, attempt);
-          console.log(`  [LLM] Retry ${attempt}/2 for ${model} in ${delay / 1000}s...`);
-          await new Promise((r) => setTimeout(r, delay));
-        }
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 2048,
+        messages: [{ role: "user", content: prompt }],
+      }),
+    });
 
-        const res = await fetch("https://api.anthropic.com/v1/messages", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "x-api-key": apiKey,
-            "anthropic-version": "2023-06-01",
-          },
-          body: JSON.stringify({
-            model,
-            max_tokens: 2048,
-            messages: [{ role: "user", content: prompt }],
-          }),
-        });
-
-        if (res.status === 429) {
-          console.log(`  [LLM] Rate limited on ${model}, attempt ${attempt + 1}`);
-          continue;
-        }
-        if (res.status === 529 || res.status === 503) {
-          console.log(`  [LLM] ${model} overloaded (${res.status}), attempt ${attempt + 1}`);
-          continue;
-        }
-        if (!res.ok) {
-          console.log(`  [LLM] API error on ${model}: ${res.status} ${res.statusText}`);
-          break; // non-retryable error, try next model
-        }
-
-        const data = await res.json() as any;
-        const text = data.content?.[0]?.text ?? "";
-        const jsonMatch = text.match(/\{[\s\S]*\}/);
-        if (!jsonMatch) {
-          console.log(`  [LLM] Could not parse JSON from ${model}`);
-          break;
-        }
-
-        console.log(`  [LLM] Success with ${model}`);
-        return JSON.parse(jsonMatch[0]);
-      } catch (e: any) {
-        console.log(`  [LLM] Error with ${model}: ${e.message}`);
-        break;
-      }
+    if (!res.ok) {
+      console.log(`  [LLM] API error: ${res.status} ${res.statusText}`);
+      return null;
     }
-  }
 
-  console.log("  [LLM] All models exhausted, proceeding without LLM.");
-  return null;
+    const data = await res.json() as any;
+    const text = data.content?.[0]?.text ?? "";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.log("  [LLM] Could not parse JSON from response");
+      return null;
+    }
+
+    return JSON.parse(jsonMatch[0]);
+  } catch (e: any) {
+    console.log(`  [LLM] Error: ${e.message}`);
+    return null;
+  }
 }
 
 // ─── Journal Writer ──────────────────────────────────────────────────────────
@@ -1071,7 +1245,6 @@ function writeJournalEntry(
   statObs: StatObservation[],
   llmJournal: string | null,
   portfolio: Portfolio,
-  allClosed: ClosedTrade[],
 ) {
   const now = new Date();
   const dateStr = now.toISOString().slice(0, 16).replace("T", " ");
@@ -1089,28 +1262,15 @@ function writeJournalEntry(
     lines.push(`**Closed ${closedTrades.length} trades:**`);
     for (const t of closedTrades) {
       const emoji = t.pnl >= 0 ? "✅" : "❌";
-      const levTag = t.leverage > 1 ? ` [${t.leverage}x]` : "";
-      const mistakeTag = t.leverageMistake ? ` ⚠ LEVERAGE MISTAKE — 1x would have been ${t.rawPnlPct.toFixed(1)}%` : "";
-      lines.push(`- ${emoji} ${t.asset} ${t.direction}${levTag} (${t.signalType}) → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)${mistakeTag}`);
+      lines.push(`- ${emoji} ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} [${t.instrumentLabel ?? "n/a"}] (${t.signalType}) → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%, market ${(t.marketPnl ?? t.pnl).toFixed(4)}, funding ${(t.fundingPnl ?? 0).toFixed(4)})`);
     }
-    lines.push("");
-  }
-
-  // Leverage running scoreboard
-  const hlTrades = allClosed.filter((t) => t.venue === "hyperliquid");
-  const hlLev = hlTrades.filter((t) => t.leverage > 1);
-  const hlMistakes = allClosed.filter((t) => t.leverageMistake);
-  if (hlTrades.length > 0) {
-    const levWins = hlLev.filter((t) => t.pnl >= 0).length;
-    lines.push(`**Leverage scoreboard (all-time HL):** ${hlLev.length} leveraged trades — ${levWins}/${hlLev.length} wins. Leverage mistakes: ${hlMistakes.length}`);
     lines.push("");
   }
 
   if (openedPositions.length > 0) {
     lines.push(`**Opened ${openedPositions.length} positions:**`);
     for (const p of openedPositions) {
-      const levTag = p.leverage > 1 ? ` [${p.leverage}x]` : "";
-      lines.push(`- ${p.asset} ${p.direction} @ $${p.entryPrice} via ${p.venue}${levTag} (${p.signalType})`);
+      lines.push(`- ${p.asset} ${p.direction} @ $${p.entryPrice} via ${p.venue}/${p.instrumentType ?? "legacy"} [${p.instrumentLabel ?? "n/a"}] (${p.signalType})`);
     }
     lines.push("");
   }
@@ -1148,15 +1308,20 @@ function writeJournalEntry(
 function checkRegime(portfolio: Portfolio): { inDrawdown: boolean; sizeMultiplier: number } {
   if (portfolio.totalTrades < 10) return { inDrawdown: false, sizeMultiplier: 1.0 };
 
-  const recentFile = join(DATA_DIR, "trades.csv");
+  const recentFile = existsSync(join(DATA_DIR, "trades-detailed.csv"))
+    ? join(DATA_DIR, "trades-detailed.csv")
+    : join(DATA_DIR, "trades.csv");
   if (!existsSync(recentFile)) return { inDrawdown: false, sizeMultiplier: 1.0 };
 
   const lines = readFileSync(recentFile, "utf-8").trim().split("\n");
+  const headers = parseCsvLine(lines[0] ?? "");
+  const pnlIndex = Math.max(0, headers.indexOf("pnl"));
   const recent = lines.slice(-20);
   let wins = 0, total = 0;
   for (const line of recent) {
     if (line.startsWith("id,")) continue;
-    const pnl = parseFloat(line.split(",")[9] ?? "0");
+    const cols = parseCsvLine(line);
+    const pnl = parseFloat(cols[pnlIndex] ?? "0");
     total++;
     if (pnl >= 0) wins++;
   }
@@ -1179,6 +1344,11 @@ function num(v: unknown): number | null {
   return null;
 }
 
+function snapshotTimeMs(ts: string): number {
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}$/.test(ts)) return Date.parse(`${ts}:00:00Z`);
+  return Date.parse(ts);
+}
+
 function readJournalTail(lines: number = 50): string {
   const file = join(DATA_DIR, "learning-journal.md");
   if (!existsSync(file)) return "";
@@ -1187,32 +1357,17 @@ function readJournalTail(lines: number = 50): string {
   return allLines.slice(-lines).join("\n");
 }
 
-function loadAllClosedTrades(): ClosedTrade[] {
-  const file = join(DATA_DIR, "trades.csv");
-  if (!existsSync(file)) return [];
-  const lines = readFileSync(file, "utf-8").trim().split("\n");
-  if (lines.length < 2) return [];
-  const headers = parseCsvLine(lines[0]);
-  return lines.slice(1).map((line) => {
-    const vals = parseCsvLine(line);
-    const get = (col: string) => vals[headers.indexOf(col)] ?? "";
-    return {
-      id: get("id"), openedAt: get("opened_at"), closedAt: get("closed_at"),
-      asset: get("asset"), venue: get("venue"), direction: get("direction"),
-      entryPrice: parseFloat(get("entry_price")) || 0,
-      exitPrice: parseFloat(get("exit_price")) || 0,
-      size: parseFloat(get("size")) || 1,
-      leverage: parseFloat(get("leverage")) || 1,
-      pnl: parseFloat(get("pnl")) || 0,
-      pnlPct: parseFloat(get("pnl_pct")) || 0,
-      rawPnlPct: parseFloat(get("raw_pnl_pct")) || 0,
-      leverageMistake: get("leverage_mistake") === "1",
-      signalType: get("signal_type"),
-      hypothesisId: get("hypothesis_id") || null,
-      thesis: get("thesis"),
-      closeReason: (get("close_reason") || "expiry") as ClosedTrade["closeReason"],
-    };
-  });
+function estimateOpenPositionPnl(position: Position): number {
+  if (position.instrumentType === "pm_yes" || position.instrumentType === "pm_no") {
+    const shares = position.size / position.entryPrice;
+    return shares * (position.currentPrice - position.entryPrice);
+  }
+  const leverage = position.leverage ?? 1;
+  const directional = position.direction === "long"
+    ? ((position.currentPrice - position.entryPrice) / position.entryPrice)
+    : ((position.entryPrice - position.currentPrice) / position.entryPrice);
+  const marketPnl = position.size * leverage * directional;
+  return marketPnl + (position.fundingPnlAccrued ?? 0);
 }
 
 // ─── Main ────────────────────────────────────────────────────────────────────
@@ -1226,6 +1381,7 @@ async function main() {
   // Load data
   const valRows = readCsv("daily-valuations.csv");
   const macroRows = readCsv("daily-macro.csv");
+  const instrumentSnapshots = readInstrumentSnapshots();
 
   if (valRows.length === 0) {
     console.log("  No snapshot data found. Run market-scanner.ts --snapshot first.");
@@ -1249,26 +1405,22 @@ async function main() {
 
   // Step 1: Mark-to-market and close positions
   const latestRow = valRows[valRows.length - 1];
-  const closedTrades = markToMarket(portfolio, latestRow);
+  const closedTrades = markToMarket(portfolio, latestRow, instrumentSnapshots);
   if (closedTrades.length > 0) {
     console.log(`\n  Closed ${closedTrades.length} positions:`);
     for (const t of closedTrades) {
       const emoji = t.pnl >= 0 ? "✅" : "❌";
-      const mistakeTag = t.leverageMistake ? ` ⚠ leverage mistake (1x: ${t.rawPnlPct.toFixed(1)}%)` : "";
-      console.log(`    ${emoji} ${t.asset} ${t.direction} → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)${mistakeTag}`);
+      console.log(`    ${emoji} ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} [${t.instrumentLabel ?? "n/a"}] → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
       appendTradeCsv(t);
     }
   }
-
-  // Load full trade history for leverage analysis (includes trades just appended)
-  const allClosedTrades = loadAllClosedTrades();
 
   // Step 2: Update signal weights
   const weightObs = updateWeights(weights, closedTrades);
   for (const o of weightObs) console.log(`  ${o}`);
 
   // Step 3: Evaluate hypotheses
-  const hypothesisObs = evaluateHypotheses(hypotheses, latestRow);
+  const hypothesisObs = evaluateHypotheses(hypotheses, valRows);
   for (const o of hypothesisObs) console.log(`  ${o}`);
 
   // Step 4: Statistical scan
@@ -1292,7 +1444,7 @@ async function main() {
   if (!NO_LLM) {
     console.log(`\n  Calling LLM for pattern discovery...`);
     const journalTail = readJournalTail(40);
-    const llmResult = await callLLM(valRows, macroRows, portfolio, weights, hypotheses, statObs, closedTrades, journalTail, allClosedTrades);
+    const llmResult = await callLLM(valRows, macroRows, instrumentSnapshots, portfolio, weights, hypotheses, statObs, closedTrades, journalTail);
 
     if (llmResult) {
       console.log(`  LLM assessment: ${llmResult.marketAssessment.slice(0, 120)}`);
@@ -1322,20 +1474,20 @@ async function main() {
 
       // Add LLM-suggested trades as signals
       for (const lt of llmResult.trades ?? []) {
-        const price = getAssetPrice(latestRow, lt.asset);
+        const price =
+          lt.venue === "hyperliquid"
+            ? getHyperliquidPerpPrice(latestRow, lt.asset)
+            : getAssetPrice(latestRow, lt.asset);
         if (!price) continue;
-        const venue = lt.venue as Signal["venue"];
-        // LLM can specify leverage directly; default to HL_MAX_LEVERAGE for HL, 1 otherwise
-        const llmLev = typeof lt.leverage === "number" ? lt.leverage : (venue === "hyperliquid" ? HL_MAX_LEVERAGE : 1);
-        const leverage = Math.min(Math.max(1, llmLev), HL_MAX_LEVERAGE); // clamp 1–HL_MAX_LEVERAGE
         signals.push({
           type: "LLM_HYPOTHESIS", asset: lt.asset,
-          venue, direction: lt.direction,
+          venue: lt.venue as Signal["venue"], direction: lt.direction,
           strength: 0.5, confidence: 0.4,
           thesis: `[LLM] ${lt.thesis}`,
           hypothesisId: null, entryPrice: price,
           targetPct: 3, stopPct: 5, expiryDays: 7,
-          leverage,
+          leverage: lt.venue === "hyperliquid" ? 1 : undefined,
+          contractHint: lt.venue === "polymarket" ? { preferredDirection: "above" } : undefined,
         });
       }
 
@@ -1346,32 +1498,26 @@ async function main() {
   // Step 7: Open new positions
   if (!DRY_RUN) {
     const sortedSignals = signals.sort((a, b) => b.confidence - a.confidence);
-    const opened = openPositions(portfolio, sortedSignals);
+    const opened = openPositions(portfolio, sortedSignals, latestRow, instrumentSnapshots);
     if (opened.length > 0) {
       console.log(`\n  Opened ${opened.length} new positions:`);
       for (const p of opened) {
-        const levTag = p.leverage > 1 ? ` [${p.leverage}x]` : "";
-        console.log(`    ${p.asset} ${p.direction} @ $${p.entryPrice} via ${p.venue}${levTag} (${p.signalType})`);
+        console.log(`    ${p.asset} ${p.direction} @ $${p.entryPrice} via ${p.venue}/${p.instrumentType ?? "legacy"} [${p.instrumentLabel ?? "n/a"}] (${p.signalType})`);
       }
     }
 
     // Step 8: Write journal entry
-    writeJournalEntry(closedTrades, opened, weightObs, hypothesisObs, statObs, llmJournal, portfolio, allClosedTrades);
+    writeJournalEntry(closedTrades, opened, weightObs, hypothesisObs, statObs, llmJournal, portfolio);
 
     // Step 9: Save all state
     savePortfolio(portfolio);
-    writePositionSnapshot(portfolio);
     saveWeights(weights);
     saveHypotheses(hypotheses);
   }
 
   // Summary
   const totalValue = portfolio.cash + portfolio.positions.length * TRADE_SIZE;
-  const unrealized = portfolio.positions.reduce((s, p) => {
-    const dir = p.direction === "long" ? 1 : -1;
-    const lev = p.leverage ?? 1;
-    return s + dir * ((p.currentPrice - p.entryPrice) / p.entryPrice) * p.size * lev;
-  }, 0);
+  const unrealized = portfolio.positions.reduce((s, p) => s + estimateOpenPositionPnl(p), 0);
 
   console.log(`\n  ${"─".repeat(55)}`);
   console.log(`  Portfolio Summary:`);
