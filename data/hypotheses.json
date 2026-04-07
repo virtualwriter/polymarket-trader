@@ -114,8 +114,8 @@
       {
         "date": "2026-04-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
@@ -192,8 +192,8 @@
       {
         "date": "2026-04-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
@@ -217,8 +217,8 @@
       {
         "date": "2026-04-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
@@ -317,8 +317,8 @@
       {
         "date": "2026-04-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
@@ -617,8 +617,8 @@
       {
         "date": "2026-04-05",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
@@ -666,8 +666,8 @@
       {
         "date": "2026-04-05",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
@@ -741,8 +741,8 @@
       {
         "date": "2026-04-05",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
@@ -792,8 +792,8 @@
       {
         "date": "2026-04-05",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
@@ -842,8 +842,8 @@
       {
         "date": "2026-04-05",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "evaluation pending — insufficient price history"
       }
     ],
     "winRate": 0,
@@ -950,7 +950,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC breakout above 69000 with HYPE OI surge to 797M confirms momentum pattern. 3-5 day window still active. | Perfect confirmation - BTC broke 68500 with HYPE OI expanding from 778M to 806M, exactly as predicted. Both assets showing coordinated momentum. | Validated - BTC breakout above 69060 with HYPE OI expanding to 806M confirming momentum pattern",
+    "postMortem": "BTC breakout above 69000 with HYPE OI surge to 797M confirms momentum pattern. 3-5 day window still active. | Perfect confirmation - BTC broke 68500 with HYPE OI expanding from 778M to 806M, exactly as predicted. Both assets showing coordinated momentum. | Validated - BTC breakout above 69060 with HYPE OI expanding to 806M confirming momentum pattern | BTC broke above 69500 with HYPE OI expansion from 777M to 806M confirming the momentum pattern, now testing consolidation phase",
     "source": "llm"
   },
   {
@@ -1052,7 +1052,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil funding hit -233%, extreme enough to trigger technical bounce hypothesis. Monitoring for 48-hour reversal pattern. | Early validation signs - oil funding recovering from -233% extreme, technical bounce pattern developing | Oil funding magnitude reached -233% and created bounce - spot moved from 85.14 to 85.43. Technical overcorrection pattern confirmed regardless of fundamentals.",
+    "postMortem": "Oil funding hit -233%, extreme enough to trigger technical bounce hypothesis. Monitoring for 48-hour reversal pattern. | Early validation signs - oil funding recovering from -233% extreme, technical bounce pattern developing | Oil funding magnitude reached -233% and created bounce - spot moved from 85.14 to 85.43. Technical overcorrection pattern confirmed regardless of fundamentals. | Oil funding normalized from -233% to -159% showing the extreme magnitude bounce pattern playing out, but timeframe may need extension to 72 hours",
     "source": "llm"
   },
   {
@@ -1127,7 +1127,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Strong validation - AMZN basis improved to 0.09% showing complete perp-spot convergence after extended negative funding",
+    "postMortem": "Strong validation - AMZN basis improved to 0.09% showing complete perp-spot convergence after extended negative funding | AMZN basis improved from -0.35% to near-zero confirming perp-spot convergence, with stock rising from 212.43 supporting the thesis",
     "source": "llm"
   },
   {
@@ -1373,6 +1373,82 @@
     "tests": [
       {
         "date": "2026-04-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-056",
+    "created": "2026-04-07",
+    "description": "BTC consolidation above 68500 with HYPE OI decline below 780M during pullbacks creates momentum resumption setup within 3-5 days",
+    "conditions": {
+      "btc_spot": "> 68500",
+      "hype_hl_oi": "< 780000000",
+      "btc_opt_iv_30d": "< 48"
+    },
+    "prediction": "BTC resumes upward momentum above 69500 within 5 days when spot holds above 68500 during HYPE OI decline",
+    "timeframeDays": 5,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-07",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-057",
+    "created": "2026-04-07",
+    "description": "Oil PM-Options IV gap compression below 15pp after extreme funding normalization indicates energy complex stabilization and creates directional clarity",
+    "conditions": {
+      "oil_pm_iv": "< oil_opt_iv_30d + 15",
+      "oil_hl_funding_ann": "< 200"
+    },
+    "prediction": "Oil funding volatility decreases below 100% absolute within 48 hours when PM-Options IV gap compresses below 15pp",
+    "timeframeDays": 2,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-07",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-058",
+    "created": "2026-04-07",
+    "description": "AMZN perp-spot convergence completion signal when basis normalizes above -0.1% after extended negative funding creates momentum acceleration",
+    "conditions": {
+      "amzn_hl_basis_pct": "> -0.1",
+      "amzn_hl_funding_ann": "> 0"
+    },
+    "prediction": "AMZN stock outperforms by >1% within 24 hours when perp basis normalizes above -0.1% after negative funding period",
+    "timeframeDays": 1,
+    "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-07",
         "triggered": true,
         "outcome": "pending",
         "actualMove": ""

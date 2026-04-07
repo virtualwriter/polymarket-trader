@@ -400,3 +400,24 @@ Critical leverage performance insight: HYPE leveraged mistake (0/1 wins) shows 2
 
 ---
 
+### 2026-04-07 03:44 UTC
+
+**Portfolio:** $99.96 total | Cash $93.96 | 6 open | P&L $-0.0441 | 60% win rate (5 trades)
+
+**Closed 1 trades:**
+- ❌ HYPE long [2x] (FUNDING_EXTREME_SHORT) → stop: $-0.0499 (-5.0%) ⚠ LEVERAGE MISTAKE — 1x would have been -2.5%
+
+**Leverage scoreboard (all-time HL):** 2 leveraged trades — 0/2 wins. Leverage mistakes: 2
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 10.2pp (was 21.9, now 11.7)
+- [anomaly] oil_opt_fwd_90d = 84.8 is -3.1 std devs from mean (85.25 ± 0.15)
+- [anomaly] gold_opt_iv_30d = 33.5 is -2.9 std devs from mean (34.38 ± 0.30)
+- [anomaly] oil_brent_wti_spread = 26.5 is 2.8 std devs from mean (24.97 ± 0.54)
+- [anomaly] amzn_opt_fwd_90d = 215.03 is 2.6 std devs from mean (212.49 ± 0.99)
+
+**LLM analysis:**
+Leverage performance analysis shows critical insight: both HYPE leveraged trades (2 total) resulted in stops with 0/2 wins, but both were leverage mistakes where 1x would have survived (-3.9% and -2.5% underlying moves vs -7.8% and -5.0% leveraged stops). This demonstrates that high-volatility funding assets like HYPE and OIL require 1x leverage due to amplified noise. The BTC consolidation pattern is showing healthy characteristics - pullback to 68748 held above key 68500 level while IV stayed compressed below 48%. HYPE OI decline during pullback (-14M) suggests organic position reduction rather than forced liquidation, which is constructive for momentum resumption. AMZN weekend structure insight proved powerful again - the perp-spot convergence completion is following the predicted path with basis normalizing above -0.35%. Oil funding normalization from extreme levels (-233% to -159%) shows the overcorrection bounce pattern working but may need longer timeframes (72hrs vs 48hrs) due to structural complexity. Going forward, using 1x leverage for BTC momentum trades to avoid amplification of consolidation noise while maintaining directional exposure.
+
+---
+
