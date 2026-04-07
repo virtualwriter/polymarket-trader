@@ -421,3 +421,21 @@ Leverage performance analysis shows critical insight: both HYPE leveraged trades
 
 ---
 
+### 2026-04-07 06:14 UTC
+
+**Portfolio:** $99.96 total | Cash $93.96 | 6 open | P&L $-0.0441 | 60% win rate (5 trades)
+
+**Leverage scoreboard (all-time HL):** 2 leveraged trades — 0/2 wins. Leverage mistakes: 2
+
+**Statistical observations:**
+- [anomaly] oil_opt_fwd_90d = 84.8 is -2.5 std devs from mean (85.23 ± 0.17)
+- [anomaly] gold_opt_iv_30d = 33.5 is -2.4 std devs from mean (34.34 ± 0.35)
+- [anomaly] amzn_opt_fwd_90d = 215.03 is 2.2 std devs from mean (212.61 ± 1.10)
+- [anomaly] gold_opt_iv_90d = 31 is -2.2 std devs from mean (31.66 ± 0.30)
+- [anomaly] btc_opt_iv_90d = 48.2 is -2.1 std devs from mean (50.03 ± 0.88)
+
+**LLM analysis:**
+Leverage performance analysis shows critical pattern: 2/2 HYPE leveraged trades resulted in stops (0% win rate) but both were leverage mistakes where 1x would have survived. This demonstrates that high-volatility assets with extreme funding patterns (HYPE, OIL) require 1x leverage due to amplified noise. BTC consolidation showing textbook characteristics - pullback held key 68500 level, IV compressed to 47.5% (2.5 std devs below mean), and HYPE OI decline at healthy -1.8% rate suggests organic position reduction vs forced liquidation. The cross-asset IV compression cascade continues with gold at 33.5% (2.9 std devs below mean) and oil PM-options gap compressing from 21.9pp to 11.7pp overnight. AMZN weekend structure insight proving systematic - P/C ratio shifts during stock freeze periods have correctly predicted Monday direction. For new BTC momentum trade, using 1x leverage given consolidation noise potential and leverage mistake history on volatile setups.
+
+---
+

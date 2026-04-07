@@ -1052,7 +1052,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil funding hit -233%, extreme enough to trigger technical bounce hypothesis. Monitoring for 48-hour reversal pattern. | Early validation signs - oil funding recovering from -233% extreme, technical bounce pattern developing | Oil funding magnitude reached -233% and created bounce - spot moved from 85.14 to 85.43. Technical overcorrection pattern confirmed regardless of fundamentals. | Oil funding normalized from -233% to -159% showing the extreme magnitude bounce pattern playing out, but timeframe may need extension to 72 hours",
+    "postMortem": "Oil funding hit -233%, extreme enough to trigger technical bounce hypothesis. Monitoring for 48-hour reversal pattern. | Early validation signs - oil funding recovering from -233% extreme, technical bounce pattern developing | Oil funding magnitude reached -233% and created bounce - spot moved from 85.14 to 85.43. Technical overcorrection pattern confirmed regardless of fundamentals. | Oil funding normalized from -233% to -159% showing the extreme magnitude bounce pattern playing out, but timeframe may need extension to 72 hours | Oil funding normalized from -159% to -185% - magnitude still above 100% so pattern hasn't triggered completion signal yet. Monitoring for sub-100% threshold.",
     "source": "llm"
   },
   {
@@ -1407,7 +1407,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC consolidation to 68748 (-0.4%) with HYPE OI decline to 767M (-14M) showing healthy organic position reduction. Pattern remains constructive as pullback held above 68500 threshold.",
     "source": "llm"
   },
   {
@@ -1445,6 +1445,82 @@
     },
     "prediction": "AMZN stock outperforms by >1% within 24 hours when perp basis normalizes above -0.1% after negative funding period",
     "timeframeDays": 1,
+    "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-07",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "AMZN basis improved from -0.35% to -0.38% - slight setback but funding remains positive at 8.99%. Convergence process ongoing but slower than expected.",
+    "source": "llm"
+  },
+  {
+    "id": "H-059",
+    "created": "2026-04-07",
+    "description": "BTC consolidation resilience test - when BTC holds above 68500 during pullbacks with IV compression below 48% and HYPE OI decline rate moderating (<2% per snapshot), momentum resumption follows within 5-7 days",
+    "conditions": {
+      "btc_spot": "> 68500",
+      "btc_opt_iv_30d": "< 48",
+      "hype_hl_oi": "declining but rate < 2% per snapshot"
+    },
+    "prediction": "BTC spot moves above 69500 within 5-7 days",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-07",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-060",
+    "created": "2026-04-07",
+    "description": "AMZN perp-spot basis recovery momentum - when basis improves from below -0.5% to above -0.3% while funding stays positive and stock is live, convergence acceleration continues to near-zero basis",
+    "conditions": {
+      "amzn_hl_basis_pct": "improving from < -0.5 to > -0.3",
+      "amzn_hl_funding_ann": "> 0",
+      "amzn_stock": "live trading"
+    },
+    "prediction": "AMZN basis reaches above -0.1% within 3 days",
+    "timeframeDays": 3,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-07",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-061",
+    "created": "2026-04-07",
+    "description": "Oil funding normalization completion pattern - when oil funding magnitude drops below 100% absolute after being above 200%, technical bounce occurs regardless of fundamental direction within 48-72 hours",
+    "conditions": {
+      "oil_hl_funding_ann": "absolute value < 100 after being > 200"
+    },
+    "prediction": "Oil spot moves >1% in direction opposite to funding stress within 72 hours",
+    "timeframeDays": 3,
     "confidence": 0.6,
     "tests": [
       {
