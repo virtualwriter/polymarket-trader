@@ -391,6 +391,54 @@ function preferredPolymarketEventSlugs(asset: string): string[] {
   }
 }
 
+function inferPolymarketPreferredDirection(
+  direction: "long" | "short",
+  signalType?: string,
+  thesis?: string,
+): "above" | "below" {
+  if (signalType === "PM_IV_GT_OPT_IV" || signalType === "OPT_IV_GT_PM_IV" || signalType === "PM_EV_ABOVE_SPOT") {
+    return "above";
+  }
+  if (signalType === "PM_EV_BELOW_SPOT") {
+    return "below";
+  }
+
+  const text = (thesis ?? "").toLowerCase();
+  if (
+    text.includes("below")
+    || text.includes("downside")
+    || text.includes("decline")
+    || text.includes("drop")
+    || text.includes("bearish")
+    || text.includes("selloff")
+    || text.includes("fade")
+  ) {
+    return "below";
+  }
+  if (
+    text.includes("above")
+    || text.includes("upside")
+    || text.includes("breakout")
+    || text.includes("rally")
+    || text.includes("bullish")
+    || text.includes("target")
+  ) {
+    return "above";
+  }
+
+  return direction === "long" ? "above" : "below";
+}
+
+function instrumentTypeForPolymarketExposure(
+  positionDirection: "long" | "short",
+  contractDirection: "above" | "below",
+): "pm_yes" | "pm_no" {
+  if (positionDirection === "long") {
+    return contractDirection === "above" ? "pm_yes" : "pm_no";
+  }
+  return contractDirection === "above" ? "pm_no" : "pm_yes";
+}
+
 function selectPolymarketContract(
   snapshot: InstrumentSnapshotFile,
   asset: string,
@@ -403,19 +451,32 @@ function selectPolymarketContract(
   const rankedEvents = preferredSlugs
     .map((slug) => events.find((event) => event.slug === slug))
     .filter((event): event is InstrumentSnapshotEvent => !!event);
+  const extraEvents = events
+    .filter((event) => !rankedEvents.some((ranked) => ranked.slug === event.slug))
+    .sort((a, b) => b.totalVolume - a.totalVolume);
+  const eventOrder = [...rankedEvents, ...extraEvents];
 
-  for (const event of rankedEvents) {
+  const preferredDirection = hint?.preferredDirection ?? inferPolymarketPreferredDirection(direction);
+  const directionOrder: Array<"above" | "below"> = preferredDirection === "above" ? ["above", "below"] : ["below", "above"];
+
+  for (const event of eventOrder) {
     const live = event.contracts.filter((c) => c.yesPrice > 0 && c.yesPrice < 1);
-    const above = live.filter((c) => c.direction === (hint?.preferredDirection ?? "above"));
-    const candidates = above
-      .filter((c) => c.strike >= underlyingSpot)
-      .sort((a, b) => Math.abs(a.strike - underlyingSpot) - Math.abs(b.strike - underlyingSpot) || b.volume - a.volume);
-    const contract = candidates[0] ?? above.sort((a, b) => Math.abs(a.strike - underlyingSpot) - Math.abs(b.strike - underlyingSpot) || b.volume - a.volume)[0];
-    if (!contract) continue;
-    const instrumentType = direction === "long" ? "pm_yes" : "pm_no";
-    const entryPrice = instrumentType === "pm_yes" ? contract.yesPrice : 1 - contract.yesPrice;
-    if (entryPrice <= 0) continue;
-    return { event, contract, instrumentType, entryPrice };
+    for (const contractDirection of directionOrder) {
+      const directional = live.filter((c) => c.direction === contractDirection);
+      const preferredSide = directional
+        .filter((c) => contractDirection === "above" ? c.strike >= underlyingSpot : c.strike <= underlyingSpot)
+        .sort((a, b) => Math.abs(a.strike - underlyingSpot) - Math.abs(b.strike - underlyingSpot) || b.volume - a.volume);
+      const fallback = directional
+        .sort((a, b) => Math.abs(a.strike - underlyingSpot) - Math.abs(b.strike - underlyingSpot) || b.volume - a.volume);
+      const contract = preferredSide[0] ?? fallback[0];
+      if (!contract) continue;
+
+      const instrumentType = instrumentTypeForPolymarketExposure(direction, contractDirection);
+      const entryPrice = instrumentType === "pm_yes" ? contract.yesPrice : 1 - contract.yesPrice;
+      if (entryPrice <= 0 || entryPrice >= 1) continue;
+
+      return { event, contract, instrumentType, entryPrice };
+    }
   }
 
   return null;
@@ -453,6 +514,67 @@ function estimateFundingPnlSinceOpen(position: Position, snapshots: InstrumentSn
     fundingPnl += position.direction === "long" ? -intervalFunding : intervalFunding;
   }
   return fundingPnl;
+}
+
+function nearestInstrumentSnapshot(
+  snapshots: InstrumentSnapshotFile[],
+  openedAtIso: string,
+): InstrumentSnapshotFile | null {
+  if (snapshots.length === 0) return null;
+  const openedAtMs = new Date(openedAtIso).getTime();
+  let best: InstrumentSnapshotFile | null = null;
+  let bestDistance = Number.POSITIVE_INFINITY;
+
+  for (const snapshot of snapshots) {
+    const distance = Math.abs(snapshotTimeMs(snapshot.timestamp) - openedAtMs);
+    if (distance < bestDistance) {
+      best = snapshot;
+      bestDistance = distance;
+    }
+  }
+
+  return best;
+}
+
+function migrateLegacyPolymarketPositions(
+  portfolio: Portfolio,
+  snapshots: InstrumentSnapshotFile[],
+): string[] {
+  const notes: string[] = [];
+  if (snapshots.length === 0) return notes;
+
+  for (const position of portfolio.positions) {
+    if (position.venue !== "polymarket") continue;
+    if (position.instrumentType === "pm_yes" || position.instrumentType === "pm_no") continue;
+
+    const openedSnapshot = nearestInstrumentSnapshot(snapshots, position.openedAt) ?? latestInstrumentSnapshot(snapshots);
+    if (!openedSnapshot) continue;
+    const underlyingAtOpen = openedSnapshot.spots[position.asset];
+    if (underlyingAtOpen == null) continue;
+
+    const preferredDirection = inferPolymarketPreferredDirection(position.direction, position.signalType, position.thesis);
+    const selected = selectPolymarketContract(
+      openedSnapshot,
+      position.asset,
+      underlyingAtOpen,
+      position.direction,
+      { preferredDirection },
+    );
+    if (!selected) continue;
+
+    position.instrumentType = selected.instrumentType;
+    position.instrumentId = `${selected.event.slug}::${selected.contract.marketId}`;
+    position.instrumentLabel = `${selected.event.slug} — ${selected.instrumentType === "pm_yes" ? "YES" : "NO"} — ${selected.contract.question}`;
+    position.entryUnderlyingPrice = underlyingAtOpen;
+    position.currentUnderlyingPrice = latestInstrumentSnapshot(snapshots)?.spots[position.asset] ?? underlyingAtOpen;
+    position.entryPrice = selected.entryPrice;
+    position.currentPrice = selected.entryPrice;
+    position.fundingPnlAccrued = 0;
+
+    notes.push(`Migrated legacy Polymarket ${position.asset} ${position.direction} to ${position.instrumentLabel} @ ${selected.entryPrice.toFixed(3)}.`);
+  }
+
+  return notes;
 }
 
 function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights: SignalWeight[]): Signal[] {
@@ -891,7 +1013,13 @@ function buildPositionFromSignal(
 
   if (signal.venue === "polymarket") {
     if (!latestSnapshot) return null;
-    const selected = selectPolymarketContract(latestSnapshot, signal.asset, underlyingPrice, signal.direction, signal.contractHint);
+    const selected = selectPolymarketContract(
+      latestSnapshot,
+      signal.asset,
+      underlyingPrice,
+      signal.direction,
+      signal.contractHint ?? { preferredDirection: inferPolymarketPreferredDirection(signal.direction, signal.type, signal.thesis) },
+    );
     if (!selected) return null;
     return {
       ...base,
@@ -1394,8 +1522,10 @@ async function main() {
   const portfolio = loadPortfolio();
   const weights = loadWeights();
   let hypotheses = loadHypotheses();
+  const migrationNotes = migrateLegacyPolymarketPositions(portfolio, instrumentSnapshots);
 
   console.log(`  Portfolio: $${portfolio.cash.toFixed(2)} cash, ${portfolio.positions.length} open positions, $${portfolio.totalRealizedPnl.toFixed(4)} realized P&L`);
+  for (const note of migrationNotes) console.log(`  ${note}`);
 
   // Regime check
   const regime = checkRegime(portfolio);
@@ -1487,7 +1617,9 @@ async function main() {
           hypothesisId: null, entryPrice: price,
           targetPct: 3, stopPct: 5, expiryDays: 7,
           leverage: lt.venue === "hyperliquid" ? 1 : undefined,
-          contractHint: lt.venue === "polymarket" ? { preferredDirection: "above" } : undefined,
+          contractHint: lt.venue === "polymarket"
+            ? { preferredDirection: inferPolymarketPreferredDirection(lt.direction, "LLM_HYPOTHESIS", lt.thesis) }
+            : undefined,
         });
       }
 
