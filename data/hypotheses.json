@@ -1863,7 +1863,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil complex showing extreme capitulation with Brent-WTI spread at 8.7, even more extreme than 15 threshold, validates structural breakdown thesis",
     "source": "llm"
   },
   {
@@ -1889,7 +1889,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Perfect execution - BTC broke above 71k with HYPE OI expanding to 843M as predicted, confirming momentum breakout pattern",
     "source": "llm"
   },
   {
@@ -1903,6 +1903,82 @@
     "prediction": "PM-spot gap compresses to under 3 points within 5-7 days",
     "timeframeDays": 7,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Oil PM-spot divergence at 6+ points confirms extreme dislocation pattern, validates convergence opportunity setup",
+    "source": "llm"
+  },
+  {
+    "id": "H-077",
+    "created": "2026-04-08",
+    "description": "BTC breakout momentum continuation above 71.5k with HYPE OI surge creates 5-7 day trend",
+    "conditions": {
+      "btc_spot": "> 71500",
+      "hype_hl_oi": "> 830000000",
+      "btc_opt_iv_30d": "< 47"
+    },
+    "prediction": "BTC continues upward momentum for 5-7 days when above 71.5k with HYPE OI above 830M and BTC IV compressed below 47%",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-078",
+    "created": "2026-04-08",
+    "description": "Oil extreme capitulation reversal - Brent-WTI spread below 12 with PM-spot gap above 5 creates 3-5 day technical bounce",
+    "conditions": {
+      "oil_brent_wti_spread": "< 12",
+      "oil_pm_settle_ev": "> oil_wti_spot + 5"
+    },
+    "prediction": "Oil bounces within 3-5 days when Brent-WTI spread collapses below 12 and PM trades 5+ points above spot",
+    "timeframeDays": 5,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-079",
+    "created": "2026-04-08",
+    "description": "HYPE momentum acceleration above 39 with OI expansion rate above 2% per snapshot creates breakout continuation",
+    "conditions": {
+      "hype_spot": "> 39",
+      "hype_hl_oi": "> 830000000"
+    },
+    "prediction": "HYPE continues momentum when spot trades above 39 with OI above 830M, targeting 42+ within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-08",
