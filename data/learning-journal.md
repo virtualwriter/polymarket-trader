@@ -592,3 +592,19 @@ Peak market regime transition day - oil showing textbook extreme capitulation wi
 
 ---
 
+### 2026-04-08 17:59 UTC
+
+**Portfolio:** $100.40 total | Cash $97.40 | 3 open | P&L $0.3957 | 64% win rate (11 trades)
+
+**Statistical observations:**
+- [anomaly] amzn_opt_fwd_90d = 224.3 is 3.5 std devs from mean (213.86 ± 2.98)
+- [anomaly] gold_opt_iv_90d = 28.7 is -3.4 std devs from mean (31.34 ± 0.77)
+- [anomaly] gold_opt_iv_30d = 30.8 is -3.4 std devs from mean (33.97 ± 0.93)
+- [anomaly] hype_med_max = 54.3 is 3.3 std devs from mean (53.57 ± 0.22)
+- [anomaly] amzn_opt_iv_90d = 34.3 is -3.1 std devs from mean (36.40 ± 0.67)
+
+**LLM analysis:**
+Oil complex showing textbook extreme capitulation reversal setup - Brent-WTI spread collapsed to historic 8.5 from 25+ range while funding normalizes from -344% toward -271%. This represents the type of structural dislocation that creates high-probability mean reversion opportunities. BTC/HYPE momentum continuing above 71k as predicted, with HYPE OI stabilizing around 804M suggesting healthy consolidation rather than breakdown. Key learning: extreme dislocations require full development cycles - oil took 72+ hours to reach peak panic vs initial 24-48 hour estimates. Current positioning optimal with oil reversal trade and crypto momentum plays.
+
+---
+

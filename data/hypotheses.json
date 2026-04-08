@@ -1052,7 +1052,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil funding hit -233%, extreme enough to trigger technical bounce hypothesis. Monitoring for 48-hour reversal pattern. | Early validation signs - oil funding recovering from -233% extreme, technical bounce pattern developing | Oil funding magnitude reached -233% and created bounce - spot moved from 85.14 to 85.43. Technical overcorrection pattern confirmed regardless of fundamentals. | Oil funding normalized from -233% to -159% showing the extreme magnitude bounce pattern playing out, but timeframe may need extension to 72 hours | Oil funding normalized from -159% to -185% - magnitude still above 100% so pattern hasn't triggered completion signal yet. Monitoring for sub-100% threshold. | Oil funding magnitude -304% creates extreme oversold condition, but bounce timing extended due to systematic selling pressure - monitoring for 48-72 hour completion",
+    "postMortem": "Oil funding hit -233%, extreme enough to trigger technical bounce hypothesis. Monitoring for 48-hour reversal pattern. | Early validation signs - oil funding recovering from -233% extreme, technical bounce pattern developing | Oil funding magnitude reached -233% and created bounce - spot moved from 85.14 to 85.43. Technical overcorrection pattern confirmed regardless of fundamentals. | Oil funding normalized from -233% to -159% showing the extreme magnitude bounce pattern playing out, but timeframe may need extension to 72 hours | Oil funding normalized from -159% to -185% - magnitude still above 100% so pattern hasn't triggered completion signal yet. Monitoring for sub-100% threshold. | Oil funding magnitude -304% creates extreme oversold condition, but bounce timing extended due to systematic selling pressure - monitoring for 48-72 hour completion | Oil funding magnitude dropped from -325% to -271%, showing normalization pattern as predicted. Still above 200% threshold so hypothesis remains active.",
     "source": "llm"
   },
   {
@@ -1889,7 +1889,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Perfect execution - BTC broke above 71k with HYPE OI expanding to 843M as predicted, confirming momentum breakout pattern | Perfect confirmation - BTC broke above 71k with HYPE OI expanding to 843M and spot at 39.48. Momentum continuing as predicted with multi-day trend established. | BTC breakout above 71k with HYPE OI expansion proceeding perfectly - momentum continuing as predicted",
+    "postMortem": "Perfect execution - BTC broke above 71k with HYPE OI expanding to 843M as predicted, confirming momentum breakout pattern | Perfect confirmation - BTC broke above 71k with HYPE OI expanding to 843M and spot at 39.48. Momentum continuing as predicted with multi-day trend established. | BTC breakout above 71k with HYPE OI expansion proceeding perfectly - momentum continuing as predicted | BTC momentum above 71k continuing perfectly - now at 71.9k with HYPE at 38.6. Breakout confirmation successful.",
     "source": "llm"
   },
   {
@@ -2092,7 +2092,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil extreme capitulation playing out - Brent-WTI at 8.5, PM-spot gap present, funding normalizing. Classic reversal setup developing.",
     "source": "llm"
   },
   {
@@ -2131,6 +2131,56 @@
     "prediction": "BTC continues momentum above 72k within 48-72 hours",
     "timeframeDays": 3,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-086",
+    "created": "2026-04-08",
+    "description": "Oil Brent-WTI spread extreme reversal pattern - when spread collapses below 10 from above 20 range within 48 hours, technical bounce follows within 3-5 days as structural arbitrage gets corrected",
+    "conditions": {
+      "oil_brent_wti_spread": "< 10",
+      "oil_hl_funding_ann": "> -300"
+    },
+    "prediction": "Oil funding normalizes above -200% and Brent-WTI spread expands above 15 within 5 days",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-087",
+    "created": "2026-04-08",
+    "description": "HYPE OI stabilization after momentum peak - when HYPE OI declines to 800-820M range from 843M peak while spot holds above 38.5, consolidation phase creates next leg setup",
+    "conditions": {
+      "hype_hl_oi": "> 800000000",
+      "hype_spot": "> 38.5"
+    },
+    "prediction": "HYPE resumes upward momentum above 40 within 7 days as OI stabilizes",
+    "timeframeDays": 7,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-08",
