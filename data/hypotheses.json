@@ -642,11 +642,11 @@
       {
         "date": "2026-04-05",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "win",
+        "actualMove": "Funding moved 5.5% → 4.8%"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Gold funding crashed to -17.59% as predicted, validating the extreme negative funding setup. Position working as expected. | Gold funding crashed to -17.59% while PM premium stayed elevated at +34pts above futures - pattern confirming but waiting for momentum reversal signal | TRIGGERED - Gold funding crashed to -40.94% while PM premium stays at 150+ pts above futures, setup developing",
@@ -766,11 +766,11 @@
       {
         "date": "2026-04-05",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "win",
+        "actualMove": "BTC moved 6.32% (67094 → 71335)"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Both BTC (-15.04%) and Gold (-17.59%) hit extreme negative funding simultaneously - systematic covering signal may be imminent | VALIDATED - BTC and Gold both hit extreme negative funding simultaneously (-26.11% and -40.94%), confirming systematic cascade pattern",
@@ -817,11 +817,11 @@
       {
         "date": "2026-04-05",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "win",
+        "actualMove": "BTC moved 6.32% (67094 → 71335)"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -918,11 +918,11 @@
       {
         "date": "2026-04-05",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "win",
+        "actualMove": "AMZN moved 5.73% (209.78 → 221.8)"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -970,8 +970,8 @@
       {
         "date": "2026-04-06",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "OIL moved -1.54% (85.14 → 83.83)"
       }
     ],
     "winRate": 0,
@@ -995,11 +995,11 @@
       {
         "date": "2026-04-06",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "win",
+        "actualMove": "HYPE moved 3.43% (37.056 → 38.328)"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -1028,7 +1028,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "TRIGGERING - BTC broke above 71k with HYPE IV at 56.1% and consolidation pattern complete",
     "source": "llm"
   },
   {
@@ -1045,8 +1045,8 @@
       {
         "date": "2026-04-06",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "loss",
+        "actualMove": "OIL moved -1.54% (85.14 → 83.83)"
       }
     ],
     "winRate": 0,
@@ -1095,11 +1095,11 @@
       {
         "date": "2026-04-06",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "win",
+        "actualMove": "Funding moved -219.9% → -338.1%"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -1450,11 +1450,11 @@
       {
         "date": "2026-04-07",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "win",
+        "actualMove": "AMZN moved 4.41% (212.43 → 221.8)"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "AMZN basis improved from -0.35% to -0.38% - slight setback but funding remains positive at 8.99%. Convergence process ongoing but slower than expected.",
@@ -1762,7 +1762,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "CONFIRMING - Oil PM settle spiked to 89.8 vs spot 83.83, creating 6+ point dislocation",
     "source": "llm"
   },
   {
@@ -1812,7 +1812,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "CORRECT - Brent-WTI spread collapsed from 25+ to 10.3, confirming oil market structure breakdown thesis",
     "source": "llm"
   },
   {
@@ -1830,6 +1830,82 @@
     "tests": [
       {
         "date": "2026-04-07",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-074",
+    "created": "2026-04-08",
+    "description": "Oil complex extreme capitulation reversal - Brent-WTI spread collapse below 15 after trading above 24 creates structural arbitrage opportunity",
+    "conditions": {
+      "oil_brent_wti_spread": "< 15",
+      "oil_hl_funding_ann": "> -100"
+    },
+    "prediction": "Oil technical bounce within 3-5 days as structural dislocations normalize",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-075",
+    "created": "2026-04-08",
+    "description": "BTC momentum breakout confirmation above 71k with HYPE OI expansion creates multi-day trend",
+    "conditions": {
+      "btc_spot": "> 71000",
+      "hype_hl_oi": "> 800000000",
+      "btc_opt_iv_30d": "< 48"
+    },
+    "prediction": "BTC continues higher toward 75k over 7-10 days with momentum confirmation",
+    "timeframeDays": 10,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-076",
+    "created": "2026-04-08",
+    "description": "Oil PM-spot extreme divergence compression - when PM settle trades >6 points above spot, convergence follows",
+    "conditions": {
+      "oil_pm_settle_ev": "> 89",
+      "oil_wti_spot": "< 85"
+    },
+    "prediction": "PM-spot gap compresses to under 3 points within 5-7 days",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-08",
         "triggered": true,
         "outcome": "pending",
         "actualMove": ""

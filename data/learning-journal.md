@@ -519,3 +519,28 @@ Oil complex showing textbook capitulation signals: P/C ratio spiked to 2.436 (hi
 
 ---
 
+### 2026-04-08 03:47 UTC
+
+**Portfolio:** $100.40 total | Cash $97.40 | 3 open | P&L $0.3957 | 64% win rate (11 trades)
+
+**Closed 4 trades:**
+- ✅ BTC long via spot/legacy [n/a] (LLM_HYPOTHESIS) → target: +$0.0329 (3.3%, market 0.0329, funding 0.0000)
+- ✅ OIL short via polymarket/pm_no [cl-over-under-jun-2026 — NO — Will Crude Oil (CL) settle over $85 on the final trading day of June 2026?] (PM_IV_GT_OPT_IV) → target: +$0.3913 (39.1%, market 0.3913, funding 0.0000)
+- ❌ AMZN short via spot/legacy [n/a] (PC_RATIO_EXTREME_LOW) → stop: $-0.0469 (-4.7%, market -0.0469, funding 0.0000)
+- ✅ AMZN long via hyperliquid/legacy [n/a] (LLM_HYPOTHESIS) → target: +$0.0351 (3.5%, market 0.0351, funding 0.0000)
+
+**Opened 1 positions:**
+- BTC long @ $71335 via spot/spot [BTC spot] (LLM_HYPOTHESIS)
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 12.7pp (was 19.1, now 6.4)
+- [anomaly] hype_med_min = 23.6 is -5.1 std devs from mean (23.70 ± 0.02)
+- [anomaly] oil_brent_wti_spread = 10.3 is -4.8 std devs from mean (24.28 ± 2.93)
+- [anomaly] oil_brent_spot = 94.13 is -4.6 std devs from mean (109.03 ± 3.22)
+- [anomaly] gold_opt_fwd_90d = 4847 is 4.5 std devs from mean (4704.63 ± 31.60)
+
+**LLM analysis:**
+Major breakthrough in understanding oil complex capitulation signals - Brent-WTI spread collapse to 10.3 from 24+ range combined with PM-spot gap at 6+ points and P/C ratio at 2.436 represents textbook extreme dislocation. Previous oil trades failed due to 2x leverage during volatile normalization - now using 1x leverage with better timing at peak panic. BTC showing perfect momentum breakout confirmation above 71k with all consolidation conditions met: held 68500, IV compressed below 47%, HYPE OI expanding. Key insight: extreme dislocations in complex markets create best opportunities but require patience for full normalization cycles (72+ hours vs 24-48 initially estimated).
+
+---
+
