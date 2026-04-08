@@ -1889,7 +1889,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Perfect execution - BTC broke above 71k with HYPE OI expanding to 843M as predicted, confirming momentum breakout pattern | Perfect confirmation - BTC broke above 71k with HYPE OI expanding to 843M and spot at 39.48. Momentum continuing as predicted with multi-day trend established.",
+    "postMortem": "Perfect execution - BTC broke above 71k with HYPE OI expanding to 843M as predicted, confirming momentum breakout pattern | Perfect confirmation - BTC broke above 71k with HYPE OI expanding to 843M and spot at 39.48. Momentum continuing as predicted with multi-day trend established. | BTC breakout above 71k with HYPE OI expansion proceeding perfectly - momentum continuing as predicted",
     "source": "llm"
   },
   {
@@ -1965,7 +1965,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Textbook setup developing - Brent-WTI spread collapsed to 8.7 from 24+ range with PM-spot gap widening. Oil showing classic extreme capitulation signals.",
+    "postMortem": "Textbook setup developing - Brent-WTI spread collapsed to 8.7 from 24+ range with PM-spot gap widening. Oil showing classic extreme capitulation signals. | Oil extreme capitulation developing - Brent-WTI at 8.5, PM-spot gap at 6+ points, setting up for reversal",
     "source": "llm"
   },
   {
@@ -2055,6 +2055,82 @@
     "prediction": "Gold maintains outperformance when structural strength confirmed by cross-venue premium",
     "timeframeDays": 5,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Gold holding strength at 4771 despite some GLD weakness, PM premium maintaining elevation",
+    "source": "llm"
+  },
+  {
+    "id": "H-083",
+    "created": "2026-04-08",
+    "description": "Oil extreme capitulation reversal - Brent-WTI spread below 9 with PM-spot gap above 6 and P/C above 2.0 creates systematic bounce",
+    "conditions": {
+      "oil_brent_wti_spread": "< 9",
+      "oil_pm_settle_ev": "> oil_wti_spot + 6",
+      "oil_cl_pc_ratio": "> 2.0"
+    },
+    "prediction": "Oil spot rallies 3-5% within 72 hours of peak capitulation",
+    "timeframeDays": 3,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-084",
+    "created": "2026-04-08",
+    "description": "HYPE momentum deceleration signal - OI decline below 800M after reaching 843M peak during spot weakness creates consolidation setup",
+    "conditions": {
+      "hype_hl_oi": "< 800000000",
+      "hype_spot": "< 39"
+    },
+    "prediction": "HYPE consolidates between 37-39 for 3-5 days before next leg",
+    "timeframeDays": 5,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-085",
+    "created": "2026-04-08",
+    "description": "BTC P/C normalization after spike above 0.8 during momentum phases creates continuation signal",
+    "conditions": {
+      "btc_ibit_pc_ratio": "< 0.7",
+      "btc_spot": "> 71000"
+    },
+    "prediction": "BTC continues momentum above 72k within 48-72 hours",
+    "timeframeDays": 3,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-08",
