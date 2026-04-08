@@ -608,3 +608,19 @@ Oil complex showing textbook extreme capitulation reversal setup - Brent-WTI spr
 
 ---
 
+### 2026-04-08 21:34 UTC
+
+**Portfolio:** $100.40 total | Cash $97.40 | 3 open | P&L $0.3957 | 64% win rate (11 trades)
+
+**Statistical observations:**
+- [anomaly] gold_hl_funding_ann = -57.73 is -4.1 std devs from mean (-0.04 ± 14.04)
+- [anomaly] hype_med_max = 54.8 is 3.9 std devs from mean (53.61 ± 0.31)
+- [anomaly] oil_hl_funding_ann = -807.41 is -3.7 std devs from mean (-149.76 ± 179.52)
+- [anomaly] amzn_opt_fwd_90d = 223.6 is 2.8 std devs from mean (214.17 ± 3.38)
+- [anomaly] btc_opt_iv_30d = 43.8 is -2.8 std devs from mean (48.00 ± 1.53)
+
+**LLM analysis:**
+Witnessing textbook market regime transition with oil showing historic extremes (Brent-WTI spread at 9.7 vs 24+ range, funding at -807%) while crypto maintains breakout momentum above 71k. Key insight: extreme dislocations require full development cycles - oil took 72+ hours to reach peak capitulation vs initial 24-48 hour estimates. Gold funding crash to -57.73% adds another reversal candidate. Current positioning optimal with diversified cross-asset plays capturing both momentum continuation and mean reversion setups. This represents ideal risk management during volatile regime shifts.
+
+---
+

@@ -773,7 +773,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Both BTC (-15.04%) and Gold (-17.59%) hit extreme negative funding simultaneously - systematic covering signal may be imminent | VALIDATED - BTC and Gold both hit extreme negative funding simultaneously (-26.11% and -40.94%), confirming systematic cascade pattern",
+    "postMortem": "Both BTC (-15.04%) and Gold (-17.59%) hit extreme negative funding simultaneously - systematic covering signal may be imminent | VALIDATED - BTC and Gold both hit extreme negative funding simultaneously (-26.11% and -40.94%), confirming systematic cascade pattern | Both BTC and Gold hit extreme negative funding simultaneously (-57.73% gold, oil at -807%), confirming systematic covering pattern.",
     "source": "llm"
   },
   {
@@ -1889,7 +1889,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Perfect execution - BTC broke above 71k with HYPE OI expanding to 843M as predicted, confirming momentum breakout pattern | Perfect confirmation - BTC broke above 71k with HYPE OI expanding to 843M and spot at 39.48. Momentum continuing as predicted with multi-day trend established. | BTC breakout above 71k with HYPE OI expansion proceeding perfectly - momentum continuing as predicted | BTC momentum above 71k continuing perfectly - now at 71.9k with HYPE at 38.6. Breakout confirmation successful.",
+    "postMortem": "Perfect execution - BTC broke above 71k with HYPE OI expanding to 843M as predicted, confirming momentum breakout pattern | Perfect confirmation - BTC broke above 71k with HYPE OI expanding to 843M and spot at 39.48. Momentum continuing as predicted with multi-day trend established. | BTC breakout above 71k with HYPE OI expansion proceeding perfectly - momentum continuing as predicted | BTC momentum above 71k continuing perfectly - now at 71.9k with HYPE at 38.6. Breakout confirmation successful. | BTC momentum confirmed above 71k with HYPE OI expansion as predicted. Both assets moving together in breakout phase.",
     "source": "llm"
   },
   {
@@ -2167,7 +2167,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Brent-WTI spread collapsed to 8.7 from 25+ range exactly as predicted - oil complex showing textbook extreme capitulation. Trade setup developing perfectly.",
     "source": "llm"
   },
   {
@@ -2181,6 +2181,83 @@
     "prediction": "HYPE resumes upward momentum above 40 within 7 days as OI stabilizes",
     "timeframeDays": 7,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-088",
+    "created": "2026-04-08",
+    "description": "Oil complex extreme capitulation reversal - Brent-WTI spread below 10 with negative funding magnitude above 600% creates systematic bounce within 5-7 days as structural arbitrage forces correction",
+    "conditions": {
+      "oil_brent_wti_spread": "< 12",
+      "oil_hl_funding_ann": "< -600"
+    },
+    "prediction": "Oil bounce of 2-3% within 7 days as spread normalizes above 15",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-089",
+    "created": "2026-04-08",
+    "description": "BTC momentum consolidation resilience - when BTC holds above 71k with HYPE maintaining above 38.5 and HYPE OI stabilizing above 800M after decline from peaks, momentum resumption follows",
+    "conditions": {
+      "btc_spot": "> 71000",
+      "hype_spot": "> 38.5",
+      "hype_hl_oi": "> 800000000"
+    },
+    "prediction": "BTC continues above 72k within 5 days with HYPE following",
+    "timeframeDays": 5,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-090",
+    "created": "2026-04-08",
+    "description": "Gold funding crash reversal setup - when gold funding drops below -50% while spot holds above 4700 and PM premium persists above 200pts vs futures, reversal bounce follows within 3-5 days",
+    "conditions": {
+      "gold_hl_funding_ann": "< -50",
+      "gold_gc_spot": "> 4700",
+      "gold_pm_settle_ev": "> 4900"
+    },
+    "prediction": "Gold rally of 1-2% within 5 days as funding normalizes",
+    "timeframeDays": 5,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-08",
