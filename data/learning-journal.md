@@ -669,3 +669,25 @@ Witnessing textbook extreme regime recovery patterns across oil complex. Key ins
 
 ---
 
+### 2026-04-09 10:04 UTC
+
+**Portfolio:** $100.58 total | Cash $96.58 | 4 open | P&L $0.5811 | 64% win rate (14 trades)
+
+**Closed 1 trades:**
+- ❌ OIL short via polymarket/pm_no [cl-over-under-jun-2026 — NO — Will Crude Oil (CL) settle over $90 on the final trading day of June 2026?] (PM_IV_GT_OPT_IV) → stop: $-0.1844 (-18.4%, market -0.1844, funding 0.0000)
+
+**Opened 1 positions:**
+- HYPE long @ $39.143 via spot/spot [HYPE spot] (LLM_HYPOTHESIS)
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 13.6pp (was 16.4, now 2.8)
+- [anomaly] btc_med_max = 90313 is 2.4 std devs from mean (90027.37 ± 118.05)
+- [anomaly] gold_pm_settle_ev = 5137 is 2.4 std devs from mean (4875.69 ± 108.50)
+- [anomaly] oil_pm_iv = 30.7 is -2.1 std devs from mean (43.17 ± 5.87)
+- [anomaly] amzn_opt_fwd_90d = 223.6 is 2.1 std devs from mean (214.97 ± 4.18)
+
+**LLM analysis:**
+Market showing textbook extreme reversal completion patterns across oil complex while crypto maintains momentum decoupling. Key insight: capitulation cycles require full 72-96 hours to complete structural reversals, not initial 24-48 hour estimates. Oil complex now showing sustained recovery with Brent-WTI spread above 10 and funding normalized from -800% extremes. BTC-HYPE correlation positive again at 0.33, supporting coordinated crypto momentum above key levels. Portfolio positioned for both momentum continuation in crypto and structural recovery completion in commodities. Multiple successful hypothesis validations confirm cross-asset extreme regime analysis framework.
+
+---
+

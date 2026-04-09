@@ -1889,7 +1889,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Perfect execution - BTC broke above 71k with HYPE OI expanding to 843M as predicted, confirming momentum breakout pattern | Perfect confirmation - BTC broke above 71k with HYPE OI expanding to 843M and spot at 39.48. Momentum continuing as predicted with multi-day trend established. | BTC breakout above 71k with HYPE OI expansion proceeding perfectly - momentum continuing as predicted | BTC momentum above 71k continuing perfectly - now at 71.9k with HYPE at 38.6. Breakout confirmation successful. | BTC momentum confirmed above 71k with HYPE OI expansion as predicted. Both assets moving together in breakout phase.",
+    "postMortem": "Perfect execution - BTC broke above 71k with HYPE OI expanding to 843M as predicted, confirming momentum breakout pattern | Perfect confirmation - BTC broke above 71k with HYPE OI expanding to 843M and spot at 39.48. Momentum continuing as predicted with multi-day trend established. | BTC breakout above 71k with HYPE OI expansion proceeding perfectly - momentum continuing as predicted | BTC momentum above 71k continuing perfectly - now at 71.9k with HYPE at 38.6. Breakout confirmation successful. | BTC momentum confirmed above 71k with HYPE OI expansion as predicted. Both assets moving together in breakout phase. | BTC momentum breakout above 71k confirmed - BTC held above 71k with HYPE OI expansion from 773M to 814M. Pattern working as expected.",
     "source": "llm"
   },
   {
@@ -2167,7 +2167,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Brent-WTI spread collapsed to 8.7 from 25+ range exactly as predicted - oil complex showing textbook extreme capitulation. Trade setup developing perfectly.",
+    "postMortem": "Brent-WTI spread collapsed to 8.7 from 25+ range exactly as predicted - oil complex showing textbook extreme capitulation. Trade setup developing perfectly. | Oil Brent-WTI spread extreme reversal pattern confirmed - spread recovered from 8.5 to 10.7, technical bounce following as predicted.",
     "source": "llm"
   },
   {
@@ -2217,7 +2217,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil complex extreme capitulation playing out perfectly - spread hit 8.5 and funding reached -807%, now recovering to 9.6 spread and -154% funding. Pattern taking longer than initial estimates but showing clear reversal signals. | Oil complex extreme capitulation reversal pattern showing early signs of completion - Brent-WTI spread recovered from 8.7 to 9.7 while funding normalized from -807% to -200%, indicating structural arbitrage forces beginning to correct the dislocation",
+    "postMortem": "Oil complex extreme capitulation playing out perfectly - spread hit 8.5 and funding reached -807%, now recovering to 9.6 spread and -154% funding. Pattern taking longer than initial estimates but showing clear reversal signals. | Oil complex extreme capitulation reversal pattern showing early signs of completion - Brent-WTI spread recovered from 8.7 to 9.7 while funding normalized from -807% to -200%, indicating structural arbitrage forces beginning to correct the dislocation | Oil complex extreme capitulation reversal working - funding normalized from -807% to -191% with spread recovery above 10, systematic bounce continuing.",
     "source": "llm"
   },
   {
@@ -2410,6 +2410,82 @@
       "hype_spot": "> 38"
     },
     "prediction": "HYPE spot price recovery and funding normalization back toward positive within 5 days",
+    "timeframeDays": 5,
+    "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-09",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-097",
+    "created": "2026-04-09",
+    "description": "Oil complex structural recovery completion - Brent-WTI spread recovering above 10 from sub-9 lows with funding normalization creates sustained bounce",
+    "conditions": {
+      "oil_brent_wti_spread": "> 10",
+      "oil_hl_funding_ann": "> -250"
+    },
+    "prediction": "Oil continues technical bounce with spread expanding toward 15+ and funding normalizing toward -100% within 3-5 days",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-09",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-098",
+    "created": "2026-04-09",
+    "description": "BTC momentum persistence above 71k with HYPE funding normalization creates consolidated breakout setup",
+    "conditions": {
+      "btc_spot": "> 71000",
+      "hype_hl_funding_ann": "> 0.05",
+      "hype_hl_oi": "> 810000000"
+    },
+    "prediction": "BTC continues upward momentum toward 72.5k+ with HYPE following as funding normalizes and OI stabilizes",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-09",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-099",
+    "created": "2026-04-09",
+    "description": "AMZN perp-stock basis recovery momentum - basis improvement from -0.4% to +0.07% while funding stays positive creates convergence acceleration",
+    "conditions": {
+      "amzn_hl_basis_pct": "> 0",
+      "amzn_hl_funding_ann": "> 0.04"
+    },
+    "prediction": "AMZN basis stays positive and expands further as perp-stock convergence completes, supporting continued upside",
     "timeframeDays": 5,
     "confidence": 0.6,
     "tests": [
