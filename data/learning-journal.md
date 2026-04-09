@@ -624,3 +624,26 @@ Witnessing textbook market regime transition with oil showing historic extremes 
 
 ---
 
+### 2026-04-09 03:43 UTC
+
+**Portfolio:** $100.44 total | Cash $96.44 | 4 open | P&L $0.4353 | 67% win rate (12 trades)
+
+**Closed 1 trades:**
+- ✅ GOLD long via polymarket/pm_yes [gc-over-under-jun-2026 — YES — Will Gold (GC) settle over $4,800 on the final trading day of June 2026?] (OPT_IV_GT_PM_IV) → target: +$0.0396 (4.0%, market 0.0396, funding 0.0000)
+
+**Opened 2 positions:**
+- GOLD long @ $0.525 via polymarket/pm_yes [gc-over-under-jun-2026 — YES — Will Gold (GC) settle over $4,800 on the final trading day of June 2026?] (OPT_IV_GT_PM_IV)
+- OIL short @ $0.53 via polymarket/pm_no [cl-over-under-jun-2026 — NO — Will Crude Oil (CL) settle over $90 on the final trading day of June 2026?] (PM_IV_GT_OPT_IV)
+
+**Statistical observations:**
+- [anomaly] amzn_opt_fwd_90d = 223.6 is 2.5 std devs from mean (214.45 ± 3.70)
+- [anomaly] gold_pm_settle_ev = 5072 is 2.4 std devs from mean (4859.67 ± 89.42)
+- [anomaly] gold_opt_iv_30d = 31.2 is -2.3 std devs from mean (33.80 ± 1.12)
+- [anomaly] gold_opt_iv_90d = 29.1 is -2.3 std devs from mean (31.20 ± 0.91)
+- [anomaly] btc_opt_iv_90d = 45.6 is -2.2 std devs from mean (49.19 ± 1.66)
+
+**LLM analysis:**
+Market showing textbook extreme regime transition patterns - oil complex completing historic capitulation cycle (Brent-WTI spread 8.5→9.6, funding -807%→-154%) while crypto maintains breakout structure above 70k. Key learning: extreme dislocations require full 72+ hour development cycles vs initial 24-48 hour estimates. Multiple asset reversals (oil, gold funding normalization) creating diversified opportunity set while maintaining crypto momentum exposure. This represents optimal cross-asset positioning during volatile regime shifts.
+
+---
+
