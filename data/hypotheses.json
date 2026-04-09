@@ -2217,7 +2217,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil complex extreme capitulation playing out perfectly - spread hit 8.5 and funding reached -807%, now recovering to 9.6 spread and -154% funding. Pattern taking longer than initial estimates but showing clear reversal signals.",
+    "postMortem": "Oil complex extreme capitulation playing out perfectly - spread hit 8.5 and funding reached -807%, now recovering to 9.6 spread and -154% funding. Pattern taking longer than initial estimates but showing clear reversal signals. | Oil complex extreme capitulation reversal pattern showing early signs of completion - Brent-WTI spread recovered from 8.7 to 9.7 while funding normalized from -807% to -200%, indicating structural arbitrage forces beginning to correct the dislocation",
     "source": "llm"
   },
   {
@@ -2320,7 +2320,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC-HYPE correlation momentum resumption showing mixed signals - BTC holding above 70k as predicted, HYPE OI stabilized above 790M, but HYPE funding went negative to -3.5%, suggesting some divergence in the correlation",
     "source": "llm"
   },
   {
@@ -2334,6 +2334,83 @@
     },
     "prediction": "Gold spot rises 2-3% within 3 days after funding normalization completion",
     "timeframeDays": 3,
+    "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-09",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Gold funding reversal acceleration partially confirmed - funding normalized from -57.73% to -2.48% while spot held above 4700 and PM premium stayed elevated, showing the predicted momentum reversal pattern",
+    "source": "llm"
+  },
+  {
+    "id": "H-094",
+    "created": "2026-04-09",
+    "description": "Oil complex extreme capitulation recovery acceleration - when Brent-WTI spread recovers above 9.5 from below 9 lows while funding normalizes above -200% from extremes below -800%, momentum reversal accelerates within 3-5 days",
+    "conditions": {
+      "oil_brent_wti_spread": "> 9.5",
+      "oil_hl_funding_ann": "> -200"
+    },
+    "prediction": "Oil price bounce and funding further normalization toward zero within 5 days",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-09",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-095",
+    "created": "2026-04-09",
+    "description": "BTC momentum resilience during cross-asset volatility - when BTC holds above 70.5k with IV compression below 45% while other assets show extreme volatility (oil funding >200% absolute), crypto momentum decoupling creates continuation setup",
+    "conditions": {
+      "btc_spot": "> 70500",
+      "btc_opt_iv_30d": "< 45",
+      "oil_hl_funding_ann": "< -200"
+    },
+    "prediction": "BTC continues upward momentum toward 72-73k within 7 days despite oil volatility",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-09",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-096",
+    "created": "2026-04-09",
+    "description": "HYPE funding normalization pattern - when HYPE funding drops below -3% from positive territory while OI stabilizes above 790M and spot holds above 38, oversold bounce follows within 3-5 days",
+    "conditions": {
+      "hype_hl_funding_ann": "< -3",
+      "hype_hl_oi": "> 790000000",
+      "hype_spot": "> 38"
+    },
+    "prediction": "HYPE spot price recovery and funding normalization back toward positive within 5 days",
+    "timeframeDays": 5,
     "confidence": 0.6,
     "tests": [
       {

@@ -647,3 +647,25 @@ Market showing textbook extreme regime transition patterns - oil complex complet
 
 ---
 
+### 2026-04-09 06:15 UTC
+
+**Portfolio:** $100.77 total | Cash $96.77 | 4 open | P&L $0.7655 | 69% win rate (13 trades)
+
+**Closed 1 trades:**
+- ✅ OIL short via polymarket/pm_no [cl-over-under-jun-2026 — NO — Will Crude Oil (CL) settle over $90 on the final trading day of June 2026?] (PM_IV_GT_OPT_IV) → target: +$0.3302 (33.0%, market 0.3302, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL short @ $0.7050000000000001 via polymarket/pm_no [cl-over-under-jun-2026 — NO — Will Crude Oil (CL) settle over $90 on the final trading day of June 2026?] (PM_IV_GT_OPT_IV)
+
+**Statistical observations:**
+- [anomaly] gold_pm_settle_ev = 5143 is 2.7 std devs from mean (4868.00 ± 100.26)
+- [anomaly] amzn_opt_fwd_90d = 223.6 is 2.2 std devs from mean (214.72 ± 3.96)
+- [anomaly] gold_opt_iv_30d = 31.2 is -2.1 std devs from mean (33.73 ± 1.18)
+- [anomaly] gold_opt_iv_90d = 29.1 is -2.1 std devs from mean (31.14 ± 0.97)
+- [anomaly] btc_opt_iv_90d = 45.6 is -2.0 std devs from mean (49.09 ± 1.74)
+
+**LLM analysis:**
+Witnessing textbook extreme regime recovery patterns across oil complex. Key insight: capitulation cycles require full 72+ hour development before reversal acceleration begins. Oil showing classic technical bounce setup with Brent-WTI spread recovering from 8.5 to 9.7 and funding normalizing from -807% to -200%. BTC maintaining breakout resilience above 70k despite cross-asset volatility, confirming momentum decoupling thesis. HYPE funding flip to negative creates potential oversold setup. Portfolio positioned for both momentum continuation in crypto and mean reversion completion in oil complex.
+
+---
+
