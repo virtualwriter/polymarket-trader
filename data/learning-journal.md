@@ -710,3 +710,25 @@ Major breakthrough in understanding extreme regime completion patterns. Oil comp
 
 ---
 
+### 2026-04-09 17:54 UTC
+
+**Portfolio:** $100.60 total | Cash $95.60 | 5 open | P&L $0.6026 | 67% win rate (15 trades)
+
+**Closed 1 trades:**
+- ✅ OIL long via hyperliquid/legacy [n/a] (FUNDING_EXTREME_SHORT) → target: +$0.0215 (2.2%, market 0.0215, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL long @ $93.02 via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT)
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 6.1pp (was 17.5, now 11.4)
+- [anomaly] oil_opt_iv_90d = 23.5 is -3.4 std devs from mean (26.19 ± 0.80)
+- [anomaly] amzn_opt_fwd_90d = 233.95 is 3.3 std devs from mean (215.81 ± 5.42)
+- [anomaly] amzn_stock = 231.53 is 3.0 std devs from mean (214.19 ± 5.72)
+- [anomaly] gold_opt_iv_30d = 28.8 is -2.9 std devs from mean (33.41 ± 1.57)
+
+**LLM analysis:**
+Major validation of extreme capitulation reversal framework across oil complex. Key insight: Oil showed perfect textbook recovery with Brent-WTI spread above 6.7 from sub-10 lows, funding normalized from -800% extremes, and systematic bounce continuing. BTC-HYPE correlation restored to positive territory supporting coordinated crypto momentum. AMZN basis explosion to 1.32% provides perfect case study of perp-stock divergence during extreme moves. Gold presenting classic IV compression setup with 90d IV at 27.2 while PM premium stays elevated above 350pts vs futures. Multiple pattern confirmations validate cross-asset extreme regime analysis approach.
+
+---
+
