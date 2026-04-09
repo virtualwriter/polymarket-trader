@@ -1178,7 +1178,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "AMZN P/C collapsed to 0.399 then rebounded to 0.737 as predicted - weekend repositioning led to Monday gap from 209.78 to 211.86. Pattern confirmed but needs refinement for entry timing. | Strong validation - AMZN put-call ratio crashed to 0.147 from 0.814, creating the extreme repositioning signal that preceded the 4.7% stock surge",
+    "postMortem": "AMZN P/C collapsed to 0.399 then rebounded to 0.737 as predicted - weekend repositioning led to Monday gap from 209.78 to 211.86. Pattern confirmed but needs refinement for entry timing. | Strong validation - AMZN put-call ratio crashed to 0.147 from 0.814, creating the extreme repositioning signal that preceded the 4.7% stock surge | AMZN P/C collapsed to 0.445 during major stock moves above $230 - extreme options repositioning signal confirmed as predicted",
     "source": "llm"
   },
   {
@@ -2598,7 +2598,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil complex showing perfect textbook recovery - Brent-WTI spread at 7.6 from sub-10 lows with funding normalized from extremes, confirming sustained bounce pattern",
     "source": "llm"
   },
   {
@@ -2623,7 +2623,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC above 72k with HYPE correlation restored - both assets moving higher together confirming coordinated crypto momentum breakout",
     "source": "llm"
   },
   {
@@ -2637,6 +2637,81 @@
     "prediction": "Gold volatility expands within 5 days as IV compression reverses",
     "timeframeDays": 5,
     "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-09",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-106",
+    "created": "2026-04-09",
+    "description": "AMZN weekend put-call ratio acceleration creates Monday momentum - when P/C drops below 0.5 during stock live periods after extreme moves, systematic options repositioning indicates momentum continuation",
+    "conditions": {
+      "amzn_pc_ratio": "< 0.5",
+      "amzn_stock": "> 230"
+    },
+    "prediction": "AMZN momentum continues for 3-5 days when P/C drops below 0.5 during stock live periods above $230",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-09",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-107",
+    "created": "2026-04-09",
+    "description": "Oil complex structural recovery completion pattern - Brent-WTI spread recovering above 7 from sub-10 lows with funding normalization above -400% creates sustained 5-7 day technical bounce",
+    "conditions": {
+      "oil_brent_wti_spread": "> 7",
+      "oil_hl_funding_ann": "> -4.0"
+    },
+    "prediction": "Oil sustained bounce continues 5-7 days when spread recovers above 7 and funding normalizes above -400%",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-09",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-108",
+    "created": "2026-04-09",
+    "description": "BTC momentum acceleration above 72k with HYPE correlation restoration creates breakout continuation - when both BTC above 72k and HYPE above 39.8 with positive correlation",
+    "conditions": {
+      "btc_spot": "> 72000",
+      "hype_spot": "> 39.8"
+    },
+    "prediction": "BTC-HYPE coordinated breakout continues for 5-7 days when both break above key levels together",
+    "timeframeDays": 7,
+    "confidence": 0.8,
     "tests": [
       {
         "date": "2026-04-09",

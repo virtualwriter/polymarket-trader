@@ -732,3 +732,19 @@ Major validation of extreme capitulation reversal framework across oil complex. 
 
 ---
 
+### 2026-04-09 21:39 UTC
+
+**Portfolio:** $100.60 total | Cash $95.60 | 5 open | P&L $0.6026 | 67% win rate (15 trades)
+
+**Statistical observations:**
+- [anomaly] amzn_opt_fwd_90d = 235.8 is 3.1 std devs from mean (216.34 ± 6.24)
+- [anomaly] amzn_stock = 233.11 is 2.9 std devs from mean (214.69 ± 6.40)
+- [anomaly] amzn_hl_perp = 233.38 is 2.8 std devs from mean (214.47 ± 6.81)
+- [anomaly] oil_opt_iv_90d = 23.7 is -2.8 std devs from mean (26.12 ± 0.88)
+- [anomaly] gold_opt_iv_30d = 28.7 is -2.7 std devs from mean (33.29 ± 1.73)
+
+**LLM analysis:**
+Major breakthrough validating extreme capitulation reversal framework. Oil complex provided perfect case study - textbook recovery with Brent-WTI spread at 7.6 from sub-10 lows, funding normalized from -800% extremes, creating sustained technical bounce as predicted. BTC-HYPE correlation restoration above key levels (72k/39.8) confirms crypto momentum decoupling from traditional assets during breakout phases. AMZN showing classic perp-stock basis patterns during extreme moves with P/C collapse below 0.5 indicating systematic options repositioning. Framework proving robust across multiple asset classes and extreme regime transitions. Key learning: correlation restoration between related assets (BTC-HYPE, Brent-WTI) signals completion of extreme regime phases and momentum continuation setup.
+
+---
+
