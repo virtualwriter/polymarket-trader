@@ -2800,6 +2800,83 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
+    "postMortem": "PERFECT validation - Oil funding normalized to -151.3% from -800% extremes while Brent-WTI spread recovered to 8.1 from sub-7 lows, creating sustained technical bounce as predicted",
+    "source": "llm"
+  },
+  {
+    "id": "H-112",
+    "created": "2026-04-10",
+    "description": "Oil complex extreme capitulation recovery acceleration - when Brent-WTI spread recovers above 8 from below 7.5 lows while funding normalizes above -200% from extremes below -800%, momentum reversal accelerates within 24-48 hours",
+    "conditions": {
+      "oil_brent_wti_spread": "> 8.0",
+      "oil_hl_funding_ann": "> -200"
+    },
+    "prediction": "Oil complex continues technical bounce with further spread normalization above 8.5 and funding recovery toward -100% within 48 hours",
+    "timeframeDays": 2,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-10",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-113",
+    "created": "2026-04-10",
+    "description": "BTC momentum persistence above 71.9k with HYPE funding normalization to positive territory creates consolidated breakout continuation setup when both assets show positive correlation restoration",
+    "conditions": {
+      "btc_spot": "> 71900",
+      "hype_hl_funding_ann": "> 0",
+      "hype_spot": "> 40.3"
+    },
+    "prediction": "BTC-HYPE correlation positive restoration creates 3-5 day momentum continuation above 72.5k/40.8 levels",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-10",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-114",
+    "created": "2026-04-10",
+    "description": "Gold IV compression extreme completion below 27.5 with 90d IV while PM premium stays above 400pts vs futures during BTC momentum phases creates volatility expansion setup within 5-7 days",
+    "conditions": {
+      "gold_opt_iv_90d": "< 27.5",
+      "gold_pm_settle_ev": "> gold_opt_fwd_90d + 400",
+      "btc_spot": "> 71500"
+    },
+    "prediction": "Gold IV expansion above 29% on 90d within 5-7 days as volatility compression unwinds",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-10",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
     "postMortem": null,
     "source": "llm"
   }
