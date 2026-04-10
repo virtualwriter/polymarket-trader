@@ -2825,7 +2825,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Perfect execution - Brent-WTI spread recovery above 8 from 7.5 lows with funding normalizing to -151% from -800% extremes created momentum reversal acceleration within 24-48 hours. | Confirmed - Brent-WTI spread recovered above 8 from sub-7 lows while funding normalized from extremes, creating sustained technical bounce as predicted.",
+    "postMortem": "Perfect execution - Brent-WTI spread recovery above 8 from 7.5 lows with funding normalizing to -151% from -800% extremes created momentum reversal acceleration within 24-48 hours. | Confirmed - Brent-WTI spread recovered above 8 from sub-7 lows while funding normalized from extremes, creating sustained technical bounce as predicted. | Strong validation - Oil complex recovering from extreme capitulation with Brent-WTI spread normalizing and funding improving from -800% territory as predicted.",
     "source": "llm"
   },
   {
@@ -2929,7 +2929,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "PERFECT validation - HYPE OI surged to record 863M with spot at 41.7, exactly matching conditions. Funding normalized to -5.37% from extreme negative. Breakout continuation confirmed. | Perfect execution - HYPE OI surged to record 867M with spot breakout above 42, exactly matching conditions. Framework proving exceptional at identifying institutional breakout participation.",
+    "postMortem": "PERFECT validation - HYPE OI surged to record 863M with spot at 41.7, exactly matching conditions. Funding normalized to -5.37% from extreme negative. Breakout continuation confirmed. | Perfect execution - HYPE OI surged to record 867M with spot breakout above 42, exactly matching conditions. Framework proving exceptional at identifying institutional breakout participation. | Perfect validation - HYPE OI surged to 867M with spot breakout above 42, exactly as predicted. Framework correctly identified institutional participation during breakout phases.",
     "source": "llm"
   },
   {
@@ -3006,7 +3006,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Confirmed - AMZN P/C collapsed to 0.381 during explosive move to 238.49, indicating systematic options repositioning ahead of momentum continuation.",
+    "postMortem": "Confirmed - AMZN P/C collapsed to 0.381 during explosive move to 238.49, indicating systematic options repositioning ahead of momentum continuation. | Excellent validation - AMZN P/C collapsed to 0.381 during explosive momentum, confirming systematic options repositioning theory during major moves.",
     "source": "llm"
   },
   {
@@ -3097,6 +3097,82 @@
       "btc_spot": "> 72000"
     },
     "prediction": "Gold 30d IV expands above 30% within 7 days or gold spot moves above 4800",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-10",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-124",
+    "created": "2026-04-10",
+    "description": "BTC extreme momentum exhaustion signal - when BTC breaks 73k with P/C ratio below 0.4 during funding normalization",
+    "conditions": {
+      "btc_spot": "> 72500",
+      "btc_ibit_pc_ratio": "< 0.4",
+      "btc_hl_funding_ann": "> -0.1"
+    },
+    "prediction": "Momentum exhaustion and 3-5% correction within 3-5 days as call positioning becomes unsustainable",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-10",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-125",
+    "created": "2026-04-10",
+    "description": "Oil structural breakdown completion reversal - Brent-WTI spread collapse below 7 with funding extremes below -800%",
+    "conditions": {
+      "oil_brent_wti_spread": "< 7",
+      "oil_hl_funding_ann": "< -500"
+    },
+    "prediction": "Systematic structural reversal bounce within 48-72 hours as extreme positioning unwinds",
+    "timeframeDays": 3,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-10",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-126",
+    "created": "2026-04-10",
+    "description": "HYPE momentum deceleration after OI peak - OI decline below 850M from 867M peak while spot holds above 41.5",
+    "conditions": {
+      "hype_hl_oi": "< 850000000",
+      "hype_spot": "> 41.5"
+    },
+    "prediction": "Consolidation phase begins with 5-10% pullback over 5-7 days as institutional profit-taking occurs",
     "timeframeDays": 7,
     "confidence": 0.65,
     "tests": [
