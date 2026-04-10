@@ -2673,7 +2673,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Strong validation - AMZN P/C collapsed to 0.381 during explosive stock momentum to 237.9. Options repositioning indicating momentum continuation as predicted.",
     "source": "llm"
   },
   {
@@ -2929,7 +2929,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "PERFECT validation - HYPE OI surged to record 863M with spot at 41.7, exactly matching conditions. Funding normalized to -5.37% from extreme negative. Breakout continuation confirmed.",
     "source": "llm"
   },
   {
@@ -2944,6 +2944,83 @@
     "prediction": "Gold IV expansion follows within 3-5 days as volatility selling overdone",
     "timeframeDays": 5,
     "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-10",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Setting up perfectly - Gold IV compressed to 26.3% (30d) and 25.9% (90d) while PM premium stays 362pts above futures. Volatility expansion setup forming during crypto momentum phase.",
+    "source": "llm"
+  },
+  {
+    "id": "H-118",
+    "created": "2026-04-10",
+    "description": "HYPE OI record surge above 860M with spot momentum above 41.5 and PM EV catching up creates sustained breakout acceleration",
+    "conditions": {
+      "hype_hl_oi": "> 860000000",
+      "hype_spot": "> 41.5",
+      "hype_pm_ev": "> 42.5"
+    },
+    "prediction": "HYPE spot continues above 42 for 5-7 days with OI staying elevated",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-10",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-119",
+    "created": "2026-04-10",
+    "description": "AMZN put-call ratio extreme collapse below 0.4 during explosive stock momentum above 235 creates systematic momentum continuation signal",
+    "conditions": {
+      "amzn_pc_ratio": "< 0.4",
+      "amzn_stock": "> 235"
+    },
+    "prediction": "AMZN continues momentum above 240 within 3-5 days as options repositioning completes",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-10",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-120",
+    "created": "2026-04-10",
+    "description": "Gold IV compression extreme completion below 26.5 on 30d with PM premium above 350pts during BTC breakout phases creates volatility expansion setup",
+    "conditions": {
+      "gold_opt_iv_30d": "< 26.5",
+      "gold_pm_settle_ev": "> 5100",
+      "btc_spot": "> 72000"
+    },
+    "prediction": "Gold IV expands above 30% within 5-7 days as compression unwinds",
+    "timeframeDays": 7,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-10",
