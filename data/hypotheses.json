@@ -2825,7 +2825,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Perfect execution - Brent-WTI spread recovery above 8 from 7.5 lows with funding normalizing to -151% from -800% extremes created momentum reversal acceleration within 24-48 hours.",
+    "postMortem": "Perfect execution - Brent-WTI spread recovery above 8 from 7.5 lows with funding normalizing to -151% from -800% extremes created momentum reversal acceleration within 24-48 hours. | Confirmed - Brent-WTI spread recovered above 8 from sub-7 lows while funding normalized from extremes, creating sustained technical bounce as predicted.",
     "source": "llm"
   },
   {
@@ -2929,7 +2929,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "PERFECT validation - HYPE OI surged to record 863M with spot at 41.7, exactly matching conditions. Funding normalized to -5.37% from extreme negative. Breakout continuation confirmed.",
+    "postMortem": "PERFECT validation - HYPE OI surged to record 863M with spot at 41.7, exactly matching conditions. Funding normalized to -5.37% from extreme negative. Breakout continuation confirmed. | Perfect execution - HYPE OI surged to record 867M with spot breakout above 42, exactly matching conditions. Framework proving exceptional at identifying institutional breakout participation.",
     "source": "llm"
   },
   {
@@ -3006,7 +3006,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Confirmed - AMZN P/C collapsed to 0.381 during explosive move to 238.49, indicating systematic options repositioning ahead of momentum continuation.",
     "source": "llm"
   },
   {
@@ -3021,6 +3021,84 @@
     "prediction": "Gold IV expands above 30% within 5-7 days as compression unwinds",
     "timeframeDays": 7,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-10",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-121",
+    "created": "2026-04-10",
+    "description": "BTC momentum acceleration above 72.5k with HYPE correlation restoration above 42 creates sustained breakout continuation when both assets move with positive correlation during funding normalization",
+    "conditions": {
+      "btc_spot": "> 72500",
+      "hype_spot": "> 42.0",
+      "hype_hl_funding_ann": "> -0.1"
+    },
+    "prediction": "BTC continues above 73k within 3-5 days with HYPE following above 42.5",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-10",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-122",
+    "created": "2026-04-10",
+    "description": "HYPE OI record surge above 867M with spot momentum above 42 and funding normalization to negative territory creates sustained breakout acceleration with PM EV catching up",
+    "conditions": {
+      "hype_hl_oi": "> 867000000",
+      "hype_spot": "> 42.0",
+      "hype_hl_funding_ann": "< 0"
+    },
+    "prediction": "HYPE continues above 43 within 5-7 days with PM EV following above 44",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-10",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-123",
+    "created": "2026-04-10",
+    "description": "Gold IV compression extreme completion below 27% on 30d with PM premium above 370pts during BTC breakout phases creates volatility expansion setup within one week",
+    "conditions": {
+      "gold_opt_iv_30d": "< 27.0",
+      "gold_pm_settle_ev": "> 5100",
+      "btc_spot": "> 72000"
+    },
+    "prediction": "Gold 30d IV expands above 30% within 7 days or gold spot moves above 4800",
+    "timeframeDays": 7,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-10",
