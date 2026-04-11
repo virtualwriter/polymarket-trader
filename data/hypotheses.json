@@ -3288,7 +3288,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC P/C ratio stayed at extreme 0.39 level, confirming momentum exhaustion signal. This represents most extreme call positioning ever observed during new highs above 72.8k.",
     "source": "llm"
   },
   {
@@ -3313,7 +3313,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI stabilized above 860M as predicted and spot momentum continued above 41.5. Now at record 870M+ suggesting institutional accumulation accelerating rather than stabilizing.",
     "source": "llm"
   },
   {
@@ -3327,6 +3327,83 @@
     "prediction": "Oil complex structural recovery complete, profit-taking opportunity emerges for long positions established during extremes",
     "timeframeDays": 3,
     "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-11",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Oil funding normalized to positive territory as predicted, validating extreme capitulation reversal theory. However, now showing signs of overcorrection back to negative, suggesting cyclical pattern.",
+    "source": "llm"
+  },
+  {
+    "id": "H-133",
+    "created": "2026-04-11",
+    "description": "BTC momentum exhaustion confirmation when P/C ratio stays below 0.4 for multiple snapshots during new highs above 72.8k with funding normalization creates 3-5 day consolidation setup as systematic call positioning becomes unsustainable",
+    "conditions": {
+      "btc_spot": "> 72800",
+      "btc_ibit_pc_ratio": "< 0.4",
+      "btc_hl_funding_ann": "> -0.05"
+    },
+    "prediction": "BTC consolidates or pulls back within 5 days when extreme call positioning persists",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-11",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-134",
+    "created": "2026-04-11",
+    "description": "HYPE institutional accumulation completion signal - OI stabilization above 870M after record surge with spot momentum above 42.4 and funding normalization creates sustained breakout continuation as smart money positioning completes",
+    "conditions": {
+      "hype_hl_oi": "> 870000000",
+      "hype_spot": "> 42.4",
+      "hype_hl_funding_ann": "> -0.1"
+    },
+    "prediction": "HYPE continues momentum above 42.4 for 7+ days as institutional positioning provides support",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-11",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-135",
+    "created": "2026-04-11",
+    "description": "Oil funding overcorrection completion signal - funding dropping from positive 16% back to negative territory below -50% while Brent-WTI spread holds above 6.8 creates technical bounce opportunity as funding swing becomes excessive",
+    "conditions": {
+      "oil_hl_funding_ann": "< -0.5",
+      "oil_brent_wti_spread": "> 6.8"
+    },
+    "prediction": "Oil funding normalizes back toward zero and creates technical bounce within 3 days",
+    "timeframeDays": 3,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-11",
