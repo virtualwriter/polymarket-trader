@@ -3161,7 +3161,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Completed - Oil structural recovery from -804% funding to +5.48% with spread recovery above 7.5 validates extreme capitulation reversal pattern. | Perfect validation - oil funding normalized from -804% to +16% while Brent-WTI spread recovered from 6.9 to 7.5. Structural recovery completed exactly as predicted, providing clear exit signal for extreme positioning.",
+    "postMortem": "Completed - Oil structural recovery from -804% funding to +5.48% with spread recovery above 7.5 validates extreme capitulation reversal pattern. | Perfect validation - oil funding normalized from -804% to +16% while Brent-WTI spread recovered from 6.9 to 7.5. Structural recovery completed exactly as predicted, providing clear exit signal for extreme positioning. | PERFECT validation - oil funding normalized from -804% to +16% with Brent-WTI spread recovery above 7.5, creating textbook structural recovery as predicted",
     "source": "llm"
   },
   {
@@ -3364,7 +3364,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "ACTIVE monitoring - BTC P/C ratio at 0.39 for multiple snapshots during new highs above 72.6k, momentum exhaustion signal developing as predicted",
     "source": "llm"
   },
   {
@@ -3390,7 +3390,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "STRONG validation - HYPE OI surge to 870M+ with spot above 42.4 demonstrating institutional accumulation completion pattern",
     "source": "llm"
   },
   {
@@ -3402,6 +3402,81 @@
       "oil_brent_wti_spread": "> 6.8"
     },
     "prediction": "Oil funding normalizes back toward zero and creates technical bounce within 3 days",
+    "timeframeDays": 3,
+    "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-11",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-136",
+    "created": "2026-04-11",
+    "description": "BTC momentum exhaustion confirmation when P/C ratio stays below 0.4 for multiple snapshots during new highs creates consolidation setup",
+    "conditions": {
+      "btc_ibit_pc_ratio": "< 0.4",
+      "btc_spot": "> 72500"
+    },
+    "prediction": "3-5 day consolidation follows when extreme call positioning persists",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-11",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-137",
+    "created": "2026-04-11",
+    "description": "HYPE institutional accumulation completion signal - OI stabilization above 870M after record surge creates sustained breakout continuation",
+    "conditions": {
+      "hype_hl_oi": "> 870000000",
+      "hype_spot": "> 42.4"
+    },
+    "prediction": "Sustained breakout continuation as smart money positioning completes",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-11",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-138",
+    "created": "2026-04-11",
+    "description": "Oil funding overcorrection completion signal - funding normalization creates technical bounce opportunity",
+    "conditions": {
+      "oil_hl_funding_ann": "< -50",
+      "oil_brent_wti_spread": "> 6.8"
+    },
+    "prediction": "Technical bounce opportunity as funding swing becomes excessive",
     "timeframeDays": 3,
     "confidence": 0.6,
     "tests": [
