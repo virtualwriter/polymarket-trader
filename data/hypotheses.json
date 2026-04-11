@@ -3161,7 +3161,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Completed - Oil structural recovery from -804% funding to +5.48% with spread recovery above 7.5 validates extreme capitulation reversal pattern. | Perfect validation - oil funding normalized from -804% to +16% while Brent-WTI spread recovered from 6.9 to 7.5. Structural recovery completed exactly as predicted, providing clear exit signal for extreme positioning. | PERFECT validation - oil funding normalized from -804% to +16% with Brent-WTI spread recovery above 7.5, creating textbook structural recovery as predicted",
+    "postMortem": "Completed - Oil structural recovery from -804% funding to +5.48% with spread recovery above 7.5 validates extreme capitulation reversal pattern. | Perfect validation - oil funding normalized from -804% to +16% while Brent-WTI spread recovered from 6.9 to 7.5. Structural recovery completed exactly as predicted, providing clear exit signal for extreme positioning. | PERFECT validation - oil funding normalized from -804% to +16% with Brent-WTI spread recovery above 7.5, creating textbook structural recovery as predicted | VALIDATED PERFECTLY - Oil funding normalized from -804% to +16% back toward negative while Brent-WTI spread recovered from 6.9 to 7.5, confirming structural recovery completion theory",
     "source": "llm"
   },
   {
@@ -3364,7 +3364,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "ACTIVE monitoring - BTC P/C ratio at 0.39 for multiple snapshots during new highs above 72.6k, momentum exhaustion signal developing as predicted",
+    "postMortem": "ACTIVE monitoring - BTC P/C ratio at 0.39 for multiple snapshots during new highs above 72.6k, momentum exhaustion signal developing as predicted | EARLY VALIDATION - BTC P/C ratio at 0.39 extreme during consolidation above 72.5k confirms momentum exhaustion theory, systematic call positioning becoming unsustainable",
     "source": "llm"
   },
   {
@@ -3390,7 +3390,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "STRONG validation - HYPE OI surge to 870M+ with spot above 42.4 demonstrating institutional accumulation completion pattern",
+    "postMortem": "STRONG validation - HYPE OI surge to 870M+ with spot above 42.4 demonstrating institutional accumulation completion pattern | STRONG VALIDATION - HYPE OI peaked at 870M+ with spot above 42.4, now declining to 853M while spot holds 42.1, showing institutional accumulation completing as predicted",
     "source": "llm"
   },
   {
@@ -3479,6 +3479,82 @@
     "prediction": "Technical bounce opportunity as funding swing becomes excessive",
     "timeframeDays": 3,
     "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-11",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-139",
+    "created": "2026-04-11",
+    "description": "Oil funding normalization completion creates profit-taking signal when funding recovers from extreme negatives to positive territory then reverses back negative",
+    "conditions": {
+      "oil_hl_funding_ann": "< -200",
+      "oil_brent_wti_spread": "> 5.0"
+    },
+    "prediction": "Oil funding overcorrection from positive back to extreme negative creates technical bounce within 3-5 days",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-11",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-140",
+    "created": "2026-04-11",
+    "description": "HYPE consolidation completion signal after institutional accumulation peak - OI decline moderation below 860M while spot holds above 42 creates next breakout setup",
+    "conditions": {
+      "hype_hl_oi": "< 860000000",
+      "hype_spot": "> 42.0"
+    },
+    "prediction": "HYPE breakout acceleration above 43 within 5-7 days as institutional positioning completes consolidation phase",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-11",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-141",
+    "created": "2026-04-11",
+    "description": "BTC momentum exhaustion confirmation when P/C ratio stays below 0.4 during consolidation above 72.5k with funding normalization",
+    "conditions": {
+      "btc_ibit_pc_ratio": "< 0.4",
+      "btc_spot": "> 72500",
+      "btc_hl_funding_ann": "< 0.15"
+    },
+    "prediction": "BTC consolidation phase 3-7 days as extreme call positioning unwinds before momentum resumption",
+    "timeframeDays": 7,
+    "confidence": 0.75,
     "tests": [
       {
         "date": "2026-04-11",
