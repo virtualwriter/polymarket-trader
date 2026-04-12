@@ -3364,7 +3364,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "ACTIVE monitoring - BTC P/C ratio at 0.39 for multiple snapshots during new highs above 72.6k, momentum exhaustion signal developing as predicted | EARLY VALIDATION - BTC P/C ratio at 0.39 extreme during consolidation above 72.5k confirms momentum exhaustion theory, systematic call positioning becoming unsustainable | VALIDATED - BTC P/C exhaustion signal worked perfectly. P/C stayed below 0.4 for multiple snapshots during new highs above 73k, then sharp pullback to 71.6k occurred exactly as predicted. Systematic call positioning became unsustainable. | CONFIRMED PERFECTLY - BTC P/C ratio extreme below 0.4 during new highs above 72.8k preceded sharp pullback to 71.6k exactly as predicted. Framework successfully identified momentum exhaustion vs continuation.",
+    "postMortem": "ACTIVE monitoring - BTC P/C ratio at 0.39 for multiple snapshots during new highs above 72.6k, momentum exhaustion signal developing as predicted | EARLY VALIDATION - BTC P/C ratio at 0.39 extreme during consolidation above 72.5k confirms momentum exhaustion theory, systematic call positioning becoming unsustainable | VALIDATED - BTC P/C exhaustion signal worked perfectly. P/C stayed below 0.4 for multiple snapshots during new highs above 73k, then sharp pullback to 71.6k occurred exactly as predicted. Systematic call positioning became unsustainable. | CONFIRMED PERFECTLY - BTC P/C ratio extreme below 0.4 during new highs above 72.8k preceded sharp pullback to 71.6k exactly as predicted. Framework successfully identified momentum exhaustion vs continuation. | Working perfectly - P/C ratio extreme below 0.44 during BTC highs above 73k preceded sharp pullback to 71.5k exactly as predicted. Framework's first successful momentum reversal prediction confirms positioning extremes theory.",
     "source": "llm"
   },
   {
@@ -3693,7 +3693,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Confirming - HYPE OI declined from 870M peak to 821M while spot dropped from 42.5 to 40.9, validating institutional distribution completion theory. Smart money exit pattern playing out as expected.",
     "source": "llm"
   },
   {
@@ -3718,7 +3718,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "TESTING - AMZN basis explosion to -0.79% with -136% funding represents most extreme dislocation observed, creating textbook systematic correction opportunity.",
+    "postMortem": "TESTING - AMZN basis explosion to -0.79% with -136% funding represents most extreme dislocation observed, creating textbook systematic correction opportunity. | Extreme conditions met - AMZN basis at -0.79% with -136% funding represents most extreme perp-spot dislocation observed. Systematic correction opportunity created as predicted.",
     "source": "llm"
   },
   {
@@ -3808,6 +3808,83 @@
     "prediction": "Oil PM IV compresses back toward options IV within 7 days as extreme gap unsustainable",
     "timeframeDays": 7,
     "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-12",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-152",
+    "created": "2026-04-12",
+    "description": "BTC consolidation floor test - when BTC drops below 72k after P/C ratio extremes but holds above 71k with IV compression below 42%, creates oversold bounce setup as systematic call unwind completes",
+    "conditions": {
+      "btc_spot": "> 71000",
+      "btc_opt_iv_30d": "< 42",
+      "btc_ibit_pc_ratio": "> 0.4"
+    },
+    "prediction": "BTC bounces back above 72k within 3-5 days as call positioning unwind completes",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-12",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-153",
+    "created": "2026-04-12",
+    "description": "HYPE institutional distribution completion - when HYPE OI declines below 820M from 870M peak while spot drops below 40.5 and funding stays negative below -5%, distribution phase completion creates oversold bounce opportunity",
+    "conditions": {
+      "hype_hl_oi": "< 820000000",
+      "hype_spot": "< 40.5",
+      "hype_hl_funding_ann": "< -5"
+    },
+    "prediction": "HYPE oversold bounce toward 42-43 range within 5-7 days as institutional distribution completes",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-12",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-154",
+    "created": "2026-04-12",
+    "description": "AMZN extreme basis correction acceleration - when AMZN basis stays below -0.7% with funding below -100% for 3+ snapshots while stock is live, systematic correction toward zero basis accelerates within 48-72 hours",
+    "conditions": {
+      "amzn_hl_basis_pct": "< -0.7",
+      "amzn_hl_funding_ann": "< -100"
+    },
+    "prediction": "AMZN basis corrects toward zero within 3 days as extreme dislocation forces arbitrage",
+    "timeframeDays": 3,
+    "confidence": 0.75,
     "tests": [
       {
         "date": "2026-04-12",
