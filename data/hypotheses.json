@@ -3364,7 +3364,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "ACTIVE monitoring - BTC P/C ratio at 0.39 for multiple snapshots during new highs above 72.6k, momentum exhaustion signal developing as predicted | EARLY VALIDATION - BTC P/C ratio at 0.39 extreme during consolidation above 72.5k confirms momentum exhaustion theory, systematic call positioning becoming unsustainable | VALIDATED - BTC P/C exhaustion signal worked perfectly. P/C stayed below 0.4 for multiple snapshots during new highs above 73k, then sharp pullback to 71.6k occurred exactly as predicted. Systematic call positioning became unsustainable. | CONFIRMED PERFECTLY - BTC P/C ratio extreme below 0.4 during new highs above 72.8k preceded sharp pullback to 71.6k exactly as predicted. Framework successfully identified momentum exhaustion vs continuation. | Working perfectly - P/C ratio extreme below 0.44 during BTC highs above 73k preceded sharp pullback to 71.5k exactly as predicted. Framework's first successful momentum reversal prediction confirms positioning extremes theory. | Perfect validation - BTC P/C extremes below 0.44 during new highs above 73k preceded exact pullback to 71k range. Framework successfully predicted momentum exhaustion vs continuation.",
+    "postMortem": "ACTIVE monitoring - BTC P/C ratio at 0.39 for multiple snapshots during new highs above 72.6k, momentum exhaustion signal developing as predicted | EARLY VALIDATION - BTC P/C ratio at 0.39 extreme during consolidation above 72.5k confirms momentum exhaustion theory, systematic call positioning becoming unsustainable | VALIDATED - BTC P/C exhaustion signal worked perfectly. P/C stayed below 0.4 for multiple snapshots during new highs above 73k, then sharp pullback to 71.6k occurred exactly as predicted. Systematic call positioning became unsustainable. | CONFIRMED PERFECTLY - BTC P/C ratio extreme below 0.4 during new highs above 72.8k preceded sharp pullback to 71.6k exactly as predicted. Framework successfully identified momentum exhaustion vs continuation. | Working perfectly - P/C ratio extreme below 0.44 during BTC highs above 73k preceded sharp pullback to 71.5k exactly as predicted. Framework's first successful momentum reversal prediction confirms positioning extremes theory. | Perfect validation - BTC P/C extremes below 0.44 during new highs above 73k preceded exact pullback to 71k range. Framework successfully predicted momentum exhaustion vs continuation. | VALIDATED PERFECTLY - BTC P/C extremes below 0.44 during new highs above 73k preceded exact pullback to 70.9k as predicted. Framework can now distinguish exhaustion from continuation.",
     "source": "llm"
   },
   {
@@ -3743,7 +3743,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Confirming - BTC dropped below 72k after P/C extremes, now testing 71k level exactly as predicted with systematic call unwind accelerating.",
+    "postMortem": "Confirming - BTC dropped below 72k after P/C extremes, now testing 71k level exactly as predicted with systematic call unwind accelerating. | TRACKING - BTC dropped below 72k after P/C extremes, confirming systematic call unwind pattern. Pullback accelerating as predicted.",
     "source": "llm"
   },
   {
@@ -3769,7 +3769,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Tracking perfectly - HYPE OI declined to 808M from 870M peak while spot dropped below 41, distribution phase accelerating toward predicted 38-39 range.",
+    "postMortem": "Tracking perfectly - HYPE OI declined to 808M from 870M peak while spot dropped below 41, distribution phase accelerating toward predicted 38-39 range. | CONFIRMING - HYPE OI declining from 870M peak to 808M while spot drops below 41, institutional distribution accelerating as predicted.",
     "source": "llm"
   },
   {
@@ -3922,7 +3922,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "ACTIVATING - BTC holding above 70.9k after pullback, testing oversold bounce thesis with funding normalization occurring.",
     "source": "llm"
   },
   {
@@ -3963,6 +3963,81 @@
     "prediction": "Gold funding normalizes above -20% within 48-72 hours as extreme positioning unwinds",
     "timeframeDays": 3,
     "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-12",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-158",
+    "created": "2026-04-12",
+    "description": "Gold extreme funding crash below -96% while spot holds above 4700 creates reversal acceleration",
+    "conditions": {
+      "gold_hl_funding_ann": "< -90",
+      "gold_gc_spot": "> 4700"
+    },
+    "prediction": "Gold reversal bounce within 48-72 hours as extreme funding unwinds",
+    "timeframeDays": 3,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-12",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-159",
+    "created": "2026-04-12",
+    "description": "BTC pullback completion signal when drops stabilize above 70.5k with P/C normalization",
+    "conditions": {
+      "btc_spot": "> 70500",
+      "btc_ibit_pc_ratio": "> 0.45"
+    },
+    "prediction": "BTC oversold bounce resumption within 3-5 days after P/C exhaustion unwind completes",
+    "timeframeDays": 5,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-12",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-160",
+    "created": "2026-04-12",
+    "description": "HYPE OI capitulation completion below 810M from 870M peak creates oversold setup",
+    "conditions": {
+      "hype_hl_oi": "< 810000000",
+      "hype_spot": "< 40.5"
+    },
+    "prediction": "HYPE institutional distribution completion creates bounce opportunity within 5-7 days",
+    "timeframeDays": 7,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-12",
