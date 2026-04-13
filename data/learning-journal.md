@@ -1126,3 +1126,24 @@ Milestone achievement: Framework successfully predicted both momentum exhaustion
 
 ---
 
+### 2026-04-13 17:52 UTC
+
+**Portfolio:** $100.81 total | Cash $93.81 | 7 open | P&L $0.8110 | 71% win rate (24 trades)
+
+**Closed 2 trades:**
+- ✅ OIL short via spot/spot [OIL spot] (PC_RATIO_EXTREME_LOW) → target: +$0.0219 (2.2%, market 0.0219, funding 0.0000)
+- ✅ HYPE long via spot/spot [HYPE spot] (LLM_HYPOTHESIS) → target: +$0.0377 (3.8%, market 0.0377, funding 0.0000)
+
+**Opened 2 positions:**
+- GOLD short @ $4739 via spot/spot [GOLD spot] (PC_RATIO_EXTREME_LOW)
+- OIL short @ $0.375 via polymarket/pm_no [cl-over-under-jun-2026 — NO — Will Crude Oil (CL) settle over $85 on the final trading day of June 2026?] (PM_IV_GT_OPT_IV)
+
+**Statistical observations:**
+- [anomaly] hype_pm_iv = 73 is 5.6 std devs from mean (58.73 ± 2.55)
+- [anomaly] hype_med_max = 67.1 is 5.1 std devs from mean (55.16 ± 2.35)
+- [anomaly] gold_gld_pc_ratio = 0.219 is -4.3 std devs from mean (0.61 ± 0.09)
+- [anomaly] hype_pm_ev = 45.5 is 2.7 std devs from mean (41.10 ± 1.63)
+- [anomaly] oil_opt_fwd_90d = 83.2 is -2.3 std devs from mean (84.87 ± 0.71)
+
+---
+
