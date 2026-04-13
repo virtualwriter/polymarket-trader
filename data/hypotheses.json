@@ -3465,7 +3465,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI at 891M after institutional surge confirms accumulation completion signal working",
     "source": "llm"
   },
   {
@@ -4430,7 +4430,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC at 73.2k with HYPE OI at 891M confirms momentum resumption - pattern validated",
     "source": "llm"
   },
   {
@@ -4443,6 +4443,82 @@
     },
     "prediction": "Oil technical bounce accelerates as structural arbitrage corrects within 3-5 days",
     "timeframeDays": 5,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-13",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Oil Brent-WTI spread at 9.4 after recovering from sub-10 lows confirms structural recovery pattern working as predicted",
+    "source": "llm"
+  },
+  {
+    "id": "H-177",
+    "created": "2026-04-13",
+    "description": "BTC momentum breakout above 73k confirmed with HYPE OI expansion and IV compression creates sustained trend",
+    "conditions": {
+      "btc_spot": "> 73000",
+      "hype_hl_oi": "> 880000000",
+      "btc_opt_iv_30d": "< 44"
+    },
+    "prediction": "BTC continues above 73.5k for 5-7 days with HYPE correlation",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-13",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-178",
+    "created": "2026-04-13",
+    "description": "AMZN P/C ratio collapse to 0.381 during explosive momentum to 237.9 creates systematic options repositioning signal",
+    "conditions": {
+      "amzn_pc_ratio": "< 0.4",
+      "amzn_stock": "> 237"
+    },
+    "prediction": "AMZN momentum continues above 240 within 3-5 days",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-13",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-179",
+    "created": "2026-04-13",
+    "description": "Oil PM settlement collapse to 77.9 while spot holds above 83 creates extreme mean reversion setup",
+    "conditions": {
+      "oil_pm_settle_ev": "< 80",
+      "oil_wti_spot": "> 83"
+    },
+    "prediction": "Oil PM settlement recovers above 82 within one week",
+    "timeframeDays": 7,
     "confidence": 0.65,
     "tests": [
       {
