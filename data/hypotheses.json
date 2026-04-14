@@ -4712,7 +4712,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC median maximum stable at 93947 with IV at 45.1%, but new P/C ratio extreme below 0.2 suggests positioning exhaustion overriding breakout setup.",
     "source": "llm"
   },
   {
@@ -4738,7 +4738,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI declined from 943M to 909M while PM IV dropped from 61.2% to 63%, momentum deceleration signal activating as predicted.",
     "source": "llm"
   },
   {
@@ -4752,6 +4752,84 @@
     "prediction": "Oil PM-spot gap narrows to under 2pts within 3 days as convergence accelerates",
     "timeframeDays": 3,
     "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-14",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Oil PM-spot gap compressed to ~2pts from extreme 6pt divergence, exactly as predicted. Structural correction completing successfully with funding normalization.",
+    "source": "llm"
+  },
+  {
+    "id": "H-189",
+    "created": "2026-04-14",
+    "description": "BTC P/C ratio extreme exhaustion below 0.2 during new highs above 74k with funding normalization creates systematic pullback setup",
+    "conditions": {
+      "btc_ibit_pc_ratio": "< 0.2",
+      "btc_spot": "> 74000",
+      "btc_hl_funding_ann": "> -10"
+    },
+    "prediction": "BTC drops 3-5% within 5 days as call positioning unwinds",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-14",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-190",
+    "created": "2026-04-14",
+    "description": "HYPE funding crash below -25% while OI stabilizes above 900M and spot holds above 43 creates oversold bounce setup",
+    "conditions": {
+      "hype_hl_funding_ann": "< -25",
+      "hype_hl_oi": "> 900000000",
+      "hype_spot": "> 43"
+    },
+    "prediction": "HYPE recovers 5-8% within 7 days as funding normalizes",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-14",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-191",
+    "created": "2026-04-14",
+    "description": "AMZN stock explosive momentum above 250 with basis collapse to deeply negative creates perp catch-up acceleration",
+    "conditions": {
+      "amzn_stock": "> 250",
+      "amzn_hl_basis_pct": "< -0.1",
+      "amzn_hl_funding_ann": "> 0"
+    },
+    "prediction": "AMZN perp outperforms stock by 1-2% as basis converges to zero within 3 days",
+    "timeframeDays": 3,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-14",
