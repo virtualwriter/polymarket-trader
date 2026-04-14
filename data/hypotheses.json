@@ -4583,7 +4583,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE OI at 931M with momentum above 44.8 - record institutional positioning confirmed, breakout acceleration as predicted",
+    "postMortem": "HYPE OI at 931M with momentum above 44.8 - record institutional positioning confirmed, breakout acceleration as predicted | HYPE OI at 943M with spot at 45.026 and funding positive - institutional accumulation signal confirmed",
     "source": "llm"
   },
   {
@@ -4608,7 +4608,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil PM-spot gap narrowed from 6pts to ~4.7pts - extreme divergence beginning to correct as predicted, mean reversion setup working",
+    "postMortem": "Oil PM-spot gap narrowed from 6pts to ~4.7pts - extreme divergence beginning to correct as predicted, mean reversion setup working | Oil PM settlement at 79.7 vs spot 83.98 shows gap narrowing from extreme 6pt divergence - mean reversion progressing as predicted",
     "source": "llm"
   },
   {
@@ -4634,7 +4634,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC consolidating above 74k with HYPE OI at 943M and IV at 42.5% - conditions met, monitoring for breakout continuation",
     "source": "llm"
   },
   {
@@ -4675,6 +4675,83 @@
     "prediction": "HYPE-BTC positive correlation restoration within 3-5 days as institutional positioning stabilizes",
     "timeframeDays": 5,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-14",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-186",
+    "created": "2026-04-14",
+    "description": "BTC median maximum expansion above 93k with IV compression below 42.5% during consolidation above 74k creates breakout acceleration setup",
+    "conditions": {
+      "btc_med_max": "> 93000",
+      "btc_opt_iv_30d": "< 42.5",
+      "btc_spot": "> 74000"
+    },
+    "prediction": "BTC breaks above 75k within 5 days when median maximum expands above 93k",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-14",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-187",
+    "created": "2026-04-14",
+    "description": "HYPE OI surge above 940M with PM IV compression below 62% creates momentum continuation setup",
+    "conditions": {
+      "hype_hl_oi": "> 940000000",
+      "hype_pm_iv": "< 62",
+      "hype_spot": "> 44.5"
+    },
+    "prediction": "HYPE sustains above 45 for 3+ days when OI exceeds 940M with IV compression",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-14",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-188",
+    "created": "2026-04-14",
+    "description": "Oil PM-spot convergence acceleration below 4pt gap after extreme 6pt divergence indicates structural correction completion",
+    "conditions": {
+      "oil_pm_settle_ev": "< 87.98",
+      "oil_wti_spot": "> 83.5"
+    },
+    "prediction": "Oil PM-spot gap narrows to under 2pts within 3 days as convergence accelerates",
+    "timeframeDays": 3,
+    "confidence": 0.8,
     "tests": [
       {
         "date": "2026-04-14",
