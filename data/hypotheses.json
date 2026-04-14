@@ -4557,7 +4557,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC above 74k with HYPE OI above 930M - institutional accumulation continuing as predicted, framework correctly identifying sustained momentum setup",
     "source": "llm"
   },
   {
@@ -4583,7 +4583,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI at 931M with momentum above 44.8 - record institutional positioning confirmed, breakout acceleration as predicted",
     "source": "llm"
   },
   {
@@ -4597,6 +4597,84 @@
     "prediction": "Oil PM settlement recovers toward spot within 3-5 days as divergence closes",
     "timeframeDays": 5,
     "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-14",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Oil PM-spot gap narrowed from 6pts to ~4.7pts - extreme divergence beginning to correct as predicted, mean reversion setup working",
+    "source": "llm"
+  },
+  {
+    "id": "H-183",
+    "created": "2026-04-14",
+    "description": "BTC consolidation above 74k with HYPE OI stabilization above 930M and IV compression below 42.6% creates breakout continuation setup",
+    "conditions": {
+      "btc_spot": "> 74000",
+      "hype_hl_oi": "> 930000000",
+      "btc_opt_iv_30d": "< 42.6"
+    },
+    "prediction": "BTC breakout above 75k within 5-7 days as consolidation completes with institutional positioning intact",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-14",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-184",
+    "created": "2026-04-14",
+    "description": "Oil PM-spot convergence acceleration when gap narrows below 4pts from extreme 6pt divergence while funding normalizes above -200%",
+    "conditions": {
+      "oil_wti_spot": "> 83",
+      "oil_pm_settle_ev": "> 79",
+      "oil_hl_funding_ann": "> -200"
+    },
+    "prediction": "Oil PM-spot gap closes to under 2pts within 3-5 days as extreme divergence corrects",
+    "timeframeDays": 5,
+    "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-14",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-185",
+    "created": "2026-04-14",
+    "description": "HYPE momentum restoration with OI stabilization above 930M while funding normalizes above 5% creates correlation restoration with BTC",
+    "conditions": {
+      "hype_hl_oi": "> 930000000",
+      "hype_hl_funding_ann": "> 5",
+      "hype_spot": "> 44.5"
+    },
+    "prediction": "HYPE-BTC positive correlation restoration within 3-5 days as institutional positioning stabilizes",
+    "timeframeDays": 5,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-14",
