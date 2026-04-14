@@ -1256,3 +1256,22 @@ Framework successfully predicted oil PM-spot convergence with gap compressing fr
 
 ---
 
+### 2026-04-14 21:42 UTC
+
+**Portfolio:** $100.85 total | Cash $94.85 | 6 open | P&L $0.8528 | 69% win rate (29 trades)
+
+**Closed 1 trades:**
+- ✅ OIL short via polymarket/pm_no [cl-over-under-jun-2026 — NO — Will Crude Oil (CL) settle over $85 on the final trading day of June 2026?] (PM_IV_GT_OPT_IV) → target: +$0.0533 (5.3%, market 0.0533, funding 0.0000)
+
+**Statistical observations:**
+- [anomaly] oil_cl_pc_ratio = 34.283 is 4.9 std devs from mean (1.96 ± 6.66)
+- [anomaly] btc_hl_funding_ann = -36.88 is -3.3 std devs from mean (-0.51 ± 11.07)
+- [anomaly] btc_pm_iv = 47.3 is 3.1 std devs from mean (43.94 ± 1.08)
+- [anomaly] btc_med_max = 93750 is 3.0 std devs from mean (90583.78 ± 1047.73)
+- [anomaly] gold_gld_pc_ratio = 0.203 is -2.5 std devs from mean (0.57 ± 0.15)
+
+**LLM analysis:**
+Framework successfully identified P/C ratio exhaustion pattern in BTC exactly as hypothesized - extreme positioning below 0.2 created unsustainable call positioning that unwound systematically. HYPE showing textbook institutional distribution with 22M OI decline while maintaining spot above 43, suggesting smart money exit near completion. Gold funding overcorrection from positive back to -29.38% while spot holds strong above 4830 creates classic funding mean reversion setup. Key insight: positioning extremes (P/C ratios, OI changes) provide more reliable signals than pure momentum indicators during consolidation phases. Cross-asset funding normalization cycle continuing with all major assets showing funding compression toward neutral territory.
+
+---
+

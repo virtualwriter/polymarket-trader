@@ -4789,7 +4789,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Exactly correct - BTC P/C ratio hit extreme low of 0.172 during new highs above 75.2k, then normalized to 0.249, creating systematic pullback to 73.9k as predicted. Options positioning exhaustion was the key signal.",
     "source": "llm"
   },
   {
@@ -4815,7 +4815,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Confirmed - HYPE funding crashed to -12.35% while OI declined to 907M and spot weakened to 43.1, showing distribution completion as outlined. Pattern working as expected.",
     "source": "llm"
   },
   {
@@ -4830,6 +4830,84 @@
     "prediction": "AMZN perp outperforms stock by 1-2% as basis converges to zero within 3 days",
     "timeframeDays": 3,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-14",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Partially triggered - AMZN hit 251.92 with basis turning negative to -0.13%, but magnitude less extreme than predicted. Stock momentum decelerated rather than creating explosive catch-up trade.",
+    "source": "llm"
+  },
+  {
+    "id": "H-192",
+    "created": "2026-04-14",
+    "description": "BTC P/C ratio normalization completion signal - when P/C recovers above 0.24 from extreme lows below 0.2 during consolidation above 73.5k with funding normalization below -30%, systematic call exhaustion completes and creates oversold bounce setup",
+    "conditions": {
+      "btc_ibit_pc_ratio": "> 0.24",
+      "btc_spot": "> 73500",
+      "btc_hl_funding_ann": "< -30"
+    },
+    "prediction": "BTC bounces within 3-5 days to test 75k resistance",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-14",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-193",
+    "created": "2026-04-14",
+    "description": "HYPE institutional capitulation completion - when OI declines below 905M from 930M+ peaks while spot holds above 43 and funding stays negative below -10%, distribution phase completes and creates oversold reversal opportunity",
+    "conditions": {
+      "hype_hl_oi": "< 905000000",
+      "hype_spot": "> 43",
+      "hype_hl_funding_ann": "< -10"
+    },
+    "prediction": "HYPE reversal bounce to 45+ within one week",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-14",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-194",
+    "created": "2026-04-14",
+    "description": "Gold funding overcorrection reversal - when funding drops from positive territory to below -25% while spot holds above 4830 and PM premium stays above 80pts vs futures, extreme funding swing creates reversal setup",
+    "conditions": {
+      "gold_hl_funding_ann": "< -25",
+      "gold_gc_spot": "> 4830",
+      "gold_pm_settle_ev": "> 4910"
+    },
+    "prediction": "Gold funding normalizes above -5% within 5 days with spot strength",
+    "timeframeDays": 5,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-14",
