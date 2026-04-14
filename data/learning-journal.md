@@ -1217,3 +1217,26 @@ Framework reaching peak efficiency in distinguishing continuation vs reversal si
 
 ---
 
+### 2026-04-14 14:46 UTC
+
+**Portfolio:** $100.80 total | Cash $93.80 | 7 open | P&L $0.7995 | 68% win rate (28 trades)
+
+**Closed 3 trades:**
+- ✅ AMZN long via spot/spot [AMZN spot] (LLM_HYPOTHESIS) → target: +$0.0331 (3.3%, market 0.0331, funding 0.0000)
+- ❌ AMZN short via spot/spot [AMZN spot] (PC_RATIO_EXTREME_LOW) → stop: $-0.0331 (-3.3%, market -0.0331, funding 0.0000)
+- ❌ OIL long via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT) → stop: $-0.0544 (-5.4%, market -0.0661, funding 0.0116)
+
+**Opened 3 positions:**
+- BTC short @ $75236 via spot/spot [BTC spot] (PC_RATIO_EXTREME_LOW)
+- OIL long @ $91.31 via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT)
+- AMZN short @ $245.77 via spot/spot [AMZN spot] (PC_RATIO_EXTREME_LOW)
+
+**Statistical observations:**
+- [anomaly] btc_med_max = 93947 is 3.9 std devs from mean (90484.85 ± 893.27)
+- [anomaly] gold_gld_pc_ratio = 0.081 is -3.7 std devs from mean (0.58 ± 0.14)
+- [anomaly] btc_pm_iv = 47 is 3.4 std devs from mean (43.84 ± 0.93)
+- [anomaly] gold_med_min = 4330 is -2.9 std devs from mean (4360.59 ± 10.65)
+- [anomaly] oil_pm_settle_ev = 77.8 is -2.4 std devs from mean (84.94 ± 2.97)
+
+---
+
