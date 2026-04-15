@@ -4945,7 +4945,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "ACTIVE - BTC holding above 74k with HYPE OI at record 939M and IV compressed to 43.9%, consolidation phase continuing but breakout setup intact.",
     "source": "llm"
   },
   {
@@ -5099,7 +5099,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE funding normalized to +10.95% with OI at 918M above threshold - pattern working, momentum restoration setup confirmed",
+    "postMortem": "HYPE funding normalized to +10.95% with OI at 918M above threshold - pattern working, momentum restoration setup confirmed | CONFIRMED - HYPE funding normalized from negative to +10.95% with OI stabilization above 939M as predicted. Pattern working but timeframe may extend in low-vol environment.",
     "source": "llm"
   },
   {
@@ -5202,7 +5202,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "PARTIALLY CONFIRMED - BTC consolidating above 74k with HYPE funding positive, but momentum resumption taking longer than expected in consolidated market.",
     "source": "llm"
   },
   {
@@ -5216,6 +5216,83 @@
     "prediction": "Oil systematic bounce within 3-5 days as extreme panic positioning reverses",
     "timeframeDays": 5,
     "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-15",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "ACTIVE - Oil P/C ratio at extreme 34.3 with funding at +6.57%, creating compelling contrarian setup as systematic panic positioning continues unwinding.",
+    "source": "llm"
+  },
+  {
+    "id": "H-207",
+    "created": "2026-04-15",
+    "description": "Oil P/C ratio extreme capitulation reversal - when oil P/C spikes above 30 with funding normalization below 50% absolute creates systematic bounce setup within 5-7 days",
+    "conditions": {
+      "oil_cl_pc_ratio": "> 30",
+      "oil_hl_funding_ann": "between -50 and 50"
+    },
+    "prediction": "Oil spot price bounce 3-5% within 5-7 days as panic positioning unwinds",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-15",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-208",
+    "created": "2026-04-15",
+    "description": "BTC consolidation above 74k with HYPE OI record stabilization above 930M and IV compression creates breakout continuation setup",
+    "conditions": {
+      "btc_spot": "> 74000",
+      "hype_hl_oi": "> 930000000",
+      "btc_opt_iv_30d": "< 44"
+    },
+    "prediction": "BTC momentum resumption above 75k within 7 days when consolidation completes",
+    "timeframeDays": 7,
+    "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-15",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-209",
+    "created": "2026-04-15",
+    "description": "HYPE funding normalization completion to positive territory with OI record stabilization creates correlation restoration with BTC",
+    "conditions": {
+      "hype_hl_funding_ann": "> 5",
+      "hype_hl_oi": "> 930000000",
+      "btc_spot": "> 74000"
+    },
+    "prediction": "HYPE-BTC positive correlation restoration with HYPE outperformance within 5-7 days",
+    "timeframeDays": 7,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-15",
