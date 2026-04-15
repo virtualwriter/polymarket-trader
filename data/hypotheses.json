@@ -4945,7 +4945,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "ACTIVE - BTC holding above 74k with HYPE OI at record 939M and IV compressed to 43.9%, consolidation phase continuing but breakout setup intact.",
+    "postMortem": "ACTIVE - BTC holding above 74k with HYPE OI at record 939M and IV compressed to 43.9%, consolidation phase continuing but breakout setup intact. | BTC consolidation above 74k confirmed with HYPE OI record stabilization above 945M and IV compression to 45.1%. Pattern holding but waiting for breakout catalyst.",
     "source": "llm"
   },
   {
@@ -5099,7 +5099,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE funding normalized to +10.95% with OI at 918M above threshold - pattern working, momentum restoration setup confirmed | CONFIRMED - HYPE funding normalized from negative to +10.95% with OI stabilization above 939M as predicted. Pattern working but timeframe may extend in low-vol environment.",
+    "postMortem": "HYPE funding normalized to +10.95% with OI at 918M above threshold - pattern working, momentum restoration setup confirmed | CONFIRMED - HYPE funding normalized from negative to +10.95% with OI stabilization above 939M as predicted. Pattern working but timeframe may extend in low-vol environment. | HYPE funding normalization to positive territory (10.95%) with OI stabilization above 945M confirmed. Correlation restoration with BTC emerging as expected.",
     "source": "llm"
   },
   {
@@ -5252,7 +5252,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil P/C ratio panic exhaustion reversal from 34+ to 2.7 confirms systematic bounce setup. Positioning unwind accelerating as predicted.",
     "source": "llm"
   },
   {
@@ -5292,6 +5292,83 @@
     },
     "prediction": "HYPE-BTC positive correlation restoration with HYPE outperformance within 5-7 days",
     "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-15",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-210",
+    "created": "2026-04-15",
+    "description": "BTC PM IV extreme compression below 37% while spot consolidates above 74k with HYPE OI stabilization above 940M creates volatility expansion setup",
+    "conditions": {
+      "btc_pm_iv": "< 37",
+      "btc_spot": "> 74000",
+      "hype_hl_oi": "> 940000000"
+    },
+    "prediction": "BTC volatility expansion with PM IV recovery above 42% within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-15",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-211",
+    "created": "2026-04-15",
+    "description": "HYPE OI record stabilization above 945M with funding positive territory and spot above 44.6 creates momentum continuation setup",
+    "conditions": {
+      "hype_hl_oi": "> 945000000",
+      "hype_hl_funding_ann": "> 0.05",
+      "hype_spot": "> 44.6"
+    },
+    "prediction": "HYPE momentum continuation above 46 within 5 days",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-15",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-212",
+    "created": "2026-04-15",
+    "description": "Oil P/C ratio panic exhaustion reversal from 34+ to 2.7 with funding normalization creates contrarian bounce setup",
+    "conditions": {
+      "oil_cl_pc_ratio": "< 3",
+      "oil_hl_funding_ann": "> -200"
+    },
+    "prediction": "Oil technical bounce above 85 within 3-5 days as positioning unwinds",
+    "timeframeDays": 5,
     "confidence": 0.65,
     "tests": [
       {
