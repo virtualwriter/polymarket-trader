@@ -5022,7 +5022,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE funding normalized to +10.95% from extreme negatives with OI at 918M, confirming oversold completion. Pattern working as predicted for momentum restoration setup.",
     "source": "llm"
   },
   {
@@ -5048,7 +5048,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC P/C ratio at 0.249 showing normalization from extreme lows below 0.2. Consolidation above 73.5k confirmed but momentum resumption taking longer than expected - may need extended timeframe.",
     "source": "llm"
   },
   {
@@ -5062,6 +5062,83 @@
     "prediction": "Oil structural recovery trade completes, creating natural exit opportunity",
     "timeframeDays": 3,
     "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-15",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Oil funding normalized to +9.29% from extreme negatives, confirming structural recovery completion. Trade timing good but profits may be limited as normalization already achieved.",
+    "source": "llm"
+  },
+  {
+    "id": "H-201",
+    "created": "2026-04-15",
+    "description": "HYPE funding normalization to positive territory with OI stabilization above 915M after institutional distribution creates momentum restoration setup",
+    "conditions": {
+      "hype_hl_funding_ann": "> 5",
+      "hype_hl_oi": "> 915000000",
+      "hype_spot": "> 43.5"
+    },
+    "prediction": "HYPE spot moves above 44.5 within 3-5 days as funding normalization completes oversold bounce",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-15",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-202",
+    "created": "2026-04-15",
+    "description": "Oil P/C ratio extreme capitulation above 30 with funding normalization below 50% absolute creates systematic bounce setup",
+    "conditions": {
+      "oil_cl_pc_ratio": "> 30",
+      "oil_hl_funding_ann": "> -50"
+    },
+    "prediction": "Oil spot recovers above 85.5 within 5-7 days as extreme put positioning unwinds",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-15",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-203",
+    "created": "2026-04-15",
+    "description": "BTC consolidation completion signal when holds above 73.5k with P/C ratio normalization above 0.24 and funding stabilization below -10% creates momentum resumption setup",
+    "conditions": {
+      "btc_spot": "> 73500",
+      "btc_ibit_pc_ratio": "> 0.24",
+      "btc_hl_funding_ann": "> -10"
+    },
+    "prediction": "BTC breaks above 75k within 5-7 days as consolidation phase completes",
+    "timeframeDays": 7,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-15",
