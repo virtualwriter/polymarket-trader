@@ -1295,3 +1295,19 @@ Key insight emerging: institutional distribution patterns in HYPE show clear OI 
 
 ---
 
+### 2026-04-15 06:27 UTC
+
+**Portfolio:** $100.85 total | Cash $92.85 | 8 open | P&L $0.8528 | 69% win rate (29 trades)
+
+**Statistical observations:**
+- [anomaly] oil_cl_pc_ratio = 34.283 is 3.7 std devs from mean (2.88 ± 8.49)
+- [anomaly] btc_med_max = 93250 is 2.3 std devs from mean (90659.96 ± 1124.13)
+- [anomaly] gold_gld_spot = 445.09 is 2.3 std devs from mean (434.29 ± 4.77)
+- [anomaly] gold_gld_pc_ratio = 0.203 is -2.2 std devs from mean (0.56 ± 0.16)
+- [anomaly] gold_med_min = 4334 is -2.0 std devs from mean (4358.99 ± 12.23)
+
+**LLM analysis:**
+Key pattern recognition: positioning extremes are unwinding systematically but momentum resumption timeframes appear extended in current low-volatility environment. HYPE funding crash to near-zero suggests oversold completion rather than continued distribution. BTC P/C normalization confirmed but consolidation phase lasting longer than historical patterns suggest. Oil funding completing full normalization cycle indicates structural recovery trade maturation. Framework correctly identifying positioning exhaustion signals but may need to extend timeframes for resumption patterns in consolidated market conditions. Focus shifting from extreme positioning trades to normalization completion signals.
+
+---
+

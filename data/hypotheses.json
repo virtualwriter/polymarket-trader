@@ -4867,7 +4867,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC P/C ratio did normalize above 0.24 from extreme lows, confirming systematic call exhaustion pattern. However, momentum resumption was limited, suggesting consolidation phase extending longer than expected.",
+    "postMortem": "BTC P/C ratio did normalize above 0.24 from extreme lows, confirming systematic call exhaustion pattern. However, momentum resumption was limited, suggesting consolidation phase extending longer than expected. | BTC P/C ratio normalized to 0.249 from extreme lows, confirming systematic positioning unwind completion. However, momentum resumption taking longer than expected, suggesting market needs more consolidation time.",
     "source": "llm"
   },
   {
@@ -4971,7 +4971,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI actually declined further to 910M, but funding crashed to near-zero from -30%, suggesting oversold completion rather than distribution continuation. Pattern evolving toward normalization rather than continued decline.",
     "source": "llm"
   },
   {
@@ -4985,6 +4985,83 @@
     "prediction": "Oil consolidation or pullback within 48-72 hours as overcorrection from structural breakdown completes",
     "timeframeDays": 3,
     "confidence": 0.5,
+    "tests": [
+      {
+        "date": "2026-04-15",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Oil funding completing normalization cycle - recovered from extreme negatives to positive 44.9% then back to positive 41.89%, indicating structural recovery trade maturation. Pattern suggests natural profit-taking opportunity emerging.",
+    "source": "llm"
+  },
+  {
+    "id": "H-198",
+    "created": "2026-04-15",
+    "description": "HYPE funding normalization completion from extreme negative to neutral territory while OI stabilizes above 910M creates momentum restoration setup",
+    "conditions": {
+      "hype_hl_funding_ann": "> -5",
+      "hype_hl_oi": "> 910000000",
+      "hype_spot": "> 43"
+    },
+    "prediction": "HYPE momentum restoration and correlation with BTC resumes within 3-5 days",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-15",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-199",
+    "created": "2026-04-15",
+    "description": "BTC consolidation completion above 73.5k with P/C ratio normalization above 0.24 and funding stabilization below -15% creates momentum resumption setup",
+    "conditions": {
+      "btc_spot": "> 73500",
+      "btc_ibit_pc_ratio": "> 0.24",
+      "btc_hl_funding_ann": "> -15"
+    },
+    "prediction": "BTC momentum resumption toward 75-76k range within one week",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-15",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-200",
+    "created": "2026-04-15",
+    "description": "Oil funding normalization completion to positive territory with Brent-WTI spread stabilization above 6 creates profit-taking signal after structural recovery",
+    "conditions": {
+      "oil_hl_funding_ann": "> 20",
+      "oil_brent_wti_spread": "> 6"
+    },
+    "prediction": "Oil structural recovery trade completes, creating natural exit opportunity",
+    "timeframeDays": 3,
+    "confidence": 0.8,
     "tests": [
       {
         "date": "2026-04-15",
