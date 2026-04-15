@@ -5099,7 +5099,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE funding normalized to +10.95% with OI at 918M above threshold - pattern working, momentum restoration setup confirmed",
     "source": "llm"
   },
   {
@@ -5124,7 +5124,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil P/C at extreme 34.28 with funding +9.29% - extreme positioning confirmed, waiting for bounce signal",
     "source": "llm"
   },
   {
@@ -5139,6 +5139,83 @@
     "prediction": "BTC breaks above 75k within 5-7 days as consolidation phase completes",
     "timeframeDays": 7,
     "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-15",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "BTC holding 74.1k with P/C at 0.249 and funding -6.19% - conditions met but momentum resumption taking longer timeframe",
+    "source": "llm"
+  },
+  {
+    "id": "H-204",
+    "created": "2026-04-15",
+    "description": "HYPE funding positive territory confirmation with OI stabilization above 915M creates correlation restoration with BTC",
+    "conditions": {
+      "hype_hl_funding_ann": "> 10",
+      "hype_hl_oi": "> 915000000",
+      "hype_spot": "> 43.5"
+    },
+    "prediction": "HYPE-BTC correlation restores to positive territory within 3-5 days as funding normalization completes",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-15",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-205",
+    "created": "2026-04-15",
+    "description": "BTC consolidation completion above 74k with P/C normalization and HYPE funding positive creates momentum resumption setup",
+    "conditions": {
+      "btc_spot": "> 74000",
+      "btc_ibit_pc_ratio": "> 0.24",
+      "hype_hl_funding_ann": "> 8"
+    },
+    "prediction": "BTC momentum resumption above 75k within 5-7 days as positioning resets complete",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-15",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-206",
+    "created": "2026-04-15",
+    "description": "Oil P/C ratio extreme capitulation above 30 with funding normalization below 20% creates systematic bounce setup",
+    "conditions": {
+      "oil_cl_pc_ratio": "> 30",
+      "oil_hl_funding_ann": "> -50"
+    },
+    "prediction": "Oil systematic bounce within 3-5 days as extreme panic positioning reverses",
+    "timeframeDays": 5,
+    "confidence": 0.75,
     "tests": [
       {
         "date": "2026-04-15",
