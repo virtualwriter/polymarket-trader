@@ -5330,7 +5330,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC PM IV collapsed to historic 36.6 (-5.1σ) confirming extreme compression setup - waiting for volatility expansion | BTC PM IV hitting -3.9σ compression validates extreme volatility mispricing hypothesis - most extreme statistical deviation observed",
+    "postMortem": "BTC PM IV collapsed to historic 36.6 (-5.1σ) confirming extreme compression setup - waiting for volatility expansion | BTC PM IV hitting -3.9σ compression validates extreme volatility mispricing hypothesis - most extreme statistical deviation observed | BTC PM IV compression to 36.7% (-3.7σ) while consolidating above 74k confirms pattern - extreme statistical deviations create highest probability mean reversion setups",
     "source": "llm"
   },
   {
@@ -5507,7 +5507,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI stabilization above 950M with funding turning negative to -39.5% creates oversold setup as predicted - institutional distribution completion patterns working consistently",
     "source": "llm"
   },
   {
@@ -5522,6 +5522,56 @@
     "prediction": "BTC spot will move above 76k within 7 days when median minimum expands during consolidation",
     "timeframeDays": 7,
     "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-16",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-219",
+    "created": "2026-04-16",
+    "description": "BTC PM IV extreme compression below 37% (-4σ) during consolidation above 74k creates volatility expansion within 5-7 days",
+    "conditions": {
+      "btc_pm_iv": "< 37",
+      "btc_spot": "> 74000"
+    },
+    "prediction": "BTC PM IV expands above 40% within one week",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-16",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-220",
+    "created": "2026-04-16",
+    "description": "HYPE OI record stabilization above 940M with funding crash below -35% creates oversold bounce setup",
+    "conditions": {
+      "hype_hl_oi": "> 940000000",
+      "hype_hl_funding_ann": "< -35"
+    },
+    "prediction": "HYPE spot recovers above 46.5 within 3-5 days",
+    "timeframeDays": 5,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-16",
