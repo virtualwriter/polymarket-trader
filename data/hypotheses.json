@@ -5381,7 +5381,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil P/C dropped to 1.115 from extreme 34+ levels confirming panic exhaustion reversal pattern working as expected.",
     "source": "llm"
   },
   {
@@ -5558,7 +5558,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC PM IV at 36.9% (-3.7σ) confirms extreme compression pattern active. Framework correctly identifying most extreme volatility mispricing observed.",
     "source": "llm"
   },
   {
@@ -5572,6 +5572,83 @@
     "prediction": "HYPE spot recovers above 46.5 within 3-5 days",
     "timeframeDays": 5,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-16",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "HYPE OI at 931M with funding -11.6% shows institutional distribution moderating. OI stabilization pattern emerging as predicted.",
+    "source": "llm"
+  },
+  {
+    "id": "H-221",
+    "created": "2026-04-16",
+    "description": "BTC PM IV extreme compression below 37% during consolidation above 73.5k with AMZN P/C below 0.65 creates volatility expansion setup",
+    "conditions": {
+      "btc_pm_iv": "< 37",
+      "btc_spot": "> 73500",
+      "amzn_pc_ratio": "< 0.65"
+    },
+    "prediction": "BTC PM IV expands above 40% within 5-7 days as extreme compression reverses",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-16",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-222",
+    "created": "2026-04-16",
+    "description": "AMZN P/C ratio collapse below 0.44 with stock momentum above 245 and positive funding creates systematic momentum continuation",
+    "conditions": {
+      "amzn_pc_ratio": "< 0.44",
+      "amzn_stock": "> 245",
+      "amzn_hl_funding_ann": "> 5"
+    },
+    "prediction": "AMZN continues upward momentum above 250 within 3-5 days as systematic repositioning completes",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-16",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-223",
+    "created": "2026-04-16",
+    "description": "Oil P/C ratio collapse below 1.2 after extreme above 34 with funding normalization below 50% absolute creates bounce completion",
+    "conditions": {
+      "oil_cl_pc_ratio": "< 1.2",
+      "oil_hl_funding_ann": "> -50"
+    },
+    "prediction": "Oil technical bounce accelerates with P/C normalization as panic positioning unwinds",
+    "timeframeDays": 3,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-16",

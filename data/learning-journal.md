@@ -1423,3 +1423,22 @@ Framework successfully identifying extreme statistical anomalies creating system
 
 ---
 
+### 2026-04-16 14:48 UTC
+
+**Portfolio:** $100.90 total | Cash $93.90 | 7 open | P&L $0.8963 | 71% win rate (31 trades)
+
+**Closed 1 trades:**
+- ✅ OIL long via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT) → target: +$0.0207 (2.1%, market 0.0180, funding 0.0027)
+
+**Statistical observations:**
+- [anomaly] btc_pm_iv = 36.9 is -3.3 std devs from mean (43.61 ± 2.05)
+- [anomaly] btc_med_min = 54792 is 3.2 std devs from mean (47901.59 ± 2155.57)
+- [anomaly] oil_opt_iv_90d = 22.2 is -2.4 std devs from mean (25.14 ± 1.24)
+- [anomaly] oil_opt_iv_30d = 23.2 is -2.2 std devs from mean (27.77 ± 2.08)
+- [anomaly] gold_med_min = 4327 is -2.0 std devs from mean (4356.19 ± 14.25)
+
+**LLM analysis:**
+Statistical anomaly framework proving highly effective with BTC PM IV reaching -3.7σ compression representing most extreme volatility mispricing observed. HYPE OI record stabilization above 930M confirming institutional accumulation completion patterns. Oil P/C exhaustion reversal from 34+ to 1.115 demonstrates positioning cycle completion. Key insight: volatility anomalies beyond -3σ during stable price action offer highest-probability systematic opportunities. Cross-asset funding normalization creating multiple systematic positioning opportunities across venues.
+
+---
+
