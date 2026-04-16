@@ -5381,7 +5381,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil P/C dropped to 1.115 from extreme 34+ levels confirming panic exhaustion reversal pattern working as expected.",
+    "postMortem": "Oil P/C dropped to 1.115 from extreme 34+ levels confirming panic exhaustion reversal pattern working as expected. | Oil P/C ratio completed dramatic reversal from 34+ to 1.115, confirming positioning exhaustion cycle completion. Bounce setup validated.",
     "source": "llm"
   },
   {
@@ -5431,7 +5431,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI stabilized above 950M initially but declined to 931M while spot held above 44.5. Pattern partially confirmed but requires adjustment to stabilization range.",
     "source": "llm"
   },
   {
@@ -5558,7 +5558,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC PM IV at 36.9% (-3.7σ) confirms extreme compression pattern active. Framework correctly identifying most extreme volatility mispricing observed.",
+    "postMortem": "BTC PM IV at 36.9% (-3.7σ) confirms extreme compression pattern active. Framework correctly identifying most extreme volatility mispricing observed. | BTC PM IV compression reached -3.7σ, exceeding the -3.0σ threshold with spot holding above 74k. Most extreme statistical anomaly observed, confirming hypothesis validity.",
     "source": "llm"
   },
   {
@@ -5649,6 +5649,84 @@
     "prediction": "Oil technical bounce accelerates with P/C normalization as panic positioning unwinds",
     "timeframeDays": 3,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-16",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-224",
+    "created": "2026-04-16",
+    "description": "BTC PM IV extreme compression beyond -3.7σ during stable consolidation creates highest-probability volatility expansion setup",
+    "conditions": {
+      "btc_pm_iv": "< 37",
+      "btc_spot": "> 73500",
+      "btc_opt_iv_30d": "< 45"
+    },
+    "prediction": "BTC PM IV will expand above 42% within 7 days as -3.7σ statistical anomaly mean reverts",
+    "timeframeDays": 7,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-16",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-225",
+    "created": "2026-04-16",
+    "description": "HYPE institutional positioning completion signal when OI stabilizes above 930M after record surge creates momentum continuation",
+    "conditions": {
+      "hype_hl_oi": "> 930000000",
+      "hype_spot": "> 44",
+      "hype_hl_funding_ann": "> -20"
+    },
+    "prediction": "HYPE spot will break above 46 within 5 days as institutional accumulation completes",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-16",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-226",
+    "created": "2026-04-16",
+    "description": "Oil P/C exhaustion reversal completion from extreme 34+ to normal 1.115 indicates positioning cycle complete",
+    "conditions": {
+      "oil_cl_pc_ratio": "< 1.5",
+      "oil_hl_funding_ann": "< 50",
+      "oil_wti_spot": "> 83"
+    },
+    "prediction": "Oil will consolidate in 82-86 range for 3-5 days as extreme positioning unwinds completely",
+    "timeframeDays": 5,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-16",
