@@ -5330,7 +5330,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC PM IV collapsed to historic 36.6 (-5.1σ) confirming extreme compression setup - waiting for volatility expansion",
+    "postMortem": "BTC PM IV collapsed to historic 36.6 (-5.1σ) confirming extreme compression setup - waiting for volatility expansion | BTC PM IV hitting -3.9σ compression validates extreme volatility mispricing hypothesis - most extreme statistical deviation observed",
     "source": "llm"
   },
   {
@@ -5445,6 +5445,83 @@
     "prediction": "Oil WTI spot rally above 85 within 3-5 days as panic positioning unwinds",
     "timeframeDays": 5,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-16",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-216",
+    "created": "2026-04-16",
+    "description": "BTC PM IV extreme compression below 38% while spot consolidates above 74k creates volatility expansion setup",
+    "conditions": {
+      "btc_pm_iv": "< 38",
+      "btc_spot": "> 74000"
+    },
+    "prediction": "BTC PM IV will expand above 42% within 7 days as extreme compression reverses",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-16",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-217",
+    "created": "2026-04-16",
+    "description": "HYPE OI record stabilization above 950M with funding normalization to negative territory creates momentum setup",
+    "conditions": {
+      "hype_hl_oi": "> 950000000",
+      "hype_hl_funding_ann": "< 0",
+      "hype_spot": "> 45"
+    },
+    "prediction": "HYPE spot will break above 47 within 5 days as institutional positioning completes",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-16",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-218",
+    "created": "2026-04-16",
+    "description": "BTC median minimum expansion above 53k during consolidation phases creates momentum continuation confirmation",
+    "conditions": {
+      "btc_med_min": "> 53000",
+      "btc_spot": "> 74000",
+      "btc_pm_iv": "< 40"
+    },
+    "prediction": "BTC spot will move above 76k within 7 days when median minimum expands during consolidation",
+    "timeframeDays": 7,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-16",
