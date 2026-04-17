@@ -3136,7 +3136,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Triggering now - BTC at 73k with P/C ratio 0.39 showing extreme momentum exhaustion signal forming as predicted.",
+    "postMortem": "Triggering now - BTC at 73k with P/C ratio 0.39 showing extreme momentum exhaustion signal forming as predicted. | BTC extreme momentum continuing above 77k with P/C ratio at 0.211 - exhaustion signal may need recalibration for this cycle",
     "source": "llm"
   },
   {
@@ -5996,7 +5996,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Gold funding showing sextuple reversal pattern now - oscillating between -300% extremes and positive territory validates systematic overcorrection thesis",
     "source": "llm"
   },
   {
@@ -6037,6 +6037,81 @@
     "prediction": "AMZN funding normalizes below 10% within 3 days as perp catches up",
     "timeframeDays": 3,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-17",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "AMZN funding spiked to 34.41% validating extreme perp stress hypothesis - basis explosion to 0.2% confirms systematic divergence requiring correction",
+    "source": "llm"
+  },
+  {
+    "id": "H-239",
+    "created": "2026-04-17",
+    "description": "BTC PM IV extreme compression beyond -7σ during breakout above 77k creates highest-probability volatility expansion",
+    "conditions": {
+      "btc_spot": "> 77000",
+      "btc_pm_iv": "< 40"
+    },
+    "prediction": "BTC PM IV expansion above 42% within 5-7 days as statistical anomaly corrects",
+    "timeframeDays": 7,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-17",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-240",
+    "created": "2026-04-17",
+    "description": "Oil structural breakdown completion - Brent-WTI spread collapse below 1.0 with extreme funding creates systematic correction",
+    "conditions": {
+      "oil_brent_wti_spread": "< 1.0",
+      "oil_hl_funding_ann": "> 0.5"
+    },
+    "prediction": "Brent-WTI spread recovery above 3.0 within 5-7 days as structural arbitrage corrects",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-17",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-241",
+    "created": "2026-04-17",
+    "description": "AMZN perp-stock divergence explosion with basis above 0.2% during extreme stock moves creates correction opportunity",
+    "conditions": {
+      "amzn_hl_basis_pct": "> 0.15",
+      "amzn_stock": "> 254"
+    },
+    "prediction": "AMZN basis normalizes toward zero within 48-72 hours as arbitrage corrects extreme divergence",
+    "timeframeDays": 3,
+    "confidence": 0.75,
     "tests": [
       {
         "date": "2026-04-17",
