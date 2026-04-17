@@ -5840,7 +5840,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Gold showing even more extreme funding pattern than predicted - quadruple reversal with funding oscillating between -348% and positive territory while spot holds resilient. This overcorrection creates highest-probability systematic opportunity observed.",
     "source": "llm"
   },
   {
@@ -5866,7 +5866,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC consolidating above 74k with HYPE OI stabilizing at 929M after institutional distribution. The correlation restoration is beginning as both assets stabilize after extreme moves.",
     "source": "llm"
   },
   {
@@ -5881,6 +5881,84 @@
     "prediction": "Gold volatility expansion with IV rising above 12% within 5 days",
     "timeframeDays": 5,
     "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-17",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Gold PM IV compressed further to 9.8% while spot held above 4700 and funding showed unprecedented triple reversal pattern. The extreme -7.6σ compression validates statistical anomaly framework - this represents the most extreme volatility mispricing detected.",
+    "source": "llm"
+  },
+  {
+    "id": "H-233",
+    "created": "2026-04-17",
+    "description": "Gold quadruple funding reversal pattern - extreme negative funding below -300% oscillating with positive territory creates systematic overcorrection requiring multi-day bounce",
+    "conditions": {
+      "gold_hl_funding_ann": "< -300",
+      "gold_gc_spot": "> 4700",
+      "gold_pm_settle_ev": "> 4900"
+    },
+    "prediction": "Gold bounce above 4850 within 5-7 days after extreme funding oscillation completes",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-17",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-234",
+    "created": "2026-04-17",
+    "description": "BTC PM IV extreme compression below 10% during consolidation above 74k creates highest-probability volatility expansion setup",
+    "conditions": {
+      "btc_pm_iv": "< 10",
+      "btc_spot": "> 74000",
+      "btc_opt_iv_30d": "> 40"
+    },
+    "prediction": "BTC PM IV expansion above 45% within one week as extreme compression corrects",
+    "timeframeDays": 7,
+    "confidence": 0.9,
+    "tests": [
+      {
+        "date": "2026-04-17",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-235",
+    "created": "2026-04-17",
+    "description": "HYPE institutional positioning cycle completion - OI stabilization above 925M after record surge with funding normalization creates momentum resumption setup",
+    "conditions": {
+      "hype_hl_oi": "> 925000000",
+      "hype_hl_funding_ann": "> -15",
+      "hype_spot": "> 43"
+    },
+    "prediction": "HYPE momentum resumption above 45 within 5 days as institutional positioning completes",
+    "timeframeDays": 5,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-17",
