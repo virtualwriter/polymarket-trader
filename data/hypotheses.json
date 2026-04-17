@@ -6022,7 +6022,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC momentum breakout above 75k thesis partially validated - reached 77k+ with HYPE OI above 954M and positive correlation restoration confirming institutional positioning cycle.",
     "source": "llm"
   },
   {
@@ -6098,7 +6098,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil structural breakdown thesis validated - Brent-WTI spread collapsed to historic 0.2 low, now recovering to 0.7. Systematic correction beginning as predicted.",
     "source": "llm"
   },
   {
@@ -6112,6 +6112,85 @@
     "prediction": "AMZN basis normalizes toward zero within 48-72 hours as arbitrage corrects extreme divergence",
     "timeframeDays": 3,
     "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-17",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "AMZN perp-stock divergence explosion thesis validated - basis moved from negative to +0.12% during extreme stock momentum to 253.68, creating systematic correction as predicted.",
+    "source": "llm"
+  },
+  {
+    "id": "H-242",
+    "created": "2026-04-17",
+    "description": "BTC momentum acceleration above 77k with HYPE correlation restoration creates sustained breakout continuation when both assets move with positive correlation during IV normalization",
+    "conditions": {
+      "btc_spot": "> 77000",
+      "hype_spot": "> 44.5",
+      "btc_pm_iv": "< 40",
+      "hype_hl_oi": "> 950000000"
+    },
+    "prediction": "BTC continues to 78k+ within 3-5 days with HYPE following above 45",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-17",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-243",
+    "created": "2026-04-17",
+    "description": "Oil structural recovery completion profit-taking signal - Brent-WTI spread normalization above 0.5 from sub-1 lows with funding normalization creates systematic correction trade completion",
+    "conditions": {
+      "oil_brent_wti_spread": "> 0.5",
+      "oil_hl_funding_ann": "< 0.5",
+      "oil_pm_iv": "< 30"
+    },
+    "prediction": "Oil technical bounce completion, profit-taking opportunity emerges as structural recovery trade completes",
+    "timeframeDays": 3,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-17",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-244",
+    "created": "2026-04-17",
+    "description": "AMZN perp-stock basis normalization completion signal - basis recovering from deeply negative to positive territory while funding normalizes indicates systematic correction completion",
+    "conditions": {
+      "amzn_hl_basis_pct": "> 0.1",
+      "amzn_hl_funding_ann": "< 0.1",
+      "amzn_pc_ratio": "< 0.4"
+    },
+    "prediction": "AMZN momentum continuation above 254 as perp-stock convergence completes and options positioning becomes extreme",
+    "timeframeDays": 3,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-17",

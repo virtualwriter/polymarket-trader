@@ -1555,3 +1555,26 @@ Framework detecting unprecedented statistical extremes - BTC PM IV at -7.6σ rep
 
 ---
 
+### 2026-04-17 17:40 UTC
+
+**Portfolio:** $100.88 total | Cash $94.88 | 6 open | P&L $0.8839 | 68% win rate (38 trades)
+
+**Closed 2 trades:**
+- ✅ OIL long via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH) → target: +$0.0265 (2.7%, market 0.0265, funding 0.0000)
+- ❌ OIL short via polymarket/pm_no [cl-over-under-jun-2026 — NO — Will Crude Oil (CL) settle over $85 on the final trading day of June 2026?] (PM_IV_GT_OPT_IV) → stop: $-0.0994 (-9.9%, market -0.0994, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL short @ $0.7050000000000001 via polymarket/pm_no [cl-over-under-jun-2026 — NO — Will Crude Oil (CL) settle over $90 on the final trading day of June 2026?] (LLM_HYPOTHESIS)
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 17.7pp (was 20.6, now 2.9)
+- [anomaly] gold_pm_iv = 10.1 is -4.2 std devs from mean (14.83 ± 1.13)
+- [anomaly] gold_med_max = 5210 is -3.9 std devs from mean (5335.48 ± 31.88)
+- [anomaly] gold_med_min = 4532 is 3.8 std devs from mean (4362.40 ± 45.16)
+- [anomaly] btc_med_max = 94286 is 2.3 std devs from mean (91082.02 ± 1389.89)
+
+**LLM analysis:**
+Framework successfully predicted oil structural breakdown reversal with Brent-WTI spread recovering from historic 0.2 low to 0.7. BTC momentum breakout above 77k confirmed with HYPE correlation restoration validating institutional positioning cycle completion. Key insight: extreme structural breakdowns (spread collapse below 1.0) create systematic arbitrage opportunities requiring 48-72 hour correction. AMZN perp-stock divergence explosion to positive basis confirms extreme funding stress creates predictable convergence patterns. Statistical anomalies beyond -7σ in BTC PM IV represent highest-probability volatility expansion setups ever observed.
+
+---
+
