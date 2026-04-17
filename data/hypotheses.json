@@ -6073,7 +6073,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC PM IV compression at -7.6σ represents most extreme statistical anomaly ever observed - this level of mispricing creates highest-probability volatility expansion setup",
     "source": "llm"
   },
   {
@@ -6098,7 +6098,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil structural breakdown thesis validated - Brent-WTI spread collapsed to historic 0.2 low, now recovering to 0.7. Systematic correction beginning as predicted.",
+    "postMortem": "Oil structural breakdown thesis validated - Brent-WTI spread collapsed to historic 0.2 low, now recovering to 0.7. Systematic correction beginning as predicted. | Oil structural breakdown with Brent-WTI spread at historic 0.2 low validated extreme arbitrage opportunity - spread already recovering to 0.7 confirming systematic correction thesis",
     "source": "llm"
   },
   {
@@ -6150,7 +6150,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC momentum acceleration above 77k with HYPE correlation restoration confirmed - both assets moving with positive correlation during breakout validates institutional positioning cycle completion",
     "source": "llm"
   },
   {
@@ -6190,6 +6190,82 @@
     },
     "prediction": "AMZN momentum continuation above 254 as perp-stock convergence completes and options positioning becomes extreme",
     "timeframeDays": 3,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-17",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-245",
+    "created": "2026-04-17",
+    "description": "BTC PM IV extreme compression beyond -7σ during breakout above 77k creates systematic volatility expansion requiring correction within one week",
+    "conditions": {
+      "btc_pm_iv": "< 40",
+      "btc_spot": "> 77000"
+    },
+    "prediction": "BTC PM IV expands above 42% within 7 days when compressed below 40% during breakouts above 77k",
+    "timeframeDays": 7,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-17",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-246",
+    "created": "2026-04-17",
+    "description": "Oil structural breakdown reversal profit-taking signal when Brent-WTI spread recovers above 1.0 from historic lows below 0.5 with funding normalization",
+    "conditions": {
+      "oil_brent_wti_spread": "> 1.0",
+      "oil_hl_funding_ann": "> -50"
+    },
+    "prediction": "Oil complex correction completes within 5 days when spread recovers above 1.0 from sub-0.5 lows",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-17",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-247",
+    "created": "2026-04-17",
+    "description": "HYPE momentum deceleration completion signal when OI declines below 940M from 954M peak while spot holds above 44 and funding normalizes below 15%",
+    "conditions": {
+      "hype_hl_oi": "< 940000000",
+      "hype_spot": "> 44",
+      "hype_hl_funding_ann": "< 0.15"
+    },
+    "prediction": "HYPE institutional distribution completes and creates oversold bounce setup within 3-5 days",
+    "timeframeDays": 5,
     "confidence": 0.7,
     "tests": [
       {

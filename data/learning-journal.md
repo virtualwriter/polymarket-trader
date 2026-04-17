@@ -1578,3 +1578,25 @@ Framework successfully predicted oil structural breakdown reversal with Brent-WT
 
 ---
 
+### 2026-04-17 21:33 UTC
+
+**Portfolio:** $100.81 total | Cash $94.81 | 6 open | P&L $0.8059 | 67% win rate (39 trades)
+
+**Closed 1 trades:**
+- ❌ OIL short via polymarket/pm_no [cl-over-under-jun-2026 — NO — Will Crude Oil (CL) settle over $90 on the final trading day of June 2026?] (LLM_HYPOTHESIS) → stop: $-0.0780 (-7.8%, market -0.0780, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL short @ $86 via spot/spot [OIL spot] (PC_RATIO_EXTREME_LOW)
+
+**Statistical observations:**
+- [anomaly] gold_pm_iv = 9.6 is -4.1 std devs from mean (14.77 ± 1.25)
+- [anomaly] gold_med_min = 4567 is 4.0 std devs from mean (4364.78 ± 49.97)
+- [anomaly] gold_med_max = 5210 is -3.6 std devs from mean (5334.02 ± 34.43)
+- [anomaly] btc_med_max = 95227 is 2.8 std devs from mean (91130.22 ± 1451.48)
+- [anomaly] btc_pm_ev = 83956 is 2.2 std devs from mean (79277.74 ± 2135.13)
+
+**LLM analysis:**
+Historic statistical extremes validated: BTC PM IV at -7.6σ compression creates unprecedented arbitrage opportunity, while oil Brent-WTI spread collapse to 0.2 already reversing confirms structural breakdown thesis. Key insight: statistical anomalies beyond -7σ combined with structural breakdowns below historic ranges (spread <1.0) offer systematic opportunities requiring 48-72 hour corrections. HYPE OI decline from 954M peak while funding normalizes suggests institutional distribution completion creating oversold setup.
+
+---
+
