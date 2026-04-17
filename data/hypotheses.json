@@ -3922,7 +3922,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "ACTIVATING - BTC holding above 70.9k after pullback, testing oversold bounce thesis with funding normalization occurring. | H-155 Gold extreme funding crash reversal tracking perfectly - funding at -369% while spot holds 4706, creating unprecedented reversal setup. Opening gold long position. | H-155 Gold extreme funding crash reversal accelerating perfectly - funding recovered from -369% to -10% while spot held above 4700, exactly as predicted. Position performing well. | SUCCESSFUL - Gold funding crash below -96% created reversal acceleration as predicted, now recovering toward -10% range | VALIDATED - Gold funding crash below -369% followed by recovery to -10% confirms extreme reversal pattern, showing framework can distinguish between positioning opportunity vs exhaustion | VALIDATED - BTC dropped to 70.7k after P/C exhaustion extremes below 0.44 but held above 70.5k with oversold bounce setup confirmed. Framework correctly identified consolidation floor. | Gold extreme funding crash below -96% while spot holds above 4700 creates reversal acceleration - hypothesis active and playing out as expected with funding at extreme levels. | Gold extreme funding crash pattern continuing to work - funding hit -347% while spot holds above 4793, validating extreme reversal setup framework",
+    "postMortem": "ACTIVATING - BTC holding above 70.9k after pullback, testing oversold bounce thesis with funding normalization occurring. | H-155 Gold extreme funding crash reversal tracking perfectly - funding at -369% while spot holds 4706, creating unprecedented reversal setup. Opening gold long position. | H-155 Gold extreme funding crash reversal accelerating perfectly - funding recovered from -369% to -10% while spot held above 4700, exactly as predicted. Position performing well. | SUCCESSFUL - Gold funding crash below -96% created reversal acceleration as predicted, now recovering toward -10% range | VALIDATED - Gold funding crash below -369% followed by recovery to -10% confirms extreme reversal pattern, showing framework can distinguish between positioning opportunity vs exhaustion | VALIDATED - BTC dropped to 70.7k after P/C exhaustion extremes below 0.44 but held above 70.5k with oversold bounce setup confirmed. Framework correctly identified consolidation floor. | Gold extreme funding crash below -96% while spot holds above 4700 creates reversal acceleration - hypothesis active and playing out as expected with funding at extreme levels. | Gold extreme funding crash pattern continuing to work - funding hit -347% while spot holds above 4793, validating extreme reversal setup framework | Gold extreme funding crash below -96% while spot holds above 4700 created reversal acceleration - position working with funding recovering toward -15% as predicted, validating extreme funding reversal pattern",
     "source": "llm"
   },
   {
@@ -5330,7 +5330,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC PM IV collapsed to historic 36.6 (-5.1σ) confirming extreme compression setup - waiting for volatility expansion | BTC PM IV hitting -3.9σ compression validates extreme volatility mispricing hypothesis - most extreme statistical deviation observed | BTC PM IV compression to 36.7% (-3.7σ) while consolidating above 74k confirms pattern - extreme statistical deviations create highest probability mean reversion setups | BTC PM IV extreme compression below 37% while spot consolidates above 74k creates volatility expansion setup - PM IV at 37.3% approaching extreme levels, monitoring for expansion signal.",
+    "postMortem": "BTC PM IV collapsed to historic 36.6 (-5.1σ) confirming extreme compression setup - waiting for volatility expansion | BTC PM IV hitting -3.9σ compression validates extreme volatility mispricing hypothesis - most extreme statistical deviation observed | BTC PM IV compression to 36.7% (-3.7σ) while consolidating above 74k confirms pattern - extreme statistical deviations create highest probability mean reversion setups | BTC PM IV extreme compression below 37% while spot consolidates above 74k creates volatility expansion setup - PM IV at 37.3% approaching extreme levels, monitoring for expansion signal. | BTC PM IV extreme compression below 37% creating volatility expansion - IV recovering from 36.7% to 37.5% as consolidation above 74k holds, early validation of volatility mean reversion",
     "source": "llm"
   },
   {
@@ -5866,7 +5866,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC consolidating above 74k with HYPE OI stabilizing at 929M after institutional distribution. The correlation restoration is beginning as both assets stabilize after extreme moves.",
+    "postMortem": "BTC consolidating above 74k with HYPE OI stabilizing at 929M after institutional distribution. The correlation restoration is beginning as both assets stabilize after extreme moves. | BTC consolidation above 74k with HYPE OI stabilization above 930M and IV compression showing breakout - BTC broke 75k with HYPE following, confirming correlation restoration pattern",
     "source": "llm"
   },
   {
@@ -5959,6 +5959,84 @@
     "prediction": "HYPE momentum resumption above 45 within 5 days as institutional positioning completes",
     "timeframeDays": 5,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-17",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-236",
+    "created": "2026-04-17",
+    "description": "Gold quintuple funding reversal pattern - extreme oscillation between negative below -300% and positive territory within 72 hours while spot holds above 4787 creates systematic overcorrection bounce requiring 5-7 day correction",
+    "conditions": {
+      "gold_hl_funding_ann": "> -50",
+      "gold_gc_spot": "> 4787",
+      "gold_pm_settle_ev": "> 4900"
+    },
+    "prediction": "Gold bounces to 4850+ within 7 days as funding normalizes",
+    "timeframeDays": 7,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-17",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-237",
+    "created": "2026-04-17",
+    "description": "BTC momentum breakout above 75k with HYPE OI stabilization above 943M and PM IV compression below 38% creates sustained trend continuation when both assets show positive correlation",
+    "conditions": {
+      "btc_spot": "> 75000",
+      "hype_hl_oi": "> 943000000",
+      "btc_pm_iv": "< 38"
+    },
+    "prediction": "BTC continues above 76k with HYPE following above 44.5 within 5 days",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-17",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-238",
+    "created": "2026-04-17",
+    "description": "AMZN funding spike to 34.4% while basis stays positive above 0.07% creates perp-stock divergence correction opportunity as funding becomes unsustainable",
+    "conditions": {
+      "amzn_hl_funding_ann": "> 0.25",
+      "amzn_hl_basis_pct": "> 0.05",
+      "amzn_stock": "> 250"
+    },
+    "prediction": "AMZN funding normalizes below 10% within 3 days as perp catches up",
+    "timeframeDays": 3,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-17",
