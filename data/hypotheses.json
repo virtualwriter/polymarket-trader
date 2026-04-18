@@ -3896,7 +3896,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "AMZN basis at -1.27% with -83% funding, most extreme dislocation observed. Systematic correction pressure building exactly as hypothesis predicts.",
+    "postMortem": "AMZN basis at -1.27% with -83% funding, most extreme dislocation observed. Systematic correction pressure building exactly as hypothesis predicts. | AMZN basis at -0.22% with funding crash to -8.4% confirms extreme correction acceleration pattern - negative funding with negative basis creates systematic correction pressure",
     "source": "llm"
   },
   {
@@ -5406,7 +5406,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC PM IV compression to 37.5% represents -7σ anomaly confirming extreme compression thesis - this level of statistical deviation creates high-probability mean reversion",
     "source": "llm"
   },
   {
@@ -5583,7 +5583,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE OI at 931M with funding -11.6% shows institutional distribution moderating. OI stabilization pattern emerging as predicted.",
+    "postMortem": "HYPE OI at 931M with funding -11.6% shows institutional distribution moderating. OI stabilization pattern emerging as predicted. | HYPE OI at 938M with funding crash to -27.6% then recovery to +10.95% confirms oversold bounce pattern - funding extremes below -25% do create reliable reversals",
     "source": "llm"
   },
   {
@@ -6342,6 +6342,106 @@
     "prediction": "Gold funding normalizes above 0% within 3 days as extreme oscillation corrects",
     "timeframeDays": 3,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-251",
+    "created": "2026-04-18",
+    "description": "BTC PM IV extreme compression below 40% during consolidation above 77k creates highest-probability volatility expansion",
+    "conditions": {
+      "btc_pm_iv": "< 40.0",
+      "btc_spot": "> 77000"
+    },
+    "prediction": "BTC PM IV expansion above 42% within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-252",
+    "created": "2026-04-18",
+    "description": "HYPE funding normalization to positive territory with OI stabilization above 938M creates correlation restoration with BTC",
+    "conditions": {
+      "hype_hl_funding_ann": "> 5.0",
+      "hype_hl_oi": "> 938000000"
+    },
+    "prediction": "HYPE-BTC correlation restoration above 0.5 within 5 days",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-253",
+    "created": "2026-04-18",
+    "description": "Gold PM IV extreme compression below 10.5% while spot holds above 4830 creates volatility expansion setup",
+    "conditions": {
+      "gold_pm_iv": "< 10.5",
+      "gold_gc_spot": "> 4830"
+    },
+    "prediction": "Gold PM IV expansion above 13% within 5 days",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-254",
+    "created": "2026-04-18",
+    "description": "AMZN funding crash to -8.4% while basis stays negative creates perp underperformance reversal setup",
+    "conditions": {
+      "amzn_hl_funding_ann": "< -8.0",
+      "amzn_hl_basis_pct": "< -0.15"
+    },
+    "prediction": "AMZN basis recovery above -0.1% within 3 days",
+    "timeframeDays": 3,
+    "confidence": 0.8,
     "tests": [
       {
         "date": "2026-04-18",
