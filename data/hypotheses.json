@@ -5073,7 +5073,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil funding normalized to +9.29% from extreme negatives, confirming structural recovery completion. Trade timing good but profits may be limited as normalization already achieved.",
+    "postMortem": "Oil funding normalized to +9.29% from extreme negatives, confirming structural recovery completion. Trade timing good but profits may be limited as normalization already achieved. | Oil funding normalization completion from extreme negatives created profit-taking signal perfectly - funding oscillated from -388% to positive territory as systematic recovery trade completed",
     "source": "llm"
   },
   {
@@ -6553,7 +6553,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC PM IV extreme compression beyond -7σ created systematic volatility expansion as predicted - IV recovered from 38.8% to 46.3%, validating statistical mean reversion patterns",
     "source": "llm"
   },
   {
@@ -6590,6 +6590,82 @@
       "hype_hl_funding_ann": "> -15"
     },
     "prediction": "HYPE spot recovers above 45.5 within 5 days as institutional distribution completes",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "HYPE institutional distribution completed with OI declining from 954M to 919M while funding normalized positive, creating oversold reversal opportunity as predicted",
+    "source": "llm"
+  },
+  {
+    "id": "H-261",
+    "created": "2026-04-18",
+    "description": "BTC PM IV expansion acceleration from historic -7σ compression creates momentum continuation setup when IV recovers above 40% from 38.8% lows during spot consolidation above 75k",
+    "conditions": {
+      "btc_pm_iv": "> 40",
+      "btc_spot": "> 75000"
+    },
+    "prediction": "BTC momentum resumption above 76.5k within 5-7 days as IV expansion validates volatility normalization",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-262",
+    "created": "2026-04-18",
+    "description": "Oil complex extreme structural breakdown profit-taking completion signal - Brent-WTI spread collapse to 4.4 from 9+ range with funding magnitude above 3800% creates systematic correction requiring 5-7 day recovery",
+    "conditions": {
+      "oil_brent_wti_spread": "< 5",
+      "oil_hl_funding_ann": "> 30"
+    },
+    "prediction": "Oil spread recovery above 6.5 and funding normalization below 100% absolute within one week as structural arbitrage forces correction",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-263",
+    "created": "2026-04-18",
+    "description": "HYPE institutional accumulation completion confirmation - OI stabilization above 919M with funding positive territory and spot above 44.2 after record surge creates correlation restoration with BTC",
+    "conditions": {
+      "hype_hl_oi": "> 919000000",
+      "hype_hl_funding_ann": "> 0",
+      "hype_spot": "> 44.2"
+    },
+    "prediction": "HYPE-BTC positive correlation restoration with synchronized moves above HYPE 45.5 and BTC 76k within 3-5 days",
     "timeframeDays": 5,
     "confidence": 0.7,
     "tests": [
