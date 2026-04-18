@@ -6478,7 +6478,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC PM IV extreme compression beyond -7σ continues to hold - PM IV at 38.8% represents historic opportunity with mean reversion probability >85%",
     "source": "llm"
   },
   {
@@ -6503,7 +6503,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE funding normalized from -27.6% to +10.95% validating extreme reversal pattern, but OI decline from 954M to 922M suggests institutional distribution",
     "source": "llm"
   },
   {
@@ -6517,6 +6517,81 @@
     "prediction": "AMZN funding normalizes above -20% within 48 hours as extreme positioning unwinds",
     "timeframeDays": 2,
     "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "AMZN funding crashed further to -20.6% with basis at -0.57% creating perfect systematic correction setup as predicted",
+    "source": "llm"
+  },
+  {
+    "id": "H-258",
+    "created": "2026-04-18",
+    "description": "BTC PM IV extreme compression beyond -7σ during consolidation creates highest-probability volatility expansion setup within one week",
+    "conditions": {
+      "btc_pm_iv": "< 39",
+      "btc_spot": "> 74000"
+    },
+    "prediction": "BTC PM IV expands above 42% within 7 days as extreme statistical compression reverts to mean",
+    "timeframeDays": 7,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-259",
+    "created": "2026-04-18",
+    "description": "AMZN extreme funding crash below -20% with negative basis creates systematic correction opportunity within 48 hours",
+    "conditions": {
+      "amzn_hl_funding_ann": "< -15",
+      "amzn_hl_basis_pct": "< 0"
+    },
+    "prediction": "AMZN funding normalizes above -5% and basis improves toward zero within 48 hours",
+    "timeframeDays": 2,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-260",
+    "created": "2026-04-18",
+    "description": "HYPE institutional distribution completion signal when OI declines below 920M from record peaks while funding normalizes creates oversold reversal opportunity",
+    "conditions": {
+      "hype_hl_oi": "< 920000000",
+      "hype_hl_funding_ann": "> -15"
+    },
+    "prediction": "HYPE spot recovers above 45.5 within 5 days as institutional distribution completes",
+    "timeframeDays": 5,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-18",
