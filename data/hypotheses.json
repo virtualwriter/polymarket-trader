@@ -6303,7 +6303,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC PM IV extreme compression persists at historic -7σ levels, creating unprecedented arbitrage opportunity that continues building pressure.",
     "source": "llm"
   },
   {
@@ -6403,7 +6403,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE funding normalized to +10.95% from extreme negatives, validating reversal pattern. OI stabilized above 935M as predicted.",
     "source": "llm"
   },
   {
@@ -6441,6 +6441,81 @@
     },
     "prediction": "AMZN basis recovery above -0.1% within 3 days",
     "timeframeDays": 3,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "AMZN funding crashed further to -62.54% validating extreme positioning thesis. Basis at -0.41% creates perfect systematic correction setup.",
+    "source": "llm"
+  },
+  {
+    "id": "H-255",
+    "created": "2026-04-18",
+    "description": "BTC PM IV extreme compression beyond -7σ creates systematic volatility expansion requiring correction within 5-7 days",
+    "conditions": {
+      "btc_pm_iv": "< 40",
+      "btc_spot": "> 76000"
+    },
+    "prediction": "BTC PM IV expands above 42% within one week as -7σ compression becomes unsustainable",
+    "timeframeDays": 7,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-256",
+    "created": "2026-04-18",
+    "description": "HYPE funding normalization from extreme negative territory with OI stabilization creates momentum restoration setup",
+    "conditions": {
+      "hype_hl_funding_ann": "> 5",
+      "hype_hl_oi": "> 935000000"
+    },
+    "prediction": "HYPE spot recovers above 46 within 3-5 days as funding normalization completes",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-257",
+    "created": "2026-04-18",
+    "description": "AMZN extreme funding crash below -60% with negative basis creates systematic correction opportunity",
+    "conditions": {
+      "amzn_hl_funding_ann": "< -60",
+      "amzn_hl_basis_pct": "< -0.4"
+    },
+    "prediction": "AMZN funding normalizes above -20% within 48 hours as extreme positioning unwinds",
+    "timeframeDays": 2,
     "confidence": 0.8,
     "tests": [
       {

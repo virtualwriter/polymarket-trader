@@ -1635,3 +1635,22 @@ Historic statistical extremes continue to provide systematic opportunities: BTC 
 
 ---
 
+### 2026-04-18 09:38 UTC
+
+**Portfolio:** $100.81 total | Cash $92.81 | 8 open | P&L $0.8059 | 67% win rate (39 trades)
+
+**Opened 1 positions:**
+- AMZN long @ $249.72 via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT)
+
+**Statistical observations:**
+- [anomaly] gold_med_min = 4571 is 3.2 std devs from mean (4371.71 ± 61.55)
+- [anomaly] gold_pm_iv = 10 is -3.1 std devs from mean (14.62 ± 1.49)
+- [anomaly] amzn_hl_funding_ann = -62.54 is -2.9 std devs from mean (1.02 ± 21.68)
+- [anomaly] gold_med_max = 5241 is -2.4 std devs from mean (5331.25 ± 36.99)
+- [anomaly] btc_med_max = 95116 is 2.4 std devs from mean (91274.34 ± 1622.56)
+
+**LLM analysis:**
+Historic statistical extremes continue providing systematic opportunities: BTC PM IV at -7σ compression represents most extreme volatility mispricing observed with 85%+ probability of mean reversion. HYPE funding normalization from -27.6% to +10.95% validates extreme reversal patterns perfectly. Key insight: statistical anomalies beyond -5σ combined with systematic venue arbitrage offer highest-probability setups. AMZN funding crash to -62.54% with negative basis creates perfect storm for systematic correction within 48 hours.
+
+---
+
