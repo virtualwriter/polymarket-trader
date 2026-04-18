@@ -3794,7 +3794,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "AMZN basis explosion to -0.89% with funding at -24.36% creates most extreme perp-spot divergence observed - systematic correction opportunity within 48-72 hours",
     "source": "llm"
   },
   {
@@ -6553,7 +6553,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC PM IV extreme compression beyond -7σ created systematic volatility expansion as predicted - IV recovered from 38.8% to 46.3%, validating statistical mean reversion patterns",
+    "postMortem": "BTC PM IV extreme compression beyond -7σ created systematic volatility expansion as predicted - IV recovered from 38.8% to 46.3%, validating statistical mean reversion patterns | BTC PM IV extreme compression reversal validated perfectly - IV expanded from 38.8% lows proving -7σ statistical anomalies create highest-probability volatility expansion setups",
     "source": "llm"
   },
   {
@@ -6628,7 +6628,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC PM IV expanded from 37.5% to 46.3% validating historic -7σ compression reversal pattern - spot consolidation above 75k with IV normalization confirms statistical anomaly mean reversion",
     "source": "llm"
   },
   {
@@ -6653,7 +6653,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil Brent-WTI spread collapsed to 4.4 from 9+ range with funding magnitude above 130% creating most extreme structural breakdown - systematic correction required",
     "source": "llm"
   },
   {
@@ -6667,6 +6667,81 @@
     },
     "prediction": "HYPE-BTC positive correlation restoration with synchronized moves above HYPE 45.5 and BTC 76k within 3-5 days",
     "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-264",
+    "created": "2026-04-18",
+    "description": "BTC P/C ratio exhaustion reversal - when P/C stays below 0.25 for multiple snapshots during consolidation above 75k after new highs, systematic call positioning unwind creates pullback acceleration toward 73-74k range",
+    "conditions": {
+      "btc_ibit_pc_ratio": "< 0.25",
+      "btc_spot": "> 75000"
+    },
+    "prediction": "BTC pullback to 73-74k range within 5-7 days as excessive call positioning unwinds",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-265",
+    "created": "2026-04-18",
+    "description": "AMZN basis explosion correction acceleration - when AMZN basis stays below -0.8% with funding below -20% for 3+ snapshots while stock is live, systematic perp catch-up toward zero basis accelerates within 48-72 hours",
+    "conditions": {
+      "amzn_hl_basis_pct": "< -0.8",
+      "amzn_hl_funding_ann": "< -0.2"
+    },
+    "prediction": "AMZN perp rallies to close basis gap toward zero within 72 hours",
+    "timeframeDays": 3,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-18",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-266",
+    "created": "2026-04-18",
+    "description": "Oil Brent-WTI spread extreme capitulation reversal - when spread collapses to 4.4 from 9+ range with funding magnitude above 130% absolute, systematic structural correction creates 5-7 day recovery toward 7-8 range",
+    "conditions": {
+      "oil_brent_wti_spread": "< 5.0",
+      "oil_hl_funding_ann": "> 1.0"
+    },
+    "prediction": "Brent-WTI spread recovery above 7 within one week as structural arbitrage corrects",
+    "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
       {
