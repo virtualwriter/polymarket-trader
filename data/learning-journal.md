@@ -1813,3 +1813,23 @@ Distribution completion patterns providing consistent edge as institutional flow
 
 ---
 
+### 2026-04-19 21:26 UTC
+
+**Portfolio:** $100.57 total | Cash $93.57 | 7 open | P&L $0.5717 | 61% win rate (46 trades)
+
+**Closed 2 trades:**
+- ❌ BTC long via polymarket/pm_yes [what-price-will-bitcoin-hit-before-2027 — YES — Will Bitcoin reach $80,000 by December 31, 2026?] (LLM_HYPOTHESIS) → stop: $-0.0539 (-5.4%, market -0.0539, funding 0.0000)
+- ✅ OIL long via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT) → target: +$0.0257 (2.6%, market 0.0288, funding -0.0031)
+
+**Statistical observations:**
+- [anomaly] gold_hl_funding_ann = -454.6 is -7.3 std devs from mean (-8.04 ± 60.99)
+- [anomaly] gold_med_min = 4579 is 2.3 std devs from mean (4390.57 ± 83.43)
+- [anomaly] gold_pm_iv = 10 is -2.2 std devs from mean (14.20 ± 1.94)
+- [anomaly] amzn_opt_iv_30d = 38.3 is -2.1 std devs from mean (41.02 ± 1.28)
+- [anomaly] hype_med_min = 22.9 is -2.1 std devs from mean (23.43 ± 0.25)
+
+**LLM analysis:**
+Distribution completion patterns continue providing edge as institutional flows reach exhaustion phases. HYPE showing textbook smart money exit with 16% OI decline from peaks combined with funding normalization to positive territory - classic oversold reversal setup. Gold funding extreme oscillation from -455% to +55% represents systematic overcorrection requiring fade. BTC consolidation above 74k with P/C near extremes suggests either exhaustion pullback or momentum resumption pending. Key insight: tracking institutional flow completion (OI changes) combined with funding normalization continues delivering high-probability reversal signals. Focus on distribution exhaustion patterns and extreme funding reversals for next opportunities.
+
+---
+
