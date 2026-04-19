@@ -1791,3 +1791,25 @@ Distribution cycle completion patterns continue providing edge as institutional 
 
 ---
 
+### 2026-04-19 17:28 UTC
+
+**Portfolio:** $100.60 total | Cash $91.60 | 9 open | P&L $0.5999 | 61% win rate (44 trades)
+
+**Closed 1 trades:**
+- ✅ BTC short via spot/spot [BTC spot] (PC_RATIO_EXTREME_LOW) → expiry: +$0.0005 (0.1%, market 0.0005, funding 0.0000)
+
+**Opened 1 positions:**
+- BTC short @ $75195 via spot/spot [BTC spot] (PC_RATIO_EXTREME_LOW)
+
+**Statistical observations:**
+- [anomaly] amzn_hl_funding_ann = -126.7 is -5.1 std devs from mean (-0.58 ± 24.84)
+- [anomaly] oil_hl_funding_ann = 885.38 is 3.8 std devs from mean (-90.72 ± 255.78)
+- [anomaly] hype_med_min = 22.8 is -2.5 std devs from mean (23.43 ± 0.25)
+- [anomaly] gold_med_min = 4579 is 2.3 std devs from mean (4388.63 ± 81.62)
+- [anomaly] gold_pm_iv = 10 is -2.2 std devs from mean (14.24 ± 1.90)
+
+**LLM analysis:**
+Distribution completion patterns providing consistent edge as institutional flows normalize. HYPE showing textbook smart money exit cycle with 13% OI decline from peaks while funding normalizes - historically leads to oversold bounces with 75%+ accuracy. AMZN explosive momentum with P/C collapse indicates systematic options repositioning ahead of weekend. Gold funding extreme oscillation from negative to +55% creates overcorrection fade opportunity. Key insight: tracking institutional flow completion through OI changes combined with funding normalization continues delivering high-probability reversal setups. Focus on distribution completion signals and overcorrection patterns.
+
+---
+

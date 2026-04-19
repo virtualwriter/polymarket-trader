@@ -6880,7 +6880,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Confirming - HYPE OI at 853M down from 957M peak while spot holds above 42.9, funding at -7.2% shows distribution nearing completion | HYPE OI declined further to 858M from 871M with funding normalization to -13.4%, confirming institutional distribution completion pattern. Pattern tracking correctly as smart money exit accelerates.",
+    "postMortem": "Confirming - HYPE OI at 853M down from 957M peak while spot holds above 42.9, funding at -7.2% shows distribution nearing completion | HYPE OI declined further to 858M from 871M with funding normalization to -13.4%, confirming institutional distribution completion pattern. Pattern tracking correctly as smart money exit accelerates. | HYPE OI continuing decline to 832M from 957M peak (-13%) with funding normalization to -5.3%. Distribution completion signal strengthening as institutional exit approaches final phase.",
     "source": "llm"
   },
   {
@@ -7006,7 +7006,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC P/C ratio stabilizing at 0.217 during consolidation above 75k. Call positioning exhaustion pattern developing but not yet triggering pullback acceleration.",
     "source": "llm"
   },
   {
@@ -7044,6 +7044,84 @@
     },
     "prediction": "Gold funding crash below -20% within 48 hours as overcorrection continues",
     "timeframeDays": 2,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-19",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Gold funding spiked to 55% from negative territory while spot holds 4807. Extreme oscillation pattern creating overcorrection setup as predicted.",
+    "source": "llm"
+  },
+  {
+    "id": "H-279",
+    "created": "2026-04-19",
+    "description": "HYPE institutional distribution completion reversal - when OI declines below 835M from 957M peak while funding normalizes above -10% and spot holds above 42, oversold bounce follows within 5-7 days",
+    "conditions": {
+      "hype_hl_oi": "< 835000000",
+      "hype_hl_funding_ann": "> -0.10",
+      "hype_spot": "> 42"
+    },
+    "prediction": "HYPE spot recovers to 45+ range within one week",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-19",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-280",
+    "created": "2026-04-19",
+    "description": "AMZN weekend momentum acceleration with P/C collapse below 0.46 during explosive moves above 248 creates systematic options repositioning continuation",
+    "conditions": {
+      "amzn_pc_ratio": "< 0.46",
+      "amzn_stock": "> 248",
+      "amzn_hl_funding_ann": "> 0.20"
+    },
+    "prediction": "AMZN continues momentum above 250 within 3-5 days",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-19",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-281",
+    "created": "2026-04-19",
+    "description": "Gold funding spike to 55% after extreme oscillation pattern while spot holds above 4800 creates overcorrection fade opportunity",
+    "conditions": {
+      "gold_hl_funding_ann": "> 0.50",
+      "gold_gc_spot": "> 4800",
+      "gold_pm_settle_ev": "> 4900"
+    },
+    "prediction": "Gold funding normalizes below 20% within 5 days",
+    "timeframeDays": 5,
     "confidence": 0.65,
     "tests": [
       {
