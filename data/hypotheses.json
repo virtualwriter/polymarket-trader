@@ -6854,7 +6854,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Partially confirming - BTC PM IV expanded to 40.9% from 37.5% lows, still in extreme compression territory with potential for further expansion",
+    "postMortem": "Partially confirming - BTC PM IV expanded to 40.9% from 37.5% lows, still in extreme compression territory with potential for further expansion | BTC PM IV stayed compressed at 37.3% while spot consolidated above 75.8k. Statistical anomaly persists but no volatility expansion yet - may need more time or deeper pullback catalyst.",
     "source": "llm"
   },
   {
@@ -6880,7 +6880,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Confirming - HYPE OI at 853M down from 957M peak while spot holds above 42.9, funding at -7.2% shows distribution nearing completion",
+    "postMortem": "Confirming - HYPE OI at 853M down from 957M peak while spot holds above 42.9, funding at -7.2% shows distribution nearing completion | HYPE OI declined further to 858M from 871M with funding normalization to -13.4%, confirming institutional distribution completion pattern. Pattern tracking correctly as smart money exit accelerates.",
     "source": "llm"
   },
   {
@@ -6905,7 +6905,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Testing - Gold funding at 5.5% normalized from extreme negatives, spot at 4790 holding above 4780 threshold",
+    "postMortem": "Testing - Gold funding at 5.5% normalized from extreme negatives, spot at 4790 holding above 4780 threshold | Gold funding spiked to +55% from previous negative territory while spot held above 4807. Extreme oscillation pattern continuing as predicted - watching for next reversal cycle.",
     "source": "llm"
   },
   {
@@ -6970,6 +6970,81 @@
     "prediction": "When Brent-WTI spread holds above 4 after recovery from sub-1 lows and funding normalizes below 100% absolute, structural recovery trade completion creates profit-taking opportunity",
     "timeframeDays": 3,
     "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-19",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-276",
+    "created": "2026-04-19",
+    "description": "BTC P/C ratio spike to 0.217 from extreme 0.211 lows during consolidation above 75k indicates systematic call positioning exhaustion and creates pullback acceleration setup",
+    "conditions": {
+      "btc_spot": "> 75000",
+      "btc_ibit_pc_ratio": "> 0.215"
+    },
+    "prediction": "BTC pullback to 73-74k range within 3-5 days as call unwind accelerates",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-19",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-277",
+    "created": "2026-04-19",
+    "description": "HYPE institutional distribution nearing completion with OI at 858M declining from 957M peak while funding normalizes to -13.4% creates oversold reversal setup",
+    "conditions": {
+      "hype_hl_oi": "< 870000000",
+      "hype_hl_funding_ann": "> -0.20"
+    },
+    "prediction": "HYPE bounce above 44.5 within 5-7 days as distribution cycle completes",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-19",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-278",
+    "created": "2026-04-19",
+    "description": "Gold funding oscillation pattern with funding at 55% after cycling between extreme negatives and positives while spot holds above 4800 creates overcorrection reversal",
+    "conditions": {
+      "gold_gc_spot": "> 4800",
+      "gold_hl_funding_ann": "> 0.40"
+    },
+    "prediction": "Gold funding crash below -20% within 48 hours as overcorrection continues",
+    "timeframeDays": 2,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-19",
