@@ -6854,7 +6854,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Partially confirming - BTC PM IV expanded to 40.9% from 37.5% lows, still in extreme compression territory with potential for further expansion",
     "source": "llm"
   },
   {
@@ -6880,7 +6880,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Confirming - HYPE OI at 853M down from 957M peak while spot holds above 42.9, funding at -7.2% shows distribution nearing completion",
     "source": "llm"
   },
   {
@@ -6894,6 +6894,82 @@
     "prediction": "Gold funding normalizes above -10% within 3 days creating bounce to 4850+",
     "timeframeDays": 3,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-19",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Testing - Gold funding at 5.5% normalized from extreme negatives, spot at 4790 holding above 4780 threshold",
+    "source": "llm"
+  },
+  {
+    "id": "H-273",
+    "created": "2026-04-19",
+    "description": "BTC PM IV expansion acceleration from historic -7σ compression during consolidation phases creates momentum continuation setup",
+    "conditions": {
+      "btc_pm_iv": "> 40",
+      "btc_spot": "> 75000"
+    },
+    "prediction": "When BTC PM IV expands above 40% from current 40.9% during spot consolidation above 75k, momentum continuation follows within 3-5 days",
+    "timeframeDays": 5,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-19",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-274",
+    "created": "2026-04-19",
+    "description": "HYPE institutional distribution completion reversal when OI stabilizes after major decline with funding normalization",
+    "conditions": {
+      "hype_hl_oi": "> 850000000",
+      "hype_hl_funding_ann": "> -0.1",
+      "hype_spot": "> 43"
+    },
+    "prediction": "When HYPE OI stabilizes above 850M after decline from 957M peak while funding normalizes above -10% and spot holds above 43, reversal bounce follows within 5-7 days",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-19",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-275",
+    "created": "2026-04-19",
+    "description": "Oil complex structural recovery profit-taking signal when Brent-WTI spread stabilizes after extreme breakdown",
+    "conditions": {
+      "oil_brent_wti_spread": "> 4",
+      "oil_hl_funding_ann": "< 1"
+    },
+    "prediction": "When Brent-WTI spread holds above 4 after recovery from sub-1 lows and funding normalizes below 100% absolute, structural recovery trade completion creates profit-taking opportunity",
+    "timeframeDays": 3,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-19",
