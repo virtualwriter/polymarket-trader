@@ -1559,7 +1559,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "AMZN momentum acceleration above 214 confirmed - stock at 214.28 with perp convergence and P/C at 0.728. Trade executed and already showing positive results.",
+    "postMortem": "AMZN momentum acceleration above 214 confirmed - stock at 214.28 with perp convergence and P/C at 0.728. Trade executed and already showing positive results. | AMZN P/C collapse to 0.482 with stock surge to 248.21 confirms momentum acceleration hypothesis - systematic options repositioning driving continuation as predicted",
     "source": "llm"
   },
   {
@@ -5660,7 +5660,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil P/C ratio at 0.694 after extreme spikes shows partial normalization but remains elevated - structural positioning shift ongoing",
     "source": "llm"
   },
   {
@@ -7314,7 +7314,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE OI decline continues at 17% from peak, now at 784M vs 957M high. Funding normalized to -16.39% from extremes. Pattern developing exactly as modeled with distribution exhaustion approaching.",
+    "postMortem": "HYPE OI decline continues at 17% from peak, now at 784M vs 957M high. Funding normalized to -16.39% from extremes. Pattern developing exactly as modeled with distribution exhaustion approaching. | HYPE OI decline accelerating to 801M from 957M peak (16% decline) with funding positive normalization matches institutional distribution exhaustion pattern perfectly - positioning for reversal",
     "source": "llm"
   },
   {
@@ -7458,6 +7458,83 @@
     },
     "prediction": "AMZN basis recovery toward zero within 48 hours as perp catches up to stock",
     "timeframeDays": 2,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-295",
+    "created": "2026-04-20",
+    "description": "AMZN explosive momentum acceleration with P/C collapse below 0.48 during stock surge above 247 creates systematic momentum continuation",
+    "conditions": {
+      "amzn_stock": "> 247",
+      "amzn_pc_ratio": "< 0.48",
+      "amzn_hl_funding_ann": "> 0.10"
+    },
+    "prediction": "AMZN continues momentum to 250+ range within 3-5 days as systematic options repositioning drives continuation",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-296",
+    "created": "2026-04-20",
+    "description": "Oil P/C ratio capitulation reversal from extreme above 0.69 with funding normalization below 20% creates systematic bounce",
+    "conditions": {
+      "oil_cl_pc_ratio": "> 0.65",
+      "oil_hl_funding_ann": "< 0.20"
+    },
+    "prediction": "Oil P/C ratio normalizes below 0.50 within one week as extreme bearish positioning unwinds",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-297",
+    "created": "2026-04-20",
+    "description": "Gold IV compression extreme below 25% while PM premium stays above 100pts during macro shifts creates volatility expansion",
+    "conditions": {
+      "gold_opt_iv_30d": "< 25.0",
+      "gold_pm_settle_ev": "> 4900",
+      "gold_opt_fwd_90d": "< 4800"
+    },
+    "prediction": "Gold IV expands above 27% within 5 days as extreme compression corrects during macro uncertainty",
+    "timeframeDays": 5,
     "confidence": 0.7,
     "tests": [
       {
