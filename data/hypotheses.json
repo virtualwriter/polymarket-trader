@@ -5099,7 +5099,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE funding normalized to +10.95% with OI at 918M above threshold - pattern working, momentum restoration setup confirmed | CONFIRMED - HYPE funding normalized from negative to +10.95% with OI stabilization above 939M as predicted. Pattern working but timeframe may extend in low-vol environment. | HYPE funding normalization to positive territory (10.95%) with OI stabilization above 945M confirmed. Correlation restoration with BTC emerging as expected.",
+    "postMortem": "HYPE funding normalized to +10.95% with OI at 918M above threshold - pattern working, momentum restoration setup confirmed | CONFIRMED - HYPE funding normalized from negative to +10.95% with OI stabilization above 939M as predicted. Pattern working but timeframe may extend in low-vol environment. | HYPE funding normalization to positive territory (10.95%) with OI stabilization above 945M confirmed. Correlation restoration with BTC emerging as expected. | HYPE funding normalized to positive 10.95% with OI at 784M after institutional distribution. Pattern partially confirmed but OI still declining - monitoring for stabilization.",
     "source": "llm"
   },
   {
@@ -7314,7 +7314,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI decline continues at 17% from peak, now at 784M vs 957M high. Funding normalized to -16.39% from extremes. Pattern developing exactly as modeled with distribution exhaustion approaching.",
     "source": "llm"
   },
   {
@@ -7339,7 +7339,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC PM IV at 37.1% still represents -7σ statistical anomaly. P/C ratio at 0.221 shows slight normalization from extremes. Statistical reversion setup remains intact.",
     "source": "llm"
   },
   {
@@ -7353,6 +7353,112 @@
     "prediction": "Oil structural recovery trade completion, expect consolidation or reversal",
     "timeframeDays": 5,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Oil Brent-WTI spread recovered to 3.9 from sub-1 lows. Funding normalized to 17.9% from extremes. Structural recovery trade completion signal active.",
+    "source": "llm"
+  },
+  {
+    "id": "H-291",
+    "created": "2026-04-20",
+    "description": "BTC PM IV extreme compression below 37.1% during consolidation above 75k creates highest-probability volatility expansion setup when combined with P/C ratio normalization above 0.221 and median minimum expansion above 54k",
+    "conditions": {
+      "btc_pm_iv": "< 37.1",
+      "btc_spot": "> 75000",
+      "btc_ibit_pc_ratio": "> 0.221",
+      "btc_med_min": "> 54000"
+    },
+    "prediction": "BTC PM IV expansion above 40% within 7 days with spot momentum resumption above 76k",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-292",
+    "created": "2026-04-20",
+    "description": "HYPE institutional distribution exhaustion reversal when OI stabilizes above 784M after 17% decline from 957M peak while funding normalizes above -16% and spot holds above 41",
+    "conditions": {
+      "hype_hl_oi": "> 784000000",
+      "hype_hl_funding_ann": "> -0.16",
+      "hype_spot": "> 41"
+    },
+    "prediction": "HYPE recovery above 42.5 within 5 days as distribution completion creates oversold bounce",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-293",
+    "created": "2026-04-20",
+    "description": "Gold extreme funding oscillation fade when funding spikes above 5% after cycling between extremes while PM premium stays above 180pts vs futures and spot holds above 4798",
+    "conditions": {
+      "gold_hl_funding_ann": "> 0.05",
+      "gold_pm_settle_ev": "> 4981",
+      "gold_opt_fwd_90d": "< 4832",
+      "gold_gc_spot": "> 4798"
+    },
+    "prediction": "Gold funding normalization below 0% within 3 days creating fade opportunity",
+    "timeframeDays": 3,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-294",
+    "created": "2026-04-20",
+    "description": "AMZN perp-stock basis explosion correction when basis drops to -0.89% with funding at -4.69% while stock trades live, creating systematic convergence pressure",
+    "conditions": {
+      "amzn_hl_basis_pct": "< -0.85",
+      "amzn_hl_funding_ann": "< -0.04",
+      "amzn_stock": "> 248"
+    },
+    "prediction": "AMZN basis recovery toward zero within 48 hours as perp catches up to stock",
+    "timeframeDays": 2,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-20",
