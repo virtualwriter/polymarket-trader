@@ -3693,7 +3693,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Confirming - HYPE OI declined from 870M peak to 821M while spot dropped from 42.5 to 40.9, validating institutional distribution completion theory. Smart money exit pattern playing out as expected.",
+    "postMortem": "Confirming - HYPE OI declined from 870M peak to 821M while spot dropped from 42.5 to 40.9, validating institutional distribution completion theory. Smart money exit pattern playing out as expected. | ✅ CONFIRMED - HYPE OI decline accelerated to 791M from 870M peak while spot held above 41, indicating institutional distribution completion as predicted",
     "source": "llm"
   },
   {
@@ -5073,7 +5073,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil funding normalized to +9.29% from extreme negatives, confirming structural recovery completion. Trade timing good but profits may be limited as normalization already achieved. | Oil funding normalization completion from extreme negatives created profit-taking signal perfectly - funding oscillated from -388% to positive territory as systematic recovery trade completed",
+    "postMortem": "Oil funding normalized to +9.29% from extreme negatives, confirming structural recovery completion. Trade timing good but profits may be limited as normalization already achieved. | Oil funding normalization completion from extreme negatives created profit-taking signal perfectly - funding oscillated from -388% to positive territory as systematic recovery trade completed | ✅ TRIGGERED - Oil funding normalized to positive territory with Brent-WTI spread stabilization above 4, indicating structural recovery trade completion",
     "source": "llm"
   },
   {
@@ -6227,7 +6227,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC PM IV at 40.2% remains in extreme compression territory confirming -7σ statistical anomaly thesis",
+    "postMortem": "BTC PM IV at 40.2% remains in extreme compression territory confirming -7σ statistical anomaly thesis | ✅ ACTIVE - BTC PM IV remains at extreme -7σ compression (37.7%), creating highest-probability volatility expansion setup within timeframe",
     "source": "llm"
   },
   {
@@ -7275,6 +7275,82 @@
       "gold_gc_spot": "> 4790"
     },
     "prediction": "Funding overcorrection cycle completes with price stability and creates range trading opportunity",
+    "timeframeDays": 5,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-288",
+    "created": "2026-04-20",
+    "description": "HYPE institutional distribution exhaustion reversal - massive 17% OI decline from record peaks with funding normalization indicates smart money exit completion",
+    "conditions": {
+      "hype_hl_oi": "< 800000000",
+      "hype_hl_funding_ann": "> 0.05",
+      "hype_spot": "> 41"
+    },
+    "prediction": "HYPE oversold bounce above 43 within 5 days as distribution phase completes",
+    "timeframeDays": 5,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-289",
+    "created": "2026-04-20",
+    "description": "BTC PM IV extreme compression statistical reversion - compression below 38% represents -7σ anomaly requiring correction",
+    "conditions": {
+      "btc_pm_iv": "< 38.5",
+      "btc_spot": "> 74000"
+    },
+    "prediction": "BTC PM IV expansion above 42% within 7 days as statistical anomaly corrects",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-290",
+    "created": "2026-04-20",
+    "description": "Oil structural recovery completion profit-taking - Brent-WTI spread normalization from extreme breakdown indicates trade completion",
+    "conditions": {
+      "oil_brent_wti_spread": "> 3.5",
+      "oil_hl_funding_ann": "< 1.0"
+    },
+    "prediction": "Oil structural recovery trade completion, expect consolidation or reversal",
     "timeframeDays": 5,
     "confidence": 0.65,
     "tests": [
