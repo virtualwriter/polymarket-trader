@@ -1305,7 +1305,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "AMZN P/C collapsed to 0.728 over weekend while stock frozen, confirmed gap-up Monday - pattern validated, refining threshold | Needs refinement - AMZN weekend put-call pattern showed acceleration but stock moved during session, not just weekend gap",
+    "postMortem": "AMZN P/C collapsed to 0.728 over weekend while stock frozen, confirmed gap-up Monday - pattern validated, refining threshold | Needs refinement - AMZN weekend put-call pattern showed acceleration but stock moved during session, not just weekend gap | AMZN weekend P/C pattern continues working - collapsed to 0.482 during explosive momentum as predicted",
     "source": "llm"
   },
   {
@@ -7496,7 +7496,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "AMZN P/C collapsed to 0.482 during stock surge to 248.21 - systematic momentum acceleration confirming",
     "source": "llm"
   },
   {
@@ -7521,7 +7521,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil P/C dropped to 0.694 from extreme highs - systematic capitulation reversal pattern developing as predicted",
     "source": "llm"
   },
   {
@@ -7534,6 +7534,84 @@
       "gold_opt_fwd_90d": "< 4800"
     },
     "prediction": "Gold IV expands above 27% within 5 days as extreme compression corrects during macro uncertainty",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-298",
+    "created": "2026-04-20",
+    "description": "Macro regime shift amplification pattern - when macro_composite drops from BULLISH (62) to NEUTRAL (57) during HYPE distribution phase, volatility acceleration creates reversal opportunity",
+    "conditions": {
+      "macro_composite": "< 58",
+      "hype_hl_oi": "< 810000000",
+      "hype_hl_funding_ann": "> -0.2"
+    },
+    "prediction": "HYPE reversal above 42.5 within 5 days as macro uncertainty amplifies distribution exhaustion",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-299",
+    "created": "2026-04-20",
+    "description": "AMZN systematic momentum acceleration with explosive P/C collapse below 0.5 during stock surge above 245 creates institutional repositioning signal",
+    "conditions": {
+      "amzn_stock": "> 245",
+      "amzn_pc_ratio": "< 0.5",
+      "amzn_hl_funding_ann": "> 0.1"
+    },
+    "prediction": "AMZN momentum continuation above 250 within 3 days as systematic options repositioning completes",
+    "timeframeDays": 3,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-300",
+    "created": "2026-04-20",
+    "description": "BTC P/C ratio extreme below 0.67 during macro shifts with IV compression creates positioning exhaustion signal",
+    "conditions": {
+      "btc_ibit_pc_ratio": "> 0.6",
+      "btc_opt_iv_30d": "< 44.5",
+      "macro_composite": "< 58"
+    },
+    "prediction": "BTC consolidation below 76k within 5 days as extreme call positioning unwinds during macro uncertainty",
     "timeframeDays": 5,
     "confidence": 0.7,
     "tests": [
