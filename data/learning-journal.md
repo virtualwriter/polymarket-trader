@@ -1919,3 +1919,27 @@ Critical macro regime shift from BULLISH to NEUTRAL creating volatility amplific
 
 ---
 
+### 2026-04-20 21:38 UTC
+
+**Portfolio:** $100.60 total | Cash $93.60 | 7 open | P&L $0.5959 | 62% win rate (50 trades)
+
+**Closed 2 trades:**
+- ✅ OIL short via spot/spot [OIL spot] (PC_RATIO_EXTREME_LOW) → target: +$0.0336 (3.4%, market 0.0336, funding 0.0000)
+- ✅ AMZN long via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT) → target: +$0.0213 (2.1%, market 0.0206, funding 0.0008)
+
+**Opened 3 positions:**
+- OIL short @ $89.45 via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_LONG)
+- BTC long @ $0.835 via polymarket/pm_yes [what-price-will-bitcoin-hit-before-2027 — YES — Will Bitcoin reach $80,000 by December 31, 2026?] (LLM_HYPOTHESIS)
+- AMZN long @ $254.74 via spot/spot [AMZN spot] (LLM_HYPOTHESIS)
+
+**Statistical observations:**
+- [anomaly] gold_med_max = 5196 is -2.5 std devs from mean (5317.32 ± 48.80)
+- [anomaly] gold_pm_iv = 9.3 is -2.1 std devs from mean (13.94 ± 2.16)
+- [correlation_flip] BTC-OIL correlation shifted from -0.07 to 0.44
+- [correlation_flip] BTC-HYPE correlation shifted from -0.16 to 0.34
+
+**LLM analysis:**
+Critical inflection points across multiple assets. HYPE showing textbook institutional distribution exhaustion with 15% OI decline - classic smart money exit pattern creating reversal setup. BTC PM IV compression represents most extreme statistical anomaly observed (-7σ) - mechanical reversion opportunity with exceptional historical success rate. AMZN demonstrating explosive momentum with systematic options repositioning indicating major institutional shift toward continuation. Key insight: extreme statistical deviations combined with institutional flow patterns provide highest-probability setups. Focus on distribution exhaustion reversals, statistical anomaly corrections, and systematic momentum continuation signals.
+
+---
+

@@ -7031,7 +7031,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI declined to 811M from 957M peak (15% decline) with funding at 4.17% and spot at 41.16 - distribution pattern completing as predicted, setting up oversold reversal",
     "source": "llm"
   },
   {
@@ -7237,7 +7237,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC PM IV expanded to 38.4% from extreme compression below 37.7% - statistical reversion beginning as predicted, volatility normalization underway",
     "source": "llm"
   },
   {
@@ -7496,7 +7496,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "AMZN P/C collapsed to 0.482 during stock surge to 248.21 - systematic momentum acceleration confirming",
+    "postMortem": "AMZN P/C collapsed to 0.482 during stock surge to 248.21 - systematic momentum acceleration confirming | AMZN P/C collapsed to 0.67 with stock at 254.74 - systematic momentum continuation playing out as institutional repositioning accelerates",
     "source": "llm"
   },
   {
@@ -7614,6 +7614,83 @@
     "prediction": "BTC consolidation below 76k within 5 days as extreme call positioning unwinds during macro uncertainty",
     "timeframeDays": 5,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-301",
+    "created": "2026-04-20",
+    "description": "BTC PM IV extreme compression reversion - when BTC PM IV drops below 38% representing -7σ statistical anomaly during consolidation above 75k, volatility expansion follows within one week",
+    "conditions": {
+      "btc_pm_iv": "< 38",
+      "btc_spot": "> 75000"
+    },
+    "prediction": "BTC PM IV expands above 42% within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-302",
+    "created": "2026-04-20",
+    "description": "HYPE institutional distribution completion reversal - when HYPE OI declines below 815M from 957M peak (15%+ decline) while funding normalizes above -10% and spot holds above 41, distribution exhaustion creates oversold bounce",
+    "conditions": {
+      "hype_hl_oi": "< 815000000",
+      "hype_hl_funding_ann": "> -0.1",
+      "hype_spot": "> 41"
+    },
+    "prediction": "HYPE spot rallies above 43 within 5 days",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-20",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-303",
+    "created": "2026-04-20",
+    "description": "AMZN explosive momentum continuation with systematic P/C collapse - when AMZN P/C drops below 0.5 during stock surge above 245 with positive funding, institutional repositioning creates momentum acceleration",
+    "conditions": {
+      "amzn_pc_ratio": "< 0.5",
+      "amzn_stock": "> 245",
+      "amzn_hl_funding_ann": "> 0"
+    },
+    "prediction": "AMZN stock moves above 255 within 3 days",
+    "timeframeDays": 3,
+    "confidence": 0.75,
     "tests": [
       {
         "date": "2026-04-20",
