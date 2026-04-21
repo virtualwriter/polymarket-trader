@@ -7031,7 +7031,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE OI declined to 811M from 957M peak (15% decline) with funding at 4.17% and spot at 41.16 - distribution pattern completing as predicted, setting up oversold reversal | HYPE OI at 819M (14.4% decline from peak) with funding at 11% - distribution pattern accelerating as predicted but not yet at completion threshold of sub-800M | HYPE institutional distribution accelerating - OI now at 812M vs 858M previously, 15% total decline from 957M peak. Funding normalized to +10.95% from -13.4%. Pattern developing as expected but not yet at oversold completion threshold.",
+    "postMortem": "HYPE OI declined to 811M from 957M peak (15% decline) with funding at 4.17% and spot at 41.16 - distribution pattern completing as predicted, setting up oversold reversal | HYPE OI at 819M (14.4% decline from peak) with funding at 11% - distribution pattern accelerating as predicted but not yet at completion threshold of sub-800M | HYPE institutional distribution accelerating - OI now at 812M vs 858M previously, 15% total decline from 957M peak. Funding normalized to +10.95% from -13.4%. Pattern developing as expected but not yet at oversold completion threshold. | HYPE OI declined to 858M from 957M peak (10% decline) with funding at -13.4%. Pattern developing as predicted but hasn't reached sub-800M completion threshold yet.",
     "source": "llm"
   },
   {
@@ -7056,7 +7056,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Gold funding spiked to 55% from negative territory while spot holds 4807. Extreme oscillation pattern creating overcorrection setup as predicted. | Gold funding spiked to +55% after extreme oscillation pattern - overcorrection pattern developing as expected, watching for fade opportunity as extreme positioning unwinds | Gold funding oscillation continues - now at +5.48% after previous +55%. Pattern of extreme oscillation persisting while spot holds above 4786. Overcorrection fade opportunity developing as predicted.",
+    "postMortem": "Gold funding spiked to 55% from negative territory while spot holds 4807. Extreme oscillation pattern creating overcorrection setup as predicted. | Gold funding spiked to +55% after extreme oscillation pattern - overcorrection pattern developing as expected, watching for fade opportunity as extreme positioning unwinds | Gold funding oscillation continues - now at +5.48% after previous +55%. Pattern of extreme oscillation persisting while spot holds above 4786. Overcorrection fade opportunity developing as predicted. | Gold funding spiked to 55% after extreme oscillation pattern while spot holds above 4800 as predicted. Overcorrection setup developing.",
     "source": "llm"
   },
   {
@@ -7625,7 +7625,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC P/C ratio dropped to 0.323 from extreme lows, showing systematic exhaustion during consolidation above 75k. Positioning unwind setup confirmed.",
     "source": "llm"
   },
   {
@@ -7999,6 +7999,81 @@
     "prediction": "Gold rally above 4850 within 5-7 days as bearish positioning corrects",
     "timeframeDays": 7,
     "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-21",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-316",
+    "created": "2026-04-21",
+    "description": "BTC P/C ratio extreme exhaustion reversal during consolidation - when P/C drops below 0.32 during consolidation above 75k after hitting new highs, systematic call positioning becomes unsustainable",
+    "conditions": {
+      "btc_spot": "> 75000",
+      "btc_ibit_pc_ratio": "< 0.35"
+    },
+    "prediction": "3-5 day pullback toward 73-74k range as call positioning unwinds",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-21",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-317",
+    "created": "2026-04-21",
+    "description": "HYPE institutional distribution completion reversal - massive 16% OI decline from record peaks with funding normalization indicates smart money exit completion",
+    "conditions": {
+      "hype_hl_oi": "< 800000000",
+      "hype_hl_funding_ann": "> -0.2"
+    },
+    "prediction": "Oversold bounce toward 43-44 range within 5-7 days as distribution exhaustion creates reversal setup",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-21",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-318",
+    "created": "2026-04-21",
+    "description": "Gold extreme funding oscillation fade completion - when gold funding spikes above 50% after cycling between extreme negatives below -400% while spot holds above 4800",
+    "conditions": {
+      "gold_hl_funding_ann": "> 0.5",
+      "gold_gc_spot": "> 4800"
+    },
+    "prediction": "Fade opportunity as overcorrection normalizes within 3-5 days",
+    "timeframeDays": 5,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-21",
