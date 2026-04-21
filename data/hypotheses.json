@@ -7314,7 +7314,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE OI decline continues at 17% from peak, now at 784M vs 957M high. Funding normalized to -16.39% from extremes. Pattern developing exactly as modeled with distribution exhaustion approaching. | HYPE OI decline accelerating to 801M from 957M peak (16% decline) with funding positive normalization matches institutional distribution exhaustion pattern perfectly - positioning for reversal | HYPE OI decline now 16% from peak to 809M, funding normalized to positive territory. Distribution pattern maturing but not yet at capitulation levels - need sub-800M for completion signal.",
+    "postMortem": "HYPE OI decline continues at 17% from peak, now at 784M vs 957M high. Funding normalized to -16.39% from extremes. Pattern developing exactly as modeled with distribution exhaustion approaching. | HYPE OI decline accelerating to 801M from 957M peak (16% decline) with funding positive normalization matches institutional distribution exhaustion pattern perfectly - positioning for reversal | HYPE OI decline now 16% from peak to 809M, funding normalized to positive territory. Distribution pattern maturing but not yet at capitulation levels - need sub-800M for completion signal. | HYPE OI continues declining (816M from 957M peak = 15% decline) with funding at positive 10.95%. Distribution pattern accelerating but not yet at completion threshold sub-800M.",
     "source": "llm"
   },
   {
@@ -7339,7 +7339,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC PM IV at 37.1% still represents -7σ statistical anomaly. P/C ratio at 0.221 shows slight normalization from extremes. Statistical reversion setup remains intact. | BTC PM IV at 37.9% maintaining extreme -7σ compression - statistical anomaly persisting but setup strengthening for mechanical reversion | BTC PM IV compression deepened to 37.2% maintaining -7σ statistical anomaly. This extreme compression represents highest-probability reversion setup observed - waiting for expansion above 40%.",
+    "postMortem": "BTC PM IV at 37.1% still represents -7σ statistical anomaly. P/C ratio at 0.221 shows slight normalization from extremes. Statistical reversion setup remains intact. | BTC PM IV at 37.9% maintaining extreme -7σ compression - statistical anomaly persisting but setup strengthening for mechanical reversion | BTC PM IV compression deepened to 37.2% maintaining -7σ statistical anomaly. This extreme compression represents highest-probability reversion setup observed - waiting for expansion above 40%. | BTC PM IV remains compressed at 37.2% (-7σ anomaly) during consolidation above 76k. Statistical reversion setup intact but requires patience for mechanical correction.",
     "source": "llm"
   },
   {
@@ -7779,7 +7779,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "AMZN P/C collapsed to 0.67 from 0.7+ range during systematic momentum above 255. Institutional repositioning signal confirmed with explosive stock momentum.",
     "source": "llm"
   },
   {
@@ -7845,6 +7845,84 @@
     "prediction": "Gold funding normalizes below 5% within 3 days",
     "timeframeDays": 3,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-21",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-310",
+    "created": "2026-04-21",
+    "description": "BTC momentum breakout above 77k with HYPE OI stabilization above 815M after institutional distribution creates sustained trend continuation",
+    "conditions": {
+      "btc_spot": "> 77000",
+      "hype_hl_oi": "> 815000000",
+      "btc_pm_iv": "< 40"
+    },
+    "prediction": "BTC continues upward momentum to 78k+ range within 5-7 days when combined with HYPE OI stabilization",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-21",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-311",
+    "created": "2026-04-21",
+    "description": "HYPE institutional distribution completion reversal when OI stabilizes above 815M after 15% decline from 957M peak with funding normalization",
+    "conditions": {
+      "hype_hl_oi": "> 815000000",
+      "hype_hl_funding_ann": "> -0.15",
+      "hype_spot": "> 40.5"
+    },
+    "prediction": "HYPE oversold bounce toward 42-43 range within 5-7 days as distribution exhaustion completes",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-21",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-312",
+    "created": "2026-04-21",
+    "description": "AMZN systematic momentum continuation with extreme funding above 25% while basis stays positive creates correction opportunity",
+    "conditions": {
+      "amzn_hl_funding_ann": "> 0.25",
+      "amzn_hl_basis_pct": "> 0.5",
+      "amzn_pc_ratio": "< 0.7"
+    },
+    "prediction": "AMZN funding normalizes back below 10% within 3-5 days as extreme positioning unwinds",
+    "timeframeDays": 5,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-21",
