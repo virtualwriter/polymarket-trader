@@ -1957,3 +1957,20 @@ Portfolio showing excellent stability at $100.60 with 62% win rate over 50 trade
 
 ---
 
+### 2026-04-21 06:29 UTC
+
+**Portfolio:** $100.60 total | Cash $92.60 | 8 open | P&L $0.5959 | 62% win rate (50 trades)
+
+**Opened 1 positions:**
+- AMZN short @ $256.07 via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_LONG)
+
+**Statistical observations:**
+- [anomaly] gold_med_max = 5165 is -2.9 std devs from mean (5314.64 ± 52.07)
+- [correlation_flip] BTC-OIL correlation shifted from -0.08 to 0.40
+- [correlation_flip] BTC-HYPE correlation shifted from -0.15 to 0.33
+
+**LLM analysis:**
+Portfolio stability at $100.60 with strong 62% win rate over 50 trades demonstrates systematic edge identification. Key insight: extreme statistical anomalies (BTC PM IV at -7σ) combined with institutional flow exhaustion patterns (HYPE 16% OI decline) provide highest-probability setups. Maintaining discipline to wait for completion signals rather than rushing into partial patterns. HYPE distribution approaching but not at capitulation - need sub-800M OI. BTC PM IV compression represents most extreme statistical deviation observed - patience for mechanical reversion. Focus on letting extreme setups fully develop rather than trading partial signals.
+
+---
+

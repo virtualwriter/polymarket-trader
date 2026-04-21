@@ -7288,7 +7288,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Gold funding oscillating in moderate range after extreme swings. Pattern showing fatigue but not yet clear directional signal - watching for next extreme to fade.",
     "source": "llm"
   },
   {
@@ -7314,7 +7314,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE OI decline continues at 17% from peak, now at 784M vs 957M high. Funding normalized to -16.39% from extremes. Pattern developing exactly as modeled with distribution exhaustion approaching. | HYPE OI decline accelerating to 801M from 957M peak (16% decline) with funding positive normalization matches institutional distribution exhaustion pattern perfectly - positioning for reversal",
+    "postMortem": "HYPE OI decline continues at 17% from peak, now at 784M vs 957M high. Funding normalized to -16.39% from extremes. Pattern developing exactly as modeled with distribution exhaustion approaching. | HYPE OI decline accelerating to 801M from 957M peak (16% decline) with funding positive normalization matches institutional distribution exhaustion pattern perfectly - positioning for reversal | HYPE OI decline now 16% from peak to 809M, funding normalized to positive territory. Distribution pattern maturing but not yet at capitulation levels - need sub-800M for completion signal.",
     "source": "llm"
   },
   {
@@ -7339,7 +7339,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC PM IV at 37.1% still represents -7σ statistical anomaly. P/C ratio at 0.221 shows slight normalization from extremes. Statistical reversion setup remains intact. | BTC PM IV at 37.9% maintaining extreme -7σ compression - statistical anomaly persisting but setup strengthening for mechanical reversion",
+    "postMortem": "BTC PM IV at 37.1% still represents -7σ statistical anomaly. P/C ratio at 0.221 shows slight normalization from extremes. Statistical reversion setup remains intact. | BTC PM IV at 37.9% maintaining extreme -7σ compression - statistical anomaly persisting but setup strengthening for mechanical reversion | BTC PM IV compression deepened to 37.2% maintaining -7σ statistical anomaly. This extreme compression represents highest-probability reversion setup observed - waiting for expansion above 40%.",
     "source": "llm"
   },
   {
@@ -7767,6 +7767,83 @@
     },
     "prediction": "AMZN momentum continuation above 260 within 5 days as systematic options repositioning drives acceleration",
     "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-21",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-307",
+    "created": "2026-04-21",
+    "description": "BTC PM IV extreme compression statistical reversion - when BTC PM IV drops below 37.2% representing -7σ statistical anomaly during consolidation above 75k, volatility expansion follows within 3-5 days",
+    "conditions": {
+      "btc_pm_iv": "< 37.2",
+      "btc_spot": "> 75000"
+    },
+    "prediction": "BTC PM IV expands above 40% within 5 days",
+    "timeframeDays": 5,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-21",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-308",
+    "created": "2026-04-21",
+    "description": "HYPE institutional distribution completion reversal - when HYPE OI declines below 810M from 957M peak (16%+ decline) while funding normalizes above -20% and spot holds above 40, distribution exhaustion creates oversold bounce",
+    "conditions": {
+      "hype_hl_oi": "< 810000000",
+      "hype_hl_funding_ann": "> -0.20",
+      "hype_spot": "> 40"
+    },
+    "prediction": "HYPE rebounds above 42 within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-21",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-309",
+    "created": "2026-04-21",
+    "description": "Gold funding oscillation exhaustion fade - when gold funding spikes above 5% after cycling between extreme negatives below -50% while spot holds above 4775 and PM premium stays above 100pts vs futures, overcorrection creates fade opportunity",
+    "conditions": {
+      "gold_hl_funding_ann": "> 0.05",
+      "gold_gc_spot": "> 4775",
+      "gold_pm_settle_ev": "> 4875"
+    },
+    "prediction": "Gold funding normalizes below 5% within 3 days",
+    "timeframeDays": 3,
     "confidence": 0.7,
     "tests": [
       {
