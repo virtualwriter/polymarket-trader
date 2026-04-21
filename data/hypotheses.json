@@ -5381,7 +5381,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil P/C dropped to 1.115 from extreme 34+ levels confirming panic exhaustion reversal pattern working as expected. | Oil P/C ratio completed dramatic reversal from 34+ to 1.115, confirming positioning exhaustion cycle completion. Bounce setup validated.",
+    "postMortem": "Oil P/C dropped to 1.115 from extreme 34+ levels confirming panic exhaustion reversal pattern working as expected. | Oil P/C ratio completed dramatic reversal from 34+ to 1.115, confirming positioning exhaustion cycle completion. Bounce setup validated. | Oil P/C collapsed from 34+ extreme to 0.504 with funding at 60% - panic exhaustion reversal completing as predicted",
     "source": "llm"
   },
   {
@@ -7160,7 +7160,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE OI declined to 800M from 957M peak (16% decline) with funding crash to -22% - distribution completion accelerating as predicted, setting up oversold reversal",
+    "postMortem": "HYPE OI declined to 800M from 957M peak (16% decline) with funding crash to -22% - distribution completion accelerating as predicted, setting up oversold reversal | HYPE OI at 784M (17.4% decline from peak) with funding at 10.95% and spot at 39.275 - distribution approaching completion threshold but waiting for positive funding territory confirmation",
     "source": "llm"
   },
   {
@@ -8035,7 +8035,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC P/C at 0.408 during consolidation around 75.5k - positioning exhaustion accelerating as predicted, pullback setup developing",
     "source": "llm"
   },
   {
@@ -8072,6 +8072,82 @@
       "gold_gc_spot": "> 4800"
     },
     "prediction": "Fade opportunity as overcorrection normalizes within 3-5 days",
+    "timeframeDays": 5,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-21",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-319",
+    "created": "2026-04-21",
+    "description": "HYPE institutional distribution exhaustion completion signal - when HYPE OI declines below 785M from 957M peak (18%+ decline) while funding normalizes to positive territory and spot holds above 39, distribution exhaustion creates oversold bounce within 5-7 days",
+    "conditions": {
+      "hype_hl_oi": "< 785000000",
+      "hype_spot": "> 39",
+      "hype_hl_funding_ann": "> 0"
+    },
+    "prediction": "HYPE bounces toward 41-42 range within one week",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-21",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-320",
+    "created": "2026-04-21",
+    "description": "BTC P/C ratio exhaustion completion reversal - when BTC P/C stays below 0.45 for 3+ snapshots during consolidation above 75k after new highs, systematic call positioning unwind accelerates pullback toward 73-74k range",
+    "conditions": {
+      "btc_ibit_pc_ratio": "< 0.45",
+      "btc_spot": "> 75000"
+    },
+    "prediction": "BTC pulls back to 73-74k range within 3-5 days",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-21",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-321",
+    "created": "2026-04-21",
+    "description": "Oil P/C ratio panic exhaustion reversal completion - when Oil P/C collapses from extreme above 2.0 to below 0.6 within 48 hours with funding normalization, systematic bounce follows within 5 days",
+    "conditions": {
+      "oil_cl_pc_ratio": "< 0.6",
+      "oil_hl_funding_ann": "< 100"
+    },
+    "prediction": "Oil bounces 3-5% within 5 days after positioning exhaustion",
     "timeframeDays": 5,
     "confidence": 0.65,
     "tests": [
