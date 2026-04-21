@@ -7031,7 +7031,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE OI declined to 811M from 957M peak (15% decline) with funding at 4.17% and spot at 41.16 - distribution pattern completing as predicted, setting up oversold reversal | HYPE OI at 819M (14.4% decline from peak) with funding at 11% - distribution pattern accelerating as predicted but not yet at completion threshold of sub-800M",
+    "postMortem": "HYPE OI declined to 811M from 957M peak (15% decline) with funding at 4.17% and spot at 41.16 - distribution pattern completing as predicted, setting up oversold reversal | HYPE OI at 819M (14.4% decline from peak) with funding at 11% - distribution pattern accelerating as predicted but not yet at completion threshold of sub-800M | HYPE institutional distribution accelerating - OI now at 812M vs 858M previously, 15% total decline from 957M peak. Funding normalized to +10.95% from -13.4%. Pattern developing as expected but not yet at oversold completion threshold.",
     "source": "llm"
   },
   {
@@ -7056,7 +7056,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Gold funding spiked to 55% from negative territory while spot holds 4807. Extreme oscillation pattern creating overcorrection setup as predicted. | Gold funding spiked to +55% after extreme oscillation pattern - overcorrection pattern developing as expected, watching for fade opportunity as extreme positioning unwinds",
+    "postMortem": "Gold funding spiked to 55% from negative territory while spot holds 4807. Extreme oscillation pattern creating overcorrection setup as predicted. | Gold funding spiked to +55% after extreme oscillation pattern - overcorrection pattern developing as expected, watching for fade opportunity as extreme positioning unwinds | Gold funding oscillation continues - now at +5.48% after previous +55%. Pattern of extreme oscillation persisting while spot holds above 4786. Overcorrection fade opportunity developing as predicted.",
     "source": "llm"
   },
   {
@@ -7779,7 +7779,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "AMZN P/C collapsed to 0.67 from 0.7+ range during systematic momentum above 255. Institutional repositioning signal confirmed with explosive stock momentum.",
+    "postMortem": "AMZN P/C collapsed to 0.67 from 0.7+ range during systematic momentum above 255. Institutional repositioning signal confirmed with explosive stock momentum. | AMZN P/C collapse accelerating to 0.482 from 0.67, indicating systematic institutional repositioning. Stock momentum above 248 with positive funding creating convergence pressure as predicted.",
     "source": "llm"
   },
   {
@@ -7923,6 +7923,82 @@
     "prediction": "AMZN funding normalizes back below 10% within 3-5 days as extreme positioning unwinds",
     "timeframeDays": 5,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-21",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-313",
+    "created": "2026-04-21",
+    "description": "BTC put-call ratio extreme exhaustion reversal - when P/C drops below 0.52 during consolidation above 76k after new highs, systematic call positioning becomes unsustainable and creates pullback setup",
+    "conditions": {
+      "btc_ibit_pc_ratio": "< 0.52",
+      "btc_spot": "> 76000"
+    },
+    "prediction": "BTC pullback to 74-75k range within 3-5 days as call positioning unwinds",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-21",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-314",
+    "created": "2026-04-21",
+    "description": "HYPE institutional distribution approaching completion - OI decline below 812M from 957M peak (15% decline) with funding normalization creates oversold reversal setup",
+    "conditions": {
+      "hype_hl_oi": "< 812000000",
+      "hype_hl_funding_ann": "> -0.15"
+    },
+    "prediction": "HYPE oversold bounce above 42 when OI stabilizes and funding normalizes",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-21",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-315",
+    "created": "2026-04-21",
+    "description": "Gold put-call ratio spike above 0.73 during funding normalization creates contrarian opportunity as positioning becomes too bearish relative to spot strength above 4775",
+    "conditions": {
+      "gold_gld_pc_ratio": "> 0.73",
+      "gold_gc_spot": "> 4775",
+      "gold_hl_funding_ann": "< 0.10"
+    },
+    "prediction": "Gold rally above 4850 within 5-7 days as bearish positioning corrects",
+    "timeframeDays": 7,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-21",
