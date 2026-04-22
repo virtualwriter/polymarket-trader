@@ -3693,7 +3693,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Confirming - HYPE OI declined from 870M peak to 821M while spot dropped from 42.5 to 40.9, validating institutional distribution completion theory. Smart money exit pattern playing out as expected. | ✅ CONFIRMED - HYPE OI decline accelerated to 791M from 870M peak while spot held above 41, indicating institutional distribution completion as predicted",
+    "postMortem": "Confirming - HYPE OI declined from 870M peak to 821M while spot dropped from 42.5 to 40.9, validating institutional distribution completion theory. Smart money exit pattern playing out as expected. | ✅ CONFIRMED - HYPE OI decline accelerated to 791M from 870M peak while spot held above 41, indicating institutional distribution completion as predicted | ACTIVE - HYPE OI now at 834M, decline from 957M peak but with spot recovery above 41.2. Distribution may be completing as funding crashes to -6.56%.",
     "source": "llm"
   },
   {
@@ -6022,7 +6022,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC momentum breakout above 75k thesis partially validated - reached 77k+ with HYPE OI above 954M and positive correlation restoration confirming institutional positioning cycle. | BTC broke above 77.5k with HYPE correlation intact and OI stabilization above 806M. Pattern working but now entering exhaustion phase with P/C at 0.408 indicating positioning extremes.",
+    "postMortem": "BTC momentum breakout above 75k thesis partially validated - reached 77k+ with HYPE OI above 954M and positive correlation restoration confirming institutional positioning cycle. | BTC broke above 77.5k with HYPE correlation intact and OI stabilization above 806M. Pattern working but now entering exhaustion phase with P/C at 0.408 indicating positioning extremes. | CONFIRMED - BTC broke above 79k with HYPE OI at 834M and positive correlation restoration. Pattern working as momentum continues with institutional positioning.",
     "source": "llm"
   },
   {
@@ -6150,7 +6150,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC momentum acceleration above 77k with HYPE correlation restoration confirmed - both assets moving with positive correlation during breakout validates institutional positioning cycle completion | BTC-HYPE correlation restoration confirmed with both assets moving higher together. BTC above 77.9k with HYPE above 40.4 showing positive momentum correlation. Pattern working as expected during funding normalization phases.",
+    "postMortem": "BTC momentum acceleration above 77k with HYPE correlation restoration confirmed - both assets moving with positive correlation during breakout validates institutional positioning cycle completion | BTC-HYPE correlation restoration confirmed with both assets moving higher together. BTC above 77.9k with HYPE above 40.4 showing positive momentum correlation. Pattern working as expected during funding normalization phases. | CONFIRMED - BTC momentum acceleration above 77k with HYPE correlation restoration creating sustained breakout. Both assets moving with positive correlation during IV normalization.",
     "source": "llm"
   },
   {
@@ -8382,6 +8382,84 @@
     "prediction": "Funding normalizes between -10% to +10% range within 48 hours",
     "timeframeDays": 2,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-331",
+    "created": "2026-04-22",
+    "description": "BTC momentum breakout above 79k with HYPE OI surge above 835M and IBIT P/C collapse below 0.45 creates sustained institutional positioning continuation",
+    "conditions": {
+      "btc_spot": "> 79000",
+      "hype_hl_oi": "> 835000000",
+      "btc_ibit_pc_ratio": "< 0.45"
+    },
+    "prediction": "BTC continues above 79.5k within 3 days with HYPE correlation maintaining above 0.3",
+    "timeframeDays": 3,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-332",
+    "created": "2026-04-22",
+    "description": "Cross-asset IV compression completion signal - GOLD IV dropping to 24.8% while HYPE PM IV declining to 69.2% during BTC momentum creates systematic volatility expansion setup",
+    "conditions": {
+      "gold_opt_iv_30d": "< 25.0",
+      "hype_pm_iv": "< 70.0",
+      "btc_spot": "> 78500"
+    },
+    "prediction": "Volatility expansion across assets within 5-7 days as compression unwinds",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-333",
+    "created": "2026-04-22",
+    "description": "HYPE funding crash to -6.56% with OI record surge above 834M while spot momentum above 41.2 creates oversold bounce acceleration setup",
+    "conditions": {
+      "hype_hl_funding_ann": "< -0.05",
+      "hype_hl_oi": "> 834000000",
+      "hype_spot": "> 41.0"
+    },
+    "prediction": "HYPE bounces above 42.5 within 48 hours as negative funding creates systematic covering",
+    "timeframeDays": 2,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-22",
