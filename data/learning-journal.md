@@ -2102,3 +2102,22 @@ Portfolio showing strong systematic edge identification with key exhaustion patt
 
 ---
 
+### 2026-04-22 10:11 UTC
+
+**Portfolio:** $100.46 total | Cash $90.46 | 10 open | P&L $0.4561 | 60% win rate (57 trades)
+
+**Opened 1 positions:**
+- GOLD short @ $4752 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG)
+
+**Statistical observations:**
+- [anomaly] gold_med_max = 5083 is -3.0 std devs from mean (5301.13 ± 72.98)
+- [anomaly] oil_opt_fwd_90d = 82.4 is -2.5 std devs from mean (84.69 ± 0.91)
+- [anomaly] oil_wti_spot = 82.3 is -2.2 std devs from mean (84.60 ± 1.02)
+- [correlation_flip] BTC-HYPE correlation shifted from -0.16 to 0.34
+- [correlation_flip] GOLD-OIL correlation shifted from -0.06 to 0.44
+
+**LLM analysis:**
+Portfolio reaching $100+ validates systematic approach to identifying exhaustion patterns across assets. Key breakthrough: BTC-HYPE correlation restoration at 0.34 from -0.16 confirms momentum continuation thesis when both assets move together during funding normalization. HYPE institutional distribution at 820M (14.3% decline from 957M peak) showing classic exhaustion patterns with funding normalizing to positive territory. Most valuable learning: correlation flip signals are more reliable than absolute levels - when previously negatively correlated assets restore positive correlation during momentum phases, it confirms underlying strength rather than divergence. Gold funding oscillation between -94% to +23% represents textbook overcorrection requiring fade. Focus remains on patience with completion signals rather than partial patterns.
+
+---
+

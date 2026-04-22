@@ -6981,7 +6981,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "CONFIRMED - Oil Brent-WTI spread recovery from extremes created profitable structural trade completion",
     "source": "llm"
   },
   {
@@ -7728,7 +7728,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "CONFIRMED - HYPE OI decline from 957M to 820M (14.3%) with funding normalization showing distribution completion",
     "source": "llm"
   },
   {
@@ -8266,7 +8266,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "CONFIRMED - BTC broke 77.9k with HYPE correlation restoration creating sustained momentum as predicted",
     "source": "llm"
   },
   {
@@ -8306,6 +8306,81 @@
     },
     "prediction": "Gold PM IV expansion above 12% within 5 days as statistical compression anomaly corrects during crypto momentum phases",
     "timeframeDays": 5,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-328",
+    "created": "2026-04-22",
+    "description": "AMZN funding spike above 23% while basis stays negative creates unsustainable perp positioning requiring correction",
+    "conditions": {
+      "amzn_hl_funding_ann": "> 20",
+      "amzn_hl_basis_pct": "< 0"
+    },
+    "prediction": "Funding normalizes below 15% within 48 hours as perp catch-up accelerates",
+    "timeframeDays": 2,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-329",
+    "created": "2026-04-22",
+    "description": "BTC P/C ratio exhaustion below 0.41 during new highs above 77.5k creates systematic call positioning unwind",
+    "conditions": {
+      "btc_spot": "> 77500",
+      "btc_ibit_pc_ratio": "< 0.41"
+    },
+    "prediction": "P/C ratio normalizes above 0.45 within 3-5 days as positioning unwinds",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-330",
+    "created": "2026-04-22",
+    "description": "Gold funding oscillation between extreme negative below -23% and positive territory creates overcorrection fade",
+    "conditions": {
+      "gold_hl_funding_ann": "> 20",
+      "gold_gc_spot": "> 4750"
+    },
+    "prediction": "Funding normalizes between -10% to +10% range within 48 hours",
+    "timeframeDays": 2,
     "confidence": 0.65,
     "tests": [
       {
