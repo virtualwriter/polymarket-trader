@@ -2078,3 +2078,27 @@ Portfolio performing exceptionally well at $100+ with systematic identification 
 
 ---
 
+### 2026-04-22 06:30 UTC
+
+**Portfolio:** $100.46 total | Cash $91.46 | 9 open | P&L $0.4561 | 60% win rate (57 trades)
+
+**Closed 2 trades:**
+- ✅ GOLD short via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG) → expiry: +$0.0030 (0.3%, market 0.0058, funding -0.0028)
+- ✅ GOLD long via polymarket/pm_yes [gc-over-under-jun-2026 — YES — Will Gold (GC) settle over $4,800 on the final trading day of June 2026?] (OPT_IV_GT_PM_IV) → target: +$0.0472 (4.7%, market 0.0472, funding 0.0000)
+
+**Opened 2 positions:**
+- GOLD long @ $0.555 via polymarket/pm_yes [gc-over-under-jun-2026 — YES — Will Gold (GC) settle over $4,800 on the final trading day of June 2026?] (OPT_IV_GT_PM_IV)
+- BTC long @ $77906 via spot/spot [BTC spot] (LLM_HYPOTHESIS)
+
+**Statistical observations:**
+- [anomaly] gold_med_max = 5083 is -3.1 std devs from mean (5303.08 ± 70.32)
+- [anomaly] oil_opt_fwd_90d = 82.4 is -2.6 std devs from mean (84.71 ± 0.89)
+- [anomaly] oil_wti_spot = 82.3 is -2.3 std devs from mean (84.62 ± 1.00)
+- [anomaly] hype_pm_iv = 72.2 is 2.1 std devs from mean (62.16 ± 4.79)
+- [correlation_flip] BTC-HYPE correlation shifted from -0.16 to 0.35
+
+**LLM analysis:**
+Portfolio showing strong systematic edge identification with key exhaustion patterns across multiple assets. BTC breaking above 77.9k with HYPE correlation restoration confirms momentum continuation thesis. HYPE institutional distribution at 15% OI decline appears to be reaching exhaustion as funding normalizes to positive territory. Gold PM IV compression to 10.2% represents extreme statistical anomaly similar to previous BTC PM IV patterns that created high-probability reversions. Key learning: Correlation restoration between BTC and HYPE during momentum phases is reliable signal for continued upside, while institutional distribution exhaustion creates oversold bounce opportunities when OI decline moderates and funding normalizes. Oil structural recovery trade completing as expected with Brent-WTI spread normalization.
+
+---
+

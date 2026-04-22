@@ -6150,7 +6150,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC momentum acceleration above 77k with HYPE correlation restoration confirmed - both assets moving with positive correlation during breakout validates institutional positioning cycle completion",
+    "postMortem": "BTC momentum acceleration above 77k with HYPE correlation restoration confirmed - both assets moving with positive correlation during breakout validates institutional positioning cycle completion | BTC-HYPE correlation restoration confirmed with both assets moving higher together. BTC above 77.9k with HYPE above 40.4 showing positive momentum correlation. Pattern working as expected during funding normalization phases.",
     "source": "llm"
   },
   {
@@ -8060,7 +8060,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE institutional distribution at 15% decline from peak with OI at 812M. Pattern showing signs of exhaustion as funding normalizes to 9.6% positive. Distribution completion threshold likely around 810-815M OI level based on historical patterns.",
     "source": "llm"
   },
   {
@@ -8226,6 +8226,85 @@
       "gold_pm_settle_ev": "> 4900"
     },
     "prediction": "Gold funding normalizes to ±20% range within 5 days after extreme oscillation exhaustion",
+    "timeframeDays": 5,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Gold funding oscillation pattern continuing with current funding at 5.48% after extreme swings. Pattern shows systematic overcorrection but timing needs refinement - oscillation frequency appears to be 24-48 hour cycles rather than single extreme events.",
+    "source": "llm"
+  },
+  {
+    "id": "H-325",
+    "created": "2026-04-22",
+    "description": "BTC momentum acceleration above 77.9k with HYPE correlation restoration and IV compression creates sustained breakout continuation",
+    "conditions": {
+      "btc_spot": "> 77900",
+      "hype_spot": "> 40.4",
+      "btc_opt_iv_30d": "< 44",
+      "hype_hl_oi": "> 810000000"
+    },
+    "prediction": "BTC continues momentum toward 79-80k range within 5-7 days as correlation with HYPE restores during funding normalization",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-326",
+    "created": "2026-04-22",
+    "description": "HYPE institutional distribution exhaustion reversal completion signal when OI stabilizes above 812M after 15% decline with funding normalization",
+    "conditions": {
+      "hype_hl_oi": "> 812000000",
+      "hype_hl_funding_ann": "> -0.15",
+      "hype_spot": "> 40.1"
+    },
+    "prediction": "HYPE oversold bounce toward 43-44 range within 5-7 days as institutional distribution phase completes",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-327",
+    "created": "2026-04-22",
+    "description": "Gold PM IV extreme compression below 10.3% while spot holds above 4757 and PM premium stays above 170pts vs futures creates volatility expansion setup",
+    "conditions": {
+      "gold_pm_iv": "< 10.3",
+      "gold_gc_spot": "> 4757",
+      "gold_pm_settle_ev": "> 4927"
+    },
+    "prediction": "Gold PM IV expansion above 12% within 5 days as statistical compression anomaly corrects during crypto momentum phases",
     "timeframeDays": 5,
     "confidence": 0.65,
     "tests": [
