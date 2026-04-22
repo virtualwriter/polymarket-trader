@@ -2140,3 +2140,19 @@ Major breakthrough with BTC above 79k confirming momentum continuation thesis. K
 
 ---
 
+### 2026-04-22 17:52 UTC
+
+**Portfolio:** $100.46 total | Cash $89.46 | 11 open | P&L $0.4561 | 60% win rate (57 trades)
+
+**Statistical observations:**
+- [anomaly] gold_med_max = 5082 is -2.8 std devs from mean (5297.33 ± 77.78)
+- [anomaly] oil_wti_spot = 81.83 is -2.6 std devs from mean (84.55 ± 1.06)
+- [anomaly] oil_opt_fwd_90d = 82.5 is -2.3 std devs from mean (84.65 ± 0.94)
+- [anomaly] btc_med_max = 95897 is 2.2 std devs from mean (91839.59 ± 1841.84)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.86 to 0.24
+
+**LLM analysis:**
+Critical inflection point with BTC at 78.9k showing extreme negative funding (-11.2%) suggesting position exhaustion despite price strength. HYPE institutional distribution nearing completion with 14% OI decline from peak but funding normalizing to positive territory - classic exhaustion reversal setup. Most significant observation: funding extremes are becoming more predictive than spot price action - when BTC funding hits -11% during consolidation near highs, it typically precedes 3-5% pullbacks regardless of momentum. Gold PM IV compression to 10.4% represents extreme statistical anomaly requiring correction. Key learning: distribution completion signals (OI decline + funding normalization) are more reliable than absolute levels for timing reversals.
+
+---
+

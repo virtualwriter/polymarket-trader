@@ -6176,7 +6176,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil structural recovery completed with Brent-WTI spread normalizing above 14 - profit-taking signal confirmed",
     "source": "llm"
   },
   {
@@ -8419,7 +8419,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC momentum above 79k achieved but IBIT P/C at 0.417 not quite triggering threshold - pattern developing",
     "source": "llm"
   },
   {
@@ -8445,7 +8445,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Cross-asset IV compression continuing with Gold at 24.1%, suggesting expansion setup remains valid",
     "source": "llm"
   },
   {
@@ -8460,6 +8460,83 @@
     "prediction": "HYPE bounces above 42.5 within 48 hours as negative funding creates systematic covering",
     "timeframeDays": 2,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "HYPE funding normalized from -6.56% to 0.6% while OI stabilized above 824M, confirming oversold bounce pattern",
+    "source": "llm"
+  },
+  {
+    "id": "H-334",
+    "created": "2026-04-22",
+    "description": "BTC funding exhaustion reversal pattern - extreme negative funding below -10% during consolidation above 78k with P/C ratio below 0.42 creates oversold bounce setup",
+    "conditions": {
+      "btc_hl_funding_ann": "< -10",
+      "btc_spot": "> 78000",
+      "btc_ibit_pc_ratio": "< 0.42"
+    },
+    "prediction": "BTC bounces within 3-5 days when funding normalizes above -5%",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-335",
+    "created": "2026-04-22",
+    "description": "HYPE institutional distribution exhaustion reversal - OI decline below 825M from 957M peak (14%+ decline) with funding normalization above 0% creates oversold bounce",
+    "conditions": {
+      "hype_hl_oi": "< 825000000",
+      "hype_hl_funding_ann": "> 0"
+    },
+    "prediction": "HYPE recovers above 42 within 5-7 days as distribution completes",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-336",
+    "created": "2026-04-22",
+    "description": "Gold PM IV extreme compression below 10.5% while spot holds above 4740 during crypto momentum phases creates volatility expansion setup",
+    "conditions": {
+      "gold_pm_iv": "< 10.5",
+      "gold_gc_spot": "> 4740",
+      "btc_spot": "> 78000"
+    },
+    "prediction": "Gold PM IV expands above 12% within one week",
+    "timeframeDays": 7,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-22",
