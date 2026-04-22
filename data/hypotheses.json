@@ -8548,6 +8548,84 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
+    "postMortem": "Active hypothesis tracking Gold PM IV compression below 10.5% - currently at 10.4% with spot holding above 4740 during crypto momentum phases. Pattern setting up for volatility expansion as predicted.",
+    "source": "llm"
+  },
+  {
+    "id": "H-337",
+    "created": "2026-04-22",
+    "description": "BTC extreme funding exhaustion reversal pattern when funding drops below -9% during consolidation near highs creates systematic bounce within 48-72 hours",
+    "conditions": {
+      "btc_hl_funding_ann": "< -0.09",
+      "btc_spot": "> 78000",
+      "btc_ibit_pc_ratio": "> 0.4"
+    },
+    "prediction": "BTC bounces toward 80-81k range within 3 days when extreme negative funding reverses",
+    "timeframeDays": 3,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-338",
+    "created": "2026-04-22",
+    "description": "HYPE institutional distribution exhaustion completion when OI declines below 827M from 957M peak while funding normalizes above -6% creates oversold reversal",
+    "conditions": {
+      "hype_hl_oi": "< 827000000",
+      "hype_hl_funding_ann": "> -0.06",
+      "hype_spot": "> 40.5"
+    },
+    "prediction": "HYPE oversold bounce toward 43-44 range within 5-7 days as 13.6% distribution completes",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-339",
+    "created": "2026-04-22",
+    "description": "Gold extreme funding oscillation exhaustion between -20% and +56% while PM premium stays elevated creates volatility expansion setup",
+    "conditions": {
+      "gold_hl_funding_ann": "> 0.5",
+      "gold_pm_settle_ev": "> 4850",
+      "gold_gc_spot": "> 4740"
+    },
+    "prediction": "Gold volatility expansion with IV above 12% and spot movement toward 4850-4900 range within one week",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
     "postMortem": null,
     "source": "llm"
   }

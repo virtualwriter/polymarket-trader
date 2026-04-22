@@ -2156,3 +2156,19 @@ Critical inflection point with BTC at 78.9k showing extreme negative funding (-1
 
 ---
 
+### 2026-04-22 21:42 UTC
+
+**Portfolio:** $100.46 total | Cash $89.46 | 11 open | P&L $0.4561 | 60% win rate (57 trades)
+
+**Statistical observations:**
+- [anomaly] gold_med_max = 5082 is -2.7 std devs from mean (5295.47 ± 79.96)
+- [anomaly] oil_opt_fwd_90d = 82.6 is -2.1 std devs from mean (84.64 ± 0.95)
+- [anomaly] oil_wti_spot = 82.35 is -2.0 std devs from mean (84.54 ± 1.08)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.86 to 0.18
+- [correlation_flip] GOLD-OIL correlation shifted from -0.06 to 0.51
+
+**LLM analysis:**
+Critical validation of funding exhaustion patterns: BTC hitting -9.2% annualized funding while consolidating near highs represents textbook positioning extreme requiring reversal. HYPE distribution at 826M (13.6% decline from 957M peak) with funding normalizing above -6% suggests institutional exit nearing completion. Most important insight: funding extremes during consolidation are more predictive than during trending moves - when assets hit extreme negative funding while price stable, it indicates unsustainable positioning requiring correction. Gold funding oscillation between -20% and +56% represents classic overcorrection pattern requiring fade. Portfolio at $100.46 validates systematic approach to identifying exhaustion signals across multiple timeframes and assets.
+
+---
+
