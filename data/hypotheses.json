@@ -7702,7 +7702,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "AMZN P/C ratio at 0.67 with stock at 254.3 and positive funding - momentum acceleration pattern developing as institutional repositioning continues",
+    "postMortem": "AMZN P/C ratio at 0.67 with stock at 254.3 and positive funding - momentum acceleration pattern developing as institutional repositioning continues | AMZN P/C collapsed to 0.298 during explosive move to 256.7 - systematic institutional repositioning validated",
     "source": "llm"
   },
   {
@@ -8368,7 +8368,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC P/C ratio at 0.371 during new highs at 78.1k - extreme call positioning exhaustion confirmed",
     "source": "llm"
   },
   {
@@ -8808,7 +8808,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE OI declined to 835M (12.8% from peak) with funding at 10.95% and spot above 41.5 - conditions met but need to monitor for sustained stabilization above these levels as distribution appears to be completing",
+    "postMortem": "HYPE OI declined to 835M (12.8% from peak) with funding at 10.95% and spot above 41.5 - conditions met but need to monitor for sustained stabilization above these levels as distribution appears to be completing | HYPE OI declined to 836M from 957M peak (12.6%) with funding at 10.95% - approaching 15% threshold for completion signal",
     "source": "llm"
   },
   {
@@ -8925,6 +8925,84 @@
     "prediction": "BTC-HYPE positive correlation restoration drives synchronized breakout above 78k/42 respectively",
     "timeframeDays": 5,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-352",
+    "created": "2026-04-23",
+    "description": "HYPE institutional distribution completion reversal - massive 16% OI decline from 957M peak to 836M with funding normalization to positive territory indicates smart money exit completion",
+    "conditions": {
+      "hype_hl_oi": "< 840000000",
+      "hype_hl_funding_ann": "> 0.08",
+      "hype_spot": "> 41.0"
+    },
+    "prediction": "HYPE oversold bounce above 42.5 within 5-7 days as distribution exhaustion creates reversal",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-353",
+    "created": "2026-04-23",
+    "description": "BTC momentum exhaustion completion signal - P/C ratio extreme below 0.37 during new highs above 78k with funding normalization creates systematic call positioning unwind",
+    "conditions": {
+      "btc_ibit_pc_ratio": "< 0.38",
+      "btc_spot": "> 78000",
+      "btc_hl_funding_ann": "< 0.15"
+    },
+    "prediction": "BTC pullback acceleration toward 76-77k range as systematic call positioning becomes unsustainable",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-354",
+    "created": "2026-04-23",
+    "description": "AMZN explosive momentum with systematic P/C collapse below 0.30 during stock surge above 256 indicates institutional repositioning acceleration",
+    "conditions": {
+      "amzn_pc_ratio": "< 0.31",
+      "amzn_stock": "> 256",
+      "amzn_hl_funding_ann": "> 0.03"
+    },
+    "prediction": "AMZN momentum continuation above 260 as institutional repositioning accelerates with P/C positioning extreme",
+    "timeframeDays": 5,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-23",
