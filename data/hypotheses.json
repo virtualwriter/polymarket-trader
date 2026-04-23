@@ -9118,7 +9118,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI decline to 822M from 957M peak (-14%) with funding normalization to 10.95% showing textbook distribution exhaustion",
     "source": "llm"
   },
   {
@@ -9144,7 +9144,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC P/C exhaustion at 0.43 during new highs above 78k confirming systematic call positioning unwind pattern",
     "source": "llm"
   },
   {
@@ -9159,6 +9159,83 @@
     "prediction": "AMZN momentum continues to 260+ range within 3-5 days as systematic options repositioning drives acceleration",
     "timeframeDays": 5,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "AMZN P/C collapsed to 0.364 during explosive momentum above 253 - systematic options repositioning pattern continuing as predicted",
+    "source": "llm"
+  },
+  {
+    "id": "H-361",
+    "created": "2026-04-23",
+    "description": "HYPE institutional distribution exhaustion reversal - OI decline stabilization above 820M after 14% drop from 957M peak with funding positive creates oversold bounce",
+    "conditions": {
+      "hype_hl_oi": "> 820000000",
+      "hype_hl_funding_ann": "> 0",
+      "hype_spot": "> 40.5"
+    },
+    "prediction": "HYPE bounces 5-8% within 5 days as distribution phase completes",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-362",
+    "created": "2026-04-23",
+    "description": "BTC P/C exhaustion pullback acceleration - P/C below 0.43 for 3+ snapshots during new highs above 78k creates systematic call unwind",
+    "conditions": {
+      "btc_spot": "> 78000",
+      "btc_ibit_pc_ratio": "< 0.43"
+    },
+    "prediction": "BTC pullback to 75-76k range within 3-5 days as call positioning unwinds",
+    "timeframeDays": 5,
+    "confidence": 0.68,
+    "tests": [
+      {
+        "date": "2026-04-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-363",
+    "created": "2026-04-23",
+    "description": "Cross-asset momentum divergence pattern - HYPE distribution exhaustion while BTC holds above 77k creates correlation restoration setup",
+    "conditions": {
+      "btc_spot": "> 77000",
+      "hype_hl_oi": "> 820000000",
+      "hype_spot": "> 40.5"
+    },
+    "prediction": "Both assets move together within 7 days as HYPE distribution completes and BTC consolidates",
+    "timeframeDays": 7,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-23",

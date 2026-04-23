@@ -2288,3 +2288,19 @@ Critical validation of institutional distribution patterns. HYPE showing textboo
 
 ---
 
+### 2026-04-23 21:37 UTC
+
+**Portfolio:** $100.43 total | Cash $90.43 | 10 open | P&L $0.4325 | 59% win rate (59 trades)
+
+**Statistical observations:**
+- [anomaly] gold_med_max = 5036 is -2.6 std devs from mean (5282.46 ± 94.04)
+- [anomaly] hype_pm_iv = 51.9 is -2.1 std devs from mean (62.25 ± 4.90)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.86 to -0.45
+- [correlation_flip] GOLD-OIL correlation shifted from -0.08 to 0.58
+- [correlation_flip] BTC-HYPE correlation shifted from -0.17 to 0.34
+
+**LLM analysis:**
+Critical validation of institutional distribution patterns in HYPE. The 14% OI decline from 957M to 822M combined with funding normalization to 10.95% represents textbook smart money exit completion. Key insight: distribution phases follow predictable patterns - massive OI decline (>12%) followed by funding direction change (negative to positive) signals exhaustion. BTC showing momentum exhaustion with P/C ratio at 0.43 staying below exhaustion threshold during new highs - systematic call positioning unwind creates pullback setup. AMZN explosive momentum with P/C collapse to 0.364 confirms institutional repositioning pattern. Most important learning: combination of OI decline rate with funding normalization timing is more predictive than absolute levels for reversal opportunities.
+
+---
+
