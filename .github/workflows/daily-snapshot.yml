@@ -22,6 +22,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Validate required secrets
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          if [ -z "${ANTHROPIC_API_KEY}" ]; then
+            echo "::error::Missing required secret ANTHROPIC_API_KEY"
+            exit 1
+          fi
+
       - name: Take market snapshot
         run: npx tsx scripts/market-scanner.ts --snapshot
 
@@ -38,12 +47,13 @@ jobs:
                    data/trades-detailed.csv data/position-snapshots.csv \
                    data/instrument-snapshots.jsonl data/portfolio.json \
                    data/signal-weights.json data/hypotheses.json \
+                   data/learning-params.json \
                    data/learning-journal.md; do
             [ -f "$f" ] && git add -f "$f"
           done
           if git diff --cached --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "scan+trade $(date -u +%Y-%m-%d-%H%M)"
+            git commit -m "scan+trade $(date -u +%Y-%m-%d-%H%M) [skip ci]"
             git push
           fi

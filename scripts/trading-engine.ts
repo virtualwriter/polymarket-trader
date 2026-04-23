@@ -17,6 +17,7 @@ import { join } from "node:path";
 
 const DATA_DIR = join(import.meta.dirname ?? ".", "..", "data");
 const INSTRUMENT_SNAPSHOTS_JSONL = "instrument-snapshots.jsonl";
+const LEARNING_PARAMS_FILE = "learning-params.json";
 const TRADE_SIZE = 1;
 const MAX_BANKROLL = 100;
 const MAX_OPEN_POSITIONS = 15;
@@ -25,6 +26,11 @@ const PROMOTE_MIN_TESTS = 5;
 const DEMOTE_THRESHOLD = 0.45;
 const KILL_THRESHOLD = 0.30;
 const WEIGHT_DECAY = 0.85;
+const LOOKBACK_HOURS = 24;
+const LLM_TRADE_TARGET_PCT = 5;
+const LLM_TRADE_STOP_PCT = 5;
+const MOMENTUM_LONG_TARGET_PCT = 6;
+const MOMENTUM_LONG_STOP_PCT = 5;
 const NO_LLM = process.argv.includes("--no-llm");
 const DRY_RUN = process.argv.includes("--dry-run");
 
@@ -97,6 +103,23 @@ interface SignalWeight {
   lastTriggered: string;
   enabled: boolean;
   perAsset: Record<string, { trades: number; wins: number; avgPnlPct: number }>;
+}
+
+interface LearningParams {
+  macroMomentum24hThresholdPts: number;
+  contrarianTrendMarginPct: number;
+  positiveMomentum24hPct: number;
+  llmTradeExpiryDays: number;
+  momentumLongExpiryDays: number;
+  updatedAt: string;
+}
+
+interface LlmTradeInstruction {
+  action: "buy" | "sell" | "close";
+  asset: string;
+  venue: "polymarket" | "hyperliquid" | "spot";
+  direction: "long" | "short" | "any";
+  thesis: string;
 }
 
 interface HypothesisTest {
@@ -301,6 +324,34 @@ function loadWeights(): SignalWeight[] {
 
 function saveWeights(w: SignalWeight[]) {
   writeJson("signal-weights.json", w);
+}
+
+function defaultLearningParams(): LearningParams {
+  return {
+    macroMomentum24hThresholdPts: 4,
+    contrarianTrendMarginPct: 0.5,
+    positiveMomentum24hPct: 1.5,
+    llmTradeExpiryDays: 14,
+    momentumLongExpiryDays: 21,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+function loadLearningParams(): LearningParams {
+  const defaults = defaultLearningParams();
+  const raw = readJson<Partial<LearningParams>>(LEARNING_PARAMS_FILE, defaults);
+  return {
+    macroMomentum24hThresholdPts: typeof raw.macroMomentum24hThresholdPts === "number" ? raw.macroMomentum24hThresholdPts : defaults.macroMomentum24hThresholdPts,
+    contrarianTrendMarginPct: typeof raw.contrarianTrendMarginPct === "number" ? raw.contrarianTrendMarginPct : defaults.contrarianTrendMarginPct,
+    positiveMomentum24hPct: typeof raw.positiveMomentum24hPct === "number" ? raw.positiveMomentum24hPct : defaults.positiveMomentum24hPct,
+    llmTradeExpiryDays: typeof raw.llmTradeExpiryDays === "number" ? raw.llmTradeExpiryDays : defaults.llmTradeExpiryDays,
+    momentumLongExpiryDays: typeof raw.momentumLongExpiryDays === "number" ? raw.momentumLongExpiryDays : defaults.momentumLongExpiryDays,
+    updatedAt: typeof raw.updatedAt === "string" ? raw.updatedAt : defaults.updatedAt,
+  };
+}
+
+function saveLearningParams(params: LearningParams) {
+  writeJson(LEARNING_PARAMS_FILE, params);
 }
 
 function loadHypotheses(): Hypothesis[] {
@@ -577,10 +628,262 @@ function migrateLegacyPolymarketPositions(
   return notes;
 }
 
-function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights: SignalWeight[]): Signal[] {
+function markPosition(
+  position: Position,
+  latestRow: SnapshotRow,
+  snapshots: InstrumentSnapshotFile[],
+): {
+  currentPrice: number;
+  underlyingPrice: number | null;
+  marketPnl: number;
+  fundingPnl: number;
+  pnl: number;
+  pnlPct: number;
+} | null {
+  const latestSnapshot = latestInstrumentSnapshot(snapshots);
+  let currentPrice: number | null = null;
+  let underlyingPrice: number | null = getAssetPrice(latestRow, position.asset);
+  let marketPnl = 0;
+  let fundingPnl = 0;
+
+  if (position.instrumentType === "pm_yes" || position.instrumentType === "pm_no") {
+    if (!latestSnapshot) return null;
+    const pmMark = findPolymarketContractMark(latestSnapshot, position);
+    if (!pmMark) return null;
+    currentPrice = pmMark.price;
+    underlyingPrice = pmMark.underlyingPrice;
+    const shares = position.size / position.entryPrice;
+    marketPnl = shares * (currentPrice - position.entryPrice);
+  } else if (position.instrumentType === "hl_perp") {
+    currentPrice = getHyperliquidPerpPrice(latestRow, position.asset);
+    if (!currentPrice) return null;
+    const rawReturn = position.direction === "long"
+      ? (currentPrice - position.entryPrice) / position.entryPrice
+      : (position.entryPrice - currentPrice) / position.entryPrice;
+    marketPnl = position.size * (position.leverage ?? 1) * rawReturn;
+    fundingPnl = estimateFundingPnlSinceOpen(position, snapshots);
+  } else {
+    currentPrice = getAssetPrice(latestRow, position.asset);
+    if (!currentPrice) return null;
+    const rawReturn = position.direction === "long"
+      ? (currentPrice - position.entryPrice) / position.entryPrice
+      : (position.entryPrice - currentPrice) / position.entryPrice;
+    marketPnl = position.size * rawReturn;
+  }
+
+  const pnl = marketPnl + fundingPnl;
+  const pnlPct = (pnl / position.size) * 100;
+  return { currentPrice, underlyingPrice, marketPnl, fundingPnl, pnl, pnlPct };
+}
+
+function realizeClosedPosition(
+  portfolio: Portfolio,
+  position: Position,
+  mark: {
+    currentPrice: number;
+    underlyingPrice: number | null;
+    marketPnl: number;
+    fundingPnl: number;
+    pnl: number;
+    pnlPct: number;
+  },
+  closeReason: ClosedTrade["closeReason"],
+  closedAt: string,
+  thesisOverride?: string,
+): ClosedTrade {
+  position.currentPrice = mark.currentPrice;
+  position.currentUnderlyingPrice = mark.underlyingPrice ?? undefined;
+  position.fundingPnlAccrued = mark.fundingPnl;
+
+  const trade: ClosedTrade = {
+    id: position.id,
+    openedAt: position.openedAt,
+    closedAt,
+    asset: position.asset,
+    venue: position.venue,
+    direction: position.direction,
+    entryPrice: position.entryPrice,
+    exitPrice: mark.currentPrice,
+    size: position.size,
+    leverage: position.leverage ?? 1,
+    pnl: mark.pnl,
+    pnlPct: mark.pnlPct,
+    marketPnl: mark.marketPnl,
+    fundingPnl: mark.fundingPnl,
+    signalType: position.signalType,
+    hypothesisId: position.hypothesisId,
+    thesis: thesisOverride ?? position.thesis,
+    closeReason,
+    instrumentType: position.instrumentType,
+    instrumentId: position.instrumentId,
+    instrumentLabel: position.instrumentLabel,
+  };
+
+  portfolio.cash += position.size + mark.pnl;
+  portfolio.totalRealizedPnl += mark.pnl;
+  portfolio.totalTrades++;
+  if (mark.pnl >= 0) portfolio.winCount++; else portfolio.lossCount++;
+  return trade;
+}
+
+function isValidVenue(value: string): value is Signal["venue"] {
+  return value === "polymarket" || value === "hyperliquid" || value === "spot";
+}
+
+function closePositionsFromLlm(
+  portfolio: Portfolio,
+  instructions: LlmTradeInstruction[],
+  latestRow: SnapshotRow,
+  snapshots: InstrumentSnapshotFile[],
+): ClosedTrade[] {
+  if (instructions.length === 0) return [];
+  const closed: ClosedTrade[] = [];
+  const remaining: Position[] = [];
+  const now = new Date().toISOString();
+
+  for (const position of portfolio.positions) {
+    const instruction = instructions.find((candidate) =>
+      candidate.asset === position.asset
+      && candidate.venue === position.venue
+      && (candidate.direction === "any" || candidate.direction === position.direction),
+    );
+    if (!instruction) {
+      remaining.push(position);
+      continue;
+    }
+
+    const mark = markPosition(position, latestRow, snapshots);
+    if (!mark) {
+      remaining.push(position);
+      continue;
+    }
+
+    closed.push(realizeClosedPosition(
+      portfolio,
+      position,
+      mark,
+      "llm_decision",
+      now,
+      `${position.thesis} | [LLM close] ${instruction.thesis}`,
+    ));
+  }
+
+  portfolio.positions = remaining;
+  return closed;
+}
+
+function getRowTimeMs(row: SnapshotRow): number | null {
+  return typeof row.date === "string" && row.date ? snapshotTimeMs(row.date) : null;
+}
+
+function findRowAtOrBefore(rows: SnapshotRow[], targetMs: number): SnapshotRow | null {
+  for (let i = rows.length - 1; i >= 0; i--) {
+    const ts = getRowTimeMs(rows[i]);
+    if (ts !== null && ts <= targetMs) return rows[i];
+  }
+  return null;
+}
+
+function average(nums: number[]): number | null {
+  return nums.length > 0 ? nums.reduce((sum, value) => sum + value, 0) / nums.length : null;
+}
+
+function assetTrendMetrics(
+  rows: SnapshotRow[],
+  asset: string,
+  lookbackHours: number,
+): { current: number; lookback: number; sma: number; momentumPct: number; aboveTrendPct: number } | null {
+  if (rows.length < 2) return null;
+  const latest = rows[rows.length - 1];
+  const latestTs = getRowTimeMs(latest);
+  const current = getAssetPrice(latest, asset);
+  if (latestTs === null || current === null) return null;
+
+  const lookbackRow = findRowAtOrBefore(rows, latestTs - lookbackHours * 60 * 60 * 1000);
+  const lookback = lookbackRow ? getAssetPrice(lookbackRow, asset) : null;
+  if (lookback === null || lookback <= 0) return null;
+
+  const windowPrices = rows
+    .filter((row) => {
+      const ts = getRowTimeMs(row);
+      return ts !== null && ts >= latestTs - lookbackHours * 60 * 60 * 1000;
+    })
+    .map((row) => getAssetPrice(row, asset))
+    .filter((value): value is number => value !== null && value > 0);
+  const sma = average(windowPrices);
+  if (sma === null || sma <= 0) return null;
+
+  return {
+    current,
+    lookback,
+    sma,
+    momentumPct: ((current - lookback) / lookback) * 100,
+    aboveTrendPct: ((current - sma) / sma) * 100,
+  };
+}
+
+function macroCompositeShiftPts(rows: SnapshotRow[], lookbackHours: number): { shift: number; previous: number; current: number } | null {
+  if (rows.length < 2) return null;
+  const latest = rows[rows.length - 1];
+  const latestTs = getRowTimeMs(latest);
+  const latestComposite = num(latest.macro_composite);
+  if (latestTs === null || latestComposite === null) return null;
+
+  const lookbackRow = findRowAtOrBefore(rows, latestTs - lookbackHours * 60 * 60 * 1000);
+  const previousComposite = lookbackRow ? num(lookbackRow.macro_composite) : null;
+  if (previousComposite === null) return null;
+
+  return {
+    shift: latestComposite - previousComposite,
+    previous: previousComposite,
+    current: latestComposite,
+  };
+}
+
+function isAssetTrendAndMomentumPositive(rows: SnapshotRow[], asset: string, learningParams: LearningParams): boolean {
+  const metrics = assetTrendMetrics(rows, asset, LOOKBACK_HOURS);
+  if (!metrics) return false;
+  return metrics.aboveTrendPct >= learningParams.contrarianTrendMarginPct
+    && metrics.momentumPct >= learningParams.positiveMomentum24hPct;
+}
+
+function isShortSignalBlockedByTrend(signal: Signal, rows: SnapshotRow[], learningParams: LearningParams): boolean {
+  if (signal.direction !== "short") return false;
+  if (signal.type === "MACRO_MOMENTUM_DOWN") return false;
+  return isAssetTrendAndMomentumPositive(rows, signal.asset, learningParams);
+}
+
+function isMomentumLongSignal(signal: Signal, rows: SnapshotRow[], learningParams: LearningParams): boolean {
+  if (signal.direction !== "long") return false;
+  if (signal.type === "MACRO_MOMENTUM_UP") return true;
+  return isAssetTrendAndMomentumPositive(rows, signal.asset, learningParams);
+}
+
+function finalizeSignal(signal: Signal, rows: SnapshotRow[], learningParams: LearningParams): Signal | null {
+  if (isShortSignalBlockedByTrend(signal, rows, learningParams)) return null;
+
+  const next = { ...signal };
+  if (next.type === "LLM_HYPOTHESIS") {
+    next.targetPct = Math.max(next.targetPct, LLM_TRADE_TARGET_PCT);
+    next.stopPct = Math.max(next.stopPct, LLM_TRADE_STOP_PCT);
+    next.expiryDays = Math.max(next.expiryDays, learningParams.llmTradeExpiryDays);
+  }
+  if (isMomentumLongSignal(next, rows, learningParams)) {
+    next.targetPct = Math.max(next.targetPct, MOMENTUM_LONG_TARGET_PCT);
+    next.stopPct = Math.max(next.stopPct, MOMENTUM_LONG_STOP_PCT);
+    next.expiryDays = Math.max(next.expiryDays, learningParams.momentumLongExpiryDays);
+  }
+  return next;
+}
+
+function generateSignals(
+  rows: SnapshotRow[],
+  macroRows: SnapshotRow[],
+  weights: SignalWeight[],
+  learningParams: LearningParams,
+): Signal[] {
   if (rows.length === 0) return [];
   const latest = rows[rows.length - 1];
-  const prev = rows.length >= 2 ? rows[rows.length - 2] : null;
   const signals: Signal[] = [];
   const weightMap = new Map(weights.filter((w) => w.enabled).map((w) => [w.type, w]));
 
@@ -606,7 +909,6 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
     const spot = num(latest[a.spot]);
     if (!spot) continue;
 
-    // PM IV vs Options IV divergence
     const pmIv = a.pmIv ? num(latest[a.pmIv]) : null;
     const optIv = a.optIv30 ? num(latest[a.optIv30]) : null;
     if (pmIv && optIv && optIv > 0) {
@@ -614,106 +916,110 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
       if (ratio > 1.3 && weightMap.has("PM_IV_GT_OPT_IV")) {
         const strength = Math.min(1, (ratio - 1.3) / 0.7);
         const w = weightMap.get("PM_IV_GT_OPT_IV")!;
-        signals.push({
+        const signal = finalizeSignal({
           type: "PM_IV_GT_OPT_IV", asset: a.key, venue: "polymarket", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} PM IV (${pmIv.toFixed(1)}%) >> Options IV (${optIv.toFixed(1)}%), ratio ${ratio.toFixed(2)}. PM overpricing vol → sell PM upside.`,
           hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7,
           contractHint: { preferredDirection: "above" },
-        });
+        }, rows, learningParams);
+        if (signal) signals.push(signal);
       }
       if (ratio < 0.7 && weightMap.has("OPT_IV_GT_PM_IV")) {
         const strength = Math.min(1, (0.7 - ratio) / 0.3);
         const w = weightMap.get("OPT_IV_GT_PM_IV")!;
-        signals.push({
+        const signal = finalizeSignal({
           type: "OPT_IV_GT_PM_IV", asset: a.key, venue: "polymarket", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} Options IV (${optIv.toFixed(1)}%) >> PM IV (${pmIv.toFixed(1)}%), ratio ${ratio.toFixed(2)}. PM underpricing vol → buy PM upside.`,
           hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7,
           contractHint: { preferredDirection: "above" },
-        });
+        }, rows, learningParams);
+        if (signal) signals.push(signal);
       }
     }
 
-    // Funding rate extremes
     const funding = a.funding ? num(latest[a.funding]) : null;
     if (funding !== null) {
       if (funding > 15 && weightMap.has("FUNDING_EXTREME_LONG")) {
         const strength = Math.min(1, (funding - 15) / 35);
         const w = weightMap.get("FUNDING_EXTREME_LONG")!;
         const perpEntry = getHyperliquidPerpPrice(latest, a.key) ?? spot;
-        signals.push({
+        const signal = finalizeSignal({
           type: "FUNDING_EXTREME_LONG", asset: a.key, venue: "hyperliquid", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL funding ${funding.toFixed(1)}% annualized — crowded longs. Fade.`,
           hypothesisId: null, entryPrice: perpEntry, targetPct: 2, stopPct: 4, expiryDays: 3, leverage: 1,
-        });
+        }, rows, learningParams);
+        if (signal) signals.push(signal);
       }
       if (funding < -15 && weightMap.has("FUNDING_EXTREME_SHORT")) {
         const strength = Math.min(1, (-funding - 15) / 35);
         const w = weightMap.get("FUNDING_EXTREME_SHORT")!;
         const perpEntry = getHyperliquidPerpPrice(latest, a.key) ?? spot;
-        signals.push({
+        const signal = finalizeSignal({
           type: "FUNDING_EXTREME_SHORT", asset: a.key, venue: "hyperliquid", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL funding ${funding.toFixed(1)}% annualized — crowded shorts. Buy.`,
           hypothesisId: null, entryPrice: perpEntry, targetPct: 2, stopPct: 4, expiryDays: 3, leverage: 1,
-        });
+        }, rows, learningParams);
+        if (signal) signals.push(signal);
       }
     }
 
-    // PM EV vs Spot divergence
     const pmEv = a.pmEv ? num(latest[a.pmEv]) : null;
     if (pmEv && spot) {
       const divergencePct = ((pmEv - spot) / spot) * 100;
       if (divergencePct > 8 && weightMap.has("PM_EV_ABOVE_SPOT")) {
         const strength = Math.min(1, (divergencePct - 8) / 20);
         const w = weightMap.get("PM_EV_ABOVE_SPOT")!;
-        signals.push({
+        const signal = finalizeSignal({
           type: "PM_EV_ABOVE_SPOT", asset: a.key, venue: "spot", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} PM EV ($${pmEv.toFixed(0)}) is ${divergencePct.toFixed(1)}% above spot ($${spot.toFixed(0)}). Market expects upside.`,
           hypothesisId: null, entryPrice: spot, targetPct: 4, stopPct: 6, expiryDays: 14,
-        });
+        }, rows, learningParams);
+        if (signal) signals.push(signal);
       }
       if (divergencePct < -5 && weightMap.has("PM_EV_BELOW_SPOT")) {
         const strength = Math.min(1, (-divergencePct - 5) / 15);
         const w = weightMap.get("PM_EV_BELOW_SPOT")!;
-        signals.push({
+        const signal = finalizeSignal({
           type: "PM_EV_BELOW_SPOT", asset: a.key, venue: "spot", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} PM EV ($${pmEv.toFixed(0)}) is ${divergencePct.toFixed(1)}% below spot ($${spot.toFixed(0)}). Market expects downside.`,
           hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 14,
-        });
+        }, rows, learningParams);
+        if (signal) signals.push(signal);
       }
     }
 
-    // Put/Call ratio extremes
     const pcRatio = a.pcRatio ? num(latest[a.pcRatio]) : null;
     if (pcRatio !== null) {
       if (pcRatio > 1.2 && weightMap.has("PC_RATIO_EXTREME_HIGH")) {
         const strength = Math.min(1, (pcRatio - 1.2) / 0.8);
         const w = weightMap.get("PC_RATIO_EXTREME_HIGH")!;
-        signals.push({
+        const signal = finalizeSignal({
           type: "PC_RATIO_EXTREME_HIGH", asset: a.key, venue: "spot", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy put buying → contrarian long.`,
           hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5,
-        });
+        }, rows, learningParams);
+        if (signal) signals.push(signal);
       }
       if (pcRatio < 0.5 && weightMap.has("PC_RATIO_EXTREME_LOW")) {
         const strength = Math.min(1, (0.5 - pcRatio) / 0.3);
         const w = weightMap.get("PC_RATIO_EXTREME_LOW")!;
-        signals.push({
+        const signal = finalizeSignal({
           type: "PC_RATIO_EXTREME_LOW", asset: a.key, venue: "spot", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy call buying → contrarian short.`,
           hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5,
-        });
+        }, rows, learningParams);
+        if (signal) signals.push(signal);
       }
     }
 
-    // Cross-venue basis (HL perp vs spot)
     const hlPerp = a.hlPerp ? num(latest[a.hlPerp]) : null;
     const stockSpot = a.spot === a.hlPerp ? null : num(latest[a.spot]);
     if (hlPerp && stockSpot && a.key === "AMZN") {
@@ -721,56 +1027,54 @@ function generateSignals(rows: SnapshotRow[], macroRows: SnapshotRow[], weights:
       if (basisPct > 1.5 && weightMap.has("BASIS_PREMIUM")) {
         const strength = Math.min(1, (basisPct - 1.5) / 3);
         const w = weightMap.get("BASIS_PREMIUM")!;
-        signals.push({
+        const signal = finalizeSignal({
           type: "BASIS_PREMIUM", asset: a.key, venue: "hyperliquid", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL perp ($${hlPerp.toFixed(2)}) at ${basisPct.toFixed(1)}% premium to stock ($${stockSpot.toFixed(2)}). Basis convergence → short perp.`,
           hypothesisId: null, entryPrice: hlPerp, targetPct: 1.5, stopPct: 3, expiryDays: 5, leverage: 1,
-        });
+        }, rows, learningParams);
+        if (signal) signals.push(signal);
       }
       if (basisPct < -1.5 && weightMap.has("BASIS_DISCOUNT")) {
         const strength = Math.min(1, (-basisPct - 1.5) / 3);
         const w = weightMap.get("BASIS_DISCOUNT")!;
-        signals.push({
+        const signal = finalizeSignal({
           type: "BASIS_DISCOUNT", asset: a.key, venue: "hyperliquid", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL perp ($${hlPerp.toFixed(2)}) at ${basisPct.toFixed(1)}% discount to stock ($${stockSpot.toFixed(2)}). Basis convergence → long perp.`,
           hypothesisId: null, entryPrice: hlPerp, targetPct: 1.5, stopPct: 3, expiryDays: 5, leverage: 1,
-        });
+        }, rows, learningParams);
+        if (signal) signals.push(signal);
       }
     }
   }
 
-  // Macro momentum
-  if (macroRows.length >= 2) {
-    const latestMacro = macroRows[macroRows.length - 1];
-    const prevMacro = macroRows[macroRows.length - 2];
-    const compositeNow = num(latestMacro.macro_composite);
-    const compositePrev = num(prevMacro.macro_composite);
-    if (compositeNow !== null && compositePrev !== null) {
-      const shift = compositeNow - compositePrev;
-      if (shift > 8 && weightMap.has("MACRO_MOMENTUM_UP")) {
-        const strength = Math.min(1, (shift - 8) / 20);
-        const w = weightMap.get("MACRO_MOMENTUM_UP")!;
-        signals.push({
-          type: "MACRO_MOMENTUM_UP", asset: "BTC", venue: "spot", direction: "long",
-          strength, confidence: strength * w.weight,
-          thesis: `Macro composite jumped +${shift} pts (${compositePrev}→${compositeNow}). Risk-on momentum → long BTC.`,
-          hypothesisId: null, entryPrice: num(rows[rows.length - 1].btc_spot) ?? 0,
-          targetPct: 3, stopPct: 5, expiryDays: 7,
-        });
-      }
-      if (shift < -8 && weightMap.has("MACRO_MOMENTUM_DOWN")) {
-        const strength = Math.min(1, (-shift - 8) / 20);
-        const w = weightMap.get("MACRO_MOMENTUM_DOWN")!;
-        signals.push({
-          type: "MACRO_MOMENTUM_DOWN", asset: "BTC", venue: "spot", direction: "short",
-          strength, confidence: strength * w.weight,
-          thesis: `Macro composite dropped ${shift} pts (${compositePrev}→${compositeNow}). Risk-off momentum → short BTC.`,
-          hypothesisId: null, entryPrice: num(rows[rows.length - 1].btc_spot) ?? 0,
-          targetPct: 3, stopPct: 5, expiryDays: 7,
-        });
-      }
+  const macroShift = macroCompositeShiftPts(macroRows, LOOKBACK_HOURS);
+  if (macroShift) {
+    const threshold = learningParams.macroMomentum24hThresholdPts;
+    if (macroShift.shift > threshold && weightMap.has("MACRO_MOMENTUM_UP")) {
+      const strength = Math.min(1, (macroShift.shift - threshold) / 12);
+      const w = weightMap.get("MACRO_MOMENTUM_UP")!;
+      const signal = finalizeSignal({
+        type: "MACRO_MOMENTUM_UP", asset: "BTC", venue: "spot", direction: "long",
+        strength, confidence: strength * w.weight,
+        thesis: `Macro composite rose +${macroShift.shift.toFixed(1)} pts over ${LOOKBACK_HOURS}h (${macroShift.previous.toFixed(1)}→${macroShift.current.toFixed(1)}). Risk-on momentum → long BTC.`,
+        hypothesisId: null, entryPrice: num(rows[rows.length - 1].btc_spot) ?? 0,
+        targetPct: 3, stopPct: 5, expiryDays: 7,
+      }, rows, learningParams);
+      if (signal) signals.push(signal);
+    }
+    if (macroShift.shift < -threshold && weightMap.has("MACRO_MOMENTUM_DOWN")) {
+      const strength = Math.min(1, (-macroShift.shift - threshold) / 12);
+      const w = weightMap.get("MACRO_MOMENTUM_DOWN")!;
+      const signal = finalizeSignal({
+        type: "MACRO_MOMENTUM_DOWN", asset: "BTC", venue: "spot", direction: "short",
+        strength, confidence: strength * w.weight,
+        thesis: `Macro composite fell ${macroShift.shift.toFixed(1)} pts over ${LOOKBACK_HOURS}h (${macroShift.previous.toFixed(1)}→${macroShift.current.toFixed(1)}). Risk-off momentum → short BTC.`,
+        hypothesisId: null, entryPrice: num(rows[rows.length - 1].btc_spot) ?? 0,
+        targetPct: 3, stopPct: 5, expiryDays: 7,
+      }, rows, learningParams);
+      if (signal) signals.push(signal);
     }
   }
 
@@ -894,68 +1198,23 @@ function markToMarket(
   const closed: ClosedTrade[] = [];
   const now = new Date().toISOString();
   const remaining: Position[] = [];
-  const latestSnapshot = latestInstrumentSnapshot(snapshots);
 
   for (const pos of portfolio.positions) {
-    let currentPrice: number | null = null;
-    let underlyingPrice: number | null = getAssetPrice(latestRow, pos.asset);
-    let marketPnl = 0;
-    let fundingPnl = 0;
-
-    if (pos.instrumentType === "pm_yes" || pos.instrumentType === "pm_no") {
-      if (!latestSnapshot) { remaining.push(pos); continue; }
-      const pmMark = findPolymarketContractMark(latestSnapshot, pos);
-      if (!pmMark) { remaining.push(pos); continue; }
-      currentPrice = pmMark.price;
-      underlyingPrice = pmMark.underlyingPrice;
-      const shares = pos.size / pos.entryPrice;
-      marketPnl = shares * (currentPrice - pos.entryPrice);
-    } else if (pos.instrumentType === "hl_perp") {
-      currentPrice = getHyperliquidPerpPrice(latestRow, pos.asset);
-      if (!currentPrice) { remaining.push(pos); continue; }
-      const rawReturn = pos.direction === "long"
-        ? (currentPrice - pos.entryPrice) / pos.entryPrice
-        : (pos.entryPrice - currentPrice) / pos.entryPrice;
-      marketPnl = pos.size * (pos.leverage ?? 1) * rawReturn;
-      fundingPnl = estimateFundingPnlSinceOpen(pos, snapshots);
-    } else {
-      currentPrice = getAssetPrice(latestRow, pos.asset);
-      if (!currentPrice) { remaining.push(pos); continue; }
-      const rawReturn = pos.direction === "long"
-        ? (currentPrice - pos.entryPrice) / pos.entryPrice
-        : (pos.entryPrice - currentPrice) / pos.entryPrice;
-      marketPnl = pos.size * rawReturn;
-    }
-
-    pos.currentPrice = currentPrice;
-    pos.currentUnderlyingPrice = underlyingPrice ?? undefined;
-    pos.fundingPnlAccrued = fundingPnl;
-    const pnl = marketPnl + fundingPnl;
-    const pnlPct = (pnl / pos.size) * 100;
+    const mark = markPosition(pos, latestRow, snapshots);
+    if (!mark) { remaining.push(pos); continue; }
 
     let closeReason: ClosedTrade["closeReason"] | null = null;
-    if (pnlPct >= pos.targetPct) closeReason = "target";
-    else if (pnlPct <= -pos.stopPct) closeReason = "stop";
+    if (mark.pnlPct >= pos.targetPct) closeReason = "target";
+    else if (mark.pnlPct <= -pos.stopPct) closeReason = "stop";
     else if (new Date(pos.expiryDate) <= new Date()) closeReason = "expiry";
 
     if (closeReason) {
-      const trade: ClosedTrade = {
-        id: pos.id, openedAt: pos.openedAt, closedAt: now, asset: pos.asset,
-        venue: pos.venue, direction: pos.direction, entryPrice: pos.entryPrice,
-        exitPrice: currentPrice, size: pos.size, leverage: pos.leverage ?? 1, pnl, pnlPct,
-        marketPnl, fundingPnl,
-        signalType: pos.signalType, hypothesisId: pos.hypothesisId,
-        thesis: pos.thesis, closeReason,
-        instrumentType: pos.instrumentType,
-        instrumentId: pos.instrumentId,
-        instrumentLabel: pos.instrumentLabel,
-      };
+      const trade = realizeClosedPosition(portfolio, pos, mark, closeReason, now);
       closed.push(trade);
-      portfolio.cash += pos.size + pnl;
-      portfolio.totalRealizedPnl += pnl;
-      portfolio.totalTrades++;
-      if (pnl >= 0) portfolio.winCount++; else portfolio.lossCount++;
     } else {
+      pos.currentPrice = mark.currentPrice;
+      pos.currentUnderlyingPrice = mark.underlyingPrice ?? undefined;
+      pos.fundingPnlAccrued = mark.fundingPnl;
       remaining.push(pos);
     }
   }
@@ -1230,6 +1489,7 @@ async function callLLM(
   macroRows: SnapshotRow[],
   instrumentSnapshots: InstrumentSnapshotFile[],
   portfolio: Portfolio,
+  learningParams: LearningParams,
   weights: SignalWeight[],
   hypotheses: Hypothesis[],
   statObs: StatObservation[],
@@ -1239,7 +1499,8 @@ async function callLLM(
   marketAssessment: string;
   newHypotheses: Omit<Hypothesis, "id" | "tests" | "winRate" | "status" | "promotedToSignal" | "postMortem">[];
   hypothesisReviews: { id: string; observation: string }[];
-  trades: { action: "buy" | "sell"; asset: string; venue: string; direction: "long" | "short"; thesis: string }[];
+  trades: LlmTradeInstruction[];
+  parameterUpdates?: Partial<Omit<LearningParams, "updatedAt">>;
   journalEntry: string;
 } | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -1292,6 +1553,9 @@ ${statObs.map((o) => `  [${o.type}] ${o.description}`).join("\n") || "  None"}
 RECENT CLOSED TRADES:
 ${closedTrades.slice(-10).map((t) => `  ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (market=${(t.marketPnl ?? t.pnl).toFixed(4)}, funding=${(t.fundingPnl ?? 0).toFixed(4)}) [${t.instrumentLabel ?? "n/a"}]`).join("\n") || "  None"}
 
+CURRENT LEARNABLE PARAMETERS:
+${JSON.stringify(learningParams, null, 2)}
+
 RECENT LEARNING JOURNAL:
 ${journalTail || "  No entries yet"}
 
@@ -1308,6 +1572,15 @@ IMPORTANT RULES:
 - Hyperliquid trades are perp simulations and include funding carry in realized P&L
 - Spot trades are marked only to the underlying spot price
 - Prefer polymarket only for assets with explicit contracts in the instrument snapshots
+- If you suggest parameter changes, keep them incremental and evidence-based
+- You may return \"action: close\" to exit an existing open position; use that only when the thesis has clearly weakened or a target/stop is likely stale
+- For \"action: close\", set direction to long, short, or any to identify which existing position to close
+- Keep parameter updates inside these bounds:
+  - macroMomentum24hThresholdPts: 2 to 20
+  - contrarianTrendMarginPct: 0 to 5
+  - positiveMomentum24hPct: 0 to 10
+  - llmTradeExpiryDays: 3 to 30
+  - momentumLongExpiryDays: 3 to 45
 
 Respond with ONLY valid JSON in this exact format:
 {
@@ -1325,6 +1598,13 @@ Respond with ONLY valid JSON in this exact format:
   ],
   "hypothesisReviews": [{"id": "H-xxx", "observation": "what happened and why"}],
   "trades": [{"action": "buy", "asset": "BTC", "venue": "spot", "direction": "long", "thesis": "reason"}],
+  "parameterUpdates": {
+    "macroMomentum24hThresholdPts": 4,
+    "contrarianTrendMarginPct": 0.5,
+    "positiveMomentum24hPct": 1.5,
+    "llmTradeExpiryDays": 14,
+    "momentumLongExpiryDays": 21
+  },
   "journalEntry": "Key observations and lessons from today's analysis..."
 }`;
 
@@ -1498,6 +1778,47 @@ function estimateOpenPositionPnl(position: Position): number {
   return marketPnl + (position.fundingPnlAccrued ?? 0);
 }
 
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
+function applyLearningParamUpdates(
+  current: LearningParams,
+  updates: Partial<Omit<LearningParams, "updatedAt">> | undefined,
+): { next: LearningParams; notes: string[] } {
+  if (!updates) return { next: current, notes: [] };
+  const next = { ...current };
+  const notes: string[] = [];
+  const candidates: Array<{
+    key: keyof Omit<LearningParams, "updatedAt">;
+    min: number;
+    max: number;
+    digits: number;
+  }> = [
+    { key: "macroMomentum24hThresholdPts", min: 2, max: 20, digits: 1 },
+    { key: "contrarianTrendMarginPct", min: 0, max: 5, digits: 2 },
+    { key: "positiveMomentum24hPct", min: 0, max: 10, digits: 2 },
+    { key: "llmTradeExpiryDays", min: 3, max: 30, digits: 0 },
+    { key: "momentumLongExpiryDays", min: 3, max: 45, digits: 0 },
+  ];
+
+  for (const candidate of candidates) {
+    const proposed = updates[candidate.key];
+    if (typeof proposed !== "number" || Number.isNaN(proposed)) continue;
+    const bounded = clamp(proposed, candidate.min, candidate.max);
+    const normalized = candidate.digits === 0
+      ? Math.round(bounded)
+      : Number(bounded.toFixed(candidate.digits));
+    if (normalized !== next[candidate.key]) {
+      notes.push(`${candidate.key}: ${next[candidate.key]} -> ${normalized}`);
+      next[candidate.key] = normalized as LearningParams[typeof candidate.key];
+    }
+  }
+
+  if (notes.length > 0) next.updatedAt = new Date().toISOString();
+  return { next, notes };
+}
+
 // ─── Main ────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -1520,11 +1841,13 @@ async function main() {
 
   // Load state
   const portfolio = loadPortfolio();
+  let learningParams = loadLearningParams();
   const weights = loadWeights();
   let hypotheses = loadHypotheses();
   const migrationNotes = migrateLegacyPolymarketPositions(portfolio, instrumentSnapshots);
 
   console.log(`  Portfolio: $${portfolio.cash.toFixed(2)} cash, ${portfolio.positions.length} open positions, $${portfolio.totalRealizedPnl.toFixed(4)} realized P&L`);
+  console.log(`  Learnable params: macro24h>${learningParams.macroMomentum24hThresholdPts.toFixed(1)}, trend>${learningParams.contrarianTrendMarginPct.toFixed(2)}%, momentum>${learningParams.positiveMomentum24hPct.toFixed(2)}%, llm expiry=${learningParams.llmTradeExpiryDays}d, momentum expiry=${learningParams.momentumLongExpiryDays}d`);
   for (const note of migrationNotes) console.log(`  ${note}`);
 
   // Regime check
@@ -1546,7 +1869,7 @@ async function main() {
   }
 
   // Step 2: Update signal weights
-  const weightObs = updateWeights(weights, closedTrades);
+  let weightObs = updateWeights(weights, closedTrades);
   for (const o of weightObs) console.log(`  ${o}`);
 
   // Step 3: Evaluate hypotheses
@@ -1563,7 +1886,7 @@ async function main() {
   }
 
   // Step 5: Generate rule-based signals
-  const signals = generateSignals(valRows, macroRows, weights);
+  const signals = generateSignals(valRows, macroRows, weights, learningParams);
   console.log(`\n  Signals generated: ${signals.length}`);
   for (const s of signals.slice(0, 8)) {
     console.log(`    ${s.asset} ${s.direction} (${s.type}) confidence=${s.confidence.toFixed(3)} — ${s.thesis.slice(0, 70)}`);
@@ -1574,10 +1897,17 @@ async function main() {
   if (!NO_LLM) {
     console.log(`\n  Calling LLM for pattern discovery...`);
     const journalTail = readJournalTail(40);
-    const llmResult = await callLLM(valRows, macroRows, instrumentSnapshots, portfolio, weights, hypotheses, statObs, closedTrades, journalTail);
+    const llmResult = await callLLM(valRows, macroRows, instrumentSnapshots, portfolio, learningParams, weights, hypotheses, statObs, closedTrades, journalTail);
 
     if (llmResult) {
       console.log(`  LLM assessment: ${llmResult.marketAssessment.slice(0, 120)}`);
+      const appliedUpdates = applyLearningParamUpdates(learningParams, llmResult.parameterUpdates);
+      learningParams = appliedUpdates.next;
+      for (const note of appliedUpdates.notes) {
+        console.log(`    Param update: ${note}`);
+      }
+
+      const llmCloseInstructions: LlmTradeInstruction[] = [];
 
       // Add new hypotheses
       for (const nh of llmResult.newHypotheses ?? []) {
@@ -1604,12 +1934,32 @@ async function main() {
 
       // Add LLM-suggested trades as signals
       for (const lt of llmResult.trades ?? []) {
+        if (!isValidVenue(lt.venue)) {
+          console.log(`    Skipping invalid LLM venue for ${lt.asset}: ${String(lt.venue)}`);
+          continue;
+        }
+        if (lt.action === "close") {
+          if (lt.direction !== "long" && lt.direction !== "short" && lt.direction !== "any") {
+            console.log(`    Skipping invalid LLM close direction for ${lt.asset}: ${String(lt.direction)}`);
+            continue;
+          }
+          llmCloseInstructions.push(lt);
+          continue;
+        }
+        if (lt.direction !== "long" && lt.direction !== "short") {
+          console.log(`    Skipping invalid LLM trade direction for ${lt.asset}: ${String(lt.direction)}`);
+          continue;
+        }
+        if (lt.action !== "buy" && lt.action !== "sell") {
+          console.log(`    Skipping unsupported LLM trade action for ${lt.asset}: ${String(lt.action)}`);
+          continue;
+        }
         const price =
           lt.venue === "hyperliquid"
             ? getHyperliquidPerpPrice(latestRow, lt.asset)
             : getAssetPrice(latestRow, lt.asset);
         if (!price) continue;
-        signals.push({
+        const signal = finalizeSignal({
           type: "LLM_HYPOTHESIS", asset: lt.asset,
           venue: lt.venue as Signal["venue"], direction: lt.direction,
           strength: 0.5, confidence: 0.4,
@@ -1620,7 +1970,20 @@ async function main() {
           contractHint: lt.venue === "polymarket"
             ? { preferredDirection: inferPolymarketPreferredDirection(lt.direction, "LLM_HYPOTHESIS", lt.thesis) }
             : undefined,
-        });
+        }, valRows, learningParams);
+        if (signal) signals.push(signal);
+      }
+
+      const llmClosedTrades = closePositionsFromLlm(portfolio, llmCloseInstructions, latestRow, instrumentSnapshots);
+      if (llmClosedTrades.length > 0) {
+        console.log(`\n  LLM closed ${llmClosedTrades.length} positions:`);
+        for (const t of llmClosedTrades) {
+          const emoji = t.pnl >= 0 ? "✅" : "❌";
+          console.log(`    ${emoji} ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} [${t.instrumentLabel ?? "n/a"}] → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
+          appendTradeCsv(t);
+          closedTrades.push(t);
+        }
+        weightObs = [...weightObs, ...updateWeights(weights, llmClosedTrades)];
       }
 
       llmJournal = llmResult.journalEntry;
@@ -1645,6 +2008,7 @@ async function main() {
     savePortfolio(portfolio);
     saveWeights(weights);
     saveHypotheses(hypotheses);
+    saveLearningParams(learningParams);
   }
 
   // Summary
