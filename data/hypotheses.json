@@ -5073,7 +5073,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil funding normalized to +9.29% from extreme negatives, confirming structural recovery completion. Trade timing good but profits may be limited as normalization already achieved. | Oil funding normalization completion from extreme negatives created profit-taking signal perfectly - funding oscillated from -388% to positive territory as systematic recovery trade completed | ✅ TRIGGERED - Oil funding normalized to positive territory with Brent-WTI spread stabilization above 4, indicating structural recovery trade completion",
+    "postMortem": "Oil funding normalized to +9.29% from extreme negatives, confirming structural recovery completion. Trade timing good but profits may be limited as normalization already achieved. | Oil funding normalization completion from extreme negatives created profit-taking signal perfectly - funding oscillated from -388% to positive territory as systematic recovery trade completed | ✅ TRIGGERED - Oil funding normalized to positive territory with Brent-WTI spread stabilization above 4, indicating structural recovery trade completion | Oil funding normalized to positive territory confirming structural recovery trade completion - profit-taking signal activated as predicted",
     "source": "llm"
   },
   {
@@ -8652,7 +8652,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE OI decline continues to 812M (15% from peak) with funding normalizing to +2.9%. Distribution completion signal strengthening as smart money exit approaches completion with funding turning positive.",
+    "postMortem": "HYPE OI decline continues to 812M (15% from peak) with funding normalizing to +2.9%. Distribution completion signal strengthening as smart money exit approaches completion with funding turning positive. | HYPE institutional distribution showing textbook exhaustion signals - OI declined 16% to 836M with funding normalizing to 10.95%, confirming smart money exit completion",
     "source": "llm"
   },
   {
@@ -9003,6 +9003,84 @@
     "prediction": "AMZN momentum continuation above 260 as institutional repositioning accelerates with P/C positioning extreme",
     "timeframeDays": 5,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "AMZN P/C collapsed to 0.298 validating systematic institutional repositioning during explosive momentum above 256 - pattern holding strong",
+    "source": "llm"
+  },
+  {
+    "id": "H-355",
+    "created": "2026-04-23",
+    "description": "HYPE institutional distribution exhaustion reversal - massive OI decline with funding normalization indicates smart money exit completion",
+    "conditions": {
+      "hype_hl_oi": "< 840000000",
+      "hype_hl_funding_ann": "> 0.08",
+      "hype_spot": "> 41.0"
+    },
+    "prediction": "HYPE oversold bounce to 43-44 range within 5-7 days as distribution completes",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-356",
+    "created": "2026-04-23",
+    "description": "BTC momentum exhaustion confirmation with P/C ratio extreme during new highs above 78k",
+    "conditions": {
+      "btc_spot": "> 78000",
+      "btc_ibit_pc_ratio": "< 0.40",
+      "btc_hl_funding_ann": "> 0.08"
+    },
+    "prediction": "BTC pullback to 76-77k range within 3-5 days as systematic call positioning unwinds",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-357",
+    "created": "2026-04-23",
+    "description": "Cross-asset IV compression completion signal during HYPE distribution exhaustion creates volatility expansion setup",
+    "conditions": {
+      "btc_opt_iv_30d": "< 44.0",
+      "hype_pm_iv": "< 65.0",
+      "hype_hl_oi": "< 840000000"
+    },
+    "prediction": "Systematic volatility expansion across BTC and HYPE within one week as compression corrects",
+    "timeframeDays": 7,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-23",
