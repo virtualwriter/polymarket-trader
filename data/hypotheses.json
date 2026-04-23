@@ -2474,7 +2474,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "IN PROGRESS - BTC holding above 77k with HYPE funding positive, correlation restoration underway",
     "source": "llm"
   },
   {
@@ -6981,7 +6981,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "CONFIRMED - Oil Brent-WTI spread recovery from extremes created profitable structural trade completion | Oil structural recovery confirmed - Brent-WTI spread stable above 15 with funding normalization - pattern working as expected",
+    "postMortem": "CONFIRMED - Oil Brent-WTI spread recovery from extremes created profitable structural trade completion | Oil structural recovery confirmed - Brent-WTI spread stable above 15 with funding normalization - pattern working as expected | CONFIRMED - Oil Brent-WTI spread normalized to 15.9 with funding below 5.48%, completing structural recovery trade",
     "source": "llm"
   },
   {
@@ -7728,7 +7728,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "CONFIRMED - HYPE OI decline from 957M to 820M (14.3%) with funding normalization showing distribution completion | HYPE OI at 807M represents 16% decline from 957M peak with funding at -25.1% - distribution completion accelerating as predicted",
+    "postMortem": "CONFIRMED - HYPE OI decline from 957M to 820M (14.3%) with funding normalization showing distribution completion | HYPE OI at 807M represents 16% decline from 957M peak with funding at -25.1% - distribution completion accelerating as predicted | CONFIRMED - HYPE OI declined to 808M (16% from peak) with funding normalization to 9.79%, validating distribution completion pattern",
     "source": "llm"
   },
   {
@@ -8770,6 +8770,83 @@
     },
     "prediction": "IV expansion across both assets by 2+ percentage points",
     "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-346",
+    "created": "2026-04-23",
+    "description": "HYPE institutional distribution completion reversal - when HYPE OI declines below 808M from 957M peak (16%+ decline) while funding normalizes above 10% and spot holds above 40.6, distribution exhaustion creates oversold bounce within 5-7 days",
+    "conditions": {
+      "hype_hl_oi": "< 808000000",
+      "hype_hl_funding_ann": "> 0.10",
+      "hype_spot": "> 40.6"
+    },
+    "prediction": "HYPE spot rises above 42.5 within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-347",
+    "created": "2026-04-23",
+    "description": "BTC consolidation completion above 77k with HYPE OI stabilization above 808M and funding normalization creates momentum resumption setup when both assets show correlation restoration",
+    "conditions": {
+      "btc_spot": "> 77000",
+      "hype_hl_oi": "> 808000000",
+      "hype_hl_funding_ann": "> 0.05"
+    },
+    "prediction": "BTC spot rises above 79k within 5 days",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-348",
+    "created": "2026-04-23",
+    "description": "Oil structural recovery completion profit-taking signal when Brent-WTI spread normalizes above 15 from extreme breakdown lows with funding normalization below 20% absolute",
+    "conditions": {
+      "oil_brent_wti_spread": "> 15.0",
+      "oil_hl_funding_ann": "< 0.20"
+    },
+    "prediction": "Oil funding magnitude increases above 50% absolute within 3 days",
+    "timeframeDays": 3,
     "confidence": 0.65,
     "tests": [
       {
