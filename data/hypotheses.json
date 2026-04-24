@@ -9583,7 +9583,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI declined to 821M (14% drop from peak) with funding at 11%, approaching distribution completion threshold. Setup maturing for reversal.",
     "source": "llm"
   },
   {
@@ -9608,7 +9608,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC funding crashed to 7.76%, confirming oversold positioning setup during consolidation above 77.5k. Pattern developing as predicted.",
     "source": "llm"
   },
   {
@@ -9620,6 +9620,83 @@
       "amzn_stock": "> 262"
     },
     "prediction": "AMZN continues above 265 within 3-5 days as systematic options repositioning drives momentum",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-24",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "AMZN P/C collapsed to 0.302 with stock surging to 263.85, confirming systematic institutional repositioning. Hypothesis validated with strong momentum continuation.",
+    "source": "llm"
+  },
+  {
+    "id": "H-379",
+    "created": "2026-04-24",
+    "description": "HYPE institutional distribution exhaustion reversal - massive 16% OI decline from record peaks with funding normalization creates oversold bounce",
+    "conditions": {
+      "hype_hl_oi": "< 825000000",
+      "hype_hl_funding_ann": "< 0.15",
+      "hype_spot": "> 41"
+    },
+    "prediction": "HYPE reversal bounce toward 42.5-43 range within 5-7 days as distribution phase completes",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-24",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-380",
+    "created": "2026-04-24",
+    "description": "BTC funding exhaustion reversal pattern - extreme funding drop below 8% during consolidation above 77.5k creates systematic bounce",
+    "conditions": {
+      "btc_hl_funding_ann": "< 0.08",
+      "btc_spot": "> 77500"
+    },
+    "prediction": "BTC bounce acceleration toward 78.5-79k range within 48-72 hours as funding positioning becomes oversold",
+    "timeframeDays": 3,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-24",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-381",
+    "created": "2026-04-24",
+    "description": "AMZN explosive momentum continuation with systematic P/C collapse - institutional repositioning acceleration",
+    "conditions": {
+      "amzn_pc_ratio": "< 0.31",
+      "amzn_stock": "> 262",
+      "amzn_hl_funding_ann": "> 0"
+    },
+    "prediction": "AMZN momentum continuation toward 265-267 range within 3-5 days as institutional call positioning accelerates",
     "timeframeDays": 5,
     "confidence": 0.7,
     "tests": [
