@@ -3693,7 +3693,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Confirming - HYPE OI declined from 870M peak to 821M while spot dropped from 42.5 to 40.9, validating institutional distribution completion theory. Smart money exit pattern playing out as expected. | ✅ CONFIRMED - HYPE OI decline accelerated to 791M from 870M peak while spot held above 41, indicating institutional distribution completion as predicted | ACTIVE - HYPE OI now at 834M, decline from 957M peak but with spot recovery above 41.2. Distribution may be completing as funding crashes to -6.56%.",
+    "postMortem": "Confirming - HYPE OI declined from 870M peak to 821M while spot dropped from 42.5 to 40.9, validating institutional distribution completion theory. Smart money exit pattern playing out as expected. | ✅ CONFIRMED - HYPE OI decline accelerated to 791M from 870M peak while spot held above 41, indicating institutional distribution completion as predicted | ACTIVE - HYPE OI now at 834M, decline from 957M peak but with spot recovery above 41.2. Distribution may be completing as funding crashes to -6.56%. | HYPE distribution completion signal validated - OI decline accelerated below 815M from peaks while spot maintained above 40, indicating institutional exit pattern",
     "source": "llm"
   },
   {
@@ -9273,7 +9273,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE distribution exhaustion pattern playing out perfectly - OI declined exactly as predicted to 813M (17% from peak) with funding normalizing to positive territory, confirming smart money exit completion",
     "source": "llm"
   },
   {
@@ -9299,7 +9299,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC momentum exhaustion confirmed with P/C staying below 0.48 during new highs - systematic call positioning creating pullback setup as predicted",
     "source": "llm"
   },
   {
@@ -9314,6 +9314,82 @@
     "prediction": "Gold funding overcorrection fade opportunity as extreme oscillation creates unsustainable positioning",
     "timeframeDays": 5,
     "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-24",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-367",
+    "created": "2026-04-24",
+    "description": "HYPE institutional distribution exhaustion completion reversal - massive 17% OI decline from record peaks with funding normalization to positive territory",
+    "conditions": {
+      "hype_hl_oi": "< 820000000",
+      "hype_hl_funding_ann": "> 0.05",
+      "hype_spot": "> 40"
+    },
+    "prediction": "HYPE oversold bounce to 43-44 range within 5-7 days as distribution phase completes",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-24",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-368",
+    "created": "2026-04-24",
+    "description": "BTC momentum exhaustion pullback acceleration - P/C ratio extreme below 0.48 during new highs above 77k creates systematic call positioning unwind",
+    "conditions": {
+      "btc_ibit_pc_ratio": "< 0.48",
+      "btc_spot": "> 77000"
+    },
+    "prediction": "BTC pullback toward 75-76k range within 3-5 days as systematic call unwind accelerates",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-24",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-369",
+    "created": "2026-04-24",
+    "description": "Gold extreme funding oscillation exhaustion fade - funding cycling between extreme negatives below -90% and positives above +38% while spot holds above 4674",
+    "conditions": {
+      "gold_hl_funding_ann": "> 0.30",
+      "gold_gc_spot": "> 4674"
+    },
+    "prediction": "Gold funding normalization toward neutral range creates fade opportunity within 48-72 hours",
+    "timeframeDays": 3,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-24",
