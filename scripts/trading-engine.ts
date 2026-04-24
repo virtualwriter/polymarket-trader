@@ -18,6 +18,7 @@ import { join } from "node:path";
 const DATA_DIR = join(import.meta.dirname ?? ".", "..", "data");
 const INSTRUMENT_SNAPSHOTS_JSONL = "instrument-snapshots.jsonl";
 const LEARNING_PARAMS_FILE = "learning-params.json";
+const BLOCKED_SIGNALS_FILE = "blocked-signals.json";
 const TRADE_SIZE = 1;
 const MAX_BANKROLL = 100;
 const MAX_OPEN_POSITIONS = 15;
@@ -163,6 +164,62 @@ interface Signal {
     preferredEventSlug?: string;
     preferredDirection?: "above" | "below";
   };
+}
+
+interface BlockedSignalShadow {
+  id: string;
+  status: "open" | "resolved";
+  blockedAt: string;
+  resolvedAt?: string;
+  blockedReason: "short_blocked_by_positive_trend";
+  signalType: string;
+  asset: string;
+  venue: Signal["venue"];
+  direction: Signal["direction"];
+  confidence: number;
+  thesis: string;
+  trendMetrics?: {
+    aboveTrendPct: number;
+    momentumPct: number;
+  };
+  learningParamsSnapshot: Omit<LearningParams, "updatedAt">;
+  position: Position;
+  hypotheticalResult?: {
+    closeReason: ClosedTrade["closeReason"];
+    exitPrice: number;
+    pnl: number;
+    pnlPct: number;
+    marketPnl: number;
+    fundingPnl: number;
+    outcome: "win" | "loss";
+  };
+}
+
+interface BlockedSignalLearningSummary {
+  openCount: number;
+  resolvedCount: number;
+  wouldHaveWon: number;
+  wouldHaveLost: number;
+  bySignal: Array<{
+    signalType: string;
+    blocked: number;
+    resolved: number;
+    wouldHaveWon: number;
+    wouldHaveLost: number;
+    avgPnlPct: number;
+  }>;
+  recentResolved: Array<{
+    signalType: string;
+    asset: string;
+    venue: Signal["venue"];
+    direction: Signal["direction"];
+    blockedReason: BlockedSignalShadow["blockedReason"];
+    outcome: "win" | "loss";
+    closeReason: ClosedTrade["closeReason"];
+    pnlPct: number;
+    resolvedAt: string;
+    trendMetrics?: BlockedSignalShadow["trendMetrics"];
+  }>;
 }
 
 interface SnapshotRow {
@@ -417,6 +474,14 @@ function loadLearningParams(): LearningParams {
 
 function saveLearningParams(params: LearningParams) {
   writeJson(LEARNING_PARAMS_FILE, params);
+}
+
+function loadBlockedSignals(): BlockedSignalShadow[] {
+  return readJson<BlockedSignalShadow[]>(BLOCKED_SIGNALS_FILE, []);
+}
+
+function saveBlockedSignals(blockedSignals: BlockedSignalShadow[]) {
+  writeJson(BLOCKED_SIGNALS_FILE, blockedSignals);
 }
 
 function loadHypotheses(): Hypothesis[] {
@@ -924,8 +989,193 @@ function isMomentumLongSignal(signal: Signal, rows: SnapshotRow[], learningParam
   return isAssetTrendAndMomentumPositive(rows, signal.asset, learningParams);
 }
 
-function finalizeSignal(signal: Signal, rows: SnapshotRow[], learningParams: LearningParams): Signal | null {
-  if (isShortSignalBlockedByTrend(signal, rows, learningParams)) return null;
+function blockedSignalKey(signal: Pick<Signal, "type" | "asset" | "venue" | "direction">): string {
+  return [signal.type, signal.asset, signal.venue, signal.direction].join("|");
+}
+
+function recordBlockedSignalShadow(
+  signal: Signal,
+  rows: SnapshotRow[],
+  learningParams: LearningParams,
+  latestRow: SnapshotRow,
+  latestSnapshot: InstrumentSnapshotFile | null,
+  blockedSignals: BlockedSignalShadow[],
+) {
+  const key = blockedSignalKey(signal);
+  if (blockedSignals.some((shadow) =>
+    shadow.status === "open"
+    && blockedSignalKey({
+      type: shadow.signalType,
+      asset: shadow.asset,
+      venue: shadow.venue,
+      direction: shadow.direction,
+    }) === key
+  )) {
+    return;
+  }
+
+  const position = buildPositionFromSignal(signal, latestRow, latestSnapshot);
+  if (!position) return;
+
+  const blockedAt = new Date().toISOString();
+  position.id = `B-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+  position.openedAt = blockedAt;
+
+  const metrics = assetTrendMetrics(rows, signal.asset, LOOKBACK_HOURS);
+  blockedSignals.push({
+    id: position.id,
+    status: "open",
+    blockedAt,
+    blockedReason: "short_blocked_by_positive_trend",
+    signalType: signal.type,
+    asset: signal.asset,
+    venue: signal.venue,
+    direction: signal.direction,
+    confidence: Number(signal.confidence.toFixed(4)),
+    thesis: signal.thesis,
+    trendMetrics: metrics ? {
+      aboveTrendPct: Number(metrics.aboveTrendPct.toFixed(2)),
+      momentumPct: Number(metrics.momentumPct.toFixed(2)),
+    } : undefined,
+    learningParamsSnapshot: {
+      macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+      contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
+      positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
+      llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
+      momentumLongExpiryDays: learningParams.momentumLongExpiryDays,
+    },
+    position,
+  });
+}
+
+function resolveBlockedSignalShadows(
+  blockedSignals: BlockedSignalShadow[],
+  latestRow: SnapshotRow,
+  snapshots: InstrumentSnapshotFile[],
+): BlockedSignalShadow[] {
+  const resolved: BlockedSignalShadow[] = [];
+  const now = new Date().toISOString();
+
+  for (const shadow of blockedSignals) {
+    if (shadow.status === "resolved") continue;
+    const mark = markPosition(shadow.position, latestRow, snapshots);
+    if (!mark) continue;
+
+    let closeReason: ClosedTrade["closeReason"] | null = null;
+    if (mark.pnlPct >= shadow.position.targetPct) closeReason = "target";
+    else if (mark.pnlPct <= -shadow.position.stopPct) closeReason = "stop";
+    else if (new Date(shadow.position.expiryDate) <= new Date()) closeReason = "expiry";
+
+    shadow.position.currentPrice = mark.currentPrice;
+    shadow.position.currentUnderlyingPrice = mark.underlyingPrice ?? undefined;
+    shadow.position.fundingPnlAccrued = mark.fundingPnl;
+
+    if (!closeReason) continue;
+
+    shadow.status = "resolved";
+    shadow.resolvedAt = now;
+    shadow.hypotheticalResult = {
+      closeReason,
+      exitPrice: mark.currentPrice,
+      pnl: Number(mark.pnl.toFixed(4)),
+      pnlPct: Number(mark.pnlPct.toFixed(2)),
+      marketPnl: Number(mark.marketPnl.toFixed(4)),
+      fundingPnl: Number(mark.fundingPnl.toFixed(4)),
+      outcome: mark.pnl >= 0 ? "win" : "loss",
+    };
+    resolved.push(shadow);
+  }
+
+  return resolved;
+}
+
+function summarizeBlockedSignals(blockedSignals: BlockedSignalShadow[]): BlockedSignalLearningSummary {
+  const openCount = blockedSignals.filter((shadow) => shadow.status === "open").length;
+  const resolved = blockedSignals
+    .filter((shadow): shadow is BlockedSignalShadow & { hypotheticalResult: NonNullable<BlockedSignalShadow["hypotheticalResult"]>; resolvedAt: string } =>
+      shadow.status === "resolved" && !!shadow.hypotheticalResult && !!shadow.resolvedAt)
+    .sort((a, b) => a.resolvedAt.localeCompare(b.resolvedAt));
+
+  const bySignal = new Map<string, BlockedSignalLearningSummary["bySignal"][number]>();
+  for (const shadow of blockedSignals) {
+    const row = bySignal.get(shadow.signalType) ?? {
+      signalType: shadow.signalType,
+      blocked: 0,
+      resolved: 0,
+      wouldHaveWon: 0,
+      wouldHaveLost: 0,
+      avgPnlPct: 0,
+    };
+    row.blocked++;
+    if (shadow.hypotheticalResult) {
+      row.resolved++;
+      if (shadow.hypotheticalResult.outcome === "win") row.wouldHaveWon++;
+      else row.wouldHaveLost++;
+      row.avgPnlPct = ((row.avgPnlPct * (row.resolved - 1)) + shadow.hypotheticalResult.pnlPct) / row.resolved;
+    }
+    bySignal.set(shadow.signalType, row);
+  }
+
+  return {
+    openCount,
+    resolvedCount: resolved.length,
+    wouldHaveWon: resolved.filter((shadow) => shadow.hypotheticalResult.outcome === "win").length,
+    wouldHaveLost: resolved.filter((shadow) => shadow.hypotheticalResult.outcome === "loss").length,
+    bySignal: Array.from(bySignal.values())
+      .map((row) => ({ ...row, avgPnlPct: Number(row.avgPnlPct.toFixed(2)) }))
+      .sort((a, b) => (b.wouldHaveWon - b.wouldHaveLost) - (a.wouldHaveWon - a.wouldHaveLost))
+      .slice(0, 8),
+    recentResolved: resolved.slice(-8).map((shadow) => ({
+      signalType: shadow.signalType,
+      asset: shadow.asset,
+      venue: shadow.venue,
+      direction: shadow.direction,
+      blockedReason: shadow.blockedReason,
+      outcome: shadow.hypotheticalResult.outcome,
+      closeReason: shadow.hypotheticalResult.closeReason,
+      pnlPct: shadow.hypotheticalResult.pnlPct,
+      resolvedAt: shadow.resolvedAt,
+      trendMetrics: shadow.trendMetrics,
+    })),
+  };
+}
+
+function blockedSignalObservations(summary: BlockedSignalLearningSummary): string[] {
+  const notes: string[] = [];
+  for (const row of summary.bySignal) {
+    if (row.resolved < 3) continue;
+    if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
+      notes.push(`${row.signalType} trend filter may be too strict: ${row.wouldHaveWon}/${row.resolved} blocked trades would have won.`);
+    } else if (row.wouldHaveLost >= row.wouldHaveWon + 2) {
+      notes.push(`${row.signalType} trend filter is avoiding losses: ${row.wouldHaveLost}/${row.resolved} blocked trades would have lost.`);
+    }
+  }
+  return notes;
+}
+
+function finalizeSignal(
+  signal: Signal,
+  rows: SnapshotRow[],
+  learningParams: LearningParams,
+  blockedContext?: {
+    latestRow: SnapshotRow;
+    latestSnapshot: InstrumentSnapshotFile | null;
+    blockedSignals: BlockedSignalShadow[];
+  },
+): Signal | null {
+  if (isShortSignalBlockedByTrend(signal, rows, learningParams)) {
+    if (blockedContext) {
+      recordBlockedSignalShadow(
+        signal,
+        rows,
+        learningParams,
+        blockedContext.latestRow,
+        blockedContext.latestSnapshot,
+        blockedContext.blockedSignals,
+      );
+    }
+    return null;
+  }
 
   const next = { ...signal };
   if (next.type === "LLM_HYPOTHESIS") {
@@ -946,6 +1196,8 @@ function generateSignals(
   macroRows: SnapshotRow[],
   weights: SignalWeight[],
   learningParams: LearningParams,
+  latestSnapshot: InstrumentSnapshotFile | null,
+  blockedSignals: BlockedSignalShadow[],
 ): Signal[] {
   if (rows.length === 0) return [];
   const latest = rows[rows.length - 1];
@@ -987,7 +1239,7 @@ function generateSignals(
           thesis: `${a.key} PM IV (${pmIv.toFixed(1)}%) >> Options IV (${optIv.toFixed(1)}%), ratio ${ratio.toFixed(2)}. PM overpricing vol → sell PM upside.`,
           hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7,
           contractHint: { preferredDirection: "above" },
-        }, rows, learningParams);
+        }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
       if (ratio < 0.7 && weightMap.has("OPT_IV_GT_PM_IV")) {
@@ -999,7 +1251,7 @@ function generateSignals(
           thesis: `${a.key} Options IV (${optIv.toFixed(1)}%) >> PM IV (${pmIv.toFixed(1)}%), ratio ${ratio.toFixed(2)}. PM underpricing vol → buy PM upside.`,
           hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7,
           contractHint: { preferredDirection: "above" },
-        }, rows, learningParams);
+        }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
     }
@@ -1015,7 +1267,7 @@ function generateSignals(
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL funding ${funding.toFixed(1)}% annualized — crowded longs. Fade.`,
           hypothesisId: null, entryPrice: perpEntry, targetPct: 2, stopPct: 4, expiryDays: 3, leverage: 1,
-        }, rows, learningParams);
+        }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
       if (funding < -15 && weightMap.has("FUNDING_EXTREME_SHORT")) {
@@ -1027,7 +1279,7 @@ function generateSignals(
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL funding ${funding.toFixed(1)}% annualized — crowded shorts. Buy.`,
           hypothesisId: null, entryPrice: perpEntry, targetPct: 2, stopPct: 4, expiryDays: 3, leverage: 1,
-        }, rows, learningParams);
+        }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
     }
@@ -1043,7 +1295,7 @@ function generateSignals(
           strength, confidence: strength * w.weight,
           thesis: `${a.key} PM EV ($${pmEv.toFixed(0)}) is ${divergencePct.toFixed(1)}% above spot ($${spot.toFixed(0)}). Market expects upside.`,
           hypothesisId: null, entryPrice: spot, targetPct: 4, stopPct: 6, expiryDays: 14,
-        }, rows, learningParams);
+        }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
       if (divergencePct < -5 && weightMap.has("PM_EV_BELOW_SPOT")) {
@@ -1054,7 +1306,7 @@ function generateSignals(
           strength, confidence: strength * w.weight,
           thesis: `${a.key} PM EV ($${pmEv.toFixed(0)}) is ${divergencePct.toFixed(1)}% below spot ($${spot.toFixed(0)}). Market expects downside.`,
           hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 14,
-        }, rows, learningParams);
+        }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
     }
@@ -1069,7 +1321,7 @@ function generateSignals(
           strength, confidence: strength * w.weight,
           thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy put buying → contrarian long.`,
           hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5,
-        }, rows, learningParams);
+        }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
       if (pcRatio < 0.5 && weightMap.has("PC_RATIO_EXTREME_LOW")) {
@@ -1080,7 +1332,7 @@ function generateSignals(
           strength, confidence: strength * w.weight,
           thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy call buying → contrarian short.`,
           hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5,
-        }, rows, learningParams);
+        }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
     }
@@ -1097,7 +1349,7 @@ function generateSignals(
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL perp ($${hlPerp.toFixed(2)}) at ${basisPct.toFixed(1)}% premium to stock ($${stockSpot.toFixed(2)}). Basis convergence → short perp.`,
           hypothesisId: null, entryPrice: hlPerp, targetPct: 1.5, stopPct: 3, expiryDays: 5, leverage: 1,
-        }, rows, learningParams);
+        }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
       if (basisPct < -1.5 && weightMap.has("BASIS_DISCOUNT")) {
@@ -1108,7 +1360,7 @@ function generateSignals(
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL perp ($${hlPerp.toFixed(2)}) at ${basisPct.toFixed(1)}% discount to stock ($${stockSpot.toFixed(2)}). Basis convergence → long perp.`,
           hypothesisId: null, entryPrice: hlPerp, targetPct: 1.5, stopPct: 3, expiryDays: 5, leverage: 1,
-        }, rows, learningParams);
+        }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
     }
@@ -1126,7 +1378,7 @@ function generateSignals(
         thesis: `Macro composite rose +${macroShift.shift.toFixed(1)} pts over ${LOOKBACK_HOURS}h (${macroShift.previous.toFixed(1)}→${macroShift.current.toFixed(1)}). Risk-on momentum → long BTC.`,
         hypothesisId: null, entryPrice: num(rows[rows.length - 1].btc_spot) ?? 0,
         targetPct: 3, stopPct: 5, expiryDays: 7,
-      }, rows, learningParams);
+      }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
       if (signal) signals.push(signal);
     }
     if (macroShift.shift < -threshold && weightMap.has("MACRO_MOMENTUM_DOWN")) {
@@ -1138,7 +1390,7 @@ function generateSignals(
         thesis: `Macro composite fell ${macroShift.shift.toFixed(1)} pts over ${LOOKBACK_HOURS}h (${macroShift.previous.toFixed(1)}→${macroShift.current.toFixed(1)}). Risk-off momentum → short BTC.`,
         hypothesisId: null, entryPrice: num(rows[rows.length - 1].btc_spot) ?? 0,
         targetPct: 3, stopPct: 5, expiryDays: 7,
-      }, rows, learningParams);
+      }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
       if (signal) signals.push(signal);
     }
   }
@@ -1559,6 +1811,7 @@ async function callLLM(
   hypotheses: Hypothesis[],
   statObs: StatObservation[],
   closedTrades: ClosedTrade[],
+  blockedSummary: BlockedSignalLearningSummary,
   journalTail: string,
 ): Promise<{
   marketAssessment: string;
@@ -1621,6 +1874,9 @@ ${closedTrades.slice(-10).map((t) => `  ${t.asset} ${t.direction} via ${t.venue}
 CURRENT LEARNABLE PARAMETERS:
 ${JSON.stringify(learningParams, null, 2)}
 
+BLOCKED SIGNAL SHADOW LEARNING:
+${JSON.stringify(blockedSummary, null, 1)}
+
 RECENT LEARNING JOURNAL:
 ${journalTail || "  No entries yet"}
 
@@ -1638,6 +1894,7 @@ IMPORTANT RULES:
 - Spot trades are marked only to the underlying spot price
 - Prefer polymarket only for assets with explicit contracts in the instrument snapshots
 - If you suggest parameter changes, keep them incremental and evidence-based
+- Use BLOCKED SIGNAL SHADOW LEARNING to judge whether filters are too strict or appropriately defensive
 - You may return \"action: close\" to exit an existing open position; use that only when the thesis has clearly weakened or a target/stop is likely stale
 - For \"action: close\", set direction to long, short, or any to identify which existing position to close
 - Keep parameter updates inside these bounds:
@@ -1716,6 +1973,8 @@ function writeJournalEntry(
   weightObs: string[],
   hypothesisObs: string[],
   statObs: StatObservation[],
+  blockedObs: string[],
+  blockedSummary: BlockedSignalLearningSummary,
   llmJournal: string | null,
   portfolio: Portfolio,
 ) {
@@ -1763,6 +2022,18 @@ function writeJournalEntry(
   if (statObs.length > 0) {
     lines.push("**Statistical observations:**");
     for (const o of statObs.slice(0, 5)) lines.push(`- [${o.type}] ${o.description}`);
+    lines.push("");
+  }
+
+  if (blockedObs.length > 0 || blockedSummary.recentResolved.length > 0 || blockedSummary.openCount > 0) {
+    lines.push("**Blocked signal learning:**");
+    lines.push(`- Open blocked shadows: ${blockedSummary.openCount}`);
+    lines.push(`- Resolved blocked shadows: ${blockedSummary.resolvedCount} (${blockedSummary.wouldHaveWon} wins / ${blockedSummary.wouldHaveLost} losses)`);
+    for (const note of blockedObs) lines.push(`- ${note}`);
+    for (const shadow of blockedSummary.recentResolved.slice(-4)) {
+      const emoji = shadow.outcome === "win" ? "✅" : "❌";
+      lines.push(`- ${emoji} Blocked ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${shadow.closeReason} (${shadow.pnlPct >= 0 ? "+" : ""}${shadow.pnlPct.toFixed(2)}%)`);
+    }
     lines.push("");
   }
 
@@ -1909,6 +2180,7 @@ async function main() {
   let learningParams = loadLearningParams();
   const weights = loadWeights();
   let hypotheses = loadHypotheses();
+  const blockedSignals = loadBlockedSignals();
   const migrationNotes = migrateLegacyPolymarketPositions(portfolio, instrumentSnapshots);
 
   console.log(`  Portfolio: $${portfolio.cash.toFixed(2)} cash, ${portfolio.positions.length} open positions, $${portfolio.totalRealizedPnl.toFixed(4)} realized P&L`);
@@ -1923,6 +2195,7 @@ async function main() {
 
   // Step 1: Mark-to-market and close positions
   const latestRow = valRows[valRows.length - 1];
+  const latestSnapshot = latestInstrumentSnapshot(instrumentSnapshots);
   const closedTrades = markToMarket(portfolio, latestRow, instrumentSnapshots);
   if (closedTrades.length > 0) {
     console.log(`\n  Closed ${closedTrades.length} positions:`);
@@ -1932,6 +2205,19 @@ async function main() {
       appendTradeCsv(t);
     }
   }
+
+  const resolvedBlockedSignals = resolveBlockedSignalShadows(blockedSignals, latestRow, instrumentSnapshots);
+  if (resolvedBlockedSignals.length > 0) {
+    console.log(`\n  Resolved ${resolvedBlockedSignals.length} blocked-signal shadows:`);
+    for (const shadow of resolvedBlockedSignals.slice(-6)) {
+      const result = shadow.hypotheticalResult!;
+      const emoji = result.outcome === "win" ? "✅" : "❌";
+      console.log(`    ${emoji} Blocked ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${result.closeReason}: ${result.pnlPct >= 0 ? "+" : ""}${result.pnlPct.toFixed(2)}%`);
+    }
+  }
+  let blockedSummary = summarizeBlockedSignals(blockedSignals);
+  let blockedObs = blockedSignalObservations(blockedSummary);
+  for (const note of blockedObs) console.log(`  Shadow learning: ${note}`);
 
   // Step 2: Update signal weights
   let weightObs = updateWeights(weights, closedTrades);
@@ -1951,7 +2237,9 @@ async function main() {
   }
 
   // Step 5: Generate rule-based signals
-  const signals = generateSignals(valRows, macroRows, weights, learningParams);
+  const signals = generateSignals(valRows, macroRows, weights, learningParams, latestSnapshot, blockedSignals);
+  blockedSummary = summarizeBlockedSignals(blockedSignals);
+  blockedObs = blockedSignalObservations(blockedSummary);
   console.log(`\n  Signals generated: ${signals.length}`);
   for (const s of signals.slice(0, 8)) {
     console.log(`    ${s.asset} ${s.direction} (${s.type}) confidence=${s.confidence.toFixed(3)} — ${s.thesis.slice(0, 70)}`);
@@ -1962,7 +2250,7 @@ async function main() {
   if (!NO_LLM) {
     console.log(`\n  Calling LLM for pattern discovery...`);
     const journalTail = readJournalTail(40);
-    const llmResult = await callLLM(valRows, macroRows, instrumentSnapshots, portfolio, learningParams, weights, hypotheses, statObs, closedTrades, journalTail);
+    const llmResult = await callLLM(valRows, macroRows, instrumentSnapshots, portfolio, learningParams, weights, hypotheses, statObs, closedTrades, blockedSummary, journalTail);
 
     if (llmResult) {
       console.log(`  LLM assessment: ${llmResult.marketAssessment.slice(0, 120)}`);
@@ -2035,7 +2323,7 @@ async function main() {
           contractHint: lt.venue === "polymarket"
             ? { preferredDirection: inferPolymarketPreferredDirection(lt.direction, "LLM_HYPOTHESIS", lt.thesis) }
             : undefined,
-        }, valRows, learningParams);
+        }, valRows, learningParams, { latestRow, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
 
@@ -2052,6 +2340,8 @@ async function main() {
       }
 
       llmJournal = llmResult.journalEntry;
+      blockedSummary = summarizeBlockedSignals(blockedSignals);
+      blockedObs = blockedSignalObservations(blockedSummary);
     }
   }
 
@@ -2067,13 +2357,14 @@ async function main() {
     }
 
     // Step 8: Write journal entry
-    writeJournalEntry(closedTrades, opened, weightObs, hypothesisObs, statObs, llmJournal, portfolio);
+    writeJournalEntry(closedTrades, opened, weightObs, hypothesisObs, statObs, blockedObs, blockedSummary, llmJournal, portfolio);
 
     // Step 9: Save all state
     savePortfolio(portfolio);
     saveWeights(weights);
     saveHypotheses(hypotheses);
     saveLearningParams(learningParams);
+    saveBlockedSignals(blockedSignals);
   }
 
   // Summary
