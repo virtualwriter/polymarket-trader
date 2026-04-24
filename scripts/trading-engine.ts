@@ -185,6 +185,13 @@ interface InstrumentSnapshotContract {
   direction: "above" | "below";
   yesPrice: number;
   volume: number;
+  bestBid?: number;
+  bestAsk?: number;
+  spread?: number;
+  liquidity?: number;
+  active?: boolean;
+  closed?: boolean;
+  endDate?: string | null;
 }
 
 interface InstrumentSnapshotEvent {
@@ -195,11 +202,31 @@ interface InstrumentSnapshotEvent {
   contracts: InstrumentSnapshotContract[];
 }
 
+interface InstrumentSnapshotOptionQuote {
+  strike: number;
+  bid: number;
+  ask: number;
+  mid: number;
+  volume: number;
+  openInterest: number;
+  impliedVolatility: number;
+  expiration: string;
+  type: "call" | "put";
+}
+
+interface InstrumentSnapshotOptions {
+  symbol: string;
+  underlyingPrice: number;
+  source: string;
+  chains: InstrumentSnapshotOptionQuote[];
+}
+
 interface InstrumentSnapshotFile {
   timestamp: string;
   spots: Record<string, number | null>;
   hyperliquid: Record<string, { markPx: number | null; fundingAnnualized: number | null; openInterestUsd: number | null }>;
   polymarket: InstrumentSnapshotEvent[];
+  options?: Record<string, InstrumentSnapshotOptions>;
 }
 
 // ─── File I/O ────────────────────────────────────────────────────────────────
@@ -293,6 +320,44 @@ function readInstrumentSnapshots(): InstrumentSnapshotFile[] {
       }
     })
     .filter((row): row is InstrumentSnapshotFile => row !== null);
+}
+
+function compactInstrumentSnapshotForLlm(snapshot: InstrumentSnapshotFile) {
+  const optionSummaries = Object.fromEntries(
+    Object.entries(snapshot.options ?? {}).map(([symbol, optionSnapshot]) => {
+      const expirations = Array.from(
+        new Set(optionSnapshot.chains.map((chain) => chain.expiration).filter(Boolean)),
+      )
+        .sort()
+        .slice(0, 6);
+      const callCount = optionSnapshot.chains.filter((chain) => chain.type === "call").length;
+      const putCount = optionSnapshot.chains.length - callCount;
+      const totalVolume = optionSnapshot.chains.reduce((sum, chain) => sum + (chain.volume ?? 0), 0);
+      const totalOpenInterest = optionSnapshot.chains.reduce((sum, chain) => sum + (chain.openInterest ?? 0), 0);
+
+      return [
+        symbol,
+        {
+          underlyingPrice: optionSnapshot.underlyingPrice,
+          source: optionSnapshot.source,
+          chainCount: optionSnapshot.chains.length,
+          callCount,
+          putCount,
+          expirations,
+          totalVolume,
+          totalOpenInterest,
+        },
+      ];
+    }),
+  );
+
+  return {
+    timestamp: snapshot.timestamp,
+    spots: snapshot.spots,
+    hyperliquid: snapshot.hyperliquid,
+    polymarket: snapshot.polymarket,
+    options: optionSummaries,
+  };
 }
 
 function latestInstrumentSnapshot(snapshots: InstrumentSnapshotFile[]): InstrumentSnapshotFile | null {
@@ -1511,7 +1576,7 @@ async function callLLM(
 
   const recentValuations = valuationRows.slice(-14);
   const recentMacro = macroRows.slice(-14);
-  const recentInstruments = instrumentSnapshots.slice(-4);
+  const recentInstruments = instrumentSnapshots.slice(-4).map(compactInstrumentSnapshotForLlm);
   const activeHypotheses = hypotheses.filter((h) => h.status === "active" || h.status === "promoted");
   const killedRecently = hypotheses.filter((h) => h.status === "killed").slice(-5);
   const activeWeights = weights.filter((w) => w.trades > 0);

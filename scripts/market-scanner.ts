@@ -330,6 +330,13 @@ interface PriceStrike {
   direction: "above" | "below";
   yesPrice: number;
   volume: number;
+  bestBid: number;
+  bestAsk: number;
+  spread: number;
+  liquidity: number;
+  active: boolean;
+  closed: boolean;
+  endDate: string | null;
 }
 
 interface PolymarketEvent {
@@ -411,6 +418,13 @@ async function fetchPolymarket() {
             direction: parsed.direction,
             yesPrice: prices[0] ?? 0,
             volume: vol,
+            bestBid: Number(m.bestBid ?? 0),
+            bestAsk: Number(m.bestAsk ?? 0),
+            spread: Number(m.spread ?? 0),
+            liquidity: parseFloat(m.liquidity || "0"),
+            active: !!m.active,
+            closed: !!m.closed,
+            endDate: m.endDate || null,
           });
         }
 
@@ -464,6 +478,13 @@ async function fetchPolymarket() {
             direction: parsed.direction,
             yesPrice: prices[0] ?? 0,
             volume: vol,
+            bestBid: Number(m.bestBid ?? 0),
+            bestAsk: Number(m.bestAsk ?? 0),
+            spread: Number(m.spread ?? 0),
+            liquidity: parseFloat(m.liquidity || "0"),
+            active: !!m.active,
+            closed: !!m.closed,
+            endDate: m.endDate || null,
           });
         }
 
@@ -1892,6 +1913,13 @@ interface InstrumentSnapshotContract {
   direction: "above" | "below";
   yesPrice: number;
   volume: number;
+  bestBid: number;
+  bestAsk: number;
+  spread: number;
+  liquidity: number;
+  active: boolean;
+  closed: boolean;
+  endDate: string | null;
 }
 
 interface InstrumentSnapshotEvent {
@@ -1907,6 +1935,7 @@ interface InstrumentSnapshotFile {
   spots: Record<string, number | null>;
   hyperliquid: Record<string, { markPx: number | null; fundingAnnualized: number | null; openInterestUsd: number | null }>;
   polymarket: InstrumentSnapshotEvent[];
+  options: Record<string, OptionsSnapshot>;
 }
 
 const VALUATION_HEADERS = [
@@ -2190,10 +2219,38 @@ function writeSnapshot(
             direction: s.direction,
             yesPrice: s.yesPrice,
             volume: s.volume,
+            bestBid: s.bestBid,
+            bestAsk: s.bestAsk,
+            spread: s.spread,
+            liquidity: s.liquidity,
+            active: s.active,
+            closed: s.closed,
+            endDate: s.endDate,
           })),
         } satisfies InstrumentSnapshotEvent;
       })
       .filter((event): event is InstrumentSnapshotEvent => event !== null),
+    options: Object.fromEntries(
+      Object.entries(opts).map(([symbol, snapshot]) => [
+        symbol,
+        {
+          symbol: snapshot.symbol,
+          underlyingPrice: r(snapshot.underlyingPrice, 6) ?? 0,
+          source: snapshot.source,
+          chains: snapshot.chains.map((chain) => ({
+            strike: r(chain.strike, 6) ?? 0,
+            bid: r(chain.bid, 6) ?? 0,
+            ask: r(chain.ask, 6) ?? 0,
+            mid: r(chain.mid, 6) ?? 0,
+            volume: Math.round(chain.volume),
+            openInterest: Math.round(chain.openInterest),
+            impliedVolatility: r(chain.impliedVolatility, 8) ?? 0,
+            expiration: chain.expiration,
+            type: chain.type,
+          })),
+        } satisfies OptionsSnapshot,
+      ]),
+    ),
   });
 
   const valPath = join(DATA_DIR, VALUATION_CSV);
