@@ -9351,7 +9351,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE institutional distribution showing textbook completion pattern with OI declining to 799M (16.5% from peak) while funding normalizes below 11%. This represents one of the largest OI declines observed.",
     "source": "llm"
   },
   {
@@ -9376,7 +9376,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC momentum exhaustion pattern showing signs of completion with P/C ratio normalizing above 0.48 from extreme lows. Systematic call positioning unwind appears to be moderating.",
     "source": "llm"
   },
   {
@@ -9389,6 +9389,85 @@
     },
     "prediction": "Gold funding normalization toward neutral range creates fade opportunity within 48-72 hours",
     "timeframeDays": 3,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-24",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Gold funding oscillation pattern continuing with extreme swings between negative and positive territory while spot holds above 4684. Pattern remains active as funding volatility persists above normal ranges.",
+    "source": "llm"
+  },
+  {
+    "id": "H-370",
+    "created": "2026-04-24",
+    "description": "HYPE institutional distribution completion reversal - massive 16.5% OI decline from 957M peak to sub-800M levels with funding normalization below 15% indicates smart money exit completion and creates oversold bounce setup",
+    "conditions": {
+      "hype_hl_oi": "< 800000000",
+      "hype_hl_funding_ann": "< 0.15",
+      "hype_spot": "> 40"
+    },
+    "prediction": "HYPE bounce toward 42-43 range within 7 days as institutional distribution exhaustion creates oversold reversal",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-24",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-371",
+    "created": "2026-04-24",
+    "description": "BTC momentum acceleration above 77.9k with HYPE correlation restoration and IV compression creates sustained breakout continuation when both assets move with positive correlation",
+    "conditions": {
+      "btc_spot": "> 77900",
+      "hype_spot": "> 41",
+      "btc_opt_iv_30d": "< 44",
+      "hype_hl_oi": "> 800000000"
+    },
+    "prediction": "BTC breakout toward 79-80k range within 5 days with HYPE correlation restoration above 41.5",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-24",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-372",
+    "created": "2026-04-24",
+    "description": "Gold IV compression extreme completion below 25% on both 30d and 90d while PM premium stays above 200pts vs futures during crypto momentum phases creates volatility expansion setup",
+    "conditions": {
+      "gold_opt_iv_30d": "< 25",
+      "gold_opt_iv_90d": "< 25",
+      "gold_pm_settle_ev": "> 4900"
+    },
+    "prediction": "Gold volatility expansion with IV rising above 28% within one week as statistical compression reverses",
+    "timeframeDays": 7,
     "confidence": 0.65,
     "tests": [
       {
