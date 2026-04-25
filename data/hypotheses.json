@@ -5073,7 +5073,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil funding normalized to +9.29% from extreme negatives, confirming structural recovery completion. Trade timing good but profits may be limited as normalization already achieved. | Oil funding normalization completion from extreme negatives created profit-taking signal perfectly - funding oscillated from -388% to positive territory as systematic recovery trade completed | ✅ TRIGGERED - Oil funding normalized to positive territory with Brent-WTI spread stabilization above 4, indicating structural recovery trade completion | Oil funding normalized to positive territory confirming structural recovery trade completion - profit-taking signal activated as predicted | Oil funding recovered to positive territory with Brent-WTI spread at 16.1 - structural recovery trade completion signal confirmed, profit-taking opportunity",
+    "postMortem": "Oil funding normalized to +9.29% from extreme negatives, confirming structural recovery completion. Trade timing good but profits may be limited as normalization already achieved. | Oil funding normalization completion from extreme negatives created profit-taking signal perfectly - funding oscillated from -388% to positive territory as systematic recovery trade completed | ✅ TRIGGERED - Oil funding normalized to positive territory with Brent-WTI spread stabilization above 4, indicating structural recovery trade completion | Oil funding normalized to positive territory confirming structural recovery trade completion - profit-taking signal activated as predicted | Oil funding recovered to positive territory with Brent-WTI spread at 16.1 - structural recovery trade completion signal confirmed, profit-taking opportunity | PROFIT TARGET HIT - Oil structural recovery completed with Brent-WTI spread at 17.2, up from extreme lows. Funding normalized. Trade thesis executed perfectly - closing position.",
     "source": "llm"
   },
   {
@@ -9970,7 +9970,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "CONFIRMED - HYPE OI declined to 818M (16% from 957M peak) with funding positive at 10.95%, creating textbook distribution completion signal. This represents the clearest institutional exit pattern observed.",
     "source": "llm"
   },
   {
@@ -9996,7 +9996,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "CONFIRMED - BTC momentum above 77.9k achieved with HYPE correlation restoration emerging as BTC-HYPE correlation shifted to +0.40. IV compression supporting breakout thesis.",
     "source": "llm"
   },
   {
@@ -10088,6 +10088,83 @@
     "prediction": "systematic positioning unwind creates multi-asset bounce opportunity",
     "timeframeDays": 5,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-397",
+    "created": "2026-04-25",
+    "description": "HYPE institutional distribution completion reversal - massive 16% OI decline from 957M peak to 818M with funding normalization above 10% indicates smart money exit completion",
+    "conditions": {
+      "hype_hl_oi": "< 820000000",
+      "hype_hl_funding_ann": "> 0.05",
+      "hype_spot": "> 40.5"
+    },
+    "prediction": "HYPE oversold bounce above 42.5 within 5-7 days",
+    "timeframeDays": 7,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-398",
+    "created": "2026-04-25",
+    "description": "BTC-HYPE correlation restoration momentum - when BTC holds above 77k with HYPE OI stabilizing above 818M after institutional distribution and both assets showing positive correlation restoration",
+    "conditions": {
+      "btc_spot": "> 77000",
+      "hype_hl_oi": "> 818000000",
+      "hype_spot": "> 41"
+    },
+    "prediction": "Breakout continuation above 78k within 5-7 days as correlation restores",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-399",
+    "created": "2026-04-25",
+    "description": "Oil structural recovery completion profit-taking signal - Brent-WTI spread normalized to 17.2 from extreme lows with funding normalization indicates trade completion",
+    "conditions": {
+      "oil_brent_wti_spread": "> 16",
+      "oil_hl_funding_ann": "< 3.0"
+    },
+    "prediction": "Oil consolidation or pullback as structural recovery trade completes",
+    "timeframeDays": 5,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-25",
