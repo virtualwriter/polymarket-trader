@@ -9583,7 +9583,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE OI declined to 821M (14% drop from peak) with funding at 11%, approaching distribution completion threshold. Setup maturing for reversal. | HYPE OI declined to 819M (14.4% from peak) with funding at 10.95% - distribution pattern accelerating as predicted but not yet at completion threshold below 800M",
+    "postMortem": "HYPE OI declined to 821M (14% drop from peak) with funding at 11%, approaching distribution completion threshold. Setup maturing for reversal. | HYPE OI declined to 819M (14.4% from peak) with funding at 10.95% - distribution pattern accelerating as predicted but not yet at completion threshold below 800M | Progressing as expected - HYPE OI decline to 818M represents 14.5% drop from 957M peak with funding normalizing to 10.95%. Distribution exhaustion pattern developing as predicted.",
     "source": "llm"
   },
   {
@@ -9762,7 +9762,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC funding crash to 3.98% during consolidation validated the oversold bounce framework, but funding has now gone negative to -1.02%, creating even more extreme positioning that should reverse more violently.",
+    "postMortem": "BTC funding crash to 3.98% during consolidation validated the oversold bounce framework, but funding has now gone negative to -1.02%, creating even more extreme positioning that should reverse more violently. | Activated - BTC funding crashed to 3.98% then further to -1.02% during consolidation above 77k. Extreme negative funding during stable price action creates high-probability reversal setup.",
     "source": "llm"
   },
   {
@@ -9788,7 +9788,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Oil structural recovery trade completed successfully as Brent-WTI spread normalized to 16.1 from extreme lows. Profit-taking framework working well - recognizing when structural arbitrage opportunities complete their correction cycles.",
+    "postMortem": "Oil structural recovery trade completed successfully as Brent-WTI spread normalized to 16.1 from extreme lows. Profit-taking framework working well - recognizing when structural arbitrage opportunities complete their correction cycles. | Successfully validated - Oil structural recovery trade completed with Brent-WTI spread normalized to 16.1 from extreme lows. Framework for identifying structural trade completion via spread normalization works well.",
     "source": "llm"
   },
   {
@@ -9854,6 +9854,84 @@
     },
     "prediction": "BTC and HYPE bounce within 48-72 hours",
     "timeframeDays": 3,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-388",
+    "created": "2026-04-25",
+    "description": "HYPE institutional distribution exhaustion completion reversal - when HYPE OI declines below 820M from 957M peak (15%+ decline) while funding normalizes above 10% and spot holds above 41, distribution exhaustion creates oversold bounce within 5-7 days",
+    "conditions": {
+      "hype_hl_oi": "< 820000000",
+      "hype_hl_funding_ann": "> 0.10",
+      "hype_spot": "> 41"
+    },
+    "prediction": "HYPE bounces 3-5% within 5-7 days as institutional distribution completes",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-389",
+    "created": "2026-04-25",
+    "description": "BTC extreme funding crash reversal during consolidation - when BTC funding drops below -1% during consolidation above 77k with PM IV compression below 40%, systematic bounce follows within 48-72 hours",
+    "conditions": {
+      "btc_hl_funding_ann": "< -0.01",
+      "btc_spot": "> 77000",
+      "btc_pm_iv": "< 40"
+    },
+    "prediction": "BTC funding normalizes above 5% within 3 days as extreme negative positioning unwinds",
+    "timeframeDays": 3,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-390",
+    "created": "2026-04-25",
+    "description": "Cross-asset extreme funding exhaustion reversal pattern - when both BTC funding drops below 0% and GOLD funding stays above 5% while HYPE OI stabilizes below 820M after institutional distribution, systematic positioning unwind creates multi-asset bounce",
+    "conditions": {
+      "btc_hl_funding_ann": "< 0",
+      "gold_hl_funding_ann": "> 0.05",
+      "hype_hl_oi": "< 820000000"
+    },
+    "prediction": "Coordinated bounce across BTC, HYPE, and Gold within 5 days as extreme positioning unwinds",
+    "timeframeDays": 5,
     "confidence": 0.65,
     "tests": [
       {
