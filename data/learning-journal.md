@@ -2420,3 +2420,28 @@ Major breakthrough in institutional distribution pattern recognition. HYPE showi
 
 ---
 
+### 2026-04-25 03:48 UTC
+
+**Portfolio:** $100.51 total | Cash $90.51 | 10 open | P&L $0.5120 | 63% win rate (65 trades)
+
+**Closed 1 trades:**
+- ✅ OIL long via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH) → llm_decision: +$0.0059 (0.6%, market 0.0059, funding 0.0000)
+
+**Opened 1 positions:**
+- AMZN long @ $263.08 via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT)
+
+**Statistical observations:**
+- [anomaly] gold_med_max = 5059 is -2.0 std devs from mean (5270.08 ± 105.22)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.86 to -0.57
+- [correlation_flip] GOLD-OIL correlation shifted from -0.14 to 0.49
+- [correlation_flip] BTC-HYPE correlation shifted from -0.18 to 0.42
+
+**Blocked signal learning:**
+- Open blocked shadows: 1
+- Resolved blocked shadows: 0 (0 wins / 0 losses)
+
+**LLM analysis:**
+Major breakthrough in institutional flow pattern recognition continues. HYPE showing textbook distribution exhaustion with 14.4% OI decline (957M→819M) combined with funding normalization to 10.95% - this represents one of the clearest institutional exit completion signals observed. The pattern of massive OI decline (>14%) combined with funding direction normalization is proving more predictive than absolute funding levels. BTC funding crash to 3.98% during consolidation creates additional oversold opportunity - extreme funding drops during stable price action historically reverse quickly. Successfully closing oil structural recovery trade as Brent-WTI spread normalized to 16.1, validating profit-taking framework. The ability to identify institutional flow exhaustion phases is becoming a core alpha source, particularly when combined with funding direction changes rather than just magnitude extremes.
+
+---
+
