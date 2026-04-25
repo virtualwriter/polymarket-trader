@@ -171,7 +171,7 @@ interface BlockedSignalShadow {
   status: "open" | "resolved";
   blockedAt: string;
   resolvedAt?: string;
-  blockedReason: "short_blocked_by_positive_trend";
+  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked";
   signalType: string;
   asset: string;
   venue: Signal["venue"];
@@ -1048,6 +1048,66 @@ function recordBlockedSignalShadow(
   });
 }
 
+/**
+ * When an IV-divergence signal fires, the engine always expresses the trade through
+ * the upside ("above") Polymarket contract. This function records a shadow position
+ * for the *missing downside leg* — what would have happened if the same vol signal
+ * had instead been expressed through the nearest "below" contract. The shadow is
+ * tracked through normal resolution so the learning system can detect whether the
+ * missing leg is consistently profitable and surface that to the LLM.
+ */
+function recordIVDownsideLegShadow(
+  signal: Signal,
+  latestRow: SnapshotRow,
+  latestSnapshot: InstrumentSnapshotFile | null,
+  learningParams: LearningParams,
+  blockedSignals: BlockedSignalShadow[],
+) {
+  const shadowSignalType = `${signal.type}_DOWNSIDE`;
+  // One open shadow per asset/direction at a time.
+  if (blockedSignals.some((s) =>
+    s.status === "open" &&
+    s.signalType === shadowSignalType &&
+    s.asset === signal.asset &&
+    s.venue === signal.venue &&
+    s.direction === signal.direction,
+  )) return;
+
+  // Build a mirror signal pointing at the below contract.
+  const mirrorSignal: Signal = {
+    ...signal,
+    type: shadowSignalType,
+    contractHint: { preferredDirection: "below" },
+  };
+  const position = buildPositionFromSignal(mirrorSignal, latestRow, latestSnapshot);
+  if (!position) return;
+
+  const now = new Date().toISOString();
+  position.id = `DL-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+  position.openedAt = now;
+
+  blockedSignals.push({
+    id: position.id,
+    status: "open",
+    blockedAt: now,
+    blockedReason: "iv_downside_leg_untracked",
+    signalType: shadowSignalType,
+    asset: signal.asset,
+    venue: signal.venue,
+    direction: signal.direction,
+    confidence: signal.confidence,
+    thesis: `[DOWNSIDE LEG SHADOW] ${signal.thesis}`,
+    learningParamsSnapshot: {
+      macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+      contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
+      positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
+      llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
+      momentumLongExpiryDays: learningParams.momentumLongExpiryDays,
+    },
+    position,
+  });
+}
+
 function resolveBlockedSignalShadows(
   blockedSignals: BlockedSignalShadow[],
   latestRow: SnapshotRow,
@@ -1144,10 +1204,23 @@ function blockedSignalObservations(summary: BlockedSignalLearningSummary): strin
   const notes: string[] = [];
   for (const row of summary.bySignal) {
     if (row.resolved < 3) continue;
-    if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
-      notes.push(`${row.signalType} trend filter may be too strict: ${row.wouldHaveWon}/${row.resolved} blocked trades would have won.`);
-    } else if (row.wouldHaveLost >= row.wouldHaveWon + 2) {
-      notes.push(`${row.signalType} trend filter is avoiding losses: ${row.wouldHaveLost}/${row.resolved} blocked trades would have lost.`);
+    if (row.signalType.endsWith("_DOWNSIDE")) {
+      // IV divergence missing-leg shadows
+      const base = row.signalType.replace("_DOWNSIDE", "");
+      if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
+        notes.push(`${base} missing downside leg is profitable: ${row.wouldHaveWon}/${row.resolved} below-contract shadows would have won. The engine is leaving money on the table by ignoring the downside contract.`);
+      } else if (row.wouldHaveLost >= row.wouldHaveWon + 2) {
+        notes.push(`${base} missing downside leg is unprofitable: ${row.wouldHaveLost}/${row.resolved} below-contract shadows would have lost. The current upside-only approach appears correct.`);
+      } else {
+        notes.push(`${base} missing downside leg is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
+      }
+    } else {
+      // Trend-blocked shadows
+      if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
+        notes.push(`${row.signalType} trend filter may be too strict: ${row.wouldHaveWon}/${row.resolved} blocked trades would have won.`);
+      } else if (row.wouldHaveLost >= row.wouldHaveWon + 2) {
+        notes.push(`${row.signalType} trend filter is avoiding losses: ${row.wouldHaveLost}/${row.resolved} blocked trades would have lost.`);
+      }
     }
   }
   return notes;
@@ -1233,26 +1306,34 @@ function generateSignals(
       if (ratio > 1.3 && weightMap.has("PM_IV_GT_OPT_IV")) {
         const strength = Math.min(1, (ratio - 1.3) / 0.7);
         const w = weightMap.get("PM_IV_GT_OPT_IV")!;
-        const signal = finalizeSignal({
+        const rawSignalPmGt: Signal = {
           type: "PM_IV_GT_OPT_IV", asset: a.key, venue: "polymarket", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} PM IV (${pmIv.toFixed(1)}%) >> Options IV (${optIv.toFixed(1)}%), ratio ${ratio.toFixed(2)}. PM overpricing vol → sell PM upside.`,
           hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7,
           contractHint: { preferredDirection: "above" },
-        }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
-        if (signal) signals.push(signal);
+        };
+        const signal = finalizeSignal(rawSignalPmGt, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
+        if (signal) {
+          signals.push(signal);
+          recordIVDownsideLegShadow(signal, latest, latestSnapshot, learningParams, blockedSignals);
+        }
       }
       if (ratio < 0.7 && weightMap.has("OPT_IV_GT_PM_IV")) {
         const strength = Math.min(1, (0.7 - ratio) / 0.3);
         const w = weightMap.get("OPT_IV_GT_PM_IV")!;
-        const signal = finalizeSignal({
+        const rawSignalOptGt: Signal = {
           type: "OPT_IV_GT_PM_IV", asset: a.key, venue: "polymarket", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} Options IV (${optIv.toFixed(1)}%) >> PM IV (${pmIv.toFixed(1)}%), ratio ${ratio.toFixed(2)}. PM underpricing vol → buy PM upside.`,
           hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7,
           contractHint: { preferredDirection: "above" },
-        }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
-        if (signal) signals.push(signal);
+        };
+        const signal = finalizeSignal(rawSignalOptGt, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
+        if (signal) {
+          signals.push(signal);
+          recordIVDownsideLegShadow(signal, latest, latestSnapshot, learningParams, blockedSignals);
+        }
       }
     }
 
@@ -2032,7 +2113,8 @@ function writeJournalEntry(
     for (const note of blockedObs) lines.push(`- ${note}`);
     for (const shadow of blockedSummary.recentResolved.slice(-4)) {
       const emoji = shadow.outcome === "win" ? "✅" : "❌";
-      lines.push(`- ${emoji} Blocked ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${shadow.closeReason} (${shadow.pnlPct >= 0 ? "+" : ""}${shadow.pnlPct.toFixed(2)}%)`);
+      const label = shadow.blockedReason === "iv_downside_leg_untracked" ? "Missing downside leg" : "Blocked";
+      lines.push(`- ${emoji} ${label}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${shadow.closeReason} (${shadow.pnlPct >= 0 ? "+" : ""}${shadow.pnlPct.toFixed(2)}%)`);
     }
     lines.push("");
   }
@@ -2212,7 +2294,8 @@ async function main() {
     for (const shadow of resolvedBlockedSignals.slice(-6)) {
       const result = shadow.hypotheticalResult!;
       const emoji = result.outcome === "win" ? "✅" : "❌";
-      console.log(`    ${emoji} Blocked ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${result.closeReason}: ${result.pnlPct >= 0 ? "+" : ""}${result.pnlPct.toFixed(2)}%`);
+      const shadowLabel = shadow.blockedReason === "iv_downside_leg_untracked" ? "Missing downside leg" : "Blocked";
+      console.log(`    ${emoji} ${shadowLabel}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${result.closeReason}: ${result.pnlPct >= 0 ? "+" : ""}${result.pnlPct.toFixed(2)}%`);
     }
   }
   let blockedSummary = summarizeBlockedSignals(blockedSignals);
