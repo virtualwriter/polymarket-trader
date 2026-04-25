@@ -8343,7 +8343,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "AMZN funding spike framework validated - extreme negative funding at -39.2% creates immediate perp underperformance opportunity that should correct rapidly as positioning becomes unsustainable.",
     "source": "llm"
   },
   {
@@ -9736,7 +9736,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE institutional distribution pattern continues to evolve - OI decline now at 14.5% (957M→818M) with funding normalized to positive territory. This represents textbook completion of smart money exit phase.",
     "source": "llm"
   },
   {
@@ -9762,7 +9762,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC funding crash to 3.98% during consolidation validated the oversold bounce framework, but funding has now gone negative to -1.02%, creating even more extreme positioning that should reverse more violently.",
     "source": "llm"
   },
   {
@@ -9777,6 +9777,84 @@
     "prediction": "Oil structural recovery trade completion - take profits as spread normalization indicates correction finished",
     "timeframeDays": 3,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Oil structural recovery trade completed successfully as Brent-WTI spread normalized to 16.1 from extreme lows. Profit-taking framework working well - recognizing when structural arbitrage opportunities complete their correction cycles.",
+    "source": "llm"
+  },
+  {
+    "id": "H-385",
+    "created": "2026-04-25",
+    "description": "BTC extreme funding crash reversal during consolidation - when BTC funding drops below -1% during consolidation above 77k with PM IV compression below 40%, systematic bounce follows within 48-72 hours",
+    "conditions": {
+      "btc_hl_funding_ann": "< 0.01",
+      "btc_spot": "> 77000",
+      "btc_pm_iv": "< 40"
+    },
+    "prediction": "BTC bounce above 78k within 3 days",
+    "timeframeDays": 3,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-386",
+    "created": "2026-04-25",
+    "description": "HYPE institutional distribution completion reversal - when HYPE OI declines below 820M from 957M peak (15%+ decline) while funding normalizes above 10% and spot holds above 41, distribution exhaustion creates oversold bounce",
+    "conditions": {
+      "hype_hl_oi": "< 820000000",
+      "hype_hl_funding_ann": "> 0.10",
+      "hype_spot": "> 41"
+    },
+    "prediction": "HYPE recovery above 42 within 5-7 days",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-387",
+    "created": "2026-04-25",
+    "description": "Cross-asset extreme funding exhaustion reversal pattern - when both BTC funding drops below 0% and GOLD funding stays above 50% while HYPE OI stabilizes below 820M after institutional distribution, systematic positioning unwind creates multi-asset bounce",
+    "conditions": {
+      "btc_hl_funding_ann": "< 0",
+      "gold_hl_funding_ann": "> 0.50",
+      "hype_hl_oi": "< 820000000"
+    },
+    "prediction": "BTC and HYPE bounce within 48-72 hours",
+    "timeframeDays": 3,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-25",

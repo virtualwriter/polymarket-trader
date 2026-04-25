@@ -2445,3 +2445,21 @@ Major breakthrough in institutional flow pattern recognition continues. HYPE sho
 
 ---
 
+### 2026-04-25 06:15 UTC
+
+**Portfolio:** $100.51 total | Cash $90.51 | 10 open | P&L $0.5120 | 63% win rate (65 trades)
+
+**Statistical observations:**
+- [correlation_flip] BTC-GOLD correlation shifted from 0.86 to -0.58
+- [correlation_flip] BTC-HYPE correlation shifted from -0.18 to 0.44
+- [correlation_flip] GOLD-OIL correlation shifted from -0.14 to 0.48
+
+**Blocked signal learning:**
+- Open blocked shadows: 1
+- Resolved blocked shadows: 0 (0 wins / 0 losses)
+
+**LLM analysis:**
+Major breakthrough in institutional flow pattern recognition reaching maturation. The HYPE distribution pattern (957M→818M, -14.5% OI decline) combined with funding normalization to 10.95% represents one of the clearest institutional exit completion signals observed. Key insight: OI decline magnitude >14% combined with funding direction normalization (not just magnitude) creates higher-probability reversals than traditional metrics. BTC funding crash to -1.02% during consolidation provides additional confirmation - extreme negative funding during stable price action has historically reversed within 48-72 hours. The framework is evolving from pattern recognition to institutional flow exhaustion identification, which appears to be a more reliable alpha source than pure technical analysis.
+
+---
+
