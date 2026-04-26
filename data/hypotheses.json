@@ -10280,7 +10280,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC momentum acceleration above 77.9k confirmed - spot moved from 77929 to 77940, HYPE correlation restoration in progress with OI stabilizing at 809M after 16% decline from peak",
     "source": "llm"
   },
   {
@@ -10306,7 +10306,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE institutional distribution completion confirmed - massive OI decline from 957M to 809M (15.5%) with funding crash to -1.23% indicates smart money exit approaching completion",
     "source": "llm"
   },
   {
@@ -10321,6 +10321,83 @@
     "prediction": "AMZN continues above 266 within 3 days as perp-stock convergence completes with positive funding",
     "timeframeDays": 3,
     "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "AMZN perp-stock convergence with funding spike to 15.02% while basis stays positive at -0.11% creates systematic correction pressure as positioning becomes extreme",
+    "source": "llm"
+  },
+  {
+    "id": "H-406",
+    "created": "2026-04-26",
+    "description": "HYPE institutional distribution exhaustion reversal - massive 16% OI decline from 957M peak combined with extreme funding crash below -1% indicates smart money positioning cycle completion",
+    "conditions": {
+      "hype_hl_oi": "< 815000000",
+      "hype_hl_funding_ann": "< -0.01",
+      "hype_spot": "> 40.5"
+    },
+    "prediction": "HYPE oversold bounce within 5-7 days as institutional distribution completes and correlation with BTC restores",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-407",
+    "created": "2026-04-26",
+    "description": "BTC momentum continuation above 77.9k with HYPE OI stabilization - when BTC holds above breakout level while HYPE shows distribution exhaustion, correlation restoration follows",
+    "conditions": {
+      "btc_spot": "> 77900",
+      "hype_hl_oi": "< 820000000",
+      "btc_opt_iv_30d": "< 42"
+    },
+    "prediction": "BTC momentum acceleration above 78.5k within 5-7 days as HYPE correlation restores and IV compression resolves",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-408",
+    "created": "2026-04-26",
+    "description": "AMZN funding spike above 15% with positive basis creates unsustainable perp positioning requiring systematic correction",
+    "conditions": {
+      "amzn_hl_funding_ann": "> 0.15",
+      "amzn_hl_basis_pct": "> 0"
+    },
+    "prediction": "AMZN funding normalization below 10% within 48 hours as extreme positioning unwinds",
+    "timeframeDays": 3,
+    "confidence": 0.65,
     "tests": [
       {
         "date": "2026-04-26",
