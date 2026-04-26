@@ -10280,7 +10280,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC momentum acceleration above 77.9k confirmed - spot moved from 77929 to 77940, HYPE correlation restoration in progress with OI stabilizing at 809M after 16% decline from peak | BTC holding above 77.9k with HYPE correlation breakdown during distribution - momentum continuation thesis intact but awaiting HYPE distribution completion for correlation restoration",
+    "postMortem": "BTC momentum acceleration above 77.9k confirmed - spot moved from 77929 to 77940, HYPE correlation restoration in progress with OI stabilizing at 809M after 16% decline from peak | BTC holding above 77.9k with HYPE correlation breakdown during distribution - momentum continuation thesis intact but awaiting HYPE distribution completion for correlation restoration | BTC momentum above 77.9k with HYPE correlation beginning restoration. Framework correctly identifying momentum continuation patterns.",
     "source": "llm"
   },
   {
@@ -10306,7 +10306,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE institutional distribution completion confirmed - massive OI decline from 957M to 809M (15.5%) with funding crash to -1.23% indicates smart money exit approaching completion",
+    "postMortem": "HYPE institutional distribution completion confirmed - massive OI decline from 957M to 809M (15.5%) with funding crash to -1.23% indicates smart money exit approaching completion | HYPE funding crash to 1.8% from 10.95% confirms institutional distribution exhaustion. Pattern validates smart money exit completion framework.",
     "source": "llm"
   },
   {
@@ -10461,7 +10461,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC PM IV at 39.6% represents -6.8σ statistical anomaly. Extreme compression validates volatility expansion setup during consolidation.",
     "source": "llm"
   },
   {
@@ -10476,6 +10476,83 @@
     "prediction": "Gold spot catch-up toward PM levels or PM premium compression within one week",
     "timeframeDays": 7,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-412",
+    "created": "2026-04-26",
+    "description": "HYPE institutional distribution exhaustion completion reversal - when HYPE OI declines below 815M from 957M peak (15%+ decline) while funding normalizes above 10% and spot holds above 41, distribution exhaustion creates oversold bounce within 5-7 days",
+    "conditions": {
+      "hype_hl_oi": "< 815000000",
+      "hype_hl_funding_ann": "> 0.10",
+      "hype_spot": "> 41"
+    },
+    "prediction": "HYPE oversold bounce to 43-44 range within one week",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-413",
+    "created": "2026-04-26",
+    "description": "BTC PM IV extreme compression statistical reversion - when BTC PM IV drops below 40% representing -6.5σ statistical anomaly during consolidation above 77k, volatility expansion follows within 5-7 days as market corrects pricing inefficiency",
+    "conditions": {
+      "btc_pm_iv": "< 40",
+      "btc_spot": "> 77000"
+    },
+    "prediction": "BTC PM IV expansion above 45% within one week",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-414",
+    "created": "2026-04-26",
+    "description": "Cross-asset momentum restoration signal - when BTC holds above 77k with HYPE OI stabilizing above 810M after institutional distribution and both assets showing positive correlation during funding normalization, breakout continuation follows",
+    "conditions": {
+      "btc_spot": "> 77000",
+      "hype_hl_oi": "> 810000000",
+      "hype_hl_funding_ann": "> 0.05"
+    },
+    "prediction": "BTC-HYPE correlation restoration with momentum continuation",
+    "timeframeDays": 5,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-26",

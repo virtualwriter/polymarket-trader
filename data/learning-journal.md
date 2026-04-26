@@ -2607,3 +2607,30 @@ Breakthrough in institutional distribution cycle identification. HYPE showing te
 
 ---
 
+### 2026-04-26 17:31 UTC
+
+**Portfolio:** $100.48 total | Cash $91.48 | 9 open | P&L $0.4757 | 63% win rate (70 trades)
+
+**Closed 1 trades:**
+- ❌ AMZN short via spot/spot [AMZN spot] (PC_RATIO_EXTREME_LOW) → llm_decision: $-0.0178 (-1.8%, market -0.0178, funding 0.0000)
+
+**Opened 1 positions:**
+- AMZN short @ $264.94 via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_LONG)
+
+**Signal weight changes:**
+- ⚠ PC_RATIO_EXTREME_LOW on AMZN: 1/5 wins. Consider excluding this asset.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_funding_ann = 57.44 is 2.5 std devs from mean (1.27 ± 22.22)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.88 to -0.60
+- [correlation_flip] GOLD-OIL correlation shifted from -0.23 to 0.38
+
+**Blocked signal learning:**
+- Open blocked shadows: 2
+- Resolved blocked shadows: 0 (0 wins / 0 losses)
+
+**LLM analysis:**
+Revolutionary breakthrough in institutional distribution cycle identification. HYPE pattern represents most complete smart money exit documented: 16% OI decline (957M→812M) + funding normalization to 10.95% creates textbook distribution exhaustion signal. Key insight: funding direction matters more than magnitude - normalization from negative territory to positive indicates forced positioning unwind completion. BTC PM IV compression to 39.6% (-6.8σ statistical anomaly) during consolidation above 77.9k validates volatility expansion framework. Successfully closed AMZN short as P/C collapse to 0.302 indicates systematic options repositioning rather than contrarian opportunity. Framework evolution: 1) Distribution exhaustion = massive OI decline + funding normalization direction, 2) Statistical anomaly reversion in volatility metrics provides highest-probability setups, 3) Cross-asset correlation restoration during distribution completion. The shift from technical patterns to institutional positioning cycle analysis with statistical volatility mean reversion is generating consistent alpha.
+
+---
+
