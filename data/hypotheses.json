@@ -10280,7 +10280,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC momentum acceleration above 77.9k confirmed - spot moved from 77929 to 77940, HYPE correlation restoration in progress with OI stabilizing at 809M after 16% decline from peak",
+    "postMortem": "BTC momentum acceleration above 77.9k confirmed - spot moved from 77929 to 77940, HYPE correlation restoration in progress with OI stabilizing at 809M after 16% decline from peak | BTC holding above 77.9k with HYPE correlation breakdown during distribution - momentum continuation thesis intact but awaiting HYPE distribution completion for correlation restoration",
     "source": "llm"
   },
   {
@@ -10358,7 +10358,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE distribution accelerating with OI at 810M (-15.4% from peak) and funding crash to 10.95% - institutional exit cycle approaching final exhaustion phase, setting up highest-confidence reversal",
     "source": "llm"
   },
   {
@@ -10397,6 +10397,84 @@
     },
     "prediction": "AMZN funding normalization below 10% within 48 hours as extreme positioning unwinds",
     "timeframeDays": 3,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "AMZN funding normalized to 15% but still positive - pattern developing as perp positioning remains elevated relative to stock performance, monitoring for correction signal completion",
+    "source": "llm"
+  },
+  {
+    "id": "H-409",
+    "created": "2026-04-26",
+    "description": "HYPE institutional distribution final exhaustion reversal - OI decline below 810M from 957M peak (15%+ decline) with extreme funding crash to 10.95% indicates smart money exit approaching completion",
+    "conditions": {
+      "hype_hl_oi": "< 810000000",
+      "hype_hl_funding_ann": "> 0.08",
+      "hype_spot": "> 40"
+    },
+    "prediction": "HYPE oversold bounce toward 42-43 range within 5-7 days as institutional distribution exhaustion completes",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-410",
+    "created": "2026-04-26",
+    "description": "BTC PM IV extreme compression reversion acceleration - IV at 39.6% represents -6.8σ statistical anomaly during consolidation above 77.9k",
+    "conditions": {
+      "btc_pm_iv": "< 40",
+      "btc_spot": "> 77000",
+      "btc_opt_iv_30d": "< 42"
+    },
+    "prediction": "BTC volatility expansion to 42-44% range within 5-7 days as statistical anomaly corrects",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-411",
+    "created": "2026-04-26",
+    "description": "Gold PM premium persistence during extreme funding oscillation - PM settle above 5043 while spot at 4703 with funding at 5.48% creates mean reversion setup",
+    "conditions": {
+      "gold_pm_settle_ev": "> 5000",
+      "gold_gc_spot": "< 4750",
+      "gold_hl_funding_ann": "< 0.1"
+    },
+    "prediction": "Gold spot catch-up toward PM levels or PM premium compression within one week",
+    "timeframeDays": 7,
     "confidence": 0.65,
     "tests": [
       {
