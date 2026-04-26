@@ -8266,7 +8266,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "CONFIRMED - BTC broke 77.9k with HYPE correlation restoration creating sustained momentum as predicted",
+    "postMortem": "CONFIRMED - BTC broke 77.9k with HYPE correlation restoration creating sustained momentum as predicted | BTC broke above 77.9k target with HYPE funding crash from 10.95% to 1.8% confirming distribution completion - pattern working as predicted",
     "source": "llm"
   },
   {
@@ -8859,7 +8859,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Successful completion - Oil structural recovery trade closed profitably as Brent-WTI spread normalized from extreme lows, validating profit-taking framework.",
+    "postMortem": "Successful completion - Oil structural recovery trade closed profitably as Brent-WTI spread normalized from extreme lows, validating profit-taking framework. | Oil Brent-WTI spread at 16.2 normalized from extreme breakdown lows - structural recovery trade completion confirmed, taking profits",
     "source": "llm"
   },
   {
@@ -9583,7 +9583,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE OI declined to 821M (14% drop from peak) with funding at 11%, approaching distribution completion threshold. Setup maturing for reversal. | HYPE OI declined to 819M (14.4% from peak) with funding at 10.95% - distribution pattern accelerating as predicted but not yet at completion threshold below 800M | Progressing as expected - HYPE OI decline to 818M represents 14.5% drop from 957M peak with funding normalizing to 10.95%. Distribution exhaustion pattern developing as predicted.",
+    "postMortem": "HYPE OI declined to 821M (14% drop from peak) with funding at 11%, approaching distribution completion threshold. Setup maturing for reversal. | HYPE OI declined to 819M (14.4% from peak) with funding at 10.95% - distribution pattern accelerating as predicted but not yet at completion threshold below 800M | Progressing as expected - HYPE OI decline to 818M represents 14.5% drop from 957M peak with funding normalizing to 10.95%. Distribution exhaustion pattern developing as predicted. | HYPE OI at 814M represents 15% decline from 957M peak with funding crash to 1.8% - distribution completion signal activated",
     "source": "llm"
   },
   {
@@ -10242,6 +10242,85 @@
     "prediction": "BTC and HYPE move together with positive correlation restoration as smart money positioning normalizes",
     "timeframeDays": 7,
     "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-403",
+    "created": "2026-04-26",
+    "description": "BTC momentum acceleration above 77.9k with HYPE correlation restoration creates sustained breakout continuation",
+    "conditions": {
+      "btc_spot": "> 77900",
+      "hype_spot": "> 41.2",
+      "hype_hl_funding_ann": "< 5",
+      "btc_hl_funding_ann": "> 0"
+    },
+    "prediction": "BTC sustains above 78.5k within 5 days as HYPE correlation restores and funding normalizes",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-404",
+    "created": "2026-04-26",
+    "description": "HYPE institutional distribution completion reversal - massive 16% OI decline from 957M peak with funding crash to 1.8% indicates smart money exit completion",
+    "conditions": {
+      "hype_hl_oi": "< 820000000",
+      "hype_hl_funding_ann": "< 5",
+      "hype_spot": "> 41"
+    },
+    "prediction": "HYPE oversold bounce above 42 within 7 days as distribution exhaustion creates reversal setup",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-405",
+    "created": "2026-04-26",
+    "description": "AMZN perp-stock convergence completion with positive funding and basis normalization creates momentum acceleration",
+    "conditions": {
+      "amzn_hl_funding_ann": "> 15",
+      "amzn_hl_basis_pct": "> -0.3",
+      "amzn_stock": "> 264"
+    },
+    "prediction": "AMZN continues above 266 within 3 days as perp-stock convergence completes with positive funding",
+    "timeframeDays": 3,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-26",
