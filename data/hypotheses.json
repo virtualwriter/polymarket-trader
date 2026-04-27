@@ -6123,7 +6123,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "AMZN perp-stock divergence explosion thesis validated - basis moved from negative to +0.12% during extreme stock momentum to 253.68, creating systematic correction as predicted.",
+    "postMortem": "AMZN perp-stock divergence explosion thesis validated - basis moved from negative to +0.12% during extreme stock momentum to 253.68, creating systematic correction as predicted. | AMZN basis normalized from explosion highs, confirming perp-stock convergence pattern. Basis at 0.0% shows completion of structural correction.",
     "source": "llm"
   },
   {
@@ -10227,7 +10227,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC funding recovered from extreme negatives to 7.52%, validating systematic bounce theory. Pattern working as predicted.",
     "source": "llm"
   },
   {
@@ -10771,7 +10771,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI stabilized at 829M after distribution, spot holding 42.3. Distribution exhaustion theory partially validated with stabilization occurring.",
     "source": "llm"
   },
   {
@@ -10786,6 +10786,84 @@
     "prediction": "Risk-off positioning accelerates crypto pullbacks but creates oversold opportunities when macro stabilizes",
     "timeframeDays": 10,
     "confidence": 0.6,
+    "tests": [
+      {
+        "date": "2026-04-27",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-424",
+    "created": "2026-04-27",
+    "description": "HYPE PM IV explosion from 52% to 63.9% during BTC consolidation indicates institutional volatility repositioning",
+    "conditions": {
+      "hype_pm_iv": "> 62",
+      "btc_spot": "> 77000",
+      "hype_spot": "> 42"
+    },
+    "prediction": "HYPE spot acceleration above 43.5 within 5-7 days as IV expansion leads price discovery",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-27",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-425",
+    "created": "2026-04-27",
+    "description": "AMZN weekend momentum explosion with P/C collapse to 0.285 during options expiry creates systematic continuation",
+    "conditions": {
+      "amzn_pc_ratio": "< 0.3",
+      "amzn_stock": "> 264",
+      "amzn_hl_funding_ann": "> 0.25"
+    },
+    "prediction": "AMZN acceleration above 270 within 3-5 days as options positioning drives momentum",
+    "timeframeDays": 5,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-27",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-426",
+    "created": "2026-04-27",
+    "description": "Cross-asset median expansion confirmation - BTC median max rising to 95.25k while HYPE median max hits 60.5 during consolidation phases",
+    "conditions": {
+      "btc_med_max": "> 95000",
+      "hype_med_max": "> 60",
+      "btc_spot": "> 77000"
+    },
+    "prediction": "Breakout acceleration above consolidation ranges within 5-7 days as median expansion leads price",
+    "timeframeDays": 7,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-27",
