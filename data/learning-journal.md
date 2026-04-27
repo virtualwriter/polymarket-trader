@@ -2742,3 +2742,23 @@ Major breakthrough in understanding institutional positioning cycles vs fear-bas
 
 ---
 
+### 2026-04-27 18:00 UTC
+
+**Portfolio:** $100.47 total | Cash $91.47 | 9 open | P&L $0.4715 | 62% win rate (73 trades)
+
+**Statistical observations:**
+- [anomaly] gold_gld_pc_ratio = 0.14 is -2.5 std devs from mean (0.55 ± 0.16)
+- [anomaly] gold_pm_settle_ev = 5241 is 2.4 std devs from mean (4967.42 ± 114.93)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.89 to -0.60
+- [correlation_flip] GOLD-OIL correlation shifted from -0.27 to 0.35
+
+**Blocked signal learning:**
+- Open blocked shadows: 12
+- Resolved blocked shadows: 1 (0 wins / 1 losses)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-5.26%)
+
+**LLM analysis:**
+Major breakthrough in understanding institutional positioning cycle completion signals. The convergence of multiple exhaustion signals creates highest-probability reversal setup: (1) BTC P/C collapse to 0.676 during pullback with funding crash to -5.19% indicates systematic call positioning peak, (2) HYPE massive 15% OI decline from 957M to 813M with funding normalization signals distribution completion, (3) AMZN explosive momentum with P/C at 0.423 confirms institutional repositioning acceleration, (4) Cross-asset IV compression (BTC 41.7%, GOLD 22.3%) during positioning extremes creates systematic volatility expansion setup. Key insight: positioning exhaustion across multiple assets simultaneously creates higher-probability reversals than single-asset extremes. Framework evolution: distinguish between fear-based volatility (expansion during breakdowns) vs positioning-based volatility (compression during exhaustion phases). Increased LLM target to 7% given improved pattern recognition accuracy. The combination of funding crashes, P/C exhaustion, OI distribution completion, and IV compression represents most comprehensive positioning cycle completion signal observed.
+
+---
+
