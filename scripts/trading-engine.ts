@@ -95,6 +95,15 @@ interface Portfolio {
   lastUpdated: string;
 }
 
+interface PerAssetSignalStats {
+  trades: number;
+  wins: number;
+  avgPnlPct: number;
+  disabled?: boolean;
+  disabledAt?: string;
+  disabledReason?: string;
+}
+
 interface SignalWeight {
   type: string;
   weight: number;
@@ -103,7 +112,7 @@ interface SignalWeight {
   avgPnlPct: number;
   lastTriggered: string;
   enabled: boolean;
-  perAsset: Record<string, { trades: number; wins: number; avgPnlPct: number }>;
+  perAsset: Record<string, PerAssetSignalStats>;
 }
 
 interface LearningParams {
@@ -440,8 +449,24 @@ function savePortfolio(p: Portfolio) {
   writeJson("portfolio.json", p);
 }
 
+function normalizeSignalWeight(weight: SignalWeight): SignalWeight {
+  const perAsset = weight.perAsset ?? {};
+  for (const [asset, stats] of Object.entries(perAsset)) {
+    const accuracy = stats.trades > 0 ? stats.wins / stats.trades : 0.5;
+    if (stats.trades >= 5 && accuracy < KILL_THRESHOLD && !stats.disabled) {
+      stats.disabled = true;
+      stats.disabledAt = weight.lastTriggered || new Date().toISOString();
+      stats.disabledReason = `${weight.type} on ${asset} disabled after ${stats.wins}/${stats.trades} wins (${(accuracy * 100).toFixed(0)}% accuracy).`;
+    }
+  }
+  return {
+    ...weight,
+    perAsset,
+  };
+}
+
 function loadWeights(): SignalWeight[] {
-  return readJson<SignalWeight[]>("signal-weights.json", defaultWeights());
+  return readJson<SignalWeight[]>("signal-weights.json", defaultWeights()).map(normalizeSignalWeight);
 }
 
 function saveWeights(w: SignalWeight[]) {
@@ -523,6 +548,17 @@ function defaultWeights(): SignalWeight[] {
 }
 
 // ─── Signal Generation ───────────────────────────────────────────────────────
+
+function weightForSignalAsset(
+  weightMap: Map<string, SignalWeight>,
+  signalType: string,
+  asset: string,
+): SignalWeight | null {
+  const weight = weightMap.get(signalType);
+  if (!weight || !weight.enabled) return null;
+  if (weight.perAsset?.[asset]?.disabled) return null;
+  return weight;
+}
 
 function getAssetPrice(row: SnapshotRow, asset: string): number | null {
   const map: Record<string, string> = {
@@ -1303,9 +1339,10 @@ function generateSignals(
     const optIv = a.optIv30 ? num(latest[a.optIv30]) : null;
     if (pmIv && optIv && optIv > 0) {
       const ratio = pmIv / optIv;
-      if (ratio > 1.3 && weightMap.has("PM_IV_GT_OPT_IV")) {
+      const pmIvGtWeight = weightForSignalAsset(weightMap, "PM_IV_GT_OPT_IV", a.key);
+      if (ratio > 1.3 && pmIvGtWeight) {
         const strength = Math.min(1, (ratio - 1.3) / 0.7);
-        const w = weightMap.get("PM_IV_GT_OPT_IV")!;
+        const w = pmIvGtWeight;
         const rawSignalPmGt: Signal = {
           type: "PM_IV_GT_OPT_IV", asset: a.key, venue: "polymarket", direction: "short",
           strength, confidence: strength * w.weight,
@@ -1319,9 +1356,10 @@ function generateSignals(
           recordIVDownsideLegShadow(signal, latest, latestSnapshot, learningParams, blockedSignals);
         }
       }
-      if (ratio < 0.7 && weightMap.has("OPT_IV_GT_PM_IV")) {
+      const optIvGtWeight = weightForSignalAsset(weightMap, "OPT_IV_GT_PM_IV", a.key);
+      if (ratio < 0.7 && optIvGtWeight) {
         const strength = Math.min(1, (0.7 - ratio) / 0.3);
-        const w = weightMap.get("OPT_IV_GT_PM_IV")!;
+        const w = optIvGtWeight;
         const rawSignalOptGt: Signal = {
           type: "OPT_IV_GT_PM_IV", asset: a.key, venue: "polymarket", direction: "long",
           strength, confidence: strength * w.weight,
@@ -1339,9 +1377,10 @@ function generateSignals(
 
     const funding = a.funding ? num(latest[a.funding]) : null;
     if (funding !== null) {
-      if (funding > 15 && weightMap.has("FUNDING_EXTREME_LONG")) {
+      const fundingLongWeight = weightForSignalAsset(weightMap, "FUNDING_EXTREME_LONG", a.key);
+      if (funding > 15 && fundingLongWeight) {
         const strength = Math.min(1, (funding - 15) / 35);
-        const w = weightMap.get("FUNDING_EXTREME_LONG")!;
+        const w = fundingLongWeight;
         const perpEntry = getHyperliquidPerpPrice(latest, a.key) ?? spot;
         const signal = finalizeSignal({
           type: "FUNDING_EXTREME_LONG", asset: a.key, venue: "hyperliquid", direction: "short",
@@ -1351,9 +1390,10 @@ function generateSignals(
         }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
-      if (funding < -15 && weightMap.has("FUNDING_EXTREME_SHORT")) {
+      const fundingShortWeight = weightForSignalAsset(weightMap, "FUNDING_EXTREME_SHORT", a.key);
+      if (funding < -15 && fundingShortWeight) {
         const strength = Math.min(1, (-funding - 15) / 35);
-        const w = weightMap.get("FUNDING_EXTREME_SHORT")!;
+        const w = fundingShortWeight;
         const perpEntry = getHyperliquidPerpPrice(latest, a.key) ?? spot;
         const signal = finalizeSignal({
           type: "FUNDING_EXTREME_SHORT", asset: a.key, venue: "hyperliquid", direction: "long",
@@ -1368,9 +1408,10 @@ function generateSignals(
     const pmEv = a.pmEv ? num(latest[a.pmEv]) : null;
     if (pmEv && spot) {
       const divergencePct = ((pmEv - spot) / spot) * 100;
-      if (divergencePct > 8 && weightMap.has("PM_EV_ABOVE_SPOT")) {
+      const pmEvAboveWeight = weightForSignalAsset(weightMap, "PM_EV_ABOVE_SPOT", a.key);
+      if (divergencePct > 8 && pmEvAboveWeight) {
         const strength = Math.min(1, (divergencePct - 8) / 20);
-        const w = weightMap.get("PM_EV_ABOVE_SPOT")!;
+        const w = pmEvAboveWeight;
         const signal = finalizeSignal({
           type: "PM_EV_ABOVE_SPOT", asset: a.key, venue: "spot", direction: "long",
           strength, confidence: strength * w.weight,
@@ -1379,9 +1420,10 @@ function generateSignals(
         }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
-      if (divergencePct < -5 && weightMap.has("PM_EV_BELOW_SPOT")) {
+      const pmEvBelowWeight = weightForSignalAsset(weightMap, "PM_EV_BELOW_SPOT", a.key);
+      if (divergencePct < -5 && pmEvBelowWeight) {
         const strength = Math.min(1, (-divergencePct - 5) / 15);
-        const w = weightMap.get("PM_EV_BELOW_SPOT")!;
+        const w = pmEvBelowWeight;
         const signal = finalizeSignal({
           type: "PM_EV_BELOW_SPOT", asset: a.key, venue: "spot", direction: "short",
           strength, confidence: strength * w.weight,
@@ -1394,9 +1436,10 @@ function generateSignals(
 
     const pcRatio = a.pcRatio ? num(latest[a.pcRatio]) : null;
     if (pcRatio !== null) {
-      if (pcRatio > 1.2 && weightMap.has("PC_RATIO_EXTREME_HIGH")) {
+      const pcHighWeight = weightForSignalAsset(weightMap, "PC_RATIO_EXTREME_HIGH", a.key);
+      if (pcRatio > 1.2 && pcHighWeight) {
         const strength = Math.min(1, (pcRatio - 1.2) / 0.8);
-        const w = weightMap.get("PC_RATIO_EXTREME_HIGH")!;
+        const w = pcHighWeight;
         const signal = finalizeSignal({
           type: "PC_RATIO_EXTREME_HIGH", asset: a.key, venue: "spot", direction: "long",
           strength, confidence: strength * w.weight,
@@ -1405,9 +1448,10 @@ function generateSignals(
         }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
-      if (pcRatio < 0.5 && weightMap.has("PC_RATIO_EXTREME_LOW")) {
+      const pcLowWeight = weightForSignalAsset(weightMap, "PC_RATIO_EXTREME_LOW", a.key);
+      if (pcRatio < 0.5 && pcLowWeight) {
         const strength = Math.min(1, (0.5 - pcRatio) / 0.3);
-        const w = weightMap.get("PC_RATIO_EXTREME_LOW")!;
+        const w = pcLowWeight;
         const signal = finalizeSignal({
           type: "PC_RATIO_EXTREME_LOW", asset: a.key, venue: "spot", direction: "short",
           strength, confidence: strength * w.weight,
@@ -1422,9 +1466,10 @@ function generateSignals(
     const stockSpot = a.spot === a.hlPerp ? null : num(latest[a.spot]);
     if (hlPerp && stockSpot && a.key === "AMZN") {
       const basisPct = ((hlPerp - stockSpot) / stockSpot) * 100;
-      if (basisPct > 1.5 && weightMap.has("BASIS_PREMIUM")) {
+      const basisPremiumWeight = weightForSignalAsset(weightMap, "BASIS_PREMIUM", a.key);
+      if (basisPct > 1.5 && basisPremiumWeight) {
         const strength = Math.min(1, (basisPct - 1.5) / 3);
-        const w = weightMap.get("BASIS_PREMIUM")!;
+        const w = basisPremiumWeight;
         const signal = finalizeSignal({
           type: "BASIS_PREMIUM", asset: a.key, venue: "hyperliquid", direction: "short",
           strength, confidence: strength * w.weight,
@@ -1433,9 +1478,10 @@ function generateSignals(
         }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
-      if (basisPct < -1.5 && weightMap.has("BASIS_DISCOUNT")) {
+      const basisDiscountWeight = weightForSignalAsset(weightMap, "BASIS_DISCOUNT", a.key);
+      if (basisPct < -1.5 && basisDiscountWeight) {
         const strength = Math.min(1, (-basisPct - 1.5) / 3);
-        const w = weightMap.get("BASIS_DISCOUNT")!;
+        const w = basisDiscountWeight;
         const signal = finalizeSignal({
           type: "BASIS_DISCOUNT", asset: a.key, venue: "hyperliquid", direction: "long",
           strength, confidence: strength * w.weight,
@@ -1450,9 +1496,10 @@ function generateSignals(
   const macroShift = macroCompositeShiftPts(macroRows, LOOKBACK_HOURS);
   if (macroShift) {
     const threshold = learningParams.macroMomentum24hThresholdPts;
-    if (macroShift.shift > threshold && weightMap.has("MACRO_MOMENTUM_UP")) {
+    const macroUpWeight = weightForSignalAsset(weightMap, "MACRO_MOMENTUM_UP", "BTC");
+    if (macroShift.shift > threshold && macroUpWeight) {
       const strength = Math.min(1, (macroShift.shift - threshold) / 12);
-      const w = weightMap.get("MACRO_MOMENTUM_UP")!;
+      const w = macroUpWeight;
       const signal = finalizeSignal({
         type: "MACRO_MOMENTUM_UP", asset: "BTC", venue: "spot", direction: "long",
         strength, confidence: strength * w.weight,
@@ -1462,9 +1509,10 @@ function generateSignals(
       }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
       if (signal) signals.push(signal);
     }
-    if (macroShift.shift < -threshold && weightMap.has("MACRO_MOMENTUM_DOWN")) {
+    const macroDownWeight = weightForSignalAsset(weightMap, "MACRO_MOMENTUM_DOWN", "BTC");
+    if (macroShift.shift < -threshold && macroDownWeight) {
       const strength = Math.min(1, (-macroShift.shift - threshold) / 12);
-      const w = weightMap.get("MACRO_MOMENTUM_DOWN")!;
+      const w = macroDownWeight;
       const signal = finalizeSignal({
         type: "MACRO_MOMENTUM_DOWN", asset: "BTC", venue: "spot", direction: "short",
         strength, confidence: strength * w.weight,
@@ -1754,9 +1802,14 @@ function updateWeights(weights: SignalWeight[], closedTrades: ClosedTrade[]): st
       observations.push(`🛑 ${w.type} DISABLED — accuracy ${(recentAccuracy * 100).toFixed(0)}% over ${w.trades} trades is below kill threshold.`);
     }
 
-    // Per-asset demotion
-    if (pa.trades >= 5 && pa.wins / pa.trades < KILL_THRESHOLD) {
-      observations.push(`⚠ ${w.type} on ${trade.asset}: ${pa.wins}/${pa.trades} wins. Consider excluding this asset.`);
+    // Per-asset kill switch. This keeps a broken asset/signal pair from
+    // suppressing useful behavior on other assets.
+    const perAssetAccuracy = pa.trades > 0 ? pa.wins / pa.trades : 0.5;
+    if (pa.trades >= 5 && perAssetAccuracy < KILL_THRESHOLD && !pa.disabled) {
+      pa.disabled = true;
+      pa.disabledAt = trade.closedAt;
+      pa.disabledReason = `${w.type} on ${trade.asset} disabled after ${pa.wins}/${pa.trades} wins (${(perAssetAccuracy * 100).toFixed(0)}% accuracy).`;
+      observations.push(`🛑 ${w.type} on ${trade.asset} DISABLED — ${pa.wins}/${pa.trades} wins is below per-asset kill threshold.`);
     }
   }
 
@@ -1938,7 +1991,13 @@ OPEN POSITIONS:
 ${portfolio.positions.map((p) => `  ${p.asset} ${p.direction} via ${p.venue} / ${p.instrumentType ?? "legacy"} @ ${p.entryPrice} [${p.instrumentLabel ?? "n/a"}] (${p.signalType}) — ${p.thesis.slice(0, 100)}`).join("\n") || "  None"}
 
 SIGNAL PERFORMANCE:
-${activeWeights.map((w) => `  ${w.type}: weight=${w.weight.toFixed(2)}, ${w.wins}/${w.trades} wins (${w.trades > 0 ? ((w.wins / w.trades) * 100).toFixed(0) : "N/A"}%), avg pnl=${w.avgPnlPct.toFixed(2)}%`).join("\n") || "  No trades yet"}
+${activeWeights.map((w) => {
+  const disabledAssets = Object.entries(w.perAsset ?? {})
+    .filter(([, stats]) => stats.disabled)
+    .map(([asset, stats]) => `${asset} disabled (${stats.wins}/${stats.trades} wins, avg pnl=${stats.avgPnlPct.toFixed(2)}%)`)
+    .join("; ");
+  return `  ${w.type}: weight=${w.weight.toFixed(2)}, ${w.wins}/${w.trades} wins (${w.trades > 0 ? ((w.wins / w.trades) * 100).toFixed(0) : "N/A"}%), avg pnl=${w.avgPnlPct.toFixed(2)}%${disabledAssets ? ` | disabled assets: ${disabledAssets}` : ""}`;
+}).join("\n") || "  No trades yet"}
 
 ACTIVE HYPOTHESES:
 ${activeHypotheses.map((h) => `  ${h.id}: ${h.description} [${h.status}, ${(h.winRate * 100).toFixed(0)}% over ${h.tests.length} tests]`).join("\n") || "  None yet"}

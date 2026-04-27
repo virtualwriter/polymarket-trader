@@ -49,6 +49,7 @@ jobs:
                    data/instrument-snapshots.jsonl data/portfolio.json \
                    data/signal-weights.json data/hypotheses.json \
                    data/learning-params.json \
+                   data/blocked-signals.json \
                    data/learning-journal.md; do
             [ -f "$f" ] && git add -f "$f"
           done
