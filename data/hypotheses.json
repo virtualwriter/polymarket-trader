@@ -8266,7 +8266,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "CONFIRMED - BTC broke 77.9k with HYPE correlation restoration creating sustained momentum as predicted | BTC broke above 77.9k target with HYPE funding crash from 10.95% to 1.8% confirming distribution completion - pattern working as predicted | CONFIRMED - BTC momentum acceleration above 77.9k with HYPE correlation restoration and IV compression creates sustained breakout continuation. Framework successfully identified breakout conditions.",
+    "postMortem": "CONFIRMED - BTC broke 77.9k with HYPE correlation restoration creating sustained momentum as predicted | BTC broke above 77.9k target with HYPE funding crash from 10.95% to 1.8% confirming distribution completion - pattern working as predicted | CONFIRMED - BTC momentum acceleration above 77.9k with HYPE correlation restoration and IV compression creates sustained breakout continuation. Framework successfully identified breakout conditions. | Invalidated - BTC momentum above 77.9k failed to sustain with pullback to 77.6k. P/C exhaustion pattern dominated technical momentum signals.",
     "source": "llm"
   },
   {
@@ -10694,7 +10694,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Partially validated - HYPE OI surged to 851M confirming institutional FOMO but now declining to 834M showing profit-taking. Distribution-accumulation cycle continues evolving.",
     "source": "llm"
   },
   {
@@ -10708,6 +10708,84 @@
     "prediction": "BTC breakout acceleration above 80k within 3-5 days as call exhaustion completes",
     "timeframeDays": 5,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-27",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Validated - BTC P/C normalized to 0.399 from extreme levels, correctly signaling momentum resumption potential before current pullback phase.",
+    "source": "llm"
+  },
+  {
+    "id": "H-421",
+    "created": "2026-04-27",
+    "description": "BTC pullback completion signal when drops below 78k after P/C exhaustion above 79k but holds above 77k with funding normalization",
+    "conditions": {
+      "btc_spot": "> 77000",
+      "btc_hl_funding_ann": "< 0.15",
+      "btc_ibit_pc_ratio": "> 0.35"
+    },
+    "prediction": "Technical bounce toward 78-78.5k range within 3-5 days as systematic call unwind completes",
+    "timeframeDays": 5,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-27",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-422",
+    "created": "2026-04-27",
+    "description": "HYPE institutional distribution completion reversal when OI declines below 820M from 957M peak while funding normalizes and spot holds above 41.5",
+    "conditions": {
+      "hype_hl_oi": "< 820000000",
+      "hype_hl_funding_ann": "< 0.15",
+      "hype_spot": "> 41.5"
+    },
+    "prediction": "Distribution exhaustion creates oversold bounce opportunity toward 43-44 range within 5-7 days",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-27",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-423",
+    "created": "2026-04-27",
+    "description": "Macro regime shift impact on crypto momentum when macro_composite drops from BULLISH to NEUTRAL during BTC pullback phases",
+    "conditions": {
+      "macro_composite": "< 52",
+      "btc_spot": "< 78000",
+      "hype_hl_oi": "< 840000000"
+    },
+    "prediction": "Risk-off positioning accelerates crypto pullbacks but creates oversold opportunities when macro stabilizes",
+    "timeframeDays": 10,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-27",

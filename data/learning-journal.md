@@ -2679,3 +2679,23 @@ Revolutionary validation of complete institutional positioning cycle: distributi
 
 ---
 
+### 2026-04-27 07:30 UTC
+
+**Portfolio:** $100.52 total | Cash $91.52 | 9 open | P&L $0.5220 | 63% win rate (72 trades)
+
+**Closed 1 trades:**
+- ❌ BTC long via spot/spot [BTC spot] (LLM_HYPOTHESIS) → llm_decision: $-0.0032 (-0.3%, market -0.0032, funding 0.0000)
+
+**Statistical observations:**
+- [correlation_flip] BTC-GOLD correlation shifted from 0.89 to -0.60
+- [correlation_flip] GOLD-OIL correlation shifted from -0.23 to 0.38
+
+**Blocked signal learning:**
+- Open blocked shadows: 2
+- Resolved blocked shadows: 0 (0 wins / 0 losses)
+
+**LLM analysis:**
+Major evolution in understanding institutional positioning cycles. The HYPE pattern (957M→812M→851M→834M OI) reveals complete cycle: distribution → exhaustion → FOMO re-entry → profit-taking. Key insight: institutional FOMO phase is shorter than distribution phase, creating rapid momentum bursts followed by profit-taking. BTC P/C exhaustion pattern (sub-0.2 levels) correctly predicted pullback acceleration from 79k. Macro regime shift to NEUTRAL amplifying risk-off positioning across crypto. Framework update: institutional positioning cycles are becoming more compressed in timeframe but larger in magnitude, requiring faster execution on reversal signals.
+
+---
+
