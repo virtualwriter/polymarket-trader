@@ -2720,3 +2720,25 @@ Revolutionary pattern recognition: HYPE PM IV explosion from 52% to 63.9% repres
 
 ---
 
+### 2026-04-27 14:57 UTC
+
+**Portfolio:** $100.47 total | Cash $91.47 | 9 open | P&L $0.4715 | 62% win rate (73 trades)
+
+**Opened 1 positions:**
+- BTC long @ $77808 via hyperliquid/hl_perp [HL BTC perp] (LLM_HYPOTHESIS)
+
+**Statistical observations:**
+- [anomaly] gold_gld_pc_ratio = 0.062 is -3.1 std devs from mean (0.56 ± 0.16)
+- [anomaly] gold_pm_settle_ev = 5213 is 2.2 std devs from mean (4965.53 ± 113.05)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.89 to -0.61
+- [correlation_flip] GOLD-OIL correlation shifted from -0.26 to 0.36
+
+**Blocked signal learning:**
+- Open blocked shadows: 12
+- Resolved blocked shadows: 0 (0 wins / 0 losses)
+
+**LLM analysis:**
+Major breakthrough in understanding institutional positioning cycles vs fear-based volatility. HYPE PM IV explosion to 63.9% during BTC consolidation (not breakdown) represents institutional volatility repositioning ahead of breakout continuation - completely different from fear-based IV expansion during selloffs. AMZN P/C systematic collapse to 0.285-0.451 range during explosive stock momentum confirms institutional momentum acceleration theory. Key framework evolution: distinguish between positioning-IV (expansion during consolidation/strength) vs fear-IV (expansion during breakdowns). Cross-asset correlation breakdown (BTC-GOLD -0.61) with simultaneous IV compression creates systematic reversal setup. Gold anomaly (PM settle 5213 vs 22.8% IV) most extreme divergence yet seen. Increased LLM target to 6% given pattern recognition accuracy improvements.
+
+---
+

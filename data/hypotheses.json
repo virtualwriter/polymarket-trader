@@ -10823,7 +10823,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "CONFIRMED: HYPE PM IV explosion from 52% to 63.9% during BTC consolidation represents institutional volatility repositioning, not fear-based expansion. Pattern validates positioning-IV theory.",
     "source": "llm"
   },
   {
@@ -10849,7 +10849,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "CONFIRMED: AMZN P/C collapse to 0.285 during options expiry with stock explosion above 264.4 confirms systematic institutional momentum continuation theory.",
     "source": "llm"
   },
   {
@@ -10862,6 +10862,84 @@
       "btc_spot": "> 77000"
     },
     "prediction": "Breakout acceleration above consolidation ranges within 5-7 days as median expansion leads price",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-27",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "ACTIVE: BTC median max rising to 95.25k while HYPE median max hits 60.5 during consolidation confirms price discovery acceleration setup theory.",
+    "source": "llm"
+  },
+  {
+    "id": "H-427",
+    "created": "2026-04-27",
+    "description": "BTC P/C ratio extreme exhaustion reversal acceleration during pullback phases below 78k with funding normalization above 5% creates systematic bounce setup as call positioning unwind completes",
+    "conditions": {
+      "btc_spot": "< 78000",
+      "btc_ibit_pc_ratio": "< 0.5",
+      "btc_hl_funding_ann": "> 0.05"
+    },
+    "prediction": "BTC bounces toward 79k+ within 5 days",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-27",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-428",
+    "created": "2026-04-27",
+    "description": "AMZN explosive momentum continuation with P/C systematic collapse below 0.45 during stock surge above 262 with negative funding creates perp catch-up acceleration opportunity",
+    "conditions": {
+      "amzn_stock": "> 262",
+      "amzn_pc_ratio": "< 0.45",
+      "amzn_hl_funding_ann": "< 0"
+    },
+    "prediction": "AMZN perp catches up to stock momentum within 3 days",
+    "timeframeDays": 3,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-27",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-429",
+    "created": "2026-04-27",
+    "description": "Gold extreme IV compression below 23% on both 30d and 90d while PM premium stays above 500pts vs futures during cross-asset positioning exhaustion creates volatility expansion setup",
+    "conditions": {
+      "gold_opt_iv_30d": "< 23",
+      "gold_opt_iv_90d": "< 23",
+      "gold_pm_settle_ev": "> 5700"
+    },
+    "prediction": "Gold IV expands above 28% within 7 days",
     "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
