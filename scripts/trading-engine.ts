@@ -200,7 +200,7 @@ interface BlockedSignalShadow {
   status: "open" | "resolved";
   blockedAt: string;
   resolvedAt?: string;
-  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked";
+  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade";
   signalType: string;
   asset: string;
   venue: Signal["venue"];
@@ -1296,6 +1296,14 @@ function blockedSignalObservations(summary: BlockedSignalLearningSummary): strin
       } else {
         notes.push(`${base} missing downside leg is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
       }
+    } else if (row.signalType.startsWith("USER_")) {
+      if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
+        notes.push(`${row.signalType} manual shadow signal is promising: ${row.wouldHaveWon}/${row.resolved} shadows would have won, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
+      } else if (row.wouldHaveLost >= row.wouldHaveWon + 2) {
+        notes.push(`${row.signalType} manual shadow signal is weak: ${row.wouldHaveLost}/${row.resolved} shadows would have lost, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
+      } else {
+        notes.push(`${row.signalType} manual shadow signal is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
+      }
     } else {
       // Trend-blocked shadows
       if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
@@ -2241,7 +2249,9 @@ function writeJournalEntry(
     for (const note of blockedObs) lines.push(`- ${note}`);
     for (const shadow of blockedSummary.recentResolved.slice(-4)) {
       const emoji = shadow.outcome === "win" ? "✅" : "❌";
-      const label = shadow.blockedReason === "iv_downside_leg_untracked" ? "Missing downside leg" : "Blocked";
+      const label = shadow.blockedReason === "iv_downside_leg_untracked"
+        ? "Missing downside leg"
+        : shadow.blockedReason === "manual_shadow_trade" ? "Manual shadow" : "Blocked";
       lines.push(`- ${emoji} ${label}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${shadow.closeReason} (${shadow.pnlPct >= 0 ? "+" : ""}${shadow.pnlPct.toFixed(2)}%)`);
     }
     lines.push("");
@@ -2445,7 +2455,9 @@ async function main() {
     for (const shadow of resolvedBlockedSignals.slice(-6)) {
       const result = shadow.hypotheticalResult!;
       const emoji = result.outcome === "win" ? "✅" : "❌";
-      const shadowLabel = shadow.blockedReason === "iv_downside_leg_untracked" ? "Missing downside leg" : "Blocked";
+      const shadowLabel = shadow.blockedReason === "iv_downside_leg_untracked"
+        ? "Missing downside leg"
+        : shadow.blockedReason === "manual_shadow_trade" ? "Manual shadow" : "Blocked";
       console.log(`    ${emoji} ${shadowLabel}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${result.closeReason}: ${result.pnlPct >= 0 ? "+" : ""}${result.pnlPct.toFixed(2)}%`);
     }
   }

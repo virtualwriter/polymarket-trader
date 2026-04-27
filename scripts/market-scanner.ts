@@ -100,6 +100,7 @@ const POLYMARKET_EVENT_SLUGS = [
   "what-price-will-bitcoin-hit-before-2027",
   "what-price-will-hyperliquid-hit-before-2027",
   "what-will-gold-gc-hit-by-end-of-december",
+  "what-price-will-xauusd-hit-in-april-2026",
   "gc-hit-jun-2026",
   "gc-settle-jun-2026",
   "gc-over-under-jun-2026",
@@ -1992,7 +1993,7 @@ function appendCsvRow(filename: string, headers: string[], row: Record<string, a
 function polymarketAssetForSlug(slug: string): string | null {
   if (slug.includes("bitcoin")) return "BTC";
   if (slug.includes("hyperliquid")) return "HYPE";
-  if (slug.startsWith("gc-") || slug.includes("gold-gc")) return "GOLD";
+  if (slug.startsWith("gc-") || slug.includes("gold-gc") || slug.includes("xauusd")) return "GOLD";
   if (slug.startsWith("cl-")) return "OIL";
   if (slug.includes("amazon")) return "AMZN";
   return null;
