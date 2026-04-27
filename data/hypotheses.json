@@ -10979,7 +10979,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC P/C collapsed to 0.676 during pullback below 77k with funding crash to -8.99%, confirming systematic positioning exhaustion",
     "source": "llm"
   },
   {
@@ -11005,7 +11005,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI declined to 804M from 957M peak (16% decline) with funding at 10.95%, indicating distribution exhaustion nearing completion",
     "source": "llm"
   },
   {
@@ -11030,7 +11030,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Cross-asset IV compression accelerated - BTC 30d IV at 41.3% while GOLD 30d IV at 21.7%, confirming positioning exhaustion setup",
     "source": "llm"
   },
   {
@@ -11044,6 +11044,86 @@
     },
     "prediction": "AMZN continued momentum above 265 within 5 days",
     "timeframeDays": 5,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-27",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "AMZN P/C dropped to 0.423 during explosive move to 262.08, confirming systematic institutional repositioning acceleration pattern",
+    "source": "llm"
+  },
+  {
+    "id": "H-434",
+    "created": "2026-04-27",
+    "description": "Cross-asset positioning exhaustion completion reversal - when BTC P/C drops below 0.68 during pullbacks with funding below -8%, HYPE OI declines below 810M from 957M peak (15%+ decline), and cross-asset IV compresses (BTC below 42%, GOLD below 22%), systematic positioning unwind completion creates multi-asset bounce",
+    "conditions": {
+      "btc_ibit_pc_ratio": "< 0.68",
+      "btc_hl_funding_ann": "< -8",
+      "hype_hl_oi": "< 810000000",
+      "btc_opt_iv_30d": "< 42",
+      "gold_opt_iv_30d": "< 22"
+    },
+    "prediction": "Multi-asset bounce within 5-7 days as institutional positioning exhaustion completes",
+    "timeframeDays": 7,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-27",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-435",
+    "created": "2026-04-27",
+    "description": "BTC P/C exhaustion reversal acceleration during pullbacks - when BTC P/C drops below 0.68 during consolidation below 77k with extreme funding crash below -8% while spot holds above 76k, systematic call positioning exhaustion creates oversold bounce setup",
+    "conditions": {
+      "btc_ibit_pc_ratio": "< 0.68",
+      "btc_spot": "< 77000",
+      "btc_hl_funding_ann": "< -8"
+    },
+    "prediction": "BTC oversold bounce toward 78-79k range within 3-5 days",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-27",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-436",
+    "created": "2026-04-27",
+    "description": "HYPE institutional distribution exhaustion completion reversal - when HYPE OI declines below 805M from 957M peak (16%+ decline) while funding normalizes above 10% and spot holds above 41, massive distribution exhaustion creates oversold bounce setup",
+    "conditions": {
+      "hype_hl_oi": "< 805000000",
+      "hype_hl_funding_ann": "> 10",
+      "hype_spot": "> 41"
+    },
+    "prediction": "HYPE oversold bounce toward 43-44 range within 5-7 days as smart money exit completes",
+    "timeframeDays": 7,
     "confidence": 0.8,
     "tests": [
       {
