@@ -191,6 +191,7 @@ interface Signal {
   contractHint?: {
     preferredEventSlug?: string;
     preferredDirection?: "above" | "below";
+    allowDirectionFallback?: boolean;
   };
 }
 
@@ -715,7 +716,9 @@ function selectPolymarketContract(
   const eventOrder = [...rankedEvents, ...extraEvents];
 
   const preferredDirection = hint?.preferredDirection ?? inferPolymarketPreferredDirection(direction);
-  const directionOrder: Array<"above" | "below"> = preferredDirection === "above" ? ["above", "below"] : ["below", "above"];
+  const directionOrder: Array<"above" | "below"> = hint?.allowDirectionFallback === false
+    ? [preferredDirection]
+    : preferredDirection === "above" ? ["above", "below"] : ["below", "above"];
 
   for (const event of eventOrder) {
     const live = event.contracts.filter((c) => c.yesPrice > 0 && c.yesPrice < 1);
@@ -1155,7 +1158,7 @@ function recordIVDownsideLegShadow(
   const mirrorSignal: Signal = {
     ...signal,
     type: shadowSignalType,
-    contractHint: { preferredDirection: "below" },
+    contractHint: { preferredDirection: "below", allowDirectionFallback: false },
   };
   const position = buildPositionFromSignal(mirrorSignal, latestRow, latestSnapshot);
   if (!position) return;
