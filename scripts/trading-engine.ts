@@ -28,12 +28,25 @@ const DEMOTE_THRESHOLD = 0.45;
 const KILL_THRESHOLD = 0.30;
 const WEIGHT_DECAY = 0.85;
 const LOOKBACK_HOURS = 24;
-const LLM_TRADE_TARGET_PCT = 5;
-const LLM_TRADE_STOP_PCT = 5;
-const MOMENTUM_LONG_TARGET_PCT = 6;
-const MOMENTUM_LONG_STOP_PCT = 5;
 const NO_LLM = process.argv.includes("--no-llm");
 const DRY_RUN = process.argv.includes("--dry-run");
+
+const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
+  PM_IV_GT_OPT_IV: { targetPct: 8, stopPct: 5 },
+  OPT_IV_GT_PM_IV: { targetPct: 4, stopPct: 4 },
+  FUNDING_EXTREME_LONG: { targetPct: 2.5, stopPct: 2.5 },
+  FUNDING_EXTREME_SHORT: { targetPct: 2.5, stopPct: 2.5 },
+  PM_EV_ABOVE_SPOT: { targetPct: 4, stopPct: 4 },
+  PM_EV_BELOW_SPOT: { targetPct: 3, stopPct: 3.5 },
+  PC_RATIO_EXTREME_HIGH: { targetPct: 2, stopPct: 2 },
+  PC_RATIO_EXTREME_LOW: { targetPct: 2, stopPct: 2 },
+  BASIS_PREMIUM: { targetPct: 1.5, stopPct: 1.5 },
+  BASIS_DISCOUNT: { targetPct: 1.5, stopPct: 1.5 },
+  MACRO_MOMENTUM_UP: { targetPct: 4, stopPct: 3 },
+  MACRO_MOMENTUM_DOWN: { targetPct: 4, stopPct: 3 },
+  LLM_HYPOTHESIS: { targetPct: 5, stopPct: 3.5 },
+  MOMENTUM_LONG: { targetPct: 6, stopPct: 3.5 },
+};
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -115,12 +128,18 @@ interface SignalWeight {
   perAsset: Record<string, PerAssetSignalStats>;
 }
 
+interface SignalRiskParams {
+  targetPct: number;
+  stopPct: number;
+}
+
 interface LearningParams {
   macroMomentum24hThresholdPts: number;
   contrarianTrendMarginPct: number;
   positiveMomentum24hPct: number;
   llmTradeExpiryDays: number;
   momentumLongExpiryDays: number;
+  signalRisk: Record<string, SignalRiskParams>;
   updatedAt: string;
 }
 
@@ -480,8 +499,21 @@ function defaultLearningParams(): LearningParams {
     positiveMomentum24hPct: 1.5,
     llmTradeExpiryDays: 14,
     momentumLongExpiryDays: 21,
+    signalRisk: DEFAULT_SIGNAL_RISK,
     updatedAt: new Date().toISOString(),
   };
+}
+
+function normalizeSignalRisk(raw: Partial<LearningParams>["signalRisk"]): Record<string, SignalRiskParams> {
+  const normalized: Record<string, SignalRiskParams> = {};
+  for (const [signalType, defaults] of Object.entries(DEFAULT_SIGNAL_RISK)) {
+    const candidate = raw?.[signalType];
+    normalized[signalType] = {
+      targetPct: typeof candidate?.targetPct === "number" ? candidate.targetPct : defaults.targetPct,
+      stopPct: typeof candidate?.stopPct === "number" ? candidate.stopPct : defaults.stopPct,
+    };
+  }
+  return normalized;
 }
 
 function loadLearningParams(): LearningParams {
@@ -493,6 +525,7 @@ function loadLearningParams(): LearningParams {
     positiveMomentum24hPct: typeof raw.positiveMomentum24hPct === "number" ? raw.positiveMomentum24hPct : defaults.positiveMomentum24hPct,
     llmTradeExpiryDays: typeof raw.llmTradeExpiryDays === "number" ? raw.llmTradeExpiryDays : defaults.llmTradeExpiryDays,
     momentumLongExpiryDays: typeof raw.momentumLongExpiryDays === "number" ? raw.momentumLongExpiryDays : defaults.momentumLongExpiryDays,
+    signalRisk: normalizeSignalRisk(raw.signalRisk),
     updatedAt: typeof raw.updatedAt === "string" ? raw.updatedAt : defaults.updatedAt,
   };
 }
@@ -558,6 +591,10 @@ function weightForSignalAsset(
   if (!weight || !weight.enabled) return null;
   if (weight.perAsset?.[asset]?.disabled) return null;
   return weight;
+}
+
+function riskForSignal(learningParams: LearningParams, signalType: string): SignalRiskParams {
+  return learningParams.signalRisk[signalType] ?? DEFAULT_SIGNAL_RISK[signalType] ?? { targetPct: 3, stopPct: 3 };
 }
 
 function getAssetPrice(row: SnapshotRow, asset: string): number | null {
@@ -1079,6 +1116,7 @@ function recordBlockedSignalShadow(
       positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
       llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
       momentumLongExpiryDays: learningParams.momentumLongExpiryDays,
+      signalRisk: learningParams.signalRisk,
     },
     position,
   });
@@ -1139,6 +1177,7 @@ function recordIVDownsideLegShadow(
       positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
       llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
       momentumLongExpiryDays: learningParams.momentumLongExpiryDays,
+      signalRisk: learningParams.signalRisk,
     },
     position,
   });
@@ -1288,13 +1327,15 @@ function finalizeSignal(
 
   const next = { ...signal };
   if (next.type === "LLM_HYPOTHESIS") {
-    next.targetPct = Math.max(next.targetPct, LLM_TRADE_TARGET_PCT);
-    next.stopPct = Math.max(next.stopPct, LLM_TRADE_STOP_PCT);
+    const llmRisk = riskForSignal(learningParams, "LLM_HYPOTHESIS");
+    next.targetPct = Math.max(next.targetPct, llmRisk.targetPct);
+    next.stopPct = Math.min(next.stopPct, llmRisk.stopPct);
     next.expiryDays = Math.max(next.expiryDays, learningParams.llmTradeExpiryDays);
   }
   if (isMomentumLongSignal(next, rows, learningParams)) {
-    next.targetPct = Math.max(next.targetPct, MOMENTUM_LONG_TARGET_PCT);
-    next.stopPct = Math.max(next.stopPct, MOMENTUM_LONG_STOP_PCT);
+    const momentumRisk = riskForSignal(learningParams, "MOMENTUM_LONG");
+    next.targetPct = Math.max(next.targetPct, momentumRisk.targetPct);
+    next.stopPct = Math.min(next.stopPct, momentumRisk.stopPct);
     next.expiryDays = Math.max(next.expiryDays, learningParams.momentumLongExpiryDays);
   }
   return next;
@@ -1343,11 +1384,12 @@ function generateSignals(
       if (ratio > 1.3 && pmIvGtWeight) {
         const strength = Math.min(1, (ratio - 1.3) / 0.7);
         const w = pmIvGtWeight;
+        const risk = riskForSignal(learningParams, "PM_IV_GT_OPT_IV");
         const rawSignalPmGt: Signal = {
           type: "PM_IV_GT_OPT_IV", asset: a.key, venue: "polymarket", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} PM IV (${pmIv.toFixed(1)}%) >> Options IV (${optIv.toFixed(1)}%), ratio ${ratio.toFixed(2)}. PM overpricing vol → sell PM upside.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7,
+          hypothesisId: null, entryPrice: spot, targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 7,
           contractHint: { preferredDirection: "above" },
         };
         const signal = finalizeSignal(rawSignalPmGt, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
@@ -1360,11 +1402,12 @@ function generateSignals(
       if (ratio < 0.7 && optIvGtWeight) {
         const strength = Math.min(1, (0.7 - ratio) / 0.3);
         const w = optIvGtWeight;
+        const risk = riskForSignal(learningParams, "OPT_IV_GT_PM_IV");
         const rawSignalOptGt: Signal = {
           type: "OPT_IV_GT_PM_IV", asset: a.key, venue: "polymarket", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} Options IV (${optIv.toFixed(1)}%) >> PM IV (${pmIv.toFixed(1)}%), ratio ${ratio.toFixed(2)}. PM underpricing vol → buy PM upside.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 7,
+          hypothesisId: null, entryPrice: spot, targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 7,
           contractHint: { preferredDirection: "above" },
         };
         const signal = finalizeSignal(rawSignalOptGt, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
@@ -1381,12 +1424,13 @@ function generateSignals(
       if (funding > 15 && fundingLongWeight) {
         const strength = Math.min(1, (funding - 15) / 35);
         const w = fundingLongWeight;
+        const risk = riskForSignal(learningParams, "FUNDING_EXTREME_LONG");
         const perpEntry = getHyperliquidPerpPrice(latest, a.key) ?? spot;
         const signal = finalizeSignal({
           type: "FUNDING_EXTREME_LONG", asset: a.key, venue: "hyperliquid", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL funding ${funding.toFixed(1)}% annualized — crowded longs. Fade.`,
-          hypothesisId: null, entryPrice: perpEntry, targetPct: 2, stopPct: 4, expiryDays: 3, leverage: 1,
+          hypothesisId: null, entryPrice: perpEntry, targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 3, leverage: 1,
         }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
@@ -1394,12 +1438,13 @@ function generateSignals(
       if (funding < -15 && fundingShortWeight) {
         const strength = Math.min(1, (-funding - 15) / 35);
         const w = fundingShortWeight;
+        const risk = riskForSignal(learningParams, "FUNDING_EXTREME_SHORT");
         const perpEntry = getHyperliquidPerpPrice(latest, a.key) ?? spot;
         const signal = finalizeSignal({
           type: "FUNDING_EXTREME_SHORT", asset: a.key, venue: "hyperliquid", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL funding ${funding.toFixed(1)}% annualized — crowded shorts. Buy.`,
-          hypothesisId: null, entryPrice: perpEntry, targetPct: 2, stopPct: 4, expiryDays: 3, leverage: 1,
+          hypothesisId: null, entryPrice: perpEntry, targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 3, leverage: 1,
         }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
@@ -1412,11 +1457,12 @@ function generateSignals(
       if (divergencePct > 8 && pmEvAboveWeight) {
         const strength = Math.min(1, (divergencePct - 8) / 20);
         const w = pmEvAboveWeight;
+        const risk = riskForSignal(learningParams, "PM_EV_ABOVE_SPOT");
         const signal = finalizeSignal({
           type: "PM_EV_ABOVE_SPOT", asset: a.key, venue: "spot", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} PM EV ($${pmEv.toFixed(0)}) is ${divergencePct.toFixed(1)}% above spot ($${spot.toFixed(0)}). Market expects upside.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 4, stopPct: 6, expiryDays: 14,
+          hypothesisId: null, entryPrice: spot, targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 14,
         }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
@@ -1424,11 +1470,12 @@ function generateSignals(
       if (divergencePct < -5 && pmEvBelowWeight) {
         const strength = Math.min(1, (-divergencePct - 5) / 15);
         const w = pmEvBelowWeight;
+        const risk = riskForSignal(learningParams, "PM_EV_BELOW_SPOT");
         const signal = finalizeSignal({
           type: "PM_EV_BELOW_SPOT", asset: a.key, venue: "spot", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} PM EV ($${pmEv.toFixed(0)}) is ${divergencePct.toFixed(1)}% below spot ($${spot.toFixed(0)}). Market expects downside.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 3, stopPct: 5, expiryDays: 14,
+          hypothesisId: null, entryPrice: spot, targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 14,
         }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
@@ -1440,11 +1487,12 @@ function generateSignals(
       if (pcRatio > 1.2 && pcHighWeight) {
         const strength = Math.min(1, (pcRatio - 1.2) / 0.8);
         const w = pcHighWeight;
+        const risk = riskForSignal(learningParams, "PC_RATIO_EXTREME_HIGH");
         const signal = finalizeSignal({
           type: "PC_RATIO_EXTREME_HIGH", asset: a.key, venue: "spot", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy put buying → contrarian long.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5,
+          hypothesisId: null, entryPrice: spot, targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 5,
         }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
@@ -1452,11 +1500,12 @@ function generateSignals(
       if (pcRatio < 0.5 && pcLowWeight) {
         const strength = Math.min(1, (0.5 - pcRatio) / 0.3);
         const w = pcLowWeight;
+        const risk = riskForSignal(learningParams, "PC_RATIO_EXTREME_LOW");
         const signal = finalizeSignal({
           type: "PC_RATIO_EXTREME_LOW", asset: a.key, venue: "spot", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} P/C ratio ${pcRatio.toFixed(2)} — heavy call buying → contrarian short.`,
-          hypothesisId: null, entryPrice: spot, targetPct: 2, stopPct: 3, expiryDays: 5,
+          hypothesisId: null, entryPrice: spot, targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 5,
         }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
@@ -1470,11 +1519,12 @@ function generateSignals(
       if (basisPct > 1.5 && basisPremiumWeight) {
         const strength = Math.min(1, (basisPct - 1.5) / 3);
         const w = basisPremiumWeight;
+        const risk = riskForSignal(learningParams, "BASIS_PREMIUM");
         const signal = finalizeSignal({
           type: "BASIS_PREMIUM", asset: a.key, venue: "hyperliquid", direction: "short",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL perp ($${hlPerp.toFixed(2)}) at ${basisPct.toFixed(1)}% premium to stock ($${stockSpot.toFixed(2)}). Basis convergence → short perp.`,
-          hypothesisId: null, entryPrice: hlPerp, targetPct: 1.5, stopPct: 3, expiryDays: 5, leverage: 1,
+          hypothesisId: null, entryPrice: hlPerp, targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 5, leverage: 1,
         }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
@@ -1482,11 +1532,12 @@ function generateSignals(
       if (basisPct < -1.5 && basisDiscountWeight) {
         const strength = Math.min(1, (-basisPct - 1.5) / 3);
         const w = basisDiscountWeight;
+        const risk = riskForSignal(learningParams, "BASIS_DISCOUNT");
         const signal = finalizeSignal({
           type: "BASIS_DISCOUNT", asset: a.key, venue: "hyperliquid", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL perp ($${hlPerp.toFixed(2)}) at ${basisPct.toFixed(1)}% discount to stock ($${stockSpot.toFixed(2)}). Basis convergence → long perp.`,
-          hypothesisId: null, entryPrice: hlPerp, targetPct: 1.5, stopPct: 3, expiryDays: 5, leverage: 1,
+          hypothesisId: null, entryPrice: hlPerp, targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 5, leverage: 1,
         }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
@@ -1500,12 +1551,13 @@ function generateSignals(
     if (macroShift.shift > threshold && macroUpWeight) {
       const strength = Math.min(1, (macroShift.shift - threshold) / 12);
       const w = macroUpWeight;
+      const risk = riskForSignal(learningParams, "MACRO_MOMENTUM_UP");
       const signal = finalizeSignal({
         type: "MACRO_MOMENTUM_UP", asset: "BTC", venue: "spot", direction: "long",
         strength, confidence: strength * w.weight,
         thesis: `Macro composite rose +${macroShift.shift.toFixed(1)} pts over ${LOOKBACK_HOURS}h (${macroShift.previous.toFixed(1)}→${macroShift.current.toFixed(1)}). Risk-on momentum → long BTC.`,
         hypothesisId: null, entryPrice: num(rows[rows.length - 1].btc_spot) ?? 0,
-        targetPct: 3, stopPct: 5, expiryDays: 7,
+        targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 7,
       }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
       if (signal) signals.push(signal);
     }
@@ -1513,12 +1565,13 @@ function generateSignals(
     if (macroShift.shift < -threshold && macroDownWeight) {
       const strength = Math.min(1, (-macroShift.shift - threshold) / 12);
       const w = macroDownWeight;
+      const risk = riskForSignal(learningParams, "MACRO_MOMENTUM_DOWN");
       const signal = finalizeSignal({
         type: "MACRO_MOMENTUM_DOWN", asset: "BTC", venue: "spot", direction: "short",
         strength, confidence: strength * w.weight,
         thesis: `Macro composite fell ${macroShift.shift.toFixed(1)} pts over ${LOOKBACK_HOURS}h (${macroShift.previous.toFixed(1)}→${macroShift.current.toFixed(1)}). Risk-off momentum → short BTC.`,
         hypothesisId: null, entryPrice: num(rows[rows.length - 1].btc_spot) ?? 0,
-        targetPct: 3, stopPct: 5, expiryDays: 7,
+        targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 7,
       }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
       if (signal) signals.push(signal);
     }
@@ -2043,6 +2096,10 @@ IMPORTANT RULES:
   - positiveMomentum24hPct: 0 to 10
   - llmTradeExpiryDays: 3 to 30
   - momentumLongExpiryDays: 3 to 45
+  - signalRisk.<signal>.targetPct: 0.5 to 15
+  - signalRisk.<signal>.stopPct: 0.5 to 10
+- You may update signalRisk when realized wins are too small, losses are too large, or shadow/blocked learning shows a better payoff shape.
+- Keep signalRisk updates incremental and explain them in journalEntry.
 
 Respond with ONLY valid JSON in this exact format:
 {
@@ -2065,7 +2122,11 @@ Respond with ONLY valid JSON in this exact format:
     "contrarianTrendMarginPct": 0.5,
     "positiveMomentum24hPct": 1.5,
     "llmTradeExpiryDays": 14,
-    "momentumLongExpiryDays": 21
+    "momentumLongExpiryDays": 21,
+    "signalRisk": {
+      "FUNDING_EXTREME_SHORT": {"targetPct": 2.5, "stopPct": 2.5},
+      "LLM_HYPOTHESIS": {"targetPct": 5, "stopPct": 3.5}
+    }
   },
   "journalEntry": "Key observations and lessons from today's analysis..."
 }`;
@@ -2267,7 +2328,7 @@ function applyLearningParamUpdates(
   const next = { ...current };
   const notes: string[] = [];
   const candidates: Array<{
-    key: keyof Omit<LearningParams, "updatedAt">;
+    key: "macroMomentum24hThresholdPts" | "contrarianTrendMarginPct" | "positiveMomentum24hPct" | "llmTradeExpiryDays" | "momentumLongExpiryDays";
     min: number;
     max: number;
     digits: number;
@@ -2288,8 +2349,28 @@ function applyLearningParamUpdates(
       : Number(bounded.toFixed(candidate.digits));
     if (normalized !== next[candidate.key]) {
       notes.push(`${candidate.key}: ${next[candidate.key]} -> ${normalized}`);
-      next[candidate.key] = normalized as LearningParams[typeof candidate.key];
+      next[candidate.key] = normalized;
     }
+  }
+
+  if (updates.signalRisk && typeof updates.signalRisk === "object") {
+    const nextSignalRisk = { ...next.signalRisk };
+    for (const [signalType, proposed] of Object.entries(updates.signalRisk)) {
+      if (!DEFAULT_SIGNAL_RISK[signalType] || !proposed) continue;
+      const currentRisk = nextSignalRisk[signalType] ?? DEFAULT_SIGNAL_RISK[signalType];
+      const nextRisk = { ...currentRisk };
+      if (typeof proposed.targetPct === "number" && !Number.isNaN(proposed.targetPct)) {
+        nextRisk.targetPct = Number(clamp(proposed.targetPct, 0.5, 15).toFixed(2));
+      }
+      if (typeof proposed.stopPct === "number" && !Number.isNaN(proposed.stopPct)) {
+        nextRisk.stopPct = Number(clamp(proposed.stopPct, 0.5, 10).toFixed(2));
+      }
+      if (nextRisk.targetPct !== currentRisk.targetPct || nextRisk.stopPct !== currentRisk.stopPct) {
+        notes.push(`${signalType} risk: +${currentRisk.targetPct}/-${currentRisk.stopPct} -> +${nextRisk.targetPct}/-${nextRisk.stopPct}`);
+        nextSignalRisk[signalType] = nextRisk;
+      }
+    }
+    next.signalRisk = nextSignalRisk;
   }
 
   if (notes.length > 0) next.updatedAt = new Date().toISOString();
@@ -2326,6 +2407,7 @@ async function main() {
 
   console.log(`  Portfolio: $${portfolio.cash.toFixed(2)} cash, ${portfolio.positions.length} open positions, $${portfolio.totalRealizedPnl.toFixed(4)} realized P&L`);
   console.log(`  Learnable params: macro24h>${learningParams.macroMomentum24hThresholdPts.toFixed(1)}, trend>${learningParams.contrarianTrendMarginPct.toFixed(2)}%, momentum>${learningParams.positiveMomentum24hPct.toFixed(2)}%, llm expiry=${learningParams.llmTradeExpiryDays}d, momentum expiry=${learningParams.momentumLongExpiryDays}d`);
+  console.log(`  Risk params: HL funding +${learningParams.signalRisk.FUNDING_EXTREME_SHORT.targetPct}/-${learningParams.signalRisk.FUNDING_EXTREME_SHORT.stopPct}, LLM +${learningParams.signalRisk.LLM_HYPOTHESIS.targetPct}/-${learningParams.signalRisk.LLM_HYPOTHESIS.stopPct}, PM overvol +${learningParams.signalRisk.PM_IV_GT_OPT_IV.targetPct}/-${learningParams.signalRisk.PM_IV_GT_OPT_IV.stopPct}`);
   for (const note of migrationNotes) console.log(`  ${note}`);
 
   // Regime check
@@ -2454,13 +2536,14 @@ async function main() {
             ? getHyperliquidPerpPrice(latestRow, lt.asset)
             : getAssetPrice(latestRow, lt.asset);
         if (!price) continue;
+        const risk = riskForSignal(learningParams, "LLM_HYPOTHESIS");
         const signal = finalizeSignal({
           type: "LLM_HYPOTHESIS", asset: lt.asset,
           venue: lt.venue as Signal["venue"], direction: lt.direction,
           strength: 0.5, confidence: 0.4,
           thesis: `[LLM] ${lt.thesis}`,
           hypothesisId: null, entryPrice: price,
-          targetPct: 3, stopPct: 5, expiryDays: 7,
+          targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 7,
           leverage: lt.venue === "hyperliquid" ? 1 : undefined,
           contractHint: lt.venue === "polymarket"
             ? { preferredDirection: inferPolymarketPreferredDirection(lt.direction, "LLM_HYPOTHESIS", lt.thesis) }

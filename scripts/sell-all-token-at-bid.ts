@@ -5,7 +5,7 @@
 import { config } from "dotenv";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
-import { ClobClient, ApiKeyCreds } from "@polymarket/clob-client";
+import { ClobClient, ApiKeyCreds, Side, type TickSize } from "@polymarket/clob-client";
 import { ethers } from "ethers";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -20,7 +20,7 @@ if (!PK) {
 
 const CTF = "0x4D97DCd97eC945f40cF65F87097ACe5EA0476045";
 const tokenId = process.argv[2];
-const tickSize = process.argv[3] || "0.001";
+const tickSize = (process.argv[3] || "0.001") as TickSize;
 
 if (!tokenId) {
   console.error("Usage: npx tsx scripts/sell-all-token-at-bid.ts <tokenId> [tickSize]");
@@ -67,7 +67,7 @@ console.log(`On-chain balance: ${exact} shares → selling ${size} @ best bid ${
 console.log(`~Gross USDC: $${(size * bestBid).toFixed(2)} (before fees)`);
 
 const resp = await client.createAndPostOrder(
-  { tokenID: tokenId, price: bestBid, size, side: "SELL" },
+  { tokenID: tokenId, price: bestBid, size, side: Side.SELL },
   { tickSize, negRisk: false }
 );
 console.log("Response:", JSON.stringify(resp, null, 2));

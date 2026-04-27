@@ -85,6 +85,7 @@ interface CrossSportComparison {
   avgRiskAdjustedReturn: number;
   avgDefenseFrequency: number;
   avgQuotingPct: number;
+  edgeBps: number;
   auctionLikenessScore: number;
 }
 
@@ -314,6 +315,7 @@ function computeCrossSportComparison(): CrossSportComparison[] {
       avgDefenseFrequency: Math.round(avgDefense * 10) / 10,
       avgQuotingPct: Math.round(avgQuoting * 1000) / 10,
       edgeBps: Math.round(edgeRatio * 10) / 10,
+      auctionLikenessScore: 0,
     });
   }
 

@@ -20,7 +20,7 @@ export interface SettlementConfig {
  * sending settlement transactions.
  */
 export class SettlementBatcher {
-  private provider: ethers.JsonRpcProvider;
+  private provider: ethers.providers.JsonRpcProvider;
   private wallet: ethers.Wallet;
   private exchange: ethers.Contract;
   private engine: MatchingEngine;
@@ -31,7 +31,7 @@ export class SettlementBatcher {
   constructor(engine: MatchingEngine, config: SettlementConfig) {
     this.engine = engine;
     this.config = config;
-    this.provider = new ethers.JsonRpcProvider(config.rpcUrl);
+    this.provider = new ethers.providers.JsonRpcProvider(config.rpcUrl);
     this.wallet = new ethers.Wallet(config.operatorPrivateKey, this.provider);
     this.exchange = new ethers.Contract(config.exchangeAddress, CTF_EXCHANGE_ABI, this.wallet);
   }
@@ -101,7 +101,7 @@ export class SettlementBatcher {
     }
 
     const toOnChainOrder = (order: import("../types.js").Order) => ({
-      maker: ethers.getAddress(order.maker),
+      maker: ethers.utils.getAddress(order.maker),
       tokenId: BigInt(order.tokenId || "0"),
       makerAmount: order.makerAmount,
       takerAmount: order.takerAmount,

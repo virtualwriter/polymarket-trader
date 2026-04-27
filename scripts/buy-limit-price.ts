@@ -5,7 +5,7 @@
 import { config } from "dotenv";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
-import { ClobClient, ApiKeyCreds } from "@polymarket/clob-client";
+import { ClobClient, ApiKeyCreds, Side, type TickSize } from "@polymarket/clob-client";
 import { ethers } from "ethers";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -21,7 +21,7 @@ if (!PK) {
 const tokenId = process.argv[2];
 const price = parseFloat(process.argv[3] || "0");
 const usd = parseFloat(process.argv[4] || "0");
-const tickSize = process.argv[5] || "0.001";
+const tickSize = (process.argv[5] || "0.001") as TickSize;
 
 if (!tokenId || !(price > 0 && price < 1) || !usd) {
   console.error(
@@ -47,7 +47,7 @@ console.log(
 );
 
 const resp = await client.createAndPostOrder(
-  { tokenID: tokenId, price, size, side: "BUY" },
+  { tokenID: tokenId, price, size, side: Side.BUY },
   { tickSize, negRisk: false }
 );
 console.log("Response:", JSON.stringify(resp, null, 2));

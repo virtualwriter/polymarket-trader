@@ -16,8 +16,7 @@ const SELL_QTY = 17.27;
 async function main() {
   const polyClient = new PolymarketClient({
     privateKey: process.env.PRIVATE_KEY!,
-    rpcUrl: process.env.RPC_URL || "https://polygon-rpc.com",
-    clobUrl: process.env.CLOB_URL || "https://clob.polymarket.com",
+    host: process.env.CLOB_URL || "https://clob.polymarket.com",
     dryRun: false,
   });
 

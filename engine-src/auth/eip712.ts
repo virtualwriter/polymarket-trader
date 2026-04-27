@@ -53,7 +53,7 @@ export function verifyL1Auth(
   signature: string,
 ): boolean {
   try {
-    const recovered = ethers.verifyTypedData(EIP712_DOMAIN, AUTH_TYPES, { address, timestamp, nonce, message }, signature);
+    const recovered = ethers.utils.verifyTypedData(EIP712_DOMAIN, AUTH_TYPES, { address, timestamp, nonce, message }, signature);
     return recovered.toLowerCase() === address.toLowerCase();
   } catch {
     return false;
@@ -127,7 +127,7 @@ export function verifyOrderSignature(order: {
       side: order.side,
     };
 
-    const recovered = ethers.verifyTypedData(EIP712_DOMAIN, ORDER_TYPES, orderData, order.signature);
+    const recovered = ethers.utils.verifyTypedData(EIP712_DOMAIN, ORDER_TYPES, orderData, order.signature);
     return recovered.toLowerCase() === order.maker.toLowerCase();
   } catch {
     return false;

@@ -163,7 +163,7 @@ async function hydrateMarketsFromChain(markets: Market[]): Promise<void> {
     return;
   }
 
-  const provider = new ethers.JsonRpcProvider(rpcUrl);
+  const provider = new ethers.providers.JsonRpcProvider(rpcUrl);
   const adapter = new ethers.Contract(adapterAddress, UMA_ADAPTER_ABI, provider);
   const ct = new ethers.Contract(ctAddress, CONDITIONAL_TOKENS_ABI, provider);
 
@@ -174,7 +174,7 @@ async function hydrateMarketsFromChain(markets: Market[]): Promise<void> {
       const onChain = await adapter.getMarket(market.questionId);
       const conditionId: string = onChain.conditionId;
 
-      if (conditionId === ethers.ZeroHash) {
+      if (conditionId === ethers.constants.HashZero) {
         console.warn(`[Hydrate] Lot ${market.lotNumber}: not initialized on-chain`);
         continue;
       }
@@ -210,7 +210,7 @@ function loadMarkets(): Market[] {
 
   const markets: Market[] = raw.lots.map((lot) => {
     const id = `lot-${lot.lotNumber}`;
-    const questionId = ethers.keccak256(ethers.toUtf8Bytes(`christies-24181-CKS-lot-${lot.lotNumber}`));
+    const questionId = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(`christies-24181-CKS-lot-${lot.lotNumber}`));
     return {
       id,
       questionId,
@@ -237,7 +237,7 @@ function loadMarkets(): Market[] {
   // Total-value aggregate market
   const totalHigh = raw.lots.reduce((s, l) => s + Number(l.highEstimate), 0);
   const totalLow = raw.lots.reduce((s, l) => s + Number(l.lowEstimate), 0);
-  const totalQid = ethers.keccak256(ethers.toUtf8Bytes("christies-24181-CKS-total-value"));
+  const totalQid = ethers.utils.keccak256(ethers.utils.toUtf8Bytes("christies-24181-CKS-total-value"));
   markets.push({
     id: "total-value",
     questionId: totalQid,

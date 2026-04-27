@@ -5,8 +5,10 @@
  * placement, cancellation, and balance checks. Wraps @polymarket/clob-client.
  */
 
-import { ClobClient, ApiKeyCreds } from "@polymarket/clob-client";
+import { ClobClient, ApiKeyCreds, Side, type TickSize } from "@polymarket/clob-client";
 import { ethers } from "ethers";
+
+const DEFAULT_TICK_SIZE: TickSize = "0.01";
 
 export interface LiveOrderRequest {
   tokenId: string;
@@ -186,7 +188,7 @@ export class PolymarketClient {
           tokenID: req.tokenId,
           price: req.price,
           size: req.size,
-          side: req.side,
+          side: req.side === "BUY" ? Side.BUY : Side.SELL,
           expiration: req.expiration,
         }, {
           tickSize,
@@ -287,12 +289,12 @@ export class PolymarketClient {
   /**
    * Get the tick size for a token (determines price precision).
    */
-  async getTickSize(tokenId: string): Promise<string> {
+  async getTickSize(tokenId: string): Promise<TickSize> {
     try {
       const resp = await this.client.getTickSize(tokenId);
-      return (resp as any) ?? "0.01";
+      return (resp as TickSize | null) ?? DEFAULT_TICK_SIZE;
     } catch {
-      return "0.01";
+      return DEFAULT_TICK_SIZE;
     }
   }
 

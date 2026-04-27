@@ -1,7 +1,7 @@
 import { config } from "dotenv";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
-import { ClobClient, ApiKeyCreds } from "@polymarket/clob-client";
+import { ClobClient, ApiKeyCreds, Side } from "@polymarket/clob-client";
 import { ethers } from "ethers";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -70,9 +70,9 @@ try {
     tokenID: YES_TOKEN,
     price: 0.40,
     size: sellAmt,
-    side: "SELL",
+    side: Side.SELL,
   }, {
-    tickSize: tickSize as string,
+    tickSize,
     negRisk: false,
   });
   const oid = (resp as any)?.orderID ?? (resp as any)?.id ?? null;
@@ -91,8 +91,8 @@ try {
         tokenID: YES_TOKEN,
         price: 0.40,
         size: sz,
-        side: "SELL",
-      }, { tickSize: tickSize as string, negRisk: false });
+        side: Side.SELL,
+      }, { tickSize, negRisk: false });
       const id2 = (r2 as any)?.orderID ?? (r2 as any)?.id ?? null;
       if (id2) {
         console.log(`SELL ${sz} → OK! ${id2}`);

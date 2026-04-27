@@ -1,7 +1,7 @@
 import { config } from "dotenv";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
-import { ClobClient, ApiKeyCreds } from "@polymarket/clob-client";
+import { ClobClient, ApiKeyCreds, Side } from "@polymarket/clob-client";
 import { ethers } from "ethers";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -37,7 +37,7 @@ if (mode === "book") {
     tokenID: NO_TOKEN,
     price,
     size,
-    side: "BUY",
+    side: Side.BUY,
   }, { tickSize: "0.01", negRisk: false });
   console.log("Response:", JSON.stringify(resp, null, 2));
 }

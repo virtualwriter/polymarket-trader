@@ -6,7 +6,7 @@
 import { config } from "dotenv";
 import { resolve, dirname } from "path";
 import { fileURLToPath } from "url";
-import { ClobClient, ApiKeyCreds } from "@polymarket/clob-client";
+import { ClobClient, ApiKeyCreds, Side } from "@polymarket/clob-client";
 import { ethers } from "ethers";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -90,9 +90,9 @@ async function main() {
       tokenID: YES_TOKEN_ID,
       price: sellPrice,
       size: sellSize,
-      side: "SELL",
+      side: Side.SELL,
     }, {
-      tickSize: tickSize as string,
+      tickSize,
       negRisk: false,
     });
 
