@@ -32,7 +32,7 @@ const NO_LLM = process.argv.includes("--no-llm");
 const DRY_RUN = process.argv.includes("--dry-run");
 
 const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
-  PM_IV_GT_OPT_IV: { targetPct: 8, stopPct: 5 },
+  PM_IV_GT_OPT_IV: { targetPct: null, stopPct: 5 },
   OPT_IV_GT_PM_IV: { targetPct: 4, stopPct: 4 },
   FUNDING_EXTREME_LONG: { targetPct: 2.5, stopPct: 2.5 },
   FUNDING_EXTREME_SHORT: { targetPct: 2.5, stopPct: 2.5 },
@@ -63,7 +63,7 @@ interface Position {
   signalType: string;
   hypothesisId: string | null;
   thesis: string;
-  targetPct: number;
+  targetPct: number | null;
   stopPct: number;
   expiryDate: string;
   instrumentType?: "spot" | "hl_perp" | "pm_yes" | "pm_no" | "legacy_asset";
@@ -129,7 +129,7 @@ interface SignalWeight {
 }
 
 interface SignalRiskParams {
-  targetPct: number;
+  targetPct: number | null;
   stopPct: number;
 }
 
@@ -184,7 +184,7 @@ interface Signal {
   thesis: string;
   hypothesisId: string | null;
   entryPrice: number;
-  targetPct: number;
+  targetPct: number | null;
   stopPct: number;
   expiryDays: number;
   leverage?: number;
@@ -509,7 +509,7 @@ function normalizeSignalRisk(raw: Partial<LearningParams>["signalRisk"]): Record
   for (const [signalType, defaults] of Object.entries(DEFAULT_SIGNAL_RISK)) {
     const candidate = raw?.[signalType];
     normalized[signalType] = {
-      targetPct: typeof candidate?.targetPct === "number" ? candidate.targetPct : defaults.targetPct,
+      targetPct: candidate?.targetPct === null || typeof candidate?.targetPct === "number" ? candidate.targetPct : defaults.targetPct,
       stopPct: typeof candidate?.stopPct === "number" ? candidate.stopPct : defaults.stopPct,
     };
   }
@@ -595,6 +595,10 @@ function weightForSignalAsset(
 
 function riskForSignal(learningParams: LearningParams, signalType: string): SignalRiskParams {
   return learningParams.signalRisk[signalType] ?? DEFAULT_SIGNAL_RISK[signalType] ?? { targetPct: 3, stopPct: 3 };
+}
+
+function formatTargetPct(targetPct: number | null): string {
+  return targetPct === null ? "uncapped" : `+${targetPct}`;
 }
 
 function getAssetPrice(row: SnapshotRow, asset: string): number | null {
@@ -1197,7 +1201,7 @@ function resolveBlockedSignalShadows(
     if (!mark) continue;
 
     let closeReason: ClosedTrade["closeReason"] | null = null;
-    if (mark.pnlPct >= shadow.position.targetPct) closeReason = "target";
+    if (shadow.position.targetPct !== null && mark.pnlPct >= shadow.position.targetPct) closeReason = "target";
     else if (mark.pnlPct <= -shadow.position.stopPct) closeReason = "stop";
     else if (new Date(shadow.position.expiryDate) <= new Date()) closeReason = "expiry";
 
@@ -1328,13 +1332,13 @@ function finalizeSignal(
   const next = { ...signal };
   if (next.type === "LLM_HYPOTHESIS") {
     const llmRisk = riskForSignal(learningParams, "LLM_HYPOTHESIS");
-    next.targetPct = Math.max(next.targetPct, llmRisk.targetPct);
+    next.targetPct = next.targetPct === null || llmRisk.targetPct === null ? null : Math.max(next.targetPct, llmRisk.targetPct);
     next.stopPct = Math.min(next.stopPct, llmRisk.stopPct);
     next.expiryDays = Math.max(next.expiryDays, learningParams.llmTradeExpiryDays);
   }
   if (isMomentumLongSignal(next, rows, learningParams)) {
     const momentumRisk = riskForSignal(learningParams, "MOMENTUM_LONG");
-    next.targetPct = Math.max(next.targetPct, momentumRisk.targetPct);
+    next.targetPct = next.targetPct === null || momentumRisk.targetPct === null ? null : Math.max(next.targetPct, momentumRisk.targetPct);
     next.stopPct = Math.min(next.stopPct, momentumRisk.stopPct);
     next.expiryDays = Math.max(next.expiryDays, learningParams.momentumLongExpiryDays);
   }
@@ -1703,7 +1707,7 @@ function markToMarket(
     if (!mark) { remaining.push(pos); continue; }
 
     let closeReason: ClosedTrade["closeReason"] | null = null;
-    if (mark.pnlPct >= pos.targetPct) closeReason = "target";
+    if (pos.targetPct !== null && mark.pnlPct >= pos.targetPct) closeReason = "target";
     else if (mark.pnlPct <= -pos.stopPct) closeReason = "stop";
     else if (new Date(pos.expiryDate) <= new Date()) closeReason = "expiry";
 
@@ -2096,7 +2100,7 @@ IMPORTANT RULES:
   - positiveMomentum24hPct: 0 to 10
   - llmTradeExpiryDays: 3 to 30
   - momentumLongExpiryDays: 3 to 45
-  - signalRisk.<signal>.targetPct: 0.5 to 15
+  - signalRisk.<signal>.targetPct: 0.5 to 15, or null for no upside take-profit cap
   - signalRisk.<signal>.stopPct: 0.5 to 10
 - You may update signalRisk when realized wins are too small, losses are too large, or shadow/blocked learning shows a better payoff shape.
 - Keep signalRisk updates incremental and explain them in journalEntry.
@@ -2124,6 +2128,7 @@ Respond with ONLY valid JSON in this exact format:
     "llmTradeExpiryDays": 14,
     "momentumLongExpiryDays": 21,
     "signalRisk": {
+      "PM_IV_GT_OPT_IV": {"targetPct": null, "stopPct": 5},
       "FUNDING_EXTREME_SHORT": {"targetPct": 2.5, "stopPct": 2.5},
       "LLM_HYPOTHESIS": {"targetPct": 5, "stopPct": 3.5}
     }
@@ -2359,14 +2364,16 @@ function applyLearningParamUpdates(
       if (!DEFAULT_SIGNAL_RISK[signalType] || !proposed) continue;
       const currentRisk = nextSignalRisk[signalType] ?? DEFAULT_SIGNAL_RISK[signalType];
       const nextRisk = { ...currentRisk };
-      if (typeof proposed.targetPct === "number" && !Number.isNaN(proposed.targetPct)) {
+      if (proposed.targetPct === null) {
+        nextRisk.targetPct = null;
+      } else if (typeof proposed.targetPct === "number" && !Number.isNaN(proposed.targetPct)) {
         nextRisk.targetPct = Number(clamp(proposed.targetPct, 0.5, 15).toFixed(2));
       }
       if (typeof proposed.stopPct === "number" && !Number.isNaN(proposed.stopPct)) {
         nextRisk.stopPct = Number(clamp(proposed.stopPct, 0.5, 10).toFixed(2));
       }
       if (nextRisk.targetPct !== currentRisk.targetPct || nextRisk.stopPct !== currentRisk.stopPct) {
-        notes.push(`${signalType} risk: +${currentRisk.targetPct}/-${currentRisk.stopPct} -> +${nextRisk.targetPct}/-${nextRisk.stopPct}`);
+        notes.push(`${signalType} risk: ${formatTargetPct(currentRisk.targetPct)}/-${currentRisk.stopPct} -> ${formatTargetPct(nextRisk.targetPct)}/-${nextRisk.stopPct}`);
         nextSignalRisk[signalType] = nextRisk;
       }
     }
@@ -2407,7 +2414,7 @@ async function main() {
 
   console.log(`  Portfolio: $${portfolio.cash.toFixed(2)} cash, ${portfolio.positions.length} open positions, $${portfolio.totalRealizedPnl.toFixed(4)} realized P&L`);
   console.log(`  Learnable params: macro24h>${learningParams.macroMomentum24hThresholdPts.toFixed(1)}, trend>${learningParams.contrarianTrendMarginPct.toFixed(2)}%, momentum>${learningParams.positiveMomentum24hPct.toFixed(2)}%, llm expiry=${learningParams.llmTradeExpiryDays}d, momentum expiry=${learningParams.momentumLongExpiryDays}d`);
-  console.log(`  Risk params: HL funding +${learningParams.signalRisk.FUNDING_EXTREME_SHORT.targetPct}/-${learningParams.signalRisk.FUNDING_EXTREME_SHORT.stopPct}, LLM +${learningParams.signalRisk.LLM_HYPOTHESIS.targetPct}/-${learningParams.signalRisk.LLM_HYPOTHESIS.stopPct}, PM overvol +${learningParams.signalRisk.PM_IV_GT_OPT_IV.targetPct}/-${learningParams.signalRisk.PM_IV_GT_OPT_IV.stopPct}`);
+  console.log(`  Risk params: HL funding ${formatTargetPct(learningParams.signalRisk.FUNDING_EXTREME_SHORT.targetPct)}/-${learningParams.signalRisk.FUNDING_EXTREME_SHORT.stopPct}, LLM ${formatTargetPct(learningParams.signalRisk.LLM_HYPOTHESIS.targetPct)}/-${learningParams.signalRisk.LLM_HYPOTHESIS.stopPct}, PM overvol ${formatTargetPct(learningParams.signalRisk.PM_IV_GT_OPT_IV.targetPct)}/-${learningParams.signalRisk.PM_IV_GT_OPT_IV.stopPct}`);
   for (const note of migrationNotes) console.log(`  ${note}`);
 
   // Regime check
