@@ -26,9 +26,24 @@ COOKIE = os.getenv("TRADINGVIEW_COOKIE", "").strip()
 MAX_ROWS = int(os.getenv("TRADINGVIEW_OPTIONS_MAX_ROWS", "2000"))
 
 DEFAULT_ASSETS = {
-    "CME_CL": {"tv_symbol": "NYMEX:MCL1!", "label": "TradingView NYMEX MCL1! options"},
+    "CME_CL": {"tv_symbol": "NYMEX:CL1!", "label": "TradingView NYMEX CL1! options"},
     "CME_GC": {"tv_symbol": "COMEX:GC1!", "label": "TradingView COMEX GC1! options"},
     "CME_BTC": {"tv_symbol": "CME:BTC1!", "label": "TradingView CME BTC1! options"},
+}
+
+FUTURES_MONTH_CODES = {
+    "F": 1,
+    "G": 2,
+    "H": 3,
+    "J": 4,
+    "K": 5,
+    "M": 6,
+    "N": 7,
+    "Q": 8,
+    "U": 9,
+    "V": 10,
+    "X": 11,
+    "Z": 12,
 }
 
 
@@ -148,10 +163,19 @@ def expand_underlyings(tv_symbol: str) -> List[str]:
         with urllib.request.urlopen(req, timeout=TIMEOUT) as res:
             html = res.read().decode("utf-8", errors="replace")
         underlyings = list(dict.fromkeys(re.findall(r'"underlying":"([^"]+)"', html)))
+        underlyings.sort(key=underlying_sort_key)
         return underlyings[: int(os.getenv("TRADINGVIEW_OPTIONS_MAX_UNDERLYINGS", "12"))] or [tv_symbol]
     except Exception as exc:
         log(f"{tv_symbol}: could not expand option underlyings: {exc}")
         return [tv_symbol]
+
+
+def underlying_sort_key(symbol: str) -> tuple[int, int, str]:
+    match = re.search(r"([FGHJKMNQUVXZ])(\d{4})$", symbol)
+    if not match:
+        return (9999, 99, symbol)
+    month_code, year = match.groups()
+    return (int(year), FUTURES_MONTH_CODES.get(month_code, 99), symbol)
 
 
 def scanner_rows(tv_symbol: str) -> List[Dict[str, Any]]:
