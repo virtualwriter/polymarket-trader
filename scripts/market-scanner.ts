@@ -1859,8 +1859,11 @@ function appendCsvRow(filename: string, headers: string[], row: Record<string, a
   // Skip if this timestamp's row already exists
   const existing = readFileSync(filepath, "utf-8");
   const ts = row.date ?? new Date().toISOString().slice(0, 13);
-  const lastLine = existing.trim().split("\n").pop() ?? "";
+  const lines = existing.trim().split("\n");
+  const lastLine = lines[lines.length - 1] ?? "";
   if (lastLine.startsWith(`"${ts}"`) || lastLine.startsWith(ts)) {
+    lines[lines.length - 1] = headers.map((h) => csvVal(row[h] ?? null)).join(",");
+    writeFileSync(filepath, lines.join("\n") + "\n");
     return;
   }
 
