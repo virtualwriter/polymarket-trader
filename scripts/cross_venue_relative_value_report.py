@@ -21,6 +21,7 @@ import html
 import json
 import math
 import re
+import urllib.request
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -75,6 +76,7 @@ class RelativeValueRow:
     edge_score: Optional[float]
     edge_bucket: str
     perp_mark: Optional[float]
+    perp_source: str
     perp_funding_ann: Optional[float]
     perp_oi_usd: Optional[float]
     perp_basis_pct: Optional[float]
@@ -176,6 +178,33 @@ def read_latest_csv_row(path: Path) -> Dict[str, str]:
     with path.open(newline="", encoding="utf-8") as fh:
         rows = list(csv.DictReader(fh))
     return rows[-1] if rows else {}
+
+
+def fetch_hyperliquid_xyz_market(coin: str) -> Dict[str, Optional[float]]:
+    body = json.dumps({"type": "metaAndAssetCtxs", "dex": "xyz"}).encode("utf-8")
+    request = urllib.request.Request(
+        "https://api.hyperliquid.xyz/info",
+        data=body,
+        headers={"Content-Type": "application/json", "User-Agent": "cross-venue-relative-value-report"},
+    )
+    try:
+        with urllib.request.urlopen(request, timeout=20) as response:
+            meta, contexts = json.loads(response.read().decode("utf-8"))
+    except Exception:
+        return {}
+
+    for item, context in zip(meta.get("universe", []), contexts):
+        if item.get("name") != coin:
+            continue
+        mark = safe_float(context.get("markPx"))
+        funding = safe_float(context.get("funding"))
+        open_interest = safe_float(context.get("openInterest"))
+        return {
+            "markPx": mark,
+            "fundingAnnualized": funding * 24 * 365 if funding is not None else None,
+            "openInterestUsd": open_interest * mark if open_interest is not None and mark is not None else None,
+        }
+    return {}
 
 
 def pm_iv_for_asset(latest_valuations: Dict[str, str], asset: str) -> Optional[float]:
@@ -379,6 +408,7 @@ def fmt_num(value: Optional[float], digits: int = 2) -> str:
 def build_rows(
     snapshot: Dict[str, Any],
     latest_valuations: Optional[Dict[str, str]] = None,
+    hyperliquid_overrides: Optional[Dict[str, Dict[str, Optional[float]]]] = None,
     min_liquidity: float = 0.0,
 ) -> List[RelativeValueRow]:
     ts = str(snapshot.get("timestamp", ""))
@@ -386,6 +416,7 @@ def build_rows(
     spots = snapshot.get("spots", {})
     hyperliquid = snapshot.get("hyperliquid", {})
     latest_valuations = latest_valuations or {}
+    hyperliquid_overrides = hyperliquid_overrides or {}
     rows: List[RelativeValueRow] = []
 
     for event in snapshot.get("polymarket", []):
@@ -393,7 +424,12 @@ def build_rows(
         option_symbol, option_snapshot = option_chain_for_asset(snapshot, asset)
         spot = safe_float(spots.get(asset))
         pm_iv = pm_iv_for_asset(latest_valuations, asset)
-        hl = hyperliquid.get(asset, {}) if isinstance(hyperliquid.get(asset, {}), dict) else {}
+        hl = hyperliquid_overrides.get(asset)
+        perp_source = "snapshot"
+        if hl is not None:
+            perp_source = "live_hyperliquid_xyz_cl" if asset == "OIL" else "live_hyperliquid"
+        else:
+            hl = hyperliquid.get(asset, {}) if isinstance(hyperliquid.get(asset, {}), dict) else {}
         perp_mark = safe_float(hl.get("markPx"))
         perp_funding_ann = safe_float(hl.get("fundingAnnualized"))
         perp_oi_usd = safe_float(hl.get("openInterestUsd"))
@@ -471,6 +507,8 @@ def build_rows(
                 flags.append("extreme_perp_funding")
             if perp_basis_pct is not None and abs(perp_basis_pct) >= 1:
                 flags.append("perp_spot_basis")
+            if asset == "OIL" and perp_source == "snapshot":
+                flags.append("oil_snapshot_uses_brent")
 
             notes = []
             if option_symbol and option_snapshot:
@@ -513,6 +551,7 @@ def build_rows(
                     edge_score=score,
                     edge_bucket=edge_bucket(score),
                     perp_mark=perp_mark,
+                    perp_source=perp_source,
                     perp_funding_ann=perp_funding_ann,
                     perp_oi_usd=perp_oi_usd,
                     perp_basis_pct=perp_basis_pct,
@@ -582,6 +621,7 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
             f"<td>{html.escape(fmt_num(row.liquidity, 0))}</td>"
             f"<td>{html.escape(fmt_pct(row.option_iv))}</td>"
             f"<td>{html.escape(fmt_pct(row.pm_iv))}</td>"
+            f"<td>{html.escape(row.perp_source)}</td>"
             f"<td>{html.escape(fmt_pct(row.perp_funding_ann))}</td>"
             f"<td>{html.escape(fmt_num(row.perp_basis_pct, 2))}</td>"
             f"<td>{html.escape(row.flags)}</td>"
@@ -652,6 +692,7 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         <th>Liquidity</th>
         <th>Opt IV</th>
         <th>PM IV</th>
+        <th>Perp Source</th>
         <th>Perp Funding</th>
         <th>Basis %</th>
         <th>Flags</th>
@@ -687,7 +728,13 @@ def main() -> None:
 
     snapshot = read_latest_snapshot(args.snapshot)
     latest_valuations = read_latest_csv_row(VALUATIONS_PATH)
-    rows = build_rows(snapshot, latest_valuations=latest_valuations, min_liquidity=args.min_liquidity)
+    hyperliquid_overrides = {"OIL": fetch_hyperliquid_xyz_market("xyz:CL")}
+    rows = build_rows(
+        snapshot,
+        latest_valuations=latest_valuations,
+        hyperliquid_overrides=hyperliquid_overrides,
+        min_liquidity=args.min_liquidity,
+    )
     write_csv(rows, args.csv)
     write_html(rows, args.html, str(snapshot.get("timestamp", "")))
     print_summary(rows)
