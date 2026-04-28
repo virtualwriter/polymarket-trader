@@ -41,8 +41,8 @@ jobs:
 
       - name: Commit updated state
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "virtualwriter"
+          git config user.email "37585392+virtualwriter@users.noreply.github.com"
           for f in data/daily-valuations.csv data/daily-macro.csv \
                    data/trades-detailed.csv data/position-snapshots.csv \
                    data/instrument-snapshots.jsonl data/portfolio.json \
