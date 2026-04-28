@@ -4,7 +4,7 @@
  * Data sources:
  *   1. Hyperliquid  — perps for BTC, HYPE + xyz DEX (AMZN, GOLD, CL, BRENTOIL)
  *   2. Polymarket   — prediction markets (price strikes, macro, outperformance)
- *   3. CBOE         — delayed options chains for IBIT, GLD, AMZN
+ *   3. CBOE         — delayed options chains for IBIT, AMZN
  *
  * Usage:
  *   npx tsx scripts/market-scanner.ts           # full console display
@@ -95,7 +95,7 @@ const HL_BUILDER_COINS: { dex: string; coin: string; label: string }[] = [
   { dex: "xyz", coin: "xyz:CL", label: "OIL (CL)" },
   { dex: "xyz", coin: "xyz:BRENTOIL", label: "BRENT OIL" },
 ];
-const OPTIONS_SYMBOLS = ["IBIT", "GLD", "AMZN"];
+const OPTIONS_SYMBOLS = ["IBIT", "AMZN"];
 
 const POLYMARKET_EVENT_SLUGS = [
   "what-price-will-bitcoin-hit-before-2027",
@@ -618,7 +618,7 @@ async function fetchYahooOptions(symbol: string): Promise<OptionsSnapshot | null
 }
 
 async function fetchOptions() {
-  divider("OPTIONS — IBIT / GLD / AMZN");
+  divider("OPTIONS — IBIT / AMZN");
 
   const results: Record<string, OptionsSnapshot> = {};
 
@@ -1066,18 +1066,7 @@ function impliedValuations(
   {
     const goldPerp = hl["GOLD (GC)"];
     const hlSpot = goldPerp?.markPx ?? 0;
-    const gldSpot = opts.GLD?.underlyingPrice ?? 0;
     const disc: string[] = [];
-
-    const iv30 = opts.GLD ? getIVForTenor(opts.GLD.chains, gldSpot, 30) : null;
-    const iv90 = opts.GLD ? getIVForTenor(opts.GLD.chains, gldSpot, 90) : null;
-
-    let optFwd: number | null = null;
-    let optFwdExpiry = "";
-    if (opts.GLD && iv90) {
-      optFwd = computeForwardFromOptions(opts.GLD.chains, gldSpot, iv90.expiry);
-      optFwdExpiry = iv90.expiry;
-    }
 
     const goldHitJun = pm.find((e) => e.slug === "gc-hit-jun-2026");
     const goldSettleJun = pm.find((e) => e.slug === "gc-settle-jun-2026");
@@ -1102,33 +1091,16 @@ function impliedValuations(
       goldMedMin = result.medianMin;
     }
 
-    // GLD ETF to GC futures ratio: GLD ≈ GC / 10.86 (typical trust factor)
-    const gcFromGLD = gldSpot * (hlSpot / gldSpot);
-    if (gldSpot > 0 && hlSpot > 0) {
-      const basisPct = ((hlSpot / gcFromGLD) - 1) * 100;
-      if (Math.abs(basisPct) > 0.5) {
-        disc.push(`HL vs CBOE BASIS: HL gold perp $${fmt(hlSpot, 0)} vs GLD-implied, ${basisPct > 0 ? "+" : ""}${basisPct.toFixed(2)}% basis`);
-      }
-    }
-
-    if (iv90 && pmVol && Math.abs(iv90.iv - pmVol) / Math.max(iv90.iv, pmVol) > 0.3) {
-      const higher = iv90.iv > pmVol ? "Options" : "Polymarket";
-      disc.push(`VOL MISMATCH: ${higher} prices higher vol → ${higher} tails may be overpriced`);
-    }
-
     if (funding > 0.05 && pmEV && pmEV > hlSpot * 1.1) {
       disc.push(`FUNDING CONFIRMS PM: Longs pay ${(funding * 100).toFixed(1)}% ann + PM bullish EV → consensus upside`);
     }
 
-    if (!JSON_OUTPUT && (hlSpot > 0 || gldSpot > 0)) {
-      console.log(`\n  ┌─ GOLD (GC / GLD) ──────────────────────────`);
+    if (!JSON_OUTPUT && hlSpot > 0) {
+      console.log(`\n  ┌─ GOLD (GC) ────────────────────────────────`);
       if (hlSpot) console.log(`  │  GC Perp:          $${fmt(hlSpot, 0)}  (HL xyz DEX)`);
-      if (gldSpot) console.log(`  │  GLD ETF:          $${fmt(gldSpot)}  (CBOE)`);
       console.log(`  │`);
       console.log(`  │  ── Options-Implied ──`);
-      if (iv30) console.log(`  │  30d IV:           ${(iv30.iv * 100).toFixed(1)}%  (exp ${iv30.expiry})`);
-      if (iv90) console.log(`  │  90d IV:           ${(iv90.iv * 100).toFixed(1)}%  (exp ${iv90.expiry})`);
-      if (optFwd) console.log(`  │  GLD Forward (90d): $${fmt(optFwd)}  (${((optFwd / gldSpot - 1) * 100).toFixed(1)}% from spot)`);
+      console.log(`  │  Gold options:     skipped until a real CME GC options source is configured`);
       console.log(`  │`);
       console.log(`  │  ── Polymarket-Implied ──${goldHitJun ? "" : "  (Dec market — upside only)"}`);
       if (pmSettleEV) console.log(`  │  Settlement EV:    $${fmt(pmSettleEV, 0)}  (Jun 2026, ${((pmSettleEV / hlSpot - 1) * 100).toFixed(1)}% from spot)`);
@@ -1139,11 +1111,6 @@ function impliedValuations(
       console.log(`  │`);
       console.log(`  │  ── Directional ──`);
       if (hlSpot) console.log(`  │  HL Funding (ann):  ${(funding * 100).toFixed(2)}%  ${funding > 0.05 ? "(longs pay → bullish crowding)" : "(neutral)"}`);
-      if (opts.GLD) {
-        const pc = opts.GLD.chains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0) /
-          Math.max(1, opts.GLD.chains.filter((c) => c.type === "call").reduce((s, c) => s + c.volume, 0));
-        console.log(`  │  GLD P/C Ratio:    ${pc.toFixed(3)}  ${pc > 1.2 ? "(put-heavy)" : pc < 0.6 ? "(call-heavy → bullish)" : "(balanced)"}`);
-      }
       if (disc.length > 0) {
         console.log(`  │`);
         console.log(`  │  ── DISCREPANCIES ──`);
@@ -1310,14 +1277,11 @@ function impliedValuations(
 
     // GOLD
     const goldSpot = hl["GOLD (GC)"]?.markPx ?? 0;
-    const gldIv90 = opts.GLD ? getIVForTenor(opts.GLD.chains, opts.GLD.underlyingPrice, 90) : null;
-    let gldFwd: number | null = null;
-    if (opts.GLD && gldIv90) gldFwd = computeForwardFromOptions(opts.GLD.chains, opts.GLD.underlyingPrice, gldIv90.expiry);
     const goldHitEv = pm.find((e) => e.slug === "gc-hit-jun-2026") ?? pm.find((e) => e.slug.includes("gold-gc"));
     const goldSettleEv = pm.find((e) => e.slug === "gc-settle-jun-2026");
     const goldPmResult = goldHitEv && goldSpot > 0 ? pmImpliedEVFromTouches(goldHitEv.strikes, goldSpot) : null;
     const goldPmSettleEV = goldSettleEv ? pmImpliedEVFromSettlement(goldSettleEv.strikes) : null;
-    rows.push(["GOLD", goldSpot, gldFwd ? gldFwd * (goldSpot / (opts.GLD?.underlyingPrice ?? 1)) : null, goldPmSettleEV ?? goldPmResult?.ev ?? null, gldIv90?.iv ?? null, goldPmResult?.impliedVol ?? null, hl["GOLD (GC)"]?.fundingAnnualized ?? null]);
+    rows.push(["GOLD", goldSpot, null, goldPmSettleEV ?? goldPmResult?.ev ?? null, null, goldPmResult?.impliedVol ?? null, hl["GOLD (GC)"]?.fundingAnnualized ?? null]);
 
     // AMZN
     const amznSpot = opts.AMZN?.underlyingPrice ?? hl["AMZN"]?.markPx ?? 0;
@@ -1459,32 +1423,12 @@ function crossAnalysis(
     }
   }
 
-  // Gold: xyz:GOLD perp + GLD options + Polymarket GC strikes
+  // Gold: xyz:GOLD perp + Polymarket GC strikes. GLD is not used as an options proxy.
   const goldEventJun = pm.find((e) => e.slug === "gc-hit-jun-2026");
   const goldEventDec = pm.find((e) => e.slug.includes("gold-gc") && e.slug.includes("december"));
   const goldEvent = goldEventJun ?? goldEventDec;
   const goldPerp = hl["GOLD (GC)"];
-  if (opts.GLD || goldEvent || goldPerp) {
-    const nearest = opts.GLD
-      ? [...new Set(opts.GLD.chains.map((c) => c.expiration))].filter(Boolean).sort()[0]
-      : "";
-    const nearChains = opts.GLD
-      ? opts.GLD.chains.filter((c) => c.expiration === nearest)
-      : [];
-    const putVol = nearChains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0);
-    const callVol = nearChains.filter((c) => c.type === "call").reduce((s, c) => s + c.volume, 0);
-    const pcRatio = callVol > 0 ? putVol / callVol : 0;
-
-    const atmCalls = nearChains.filter(
-      (c) =>
-        c.type === "call" &&
-        Math.abs(c.strike - (opts.GLD?.underlyingPrice ?? 0)) / (opts.GLD?.underlyingPrice ?? 1) < 0.03 &&
-        c.impliedVolatility > 0
-    );
-    const atmIV = atmCalls.length > 0
-      ? atmCalls.reduce((s, c) => s + c.impliedVolatility, 0) / atmCalls.length
-      : 0;
-
+  if (goldEvent || goldPerp) {
     if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
       console.log(`\n  ┌─ GOLD Cross-Source ───────────────────────────`);
       if (goldPerp) {
@@ -1493,14 +1437,7 @@ function crossAnalysis(
         console.log(`  │  HL OI:            ${fmtUsd(goldPerp.openInterestUsd)}`);
         console.log(`  │  HL 24h Volume:    ${fmtUsd(goldPerp.dayVolume)}`);
       }
-      if (opts.GLD) {
-        console.log(`  │  GLD ETF Spot:     $${fmt(opts.GLD.underlyingPrice)}`);
-        console.log(`  │  Nearest Exp:      ${nearest}`);
-        console.log(`  │  Put/Call Ratio:   ${fmt(pcRatio, 3)}  ${pcRatio > 1.5 ? "← heavy put buying (fear/hedge)" : pcRatio < 0.5 ? "← call-heavy (bullish)" : "← balanced"}`);
-        if (atmIV > 0) {
-          console.log(`  │  ATM IV:           ${(atmIV * 100).toFixed(1)}%`);
-        }
-      }
+      console.log(`  │  Gold options:     skipped; GLD proxy disabled until CME GC options source is configured`);
       if (goldEvent) {
         console.log(`  │`);
         console.log(`  │  Polymarket Gold (GC) strikes (${goldEventJun ? "Jun" : "Dec"} 2026):`);
@@ -1997,14 +1934,7 @@ function writeSnapshot(
   const hypePm = hypeEvent && hypeSpot ? pmImpliedEVFromTouches(hypeEvent.strikes, hypeSpot) : null;
 
   const goldGcSpot = hl["GOLD (GC)"]?.markPx ?? null;
-  const goldGldSpot = opts.GLD?.underlyingPrice ?? null;
-  const goldIv30 = opts.GLD ? getIVForTenor(opts.GLD.chains, opts.GLD.underlyingPrice, 30) : null;
-  const goldIv90 = opts.GLD ? getIVForTenor(opts.GLD.chains, opts.GLD.underlyingPrice, 90) : null;
-  let goldFwd: number | null = null;
-  if (opts.GLD && goldIv90) {
-    const f = computeForwardFromOptions(opts.GLD.chains, opts.GLD.underlyingPrice, goldIv90.expiry);
-    if (f && goldGcSpot && goldGldSpot) goldFwd = f * (goldGcSpot / goldGldSpot);
-  }
+  const goldFwd: number | null = null;
   const goldSettleJun = pm.find((e) => e.slug === "gc-settle-jun-2026");
   const goldHitJun = pm.find((e) => e.slug === "gc-hit-jun-2026");
   const goldHitEv = goldHitJun ?? pm.find((e) => e.slug.includes("gold-gc"));
@@ -2045,14 +1975,14 @@ function writeSnapshot(
     hype_hl_funding_ann: r(hl.HYPE?.fundingAnnualized ? hl.HYPE.fundingAnnualized * 100 : null, 2),
     hype_hl_oi: r(hl.HYPE?.openInterestUsd, 0),
     hype_med_max: r(hypePm?.medianMax, 1), hype_med_min: r(hypePm?.medianMin, 1),
-    gold_gc_spot: r(goldGcSpot, 0), gold_gld_spot: r(goldGldSpot, 2),
+    gold_gc_spot: r(goldGcSpot, 0), gold_gld_spot: null,
     gold_opt_fwd_90d: r(goldFwd, 0), gold_pm_settle_ev: r(goldSettleEV, 0),
-    gold_opt_iv_30d: r(goldIv30?.iv ? goldIv30.iv * 100 : null, 1),
-    gold_opt_iv_90d: r(goldIv90?.iv ? goldIv90.iv * 100 : null, 1),
+    gold_opt_iv_30d: null,
+    gold_opt_iv_90d: null,
     gold_pm_iv: r(goldPm?.impliedVol ? goldPm.impliedVol * 100 : null, 1),
     gold_hl_funding_ann: r(hl["GOLD (GC)"]?.fundingAnnualized ? hl["GOLD (GC)"].fundingAnnualized * 100 : null, 2),
     gold_med_max: r(goldPm?.medianMax, 0), gold_med_min: r(goldPm?.medianMin, 0),
-    gold_gld_pc_ratio: r(opts.GLD ? pcRatioFromChains(opts.GLD.chains) : null, 3),
+    gold_gld_pc_ratio: null,
     amzn_stock: r(amznStock, 2), amzn_hl_perp: r(amznHlPerp, 2),
     amzn_opt_fwd_90d: r(amznFwd, 2),
     amzn_opt_iv_30d: r(amznIv30?.iv ? amznIv30.iv * 100 : null, 1),

@@ -39,7 +39,6 @@ VALUATIONS_PATH = DATA_DIR / "daily-valuations.csv"
 
 ASSET_TO_OPTION_SYMBOL = {
     "BTC": "IBIT",
-    "GOLD": "GLD",
     "AMZN": "AMZN",
 }
 
@@ -240,8 +239,7 @@ def scaled_option_strike(
 ) -> Optional[float]:
     if not asset_spot or not option_underlying or asset_spot <= 0:
         return None
-    # BTC Polymarket is BTC spot, but options are IBIT. GOLD PM is GC, options are GLD.
-    # CL and AMZN are already in the same approximate units.
+    # BTC Polymarket is BTC spot, but options are IBIT. AMZN is already in the same approximate units.
     return pm_strike * (option_underlying / asset_spot)
 
 
@@ -518,7 +516,7 @@ def build_rows(
                 notes.append("Hit/reach market uses simple 2x terminal-prob touch adjustment.")
             if range_bounds:
                 notes.append(f"Settlement bucket modeled as probability between {range_bounds[0]:.0f} and {range_bounds[1]:.0f}.")
-            if asset in {"BTC", "GOLD"}:
+            if asset in {"BTC"}:
                 notes.append("Strike scaled from underlying options proxy.")
 
             rows.append(
