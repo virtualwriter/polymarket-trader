@@ -94,17 +94,17 @@ def parse_float(value: Any) -> Optional[float]:
 def parse_expiration(value: Any) -> str:
     if value is None:
         return ""
+    text = str(value).strip()
+    if text.isdigit() and len(text) == 8:
+        return f"{text[:4]}-{text[4:6]}-{text[6:]}"
     if isinstance(value, (int, float)):
         # TradingView scanner dates are usually Unix seconds, but guard for ms.
         ts = float(value)
         if ts > 10_000_000_000:
             ts /= 1000.0
         return datetime.fromtimestamp(ts, tz=timezone.utc).date().isoformat()
-    text = str(value).strip()
     if not text:
         return ""
-    if text.isdigit() and len(text) == 8:
-        return f"{text[:4]}-{text[4:6]}-{text[6:]}"
     try:
         return datetime.fromisoformat(text.replace("Z", "+00:00")).date().isoformat()
     except ValueError:
