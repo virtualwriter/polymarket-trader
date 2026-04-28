@@ -680,7 +680,7 @@ function getHyperliquidPerpPrice(row: SnapshotRow, asset: string): number | null
     HYPE: "hype_spot",
     GOLD: "gold_gc_spot",
     AMZN: "amzn_hl_perp",
-    OIL: "oil_brent_spot",
+    OIL: "oil_wti_spot",
   };
   const v = row[map[asset] ?? ""];
   return typeof v === "number" && v > 0 ? v : null;
@@ -1577,7 +1577,7 @@ function generateSignals(
       pcRatio: "amzn_pc_ratio", hlPerp: "amzn_hl_perp" },
     { key: "OIL", pmIv: "oil_pm_iv", optIv30: "oil_opt_iv_30d", optIv90: "oil_opt_iv_90d",
       funding: "oil_hl_funding_ann", pmEv: "oil_pm_settle_ev", spot: "oil_wti_spot",
-      pcRatio: "oil_cl_pc_ratio", hlPerp: "oil_brent_spot" },
+      pcRatio: "oil_cl_pc_ratio", hlPerp: "oil_wti_spot" },
   ];
 
   for (const a of assets) {

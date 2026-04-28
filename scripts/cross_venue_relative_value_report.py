@@ -41,7 +41,6 @@ ASSET_TO_OPTION_SYMBOL = {
     "BTC": "IBIT",
     "GOLD": "GLD",
     "AMZN": "AMZN",
-    "OIL": "CL",
 }
 
 
@@ -513,7 +512,9 @@ def build_rows(
             notes = []
             if option_symbol and option_snapshot:
                 notes.append(f"Options model uses {option_symbol} {option_snapshot.get('source', '')}; IV expiry {iv_expiry or 'n/a'}.")
-            if "hit" in question.lower() or "reach" in question.lower():
+            else:
+                notes.append("No listed options model is used for this asset.")
+            if option_symbol and ("hit" in question.lower() or "reach" in question.lower()):
                 notes.append("Hit/reach market uses simple 2x terminal-prob touch adjustment.")
             if range_bounds:
                 notes.append(f"Settlement bucket modeled as probability between {range_bounds[0]:.0f} and {range_bounds[1]:.0f}.")

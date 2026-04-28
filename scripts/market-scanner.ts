@@ -2,9 +2,9 @@
  * Multi-source market scanner for Gold, Bitcoin, HYPE, Amazon, Oil
  *
  * Data sources:
- *   1. Hyperliquid  — perps for BTC, HYPE + xyz DEX (AMZN, GOLD, BRENTOIL)
+ *   1. Hyperliquid  — perps for BTC, HYPE + xyz DEX (AMZN, GOLD, CL, BRENTOIL)
  *   2. Polymarket   — prediction markets (price strikes, macro, outperformance)
- *   3. CBOE         — delayed options chains for IBIT, GLD, AMZN, CL
+ *   3. CBOE         — delayed options chains for IBIT, GLD, AMZN
  *
  * Usage:
  *   npx tsx scripts/market-scanner.ts           # full console display
@@ -92,9 +92,10 @@ const HL_PERP_COINS = ["BTC", "HYPE"];
 const HL_BUILDER_COINS: { dex: string; coin: string; label: string }[] = [
   { dex: "xyz", coin: "xyz:AMZN", label: "AMZN" },
   { dex: "xyz", coin: "xyz:GOLD", label: "GOLD (GC)" },
+  { dex: "xyz", coin: "xyz:CL", label: "OIL (CL)" },
   { dex: "xyz", coin: "xyz:BRENTOIL", label: "BRENT OIL" },
 ];
-const OPTIONS_SYMBOLS = ["IBIT", "GLD", "AMZN", "CL"];
+const OPTIONS_SYMBOLS = ["IBIT", "GLD", "AMZN"];
 
 const POLYMARKET_EVENT_SLUGS = [
   "what-price-will-bitcoin-hit-before-2027",
@@ -1215,18 +1216,13 @@ function impliedValuations(
 
   // ── OIL (CL / Brent) ──
   {
+    const wtiPerp = hl["OIL (CL)"];
     const brentPerp = hl["BRENT OIL"];
+    const wtiSpot = wtiPerp?.markPx ?? 0;
     const brentSpot = brentPerp?.markPx ?? 0;
-    const wtiSpot = opts.CL?.underlyingPrice ?? 0;
     const disc: string[] = [];
 
-    const iv30 = opts.CL ? getIVForTenor(opts.CL.chains, wtiSpot, 30) : null;
-    const iv90 = opts.CL ? getIVForTenor(opts.CL.chains, wtiSpot, 90) : null;
-
-    let optFwd: number | null = null;
-    if (opts.CL && iv90) {
-      optFwd = computeForwardFromOptions(opts.CL.chains, wtiSpot, iv90.expiry);
-    }
+    const optFwd: number | null = null;
 
     const clSettle = pm.find((e) => e.slug === "cl-settle-jun-2026");
     const clHit = pm.find((e) => e.slug === "cl-hit-jun-2026");
@@ -1243,7 +1239,7 @@ function impliedValuations(
       pmVol = result.impliedVol;
     }
 
-    const funding = brentPerp?.fundingAnnualized ?? 0;
+    const funding = wtiPerp?.fundingAnnualized ?? 0;
 
     // Brent-WTI spread
     const spread = brentSpot - wtiSpot;
@@ -1252,8 +1248,8 @@ function impliedValuations(
     }
 
     // HL funding vs Polymarket direction
-    if (funding < -0.15 && pmSettleEV && pmSettleEV > wtiSpot * 1.02) {
-      disc.push(`FUNDING vs PM: HL Brent shorts crowded (${(funding * 100).toFixed(1)}% ann) but PM settlement EV $${fmt(pmSettleEV, 0)} above WTI spot → SHORTS MAY BE WRONG`);
+    if (funding < -0.15 && pmSettleEV && wtiSpot && pmSettleEV > wtiSpot * 1.02) {
+      disc.push(`FUNDING vs PM: HL CL shorts crowded (${(funding * 100).toFixed(1)}% ann) but PM settlement EV $${fmt(pmSettleEV, 0)} above WTI spot → SHORTS MAY BE WRONG`);
     }
 
     // Options forward vs PM settle EV
@@ -1261,21 +1257,14 @@ function impliedValuations(
       disc.push(`OPTIONS vs PM: Options forward $${fmt(optFwd, 1)} vs PM settle EV $${fmt(pmSettleEV, 0)} → ${Math.abs(optFwd - pmSettleEV).toFixed(1)} gap`);
     }
 
-    // IV comparison
-    if (iv90 && pmVol && Math.abs(iv90.iv - pmVol) / Math.max(iv90.iv, pmVol) > 0.25) {
-      const higher = iv90.iv > pmVol ? "Options" : "Polymarket";
-      disc.push(`VOL MISMATCH: ${higher} prices higher vol (Opt ${(iv90.iv * 100).toFixed(0)}% vs PM ${(pmVol * 100).toFixed(0)}%)`);
-    }
-
     if (!JSON_OUTPUT && (brentSpot > 0 || wtiSpot > 0)) {
       console.log(`\n  ┌─ OIL (CL / Brent) ─────────────────────────`);
-      if (wtiSpot) console.log(`  │  WTI Spot:         $${fmt(wtiSpot)}  (CBOE CL)`);
+      if (wtiSpot) console.log(`  │  WTI CL Perp:      $${fmt(wtiSpot)}  (HL xyz DEX; CME chart cross-check)`);
       if (brentSpot) console.log(`  │  Brent Perp:       $${fmt(brentSpot)}  (HL xyz DEX)`);
       if (brentSpot && wtiSpot) console.log(`  │  Brent-WTI Spread: $${fmt(spread, 1)}`);
       console.log(`  │`);
       console.log(`  │  ── Options-Implied ──`);
-      if (iv30) console.log(`  │  30d IV:           ${(iv30.iv * 100).toFixed(1)}%  (exp ${iv30.expiry})`);
-      if (iv90) console.log(`  │  90d IV:           ${(iv90.iv * 100).toFixed(1)}%  (exp ${iv90.expiry})`);
+      console.log(`  │  Crude options:    skipped until a real CME crude options source is configured`);
       if (optFwd) console.log(`  │  Forward (90d):    $${fmt(optFwd, 1)}  (${((optFwd / wtiSpot - 1) * 100).toFixed(1)}% from WTI spot)`);
       console.log(`  │`);
       console.log(`  │  ── Polymarket-Implied ──`);
@@ -1283,12 +1272,7 @@ function impliedValuations(
       if (pmVol) console.log(`  │  PM Implied Vol:   ${(pmVol * 100).toFixed(1)}% ann`);
       console.log(`  │`);
       console.log(`  │  ── Directional ──`);
-      if (brentSpot) console.log(`  │  HL Funding (ann):  ${(funding * 100).toFixed(2)}%  ${funding < -0.15 ? "(SHORTS PAY — heavy crowding)" : funding < -0.05 ? "(shorts pay)" : "(neutral)"}`);
-      if (opts.CL) {
-        const pc = opts.CL.chains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0) /
-          Math.max(1, opts.CL.chains.filter((c) => c.type === "call").reduce((s, c) => s + c.volume, 0));
-        console.log(`  │  CL P/C Ratio:     ${pc.toFixed(3)}  ${pc > 1.2 ? "(put-heavy → hedging downside)" : pc < 0.6 ? "(call-heavy → bullish)" : "(balanced)"}`);
-      }
+      if (wtiSpot) console.log(`  │  HL CL Funding:    ${(funding * 100).toFixed(2)}%  ${funding < -0.15 ? "(SHORTS PAY — heavy crowding)" : funding < -0.05 ? "(shorts pay)" : "(neutral)"}`);
       if (disc.length > 0) {
         console.log(`  │`);
         console.log(`  │  ── DISCREPANCIES ──`);
@@ -1342,16 +1326,14 @@ function impliedValuations(
     if (opts.AMZN && amznIv90) amznFwd = computeForwardFromOptions(opts.AMZN.chains, amznSpot, amznIv90.expiry);
     rows.push(["AMZN", amznSpot, amznFwd, null, amznIv90?.iv ?? null, null, hl["AMZN"]?.fundingAnnualized ?? null]);
 
-    // OIL
-    const clSpot = opts.CL?.underlyingPrice ?? 0;
-    const clIv90 = opts.CL ? getIVForTenor(opts.CL.chains, clSpot, 90) : null;
-    let clFwd: number | null = null;
-    if (opts.CL && clIv90) clFwd = computeForwardFromOptions(opts.CL.chains, clSpot, clIv90.expiry);
+    // OIL. Do not use CBOE symbol CL here: that endpoint is Colgate-Palmolive stock.
+    const clSpot = hl["OIL (CL)"]?.markPx ?? 0;
+    const clFwd: number | null = null;
     const clSettleEv = pm.find((e) => e.slug === "cl-settle-jun-2026");
     const clPmEV = clSettleEv ? pmImpliedEVFromSettlement(clSettleEv.strikes) : null;
     const clHitEv = pm.find((e) => e.slug === "cl-hit-jun-2026");
     const clPmVol = clHitEv && clSpot > 0 ? pmImpliedEVFromTouches(clHitEv.strikes, clSpot).impliedVol : null;
-    rows.push(["OIL(WTI)", clSpot, clFwd, clPmEV, clIv90?.iv ?? null, clPmVol, hl["BRENT OIL"]?.fundingAnnualized ?? null]);
+    rows.push(["OIL(WTI)", clSpot, clFwd, clPmEV, null, clPmVol, hl["OIL (CL)"]?.fundingAnnualized ?? null]);
 
     for (const [name, spot, fwd, pmEv, optIv, pmIv, fund] of rows) {
       const fmtVal = (v: number | null, d = 0) => v ? `$${fmt(v, d)}` : "N/A";
@@ -1572,60 +1554,19 @@ function crossAnalysis(
     }
   }
 
-  // Oil: xyz:BRENTOIL perp + CL options + Polymarket CL strikes
-  const oilPerp = hl["BRENT OIL"];
+  // Oil: xyz:CL perp + Polymarket CL strikes. Do not use CBOE symbol CL; it is Colgate stock.
+  const oilPerp = hl["OIL (CL)"];
   const clEvents = pm.filter((e) => e.slug.includes("cl-"));
-  if (opts.CL || clEvents.length > 0 || oilPerp) {
-    const nearest = [...new Set(opts.CL.chains.map((c) => c.expiration))].filter(Boolean).sort()[0];
-    const nearChains = opts.CL.chains.filter((c) => c.expiration === nearest);
-    const putVol = nearChains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0);
-    const callVol = nearChains.filter((c) => c.type === "call").reduce((s, c) => s + c.volume, 0);
-    const pcRatio = callVol > 0 ? putVol / callVol : 0;
-
-    const atmCalls = nearChains.filter(
-      (c) =>
-        c.type === "call" &&
-        Math.abs(c.strike - opts.CL.underlyingPrice) / opts.CL.underlyingPrice < 0.05 &&
-        c.impliedVolatility > 0
-    );
-    const atmIV = atmCalls.length > 0
-      ? atmCalls.reduce((s, c) => s + c.impliedVolatility, 0) / atmCalls.length
-      : 0;
-
+  if (clEvents.length > 0 || oilPerp) {
     if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
       console.log(`\n  ┌─ OIL Cross-Source ───────────────────────────`);
       if (oilPerp) {
-        console.log(`  │  HL Brent Perp:    $${fmt(oilPerp.markPx)} (xyz DEX)`);
+        console.log(`  │  HL CL Perp:       $${fmt(oilPerp.markPx)} (xyz DEX; CME chart cross-check)`);
         console.log(`  │  HL Funding (ann): ${pct(oilPerp.fundingAnnualized)}  ${oilPerp.fundingAnnualized < -0.1 ? "← SHORTS PAY" : oilPerp.fundingAnnualized > 0.1 ? "← LONGS PAY" : ""}`);
         console.log(`  │  HL OI:            ${fmtUsd(oilPerp.openInterestUsd)}`);
         console.log(`  │  HL 24h Volume:    ${fmtUsd(oilPerp.dayVolume)}`);
       }
-      if (opts.CL) {
-        console.log(`  │  WTI Spot:         $${fmt(opts.CL.underlyingPrice)}`);
-        console.log(`  │  Nearest Exp:      ${nearest}`);
-        console.log(`  │  Total Chains:     ${opts.CL.chains.length}`);
-        console.log(`  │  Put/Call Ratio:   ${fmt(pcRatio, 3)}  ${pcRatio > 1.5 ? "← heavy put buying (bearish/hedge)" : pcRatio < 0.5 ? "← call-heavy (bullish)" : "← balanced"}`);
-        if (atmIV > 0) {
-          console.log(`  │  ATM IV:           ${(atmIV * 100).toFixed(1)}%`);
-        }
-
-        const atm = opts.CL.underlyingPrice;
-        const nearbyCalls = nearChains
-          .filter((c) => c.type === "call" && c.strike >= atm * 0.95 && c.strike <= atm * 1.1)
-          .sort((a, b) => a.strike - b.strike)
-          .slice(0, 6);
-        if (nearbyCalls.length > 0) {
-          console.log(`  │`);
-          console.log(`  │  Near-ATM Calls (${nearest}):`);
-          console.log(`  │  ${"Strike".padEnd(10)} ${"Bid".padStart(8)} ${"Ask".padStart(8)} ${"IV".padStart(8)} ${"OI".padStart(10)}`);
-          for (const c of nearbyCalls) {
-            const marker = Math.abs(c.strike - atm) / atm < 0.01 ? " << ATM" : "";
-            console.log(
-              `  │  ${("$" + fmt(c.strike)).padEnd(10)} ${("$" + fmt(c.bid)).padStart(8)} ${("$" + fmt(c.ask)).padStart(8)} ${c.impliedVolatility > 0 ? (c.impliedVolatility * 100).toFixed(1) + "%" : "N/A".padStart(4)}${fmt(c.openInterest, 0).padStart(10)}${marker}`
-            );
-          }
-        }
-      }
+      console.log(`  │  Crude options:    skipped; CBOE CL was Colgate, not WTI crude`);
 
       if (clEvents.length > 0) {
         for (const ev of clEvents) {
@@ -1767,9 +1708,9 @@ function computeMacroScore(
     if (s120) pSpike120 = s120.yesPrice ?? s120.yes ?? 0.78;
   }
 
-  const wtiSpot = opts["CL"]?.underlyingPrice ?? 85;
-  const brentPerp = hl["xyz:BRENTOIL"]?.ctx ? parseFloat(hl["xyz:BRENTOIL"].ctx.markPx) : 110;
-  const brentWtiSpread = brentPerp - wtiSpot;
+  const wtiSpot = hl["OIL (CL)"]?.markPx ?? 0;
+  const brentPerp = hl["BRENT OIL"]?.markPx ?? 0;
+  const brentWtiSpread = brentPerp && wtiSpot ? brentPerp - wtiSpot : 0;
 
   // P(settle below current) as base, spike and spread as penalties
   let oilScore = (1 - pSettleAboveCurrent) * 100;
@@ -2074,13 +2015,11 @@ function writeSnapshot(
   if (opts.AMZN && amznIv90) amznFwd = computeForwardFromOptions(opts.AMZN.chains, amznStock!, amznIv90.expiry);
   const amznBasis = amznHlPerp && amznStock ? ((amznHlPerp / amznStock) - 1) * 100 : null;
 
-  const oilWti = opts.CL?.underlyingPrice ?? null;
+  // OIL must use a crude reference. CBOE symbol CL is Colgate-Palmolive stock, not crude.
+  const oilWti = hl["OIL (CL)"]?.markPx ?? null;
   const oilBrent = hl["BRENT OIL"]?.markPx ?? null;
   const oilSpread = oilBrent && oilWti ? oilBrent - oilWti : null;
-  const oilIv30 = opts.CL ? getIVForTenor(opts.CL.chains, opts.CL.underlyingPrice, 30) : null;
-  const oilIv90 = opts.CL ? getIVForTenor(opts.CL.chains, opts.CL.underlyingPrice, 90) : null;
-  let oilFwd: number | null = null;
-  if (opts.CL && oilIv90) oilFwd = computeForwardFromOptions(opts.CL.chains, oilWti!, oilIv90.expiry);
+  const oilFwd: number | null = null;
   const clSettle = pm.find((e) => e.slug === "cl-settle-jun-2026");
   const clHit = pm.find((e) => e.slug === "cl-hit-jun-2026");
   const oilSettleEV = clSettle ? pmImpliedEVFromSettlement(clSettle.strikes) : null;
@@ -2120,11 +2059,11 @@ function writeSnapshot(
     oil_wti_spot: r(oilWti, 2), oil_brent_spot: r(oilBrent, 2),
     oil_brent_wti_spread: r(oilSpread, 1),
     oil_opt_fwd_90d: r(oilFwd, 1), oil_pm_settle_ev: r(oilSettleEV, 1),
-    oil_opt_iv_30d: r(oilIv30?.iv ? oilIv30.iv * 100 : null, 1),
-    oil_opt_iv_90d: r(oilIv90?.iv ? oilIv90.iv * 100 : null, 1),
+    oil_opt_iv_30d: null,
+    oil_opt_iv_90d: null,
     oil_pm_iv: r(oilPm?.impliedVol ? oilPm.impliedVol * 100 : null, 1),
-    oil_hl_funding_ann: r(hl["BRENT OIL"]?.fundingAnnualized ? hl["BRENT OIL"].fundingAnnualized * 100 : null, 2),
-    oil_cl_pc_ratio: r(opts.CL ? pcRatioFromChains(opts.CL.chains) : null, 3),
+    oil_hl_funding_ann: r(hl["OIL (CL)"]?.fundingAnnualized ? hl["OIL (CL)"].fundingAnnualized * 100 : null, 2),
+    oil_cl_pc_ratio: null,
   });
 
   // ── Macro row ──
@@ -2199,9 +2138,9 @@ function writeSnapshot(
         openInterestUsd: r(hl["AMZN"]?.openInterestUsd ?? null, 2),
       },
       OIL: {
-        markPx: r(hl["BRENT OIL"]?.markPx ?? null, 6),
-        fundingAnnualized: r(hl["BRENT OIL"]?.fundingAnnualized ?? null, 6),
-        openInterestUsd: r(hl["BRENT OIL"]?.openInterestUsd ?? null, 2),
+        markPx: r(hl["OIL (CL)"]?.markPx ?? null, 6),
+        fundingAnnualized: r(hl["OIL (CL)"]?.fundingAnnualized ?? null, 6),
+        openInterestUsd: r(hl["OIL (CL)"]?.openInterestUsd ?? null, 2),
       },
     },
     polymarket: pm
