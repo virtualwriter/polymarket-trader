@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import sys
 import time
 import urllib.error
@@ -130,6 +131,26 @@ def yahoo_price(symbol: str) -> Optional[float]:
         return None
 
 
+def expand_underlyings(tv_symbol: str) -> List[str]:
+    """TradingView option rows are keyed by expiring futures, not 1! symbols."""
+    if not tv_symbol.endswith("1!"):
+        return [tv_symbol]
+    page_symbol = urllib.parse.quote(tv_symbol.replace(":", "-"), safe="-!")
+    url = f"https://www.tradingview.com/symbols/{page_symbol}/options-chain/"
+    try:
+        req = urllib.request.Request(url, headers={
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
+            "Cookie": COOKIE,
+        })
+        with urllib.request.urlopen(req, timeout=TIMEOUT) as res:
+            html = res.read().decode("utf-8", errors="replace")
+        underlyings = list(dict.fromkeys(re.findall(r'"underlying":"([^"]+)"', html)))
+        return underlyings[: int(os.getenv("TRADINGVIEW_OPTIONS_MAX_UNDERLYINGS", "12"))] or [tv_symbol]
+    except Exception as exc:
+        log(f"{tv_symbol}: could not expand option underlyings: {exc}")
+        return [tv_symbol]
+
+
 def scanner_rows(tv_symbol: str) -> List[Dict[str, Any]]:
     columns = [
         "name",
@@ -151,8 +172,8 @@ def scanner_rows(tv_symbol: str) -> List[Dict[str, Any]]:
         "bid_iv",
         "ask_iv",
         "volume",
-        "open_interest",
     ]
+    underlyings = expand_underlyings(tv_symbol)
     payload = {
         "columns": columns,
         "filter2": {
@@ -161,14 +182,14 @@ def scanner_rows(tv_symbol: str) -> List[Dict[str, Any]]:
                 {"expression": {"left": "type", "operation": "equal", "right": "option"}},
             ],
         },
-        "index_filters": [{"name": "underlying_symbol", "values": [tv_symbol]}],
+        "index_filters": [{"name": "underlying_symbol", "values": underlyings}],
         "range": [0, MAX_ROWS],
     }
     data = request_json(SCAN_URL, body=payload, headers={"Cookie": COOKIE})
     fields = data.get("fields", columns)
     rows = []
     for item in data.get("symbols", []) or []:
-        values = item.get("d") if isinstance(item, dict) else None
+        values = (item.get("d") or item.get("f")) if isinstance(item, dict) else None
         if not isinstance(values, list):
             continue
         row = {field: values[i] if i < len(values) else None for i, field in enumerate(fields)}
