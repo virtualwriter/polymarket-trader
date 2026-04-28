@@ -13,6 +13,7 @@
  */
 
 import { writeFileSync, readFileSync, existsSync, appendFileSync, mkdirSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -104,6 +105,7 @@ const CME_OPTIONS_CONFIG = [
   { snapshotKey: "CME_GC", undlyProductCode: process.env.CME_GOLD_UNDLY_PRODUCT_CODE ?? "GC", label: "CME GC futures options" },
   { snapshotKey: "CME_CL", undlyProductCode: process.env.CME_OIL_UNDLY_PRODUCT_CODE ?? "CL", label: "CME CL futures options" },
 ];
+const IBKR_CP_ENABLED = process.env.IBKR_CP_ENABLED === "1" || process.env.IBKR_CP_ENABLED === "true";
 
 const POLYMARKET_EVENT_SLUGS = [
   "what-price-will-bitcoin-hit-before-2027",
@@ -769,6 +771,32 @@ async function fetchCmeOptionsAnalytics(): Promise<Record<string, OptionsSnapsho
   return snapshots;
 }
 
+async function fetchIbkrFuturesOptions(): Promise<Record<string, OptionsSnapshot>> {
+  if (!IBKR_CP_ENABLED) return {};
+
+  try {
+    const stdout = execFileSync("python3", ["scripts/ibkr_futures_options.py"], {
+      cwd: process.cwd(),
+      env: process.env,
+      encoding: "utf-8",
+      timeout: Number(process.env.IBKR_CP_COLLECTOR_TIMEOUT_MS ?? 120_000),
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    const snapshots = JSON.parse(stdout) as Record<string, OptionsSnapshot>;
+    const usable = Object.fromEntries(
+      Object.entries(snapshots).filter(([, snapshot]) => snapshot?.chains?.length > 0),
+    );
+    for (const [key, snapshot] of Object.entries(usable)) {
+      warn(`${key}: loaded ${snapshot.chains.length} futures options from IBKR Client Portal`);
+    }
+    return usable;
+  } catch (e: any) {
+    const message = e.stderr ? String(e.stderr).trim().slice(0, 800) : e.message;
+    warn(`IBKR futures options disabled/unavailable: ${message}`);
+    return {};
+  }
+}
+
 // ─── CME Futures Spot via Yahoo Finance ──────────────────────────────────────
 // Fetches front-month futures prices for CL=F (WTI crude, NYMEX),
 // GC=F (Gold, COMEX), and BTC=F (Bitcoin, CME) from Yahoo Finance.
@@ -928,6 +956,7 @@ async function fetchOptions() {
     }
   }
 
+  Object.assign(results, await fetchIbkrFuturesOptions());
   Object.assign(results, await fetchCmeOptionsAnalytics());
 
   return results;
