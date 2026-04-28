@@ -1954,7 +1954,11 @@ function appendInstrumentSnapshot(snapshot: InstrumentSnapshotFile) {
   if (lastLine) {
     try {
       const last = JSON.parse(lastLine) as InstrumentSnapshotFile;
-      if (last.timestamp === snapshot.timestamp) return;
+      if (last.timestamp === snapshot.timestamp) {
+        existing[existing.length - 1] = line;
+        writeFileSync(filepath, existing.join("\n") + "\n");
+        return;
+      }
     } catch {}
   }
   appendFileSync(filepath, line + "\n");
