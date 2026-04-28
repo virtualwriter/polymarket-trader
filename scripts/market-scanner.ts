@@ -1031,12 +1031,24 @@ function pmImpliedEVFromTouches(
   const downside = spot - expectedMin;
   const ev = spot + (upside - downside) * 0.35;
 
-  // Implied annual vol from median range
-  const T = 0.75; // ~9 months remaining in 2026
+  // Implied annual vol from the market's actual remaining term.
   const rangeRatio = Math.max(0.01, (medianMax - medianMin) / spot);
+  const T = yearsToExpiry(strikes);
   const impliedVol = rangeRatio / (Math.sqrt(T) * 1.6);
 
   return { ev, medianMax, medianMin, impliedVol };
+}
+
+function yearsToExpiry(strikes: PriceStrike[]): number {
+  const now = Date.now();
+  const expiries = strikes
+    .map((s) => (s.endDate ? new Date(s.endDate).getTime() : NaN))
+    .filter((t) => Number.isFinite(t) && t > now);
+  if (expiries.length === 0) return 0.75;
+
+  const expiry = Math.max(...expiries);
+  const days = Math.max(1, (expiry - now) / 86400000);
+  return days / 365;
 }
 
 function pmImpliedEVFromSettlement(
