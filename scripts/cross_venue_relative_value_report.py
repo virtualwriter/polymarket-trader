@@ -33,6 +33,7 @@ SNAPSHOT_PATH = DATA_DIR / "instrument-snapshots.jsonl"
 HOSTED_DIR = ROOT / "relative-value"
 CSV_PATH = HOSTED_DIR / "cross_venue_relative_value.csv"
 HTML_PATH = HOSTED_DIR / "index.html"
+VALUATIONS_PATH = DATA_DIR / "daily-valuations.csv"
 
 
 ASSET_TO_OPTION_SYMBOL = {
@@ -59,6 +60,7 @@ class RelativeValueRow:
     option_underlying: Optional[float]
     option_source: str
     option_iv: Optional[float]
+    pm_iv: Optional[float]
     options_terminal_prob: Optional[float]
     options_touch_adjusted_prob: Optional[float]
     pm_yes_price: Optional[float]
@@ -166,6 +168,31 @@ def read_latest_snapshot(path: Path) -> Dict[str, Any]:
         if not last_line:
             last_line = buffer.decode("utf-8").strip().splitlines()[-1]
     return json.loads(last_line)
+
+
+def read_latest_csv_row(path: Path) -> Dict[str, str]:
+    if not path.exists():
+        return {}
+    with path.open(newline="", encoding="utf-8") as fh:
+        rows = list(csv.DictReader(fh))
+    return rows[-1] if rows else {}
+
+
+def pm_iv_for_asset(latest_valuations: Dict[str, str], asset: str) -> Optional[float]:
+    key_by_asset = {
+        "BTC": "btc_pm_iv",
+        "HYPE": "hype_pm_iv",
+        "GOLD": "gold_pm_iv",
+        "OIL": "oil_pm_iv",
+    }
+    key = key_by_asset.get(asset)
+    if not key:
+        return None
+    value = safe_float(latest_valuations.get(key))
+    if value is None:
+        return None
+    # daily-valuations.csv stores IV columns as percentages.
+    return value / 100.0
 
 
 def option_chain_for_asset(snapshot: Dict[str, Any], asset: str) -> Tuple[str, Optional[Dict[str, Any]]]:
@@ -286,7 +313,7 @@ def touch_adjusted_probability(terminal_prob: Optional[float], direction: str, q
     if terminal_prob is None:
         return None
     q = question.lower()
-    if "hit" not in q and "reach" not in q:
+    if "hit" not in q and "reach" not in q and "dip" not in q:
         return terminal_prob
     # A one-touch style event is worth more than terminal probability. This is a
     # deliberately simple approximation for screening, not a pricing model.
@@ -349,17 +376,23 @@ def fmt_num(value: Optional[float], digits: int = 2) -> str:
     return f"{value:.{digits}f}"
 
 
-def build_rows(snapshot: Dict[str, Any], min_liquidity: float = 0.0) -> List[RelativeValueRow]:
+def build_rows(
+    snapshot: Dict[str, Any],
+    latest_valuations: Optional[Dict[str, str]] = None,
+    min_liquidity: float = 0.0,
+) -> List[RelativeValueRow]:
     ts = str(snapshot.get("timestamp", ""))
     snap_dt = snapshot_time(snapshot)
     spots = snapshot.get("spots", {})
     hyperliquid = snapshot.get("hyperliquid", {})
+    latest_valuations = latest_valuations or {}
     rows: List[RelativeValueRow] = []
 
     for event in snapshot.get("polymarket", []):
         asset = str(event.get("asset", ""))
         option_symbol, option_snapshot = option_chain_for_asset(snapshot, asset)
         spot = safe_float(spots.get(asset))
+        pm_iv = pm_iv_for_asset(latest_valuations, asset)
         hl = hyperliquid.get(asset, {}) if isinstance(hyperliquid.get(asset, {}), dict) else {}
         perp_mark = safe_float(hl.get("markPx"))
         perp_funding_ann = safe_float(hl.get("fundingAnnualized"))
@@ -465,6 +498,7 @@ def build_rows(snapshot: Dict[str, Any], min_liquidity: float = 0.0) -> List[Rel
                     option_underlying=option_underlying,
                     option_source=str(option_snapshot.get("source", "")) if option_snapshot else "",
                     option_iv=option_iv,
+                    pm_iv=pm_iv,
                     options_terminal_prob=terminal_prob,
                     options_touch_adjusted_prob=model_prob,
                     pm_yes_price=pm_yes,
@@ -547,6 +581,7 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
             f"<td>{html.escape(fmt_num(row.pm_spread, 3))}</td>"
             f"<td>{html.escape(fmt_num(row.liquidity, 0))}</td>"
             f"<td>{html.escape(fmt_pct(row.option_iv))}</td>"
+            f"<td>{html.escape(fmt_pct(row.pm_iv))}</td>"
             f"<td>{html.escape(fmt_pct(row.perp_funding_ann))}</td>"
             f"<td>{html.escape(fmt_num(row.perp_basis_pct, 2))}</td>"
             f"<td>{html.escape(row.flags)}</td>"
@@ -616,6 +651,7 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         <th>PM Spread</th>
         <th>Liquidity</th>
         <th>Opt IV</th>
+        <th>PM IV</th>
         <th>Perp Funding</th>
         <th>Basis %</th>
         <th>Flags</th>
@@ -650,7 +686,8 @@ def main() -> None:
     args = parser.parse_args()
 
     snapshot = read_latest_snapshot(args.snapshot)
-    rows = build_rows(snapshot, min_liquidity=args.min_liquidity)
+    latest_valuations = read_latest_csv_row(VALUATIONS_PATH)
+    rows = build_rows(snapshot, latest_valuations=latest_valuations, min_liquidity=args.min_liquidity)
     write_csv(rows, args.csv)
     write_html(rows, args.html, str(snapshot.get("timestamp", "")))
     print_summary(rows)
