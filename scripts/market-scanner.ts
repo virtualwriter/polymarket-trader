@@ -106,6 +106,7 @@ const CME_OPTIONS_CONFIG = [
   { snapshotKey: "CME_CL", undlyProductCode: process.env.CME_OIL_UNDLY_PRODUCT_CODE ?? "CL", label: "CME CL futures options" },
 ];
 const IBKR_CP_ENABLED = process.env.IBKR_CP_ENABLED === "1" || process.env.IBKR_CP_ENABLED === "true";
+const TRADINGVIEW_OPTIONS_ENABLED = process.env.TRADINGVIEW_OPTIONS_ENABLED === "1" || process.env.TRADINGVIEW_OPTIONS_ENABLED === "true";
 
 const POLYMARKET_EVENT_SLUGS = [
   "what-price-will-bitcoin-hit-before-2027",
@@ -797,6 +798,36 @@ async function fetchIbkrFuturesOptions(): Promise<Record<string, OptionsSnapshot
   }
 }
 
+async function fetchTradingViewFuturesOptions(): Promise<Record<string, OptionsSnapshot>> {
+  if (!TRADINGVIEW_OPTIONS_ENABLED) return {};
+  if (!process.env.TRADINGVIEW_COOKIE) {
+    warn("TradingView futures options disabled: TRADINGVIEW_COOKIE is not set");
+    return {};
+  }
+
+  try {
+    const stdout = execFileSync("python3", ["scripts/tradingview_futures_options.py"], {
+      cwd: process.cwd(),
+      env: process.env,
+      encoding: "utf-8",
+      timeout: Number(process.env.TRADINGVIEW_OPTIONS_COLLECTOR_TIMEOUT_MS ?? 120_000),
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    const snapshots = JSON.parse(stdout) as Record<string, OptionsSnapshot>;
+    const usable = Object.fromEntries(
+      Object.entries(snapshots).filter(([, snapshot]) => snapshot?.chains?.length > 0),
+    );
+    for (const [key, snapshot] of Object.entries(usable)) {
+      warn(`${key}: loaded ${snapshot.chains.length} futures options from TradingView`);
+    }
+    return usable;
+  } catch (e: any) {
+    const message = e.stderr ? String(e.stderr).trim().slice(0, 800) : e.message;
+    warn(`TradingView futures options disabled/unavailable: ${message}`);
+    return {};
+  }
+}
+
 // ─── CME Futures Spot via Yahoo Finance ──────────────────────────────────────
 // Fetches front-month futures prices for CL=F (WTI crude, NYMEX),
 // GC=F (Gold, COMEX), and BTC=F (Bitcoin, CME) from Yahoo Finance.
@@ -956,6 +987,7 @@ async function fetchOptions() {
     }
   }
 
+  Object.assign(results, await fetchTradingViewFuturesOptions());
   Object.assign(results, await fetchIbkrFuturesOptions());
   Object.assign(results, await fetchCmeOptionsAnalytics());
 
