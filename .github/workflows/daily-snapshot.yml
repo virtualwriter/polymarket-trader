@@ -2,8 +2,8 @@ name: Market Scanner & Trading Engine
 
 on:
   schedule:
-    # Every hour at minute 0 so stops and marks are checked more frequently.
-    - cron: "0 * * * *"
+    # Every hour at minute 27 so stops and marks are checked frequently while avoiding top-of-hour scheduler congestion.
+    - cron: "27 * * * *"
   workflow_dispatch: # manual trigger from GitHub UI
 
 permissions:
