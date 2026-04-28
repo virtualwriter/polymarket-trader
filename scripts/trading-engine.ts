@@ -1407,7 +1407,7 @@ function recordRelativeValueHeatmapShadows(
   let recorded = 0;
 
   for (const obs of observations.slice(0, 10)) {
-    if (!["buy_yes", "sell_yes_or_buy_no", "avoid_buy_yes"].includes(obs.bestExpression)) continue;
+    if (!["buy_yes", "sell_yes_or_buy_no"].includes(obs.bestExpression)) continue;
     const event = latestSnapshot.polymarket.find((candidate) => candidate.slug === obs.eventSlug && candidate.asset === obs.asset);
     if (!event) continue;
     const contract = event.contracts.find((candidate) =>
