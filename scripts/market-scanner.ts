@@ -105,7 +105,6 @@ const CME_OPTIONS_CONFIG = [
   { snapshotKey: "CME_GC", undlyProductCode: process.env.CME_GOLD_UNDLY_PRODUCT_CODE ?? "GC", label: "CME GC futures options" },
   { snapshotKey: "CME_CL", undlyProductCode: process.env.CME_OIL_UNDLY_PRODUCT_CODE ?? "CL", label: "CME CL futures options" },
 ];
-const IBKR_CP_ENABLED = process.env.IBKR_CP_ENABLED === "1" || process.env.IBKR_CP_ENABLED === "true";
 const TRADINGVIEW_OPTIONS_ENABLED = process.env.TRADINGVIEW_OPTIONS_ENABLED === "1" || process.env.TRADINGVIEW_OPTIONS_ENABLED === "true";
 
 const POLYMARKET_EVENT_SLUGS = [
@@ -593,41 +592,6 @@ async function fetchCboeOptions(symbol: string): Promise<OptionsSnapshot | null>
   }
 }
 
-async function fetchYahooOptions(symbol: string): Promise<OptionsSnapshot | null> {
-  try {
-    const url = `https://query2.finance.yahoo.com/v7/finance/options/${symbol}`;
-    const data = await fetchJson(url);
-
-    const quote = data?.optionChain?.result?.[0]?.quote;
-    const underlying = quote?.regularMarketPrice ?? 0;
-    const opts = data?.optionChain?.result?.[0]?.options?.[0];
-
-    const chains: OptionQuote[] = [];
-    for (const type of ["calls", "puts"] as const) {
-      const optType = type === "calls" ? "call" : "put";
-      for (const o of opts?.[type] ?? []) {
-        chains.push({
-          strike: o.strike ?? 0,
-          bid: o.bid ?? 0,
-          ask: o.ask ?? 0,
-          mid: ((o.bid ?? 0) + (o.ask ?? 0)) / 2,
-          volume: o.volume ?? 0,
-          openInterest: o.openInterest ?? 0,
-          impliedVolatility: o.impliedVolatility ?? 0,
-          expiration: o.expiration
-            ? new Date(o.expiration * 1000).toISOString().slice(0, 10)
-            : "",
-          type: optType,
-        });
-      }
-    }
-
-    return { symbol, underlyingPrice: underlying, chains, source: "Yahoo Finance" };
-  } catch {
-    return null;
-  }
-}
-
 function parseCmeNumber(value: any): number {
   if (value === null || value === undefined || value === "") return 0;
   const parsed = parseFloat(String(value).replace(/,/g, ""));
@@ -772,33 +736,6 @@ async function fetchCmeOptionsAnalytics(): Promise<Record<string, OptionsSnapsho
   return snapshots;
 }
 
-async function fetchIbkrFuturesOptions(): Promise<Record<string, OptionsSnapshot>> {
-  if (!IBKR_CP_ENABLED) return {};
-
-  try {
-    const stdout = execFileSync("python3", ["scripts/ibkr_futures_options.py"], {
-      cwd: process.cwd(),
-      env: process.env,
-      encoding: "utf-8",
-      timeout: Number(process.env.IBKR_CP_COLLECTOR_TIMEOUT_MS ?? 120_000),
-      maxBuffer: Number(process.env.OPTIONS_COLLECTOR_MAX_BUFFER_BYTES ?? 50 * 1024 * 1024),
-      stdio: ["ignore", "pipe", "pipe"],
-    });
-    const snapshots = JSON.parse(stdout) as Record<string, OptionsSnapshot>;
-    const usable = Object.fromEntries(
-      Object.entries(snapshots).filter(([, snapshot]) => snapshot?.chains?.length > 0),
-    );
-    for (const [key, snapshot] of Object.entries(usable)) {
-      warn(`${key}: loaded ${snapshot.chains.length} futures options from IBKR Client Portal`);
-    }
-    return usable;
-  } catch (e: any) {
-    const message = e.stderr ? String(e.stderr).trim().slice(0, 800) : e.message;
-    warn(`IBKR futures options disabled/unavailable: ${message}`);
-    return {};
-  }
-}
-
 async function fetchTradingViewFuturesOptions(): Promise<Record<string, OptionsSnapshot>> {
   if (!TRADINGVIEW_OPTIONS_ENABLED) return {};
   if (!process.env.TRADINGVIEW_COOKIE) {
@@ -830,63 +767,6 @@ async function fetchTradingViewFuturesOptions(): Promise<Record<string, OptionsS
   }
 }
 
-// ─── CME Futures Spot via Yahoo Finance ──────────────────────────────────────
-// Fetches front-month futures prices for CL=F (WTI crude, NYMEX),
-// GC=F (Gold, COMEX), and BTC=F (Bitcoin, CME) from Yahoo Finance.
-// This gives us the same exchange-sourced reference prices as the CME
-// quote pages, without requiring a browser or CME API credentials.
-
-interface YahooCmeFuturesSpot {
-  oil_cme_yf_spot: number | null;   // CL=F — WTI front-month, NYMEX
-  gold_cme_yf_spot: number | null;  // GC=F — Gold front-month, COMEX
-  btc_cme_yf_spot: number | null;   // BTC=F — Bitcoin futures, CME
-}
-
-async function fetchYahooCmeFuturesSpot(): Promise<YahooCmeFuturesSpot> {
-  const result: YahooCmeFuturesSpot = {
-    oil_cme_yf_spot: null,
-    gold_cme_yf_spot: null,
-    btc_cme_yf_spot: null,
-  };
-
-  const symbols: [keyof YahooCmeFuturesSpot, string, string][] = [
-    ["oil_cme_yf_spot",  "CL=F",  "WTI Crude (NYMEX)"],
-    ["gold_cme_yf_spot", "GC=F",  "Gold (COMEX)"],
-    ["btc_cme_yf_spot",  "BTC=F", "Bitcoin (CME)"],
-  ];
-
-  if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
-    divider("CME FUTURES SPOT — Yahoo Finance (CL=F / GC=F / BTC=F)");
-  }
-
-  for (const [key, symbol, label] of symbols) {
-    try {
-      const res = await fetch(
-        `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=1d`,
-        {
-          headers: {
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-            "Accept": "application/json",
-          },
-          signal: AbortSignal.timeout(10_000),
-        }
-      );
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      const meta = data?.chart?.result?.[0]?.meta;
-      if (!meta?.regularMarketPrice) throw new Error("No price in response");
-      result[key] = meta.regularMarketPrice as number;
-      if (!JSON_OUTPUT && !SNAPSHOT_MODE) {
-        console.log(`  ${label.padEnd(25)} $${fmt(meta.regularMarketPrice)}  (${meta.exchangeName ?? "?"})`);
-      }
-    } catch (e: any) {
-      warn(`Yahoo Finance ${symbol}: ${e.message}`);
-    }
-  }
-
-  return result;
-}
-
 async function fetchOptions() {
   divider("OPTIONS — IBIT / AMZN");
 
@@ -894,12 +774,9 @@ async function fetchOptions() {
 
   for (const symbol of OPTIONS_SYMBOLS) {
     let snapshot = await fetchCboeOptions(symbol);
-    if (!snapshot || snapshot.chains.length === 0) {
-      snapshot = await fetchYahooOptions(symbol);
-    }
 
     if (!snapshot || snapshot.chains.length === 0) {
-      warn(`No options data found for ${symbol} (CBOE + Yahoo both failed)`);
+      warn(`No CBOE options data found for ${symbol}`);
       continue;
     }
 
@@ -990,7 +867,6 @@ async function fetchOptions() {
   }
 
   Object.assign(results, await fetchTradingViewFuturesOptions());
-  Object.assign(results, await fetchIbkrFuturesOptions());
   Object.assign(results, await fetchCmeOptionsAnalytics());
 
   return results;
@@ -2105,7 +1981,6 @@ const VALUATION_HEADERS = [
   "oil_wti_spot", "oil_brent_spot", "oil_brent_wti_spread", "oil_opt_fwd_90d",
   "oil_pm_settle_ev", "oil_opt_iv_30d", "oil_opt_iv_90d", "oil_pm_iv",
   "oil_hl_funding_ann", "oil_cl_pc_ratio",
-  "oil_cme_yf_spot", "gold_cme_yf_spot", "btc_cme_yf_spot",
 ];
 
 const MACRO_HEADERS = [
@@ -2192,7 +2067,6 @@ function writeSnapshot(
   macro: CategoryEvent[],
   btcOutperform: CategoryEvent[],
   gpu: CategoryEvent[],
-  cmeFutures: YahooCmeFuturesSpot,
 ) {
   const today = new Date().toISOString().slice(0, 13); // YYYY-MM-DDTHH for 4-hourly dedup
 
@@ -2286,9 +2160,6 @@ function writeSnapshot(
     oil_pm_iv: r(oilPm?.impliedVol ? oilPm.impliedVol * 100 : null, 1),
     oil_hl_funding_ann: r(hl["OIL (CL)"]?.fundingAnnualized ? hl["OIL (CL)"].fundingAnnualized * 100 : null, 2),
     oil_cl_pc_ratio: r(oilOptions ? pcRatioFromChains(oilOptions.chains) : null, 3),
-    oil_cme_yf_spot: r(cmeFutures.oil_cme_yf_spot, 2),
-    gold_cme_yf_spot: r(cmeFutures.gold_cme_yf_spot, 0),
-    btc_cme_yf_spot: r(cmeFutures.btc_cme_yf_spot, 0),
   });
 
   // ── Macro row ──
@@ -2340,10 +2211,6 @@ function writeSnapshot(
       GOLD: r(goldGcSpot, 6),
       AMZN: r(amznStock, 6),
       OIL: r(oilWti, 6),
-      // Yahoo Finance → CME/NYMEX/COMEX reference prices (CL=F, GC=F, BTC=F)
-      OIL_CME_YF: r(cmeFutures.oil_cme_yf_spot, 2),
-      GOLD_CME_YF: r(cmeFutures.gold_cme_yf_spot, 0),
-      BTC_CME_YF: r(cmeFutures.btc_cme_yf_spot, 0),
     },
     hyperliquid: {
       BTC: {
@@ -2438,7 +2305,7 @@ async function main() {
     console.log(`  Sources: Hyperliquid (native + xyz DEX), Polymarket, CBOE Options`);
   }
 
-  const [hl, pm, opts, btcOutperform, macro, gpu, cmeFutures] = await Promise.all([
+  const [hl, pm, opts, btcOutperform, macro, gpu] = await Promise.all([
     fetchHyperliquid().catch((e) => {
       warn(`Hyperliquid failed: ${e.message}`);
       return {} as Record<string, any>;
@@ -2454,14 +2321,10 @@ async function main() {
     fetchCategoryEvents(BITCOIN_OUTPERFORMANCE_SLUGS).catch(() => [] as CategoryEvent[]),
     fetchCategoryEvents(MACRO_SLUGS).catch(() => [] as CategoryEvent[]),
     fetchCategoryEvents(GPU_SLUGS).catch(() => [] as CategoryEvent[]),
-    fetchYahooCmeFuturesSpot().catch((e) => {
-      warn(`Yahoo CME futures spot failed: ${e.message}`);
-      return { oil_cme_yf_spot: null, gold_cme_yf_spot: null, btc_cme_yf_spot: null } as YahooCmeFuturesSpot;
-    }),
   ]);
 
   if (SNAPSHOT_MODE) {
-    writeSnapshot(hl, pm, opts, macro, btcOutperform, gpu, cmeFutures);
+    writeSnapshot(hl, pm, opts, macro, btcOutperform, gpu);
     return;
   }
 

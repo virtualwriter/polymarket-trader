@@ -26,9 +26,9 @@ COOKIE = os.getenv("TRADINGVIEW_COOKIE", "").strip()
 MAX_ROWS = int(os.getenv("TRADINGVIEW_OPTIONS_MAX_ROWS", "2000"))
 
 DEFAULT_ASSETS = {
-    "CME_CL": {"tv_symbol": "NYMEX:MCL1!", "yf_symbol": "CL=F", "label": "TradingView NYMEX MCL1! options"},
-    "CME_GC": {"tv_symbol": "COMEX:GC1!", "yf_symbol": "GC=F", "label": "TradingView COMEX GC1! options"},
-    "CME_BTC": {"tv_symbol": "CME:BTC1!", "yf_symbol": "BTC=F", "label": "TradingView CME BTC1! options"},
+    "CME_CL": {"tv_symbol": "NYMEX:MCL1!", "label": "TradingView NYMEX MCL1! options"},
+    "CME_GC": {"tv_symbol": "COMEX:GC1!", "label": "TradingView COMEX GC1! options"},
+    "CME_BTC": {"tv_symbol": "CME:BTC1!", "label": "TradingView CME BTC1! options"},
 }
 
 
@@ -47,7 +47,6 @@ def load_assets() -> Dict[str, Dict[str, str]]:
             if cfg.get("tv_symbol"):
                 out[key] = {
                     "tv_symbol": cfg["tv_symbol"],
-                    "yf_symbol": cfg.get("yf_symbol", ""),
                     "label": cfg.get("label", f"TradingView {cfg['tv_symbol']} options"),
                 }
         return out or DEFAULT_ASSETS
@@ -118,16 +117,20 @@ def normalize_iv(value: Any) -> Optional[float]:
     return iv / 100.0 if iv > 3 else iv
 
 
-def yahoo_price(symbol: str) -> Optional[float]:
-    if not symbol:
-        return None
-    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{urllib.parse.quote(symbol)}?interval=1d&range=1d"
+def tradingview_close(symbol: str) -> Optional[float]:
+    payload = {
+        "columns": ["close"],
+        "symbols": {"tickers": [symbol]},
+    }
     try:
-        data = request_json(url, headers={"Origin": "", "Referer": ""})
-        price = data.get("chart", {}).get("result", [{}])[0].get("meta", {}).get("regularMarketPrice")
-        return parse_float(price)
+        data = request_json("https://scanner.tradingview.com/futures/scan2", body=payload, headers={"Cookie": COOKIE})
+        rows = data.get("symbols") or []
+        if not rows:
+            return None
+        values = rows[0].get("d") or rows[0].get("f") or []
+        return parse_float(values[0] if values else None)
     except Exception as exc:
-        log(f"Yahoo reference price failed for {symbol}: {exc}")
+        log(f"TradingView futures close failed for {symbol}: {exc}")
         return None
 
 
@@ -243,7 +246,7 @@ def collect_snapshot(key: str, cfg: Dict[str, str]) -> Optional[Dict[str, Any]]:
     if not quotes:
         log(f"{key}: no usable TradingView option rows for {cfg['tv_symbol']} (rows={len(rows)})")
         return None
-    underlying = yahoo_price(cfg.get("yf_symbol", "")) or 0.0
+    underlying = tradingview_close(cfg["tv_symbol"]) or 0.0
     if underlying <= 0:
         strikes = sorted(q["strike"] for q in quotes)
         underlying = strikes[len(strikes) // 2]
