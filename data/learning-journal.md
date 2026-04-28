@@ -2971,3 +2971,25 @@ Major breakthrough in recognizing cross-asset positioning exhaustion patterns. K
 
 ---
 
+### 2026-04-28 19:27 UTC
+
+**Portfolio:** $100.59 total | Cash $92.59 | 8 open | P&L $0.5872 | 61% win rate (83 trades)
+
+**Statistical observations:**
+- [anomaly] oil_pm_settle_ev = 95.5 is 2.7 std devs from mean (84.75 ± 4.02)
+- [anomaly] gold_gld_spot = 422.09 is -2.3 std devs from mean (435.62 ± 6.00)
+- [anomaly] gold_gc_spot = 4598 is -2.2 std devs from mean (4735.51 ± 61.55)
+- [anomaly] gold_opt_fwd_90d = 4636 is -2.2 std devs from mean (4776.83 ± 64.68)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.90 to -0.35
+
+**Blocked signal learning:**
+- Open blocked shadows: 13
+- Resolved blocked shadows: 2 (0 wins / 2 losses)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-11.30%)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-7.96%)
+
+**LLM analysis:**
+Major breakthrough in recognizing institutional distribution exhaustion patterns. HYPE showing textbook completion at 18.5% OI decline (957M→787M) with funding crash to 0.13% - classic smart money exit exhaustion. BTC P/C ratio normalization from 0.217 extreme to 0.724 with funding recovery to 3.05% confirms positioning reset completion. Cross-asset patterns showing systematic exhaustion requiring bounce within week. Added HYPE long position capitalizing on institutional distribution completion. Pattern recognition improving on multi-asset positioning cycles and statistical reversion setups.
+
+---
+

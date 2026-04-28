@@ -7006,7 +7006,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC P/C ratio stabilizing at 0.217 during consolidation above 75k. Call positioning exhaustion pattern developing but not yet triggering pullback acceleration. | BTC P/C ratio at 0.217 near extreme lows during consolidation above 74.6k - call positioning exhaustion pattern intact, monitoring for pullback or reversal signals | BTC P/C ratio stayed near extreme 0.217 levels during consolidation above 74k - systematic call exhaustion continuing, pullback acceleration setup remains valid",
+    "postMortem": "BTC P/C ratio stabilizing at 0.217 during consolidation above 75k. Call positioning exhaustion pattern developing but not yet triggering pullback acceleration. | BTC P/C ratio at 0.217 near extreme lows during consolidation above 74.6k - call positioning exhaustion pattern intact, monitoring for pullback or reversal signals | BTC P/C ratio stayed near extreme 0.217 levels during consolidation above 74k - systematic call exhaustion continuing, pullback acceleration setup remains valid | BTC P/C spike pattern confirmed - ratio moved from 0.217 extreme to 0.724 indicating systematic positioning unwind acceleration",
     "source": "llm"
   },
   {
@@ -8136,7 +8136,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "BTC P/C ratio normalized to 0.724 from extreme lows - call positioning exhaustion completion signal confirmed",
     "source": "llm"
   },
   {
@@ -11316,7 +11316,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE OI declined to 789M (-18% from 957M peak) with funding at 9.03% - massive distribution exhaustion completion confirmed, creating oversold setup",
+    "postMortem": "HYPE OI declined to 789M (-18% from 957M peak) with funding at 9.03% - massive distribution exhaustion completion confirmed, creating oversold setup | HYPE OI decline reached 18.5% (957M→787M) with funding crash to 0.13% - institutional distribution exhaustion approaching final completion",
     "source": "llm"
   },
   {
@@ -11715,6 +11715,84 @@
     "prediction": "BTC momentum resumption >2% within 3-5 days as funding exhaustion completes",
     "timeframeDays": 5,
     "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "BTC funding recovered from negative to 3.05% during consolidation above 76k - positioning reset confirmed as predicted, supports bounce thesis",
+    "source": "llm"
+  },
+  {
+    "id": "H-460",
+    "created": "2026-04-28",
+    "description": "BTC P/C ratio exhaustion completion reversal - when BTC P/C ratio stays above 0.7 for 2+ snapshots during consolidation above 76k after funding normalization above 3%, systematic call positioning exhaustion creates oversold bounce setup",
+    "conditions": {
+      "btc_spot": "> 76000",
+      "btc_ibit_pc_ratio": "> 0.7",
+      "btc_hl_funding_ann": "> 3"
+    },
+    "prediction": "BTC bounce toward 77-78k range within 5-7 days as call positioning unwind completes",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-461",
+    "created": "2026-04-28",
+    "description": "HYPE institutional distribution exhaustion final completion reversal - when HYPE OI declines below 790M from 957M peak (18%+ decline) while funding crashes below 1% and spot holds above 39.5, massive distribution exhaustion creates oversold bounce",
+    "conditions": {
+      "hype_hl_oi": "< 790000000",
+      "hype_hl_funding_ann": "< 1",
+      "hype_spot": "> 39.5"
+    },
+    "prediction": "HYPE oversold bounce toward 41-42 range within 5-7 days as institutional distribution completes",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-462",
+    "created": "2026-04-28",
+    "description": "Cross-asset positioning exhaustion completion bounce - when BTC P/C above 0.72 with funding normalization while HYPE OI below 790M from 957M peak and both assets showing correlation restoration during positioning reset",
+    "conditions": {
+      "btc_ibit_pc_ratio": "> 0.72",
+      "btc_hl_funding_ann": "> 3",
+      "hype_hl_oi": "< 790000000"
+    },
+    "prediction": "Multi-asset bounce as positioning exhaustion completes - BTC toward 77k, HYPE toward 41k within one week",
+    "timeframeDays": 7,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-28",
