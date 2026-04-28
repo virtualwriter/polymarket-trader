@@ -3106,3 +3106,23 @@ Critical evolution: extreme statistical anomalies (+/-6σ) create mathematical r
 
 ---
 
+### 2026-04-28 23:29 UTC
+
+**Portfolio:** $100.58 total | Cash $93.58 | 7 open | P&L $0.5772 | 61% win rate (85 trades)
+
+**Statistical observations:**
+- [anomaly] oil_opt_iv_90d = 57.7 is 8.2 std devs from mean (24.78 ± 4.01)
+- [anomaly] oil_opt_iv_30d = 53.2 is 7.3 std devs from mean (27.57 ± 3.50)
+- [anomaly] oil_wti_spot = 99.42 is 5.7 std devs from mean (84.86 ± 2.57)
+- [anomaly] oil_pm_iv = 68.9 is 4.9 std devs from mean (37.68 ± 6.39)
+- [anomaly] gold_gld_pc_ratio = 0 is -3.0 std devs from mean (0.55 ± 0.18)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 3 (1 wins / 2 losses)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-11.30%)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-7.96%)
+- ✅ PM proxy short: MACRO_MOMENTUM_DOWN_PM_PROXY_SHORT BTC short via polymarket would have target (+6.73%)
+
+---
+
