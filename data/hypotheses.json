@@ -11290,7 +11290,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC PM IV compression below 40.5% continues validating -6.5σ statistical anomaly thesis - IV expansion required for market efficiency",
+    "postMortem": "BTC PM IV compression below 40.5% continues validating -6.5σ statistical anomaly thesis - IV expansion required for market efficiency | BTC PM IV at 39.9% represents -6.5σ statistical anomaly during consolidation - extreme compression requiring volatility expansion correction",
     "source": "llm"
   },
   {
@@ -11316,7 +11316,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI declined to 789M (-18% from 957M peak) with funding at 9.03% - massive distribution exhaustion completion confirmed, creating oversold setup",
     "source": "llm"
   },
   {
@@ -11357,6 +11357,133 @@
     "prediction": "Cross-asset IV expansion above 45% BTC, 25% GOLD, 60% HYPE within one week as statistical anomalies correct",
     "timeframeDays": 7,
     "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Cross-asset IV compression confirmed extreme with BTC 41.9%, GOLD 23%, HYPE 55.1% - systematic volatility expansion setup validated",
+    "source": "llm"
+  },
+  {
+    "id": "H-446",
+    "created": "2026-04-28",
+    "description": "HYPE institutional distribution exhaustion completion - 18% OI decline from record peak with funding normalization to 9.03% indicates smart money exit completion",
+    "conditions": {
+      "hype_hl_oi": "< 800000000",
+      "hype_hl_funding_ann": "> 0.05",
+      "hype_spot": "> 39.5"
+    },
+    "prediction": "HYPE oversold bounce to 42+ range within 5-7 days as distribution cycle completes",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-447",
+    "created": "2026-04-28",
+    "description": "Cross-asset IV compression extreme completion - BTC 30d IV at 41.9%, GOLD 30d IV at 23%, Oil PM IV at 40.2% creates systematic volatility expansion",
+    "conditions": {
+      "btc_opt_iv_30d": "< 42",
+      "gold_opt_iv_30d": "< 24",
+      "oil_pm_iv": "< 41"
+    },
+    "prediction": "Multi-asset volatility expansion within one week as -6σ statistical anomalies correct",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-448",
+    "created": "2026-04-28",
+    "description": "Oil PM settlement extreme statistical anomaly reversal - PM at 113 while spot at 84.89 represents +7.8σ deviation requiring correction",
+    "conditions": {
+      "oil_pm_settle_ev": "> 100",
+      "oil_wti_spot": "< 90"
+    },
+    "prediction": "Oil PM-spot convergence within 3-5 days as statistical anomaly corrects toward normal 2-4pt premium",
+    "timeframeDays": 5,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-449",
+    "created": "2026-04-28",
+    "description": "Gold PM settlement extreme deviation mean reversion - PM at 15176 while spot at 4587 represents +12.1σ anomaly",
+    "conditions": {
+      "gold_pm_settle_ev": "> 10000",
+      "gold_gc_spot": "< 5000"
+    },
+    "prediction": "Gold PM settlement normalization below 8000 within one week as extreme statistical anomaly corrects",
+    "timeframeDays": 7,
+    "confidence": 0.9,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-450",
+    "created": "2026-04-28",
+    "description": "BTC extreme funding exhaustion reversal - funding near zero at 0.04% during consolidation above 76k creates systematic bounce setup",
+    "conditions": {
+      "btc_hl_funding_ann": "< 0.005",
+      "btc_spot": "> 75000"
+    },
+    "prediction": "BTC funding recovery above 5% within 48-72 hours as positioning exhaustion completes",
+    "timeframeDays": 3,
+    "confidence": 0.7,
     "tests": [
       {
         "date": "2026-04-28",

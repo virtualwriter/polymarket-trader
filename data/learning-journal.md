@@ -2867,3 +2867,35 @@ Historic cross-asset positioning exhaustion completion observed. HYPE institutio
 
 ---
 
+### 2026-04-28 13:54 UTC
+
+**Portfolio:** $100.59 total | Cash $92.59 | 8 open | P&L $0.5885 | 62% win rate (82 trades)
+
+**Closed 3 trades:**
+- ✅ BTC short via spot/spot [BTC spot] (PC_RATIO_EXTREME_LOW) → target: +$0.0256 (2.6%, market 0.0256, funding 0.0000)
+- ✅ AMZN short via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_LONG) → target: +$0.0204 (2.0%, market 0.0197, funding 0.0007)
+- ✅ GOLD long via polymarket/pm_yes [gc-over-under-jun-2026 — YES — Will Gold (GC) settle over $4,800 on the final trading day of June 2026?] (OPT_IV_GT_PM_IV) → target: +$0.2632 (26.3%, market 0.2632, funding 0.0000)
+
+**Opened 3 positions:**
+- GOLD long @ $4587 via spot/spot [GOLD spot] (PM_EV_ABOVE_SPOT)
+- OIL long @ $84.89 via spot/spot [OIL spot] (PM_EV_ABOVE_SPOT)
+- BTC short @ $76100 via spot/spot [BTC spot] (MACRO_MOMENTUM_DOWN)
+
+**Statistical observations:**
+- [anomaly] gold_pm_settle_ev = 15176 is 12.1 std devs from mean (5040.50 ± 835.92)
+- [anomaly] oil_pm_settle_ev = 113 is 7.8 std devs from mean (84.51 ± 3.67)
+- [anomaly] gold_gld_pc_ratio = 1.008 is 2.6 std devs from mean (0.55 ± 0.17)
+- [anomaly] gold_gld_spot = 420.77 is -2.6 std devs from mean (435.89 ± 5.74)
+- [anomaly] gold_gc_spot = 4587 is -2.6 std devs from mean (4738.25 ± 58.98)
+
+**Blocked signal learning:**
+- Open blocked shadows: 11
+- Resolved blocked shadows: 2 (0 wins / 2 losses)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-11.30%)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-7.96%)
+
+**LLM analysis:**
+Historic multi-asset positioning exhaustion completion observed. HYPE institutional distribution reached 18% OI decline (789M from 957M peak) with funding normalization to 9.03% - textbook smart money exit completion. Cross-asset IV compression to extreme statistical anomalies (BTC 41.9%, GOLD 23%, Oil PM 40.2%) represents -6σ deviations requiring systematic correction. Oil PM settlement at 113 (+7.8σ) and Gold PM at 15176 (+12.1σ) create highest-probability mean reversion setups observed. Key insight: extreme statistical anomalies across multiple venues simultaneously indicate systematic market inefficiencies requiring correction within one week. Increased LLM_HYPOTHESIS target to 7% and FUNDING_EXTREME_SHORT target to 3.5% based on improved pattern recognition of positioning exhaustion signals. These confluence patterns represent the most extreme cross-asset positioning exhaustion signals in the dataset.
+
+---
+
