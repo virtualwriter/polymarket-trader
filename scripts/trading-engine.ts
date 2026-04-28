@@ -1705,7 +1705,7 @@ function generateSignals(
         if (signal) signals.push(signal);
       }
       const pcLowWeight = weightForSignalAsset(weightMap, "PC_RATIO_EXTREME_LOW", a.key);
-      if (pcRatio < 0.5 && pcLowWeight) {
+      if (a.key !== "AMZN" && pcRatio < 0.5 && pcLowWeight) {
         const strength = Math.min(1, (0.5 - pcRatio) / 0.3);
         const w = pcLowWeight;
         const risk = riskForSignal(learningParams, "PC_RATIO_EXTREME_LOW");
