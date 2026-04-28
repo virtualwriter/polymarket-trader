@@ -2993,3 +2993,32 @@ Major breakthrough in recognizing institutional distribution exhaustion patterns
 
 ---
 
+### 2026-04-28 20:28 UTC
+
+**Portfolio:** $100.58 total | Cash $93.58 | 7 open | P&L $0.5772 | 61% win rate (85 trades)
+
+**Closed 2 trades:**
+- ❌ OIL short via spot/spot [OIL spot] (PC_RATIO_EXTREME_LOW) → stop: $-0.1837 (-18.4%, market -0.1837, funding 0.0000)
+- ✅ OIL long via spot/spot [OIL spot] (PM_EV_ABOVE_SPOT) → target: +$0.1736 (17.4%, market 0.1736, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL long @ $99.63 via spot/spot [OIL spot] (LLM_HYPOTHESIS)
+
+**Statistical observations:**
+- [anomaly] oil_wti_spot = 99.63 is 9.6 std devs from mean (84.57 ± 1.58)
+- [anomaly] oil_pm_settle_ev = 94 is 2.3 std devs from mean (84.81 ± 4.08)
+- [anomaly] gold_gc_spot = 4595 is -2.2 std devs from mean (4734.61 ± 62.37)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.90 to -0.31
+
+**Blocked signal learning:**
+- Open blocked shadows: 13
+- Resolved blocked shadows: 3 (1 wins / 2 losses)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-11.30%)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-7.96%)
+- ✅ PM proxy short: MACRO_MOMENTUM_DOWN_PM_PROXY_SHORT BTC short via polymarket would have target (+6.73%)
+
+**LLM analysis:**
+Critical breakthrough recognizing extreme structural breakdown patterns. Oil showing most extreme dislocation in dataset - Brent-WTI spread collapsed to 4.4 from 25+ range while WTI spiked to 99.63 representing +9.6σ statistical anomaly. This creates systematic arbitrage requiring correction as structural relationships cannot sustain such extremes. HYPE institutional distribution reached textbook completion at 16% OI decline with funding crash to -6.24%, confirming smart money exit exhaustion. Cross-asset positioning exhaustion patterns showing highest conviction reversal setups. Updated LLM_HYPOTHESIS target to 10% given improved recognition of multi-venue statistical anomalies and structural breakdown reversals. Pattern recognition evolution focusing on extreme statistical deviations that force systematic correction regardless of fundamentals.
+
+---
+

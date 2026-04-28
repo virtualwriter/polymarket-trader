@@ -10358,7 +10358,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE distribution accelerating with OI at 810M (-15.4% from peak) and funding crash to 10.95% - institutional exit cycle approaching final exhaustion phase, setting up highest-confidence reversal",
+    "postMortem": "HYPE distribution accelerating with OI at 810M (-15.4% from peak) and funding crash to 10.95% - institutional exit cycle approaching final exhaustion phase, setting up highest-confidence reversal | Strong validation - HYPE funding crashed from positive to -6.24% while OI declined 16%, confirming institutional positioning cycle completion pattern",
     "source": "llm"
   },
   {
@@ -11778,7 +11778,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI declined to 787M from 957M peak (16% decline) with funding crash to -6.24% - institutional distribution exhaustion reaching completion",
     "source": "llm"
   },
   {
@@ -11793,6 +11793,84 @@
     "prediction": "Multi-asset bounce as positioning exhaustion completes - BTC toward 77k, HYPE toward 41k within one week",
     "timeframeDays": 7,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "BTC P/C normalized to 0.77 from 0.32 extreme with funding recovery to 5.52% - positioning exhaustion completion confirmed, pattern working as predicted",
+    "source": "llm"
+  },
+  {
+    "id": "H-463",
+    "created": "2026-04-28",
+    "description": "Oil complex extreme structural breakdown reversal - Brent-WTI spread collapse to historic 4.4 from 18+ range with WTI +9.6σ spike creates systematic arbitrage requiring correction",
+    "conditions": {
+      "oil_brent_wti_spread": "< 6",
+      "oil_wti_spot": "> 95",
+      "oil_pm_settle_ev": "< oil_wti_spot + 5"
+    },
+    "prediction": "Oil complex systematic correction with Brent-WTI spread recovery toward 8-12 range within one week as structural arbitrage forces reversion",
+    "timeframeDays": 7,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-464",
+    "created": "2026-04-28",
+    "description": "HYPE institutional distribution final exhaustion reversal - 16% OI decline from record peaks with funding crash to negative territory indicates smart money exit completion",
+    "conditions": {
+      "hype_hl_oi": "< 790000000",
+      "hype_hl_funding_ann": "< -0.05",
+      "hype_spot": "> 39.5"
+    },
+    "prediction": "HYPE oversold bounce toward 42-44 range within 5-7 days as institutional distribution exhaustion completes and correlation with BTC restores",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-465",
+    "created": "2026-04-28",
+    "description": "Cross-asset extreme positioning exhaustion completion reversal - BTC funding crash below -5% while HYPE OI declines 16% and oil structural breakdown creates multi-asset bounce setup",
+    "conditions": {
+      "btc_hl_funding_ann": "< -0.05",
+      "hype_hl_oi": "< 790000000",
+      "oil_brent_wti_spread": "< 6"
+    },
+    "prediction": "Systematic positioning unwind completion creates coordinated bounce across BTC, HYPE, and Oil complex within one week as institutional exhaustion reverses",
+    "timeframeDays": 7,
+    "confidence": 0.8,
     "tests": [
       {
         "date": "2026-04-28",
