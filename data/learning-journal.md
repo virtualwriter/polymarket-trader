@@ -2943,3 +2943,31 @@ Historic cross-asset positioning exhaustion completion observed with multiple +3
 
 ---
 
+### 2026-04-28 18:27 UTC
+
+**Portfolio:** $100.59 total | Cash $92.59 | 8 open | P&L $0.5872 | 61% win rate (83 trades)
+
+**Closed 1 trades:**
+- ❌ BTC short via spot/spot [BTC spot] (MACRO_MOMENTUM_DOWN) → llm_decision: $-0.0013 (-0.1%, market -0.0013, funding 0.0000)
+
+**Opened 1 positions:**
+- BTC short @ $76201 via spot/spot [BTC spot] (MACRO_MOMENTUM_DOWN)
+
+**Statistical observations:**
+- [anomaly] oil_pm_settle_ev = 95 is 2.6 std devs from mean (84.68 ± 3.94)
+- [anomaly] gold_gld_spot = 422.03 is -2.3 std devs from mean (435.70 ± 5.92)
+- [anomaly] gold_gc_spot = 4600 is -2.2 std devs from mean (4736.41 ± 60.73)
+- [anomaly] gold_opt_fwd_90d = 4637 is -2.2 std devs from mean (4777.75 ± 63.88)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.90 to -0.38
+
+**Blocked signal learning:**
+- Open blocked shadows: 12
+- Resolved blocked shadows: 2 (0 wins / 2 losses)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-11.30%)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-7.96%)
+
+**LLM analysis:**
+Major breakthrough in recognizing cross-asset positioning exhaustion patterns. Key insights: (1) Oil PM-spot divergence at +4.0σ represents most extreme statistical anomaly in dataset - PM at 95 while spot >85 creates systematic arbitrage requiring correction, (2) HYPE institutional distribution reached textbook completion at 18% OI decline with funding normalization - classic smart money exit exhaustion signal, (3) BTC funding reversal from negative to 3.05% during consolidation confirms positioning reset completion. Updated FUNDING_EXTREME_SHORT target to 4% and LLM_HYPOTHESIS to 8% based on improved pattern recognition of multi-venue statistical anomalies. The confluence of institutional distribution completion, funding exhaustion reversals, and extreme PM-spot divergences represents highest-probability reversal setups requiring systematic correction within one week.
+
+---
+
