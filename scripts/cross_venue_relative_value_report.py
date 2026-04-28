@@ -20,6 +20,7 @@ import csv
 import html
 import json
 import math
+import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
@@ -48,6 +49,7 @@ class RelativeValueRow:
     asset: str
     event_slug: str
     contract_question: str
+    contract_month: str
     direction: str
     strike: float
     expiry: str
@@ -101,6 +103,34 @@ def parse_time(value: str) -> Optional[datetime]:
         return datetime.fromisoformat(value.replace("Z", "+00:00"))
     except ValueError:
         return None
+
+
+def contract_month_from_question(question: str, expiry_dt: Optional[datetime]) -> str:
+    months = {
+        "january": "January",
+        "february": "February",
+        "march": "March",
+        "april": "April",
+        "may": "May",
+        "june": "June",
+        "july": "July",
+        "august": "August",
+        "september": "September",
+        "october": "October",
+        "november": "November",
+        "december": "December",
+    }
+    q = question.lower()
+    for key, label in months.items():
+        if re.search(rf"\b{key}\b", q):
+            year_match = re.search(rf"\b{key}\b.{{0,40}}?(20\d{{2}})", q)
+            year = year_match.group(1) if year_match else None
+            if not year and expiry_dt:
+                year = str(expiry_dt.astimezone(timezone.utc).year)
+            return f"{label} {year}" if year else label
+    if expiry_dt:
+        return expiry_dt.astimezone(timezone.utc).strftime("%B %Y")
+    return ""
 
 
 def snapshot_time(snapshot: Dict[str, Any]) -> datetime:
@@ -425,6 +455,7 @@ def build_rows(snapshot: Dict[str, Any], min_liquidity: float = 0.0) -> List[Rel
                     asset=asset,
                     event_slug=str(event.get("slug", "")),
                     contract_question=question,
+                    contract_month=contract_month_from_question(question, expiry_dt),
                     direction=direction,
                     strike=strike or 0.0,
                     expiry=expiry_raw,
@@ -508,6 +539,7 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
             f"<td>{html.escape(row.direction)}</td>"
             f"<td>{html.escape(fmt_num(row.strike, 2))}</td>"
             f"<td class='question'>{html.escape(row.contract_question)}</td>"
+            f"<td>{html.escape(row.contract_month)}</td>"
             f"<td>{html.escape(fmt_pct(row.pm_yes_price))}</td>"
             f"<td>{html.escape(fmt_pct(row.options_touch_adjusted_prob))}</td>"
             f"<td class='{cls}'>{html.escape(fmt_pts(row.edge_score))}</td>"
@@ -576,6 +608,7 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         <th>Dir</th>
         <th>Strike</th>
         <th>Contract</th>
+        <th>Date</th>
         <th>PM YES</th>
         <th>Options Prob</th>
         <th>Edge Pts</th>
