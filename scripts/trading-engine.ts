@@ -16,6 +16,7 @@ import { join } from "node:path";
 // ─── Config ──────────────────────────────────────────────────────────────────
 
 const DATA_DIR = join(import.meta.dirname ?? ".", "..", "data");
+const RELATIVE_VALUE_CSV = join(import.meta.dirname ?? ".", "..", "relative-value", "cross_venue_relative_value.csv");
 const INSTRUMENT_SNAPSHOTS_JSONL = "instrument-snapshots.jsonl";
 const LEARNING_PARAMS_FILE = "learning-params.json";
 const BLOCKED_SIGNALS_FILE = "blocked-signals.json";
@@ -201,7 +202,7 @@ interface BlockedSignalShadow {
   status: "open" | "resolved";
   blockedAt: string;
   resolvedAt?: string;
-  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short";
+  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short" | "relative_value_heatmap";
   signalType: string;
   asset: string;
   venue: Signal["venue"];
@@ -273,6 +274,27 @@ interface StatObservation {
   assets: string[];
   magnitude: number;
   data: Record<string, number>;
+}
+
+interface RelativeValueObservation {
+  timestamp: string;
+  asset: string;
+  eventSlug: string;
+  question: string;
+  contractMonth: string;
+  direction: "above" | "below";
+  strike: number;
+  expiry: string;
+  pmYes: number | null;
+  pmBid: number | null;
+  pmAsk: number | null;
+  modelProb: number | null;
+  edgePts: number;
+  bestExpression: string;
+  optionIv: number | null;
+  pmIv: number | null;
+  liquidity: number | null;
+  flags: string;
 }
 
 interface InstrumentSnapshotContract {
@@ -383,6 +405,54 @@ function readCsv(filename: string): SnapshotRow[] {
     });
     return row;
   });
+}
+
+function readCsvFile(path: string): Record<string, string>[] {
+  if (!existsSync(path)) return [];
+  const raw = readFileSync(path, "utf-8").trim();
+  if (!raw) return [];
+  const lines = raw.split("\n");
+  if (lines.length < 2) return [];
+  const headers = parseCsvLine(lines[0]);
+  return lines.slice(1).map((line) => {
+    const values = parseCsvLine(line);
+    return Object.fromEntries(headers.map((header, idx) => [header, values[idx] ?? ""]));
+  });
+}
+
+function readRelativeValueObservations(limit = 30): RelativeValueObservation[] {
+  return readCsvFile(RELATIVE_VALUE_CSV)
+    .map((row): RelativeValueObservation | null => {
+      const edgePts = num(row.edge_score);
+      const strike = num(row.strike);
+      const direction = row.direction === "above" || row.direction === "below" ? row.direction : null;
+      if (edgePts === null || strike === null || !direction) return null;
+      if (!row.option_symbol || !row.options_touch_adjusted_prob) return null;
+      return {
+        timestamp: row.timestamp ?? "",
+        asset: row.asset ?? "",
+        eventSlug: row.event_slug ?? "",
+        question: row.contract_question ?? "",
+        contractMonth: row.contract_month ?? "",
+        direction,
+        strike,
+        expiry: row.expiry ?? "",
+        pmYes: num(row.pm_yes_price),
+        pmBid: num(row.pm_best_bid),
+        pmAsk: num(row.pm_best_ask),
+        modelProb: num(row.options_touch_adjusted_prob),
+        edgePts,
+        bestExpression: row.best_expression ?? "",
+        optionIv: num(row.option_iv),
+        pmIv: num(row.pm_iv),
+        liquidity: num(row.liquidity),
+        flags: row.flags ?? "",
+      };
+    })
+    .filter((row): row is RelativeValueObservation => !!row)
+    .filter((row) => row.bestExpression !== "no-options-model")
+    .sort((a, b) => Math.abs(b.edgePts) - Math.abs(a.edgePts))
+    .slice(0, limit);
 }
 
 function appendTradeCsv(trade: ClosedTrade) {
@@ -1326,6 +1396,91 @@ function recordPolymarketProxyShortShadow(
   });
 }
 
+function recordRelativeValueHeatmapShadows(
+  observations: RelativeValueObservation[],
+  latestRow: SnapshotRow,
+  latestSnapshot: InstrumentSnapshotFile | null,
+  learningParams: LearningParams,
+  blockedSignals: BlockedSignalShadow[],
+): number {
+  if (!latestSnapshot) return 0;
+  let recorded = 0;
+
+  for (const obs of observations.slice(0, 10)) {
+    if (!["buy_yes", "sell_yes_or_buy_no", "avoid_buy_yes"].includes(obs.bestExpression)) continue;
+    const event = latestSnapshot.polymarket.find((candidate) => candidate.slug === obs.eventSlug && candidate.asset === obs.asset);
+    if (!event) continue;
+    const contract = event.contracts.find((candidate) =>
+      candidate.question === obs.question || (candidate.strike === obs.strike && candidate.direction === obs.direction)
+    );
+    if (!contract || !contract.marketId || contract.closed || contract.active === false) continue;
+
+    const instrumentType: "pm_yes" | "pm_no" = obs.bestExpression === "buy_yes" ? "pm_yes" : "pm_no";
+    const entryPrice = instrumentType === "pm_yes"
+      ? (obs.pmAsk && obs.pmAsk > 0 ? obs.pmAsk : contract.yesPrice)
+      : (obs.pmBid && obs.pmBid > 0 ? 1 - obs.pmBid : 1 - contract.yesPrice);
+    if (entryPrice <= 0 || entryPrice >= 1) continue;
+
+    const instrumentId = `${event.slug}::${contract.marketId}`;
+    if (blockedSignals.some((shadow) =>
+      shadow.status === "open" &&
+      shadow.signalType === "RELATIVE_VALUE_HEATMAP" &&
+      shadow.position.instrumentId === instrumentId &&
+      shadow.position.instrumentType === instrumentType
+    )) continue;
+
+    const now = new Date().toISOString();
+    const expiryDate = obs.expiry || contract.endDate || new Date(Date.now() + 14 * 86400000).toISOString();
+    const position: Position = {
+      id: `RV-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+      openedAt: now,
+      asset: obs.asset,
+      venue: "polymarket",
+      direction: instrumentType === "pm_yes" ? "long" : "short",
+      entryPrice,
+      currentPrice: entryPrice,
+      size: TRADE_SIZE,
+      leverage: 1,
+      signalType: "RELATIVE_VALUE_HEATMAP",
+      hypothesisId: null,
+      thesis: `[RELATIVE VALUE SHADOW] ${obs.bestExpression} edge=${obs.edgePts.toFixed(1)}pts, PM=${formatPct(obs.pmYes)}, model=${formatPct(obs.modelProb)}, optIV=${formatPct(obs.optionIv)}, pmIV=${formatPct(obs.pmIv)} — ${obs.question}`,
+      targetPct: 20,
+      stopPct: 12,
+      expiryDate,
+      instrumentType,
+      instrumentId,
+      instrumentLabel: `${event.slug} — ${instrumentType === "pm_yes" ? "YES" : "NO"} — ${contract.question}`,
+      entryUnderlyingPrice: getAssetPrice(latestRow, obs.asset) ?? undefined,
+      currentUnderlyingPrice: getAssetPrice(latestRow, obs.asset) ?? undefined,
+    };
+
+    blockedSignals.push({
+      id: position.id,
+      status: "open",
+      blockedAt: now,
+      blockedReason: "relative_value_heatmap",
+      signalType: "RELATIVE_VALUE_HEATMAP",
+      asset: obs.asset,
+      venue: "polymarket",
+      direction: position.direction,
+      confidence: Number(Math.min(1, Math.abs(obs.edgePts) / 20).toFixed(4)),
+      thesis: position.thesis,
+      learningParamsSnapshot: {
+        macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+        contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
+        positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
+        llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
+        momentumLongExpiryDays: learningParams.momentumLongExpiryDays,
+        signalRisk: learningParams.signalRisk,
+      },
+      position,
+    });
+    recorded++;
+  }
+
+  return recorded;
+}
+
 function resolveBlockedSignalShadows(
   blockedSignals: BlockedSignalShadow[],
   latestRow: SnapshotRow,
@@ -2210,6 +2365,7 @@ async function callLLM(
   statObs: StatObservation[],
   closedTrades: ClosedTrade[],
   blockedSummary: BlockedSignalLearningSummary,
+  relativeValueRows: RelativeValueObservation[],
   journalTail: string,
 ): Promise<{
   marketAssessment: string;
@@ -2281,6 +2437,9 @@ ${JSON.stringify(learningParams, null, 2)}
 BLOCKED SIGNAL SHADOW LEARNING:
 ${JSON.stringify(blockedSummary, null, 1)}
 
+RELATIVE-VALUE HEATMAP OBSERVATIONS (ranked by absolute executable edge):
+${JSON.stringify(relativeValueRows, null, 1)}
+
 RECENT LEARNING JOURNAL:
 ${journalTail || "  No entries yet"}
 
@@ -2299,6 +2458,7 @@ IMPORTANT RULES:
 - Prefer polymarket only for assets with explicit contracts in the instrument snapshots
 - If you suggest parameter changes, keep them incremental and evidence-based
 - Use BLOCKED SIGNAL SHADOW LEARNING to judge whether filters are too strict or appropriately defensive
+- Use RELATIVE-VALUE HEATMAP OBSERVATIONS to look for clean cross-venue edges. If you suggest a trade because of this section, say "relative-value heatmap" in the thesis so its performance can be reviewed.
 - You may return \"action: close\" to exit an existing open position; use that only when the thesis has clearly weakened or a target/stop is likely stale
 - For \"action: close\", set direction to long, short, or any to identify which existing position to close
 - Keep parameter updates inside these bounds:
@@ -2378,6 +2538,10 @@ Respond with ONLY valid JSON in this exact format:
   }
 }
 
+function formatPct(v: number | null): string {
+  return v === null ? "n/a" : `${(v * 100).toFixed(1)}%`;
+}
+
 // ─── Journal Writer ──────────────────────────────────────────────────────────
 
 function writeJournalEntry(
@@ -2448,6 +2612,7 @@ function writeJournalEntry(
       const label = shadow.blockedReason === "iv_downside_leg_untracked"
         ? "Missing downside leg"
         : shadow.blockedReason === "polymarket_proxy_short" ? "PM proxy short"
+        : shadow.blockedReason === "relative_value_heatmap" ? "Relative-value heatmap"
         : shadow.blockedReason === "manual_shadow_trade" ? "Manual shadow" : "Blocked";
       lines.push(`- ${emoji} ${label}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${shadow.closeReason} (${shadow.pnlPct >= 0 ? "+" : ""}${shadow.pnlPct.toFixed(2)}%)`);
     }
@@ -2636,6 +2801,7 @@ async function main() {
   // Step 1: Mark-to-market and close positions
   const latestRow = valRows[valRows.length - 1];
   const latestSnapshot = latestInstrumentSnapshot(instrumentSnapshots);
+  const relativeValueRows = readRelativeValueObservations(30);
   const closedTrades = markToMarket(portfolio, latestRow, instrumentSnapshots);
   if (closedTrades.length > 0) {
     console.log(`\n  Closed ${closedTrades.length} positions:`);
@@ -2655,9 +2821,14 @@ async function main() {
       const shadowLabel = shadow.blockedReason === "iv_downside_leg_untracked"
         ? "Missing downside leg"
         : shadow.blockedReason === "polymarket_proxy_short" ? "PM proxy short"
+        : shadow.blockedReason === "relative_value_heatmap" ? "Relative-value heatmap"
         : shadow.blockedReason === "manual_shadow_trade" ? "Manual shadow" : "Blocked";
       console.log(`    ${emoji} ${shadowLabel}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${result.closeReason}: ${result.pnlPct >= 0 ? "+" : ""}${result.pnlPct.toFixed(2)}%`);
     }
+  }
+  const newRelativeValueShadows = recordRelativeValueHeatmapShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals);
+  if (newRelativeValueShadows > 0) {
+    console.log(`\n  Opened ${newRelativeValueShadows} relative-value heatmap shadow trades.`);
   }
   let proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   let blockedSummary = summarizeBlockedSignals(blockedSignals);
@@ -2696,7 +2867,7 @@ async function main() {
   if (!NO_LLM) {
     console.log(`\n  Calling LLM for pattern discovery...`);
     const journalTail = readJournalTail(40);
-    const llmResult = await callLLM(valRows, macroRows, instrumentSnapshots, portfolio, learningParams, weights, hypotheses, statObs, closedTrades, blockedSummary, journalTail);
+    const llmResult = await callLLM(valRows, macroRows, instrumentSnapshots, portfolio, learningParams, weights, hypotheses, statObs, closedTrades, blockedSummary, relativeValueRows, journalTail);
 
     if (llmResult) {
       console.log(`  LLM assessment: ${llmResult.marketAssessment.slice(0, 120)}`);
