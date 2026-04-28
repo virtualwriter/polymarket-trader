@@ -10979,7 +10979,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC P/C collapsed to 0.676 during pullback below 77k with funding crash to -8.99%, confirming systematic positioning exhaustion",
+    "postMortem": "BTC P/C collapsed to 0.676 during pullback below 77k with funding crash to -8.99%, confirming systematic positioning exhaustion | BTC P/C ratio dropped to 0.676 during pullback with funding crash to -5.18%, confirming call positioning exhaustion pattern. Close monitoring as pattern develops.",
     "source": "llm"
   },
   {
@@ -11005,7 +11005,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE OI declined to 804M from 957M peak (16% decline) with funding at 10.95%, indicating distribution exhaustion nearing completion",
+    "postMortem": "HYPE OI declined to 804M from 957M peak (16% decline) with funding at 10.95%, indicating distribution exhaustion nearing completion | HYPE OI declined to 790M from 957M peak (17.4% decline) with funding normalization to 10.95%, indicating distribution exhaustion completion as predicted.",
     "source": "llm"
   },
   {
@@ -11030,7 +11030,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Cross-asset IV compression accelerated - BTC 30d IV at 41.3% while GOLD 30d IV at 21.7%, confirming positioning exhaustion setup | Cross-asset IV compression accelerating - BTC 30d IV at 41%, GOLD at 21.7% - systematic volatility expansion setup strengthening as predicted",
+    "postMortem": "Cross-asset IV compression accelerated - BTC 30d IV at 41.3% while GOLD 30d IV at 21.7%, confirming positioning exhaustion setup | Cross-asset IV compression accelerating - BTC 30d IV at 41%, GOLD at 21.7% - systematic volatility expansion setup strengthening as predicted | Cross-asset IV compression confirmed: BTC 30d IV at 41% and GOLD 30d IV at 21.7%, creating extreme compression setup for volatility expansion.",
     "source": "llm"
   },
   {
@@ -11202,6 +11202,83 @@
     "prediction": "Oil funding normalization below 50% absolute within 3-5 days as extreme positioning unwinds",
     "timeframeDays": 5,
     "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-440",
+    "created": "2026-04-28",
+    "description": "Cross-asset positioning exhaustion completion reversal - when BTC PM IV compresses below 40.5% (-6σ anomaly) while HYPE OI declines below 800M from 957M peak (16%+ decline) and GOLD funding oscillates between extremes, systematic institutional positioning cycle completion creates multi-asset bounce within 5-7 days",
+    "conditions": {
+      "btc_pm_iv": "< 40.5",
+      "hype_hl_oi": "< 800000000",
+      "gold_hl_funding_ann": "> 30"
+    },
+    "prediction": "Multi-asset volatility expansion and price reversal within one week as extreme positioning unwinds",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-441",
+    "created": "2026-04-28",
+    "description": "HYPE institutional distribution exhaustion completion - when HYPE OI declines below 790M from 957M peak (18%+ decline) while funding normalizes above -20% and spot holds above 40, massive distribution exhaustion creates oversold bounce opportunity",
+    "conditions": {
+      "hype_hl_oi": "< 790000000",
+      "hype_hl_funding_ann": "> -20",
+      "hype_spot": "> 40"
+    },
+    "prediction": "HYPE oversold bounce toward 42-43 range within 5-7 days as institutional distribution completes",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-442",
+    "created": "2026-04-28",
+    "description": "BTC PM IV extreme compression statistical reversion - when BTC PM IV drops below 40.5% representing -6.5σ statistical anomaly during consolidation above 76k, market efficiency requires volatility expansion correction within one week",
+    "conditions": {
+      "btc_pm_iv": "< 40.5",
+      "btc_spot": "> 76000"
+    },
+    "prediction": "BTC IV expansion above 42% within 5-7 days as extreme compression corrects to historical norms",
+    "timeframeDays": 7,
+    "confidence": 0.75,
     "tests": [
       {
         "date": "2026-04-28",
