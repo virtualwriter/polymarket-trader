@@ -600,7 +600,7 @@ def top_rows(rows: List[RelativeValueRow], limit: int = 80) -> List[RelativeValu
 
 def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    visible = top_rows(rows)
+    visible = top_rows(rows, limit=len(rows))
     generated = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     body_rows = []
     for row in visible:
