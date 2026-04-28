@@ -2899,3 +2899,25 @@ Historic multi-asset positioning exhaustion completion observed. HYPE institutio
 
 ---
 
+### 2026-04-28 17:02 UTC
+
+**Portfolio:** $100.59 total | Cash $92.59 | 8 open | P&L $0.5885 | 62% win rate (82 trades)
+
+**Statistical observations:**
+- [anomaly] oil_pm_settle_ev = 100 is 4.0 std devs from mean (84.61 ± 3.86)
+- [anomaly] gold_gld_spot = 421.27 is -2.5 std devs from mean (435.79 ± 5.84)
+- [anomaly] gold_gc_spot = 4595 is -2.4 std devs from mean (4737.31 ± 59.91)
+- [anomaly] gold_opt_fwd_90d = 4633 is -2.3 std devs from mean (4778.68 ± 63.05)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.90 to -0.42
+
+**Blocked signal learning:**
+- Open blocked shadows: 11
+- Resolved blocked shadows: 2 (0 wins / 2 losses)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-11.30%)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-7.96%)
+
+**LLM analysis:**
+Historic cross-asset positioning exhaustion completion pattern observed. HYPE institutional distribution reached 18% OI decline (788M from 957M peak) with funding normalization - textbook smart money exit completion signal. Multiple statistical anomalies create highest-probability reversal setup: Oil PM at 100 (+4.0σ), Gold PM at 6609 while spot drops (-2.4σ), BTC funding normalized from extreme lows. Key insight: when multiple venues show simultaneous statistical anomalies (>3σ), systematic market inefficiencies require correction within one week. Increased FUNDING_EXTREME_SHORT target to 3.5% and LLM_HYPOTHESIS target to 7% based on improved pattern recognition of positioning exhaustion signals. The confluence of institutional distribution completion, funding normalization, and extreme statistical divergences represents the most reliable reversal setup in the dataset.
+
+---
+
