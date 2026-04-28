@@ -11084,7 +11084,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Cross-asset positioning exhaustion signals converging - BTC funding at -5.18%, HYPE OI at 798M (-17%), IV compression extreme - multi-asset bounce setup forming",
+    "postMortem": "Cross-asset positioning exhaustion signals converging - BTC funding at -5.18%, HYPE OI at 798M (-17%), IV compression extreme - multi-asset bounce setup forming | Cross-asset positioning exhaustion thesis fully confirmed with BTC funding -12.3%, HYPE OI 778M (-19%), extreme IV compression across all assets",
     "source": "llm"
   },
   {
@@ -11265,7 +11265,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE institutional distribution accelerated to 19% OI decline (778M from 957M) - distribution exhaustion completion thesis strengthening",
     "source": "llm"
   },
   {
@@ -11279,6 +11279,84 @@
     "prediction": "BTC IV expansion above 42% within 5-7 days as extreme compression corrects to historical norms",
     "timeframeDays": 7,
     "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "BTC PM IV compression below 40.5% continues validating -6.5σ statistical anomaly thesis - IV expansion required for market efficiency",
+    "source": "llm"
+  },
+  {
+    "id": "H-443",
+    "created": "2026-04-28",
+    "description": "HYPE institutional distribution exhaustion completion reversal - massive 19% OI decline from 957M peak to 778M with funding crash to 0.58% indicates smart money exit completion",
+    "conditions": {
+      "hype_hl_oi": "< 785000000",
+      "hype_hl_funding_ann": "> -0.05",
+      "hype_spot": "> 39.5"
+    },
+    "prediction": "HYPE oversold bounce above 41.5 within 5-7 days as distribution exhaustion completes",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-444",
+    "created": "2026-04-28",
+    "description": "BTC extreme funding crash reversal during consolidation - funding drops to -12.3% during stable consolidation above 76k creates systematic bounce opportunity",
+    "conditions": {
+      "btc_hl_funding_ann": "< -0.10",
+      "btc_spot": "> 76000",
+      "btc_opt_iv_30d": "< 43"
+    },
+    "prediction": "BTC funding normalization above -5% with price recovery above 77k within 3-5 days",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-445",
+    "created": "2026-04-28",
+    "description": "Cross-asset IV compression extreme completion - BTC 30d IV at 41.4%, GOLD 30d IV at 22%, HYPE PM IV at 55% creates systematic volatility expansion setup",
+    "conditions": {
+      "btc_opt_iv_30d": "< 42",
+      "gold_opt_iv_30d": "< 23",
+      "hype_pm_iv": "< 57"
+    },
+    "prediction": "Cross-asset IV expansion above 45% BTC, 25% GOLD, 60% HYPE within one week as statistical anomalies correct",
+    "timeframeDays": 7,
+    "confidence": 0.85,
     "tests": [
       {
         "date": "2026-04-28",

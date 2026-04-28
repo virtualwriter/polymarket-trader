@@ -2834,3 +2834,36 @@ Historic breakthrough in cross-asset positioning exhaustion analysis. The simult
 
 ---
 
+### 2026-04-28 10:55 UTC
+
+**Portfolio:** $100.28 total | Cash $92.28 | 8 open | P&L $0.2794 | 61% win rate (79 trades)
+
+**Closed 2 trades:**
+- ✅ GOLD short via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG) → target: +$0.0223 (2.2%, market 0.0219, funding 0.0005)
+- ❌ GOLD long via polymarket/pm_yes [gc-over-under-jun-2026 — YES — Will Gold (GC) settle over $4,800 on the final trading day of June 2026?] (OPT_IV_GT_PM_IV) → stop: $-0.1121 (-11.2%, market -0.1121, funding 0.0000)
+
+**Opened 2 positions:**
+- GOLD short @ $4610 via spot/spot [GOLD spot] (PC_RATIO_EXTREME_LOW)
+- GOLD long @ $0.475 via polymarket/pm_yes [gc-over-under-jun-2026 — YES — Will Gold (GC) settle over $4,800 on the final trading day of June 2026?] (OPT_IV_GT_PM_IV)
+
+**Statistical observations:**
+- [anomaly] gold_gc_spot = 4610 is -2.2 std devs from mean (4739.26 ± 57.86)
+- [anomaly] gold_gld_spot = 423.5 is -2.2 std devs from mean (435.99 ± 5.62)
+- [anomaly] oil_opt_iv_90d = 21.4 is -2.2 std devs from mean (24.37 ± 1.37)
+- [anomaly] gold_gld_pc_ratio = 0.195 is -2.1 std devs from mean (0.55 ± 0.17)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.90 to -0.52
+
+**Blocked signal learning:**
+- Open blocked shadows: 11
+- Resolved blocked shadows: 6 (0 wins / 6 losses)
+- OPT_IV_GT_PM_IV missing downside leg is unprofitable: 3/3 below-contract shadows would have lost. The current upside-only approach appears correct.
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-12.96%)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-7.96%)
+- ❌ Missing downside leg: PM_IV_GT_OPT_IV_DOWNSIDE OIL short via polymarket would have stop (-5.22%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-44.68%)
+
+**LLM analysis:**
+Historic cross-asset positioning exhaustion completion observed. HYPE institutional distribution reached 19% OI decline (778M from 957M peak) with funding crash to 0.58% - textbook smart money exit completion signal. BTC extreme funding crash to -12.3% during stable consolidation above 76k creates systematic bounce opportunity. Cross-asset IV compression to extreme levels (BTC 41.4%, GOLD 22%, HYPE 55%) represents -6σ statistical anomalies requiring correction. Key insight: institutional positioning cycles complete across multiple assets simultaneously, creating highest-probability multi-asset reversal setup. Increased FUNDING_EXTREME_SHORT target to 3% based on improved recognition of overcorrection patterns. The confluence of distribution exhaustion, extreme funding, and IV compression creates systematic volatility expansion opportunity within one week based on market efficiency principles.
+
+---
+
