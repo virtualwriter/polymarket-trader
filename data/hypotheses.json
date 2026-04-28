@@ -11521,7 +11521,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE institutional distribution reached 18% OI decline (787M from 957M) with funding at -15.69% - distribution exhaustion phase approaching completion as predicted",
     "source": "llm"
   },
   {
@@ -11547,7 +11547,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil PM-spot divergence compressed from +7.8σ to +4.0σ as PM dropped from 113 to 100 while spot held above 84 - mean reversion acceleration confirmed",
     "source": "llm"
   },
   {
@@ -11562,6 +11562,83 @@
     "prediction": "BTC momentum resumption above 77k within 3-5 days as funding exhaustion completes",
     "timeframeDays": 5,
     "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "BTC funding recovered from 0.04% to 7.57% confirming exhaustion reversal pattern - hypothesis working as predicted with systematic bounce setup completing",
+    "source": "llm"
+  },
+  {
+    "id": "H-454",
+    "created": "2026-04-28",
+    "description": "Oil PM-spot extreme divergence mean reversion completion - PM settlement collapse from 113 to 100 while spot holds above 84 creates most extreme convergence opportunity",
+    "conditions": {
+      "oil_pm_settle_ev": "< 105",
+      "oil_wti_spot": "> 84",
+      "oil_hl_funding_ann": "> -0.1"
+    },
+    "prediction": "Oil PM settlement converges toward spot within 5-7 days as +4σ statistical anomaly corrects",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-455",
+    "created": "2026-04-28",
+    "description": "HYPE institutional distribution exhaustion completion reversal - 18% OI decline from 957M peak to 787M with funding normalization indicates smart money exit completion",
+    "conditions": {
+      "hype_hl_oi": "< 800000000",
+      "hype_hl_funding_ann": "> -0.2",
+      "hype_spot": "> 39.5"
+    },
+    "prediction": "HYPE oversold bounce follows within 5-7 days as institutional distribution completes",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-456",
+    "created": "2026-04-28",
+    "description": "BTC funding exhaustion reversal acceleration - funding crash from negative territory to 7.57% during consolidation above 76k creates systematic bounce setup",
+    "conditions": {
+      "btc_hl_funding_ann": "< 0.1",
+      "btc_spot": "> 76000"
+    },
+    "prediction": "BTC funding normalization completion creates momentum resumption within 3-5 days",
+    "timeframeDays": 5,
+    "confidence": 0.6,
     "tests": [
       {
         "date": "2026-04-28",
