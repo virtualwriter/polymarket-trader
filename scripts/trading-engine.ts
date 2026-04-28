@@ -201,7 +201,7 @@ interface BlockedSignalShadow {
   status: "open" | "resolved";
   blockedAt: string;
   resolvedAt?: string;
-  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade";
+  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short";
   signalType: string;
   asset: string;
   venue: Signal["venue"];
@@ -1206,6 +1206,74 @@ function recordIVDownsideLegShadow(
   });
 }
 
+function recordPolymarketProxyShortShadow(
+  sourcePosition: Position,
+  latestRow: SnapshotRow,
+  latestSnapshot: InstrumentSnapshotFile | null,
+  learningParams: LearningParams,
+  blockedSignals: BlockedSignalShadow[],
+) {
+  if (!["BTC", "GOLD", "HYPE"].includes(sourcePosition.asset)) return;
+  if (sourcePosition.direction !== "short") return;
+  if (sourcePosition.venue === "polymarket") return;
+  if (!latestSnapshot) return;
+
+  const shadowSignalType = `${sourcePosition.signalType}_PM_PROXY_SHORT`;
+  const proxySignal: Signal = {
+    type: shadowSignalType,
+    asset: sourcePosition.asset,
+    venue: "polymarket",
+    direction: "short",
+    strength: 0.5,
+    confidence: 0.25,
+    thesis: `[PM PROXY SHORT SHADOW] Real ${sourcePosition.asset} short via ${sourcePosition.venue}/${sourcePosition.instrumentType ?? "legacy"} (${sourcePosition.signalType}). Track buying NO on the comparable Polymarket upside contract.`,
+    hypothesisId: sourcePosition.hypothesisId,
+    entryPrice: getAssetPrice(latestRow, sourcePosition.asset) ?? sourcePosition.entryUnderlyingPrice ?? sourcePosition.entryPrice,
+    targetPct: sourcePosition.targetPct,
+    stopPct: sourcePosition.stopPct,
+    expiryDays: Math.max(1, Math.ceil((new Date(sourcePosition.expiryDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))),
+    contractHint: { preferredDirection: "above", allowDirectionFallback: false, forceInstrumentType: "pm_no" },
+  };
+
+  const position = buildPositionFromSignal(proxySignal, latestRow, latestSnapshot);
+  if (!position) return;
+
+  if (blockedSignals.some((shadow) =>
+    shadow.status === "open" &&
+    shadow.signalType === shadowSignalType &&
+    shadow.asset === position.asset &&
+    shadow.venue === position.venue &&
+    shadow.direction === position.direction &&
+    shadow.position.instrumentId === position.instrumentId,
+  )) return;
+
+  const now = new Date().toISOString();
+  position.id = `PS-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+  position.openedAt = now;
+
+  blockedSignals.push({
+    id: position.id,
+    status: "open",
+    blockedAt: now,
+    blockedReason: "polymarket_proxy_short",
+    signalType: shadowSignalType,
+    asset: sourcePosition.asset,
+    venue: "polymarket",
+    direction: "short",
+    confidence: proxySignal.confidence,
+    thesis: proxySignal.thesis,
+    learningParamsSnapshot: {
+      macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+      contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
+      positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
+      llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
+      momentumLongExpiryDays: learningParams.momentumLongExpiryDays,
+      signalRisk: learningParams.signalRisk,
+    },
+    position,
+  });
+}
+
 function resolveBlockedSignalShadows(
   blockedSignals: BlockedSignalShadow[],
   latestRow: SnapshotRow,
@@ -1311,6 +1379,15 @@ function blockedSignalObservations(summary: BlockedSignalLearningSummary): strin
         notes.push(`${base} missing downside leg is unprofitable: ${row.wouldHaveLost}/${row.resolved} below-contract shadows would have lost. The current upside-only approach appears correct.`);
       } else {
         notes.push(`${base} missing downside leg is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
+      }
+    } else if (row.signalType.endsWith("_PM_PROXY_SHORT")) {
+      const base = row.signalType.replace("_PM_PROXY_SHORT", "");
+      if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
+        notes.push(`${base} Polymarket proxy short is promising: ${row.wouldHaveWon}/${row.resolved} NO-upside proxy shorts would have won, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
+      } else if (row.wouldHaveLost >= row.wouldHaveWon + 2) {
+        notes.push(`${base} Polymarket proxy short is weak: ${row.wouldHaveLost}/${row.resolved} NO-upside proxy shorts would have lost, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
+      } else {
+        notes.push(`${base} Polymarket proxy short is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
       }
     } else if (row.signalType.startsWith("USER_")) {
       if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
@@ -1828,6 +1905,8 @@ function openPositions(
   signals: Signal[],
   latestRow: SnapshotRow,
   snapshots: InstrumentSnapshotFile[],
+  learningParams: LearningParams,
+  blockedSignals: BlockedSignalShadow[],
 ): Position[] {
   const opened: Position[] = [];
   const latestSnapshot = latestInstrumentSnapshot(snapshots);
@@ -1846,6 +1925,7 @@ function openPositions(
     portfolio.cash -= TRADE_SIZE;
     portfolio.positions.push(pos);
     opened.push(pos);
+    recordPolymarketProxyShortShadow(pos, latestRow, latestSnapshot, learningParams, blockedSignals);
   }
   return opened;
 }
@@ -2267,6 +2347,7 @@ function writeJournalEntry(
       const emoji = shadow.outcome === "win" ? "✅" : "❌";
       const label = shadow.blockedReason === "iv_downside_leg_untracked"
         ? "Missing downside leg"
+        : shadow.blockedReason === "polymarket_proxy_short" ? "PM proxy short"
         : shadow.blockedReason === "manual_shadow_trade" ? "Manual shadow" : "Blocked";
       lines.push(`- ${emoji} ${label}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${shadow.closeReason} (${shadow.pnlPct >= 0 ? "+" : ""}${shadow.pnlPct.toFixed(2)}%)`);
     }
@@ -2473,6 +2554,7 @@ async function main() {
       const emoji = result.outcome === "win" ? "✅" : "❌";
       const shadowLabel = shadow.blockedReason === "iv_downside_leg_untracked"
         ? "Missing downside leg"
+        : shadow.blockedReason === "polymarket_proxy_short" ? "PM proxy short"
         : shadow.blockedReason === "manual_shadow_trade" ? "Manual shadow" : "Blocked";
       console.log(`    ${emoji} ${shadowLabel}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${result.closeReason}: ${result.pnlPct >= 0 ? "+" : ""}${result.pnlPct.toFixed(2)}%`);
     }
@@ -2611,7 +2693,7 @@ async function main() {
   // Step 7: Open new positions
   if (!DRY_RUN) {
     const sortedSignals = signals.sort((a, b) => b.confidence - a.confidence);
-    const opened = openPositions(portfolio, sortedSignals, latestRow, instrumentSnapshots);
+    const opened = openPositions(portfolio, sortedSignals, latestRow, instrumentSnapshots, learningParams, blockedSignals);
     if (opened.length > 0) {
       console.log(`\n  Opened ${opened.length} new positions:`);
       for (const p of opened) {
