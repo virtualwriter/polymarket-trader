@@ -28,7 +28,6 @@ const DEMOTE_THRESHOLD = 0.45;
 const KILL_THRESHOLD = 0.30;
 const WEIGHT_DECAY = 0.85;
 const LOOKBACK_HOURS = 24;
-const STOP_REENTRY_COOLDOWN_HOURS = 24;
 const NO_LLM = process.argv.includes("--no-llm");
 const DRY_RUN = process.argv.includes("--dry-run");
 
@@ -397,46 +396,6 @@ function appendTradeCsv(trade: ClosedTrade) {
     `"${trade.thesis.replace(/"/g, '""')}"`, trade.closeReason,
   ];
   appendFileSync(file, vals.join(",") + "\n");
-}
-
-function readClosedTradeCsv(): ClosedTrade[] {
-  const file = join(DATA_DIR, "trades-detailed.csv");
-  if (!existsSync(file)) return [];
-
-  const lines = readFileSync(file, "utf-8")
-    .split("\n")
-    .filter((line) => line.trim() !== "");
-  const [headerLine, ...rows] = lines;
-  if (!headerLine) return [];
-
-  const headers = parseCsvLine(headerLine);
-  return rows.map((line) => {
-    const values = parseCsvLine(line);
-    const row = Object.fromEntries(headers.map((header, idx) => [header, values[idx] ?? ""]));
-    return {
-      id: row.id,
-      openedAt: row.opened_at,
-      closedAt: row.closed_at,
-      asset: row.asset,
-      venue: row.venue,
-      direction: row.direction,
-      entryPrice: Number(row.entry_price),
-      exitPrice: Number(row.exit_price),
-      size: Number(row.size),
-      leverage: Number(row.leverage),
-      pnl: Number(row.pnl),
-      pnlPct: Number(row.pnl_pct),
-      marketPnl: Number(row.market_pnl),
-      fundingPnl: Number(row.funding_pnl),
-      signalType: row.signal_type,
-      hypothesisId: row.hypothesis_id || null,
-      thesis: row.thesis,
-      closeReason: row.close_reason as ClosedTrade["closeReason"],
-      instrumentType: row.instrument_type as ClosedTrade["instrumentType"],
-      instrumentId: row.instrument_id || undefined,
-      instrumentLabel: row.instrument_label || undefined,
-    };
-  }).filter((trade) => !!trade.id && !!trade.closedAt);
 }
 
 function appendJournal(entry: string) {
@@ -1864,55 +1823,14 @@ function buildPositionFromSignal(
   return { ...base, instrumentType: "legacy_asset" };
 }
 
-function tradeCooldownKey(trade: Pick<ClosedTrade, "asset" | "venue" | "direction" | "signalType" | "instrumentType" | "instrumentId">): string {
-  return [
-    trade.asset,
-    trade.venue,
-    trade.direction,
-    trade.signalType,
-    trade.instrumentType ?? "",
-    trade.instrumentId ?? "",
-  ].join("|");
-}
-
-function positionCooldownKey(position: Position): string {
-  return [
-    position.asset,
-    position.venue,
-    position.direction,
-    position.signalType,
-    position.instrumentType ?? "",
-    position.instrumentId ?? "",
-  ].join("|");
-}
-
-function isInStopReentryCooldown(
-  position: Position,
-  recentClosedTrades: ClosedTrade[],
-  now: Date,
-): ClosedTrade | null {
-  const key = positionCooldownKey(position);
-  const cooldownMs = STOP_REENTRY_COOLDOWN_HOURS * 60 * 60 * 1000;
-
-  return recentClosedTrades
-    .filter((trade) => trade.closeReason === "stop" && tradeCooldownKey(trade) === key)
-    .sort((a, b) => new Date(b.closedAt).getTime() - new Date(a.closedAt).getTime())
-    .find((trade) => {
-      const closedAt = new Date(trade.closedAt).getTime();
-      return Number.isFinite(closedAt) && now.getTime() - closedAt < cooldownMs;
-    }) ?? null;
-}
-
 function openPositions(
   portfolio: Portfolio,
   signals: Signal[],
   latestRow: SnapshotRow,
   snapshots: InstrumentSnapshotFile[],
-  recentClosedTrades: ClosedTrade[],
 ): Position[] {
   const opened: Position[] = [];
   const latestSnapshot = latestInstrumentSnapshot(snapshots);
-  const now = new Date();
   for (const sig of signals) {
     if (portfolio.positions.length >= MAX_OPEN_POSITIONS) break;
     if (portfolio.cash < TRADE_SIZE) break;
@@ -1924,15 +1842,6 @@ function openPositions(
 
     const pos = buildPositionFromSignal(sig, latestRow, latestSnapshot);
     if (!pos) continue;
-
-    const stoppedRecently = isInStopReentryCooldown(pos, recentClosedTrades, now);
-    if (stoppedRecently) {
-      console.log(
-        `    Cooldown skip: ${pos.asset} ${pos.direction} ${pos.signalType} via ${pos.venue}/${pos.instrumentType ?? "legacy"} ` +
-        `after recent stop (${stoppedRecently.pnlPct.toFixed(2)}%)`,
-      );
-      continue;
-    }
 
     portfolio.cash -= TRADE_SIZE;
     portfolio.positions.push(pos);
@@ -2702,8 +2611,7 @@ async function main() {
   // Step 7: Open new positions
   if (!DRY_RUN) {
     const sortedSignals = signals.sort((a, b) => b.confidence - a.confidence);
-    const cooldownClosedTrades = [...readClosedTradeCsv(), ...closedTrades];
-    const opened = openPositions(portfolio, sortedSignals, latestRow, instrumentSnapshots, cooldownClosedTrades);
+    const opened = openPositions(portfolio, sortedSignals, latestRow, instrumentSnapshots);
     if (opened.length > 0) {
       console.log(`\n  Opened ${opened.length} new positions:`);
       for (const p of opened) {
