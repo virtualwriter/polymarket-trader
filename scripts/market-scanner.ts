@@ -96,6 +96,14 @@ const HL_BUILDER_COINS: { dex: string; coin: string; label: string }[] = [
   { dex: "xyz", coin: "xyz:BRENTOIL", label: "BRENT OIL" },
 ];
 const OPTIONS_SYMBOLS = ["IBIT", "AMZN"];
+const CME_GREEKS_API_BASE = process.env.CME_GREEKS_API_BASE ?? "https://markets.api.cmegroup.com/greeks/v1";
+const CME_TOKEN_URL = process.env.CME_TOKEN_URL ?? "https://auth.cmegroup.com/as/token.oauth2";
+const CME_OPTIONS_QUERY_PARAM = process.env.CME_OPTIONS_QUERY_PARAM ?? "undlyProductCodes";
+const CME_OPTIONS_CONFIG = [
+  { snapshotKey: "CME_BTC", undlyProductCode: process.env.CME_BTC_UNDLY_PRODUCT_CODE ?? "BTC", label: "CME BTC futures options" },
+  { snapshotKey: "CME_GC", undlyProductCode: process.env.CME_GOLD_UNDLY_PRODUCT_CODE ?? "GC", label: "CME GC futures options" },
+  { snapshotKey: "CME_CL", undlyProductCode: process.env.CME_OIL_UNDLY_PRODUCT_CODE ?? "CL", label: "CME CL futures options" },
+];
 
 const POLYMARKET_EVENT_SLUGS = [
   "what-price-will-bitcoin-hit-before-2027",
@@ -617,6 +625,150 @@ async function fetchYahooOptions(symbol: string): Promise<OptionsSnapshot | null
   }
 }
 
+function parseCmeNumber(value: any): number {
+  if (value === null || value === undefined || value === "") return 0;
+  const parsed = parseFloat(String(value).replace(/,/g, ""));
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function parseCmeIv(record: any): number {
+  const bid = parseCmeNumber(record.impliedVolBid ?? record.ivBid);
+  const ask = parseCmeNumber(record.impliedVolAsk ?? record.ivAsk);
+  let iv = parseCmeNumber(record.impliedVol ?? record.impliedVolatility ?? record.iv ?? record.volatility);
+  if (!iv && bid > 0 && ask > 0) iv = (bid + ask) / 2;
+  if (iv > 3) return iv / 100;
+  return iv;
+}
+
+function cmeOptionType(record: any): "call" | "put" | null {
+  const raw = String(record.putCallInd ?? record.putCall ?? record.callPut ?? record.optionType ?? record.cp ?? "").toUpperCase();
+  if (raw.startsWith("C")) return "call";
+  if (raw.startsWith("P")) return "put";
+  return null;
+}
+
+function cmeExpiration(record: any): string {
+  const raw = record.expirationDate ?? record.expiryDate ?? record.expiration ?? record.maturityDate ?? record.lastTradeDate;
+  if (raw) {
+    const parsed = new Date(String(raw));
+    if (!Number.isNaN(parsed.getTime())) return parsed.toISOString().slice(0, 10);
+    const compact = String(raw).match(/^(20\d{2})(\d{2})(\d{2})/);
+    if (compact) return `${compact[1]}-${compact[2]}-${compact[3]}`;
+  }
+  const dte = parseCmeNumber(record.daysToExpiration ?? record.dte);
+  if (dte > 0) {
+    const dt = new Date(Date.now() + dte * 86400_000);
+    return dt.toISOString().slice(0, 10);
+  }
+  return "";
+}
+
+function collectCmeRecords(value: any, out: any[] = []): any[] {
+  if (Array.isArray(value)) {
+    for (const item of value) collectCmeRecords(item, out);
+  } else if (value && typeof value === "object") {
+    if (
+      value.impliedVol !== undefined ||
+      value.impliedVolatility !== undefined ||
+      value.impliedVolBid !== undefined ||
+      value.impliedVolAsk !== undefined
+    ) {
+      out.push(value);
+    }
+    for (const child of Object.values(value)) collectCmeRecords(child, out);
+  }
+  return out;
+}
+
+async function fetchCmeBearerToken(): Promise<string | null> {
+  if (process.env.CME_API_BEARER_TOKEN) return process.env.CME_API_BEARER_TOKEN;
+  const clientId = process.env.CME_API_CLIENT_ID;
+  const clientSecret = process.env.CME_API_CLIENT_SECRET;
+  if (!clientId || !clientSecret) return null;
+
+  const body = new URLSearchParams({ grant_type: "client_credentials" });
+  if (process.env.CME_API_SCOPE) body.set("scope", process.env.CME_API_SCOPE);
+  const res = await fetch(CME_TOKEN_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": `Basic ${Buffer.from(`${clientId}:${clientSecret}`).toString("base64")}`,
+      "User-Agent": "polymarket-trader/1.0",
+    },
+    body,
+  });
+  if (!res.ok) throw new Error(`CME token request failed: ${res.status} ${res.statusText}`);
+  const data = await res.json();
+  return data.access_token ?? null;
+}
+
+async function fetchCmeOptionsAnalytics(): Promise<Record<string, OptionsSnapshot>> {
+  const token = await fetchCmeBearerToken();
+  if (!token) {
+    warn("CME options disabled: set CME_API_BEARER_TOKEN or CME_API_CLIENT_ID/CME_API_CLIENT_SECRET");
+    return {};
+  }
+
+  const snapshots: Record<string, OptionsSnapshot> = {};
+  for (const cfg of CME_OPTIONS_CONFIG) {
+    const url = `${CME_GREEKS_API_BASE.replace(/\/$/, "")}/latest?${CME_OPTIONS_QUERY_PARAM}=${encodeURIComponent(cfg.undlyProductCode)}`;
+    try {
+      const res = await fetch(url, {
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Accept": "application/json",
+          "User-Agent": "polymarket-trader/1.0",
+        },
+      });
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      const data = await res.json();
+      const records = collectCmeRecords(data);
+      const chains: OptionQuote[] = [];
+      let underlyingPrice = 0;
+
+      for (const record of records) {
+        const type = cmeOptionType(record);
+        const strike = parseCmeNumber(record.strikePx ?? record.strikePrice ?? record.strike);
+        const iv = parseCmeIv(record);
+        const expiration = cmeExpiration(record);
+        if (!type || strike <= 0 || iv <= 0 || !expiration) continue;
+        if (!underlyingPrice) {
+          underlyingPrice = parseCmeNumber(
+            record.undlyPx ?? record.underlyingPrice ?? record.underlyingPx ?? record.futurePrice ?? record.futuresPrice ?? record.undlySettlePx
+          );
+        }
+        const bid = parseCmeNumber(record.bid ?? record.optionBid ?? record.premiumBid);
+        const ask = parseCmeNumber(record.ask ?? record.optionAsk ?? record.premiumAsk);
+        chains.push({
+          strike,
+          bid,
+          ask,
+          mid: bid && ask ? (bid + ask) / 2 : 0,
+          volume: parseCmeNumber(record.volume ?? record.tradeVolume),
+          openInterest: parseCmeNumber(record.openInterest ?? record.oi),
+          impliedVolatility: iv,
+          expiration,
+          type,
+        });
+      }
+
+      if (underlyingPrice > 0 && chains.length > 0) {
+        snapshots[cfg.snapshotKey] = {
+          symbol: cfg.snapshotKey,
+          underlyingPrice,
+          chains,
+          source: `${cfg.label} - CME Options Analytics`,
+        };
+      } else {
+        warn(`${cfg.label}: CME returned no usable options analytics`);
+      }
+    } catch (e: any) {
+      warn(`${cfg.label}: ${e.message}`);
+    }
+  }
+  return snapshots;
+}
+
 async function fetchOptions() {
   divider("OPTIONS — IBIT / AMZN");
 
@@ -718,6 +870,8 @@ async function fetchOptions() {
       console.log(`  └────────────────────────────────────────────`);
     }
   }
+
+  Object.assign(results, await fetchCmeOptionsAnalytics());
 
   return results;
 }
@@ -1922,12 +2076,13 @@ function writeSnapshot(
 
   // ── Valuations row ──
   const btcSpot = hl.BTC?.markPx ?? null;
-  const btcIv30 = opts.IBIT ? getIVForTenor(opts.IBIT.chains, opts.IBIT.underlyingPrice, 30) : null;
-  const btcIv90 = opts.IBIT ? getIVForTenor(opts.IBIT.chains, opts.IBIT.underlyingPrice, 90) : null;
+  const btcOptions = opts.CME_BTC ?? opts.IBIT ?? null;
+  const btcIv30 = btcOptions ? getIVForTenor(btcOptions.chains, btcOptions.underlyingPrice, 30) : null;
+  const btcIv90 = btcOptions ? getIVForTenor(btcOptions.chains, btcOptions.underlyingPrice, 90) : null;
   let btcFwd: number | null = null;
-  if (opts.IBIT && btcIv90) {
-    const f = computeForwardFromOptions(opts.IBIT.chains, opts.IBIT.underlyingPrice, btcIv90.expiry);
-    if (f && btcSpot) btcFwd = f * (btcSpot / opts.IBIT.underlyingPrice);
+  if (btcOptions && btcIv90) {
+    const f = computeForwardFromOptions(btcOptions.chains, btcOptions.underlyingPrice, btcIv90.expiry);
+    if (f && btcSpot) btcFwd = btcOptions.symbol === "IBIT" ? f * (btcSpot / btcOptions.underlyingPrice) : f;
   }
   const btcEvent = pm.find((e) => e.slug.includes("bitcoin"));
   const btcPm = btcEvent && btcSpot ? pmImpliedEVFromTouches(btcEvent.strikes, btcSpot) : null;
@@ -1937,7 +2092,11 @@ function writeSnapshot(
   const hypePm = hypeEvent && hypeSpot ? pmImpliedEVFromTouches(hypeEvent.strikes, hypeSpot) : null;
 
   const goldGcSpot = hl["GOLD (GC)"]?.markPx ?? null;
-  const goldFwd: number | null = null;
+  const goldOptions = opts.CME_GC ?? null;
+  const goldIv30 = goldOptions ? getIVForTenor(goldOptions.chains, goldOptions.underlyingPrice, 30) : null;
+  const goldIv90 = goldOptions ? getIVForTenor(goldOptions.chains, goldOptions.underlyingPrice, 90) : null;
+  let goldFwd: number | null = null;
+  if (goldOptions && goldIv90) goldFwd = computeForwardFromOptions(goldOptions.chains, goldOptions.underlyingPrice, goldIv90.expiry);
   const goldSettleJun = pm.find((e) => e.slug === "gc-settle-jun-2026");
   const goldHitJun = pm.find((e) => e.slug === "gc-hit-jun-2026");
   const goldHitEv = goldHitJun ?? pm.find((e) => e.slug.includes("gold-gc"));
@@ -1956,7 +2115,11 @@ function writeSnapshot(
   const oilWti = hl["OIL (CL)"]?.markPx ?? null;
   const oilBrent = hl["BRENT OIL"]?.markPx ?? null;
   const oilSpread = oilBrent && oilWti ? oilBrent - oilWti : null;
-  const oilFwd: number | null = null;
+  const oilOptions = opts.CME_CL ?? null;
+  const oilIv30 = oilOptions ? getIVForTenor(oilOptions.chains, oilOptions.underlyingPrice, 30) : null;
+  const oilIv90 = oilOptions ? getIVForTenor(oilOptions.chains, oilOptions.underlyingPrice, 90) : null;
+  let oilFwd: number | null = null;
+  if (oilOptions && oilIv90) oilFwd = computeForwardFromOptions(oilOptions.chains, oilOptions.underlyingPrice, oilIv90.expiry);
   const clSettle = pm.find((e) => e.slug === "cl-settle-jun-2026");
   const clHit = pm.find((e) => e.slug === "cl-hit-jun-2026");
   const oilSettleEV = clSettle ? pmImpliedEVFromSettlement(clSettle.strikes) : null;
@@ -1980,12 +2143,12 @@ function writeSnapshot(
     hype_med_max: r(hypePm?.medianMax, 1), hype_med_min: r(hypePm?.medianMin, 1),
     gold_gc_spot: r(goldGcSpot, 0), gold_gld_spot: null,
     gold_opt_fwd_90d: r(goldFwd, 0), gold_pm_settle_ev: r(goldSettleEV, 0),
-    gold_opt_iv_30d: null,
-    gold_opt_iv_90d: null,
+    gold_opt_iv_30d: r(goldIv30?.iv ? goldIv30.iv * 100 : null, 1),
+    gold_opt_iv_90d: r(goldIv90?.iv ? goldIv90.iv * 100 : null, 1),
     gold_pm_iv: r(goldPm?.impliedVol ? goldPm.impliedVol * 100 : null, 1),
     gold_hl_funding_ann: r(hl["GOLD (GC)"]?.fundingAnnualized ? hl["GOLD (GC)"].fundingAnnualized * 100 : null, 2),
     gold_med_max: r(goldPm?.medianMax, 0), gold_med_min: r(goldPm?.medianMin, 0),
-    gold_gld_pc_ratio: null,
+    gold_gld_pc_ratio: r(goldOptions ? pcRatioFromChains(goldOptions.chains) : null, 3),
     amzn_stock: r(amznStock, 2), amzn_hl_perp: r(amznHlPerp, 2),
     amzn_opt_fwd_90d: r(amznFwd, 2),
     amzn_opt_iv_30d: r(amznIv30?.iv ? amznIv30.iv * 100 : null, 1),
@@ -1996,11 +2159,11 @@ function writeSnapshot(
     oil_wti_spot: r(oilWti, 2), oil_brent_spot: r(oilBrent, 2),
     oil_brent_wti_spread: r(oilSpread, 1),
     oil_opt_fwd_90d: r(oilFwd, 1), oil_pm_settle_ev: r(oilSettleEV, 1),
-    oil_opt_iv_30d: null,
-    oil_opt_iv_90d: null,
+    oil_opt_iv_30d: r(oilIv30?.iv ? oilIv30.iv * 100 : null, 1),
+    oil_opt_iv_90d: r(oilIv90?.iv ? oilIv90.iv * 100 : null, 1),
     oil_pm_iv: r(oilPm?.impliedVol ? oilPm.impliedVol * 100 : null, 1),
     oil_hl_funding_ann: r(hl["OIL (CL)"]?.fundingAnnualized ? hl["OIL (CL)"].fundingAnnualized * 100 : null, 2),
-    oil_cl_pc_ratio: null,
+    oil_cl_pc_ratio: r(oilOptions ? pcRatioFromChains(oilOptions.chains) : null, 3),
   });
 
   // ── Macro row ──

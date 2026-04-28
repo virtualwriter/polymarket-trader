@@ -37,9 +37,11 @@ HTML_PATH = HOSTED_DIR / "index.html"
 VALUATIONS_PATH = DATA_DIR / "daily-valuations.csv"
 
 
-ASSET_TO_OPTION_SYMBOL = {
-    "BTC": "IBIT",
-    "AMZN": "AMZN",
+ASSET_TO_OPTION_SYMBOLS = {
+    "BTC": ["CME_BTC", "IBIT"],
+    "GOLD": ["CME_GC"],
+    "OIL": ["CME_CL"],
+    "AMZN": ["AMZN"],
 }
 
 
@@ -223,24 +225,26 @@ def pm_iv_for_asset(latest_valuations: Dict[str, str], asset: str) -> Optional[f
 
 
 def option_chain_for_asset(snapshot: Dict[str, Any], asset: str) -> Tuple[str, Optional[Dict[str, Any]]]:
-    symbol = ASSET_TO_OPTION_SYMBOL.get(asset, "")
-    if not symbol:
-        return "", None
     options = snapshot.get("options", {})
-    chain = options.get(symbol)
-    return symbol, chain if isinstance(chain, dict) else None
+    for symbol in ASSET_TO_OPTION_SYMBOLS.get(asset, []):
+        chain = options.get(symbol)
+        if isinstance(chain, dict):
+            return symbol, chain
+    return "", None
 
 
 def scaled_option_strike(
     asset: str,
+    option_symbol: str,
     pm_strike: float,
     asset_spot: Optional[float],
     option_underlying: Optional[float],
 ) -> Optional[float]:
     if not asset_spot or not option_underlying or asset_spot <= 0:
         return None
-    # BTC Polymarket is BTC spot, but options are IBIT. AMZN is already in the same approximate units.
-    return pm_strike * (option_underlying / asset_spot)
+    if option_symbol == "IBIT":
+        return pm_strike * (option_underlying / asset_spot)
+    return pm_strike
 
 
 def choose_iv_for_expiry(
@@ -451,12 +455,12 @@ def build_rows(
                 dte_days = max(0.0, (expiry_dt.astimezone(timezone.utc) - snap_dt).total_seconds() / 86400)
 
             option_underlying = safe_float(option_snapshot.get("underlyingPrice")) if option_snapshot else None
-            option_strike = scaled_option_strike(asset, strike or 0.0, spot, option_underlying)
+            option_strike = scaled_option_strike(asset, option_symbol, strike or 0.0, spot, option_underlying)
             option_iv, iv_expiry = choose_iv_for_expiry(option_snapshot, expiry_dt, option_strike) if option_snapshot else (None, "")
             range_bounds = parse_settlement_range(question)
             if range_bounds and spot and option_underlying:
-                scaled_low = scaled_option_strike(asset, range_bounds[0], spot, option_underlying)
-                scaled_high = scaled_option_strike(asset, range_bounds[1], spot, option_underlying)
+                scaled_low = scaled_option_strike(asset, option_symbol, range_bounds[0], spot, option_underlying)
+                scaled_high = scaled_option_strike(asset, option_symbol, range_bounds[1], spot, option_underlying)
                 terminal_prob = lognormal_range_probability(option_underlying, scaled_low, scaled_high, option_iv, dte_days)
                 model_prob = terminal_prob
             else:
@@ -516,7 +520,7 @@ def build_rows(
                 notes.append("Hit/reach market uses simple 2x terminal-prob touch adjustment.")
             if range_bounds:
                 notes.append(f"Settlement bucket modeled as probability between {range_bounds[0]:.0f} and {range_bounds[1]:.0f}.")
-            if asset in {"BTC"}:
+            if option_symbol == "IBIT":
                 notes.append("Strike scaled from underlying options proxy.")
 
             rows.append(
