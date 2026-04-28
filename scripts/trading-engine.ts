@@ -208,6 +208,8 @@ interface BlockedSignalShadow {
   direction: Signal["direction"];
   confidence: number;
   thesis: string;
+  sourcePositionId?: string;
+  sourcePositionLabel?: string;
   trendMetrics?: {
     aboveTrendPct: number;
     momentumPct: number;
@@ -222,6 +224,13 @@ interface BlockedSignalShadow {
     marketPnl: number;
     fundingPnl: number;
     outcome: "win" | "loss";
+  };
+  sourceComparison?: {
+    sourceClosedAt: string;
+    sourcePnl: number;
+    sourcePnlPct: number;
+    proxyOutperformed: boolean;
+    correlation: "same_direction" | "opposite_direction" | "flat";
   };
 }
 
@@ -249,6 +258,7 @@ interface BlockedSignalLearningSummary {
     pnlPct: number;
     resolvedAt: string;
     trendMetrics?: BlockedSignalShadow["trendMetrics"];
+    sourceComparison?: BlockedSignalShadow["sourceComparison"];
   }>;
 }
 
@@ -396,6 +406,46 @@ function appendTradeCsv(trade: ClosedTrade) {
     `"${trade.thesis.replace(/"/g, '""')}"`, trade.closeReason,
   ];
   appendFileSync(file, vals.join(",") + "\n");
+}
+
+function readClosedTradeCsv(): ClosedTrade[] {
+  const file = join(DATA_DIR, "trades-detailed.csv");
+  if (!existsSync(file)) return [];
+
+  const lines = readFileSync(file, "utf-8")
+    .split("\n")
+    .filter((line) => line.trim() !== "");
+  const [headerLine, ...rows] = lines;
+  if (!headerLine) return [];
+
+  const headers = parseCsvLine(headerLine);
+  return rows.map((line) => {
+    const values = parseCsvLine(line);
+    const row = Object.fromEntries(headers.map((header, idx) => [header, values[idx] ?? ""]));
+    return {
+      id: row.id,
+      openedAt: row.opened_at,
+      closedAt: row.closed_at,
+      asset: row.asset,
+      venue: row.venue,
+      direction: row.direction,
+      entryPrice: Number(row.entry_price),
+      exitPrice: Number(row.exit_price),
+      size: Number(row.size),
+      leverage: Number(row.leverage),
+      pnl: Number(row.pnl),
+      pnlPct: Number(row.pnl_pct),
+      marketPnl: Number(row.market_pnl),
+      fundingPnl: Number(row.funding_pnl),
+      signalType: row.signal_type,
+      hypothesisId: row.hypothesis_id || null,
+      thesis: row.thesis,
+      closeReason: row.close_reason as ClosedTrade["closeReason"],
+      instrumentType: row.instrument_type || undefined,
+      instrumentId: row.instrument_id || undefined,
+      instrumentLabel: row.instrument_label || undefined,
+    };
+  }).filter((trade) => !!trade.id && !!trade.closedAt);
 }
 
 function appendJournal(entry: string) {
@@ -1262,6 +1312,8 @@ function recordPolymarketProxyShortShadow(
     direction: "short",
     confidence: proxySignal.confidence,
     thesis: proxySignal.thesis,
+    sourcePositionId: sourcePosition.id,
+    sourcePositionLabel: `${sourcePosition.asset} ${sourcePosition.direction} via ${sourcePosition.venue}/${sourcePosition.instrumentType ?? "legacy"} (${sourcePosition.signalType})`,
     learningParamsSnapshot: {
       macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
       contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
@@ -1315,6 +1367,53 @@ function resolveBlockedSignalShadows(
   return resolved;
 }
 
+function pnlCorrelation(proxyPnl: number, sourcePnl: number): NonNullable<BlockedSignalShadow["sourceComparison"]>["correlation"] {
+  if (proxyPnl === 0 || sourcePnl === 0) return "flat";
+  return Math.sign(proxyPnl) === Math.sign(sourcePnl) ? "same_direction" : "opposite_direction";
+}
+
+function updateProxyShortShadowComparisons(
+  blockedSignals: BlockedSignalShadow[],
+  closedTrades: ClosedTrade[],
+): string[] {
+  const notes: string[] = [];
+  const tradesById = new Map(closedTrades.map((trade) => [trade.id, trade]));
+
+  for (const shadow of blockedSignals) {
+    if (
+      shadow.blockedReason !== "polymarket_proxy_short" ||
+      shadow.status !== "resolved" ||
+      !shadow.hypotheticalResult ||
+      !shadow.sourcePositionId ||
+      shadow.sourceComparison
+    ) continue;
+
+    const sourceTrade = tradesById.get(shadow.sourcePositionId);
+    if (!sourceTrade) continue;
+
+    const comparison = {
+      sourceClosedAt: sourceTrade.closedAt,
+      sourcePnl: Number(sourceTrade.pnl.toFixed(4)),
+      sourcePnlPct: Number(sourceTrade.pnlPct.toFixed(2)),
+      proxyOutperformed: shadow.hypotheticalResult.pnlPct > sourceTrade.pnlPct,
+      correlation: pnlCorrelation(shadow.hypotheticalResult.pnl, sourceTrade.pnl),
+    };
+    shadow.sourceComparison = comparison;
+
+    const better = comparison.proxyOutperformed ? "outperformed" : "underperformed";
+    const correlated = comparison.correlation === "same_direction"
+      ? "correlated"
+      : comparison.correlation === "opposite_direction" ? "inversely correlated" : "flat/mixed";
+    notes.push(
+      `${shadow.signalType} ${shadow.asset} PM proxy short ${better} actual short ` +
+      `(${shadow.hypotheticalResult.pnlPct >= 0 ? "+" : ""}${shadow.hypotheticalResult.pnlPct.toFixed(2)}% vs ` +
+      `${sourceTrade.pnlPct >= 0 ? "+" : ""}${sourceTrade.pnlPct.toFixed(2)}%) and was ${correlated}.`,
+    );
+  }
+
+  return notes;
+}
+
 function summarizeBlockedSignals(blockedSignals: BlockedSignalShadow[]): BlockedSignalLearningSummary {
   const openCount = blockedSignals.filter((shadow) => shadow.status === "open").length;
   const resolved = blockedSignals
@@ -1362,6 +1461,7 @@ function summarizeBlockedSignals(blockedSignals: BlockedSignalShadow[]): Blocked
       pnlPct: shadow.hypotheticalResult.pnlPct,
       resolvedAt: shadow.resolvedAt,
       trendMetrics: shadow.trendMetrics,
+      sourceComparison: shadow.sourceComparison,
     })),
   };
 }
@@ -2559,8 +2659,9 @@ async function main() {
       console.log(`    ${emoji} ${shadowLabel}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${result.closeReason}: ${result.pnlPct >= 0 ? "+" : ""}${result.pnlPct.toFixed(2)}%`);
     }
   }
+  let proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   let blockedSummary = summarizeBlockedSignals(blockedSignals);
-  let blockedObs = blockedSignalObservations(blockedSummary);
+  let blockedObs = [...blockedSignalObservations(blockedSummary), ...proxyComparisonObs];
   for (const note of blockedObs) console.log(`  Shadow learning: ${note}`);
 
   // Step 2: Update signal weights
@@ -2582,8 +2683,9 @@ async function main() {
 
   // Step 5: Generate rule-based signals
   const signals = generateSignals(valRows, macroRows, weights, learningParams, latestSnapshot, blockedSignals);
+  proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   blockedSummary = summarizeBlockedSignals(blockedSignals);
-  blockedObs = blockedSignalObservations(blockedSummary);
+  blockedObs = [...blockedSignalObservations(blockedSummary), ...proxyComparisonObs];
   console.log(`\n  Signals generated: ${signals.length}`);
   for (const s of signals.slice(0, 8)) {
     console.log(`    ${s.asset} ${s.direction} (${s.type}) confidence=${s.confidence.toFixed(3)} — ${s.thesis.slice(0, 70)}`);
@@ -2685,8 +2787,9 @@ async function main() {
       }
 
       llmJournal = llmResult.journalEntry;
+      proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
       blockedSummary = summarizeBlockedSignals(blockedSignals);
-      blockedObs = blockedSignalObservations(blockedSummary);
+      blockedObs = [...blockedSignalObservations(blockedSummary), ...proxyComparisonObs];
     }
   }
 
