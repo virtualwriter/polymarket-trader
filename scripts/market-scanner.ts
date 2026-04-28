@@ -66,6 +66,8 @@ interface PolymarketMarket {
 }
 
 interface OptionQuote {
+  contractSymbol?: string;
+  root?: string;
   strike: number;
   bid: number;
   ask: number;
@@ -926,7 +928,9 @@ function getIVForTenor(
       Math.abs(c.strike - underlying) / underlying < 0.05,
   );
   if (atmCalls.length === 0) return null;
-  const iv = atmCalls.reduce((s, c) => s + c.impliedVolatility, 0) / atmCalls.length;
+  const liquidAtmCalls = atmCalls.filter((c) => c.bid > 0 && c.ask > 0);
+  const ivSample = liquidAtmCalls.length >= 3 ? liquidAtmCalls : atmCalls;
+  const iv = ivSample.reduce((s, c) => s + c.impliedVolatility, 0) / ivSample.length;
   return { iv, expiry: bestExp };
 }
 
@@ -2274,6 +2278,8 @@ function writeSnapshot(
           underlyingPrice: r(snapshot.underlyingPrice, 6) ?? 0,
           source: snapshot.source,
           chains: snapshot.chains.map((chain) => ({
+            contractSymbol: chain.contractSymbol,
+            root: chain.root,
             strike: r(chain.strike, 6) ?? 0,
             bid: r(chain.bid, 6) ?? 0,
             ask: r(chain.ask, 6) ?? 0,

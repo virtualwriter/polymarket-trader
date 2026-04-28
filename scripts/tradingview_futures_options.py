@@ -252,6 +252,8 @@ def row_to_quote(row: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     mid = (bid + ask) / 2.0 if bid > 0 and ask > 0 else (parse_float(row.get("theoPrice")) or 0.0)
 
     return {
+        "contractSymbol": row.get("name") or "",
+        "root": row.get("root") or "",
         "strike": strike,
         "bid": bid,
         "ask": ask,

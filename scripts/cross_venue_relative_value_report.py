@@ -282,8 +282,13 @@ def choose_iv_for_expiry(
     if not candidates:
         return None, ""
 
-    candidates.sort(key=lambda row: (row[0], row[1]))
-    top = candidates[:8]
+    liquid_candidates = [
+        row for row in candidates
+        if (safe_float(row[2].get("bid")) or 0) > 0 and (safe_float(row[2].get("ask")) or 0) > 0
+    ]
+    ranked = liquid_candidates if len(liquid_candidates) >= 4 else candidates
+    ranked.sort(key=lambda row: (row[0], row[1]))
+    top = ranked[:8]
     iv = sum(float(item["impliedVolatility"]) for _, _, item in top) / len(top)
     expiry = str(top[0][2].get("expiration", ""))
     return iv, expiry
