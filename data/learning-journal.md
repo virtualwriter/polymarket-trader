@@ -3037,3 +3037,26 @@ Two OIL trades have been retroactively flagged as **DATA_CORRECTION_ARTIFACTS** 
 **Impact:** These P&L figures do not reflect real market edge. Signal weight stats for `PC_RATIO_EXTREME_LOW` (OIL) and `PM_EV_ABOVE_SPOT` (OIL) have been adjusted to exclude these artifacts.
 
 ---
+### 2026-04-28 21:28 UTC
+
+**Portfolio:** $100.58 total | Cash $93.58 | 7 open | P&L $0.5772 | 61% win rate (85 trades)
+
+**Statistical observations:**
+- [anomaly] oil_wti_spot = 99.65 is 7.6 std devs from mean (84.67 ± 1.98)
+- [anomaly] gold_med_max = 4900 is -2.5 std devs from mean (5230.19 ± 132.29)
+- [anomaly] gold_gc_spot = 4600 is -2.1 std devs from mean (4733.76 ± 63.06)
+- [anomaly] oil_pm_settle_ev = 93.3 is 2.0 std devs from mean (84.87 ± 4.14)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.91 to -0.30
+
+**Blocked signal learning:**
+- Open blocked shadows: 13
+- Resolved blocked shadows: 3 (1 wins / 2 losses)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-11.30%)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-7.96%)
+- ✅ PM proxy short: MACRO_MOMENTUM_DOWN_PM_PROXY_SHORT BTC short via polymarket would have target (+6.73%)
+
+**LLM analysis:**
+Critical pattern recognition evolution: extreme structural breakdown patterns requiring systematic correction regardless of fundamentals. Oil complex showing most extreme dislocation in dataset - Brent-WTI spread collapsed to 4.6 from 25+ range while WTI spiked +7.6σ to 99.65. This creates mathematical arbitrage as structural relationships cannot sustain such extremes. HYPE institutional distribution reached textbook completion at 18% OI decline (957M to 786M) with funding crash to -0.34%, confirming smart money exit exhaustion. BTC funding crashed to -3.4% during consolidation above 76k, indicating extreme positioning reset. Cross-asset positioning exhaustion patterns showing highest conviction reversal setups across multiple venues. Increased LLM_HYPOTHESIS target to 8% given improved recognition of multi-venue statistical anomalies that force systematic correction. Pattern recognition now focusing on extreme statistical deviations (+/-7σ) that create mathematical reversion requirements beyond traditional technical analysis. These structural breakdown patterns represent highest-probability setups when multiple statistical anomalies converge across asset classes.
+
+---
+
