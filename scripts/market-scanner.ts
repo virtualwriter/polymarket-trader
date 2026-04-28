@@ -781,6 +781,7 @@ async function fetchIbkrFuturesOptions(): Promise<Record<string, OptionsSnapshot
       env: process.env,
       encoding: "utf-8",
       timeout: Number(process.env.IBKR_CP_COLLECTOR_TIMEOUT_MS ?? 120_000),
+      maxBuffer: Number(process.env.OPTIONS_COLLECTOR_MAX_BUFFER_BYTES ?? 50 * 1024 * 1024),
       stdio: ["ignore", "pipe", "pipe"],
     });
     const snapshots = JSON.parse(stdout) as Record<string, OptionsSnapshot>;
@@ -811,6 +812,7 @@ async function fetchTradingViewFuturesOptions(): Promise<Record<string, OptionsS
       env: process.env,
       encoding: "utf-8",
       timeout: Number(process.env.TRADINGVIEW_OPTIONS_COLLECTOR_TIMEOUT_MS ?? 120_000),
+      maxBuffer: Number(process.env.OPTIONS_COLLECTOR_MAX_BUFFER_BYTES ?? 50 * 1024 * 1024),
       stdio: ["ignore", "pipe", "pipe"],
     });
     const snapshots = JSON.parse(stdout) as Record<string, OptionsSnapshot>;

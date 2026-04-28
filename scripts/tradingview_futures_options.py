@@ -23,7 +23,7 @@ from typing import Any, Dict, Iterable, List, Optional
 SCAN_URL = "https://scanner.tradingview.com/options/scan2"
 TIMEOUT = float(os.getenv("TRADINGVIEW_TIMEOUT_SECONDS", "20"))
 COOKIE = os.getenv("TRADINGVIEW_COOKIE", "").strip()
-MAX_ROWS = int(os.getenv("TRADINGVIEW_OPTIONS_MAX_ROWS", "5000"))
+MAX_ROWS = int(os.getenv("TRADINGVIEW_OPTIONS_MAX_ROWS", "2000"))
 
 DEFAULT_ASSETS = {
     "CME_CL": {"tv_symbol": "NYMEX:MCL1!", "yf_symbol": "CL=F", "label": "TradingView NYMEX MCL1! options"},
