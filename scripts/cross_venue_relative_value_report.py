@@ -80,6 +80,8 @@ class RelativeValueRow:
     perp_funding_ann: Optional[float]
     perp_oi_usd: Optional[float]
     perp_basis_pct: Optional[float]
+    cme_yf_spot: Optional[float]       # Yahoo Finance → CME/NYMEX/COMEX ref price (CL=F / GC=F / BTC=F)
+    hl_vs_cme_diff_pct: Optional[float]  # HL spot vs CME YF spot divergence %
     flags: str
     notes: str
 
@@ -438,6 +440,13 @@ def build_rows(
         if perp_mark is not None and spot:
             perp_basis_pct = (perp_mark / spot - 1.0) * 100
 
+        # Yahoo Finance CME reference spot (CL=F / GC=F / BTC=F from NYMEX/COMEX/CME)
+        cme_yf_key = f"{asset}_CME_YF"
+        cme_yf_spot = safe_float(spots.get(cme_yf_key))
+        hl_vs_cme_diff_pct = None
+        if spot is not None and cme_yf_spot is not None and cme_yf_spot > 0:
+            hl_vs_cme_diff_pct = (spot / cme_yf_spot - 1.0) * 100
+
         for contract in event.get("contracts", []):
             if contract.get("closed") or not contract.get("active", True):
                 continue
@@ -558,6 +567,8 @@ def build_rows(
                     perp_funding_ann=perp_funding_ann,
                     perp_oi_usd=perp_oi_usd,
                     perp_basis_pct=perp_basis_pct,
+                    cme_yf_spot=cme_yf_spot,
+                    hl_vs_cme_diff_pct=hl_vs_cme_diff_pct,
                     flags=";".join(flags),
                     notes=" ".join(notes),
                 )
@@ -609,6 +620,12 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
     body_rows = []
     for row in visible:
         cls = html_class(row.edge_score)
+        cme_yf_cell = fmt_num(row.cme_yf_spot, 2) if row.cme_yf_spot else ""
+        hl_diff = row.hl_vs_cme_diff_pct
+        hl_diff_str = f"{hl_diff:+.2f}%" if hl_diff is not None else ""
+        hl_diff_cls = ""
+        if hl_diff is not None:
+            hl_diff_cls = " style='color:red;font-weight:700'" if abs(hl_diff) > 1.0 else " style='color:#555'"
         body_rows.append(
             "<tr>"
             f"<td>{html.escape(row.asset)}</td>"
@@ -627,6 +644,8 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
             f"<td>{html.escape(row.perp_source)}</td>"
             f"<td>{html.escape(fmt_pct(row.perp_funding_ann))}</td>"
             f"<td>{html.escape(fmt_num(row.perp_basis_pct, 2))}</td>"
+            f"<td>{html.escape(cme_yf_cell)}</td>"
+            f"<td{hl_diff_cls}>{html.escape(hl_diff_str)}</td>"
             f"<td>{html.escape(row.flags)}</td>"
             "</tr>"
         )
@@ -698,6 +717,8 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         <th>Perp Source</th>
         <th>Perp Funding</th>
         <th>Basis %</th>
+        <th>CME Ref (YF)</th>
+        <th>HL vs CME</th>
         <th>Flags</th>
       </tr>
     </thead>
