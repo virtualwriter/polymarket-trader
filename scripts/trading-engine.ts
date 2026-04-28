@@ -192,6 +192,7 @@ interface Signal {
     preferredEventSlug?: string;
     preferredDirection?: "above" | "below";
     allowDirectionFallback?: boolean;
+    forceInstrumentType?: "pm_yes" | "pm_no";
   };
 }
 
@@ -732,7 +733,7 @@ function selectPolymarketContract(
       const contract = preferredSide[0] ?? fallback[0];
       if (!contract) continue;
 
-      const instrumentType = instrumentTypeForPolymarketExposure(direction, contractDirection);
+      const instrumentType = hint?.forceInstrumentType ?? instrumentTypeForPolymarketExposure(direction, contractDirection);
       const entryPrice = instrumentType === "pm_yes" ? contract.yesPrice : 1 - contract.yesPrice;
       if (entryPrice <= 0 || entryPrice >= 1) continue;
 
@@ -1154,11 +1155,14 @@ function recordIVDownsideLegShadow(
     s.direction === signal.direction,
   )) return;
 
-  // Build a mirror signal pointing at the below contract.
+  // Build a mirror signal pointing at the below contract while preserving
+  // the token side of the real above-contract trade: YES-above -> YES-below,
+  // NO-above -> NO-below.
+  const forcedInstrumentType = instrumentTypeForPolymarketExposure(signal.direction, "above");
   const mirrorSignal: Signal = {
     ...signal,
     type: shadowSignalType,
-    contractHint: { preferredDirection: "below", allowDirectionFallback: false },
+    contractHint: { preferredDirection: "below", allowDirectionFallback: false, forceInstrumentType: forcedInstrumentType },
   };
   const position = buildPositionFromSignal(mirrorSignal, latestRow, latestSnapshot);
   if (!position) return;
