@@ -11804,7 +11804,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC P/C normalized to 0.77 from 0.32 extreme with funding recovery to 5.52% - positioning exhaustion completion confirmed, pattern working as predicted",
+    "postMortem": "BTC P/C normalized to 0.77 from 0.32 extreme with funding recovery to 5.52% - positioning exhaustion completion confirmed, pattern working as predicted | Cross-asset positioning exhaustion materializing - BTC funding -1.6%, HYPE distribution complete, oil breakdown extreme. Multi-asset reversal setup strengthening",
     "source": "llm"
   },
   {
@@ -11984,7 +11984,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil structural breakdown accelerated - WTI now +6.4σ at 99.47 with Brent-WTI spread at 4.5, creating most extreme arbitrage opportunity in dataset",
     "source": "llm"
   },
   {
@@ -12010,7 +12010,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI declined to 785M from 957M peak (18% decline) with funding at -7.8% - distribution exhaustion pattern confirmed, awaiting oversold bounce trigger",
     "source": "llm"
   },
   {
@@ -12023,6 +12023,84 @@
       "oil_wti_spot": "> 99"
     },
     "prediction": "Multi-asset positioning reset bounce within 5-7 days as extreme positioning unwind completion creates systematic reversal across venues",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-472",
+    "created": "2026-04-28",
+    "description": "Oil complex extreme structural breakdown mathematical arbitrage - when both oil options IV spikes above 50% (representing +6σ anomalies) while Brent-WTI spread collapses below 5 from historical 15-25 range, systematic correction follows within 5-7 days",
+    "conditions": {
+      "oil_opt_iv_30d": "> 50",
+      "oil_opt_iv_90d": "> 50",
+      "oil_brent_wti_spread": "< 5"
+    },
+    "prediction": "Oil IV normalization below 35% with Brent-WTI spread recovery above 8 within one week",
+    "timeframeDays": 7,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-473",
+    "created": "2026-04-28",
+    "description": "HYPE institutional distribution exhaustion completion reversal - when HYPE OI declines below 790M from 957M peak (18%+ decline) while funding crashes below -5% and spot holds above 40, massive distribution exhaustion creates oversold bounce",
+    "conditions": {
+      "hype_hl_oi": "< 790000000",
+      "hype_hl_funding_ann": "< -5",
+      "hype_spot": "> 40"
+    },
+    "prediction": "HYPE recovery above 41.5 with OI stabilization above 800M within 5-7 days",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-474",
+    "created": "2026-04-28",
+    "description": "Cross-asset extreme positioning exhaustion completion reversal - when BTC funding crashes below -1%, HYPE OI declines 18%+ from peaks, and oil IV spikes above +6σ simultaneously, systematic multi-asset positioning reset creates bounce",
+    "conditions": {
+      "btc_hl_funding_ann": "< -1",
+      "hype_hl_oi": "< 790000000",
+      "oil_opt_iv_30d": "> 50"
+    },
+    "prediction": "Multi-asset bounce with BTC funding recovery above 0%, HYPE OI stabilization above 800M, oil IV compression below 40% within one week",
     "timeframeDays": 7,
     "confidence": 0.8,
     "tests": [
