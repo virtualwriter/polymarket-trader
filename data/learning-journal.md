@@ -3022,3 +3022,18 @@ Critical breakthrough recognizing extreme structural breakdown patterns. Oil sho
 
 ---
 
+
+### 2026-04-28 — DATA CORRECTION NOTE
+
+Two OIL trades have been retroactively flagged as **DATA_CORRECTION_ARTIFACTS** and removed from signal performance statistics:
+
+| Trade ID | Signal | Direction | Entry | Exit | P&L |
+|---|---|---|---|---|---|
+| T-1777361233876-molk | PC_RATIO_EXTREME_LOW | OIL short | $84.17 | $99.63 | -18.4% |
+| T-1777384445778-vsg8 | PM_EV_ABOVE_SPOT | OIL long | $84.89 | $99.63 | +17.4% |
+
+**Root cause:** Both trades were entered and exited using a corrupted OIL spot reference. The market scanner was fetching CBOE options for ticker `CL`, which resolved to **Colgate-Palmolive stock (~$85)** rather than WTI crude oil futures (~$99-100). When the fix was deployed (switching to Hyperliquid `xyz:CL` WTI futures), the price jumped ~18% in a single run, instantly triggering the stop on the short and the target on the long at the same price ($99.63).
+
+**Impact:** These P&L figures do not reflect real market edge. Signal weight stats for `PC_RATIO_EXTREME_LOW` (OIL) and `PM_EV_ABOVE_SPOT` (OIL) have been adjusted to exclude these artifacts.
+
+---
