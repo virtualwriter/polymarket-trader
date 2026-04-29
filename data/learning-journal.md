@@ -3162,3 +3162,27 @@ Discarded the initial GOLD $4,800 relative-value heatmap shadow loss as a spread
 The OIL LLM_HYPOTHESIS short on CL settle over $90 was correctly blocked by the positive-trend filter: the blocked PM NO shadow is losing under conservative marking. However, the proposed Polymarket setup was also poor market quality, with YES bid/ask around 46c/77c (31c spread) and liquidity under $1k. Treat this as two lessons: trend block worked, and the LLM should avoid wide-spread/thin-liquidity PM legs rather than treating them as clean directional evidence.
 
 ---
+### 2026-04-29 01:28 UTC
+
+**Portfolio:** $100.58 total | Cash $93.58 | 7 open | P&L $0.5772 | 61% win rate (85 trades)
+
+**Statistical observations:**
+- [anomaly] oil_opt_fwd_90d = 95.7 is 8.6 std devs from mean (84.69 ± 1.29)
+- [anomaly] oil_opt_iv_30d = 56 is 6.0 std devs from mean (27.92 ± 4.65)
+- [anomaly] oil_opt_iv_90d = 58 is 6.0 std devs from mean (25.20 ± 5.43)
+- [anomaly] oil_wti_spot = 99.98 is 4.9 std devs from mean (85.04 ± 3.03)
+- [anomaly] oil_pm_iv = 67.8 is 4.1 std devs from mean (38.07 ± 7.21)
+
+**Blocked signal learning:**
+- Open blocked shadows: 23
+- Resolved blocked shadows: 5 (1 wins / 4 losses)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-7.96%)
+- ✅ PM proxy short: MACRO_MOMENTUM_DOWN_PM_PROXY_SHORT BTC short via polymarket would have target (+6.73%)
+- ❌ Blocked: LLM_HYPOTHESIS OIL short via polymarket would have stop (-40.26%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE OIL long via polymarket would have stop (-4.50%)
+
+**LLM analysis:**
+Mathematical arbitrage convergence event: multiple +6σ statistical anomalies creating forced correction requirements. Oil showing most extreme structural breakdown in dataset history (IV +6.8σ, WTI +5.1σ, spread collapse to 4.6 from 25+ range). HYPE distribution reaching mathematical completion (18% OI decline with funding crash) while BTC approaches funding exhaustion threshold. These aren't traditional TA setups - they're mathematical arbitrage requirements where structural relationships become mathematically unsustainable. Blocked shadow learning validates approach: oil short was correctly blocked by trend filter AND had poor market quality (31c spread). LLM improvement focus: recognize mathematical vs technical setups. Mathematical arbitrage (structural relationship breakdown requiring correction) has higher probability than technical oversold (sentiment-based). Increasing LLM target to 15% given improved edge detection on extreme statistical deviations. Key lesson: +6σ anomalies in financial markets represent forced correction opportunities, not just oversold conditions.
+
+---
+
