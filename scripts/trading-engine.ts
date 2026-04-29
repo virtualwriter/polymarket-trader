@@ -26,6 +26,7 @@ const MAX_OPEN_POSITIONS = 15;
 const HEATMAP_SHADOW_MAX_SPREAD = 0.01;
 const HEATMAP_SHADOW_MIN_LIQUIDITY = 1000;
 const HYPOTHESIS_SHADOW_TESTS_REQUIRED = 9;
+const HYPOTHESIS_RETEST_ACTIVE_LIMIT = 50;
 const PROMOTE_THRESHOLD = 0.65;
 const PROMOTE_MIN_TESTS = HYPOTHESIS_SHADOW_TESTS_REQUIRED;
 const DEMOTE_THRESHOLD = 0.45;
@@ -2408,6 +2409,10 @@ function pendingHypothesisTests(hypothesis: Hypothesis): HypothesisTest[] {
   return hypothesis.tests.filter((test) => test.outcome === "pending");
 }
 
+function isRepeatHypothesisShadowTest(test: HypothesisTest): boolean {
+  return test.outcome === "pending" && /Shadow test \d+\/\d+ opened/.test(test.actualMove);
+}
+
 function hypothesisNeedsMoreShadowTests(hypothesis: Hypothesis): boolean {
   if (hypothesis.source !== "llm") return false;
   if (hypothesis.status === "killed" || hypothesis.status === "archived") return false;
@@ -2417,13 +2422,104 @@ function hypothesisNeedsMoreShadowTests(hypothesis: Hypothesis): boolean {
 function llmHypothesisBacklog(hypotheses: Hypothesis[]) {
   const llmHypotheses = hypotheses.filter((hypothesis) => hypothesis.source === "llm");
   const needingTests = llmHypotheses.filter(hypothesisNeedsMoreShadowTests);
+  const activeRetestQueue = needingTests.slice(0, HYPOTHESIS_RETEST_ACTIVE_LIMIT);
   const pending = needingTests.reduce((sum, hypothesis) => sum + pendingHypothesisTests(hypothesis).length, 0);
   return {
     total: llmHypotheses.length,
     needingTests: needingTests.length,
+    activeRetestLimit: HYPOTHESIS_RETEST_ACTIVE_LIMIT,
+    activeRetestQueue: activeRetestQueue.length,
     pending,
     complete: needingTests.length === 0,
   };
+}
+
+function hypothesisConditionValue(key: string, latestRow: SnapshotRow, previousRow: SnapshotRow | null, hypothesis: Hypothesis): number | null {
+  if (key.startsWith("previous_")) return previousRow ? num(previousRow[key.replace(/^previous_/, "")]) : null;
+  const direct = num(latestRow[key]);
+  if (direct !== null) return direct;
+
+  if (key === "ratio") {
+    const pmIvKey = Object.keys(hypothesis.conditions).find((conditionKey) => conditionKey.endsWith("_pm_iv"));
+    const optIvKey = Object.keys(hypothesis.conditions).find((conditionKey) => conditionKey.includes("_opt_iv"));
+    const pmIv = pmIvKey ? num(latestRow[pmIvKey]) : null;
+    const optIv = optIvKey ? num(latestRow[optIvKey]) : null;
+    if (pmIv !== null && optIv !== null && optIv !== 0) return pmIv / optIv;
+  }
+
+  return null;
+}
+
+function evaluateHypothesisCondition(
+  key: string,
+  rawExpression: string,
+  latestRow: SnapshotRow,
+  previousRow: SnapshotRow | null,
+  hypothesis: Hypothesis,
+): boolean {
+  const expression = String(rawExpression).trim().toLowerCase().replace(/%/g, "");
+  const value = hypothesisConditionValue(key, latestRow, previousRow, hypothesis);
+  const previousValue = key.startsWith("previous_")
+    ? null
+    : previousRow ? num(previousRow[key]) : null;
+
+  const between = expression.match(/^between\s+(-?\d+(?:\.\d+)?)\s+and\s+(-?\d+(?:\.\d+)?)/);
+  if (between) {
+    if (value === null) return false;
+    const low = Number(between[1]);
+    const high = Number(between[2]);
+    return value >= low && value <= high;
+  }
+
+  const absChange = expression.match(/^abs\(current\s*-\s*previous\)\s*([<>]=?)\s*(-?\d+(?:\.\d+)?)/);
+  if (absChange) {
+    if (value === null || previousValue === null) return false;
+    const delta = Math.abs(value - previousValue);
+    const threshold = Number(absChange[2]);
+    return absChange[1].startsWith(">") ? delta > threshold : delta < threshold;
+  }
+
+  const declining = expression.match(/^declining\s*>\s*(-?\d+(?:\.\d+)?)/);
+  if (declining) {
+    if (value === null || previousValue === null) return false;
+    return previousValue - value > Number(declining[1]);
+  }
+
+  if (expression.includes("changes sign")) {
+    if (value === null || previousValue === null) return false;
+    return Math.sign(value) !== 0 && Math.sign(previousValue) !== 0 && Math.sign(value) !== Math.sign(previousValue);
+  }
+
+  const dailyChange = expression.match(/^<\s*(-?\d+(?:\.\d+)?)\s*daily change/);
+  if (dailyChange) {
+    if (value === null || previousValue === null || previousValue === 0) return false;
+    return Math.abs(((value - previousValue) / previousValue) * 100) < Number(dailyChange[1]);
+  }
+
+  const comparison = expression.match(/^([<>]=?|=|==)\s*(-?\d+(?:\.\d+)?)/);
+  if (comparison) {
+    if (value === null) return false;
+    const threshold = Number(comparison[2]);
+    switch (comparison[1]) {
+      case ">": return value > threshold;
+      case ">=": return value >= threshold;
+      case "<": return value < threshold;
+      case "<=": return value <= threshold;
+      case "=":
+      case "==": return value === threshold;
+    }
+  }
+
+  return false;
+}
+
+function hypothesisConditionsSatisfied(hypothesis: Hypothesis, valuationRows: SnapshotRow[]): boolean {
+  const latestRow = valuationRows[valuationRows.length - 1];
+  const previousRow = valuationRows.length > 1 ? valuationRows[valuationRows.length - 2] : null;
+  if (!latestRow) return false;
+  const entries = Object.entries(hypothesis.conditions ?? {});
+  if (entries.length === 0) return false;
+  return entries.every(([key, expression]) => evaluateHypothesisCondition(key, String(expression), latestRow, previousRow, hypothesis));
 }
 
 function inferHypothesisDirection(hypothesis: Hypothesis): "long" | "short" {
@@ -2473,6 +2569,14 @@ function evaluateHypotheses(hypotheses: Hypothesis[], valuationRows: SnapshotRow
   const now = new Date();
   const latestDate = String(valuationRows[valuationRows.length - 1]?.date ?? new Date().toISOString().slice(0, 10)).slice(0, 10);
   let openedShadowTests = 0;
+  let skippedInactiveBacklog = 0;
+  let skippedConditionNotMet = 0;
+  const activeRetestIds = new Set(
+    hypotheses
+      .filter(hypothesisNeedsMoreShadowTests)
+      .slice(0, HYPOTHESIS_RETEST_ACTIVE_LIMIT)
+      .map((hypothesis) => hypothesis.id),
+  );
 
   for (const h of hypotheses) {
     if (h.status === "killed" || h.status === "archived") continue;
@@ -2524,11 +2628,19 @@ function evaluateHypotheses(hypotheses: Hypothesis[], valuationRows: SnapshotRow
     }
 
     if (hypothesisNeedsMoreShadowTests(h) && pendingHypothesisTests(h).length === 0) {
+      if (!activeRetestIds.has(h.id)) {
+        skippedInactiveBacklog++;
+        continue;
+      }
+      if (!hypothesisConditionsSatisfied(h, valuationRows)) {
+        skippedConditionNotMet++;
+        continue;
+      }
       h.tests.push({
         date: latestDate,
         triggered: true,
         outcome: "pending",
-        actualMove: `Shadow test ${h.tests.length + 1}/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened for repeat validation.`,
+        actualMove: `Shadow test ${h.tests.length + 1}/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened after current row satisfied hypothesis conditions.`,
       });
       openedShadowTests++;
     } else if (
@@ -2543,7 +2655,10 @@ function evaluateHypotheses(hypotheses: Hypothesis[], valuationRows: SnapshotRow
   }
 
   if (openedShadowTests > 0) {
-    observations.push(`🧪 Opened ${openedShadowTests} repeat hypothesis shadow tests; no new LLM hypotheses will be accepted until existing LLM hypotheses reach ${HYPOTHESIS_SHADOW_TESTS_REQUIRED} tests each.`);
+    observations.push(`🧪 Opened ${openedShadowTests} condition-triggered repeat hypothesis shadow tests from the first ${HYPOTHESIS_RETEST_ACTIVE_LIMIT} LLM hypotheses.`);
+  }
+  if (skippedConditionNotMet > 0 || skippedInactiveBacklog > 0) {
+    observations.push(`🧪 Hypothesis retest queue: ${skippedConditionNotMet} of the first ${HYPOTHESIS_RETEST_ACTIVE_LIMIT} did not trigger; ${skippedInactiveBacklog} later hypotheses are waiting for the next batch.`);
   }
 
   return observations;
@@ -2622,7 +2737,7 @@ ${activeHypotheses.map((h) => `  ${h.id}: ${h.description} [${h.status}, ${(h.wi
 
 HYPOTHESIS SHADOW TEST BACKLOG:
 ${JSON.stringify(hypothesisBacklog, null, 1)}
-${hypothesisBacklog.complete ? "Existing LLM hypothesis backlog is complete; new hypotheses may be proposed." : `Do NOT propose new hypotheses right now. Existing LLM hypotheses still need repeat shadow tests (${hypothesisBacklog.needingTests}/${hypothesisBacklog.total} need more tests, ${hypothesisBacklog.pending} pending). Return newHypotheses: [] and focus on reviewing/testing existing hypotheses.`}
+${hypothesisBacklog.complete ? "Existing LLM hypothesis backlog is complete; new hypotheses may be proposed." : `Do NOT propose new hypotheses right now. Existing LLM hypotheses still need condition-triggered repeat shadow tests (${hypothesisBacklog.needingTests}/${hypothesisBacklog.total} need more tests, ${hypothesisBacklog.pending} pending). Only the first ${HYPOTHESIS_RETEST_ACTIVE_LIMIT} backlog hypotheses are active for retesting; others wait. Return newHypotheses: [] and focus on reviewing/testing existing hypotheses.`}
 
 RECENTLY KILLED HYPOTHESES:
 ${killedRecently.map((h) => `  ${h.id}: ${h.description} — ${h.postMortem}`).join("\n") || "  None"}
@@ -2648,7 +2763,7 @@ ${journalTail || "  No entries yet"}
 IMPORTANT RULES:
 - Each hypothesis MUST be specific and testable with a clear timeframe (1-14 days)
 - Each hypothesis MUST define measurable conditions using column names from the data
-- Existing LLM hypotheses must receive ${HYPOTHESIS_SHADOW_TESTS_REQUIRED} shadow tests before promotion/kill/inconclusive demotion. Do not create new hypotheses while the backlog is incomplete.
+- Existing LLM hypotheses must receive ${HYPOTHESIS_SHADOW_TESTS_REQUIRED} condition-triggered shadow tests before promotion/kill/inconclusive demotion. Do not create new hypotheses while the backlog is incomplete.
 - Focus on cross-venue divergences and patterns the rule-based system can't detect
 - Be honest about what's working and what isn't
 - If a pattern stopped working, explain WHY you think it changed
