@@ -7211,7 +7211,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Active - BTC P/C normalized above 0.77 during consolidation at 76852 with PM IV at 33.3%. Momentum resumption setup developing as expected.",
     "source": "llm"
   },
   {
@@ -7263,7 +7263,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Confirmed - HYPE OI declined to 775M from 957M peak (19% decline) with funding normalized to 2.12%. Distribution exhaustion reversal setup completing.",
     "source": "llm"
   },
   {
@@ -12348,7 +12348,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "Oil IV reached 56.4% (+6σ anomaly) with WTI at 99.18 (+4σ) and spread at 4.7 - mathematical arbitrage conditions fully met, confirming systematic correction requirement",
     "source": "llm"
   },
   {
@@ -12374,7 +12374,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "HYPE OI at 794M represents 17% decline from 957M peak with funding at -5.22%, approaching the 18% threshold for distribution completion reversal",
     "source": "llm"
   },
   {
@@ -12390,6 +12390,842 @@
     "prediction": "BTC funding normalization above 5%, HYPE OI stabilization, oil IV compression within 7 days",
     "timeframeDays": 7,
     "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "BTC funding crashed to -6.98% with HYPE OI at 794M (17% decline) and oil IV at +6.4σ - all three extreme positioning exhaustion conditions met simultaneously, validating mathematical arbitrage thesis",
+    "source": "llm"
+  },
+  {
+    "id": "H-486",
+    "created": "2026-04-29",
+    "description": "BTC funding crash below -6% during consolidation above 76k creates systematic bounce setup when combined with HYPE institutional distribution completion (OI below 800M from 957M peak)",
+    "conditions": {
+      "btc_hl_funding_ann": "< -0.06",
+      "btc_spot": "> 76000",
+      "hype_hl_oi": "< 800000000"
+    },
+    "prediction": "BTC funding normalization above -3% within 5-7 days",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "BTC funding at -6.98% during consolidation above 76k while HYPE shows 17% OI decline. Cross-asset positioning exhaustion conditions met. Keeping active. | Active - BTC funding at -10.03% with consolidation above 76k and HYPE OI at 805.8M (16% decline from peak). Conditions met for systematic bounce setup.",
+    "source": "llm"
+  },
+  {
+    "id": "H-487",
+    "created": "2026-04-29",
+    "description": "Oil extreme statistical breakdown mathematical arbitrage - when Oil options IV reaches +6σ anomaly above 56% while WTI shows +4σ deviation above 99 and Brent-WTI spread collapses below 5 from historical 15-25 range",
+    "conditions": {
+      "oil_opt_iv_30d": "> 56",
+      "oil_wti_spot": "> 99",
+      "oil_brent_wti_spread": "< 5"
+    },
+    "prediction": "Mathematical arbitrage forces systematic correction within one week",
+    "timeframeDays": 7,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Oil IV at 55.4% (+4.5σ) with WTI at 99.33 (+4σ) and spread at 4.8. Mathematical arbitrage conditions fully triggered. Keeping active. | Active - Oil IV at 55.2% (+4.5σ), WTI at 99.7 (+4σ), Brent-WTI spread at 4.8. Mathematical arbitrage conditions fully met. | Confirmed - Oil IV reached +4σ at 55.2% with WTI +3.7σ at 99.75 and Brent-WTI spread at 4.8. Mathematical arbitrage setup active.",
+    "source": "llm"
+  },
+  {
+    "id": "H-488",
+    "created": "2026-04-29",
+    "description": "HYPE institutional distribution exhaustion completion reversal - massive 18% OI decline from 957M peak to sub-800M levels with funding normalization below -5%",
+    "conditions": {
+      "hype_hl_oi": "< 800000000",
+      "hype_hl_funding_ann": "< -0.05"
+    },
+    "prediction": "Oversold bounce setup emerges as smart money exit completion indicated",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "HYPE OI at 794M vs 957M peak = 17% decline with funding at -5.2%. Distribution approaching mathematical completion as predicted. Keeping active. | Active - HYPE OI at 805.8M (16% decline from 957M peak) with funding at 10.95%. Close to completion threshold.",
+    "source": "llm"
+  },
+  {
+    "id": "H-489",
+    "created": "2026-04-29",
+    "description": "Oil complex mathematical arbitrage completion reversal - when Oil options IV reaches +4.5σ anomaly above 55% while WTI shows +4σ deviation above 99 and Brent-WTI spread collapses below 5 from historical 15-25 range, mathematical arbitrage forces systematic correction within one week",
+    "conditions": {
+      "oil_opt_iv_30d": "> 55",
+      "oil_wti_spot": "> 99",
+      "oil_brent_wti_spread": "< 5"
+    },
+    "prediction": "systematic oil complex correction within 7 days as mathematical arbitrage requirements force structural realignment",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Active - Oil IV 55.2% (+4.5σ), WTI 99.7 (+4σ), spread 4.8. All mathematical arbitrage conditions confirmed.",
+    "source": "llm"
+  },
+  {
+    "id": "H-490",
+    "created": "2026-04-29",
+    "description": "Cross-asset mathematical positioning exhaustion completion reversal - when BTC funding crashes below -10% during consolidation above 76k while HYPE OI declines 17%+ from record peaks and Oil IV reaches +4.5σ statistical anomaly simultaneously, systematic institutional positioning reset creates multi-asset bounce",
+    "conditions": {
+      "btc_hl_funding_ann": "< -0.1",
+      "btc_spot": "> 76000",
+      "hype_hl_oi": "< 800000000",
+      "oil_opt_iv_30d": "> 55"
+    },
+    "prediction": "multi-asset bounce within 5-7 days as mathematical positioning exhaustion forces systematic reset across crypto and commodities",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Active - Cross-asset positioning exhaustion fully confirmed: BTC funding -10.03%, HYPE OI down 16%, Oil IV +4.5σ. Mathematical completion levels reached.",
+    "source": "llm"
+  },
+  {
+    "id": "H-491",
+    "created": "2026-04-29",
+    "description": "HYPE institutional distribution mathematical completion reversal - when HYPE OI declines below 790M from 957M peak (17%+ decline) while funding crashes below -10% and spot holds above 40, massive distribution exhaustion creates oversold bounce within one week",
+    "conditions": {
+      "hype_hl_oi": "< 790000000",
+      "hype_hl_funding_ann": "< -0.1",
+      "hype_spot": "> 40"
+    },
+    "prediction": "HYPE oversold bounce acceleration within 7 days as mathematical distribution completion triggers reversal",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-492",
+    "created": "2026-04-29",
+    "description": "BTC funding crash below -10% during consolidation above 76k creates systematic bounce setup when combined with HYPE institutional distribution completion (OI below 800M from 957M peak)",
+    "conditions": {
+      "btc_hl_funding_ann": "< -10",
+      "btc_spot": "> 76000",
+      "hype_hl_oi": "< 800000000"
+    },
+    "prediction": "BTC funding normalizes above -5% within 72 hours as positioning unwind completes",
+    "timeframeDays": 3,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Confirmed - BTC funding crashed to -12.16% during consolidation above 76k with HYPE OI at 803M (16% decline from peaks). Positioning exhaustion evident.",
+    "source": "llm"
+  },
+  {
+    "id": "H-493",
+    "created": "2026-04-29",
+    "description": "Oil extreme statistical breakdown mathematical arbitrage - when Oil options IV reaches +4.5σ anomaly above 55% while WTI shows +4σ deviation above 99 and Brent-WTI spread collapses below 5 from historical 15-25 range, mathematical arbitrage forces systematic correction within one week",
+    "conditions": {
+      "oil_opt_iv_30d": "> 55",
+      "oil_wti_spot": "> 99",
+      "oil_brent_wti_spread": "< 5"
+    },
+    "prediction": "Oil IV compression below 45% and/or WTI pullback below 95 within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-494",
+    "created": "2026-04-29",
+    "description": "HYPE institutional distribution mathematical completion reversal - when HYPE OI declines below 800M from 957M peak (17%+ decline) while funding crashes below -10% and spot holds above 40, massive distribution exhaustion creates oversold bounce within one week",
+    "conditions": {
+      "hype_hl_oi": "< 800000000",
+      "hype_hl_funding_ann": "< -10",
+      "hype_spot": "> 40"
+    },
+    "prediction": "HYPE spot recovery above 42 and/or OI stabilization above 820M within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Confirmed - HYPE OI at 803M from 957M peak (16% decline) with funding at -9.66%. Distribution approaching mathematical completion levels.",
+    "source": "llm"
+  },
+  {
+    "id": "H-495",
+    "created": "2026-04-29",
+    "description": "Cross-asset extreme positioning exhaustion mathematical reversal - when BTC funding crashes below -10% during consolidation above 76k while HYPE OI declines 17%+ from record peaks and Oil IV reaches +4.5σ statistical anomaly simultaneously, systematic institutional positioning reset creates multi-asset bounce",
+    "conditions": {
+      "btc_hl_funding_ann": "< -10",
+      "btc_spot": "> 76000",
+      "hype_hl_oi": "< 800000000",
+      "oil_opt_iv_30d": "> 55"
+    },
+    "prediction": "At least 2 of 3 assets show reversal signals within 5 days: BTC funding > -5%, HYPE OI > 820M, Oil IV < 45%",
+    "timeframeDays": 5,
+    "confidence": 0.65,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Cross-asset extreme positioning exhaustion mathematical reversal conditions met with BTC funding -12.52%, HYPE OI at 792M (17% decline from 957M peak), Oil IV at 58.7% (+3.4σ). All three assets showing extreme positioning that requires systematic correction.",
+    "source": "llm"
+  },
+  {
+    "id": "H-496",
+    "created": "2026-04-29",
+    "description": "HYPE institutional distribution mathematical completion reversal - when HYPE OI declines below 790M from 957M peak (17%+ decline) while funding crashes below -10% and spot holds above 40, massive distribution exhaustion creates oversold bounce within one week",
+    "conditions": {
+      "hype_hl_oi": "< 790000000",
+      "hype_hl_funding_ann": "< -10",
+      "hype_spot": "> 40"
+    },
+    "prediction": "HYPE spot recovery above 42 within 7 days as institutional distribution completes",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-497",
+    "created": "2026-04-29",
+    "description": "Oil mathematical arbitrage completion - when Oil options IV reaches +4σ anomaly above 55% while WTI shows +3.5σ deviation above 99 and Brent-WTI spread collapses below 5 from historical 15-25 range, mathematical arbitrage forces systematic correction within one week",
+    "conditions": {
+      "oil_opt_iv_30d": "> 55",
+      "oil_wti_spot": "> 99",
+      "oil_brent_wti_spread": "< 5"
+    },
+    "prediction": "Oil complex systematic correction toward normalized IV below 45% and WTI pullback toward 95-97 range within 5-7 days",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Oil mathematical arbitrage pattern triggered with IV +4σ at 55.2%, WTI +3.7σ at 100.94, Brent-WTI spread at 4.6 from 15-25 range. System correctly identifying mathematical rather than sentiment extremes.",
+    "source": "llm"
+  },
+  {
+    "id": "H-498",
+    "created": "2026-04-29",
+    "description": "Cross-asset extreme positioning exhaustion mathematical reversal - when BTC funding crashes below -10% during consolidation above 76k while HYPE OI declines 16%+ from record peaks and Oil IV reaches +4σ statistical anomaly simultaneously, systematic institutional positioning reset creates multi-asset bounce",
+    "conditions": {
+      "btc_hl_funding_ann": "< -10",
+      "hype_hl_oi": "< 820000000",
+      "oil_opt_iv_30d": "> 55"
+    },
+    "prediction": "Multi-asset bounce within 48-72 hours - BTC recovery above 77k, HYPE funding normalization above 0%, Oil IV compression below 50%",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Cross-asset positioning exhaustion confirmed: BTC funding -11.05%, HYPE OI declined 16%+ from peaks, Oil IV +3.8σ. Multi-asset mathematical conditions aligned for systematic bounce.",
+    "source": "llm"
+  },
+  {
+    "id": "H-499",
+    "created": "2026-04-29",
+    "description": "HYPE institutional distribution mathematical completion reversal - when HYPE OI declines below 800M from 957M peak (17%+ decline) while funding crashes below -10% and spot holds above 40, massive distribution exhaustion creates oversold bounce within one week",
+    "conditions": {
+      "hype_hl_oi": "< 800000000",
+      "hype_hl_funding_ann": "< -10",
+      "hype_spot": "> 40"
+    },
+    "prediction": "HYPE oversold bounce toward 42-43 range with funding normalization above 0% and OI stabilization within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "HYPE institutional distribution at 799M (-16% from 957M peak) with funding -6.78%. Distribution approaching mathematical completion levels requiring reversal within target timeframe.",
+    "source": "llm"
+  },
+  {
+    "id": "H-500",
+    "created": "2026-04-29",
+    "description": "Oil complex extreme mathematical arbitrage completion - when oil options IV reaches +4σ anomaly above 55% while WTI shows +4σ deviation above 102 and Brent-WTI spread collapses below 5 from historical 15-25 range, mathematical arbitrage forces systematic correction within one week",
+    "conditions": {
+      "oil_opt_iv_30d": "> 55",
+      "oil_wti_spot": "> 102",
+      "oil_brent_wti_spread": "< 5"
+    },
+    "prediction": "Oil structural recovery within 7 days as mathematical arbitrage forces correction",
+    "timeframeDays": 7,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Oil IV reached +5.3σ at 69.3% while WTI at +4.0σ above 102.7 and Brent-WTI spread at 4.6 - extreme mathematical conditions confirmed requiring systematic correction | Oil complex extreme mathematical arbitrage confirmed with WTI +3.8σ at 103.33, IV compression to 50.1%, and Brent-WTI spread at 4.0 - all conditions met for systematic correction | Oil complex showing even more extreme conditions with IV reaching +4.7σ at 70.8%, confirming mathematical arbitrage thesis | Oil complex extreme mathematical arbitrage completion conditions active - Oil IV at 58.7% (+3.4σ anomaly), WTI at 103.15 (+3.6σ deviation), Brent-WTI spread at 4.2 from historical 15-25 range. Mathematical relationships unsustainable at these levels.",
+    "source": "llm"
+  },
+  {
+    "id": "H-501",
+    "created": "2026-04-29",
+    "description": "Cross-asset extreme positioning exhaustion mathematical reversal - when BTC funding crashes below -10% during consolidation above 76k while HYPE OI declines 16%+ from record peaks and Oil IV reaches +4σ statistical anomaly simultaneously, systematic institutional positioning reset creates multi-asset bounce",
+    "conditions": {
+      "btc_hl_funding_ann": "< -10",
+      "hype_hl_oi": "< 810000000",
+      "oil_opt_iv_30d": "> 54"
+    },
+    "prediction": "Multi-asset bounce within 5 days as positioning extremes mathematically unsustainable",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "BTC funding at -11.05% with HYPE OI at 799M (16.4% decline from 957M peak) and Oil IV +5.3σ - cross-asset positioning exhaustion mathematical threshold reached | Cross-asset positioning exhaustion confirmed with BTC funding at -16.32%, HYPE OI at 795M (17% decline), and Oil +3.8σ deviation - mathematical completion reached | Cross-asset positioning exhaustion accelerating with BTC funding at -16.32% and HYPE OI at 795M, validating systematic correction hypothesis",
+    "source": "llm"
+  },
+  {
+    "id": "H-502",
+    "created": "2026-04-29",
+    "description": "HYPE institutional distribution mathematical completion reversal - when HYPE OI declines below 800M from 957M peak (16%+ decline) while funding crashes below -10% and spot holds above 40, massive distribution exhaustion creates oversold bounce within one week",
+    "conditions": {
+      "hype_hl_oi": "< 800000000",
+      "hype_hl_funding_ann": "< -10",
+      "hype_spot": "> 40"
+    },
+    "prediction": "HYPE oversold bounce within 7 days as institutional distribution reaches mathematical completion",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "HYPE OI at 799M represents 16.5% decline from 957M peak with funding at -6.78% and spot holding 40.4 - distribution exhaustion approaching completion | HYPE institutional distribution at 795M from 957M peak (17% decline) with funding at -11.27% while spot at 40.63 - distribution exhaustion approaching completion | HYPE institutional distribution at 17% decline from peaks with funding at -11.27%, approaching completion levels | HYPE institutional distribution mathematical completion reversal conditions approaching - OI at 792M (17% decline from 957M peak) with funding at -11.58%. Distribution exhaustion near completion levels requiring oversold bounce.",
+    "source": "llm"
+  },
+  {
+    "id": "H-503",
+    "created": "2026-04-29",
+    "description": "Oil complex extreme statistical breakdown mathematical arbitrage - when Oil options IV reaches +5σ anomaly above 69% while WTI shows +4σ deviation above 102 and Brent-WTI spread collapses below 5 from historical 15-25 range, mathematical arbitrage forces systematic correction within one week",
+    "conditions": {
+      "oil_opt_iv_30d": "> 69",
+      "oil_wti_spot": "> 102",
+      "oil_brent_wti_spread": "< 5"
+    },
+    "prediction": "systematic correction within 5-7 days as statistical anomalies revert",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-504",
+    "created": "2026-04-29",
+    "description": "Cross-asset extreme positioning exhaustion mathematical reversal - when BTC funding crashes below -10% during consolidation above 76k while HYPE OI declines 16%+ from record peaks and Oil IV reaches +5σ statistical anomaly simultaneously, systematic institutional positioning reset creates multi-asset bounce",
+    "conditions": {
+      "btc_hl_funding_ann": "< -10",
+      "hype_hl_oi": "< 820000000",
+      "oil_opt_iv_30d": "> 69"
+    },
+    "prediction": "multi-asset bounce within 5-7 days as positioning exhaustion completes",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-505",
+    "created": "2026-04-29",
+    "description": "HYPE institutional distribution mathematical completion reversal - when HYPE OI declines below 800M from 957M peak (17%+ decline) while funding crashes below -5% and spot holds above 40, massive distribution exhaustion creates oversold bounce within one week",
+    "conditions": {
+      "hype_hl_oi": "< 800000000",
+      "hype_hl_funding_ann": "< -5",
+      "hype_spot": "> 40"
+    },
+    "prediction": "oversold bounce within 5-7 days as institutional distribution completes",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-506",
+    "created": "2026-04-29",
+    "description": "Oil complex extreme statistical breakdown mathematical arbitrage completion - when Oil WTI shows +3.8σ deviation above 103 while options IV compresses below 52% from extreme highs above 70% and Brent-WTI spread stays collapsed below 4.5 from historical 15-25 range, mathematical arbitrage forces systematic correction",
+    "conditions": {
+      "oil_wti_spot": "> 103",
+      "oil_opt_iv_30d": "< 52",
+      "oil_brent_wti_spread": "< 4.5"
+    },
+    "prediction": "Oil structural breakdown reversal within one week as extreme statistical deviations become mathematically unsustainable",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-507",
+    "created": "2026-04-29",
+    "description": "Cross-asset extreme positioning exhaustion mathematical reversal - when BTC funding crashes below -15% during consolidation above 77k while HYPE OI declines 17%+ from record peaks and Oil shows +3.8σ statistical anomaly simultaneously, systematic institutional positioning reset creates multi-asset bounce",
+    "conditions": {
+      "btc_hl_funding_ann": "< -15",
+      "hype_hl_oi": "< 800000000",
+      "oil_wti_spot": "> 103"
+    },
+    "prediction": "Multi-asset bounce within 5-7 days as positioning exhaustion reaches mathematical completion requiring systematic correction",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-508",
+    "created": "2026-04-29",
+    "description": "HYPE institutional distribution mathematical completion reversal - when HYPE OI declines below 800M from 957M peak (17%+ decline) while funding crashes below -10% and spot holds above 40, massive distribution exhaustion creates oversold bounce within one week",
+    "conditions": {
+      "hype_hl_oi": "< 800000000",
+      "hype_hl_funding_ann": "< -10",
+      "hype_spot": "> 40"
+    },
+    "prediction": "HYPE oversold bounce within 5-7 days as institutional distribution cycle completion creates systematic reversal opportunity",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-509",
+    "created": "2026-04-29",
+    "description": "Oil complex extreme statistical breakdown mathematical arbitrage completion - when Oil IV reaches +4.7σ anomaly above 70% while WTI shows +3.8σ deviation above 103 and Brent-WTI spread collapses below 4.5 from historical 15-25 range, mathematical arbitrage forces systematic correction within one week",
+    "conditions": {
+      "oil_opt_iv_30d": "> 70",
+      "oil_wti_spot": "> 103",
+      "oil_brent_wti_spread": "< 4.5"
+    },
+    "prediction": "Oil IV compression below 60% and WTI pullback below 100 within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Active - Oil IV reached +3.9σ at 67.7% with WTI +3.5σ at 103.28, Brent-WTI spread at 4.9. Mathematical conditions intensifying toward completion.",
+    "source": "llm"
+  },
+  {
+    "id": "H-510",
+    "created": "2026-04-29",
+    "description": "Cross-asset extreme positioning exhaustion mathematical reversal - when BTC funding crashes below -16% during consolidation above 77k while HYPE OI declines 17%+ from record peaks and Oil IV reaches +4.7σ statistical anomaly simultaneously, systematic institutional positioning reset creates multi-asset bounce",
+    "conditions": {
+      "btc_hl_funding_ann": "< -16",
+      "btc_spot": "> 77000",
+      "hype_hl_oi": "< 800000000",
+      "oil_opt_iv_30d": "> 70"
+    },
+    "prediction": "BTC funding normalization above -5%, HYPE OI stabilization, Oil IV compression below 60% within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-511",
+    "created": "2026-04-29",
+    "description": "HYPE institutional distribution mathematical completion reversal - when HYPE OI declines below 800M from 957M peak (17%+ decline) while funding crashes below -11% and spot holds above 40, massive distribution exhaustion creates oversold bounce within one week",
+    "conditions": {
+      "hype_hl_oi": "< 800000000",
+      "hype_hl_funding_ann": "< -11",
+      "hype_spot": "> 40"
+    },
+    "prediction": "HYPE OI stabilization above 820M with funding normalization above -5% within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Active - HYPE OI at 775M (19% decline from 957M peak) with funding at 2.12%. Distribution exhaustion accelerating toward mathematical completion levels.",
+    "source": "llm"
+  },
+  {
+    "id": "H-512",
+    "created": "2026-04-29",
+    "description": "HYPE institutional distribution exhaustion completion reversal - when HYPE OI declines below 800M from 957M peak (16%+ decline) while funding normalizes above -20% and spot holds above 40, distribution exhaustion creates oversold bounce within 5-7 days",
+    "conditions": {
+      "hype_hl_oi": "< 800000000",
+      "hype_hl_funding_ann": "> -0.2",
+      "hype_spot": "> 40"
+    },
+    "prediction": "HYPE bounce toward 42-43 range within one week as institutional distribution completes",
+    "timeframeDays": 7,
+    "confidence": 0.8,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-513",
+    "created": "2026-04-29",
+    "description": "Oil complex extreme mathematical arbitrage completion - when Oil options IV reaches +4σ anomaly above 56% while WTI shows +3.5σ deviation above 99 and Brent-WTI spread collapses below 5 from historical 15-25 range, mathematical arbitrage forces systematic correction within one week",
+    "conditions": {
+      "oil_opt_iv_30d": "> 56",
+      "oil_wti_spot": "> 99",
+      "oil_brent_wti_spread": "< 5"
+    },
+    "prediction": "Oil complex correction with IV normalization below 50% and WTI pullback below 95 within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-514",
+    "created": "2026-04-29",
+    "description": "Cross-asset extreme positioning exhaustion mathematical reversal - when BTC funding crashes below -10% during consolidation above 76k while HYPE OI declines 16%+ from record peaks and Oil IV reaches +4σ statistical anomaly simultaneously, systematic institutional positioning reset creates multi-asset bounce",
+    "conditions": {
+      "btc_hl_funding_ann": "< -0.1",
+      "btc_spot": "> 76000",
+      "hype_hl_oi": "< 804000000",
+      "oil_opt_iv_30d": "> 56"
+    },
+    "prediction": "Multi-asset bounce with BTC above 78k, HYPE above 42, Oil IV below 50% within 5 days",
+    "timeframeDays": 5,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-515",
+    "created": "2026-04-29",
+    "description": "Oil mathematical arbitrage completion - when Oil options IV reaches +4.7σ anomaly above 63% while WTI shows +3.6σ deviation above 104 and Brent-WTI spread collapses below 5 from historical 15-25 range, mathematical arbitrage forces systematic correction within one week",
+    "conditions": {
+      "oil_opt_iv_30d": "> 63",
+      "oil_wti_spot": "> 104",
+      "oil_brent_wti_spread": "< 5"
+    },
+    "prediction": "Oil complex systematic correction with IV compression and spread normalization within 7 days",
+    "timeframeDays": 7,
+    "confidence": 0.85,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-516",
+    "created": "2026-04-29",
+    "description": "HYPE institutional distribution mathematical completion reversal - when HYPE OI declines below 800M from 957M peak (16%+ decline) while funding crashes below -10% and spot holds above 40, massive distribution exhaustion creates oversold bounce within one week",
+    "conditions": {
+      "hype_hl_oi": "< 800000000",
+      "hype_hl_funding_ann": "< -10",
+      "hype_spot": "> 40"
+    },
+    "prediction": "HYPE oversold bounce as institutional distribution reaches mathematical completion",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "tests": [
+      {
+        "date": "2026-04-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": ""
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-517",
+    "created": "2026-04-29",
+    "description": "Cross-asset extreme positioning exhaustion mathematical reversal - when BTC funding crashes below -10% during consolidation above 76k while HYPE OI declines 16%+ from record peaks and Oil IV reaches +4.7σ statistical anomaly simultaneously, systematic institutional positioning reset creates multi-asset bounce",
+    "conditions": {
+      "btc_hl_funding_ann": "< -10",
+      "btc_spot": "> 76000",
+      "oil_opt_iv_30d": "> 63",
+      "hype_hl_oi": "< 820000000"
+    },
+    "prediction": "Multi-asset bounce as mathematical positioning exhaustion completes across BTC, HYPE, and Oil",
+    "timeframeDays": 7,
+    "confidence": 0.8,
     "tests": [
       {
         "date": "2026-04-29",
