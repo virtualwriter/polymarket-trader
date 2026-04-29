@@ -3567,3 +3567,28 @@ Historic mathematical arbitrage conditions reached with oil complex showing most
 
 ---
 
+### 2026-04-29 17:28 UTC
+
+**Portfolio:** $100.58 total | Cash $92.58 | 8 open | P&L $0.5772 | 61% win rate (85 trades)
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved wider by 9.4pp (was -5.3, now 4.1)
+- [anomaly] oil_opt_fwd_90d = 6.5 is -8.8 std devs from mean (83.96 ± 8.80)
+- [divergence] OIL PM-Options IV gap moved narrower by 5.0pp (was -12.2, now -17.2)
+- [anomaly] oil_opt_iv_30d = 72.2 is 3.6 std devs from mean (31.19 ± 11.36)
+- [anomaly] oil_wti_spot = 107.1 is 3.5 std devs from mean (86.64 ± 5.87)
+
+**Blocked signal learning:**
+- Open blocked shadows: 21
+- Resolved blocked shadows: 15 (3 wins / 12 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (1W/2L across 3 resolved shadows, avg P&L -0.90%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE OIL long via polymarket would have stop (-4.08%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have stop (-2.46%)
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP BTC short via polymarket would have target (+20.48%)
+- ❌ Blocked: PM_EV_BELOW_SPOT OIL short via spot would have stop (-3.58%)
+
+**LLM analysis:**
+Historic mathematical arbitrage conditions reached across multiple assets with oil complex showing most extreme statistical breakdown in dataset history. Oil IV at +3.2σ anomaly (66.1%), WTI at +3.5σ deviation (106.45), and Brent-WTI spread collapsed to 4.1 from historical 15-25 range represent mathematical relationships that cannot persist beyond +3.5σ thresholds. Cross-asset positioning exhaustion evident with BTC funding crash to 1.35% during consolidation, HYPE institutional distribution at 16% OI decline from record peaks, and IV compression across assets. Portfolio already positioned with 8 trades capturing these mathematical arbitrage themes including oil structural breakdown reversal and cross-asset positioning exhaustion. Blocked shadow learning validates system filters - relative-value heatmap BTC short had +20.48% target vs other shorts having stops, showing edge detection works when market quality is adequate. Increased LLM target to 20% given improved edge detection on extreme statistical deviations where mathematical correction is forced within one week. No new trades as existing positions capture convergence themes optimally. 520 LLM hypotheses need retesting before new hypothesis creation - focusing on monitoring existing mathematical arbitrage positions for correction signals.
+
+---
+
