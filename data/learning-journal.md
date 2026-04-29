@@ -3592,3 +3592,9 @@ Historic mathematical arbitrage conditions reached across multiple assets with o
 
 ---
 
+
+### 2026-04-29 — CONDITION-TRIGGERED HYPOTHESIS RETESTING
+
+Removed the broad seeded pending hypothesis tests. Repeat hypothesis shadow tests now only open when the current valuation row satisfies that hypothesis conditions, and only for the first 50 existing LLM hypotheses in the active retest queue. New LLM hypotheses remain blocked while the backlog is incomplete.
+
+---
