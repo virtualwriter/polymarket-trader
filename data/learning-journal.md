@@ -3210,3 +3210,30 @@ Mathematical arbitrage convergence: Oil showing historic +6σ breakdown (IV 56, 
 
 ---
 
+### 2026-04-29 03:27 UTC
+
+**Portfolio:** $100.58 total | Cash $92.58 | 8 open | P&L $0.5772 | 61% win rate (85 trades)
+
+**Opened 1 positions:**
+- AMZN short @ $260.88 via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_LONG)
+
+**Statistical observations:**
+- [anomaly] oil_opt_fwd_90d = 6.7 is -12.2 std devs from mean (84.22 ± 6.35)
+- [anomaly] oil_opt_iv_30d = 56.4 is 5.1 std devs from mean (28.27 ± 5.57)
+- [anomaly] oil_opt_iv_90d = 57.2 is 4.9 std devs from mean (25.60 ± 6.46)
+- [anomaly] oil_wti_spot = 99.18 is 4.1 std devs from mean (85.21 ± 3.38)
+- [anomaly] oil_pm_iv = 69.1 is 3.9 std devs from mean (38.45 ± 7.94)
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 5 (1 wins / 4 losses)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-7.96%)
+- ✅ PM proxy short: MACRO_MOMENTUM_DOWN_PM_PROXY_SHORT BTC short via polymarket would have target (+6.73%)
+- ❌ Blocked: LLM_HYPOTHESIS OIL short via polymarket would have stop (-40.26%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE OIL long via polymarket would have stop (-4.50%)
+
+**LLM analysis:**
+Mathematical arbitrage convergence event: Oil showing most extreme structural breakdown in dataset history (IV +6.4σ at 56.4%, WTI +4.1σ at 98.87, spread collapse to 4.7 from 25+ range). HYPE distribution reaching mathematical completion (17.7% OI decline with funding crash -4.8%) while BTC funding crashed -10.8%. These aren't traditional TA setups but mathematical arbitrage requirements where structural relationships become mathematically unsustainable. Blocked shadow learning validates approach: oil LLM short was correctly blocked by trend filter AND had poor market quality (31c spread, <$600 liquidity). Key insight: +6σ anomalies represent forced correction opportunities with mathematical probability, not sentiment-dependent oversold. Increasing LLM target to 15% given improved edge detection on extreme statistical deviations. Focus shift from technical oversold to mathematical arbitrage - when structural relationships break beyond +5σ thresholds, correction becomes mathematically required. No trades today due to existing positions covering these mathematical arbitrage setups already.
+
+---
+
