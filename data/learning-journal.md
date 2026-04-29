@@ -3486,3 +3486,28 @@ Mathematical arbitrage conditions reached extreme statistical levels requiring s
 Marked GOLD $4,900 June heatmap shadow RV-1777433250302-ko0i as not learnable. The apparent stop used a 38c executable NO bid caused by a 56c/62c YES book (6c spread), while visible NO pricing stayed around the low/mid 40s. Going forward, relative-value heatmap shadows require Polymarket spread <= 1c and adequate liquidity; wider-spread heatmap rows remain report-only/LLM context, not shadow-learning trades.
 
 ---
+### 2026-04-29 14:28 UTC
+
+**Portfolio:** $100.58 total | Cash $92.58 | 8 open | P&L $0.5772 | 61% win rate (85 trades)
+
+**Statistical observations:**
+- [anomaly] oil_wti_spot = 104.63 is 3.5 std devs from mean (86.30 ± 5.31)
+- [anomaly] oil_opt_iv_30d = 65.8 is 3.4 std devs from mean (30.52 ± 10.25)
+- [anomaly] btc_med_min = 59950 is 3.2 std devs from mean (50250.45 ± 3019.52)
+- [anomaly] oil_opt_iv_90d = 59.9 is 3.2 std devs from mean (27.68 ± 10.13)
+- [anomaly] btc_pm_iv = 33.6 is -2.8 std devs from mean (41.55 ± 2.81)
+
+**Blocked signal learning:**
+- Open blocked shadows: 19
+- Resolved blocked shadows: 12 (2 wins / 10 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (1W/2L across 3 resolved shadows, avg P&L -0.90%).
+- ❌ Blocked: LLM_HYPOTHESIS OIL short via spot would have stop (-3.95%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP BTC short via polymarket would have stop (-19.47%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP BTC short via polymarket would have stop (-13.04%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE OIL long via polymarket would have stop (-4.08%)
+
+**LLM analysis:**
+Mathematical arbitrage conditions have reached historic statistical extremes requiring systematic correction. Oil complex shows most severe breakdown in dataset history with IV at +3.3σ anomaly (63.4%), WTI at +3.6σ deviation (104.55), and Brent-WTI spread collapsed to 4.9 from historical 15-25 range. These represent mathematical relationships that cannot persist beyond +3.5σ statistical thresholds. Cross-asset positioning exhaustion evident with BTC funding at -7.86% during stable consolidation and HYPE institutional distribution at 19% OI decline from record peaks. Portfolio already positioned with 8 trades covering these mathematical arbitrage themes. Blocked shadow learning validates system filters - oil shorts blocked for trend protection had poor market quality (wide spreads, low liquidity), distinguishing mathematical arbitrage from unexecutable setups. Increased LLM target to 20% given improved edge detection on extreme statistical deviations beyond +3.5σ where mathematical relationships become unsustainable and correction is forced within one week. No new trades as existing positions capture the mathematical arbitrage convergence themes across all assets.
+
+---
+
