@@ -217,6 +217,13 @@ interface BlockedSignalShadow {
     aboveTrendPct: number;
     momentumPct: number;
   };
+  marketQuality?: {
+    yesBid: number;
+    yesAsk: number;
+    yesSpread: number;
+    liquidity: number;
+    flags: string[];
+  };
   learningParamsSnapshot: Omit<LearningParams, "updatedAt">;
   position: Position;
   hypotheticalResult?: {
@@ -261,7 +268,16 @@ interface BlockedSignalLearningSummary {
     pnlPct: number;
     resolvedAt: string;
     trendMetrics?: BlockedSignalShadow["trendMetrics"];
+    marketQuality?: BlockedSignalShadow["marketQuality"];
     sourceComparison?: BlockedSignalShadow["sourceComparison"];
+  }>;
+  openQualityWarnings: Array<{
+    signalType: string;
+    asset: string;
+    blockedReason: BlockedSignalShadow["blockedReason"];
+    instrumentLabel?: string;
+    marketQuality: NonNullable<BlockedSignalShadow["marketQuality"]>;
+    thesis: string;
   }>;
 }
 
@@ -918,6 +934,34 @@ function applyConservativePolymarketEntry(position: Position, latestSnapshot: In
   position.currentPrice = entryPrice;
 }
 
+function polymarketMarketQuality(
+  position: Position,
+  latestSnapshot: InstrumentSnapshotFile | null,
+): BlockedSignalShadow["marketQuality"] | undefined {
+  if (!latestSnapshot || (position.instrumentType !== "pm_yes" && position.instrumentType !== "pm_no")) return undefined;
+  const [eventSlug, marketId] = position.instrumentId?.split("::") ?? [];
+  const event = latestSnapshot.polymarket.find((candidate) => candidate.slug === eventSlug);
+  const contract = event?.contracts.find((candidate) => candidate.marketId === marketId);
+  if (!contract) return undefined;
+
+  const yesBid = contract.bestBid ?? 0;
+  const yesAsk = contract.bestAsk ?? 0;
+  const yesSpread = contract.spread ?? Math.max(0, yesAsk - yesBid);
+  const liquidity = contract.liquidity ?? 0;
+  const flags: string[] = [];
+  if (yesBid <= 0 || yesAsk <= 0) flags.push("missing_bid_ask");
+  if (yesSpread > HEATMAP_SHADOW_MAX_SPREAD) flags.push("wide_pm_spread");
+  if (liquidity < HEATMAP_SHADOW_MIN_LIQUIDITY) flags.push("low_pm_liquidity");
+
+  return {
+    yesBid: Number(yesBid.toFixed(4)),
+    yesAsk: Number(yesAsk.toFixed(4)),
+    yesSpread: Number(yesSpread.toFixed(4)),
+    liquidity: Number(liquidity.toFixed(2)),
+    flags,
+  };
+}
+
 function estimateFundingPnlSinceOpen(position: Position, snapshots: InstrumentSnapshotFile[]): number {
   if (position.venue !== "hyperliquid" || position.instrumentType !== "hl_perp") return 0;
   const openedAt = new Date(position.openedAt).getTime();
@@ -1264,6 +1308,7 @@ function recordBlockedSignalShadow(
   position.openedAt = blockedAt;
 
   const metrics = assetTrendMetrics(rows, signal.asset, LOOKBACK_HOURS);
+  const marketQuality = polymarketMarketQuality(position, latestSnapshot);
   blockedSignals.push({
     id: position.id,
     status: "open",
@@ -1279,6 +1324,7 @@ function recordBlockedSignalShadow(
       aboveTrendPct: Number(metrics.aboveTrendPct.toFixed(2)),
       momentumPct: Number(metrics.momentumPct.toFixed(2)),
     } : undefined,
+    marketQuality,
     learningParamsSnapshot: {
       macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
       contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
@@ -1344,6 +1390,7 @@ function recordIVDownsideLegShadow(
     direction: signal.direction,
     confidence: signal.confidence,
     thesis: `[DOWNSIDE LEG SHADOW] ${signal.thesis}`,
+    marketQuality: polymarketMarketQuality(position, latestSnapshot),
     learningParamsSnapshot: {
       macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
       contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
@@ -1415,6 +1462,7 @@ function recordPolymarketProxyShortShadow(
     thesis: proxySignal.thesis,
     sourcePositionId: sourcePosition.id,
     sourcePositionLabel: `${sourcePosition.asset} ${sourcePosition.direction} via ${sourcePosition.venue}/${sourcePosition.instrumentType ?? "legacy"} (${sourcePosition.signalType})`,
+    marketQuality: polymarketMarketQuality(position, latestSnapshot),
     learningParamsSnapshot: {
       macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
       contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
@@ -1500,6 +1548,7 @@ function recordRelativeValueHeatmapShadows(
       direction: position.direction,
       confidence: Number(Math.min(1, Math.abs(obs.edgePts) / 20).toFixed(4)),
       thesis: position.thesis,
+      marketQuality: polymarketMarketQuality(position, latestSnapshot),
       learningParamsSnapshot: {
         macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
         contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
@@ -1610,6 +1659,18 @@ function summarizeBlockedSignals(blockedSignals: BlockedSignalShadow[]): Blocked
     .filter((shadow): shadow is BlockedSignalShadow & { hypotheticalResult: NonNullable<BlockedSignalShadow["hypotheticalResult"]>; resolvedAt: string } =>
       shadow.status === "resolved" && !!shadow.hypotheticalResult && !!shadow.resolvedAt)
     .sort((a, b) => a.resolvedAt.localeCompare(b.resolvedAt));
+  const openQualityWarnings = blockedSignals
+    .filter((shadow): shadow is BlockedSignalShadow & { marketQuality: NonNullable<BlockedSignalShadow["marketQuality"]> } =>
+      shadow.status === "open" && !!shadow.marketQuality && shadow.marketQuality.flags.length > 0)
+    .slice(-8)
+    .map((shadow) => ({
+      signalType: shadow.signalType,
+      asset: shadow.asset,
+      blockedReason: shadow.blockedReason,
+      instrumentLabel: shadow.position.instrumentLabel,
+      marketQuality: shadow.marketQuality,
+      thesis: shadow.thesis,
+    }));
 
   const bySignal = new Map<string, BlockedSignalLearningSummary["bySignal"][number]>();
   for (const shadow of blockedSignals) {
@@ -1651,8 +1712,10 @@ function summarizeBlockedSignals(blockedSignals: BlockedSignalShadow[]): Blocked
       pnlPct: shadow.hypotheticalResult.pnlPct,
       resolvedAt: shadow.resolvedAt,
       trendMetrics: shadow.trendMetrics,
+      marketQuality: shadow.marketQuality,
       sourceComparison: shadow.sourceComparison,
     })),
+    openQualityWarnings,
   };
 }
 
@@ -2492,7 +2555,9 @@ IMPORTANT RULES:
 - Spot trades are marked only to the underlying spot price
 - Prefer polymarket only for assets with explicit contracts in the instrument snapshots
 - If you suggest parameter changes, keep them incremental and evidence-based
-- Use BLOCKED SIGNAL SHADOW LEARNING to judge whether filters are too strict or appropriately defensive
+- Use BLOCKED SIGNAL SHADOW LEARNING to judge whether filters are too strict or appropriately defensive. If a blocked short loses money, the block was directionally correct.
+- Separately evaluate market quality. A blocked trade can be correctly blocked by trend AND still be a bad setup because the Polymarket bid/ask is too wide or liquidity is too thin.
+- Avoid suggesting Polymarket trades when yesSpread > ${(HEATMAP_SHADOW_MAX_SPREAD * 100).toFixed(0)}c, liquidity < ${HEATMAP_SHADOW_MIN_LIQUIDITY}, or marketQuality flags include wide_pm_spread / low_pm_liquidity / missing_bid_ask. Treat those as "avoid due to spread/liquidity", not as clean directional evidence.
 - Use RELATIVE-VALUE HEATMAP OBSERVATIONS to look for clean cross-venue edges. If you suggest a trade because of this section, say "relative-value heatmap" in the thesis so its performance can be reviewed.
 - You may return \"action: close\" to exit an existing open position; use that only when the thesis has clearly weakened or a target/stop is likely stale
 - For \"action: close\", set direction to long, short, or any to identify which existing position to close
