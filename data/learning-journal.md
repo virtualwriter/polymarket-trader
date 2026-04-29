@@ -3150,3 +3150,9 @@ Critical pattern recognition: extreme statistical anomalies (+/-6σ) create math
 
 ---
 
+
+### 2026-04-29 — HEATMAP SHADOW CORRECTION
+
+Discarded the initial GOLD $4,800 relative-value heatmap shadow loss as a spread/marking artifact. The shadow entered at executable NO price but marked exit against midpoint-style yesPrice; wide-spread/low-liquidity rows are now excluded, and all shadow Polymarket entries/exits use conservative bid/ask accounting.
+
+---
