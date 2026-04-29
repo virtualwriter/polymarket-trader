@@ -23,6 +23,8 @@ const BLOCKED_SIGNALS_FILE = "blocked-signals.json";
 const TRADE_SIZE = 1;
 const MAX_BANKROLL = 100;
 const MAX_OPEN_POSITIONS = 15;
+const HEATMAP_SHADOW_MAX_SPREAD = 0.10;
+const HEATMAP_SHADOW_MIN_LIQUIDITY = 1000;
 const PROMOTE_THRESHOLD = 0.65;
 const PROMOTE_MIN_TESTS = 5;
 const DEMOTE_THRESHOLD = 0.45;
@@ -831,6 +833,16 @@ function instrumentTypeForPolymarketExposure(
   return contractDirection === "above" ? "pm_no" : "pm_yes";
 }
 
+function polymarketEntryPrice(contract: InstrumentSnapshotContract, instrumentType: "pm_yes" | "pm_no"): number {
+  if (instrumentType === "pm_yes") return contract.bestAsk && contract.bestAsk > 0 ? contract.bestAsk : contract.yesPrice;
+  return contract.bestBid && contract.bestBid > 0 ? 1 - contract.bestBid : 1 - contract.yesPrice;
+}
+
+function polymarketExitPrice(contract: InstrumentSnapshotContract, instrumentType: "pm_yes" | "pm_no"): number {
+  if (instrumentType === "pm_yes") return contract.bestBid && contract.bestBid > 0 ? contract.bestBid : contract.yesPrice;
+  return contract.bestAsk && contract.bestAsk > 0 ? 1 - contract.bestAsk : 1 - contract.yesPrice;
+}
+
 function selectPolymarketContract(
   snapshot: InstrumentSnapshotFile,
   asset: string,
@@ -866,7 +878,7 @@ function selectPolymarketContract(
       if (!contract) continue;
 
       const instrumentType = hint?.forceInstrumentType ?? instrumentTypeForPolymarketExposure(direction, contractDirection);
-      const entryPrice = instrumentType === "pm_yes" ? contract.yesPrice : 1 - contract.yesPrice;
+      const entryPrice = polymarketEntryPrice(contract, instrumentType);
       if (entryPrice <= 0 || entryPrice >= 1) continue;
 
       return { event, contract, instrumentType, entryPrice };
@@ -879,6 +891,7 @@ function selectPolymarketContract(
 function findPolymarketContractMark(
   snapshot: InstrumentSnapshotFile,
   position: Position,
+  conservativeExit = false,
 ): { price: number; underlyingPrice: number | null } | null {
   const event = snapshot.polymarket.find((candidate) =>
     candidate.slug === position.instrumentId?.split("::")[0] && candidate.contracts.some((c) => c.marketId === position.instrumentId?.split("::")[1]),
@@ -887,8 +900,22 @@ function findPolymarketContractMark(
   const marketId = position.instrumentId?.split("::")[1];
   const contract = event.contracts.find((c) => c.marketId === marketId);
   if (!contract) return null;
-  const price = position.instrumentType === "pm_no" ? 1 - contract.yesPrice : contract.yesPrice;
+  const price = conservativeExit && (position.instrumentType === "pm_yes" || position.instrumentType === "pm_no")
+    ? polymarketExitPrice(contract, position.instrumentType)
+    : position.instrumentType === "pm_no" ? 1 - contract.yesPrice : contract.yesPrice;
   return { price, underlyingPrice: snapshot.spots[position.asset] ?? null };
+}
+
+function applyConservativePolymarketEntry(position: Position, latestSnapshot: InstrumentSnapshotFile | null) {
+  if (!latestSnapshot || (position.instrumentType !== "pm_yes" && position.instrumentType !== "pm_no")) return;
+  const [eventSlug, marketId] = position.instrumentId?.split("::") ?? [];
+  const event = latestSnapshot.polymarket.find((candidate) => candidate.slug === eventSlug);
+  const contract = event?.contracts.find((candidate) => candidate.marketId === marketId);
+  if (!contract) return;
+  const entryPrice = polymarketEntryPrice(contract, position.instrumentType);
+  if (entryPrice <= 0 || entryPrice >= 1) return;
+  position.entryPrice = entryPrice;
+  position.currentPrice = entryPrice;
 }
 
 function estimateFundingPnlSinceOpen(position: Position, snapshots: InstrumentSnapshotFile[]): number {
@@ -975,6 +1002,7 @@ function markPosition(
   position: Position,
   latestRow: SnapshotRow,
   snapshots: InstrumentSnapshotFile[],
+  conservativePolymarketExit = false,
 ): {
   currentPrice: number;
   underlyingPrice: number | null;
@@ -991,7 +1019,7 @@ function markPosition(
 
   if (position.instrumentType === "pm_yes" || position.instrumentType === "pm_no") {
     if (!latestSnapshot) return null;
-    const pmMark = findPolymarketContractMark(latestSnapshot, position);
+    const pmMark = findPolymarketContractMark(latestSnapshot, position, conservativePolymarketExit);
     if (!pmMark) return null;
     currentPrice = pmMark.price;
     underlyingPrice = pmMark.underlyingPrice;
@@ -1229,6 +1257,7 @@ function recordBlockedSignalShadow(
 
   const position = buildPositionFromSignal(signal, latestRow, latestSnapshot);
   if (!position) return;
+  applyConservativePolymarketEntry(position, latestSnapshot);
 
   const blockedAt = new Date().toISOString();
   position.id = `B-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
@@ -1298,6 +1327,7 @@ function recordIVDownsideLegShadow(
   };
   const position = buildPositionFromSignal(mirrorSignal, latestRow, latestSnapshot);
   if (!position) return;
+  applyConservativePolymarketEntry(position, latestSnapshot);
 
   const now = new Date().toISOString();
   position.id = `DL-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
@@ -1357,6 +1387,7 @@ function recordPolymarketProxyShortShadow(
 
   const position = buildPositionFromSignal(proxySignal, latestRow, latestSnapshot);
   if (!position) return;
+  applyConservativePolymarketEntry(position, latestSnapshot);
 
   if (blockedSignals.some((shadow) =>
     shadow.status === "open" &&
@@ -1406,8 +1437,14 @@ function recordRelativeValueHeatmapShadows(
   if (!latestSnapshot) return 0;
   let recorded = 0;
 
-  for (const obs of observations.slice(0, 10)) {
-    if (!["buy_yes", "sell_yes_or_buy_no"].includes(obs.bestExpression)) continue;
+  const candidates = observations
+    .filter((obs) => ["buy_yes", "sell_yes_or_buy_no"].includes(obs.bestExpression))
+    .filter((obs) => !obs.flags.includes("wide_pm_spread") && !obs.flags.includes("low_pm_liquidity"))
+    .filter((obs) => !(obs.pmAsk !== null && obs.pmBid !== null && obs.pmAsk - obs.pmBid > HEATMAP_SHADOW_MAX_SPREAD))
+    .filter((obs) => !(obs.liquidity !== null && obs.liquidity < HEATMAP_SHADOW_MIN_LIQUIDITY))
+    .slice(0, 10);
+
+  for (const obs of candidates) {
     const event = latestSnapshot.polymarket.find((candidate) => candidate.slug === obs.eventSlug && candidate.asset === obs.asset);
     if (!event) continue;
     const contract = event.contracts.find((candidate) =>
@@ -1416,9 +1453,7 @@ function recordRelativeValueHeatmapShadows(
     if (!contract || !contract.marketId || contract.closed || contract.active === false) continue;
 
     const instrumentType: "pm_yes" | "pm_no" = obs.bestExpression === "buy_yes" ? "pm_yes" : "pm_no";
-    const entryPrice = instrumentType === "pm_yes"
-      ? (obs.pmAsk && obs.pmAsk > 0 ? obs.pmAsk : contract.yesPrice)
-      : (obs.pmBid && obs.pmBid > 0 ? 1 - obs.pmBid : 1 - contract.yesPrice);
+    const entryPrice = polymarketEntryPrice(contract, instrumentType);
     if (entryPrice <= 0 || entryPrice >= 1) continue;
 
     const instrumentId = `${event.slug}::${contract.marketId}`;
@@ -1491,7 +1526,7 @@ function resolveBlockedSignalShadows(
 
   for (const shadow of blockedSignals) {
     if (shadow.status === "resolved") continue;
-    const mark = markPosition(shadow.position, latestRow, snapshots);
+    const mark = markPosition(shadow.position, latestRow, snapshots, true);
     if (!mark) continue;
 
     let closeReason: ClosedTrade["closeReason"] | null = null;
