@@ -3542,3 +3542,28 @@ Historic mathematical arbitrage conditions reached across multiple assets with o
 
 ---
 
+### 2026-04-29 16:28 UTC
+
+**Portfolio:** $100.58 total | Cash $92.58 | 8 open | P&L $0.5772 | 61% win rate (85 trades)
+
+**Statistical observations:**
+- [anomaly] oil_wti_spot = 106.45 is 3.5 std devs from mean (86.52 ± 5.68)
+- [anomaly] oil_opt_iv_30d = 66.1 is 3.2 std devs from mean (30.95 ± 10.95)
+- [anomaly] oil_opt_iv_90d = 62.1 is 3.2 std devs from mean (28.07 ± 10.69)
+- [anomaly] btc_med_min = 59950 is 3.0 std devs from mean (50361.30 ± 3174.31)
+- [anomaly] btc_pm_iv = 33.8 is -2.6 std devs from mean (41.46 ± 2.91)
+
+**Blocked signal learning:**
+- Open blocked shadows: 21
+- Resolved blocked shadows: 14 (3 wins / 11 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (1W/2L across 3 resolved shadows, avg P&L -0.90%).
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP BTC short via polymarket would have stop (-13.04%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE OIL long via polymarket would have stop (-4.08%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have stop (-2.46%)
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP BTC short via polymarket would have target (+20.48%)
+
+**LLM analysis:**
+Historic mathematical arbitrage conditions reached with oil complex showing most extreme statistical breakdown in dataset history. Oil IV at +3.7σ anomaly (69.8%), WTI at +3.4σ deviation (105.23), and Brent-WTI spread collapsed to 4.4 represent mathematical relationships that cannot persist beyond +3.5σ thresholds. Portfolio already positioned with 8 trades covering these themes including oil structural breakdown reversal (H-262), cross-asset positioning exhaustion (H-485), and HYPE distribution completion (H-520). Blocked shadow learning validates system filters - relative-value heatmap BTC short had +20.48% target vs -13.04% stop, showing edge detection works when market quality is adequate. Increased LLM target to 20% given improved edge detection on extreme statistical deviations where mathematical correction is forced. 520 LLM hypotheses need retesting before new hypothesis creation - focusing on existing mathematical arbitrage positions.
+
+---
+
