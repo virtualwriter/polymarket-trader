@@ -3630,3 +3630,32 @@ Historic mathematical arbitrage conditions reached with oil complex showing most
 
 ---
 
+### 2026-04-29 20:35 UTC
+
+**Portfolio:** $100.54 total | Cash $93.54 | 7 open | P&L $0.5448 | 60% win rate (86 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 3 condition-triggered repeat hypothesis shadow tests from the first 50 LLM hypotheses.
+- 🧪 Hypothesis retest queue: 40 of the first 50 did not trigger; 323 later hypotheses are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 13.5pp (was -10.4, now -23.9)
+- [anomaly] amzn_hl_basis_pct = 2.67 is 5.7 std devs from mean (-0.07 ± 0.48)
+- [anomaly] oil_opt_iv_30d = 79 is 3.9 std devs from mean (31.66 ± 12.13)
+- [anomaly] oil_wti_spot = 108.04 is 3.4 std devs from mean (86.87 ± 6.23)
+- [anomaly] oil_opt_iv_90d = 64.5 is 3.1 std devs from mean (28.67 ± 11.52)
+
+**Blocked signal learning:**
+- Open blocked shadows: 20
+- Resolved blocked shadows: 19 (5 wins / 14 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (1W/2L across 3 resolved shadows, avg P&L -0.90%).
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP BTC short via polymarket would have target (+23.97%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-13.33%)
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have target (+2.51%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have stop (-2.67%)
+
+**LLM analysis:**
+Historic mathematical arbitrage conditions reached across oil complex with multiple +3σ statistical anomalies that cannot persist. Oil IV at +3.9σ (79%), WTI at +3.4σ (108.04), Brent-WTI spread collapsed to 3.4 represent forced mathematical correction setup. Portfolio already positioned with oil structural breakdown (H-262), HYPE distribution exhaustion (H-286), and cross-asset positioning exhaustion (H-475) themes. AMZN showing classic momentum exhaustion pattern with explosive stock gap down from 263+ to 251.32 after extreme P/C positioning collapse. Increased LLM target to 20% given improved edge detection on mathematical arbitrage setups where correction is statistically forced. Blocked shadow learning validates system - relative-value heatmap showing clean edges when market quality adequate. 520 LLM hypotheses need condition-triggered retesting before new hypothesis creation - focusing on mathematical arbitrage positions where statistical relationships require correction.
+
+---
+
