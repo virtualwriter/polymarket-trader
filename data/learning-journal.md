@@ -3156,3 +3156,9 @@ Critical pattern recognition: extreme statistical anomalies (+/-6σ) create math
 Discarded the initial GOLD $4,800 relative-value heatmap shadow loss as a spread/marking artifact. The shadow entered at executable NO price but marked exit against midpoint-style yesPrice; wide-spread/low-liquidity rows are now excluded, and all shadow Polymarket entries/exits use conservative bid/ask accounting.
 
 ---
+
+### 2026-04-29 — OIL SPREAD / TREND BLOCK LESSON
+
+The OIL LLM_HYPOTHESIS short on CL settle over $90 was correctly blocked by the positive-trend filter: the blocked PM NO shadow is losing under conservative marking. However, the proposed Polymarket setup was also poor market quality, with YES bid/ask around 46c/77c (31c spread) and liquidity under $1k. Treat this as two lessons: trend block worked, and the LLM should avoid wide-spread/thin-liquidity PM legs rather than treating them as clean directional evidence.
+
+---
