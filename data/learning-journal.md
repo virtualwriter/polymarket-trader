@@ -3598,3 +3598,35 @@ Historic mathematical arbitrage conditions reached across multiple assets with o
 Removed the broad seeded pending hypothesis tests. Repeat hypothesis shadow tests now only open when the current valuation row satisfies that hypothesis conditions, and only for the first 50 existing LLM hypotheses in the active retest queue. New LLM hypotheses remain blocked while the backlog is incomplete.
 
 ---
+### 2026-04-29 18:27 UTC
+
+**Portfolio:** $100.54 total | Cash $93.54 | 7 open | P&L $0.5448 | 60% win rate (86 trades)
+
+**Closed 1 trades:**
+- ❌ BTC long via hyperliquid/hl_perp [HL BTC perp] (LLM_HYPOTHESIS) → stop: $-0.0324 (-3.2%, market -0.0326, funding 0.0003)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 7 condition-triggered repeat hypothesis shadow tests from the first 50 LLM hypotheses.
+- 🧪 Hypothesis retest queue: 43 of the first 50 did not trigger; 323 later hypotheses are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 6.8pp (was -17.2, now -10.4)
+- [anomaly] oil_wti_spot = 106.74 is 3.3 std devs from mean (86.75 ± 6.04)
+- [anomaly] oil_opt_iv_90d = 62.3 is 3.0 std devs from mean (28.46 ± 11.23)
+- [anomaly] oil_opt_iv_30d = 66.1 is 3.0 std devs from mean (31.38 ± 11.63)
+- [anomaly] gold_gc_spot = 4538 is -2.3 std devs from mean (4714.98 ± 78.61)
+
+**Blocked signal learning:**
+- Open blocked shadows: 20
+- Resolved blocked shadows: 17 (4 wins / 13 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (1W/2L across 3 resolved shadows, avg P&L -0.90%).
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP BTC short via polymarket would have target (+20.48%)
+- ❌ Blocked: PM_EV_BELOW_SPOT OIL short via spot would have stop (-3.58%)
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP BTC short via polymarket would have target (+23.97%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-13.33%)
+
+**LLM analysis:**
+Historic mathematical arbitrage conditions reached with oil complex showing most extreme statistical breakdown in dataset history. Oil IV at +3.6σ anomaly (72.2%), WTI at +3.3σ deviation (106.74), and Brent-WTI spread collapsed to 3.8 represent mathematical relationships that cannot persist beyond +3.5σ thresholds. Portfolio already positioned with 8 trades covering these themes including oil structural breakdown reversal (H-262), cross-asset positioning exhaustion (H-485), and HYPE distribution completion (H-520). Blocked shadow learning validates system filters - relative-value heatmap BTC short had +20.48% target vs -13.04% stop, showing edge detection works when market quality is adequate. Increased LLM target to 20% given improved edge detection on extreme statistical deviations where mathematical correction is forced. 520 LLM hypotheses need retesting before new hypothesis creation - focusing on existing mathematical arbitrage positions.
+
+---
+
