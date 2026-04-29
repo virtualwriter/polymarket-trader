@@ -25,10 +25,11 @@ const MAX_BANKROLL = 100;
 const MAX_OPEN_POSITIONS = 15;
 const HEATMAP_SHADOW_MAX_SPREAD = 0.01;
 const HEATMAP_SHADOW_MIN_LIQUIDITY = 1000;
+const HYPOTHESIS_SHADOW_TESTS_REQUIRED = 9;
 const PROMOTE_THRESHOLD = 0.65;
-const PROMOTE_MIN_TESTS = 5;
+const PROMOTE_MIN_TESTS = HYPOTHESIS_SHADOW_TESTS_REQUIRED;
 const DEMOTE_THRESHOLD = 0.45;
-const KILL_THRESHOLD = 0.30;
+const KILL_THRESHOLD = 0.40;
 const WEIGHT_DECAY = 0.85;
 const LOOKBACK_HOURS = 24;
 const NO_LLM = process.argv.includes("--no-llm");
@@ -49,6 +50,7 @@ const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
   MACRO_MOMENTUM_DOWN: { targetPct: 4, stopPct: 3 },
   LLM_HYPOTHESIS: { targetPct: 5, stopPct: 3.5 },
   MOMENTUM_LONG: { targetPct: 6, stopPct: 3.5 },
+  PROMOTED_HYPOTHESIS: { targetPct: 6, stopPct: 3.5 },
 };
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -2398,9 +2400,79 @@ function evaluateHypothesisTest(hypothesis: Hypothesis, startRow: SnapshotRow, e
   };
 }
 
+function completedHypothesisTests(hypothesis: Hypothesis): HypothesisTest[] {
+  return hypothesis.tests.filter((test) => test.outcome !== "pending");
+}
+
+function pendingHypothesisTests(hypothesis: Hypothesis): HypothesisTest[] {
+  return hypothesis.tests.filter((test) => test.outcome === "pending");
+}
+
+function hypothesisNeedsMoreShadowTests(hypothesis: Hypothesis): boolean {
+  if (hypothesis.source !== "llm") return false;
+  if (hypothesis.status === "killed" || hypothesis.status === "archived") return false;
+  return completedHypothesisTests(hypothesis).length < HYPOTHESIS_SHADOW_TESTS_REQUIRED;
+}
+
+function llmHypothesisBacklog(hypotheses: Hypothesis[]) {
+  const llmHypotheses = hypotheses.filter((hypothesis) => hypothesis.source === "llm");
+  const needingTests = llmHypotheses.filter(hypothesisNeedsMoreShadowTests);
+  const pending = needingTests.reduce((sum, hypothesis) => sum + pendingHypothesisTests(hypothesis).length, 0);
+  return {
+    total: llmHypotheses.length,
+    needingTests: needingTests.length,
+    pending,
+    complete: needingTests.length === 0,
+  };
+}
+
+function inferHypothesisDirection(hypothesis: Hypothesis): "long" | "short" {
+  const prediction = `${hypothesis.description} ${hypothesis.prediction}`.toLowerCase();
+  return prediction.includes("decline") || prediction.includes("drop") || prediction.includes("down") || prediction.includes("falls")
+    ? "short"
+    : "long";
+}
+
+function generatePromotedHypothesisSignals(
+  hypotheses: Hypothesis[],
+  rows: SnapshotRow[],
+  latestRow: SnapshotRow,
+  learningParams: LearningParams,
+  latestSnapshot: InstrumentSnapshotFile | null,
+  blockedSignals: BlockedSignalShadow[],
+): Signal[] {
+  const signals: Signal[] = [];
+  const risk = riskForSignal(learningParams, "PROMOTED_HYPOTHESIS");
+  for (const hypothesis of hypotheses) {
+    if (hypothesis.status !== "promoted" || !hypothesis.promotedToSignal) continue;
+    const asset = inferHypothesisAsset(hypothesis);
+    if (!asset) continue;
+    const entryPrice = getAssetPrice(latestRow, asset);
+    if (!entryPrice) continue;
+    const signal = finalizeSignal({
+      type: "PROMOTED_HYPOTHESIS",
+      asset,
+      venue: "spot",
+      direction: inferHypothesisDirection(hypothesis),
+      strength: Math.max(0.2, hypothesis.winRate),
+      confidence: Math.min(0.9, Math.max(0.2, hypothesis.confidence * Math.max(hypothesis.winRate, 0.5))),
+      thesis: `[PROMOTED ${hypothesis.id}] ${hypothesis.description}`,
+      hypothesisId: hypothesis.id,
+      entryPrice,
+      targetPct: risk.targetPct,
+      stopPct: risk.stopPct,
+      expiryDays: Math.max(3, Math.min(14, hypothesis.timeframeDays)),
+    }, rows, learningParams, { latestRow, latestSnapshot, blockedSignals });
+    if (signal) signals.push(signal);
+  }
+  return signals;
+}
+
 function evaluateHypotheses(hypotheses: Hypothesis[], valuationRows: SnapshotRow[]): string[] {
   const observations: string[] = [];
   const now = new Date();
+  const latestDate = String(valuationRows[valuationRows.length - 1]?.date ?? new Date().toISOString().slice(0, 10)).slice(0, 10);
+  let openedShadowTests = 0;
 
   for (const h of hypotheses) {
     if (h.status === "killed" || h.status === "archived") continue;
@@ -2450,6 +2522,28 @@ function evaluateHypotheses(hypotheses: Hypothesis[], valuationRows: SnapshotRow
       h.postMortem = h.postMortem ?? `Killed: win rate ${(h.winRate * 100).toFixed(0)}% over ${completed.length} tests.`;
       observations.push(`💀 Hypothesis ${h.id} KILLED (${(h.winRate * 100).toFixed(0)}%): ${h.description}`);
     }
+
+    if (hypothesisNeedsMoreShadowTests(h) && pendingHypothesisTests(h).length === 0) {
+      h.tests.push({
+        date: latestDate,
+        triggered: true,
+        outcome: "pending",
+        actualMove: `Shadow test ${h.tests.length + 1}/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened for repeat validation.`,
+      });
+      openedShadowTests++;
+    } else if (
+      h.source === "llm" &&
+      h.status === "active" &&
+      completed.length >= HYPOTHESIS_SHADOW_TESTS_REQUIRED &&
+      h.winRate >= KILL_THRESHOLD &&
+      h.winRate < PROMOTE_THRESHOLD
+    ) {
+      h.postMortem = h.postMortem ?? `Inconclusive after ${completed.length} shadow tests: ${(h.winRate * 100).toFixed(0)}% win rate. Not promoted to production.`;
+    }
+  }
+
+  if (openedShadowTests > 0) {
+    observations.push(`🧪 Opened ${openedShadowTests} repeat hypothesis shadow tests; no new LLM hypotheses will be accepted until existing LLM hypotheses reach ${HYPOTHESIS_SHADOW_TESTS_REQUIRED} tests each.`);
   }
 
   return observations;
@@ -2490,6 +2584,7 @@ async function callLLM(
   const activeHypotheses = hypotheses.filter((h) => h.status === "active" || h.status === "promoted");
   const killedRecently = hypotheses.filter((h) => h.status === "killed").slice(-5);
   const activeWeights = weights.filter((w) => w.trades > 0);
+  const hypothesisBacklog = llmHypothesisBacklog(hypotheses);
 
   const prompt = `You are a quantitative paper trading system analyzing cross-venue market data. Your job is to:
 1. Assess the current market state
@@ -2525,6 +2620,10 @@ ${activeWeights.map((w) => {
 ACTIVE HYPOTHESES:
 ${activeHypotheses.map((h) => `  ${h.id}: ${h.description} [${h.status}, ${(h.winRate * 100).toFixed(0)}% over ${h.tests.length} tests]`).join("\n") || "  None yet"}
 
+HYPOTHESIS SHADOW TEST BACKLOG:
+${JSON.stringify(hypothesisBacklog, null, 1)}
+${hypothesisBacklog.complete ? "Existing LLM hypothesis backlog is complete; new hypotheses may be proposed." : `Do NOT propose new hypotheses right now. Existing LLM hypotheses still need repeat shadow tests (${hypothesisBacklog.needingTests}/${hypothesisBacklog.total} need more tests, ${hypothesisBacklog.pending} pending). Return newHypotheses: [] and focus on reviewing/testing existing hypotheses.`}
+
 RECENTLY KILLED HYPOTHESES:
 ${killedRecently.map((h) => `  ${h.id}: ${h.description} — ${h.postMortem}`).join("\n") || "  None"}
 
@@ -2549,6 +2648,7 @@ ${journalTail || "  No entries yet"}
 IMPORTANT RULES:
 - Each hypothesis MUST be specific and testable with a clear timeframe (1-14 days)
 - Each hypothesis MUST define measurable conditions using column names from the data
+- Existing LLM hypotheses must receive ${HYPOTHESIS_SHADOW_TESTS_REQUIRED} shadow tests before promotion/kill/inconclusive demotion. Do not create new hypotheses while the backlog is incomplete.
 - Focus on cross-venue divergences and patterns the rule-based system can't detect
 - Be honest about what's working and what isn't
 - If a pattern stopped working, explain WHY you think it changed
@@ -2959,6 +3059,8 @@ async function main() {
 
   // Step 5: Generate rule-based signals
   const signals = generateSignals(valRows, macroRows, weights, learningParams, latestSnapshot, blockedSignals);
+  const promotedSignals = generatePromotedHypothesisSignals(hypotheses, valRows, latestRow, learningParams, latestSnapshot, blockedSignals);
+  signals.push(...promotedSignals);
   proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   blockedSummary = summarizeBlockedSignals(blockedSignals);
   blockedObs = [...blockedSignalObservations(blockedSummary), ...proxyComparisonObs];
@@ -2984,18 +3086,23 @@ async function main() {
 
       const llmCloseInstructions: LlmTradeInstruction[] = [];
 
-      // Add new hypotheses
-      for (const nh of llmResult.newHypotheses ?? []) {
-        const id = `H-${String(hypotheses.length + 1).padStart(3, "0")}`;
-        hypotheses.push({
-          id, created: nh.created, description: nh.description,
-          conditions: nh.conditions, prediction: nh.prediction,
-          timeframeDays: nh.timeframeDays, confidence: nh.confidence,
-          tests: [{ date: new Date().toISOString().slice(0, 10), triggered: true, outcome: "pending", actualMove: "" }],
-          winRate: 0, status: "active", promotedToSignal: false, postMortem: null,
-          source: nh.source ?? "llm",
-        });
-        console.log(`    New hypothesis ${id}: ${nh.description.slice(0, 80)}`);
+      // Add new hypotheses only after the existing LLM backlog has enough repeat shadow tests.
+      const currentHypothesisBacklog = llmHypothesisBacklog(hypotheses);
+      if (!currentHypothesisBacklog.complete && (llmResult.newHypotheses ?? []).length > 0) {
+        console.log(`    Skipping ${llmResult.newHypotheses.length} new LLM hypotheses; ${currentHypothesisBacklog.needingTests} existing hypotheses still need shadow tests.`);
+      } else {
+        for (const nh of llmResult.newHypotheses ?? []) {
+          const id = `H-${String(hypotheses.length + 1).padStart(3, "0")}`;
+          hypotheses.push({
+            id, created: nh.created, description: nh.description,
+            conditions: nh.conditions, prediction: nh.prediction,
+            timeframeDays: nh.timeframeDays, confidence: nh.confidence,
+            tests: [{ date: new Date().toISOString().slice(0, 10), triggered: true, outcome: "pending", actualMove: `Shadow test 1/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened for initial validation.` }],
+            winRate: 0, status: "active", promotedToSignal: false, postMortem: null,
+            source: nh.source ?? "llm",
+          });
+          console.log(`    New hypothesis ${id}: ${nh.description.slice(0, 80)}`);
+        }
       }
 
       // Process hypothesis reviews
