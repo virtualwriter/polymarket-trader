@@ -23,7 +23,7 @@ const BLOCKED_SIGNALS_FILE = "blocked-signals.json";
 const TRADE_SIZE = 1;
 const MAX_BANKROLL = 100;
 const MAX_OPEN_POSITIONS = 15;
-const HEATMAP_SHADOW_MAX_SPREAD = 0.10;
+const HEATMAP_SHADOW_MAX_SPREAD = 0.01;
 const HEATMAP_SHADOW_MIN_LIQUIDITY = 1000;
 const PROMOTE_THRESHOLD = 0.65;
 const PROMOTE_MIN_TESTS = 5;
@@ -241,6 +241,10 @@ interface BlockedSignalShadow {
     sourcePnlPct: number;
     proxyOutperformed: boolean;
     correlation: "same_direction" | "opposite_direction" | "flat";
+  };
+  learningExcluded?: {
+    reason: string;
+    note: string;
   };
 }
 
@@ -1657,7 +1661,7 @@ function summarizeBlockedSignals(blockedSignals: BlockedSignalShadow[]): Blocked
   const openCount = blockedSignals.filter((shadow) => shadow.status === "open").length;
   const resolved = blockedSignals
     .filter((shadow): shadow is BlockedSignalShadow & { hypotheticalResult: NonNullable<BlockedSignalShadow["hypotheticalResult"]>; resolvedAt: string } =>
-      shadow.status === "resolved" && !!shadow.hypotheticalResult && !!shadow.resolvedAt)
+      shadow.status === "resolved" && !!shadow.hypotheticalResult && !!shadow.resolvedAt && !shadow.learningExcluded)
     .sort((a, b) => a.resolvedAt.localeCompare(b.resolvedAt));
   const openQualityWarnings = blockedSignals
     .filter((shadow): shadow is BlockedSignalShadow & { marketQuality: NonNullable<BlockedSignalShadow["marketQuality"]> } =>
@@ -1674,6 +1678,7 @@ function summarizeBlockedSignals(blockedSignals: BlockedSignalShadow[]): Blocked
 
   const bySignal = new Map<string, BlockedSignalLearningSummary["bySignal"][number]>();
   for (const shadow of blockedSignals) {
+    if (shadow.learningExcluded) continue;
     const row = bySignal.get(shadow.signalType) ?? {
       signalType: shadow.signalType,
       blocked: 0,
