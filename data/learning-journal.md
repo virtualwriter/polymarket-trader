@@ -3511,3 +3511,9 @@ Mathematical arbitrage conditions have reached historic statistical extremes req
 
 ---
 
+
+### 2026-04-29 — HYPOTHESIS BACKLOG RETESTING
+
+Opened 373 repeat shadow tests for existing LLM hypotheses. New LLM hypotheses are blocked until existing LLM hypotheses complete 9 shadow tests each, then promote at >=65% win rate, kill below 40%, or leave inconclusive/not promoted between those thresholds.
+
+---
