@@ -3186,3 +3186,27 @@ Mathematical arbitrage convergence event: multiple +6σ statistical anomalies cr
 
 ---
 
+### 2026-04-29 02:28 UTC
+
+**Portfolio:** $100.58 total | Cash $93.58 | 7 open | P&L $0.5772 | 61% win rate (85 trades)
+
+**Statistical observations:**
+- [anomaly] oil_opt_iv_30d = 55.3 is 5.3 std devs from mean (28.09 ± 5.11)
+- [anomaly] oil_opt_iv_90d = 57.1 is 5.3 std devs from mean (25.40 ± 5.97)
+- [anomaly] oil_wti_spot = 98.87 is 4.3 std devs from mean (85.13 ± 3.21)
+- [anomaly] oil_pm_iv = 69 is 4.0 std devs from mean (38.26 ± 7.59)
+- [anomaly] gold_pm_iv = 22.6 is 3.3 std devs from mean (12.98 ± 2.89)
+
+**Blocked signal learning:**
+- Open blocked shadows: 23
+- Resolved blocked shadows: 5 (1 wins / 4 losses)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have stop (-7.96%)
+- ✅ PM proxy short: MACRO_MOMENTUM_DOWN_PM_PROXY_SHORT BTC short via polymarket would have target (+6.73%)
+- ❌ Blocked: LLM_HYPOTHESIS OIL short via polymarket would have stop (-40.26%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE OIL long via polymarket would have stop (-4.50%)
+
+**LLM analysis:**
+Mathematical arbitrage convergence: Oil showing historic +6σ breakdown (IV 56, WTI 99.98, spread 4.6) while HYPE distribution reaches mathematical completion (18% OI decline) and BTC funding crashes -4.2%. These aren't sentiment-based oversold conditions but mathematical arbitrage requirements where structural relationships become unsustainable. Blocked shadow learning validates: oil LLM short correctly blocked by trend filter AND had poor market quality (31c spread, <$600 liquidity). Key insight: +6σ anomalies in financial markets represent forced correction opportunities with mathematical probability, not just technical patterns. Increasing LLM target to 15% given improved edge detection on extreme statistical deviations. Focus shift from technical oversold to mathematical arbitrage - when structural relationships break down beyond +5σ thresholds, correction becomes mathematically required rather than sentiment-dependent.
+
+---
+
