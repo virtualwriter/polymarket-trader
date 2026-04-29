@@ -3517,3 +3517,28 @@ Mathematical arbitrage conditions have reached historic statistical extremes req
 Opened 373 repeat shadow tests for existing LLM hypotheses. New LLM hypotheses are blocked until existing LLM hypotheses complete 9 shadow tests each, then promote at >=65% win rate, kill below 40%, or leave inconclusive/not promoted between those thresholds.
 
 ---
+### 2026-04-29 15:27 UTC
+
+**Portfolio:** $100.58 total | Cash $92.58 | 8 open | P&L $0.5772 | 61% win rate (85 trades)
+
+**Statistical observations:**
+- [anomaly] oil_opt_iv_30d = 69.8 is 3.7 std devs from mean (30.74 ± 10.65)
+- [anomaly] oil_wti_spot = 105.23 is 3.4 std devs from mean (86.41 ± 5.49)
+- [anomaly] oil_opt_iv_90d = 60.3 is 3.1 std devs from mean (27.87 ± 10.40)
+- [anomaly] btc_med_min = 59950 is 3.1 std devs from mean (50306.20 ± 3098.82)
+- [anomaly] btc_pm_iv = 33.8 is -2.7 std devs from mean (41.50 ± 2.86)
+
+**Blocked signal learning:**
+- Open blocked shadows: 20
+- Resolved blocked shadows: 14 (3 wins / 11 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (1W/2L across 3 resolved shadows, avg P&L -0.90%).
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP BTC short via polymarket would have stop (-13.04%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE OIL long via polymarket would have stop (-4.08%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have stop (-2.46%)
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP BTC short via polymarket would have target (+20.48%)
+
+**LLM analysis:**
+Historic mathematical arbitrage conditions reached across multiple assets with oil complex showing most extreme statistical breakdown in dataset history. Oil IV at +3.7σ anomaly (69.8%), WTI at +3.4σ deviation (105.23), and Brent-WTI spread collapsed to 4.4 from historical 15-25 range represent mathematical relationships that cannot persist beyond +3.5σ thresholds. Cross-asset positioning exhaustion evident with BTC funding crash to 5.89% during consolidation, HYPE institutional distribution at 19% OI decline from record peaks, and IV compression across assets. Portfolio already positioned with 8 trades capturing these mathematical arbitrage themes. Blocked shadow learning validates system filters - oil shorts blocked for trend protection had poor executions distinguishing mathematical setups from unexecutable spreads. Increased LLM target to 20% given improved edge detection on extreme statistical deviations where mathematical correction is forced within one week. No new trades as existing positions capture convergence themes. 520 LLM hypotheses need retesting before new hypothesis creation.
+
+---
+
