@@ -3719,3 +3719,37 @@ Historic mathematical arbitrage conditions reached across oil complex with multi
 
 ---
 
+### 2026-04-30 04:27 UTC
+
+**Portfolio:** $100.61 total | Cash $94.61 | 6 open | P&L $0.6133 | 60% win rate (88 trades)
+
+**Closed 1 trades:**
+- ✅ OIL long via spot/spot [OIL spot] (LLM_HYPOTHESIS) → target: +$0.1012 (10.1%, market 0.1012, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL long @ $109.71 via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis retest queue: 39 of the first 50 did not trigger; 339 later hypotheses are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 7.2pp (was -10.5, now -17.7)
+- [anomaly] oil_opt_fwd_90d = 185.6 is 5.7 std devs from mean (86.54 ± 17.39)
+- [anomaly] oil_opt_iv_30d = 78.2 is 3.1 std devs from mean (33.33 ± 14.27)
+- [anomaly] oil_wti_spot = 109.71 is 2.9 std devs from mean (87.79 ± 7.48)
+- [anomaly] oil_opt_iv_90d = 65.4 is 2.6 std devs from mean (30.22 ± 13.42)
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 20 (6 wins / 14 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (1W/2L across 3 resolved shadows, avg P&L -0.90%).
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-13.33%)
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have target (+2.51%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have stop (-2.67%)
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have target (+21.05%)
+
+**LLM analysis:**
+Historic mathematical arbitrage conditions persisting in oil complex with multiple +3σ statistical anomalies requiring correction. WTI at +2.9σ (109.71), oil IV compression from extreme highs, and Brent-WTI spread collapse represent forced mathematical correction setup. Portfolio maintains oil structural breakdown positioning (H-262) and HYPE distribution exhaustion themes (H-286) which continue validating. AMZN showing classic momentum exhaustion with explosive stock gap patterns. Increased LLM target to 20% given improved edge detection on mathematical arbitrage setups where statistical relationships force correction within known probability bounds. 520 LLM hypotheses need condition-triggered retesting before new creation - focusing on existing mathematical arbitrage positions where correction is statistically required.
+
+---
+
