@@ -2297,8 +2297,8 @@ function statisticalScan(rows: SnapshotRow[], macroRows: SnapshotRow[]): StatObs
       const std = Math.sqrt(vals.reduce((s, v) => s + (v - mean) ** 2, 0) / vals.length);
       if (std === 0) continue;
       const latestVal = num(latest[col]);
-      if (latestVal === 0 && col.endsWith("_pc_ratio")) continue;
       if (latestVal === null) continue;
+      if (col.endsWith("_pc_ratio") && latestVal <= 0) continue;
       const z = (latestVal - mean) / std;
       if (Math.abs(z) > 2) {
         const scope = col.startsWith("oil_") ? ` since ${OIL_CRUDE_HISTORY_START}` : "";
@@ -2372,6 +2372,18 @@ function statisticalScan(rows: SnapshotRow[], macroRows: SnapshotRow[]): StatObs
   }
 
   return obs.sort((a, b) => b.magnitude - a.magnitude);
+}
+
+function sanitizeValuationsForLlm(rows: SnapshotRow[]): SnapshotRow[] {
+  const unreliablePcRatioColumns = new Set(["gold_gld_pc_ratio", "oil_cl_pc_ratio"]);
+  return rows.map((row) => {
+    const sanitized = { ...row };
+    for (const col of unreliablePcRatioColumns) {
+      const value = num(sanitized[col]);
+      if (value !== null && value <= 0) (sanitized as Record<string, string | number | null>)[col] = null;
+    }
+    return sanitized;
+  });
 }
 
 function pearson(x: number[], y: number[]): number {
@@ -2974,7 +2986,7 @@ async function callLLM(
   }
   const anthropicModel = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-6";
 
-  const recentValuations = valuationRows.slice(-14);
+  const recentValuations = sanitizeValuationsForLlm(valuationRows.slice(-14));
   const recentMacro = macroRows.slice(-14);
   const recentInstruments = instrumentSnapshots.slice(-4).map(compactInstrumentSnapshotForLlm);
   const activeHypotheses = hypotheses.filter((h) => h.status === "active" || h.status === "promoted");
