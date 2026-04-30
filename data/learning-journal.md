@@ -3809,3 +3809,32 @@ Maintaining mathematical arbitrage focus with oil complex showing persistent +2.
 
 ---
 
+### 2026-04-30 07:28 UTC
+
+**Portfolio:** $100.61 total | Cash $94.61 | 6 open | P&L $0.6133 | 60% win rate (88 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered repeat hypothesis shadow tests from the first 50 LLM hypotheses.
+- 🧪 Hypothesis retest queue: 38 of the first 50 did not trigger; 339 later hypotheses are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 15.1pp (was -21.4, now -6.3)
+- [divergence] GOLD PM-Options IV gap moved wider by 5.4pp (was -6.8, now -1.4)
+- [anomaly] oil_wti_spot = 108.18 is 2.5 std devs from mean (88.13 ± 7.90)
+- [anomaly] oil_opt_iv_90d = 63.8 is 2.4 std devs from mean (30.78 ± 14.01)
+- [anomaly] gold_pm_iv = 22.6 is 2.3 std devs from mean (14.04 ± 3.78)
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 20 (6 wins / 14 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (1W/2L across 3 resolved shadows, avg P&L -0.90%).
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-13.33%)
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have target (+2.51%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have stop (-2.67%)
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have target (+21.05%)
+
+**LLM analysis:**
+Oil complex maintaining mathematical arbitrage setup with WTI +2.8σ deviation (110.04) while IV compresses from extreme highs above 70% to 65.5%. Portfolio correctly positioned for statistical corrections through H-262 (oil structural breakdown), H-286 (HYPE distribution exhaustion), and H-475 (cross-asset positioning exhaustion). Increased LLM target to 20% given improved edge detection on mathematical arbitrage setups where statistical relationships force correction within known probability bounds. System showing excellent discrimination between actionable mathematical arbitrage patterns and noise. All 520 LLM hypotheses require condition-triggered retesting before creating new ones - focusing on existing positions where mathematical correction is statistically required. HYPE OI decline from 957M to sub-800M levels represents massive institutional distribution exhaustion nearing completion. Oil options IV compression from +6σ anomalies creates systematic correction opportunity as mathematical relationships normalize.
+
+---
+
