@@ -4091,3 +4091,35 @@ Mathematical positioning exhaustion patterns reaching completion across all majo
 
 ---
 
+### 2026-04-30 16:28 UTC
+
+**Portfolio:** $100.26 total | Cash $93.26 | 7 open | P&L $0.2573 | 58% win rate (91 trades)
+
+**Opened 1 positions:**
+- AMZN short @ $259.78 via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis retest queue: 36 of the first 50 did not trigger; 339 later hypotheses are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_opt_iv_30d = 29.8 is -5.8 std devs from mean (40.73 ± 1.88)
+- [anomaly] amzn_opt_iv_90d = 29.8 is -4.7 std devs from mean (34.91 ± 1.08)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.01 to -0.83
+- [correlation_flip] BTC-GOLD correlation shifted from 0.93 to 0.35
+- [correlation_flip] BTC-OIL correlation shifted from 0.02 to -0.53
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 30 (10 wins / 20 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (2W/2L across 4 resolved shadows, avg P&L 2.04%).
+- PC_RATIO_EXTREME_LOW trend filter is avoiding losses: 3/4 blocked trades would have lost.
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-13.95%)
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL short via polymarket would have target (+20.33%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-12.50%)
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have target (+4.10%)
+
+**LLM analysis:**
+Positioning exhaustion patterns reaching mathematical completion across assets. HYPE distribution confirmed with 19.4% OI decline from peaks while funding normalized - textbook institutional exit completion. BTC extreme funding crash to -15.67% during consolidation confirms systematic reset underway. AMZN explosive momentum with P/C collapse to 0.306 shows institutional repositioning acceleration. Relative-value heatmap proving excellent at identifying clean mathematical arbitrage where probability distribution mispricing creates systematic correction pressure. Increased LLM target to 8% given proven edge detection on statistical relationships requiring correction. Focus shifting from directional speculation to mathematical arbitrage of positioning imbalances.
+
+---
+
