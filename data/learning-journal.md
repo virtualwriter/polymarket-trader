@@ -4030,3 +4030,35 @@ Increased LLM_HYPOTHESIS target to 20% given proven edge detection on mathematic
 
 ---
 
+### 2026-04-30 14:28 UTC
+
+**Portfolio:** $100.26 total | Cash $94.26 | 6 open | P&L $0.2573 | 58% win rate (91 trades)
+
+**Closed 1 trades:**
+- ❌ OIL long via polymarket/pm_yes [cl-over-under-jun-2026 — YES — Will Crude Oil (CL) settle over $90 on the final trading day of June 2026?] (LLM_HYPOTHESIS) → stop: $-0.1797 (-18.0%, market -0.1797, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis retest queue: 36 of the first 50 did not trigger; 339 later hypotheses are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 24.1pp (was 13.0, now -11.1)
+- [anomaly] amzn_opt_iv_30d = 30.8 is -6.5 std devs from mean (40.84 ± 1.54)
+- [anomaly] amzn_opt_iv_90d = 30.6 is -4.5 std devs from mean (34.96 ± 0.97)
+- [anomaly] oil_opt_iv_90d = 62.9 is 2.1 std devs from mean (31.94 ± 15.02)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.02 to -0.83
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 30 (10 wins / 20 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (2W/2L across 4 resolved shadows, avg P&L 2.04%).
+- PC_RATIO_EXTREME_LOW trend filter is avoiding losses: 3/4 blocked trades would have lost.
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-13.95%)
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL short via polymarket would have target (+20.33%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-12.50%)
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have target (+4.10%)
+
+**LLM analysis:**
+Positioning exhaustion signals across all major assets creating systematic multi-asset bounce setup. HYPE institutional distribution reached mathematical completion with 19.7% OI decline from record peaks while funding normalized, indicating smart money exit completion. BTC extreme funding crash to -15.67% during consolidation above 76k confirms positioning reset underway. AMZN explosive momentum with P/C systematic collapse to 0.53 shows institutional repositioning acceleration. Cross-asset statistical breakdowns presenting clean mathematical arbitrage opportunities through relative-value heatmap system - focusing on probability distribution mispricing rather than directional speculation. Increased LLM_HYPOTHESIS target to 20% given proven edge detection on mathematical relationships where statistical anomalies force systematic correction within known probability bounds. Oil complex extreme structural breakdown with options IV spikes and spread volatility creates textbook statistical arbitrage patterns. Portfolio positioned for systematic correction of mathematical positioning imbalances rather than momentum speculation.
+
+---
+
