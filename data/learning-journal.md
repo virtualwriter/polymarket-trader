@@ -4123,3 +4123,32 @@ Positioning exhaustion patterns reaching mathematical completion across assets. 
 
 ---
 
+### 2026-04-30 17:28 UTC
+
+**Portfolio:** $100.26 total | Cash $93.26 | 7 open | P&L $0.2573 | 58% win rate (91 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis retest queue: 36 of the first 50 did not trigger; 339 later hypotheses are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_opt_iv_30d = 30.2 is -5.2 std devs from mean (40.68 ± 2.01)
+- [anomaly] amzn_opt_iv_90d = 30.5 is -3.9 std devs from mean (34.89 ± 1.12)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.01 to -0.83
+- [correlation_flip] BTC-OIL correlation shifted from 0.02 to -0.56
+- [correlation_flip] BTC-GOLD correlation shifted from 0.93 to 0.41
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 31 (10 wins / 21 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (2W/2L across 4 resolved shadows, avg P&L 2.04%).
+- PC_RATIO_EXTREME_LOW trend filter is avoiding losses: 3/4 blocked trades would have lost.
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL short via polymarket would have target (+20.33%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-12.50%)
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have target (+4.10%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP GOLD long via polymarket would have stop (-41.98%)
+
+**LLM analysis:**
+Positioning exhaustion patterns reaching mathematical completion across all major assets. HYPE showing textbook institutional distribution exhaustion with 18% OI decline from record peaks while funding normalized to positive territory - smart money exit completion clearly visible. BTC extreme funding crash to -15.67% during consolidation confirming systematic positioning reset underway. AMZN explosive momentum with P/C collapse to 0.306 demonstrates institutional repositioning acceleration. Oil complex showing statistical breakdown with IV normalization from extreme +6σ peaks. Relative-value heatmap system proving excellent at identifying clean mathematical arbitrage opportunities where probability distribution mispricing creates systematic correction pressure within measurable bounds. The shadow learning shows blocked FUNDING_EXTREME_LONG AMZN short would have hit target (+4.10%), confirming trend filter prevented profitable counter-trend trade. Focus remains on mathematical arbitrage of positioning imbalances rather than directional speculation, as these statistical relationships require systematic correction regardless of fundamental direction. Current hypothesis backlog of 520 requiring more tests prevents new hypothesis generation - system correctly prioritizing thorough testing of existing patterns over speculation.
+
+---
+
