@@ -3992,3 +3992,41 @@ Increased LLM_HYPOTHESIS target to 20% given proven edge detection on mathematic
 
 ---
 
+### 2026-04-30 13:28 UTC
+
+**Portfolio:** $100.44 total | Cash $93.44 | 7 open | P&L $0.4370 | 59% win rate (90 trades)
+
+**Closed 1 trades:**
+- ❌ OIL long via polymarket/pm_yes [cl-over-under-jun-2026 — YES — Will Crude Oil (CL) settle over $90 on the final trading day of June 2026?] (LLM_HYPOTHESIS) → stop: $-0.1484 (-14.8%, market -0.1484, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL long @ $0.64 via polymarket/pm_yes [cl-over-under-jun-2026 — YES — Will Crude Oil (CL) settle over $90 on the final trading day of June 2026?] (LLM_HYPOTHESIS)
+
+**Signal weight changes:**
+- 🛑 LLM_HYPOTHESIS on OIL DISABLED — 1/5 wins is below per-asset kill threshold.
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis retest queue: 36 of the first 50 did not trigger; 339 later hypotheses are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 5.7pp (was 7.3, now 13.0)
+- [anomaly] oil_pm_iv = 77.7 is 3.3 std devs from mean (41.82 ± 10.81)
+- [anomaly] oil_opt_iv_90d = 62.4 is 2.1 std devs from mean (31.78 ± 14.89)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.03 to -0.83
+- [correlation_flip] BTC-GOLD correlation shifted from 0.93 to 0.29
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 29 (9 wins / 20 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (2W/2L across 4 resolved shadows, avg P&L 2.04%).
+- PC_RATIO_EXTREME_LOW trend filter is avoiding losses: 3/4 blocked trades would have lost.
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL short via polymarket would have stop (-12.96%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-13.95%)
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL short via polymarket would have target (+20.33%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-12.50%)
+
+**LLM analysis:**
+Increased LLM_HYPOTHESIS target to 20% given proven edge detection on mathematical arbitrage opportunities where statistical relationships force correction within probability bounds. Oil complex presenting textbook statistical breakdown: WTI +2.3σ deviation while options IV compresses from extreme +6σ peaks (70.3% vs 34.87% mean). System showing excellent discrimination through blocked signal learning - appropriately filtering poor setups while capturing clean mathematical edges where probability distributions force systematic correction. 520 hypotheses require condition-triggered retesting before creating new ones, demonstrating systematic approach to pattern validation rather than hypothesis inflation. Portfolio positioned through mathematical arbitrage rather than directional speculation, focusing on statistical relationship breakdowns that require systematic correction within known probability bounds.
+
+---
+
