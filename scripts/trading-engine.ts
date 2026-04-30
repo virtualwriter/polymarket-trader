@@ -36,12 +36,19 @@ const RELATIVE_VALUE_HEATMAP_SHADOWS_ENABLED =
   process.env.RELATIVE_VALUE_HEATMAP_SHADOWS_ENABLED === "1" ||
   process.env.RELATIVE_VALUE_HEATMAP_SHADOWS_ENABLED === "true";
 const HYPOTHESIS_SHADOW_TESTS_REQUIRED = 9;
-const HYPOTHESIS_RETEST_ACTIVE_LIMIT = 50;
+const HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT = 25;
 const PROMOTE_THRESHOLD = 0.65;
 const PROMOTE_MIN_TESTS = HYPOTHESIS_SHADOW_TESTS_REQUIRED;
 const DEMOTE_THRESHOLD = 0.45;
 const KILL_THRESHOLD = 0.40;
 const WEIGHT_DECAY = 0.85;
+const DATA_CONTAMINATED_SETUP_IDS = new Set([
+  "oil_iv_statistical_breakdown_arbitrage",
+  "oil_funding_volatility_mean_reversion",
+  "oil_pm_spot_divergence_mean_reversion",
+  "gold_pm_premium_futures_spread_mean_reversion",
+  "cross_asset_funding_positioning_exhaustion",
+]);
 const LOOKBACK_HOURS = 24;
 const NO_LLM = process.argv.includes("--no-llm");
 const DRY_RUN = process.argv.includes("--dry-run");
@@ -53,7 +60,7 @@ const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
   FUNDING_EXTREME_SHORT: { targetPct: 4, stopPct: 2.5 },
   PM_EV_ABOVE_SPOT: { targetPct: 4, stopPct: 4 },
   PM_EV_BELOW_SPOT: { targetPct: 3, stopPct: 3.5 },
-  PC_RATIO_EXTREME_HIGH: { targetPct: 2, stopPct: 2 },
+  PC_RATIO_EXTREME_HIGH: { targetPct: 4, stopPct: 2 },
   PC_RATIO_EXTREME_LOW: { targetPct: 2, stopPct: 2 },
   BASIS_PREMIUM: { targetPct: 1.5, stopPct: 1.5 },
   BASIS_DISCOUNT: { targetPct: 1.5, stopPct: 1.5 },
@@ -177,10 +184,14 @@ interface HypothesisTest {
   triggered: boolean;
   outcome: "win" | "loss" | "pending";
   actualMove: string;
+  excludedFromSetupStats?: boolean;
+  exclusionReason?: string;
 }
 
 interface Hypothesis {
   id: string;
+  setupId?: string;
+  setupLabel?: string;
   created: string;
   description: string;
   conditions: Record<string, string>;
@@ -193,6 +204,18 @@ interface Hypothesis {
   promotedToSignal: boolean;
   postMortem: string | null;
   source: "llm" | "statistical";
+}
+
+interface HypothesisSetupFamily {
+  setupId: string;
+  setupLabel: string;
+  hypotheses: Hypothesis[];
+  completed: HypothesisTest[];
+  pending: HypothesisTest[];
+  wins: number;
+  losses: number;
+  winRate: number;
+  primary: Hypothesis;
 }
 
 interface Signal {
@@ -884,7 +907,9 @@ function saveBlockedSignals(blockedSignals: BlockedSignalShadow[]) {
 }
 
 function loadHypotheses(): Hypothesis[] {
-  return readJson<Hypothesis[]>("hypotheses.json", []);
+  const hypotheses = readJson<Hypothesis[]>("hypotheses.json", []);
+  for (const hypothesis of hypotheses) ensureHypothesisSetupMetadata(hypothesis);
+  return hypotheses;
 }
 
 function saveHypotheses(h: Hypothesis[]) {
@@ -2734,32 +2759,147 @@ function evaluateHypothesisTest(hypothesis: Hypothesis, startRow: SnapshotRow, e
 }
 
 function completedHypothesisTests(hypothesis: Hypothesis): HypothesisTest[] {
-  return hypothesis.tests.filter((test) => test.outcome !== "pending");
+  return hypothesis.tests.filter((test) => test.outcome !== "pending" && !test.excludedFromSetupStats);
 }
 
 function pendingHypothesisTests(hypothesis: Hypothesis): HypothesisTest[] {
-  return hypothesis.tests.filter((test) => test.outcome === "pending");
+  return hypothesis.tests.filter((test) => test.outcome === "pending" && !test.excludedFromSetupStats);
+}
+
+function slugifySetupId(label: string): string {
+  return label
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+}
+
+function classifyHypothesisSetup(hypothesis: Hypothesis): { setupId: string; setupLabel: string } {
+  const text = `${hypothesis.description} ${hypothesis.prediction} ${Object.keys(hypothesis.conditions ?? {}).join(" ")}`.toLowerCase();
+
+  let label = "Other / mixed";
+  if (text.includes("cross-asset") && (text.includes("funding") || text.includes("positioning"))) {
+    label = "Cross-asset funding/positioning exhaustion";
+  } else if (text.includes("cross-asset") && text.includes("iv")) {
+    label = "Cross-asset IV compression / vol expansion";
+  } else if (text.includes("cross-asset") && (text.includes("p/c") || text.includes("put-call"))) {
+    label = "Cross-asset options repositioning";
+  } else if (text.includes("btc") && text.includes("hype") && (text.includes("correlation") || text.includes("coordinated"))) {
+    label = "BTC momentum / correlation breakout";
+  } else if (text.includes("hype") && (text.includes("oi") || text.includes("open interest")) && (text.includes("distribution") || text.includes("exhaustion"))) {
+    label = "HYPE OI distribution exhaustion / reversal";
+  } else if (text.includes("hype") && (text.includes("breakout") || text.includes("momentum") || text.includes("fomo") || text.includes("surge"))) {
+    label = "HYPE breakout / OI surge momentum";
+  } else if (text.includes("hype") && (text.includes("funding") || text.includes("oi") || text.includes("open interest"))) {
+    label = "HYPE funding/OI normalization";
+  } else if (text.includes("btc") && text.includes("funding")) {
+    label = "BTC funding exhaustion / reversal";
+  } else if (text.includes("btc") && (text.includes("iv compression") || text.includes("pm iv") || text.includes("vol"))) {
+    label = "BTC IV compression / vol reversion";
+  } else if (text.includes("btc") && (text.includes("p/c") || text.includes("put-call"))) {
+    label = "BTC put-call exhaustion / reversal";
+  } else if (text.includes("btc") && (text.includes("momentum") || text.includes("breakout") || text.includes("correlation"))) {
+    label = "BTC momentum / correlation breakout";
+  } else if (text.includes("oil") && (text.includes("iv") || text.includes("statistical") || text.includes("arbitrage") || text.includes("breakdown"))) {
+    label = "Oil IV/statistical breakdown arbitrage";
+  } else if (text.includes("oil") && text.includes("funding")) {
+    label = "Oil funding volatility / mean reversion";
+  } else if (text.includes("oil") && (text.includes("pm") || text.includes("spot"))) {
+    label = "Oil PM-spot divergence / mean reversion";
+  } else if (text.includes("gold") && (text.includes("pm") || text.includes("premium") || text.includes("settlement") || text.includes("futures"))) {
+    label = "Gold PM premium / futures spread mean reversion";
+  } else if (text.includes("gold") && (text.includes("iv") || text.includes("compression"))) {
+    label = "Gold IV compression / vol reversion";
+  } else if (text.includes("amzn") && (text.includes("funding") || text.includes("basis") || text.includes("perp"))) {
+    label = "AMZN perp/spot funding convergence";
+  } else if (text.includes("amzn") && (text.includes("p/c") || text.includes("put-call") || text.includes("momentum"))) {
+    label = "AMZN options positioning / momentum";
+  } else if (text.includes("macro")) {
+    label = "Macro regime / risk momentum";
+  }
+
+  return {
+    setupId: slugifySetupId(label),
+    setupLabel: label,
+  };
+}
+
+function ensureHypothesisSetupMetadata(hypothesis: Hypothesis): void {
+  const setup = classifyHypothesisSetup(hypothesis);
+  hypothesis.setupId = setup.setupId;
+  hypothesis.setupLabel = setup.setupLabel;
+}
+
+function completedSetupTests(hypotheses: Hypothesis[]): HypothesisTest[] {
+  return hypotheses.flatMap((hypothesis) => completedHypothesisTests(hypothesis));
+}
+
+function pendingSetupTests(hypotheses: Hypothesis[]): HypothesisTest[] {
+  return hypotheses.flatMap((hypothesis) => pendingHypothesisTests(hypothesis));
+}
+
+function selectSetupPrimary(hypotheses: Hypothesis[]): Hypothesis {
+  return [...hypotheses].sort((a, b) => {
+    if (a.status === "promoted" && b.status !== "promoted") return -1;
+    if (b.status === "promoted" && a.status !== "promoted") return 1;
+    if (b.winRate !== a.winRate) return b.winRate - a.winRate;
+    if (b.confidence !== a.confidence) return b.confidence - a.confidence;
+    return a.id.localeCompare(b.id);
+  })[0];
+}
+
+function hypothesisSetupFamilies(hypotheses: Hypothesis[]): HypothesisSetupFamily[] {
+  const bySetup = new Map<string, Hypothesis[]>();
+  for (const hypothesis of hypotheses) {
+    ensureHypothesisSetupMetadata(hypothesis);
+    const setupId = hypothesis.setupId ?? "other_mixed";
+    bySetup.set(setupId, [...(bySetup.get(setupId) ?? []), hypothesis]);
+  }
+
+  return [...bySetup.entries()].map(([setupId, familyHypotheses]) => {
+    const completed = completedSetupTests(familyHypotheses);
+    const pending = pendingSetupTests(familyHypotheses);
+    const wins = completed.filter((test) => test.outcome === "win").length;
+    const losses = completed.filter((test) => test.outcome === "loss").length;
+    const setupLabel = familyHypotheses[0]?.setupLabel ?? setupId;
+    return {
+      setupId,
+      setupLabel,
+      hypotheses: familyHypotheses,
+      completed,
+      pending,
+      wins,
+      losses,
+      winRate: completed.length > 0 ? wins / completed.length : 0,
+      primary: selectSetupPrimary(familyHypotheses),
+    };
+  });
+}
+
+function hypothesisSetupNeedsMoreShadowTests(family: HypothesisSetupFamily): boolean {
+  if (!family.hypotheses.some((hypothesis) => hypothesis.source === "llm")) return false;
+  if (!family.hypotheses.some((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived")) return false;
+  return family.completed.length < HYPOTHESIS_SHADOW_TESTS_REQUIRED;
+}
+
+function isDataContaminatedSetup(setupId: string): boolean {
+  return DATA_CONTAMINATED_SETUP_IDS.has(setupId);
 }
 
 function isRepeatHypothesisShadowTest(test: HypothesisTest): boolean {
   return test.outcome === "pending" && /Shadow test \d+\/\d+ opened/.test(test.actualMove);
 }
 
-function hypothesisNeedsMoreShadowTests(hypothesis: Hypothesis): boolean {
-  if (hypothesis.source !== "llm") return false;
-  if (hypothesis.status === "killed" || hypothesis.status === "archived") return false;
-  return completedHypothesisTests(hypothesis).length < HYPOTHESIS_SHADOW_TESTS_REQUIRED;
-}
-
 function llmHypothesisBacklog(hypotheses: Hypothesis[]) {
   const llmHypotheses = hypotheses.filter((hypothesis) => hypothesis.source === "llm");
-  const needingTests = llmHypotheses.filter(hypothesisNeedsMoreShadowTests);
-  const activeRetestQueue = needingTests.slice(0, HYPOTHESIS_RETEST_ACTIVE_LIMIT);
-  const pending = needingTests.reduce((sum, hypothesis) => sum + pendingHypothesisTests(hypothesis).length, 0);
+  const families = hypothesisSetupFamilies(llmHypotheses);
+  const needingTests = families.filter(hypothesisSetupNeedsMoreShadowTests);
+  const activeRetestQueue = needingTests.slice(0, HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT);
+  const pending = needingTests.reduce((sum, family) => sum + family.pending.length, 0);
   return {
     total: llmHypotheses.length,
+    setupFamilies: families.length,
     needingTests: needingTests.length,
-    activeRetestLimit: HYPOTHESIS_RETEST_ACTIVE_LIMIT,
+    activeRetestLimit: HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT,
     activeRetestQueue: activeRetestQueue.length,
     pending,
     complete: needingTests.length === 0,
@@ -2903,14 +3043,9 @@ function evaluateHypotheses(hypotheses: Hypothesis[], valuationRows: SnapshotRow
   let openedShadowTests = 0;
   let skippedInactiveBacklog = 0;
   let skippedConditionNotMet = 0;
-  const activeRetestIds = new Set(
-    hypotheses
-      .filter(hypothesisNeedsMoreShadowTests)
-      .slice(0, HYPOTHESIS_RETEST_ACTIVE_LIMIT)
-      .map((hypothesis) => hypothesis.id),
-  );
 
   for (const h of hypotheses) {
+    ensureHypothesisSetupMetadata(h);
     if (h.status === "killed" || h.status === "archived") continue;
 
     // Check pending tests
@@ -2936,61 +3071,100 @@ function evaluateHypotheses(hypotheses: Hypothesis[], valuationRows: SnapshotRow
     if (completed.length > 0) {
       h.winRate = completed.filter((t) => t.outcome === "win").length / completed.length;
     }
+  }
 
-    // Promotion
-    if (!h.promotedToSignal && h.status === "active" && completed.length >= PROMOTE_MIN_TESTS && h.winRate >= PROMOTE_THRESHOLD) {
-      h.status = "promoted";
-      h.promotedToSignal = true;
-      observations.push(`🎯 Hypothesis ${h.id} PROMOTED to active signal (${(h.winRate * 100).toFixed(0)}% over ${completed.length} tests): ${h.description}`);
-    }
+  const setupFamilies = hypothesisSetupFamilies(hypotheses.filter((hypothesis) => hypothesis.source === "llm"));
 
-    // Demotion
-    if (h.status === "promoted" && completed.length >= PROMOTE_MIN_TESTS && h.winRate < DEMOTE_THRESHOLD) {
-      h.status = "active";
-      h.promotedToSignal = false;
-      h.postMortem = `Demoted: win rate dropped to ${(h.winRate * 100).toFixed(0)}% after ${completed.length} tests.`;
-      observations.push(`📉 Hypothesis ${h.id} DEMOTED back to testing: ${h.description}`);
-    }
+  for (const family of setupFamilies) {
+    const completedCount = family.completed.length;
+    if (completedCount < PROMOTE_MIN_TESTS) continue;
 
-    // Kill
-    if (completed.length >= PROMOTE_MIN_TESTS && h.winRate < KILL_THRESHOLD) {
-      h.status = "killed";
-      h.postMortem = h.postMortem ?? `Killed: win rate ${(h.winRate * 100).toFixed(0)}% over ${completed.length} tests.`;
-      observations.push(`💀 Hypothesis ${h.id} KILLED (${(h.winRate * 100).toFixed(0)}%): ${h.description}`);
-    }
+    const activeFamilyHypotheses = family.hypotheses.filter((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived");
+    if (activeFamilyHypotheses.length === 0) continue;
+    if (isDataContaminatedSetup(family.setupId)) continue;
 
-    if (hypothesisNeedsMoreShadowTests(h) && pendingHypothesisTests(h).length === 0) {
-      if (!activeRetestIds.has(h.id)) {
-        skippedInactiveBacklog++;
-        continue;
+    if (family.winRate >= PROMOTE_THRESHOLD) {
+      const primary = family.primary;
+      const alreadyPromoted = primary.status === "promoted" && primary.promotedToSignal;
+      primary.status = "promoted";
+      primary.promotedToSignal = true;
+      primary.winRate = family.winRate;
+      primary.postMortem = primary.postMortem ?? `Setup family promoted: ${(family.winRate * 100).toFixed(0)}% win rate over ${completedCount} completed tests across ${family.hypotheses.length} variants.`;
+      for (const sibling of activeFamilyHypotheses) {
+        if (sibling.id === primary.id) continue;
+        if (sibling.status === "promoted") sibling.status = "active";
+        sibling.promotedToSignal = false;
+        sibling.postMortem = sibling.postMortem ?? `Covered by promoted setup family ${family.setupId} via primary ${primary.id}.`;
       }
-      if (!hypothesisConditionsSatisfied(h, valuationRows)) {
-        skippedConditionNotMet++;
-        continue;
+      if (!alreadyPromoted) {
+        observations.push(`🎯 Setup family ${family.setupId} PROMOTED via ${primary.id} (${(family.winRate * 100).toFixed(0)}% over ${completedCount} tests across ${family.hypotheses.length} variants): ${family.setupLabel}`);
       }
-      h.tests.push({
-        date: latestDate,
-        triggered: true,
-        outcome: "pending",
-        actualMove: `Shadow test ${h.tests.length + 1}/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened after current row satisfied hypothesis conditions.`,
-      });
-      openedShadowTests++;
-    } else if (
-      h.source === "llm" &&
-      h.status === "active" &&
-      completed.length >= HYPOTHESIS_SHADOW_TESTS_REQUIRED &&
-      h.winRate >= KILL_THRESHOLD &&
-      h.winRate < PROMOTE_THRESHOLD
-    ) {
-      h.postMortem = h.postMortem ?? `Inconclusive after ${completed.length} shadow tests: ${(h.winRate * 100).toFixed(0)}% win rate. Not promoted to production.`;
+      continue;
     }
+
+    if (family.winRate < KILL_THRESHOLD) {
+      for (const hypothesis of activeFamilyHypotheses) {
+        hypothesis.status = "killed";
+        hypothesis.promotedToSignal = false;
+        hypothesis.postMortem = hypothesis.postMortem ?? `Setup family killed: ${(family.winRate * 100).toFixed(0)}% win rate over ${completedCount} completed tests across ${family.hypotheses.length} variants.`;
+      }
+      observations.push(`💀 Setup family ${family.setupId} KILLED (${(family.winRate * 100).toFixed(0)}% over ${completedCount} tests across ${family.hypotheses.length} variants): ${family.setupLabel}`);
+      continue;
+    }
+
+    for (const hypothesis of activeFamilyHypotheses) {
+      if (hypothesis.status === "promoted" && family.winRate < DEMOTE_THRESHOLD) {
+        hypothesis.status = "active";
+        hypothesis.promotedToSignal = false;
+        hypothesis.postMortem = `Setup family demoted: win rate dropped to ${(family.winRate * 100).toFixed(0)}% over ${completedCount} completed tests.`;
+        observations.push(`📉 Setup family ${family.setupId} DEMOTED from promoted trading: ${family.setupLabel}`);
+      } else if (family.winRate < PROMOTE_THRESHOLD) {
+        hypothesis.postMortem = hypothesis.postMortem ?? `Setup family inconclusive after ${completedCount} completed tests: ${(family.winRate * 100).toFixed(0)}% win rate.`;
+      }
+    }
+  }
+
+  const familiesNeedingTests = hypothesisSetupFamilies(hypotheses.filter((hypothesis) => hypothesis.source === "llm"))
+    .filter(hypothesisSetupNeedsMoreShadowTests);
+  const activeSetupIds = new Set(
+    familiesNeedingTests
+      .slice(0, HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT)
+      .map((family) => family.setupId),
+  );
+
+  for (const family of familiesNeedingTests) {
+    if (family.pending.length > 0) continue;
+    if (!activeSetupIds.has(family.setupId)) {
+      skippedInactiveBacklog++;
+      continue;
+    }
+
+    const candidate = family.hypotheses
+      .filter((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived")
+      .filter((hypothesis) => pendingHypothesisTests(hypothesis).length === 0)
+      .sort((a, b) => completedHypothesisTests(a).length - completedHypothesisTests(b).length || b.confidence - a.confidence)
+      .find((hypothesis) => hypothesisConditionsSatisfied(hypothesis, valuationRows));
+
+    if (!candidate) {
+      skippedConditionNotMet++;
+      continue;
+    }
+
+    const nextTestNumber = family.completed.length + family.pending.length + 1;
+    candidate.tests.push({
+      date: latestDate,
+      triggered: true,
+      outcome: "pending",
+      actualMove: `Setup ${family.setupId} shadow test ${nextTestNumber}/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened via ${candidate.id} after current row satisfied variant conditions.`,
+    });
+    openedShadowTests++;
   }
 
   if (openedShadowTests > 0) {
-    observations.push(`🧪 Opened ${openedShadowTests} condition-triggered repeat hypothesis shadow tests from the first ${HYPOTHESIS_RETEST_ACTIVE_LIMIT} LLM hypotheses.`);
+    observations.push(`🧪 Opened ${openedShadowTests} condition-triggered setup-family shadow tests from the first ${HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT} LLM setup families.`);
   }
   if (skippedConditionNotMet > 0 || skippedInactiveBacklog > 0) {
-    observations.push(`🧪 Hypothesis retest queue: ${skippedConditionNotMet} of the first ${HYPOTHESIS_RETEST_ACTIVE_LIMIT} did not trigger; ${skippedInactiveBacklog} later hypotheses are waiting for the next batch.`);
+    observations.push(`🧪 Hypothesis setup retest queue: ${skippedConditionNotMet} of the first ${HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT} setup families did not trigger; ${skippedInactiveBacklog} later setup families are waiting for the next batch.`);
   }
 
   return observations;
@@ -3066,11 +3240,11 @@ ${activeWeights.map((w) => {
 }).join("\n") || "  No trades yet"}
 
 ACTIVE HYPOTHESES:
-${activeHypotheses.map((h) => `  ${h.id}: ${h.description} [${h.status}, ${(h.winRate * 100).toFixed(0)}% over ${h.tests.length} tests]`).join("\n") || "  None yet"}
+${activeHypotheses.map((h) => `  ${h.id} (${h.setupId ?? "unclassified"}): ${h.description} [${h.status}, ${(h.winRate * 100).toFixed(0)}% over ${h.tests.length} variant tests]`).join("\n") || "  None yet"}
 
 HYPOTHESIS SHADOW TEST BACKLOG:
 ${JSON.stringify(hypothesisBacklog, null, 1)}
-${hypothesisBacklog.complete ? "Existing LLM hypothesis backlog is complete; new hypotheses may be proposed." : `Do NOT propose new hypotheses right now. Existing LLM hypotheses still need condition-triggered repeat shadow tests (${hypothesisBacklog.needingTests}/${hypothesisBacklog.total} need more tests, ${hypothesisBacklog.pending} pending). Only the first ${HYPOTHESIS_RETEST_ACTIVE_LIMIT} backlog hypotheses are active for retesting; others wait. Return newHypotheses: [] and focus on reviewing/testing existing hypotheses.`}
+${hypothesisBacklog.complete ? "Existing LLM setup-family backlog is complete; new hypotheses may be proposed." : `Do NOT propose new hypotheses right now. Existing LLM setup families still need condition-triggered repeat shadow tests (${hypothesisBacklog.needingTests}/${hypothesisBacklog.setupFamilies} setup families need more tests, ${hypothesisBacklog.pending} pending). Only the first ${HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT} setup families are active for retesting; others wait. Return newHypotheses: [] and focus on reviewing/testing existing setup families.`}
 
 RECENTLY KILLED HYPOTHESES:
 ${killedRecently.map((h) => `  ${h.id}: ${h.description} — ${h.postMortem}`).join("\n") || "  None"}
@@ -3097,6 +3271,7 @@ IMPORTANT RULES:
 - Each hypothesis MUST be specific and testable with a clear timeframe (1-14 days)
 - Each hypothesis MUST define measurable conditions using column names from the data
 - Existing LLM hypotheses must receive ${HYPOTHESIS_SHADOW_TESTS_REQUIRED} condition-triggered shadow tests before promotion/kill/inconclusive demotion. Do not create new hypotheses while the backlog is incomplete.
+- Similar hypotheses are grouped into setup families. Promotion/kill decisions happen at the setup-family level, not per wording variant. Prefer reviewing whether the parent setup is working over proposing near-duplicate threshold variants.
 - Focus on cross-venue divergences and patterns the rule-based system can't detect
 - Be honest about what's working and what isn't
 - If a pattern stopped working, explain WHY you think it changed
@@ -3603,14 +3778,16 @@ async function main() {
       } else {
         for (const nh of llmResult.newHypotheses ?? []) {
           const id = `H-${String(hypotheses.length + 1).padStart(3, "0")}`;
-          hypotheses.push({
+          const hypothesis: Hypothesis = {
             id, created: nh.created, description: nh.description,
             conditions: nh.conditions, prediction: nh.prediction,
             timeframeDays: nh.timeframeDays, confidence: nh.confidence,
             tests: [{ date: new Date().toISOString().slice(0, 10), triggered: true, outcome: "pending", actualMove: `Shadow test 1/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened for initial validation.` }],
             winRate: 0, status: "active", promotedToSignal: false, postMortem: null,
             source: nh.source ?? "llm",
-          });
+          };
+          ensureHypothesisSetupMetadata(hypothesis);
+          hypotheses.push(hypothesis);
           console.log(`    New hypothesis ${id}: ${nh.description.slice(0, 80)}`);
         }
       }

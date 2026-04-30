@@ -92,7 +92,7 @@
     "lastTriggered": "2026-04-28T20:27:37.814Z",
     "enabled": true,
     "perAsset": {},
-    "artifactNote": "2026-04-28: 1 OIL trade removed as DATA_CORRECTION_ARTIFACT (wrong price source — CBOE CL was Colgate-Palmolive, not WTI crude)"
+    "artifactNote": "2026-04-28: 1 OIL trade removed as DATA_CORRECTION_ARTIFACT (wrong price source \u2014 CBOE CL was Colgate-Palmolive, not WTI crude)"
   },
   {
     "type": "PM_EV_BELOW_SPOT",
@@ -168,10 +168,10 @@
   },
   {
     "type": "PC_RATIO_EXTREME_LOW",
-    "weight": 0.5545873073447192,
-    "trades": 16,
-    "wins": 10,
-    "avgPnlPct": -0.11036870991601888,
+    "weight": 0.5,
+    "trades": 10,
+    "wins": 5,
+    "avgPnlPct": -0.6395834965074136,
     "lastTriggered": "2026-04-28T20:27:37.814Z",
     "enabled": true,
     "perAsset": {
@@ -189,17 +189,31 @@
         "avgPnlPct": 0.891015802427159
       },
       "OIL": {
-        "trades": 5,
-        "wins": 5,
-        "avgPnlPct": 1.217187796531509
+        "trades": 0,
+        "wins": 0,
+        "avgPnlPct": 0,
+        "resetAt": "2026-04-30T23:03:00Z",
+        "resetReason": "Reset after bad zero oil_cl_pc_ratio and CL/WTI source correction; retest Oil P/C signals from corrected data.",
+        "priorStats": {
+          "trades": 5,
+          "wins": 5,
+          "avgPnlPct": 1.217187796531509
+        }
       },
       "GOLD": {
-        "trades": 1,
+        "trades": 0,
         "wins": 0,
-        "avgPnlPct": -1.4560033762397129
+        "avgPnlPct": 0,
+        "resetAt": "2026-04-30T23:03:00Z",
+        "resetReason": "Reset after bad zero gold_gld_pc_ratio; retest Gold P/C signals from corrected data.",
+        "priorStats": {
+          "trades": 1,
+          "wins": 0,
+          "avgPnlPct": -1.4560033762397129
+        }
       }
     },
-    "artifactNote": "2026-04-28: 1 OIL trade removed as DATA_CORRECTION_ARTIFACT (wrong price source — CBOE CL was Colgate-Palmolive, not WTI crude)"
+    "artifactNote": "2026-04-28: 1 OIL trade removed as DATA_CORRECTION_ARTIFACT (wrong price source \u2014 CBOE CL was Colgate-Palmolive, not WTI crude) | 2026-04-30: reset Oil/GOLD PC_RATIO_EXTREME_LOW stats after bad zero P/C inputs; clean stats retain non-contaminated assets only."
   },
   {
     "type": "LLM_HYPOTHESIS",
