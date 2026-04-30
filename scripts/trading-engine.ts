@@ -28,6 +28,9 @@ const MAX_BANKROLL = 100;
 const MAX_OPEN_POSITIONS = 15;
 const HEATMAP_SHADOW_MAX_SPREAD = 0.01;
 const HEATMAP_SHADOW_MIN_LIQUIDITY = 1000;
+const RELATIVE_VALUE_HEATMAP_SHADOWS_ENABLED =
+  process.env.RELATIVE_VALUE_HEATMAP_SHADOWS_ENABLED === "1" ||
+  process.env.RELATIVE_VALUE_HEATMAP_SHADOWS_ENABLED === "true";
 const HYPOTHESIS_SHADOW_TESTS_REQUIRED = 9;
 const HYPOTHESIS_RETEST_ACTIVE_LIMIT = 50;
 const PROMOTE_THRESHOLD = 0.65;
@@ -212,7 +215,7 @@ interface Signal {
 
 interface BlockedSignalShadow {
   id: string;
-  status: "open" | "resolved";
+  status: "open" | "resolved" | "cancelled";
   blockedAt: string;
   resolvedAt?: string;
   blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short" | "relative_value_heatmap";
@@ -1691,6 +1694,7 @@ function recordRelativeValueHeatmapShadows(
   learningParams: LearningParams,
   blockedSignals: BlockedSignalShadow[],
 ): number {
+  if (!RELATIVE_VALUE_HEATMAP_SHADOWS_ENABLED) return 0;
   if (!latestSnapshot) return 0;
   let recorded = 0;
 
@@ -1772,6 +1776,22 @@ function recordRelativeValueHeatmapShadows(
   }
 
   return recorded;
+}
+
+function cancelOpenRelativeValueHeatmapShadows(blockedSignals: BlockedSignalShadow[]): string[] {
+  const now = new Date().toISOString();
+  const notes: string[] = [];
+  for (const shadow of blockedSignals) {
+    if (shadow.status !== "open" || shadow.blockedReason !== "relative_value_heatmap") continue;
+    shadow.status = "cancelled";
+    shadow.resolvedAt = now;
+    shadow.learningExcluded = {
+      reason: "heatmap_shadow_horizon_mismatch",
+      note: "Cancelled: relative-value heatmap convergence should be evaluated on a longer horizon than minute/hour stop-target shadow trading.",
+    };
+    notes.push(`${shadow.asset} ${shadow.position.instrumentLabel ?? shadow.thesis}`);
+  }
+  return notes;
 }
 
 function resolveBlockedSignalShadows(
@@ -3377,12 +3397,16 @@ async function main() {
   const blockedSignals = loadBlockedSignals();
   const migrationNotes = migrateLegacyPolymarketPositions(portfolio, instrumentSnapshots);
   const fundingRiskShapeNotes = applyFundingRiskShapeToOpenPositions(portfolio, learningParams);
+  const cancelledHeatmapShadows = cancelOpenRelativeValueHeatmapShadows(blockedSignals);
 
   console.log(`  Portfolio: $${portfolio.cash.toFixed(2)} cash, ${portfolio.positions.length} open positions, $${portfolio.totalRealizedPnl.toFixed(4)} realized P&L`);
   console.log(`  Learnable params: macro24h>${learningParams.macroMomentum24hThresholdPts.toFixed(1)}, trend>${learningParams.contrarianTrendMarginPct.toFixed(2)}%, momentum>${learningParams.positiveMomentum24hPct.toFixed(2)}%, llm expiry=${learningParams.llmTradeExpiryDays}d, momentum expiry=${learningParams.momentumLongExpiryDays}d`);
   console.log(`  Risk params: HL funding ${formatTargetPct(learningParams.signalRisk.FUNDING_EXTREME_SHORT.targetPct)}/-${learningParams.signalRisk.FUNDING_EXTREME_SHORT.stopPct}, LLM ${formatTargetPct(learningParams.signalRisk.LLM_HYPOTHESIS.targetPct)}/-${learningParams.signalRisk.LLM_HYPOTHESIS.stopPct}, PM overvol ${formatTargetPct(learningParams.signalRisk.PM_IV_GT_OPT_IV.targetPct)}/-${learningParams.signalRisk.PM_IV_GT_OPT_IV.stopPct}`);
   for (const note of migrationNotes) console.log(`  ${note}`);
   for (const note of fundingRiskShapeNotes) console.log(`  Funding risk shape: ${note}`);
+  if (cancelledHeatmapShadows.length > 0) {
+    console.log(`  Cancelled ${cancelledHeatmapShadows.length} open relative-value heatmap shadow trades; heatmap is report-only until the horizon model is redesigned.`);
+  }
 
   // Regime check
   const regime = checkRegime(portfolio);
