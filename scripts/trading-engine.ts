@@ -18,7 +18,7 @@ import { join } from "node:path";
 const DATA_DIR = join(import.meta.dirname ?? ".", "..", "data");
 const RELATIVE_VALUE_CSV = join(import.meta.dirname ?? ".", "..", "relative-value", "cross_venue_relative_value.csv");
 const INSTRUMENT_SNAPSHOTS_JSONL = "instrument-snapshots.jsonl";
-const INSTRUMENT_SNAPSHOT_LOOKBACK = Number(process.env.INSTRUMENT_SNAPSHOT_LOOKBACK ?? 96);
+const INSTRUMENT_SNAPSHOT_LOOKBACK = Number(process.env.INSTRUMENT_SNAPSHOT_LOOKBACK ?? 12);
 const LEARNING_PARAMS_FILE = "learning-params.json";
 const BLOCKED_SIGNALS_FILE = "blocked-signals.json";
 const TRADE_SIZE = 1;
