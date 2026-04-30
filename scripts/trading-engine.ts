@@ -2972,6 +2972,7 @@ async function callLLM(
     console.log("  [LLM] No ANTHROPIC_API_KEY set, skipping LLM reasoning.");
     return null;
   }
+  const anthropicModel = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-6";
 
   const recentValuations = valuationRows.slice(-14);
   const recentMacro = macroRows.slice(-14);
@@ -3112,7 +3113,7 @@ Respond with ONLY valid JSON in this exact format:
         "anthropic-version": "2023-06-01",
       },
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
+        model: anthropicModel,
         max_tokens: 2048,
         messages: [{ role: "user", content: prompt }],
       }),
