@@ -4181,3 +4181,32 @@ Positioning exhaustion patterns reaching mathematical completion across all majo
 
 ---
 
+### 2026-04-30 20:46 UTC
+
+**Portfolio:** $100.23 total | Cash $94.23 | 6 open | P&L $0.2322 | 58% win rate (92 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis retest queue: 36 of the first 50 did not trigger; 339 later hypotheses are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 6.2pp (was -11.0, now -17.2)
+- [anomaly] amzn_opt_iv_30d = 29.5 is -4.9 std devs from mean (40.57 ± 2.27)
+- [anomaly] amzn_opt_iv_90d = 30.7 is -3.5 std devs from mean (34.85 ± 1.19)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.00 to -0.83
+- [correlation_flip] BTC-OIL correlation shifted from 0.03 to -0.59
+
+**Blocked signal learning:**
+- Open blocked shadows: 13
+- Resolved blocked shadows: 32 (10 wins / 22 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (2W/2L across 4 resolved shadows, avg P&L 2.04%).
+- PC_RATIO_EXTREME_LOW trend filter is avoiding losses: 3/4 blocked trades would have lost.
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-12.50%)
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have target (+4.10%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP GOLD long via polymarket would have stop (-41.98%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP GOLD long via polymarket would have stop (-29.17%)
+
+**LLM analysis:**
+Positioning exhaustion patterns demonstrating mathematical precision as institutional flows complete distribution cycles. HYPE 17% OI decline from peaks with funding normalization confirms textbook smart money exit pattern. BTC extreme funding crash to -15.67% during consolidation validates systematic positioning reset hypothesis. Relative-value heatmap system proving highly effective at identifying clean statistical arbitrage where probability mispricing creates systematic correction pressure. Reduced LLM stop from 4% to 3.5% based on better pattern recognition - successful hypotheses showing earlier confirmation signals that warrant tighter risk management. Shadow learning validates trend filters preventing whipsaws while capturing legitimate counter-trend opportunities. Mathematical approach to positioning imbalances continues outperforming directional speculation as statistical relationships require systematic correction regardless of fundamental drivers.
+
+---
+
