@@ -2055,18 +2055,6 @@ function appendInstrumentSnapshot(snapshot: InstrumentSnapshotFile) {
     return;
   }
 
-  const existing = readFileSync(filepath, "utf-8").trim().split("\n");
-  const lastLine = existing[existing.length - 1];
-  if (lastLine) {
-    try {
-      const last = JSON.parse(lastLine) as InstrumentSnapshotFile;
-      if (last.timestamp === snapshot.timestamp) {
-        existing[existing.length - 1] = line;
-        writeFileSync(filepath, existing.join("\n") + "\n");
-        return;
-      }
-    } catch {}
-  }
   appendFileSync(filepath, line + "\n");
 }
 
