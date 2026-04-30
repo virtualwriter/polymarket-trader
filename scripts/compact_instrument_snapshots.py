@@ -20,8 +20,8 @@ from pathlib import Path
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 SNAPSHOT_FILE = DATA_DIR / "instrument-snapshots.jsonl"
 ARCHIVE_DIR = DATA_DIR / "instrument-snapshot-archives"
-MIN_BYTES = int(os.getenv("INSTRUMENT_SNAPSHOT_COMPACT_MIN_BYTES", str(300 * 1024 * 1024)))
-KEEP_LINES = int(os.getenv("INSTRUMENT_SNAPSHOT_COMPACT_KEEP_LINES", "48"))
+MIN_BYTES = int(os.getenv("INSTRUMENT_SNAPSHOT_COMPACT_MIN_BYTES", str(200 * 1024 * 1024)))
+KEEP_LINES = int(os.getenv("INSTRUMENT_SNAPSHOT_COMPACT_KEEP_LINES", "36"))
 CHUNK_SIZE = 1024 * 1024
 
 
