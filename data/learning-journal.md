@@ -4210,3 +4210,33 @@ Positioning exhaustion patterns demonstrating mathematical precision as institut
 
 ---
 
+### 2026-04-30 21:28 UTC
+
+**Portfolio:** $100.23 total | Cash $93.23 | 7 open | P&L $0.2322 | 58% win rate (92 trades)
+
+**Opened 1 positions:**
+- OIL long @ $105.16 via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered repeat hypothesis shadow tests from the first 50 LLM hypotheses.
+- 🧪 Hypothesis retest queue: 35 of the first 50 did not trigger; 339 later hypotheses are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 5.2pp (was -17.2, now -22.4)
+- [anomaly] amzn_opt_iv_30d = 29.5 is -4.6 std devs from mean (40.51 ± 2.40)
+- [anomaly] amzn_opt_iv_90d = 30.7 is -3.4 std devs from mean (34.83 ± 1.22)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.01 to -0.83
+- [correlation_flip] BTC-OIL correlation shifted from 0.05 to -0.59
+
+**Blocked signal learning:**
+- Open blocked shadows: 13
+- Resolved blocked shadows: 32 (10 wins / 22 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (2W/2L across 4 resolved shadows, avg P&L 2.04%).
+- PC_RATIO_EXTREME_LOW trend filter is avoiding losses: 3/4 blocked trades would have lost.
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-12.50%)
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have target (+4.10%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP GOLD long via polymarket would have stop (-41.98%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP GOLD long via polymarket would have stop (-29.17%)
+
+---
+
