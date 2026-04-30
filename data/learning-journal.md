@@ -3866,3 +3866,32 @@ Maintaining mathematical arbitrage focus with oil complex showing +2.5σ WTI dev
 
 ---
 
+### 2026-04-30 09:28 UTC
+
+**Portfolio:** $100.61 total | Cash $94.61 | 6 open | P&L $0.6133 | 60% win rate (88 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered repeat hypothesis shadow tests from the first 50 LLM hypotheses.
+- 🧪 Hypothesis retest queue: 37 of the first 50 did not trigger; 339 later hypotheses are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_wti_spot = 108.33 is 2.5 std devs from mean (88.34 ± 8.11)
+- [anomaly] oil_opt_iv_90d = 64.2 is 2.3 std devs from mean (31.13 ± 14.35)
+- [anomaly] oil_opt_iv_30d = 67.6 is 2.2 std devs from mean (34.33 ± 15.37)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.06 to -0.84
+- [correlation_flip] BTC-GOLD correlation shifted from 0.93 to 0.21
+
+**Blocked signal learning:**
+- Open blocked shadows: 29
+- Resolved blocked shadows: 20 (6 wins / 14 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (1W/2L across 3 resolved shadows, avg P&L -0.90%).
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-13.33%)
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have target (+2.51%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have stop (-2.67%)
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have target (+21.05%)
+
+**LLM analysis:**
+Maintaining mathematical arbitrage focus as oil complex shows +2.5σ WTI deviation with IV compression from extreme levels. Portfolio correctly positioned through existing LLM hypotheses tracking statistical corrections. Increased LLM target to 20% given improved edge detection on mathematical arbitrage setups where statistical relationships force correction within known probability bounds. System showing excellent discrimination with 520 hypotheses needing condition-triggered retesting before creating new ones. Oil options IV compression from +6σ peaks (70%+) to current 63.9% creates systematic correction opportunity. HYPE OI decline from 957M peak to 799M represents massive 16.5% institutional distribution nearing mathematical completion. Cross-venue relative value heatmap showing clean edges on gold LOW strikes due to statistical anomalies. All positions aligned with mathematical arbitrage opportunities where statistical relationships force correction rather than directional speculation. Mathematical positioning reset patterns across multiple assets creating multi-venue correction opportunity.
+
+---
+
