@@ -19,8 +19,10 @@ const DATA_DIR = join(import.meta.dirname ?? ".", "..", "data");
 const RELATIVE_VALUE_CSV = join(import.meta.dirname ?? ".", "..", "relative-value", "cross_venue_relative_value.csv");
 const INSTRUMENT_SNAPSHOTS_JSONL = "instrument-snapshots.jsonl";
 const INSTRUMENT_SNAPSHOT_LOOKBACK = Number(process.env.INSTRUMENT_SNAPSHOT_LOOKBACK ?? 12);
+const OIL_CRUDE_HISTORY_START = process.env.OIL_CRUDE_HISTORY_START ?? "2026-04-28";
 const LEARNING_PARAMS_FILE = "learning-params.json";
 const BLOCKED_SIGNALS_FILE = "blocked-signals.json";
+const PROCESSED_CLOSED_TRADES_FILE = "processed-closed-trades.json";
 const TRADE_SIZE = 1;
 const MAX_BANKROLL = 100;
 const MAX_OPEN_POSITIONS = 15;
@@ -40,8 +42,8 @@ const DRY_RUN = process.argv.includes("--dry-run");
 const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
   PM_IV_GT_OPT_IV: { targetPct: null, stopPct: 5 },
   OPT_IV_GT_PM_IV: { targetPct: 4, stopPct: 4 },
-  FUNDING_EXTREME_LONG: { targetPct: 2.5, stopPct: 2.5 },
-  FUNDING_EXTREME_SHORT: { targetPct: 2.5, stopPct: 2.5 },
+  FUNDING_EXTREME_LONG: { targetPct: 5, stopPct: 2.5 },
+  FUNDING_EXTREME_SHORT: { targetPct: 4, stopPct: 2.5 },
   PM_EV_ABOVE_SPOT: { targetPct: 4, stopPct: 4 },
   PM_EV_BELOW_SPOT: { targetPct: 3, stopPct: 3.5 },
   PC_RATIO_EXTREME_HIGH: { targetPct: 2, stopPct: 2 },
@@ -54,6 +56,10 @@ const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
   MOMENTUM_LONG: { targetPct: 6, stopPct: 3.5 },
   PROMOTED_HYPOTHESIS: { targetPct: 6, stopPct: 3.5 },
 };
+const FUNDING_BREAKEVEN_ARM_PCT = 1.5;
+const FUNDING_BREAKEVEN_LOCK_PCT = 0.25;
+const FUNDING_EXTENDED_ABS_MOVE_PCT = 8;
+const FUNDING_CHASE_MOVE_PCT = 4;
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -79,6 +85,7 @@ interface Position {
   entryUnderlyingPrice?: number;
   currentUnderlyingPrice?: number;
   fundingPnlAccrued?: number;
+  peakPnlPct?: number;
 }
 
 interface ClosedTrade {
@@ -99,7 +106,7 @@ interface ClosedTrade {
   signalType: string;
   hypothesisId: string | null;
   thesis: string;
-  closeReason: "target" | "stop" | "expiry" | "llm_decision" | "signal_killed";
+  closeReason: "target" | "stop" | "breakeven_stop" | "expiry" | "llm_decision" | "signal_killed";
   instrumentType?: string;
   instrumentId?: string;
   instrumentLabel?: string;
@@ -369,7 +376,14 @@ interface InstrumentSnapshotOptions {
 interface InstrumentSnapshotFile {
   timestamp: string;
   spots: Record<string, number | null>;
-  hyperliquid: Record<string, { markPx: number | null; fundingAnnualized: number | null; openInterestUsd: number | null }>;
+  hyperliquid: Record<string, {
+    markPx: number | null;
+    fundingAnnualized: number | null;
+    openInterestUsd: number | null;
+    bestBid?: number | null;
+    bestAsk?: number | null;
+    spread?: number | null;
+  }>;
   polymarket: InstrumentSnapshotEvent[];
   options?: Record<string, InstrumentSnapshotOptions>;
 }
@@ -542,6 +556,36 @@ function readClosedTradeCsv(): ClosedTrade[] {
       instrumentLabel: row.instrument_label || undefined,
     };
   }).filter((trade) => !!trade.id && !!trade.closedAt);
+}
+
+interface ProcessedClosedTrades {
+  processedIds: string[];
+  updatedAt: string;
+}
+
+function loadProcessedClosedTrades(allClosedTrades: ClosedTrade[]): ProcessedClosedTrades {
+  const existing = readJson<ProcessedClosedTrades | null>(PROCESSED_CLOSED_TRADES_FILE, null);
+  if (existing && Array.isArray(existing.processedIds)) {
+    return {
+      processedIds: existing.processedIds.filter((id) => typeof id === "string"),
+      updatedAt: typeof existing.updatedAt === "string" ? existing.updatedAt : new Date().toISOString(),
+    };
+  }
+
+  // First run after introducing the minute exit scanner: treat existing history
+  // as already learned so we only ingest newly scanner-closed trades.
+  return {
+    processedIds: allClosedTrades.map((trade) => trade.id),
+    updatedAt: new Date().toISOString(),
+  };
+}
+
+function saveProcessedClosedTrades(state: ProcessedClosedTrades) {
+  const uniqueIds = [...new Set(state.processedIds)].slice(-2000);
+  writeJson(PROCESSED_CLOSED_TRADES_FILE, {
+    processedIds: uniqueIds,
+    updatedAt: new Date().toISOString(),
+  });
 }
 
 function appendJournal(entry: string) {
@@ -755,7 +799,19 @@ function normalizeSignalRisk(raw: Partial<LearningParams>["signalRisk"]): Record
       stopPct: typeof candidate?.stopPct === "number" ? candidate.stopPct : defaults.stopPct,
     };
   }
+  normalizeFundingRiskShape(normalized);
   return normalized;
+}
+
+function normalizeFundingRiskShape(signalRisk: Record<string, SignalRiskParams>) {
+  signalRisk.FUNDING_EXTREME_SHORT = {
+    targetPct: Math.max(signalRisk.FUNDING_EXTREME_SHORT?.targetPct ?? 0, 4),
+    stopPct: Math.min(signalRisk.FUNDING_EXTREME_SHORT?.stopPct ?? 2.5, 2.5),
+  };
+  signalRisk.FUNDING_EXTREME_LONG = {
+    targetPct: Math.max(signalRisk.FUNDING_EXTREME_LONG?.targetPct ?? 0, 5),
+    stopPct: Math.min(signalRisk.FUNDING_EXTREME_LONG?.stopPct ?? 2.5, 2.5),
+  };
 }
 
 function loadLearningParams(): LearningParams {
@@ -837,6 +893,16 @@ function weightForSignalAsset(
 
 function riskForSignal(learningParams: LearningParams, signalType: string): SignalRiskParams {
   return learningParams.signalRisk[signalType] ?? DEFAULT_SIGNAL_RISK[signalType] ?? { targetPct: 3, stopPct: 3 };
+}
+
+function isFundingSignal(signalType: string): boolean {
+  return signalType === "FUNDING_EXTREME_SHORT" || signalType === "FUNDING_EXTREME_LONG";
+}
+
+function fundingSignalAllowed(signalType: string, asset: string): boolean {
+  if (signalType === "FUNDING_EXTREME_SHORT" && asset === "HYPE") return false;
+  if (signalType === "FUNDING_EXTREME_LONG" && asset === "OIL") return false;
+  return true;
 }
 
 function formatTargetPct(targetPct: number | null): string {
@@ -1181,6 +1247,16 @@ function markPosition(
   return { currentPrice, underlyingPrice, marketPnl, fundingPnl, pnl, pnlPct };
 }
 
+function updatePeakPnl(position: Position, mark: { pnlPct: number }) {
+  position.peakPnlPct = Math.max(position.peakPnlPct ?? mark.pnlPct, mark.pnlPct);
+}
+
+function fundingBreakevenStopHit(position: Position, mark: { pnlPct: number }): boolean {
+  return isFundingSignal(position.signalType)
+    && (position.peakPnlPct ?? mark.pnlPct) >= FUNDING_BREAKEVEN_ARM_PCT
+    && mark.pnlPct <= FUNDING_BREAKEVEN_LOCK_PCT;
+}
+
 function realizeClosedPosition(
   portfolio: Portfolio,
   position: Position,
@@ -1362,6 +1438,49 @@ function isMomentumLongSignal(signal: Signal, rows: SnapshotRow[], learningParam
   if (signal.direction !== "long") return false;
   if (signal.type === "MACRO_MOMENTUM_UP") return true;
   return isAssetTrendAndMomentumPositive(rows, signal.asset, learningParams);
+}
+
+function hyperliquidMarketQualityOk(
+  latestSnapshot: InstrumentSnapshotFile | null,
+  asset: string,
+): boolean {
+  const mark = latestSnapshot?.hyperliquid?.[asset];
+  const markPx = mark?.markPx ?? null;
+  if (!mark || !markPx || markPx <= 0) return true;
+
+  const spread = mark.spread ?? (
+    mark.bestBid && mark.bestAsk && mark.bestAsk > mark.bestBid
+      ? mark.bestAsk - mark.bestBid
+      : null
+  );
+  const spreadPct = spread !== null ? (spread / markPx) * 100 : 0;
+  const openInterestUsd = mark.openInterestUsd ?? 0;
+  return spreadPct <= 0.15 && openInterestUsd >= 1_000_000;
+}
+
+function fundingMoveNotExtended(
+  rows: SnapshotRow[],
+  asset: string,
+  signalDirection: "long" | "short",
+): boolean {
+  const metrics = assetTrendMetrics(rows, asset, LOOKBACK_HOURS);
+  if (!metrics) return true;
+  if (Math.abs(metrics.momentumPct) > FUNDING_EXTENDED_ABS_MOVE_PCT) return false;
+  if (signalDirection === "long" && metrics.momentumPct > FUNDING_CHASE_MOVE_PCT) return false;
+  if (signalDirection === "short" && metrics.momentumPct < -FUNDING_CHASE_MOVE_PCT) return false;
+  return true;
+}
+
+function fundingSetupAllowed(
+  signalType: "FUNDING_EXTREME_LONG" | "FUNDING_EXTREME_SHORT",
+  asset: string,
+  signalDirection: "long" | "short",
+  rows: SnapshotRow[],
+  latestSnapshot: InstrumentSnapshotFile | null,
+): boolean {
+  return fundingSignalAllowed(signalType, asset)
+    && hyperliquidMarketQualityOk(latestSnapshot, asset)
+    && fundingMoveNotExtended(rows, asset, signalDirection);
 }
 
 function blockedSignalKey(signal: Pick<Signal, "type" | "asset" | "venue" | "direction">): string {
@@ -1973,7 +2092,7 @@ function generateSignals(
     const funding = a.funding ? num(latest[a.funding]) : null;
     if (funding !== null) {
       const fundingLongWeight = weightForSignalAsset(weightMap, "FUNDING_EXTREME_LONG", a.key);
-      if (funding > 15 && fundingLongWeight) {
+      if (funding > 15 && fundingLongWeight && fundingSetupAllowed("FUNDING_EXTREME_LONG", a.key, "short", rows, latestSnapshot)) {
         const strength = Math.min(1, (funding - 15) / 35);
         const w = fundingLongWeight;
         const risk = riskForSignal(learningParams, "FUNDING_EXTREME_LONG");
@@ -1987,7 +2106,7 @@ function generateSignals(
         if (signal) signals.push(signal);
       }
       const fundingShortWeight = weightForSignalAsset(weightMap, "FUNDING_EXTREME_SHORT", a.key);
-      if (funding < -15 && fundingShortWeight) {
+      if (funding < -15 && fundingShortWeight && fundingSetupAllowed("FUNDING_EXTREME_SHORT", a.key, "long", rows, latestSnapshot)) {
         const strength = Math.min(1, (-funding - 15) / 35);
         const w = fundingShortWeight;
         const risk = riskForSignal(learningParams, "FUNDING_EXTREME_SHORT");
@@ -2034,7 +2153,7 @@ function generateSignals(
     }
 
     const pcRatio = a.pcRatio ? num(latest[a.pcRatio]) : null;
-    if (pcRatio !== null) {
+    if (pcRatio !== null && pcRatio > 0) {
       const pcHighWeight = weightForSignalAsset(weightMap, "PC_RATIO_EXTREME_HIGH", a.key);
       if (pcRatio > 1.2 && pcHighWeight) {
         const strength = Math.min(1, (pcRatio - 1.2) / 0.8);
@@ -2141,21 +2260,31 @@ function statisticalScan(rows: SnapshotRow[], macroRows: SnapshotRow[]): StatObs
   const numericCols = Object.keys(rows[0]).filter((k) => k !== "date" && typeof rows[0][k] === "number");
   const latest = rows[rows.length - 1];
 
+  const sampleRowsForColumn = (col: string) => {
+    if (!col.startsWith("oil_")) return rows;
+    return rows.filter((r) => String(r.date ?? "") >= OIL_CRUDE_HISTORY_START);
+  };
+
   // Z-score anomalies (need at least 5 data points)
   if (rows.length >= 5) {
     for (const col of numericCols) {
-      const vals = rows.map((r) => num(r[col])).filter((v): v is number => v !== null);
+      const sampleRows = sampleRowsForColumn(col);
+      const vals = sampleRows
+        .map((r) => num(r[col]))
+        .filter((v): v is number => v !== null && !(col.endsWith("_pc_ratio") && v <= 0));
       if (vals.length < 5) continue;
       const mean = vals.reduce((s, v) => s + v, 0) / vals.length;
       const std = Math.sqrt(vals.reduce((s, v) => s + (v - mean) ** 2, 0) / vals.length);
       if (std === 0) continue;
       const latestVal = num(latest[col]);
+      if (latestVal === 0 && col.endsWith("_pc_ratio")) continue;
       if (latestVal === null) continue;
       const z = (latestVal - mean) / std;
       if (Math.abs(z) > 2) {
+        const scope = col.startsWith("oil_") ? ` since ${OIL_CRUDE_HISTORY_START}` : "";
         obs.push({
           type: "anomaly",
-          description: `${col} = ${latestVal} is ${z.toFixed(1)} std devs from mean (${mean.toFixed(2)} ± ${std.toFixed(2)})`,
+          description: `${col} = ${latestVal} is ${z.toFixed(1)} std devs from mean${scope} (${mean.toFixed(2)} ± ${std.toFixed(2)})`,
           assets: [col.split("_")[0].toUpperCase()],
           magnitude: Math.abs(z),
           data: { value: latestVal, mean, std, z },
@@ -2253,9 +2382,11 @@ function markToMarket(
   for (const pos of portfolio.positions) {
     const mark = markPosition(pos, latestRow, snapshots);
     if (!mark) { remaining.push(pos); continue; }
+    updatePeakPnl(pos, mark);
 
     let closeReason: ClosedTrade["closeReason"] | null = null;
     if (pos.targetPct !== null && mark.pnlPct >= pos.targetPct) closeReason = "target";
+    else if (fundingBreakevenStopHit(pos, mark)) closeReason = "breakeven_stop";
     else if (mark.pnlPct <= -pos.stopPct) closeReason = "stop";
     else if (new Date(pos.expiryDate) <= new Date()) closeReason = "expiry";
 
@@ -2374,6 +2505,20 @@ function openPositions(
   return opened;
 }
 
+function applyFundingRiskShapeToOpenPositions(portfolio: Portfolio, learningParams: LearningParams): string[] {
+  const notes: string[] = [];
+  for (const position of portfolio.positions) {
+    if (!isFundingSignal(position.signalType)) continue;
+    const risk = riskForSignal(learningParams, position.signalType);
+    if (position.targetPct !== risk.targetPct || position.stopPct !== risk.stopPct) {
+      notes.push(`${position.asset} ${position.signalType}: ${formatTargetPct(position.targetPct)}/-${position.stopPct} -> ${formatTargetPct(risk.targetPct)}/-${risk.stopPct}`);
+      position.targetPct = risk.targetPct;
+      position.stopPct = risk.stopPct;
+    }
+  }
+  return notes;
+}
+
 // ─── Weight Updates ──────────────────────────────────────────────────────────
 
 function updateWeights(weights: SignalWeight[], closedTrades: ClosedTrade[]): string[] {
@@ -2422,6 +2567,38 @@ function updateWeights(weights: SignalWeight[], closedTrades: ClosedTrade[]): st
   }
 
   return observations;
+}
+
+function closePositionsForKilledSignals(
+  portfolio: Portfolio,
+  weights: SignalWeight[],
+  latestRow: SnapshotRow,
+  snapshots: InstrumentSnapshotFile[],
+): ClosedTrade[] {
+  const closed: ClosedTrade[] = [];
+  const remaining: Position[] = [];
+  const now = new Date().toISOString();
+
+  for (const position of portfolio.positions) {
+    const weight = weights.find((candidate) => candidate.type === position.signalType);
+    const perAsset = weight?.perAsset?.[position.asset];
+    const signalKilled = !!weight && (!weight.enabled || perAsset?.disabled === true);
+    if (!signalKilled) {
+      remaining.push(position);
+      continue;
+    }
+
+    const mark = markPosition(position, latestRow, snapshots, true);
+    if (!mark) {
+      remaining.push(position);
+      continue;
+    }
+
+    closed.push(realizeClosedPosition(portfolio, position, mark, "signal_killed", now));
+  }
+
+  portfolio.positions = remaining;
+  return closed;
 }
 
 // ─── Hypothesis Evaluation ───────────────────────────────────────────────────
@@ -3155,6 +3332,16 @@ function applyLearningParamUpdates(
         nextSignalRisk[signalType] = nextRisk;
       }
     }
+    const beforeFundingShort = nextSignalRisk.FUNDING_EXTREME_SHORT;
+    const beforeFundingLong = nextSignalRisk.FUNDING_EXTREME_LONG;
+    normalizeFundingRiskShape(nextSignalRisk);
+    for (const signalType of ["FUNDING_EXTREME_SHORT", "FUNDING_EXTREME_LONG"]) {
+      const before = signalType === "FUNDING_EXTREME_SHORT" ? beforeFundingShort : beforeFundingLong;
+      const after = nextSignalRisk[signalType];
+      if (before.targetPct !== after.targetPct || before.stopPct !== after.stopPct) {
+        notes.push(`${signalType} risk floor: ${formatTargetPct(before.targetPct)}/-${before.stopPct} -> ${formatTargetPct(after.targetPct)}/-${after.stopPct}`);
+      }
+    }
     next.signalRisk = nextSignalRisk;
   }
 
@@ -3189,11 +3376,13 @@ async function main() {
   let hypotheses = loadHypotheses();
   const blockedSignals = loadBlockedSignals();
   const migrationNotes = migrateLegacyPolymarketPositions(portfolio, instrumentSnapshots);
+  const fundingRiskShapeNotes = applyFundingRiskShapeToOpenPositions(portfolio, learningParams);
 
   console.log(`  Portfolio: $${portfolio.cash.toFixed(2)} cash, ${portfolio.positions.length} open positions, $${portfolio.totalRealizedPnl.toFixed(4)} realized P&L`);
   console.log(`  Learnable params: macro24h>${learningParams.macroMomentum24hThresholdPts.toFixed(1)}, trend>${learningParams.contrarianTrendMarginPct.toFixed(2)}%, momentum>${learningParams.positiveMomentum24hPct.toFixed(2)}%, llm expiry=${learningParams.llmTradeExpiryDays}d, momentum expiry=${learningParams.momentumLongExpiryDays}d`);
   console.log(`  Risk params: HL funding ${formatTargetPct(learningParams.signalRisk.FUNDING_EXTREME_SHORT.targetPct)}/-${learningParams.signalRisk.FUNDING_EXTREME_SHORT.stopPct}, LLM ${formatTargetPct(learningParams.signalRisk.LLM_HYPOTHESIS.targetPct)}/-${learningParams.signalRisk.LLM_HYPOTHESIS.stopPct}, PM overvol ${formatTargetPct(learningParams.signalRisk.PM_IV_GT_OPT_IV.targetPct)}/-${learningParams.signalRisk.PM_IV_GT_OPT_IV.stopPct}`);
   for (const note of migrationNotes) console.log(`  ${note}`);
+  for (const note of fundingRiskShapeNotes) console.log(`  Funding risk shape: ${note}`);
 
   // Regime check
   const regime = checkRegime(portfolio);
@@ -3213,6 +3402,22 @@ async function main() {
       console.log(`    ${emoji} ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} [${t.instrumentLabel ?? "n/a"}] → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
       appendTradeCsv(t);
     }
+  }
+
+  const allClosedTrades = readClosedTradeCsv();
+  const processedClosedTrades = loadProcessedClosedTrades(allClosedTrades);
+  const currentRunClosedIds = new Set(closedTrades.map((trade) => trade.id));
+  const processedIds = new Set(processedClosedTrades.processedIds);
+  const scannerClosedTrades = allClosedTrades.filter((trade) =>
+    !processedIds.has(trade.id) && !currentRunClosedIds.has(trade.id)
+  );
+  if (scannerClosedTrades.length > 0) {
+    console.log(`\n  Ingested ${scannerClosedTrades.length} minute-scanner closed trades for learning:`);
+    for (const t of scannerClosedTrades) {
+      const emoji = t.pnl >= 0 ? "✅" : "❌";
+      console.log(`    ${emoji} ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} [${t.instrumentLabel ?? "n/a"}] → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
+    }
+    closedTrades.push(...scannerClosedTrades);
   }
 
   const resolvedBlockedSignals = resolveBlockedSignalShadows(blockedSignals, latestRow, instrumentSnapshots);
@@ -3241,6 +3446,20 @@ async function main() {
   // Step 2: Update signal weights
   let weightObs = updateWeights(weights, closedTrades);
   for (const o of weightObs) console.log(`  ${o}`);
+
+  const killedSignalClosedTrades = closePositionsForKilledSignals(portfolio, weights, latestRow, instrumentSnapshots);
+  if (killedSignalClosedTrades.length > 0) {
+    console.log(`\n  Closed ${killedSignalClosedTrades.length} positions because their signal/asset was killed:`);
+    for (const t of killedSignalClosedTrades) {
+      const emoji = t.pnl >= 0 ? "✅" : "❌";
+      console.log(`    ${emoji} ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} [${t.instrumentLabel ?? "n/a"}] → signal_killed: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
+      appendTradeCsv(t);
+      closedTrades.push(t);
+    }
+    const killedSignalWeightObs = updateWeights(weights, killedSignalClosedTrades);
+    weightObs = [...weightObs, ...killedSignalWeightObs];
+    for (const o of killedSignalWeightObs) console.log(`  ${o}`);
+  }
 
   // Step 3: Evaluate hypotheses
   const hypothesisObs = evaluateHypotheses(hypotheses, valRows);
@@ -3312,7 +3531,8 @@ async function main() {
         }
       }
 
-      // Add LLM-suggested trades as signals
+      // LLM trade instructions are intentionally constrained to exits only.
+      // New LLM ideas must enter through hypothesis retesting and promotion.
       for (const lt of llmResult.trades ?? []) {
         if (!isValidVenue(lt.venue)) {
           console.log(`    Skipping invalid LLM venue for ${lt.asset}: ${String(lt.venue)}`);
@@ -3326,33 +3546,8 @@ async function main() {
           llmCloseInstructions.push(lt);
           continue;
         }
-        if (lt.direction !== "long" && lt.direction !== "short") {
-          console.log(`    Skipping invalid LLM trade direction for ${lt.asset}: ${String(lt.direction)}`);
-          continue;
-        }
-        if (lt.action !== "buy" && lt.action !== "sell") {
-          console.log(`    Skipping unsupported LLM trade action for ${lt.asset}: ${String(lt.action)}`);
-          continue;
-        }
-        const price =
-          lt.venue === "hyperliquid"
-            ? getHyperliquidPerpPrice(latestRow, lt.asset)
-            : getAssetPrice(latestRow, lt.asset);
-        if (!price) continue;
-        const risk = riskForSignal(learningParams, "LLM_HYPOTHESIS");
-        const signal = finalizeSignal({
-          type: "LLM_HYPOTHESIS", asset: lt.asset,
-          venue: lt.venue as Signal["venue"], direction: lt.direction,
-          strength: 0.5, confidence: 0.4,
-          thesis: `[LLM] ${lt.thesis}`,
-          hypothesisId: null, entryPrice: price,
-          targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 7,
-          leverage: lt.venue === "hyperliquid" ? 1 : undefined,
-          contractHint: lt.venue === "polymarket"
-            ? { preferredDirection: inferPolymarketPreferredDirection(lt.direction, "LLM_HYPOTHESIS", lt.thesis) }
-            : undefined,
-        }, valRows, learningParams, { latestRow, latestSnapshot, blockedSignals });
-        if (signal) signals.push(signal);
+        console.log(`    Skipping LLM ${lt.action} trade for ${lt.asset}: direct LLM entries are disabled; hypotheses must be promoted before trading.`);
+        continue;
       }
 
       const llmClosedTrades = closePositionsFromLlm(portfolio, llmCloseInstructions, latestRow, instrumentSnapshots);
@@ -3394,6 +3589,10 @@ async function main() {
     saveHypotheses(hypotheses);
     saveLearningParams(learningParams);
     saveBlockedSignals(blockedSignals);
+    saveProcessedClosedTrades({
+      processedIds: [...processedIds, ...closedTrades.map((trade) => trade.id)],
+      updatedAt: new Date().toISOString(),
+    });
   }
 
   // Summary

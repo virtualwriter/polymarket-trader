@@ -1791,7 +1791,7 @@ function computeMacroScore(
     (ev: any) => ev.slug === "cl-hit-jun-2026" || ev.title?.toLowerCase().includes("hit__ by end of june"),
   );
 
-  let pSettleAboveCurrent = 0.65;
+  let pSettleAboveCurrent = 0.5;
   if (clSettle) {
     const strikes = (clSettle.strikes ?? clSettle.markets ?? []) as any[];
     const highStrikes = strikes.filter(
@@ -1802,13 +1802,13 @@ function computeMacroScore(
     }
   }
 
-  let pSpike120 = 0.78;
+  let pSpike120 = 0;
   if (clHit) {
     const strikes = (clHit.strikes ?? clHit.markets ?? []) as any[];
     const s120 = strikes.find(
-      (s: any) => (s.strike ?? s.price ?? 0) === 120 && (s.direction === "above" || s.dir === "above"),
+      (s: any) => Math.abs((s.strike ?? s.price ?? 0) - 120) < 0.01 && (s.direction === "above" || s.dir === "above"),
     );
-    if (s120) pSpike120 = s120.yesPrice ?? s120.yes ?? 0.78;
+    if (s120) pSpike120 = s120.yesPrice ?? s120.yes ?? 0;
   }
 
   const wtiSpot = hl["OIL (CL)"]?.markPx ?? 0;
@@ -1978,7 +1978,14 @@ interface InstrumentSnapshotEvent {
 interface InstrumentSnapshotFile {
   timestamp: string;
   spots: Record<string, number | null>;
-  hyperliquid: Record<string, { markPx: number | null; fundingAnnualized: number | null; openInterestUsd: number | null }>;
+  hyperliquid: Record<string, {
+    markPx: number | null;
+    fundingAnnualized: number | null;
+    openInterestUsd: number | null;
+    bestBid?: number | null;
+    bestAsk?: number | null;
+    spread?: number | null;
+  }>;
   polymarket: InstrumentSnapshotEvent[];
   options: Record<string, OptionsSnapshot>;
 }
@@ -2058,10 +2065,16 @@ function appendInstrumentSnapshot(snapshot: InstrumentSnapshotFile) {
   appendFileSync(filepath, line + "\n");
 }
 
-function pcRatioFromChains(chains: OptionQuote[]): number {
+function pcRatioFromChains(chains: OptionQuote[]): number | null {
   const putVol = chains.filter((c) => c.type === "put").reduce((s, c) => s + c.volume, 0);
   const callVol = chains.filter((c) => c.type === "call").reduce((s, c) => s + c.volume, 0);
-  return callVol > 0 ? putVol / callVol : 0;
+  if (putVol + callVol > 0) return callVol > 0 ? putVol / callVol : null;
+
+  const putOi = chains.filter((c) => c.type === "put").reduce((s, c) => s + c.openInterest, 0);
+  const callOi = chains.filter((c) => c.type === "call").reduce((s, c) => s + c.openInterest, 0);
+  if (putOi + callOi > 0) return callOi > 0 ? putOi / callOi : null;
+
+  return null;
 }
 
 function writeSnapshot(
@@ -2221,26 +2234,41 @@ function writeSnapshot(
         markPx: r(hl.BTC?.markPx ?? null, 6),
         fundingAnnualized: r(hl.BTC?.fundingAnnualized ?? null, 6),
         openInterestUsd: r(hl.BTC?.openInterestUsd ?? null, 2),
+        bestBid: r(hl.BTC?.bestBid ?? null, 6),
+        bestAsk: r(hl.BTC?.bestAsk ?? null, 6),
+        spread: r(hl.BTC?.spread ?? null, 6),
       },
       HYPE: {
         markPx: r(hl.HYPE?.markPx ?? null, 6),
         fundingAnnualized: r(hl.HYPE?.fundingAnnualized ?? null, 6),
         openInterestUsd: r(hl.HYPE?.openInterestUsd ?? null, 2),
+        bestBid: r(hl.HYPE?.bestBid ?? null, 6),
+        bestAsk: r(hl.HYPE?.bestAsk ?? null, 6),
+        spread: r(hl.HYPE?.spread ?? null, 6),
       },
       GOLD: {
         markPx: r(hl["GOLD (GC)"]?.markPx ?? null, 6),
         fundingAnnualized: r(hl["GOLD (GC)"]?.fundingAnnualized ?? null, 6),
         openInterestUsd: r(hl["GOLD (GC)"]?.openInterestUsd ?? null, 2),
+        bestBid: r(hl["GOLD (GC)"]?.bestBid ?? null, 6),
+        bestAsk: r(hl["GOLD (GC)"]?.bestAsk ?? null, 6),
+        spread: r(hl["GOLD (GC)"]?.spread ?? null, 6),
       },
       AMZN: {
         markPx: r(hl["AMZN"]?.markPx ?? null, 6),
         fundingAnnualized: r(hl["AMZN"]?.fundingAnnualized ?? null, 6),
         openInterestUsd: r(hl["AMZN"]?.openInterestUsd ?? null, 2),
+        bestBid: r(hl["AMZN"]?.bestBid ?? null, 6),
+        bestAsk: r(hl["AMZN"]?.bestAsk ?? null, 6),
+        spread: r(hl["AMZN"]?.spread ?? null, 6),
       },
       OIL: {
         markPx: r(hl["OIL (CL)"]?.markPx ?? null, 6),
         fundingAnnualized: r(hl["OIL (CL)"]?.fundingAnnualized ?? null, 6),
         openInterestUsd: r(hl["OIL (CL)"]?.openInterestUsd ?? null, 2),
+        bestBid: r(hl["OIL (CL)"]?.bestBid ?? null, 6),
+        bestAsk: r(hl["OIL (CL)"]?.bestAsk ?? null, 6),
+        spread: r(hl["OIL (CL)"]?.spread ?? null, 6),
       },
     },
     polymarket: pm
