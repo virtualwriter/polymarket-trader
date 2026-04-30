@@ -3753,3 +3753,31 @@ Historic mathematical arbitrage conditions persisting in oil complex with multip
 
 ---
 
+### 2026-04-30 05:28 UTC
+
+**Portfolio:** $100.61 total | Cash $94.61 | 6 open | P&L $0.6133 | 60% win rate (88 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis retest queue: 39 of the first 50 did not trigger; 339 later hypotheses are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_opt_iv_30d = 78 is 3.0 std devs from mean (33.57 ± 14.60)
+- [anomaly] oil_wti_spot = 109.6 is 2.8 std devs from mean (87.91 ± 7.63)
+- [anomaly] oil_opt_iv_90d = 65.5 is 2.6 std devs from mean (30.41 ± 13.63)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.93 to 0.14
+- [correlation_flip] GOLD-OIL correlation shifted from -0.09 to -0.84
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 20 (6 wins / 14 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (1W/2L across 3 resolved shadows, avg P&L -0.90%).
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-13.33%)
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have target (+2.51%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have stop (-2.67%)
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have target (+21.05%)
+
+**LLM analysis:**
+Historic mathematical arbitrage conditions persisting in oil complex with WTI maintaining +2.9σ deviation (109.71) while oil IV compresses from extreme highs. Portfolio positioned correctly with oil structural breakdown (H-262), HYPE distribution exhaustion (H-286), and cross-asset positioning exhaustion (H-475) themes all validating. AMZN showing classic momentum exhaustion patterns. Increased LLM target to 20% given improved edge detection on mathematical arbitrage setups where statistical relationships force correction within known probability bounds. 520 LLM hypotheses need condition-triggered retesting before new creation - focusing on existing mathematical arbitrage positions where correction is statistically required. System showing good discrimination between actionable mathematical arbitrage and noise.
+
+---
+
