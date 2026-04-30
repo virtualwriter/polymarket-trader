@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build and optionally email a daily paper-trader report.
+"""Build and optionally send a daily paper-trader report.
 
 The report window is the previous calendar day in DAILY_REPORT_TZ
 (default: America/New_York). It summarizes real trades, shadow trades,
@@ -14,7 +14,8 @@ import json
 import os
 import smtplib
 import ssl
-import subprocess
+import urllib.parse
+import urllib.request
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, time, timedelta, timezone
@@ -343,11 +344,49 @@ def send_email(subject: str, body: str) -> bool:
     return True
 
 
+def telegram_chunks(text: str, max_len: int = 3900) -> list[str]:
+    chunks = []
+    remaining = text
+    while len(remaining) > max_len:
+        split_at = remaining.rfind("\n", 0, max_len)
+        if split_at < max_len // 2:
+            split_at = max_len
+        chunks.append(remaining[:split_at].strip())
+        remaining = remaining[split_at:].strip()
+    if remaining:
+        chunks.append(remaining)
+    return chunks
+
+
+def send_telegram(subject: str, body: str) -> bool:
+    token = os.getenv("TELEGRAM_BOT_TOKEN")
+    chat_id = os.getenv("TELEGRAM_CHAT_ID")
+    if not token or not chat_id:
+        return False
+
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    chunks = telegram_chunks(f"{subject}\n\n{body}")
+    for idx, chunk in enumerate(chunks, start=1):
+        prefix = f"Part {idx}/{len(chunks)}\n\n" if len(chunks) > 1 else ""
+        payload = urllib.parse.urlencode(
+            {
+                "chat_id": chat_id,
+                "text": prefix + chunk,
+                "disable_web_page_preview": "true",
+            }
+        ).encode()
+        request = urllib.request.Request(url, data=payload, method="POST")
+        with urllib.request.urlopen(request, timeout=30) as response:
+            if response.status >= 400:
+                raise RuntimeError(f"Telegram send failed with HTTP {response.status}.")
+    return True
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--date", help="Local report date, YYYY-MM-DD. Defaults to previous local day.")
-    parser.add_argument("--dry-run", action="store_true", help="Print report and do not email.")
-    parser.add_argument("--no-email", action="store_true", help="Write report file but skip email.")
+    parser.add_argument("--dry-run", action="store_true", help="Print report and do not send.")
+    parser.add_argument("--no-email", action="store_true", help="Write report file but skip all outbound delivery.")
     args = parser.parse_args()
 
     tz_name = os.getenv("DAILY_REPORT_TZ", "America/New_York")
@@ -364,14 +403,19 @@ def main() -> None:
         print(f"\n[report written to {report_path}]")
         return
     if args.no_email:
-        print(f"Report written to {report_path}; email skipped.")
+        print(f"Report written to {report_path}; outbound delivery skipped.")
         return
 
-    sent = send_email(subject, report)
-    if sent:
+    sent_telegram = send_telegram(subject, report)
+    sent_email = send_email(subject, report)
+    if sent_telegram and sent_email:
+        print(f"Report sent to Telegram/email and written to {report_path}.")
+    elif sent_telegram:
+        print(f"Report sent to Telegram and written to {report_path}.")
+    elif sent_email:
         print(f"Report emailed and written to {report_path}.")
     else:
-        print(f"Report written to {report_path}; DAILY_REPORT_EMAIL_TO not set, email skipped.")
+        print(f"Report written to {report_path}; Telegram/email credentials not set, delivery skipped.")
 
 
 if __name__ == "__main__":
