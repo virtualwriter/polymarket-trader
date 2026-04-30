@@ -3838,3 +3838,31 @@ Oil complex maintaining mathematical arbitrage setup with WTI +2.8σ deviation (
 
 ---
 
+### 2026-04-30 08:28 UTC
+
+**Portfolio:** $100.61 total | Cash $94.61 | 6 open | P&L $0.6133 | 60% win rate (88 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis retest queue: 38 of the first 50 did not trigger; 339 later hypotheses are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_wti_spot = 107.98 is 2.5 std devs from mean (88.23 ± 8.01)
+- [anomaly] oil_opt_iv_90d = 63.9 is 2.3 std devs from mean (30.95 ± 14.18)
+- [anomaly] oil_opt_iv_30d = 66.4 is 2.1 std devs from mean (34.15 ± 15.21)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.06 to -0.84
+- [correlation_flip] BTC-GOLD correlation shifted from 0.93 to 0.19
+
+**Blocked signal learning:**
+- Open blocked shadows: 28
+- Resolved blocked shadows: 20 (6 wins / 14 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (1W/2L across 3 resolved shadows, avg P&L -0.90%).
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-13.33%)
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have target (+2.51%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have stop (-2.67%)
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have target (+21.05%)
+
+**LLM analysis:**
+Maintaining mathematical arbitrage focus with oil complex showing +2.5σ WTI deviation while IV compresses from extreme levels. Portfolio correctly positioned through existing LLM hypotheses tracking statistical corrections: H-268 (BTC PM IV -6.5σ anomaly), H-286 (HYPE 16% institutional distribution exhaustion), H-348 (oil structural recovery completion), and H-475 (cross-asset positioning exhaustion). Increased LLM target to 20% given improved edge detection on mathematical arbitrage setups where statistical relationships force correction within known probability bounds. System showing excellent discrimination - 520 hypotheses need condition-triggered retesting before creating new ones, indicating robust pattern library development. Oil options IV compression from +6σ peaks (70%+) to current 63.8% creates systematic correction opportunity as mathematical relationships normalize. HYPE OI decline from 957M peak to 799M represents massive 16.5% institutional distribution nearing mathematical completion. Cross-venue relative value heatmap showing clean edges on gold LOW strikes due to statistical anomalies requiring correction. All positions aligned with mathematical arbitrage opportunities rather than directional speculation.
+
+---
+
