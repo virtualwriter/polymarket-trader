@@ -16,6 +16,10 @@ import { join } from "node:path";
 // ─── Config ──────────────────────────────────────────────────────────────────
 
 const DATA_DIR = join(import.meta.dirname ?? ".", "..", "data");
+const DEFAULT_LIVE_STATE_DIR = join(import.meta.dirname ?? ".", "..", ".runtime");
+const LIVE_STATE_DIR = process.env.POLYMARKET_TRADER_STATE_DIR ?? DEFAULT_LIVE_STATE_DIR;
+const LIVE_PORTFOLIO_FILE = process.env.POLYMARKET_TRADER_LIVE_PORTFOLIO ?? join(LIVE_STATE_DIR, "portfolio-live.json");
+const PENDING_CLOSED_TRADES_FILE = process.env.POLYMARKET_TRADER_PENDING_CLOSED_TRADES ?? join(LIVE_STATE_DIR, "pending-closed-trades.jsonl");
 const RELATIVE_VALUE_CSV = join(import.meta.dirname ?? ".", "..", "relative-value", "cross_venue_relative_value.csv");
 const INSTRUMENT_SNAPSHOTS_JSONL = "instrument-snapshots.jsonl";
 const INSTRUMENT_SNAPSHOT_LOOKBACK = Number(process.env.INSTRUMENT_SNAPSHOT_LOOKBACK ?? 12);
@@ -397,6 +401,10 @@ function ensureDataDir() {
   if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
 }
 
+function ensureLiveStateDir() {
+  if (!existsSync(LIVE_STATE_DIR)) mkdirSync(LIVE_STATE_DIR, { recursive: true });
+}
+
 function readJson<T>(filename: string, fallback: T): T {
   const p = join(DATA_DIR, filename);
   if (!existsSync(p)) return fallback;
@@ -405,6 +413,16 @@ function readJson<T>(filename: string, fallback: T): T {
 
 function writeJson(filename: string, data: unknown) {
   writeFileSync(join(DATA_DIR, filename), JSON.stringify(data, null, 2) + "\n");
+}
+
+function readJsonPath<T>(path: string, fallback: T): T {
+  if (!existsSync(path)) return fallback;
+  try { return JSON.parse(readFileSync(path, "utf-8")); } catch { return fallback; }
+}
+
+function writeJsonPath(path: string, data: unknown) {
+  ensureLiveStateDir();
+  writeFileSync(path, JSON.stringify(data, null, 2) + "\n");
 }
 
 function parseCsvLine(line: string): string[] {
@@ -591,6 +609,26 @@ function saveProcessedClosedTrades(state: ProcessedClosedTrades) {
   });
 }
 
+function loadPendingScannerClosedTrades(): ClosedTrade[] {
+  if (!existsSync(PENDING_CLOSED_TRADES_FILE)) return [];
+  const content = readFileSync(PENDING_CLOSED_TRADES_FILE, "utf-8").trim();
+  if (!content) return [];
+  const trades: ClosedTrade[] = [];
+  for (const line of content.split("\n")) {
+    try {
+      const trade = JSON.parse(line) as ClosedTrade;
+      if (trade.id && trade.closedAt) trades.push(trade);
+    } catch {}
+  }
+  return trades;
+}
+
+function clearPendingScannerClosedTrades() {
+  if (!existsSync(PENDING_CLOSED_TRADES_FILE)) return;
+  ensureLiveStateDir();
+  writeFileSync(PENDING_CLOSED_TRADES_FILE, "");
+}
+
 function appendJournal(entry: string) {
   const file = join(DATA_DIR, "learning-journal.md");
   if (!existsSync(file)) writeFileSync(file, "# Trading Engine Learning Journal\n\n");
@@ -741,7 +779,7 @@ function latestInstrumentSnapshot(snapshots: InstrumentSnapshotFile[]): Instrume
 // ─── Portfolio Management ────────────────────────────────────────────────────
 
 function loadPortfolio(): Portfolio {
-  return readJson<Portfolio>("portfolio.json", {
+  const trackedPortfolio = readJson<Portfolio>("portfolio.json", {
     cash: MAX_BANKROLL,
     positions: [],
     totalRealizedPnl: 0,
@@ -750,11 +788,13 @@ function loadPortfolio(): Portfolio {
     lossCount: 0,
     lastUpdated: new Date().toISOString(),
   });
+  return readJsonPath<Portfolio>(LIVE_PORTFOLIO_FILE, trackedPortfolio);
 }
 
 function savePortfolio(p: Portfolio) {
   p.lastUpdated = new Date().toISOString();
   writeJson("portfolio.json", p);
+  writeJsonPath(LIVE_PORTFOLIO_FILE, p);
 }
 
 function normalizeSignalWeight(weight: SignalWeight): SignalWeight {
@@ -3441,6 +3481,22 @@ async function main() {
     }
   }
 
+  const pendingScannerClosedTrades = loadPendingScannerClosedTrades();
+  if (pendingScannerClosedTrades.length > 0) {
+    const existingClosedTradeIds = new Set(readClosedTradeCsv().map((trade) => trade.id));
+    const currentRunClosedIds = new Set(closedTrades.map((trade) => trade.id));
+    const newPendingScannerClosedTrades = pendingScannerClosedTrades.filter((trade) =>
+      !existingClosedTradeIds.has(trade.id) && !currentRunClosedIds.has(trade.id)
+    );
+    console.log(`\n  Importing ${newPendingScannerClosedTrades.length}/${pendingScannerClosedTrades.length} minute-scanner closed trades from live state:`);
+    for (const t of newPendingScannerClosedTrades) {
+      const emoji = t.pnl >= 0 ? "✅" : "❌";
+      console.log(`    ${emoji} ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} [${t.instrumentLabel ?? "n/a"}] → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
+      appendTradeCsv(t);
+      closedTrades.push(t);
+    }
+  }
+
   const allClosedTrades = readClosedTradeCsv();
   const processedClosedTrades = loadProcessedClosedTrades(allClosedTrades);
   const currentRunClosedIds = new Set(closedTrades.map((trade) => trade.id));
@@ -3630,6 +3686,7 @@ async function main() {
       processedIds: [...processedIds, ...closedTrades.map((trade) => trade.id)],
       updatedAt: new Date().toISOString(),
     });
+    clearPendingScannerClosedTrades();
   }
 
   // Summary

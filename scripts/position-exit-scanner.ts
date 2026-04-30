@@ -11,6 +11,10 @@ import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } fr
 import { join } from "node:path";
 
 const DATA_DIR = join(import.meta.dirname ?? ".", "..", "data");
+const DEFAULT_LIVE_STATE_DIR = join(import.meta.dirname ?? ".", "..", ".runtime");
+const LIVE_STATE_DIR = process.env.POLYMARKET_TRADER_STATE_DIR ?? DEFAULT_LIVE_STATE_DIR;
+const LIVE_PORTFOLIO_FILE = process.env.POLYMARKET_TRADER_LIVE_PORTFOLIO ?? join(LIVE_STATE_DIR, "portfolio-live.json");
+const PENDING_CLOSED_TRADES_FILE = process.env.POLYMARKET_TRADER_PENDING_CLOSED_TRADES ?? join(LIVE_STATE_DIR, "pending-closed-trades.jsonl");
 const HL_API = "https://api.hyperliquid.xyz/info";
 const GAMMA_API = "https://gamma-api.polymarket.com";
 const DRY_RUN = process.argv.includes("--dry-run");
@@ -100,13 +104,35 @@ function dataPath(name: string) {
   return join(DATA_DIR, name);
 }
 
+function ensureLiveStateDir() {
+  if (!existsSync(LIVE_STATE_DIR)) mkdirSync(LIVE_STATE_DIR, { recursive: true });
+}
+
+function readJsonFile<T>(path: string): T {
+  return JSON.parse(readFileSync(path, "utf-8")) as T;
+}
+
 function readJson<T>(name: string): T {
   return JSON.parse(readFileSync(dataPath(name), "utf-8")) as T;
 }
 
-function writeJson(name: string, value: unknown) {
-  if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
-  writeFileSync(dataPath(name), JSON.stringify(value, null, 2) + "\n");
+function loadPortfolio(): Portfolio {
+  if (existsSync(LIVE_PORTFOLIO_FILE)) return readJsonFile<Portfolio>(LIVE_PORTFOLIO_FILE);
+  return readJson<Portfolio>("portfolio.json");
+}
+
+function writeLiveJson(path: string, value: unknown) {
+  ensureLiveStateDir();
+  writeFileSync(path, JSON.stringify(value, null, 2) + "\n");
+}
+
+function writeLivePortfolio(portfolio: Portfolio) {
+  writeLiveJson(LIVE_PORTFOLIO_FILE, portfolio);
+}
+
+function appendPendingClosedTrade(trade: ClosedTrade) {
+  ensureLiveStateDir();
+  appendFileSync(PENDING_CLOSED_TRADES_FILE, JSON.stringify(trade) + "\n");
 }
 
 async function fetchJson(url: string, body?: unknown): Promise<any> {
@@ -302,7 +328,7 @@ function appendTradeCsv(trade: ClosedTrade) {
 }
 
 async function main() {
-  const portfolio = readJson<Portfolio>("portfolio.json");
+  const portfolio = loadPortfolio();
   if (portfolio.positions.length === 0) {
     console.log("Exit scanner: no open positions.");
     return;
@@ -324,7 +350,10 @@ async function main() {
       remaining.push(position);
       continue;
     }
-    portfolioChanged = updatePeakPnl(position, mark) || portfolioChanged;
+    const markChanged = position.currentPrice !== mark.currentPrice
+      || position.currentUnderlyingPrice !== (mark.underlyingPrice ?? undefined)
+      || position.fundingPnlAccrued !== mark.fundingPnl;
+    portfolioChanged = updatePeakPnl(position, mark) || markChanged || portfolioChanged;
 
     let closeReason: CloseReason | null = null;
     if (position.targetPct !== null && mark.pnlPct >= position.targetPct) closeReason = "target";
@@ -348,7 +377,7 @@ async function main() {
   if (closed.length === 0) {
     if (!DRY_RUN && portfolioChanged) {
       portfolio.lastUpdated = now;
-      writeJson("portfolio.json", portfolio);
+      writeLivePortfolio(portfolio);
     }
     console.log(`Exit scanner: checked ${portfolio.positions.length} positions; no exits.`);
     return;
@@ -361,9 +390,9 @@ async function main() {
 
   portfolio.positions = remaining;
   portfolio.lastUpdated = now;
-  for (const trade of closed) appendTradeCsv(trade);
-  writeJson("portfolio.json", portfolio);
-  console.log(`Exit scanner: closed ${closed.length} positions and saved portfolio.`);
+  for (const trade of closed) appendPendingClosedTrade(trade);
+  writeLivePortfolio(portfolio);
+  console.log(`Exit scanner: closed ${closed.length} positions and saved live portfolio.`);
 }
 
 main().catch((error) => {
