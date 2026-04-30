@@ -237,8 +237,11 @@ function isFundingSignal(signalType: string): boolean {
   return signalType === "FUNDING_EXTREME_SHORT" || signalType === "FUNDING_EXTREME_LONG";
 }
 
-function updatePeakPnl(position: Position, mark: Mark) {
-  position.peakPnlPct = Math.max(position.peakPnlPct ?? mark.pnlPct, mark.pnlPct);
+function updatePeakPnl(position: Position, mark: Mark): boolean {
+  const previous = position.peakPnlPct ?? mark.pnlPct;
+  const next = Math.max(previous, mark.pnlPct);
+  position.peakPnlPct = next;
+  return next !== previous;
 }
 
 function fundingBreakevenStopHit(position: Position, mark: Mark): boolean {
@@ -313,6 +316,7 @@ async function main() {
   const now = new Date().toISOString();
   const remaining: Position[] = [];
   const closed: ClosedTrade[] = [];
+  let portfolioChanged = false;
 
   for (const position of portfolio.positions) {
     const mark = markPosition(position, assetMarks, polymarketMarks);
@@ -320,7 +324,7 @@ async function main() {
       remaining.push(position);
       continue;
     }
-    updatePeakPnl(position, mark);
+    portfolioChanged = updatePeakPnl(position, mark) || portfolioChanged;
 
     let closeReason: CloseReason | null = null;
     if (position.targetPct !== null && mark.pnlPct >= position.targetPct) closeReason = "target";
@@ -342,7 +346,7 @@ async function main() {
   }
 
   if (closed.length === 0) {
-    if (!DRY_RUN) {
+    if (!DRY_RUN && portfolioChanged) {
       portfolio.lastUpdated = now;
       writeJson("portfolio.json", portfolio);
     }
