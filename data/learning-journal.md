@@ -3781,3 +3781,31 @@ Historic mathematical arbitrage conditions persisting in oil complex with WTI ma
 
 ---
 
+### 2026-04-30 06:28 UTC
+
+**Portfolio:** $100.61 total | Cash $94.61 | 6 open | P&L $0.6133 | 60% win rate (88 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis retest queue: 39 of the first 50 did not trigger; 339 later hypotheses are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_opt_iv_30d = 79.4 is 3.1 std devs from mean (33.82 ± 14.94)
+- [anomaly] oil_wti_spot = 110.04 is 2.8 std devs from mean (88.02 ± 7.78)
+- [anomaly] oil_opt_iv_90d = 65.5 is 2.5 std devs from mean (30.60 ± 13.84)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.93 to 0.15
+- [correlation_flip] GOLD-OIL correlation shifted from -0.07 to -0.84
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 20 (6 wins / 14 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (1W/2L across 3 resolved shadows, avg P&L -0.90%).
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-13.33%)
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have target (+2.51%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have stop (-2.67%)
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have target (+21.05%)
+
+**LLM analysis:**
+Maintaining mathematical arbitrage focus with oil complex showing persistent +2.8σ statistical anomalies requiring correction. Portfolio positioned correctly for structural breakdown scenarios (H-262, H-475) and HYPE distribution exhaustion (H-286). Increased LLM target to 20% given improved edge detection on mathematical arbitrage setups where statistical relationships force correction within probability bounds. System showing strong discrimination between actionable mathematical arbitrage (520 hypotheses need retesting before new creation) and market noise. Oil IV compression from extreme highs while maintaining WTI statistical deviation creates forced correction setup. HYPE institutional OI decline from record peaks with funding normalization indicates positioning cycle completion.
+
+---
+
