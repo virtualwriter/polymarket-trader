@@ -98,7 +98,7 @@ const HL_BUILDER_COINS: { dex: string; coin: string; label: string }[] = [
   { dex: "xyz", coin: "xyz:CL", label: "OIL (CL)" },
   { dex: "xyz", coin: "xyz:BRENTOIL", label: "BRENT OIL" },
 ];
-const OPTIONS_SYMBOLS = ["IBIT", "AMZN"];
+const OPTIONS_SYMBOLS = ["IBIT", "AMZN", "GLD", "USO"];
 const CME_GREEKS_API_BASE = process.env.CME_GREEKS_API_BASE ?? "https://markets.api.cmegroup.com/greeks/v1";
 const CME_TOKEN_URL = process.env.CME_TOKEN_URL ?? "https://auth.cmegroup.com/as/token.oauth2";
 const CME_OPTIONS_QUERY_PARAM = process.env.CME_OPTIONS_QUERY_PARAM ?? "undlyProductCodes";
@@ -2106,6 +2106,7 @@ function writeSnapshot(
 
   const goldGcSpot = hl["GOLD (GC)"]?.markPx ?? null;
   const goldOptions = opts.CME_GC ?? null;
+  const goldPcOptions = opts.GLD ?? null;
   const goldIv30 = goldOptions ? getIVForTenor(goldOptions.chains, goldOptions.underlyingPrice, 30) : null;
   const goldIv90 = goldOptions ? getIVForTenor(goldOptions.chains, goldOptions.underlyingPrice, 90) : null;
   let goldFwd: number | null = null;
@@ -2129,6 +2130,7 @@ function writeSnapshot(
   const oilBrent = hl["BRENT OIL"]?.markPx ?? null;
   const oilSpread = oilBrent && oilWti ? oilBrent - oilWti : null;
   const oilOptions = opts.CME_CL ?? null;
+  const oilPcOptions = opts.USO ?? null;
   const oilIv30 = oilOptions ? getIVForTenor(oilOptions.chains, oilOptions.underlyingPrice, 30) : null;
   const oilIv90 = oilOptions ? getIVForTenor(oilOptions.chains, oilOptions.underlyingPrice, 90) : null;
   let oilFwd: number | null = null;
@@ -2161,7 +2163,7 @@ function writeSnapshot(
     gold_pm_iv: r(goldPm?.impliedVol ? goldPm.impliedVol * 100 : null, 1),
     gold_hl_funding_ann: r(hl["GOLD (GC)"]?.fundingAnnualized ? hl["GOLD (GC)"].fundingAnnualized * 100 : null, 2),
     gold_med_max: r(goldPm?.medianMax, 0), gold_med_min: r(goldPm?.medianMin, 0),
-    gold_gld_pc_ratio: r(goldOptions ? pcRatioFromChains(goldOptions.chains) : null, 3),
+    gold_gld_pc_ratio: r(goldPcOptions ? pcRatioFromChains(goldPcOptions.chains) : null, 3),
     amzn_stock: r(amznStock, 2), amzn_hl_perp: r(amznHlPerp, 2),
     amzn_opt_fwd_90d: r(amznFwd, 2),
     amzn_opt_iv_30d: r(amznIv30?.iv ? amznIv30.iv * 100 : null, 1),
@@ -2176,7 +2178,7 @@ function writeSnapshot(
     oil_opt_iv_90d: r(oilIv90?.iv ? oilIv90.iv * 100 : null, 1),
     oil_pm_iv: r(oilPm?.impliedVol ? oilPm.impliedVol * 100 : null, 1),
     oil_hl_funding_ann: r(hl["OIL (CL)"]?.fundingAnnualized ? hl["OIL (CL)"].fundingAnnualized * 100 : null, 2),
-    oil_cl_pc_ratio: r(oilOptions ? pcRatioFromChains(oilOptions.chains) : null, 3),
+    oil_cl_pc_ratio: r(oilPcOptions ? pcRatioFromChains(oilPcOptions.chains) : null, 3),
   });
 
   // ── Macro row ──
