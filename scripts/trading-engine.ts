@@ -10,7 +10,7 @@
  *   npx tsx scripts/trading-engine.ts --dry-run    # show signals without trading
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statSync, openSync, readSync, closeSync } from "node:fs";
 import { join } from "node:path";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
@@ -18,6 +18,7 @@ import { join } from "node:path";
 const DATA_DIR = join(import.meta.dirname ?? ".", "..", "data");
 const RELATIVE_VALUE_CSV = join(import.meta.dirname ?? ".", "..", "relative-value", "cross_venue_relative_value.csv");
 const INSTRUMENT_SNAPSHOTS_JSONL = "instrument-snapshots.jsonl";
+const INSTRUMENT_SNAPSHOT_LOOKBACK = Number(process.env.INSTRUMENT_SNAPSHOT_LOOKBACK ?? 96);
 const LEARNING_PARAMS_FILE = "learning-params.json";
 const BLOCKED_SIGNALS_FILE = "blocked-signals.json";
 const TRADE_SIZE = 1;
@@ -552,8 +553,8 @@ function appendJournal(entry: string) {
 function readInstrumentSnapshots(): InstrumentSnapshotFile[] {
   const p = join(DATA_DIR, INSTRUMENT_SNAPSHOTS_JSONL);
   if (!existsSync(p)) return [];
-  return readFileSync(p, "utf-8")
-    .split("\n")
+
+  return readRecentJsonlLines(p, INSTRUMENT_SNAPSHOT_LOOKBACK)
     .map((line) => line.trim())
     .filter(Boolean)
     .map((line) => {
@@ -564,6 +565,39 @@ function readInstrumentSnapshots(): InstrumentSnapshotFile[] {
       }
     })
     .filter((row): row is InstrumentSnapshotFile => row !== null);
+}
+
+function readRecentJsonlLines(path: string, maxLines: number): string[] {
+  const safeMaxLines = Math.max(1, Math.floor(maxLines || 1));
+  const stat = statSync(path);
+  const fd = openSync(path, "r");
+  const chunkSize = 1024 * 1024;
+  const chunks: Buffer[] = [];
+  let position = stat.size;
+  let newlineCount = 0;
+
+  try {
+    while (position > 0 && newlineCount <= safeMaxLines) {
+      const bytesToRead = Math.min(chunkSize, position);
+      position -= bytesToRead;
+      const buffer = Buffer.allocUnsafe(bytesToRead);
+      const bytesRead = readSync(fd, buffer, 0, bytesToRead, position);
+      const chunk = bytesRead === bytesToRead ? buffer : buffer.subarray(0, bytesRead);
+      chunks.unshift(chunk);
+      for (let i = 0; i < chunk.length; i++) {
+        if (chunk[i] === 10) newlineCount++;
+      }
+    }
+  } finally {
+    closeSync(fd);
+  }
+
+  return Buffer.concat(chunks)
+    .toString("utf-8")
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .slice(-safeMaxLines);
 }
 
 function compactInstrumentSnapshotForLlm(snapshot: InstrumentSnapshotFile) {
