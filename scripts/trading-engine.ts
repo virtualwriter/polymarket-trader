@@ -554,9 +554,9 @@ function readInstrumentSnapshots(): InstrumentSnapshotFile[] {
   const p = join(DATA_DIR, INSTRUMENT_SNAPSHOTS_JSONL);
   if (!existsSync(p)) return [];
 
-  return readRecentJsonlLines(p, INSTRUMENT_SNAPSHOT_LOOKBACK)
-    .map((line) => line.trim())
-    .filter(Boolean)
+  return readRecentJsonlRanges(p, INSTRUMENT_SNAPSHOT_LOOKBACK)
+    .map((range) => readInstrumentSnapshotPrefix(p, range))
+    .filter((line): line is string => !!line)
     .map((line) => {
       try {
         return JSON.parse(line) as InstrumentSnapshotFile;
@@ -567,37 +567,86 @@ function readInstrumentSnapshots(): InstrumentSnapshotFile[] {
     .filter((row): row is InstrumentSnapshotFile => row !== null);
 }
 
-function readRecentJsonlLines(path: string, maxLines: number): string[] {
+interface JsonlRange {
+  start: number;
+  end: number;
+}
+
+function readRecentJsonlRanges(path: string, maxLines: number): JsonlRange[] {
   const safeMaxLines = Math.max(1, Math.floor(maxLines || 1));
   const stat = statSync(path);
+  if (stat.size === 0) return [];
+
   const fd = openSync(path, "r");
   const chunkSize = 1024 * 1024;
-  const chunks: Buffer[] = [];
+  const newlineOffsets: number[] = [];
   let position = stat.size;
-  let newlineCount = 0;
+  let effectiveEnd = stat.size;
 
   try {
-    while (position > 0 && newlineCount <= safeMaxLines) {
+    while (position > 0 && newlineOffsets.length <= safeMaxLines) {
       const bytesToRead = Math.min(chunkSize, position);
       position -= bytesToRead;
       const buffer = Buffer.allocUnsafe(bytesToRead);
       const bytesRead = readSync(fd, buffer, 0, bytesToRead, position);
       const chunk = bytesRead === bytesToRead ? buffer : buffer.subarray(0, bytesRead);
-      chunks.unshift(chunk);
-      for (let i = 0; i < chunk.length; i++) {
-        if (chunk[i] === 10) newlineCount++;
+      for (let i = chunk.length - 1; i >= 0; i--) {
+        if (chunk[i] !== 10) continue;
+        const absoluteOffset = position + i;
+        if (absoluteOffset === stat.size - 1) {
+          effectiveEnd = absoluteOffset;
+          continue;
+        }
+        newlineOffsets.push(absoluteOffset);
+        if (newlineOffsets.length > safeMaxLines) break;
       }
     }
   } finally {
     closeSync(fd);
   }
 
-  return Buffer.concat(chunks)
-    .toString("utf-8")
-    .split("\n")
-    .map((line) => line.trim())
-    .filter(Boolean)
-    .slice(-safeMaxLines);
+  const ranges: JsonlRange[] = [];
+  let lineEnd = effectiveEnd;
+  for (const newlineOffset of newlineOffsets) {
+    const lineStart = newlineOffset + 1;
+    if (lineEnd > lineStart) ranges.unshift({ start: lineStart, end: lineEnd });
+    lineEnd = newlineOffset;
+    if (ranges.length >= safeMaxLines) break;
+  }
+  if (ranges.length < safeMaxLines && lineEnd > 0) ranges.unshift({ start: 0, end: lineEnd });
+
+  return ranges.slice(-safeMaxLines);
+}
+
+function readInstrumentSnapshotPrefix(path: string, range: JsonlRange): string | null {
+  const fd = openSync(path, "r");
+  const chunkSize = 64 * 1024;
+  const optionNeedle = ',"options":';
+  const maxPrefixBytes = 16 * 1024 * 1024;
+  let position = range.start;
+  let prefixBytes = 0;
+  let text = "";
+
+  try {
+    while (position < range.end) {
+      const bytesToRead = Math.min(chunkSize, range.end - position);
+      const buffer = Buffer.allocUnsafe(bytesToRead);
+      const bytesRead = readSync(fd, buffer, 0, bytesToRead, position);
+      if (bytesRead <= 0) break;
+
+      position += bytesRead;
+      prefixBytes += bytesRead;
+      text += buffer.subarray(0, bytesRead).toString("utf-8");
+
+      const optionIndex = text.indexOf(optionNeedle);
+      if (optionIndex >= 0) return text.slice(0, optionIndex) + "}";
+      if (prefixBytes > maxPrefixBytes) return null;
+    }
+  } finally {
+    closeSync(fd);
+  }
+
+  return text.trim() || null;
 }
 
 function compactInstrumentSnapshotForLlm(snapshot: InstrumentSnapshotFile) {
