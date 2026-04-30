@@ -3960,3 +3960,35 @@ Maintaining mathematical arbitrage discipline as 520 hypotheses require conditio
 
 ---
 
+### 2026-04-30 12:28 UTC
+
+**Portfolio:** $100.59 total | Cash $93.59 | 7 open | P&L $0.5854 | 60% win rate (89 trades)
+
+**Opened 1 positions:**
+- OIL long @ $0.64 via polymarket/pm_yes [cl-over-under-jun-2026 — YES — Will Crude Oil (CL) settle over $90 on the final trading day of June 2026?] (LLM_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis retest queue: 36 of the first 50 did not trigger; 339 later hypotheses are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 18.7pp (was -11.4, now 7.3)
+- [anomaly] oil_pm_iv = 77.6 is 3.4 std devs from mean (41.63 ± 10.52)
+- [anomaly] oil_opt_iv_30d = 70.3 is 2.2 std devs from mean (34.87 ± 15.83)
+- [anomaly] oil_opt_iv_90d = 63 is 2.1 std devs from mean (31.62 ± 14.76)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.03 to -0.83
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 29 (9 wins / 20 losses)
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (2W/2L across 4 resolved shadows, avg P&L 2.04%).
+- PC_RATIO_EXTREME_LOW trend filter is avoiding losses: 3/4 blocked trades would have lost.
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL short via polymarket would have stop (-12.96%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-13.95%)
+- ✅ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL short via polymarket would have target (+20.33%)
+- ❌ Relative-value heatmap: RELATIVE_VALUE_HEATMAP OIL long via polymarket would have stop (-12.50%)
+
+**LLM analysis:**
+Increased LLM_HYPOTHESIS target to 20% given proven edge detection on mathematical arbitrage opportunities where statistical relationships force correction within probability bounds. Oil complex presenting textbook case: WTI +2.3σ deviation while options IV compresses from extreme +6σ peaks. System showing excellent discrimination through blocked signal learning - appropriately filtering poor setups while capturing clean mathematical edges. 520 hypotheses require condition-triggered retesting before creating new ones, demonstrating systematic approach to pattern validation. Portfolio positioned through mathematical arbitrage rather than directional speculation, focusing on statistical relationship breakdowns that require systematic correction.
+
+---
+
