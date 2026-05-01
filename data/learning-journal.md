@@ -4675,3 +4675,29 @@ Positioning exhaustion patterns demonstrating mathematical precision as institut
 
 ---
 
+### 2026-05-01 15:28 UTC
+
+**Portfolio:** $100.19 total | Cash $93.19 | 7 open | P&L $0.1935 | 56% win rate (98 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_opt_iv_30d = 28.4 is -3.0 std devs from mean (39.66 ± 3.75)
+- [anomaly] amzn_opt_iv_90d = 29.9 is -2.8 std devs from mean (34.50 ± 1.62)
+- [anomaly] oil_opt_fwd_90d = 6.9 is -2.1 std devs from mean since 2026-04-28 (94.37 ± 41.05)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.03 to -0.83
+- [correlation_flip] BTC-OIL correlation shifted from -0.06 to -0.66
+
+**Blocked signal learning:**
+- Open blocked shadows: 5
+- Resolved blocked shadows: 42 (19 wins / 23 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (2W/2L across 4 resolved shadows, avg P&L 2.04%).
+- ✅ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have expiry (+0.30%)
+- ✅ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have expiry (+0.30%)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have expiry (-0.05%)
+- ✅ Blocked: PM_EV_BELOW_SPOT OIL short via spot would have target (+3.94%)
+
+---
+
