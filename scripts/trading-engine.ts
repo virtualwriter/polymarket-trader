@@ -66,7 +66,7 @@ const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
   BASIS_DISCOUNT: { targetPct: 1.5, stopPct: 1.5 },
   MACRO_MOMENTUM_UP: { targetPct: 4, stopPct: 3 },
   MACRO_MOMENTUM_DOWN: { targetPct: 4, stopPct: 3 },
-  LLM_HYPOTHESIS: { targetPct: 5, stopPct: 3.5 },
+  LLM_HYPOTHESIS: { targetPct: 3.5, stopPct: 2.5 },
   MOMENTUM_LONG: { targetPct: 6, stopPct: 3.5 },
   PROMOTED_HYPOTHESIS: { targetPct: 6, stopPct: 3.5 },
 };
@@ -3325,7 +3325,7 @@ Respond with ONLY valid JSON in this exact format:
     "signalRisk": {
       "PM_IV_GT_OPT_IV": {"targetPct": null, "stopPct": 5},
       "FUNDING_EXTREME_SHORT": {"targetPct": 2.5, "stopPct": 2.5},
-      "LLM_HYPOTHESIS": {"targetPct": 5, "stopPct": 3.5}
+      "LLM_HYPOTHESIS": {"targetPct": 3.5, "stopPct": 2.5}
     }
   },
   "journalEntry": "Key observations and lessons from today's analysis..."
