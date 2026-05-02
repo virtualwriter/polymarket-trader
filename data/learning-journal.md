@@ -4951,3 +4951,27 @@ Positioning exhaustion patterns demonstrating mathematical precision as institut
 
 ---
 
+### 2026-05-02 02:28 UTC
+
+**Portfolio:** $100.19 total | Cash $93.19 | 7 open | P&L $0.1935 | 56% win rate (98 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_opt_iv_30d = 27.8 is -2.5 std devs from mean (39.09 ± 4.44)
+- [anomaly] amzn_opt_iv_90d = 29.7 is -2.4 std devs from mean (34.27 ± 1.89)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.02 to -0.81
+
+**Blocked signal learning:**
+- Open blocked shadows: 6
+- Resolved blocked shadows: 42 (19 wins / 23 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (2W/2L across 4 resolved shadows, avg P&L 2.04%).
+- ✅ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have expiry (+0.30%)
+- ✅ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have expiry (+0.30%)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have expiry (-0.05%)
+- ✅ Blocked: PM_EV_BELOW_SPOT OIL short via spot would have target (+3.94%)
+
+---
+
