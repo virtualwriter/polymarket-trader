@@ -64,7 +64,7 @@ const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
   PC_RATIO_EXTREME_LOW: { targetPct: 2, stopPct: 2 },
   BASIS_PREMIUM: { targetPct: 1.5, stopPct: 1.5 },
   BASIS_DISCOUNT: { targetPct: 1.5, stopPct: 1.5 },
-  MACRO_MOMENTUM_UP: { targetPct: 4, stopPct: 3 },
+  MACRO_MOMENTUM_UP: { targetPct: 3, stopPct: 3 },
   MACRO_MOMENTUM_DOWN: { targetPct: 4, stopPct: 3 },
   LLM_HYPOTHESIS: { targetPct: 3.5, stopPct: 2.5 },
   MOMENTUM_LONG: { targetPct: 6, stopPct: 3.5 },
