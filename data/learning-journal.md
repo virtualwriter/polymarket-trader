@@ -5794,3 +5794,30 @@ Positioning exhaustion patterns demonstrating mathematical precision as institut
 
 ---
 
+### 2026-05-03 14:28 UTC
+
+**Portfolio:** $100.19 total | Cash $91.19 | 9 open | P&L $0.1922 | 56% win rate (99 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 22.4pp (was 10.6, now -11.8)
+- [anomaly] btc_opt_iv_30d = 29.4 is -2.3 std devs from mean (40.82 ± 4.89)
+- [anomaly] btc_med_min = 59854 is 2.2 std devs from mean (51534.56 ± 3805.46)
+- [anomaly] btc_pm_iv = 34.4 is -2.0 std devs from mean (40.95 ± 3.20)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.05 to -0.71
+
+**Blocked signal learning:**
+- Open blocked shadows: 7
+- Resolved blocked shadows: 45 (20 wins / 25 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 3/3 blocked trades would have won.
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (2W/2L across 4 resolved shadows, avg P&L 2.04%).
+- ✅ Blocked: PM_EV_BELOW_SPOT OIL short via spot would have target (+3.94%)
+- ❌ PM proxy short: PROMOTED_HYPOTHESIS_PM_PROXY_SHORT BTC short via polymarket would have stop (-15.38%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.33%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT GOLD short via polymarket would have stop (-15.00%)
+
+---
+
