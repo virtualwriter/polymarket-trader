@@ -5738,3 +5738,33 @@ Positioning exhaustion patterns demonstrating mathematical precision as institut
 
 ---
 
+### 2026-05-03 11:28 UTC
+
+**Portfolio:** $100.19 total | Cash $91.19 | 9 open | P&L $0.1922 | 56% win rate (99 trades)
+
+**Closed 1 trades:**
+- ❌ GOLD short via spot/spot [GOLD spot] (PC_RATIO_EXTREME_LOW) → expiry: $-0.0013 (-0.1%, market -0.0013, funding 0.0000)
+
+**Opened 1 positions:**
+- GOLD short @ $4617 via spot/spot [GOLD spot] (PC_RATIO_EXTREME_LOW)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_30d = 29.4 is -2.4 std devs from mean (40.90 ± 4.81)
+- [anomaly] btc_med_min = 59854 is 2.2 std devs from mean (51470.80 ± 3749.41)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.05 to -0.72
+
+**Blocked signal learning:**
+- Open blocked shadows: 8
+- Resolved blocked shadows: 43 (19 wins / 24 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (2W/2L across 4 resolved shadows, avg P&L 2.04%).
+- ✅ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have expiry (+0.30%)
+- ❌ Manual shadow: USER_PM_APR_XAU_TAIL_NO GOLD long via polymarket would have expiry (-0.05%)
+- ✅ Blocked: PM_EV_BELOW_SPOT OIL short via spot would have target (+3.94%)
+- ❌ PM proxy short: PROMOTED_HYPOTHESIS_PM_PROXY_SHORT BTC short via polymarket would have stop (-15.38%)
+
+---
+
