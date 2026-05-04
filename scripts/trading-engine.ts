@@ -3011,27 +3011,46 @@ function generatePromotedHypothesisSignals(
 ): Signal[] {
   const signals: Signal[] = [];
   const risk = riskForSignal(learningParams, "PROMOTED_HYPOTHESIS");
-  for (const hypothesis of hypotheses) {
-    if (hypothesis.status !== "promoted" || !hypothesis.promotedToSignal) continue;
-    const asset = inferHypothesisAsset(hypothesis);
-    if (!asset) continue;
-    const entryPrice = getAssetPrice(latestRow, asset);
-    if (!entryPrice) continue;
-    const signal = finalizeSignal({
-      type: "PROMOTED_HYPOTHESIS",
-      asset,
-      venue: "spot",
-      direction: inferHypothesisDirection(hypothesis),
-      strength: Math.max(0.2, hypothesis.winRate),
-      confidence: Math.min(0.9, Math.max(0.2, hypothesis.confidence * Math.max(hypothesis.winRate, 0.5))),
-      thesis: `[PROMOTED ${hypothesis.id}] ${hypothesis.description}`,
-      hypothesisId: hypothesis.id,
-      entryPrice,
-      targetPct: risk.targetPct,
-      stopPct: risk.stopPct,
-      expiryDays: Math.max(3, Math.min(14, hypothesis.timeframeDays)),
-    }, rows, learningParams, { latestRow, latestSnapshot, blockedSignals });
-    if (signal) signals.push(signal);
+  const promotedFamilies = hypothesisSetupFamilies(hypotheses)
+    .filter((family) => family.hypotheses.some((hypothesis) => hypothesis.status === "promoted" && hypothesis.promotedToSignal));
+
+  for (const family of promotedFamilies) {
+    const promotedRepresentatives = family.hypotheses.filter((hypothesis) => hypothesis.status === "promoted" && hypothesis.promotedToSignal);
+    for (const representative of promotedRepresentatives) {
+      const promotedAsset = inferHypothesisAsset(representative);
+      if (!promotedAsset) continue;
+      const candidates = family.hypotheses
+        .filter((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived")
+        .filter((hypothesis) => inferHypothesisAsset(hypothesis) === promotedAsset)
+        .filter((hypothesis) => hypothesisConditionsSatisfied(hypothesis, rows))
+        .sort((a, b) => {
+          if (b.winRate !== a.winRate) return b.winRate - a.winRate;
+          if (b.confidence !== a.confidence) return b.confidence - a.confidence;
+          return completedHypothesisTests(b).length - completedHypothesisTests(a).length;
+        });
+      const hypothesis = candidates[0];
+      if (!hypothesis) continue;
+
+      const asset = inferHypothesisAsset(hypothesis);
+      if (!asset) continue;
+      const entryPrice = getAssetPrice(latestRow, asset);
+      if (!entryPrice) continue;
+      const signal = finalizeSignal({
+        type: "PROMOTED_HYPOTHESIS",
+        asset,
+        venue: "spot",
+        direction: inferHypothesisDirection(hypothesis),
+        strength: Math.max(0.2, family.winRate, hypothesis.winRate),
+        confidence: Math.min(0.9, Math.max(0.2, hypothesis.confidence * Math.max(family.winRate, hypothesis.winRate, 0.5))),
+        thesis: `[PROMOTED ${family.setupLabel} via ${hypothesis.id}] ${hypothesis.description}`,
+        hypothesisId: hypothesis.id,
+        entryPrice,
+        targetPct: risk.targetPct,
+        stopPct: risk.stopPct,
+        expiryDays: Math.max(3, Math.min(14, hypothesis.timeframeDays)),
+      }, rows, learningParams, { latestRow, latestSnapshot, blockedSignals });
+      if (signal) signals.push(signal);
+    }
   }
   return signals;
 }
