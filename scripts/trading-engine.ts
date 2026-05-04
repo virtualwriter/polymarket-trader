@@ -360,6 +360,10 @@ interface RelativeValueObservation {
   underlyingCapYes: number | null;
   pmToUnderlyingCapRatio: number | null;
   underlyingCapSignal: string;
+  settlementYesSum: number | null;
+  settlementOverround: number | null;
+  settlementTailYes: number | null;
+  settlementSkewYes: number | null;
   edgePts: number | null;
   bestExpression: string;
   optionIv: number | null;
@@ -538,6 +542,10 @@ function readRelativeValueObservations(limit = 30): RelativeValueObservation[] {
         underlyingCapYes: num(row.underlying_cap_yes_price),
         pmToUnderlyingCapRatio: capRatio,
         underlyingCapSignal: row.underlying_cap_signal ?? "",
+        settlementYesSum: num(row.settlement_yes_sum),
+        settlementOverround: num(row.settlement_overround),
+        settlementTailYes: num(row.settlement_tail_yes),
+        settlementSkewYes: num(row.settlement_skew_yes),
         edgePts,
         bestExpression: row.best_expression ?? "",
         optionIv: num(row.option_iv),
@@ -552,6 +560,7 @@ function readRelativeValueObservations(limit = 30): RelativeValueObservation[] {
       const score = (row: RelativeValueObservation) => Math.max(
         Math.abs(row.edgePts ?? 0),
         row.pmToUnderlyingCapRatio === null ? 0 : Math.abs(row.pmToUnderlyingCapRatio - 1) * 100,
+        row.settlementOverround === null ? 0 : Math.abs(row.settlementOverround) * 100,
       );
       return score(b) - score(a);
     })
@@ -2138,13 +2147,13 @@ function generateSignals(
       funding: "hype_hl_funding_ann", pmEv: "hype_pm_ev", spot: "hype_spot",
       pcRatio: null, hlPerp: "hype_spot" },
     { key: "GOLD", pmIv: "gold_pm_iv", optIv30: "gold_opt_iv_30d", optIv90: "gold_opt_iv_90d",
-      funding: "gold_hl_funding_ann", pmEv: "gold_pm_settle_ev", spot: "gold_gc_spot",
+      funding: "gold_hl_funding_ann", pmEv: null, spot: "gold_gc_spot",
       pcRatio: "gold_gld_pc_ratio", hlPerp: "gold_gc_spot" },
     { key: "AMZN", pmIv: null, optIv30: "amzn_opt_iv_30d", optIv90: "amzn_opt_iv_90d",
       funding: "amzn_hl_funding_ann", pmEv: null, spot: "amzn_stock",
       pcRatio: "amzn_pc_ratio", hlPerp: "amzn_hl_perp" },
     { key: "OIL", pmIv: "oil_pm_iv", optIv30: "oil_opt_iv_30d", optIv90: "oil_opt_iv_90d",
-      funding: "oil_hl_funding_ann", pmEv: "oil_pm_settle_ev", spot: "oil_wti_spot",
+      funding: "oil_hl_funding_ann", pmEv: null, spot: "oil_wti_spot",
       pcRatio: "oil_cl_pc_ratio", hlPerp: "oil_wti_spot" },
   ];
 
@@ -2797,7 +2806,9 @@ function classifyHypothesisSetup(hypothesis: Hypothesis): { setupId: string; set
   const text = `${hypothesis.description} ${hypothesis.prediction} ${Object.keys(hypothesis.conditions ?? {}).join(" ")}`.toLowerCase();
 
   let label = "Other / mixed";
-  if (text.includes("underlying cap") || text.includes("spot/strike") || text.includes("payoff cap") || text.includes("pm/cap")) {
+  if (text.includes("settlement bucket") || text.includes("settle bucket") || (text.includes("settle") && (text.includes("tail") || text.includes("overround") || text.includes("volatility")))) {
+    label = "PM settlement bucket volatility";
+  } else if (text.includes("underlying cap") || text.includes("spot/strike") || text.includes("payoff cap") || text.includes("pm/cap")) {
     label = "PM odds / underlying payoff cap";
   } else if (text.includes("cross-asset") && (text.includes("funding") || text.includes("positioning"))) {
     label = "Cross-asset funding/positioning exhaustion";
@@ -3008,19 +3019,29 @@ function derivedHypothesisConditionValue(key: string, valuationRows: SnapshotRow
 }
 
 function relativeValueConditionValue(key: string, relativeValueRows: RelativeValueObservation[]): number | null {
-  const match = key.match(/^([a-z]+)_pm_underlying_cap_(ratio|edge_pts)_(max|min|avg)(_tight)?$/);
+  const match = key.match(/^([a-z]+)_pm_(underlying_cap|settle)_(ratio|edge_pts|yes_sum|overround|tail_yes|skew_yes)_(max|min|avg)(_tight)?$/);
   if (!match) return null;
-  const [, rawAsset, metric, reducer, tightOnly] = match;
+  const [, rawAsset, group, metric, reducer, tightOnly] = match;
   const asset = rawAsset.toUpperCase();
   const values = relativeValueRows
-    .filter((row) => row.asset === asset && row.direction === "above" && row.underlyingCapYes !== null)
+    .filter((row) => row.asset === asset)
+    .filter((row) => group !== "underlying_cap" || (row.direction === "above" && row.underlyingCapYes !== null))
+    .filter((row) => group !== "settle" || row.settlementYesSum !== null)
     .filter((row) => !tightOnly || (
       row.pmSpread !== null
       && row.pmSpread <= UNDERLYING_CAP_ENTRY_MAX_SPREAD
       && row.liquidity !== null
       && row.liquidity >= UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY
     ))
-    .map((row) => metric === "ratio" ? row.pmToUnderlyingCapRatio : row.edgePts)
+    .map((row) => {
+      if (metric === "ratio") return row.pmToUnderlyingCapRatio;
+      if (metric === "edge_pts") return row.edgePts;
+      if (metric === "yes_sum") return row.settlementYesSum;
+      if (metric === "overround") return row.settlementOverround;
+      if (metric === "tail_yes") return row.settlementTailYes;
+      if (metric === "skew_yes") return row.settlementSkewYes;
+      return null;
+    })
     .filter((value): value is number => value !== null);
   if (values.length === 0) return null;
   if (reducer === "max") return Math.max(...values);
@@ -3474,6 +3495,7 @@ IMPORTANT RULES:
 - Use RELATIVE-VALUE HEATMAP OBSERVATIONS to look for clean cross-venue edges. If you suggest a trade because of this section, say "relative-value heatmap" in the thesis so its performance can be reviewed.
 - For upside "hit/reach" contracts, use underlyingCapYes and pmToUnderlyingCapRatio to interpret sentiment against the underlying payoff cap. A ratio above 1.0 means PM YES is richer than the spot/strike cap; 0.85-1.0 means very bullish cap-adjacent pricing; below ~0.35 means weak sentiment relative to the underlying upside payoff.
 - Supported hypothesis aggregate keys for this cap-ratio setup: btc_pm_underlying_cap_ratio_max/min/avg, hype_pm_underlying_cap_ratio_max/min/avg, gold_pm_underlying_cap_ratio_max/min/avg, oil_pm_underlying_cap_ratio_max/min/avg, and the matching *_edge_pts_max/min/avg keys. Add _tight before the comparison suffix to require spread <= ${(UNDERLYING_CAP_ENTRY_MAX_SPREAD * 100).toFixed(0)}c and liquidity >= ${UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY}, e.g. btc_pm_underlying_cap_ratio_max_tight > ${UNDERLYING_CAP_BUY_NO_RATIO.toFixed(2)} for buy-NO over-cap tests or btc_pm_underlying_cap_ratio_min_tight < ${UNDERLYING_CAP_BUY_YES_RATIO.toFixed(2)} for buy-YES cheap-vs-cap tests.
+- Treat GOLD/OIL settle-at bucket markets as volatility/tail-shape indicators, not spot EV. Supported aggregate keys: gold_pm_settle_yes_sum_max/min/avg, gold_pm_settle_overround_max/min/avg, gold_pm_settle_tail_yes_max/min/avg, gold_pm_settle_skew_yes_max/min/avg, plus oil_* equivalents. yes_sum/overround measure bucket-price breadth, tail_yes measures total top+bottom tail demand, and skew_yes measures upside minus downside tail demand.
 - You may return \"action: close\" to exit an existing open position; use that only when the thesis has clearly weakened or a target/stop is likely stale
 - For \"action: close\", set direction to long, short, or any to identify which existing position to close
 - Keep parameter updates inside these bounds:

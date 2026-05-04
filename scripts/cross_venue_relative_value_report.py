@@ -73,6 +73,10 @@ class RelativeValueRow:
     underlying_cap_yes_price: Optional[float]
     pm_to_underlying_cap_ratio: Optional[float]
     underlying_cap_signal: str
+    settlement_yes_sum: Optional[float]
+    settlement_overround: Optional[float]
+    settlement_tail_yes: Optional[float]
+    settlement_skew_yes: Optional[float]
     buy_yes_edge_pts: Optional[float]
     sell_yes_edge_pts: Optional[float]
     best_expression: str
@@ -384,6 +388,33 @@ def underlying_cap_signal(pm_yes: Optional[float], cap: Optional[float]) -> Tupl
     return ratio, "mid_underlying_cap_ratio"
 
 
+def settlement_bucket_metrics(contracts: Iterable[Dict[str, Any]]) -> Tuple[Optional[float], Optional[float], Optional[float], Optional[float]]:
+    settle_contracts = [
+        contract for contract in contracts
+        if "settle" in str(contract.get("question", "")).lower()
+        and safe_float(contract.get("yesPrice")) is not None
+    ]
+    if len(settle_contracts) < 2:
+        return None, None, None, None
+
+    yes_sum = sum(safe_float(contract.get("yesPrice")) or 0.0 for contract in settle_contracts)
+    top = max(
+        (contract for contract in settle_contracts if contract.get("direction") == "above"),
+        key=lambda contract: safe_float(contract.get("strike")) or float("-inf"),
+        default=None,
+    )
+    bottom = min(
+        (contract for contract in settle_contracts if contract.get("direction") == "below"),
+        key=lambda contract: safe_float(contract.get("strike")) or float("inf"),
+        default=None,
+    )
+    top_yes = safe_float(top.get("yesPrice")) if top else None
+    bottom_yes = safe_float(bottom.get("yesPrice")) if bottom else None
+    tail_yes = None if top_yes is None and bottom_yes is None else (top_yes or 0.0) + (bottom_yes or 0.0)
+    skew_yes = None if top_yes is None or bottom_yes is None else top_yes - bottom_yes
+    return yes_sum, yes_sum - 1.0, tail_yes, skew_yes
+
+
 def edge_bucket(score: Optional[float]) -> str:
     if score is None:
         return "no-options"
@@ -469,6 +500,7 @@ def build_rows(
         perp_basis_pct = None
         if perp_mark is not None and spot:
             perp_basis_pct = (perp_mark / spot - 1.0) * 100
+        settlement_yes_sum, settlement_overround, settlement_tail_yes, settlement_skew_yes = settlement_bucket_metrics(event.get("contracts", []))
 
         for contract in event.get("contracts", []):
             if contract.get("closed") or not contract.get("active", True):
@@ -589,6 +621,10 @@ def build_rows(
                     underlying_cap_yes_price=cap_yes,
                     pm_to_underlying_cap_ratio=cap_ratio,
                     underlying_cap_signal=cap_signal,
+                    settlement_yes_sum=settlement_yes_sum,
+                    settlement_overround=settlement_overround,
+                    settlement_tail_yes=settlement_tail_yes,
+                    settlement_skew_yes=settlement_skew_yes,
                     buy_yes_edge_pts=buy_edge,
                     sell_yes_edge_pts=sell_edge,
                     best_expression=best_expression,
@@ -660,6 +696,9 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
             f"<td>{html.escape(fmt_pct(row.pm_yes_price))}</td>"
             f"<td>{html.escape(fmt_pct(row.underlying_cap_yes_price))}</td>"
             f"<td>{html.escape(fmt_num(row.pm_to_underlying_cap_ratio, 2))}</td>"
+            f"<td>{html.escape(fmt_num(row.settlement_yes_sum, 2))}</td>"
+            f"<td>{html.escape(fmt_num(row.settlement_tail_yes, 2))}</td>"
+            f"<td>{html.escape(fmt_num(row.settlement_skew_yes, 2))}</td>"
             f"<td>{html.escape(fmt_pct(row.options_touch_adjusted_prob))}</td>"
             f"<td class='{cls}'>{html.escape(fmt_pts(row.edge_score))}</td>"
             f"<td>{html.escape(row.best_expression)}</td>"
@@ -713,6 +752,8 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
     Negative edge means PM YES looks rich versus options after using the PM bid. This is a
     screening report, not a risk-free arbitrage ledger. Cap YES is the maximum rational
     upside one-touch YES price implied by spot/strike before expiry risk or carry.
+    Settle bucket markets are shown as volatility/tail-shape indicators; their YES prices
+    should not be summed into a spot EV unless the buckets are cleanly exclusive.
   </p>
   <div class="legend">
     <span class="pos3">+20 pts</span>
@@ -734,6 +775,9 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         <th>PM YES</th>
         <th>Cap YES</th>
         <th>PM/Cap</th>
+        <th>Settle Sum</th>
+        <th>Tail Sum</th>
+        <th>Tail Skew</th>
         <th>Options Prob</th>
         <th>Edge Pts</th>
         <th>Best Expression</th>

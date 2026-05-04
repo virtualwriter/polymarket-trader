@@ -14972,5 +14972,83 @@
     "promotedToSignal": false,
     "postMortem": null,
     "source": "llm"
+  },
+  {
+    "id": "H-527",
+    "description": "Gold settlement bucket volatility expansion: when GC settle-at bucket YES prices show high aggregate overround and broad tail demand, the market is expressing volatility/tail uncertainty rather than directional fair value.",
+    "conditions": {
+      "gold_pm_settle_overround_max": "> 0.25",
+      "gold_pm_settle_tail_yes_max": "> 0.20"
+    },
+    "prediction": "Gold spot will move >2% within 7 days when settlement bucket overround and tail demand are elevated, regardless of direction.",
+    "timeframeDays": 7,
+    "confidence": 0.68,
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility",
+    "created": "2026-05-04",
+    "tests": [],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-528",
+    "description": "Oil settlement bucket volatility expansion: when CL settle-at bucket YES prices show high aggregate overround and broad tail demand, the market is pricing volatility/tail uncertainty rather than a directional settlement EV.",
+    "conditions": {
+      "oil_pm_settle_overround_max": "> 0.15",
+      "oil_pm_settle_tail_yes_max": "> 0.60"
+    },
+    "prediction": "Oil spot will move >3% within 7 days when settlement bucket overround and tail demand are elevated, regardless of direction.",
+    "timeframeDays": 7,
+    "confidence": 0.68,
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility",
+    "created": "2026-05-04",
+    "tests": [],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-529",
+    "description": "Gold settlement bucket upside-skew volatility: when GC settle-at top-tail demand materially exceeds downside-tail demand, the market is expressing upside tail skew rather than a spot EV.",
+    "conditions": {
+      "gold_pm_settle_skew_yes_max": "> 0.15"
+    },
+    "prediction": "Gold spot will rally >2% within 7 days when settlement bucket upside-tail skew is strongly positive.",
+    "timeframeDays": 7,
+    "confidence": 0.62,
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility",
+    "created": "2026-05-04",
+    "tests": [],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-530",
+    "description": "Oil settlement bucket upside-skew volatility: when CL settle-at top-tail demand materially exceeds downside-tail demand, the market is expressing upside tail skew rather than a spot EV.",
+    "conditions": {
+      "oil_pm_settle_skew_yes_max": "> 0.40"
+    },
+    "prediction": "Oil spot will rally >3% within 7 days when settlement bucket upside-tail skew is strongly positive.",
+    "timeframeDays": 7,
+    "confidence": 0.62,
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility",
+    "created": "2026-05-04",
+    "tests": [],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
   }
 ]
