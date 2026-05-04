@@ -2906,10 +2906,94 @@ function llmHypothesisBacklog(hypotheses: Hypothesis[]) {
   };
 }
 
-function hypothesisConditionValue(key: string, latestRow: SnapshotRow, previousRow: SnapshotRow | null, hypothesis: Hypothesis): number | null {
+function lookbackRows(valuationRows: SnapshotRow[], amount: number, unit: string): SnapshotRow[] {
+  const periods = Math.max(1, Math.round(amount * (unit === "d" ? 24 : 1)));
+  return valuationRows.slice(-Math.min(valuationRows.length, periods));
+}
+
+function valuesForKey(rows: SnapshotRow[], key: string): number[] {
+  return rows.map((row) => num(row[key])).filter((value): value is number => value !== null);
+}
+
+function percentileRank(values: number[], current: number): number | null {
+  if (values.length === 0) return null;
+  const belowOrEqual = values.filter((value) => value <= current).length;
+  return (belowOrEqual / values.length) * 100;
+}
+
+function mean(values: number[]): number | null {
+  if (values.length === 0) return null;
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function standardDeviation(values: number[], avg: number): number | null {
+  if (values.length < 2) return null;
+  const variance = values.reduce((sum, value) => sum + Math.pow(value - avg, 2), 0) / values.length;
+  return Math.sqrt(variance);
+}
+
+function derivedHypothesisConditionValue(key: string, valuationRows: SnapshotRow[]): number | null {
+  const latestRow = valuationRows[valuationRows.length - 1];
+  if (!latestRow) return null;
+
+  const pctFromExtreme = key.match(/^(.+)_pct_from_(\d+)(h|d)_(high|low)$/);
+  if (pctFromExtreme) {
+    const [, baseKey, amount, unit, extreme] = pctFromExtreme;
+    const current = num(latestRow[baseKey]);
+    const values = valuesForKey(lookbackRows(valuationRows, Number(amount), unit), baseKey);
+    if (current === null || values.length === 0) return null;
+    const reference = extreme === "high" ? Math.max(...values) : Math.min(...values);
+    return reference === 0 ? null : ((current - reference) / reference) * 100;
+  }
+
+  const pctVsSma = key.match(/^(.+)_pct_vs_(\d+)(h|d)_sma$/);
+  if (pctVsSma) {
+    const [, baseKey, amount, unit] = pctVsSma;
+    const current = num(latestRow[baseKey]);
+    const avg = mean(valuesForKey(lookbackRows(valuationRows, Number(amount), unit), baseKey));
+    return current === null || avg === null || avg === 0 ? null : ((current - avg) / avg) * 100;
+  }
+
+  const percentile = key.match(/^(.+)_percentile_(\d+)(h|d)$/);
+  if (percentile) {
+    const [, baseKey, amount, unit] = percentile;
+    const current = num(latestRow[baseKey]);
+    const values = valuesForKey(lookbackRows(valuationRows, Number(amount), unit), baseKey);
+    return current === null ? null : percentileRank(values, current);
+  }
+
+  const zscore = key.match(/^(.+)_zscore_(\d+)(h|d)$/);
+  if (zscore) {
+    const [, baseKey, amount, unit] = zscore;
+    const current = num(latestRow[baseKey]);
+    const values = valuesForKey(lookbackRows(valuationRows, Number(amount), unit), baseKey);
+    const avg = mean(values);
+    const sd = avg === null ? null : standardDeviation(values, avg);
+    return current === null || avg === null || sd === null || sd === 0 ? null : (current - avg) / sd;
+  }
+
+  const changePct = key.match(/^(.+)_change_pct_(\d+)(h|d)$/);
+  if (changePct) {
+    const [, baseKey, amount, unit] = changePct;
+    const periods = Math.max(1, Math.round(Number(amount) * (unit === "d" ? 24 : 1)));
+    const current = num(latestRow[baseKey]);
+    const priorRow = valuationRows[Math.max(0, valuationRows.length - 1 - periods)];
+    const prior = priorRow ? num(priorRow[baseKey]) : null;
+    return current === null || prior === null || prior === 0 ? null : ((current - prior) / prior) * 100;
+  }
+
+  return null;
+}
+
+function hypothesisConditionValue(key: string, valuationRows: SnapshotRow[], hypothesis: Hypothesis): number | null {
+  const latestRow = valuationRows[valuationRows.length - 1];
+  const previousRow = valuationRows.length > 1 ? valuationRows[valuationRows.length - 2] : null;
+  if (!latestRow) return null;
   if (key.startsWith("previous_")) return previousRow ? num(previousRow[key.replace(/^previous_/, "")]) : null;
   const direct = num(latestRow[key]);
   if (direct !== null) return direct;
+  const derived = derivedHypothesisConditionValue(key, valuationRows);
+  if (derived !== null) return derived;
 
   if (key === "ratio") {
     const pmIvKey = Object.keys(hypothesis.conditions).find((conditionKey) => conditionKey.endsWith("_pm_iv"));
@@ -2925,12 +3009,13 @@ function hypothesisConditionValue(key: string, latestRow: SnapshotRow, previousR
 function evaluateHypothesisCondition(
   key: string,
   rawExpression: string,
-  latestRow: SnapshotRow,
-  previousRow: SnapshotRow | null,
+  valuationRows: SnapshotRow[],
   hypothesis: Hypothesis,
 ): boolean {
+  const latestRow = valuationRows[valuationRows.length - 1];
+  const previousRow = valuationRows.length > 1 ? valuationRows[valuationRows.length - 2] : null;
   const expression = String(rawExpression).trim().toLowerCase().replace(/%/g, "");
-  const value = hypothesisConditionValue(key, latestRow, previousRow, hypothesis);
+  const value = hypothesisConditionValue(key, valuationRows, hypothesis);
   const previousValue = key.startsWith("previous_")
     ? null
     : previousRow ? num(previousRow[key]) : null;
@@ -2987,11 +3072,10 @@ function evaluateHypothesisCondition(
 
 function hypothesisConditionsSatisfied(hypothesis: Hypothesis, valuationRows: SnapshotRow[]): boolean {
   const latestRow = valuationRows[valuationRows.length - 1];
-  const previousRow = valuationRows.length > 1 ? valuationRows[valuationRows.length - 2] : null;
   if (!latestRow) return false;
   const entries = Object.entries(hypothesis.conditions ?? {});
   if (entries.length === 0) return false;
-  return entries.every(([key, expression]) => evaluateHypothesisCondition(key, String(expression), latestRow, previousRow, hypothesis));
+  return entries.every(([key, expression]) => evaluateHypothesisCondition(key, String(expression), valuationRows, hypothesis));
 }
 
 function inferHypothesisDirection(hypothesis: Hypothesis): "long" | "short" {
@@ -3263,7 +3347,7 @@ ${activeHypotheses.map((h) => `  ${h.id} (${h.setupId ?? "unclassified"}): ${h.d
 
 HYPOTHESIS SHADOW TEST BACKLOG:
 ${JSON.stringify(hypothesisBacklog, null, 1)}
-${hypothesisBacklog.complete ? "Existing LLM setup-family backlog is complete; new hypotheses may be proposed." : `Do NOT propose new hypotheses right now. Existing LLM setup families still need condition-triggered repeat shadow tests (${hypothesisBacklog.needingTests}/${hypothesisBacklog.setupFamilies} setup families need more tests, ${hypothesisBacklog.pending} pending). Only the first ${HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT} setup families are active for retesting; others wait. Return newHypotheses: [] and focus on reviewing/testing existing setup families.`}
+${hypothesisBacklog.complete ? "Existing LLM setup-family backlog is complete; new hypotheses may be proposed." : `Do NOT propose unrelated new setup families right now. Existing LLM setup families still need condition-triggered repeat shadow tests (${hypothesisBacklog.needingTests}/${hypothesisBacklog.setupFamilies} setup families need more tests, ${hypothesisBacklog.pending} pending). Only the first ${HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT} setup families are active for retesting; others wait. You MAY propose regime-relative replacement variants for already-promoted setup families when existing variants use brittle absolute price levels. Otherwise return newHypotheses: [] and focus on reviewing/testing existing setup families.`}
 
 RECENTLY KILLED HYPOTHESES:
 ${killedRecently.map((h) => `  ${h.id}: ${h.description} — ${h.postMortem}`).join("\n") || "  None"}
@@ -3289,6 +3373,15 @@ ${journalTail || "  No entries yet"}
 IMPORTANT RULES:
 - Each hypothesis MUST be specific and testable with a clear timeframe (1-14 days)
 - Each hypothesis MUST define measurable conditions using column names from the data
+- Prefer regime-relative conditions over hard-coded price levels so promoted setup families can generalize across BTC/HYPE/GOLD/OIL/AMZN price regimes. Use absolute spot thresholds only when the exact level is essential to the thesis.
+- Supported derived condition keys:
+  - <column>_pct_from_<N>h_high / <column>_pct_from_<N>d_high, e.g. btc_spot_pct_from_7d_high > -3
+  - <column>_pct_from_<N>h_low / <column>_pct_from_<N>d_low, e.g. btc_spot_pct_from_3d_low > 2
+  - <column>_pct_vs_<N>h_sma / <column>_pct_vs_<N>d_sma, e.g. btc_spot_pct_vs_24h_sma > 0
+  - <column>_percentile_<N>h / <column>_percentile_<N>d, e.g. btc_ibit_pc_ratio_percentile_30d < 15
+  - <column>_zscore_<N>h / <column>_zscore_<N>d, e.g. btc_pm_iv_zscore_30d < -2
+  - <column>_change_pct_<N>h / <column>_change_pct_<N>d, e.g. btc_spot_change_pct_24h > 1.5
+- For promoted setup-family variants, describe the reusable setup in relative terms such as "within 3% of 7d high", "bottom 15th percentile P/C ratio", "PM IV z-score below -2", or "spot above 24h SMA" instead of "BTC above 78k".
 - Existing LLM hypotheses must receive ${HYPOTHESIS_SHADOW_TESTS_REQUIRED} condition-triggered shadow tests before promotion/kill/inconclusive demotion. Do not create new hypotheses while the backlog is incomplete.
 - Similar hypotheses are grouped into setup families. Promotion/kill decisions happen at the setup-family level, not per wording variant. Prefer reviewing whether the parent setup is working over proposing near-duplicate threshold variants.
 - Focus on cross-venue divergences and patterns the rule-based system can't detect
