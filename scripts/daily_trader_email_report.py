@@ -34,7 +34,8 @@ def parse_ts(value: str | None) -> datetime | None:
     if not value:
         return None
     try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc)
     except ValueError:
         return None
 
@@ -189,6 +190,93 @@ def journal_sections_for_window(path: Path, start_utc: datetime, end_utc: dateti
     return sections
 
 
+def valuation_ts(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    if len(value) == 13 and value[4] == "-" and value[10] == "T":
+        return parse_ts(f"{value}:00:00Z")
+    return parse_ts(value)
+
+
+def trade_pnl_pct(entry: float, current: float, direction: str) -> float | None:
+    if not entry or not current:
+        return None
+    raw = ((current - entry) / entry) * 100
+    return raw if direction == "long" else -raw
+
+
+def risk_shape_report_lines(closed_rows: list[dict[str, str]]) -> list[str]:
+    learning_params = read_json(DATA_DIR / "learning-params.json", {})
+    signal_risk = learning_params.get("signalRisk", {})
+    valuation_rows = read_csv(DATA_DIR / "daily-valuations.csv")
+    valuations: list[tuple[datetime, dict[str, str]]] = []
+    for row in valuation_rows:
+        parsed = valuation_ts(row.get("date"))
+        if parsed:
+            valuations.append((parsed, row))
+
+    price_cols = {
+        "BTC": "btc_spot",
+        "HYPE": "hype_spot",
+        "GOLD": "gold_gc_spot",
+        "OIL": "oil_wti_spot",
+        "AMZN": "amzn_hl_perp",
+    }
+    signals = ["FUNDING_EXTREME_LONG", "FUNDING_EXTREME_SHORT", "PC_RATIO_EXTREME_HIGH", "PC_RATIO_EXTREME_LOW"]
+    targets = [2, 3, 4, 5, 6]
+
+    def replay(row: dict[str, str], target_pct: float, stop_pct: float) -> float | None:
+        asset = row.get("asset", "")
+        col = price_cols.get(asset)
+        opened = parse_ts(row.get("opened_at"))
+        closed = parse_ts(row.get("closed_at"))
+        entry = num(row.get("entry_price"))
+        if not col or not opened or not closed or not entry:
+            return None
+        path = [(dt, val_row) for dt, val_row in valuations if opened <= dt <= closed]
+        exit_price = num(row.get("exit_price"))
+        for dt, val_row in sorted(path, key=lambda item: item[0]):
+            current = num(val_row.get(col), 0.0)
+            pnl = trade_pnl_pct(entry, current, row.get("direction", ""))
+            if pnl is None:
+                continue
+            if pnl >= target_pct:
+                return target_pct
+            if pnl <= -stop_pct:
+                return -stop_pct
+        final_pnl = trade_pnl_pct(entry, exit_price, row.get("direction", ""))
+        return final_pnl if final_pnl is not None else num(row.get("pnl_pct"))
+
+    lines = ["## Risk Shape Replay", "Target replay uses hourly valuation marks, excludes data-correction artifacts, and keeps current stops unchanged."]
+    for signal in signals:
+        rows = [
+            row for row in closed_rows
+            if row.get("signal_type") == signal and "DATA_CORRECTION_ARTIFACT" not in (row.get("close_reason") or "")
+        ]
+        if not rows:
+            continue
+        stop_pct = num((signal_risk.get(signal) or {}).get("stopPct"))
+        actual_pnl = sum(num(row.get("pnl")) for row in rows)
+        actual_wins = sum(1 for row in rows if num(row.get("pnl")) >= 0)
+        replay_parts = []
+        best_target = None
+        best_pnl = float("-inf")
+        for target in targets:
+            replayed = [replay(row, target, stop_pct) for row in rows]
+            replayed = [value for value in replayed if value is not None]
+            pnl = sum(value / 100 for value in replayed)
+            wins = sum(1 for value in replayed if value >= 0)
+            replay_parts.append(f"+{target}%: {money(pnl)} ({wins}/{len(replayed)}W)")
+            if pnl > best_pnl:
+                best_pnl = pnl
+                best_target = target
+        lines.append(
+            f"- {signal}: actual {money(actual_pnl)} ({actual_wins}/{len(rows)}W), "
+            f"best replay +{best_target}% {money(best_pnl)} | " + "; ".join(replay_parts)
+        )
+    return lines
+
+
 @dataclass
 class ReportWindow:
     report_date: datetime
@@ -301,6 +389,8 @@ def build_report(window: ReportWindow) -> str:
 
     lines.extend(["", "## Shadow Trades Resolved"])
     lines.extend(shadow_line(shadow, window.tz, resolved=True) for shadow in resolved_shadows) if resolved_shadows else lines.append("- None")
+
+    lines.extend(["", *risk_shape_report_lines(closed_rows)])
 
     lines.extend(["", "## LLM Findings / Learning Notes"])
     if llm_sections:
