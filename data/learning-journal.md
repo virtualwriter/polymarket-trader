@@ -6203,3 +6203,30 @@ Positioning exhaustion patterns demonstrating mathematical precision as institut
 
 ---
 
+### 2026-05-04 08:28 UTC
+
+**Portfolio:** $100.21 total | Cash $92.21 | 8 open | P&L $0.2131 | 56% win rate (102 trades)
+
+**Closed 1 trades:**
+- ❌ OIL short via spot/spot [OIL spot] (PM_EV_BELOW_SPOT) → stop: $-0.0366 (-3.7%, market -0.0366, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 23.0pp (was 14.4, now -8.6)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.04 to -0.58
+
+**Blocked signal learning:**
+- Open blocked shadows: 7
+- Resolved blocked shadows: 48 (20 wins / 28 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 3/3 blocked trades would have won.
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (2W/2L across 4 resolved shadows, avg P&L 2.04%).
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT GOLD short via polymarket would have stop (-15.00%)
+- ❌ Missing downside leg: PM_IV_GT_OPT_IV_DOWNSIDE BTC short via polymarket would have stop (-5.88%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have stop (-2.17%)
+- ❌ Blocked: PROMOTED_HYPOTHESIS BTC short via spot would have stop (-3.65%)
+
+---
+
