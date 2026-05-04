@@ -2037,7 +2037,7 @@
         "actualMove": "BTC moved 4.49% (68748 → 71838)"
       }
     ],
-    "winRate": 1.0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "BTC P/C ratio at 1.148 confirming oversold options positioning during consolidation phase. Setup developing. | Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"> 1.0\", \"btc_spot\": \"> 68500\"}.",
@@ -2494,7 +2494,7 @@
         "actualMove": "BTC moved 2.28% (71335 → 72962)"
       }
     ],
-    "winRate": 1.0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"< 0.7\", \"btc_spot\": \"> 71000\"}.",
@@ -2955,8 +2955,8 @@
     "promotedToSignal": false,
     "postMortem": "Gold IV compression below 23% while PM premium stays elevated above 800pts vs futures - extreme compression setup validating with PM showing persistent premium during volatility squeeze | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
     "source": "llm",
-    "setupId": "gold_pm_premium_futures_spread_mean_reversion",
-    "setupLabel": "Gold PM premium / futures spread mean reversion"
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility"
   },
   {
     "id": "H-102",
@@ -3067,8 +3067,8 @@
     "promotedToSignal": false,
     "postMortem": "Active - Gold IV at 27.2 extreme compression while PM premium at 400pts+ above futures, setup forming for volatility expansion | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
     "source": "llm",
-    "setupId": "gold_pm_premium_futures_spread_mean_reversion",
-    "setupLabel": "Gold PM premium / futures spread mean reversion"
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility"
   },
   {
     "id": "H-106",
@@ -3208,8 +3208,8 @@
     "promotedToSignal": false,
     "postMortem": "Covered by promoted setup family btc_iv_compression_vol_reversion via primary H-234. | Archived/excluded 2026-05-04: variant depended on gold_pm_settle_ev, which came from settlement bucket markets and is not a valid directional EV input.",
     "source": "llm",
-    "setupId": "btc_iv_compression_vol_reversion",
-    "setupLabel": "BTC IV compression / vol reversion"
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility"
   },
   {
     "id": "H-111",
@@ -3324,8 +3324,8 @@
     "promotedToSignal": false,
     "postMortem": "Covered by promoted setup family btc_iv_compression_vol_reversion via primary H-234. | Archived/excluded 2026-05-04: variant depended on gold_pm_settle_ev, which came from settlement bucket markets and is not a valid directional EV input.",
     "source": "llm",
-    "setupId": "btc_iv_compression_vol_reversion",
-    "setupLabel": "BTC IV compression / vol reversion"
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility"
   },
   {
     "id": "H-115",
@@ -3403,6 +3403,12 @@
         "actualMove": "GOLD moved 1.32% (4764 → 4827)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical Gold PM/P/C variants may include bad zero Gold P/C data."
+      },
+      {
+        "date": "2026-05-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup pm_settlement_bucket_volatility shadow test 1/20 opened via H-117 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0,
@@ -3410,8 +3416,8 @@
     "promotedToSignal": false,
     "postMortem": "Setting up perfectly - Gold IV compressed to 26.3% (30d) and 25.9% (90d) while PM premium stays 362pts above futures. Volatility expansion setup forming during crypto momentum phase. | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
     "source": "llm",
-    "setupId": "gold_pm_premium_futures_spread_mean_reversion",
-    "setupLabel": "Gold PM premium / futures spread mean reversion"
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility"
   },
   {
     "id": "H-118",
@@ -3501,8 +3507,8 @@
     "promotedToSignal": false,
     "postMortem": "Covered by promoted setup family btc_iv_compression_vol_reversion via primary H-234. | Archived/excluded 2026-05-04: variant depended on gold_pm_settle_ev, which came from settlement bucket markets and is not a valid directional EV input.",
     "source": "llm",
-    "setupId": "btc_iv_compression_vol_reversion",
-    "setupLabel": "BTC IV compression / vol reversion"
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility"
   },
   {
     "id": "H-121",
@@ -3587,8 +3593,8 @@
     "promotedToSignal": false,
     "postMortem": "Covered by promoted setup family btc_iv_compression_vol_reversion via primary H-234. | Archived/excluded 2026-05-04: variant depended on gold_pm_settle_ev, which came from settlement bucket markets and is not a valid directional EV input.",
     "source": "llm",
-    "setupId": "btc_iv_compression_vol_reversion",
-    "setupLabel": "BTC IV compression / vol reversion"
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility"
   },
   {
     "id": "H-124",
@@ -3779,7 +3785,7 @@
         "actualMove": "BTC moved 2.69% (72962 → 74928)"
       }
     ],
-    "winRate": 1.0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "BTC P/C ratio stayed at extreme 0.39 level, confirming momentum exhaustion signal. This represents most extreme call positioning ever observed during new highs above 72.8k. | Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"< 0.4\", \"btc_spot\": \"> 72000\"}.",
@@ -3948,7 +3954,7 @@
         "actualMove": "BTC moved 2.69% (72962 → 74928)"
       }
     ],
-    "winRate": 1.0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"< 0.4\", \"btc_spot\": \"> 72500\"}.",
@@ -4201,7 +4207,7 @@
         "actualMove": "BTC moved 3.71% (71621 → 74280)"
       }
     ],
-    "winRate": 1.0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"> 0.4\", \"btc_spot\": \"< 72500\"}.",
@@ -4283,7 +4289,7 @@
         "actualMove": "BTC moved 4.13% (71621 → 74581)"
       }
     ],
-    "winRate": 1.0,
+    "winRate": 1,
     "status": "archived",
     "promotedToSignal": false,
     "postMortem": "Confirming - BTC dropped below 72k after P/C extremes, now testing 71k level exactly as predicted with systematic call unwind accelerating. | TRACKING - BTC dropped below 72k after P/C extremes, confirming systematic call unwind pattern. Pullback accelerating as predicted. | Setup family promoted: 75% win rate over 16 clean completed tests across 17 variants. | Replaced by regime-relative promoted variant H-522 so production signals no longer depend on hard-coded spot thresholds. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"< 0.5\", \"btc_spot\": \"< 72000\"}.",
@@ -4591,7 +4597,7 @@
         "actualMove": "BTC moved 4.13% (71621 → 74581)"
       }
     ],
-    "winRate": 1.0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"> 0.45\", \"btc_spot\": \"> 70500\"}.",
@@ -4825,7 +4831,7 @@
         "actualMove": "BTC moved 8.73% (70937 → 77128)"
       }
     ],
-    "winRate": 1.0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"> 0.4\", \"btc_spot\": \"> 70500\"}.",
@@ -5027,8 +5033,8 @@
     "promotedToSignal": false,
     "postMortem": "Active - GOLD IV compressed to 22.3% 30d while PM premium persists above 560pts during crypto positioning exhaustion. Cross-asset IV compression setup strengthening. | Covered by promoted setup family btc_iv_compression_vol_reversion via primary H-234. | Archived/excluded 2026-05-04: variant depended on gold_pm_settle_ev, which came from settlement bucket markets and is not a valid directional EV input.",
     "source": "llm",
-    "setupId": "btc_iv_compression_vol_reversion",
-    "setupLabel": "BTC IV compression / vol reversion"
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility"
   },
   {
     "id": "H-175",
@@ -7565,7 +7571,7 @@
         "actualMove": "BTC moved 0.70% (77128 → 77668)"
       }
     ],
-    "winRate": 0.0,
+    "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"< 0.25\", \"btc_spot\": \"> 75000\"}.",
@@ -7904,7 +7910,7 @@
         "actualMove": "Setup btc_put_call_exhaustion_reversal shadow test 18/20 opened via H-276 after current row satisfied variant conditions."
       }
     ],
-    "winRate": 1.0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "BTC P/C ratio stabilizing at 0.217 during consolidation above 75k. Call positioning exhaustion pattern developing but not yet triggering pullback acceleration. | BTC P/C ratio at 0.217 near extreme lows during consolidation above 74.6k - call positioning exhaustion pattern intact, monitoring for pullback or reversal signals | BTC P/C ratio stayed near extreme 0.217 levels during consolidation above 74k - systematic call exhaustion continuing, pullback acceleration setup remains valid | BTC P/C spike pattern confirmed - ratio moved from 0.217 extreme to 0.724 indicating systematic positioning unwind acceleration | BTC P/C ratio exhaustion pattern continuing - ratio movements during consolidation phases above 75k indicating systematic call positioning extremes creating pullback setup | Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"> 0.215\", \"btc_spot\": \"> 75000\"}.",
@@ -8502,8 +8508,8 @@
     "promotedToSignal": false,
     "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
     "source": "llm",
-    "setupId": "gold_pm_premium_futures_spread_mean_reversion",
-    "setupLabel": "Gold PM premium / futures spread mean reversion"
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility"
   },
   {
     "id": "H-298",
@@ -8944,7 +8950,7 @@
         "actualMove": "BTC moved 2.33% (75674 → 77440)"
       }
     ],
-    "winRate": 1.0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"< 0.52\", \"btc_spot\": \"> 76000\"}.",
@@ -9027,7 +9033,7 @@
         "actualMove": "BTC moved 2.33% (75674 → 77440)"
       }
     ],
-    "winRate": 1.0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "BTC P/C at 0.408 during consolidation around 75.5k - positioning exhaustion accelerating as predicted, pullback setup developing | Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"< 0.35\", \"btc_spot\": \"> 75000\"}.",
@@ -9137,7 +9143,7 @@
         "actualMove": "BTC moved 2.33% (75674 → 77440)"
       }
     ],
-    "winRate": 1.0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "BTC P/C ratio normalized to 0.724 from extreme lows - call positioning exhaustion completion signal confirmed | BTC P/C exhaustion completion confirmed - P/C stayed below 0.45 for multiple snapshots during consolidation above 75k after new highs above 77k, with systematic call positioning unwind creating pullback acceleration as predicted. | BTC P/C ratio exhaustion completion reversal confirmed - P/C staying below 0.45 for multiple snapshots during consolidation above 75k after new highs, with systematic call positioning unwind creating pullback acceleration toward 73-74k range as predicted. | Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"< 0.45\", \"btc_spot\": \"> 75000\"}.",
@@ -9344,8 +9350,8 @@
     "promotedToSignal": false,
     "postMortem": "Gold PM IV compression to 10.3% while spot holds above 4719 validates extreme compression setup. Statistical anomaly requiring volatility expansion correction. | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
     "source": "llm",
-    "setupId": "gold_pm_premium_futures_spread_mean_reversion",
-    "setupLabel": "Gold PM premium / futures spread mean reversion"
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility"
   },
   {
     "id": "H-328",
@@ -9394,7 +9400,7 @@
         "actualMove": "BTC moved 1.89% (77538 → 79002)"
       }
     ],
-    "winRate": 0.0,
+    "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "BTC P/C ratio at 0.371 during new highs at 78.1k - extreme call positioning exhaustion confirmed | Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"< 0.41\", \"btc_spot\": \"> 77500\"}.",
@@ -9679,8 +9685,8 @@
     "promotedToSignal": false,
     "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
     "source": "llm",
-    "setupId": "gold_pm_premium_futures_spread_mean_reversion",
-    "setupLabel": "Gold PM premium / futures spread mean reversion"
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility"
   },
   {
     "id": "H-340",
@@ -10322,7 +10328,7 @@
         "actualMove": "BTC moved -1.26% (77737 → 76755)"
       }
     ],
-    "winRate": 0.0,
+    "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "BTC P/C exhaustion confirmed - ratio at 0.43 staying below threshold during new highs. Systematic call positioning unwind pattern playing out as predicted. | Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"< 0.43\", \"btc_spot\": \"> 78000\"}.",
@@ -10492,7 +10498,7 @@
         "actualMove": "BTC moved -1.84% (77703 → 76274)"
       }
     ],
-    "winRate": 0.0,
+    "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "BTC momentum exhaustion pattern showing signs of completion with P/C ratio normalizing above 0.48 from extreme lows. Systematic call positioning unwind appears to be moderating. | Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"< 0.48\", \"btc_spot\": \"> 77000\"}.",
@@ -10611,8 +10617,8 @@
     "promotedToSignal": false,
     "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
     "source": "llm",
-    "setupId": "gold_pm_premium_futures_spread_mean_reversion",
-    "setupLabel": "Gold PM premium / futures spread mean reversion"
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility"
   },
   {
     "id": "H-373",
@@ -11961,7 +11967,7 @@
         "actualMove": "BTC moved -0.91% (79002 → 78280)"
       }
     ],
-    "winRate": 0.0,
+    "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Validated - BTC P/C normalized to 0.399 from extreme levels, correctly signaling momentum resumption potential before current pullback phase. | Covered by promoted setup family btc_put_call_exhaustion_reversal via primary H-148. | Reclassified 2026-05-04 with regime-relative BTC spot/P-C conditions; old brittle conditions were {\"btc_ibit_pc_ratio\": \"> 0.39\", \"btc_spot\": \"> 78500\"}.",
@@ -12220,8 +12226,8 @@
     "promotedToSignal": false,
     "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
     "source": "llm",
-    "setupId": "cross_asset_funding_positioning_exhaustion",
-    "setupLabel": "Cross-asset funding/positioning exhaustion"
+    "setupId": "pm_settlement_bucket_volatility",
+    "setupLabel": "PM settlement bucket volatility"
   },
   {
     "id": "H-430",
@@ -14897,8 +14903,8 @@
   },
   {
     "id": "H-522",
-    "setupId": "btc_put_call_exhaustion_reversal",
-    "setupLabel": "BTC put-call exhaustion / reversal",
+    "setupId": "other_mixed",
+    "setupLabel": "Other / mixed",
     "created": "2026-05-04",
     "description": "BTC call-positioning exhaustion reversal when spot rolls over from a recent 7d high while below its 24h average and BTC put/call ratio is in the bottom quartile of the last 30d range.",
     "conditions": {
