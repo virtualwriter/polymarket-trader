@@ -114,26 +114,70 @@ def parse_time(value: str) -> Optional[datetime]:
     if not value:
         return None
     try:
-        return datetime.fromisoformat(value.replace("Z", "+00:00"))
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+        return parsed
     except ValueError:
         return None
 
 
+MONTHS = {
+    "january": 1,
+    "february": 2,
+    "march": 3,
+    "april": 4,
+    "may": 5,
+    "june": 6,
+    "july": 7,
+    "august": 8,
+    "september": 9,
+    "october": 10,
+    "november": 11,
+    "december": 12,
+}
+
+
+def contract_month_year_from_question(question: str, expiry_dt: Optional[datetime]) -> Optional[Tuple[int, int]]:
+    q = question.lower()
+    for key, month_num in MONTHS.items():
+        if re.search(rf"\b{key}\b", q):
+            year_match = re.search(rf"\b{key}\b.{{0,40}}?(20\d{{2}})", q)
+            year = int(year_match.group(1)) if year_match else None
+            if year is None and expiry_dt:
+                expiry_utc = expiry_dt.astimezone(timezone.utc)
+                year = expiry_utc.year
+                if month_num == 12 and expiry_utc.month == 1:
+                    year -= 1
+            if year is None:
+                return None
+            return year, month_num
+    if expiry_dt:
+        expiry_utc = expiry_dt.astimezone(timezone.utc)
+        return expiry_utc.year, expiry_utc.month
+    return None
+
+
+def last_business_day_of_month(year: int, month: int) -> datetime:
+    if month == 12:
+        day = datetime(year + 1, 1, 1, tzinfo=timezone.utc) - timedelta(days=1)
+    else:
+        day = datetime(year, month + 1, 1, tzinfo=timezone.utc) - timedelta(days=1)
+    while day.weekday() >= 5:
+        day -= timedelta(days=1)
+    return day
+
+
+def option_model_expiry_target(question: str, expiry_dt: Optional[datetime]) -> Optional[datetime]:
+    parsed = contract_month_year_from_question(question, expiry_dt)
+    if not parsed:
+        return expiry_dt
+    year, month = parsed
+    return last_business_day_of_month(year, month)
+
+
 def contract_month_from_question(question: str, expiry_dt: Optional[datetime]) -> str:
-    months = {
-        "january": "January",
-        "february": "February",
-        "march": "March",
-        "april": "April",
-        "may": "May",
-        "june": "June",
-        "july": "July",
-        "august": "August",
-        "september": "September",
-        "october": "October",
-        "november": "November",
-        "december": "December",
-    }
+    months = {key: key.title() for key in MONTHS}
     q = question.lower()
     for key, label in months.items():
         if re.search(rf"\b{key}\b", q):
@@ -313,12 +357,13 @@ def choose_iv_for_expiry(
     if target_expiry:
         target_days = max(1.0, (target_expiry - now).total_seconds() / 86400)
 
-    candidates: List[Tuple[float, float, Dict[str, Any]]] = []
+    candidates: List[Tuple[float, str, float, Dict[str, Any]]] = []
     for item in chains:
         exp = parse_time(str(item.get("expiration", "")))
         if not exp:
             continue
-        dte = max(0.0, (exp.astimezone(timezone.utc) - now).total_seconds() / 86400)
+        exp_utc = exp.astimezone(timezone.utc)
+        dte = max(0.0, (exp_utc - now).total_seconds() / 86400)
         if dte < 1.0:
             continue
         iv = safe_float(item.get("impliedVolatility"))
@@ -328,20 +373,23 @@ def choose_iv_for_expiry(
         strike_target = target_strike or underlying
         expiry_penalty = abs(dte - target_days)
         strike_penalty = abs(math.log(max(strike, 0.01) / max(strike_target, 0.01))) * 365
-        candidates.append((expiry_penalty, strike_penalty, item))
+        candidates.append((expiry_penalty, exp_utc.date().isoformat(), strike_penalty, item))
 
     if not candidates:
         return None, ""
 
+    candidates.sort(key=lambda row: (row[0], row[1]))
+    selected_expiry = candidates[0][1]
+    same_expiry = [row for row in candidates if row[1] == selected_expiry]
     liquid_candidates = [
-        row for row in candidates
-        if (safe_float(row[2].get("bid")) or 0) > 0 and (safe_float(row[2].get("ask")) or 0) > 0
+        row for row in same_expiry
+        if (safe_float(row[3].get("bid")) or 0) > 0 and (safe_float(row[3].get("ask")) or 0) > 0
     ]
-    ranked = liquid_candidates if len(liquid_candidates) >= 4 else candidates
-    ranked.sort(key=lambda row: (row[0], row[1]))
-    top = ranked[:8]
-    iv = sum(float(item["impliedVolatility"]) for _, _, item in top) / len(top)
-    expiry = str(top[0][2].get("expiration", ""))
+    ranked = liquid_candidates if len(liquid_candidates) >= 2 else same_expiry
+    ranked.sort(key=lambda row: row[2])
+    top = ranked[:4]
+    iv = sum(float(item["impliedVolatility"]) for _, _, _, item in top) / len(top)
+    expiry = str(top[0][3].get("expiration", ""))
     return iv, expiry
 
 
@@ -558,16 +606,20 @@ def build_rows(
             question = str(contract.get("question", ""))
             expiry_raw = str(contract.get("endDate") or "")
             expiry_dt = parse_time(expiry_raw)
+            model_expiry_dt = option_model_expiry_target(question, expiry_dt)
             dte_days = None
             if expiry_dt:
                 dte_days = max(0.0, (expiry_dt.astimezone(timezone.utc) - snap_dt).total_seconds() / 86400)
+            model_dte_days = dte_days
+            if model_expiry_dt:
+                model_dte_days = max(0.0, (model_expiry_dt.astimezone(timezone.utc) - snap_dt).total_seconds() / 86400)
 
             option_underlying = safe_float(option_snapshot.get("underlyingPrice")) if option_snapshot else spot
             option_strike = scaled_option_strike(asset, option_symbol, strike or 0.0, spot, option_underlying)
-            option_iv, iv_expiry = choose_iv_for_expiry(option_snapshot, expiry_dt, option_strike, snap_dt) if option_snapshot else (None, "")
+            option_iv, iv_expiry = choose_iv_for_expiry(option_snapshot, model_expiry_dt, option_strike, snap_dt) if option_snapshot else (None, "")
             valuation_iv_key = ""
             if option_iv is None:
-                option_iv, valuation_iv_key = option_iv_from_valuations(latest_valuations, asset, dte_days)
+                option_iv, valuation_iv_key = option_iv_from_valuations(latest_valuations, asset, model_dte_days)
                 if option_iv is not None:
                     option_symbol = option_symbol or f"{asset}_VALUATION_IV"
                     option_underlying = option_underlying or spot
@@ -576,10 +628,10 @@ def build_rows(
             if range_bounds and spot and option_underlying:
                 scaled_low = scaled_option_strike(asset, option_symbol, range_bounds[0], spot, option_underlying)
                 scaled_high = scaled_option_strike(asset, option_symbol, range_bounds[1], spot, option_underlying)
-                terminal_prob = lognormal_range_probability(option_underlying, scaled_low, scaled_high, option_iv, dte_days)
+                terminal_prob = lognormal_range_probability(option_underlying, scaled_low, scaled_high, option_iv, model_dte_days)
                 model_prob = terminal_prob
             else:
-                terminal_prob = lognormal_terminal_probability(option_underlying, option_strike, option_iv, dte_days, direction)
+                terminal_prob = lognormal_terminal_probability(option_underlying, option_strike, option_iv, model_dte_days, direction)
                 model_prob = touch_adjusted_probability(terminal_prob, direction, question)
 
             pm_yes = safe_float(contract.get("yesPrice"))
@@ -637,7 +689,8 @@ def build_rows(
             if valuation_iv_key:
                 notes.append(f"Options model falls back to latest {valuation_iv_key} from daily-valuations.csv.")
             elif option_symbol and option_snapshot:
-                notes.append(f"Options model uses {option_symbol} {option_snapshot.get('source', '')}; IV expiry {iv_expiry or 'n/a'}.")
+                target_note = model_expiry_dt.date().isoformat() if model_expiry_dt else "n/a"
+                notes.append(f"Options model uses {option_symbol} {option_snapshot.get('source', '')}; target month-end expiry {target_note}, IV expiry {iv_expiry or 'n/a'}, closest-strike IV sample.")
             else:
                 notes.append("No listed options model is used for this asset.")
             if option_symbol and ("hit" in question.lower() or "reach" in question.lower()):
