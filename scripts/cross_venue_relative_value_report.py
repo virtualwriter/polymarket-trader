@@ -23,7 +23,7 @@ import math
 import re
 import urllib.request
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
@@ -50,6 +50,7 @@ class RelativeValueRow:
     timestamp: str
     asset: str
     event_slug: str
+    market_id: str
     contract_question: str
     contract_month: str
     direction: str
@@ -81,6 +82,8 @@ class RelativeValueRow:
     sell_yes_edge_pts: Optional[float]
     best_expression: str
     edge_score: Optional[float]
+    edge_pts_per_dte: Optional[float]
+    edge_pts_per_dte_7d_change: Optional[float]
     edge_bucket: str
     perp_mark: Optional[float]
     perp_source: str
@@ -161,21 +164,26 @@ def read_latest_snapshot(path: Path) -> Dict[str, Any]:
         raise FileNotFoundError(f"Missing snapshot file: {path}")
     last_line = ""
     with path.open("rb") as fh:
-        fh.seek(0, 2)
-        pos = fh.tell()
-        chunk = 8192
-        buffer = b""
-        while pos > 0:
-            read_size = min(chunk, pos)
-            pos -= read_size
-            fh.seek(pos)
-            buffer = fh.read(read_size) + buffer
-            lines = buffer.splitlines()
-            if len(lines) > 1:
-                last_line = lines[-1].decode("utf-8")
-                break
-        if not last_line:
-            last_line = buffer.decode("utf-8").strip().splitlines()[-1]
+        try:
+            fh.seek(0, 2)
+            pos = fh.tell()
+            chunk = 8192
+            buffer = b""
+            while pos > 0:
+                read_size = min(chunk, pos)
+                pos -= read_size
+                fh.seek(pos)
+                buffer = fh.read(read_size) + buffer
+                lines = buffer.splitlines()
+                if len(lines) > 1:
+                    last_line = lines[-1].decode("utf-8")
+                    break
+            if not last_line:
+                last_line = buffer.decode("utf-8").strip().splitlines()[-1]
+        except OSError:
+            for line in fh:
+                if line.strip():
+                    last_line = line.decode("utf-8")
     return json.loads(last_line)
 
 
@@ -231,6 +239,30 @@ def pm_iv_for_asset(latest_valuations: Dict[str, str], asset: str) -> Optional[f
     return value / 100.0
 
 
+def option_iv_from_valuations(latest_valuations: Dict[str, str], asset: str, dte_days: Optional[float]) -> Tuple[Optional[float], str]:
+    keys_by_asset = {
+        "BTC": ("btc_opt_iv_30d", "btc_opt_iv_90d"),
+        "GOLD": ("gold_opt_iv_30d", "gold_opt_iv_90d"),
+        "OIL": ("oil_opt_iv_30d", "oil_opt_iv_90d"),
+        "AMZN": ("amzn_opt_iv_30d", "amzn_opt_iv_90d"),
+    }
+    keys = keys_by_asset.get(asset)
+    if not keys:
+        return None, ""
+    near_key, far_key = keys
+    preferred_key = near_key if dte_days is None or dte_days <= 60 else far_key
+    fallback_key = far_key if preferred_key == near_key else near_key
+    value = safe_float(latest_valuations.get(preferred_key))
+    source_key = preferred_key
+    if value is None:
+        value = safe_float(latest_valuations.get(fallback_key))
+        source_key = fallback_key
+    if value is None:
+        return None, ""
+    # daily-valuations.csv stores IV columns as percentages.
+    return value / 100.0, source_key
+
+
 def option_chain_for_asset(snapshot: Dict[str, Any], asset: str) -> Tuple[str, Optional[Dict[str, Any]]]:
     options = snapshot.get("options", {})
     for symbol in ASSET_TO_OPTION_SYMBOLS.get(asset, []):
@@ -258,13 +290,14 @@ def choose_iv_for_expiry(
     option_snapshot: Dict[str, Any],
     target_expiry: Optional[datetime],
     target_strike: Optional[float],
+    now: Optional[datetime] = None,
 ) -> Tuple[Optional[float], str]:
     chains = option_snapshot.get("chains", [])
     underlying = safe_float(option_snapshot.get("underlyingPrice"))
     if not chains or not underlying:
         return None, ""
 
-    now = datetime.now(timezone.utc)
+    now = now or datetime.now(timezone.utc)
     target_days = 60.0
     if target_expiry:
         target_days = max(1.0, (target_expiry - now).total_seconds() / 86400)
@@ -518,9 +551,16 @@ def build_rows(
             if expiry_dt:
                 dte_days = max(0.0, (expiry_dt.astimezone(timezone.utc) - snap_dt).total_seconds() / 86400)
 
-            option_underlying = safe_float(option_snapshot.get("underlyingPrice")) if option_snapshot else None
+            option_underlying = safe_float(option_snapshot.get("underlyingPrice")) if option_snapshot else spot
             option_strike = scaled_option_strike(asset, option_symbol, strike or 0.0, spot, option_underlying)
-            option_iv, iv_expiry = choose_iv_for_expiry(option_snapshot, expiry_dt, option_strike) if option_snapshot else (None, "")
+            option_iv, iv_expiry = choose_iv_for_expiry(option_snapshot, expiry_dt, option_strike, snap_dt) if option_snapshot else (None, "")
+            valuation_iv_key = ""
+            if option_iv is None:
+                option_iv, valuation_iv_key = option_iv_from_valuations(latest_valuations, asset, dte_days)
+                if option_iv is not None:
+                    option_symbol = option_symbol or f"{asset}_VALUATION_IV"
+                    option_underlying = option_underlying or spot
+                    option_strike = option_strike or strike
             range_bounds = parse_settlement_range(question)
             if range_bounds and spot and option_underlying:
                 scaled_low = scaled_option_strike(asset, option_symbol, range_bounds[0], spot, option_underlying)
@@ -560,6 +600,9 @@ def build_rows(
                 elif buy_edge is not None:
                     score = buy_edge
                     best_expression = "avoid_buy_yes" if buy_edge < 0 else "near_fair_or_avoid"
+            edge_per_dte = None
+            if score is not None and dte_days and dte_days > 0:
+                edge_per_dte = score / dte_days
 
             flags = []
             if spread is not None and spread >= 0.05:
@@ -580,7 +623,9 @@ def build_rows(
                 flags.append(cap_signal)
 
             notes = []
-            if option_symbol and option_snapshot:
+            if valuation_iv_key:
+                notes.append(f"Options model falls back to latest {valuation_iv_key} from daily-valuations.csv.")
+            elif option_symbol and option_snapshot:
                 notes.append(f"Options model uses {option_symbol} {option_snapshot.get('source', '')}; IV expiry {iv_expiry or 'n/a'}.")
             else:
                 notes.append("No listed options model is used for this asset.")
@@ -598,6 +643,7 @@ def build_rows(
                     timestamp=ts,
                     asset=asset,
                     event_slug=str(event.get("slug", "")),
+                    market_id=str(contract.get("marketId", "")),
                     contract_question=question,
                     contract_month=contract_month_from_question(question, expiry_dt),
                     direction=direction,
@@ -629,6 +675,8 @@ def build_rows(
                     sell_yes_edge_pts=sell_edge,
                     best_expression=best_expression,
                     edge_score=score,
+                    edge_pts_per_dte=edge_per_dte,
+                    edge_pts_per_dte_7d_change=None,
                     edge_bucket=edge_bucket(score),
                     perp_mark=perp_mark,
                     perp_source=perp_source,
@@ -642,13 +690,83 @@ def build_rows(
 
     rows.sort(
         key=lambda r: (
-            r.asset,
+            expiry_sort_key(r),
             -(abs(r.edge_score) if r.edge_score is not None else -1),
+            r.asset,
             r.event_slug,
             r.strike,
         )
     )
     return rows
+
+
+def expiry_sort_key(row: RelativeValueRow) -> Tuple[int, str]:
+    expiry_dt = parse_time(row.expiry)
+    if expiry_dt:
+        return (0, expiry_dt.astimezone(timezone.utc).isoformat())
+    return (1, row.contract_month or row.event_slug)
+
+
+def relative_value_key(row: RelativeValueRow) -> Tuple[str, str, str, str, float]:
+    return (
+        row.asset,
+        row.event_slug,
+        row.market_id,
+        row.direction,
+        round(row.strike, 6),
+    )
+
+
+def read_nearest_snapshot(path: Path, target_dt: datetime, tolerance: timedelta = timedelta(hours=36)) -> Optional[Dict[str, Any]]:
+    if not path.exists():
+        return None
+    best: Optional[Dict[str, Any]] = None
+    best_distance: Optional[timedelta] = None
+    with path.open(encoding="utf-8") as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                snapshot = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            distance = abs(snapshot_time(snapshot) - target_dt)
+            if best_distance is None or distance < best_distance:
+                best = snapshot
+                best_distance = distance
+    if best_distance is None or best_distance > tolerance:
+        return None
+    return best
+
+
+def attach_edge_history(
+    rows: List[RelativeValueRow],
+    snapshot_path: Path,
+    latest_valuations: Dict[str, str],
+    min_liquidity: float,
+) -> None:
+    if not rows:
+        return
+    current_dt = snapshot_time({"timestamp": rows[0].timestamp})
+    previous_snapshot = read_nearest_snapshot(snapshot_path, current_dt - timedelta(days=7))
+    if not previous_snapshot:
+        return
+    previous_rows = build_rows(
+        previous_snapshot,
+        latest_valuations=latest_valuations,
+        hyperliquid_overrides={},
+        min_liquidity=min_liquidity,
+    )
+    previous_by_key = {
+        relative_value_key(row): row
+        for row in previous_rows
+        if row.edge_pts_per_dte is not None
+    }
+    for row in rows:
+        previous = previous_by_key.get(relative_value_key(row))
+        if previous and row.edge_pts_per_dte is not None and previous.edge_pts_per_dte is not None:
+            row.edge_pts_per_dte_7d_change = row.edge_pts_per_dte - previous.edge_pts_per_dte
 
 
 def row_to_dict(row: RelativeValueRow) -> Dict[str, Any]:
@@ -679,13 +797,41 @@ def top_rows(rows: List[RelativeValueRow], limit: int = 80) -> List[RelativeValu
     )[:limit]
 
 
+def manual_shadow_side(row: RelativeValueRow) -> str:
+    return "no" if row.best_expression == "sell_yes_or_buy_no" else "yes"
+
+
+def manual_shadow_signal_type(row: RelativeValueRow) -> str:
+    if manual_shadow_side(row) == "no":
+        return "USER_PM_IV_TOUCH_RICH_NO"
+    return "USER_PM_IV_TOUCH_CHEAP_YES"
+
+
+def manual_shadow_command(row: RelativeValueRow) -> str:
+    side = manual_shadow_side(row)
+    reason = (
+        f"PM YES {fmt_pct(row.pm_yes_price)} vs IV touch model "
+        f"{fmt_pct(row.options_touch_adjusted_prob)}; edge {fmt_pts(row.edge_score)} pts."
+    )
+    return (
+        "python3 scripts/add_manual_iv_touch_shadow.py "
+        f"--event {row.event_slug} "
+        f"--market-id {row.market_id} "
+        f"--side {side} "
+        f"--signal-type {manual_shadow_signal_type(row)} "
+        f"--reason {json.dumps(reason)}"
+    )
+
+
 def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    visible = top_rows(rows, limit=len(rows))
+    visible = rows
     generated = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     body_rows = []
     for row in visible:
         cls = html_class(row.edge_score)
+        command = manual_shadow_command(row)
+        side = manual_shadow_side(row).upper()
         body_rows.append(
             "<tr>"
             f"<td>{html.escape(row.asset)}</td>"
@@ -701,7 +847,10 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
             f"<td>{html.escape(fmt_num(row.settlement_skew_yes, 2))}</td>"
             f"<td>{html.escape(fmt_pct(row.options_touch_adjusted_prob))}</td>"
             f"<td class='{cls}'>{html.escape(fmt_pts(row.edge_score))}</td>"
+            f"<td>{html.escape(fmt_pts(row.edge_pts_per_dte, 3))}</td>"
+            f"<td>{html.escape(fmt_pts(row.edge_pts_per_dte_7d_change, 3))}</td>"
             f"<td>{html.escape(row.best_expression)}</td>"
+            f"<td><button type='button' data-command='{html.escape(command, quote=True)}'>Copy add {html.escape(side)} shadow</button></td>"
             f"<td>{html.escape(fmt_num(row.pm_spread, 3))}</td>"
             f"<td>{html.escape(fmt_num(row.liquidity, 0))}</td>"
             f"<td>{html.escape(fmt_pct(row.option_iv))}</td>"
@@ -739,6 +888,8 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
     .neg3 {{ background: #a50f15; color: white; font-weight: 700; }}
     .missing {{ background: #d9d9d9; color: #555; }}
     .legend span {{ display: inline-block; padding: 4px 8px; margin-right: 4px; border: 1px solid #aaa; }}
+    button {{ cursor: pointer; white-space: nowrap; }}
+    .copied {{ background: #1f7a1f; color: white; }}
   </style>
 </head>
 <body>
@@ -752,8 +903,15 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
     Negative edge means PM YES looks rich versus options after using the PM bid. This is a
     screening report, not a risk-free arbitrage ledger. Cap YES is the maximum rational
     upside one-touch YES price implied by spot/strike before expiry risk or carry.
+    Edge/day normalizes edge by remaining days to expiry; 7d Δ edge/day compares the
+    current value with the nearest snapshot from seven days ago when available.
     Settle bucket markets are shown as volatility/tail-shape indicators; their YES prices
     should not be summed into a spot EV unless the buckets are cleanly exclusive.
+  </p>
+  <p>
+    Manual shadow buttons copy an exact command for adding the selected row as a manual
+    IV-touch shadow trade on the repo/VPS. The heatmap is static, so copying the command
+    is the write-safe path until a private authenticated action endpoint is added.
   </p>
   <div class="legend">
     <span class="pos3">+20 pts</span>
@@ -780,7 +938,10 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         <th>Tail Skew</th>
         <th>Options Prob</th>
         <th>Edge Pts</th>
+        <th>Edge/Day</th>
+        <th>7d Δ Edge/Day</th>
         <th>Best Expression</th>
+        <th>Manual Shadow</th>
         <th>PM Spread</th>
         <th>Liquidity</th>
         <th>Opt IV</th>
@@ -795,6 +956,25 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
       {''.join(body_rows)}
     </tbody>
   </table>
+  <script>
+    document.addEventListener("click", async (event) => {{
+      const button = event.target.closest("button[data-command]");
+      if (!button) return;
+      const command = button.getAttribute("data-command") || "";
+      try {{
+        await navigator.clipboard.writeText(command);
+        const original = button.textContent;
+        button.textContent = "Copied";
+        button.classList.add("copied");
+        setTimeout(() => {{
+          button.textContent = original;
+          button.classList.remove("copied");
+        }}, 1500);
+      }} catch (err) {{
+        window.prompt("Copy this command to add the manual shadow trade:", command);
+      }}
+    }});
+  </script>
 </body>
 </html>
 """
@@ -829,6 +1009,16 @@ def main() -> None:
         latest_valuations=latest_valuations,
         hyperliquid_overrides=hyperliquid_overrides,
         min_liquidity=args.min_liquidity,
+    )
+    attach_edge_history(rows, args.snapshot, latest_valuations, args.min_liquidity)
+    rows.sort(
+        key=lambda r: (
+            expiry_sort_key(r),
+            -(abs(r.edge_score) if r.edge_score is not None else -1),
+            r.asset,
+            r.event_slug,
+            r.strike,
+        )
     )
     write_csv(rows, args.csv)
     write_html(rows, args.html, str(snapshot.get("timestamp", "")))

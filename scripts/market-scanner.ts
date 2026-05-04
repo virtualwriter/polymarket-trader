@@ -109,6 +109,29 @@ const CME_OPTIONS_CONFIG = [
 ];
 const TRADINGVIEW_OPTIONS_ENABLED = process.env.TRADINGVIEW_OPTIONS_ENABLED === "1" || process.env.TRADINGVIEW_OPTIONS_ENABLED === "true";
 
+function monthSlug(date: Date): string {
+  return date.toLocaleString("en-US", { month: "long", timeZone: "UTC" }).toLowerCase();
+}
+
+function addMonths(date: Date, months: number): Date {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth() + months, 1));
+}
+
+function currentMonthTouchEventSlugs(now = new Date()): string[] {
+  const months = [addMonths(now, 0), addMonths(now, 1)];
+  return months.flatMap((date) => {
+    const month = monthSlug(date);
+    const year = date.getUTCFullYear();
+    return [
+      `what-price-will-bitcoin-hit-in-${month}-${year}`,
+      `what-price-will-xauusd-hit-in-${month}-${year}`,
+      `what-price-will-amzn-hit-in-${month}-${year}`,
+      `what-price-will-cl-hit-in-${month}-${year}`,
+      `what-price-will-wti-hit-in-${month}-${year}`,
+    ];
+  });
+}
+
 const POLYMARKET_EVENT_SLUGS = [
   "what-price-will-bitcoin-hit-before-2027",
   "what-price-will-bitcoin-hit-in-may-2026",
@@ -123,7 +146,8 @@ const POLYMARKET_EVENT_SLUGS = [
   "cl-hit-jun-2026",
   "cl-over-under-jun-2026",
   "cl-settle-jun-2026",
-];
+  ...currentMonthTouchEventSlugs(),
+].filter((slug, idx, arr) => arr.indexOf(slug) === idx);
 const POLYMARKET_SEARCH_KEYWORDS = ["amazon stock", "AMZN"];
 
 const JSON_OUTPUT = process.argv.includes("--json");
