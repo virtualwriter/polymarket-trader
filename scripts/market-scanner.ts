@@ -111,9 +111,12 @@ const TRADINGVIEW_OPTIONS_ENABLED = process.env.TRADINGVIEW_OPTIONS_ENABLED === 
 
 const POLYMARKET_EVENT_SLUGS = [
   "what-price-will-bitcoin-hit-before-2027",
+  "what-price-will-bitcoin-hit-in-may-2026",
   "what-price-will-hyperliquid-hit-before-2027",
   "what-will-gold-gc-hit-by-end-of-december",
+  "what-price-will-xauusd-hit-in-may-2026",
   "what-price-will-xauusd-hit-in-april-2026",
+  "what-price-will-amzn-hit-in-may-2026",
   "gc-hit-jun-2026",
   "gc-settle-jun-2026",
   "gc-over-under-jun-2026",

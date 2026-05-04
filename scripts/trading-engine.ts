@@ -32,6 +32,9 @@ const MAX_BANKROLL = 100;
 const MAX_OPEN_POSITIONS = 15;
 const HEATMAP_SHADOW_MAX_SPREAD = 0.01;
 const HEATMAP_SHADOW_MIN_LIQUIDITY = 1000;
+const MONOTONIC_ARB_MAX_YES_SPREAD = 0.01;
+const MONOTONIC_ARB_MIN_GROSS_EDGE = 0.0001;
+const MONOTONIC_ARB_ASSETS = new Set(["BTC", "GOLD", "OIL", "AMZN"]);
 const UNDERLYING_CAP_ENTRY_MAX_SPREAD = 0.02;
 const UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY = 1000;
 const UNDERLYING_CAP_BUY_NO_RATIO = 1.03;
@@ -81,6 +84,18 @@ const FUNDING_CHASE_MOVE_PCT = 4;
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
+interface PolymarketPackageLeg {
+  role: "broad_yes" | "narrow_no";
+  instrumentType: "pm_yes" | "pm_no";
+  instrumentId: string;
+  instrumentLabel: string;
+  entryPrice: number;
+  strike: number;
+  direction: "above" | "below";
+  yesBid: number;
+  yesAsk: number;
+}
+
 interface Position {
   id: string;
   openedAt: string;
@@ -97,9 +112,10 @@ interface Position {
   targetPct: number | null;
   stopPct: number;
   expiryDate: string;
-  instrumentType?: "spot" | "hl_perp" | "pm_yes" | "pm_no" | "legacy_asset";
+  instrumentType?: "spot" | "hl_perp" | "pm_yes" | "pm_no" | "pm_package" | "legacy_asset";
   instrumentId?: string;
   instrumentLabel?: string;
+  packageLegs?: PolymarketPackageLeg[];
   entryUnderlyingPrice?: number;
   currentUnderlyingPrice?: number;
   fundingPnlAccrued?: number;
@@ -249,7 +265,7 @@ interface BlockedSignalShadow {
   status: "open" | "resolved" | "cancelled";
   blockedAt: string;
   resolvedAt?: string;
-  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short" | "relative_value_heatmap";
+  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short" | "relative_value_heatmap" | "monotonic_arb_shadow";
   signalType: string;
   asset: string;
   venue: Signal["venue"];
@@ -1174,6 +1190,24 @@ function findPolymarketContractMark(
   return { price, underlyingPrice: snapshot.spots[position.asset] ?? null };
 }
 
+function findPolymarketPackageMark(
+  snapshot: InstrumentSnapshotFile,
+  position: Position,
+): { price: number; underlyingPrice: number | null } | null {
+  if (!position.packageLegs || position.packageLegs.length === 0) return null;
+
+  let packagePrice = 0;
+  for (const leg of position.packageLegs) {
+    const [eventSlug, marketId] = leg.instrumentId.split("::");
+    const event = snapshot.polymarket.find((candidate) => candidate.slug === eventSlug);
+    const contract = event?.contracts.find((candidate) => candidate.marketId === marketId);
+    if (!contract) return null;
+    packagePrice += polymarketExitPrice(contract, leg.instrumentType);
+  }
+
+  return { price: packagePrice, underlyingPrice: snapshot.spots[position.asset] ?? null };
+}
+
 function applyConservativePolymarketEntry(position: Position, latestSnapshot: InstrumentSnapshotFile | null) {
   if (!latestSnapshot || (position.instrumentType !== "pm_yes" && position.instrumentType !== "pm_no")) return;
   const [eventSlug, marketId] = position.instrumentId?.split("::") ?? [];
@@ -1319,6 +1353,14 @@ function markPosition(
     if (!pmMark) return null;
     currentPrice = pmMark.price;
     underlyingPrice = pmMark.underlyingPrice;
+    const shares = position.size / position.entryPrice;
+    marketPnl = shares * (currentPrice - position.entryPrice);
+  } else if (position.instrumentType === "pm_package") {
+    if (!latestSnapshot) return null;
+    const packageMark = findPolymarketPackageMark(latestSnapshot, position);
+    if (!packageMark) return null;
+    currentPrice = packageMark.price;
+    underlyingPrice = packageMark.underlyingPrice;
     const shares = position.size / position.entryPrice;
     marketPnl = shares * (currentPrice - position.entryPrice);
   } else if (position.instrumentType === "hl_perp") {
@@ -1872,6 +1914,147 @@ function recordRelativeValueHeatmapShadows(
   return recorded;
 }
 
+function recordMonotonicArbShadows(
+  latestRow: SnapshotRow,
+  latestSnapshot: InstrumentSnapshotFile | null,
+  learningParams: LearningParams,
+  blockedSignals: BlockedSignalShadow[],
+): number {
+  if (!latestSnapshot) return 0;
+  let recorded = 0;
+
+  for (const event of latestSnapshot.polymarket) {
+    if (!MONOTONIC_ARB_ASSETS.has(event.asset)) continue;
+    const liveContracts = event.contracts.filter((contract) =>
+      contract.active !== false &&
+      !contract.closed &&
+      contract.bestBid != null &&
+      contract.bestAsk != null &&
+      contract.bestBid > 0 &&
+      contract.bestAsk > 0 &&
+      (contract.spread ?? Math.max(0, contract.bestAsk - contract.bestBid)) <= MONOTONIC_ARB_MAX_YES_SPREAD
+    );
+
+    for (const direction of ["above", "below"] as const) {
+      const directional = liveContracts
+        .filter((contract) => contract.direction === direction)
+        .sort((a, b) => a.strike - b.strike);
+
+      for (let i = 0; i < directional.length; i++) {
+        for (let j = i + 1; j < directional.length; j++) {
+          const lower = directional[i];
+          const higher = directional[j];
+          const broad = direction === "above" ? lower : higher;
+          const narrow = direction === "above" ? higher : lower;
+          const broadAsk = broad.bestAsk ?? 0;
+          const narrowBid = narrow.bestBid ?? 0;
+          const grossEdge = narrowBid - broadAsk;
+          if (grossEdge < MONOTONIC_ARB_MIN_GROSS_EDGE) continue;
+
+          const packageId = `${event.slug}::YES-${broad.marketId}+NO-${narrow.marketId}`;
+          if (blockedSignals.some((shadow) =>
+            shadow.status === "open" &&
+            shadow.signalType === "MONOTONIC_ARB" &&
+            shadow.position.instrumentId === packageId
+          )) continue;
+
+          const now = new Date().toISOString();
+          const narrowNoAsk = 1 - narrowBid;
+          const packageCost = broadAsk + narrowNoAsk;
+          const expiryDate = broad.endDate || narrow.endDate || new Date(Date.now() + 30 * 86400000).toISOString();
+          const position: Position = {
+            id: `MA-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+            openedAt: now,
+            asset: event.asset,
+            venue: "polymarket",
+            direction: "long",
+            entryPrice: packageCost,
+            currentPrice: packageCost,
+            size: TRADE_SIZE,
+            leverage: 1,
+            signalType: "MONOTONIC_ARB",
+            hypothesisId: null,
+            thesis: `[MONOTONIC ARB SHADOW] Buy YES on broader ${direction} strike ${broad.strike} @ ${broadAsk.toFixed(4)} and buy NO on narrower ${direction} strike ${narrow.strike} @ ${narrowNoAsk.toFixed(4)}. Gross locked edge ${(grossEdge * 100).toFixed(2)}c per paired share before fees/slippage; track to expiry before production.`,
+            targetPct: null,
+            stopPct: 100,
+            expiryDate,
+            instrumentType: "pm_package",
+            instrumentId: packageId,
+            instrumentLabel: `${event.slug} — monotonic arb package — YES ${broad.strike} / NO ${narrow.strike}`,
+            packageLegs: [
+              {
+                role: "broad_yes",
+                instrumentType: "pm_yes",
+                instrumentId: `${event.slug}::${broad.marketId}`,
+                instrumentLabel: `${event.slug} — YES — ${broad.question}`,
+                entryPrice: broadAsk,
+                strike: broad.strike,
+                direction: broad.direction,
+                yesBid: broad.bestBid ?? 0,
+                yesAsk: broadAsk,
+              },
+              {
+                role: "narrow_no",
+                instrumentType: "pm_no",
+                instrumentId: `${event.slug}::${narrow.marketId}`,
+                instrumentLabel: `${event.slug} — NO — ${narrow.question}`,
+                entryPrice: narrowNoAsk,
+                strike: narrow.strike,
+                direction: narrow.direction,
+                yesBid: narrowBid,
+                yesAsk: narrow.bestAsk ?? 0,
+              },
+            ],
+            entryUnderlyingPrice: getAssetPrice(latestRow, event.asset) ?? latestSnapshot.spots[event.asset] ?? undefined,
+            currentUnderlyingPrice: getAssetPrice(latestRow, event.asset) ?? latestSnapshot.spots[event.asset] ?? undefined,
+          };
+
+          const maxSpread = Math.max(
+            broad.spread ?? Math.max(0, (broad.bestAsk ?? 0) - (broad.bestBid ?? 0)),
+            narrow.spread ?? Math.max(0, (narrow.bestAsk ?? 0) - (narrow.bestBid ?? 0)),
+          );
+          const minLiquidity = Math.min(broad.liquidity ?? 0, narrow.liquidity ?? 0);
+          const flags: string[] = [];
+          if (maxSpread > MONOTONIC_ARB_MAX_YES_SPREAD) flags.push("wide_pm_spread");
+          if (packageCost >= 1) flags.push("no_locked_edge");
+
+          blockedSignals.push({
+            id: position.id,
+            status: "open",
+            blockedAt: now,
+            blockedReason: "monotonic_arb_shadow",
+            signalType: "MONOTONIC_ARB",
+            asset: event.asset,
+            venue: "polymarket",
+            direction: "long",
+            confidence: Number(Math.min(1, grossEdge / 0.01).toFixed(4)),
+            thesis: position.thesis,
+            marketQuality: {
+              yesBid: Number(narrowBid.toFixed(4)),
+              yesAsk: Number(broadAsk.toFixed(4)),
+              yesSpread: Number(maxSpread.toFixed(4)),
+              liquidity: Number(minLiquidity.toFixed(2)),
+              flags,
+            },
+            learningParamsSnapshot: {
+              macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+              contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
+              positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
+              llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
+              momentumLongExpiryDays: learningParams.momentumLongExpiryDays,
+              signalRisk: learningParams.signalRisk,
+            },
+            position,
+          });
+          recorded++;
+        }
+      }
+    }
+  }
+
+  return recorded;
+}
+
 function cancelOpenRelativeValueHeatmapShadows(blockedSignals: BlockedSignalShadow[]): string[] {
   const now = new Date().toISOString();
   const notes: string[] = [];
@@ -2065,6 +2248,14 @@ function blockedSignalObservations(summary: BlockedSignalLearningSummary): strin
         notes.push(`${base} Polymarket proxy short is weak: ${row.wouldHaveLost}/${row.resolved} NO-upside proxy shorts would have lost, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
       } else {
         notes.push(`${base} Polymarket proxy short is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
+      }
+    } else if (row.signalType === "MONOTONIC_ARB") {
+      if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
+        notes.push(`MONOTONIC_ARB setup category is validating: ${row.wouldHaveWon}/${row.resolved} shadow packages settled profitably, avg P&L ${row.avgPnlPct.toFixed(2)}%. Review fee/slippage assumptions before live promotion.`);
+      } else if (row.wouldHaveLost > 0) {
+        notes.push(`MONOTONIC_ARB setup category has execution/model breaks: ${row.wouldHaveLost}/${row.resolved} shadow packages lost money despite locked-edge screening, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
+      } else {
+        notes.push(`MONOTONIC_ARB setup category is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadow packages, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
       }
     } else if (row.signalType.startsWith("USER_")) {
       if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
@@ -3908,6 +4099,7 @@ async function main() {
         ? "Missing downside leg"
         : shadow.blockedReason === "polymarket_proxy_short" ? "PM proxy short"
         : shadow.blockedReason === "relative_value_heatmap" ? "Relative-value heatmap"
+        : shadow.blockedReason === "monotonic_arb_shadow" ? "Monotonic arb"
         : shadow.blockedReason === "manual_shadow_trade" ? "Manual shadow" : "Blocked";
       console.log(`    ${emoji} ${shadowLabel}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${result.closeReason}: ${result.pnlPct >= 0 ? "+" : ""}${result.pnlPct.toFixed(2)}%`);
     }
@@ -3915,6 +4107,10 @@ async function main() {
   const newRelativeValueShadows = recordRelativeValueHeatmapShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals);
   if (newRelativeValueShadows > 0) {
     console.log(`\n  Opened ${newRelativeValueShadows} relative-value heatmap shadow trades.`);
+  }
+  const newMonotonicArbShadows = recordMonotonicArbShadows(latestRow, latestSnapshot, learningParams, blockedSignals);
+  if (newMonotonicArbShadows > 0) {
+    console.log(`\n  Opened ${newMonotonicArbShadows} monotonic-arb shadow package trades.`);
   }
   let proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   let blockedSummary = summarizeBlockedSignals(blockedSignals);
