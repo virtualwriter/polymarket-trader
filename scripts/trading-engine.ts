@@ -32,6 +32,10 @@ const MAX_BANKROLL = 100;
 const MAX_OPEN_POSITIONS = 15;
 const HEATMAP_SHADOW_MAX_SPREAD = 0.01;
 const HEATMAP_SHADOW_MIN_LIQUIDITY = 1000;
+const UNDERLYING_CAP_ENTRY_MAX_SPREAD = 0.02;
+const UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY = 1000;
+const UNDERLYING_CAP_BUY_NO_RATIO = 1.03;
+const UNDERLYING_CAP_BUY_YES_RATIO = 0.35;
 const RELATIVE_VALUE_HEATMAP_SHADOWS_ENABLED =
   process.env.RELATIVE_VALUE_HEATMAP_SHADOWS_ENABLED === "1" ||
   process.env.RELATIVE_VALUE_HEATMAP_SHADOWS_ENABLED === "true";
@@ -351,6 +355,7 @@ interface RelativeValueObservation {
   pmYes: number | null;
   pmBid: number | null;
   pmAsk: number | null;
+  pmSpread: number | null;
   modelProb: number | null;
   underlyingCapYes: number | null;
   pmToUnderlyingCapRatio: number | null;
@@ -528,6 +533,7 @@ function readRelativeValueObservations(limit = 30): RelativeValueObservation[] {
         pmYes: num(row.pm_yes_price),
         pmBid: num(row.pm_best_bid),
         pmAsk: num(row.pm_best_ask),
+        pmSpread: num(row.pm_spread),
         modelProb: num(row.options_touch_adjusted_prob),
         underlyingCapYes: num(row.underlying_cap_yes_price),
         pmToUnderlyingCapRatio: capRatio,
@@ -3002,12 +3008,18 @@ function derivedHypothesisConditionValue(key: string, valuationRows: SnapshotRow
 }
 
 function relativeValueConditionValue(key: string, relativeValueRows: RelativeValueObservation[]): number | null {
-  const match = key.match(/^([a-z]+)_pm_underlying_cap_(ratio|edge_pts)_(max|min|avg)$/);
+  const match = key.match(/^([a-z]+)_pm_underlying_cap_(ratio|edge_pts)_(max|min|avg)(_tight)?$/);
   if (!match) return null;
-  const [, rawAsset, metric, reducer] = match;
+  const [, rawAsset, metric, reducer, tightOnly] = match;
   const asset = rawAsset.toUpperCase();
   const values = relativeValueRows
     .filter((row) => row.asset === asset && row.direction === "above" && row.underlyingCapYes !== null)
+    .filter((row) => !tightOnly || (
+      row.pmSpread !== null
+      && row.pmSpread <= UNDERLYING_CAP_ENTRY_MAX_SPREAD
+      && row.liquidity !== null
+      && row.liquidity >= UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY
+    ))
     .map((row) => metric === "ratio" ? row.pmToUnderlyingCapRatio : row.edgePts)
     .filter((value): value is number => value !== null);
   if (values.length === 0) return null;
@@ -3461,7 +3473,7 @@ IMPORTANT RULES:
 - Avoid suggesting Polymarket trades when yesSpread > ${(HEATMAP_SHADOW_MAX_SPREAD * 100).toFixed(0)}c, liquidity < ${HEATMAP_SHADOW_MIN_LIQUIDITY}, or marketQuality flags include wide_pm_spread / low_pm_liquidity / missing_bid_ask. Treat those as "avoid due to spread/liquidity", not as clean directional evidence.
 - Use RELATIVE-VALUE HEATMAP OBSERVATIONS to look for clean cross-venue edges. If you suggest a trade because of this section, say "relative-value heatmap" in the thesis so its performance can be reviewed.
 - For upside "hit/reach" contracts, use underlyingCapYes and pmToUnderlyingCapRatio to interpret sentiment against the underlying payoff cap. A ratio above 1.0 means PM YES is richer than the spot/strike cap; 0.85-1.0 means very bullish cap-adjacent pricing; below ~0.35 means weak sentiment relative to the underlying upside payoff.
-- Supported hypothesis aggregate keys for this cap-ratio setup: btc_pm_underlying_cap_ratio_max/min/avg, hype_pm_underlying_cap_ratio_max/min/avg, gold_pm_underlying_cap_ratio_max/min/avg, oil_pm_underlying_cap_ratio_max/min/avg, and the matching *_edge_pts_max/min/avg keys.
+- Supported hypothesis aggregate keys for this cap-ratio setup: btc_pm_underlying_cap_ratio_max/min/avg, hype_pm_underlying_cap_ratio_max/min/avg, gold_pm_underlying_cap_ratio_max/min/avg, oil_pm_underlying_cap_ratio_max/min/avg, and the matching *_edge_pts_max/min/avg keys. Add _tight before the comparison suffix to require spread <= ${(UNDERLYING_CAP_ENTRY_MAX_SPREAD * 100).toFixed(0)}c and liquidity >= ${UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY}, e.g. btc_pm_underlying_cap_ratio_max_tight > ${UNDERLYING_CAP_BUY_NO_RATIO.toFixed(2)} for buy-NO over-cap tests or btc_pm_underlying_cap_ratio_min_tight < ${UNDERLYING_CAP_BUY_YES_RATIO.toFixed(2)} for buy-YES cheap-vs-cap tests.
 - You may return \"action: close\" to exit an existing open position; use that only when the thesis has clearly weakened or a target/stop is likely stale
 - For \"action: close\", set direction to long, short, or any to identify which existing position to close
 - Keep parameter updates inside these bounds:

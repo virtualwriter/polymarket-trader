@@ -14927,5 +14927,43 @@
     "promotedToSignal": false,
     "postMortem": null,
     "source": "llm"
+  },
+  {
+    "id": "H-525",
+    "setupId": "pm_odds_underlying_payoff_cap",
+    "setupLabel": "PM odds / underlying payoff cap",
+    "created": "2026-05-04",
+    "description": "Actionable over-cap payoff arbitrage test: buy NO on upside hit contracts only when PM YES is meaningfully above the spot/strike payoff cap with tight spread and sufficient liquidity.",
+    "conditions": {
+      "btc_pm_underlying_cap_ratio_max_tight": "> 1.03"
+    },
+    "prediction": "Buying NO should outperform over 7-14 days when BTC upside hit contracts price YES more than 3% above the underlying payoff cap; BTC or YES odds should decline as cap-rich optimism normalizes.",
+    "timeframeDays": 14,
+    "confidence": 0.75,
+    "tests": [],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
+  },
+  {
+    "id": "H-526",
+    "setupId": "pm_odds_underlying_payoff_cap",
+    "setupLabel": "PM odds / underlying payoff cap",
+    "created": "2026-05-04",
+    "description": "Actionable cheap-vs-cap upside test: buy YES on upside hit contracts only when PM YES trades below 35% of the spot/strike payoff cap with tight spread and sufficient liquidity.",
+    "conditions": {
+      "btc_pm_underlying_cap_ratio_min_tight": "< 0.35"
+    },
+    "prediction": "Buying YES should outperform over 7-14 days when BTC upside hit contracts are deeply discounted versus the underlying payoff cap and market quality is tradable; BTC should rally >2% or YES odds should reprice higher.",
+    "timeframeDays": 14,
+    "confidence": 0.74,
+    "tests": [],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
   }
 ]
