@@ -3369,9 +3369,9 @@
       }
     ],
     "winRate": 0.6666666666666666,
-    "status": "promoted",
-    "promotedToSignal": true,
-    "postMortem": "PERFECT validation - HYPE OI surged to record 863M with spot at 41.7, exactly matching conditions. Funding normalized to -5.37% from extreme negative. Breakout continuation confirmed. | Perfect execution - HYPE OI surged to record 867M with spot breakout above 42, exactly matching conditions. Framework proving exceptional at identifying institutional breakout participation. | Perfect validation - HYPE OI surged to 867M with spot breakout above 42, exactly as predicted. Framework correctly identified institutional participation during breakout phases. | Perfect validation - HYPE OI surged to record 860M with spot above 41.8 and funding normalized, creating sustained breakout as predicted. Framework precision exceptional. | Excellent confirmation - HYPE OI surge above 860M with spot above 41.8 created sustained momentum. Pattern holding as OI stabilizes above 860M while spot consolidates, setting up for potential next leg. | Setup family promoted: 69% win rate over 42 clean completed tests across 44 variants.",
+    "status": "archived",
+    "promotedToSignal": false,
+    "postMortem": "PERFECT validation - HYPE OI surged to record 863M with spot at 41.7, exactly matching conditions. Funding normalized to -5.37% from extreme negative. Breakout continuation confirmed. | Perfect execution - HYPE OI surged to record 867M with spot breakout above 42, exactly matching conditions. Framework proving exceptional at identifying institutional breakout participation. | Perfect validation - HYPE OI surged to 867M with spot breakout above 42, exactly as predicted. Framework correctly identified institutional participation during breakout phases. | Perfect validation - HYPE OI surged to record 860M with spot above 41.8 and funding normalized, creating sustained breakout as predicted. Framework precision exceptional. | Excellent confirmation - HYPE OI surge above 860M with spot above 41.8 created sustained momentum. Pattern holding as OI stabilizes above 860M while spot consolidates, setting up for potential next leg. | Setup family promoted: 69% win rate over 42 clean completed tests across 44 variants. | Replaced by regime-relative promoted variant H-521 so production signals no longer depend on hard-coded spot thresholds.",
     "source": "llm",
     "setupId": "hype_breakout_oi_surge_momentum",
     "setupLabel": "HYPE breakout / OI surge momentum"
@@ -4269,9 +4269,9 @@
       }
     ],
     "winRate": 1,
-    "status": "promoted",
-    "promotedToSignal": true,
-    "postMortem": "Confirming - BTC dropped below 72k after P/C extremes, now testing 71k level exactly as predicted with systematic call unwind accelerating. | TRACKING - BTC dropped below 72k after P/C extremes, confirming systematic call unwind pattern. Pullback accelerating as predicted. | Setup family promoted: 75% win rate over 16 clean completed tests across 17 variants.",
+    "status": "archived",
+    "promotedToSignal": false,
+    "postMortem": "Confirming - BTC dropped below 72k after P/C extremes, now testing 71k level exactly as predicted with systematic call unwind accelerating. | TRACKING - BTC dropped below 72k after P/C extremes, confirming systematic call unwind pattern. Pullback accelerating as predicted. | Setup family promoted: 75% win rate over 16 clean completed tests across 17 variants. | Replaced by regime-relative promoted variant H-522 so production signals no longer depend on hard-coded spot thresholds.",
     "source": "llm",
     "setupId": "btc_put_call_exhaustion_reversal",
     "setupLabel": "BTC put-call exhaustion / reversal"
@@ -6714,9 +6714,9 @@
       }
     ],
     "winRate": 0.6808510638297872,
-    "status": "promoted",
-    "promotedToSignal": true,
-    "postMortem": "Setup family promoted: 72% win rate over 43 clean completed tests across 47 variants.",
+    "status": "archived",
+    "promotedToSignal": false,
+    "postMortem": "Setup family promoted: 72% win rate over 43 clean completed tests across 47 variants. | Replaced by regime-relative promoted variant H-523 so production signals no longer depend on hard-coded spot thresholds.",
     "source": "llm",
     "setupId": "btc_iv_compression_vol_reversion",
     "setupLabel": "BTC IV compression / vol reversion"
@@ -14843,5 +14843,70 @@
     "source": "llm",
     "setupId": "hype_oi_distribution_exhaustion_reversal",
     "setupLabel": "HYPE OI distribution exhaustion / reversal"
+  },
+  {
+    "id": "H-521",
+    "setupId": "hype_breakout_oi_surge_momentum",
+    "setupLabel": "HYPE breakout / OI surge momentum",
+    "created": "2026-05-04",
+    "description": "HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
+    "conditions": {
+      "hype_hl_oi_percentile_24h": "> 85",
+      "hype_spot_pct_from_7d_high": "> -6",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_funding_ann_percentile_7d": "> 60"
+    },
+    "prediction": "HYPE sustains upside momentum for 5-7 days when relative OI expansion confirms price strength near recent highs.",
+    "timeframeDays": 7,
+    "confidence": 0.82,
+    "tests": [],
+    "winRate": 0.6666666666666666,
+    "status": "promoted",
+    "promotedToSignal": true,
+    "postMortem": "Regime-relative replacement for H-116; inherits setup-family promotion while removing brittle absolute spot thresholds.",
+    "source": "llm"
+  },
+  {
+    "id": "H-522",
+    "setupId": "btc_put_call_exhaustion_reversal",
+    "setupLabel": "BTC put-call exhaustion / reversal",
+    "created": "2026-05-04",
+    "description": "BTC call-positioning exhaustion reversal when spot rolls over from a recent 7d high while below its 24h average and BTC put/call ratio is in the bottom quartile of the last 30d range.",
+    "conditions": {
+      "btc_spot_pct_from_7d_high": "between -8 and -1",
+      "btc_spot_pct_vs_24h_sma": "< 0",
+      "btc_ibit_pc_ratio_percentile_30d": "< 25"
+    },
+    "prediction": "BTC declines over the next 3-5 days as crowded call positioning unwinds after a relative high, without relying on a fixed spot-price level.",
+    "timeframeDays": 5,
+    "confidence": 0.78,
+    "tests": [],
+    "winRate": 1,
+    "status": "promoted",
+    "promotedToSignal": true,
+    "postMortem": "Regime-relative replacement for H-148; inherits setup-family promotion while removing brittle absolute spot thresholds.",
+    "source": "llm"
+  },
+  {
+    "id": "H-523",
+    "setupId": "btc_iv_compression_vol_reversion",
+    "setupLabel": "BTC IV compression / vol reversion",
+    "created": "2026-05-04",
+    "description": "BTC PM IV compression / vol reversion when PM IV is in the bottom 20% of its 30d range and at least 1.25 standard deviations below its 30d mean while BTC spot consolidates within 5% of its 7d high.",
+    "conditions": {
+      "btc_pm_iv_percentile_30d": "< 20",
+      "btc_pm_iv_zscore_30d": "< -1.25",
+      "btc_spot_pct_from_7d_high": "> -5",
+      "btc_opt_iv_30d_percentile_30d": "> 20"
+    },
+    "prediction": "BTC volatility expands within one week as prediction-market IV mean reverts from relative compression near recent spot highs.",
+    "timeframeDays": 7,
+    "confidence": 0.9,
+    "tests": [],
+    "winRate": 0.6808510638297872,
+    "status": "promoted",
+    "promotedToSignal": true,
+    "postMortem": "Regime-relative replacement for H-234; inherits setup-family promotion while removing brittle absolute spot thresholds.",
+    "source": "llm"
   }
 ]

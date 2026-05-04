@@ -3078,6 +3078,16 @@ function hypothesisConditionsSatisfied(hypothesis: Hypothesis, valuationRows: Sn
   return entries.every(([key, expression]) => evaluateHypothesisCondition(key, String(expression), valuationRows, hypothesis));
 }
 
+function hasRegimeRelativeConditions(hypothesis: Hypothesis): boolean {
+  return Object.keys(hypothesis.conditions ?? {}).some((key) => (
+    /^.+_pct_from_\d+[hd]_(high|low)$/.test(key)
+    || /^.+_pct_vs_\d+[hd]_sma$/.test(key)
+    || /^.+_percentile_\d+[hd]$/.test(key)
+    || /^.+_zscore_\d+[hd]$/.test(key)
+    || /^.+_change_pct_\d+[hd]$/.test(key)
+  ));
+}
+
 function inferHypothesisDirection(hypothesis: Hypothesis): "long" | "short" {
   const prediction = `${hypothesis.description} ${hypothesis.prediction}`.toLowerCase();
   return prediction.includes("decline") || prediction.includes("drop") || prediction.includes("down") || prediction.includes("falls")
@@ -3106,8 +3116,11 @@ function generatePromotedHypothesisSignals(
       const candidates = family.hypotheses
         .filter((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived")
         .filter((hypothesis) => inferHypothesisAsset(hypothesis) === promotedAsset)
+        .filter((hypothesis) => !hasRegimeRelativeConditions(representative) || hasRegimeRelativeConditions(hypothesis))
         .filter((hypothesis) => hypothesisConditionsSatisfied(hypothesis, rows))
         .sort((a, b) => {
+          const regimeRelativeDelta = Number(hasRegimeRelativeConditions(b)) - Number(hasRegimeRelativeConditions(a));
+          if (regimeRelativeDelta !== 0) return regimeRelativeDelta;
           if (b.winRate !== a.winRate) return b.winRate - a.winRate;
           if (b.confidence !== a.confidence) return b.confidence - a.confidence;
           return completedHypothesisTests(b).length - completedHypothesisTests(a).length;
