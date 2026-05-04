@@ -192,7 +192,18 @@ def read_latest_csv_row(path: Path) -> Dict[str, str]:
         return {}
     with path.open(newline="", encoding="utf-8") as fh:
         rows = list(csv.DictReader(fh))
-    return rows[-1] if rows else {}
+    if not rows:
+        return {}
+    # Scanner rows can temporarily miss an options source. Forward-fill each
+    # column so the report can still use the latest known IV for screening.
+    filled: Dict[str, str] = {}
+    for row in rows:
+        for key, value in row.items():
+            if value not in (None, ""):
+                filled[key] = value
+            elif key not in filled:
+                filled[key] = ""
+    return filled
 
 
 def fetch_hyperliquid_xyz_market(coin: str) -> Dict[str, Optional[float]]:
