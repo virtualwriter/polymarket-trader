@@ -6386,3 +6386,32 @@ Positioning exhaustion patterns demonstrating mathematical precision as institut
 
 ---
 
+### 2026-05-04 15:28 UTC
+
+**Portfolio:** $100.23 total | Cash $94.23 | 6 open | P&L $0.2345 | 56% win rate (106 trades)
+
+**Closed 2 trades:**
+- ✅ AMZN long via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT) → target: +$0.0408 (4.1%, market 0.0411, funding -0.0003)
+- ❌ AMZN short via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_LONG) → stop: $-0.0259 (-2.6%, market -0.0262, funding 0.0003)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 14.9pp (was 7.5, now -7.4)
+- [anomaly] oil_brent_spot = 113.84 is 2.0 std devs from mean since 2026-04-28 (108.82 ± 2.45)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.04 to -0.48
+
+**Blocked signal learning:**
+- Open blocked shadows: 7
+- Resolved blocked shadows: 48 (20 wins / 28 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 3/3 blocked trades would have won.
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (2W/2L across 4 resolved shadows, avg P&L 2.04%).
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT GOLD short via polymarket would have stop (-15.00%)
+- ❌ Missing downside leg: PM_IV_GT_OPT_IV_DOWNSIDE BTC short via polymarket would have stop (-5.88%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have stop (-2.17%)
+- ❌ Blocked: PROMOTED_HYPOTHESIS BTC short via spot would have stop (-3.65%)
+
+---
+
