@@ -391,7 +391,7 @@ def underlying_cap_signal(pm_yes: Optional[float], cap: Optional[float]) -> Tupl
 def settlement_bucket_metrics(contracts: Iterable[Dict[str, Any]]) -> Tuple[Optional[float], Optional[float], Optional[float], Optional[float]]:
     settle_contracts = [
         contract for contract in contracts
-        if "settle" in str(contract.get("question", "")).lower()
+        if "settle at" in str(contract.get("question", "")).lower()
         and safe_float(contract.get("yesPrice")) is not None
     ]
     if len(settle_contracts) < 2:
