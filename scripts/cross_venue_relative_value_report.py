@@ -70,6 +70,9 @@ class RelativeValueRow:
     pm_spread: Optional[float]
     liquidity: Optional[float]
     volume: Optional[float]
+    underlying_cap_yes_price: Optional[float]
+    pm_to_underlying_cap_ratio: Optional[float]
+    underlying_cap_signal: str
     buy_yes_edge_pts: Optional[float]
     sell_yes_edge_pts: Optional[float]
     best_expression: str
@@ -357,6 +360,30 @@ def touch_adjusted_probability(terminal_prob: Optional[float], direction: str, q
     return terminal_prob
 
 
+def underlying_cap_yes_price(spot: Optional[float], strike: Optional[float], direction: str, question: str) -> Optional[float]:
+    q = question.lower()
+    if direction != "above" or "hit" not in q and "reach" not in q:
+        return None
+    if not spot or not strike or spot <= 0 or strike <= 0 or strike <= spot:
+        return None
+    # If spot doubles to the strike, the underlying has a 100% return, so a
+    # binary YES priced above spot/strike pays less than simply holding spot.
+    return min(1.0, max(0.0, spot / strike))
+
+
+def underlying_cap_signal(pm_yes: Optional[float], cap: Optional[float]) -> Tuple[Optional[float], str]:
+    if pm_yes is None or cap is None or cap <= 0:
+        return None, ""
+    ratio = pm_yes / cap
+    if ratio > 1.0:
+        return ratio, "above_underlying_cap"
+    if ratio >= 0.85:
+        return ratio, "near_underlying_cap_bullish"
+    if ratio <= 0.35:
+        return ratio, "cheap_vs_underlying_cap_bearish"
+    return ratio, "mid_underlying_cap_ratio"
+
+
 def edge_bucket(score: Optional[float]) -> str:
     if score is None:
         return "no-options"
@@ -478,6 +505,8 @@ def build_rows(
             spread = safe_float(contract.get("spread"))
             if spread is None and bid is not None and ask is not None:
                 spread = ask - bid
+            cap_yes = underlying_cap_yes_price(spot, strike, direction, question)
+            cap_ratio, cap_signal = underlying_cap_signal(pm_yes, cap_yes)
 
             buy_edge = None
             sell_edge = None
@@ -515,6 +544,8 @@ def build_rows(
                 flags.append("perp_spot_basis")
             if asset == "OIL" and perp_source == "snapshot":
                 flags.append("oil_snapshot_uses_brent")
+            if cap_signal in {"above_underlying_cap", "near_underlying_cap_bullish", "cheap_vs_underlying_cap_bearish"}:
+                flags.append(cap_signal)
 
             notes = []
             if option_symbol and option_snapshot:
@@ -527,6 +558,8 @@ def build_rows(
                 notes.append(f"Settlement bucket modeled as probability between {range_bounds[0]:.0f} and {range_bounds[1]:.0f}.")
             if option_symbol == "IBIT":
                 notes.append("Strike scaled from underlying options proxy.")
+            if cap_yes is not None:
+                notes.append(f"Underlying upside cap YES price is {cap_yes:.1%}; PM trades at {cap_ratio:.0%} of cap." if cap_ratio is not None else f"Underlying upside cap YES price is {cap_yes:.1%}.")
 
             rows.append(
                 RelativeValueRow(
@@ -553,6 +586,9 @@ def build_rows(
                     pm_spread=spread,
                     liquidity=liquidity,
                     volume=safe_float(contract.get("volume")),
+                    underlying_cap_yes_price=cap_yes,
+                    pm_to_underlying_cap_ratio=cap_ratio,
+                    underlying_cap_signal=cap_signal,
                     buy_yes_edge_pts=buy_edge,
                     sell_yes_edge_pts=sell_edge,
                     best_expression=best_expression,
@@ -622,6 +658,8 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
             f"<td class='question'>{html.escape(row.contract_question)}</td>"
             f"<td>{html.escape(row.contract_month)}</td>"
             f"<td>{html.escape(fmt_pct(row.pm_yes_price))}</td>"
+            f"<td>{html.escape(fmt_pct(row.underlying_cap_yes_price))}</td>"
+            f"<td>{html.escape(fmt_num(row.pm_to_underlying_cap_ratio, 2))}</td>"
             f"<td>{html.escape(fmt_pct(row.options_touch_adjusted_prob))}</td>"
             f"<td class='{cls}'>{html.escape(fmt_pts(row.edge_score))}</td>"
             f"<td>{html.escape(row.best_expression)}</td>"
@@ -673,7 +711,8 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
   <p>
     Positive edge means the model thinks PM YES is cheap versus options after using the PM ask.
     Negative edge means PM YES looks rich versus options after using the PM bid. This is a
-    screening report, not a risk-free arbitrage ledger.
+    screening report, not a risk-free arbitrage ledger. Cap YES is the maximum rational
+    upside one-touch YES price implied by spot/strike before expiry risk or carry.
   </p>
   <div class="legend">
     <span class="pos3">+20 pts</span>
@@ -693,6 +732,8 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         <th>Contract</th>
         <th>Date</th>
         <th>PM YES</th>
+        <th>Cap YES</th>
+        <th>PM/Cap</th>
         <th>Options Prob</th>
         <th>Edge Pts</th>
         <th>Best Expression</th>
@@ -723,7 +764,9 @@ def print_summary(rows: List[RelativeValueRow]) -> None:
         edge = fmt_pts(row.edge_score)
         pm = fmt_pct(row.pm_yes_price)
         model = fmt_pct(row.options_touch_adjusted_prob)
-        print(f"  {edge:>7} pts | {row.asset:<5} | PM {pm:<6} vs model {model:<6} | {row.best_expression:<18} | {row.contract_question[:92]}")
+        cap = fmt_pct(row.underlying_cap_yes_price)
+        cap_ratio = fmt_num(row.pm_to_underlying_cap_ratio, 2)
+        print(f"  {edge:>7} pts | {row.asset:<5} | PM {pm:<6} cap {cap:<6} ratio {cap_ratio:<4} vs model {model:<6} | {row.best_expression:<18} | {row.contract_question[:76]}")
 
 
 def main() -> None:

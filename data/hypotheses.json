@@ -14908,5 +14908,24 @@
     "promotedToSignal": true,
     "postMortem": "Regime-relative replacement for H-234; inherits setup-family promotion while removing brittle absolute spot thresholds.",
     "source": "llm"
+  },
+  {
+    "id": "H-524",
+    "setupId": "pm_odds_underlying_payoff_cap",
+    "setupLabel": "PM odds / underlying payoff cap",
+    "created": "2026-05-04",
+    "description": "Prediction-market upside hit contracts priced near or above the spot/strike underlying payoff cap signal extreme bullish sentiment and potential YES overpricing versus simply holding the underlying asset.",
+    "conditions": {
+      "btc_pm_underlying_cap_ratio_max": "> 0.85"
+    },
+    "prediction": "When the richest BTC upside hit contract trades at more than 85% of the underlying payoff cap, buying NO or avoiding YES should outperform over the next 7-14 days as cap-adjacent optimism mean reverts.",
+    "timeframeDays": 14,
+    "confidence": 0.7,
+    "tests": [],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm"
   }
 ]

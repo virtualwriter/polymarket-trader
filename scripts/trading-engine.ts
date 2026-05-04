@@ -352,7 +352,10 @@ interface RelativeValueObservation {
   pmBid: number | null;
   pmAsk: number | null;
   modelProb: number | null;
-  edgePts: number;
+  underlyingCapYes: number | null;
+  pmToUnderlyingCapRatio: number | null;
+  underlyingCapSignal: string;
+  edgePts: number | null;
   bestExpression: string;
   optionIv: number | null;
   pmIv: number | null;
@@ -510,8 +513,9 @@ function readRelativeValueObservations(limit = 30): RelativeValueObservation[] {
       const edgePts = num(row.edge_score);
       const strike = num(row.strike);
       const direction = row.direction === "above" || row.direction === "below" ? row.direction : null;
-      if (edgePts === null || strike === null || !direction) return null;
-      if (!row.option_symbol || !row.options_touch_adjusted_prob) return null;
+      const capRatio = num(row.pm_to_underlying_cap_ratio);
+      if (strike === null || !direction) return null;
+      if (edgePts === null && capRatio === null) return null;
       return {
         timestamp: row.timestamp ?? "",
         asset: row.asset ?? "",
@@ -525,6 +529,9 @@ function readRelativeValueObservations(limit = 30): RelativeValueObservation[] {
         pmBid: num(row.pm_best_bid),
         pmAsk: num(row.pm_best_ask),
         modelProb: num(row.options_touch_adjusted_prob),
+        underlyingCapYes: num(row.underlying_cap_yes_price),
+        pmToUnderlyingCapRatio: capRatio,
+        underlyingCapSignal: row.underlying_cap_signal ?? "",
         edgePts,
         bestExpression: row.best_expression ?? "",
         optionIv: num(row.option_iv),
@@ -534,8 +541,14 @@ function readRelativeValueObservations(limit = 30): RelativeValueObservation[] {
       };
     })
     .filter((row): row is RelativeValueObservation => !!row)
-    .filter((row) => row.bestExpression !== "no-options-model")
-    .sort((a, b) => Math.abs(b.edgePts) - Math.abs(a.edgePts))
+    .filter((row) => row.bestExpression !== "no-options-model" || row.pmToUnderlyingCapRatio !== null)
+    .sort((a, b) => {
+      const score = (row: RelativeValueObservation) => Math.max(
+        Math.abs(row.edgePts ?? 0),
+        row.pmToUnderlyingCapRatio === null ? 0 : Math.abs(row.pmToUnderlyingCapRatio - 1) * 100,
+      );
+      return score(b) - score(a);
+    })
     .slice(0, limit);
 }
 
@@ -1765,6 +1778,7 @@ function recordRelativeValueHeatmapShadows(
 
   const candidates = observations
     .filter((obs) => ["buy_yes", "sell_yes_or_buy_no"].includes(obs.bestExpression))
+    .filter((obs) => obs.edgePts !== null)
     .filter((obs) => !obs.flags.includes("wide_pm_spread") && !obs.flags.includes("low_pm_liquidity"))
     .filter((obs) => !(obs.pmAsk !== null && obs.pmBid !== null && obs.pmAsk - obs.pmBid > HEATMAP_SHADOW_MAX_SPREAD))
     .filter((obs) => !(obs.liquidity !== null && obs.liquidity < HEATMAP_SHADOW_MIN_LIQUIDITY))
@@ -1804,7 +1818,7 @@ function recordRelativeValueHeatmapShadows(
       leverage: 1,
       signalType: "RELATIVE_VALUE_HEATMAP",
       hypothesisId: null,
-      thesis: `[RELATIVE VALUE SHADOW] ${obs.bestExpression} edge=${obs.edgePts.toFixed(1)}pts, PM=${formatPct(obs.pmYes)}, model=${formatPct(obs.modelProb)}, optIV=${formatPct(obs.optionIv)}, pmIV=${formatPct(obs.pmIv)} — ${obs.question}`,
+      thesis: `[RELATIVE VALUE SHADOW] ${obs.bestExpression} edge=${(obs.edgePts ?? 0).toFixed(1)}pts, PM=${formatPct(obs.pmYes)}, model=${formatPct(obs.modelProb)}, optIV=${formatPct(obs.optionIv)}, pmIV=${formatPct(obs.pmIv)} — ${obs.question}`,
       targetPct: 20,
       stopPct: 12,
       expiryDate,
@@ -1824,7 +1838,7 @@ function recordRelativeValueHeatmapShadows(
       asset: obs.asset,
       venue: "polymarket",
       direction: position.direction,
-      confidence: Number(Math.min(1, Math.abs(obs.edgePts) / 20).toFixed(4)),
+      confidence: Number(Math.min(1, Math.abs(obs.edgePts ?? 0) / 20).toFixed(4)),
       thesis: position.thesis,
       marketQuality: polymarketMarketQuality(position, latestSnapshot),
       learningParamsSnapshot: {
@@ -2777,7 +2791,9 @@ function classifyHypothesisSetup(hypothesis: Hypothesis): { setupId: string; set
   const text = `${hypothesis.description} ${hypothesis.prediction} ${Object.keys(hypothesis.conditions ?? {}).join(" ")}`.toLowerCase();
 
   let label = "Other / mixed";
-  if (text.includes("cross-asset") && (text.includes("funding") || text.includes("positioning"))) {
+  if (text.includes("underlying cap") || text.includes("spot/strike") || text.includes("payoff cap") || text.includes("pm/cap")) {
+    label = "PM odds / underlying payoff cap";
+  } else if (text.includes("cross-asset") && (text.includes("funding") || text.includes("positioning"))) {
     label = "Cross-asset funding/positioning exhaustion";
   } else if (text.includes("cross-asset") && text.includes("iv")) {
     label = "Cross-asset IV compression / vol expansion";
@@ -2985,7 +3001,27 @@ function derivedHypothesisConditionValue(key: string, valuationRows: SnapshotRow
   return null;
 }
 
-function hypothesisConditionValue(key: string, valuationRows: SnapshotRow[], hypothesis: Hypothesis): number | null {
+function relativeValueConditionValue(key: string, relativeValueRows: RelativeValueObservation[]): number | null {
+  const match = key.match(/^([a-z]+)_pm_underlying_cap_(ratio|edge_pts)_(max|min|avg)$/);
+  if (!match) return null;
+  const [, rawAsset, metric, reducer] = match;
+  const asset = rawAsset.toUpperCase();
+  const values = relativeValueRows
+    .filter((row) => row.asset === asset && row.direction === "above" && row.underlyingCapYes !== null)
+    .map((row) => metric === "ratio" ? row.pmToUnderlyingCapRatio : row.edgePts)
+    .filter((value): value is number => value !== null);
+  if (values.length === 0) return null;
+  if (reducer === "max") return Math.max(...values);
+  if (reducer === "min") return Math.min(...values);
+  return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function hypothesisConditionValue(
+  key: string,
+  valuationRows: SnapshotRow[],
+  hypothesis: Hypothesis,
+  relativeValueRows: RelativeValueObservation[] = [],
+): number | null {
   const latestRow = valuationRows[valuationRows.length - 1];
   const previousRow = valuationRows.length > 1 ? valuationRows[valuationRows.length - 2] : null;
   if (!latestRow) return null;
@@ -2994,6 +3030,8 @@ function hypothesisConditionValue(key: string, valuationRows: SnapshotRow[], hyp
   if (direct !== null) return direct;
   const derived = derivedHypothesisConditionValue(key, valuationRows);
   if (derived !== null) return derived;
+  const relativeValue = relativeValueConditionValue(key, relativeValueRows);
+  if (relativeValue !== null) return relativeValue;
 
   if (key === "ratio") {
     const pmIvKey = Object.keys(hypothesis.conditions).find((conditionKey) => conditionKey.endsWith("_pm_iv"));
@@ -3011,11 +3049,12 @@ function evaluateHypothesisCondition(
   rawExpression: string,
   valuationRows: SnapshotRow[],
   hypothesis: Hypothesis,
+  relativeValueRows: RelativeValueObservation[] = [],
 ): boolean {
   const latestRow = valuationRows[valuationRows.length - 1];
   const previousRow = valuationRows.length > 1 ? valuationRows[valuationRows.length - 2] : null;
   const expression = String(rawExpression).trim().toLowerCase().replace(/%/g, "");
-  const value = hypothesisConditionValue(key, valuationRows, hypothesis);
+  const value = hypothesisConditionValue(key, valuationRows, hypothesis, relativeValueRows);
   const previousValue = key.startsWith("previous_")
     ? null
     : previousRow ? num(previousRow[key]) : null;
@@ -3070,12 +3109,16 @@ function evaluateHypothesisCondition(
   return false;
 }
 
-function hypothesisConditionsSatisfied(hypothesis: Hypothesis, valuationRows: SnapshotRow[]): boolean {
+function hypothesisConditionsSatisfied(
+  hypothesis: Hypothesis,
+  valuationRows: SnapshotRow[],
+  relativeValueRows: RelativeValueObservation[] = [],
+): boolean {
   const latestRow = valuationRows[valuationRows.length - 1];
   if (!latestRow) return false;
   const entries = Object.entries(hypothesis.conditions ?? {});
   if (entries.length === 0) return false;
-  return entries.every(([key, expression]) => evaluateHypothesisCondition(key, String(expression), valuationRows, hypothesis));
+  return entries.every(([key, expression]) => evaluateHypothesisCondition(key, String(expression), valuationRows, hypothesis, relativeValueRows));
 }
 
 function hasRegimeRelativeConditions(hypothesis: Hypothesis): boolean {
@@ -3102,6 +3145,7 @@ function generatePromotedHypothesisSignals(
   learningParams: LearningParams,
   latestSnapshot: InstrumentSnapshotFile | null,
   blockedSignals: BlockedSignalShadow[],
+  relativeValueRows: RelativeValueObservation[] = [],
 ): Signal[] {
   const signals: Signal[] = [];
   const risk = riskForSignal(learningParams, "PROMOTED_HYPOTHESIS");
@@ -3117,7 +3161,7 @@ function generatePromotedHypothesisSignals(
         .filter((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived")
         .filter((hypothesis) => inferHypothesisAsset(hypothesis) === promotedAsset)
         .filter((hypothesis) => !hasRegimeRelativeConditions(representative) || hasRegimeRelativeConditions(hypothesis))
-        .filter((hypothesis) => hypothesisConditionsSatisfied(hypothesis, rows))
+        .filter((hypothesis) => hypothesisConditionsSatisfied(hypothesis, rows, relativeValueRows))
         .sort((a, b) => {
           const regimeRelativeDelta = Number(hasRegimeRelativeConditions(b)) - Number(hasRegimeRelativeConditions(a));
           if (regimeRelativeDelta !== 0) return regimeRelativeDelta;
@@ -3152,7 +3196,11 @@ function generatePromotedHypothesisSignals(
   return signals;
 }
 
-function evaluateHypotheses(hypotheses: Hypothesis[], valuationRows: SnapshotRow[]): string[] {
+function evaluateHypotheses(
+  hypotheses: Hypothesis[],
+  valuationRows: SnapshotRow[],
+  relativeValueRows: RelativeValueObservation[] = [],
+): string[] {
   const observations: string[] = [];
   const now = new Date();
   const latestDate = String(valuationRows[valuationRows.length - 1]?.date ?? new Date().toISOString().slice(0, 10)).slice(0, 10);
@@ -3259,7 +3307,7 @@ function evaluateHypotheses(hypotheses: Hypothesis[], valuationRows: SnapshotRow
       .filter((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived")
       .filter((hypothesis) => pendingHypothesisTests(hypothesis).length === 0)
       .sort((a, b) => completedHypothesisTests(a).length - completedHypothesisTests(b).length || b.confidence - a.confidence)
-      .find((hypothesis) => hypothesisConditionsSatisfied(hypothesis, valuationRows));
+      .find((hypothesis) => hypothesisConditionsSatisfied(hypothesis, valuationRows, relativeValueRows));
 
     if (!candidate) {
       skippedConditionNotMet++;
@@ -3412,6 +3460,8 @@ IMPORTANT RULES:
 - Separately evaluate market quality. A blocked trade can be correctly blocked by trend AND still be a bad setup because the Polymarket bid/ask is too wide or liquidity is too thin.
 - Avoid suggesting Polymarket trades when yesSpread > ${(HEATMAP_SHADOW_MAX_SPREAD * 100).toFixed(0)}c, liquidity < ${HEATMAP_SHADOW_MIN_LIQUIDITY}, or marketQuality flags include wide_pm_spread / low_pm_liquidity / missing_bid_ask. Treat those as "avoid due to spread/liquidity", not as clean directional evidence.
 - Use RELATIVE-VALUE HEATMAP OBSERVATIONS to look for clean cross-venue edges. If you suggest a trade because of this section, say "relative-value heatmap" in the thesis so its performance can be reviewed.
+- For upside "hit/reach" contracts, use underlyingCapYes and pmToUnderlyingCapRatio to interpret sentiment against the underlying payoff cap. A ratio above 1.0 means PM YES is richer than the spot/strike cap; 0.85-1.0 means very bullish cap-adjacent pricing; below ~0.35 means weak sentiment relative to the underlying upside payoff.
+- Supported hypothesis aggregate keys for this cap-ratio setup: btc_pm_underlying_cap_ratio_max/min/avg, hype_pm_underlying_cap_ratio_max/min/avg, gold_pm_underlying_cap_ratio_max/min/avg, oil_pm_underlying_cap_ratio_max/min/avg, and the matching *_edge_pts_max/min/avg keys.
 - You may return \"action: close\" to exit an existing open position; use that only when the thesis has clearly weakened or a target/stop is likely stale
 - For \"action: close\", set direction to long, short, or any to identify which existing position to close
 - Keep parameter updates inside these bounds:
@@ -3855,7 +3905,7 @@ async function main() {
   }
 
   // Step 3: Evaluate hypotheses
-  const hypothesisObs = evaluateHypotheses(hypotheses, valRows);
+  const hypothesisObs = evaluateHypotheses(hypotheses, valRows, relativeValueRows);
   for (const o of hypothesisObs) console.log(`  ${o}`);
 
   // Step 4: Statistical scan
@@ -3869,7 +3919,7 @@ async function main() {
 
   // Step 5: Generate rule-based signals
   const signals = generateSignals(valRows, macroRows, weights, learningParams, latestSnapshot, blockedSignals);
-  const promotedSignals = generatePromotedHypothesisSignals(hypotheses, valRows, latestRow, learningParams, latestSnapshot, blockedSignals);
+  const promotedSignals = generatePromotedHypothesisSignals(hypotheses, valRows, latestRow, learningParams, latestSnapshot, blockedSignals, relativeValueRows);
   signals.push(...promotedSignals);
   proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   blockedSummary = summarizeBlockedSignals(blockedSignals);
