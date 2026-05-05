@@ -9,6 +9,7 @@ script, then commits and pushes the state file so the shadow survives deploys.
 import json
 import os
 import subprocess
+import threading
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any, Dict
@@ -16,6 +17,7 @@ from typing import Any, Dict
 ROOT = Path(__file__).resolve().parents[1]
 ALLOWED_SIDES = {"yes", "no"}
 ALLOWED_SIGNALS = {"USER_PM_IV_TOUCH_RICH_NO", "USER_PM_IV_TOUCH_CHEAP_YES"}
+REQUEST_LOCK = threading.Lock()
 
 
 def run(command: list[str]) -> str:
@@ -90,7 +92,7 @@ def add_shadow(payload: Dict[str, str]) -> Dict[str, Any]:
         )
         if proc.returncode != 0:
             raise RuntimeError((proc.stdout + proc.stderr).strip() or "git commit failed")
-        run(["git", "pull", "--rebase", "origin", "main"])
+        run(["git", "pull", "--rebase", "--autostash", "origin", "main"])
         run(["git", "push", "origin", "HEAD:main"])
 
     return {"ok": True, "output": output}
@@ -127,7 +129,8 @@ class Handler(BaseHTTPRequestHandler):
             if length <= 0 or length > 20_000:
                 raise ValueError("Invalid request length")
             payload = clean_payload(json.loads(self.rfile.read(length)))
-            self.send_json(200, add_shadow(payload))
+            with REQUEST_LOCK:
+                self.send_json(200, add_shadow(payload))
         except Exception as exc:
             self.send_json(400, {"error": str(exc)})
 
