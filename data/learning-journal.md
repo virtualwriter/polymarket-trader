@@ -6937,3 +6937,27 @@ Positioning exhaustion patterns demonstrating mathematical precision as institut
 
 ---
 
+### 2026-05-05 15:28 UTC
+
+**Portfolio:** $100.20 total | Cash $96.20 | 4 open | P&L $0.1974 | 55% win rate (110 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_med_max = 98511 is 2.1 std devs from mean (93809.57 ± 2251.48)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.33 to -0.25
+- [correlation_flip] GOLD-OIL correlation shifted from -0.01 to -0.44
+
+**Blocked signal learning:**
+- Open blocked shadows: 15
+- Resolved blocked shadows: 55 (22 wins / 33 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (2W/3L across 5 resolved shadows, avg P&L 0.03%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+1.34%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have stop (-2.14%)
+- ✅ Missing downside leg: PM_IV_GT_OPT_IV_DOWNSIDE OIL short via polymarket would have expiry (+19.10%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES GOLD long via polymarket would have stop (-10.53%)
+
+---
+
