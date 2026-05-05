@@ -35,6 +35,7 @@ const HEATMAP_SHADOW_MIN_LIQUIDITY = 1000;
 const MONOTONIC_ARB_MAX_YES_SPREAD = 0.01;
 const MONOTONIC_ARB_MIN_GROSS_EDGE = 0.0001;
 const MONOTONIC_ARB_ASSETS = new Set(["BTC", "GOLD", "OIL", "AMZN"]);
+const INVALID_MONOTONIC_SETTLEMENT_REASON = "invalid_monotonic_settlement_bucket";
 const UNDERLYING_CAP_ENTRY_MAX_SPREAD = 0.02;
 const UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY = 1000;
 const UNDERLYING_CAP_BUY_NO_RATIO = 1.03;
@@ -1925,6 +1926,7 @@ function recordMonotonicArbShadows(
 
   for (const event of latestSnapshot.polymarket) {
     if (!MONOTONIC_ARB_ASSETS.has(event.asset)) continue;
+    if (!isNestedLadderEvent(event.slug, event.title)) continue;
     const liveContracts = event.contracts.filter((contract) =>
       contract.active !== false &&
       !contract.closed &&
@@ -1932,6 +1934,8 @@ function recordMonotonicArbShadows(
       contract.bestAsk != null &&
       contract.bestBid > 0 &&
       contract.bestAsk > 0 &&
+      Number.isFinite(contract.strike) &&
+      (contract.direction === "above" || contract.direction === "below") &&
       (contract.spread ?? Math.max(0, contract.bestAsk - contract.bestBid)) <= MONOTONIC_ARB_MAX_YES_SPREAD
     );
 
@@ -2053,6 +2057,35 @@ function recordMonotonicArbShadows(
   }
 
   return recorded;
+}
+
+function isNestedLadderEvent(slug: string, title = ""): boolean {
+  const haystack = `${slug} ${title}`.toLowerCase();
+  if (haystack.includes("settle") || haystack.includes("final trading day") || haystack.includes("over-under")) return false;
+  if (haystack.includes("range") || /\$\d+(?:\.\d+)?\s*-\s*\$?\d+(?:\.\d+)?/.test(haystack)) return false;
+  return haystack.includes("hit") || haystack.includes("reach");
+}
+
+function cancelOpenInvalidMonotonicArbShadows(blockedSignals: BlockedSignalShadow[]): string[] {
+  const now = new Date().toISOString();
+  const notes: string[] = [];
+  for (const shadow of blockedSignals) {
+    if (shadow.status !== "open" || shadow.signalType !== "MONOTONIC_ARB") continue;
+    const eventSlug = shadow.position.instrumentId?.split("::")[0] ?? "";
+    if (isNestedLadderEvent(eventSlug, shadow.position.instrumentLabel ?? shadow.thesis)) continue;
+    shadow.status = "cancelled";
+    shadow.resolvedAt = now;
+    shadow.learningExcluded = {
+      reason: INVALID_MONOTONIC_SETTLEMENT_REASON,
+      note: "Cancelled: monotonic-arb validation only applies to nested hit/reach ladders. Settlement buckets, over-under final-day markets, and range markets are not nested contracts.",
+    };
+    shadow.marketQuality = {
+      ...(shadow.marketQuality ?? { yesBid: 0, yesAsk: 0, yesSpread: 0, liquidity: 0, flags: [] }),
+      flags: Array.from(new Set([...(shadow.marketQuality?.flags ?? []), INVALID_MONOTONIC_SETTLEMENT_REASON])),
+    };
+    notes.push(`${shadow.asset} ${shadow.position.instrumentLabel ?? shadow.position.instrumentId ?? shadow.id}`);
+  }
+  return notes;
 }
 
 function cancelOpenRelativeValueHeatmapShadows(blockedSignals: BlockedSignalShadow[]): string[] {
@@ -4027,6 +4060,7 @@ async function main() {
   const migrationNotes = migrateLegacyPolymarketPositions(portfolio, instrumentSnapshots);
   const fundingRiskShapeNotes = applyFundingRiskShapeToOpenPositions(portfolio, learningParams);
   const cancelledHeatmapShadows = cancelOpenRelativeValueHeatmapShadows(blockedSignals);
+  const cancelledInvalidMonotonicArbShadows = cancelOpenInvalidMonotonicArbShadows(blockedSignals);
 
   console.log(`  Portfolio: $${portfolio.cash.toFixed(2)} cash, ${portfolio.positions.length} open positions, $${portfolio.totalRealizedPnl.toFixed(4)} realized P&L`);
   console.log(`  Learnable params: macro24h>${learningParams.macroMomentum24hThresholdPts.toFixed(1)}, trend>${learningParams.contrarianTrendMarginPct.toFixed(2)}%, momentum>${learningParams.positiveMomentum24hPct.toFixed(2)}%, llm expiry=${learningParams.llmTradeExpiryDays}d, momentum expiry=${learningParams.momentumLongExpiryDays}d`);
@@ -4035,6 +4069,9 @@ async function main() {
   for (const note of fundingRiskShapeNotes) console.log(`  Funding risk shape: ${note}`);
   if (cancelledHeatmapShadows.length > 0) {
     console.log(`  Cancelled ${cancelledHeatmapShadows.length} open relative-value heatmap shadow trades; heatmap is report-only until the horizon model is redesigned.`);
+  }
+  if (cancelledInvalidMonotonicArbShadows.length > 0) {
+    console.log(`  Cancelled ${cancelledInvalidMonotonicArbShadows.length} invalid monotonic-arb shadow packages; only nested hit/reach ladders are eligible.`);
   }
 
   // Regime check
