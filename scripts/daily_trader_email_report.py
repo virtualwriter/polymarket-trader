@@ -247,7 +247,10 @@ def risk_shape_report_lines(closed_rows: list[dict[str, str]]) -> list[str]:
         final_pnl = trade_pnl_pct(entry, exit_price, row.get("direction", ""))
         return final_pnl if final_pnl is not None else num(row.get("pnl_pct"))
 
-    lines = ["## Risk Shape Replay", "Target replay uses hourly valuation marks, excludes data-correction artifacts, and keeps current stops unchanged."]
+    lines = [
+        "## Risk Shape Replay",
+        "Target replay uses previous-day closed trades only, hourly valuation marks, excludes data-correction artifacts, and keeps current stops unchanged.",
+    ]
     for signal in signals:
         rows = [
             row for row in closed_rows
@@ -390,7 +393,7 @@ def build_report(window: ReportWindow) -> str:
     lines.extend(["", "## Shadow Trades Resolved"])
     lines.extend(shadow_line(shadow, window.tz, resolved=True) for shadow in resolved_shadows) if resolved_shadows else lines.append("- None")
 
-    lines.extend(["", *risk_shape_report_lines(closed_rows)])
+    lines.extend(["", *risk_shape_report_lines(closed_trades)])
 
     lines.extend(["", "## LLM Findings / Learning Notes"])
     if llm_sections:

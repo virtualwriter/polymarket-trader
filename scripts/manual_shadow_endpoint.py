@@ -28,7 +28,7 @@ def run(command: list[str]) -> str:
     return output
 
 
-def clean_payload(payload: Dict[str, Any]) -> Dict[str, str]:
+def clean_payload(payload: Dict[str, Any]) -> Dict[str, Any]:
     event = str(payload.get("event", ""))
     market_id = str(payload.get("marketId", ""))
     side = str(payload.get("side", "")).lower()
@@ -43,16 +43,20 @@ def clean_payload(payload: Dict[str, Any]) -> Dict[str, str]:
         raise ValueError("Invalid side")
     if signal_type not in ALLOWED_SIGNALS:
         raise ValueError("Invalid signal type")
+    heatmap_row_snapshot = payload.get("heatmapRowSnapshot")
+    if heatmap_row_snapshot is not None and not isinstance(heatmap_row_snapshot, dict):
+        raise ValueError("Invalid heatmap row snapshot")
     return {
         "event": event,
         "marketId": market_id,
         "side": side,
         "signalType": signal_type,
         "reason": reason,
+        "heatmapRowSnapshot": heatmap_row_snapshot,
     }
 
 
-def add_shadow(payload: Dict[str, str]) -> Dict[str, Any]:
+def add_shadow(payload: Dict[str, Any]) -> Dict[str, Any]:
     command = [
         "python3",
         "scripts/add_manual_iv_touch_shadow.py",
@@ -67,6 +71,13 @@ def add_shadow(payload: Dict[str, str]) -> Dict[str, Any]:
         "--reason",
         payload["reason"],
     ]
+    if payload.get("heatmapRowSnapshot"):
+        command.extend(
+            [
+                "--heatmap-row-json",
+                json.dumps(payload["heatmapRowSnapshot"], separators=(",", ":")),
+            ]
+        )
     output = run(command)
 
     run(["git", "add", "data/blocked-signals.json"])
@@ -126,7 +137,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         try:
             length = int(self.headers.get("Content-Length", "0"))
-            if length <= 0 or length > 20_000:
+            if length <= 0 or length > 100_000:
                 raise ValueError("Invalid request length")
             payload = clean_payload(json.loads(self.rfile.read(length)))
             with REQUEST_LOCK:

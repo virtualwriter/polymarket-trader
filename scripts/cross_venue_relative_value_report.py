@@ -21,6 +21,7 @@ import html
 import json
 import math
 import re
+import shlex
 import urllib.request
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -873,6 +874,7 @@ def manual_shadow_signal_type(row: RelativeValueRow) -> str:
 
 def manual_shadow_command(row: RelativeValueRow) -> str:
     side = manual_shadow_side(row)
+    snapshot = manual_shadow_row_snapshot(row)
     reason = (
         f"PM YES {fmt_pct(row.pm_yes_price)} vs IV touch model "
         f"{fmt_pct(row.options_touch_adjusted_prob)}; edge {fmt_pts(row.edge_score)} pts."
@@ -883,8 +885,19 @@ def manual_shadow_command(row: RelativeValueRow) -> str:
         f"--market-id {row.market_id} "
         f"--side {side} "
         f"--signal-type {manual_shadow_signal_type(row)} "
-        f"--reason {json.dumps(reason)}"
+        f"--reason {shlex.quote(reason)} "
+        f"--heatmap-row-json {shlex.quote(json.dumps(snapshot, separators=(',', ':')))}"
     )
+
+
+def manual_shadow_row_snapshot(row: RelativeValueRow) -> Dict[str, Any]:
+    return {
+        "schemaVersion": 1,
+        "source": "cross_venue_relative_value_heatmap",
+        "row": row_to_dict(row),
+        "selectedSide": manual_shadow_side(row),
+        "selectedSignalType": manual_shadow_signal_type(row),
+    }
 
 
 def manual_shadow_payload(row: RelativeValueRow) -> Dict[str, Any]:
@@ -898,6 +911,7 @@ def manual_shadow_payload(row: RelativeValueRow) -> Dict[str, Any]:
         "side": manual_shadow_side(row),
         "signalType": manual_shadow_signal_type(row),
         "reason": reason,
+        "heatmapRowSnapshot": manual_shadow_row_snapshot(row),
     }
 
 

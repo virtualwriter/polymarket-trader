@@ -89,6 +89,18 @@ def market_quality(contract: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def parse_heatmap_row_snapshot(value: str) -> Dict[str, Any] | None:
+    if not value:
+        return None
+    try:
+        parsed = json.loads(value)
+    except json.JSONDecodeError as exc:
+        raise SystemExit(f"Invalid heatmap row JSON: {exc}") from exc
+    if not isinstance(parsed, dict):
+        raise SystemExit("Invalid heatmap row JSON: expected object")
+    return parsed
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Add a manual IV-touch shadow trade.")
     parser.add_argument("--event", required=True, help="Polymarket event slug")
@@ -96,6 +108,7 @@ def main() -> None:
     parser.add_argument("--side", choices=["yes", "no"], required=True, help="Token side to buy")
     parser.add_argument("--signal-type", default="", help="Manual shadow signal type")
     parser.add_argument("--reason", default="", help="Human thesis/reason")
+    parser.add_argument("--heatmap-row-json", default="", help="Full heatmap row snapshot JSON")
     parser.add_argument("--data-dir", type=Path, default=DATA_DIR)
     parser.add_argument("--force", action="store_true", help="Allow duplicate open shadows on the same contract/side")
     args = parser.parse_args()
@@ -122,6 +135,7 @@ def main() -> None:
     instrument_id = f"{args.event}::{args.market_id}"
     instrument_label = f"{args.event} — {side.upper()} — {contract.get('question', '')}"
     spot = snapshot.get("spots", {}).get(asset)
+    heatmap_row_snapshot = parse_heatmap_row_snapshot(args.heatmap_row_json)
 
     blocked_path = data_dir / "blocked-signals.json"
     blocked = read_json(blocked_path, [])
@@ -172,6 +186,8 @@ def main() -> None:
         },
         "marketQuality": market_quality(contract),
     }
+    if heatmap_row_snapshot:
+        record["heatmapRowSnapshot"] = heatmap_row_snapshot
     blocked.append(record)
     write_json(blocked_path, blocked)
     print(f"Added {trade_id}: buy {side.upper()} {instrument_label} @ {entry_price:.4f}")

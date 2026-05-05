@@ -5,7 +5,7 @@ function readBody(req) {
     let body = "";
     req.on("data", (chunk) => {
       body += chunk;
-      if (body.length > 20_000) {
+      if (body.length > 100_000) {
         reject(new Error("Request too large"));
         req.destroy();
       }
@@ -33,8 +33,11 @@ function cleanPayload(payload) {
   if (!allowedSides.has(side)) throw new Error("Invalid side");
   if (!/^USER_PM_IV_TOUCH_(RICH_NO|CHEAP_YES)$/.test(signalType)) throw new Error("Invalid signal type");
   if (reason.length > 500) throw new Error("Reason too long");
+  if (payload.heatmapRowSnapshot && typeof payload.heatmapRowSnapshot !== "object") {
+    throw new Error("Invalid heatmap row snapshot");
+  }
 
-  return { event, marketId, side, signalType, reason };
+  return { event, marketId, side, signalType, reason, heatmapRowSnapshot: payload.heatmapRowSnapshot };
 }
 
 export default async function handler(req, res) {
