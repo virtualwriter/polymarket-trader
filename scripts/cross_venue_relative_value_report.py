@@ -887,6 +887,20 @@ def manual_shadow_command(row: RelativeValueRow) -> str:
     )
 
 
+def manual_shadow_payload(row: RelativeValueRow) -> Dict[str, Any]:
+    reason = (
+        f"PM YES {fmt_pct(row.pm_yes_price)} vs IV touch model "
+        f"{fmt_pct(row.options_touch_adjusted_prob)}; edge {fmt_pts(row.edge_score)} pts."
+    )
+    return {
+        "event": row.event_slug,
+        "marketId": row.market_id,
+        "side": manual_shadow_side(row),
+        "signalType": manual_shadow_signal_type(row),
+        "reason": reason,
+    }
+
+
 def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     visible = rows
@@ -895,6 +909,7 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
     for row in visible:
         cls = html_class(row.edge_score)
         command = manual_shadow_command(row)
+        payload = json.dumps(manual_shadow_payload(row), separators=(",", ":"))
         side = manual_shadow_side(row).upper()
         body_rows.append(
             "<tr>"
@@ -914,7 +929,7 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
             f"<td>{html.escape(fmt_pts(row.edge_pts_per_dte, 3))}</td>"
             f"<td>{html.escape(fmt_pts(row.edge_pts_per_dte_7d_change, 3))}</td>"
             f"<td>{html.escape(row.best_expression)}</td>"
-            f"<td><button type='button' data-command='{html.escape(command, quote=True)}'>Copy add {html.escape(side)} shadow</button></td>"
+            f"<td><button type='button' data-command='{html.escape(command, quote=True)}' data-payload='{html.escape(payload, quote=True)}'>Add {html.escape(side)} shadow</button></td>"
             f"<td>{html.escape(fmt_num(row.pm_spread, 3))}</td>"
             f"<td>{html.escape(fmt_num(row.liquidity, 0))}</td>"
             f"<td>{html.escape(fmt_pct(row.option_iv))}</td>"
@@ -973,9 +988,8 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
     should not be summed into a spot EV unless the buckets are cleanly exclusive.
   </p>
   <p>
-    Manual shadow buttons copy an exact command for adding the selected row as a manual
-    IV-touch shadow trade on the repo/VPS. The heatmap is static, so copying the command
-    is the write-safe path until a private authenticated action endpoint is added.
+    Manual shadow buttons send an authenticated request to the VPS endpoint. If the endpoint
+    is unavailable, the page falls back to copying the exact command.
   </p>
   <div class="legend">
     <span class="pos3">+20 pts</span>
@@ -1025,9 +1039,43 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
       const button = event.target.closest("button[data-command]");
       if (!button) return;
       const command = button.getAttribute("data-command") || "";
+      const payload = JSON.parse(button.getAttribute("data-payload") || "{{}}");
+      let token = window.localStorage.getItem("manualShadowToken") || "";
+      if (!token) {{
+        token = window.prompt("Manual shadow auth token:") || "";
+        if (token) window.localStorage.setItem("manualShadowToken", token);
+      }}
+      const original = button.textContent;
+      if (token) {{
+        button.disabled = true;
+        button.textContent = "Adding...";
+        try {{
+          const response = await fetch("/api/manual-shadow", {{
+            method: "POST",
+            headers: {{
+              "Content-Type": "application/json",
+              "X-Manual-Shadow-Token": token,
+            }},
+            body: JSON.stringify(payload),
+          }});
+          const result = await response.json().catch(() => ({{}}));
+          if (!response.ok) throw new Error(result.error || `HTTP ${{response.status}}`);
+          button.textContent = "Logged";
+          button.classList.add("copied");
+          setTimeout(() => {{
+            button.textContent = original;
+            button.classList.remove("copied");
+            button.disabled = false;
+          }}, 1800);
+          return;
+        }} catch (err) {{
+          button.disabled = false;
+          button.textContent = original;
+          window.alert(`VPS add failed: ${{err.message || err}}. Falling back to copied command.`);
+        }}
+      }}
       try {{
         await navigator.clipboard.writeText(command);
-        const original = button.textContent;
         button.textContent = "Copied";
         button.classList.add("copied");
         setTimeout(() => {{
