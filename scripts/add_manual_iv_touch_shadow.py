@@ -176,7 +176,7 @@ def main() -> None:
             "hypothesisId": None,
             "thesis": thesis,
             "targetPct": None,
-            "stopPct": 5,
+            "stopPct": 100,
             "expiryDate": contract.get("endDate") or now,
             "instrumentType": instrument_type,
             "instrumentId": instrument_id,

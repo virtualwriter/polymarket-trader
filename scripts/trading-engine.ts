@@ -2117,9 +2117,10 @@ function resolveBlockedSignalShadows(
     const mark = markPosition(shadow.position, latestRow, snapshots, true);
     if (!mark) continue;
 
+    const expiryOnlyShadow = shadow.blockedReason === "manual_shadow_trade";
     let closeReason: ClosedTrade["closeReason"] | null = null;
-    if (shadow.position.targetPct !== null && mark.pnlPct >= shadow.position.targetPct) closeReason = "target";
-    else if (mark.pnlPct <= -shadow.position.stopPct) closeReason = "stop";
+    if (!expiryOnlyShadow && shadow.position.targetPct !== null && mark.pnlPct >= shadow.position.targetPct) closeReason = "target";
+    else if (!expiryOnlyShadow && mark.pnlPct <= -shadow.position.stopPct) closeReason = "stop";
     else if (new Date(shadow.position.expiryDate) <= new Date()) closeReason = "expiry";
 
     shadow.position.currentPrice = mark.currentPrice;
