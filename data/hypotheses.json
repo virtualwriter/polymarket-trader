@@ -312,8 +312,14 @@
       {
         "date": "2026-05-03",
         "triggered": true,
+        "outcome": "loss",
+        "actualMove": "HYPE moved 1.18% (41.32 → 41.808)"
+      },
+      {
+        "date": "2026-05-05",
+        "triggered": true,
         "outcome": "pending",
-        "actualMove": "Setup hype_funding_oi_normalization shadow test 11/20 opened via H-010 after current row satisfied variant conditions."
+        "actualMove": "Setup hype_funding_oi_normalization shadow test 12/20 opened via H-010 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0,
@@ -1529,6 +1535,12 @@
         "triggered": true,
         "outcome": "loss",
         "actualMove": "BTC moved 2.60% (69060 → 70855)"
+      },
+      {
+        "date": "2026-05-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup cross_asset_iv_compression_vol_expansion shadow test 12/20 opened via H-051 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0,
@@ -3087,6 +3099,12 @@
         "triggered": true,
         "outcome": "loss",
         "actualMove": "AMZN moved 8.86% (220.32 → 239.85)"
+      },
+      {
+        "date": "2026-05-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup amzn_options_positioning_momentum shadow test 7/20 opened via H-106 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0,
@@ -3116,6 +3134,12 @@
         "actualMove": "OIL moved -2.62% (85.74 → 83.49)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical Oil funding/P/C variants may include contaminated oil P/C or CL-derived data."
+      },
+      {
+        "date": "2026-05-05",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup oil_funding_volatility_mean_reversion shadow test 2/20 opened via H-107 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0,
@@ -3468,11 +3492,11 @@
       {
         "date": "2026-04-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup amzn_options_positioning_momentum shadow test 6/20 opened via H-119 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "AMZN moved 0.65% (270.25 → 272)"
       }
     ],
-    "winRate": 1,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Confirmed - AMZN P/C collapsed to 0.381 during explosive move to 238.49, indicating systematic options repositioning ahead of momentum continuation. | Excellent validation - AMZN P/C collapsed to 0.381 during explosive momentum, confirming systematic options repositioning theory during major moves.",
@@ -4771,11 +4795,17 @@
       {
         "date": "2026-04-30",
         "triggered": true,
+        "outcome": "loss",
+        "actualMove": "GOLD moved -1.07% (4565 → 4516)"
+      },
+      {
+        "date": "2026-05-05",
+        "triggered": true,
         "outcome": "pending",
-        "actualMove": "Setup gold_pm_premium_futures_spread_mean_reversion shadow test 1/20 opened via H-165 after current row satisfied variant conditions."
+        "actualMove": "Setup gold_pm_premium_futures_spread_mean_reversion shadow test 2/20 opened via H-165 after current row satisfied variant conditions."
       }
     ],
-    "winRate": 1,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
@@ -6107,11 +6137,11 @@
       {
         "date": "2026-04-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup oil_funding_volatility_mean_reversion shadow test 1/20 opened via H-212 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "OIL moved -1.61% (106.85 → 105.13)"
       }
     ],
-    "winRate": 1,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Oil P/C dropped to 1.115 from extreme 34+ levels confirming panic exhaustion reversal pattern working as expected. | Oil P/C ratio completed dramatic reversal from 34+ to 1.115, confirming positioning exhaustion cycle completion. Bounce setup validated. | Oil P/C collapsed from 34+ extreme to 0.504 with funding at 60% - panic exhaustion reversal completing as predicted | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
@@ -6196,8 +6226,14 @@
       {
         "date": "2026-04-30",
         "triggered": true,
+        "outcome": "loss",
+        "actualMove": "OIL moved -1.61% (106.85 → 105.13)"
+      },
+      {
+        "date": "2026-05-05",
+        "triggered": true,
         "outcome": "pending",
-        "actualMove": "Setup oil_pm_spot_divergence_mean_reversion shadow test 1/20 opened via H-215 after current row satisfied variant conditions."
+        "actualMove": "Setup oil_pm_spot_divergence_mean_reversion shadow test 2/20 opened via H-215 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0,
@@ -12446,11 +12482,11 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "win",
+        "actualMove": "BTC moved 3.99% (76755 → 79815)"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Setup family inconclusive after 29 completed tests: 62% win rate.",
@@ -12474,11 +12510,11 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "win",
+        "actualMove": "BTC moved 3.99% (76755 → 79815)"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -12531,13 +12567,13 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "",
+        "outcome": "win",
+        "actualMove": "BTC moved 3.99% (76755 → 79815)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical cross-asset positioning variants may include bad Gold/Oil P/C data."
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
@@ -12588,11 +12624,11 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "win",
+        "actualMove": "BTC moved 3.99% (76755 → 79815)"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "BTC PM IV compression below 40.5% continues validating -6.5σ statistical anomaly thesis - IV expansion required for market efficiency | BTC PM IV at 39.9% represents -6.5σ statistical anomaly during consolidation - extreme compression requiring volatility expansion correction | Covered by promoted setup family btc_iv_compression_vol_reversion via primary H-234.",
@@ -12672,11 +12708,11 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "win",
+        "actualMove": "BTC moved 3.99% (76755 → 79815)"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Cross-asset IV compression confirmed extreme with BTC 41.9%, GOLD 23%, HYPE 55.1% - systematic volatility expansion setup validated",
@@ -12728,11 +12764,11 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "win",
+        "actualMove": "BTC moved 3.99% (76755 → 79815)"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -12784,8 +12820,8 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "",
+        "outcome": "loss",
+        "actualMove": "GOLD moved -3.26% (4668 → 4516)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical Gold PM/P/C variants may include bad zero Gold P/C data."
       }
@@ -12869,13 +12905,13 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "",
+        "outcome": "win",
+        "actualMove": "OIL moved 24.90% (84.17 → 105.13)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical Oil IV/statistical tests used contaminated oil/CL data before WTI source correction."
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Oil PM-spot divergence compressed from +7.8σ to +4.0σ as PM dropped from 113 to 100 while spot held above 84 - mean reversion acceleration confirmed | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
@@ -12927,13 +12963,13 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "",
+        "outcome": "win",
+        "actualMove": "OIL moved 24.90% (84.17 → 105.13)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical Oil IV/statistical tests used contaminated oil/CL data before WTI source correction."
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Oil PM-spot extreme divergence confirmed - PM settlement collapsed from 113 to 95 while spot held above 85, creating most extreme convergence opportunity in dataset | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
@@ -13011,8 +13047,8 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "",
+        "outcome": "loss",
+        "actualMove": "OIL moved 24.90% (84.17 → 105.13)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical Oil IV/statistical tests used contaminated oil/CL data before WTI source correction."
       },
@@ -13158,13 +13194,13 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "",
+        "outcome": "win",
+        "actualMove": "BTC moved 3.99% (76755 → 79815)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical cross-asset positioning variants may include bad Gold/Oil P/C data."
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "BTC P/C normalized to 0.77 from 0.32 extreme with funding recovery to 5.52% - positioning exhaustion completion confirmed, pattern working as predicted | Cross-asset positioning exhaustion materializing - BTC funding -1.6%, HYPE distribution complete, oil breakdown extreme. Multi-asset reversal setup strengthening | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
@@ -13188,13 +13224,13 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "",
+        "outcome": "win",
+        "actualMove": "OIL moved 24.90% (84.17 → 105.13)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical Oil IV/statistical tests used contaminated oil/CL data before WTI source correction."
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Oil structural breakdown accelerated beyond initial parameters - Brent-WTI spread now 4.6 vs initial 4.4, with WTI maintaining +7.6σ deviation. Pattern holding but needs extended timeframe for systematic correction completion. | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
@@ -13218,11 +13254,11 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "win",
+        "actualMove": "BTC moved 3.99% (76755 → 79815)"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "HYPE institutional distribution reached 18% OI decline from 957M to 786M with funding crash to -0.34%. Distribution exhaustion completion confirmed - oversold reversal setup strengthening as smart money exit approaches completion.",
@@ -13246,8 +13282,8 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "",
+        "outcome": "win",
+        "actualMove": "BTC moved 3.99% (76755 → 79815)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical cross-asset positioning variants may include bad Gold/Oil P/C data."
       },
@@ -13258,7 +13294,7 @@
         "actualMove": "Setup cross_asset_funding_positioning_exhaustion shadow test 1/20 opened via H-465 after current row satisfied variant conditions."
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Cross-asset positioning exhaustion accelerating - BTC funding crashed to -3.4%, HYPE OI down 16%+, oil structural breakdown persisting. Multi-asset bounce setup strengthening as systematic positioning reset approaches completion. | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
@@ -13281,13 +13317,13 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "",
+        "outcome": "win",
+        "actualMove": "OIL moved 24.90% (84.17 → 105.13)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical Oil IV/statistical tests used contaminated oil/CL data before WTI source correction."
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Active: Oil complex showing most extreme structural breakdown in dataset - Brent-WTI spread collapsed to 4.5, WTI +6.4σ spike. Mathematical arbitrage requiring systematic correction. | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
@@ -13338,13 +13374,13 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "",
+        "outcome": "win",
+        "actualMove": "BTC moved 3.99% (76755 → 79815)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical cross-asset positioning variants may include bad Gold/Oil P/C data."
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Confirmed: Cross-asset extreme positioning exhaustion with BTC funding at -1.6%, HYPE OI down 18% to 785M, oil structural breakdown. Multi-asset bounce setup emerging as positioning reset completes. | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
@@ -13368,13 +13404,13 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "",
+        "outcome": "win",
+        "actualMove": "OIL moved 24.90% (84.17 → 105.13)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical Oil IV/statistical tests used contaminated oil/CL data before WTI source correction."
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Oil structural breakdown accelerated - WTI now +6.4σ at 99.47 with Brent-WTI spread at 4.5, creating most extreme arbitrage opportunity in dataset | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
@@ -13426,13 +13462,13 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "",
+        "outcome": "win",
+        "actualMove": "BTC moved 3.99% (76755 → 79815)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical cross-asset positioning variants may include bad Gold/Oil P/C data."
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
@@ -13456,13 +13492,13 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "",
+        "outcome": "win",
+        "actualMove": "OIL moved 24.90% (84.17 → 105.13)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical Oil IV/statistical tests used contaminated oil/CL data before WTI source correction."
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
@@ -13514,13 +13550,13 @@
       {
         "date": "2026-04-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "",
+        "outcome": "win",
+        "actualMove": "Funding moved -5.2% → -8.5%",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical cross-asset positioning variants may include bad Gold/Oil P/C data."
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Confirmed - Cross-asset extreme positioning exhaustion completion reversal triggered with BTC funding at -1.6%, HYPE OI at 786M (18% decline), and Oil IV at +8.2σ. Mathematical reversion requirements being met. | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
@@ -14938,7 +14974,7 @@
     "timeframeDays": 7,
     "confidence": 0.9,
     "tests": [],
-    "winRate": 0.6808510638297872,
+    "winRate": 0.6511627906976745,
     "status": "promoted",
     "promotedToSignal": true,
     "postMortem": "Regime-relative replacement for H-234; inherits setup-family promotion while removing brittle absolute spot thresholds.",
