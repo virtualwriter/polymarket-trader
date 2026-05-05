@@ -6833,3 +6833,32 @@ Positioning exhaustion patterns demonstrating mathematical precision as institut
 
 ---
 
+### 2026-05-05 11:28 UTC
+
+**Portfolio:** $100.22 total | Cash $95.22 | 5 open | P&L $0.2241 | 55% win rate (109 trades)
+
+**Closed 1 trades:**
+- ✅ HYPE long via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS) → target: +$0.0621 (6.2%, market 0.0621, funding 0.0000)
+
+**Opened 1 positions:**
+- HYPE long @ $43.829 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_opt_fwd_90d = 4600 is -2.0 std devs from mean (4758.25 ± 78.39)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.36 to -0.25
+
+**Blocked signal learning:**
+- Open blocked shadows: 14
+- Resolved blocked shadows: 51 (20 wins / 31 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- OPT_IV_GT_PM_IV missing downside leg is inconclusive (2W/3L across 5 resolved shadows, avg P&L 0.03%).
+- ❌ Blocked: PROMOTED_HYPOTHESIS BTC short via spot would have stop (-3.65%)
+- ❌ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have expiry (-0.82%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE OIL long via polymarket would have stop (-8.00%)
+- ❌ Blocked: FUNDING_EXTREME_LONG HYPE short via hyperliquid would have stop (-2.59%)
+
+---
+
