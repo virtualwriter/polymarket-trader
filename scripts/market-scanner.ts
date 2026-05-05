@@ -2075,7 +2075,7 @@ function polymarketAssetForSlug(slug: string): string | null {
   if (slug.includes("bitcoin")) return "BTC";
   if (slug.includes("hyperliquid")) return "HYPE";
   if (slug.startsWith("gc-") || slug.includes("gold-gc") || slug.includes("xauusd")) return "GOLD";
-  if (slug.startsWith("cl-")) return "OIL";
+  if (slug.startsWith("cl-") || slug.includes("wti") || slug.includes("crude-oil")) return "OIL";
   if (slug.includes("amazon")) return "AMZN";
   return null;
 }
