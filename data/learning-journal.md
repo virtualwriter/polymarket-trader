@@ -7646,3 +7646,29 @@ Positioning exhaustion patterns demonstrating mathematical precision as institut
 
 ---
 
+### 2026-05-06 23:28 UTC
+
+**Portfolio:** $99.17 total | Cash $96.17 | 3 open | P&L $0.1653 | 54% win rate (114 trades)
+
+**Opened 1 positions:**
+- GOLD short @ $4695 via spot/spot [GOLD spot] (PC_RATIO_EXTREME_LOW)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -131.55 is -2.3 std devs from mean since 2026-04-28 (-12.84 ± 51.49)
+- [anomaly] oil_brent_spot = 101.65 is -2.2 std devs from mean since 2026-04-28 (108.79 ± 3.27)
+- [correlation_flip] BTC-OIL correlation shifted from 0.18 to -0.70
+
+**Blocked signal learning:**
+- Open blocked shadows: 13
+- Resolved blocked shadows: 57 (23 wins / 34 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- ✅ Missing downside leg: PM_IV_GT_OPT_IV_DOWNSIDE OIL short via polymarket would have expiry (+19.10%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE OIL long via polymarket would have stop (-4.26%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have stop (-3.33%)
+- ✅ Blocked: PM_EV_BELOW_SPOT OIL short via spot would have target (+3.68%)
+
+---
+
