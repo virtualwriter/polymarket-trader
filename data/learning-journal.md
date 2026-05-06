@@ -7377,3 +7377,31 @@ Positioning exhaustion patterns demonstrating mathematical precision as institut
 
 ---
 
+### 2026-05-06 11:28 UTC
+
+**Portfolio:** $100.15 total | Cash $96.15 | 4 open | P&L $0.1521 | 54% win rate (112 trades)
+
+**Closed 1 trades:**
+- ❌ GOLD short via spot/spot [GOLD spot] (PC_RATIO_EXTREME_LOW) → stop: $-0.0200 (-2.0%, market -0.0200, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_brent_spot = 97.99 is -3.9 std devs from mean since 2026-04-28 (109.22 ± 2.86)
+- [anomaly] oil_wti_spot = 90.48 is -2.7 std devs from mean since 2026-04-28 (102.41 ± 4.45)
+- [anomaly] btc_med_max = 99783 is 2.3 std devs from mean (94087.61 ± 2456.36)
+- [anomaly] amzn_hl_funding_ann = 61.82 is 2.2 std devs from mean (10.95 ± 23.55)
+- [correlation_flip] BTC-OIL correlation shifted from 0.09 to -0.62
+
+**Blocked signal learning:**
+- Open blocked shadows: 7
+- Resolved blocked shadows: 57 (23 wins / 34 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- ✅ Missing downside leg: PM_IV_GT_OPT_IV_DOWNSIDE OIL short via polymarket would have expiry (+19.10%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE OIL long via polymarket would have stop (-4.26%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have stop (-3.33%)
+- ✅ Blocked: PM_EV_BELOW_SPOT OIL short via spot would have target (+3.68%)
+
+---
+
