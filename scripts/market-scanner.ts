@@ -1735,7 +1735,7 @@ interface CategoryEvent {
 
 interface MacroScore {
   fed: { score: number; expectedCuts: number; pAtLeastOneCut: number; medianFirstCut: string; signal: string };
-  iran: { score: number; pDealByYE: number; pNuclearTest: number; signal: string };
+  iran: { score: number; pDealByYE: number; pCeasefire: number | null; pNuclearTest: number; signal: string };
   oil: { score: number; pSettleAboveCurrent: number; pSpike120: number; brentWtiSpread: number; signal: string };
   composite: number;
   label: string;
@@ -1799,11 +1799,17 @@ function computeMacroScore(
   // ── Iran Score (0-100, 100 = peace/bullish) ──
   const iranDealYE = macro.find((e) => e.slug === "us-iran-nuclear-deal-before-2027");
   const iranNuke = macro.find((e) => e.slug === "iran-nuclear-test-before-2027");
+  const iranCeasefire = macro.find((e) => e.slug === "us-x-iran-ceasefire-by");
 
   const pDealByYE = iranDealYE?.markets[0]?.yesPrice ?? 0;
   const pNuclearTest = iranNuke?.markets[0]?.yesPrice ?? 0;
+  const ceasefirePrices = iranCeasefire?.markets
+    .map((m) => m.yesPrice)
+    .filter((p) => Number.isFinite(p) && p >= 0 && p <= 1) ?? [];
+  const pCeasefire = ceasefirePrices.length > 0 ? Math.max(...ceasefirePrices) : null;
+  const peaceAgreementInput = pCeasefire ?? pDealByYE;
 
-  let iranScore = pDealByYE * 100;
+  let iranScore = ((pDealByYE + peaceAgreementInput) / 2) * 100;
   iranScore -= pNuclearTest * 60;
   iranScore = Math.max(0, Math.min(100, iranScore));
 
@@ -1866,7 +1872,7 @@ function computeMacroScore(
 
   return {
     fed: { score: Math.round(fedScore), expectedCuts, pAtLeastOneCut, medianFirstCut, signal: fedSignal },
-    iran: { score: Math.round(iranScore), pDealByYE, pNuclearTest, signal: iranSignal },
+    iran: { score: Math.round(iranScore), pDealByYE, pCeasefire, pNuclearTest, signal: iranSignal },
     oil: { score: Math.round(oilScore), pSettleAboveCurrent, pSpike120, brentWtiSpread, signal: oilSignal },
     composite,
     label,
@@ -1903,6 +1909,7 @@ function displayMacroScore(ms: MacroScore) {
   console.log(`  │    Brent-WTI:     $${ms.oil.brentWtiSpread.toFixed(1)} spread`);
   console.log(`  │`);
   console.log(`  │  Weights: Fed 40% · Oil 40% · Iran 20%`);
+  console.log(`  │  Iran: Deal ${(ms.iran.pDealByYE * 100).toFixed(1)}% | Ceasefire ${ms.iran.pCeasefire === null ? "n/a" : `${(ms.iran.pCeasefire * 100).toFixed(1)}%`} | Nuke test ${(ms.iran.pNuclearTest * 100).toFixed(1)}%`);
   console.log(`  │  Scale: 80+ Very Bullish │ 60-80 Bullish │ 45-60 Neutral │ 30-45 Bearish │ <30 Very Bearish`);
   console.log(`  └────────────────────────────────────────────`);
 }
@@ -1920,6 +1927,7 @@ const MACRO_SLUGS = [
   "us-iran-nuclear-deal-by-june-30",
   "us-iran-nuclear-deal-before-2027",
   "iran-nuclear-test-before-2027",
+  "us-x-iran-ceasefire-by",
 ];
 
 const GPU_SLUGS: string[] = [
@@ -2037,7 +2045,7 @@ const MACRO_HEADERS = [
   "date",
   "macro_composite", "macro_label",
   "fed_score", "fed_signal", "fed_p_at_least_one_cut", "fed_expected_cuts", "fed_median_first_cut",
-  "iran_score", "iran_signal", "iran_p_deal_ye", "iran_p_nuke_test",
+  "iran_score", "iran_signal", "iran_p_deal_ye", "iran_p_ceasefire", "iran_p_nuke_test",
   "oil_macro_score", "oil_signal", "oil_p_settle_above_current", "oil_p_spike_120", "oil_brent_wti_spread",
   "btc_outperform_sp500", "btc_outperform_gold", "btc_outperform_nvda", "btc_outperform_silver",
   "gpu_h100_hit_275", "gpu_h100_hit_300",
@@ -2236,6 +2244,7 @@ function writeSnapshot(
     fed_median_first_cut: ms.fed.medianFirstCut,
     iran_score: ms.iran.score, iran_signal: ms.iran.signal,
     iran_p_deal_ye: r(ms.iran.pDealByYE * 100, 1),
+    iran_p_ceasefire: ms.iran.pCeasefire === null ? null : r(ms.iran.pCeasefire * 100, 1),
     iran_p_nuke_test: r(ms.iran.pNuclearTest * 100, 1),
     oil_macro_score: ms.oil.score, oil_signal: ms.oil.signal,
     oil_p_settle_above_current: r(ms.oil.pSettleAboveCurrent * 100, 1),
