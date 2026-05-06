@@ -78,6 +78,13 @@ const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
   MOMENTUM_LONG: { targetPct: 6, stopPct: 3.5 },
   PROMOTED_HYPOTHESIS: { targetPct: 6, stopPct: 3.5 },
 };
+const SPOT_LONG_RISK_BY_ASSET: Record<string, SignalRiskParams> = {
+  BTC: { targetPct: 3, stopPct: 1.5 },
+  AMZN: { targetPct: 3, stopPct: 1.5 },
+  GOLD: { targetPct: 3, stopPct: 1.5 },
+  OIL: { targetPct: 4, stopPct: 2 },
+  HYPE: { targetPct: 4, stopPct: 2 },
+};
 const FUNDING_BREAKEVEN_ARM_PCT = 1.5;
 const FUNDING_BREAKEVEN_LOCK_PCT = 0.25;
 const FUNDING_EXTENDED_ABS_MOVE_PCT = 8;
@@ -1006,6 +1013,30 @@ function weightForSignalAsset(
 
 function riskForSignal(learningParams: LearningParams, signalType: string): SignalRiskParams {
   return learningParams.signalRisk[signalType] ?? DEFAULT_SIGNAL_RISK[signalType] ?? { targetPct: 3, stopPct: 3 };
+}
+
+function spotLongRiskOverride(asset: string, venue: string, direction: string, leverage = 1): SignalRiskParams | null {
+  if (venue !== "spot" || direction !== "long" || leverage !== 1) return null;
+  return SPOT_LONG_RISK_BY_ASSET[asset] ?? null;
+}
+
+function applySpotLongRiskToSignal(signal: Signal): Signal {
+  const override = spotLongRiskOverride(signal.asset, signal.venue, signal.direction, signal.leverage ?? 1);
+  return override ? { ...signal, targetPct: override.targetPct, stopPct: override.stopPct } : signal;
+}
+
+function applySpotLongRiskToOpenPositions(portfolio: Portfolio): string[] {
+  const notes: string[] = [];
+  for (const position of portfolio.positions) {
+    const override = spotLongRiskOverride(position.asset, position.venue, position.direction, position.leverage ?? 1);
+    if (!override) continue;
+    if (position.targetPct !== override.targetPct || position.stopPct !== override.stopPct) {
+      notes.push(`${position.asset} ${position.instrumentType ?? position.venue} ${position.signalType}: ${formatTargetPct(position.targetPct)}/-${position.stopPct} -> ${formatTargetPct(override.targetPct)}/-${override.stopPct}`);
+      position.targetPct = override.targetPct;
+      position.stopPct = override.stopPct;
+    }
+  }
+  return notes;
 }
 
 function isFundingSignal(signalType: string): boolean {
@@ -2761,56 +2792,57 @@ function buildPositionFromSignal(
   latestRow: SnapshotRow,
   latestSnapshot: InstrumentSnapshotFile | null,
 ): Position | null {
+  const riskAdjustedSignal = applySpotLongRiskToSignal(signal);
   const expiry = new Date();
-  expiry.setDate(expiry.getDate() + signal.expiryDays);
-  const underlyingPrice = getAssetPrice(latestRow, signal.asset) ?? signal.entryPrice;
+  expiry.setDate(expiry.getDate() + riskAdjustedSignal.expiryDays);
+  const underlyingPrice = getAssetPrice(latestRow, riskAdjustedSignal.asset) ?? riskAdjustedSignal.entryPrice;
 
   const base: Position = {
     id: `T-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
     openedAt: new Date().toISOString(),
-    asset: signal.asset,
-    venue: signal.venue,
-    direction: signal.direction,
-    entryPrice: signal.entryPrice,
-    currentPrice: signal.entryPrice,
+    asset: riskAdjustedSignal.asset,
+    venue: riskAdjustedSignal.venue,
+    direction: riskAdjustedSignal.direction,
+    entryPrice: riskAdjustedSignal.entryPrice,
+    currentPrice: riskAdjustedSignal.entryPrice,
     currentUnderlyingPrice: underlyingPrice,
     entryUnderlyingPrice: underlyingPrice,
     size: TRADE_SIZE,
-    leverage: signal.leverage ?? 1,
-    signalType: signal.type,
-    hypothesisId: signal.hypothesisId,
-    thesis: signal.thesis,
-    targetPct: signal.targetPct,
-    stopPct: signal.stopPct,
+    leverage: riskAdjustedSignal.leverage ?? 1,
+    signalType: riskAdjustedSignal.type,
+    hypothesisId: riskAdjustedSignal.hypothesisId,
+    thesis: riskAdjustedSignal.thesis,
+    targetPct: riskAdjustedSignal.targetPct,
+    stopPct: riskAdjustedSignal.stopPct,
     expiryDate: expiry.toISOString(),
   };
 
-  if (signal.venue === "spot") {
-    return { ...base, instrumentType: "spot", instrumentLabel: `${signal.asset} spot` };
+  if (riskAdjustedSignal.venue === "spot") {
+    return { ...base, instrumentType: "spot", instrumentLabel: `${riskAdjustedSignal.asset} spot` };
   }
 
-  if (signal.venue === "hyperliquid") {
-    const perpPrice = getHyperliquidPerpPrice(latestRow, signal.asset);
+  if (riskAdjustedSignal.venue === "hyperliquid") {
+    const perpPrice = getHyperliquidPerpPrice(latestRow, riskAdjustedSignal.asset);
     if (!perpPrice) return null;
     return {
       ...base,
       entryPrice: perpPrice,
       currentPrice: perpPrice,
       instrumentType: "hl_perp",
-      instrumentId: signal.asset,
-      instrumentLabel: `HL ${signal.asset} perp`,
+      instrumentId: riskAdjustedSignal.asset,
+      instrumentLabel: `HL ${riskAdjustedSignal.asset} perp`,
       fundingPnlAccrued: 0,
     };
   }
 
-  if (signal.venue === "polymarket") {
+  if (riskAdjustedSignal.venue === "polymarket") {
     if (!latestSnapshot) return null;
     const selected = selectPolymarketContract(
       latestSnapshot,
-      signal.asset,
+      riskAdjustedSignal.asset,
       underlyingPrice,
-      signal.direction,
-      signal.contractHint ?? { preferredDirection: inferPolymarketPreferredDirection(signal.direction, signal.type, signal.thesis) },
+      riskAdjustedSignal.direction,
+      riskAdjustedSignal.contractHint ?? { preferredDirection: inferPolymarketPreferredDirection(riskAdjustedSignal.direction, riskAdjustedSignal.type, riskAdjustedSignal.thesis) },
     );
     if (!selected) return null;
     return {
@@ -4060,6 +4092,7 @@ async function main() {
   const blockedSignals = loadBlockedSignals();
   const migrationNotes = migrateLegacyPolymarketPositions(portfolio, instrumentSnapshots);
   const fundingRiskShapeNotes = applyFundingRiskShapeToOpenPositions(portfolio, learningParams);
+  const spotLongRiskShapeNotes = applySpotLongRiskToOpenPositions(portfolio);
   const cancelledHeatmapShadows = cancelOpenRelativeValueHeatmapShadows(blockedSignals);
   const cancelledInvalidMonotonicArbShadows = cancelOpenInvalidMonotonicArbShadows(blockedSignals);
 
@@ -4068,6 +4101,7 @@ async function main() {
   console.log(`  Risk params: HL funding ${formatTargetPct(learningParams.signalRisk.FUNDING_EXTREME_SHORT.targetPct)}/-${learningParams.signalRisk.FUNDING_EXTREME_SHORT.stopPct}, LLM ${formatTargetPct(learningParams.signalRisk.LLM_HYPOTHESIS.targetPct)}/-${learningParams.signalRisk.LLM_HYPOTHESIS.stopPct}, PM overvol ${formatTargetPct(learningParams.signalRisk.PM_IV_GT_OPT_IV.targetPct)}/-${learningParams.signalRisk.PM_IV_GT_OPT_IV.stopPct}`);
   for (const note of migrationNotes) console.log(`  ${note}`);
   for (const note of fundingRiskShapeNotes) console.log(`  Funding risk shape: ${note}`);
+  for (const note of spotLongRiskShapeNotes) console.log(`  Spot long risk shape: ${note}`);
   if (cancelledHeatmapShadows.length > 0) {
     console.log(`  Cancelled ${cancelledHeatmapShadows.length} open relative-value heatmap shadow trades; heatmap is report-only until the horizon model is redesigned.`);
   }
