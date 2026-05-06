@@ -22,6 +22,7 @@ import json
 import math
 import re
 import shlex
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -70,6 +71,7 @@ class RelativeValueRow:
     pm_best_bid: Optional[float]
     pm_best_ask: Optional[float]
     pm_spread: Optional[float]
+    pm_quote_source: str
     liquidity: Optional[float]
     volume: Optional[float]
     underlying_cap_yes_price: Optional[float]
@@ -562,6 +564,95 @@ def fmt_num(value: Optional[float], digits: int = 2) -> str:
     return f"{value:.{digits}f}"
 
 
+GAMMA_EVENT_URL = "https://gamma-api.polymarket.com/events/slug"
+CLOB_BOOK_URL = "https://clob.polymarket.com/book"
+HTTP_HEADERS = {"Accept": "application/json", "User-Agent": "cross-venue-relative-value-report/1.0"}
+
+
+def fetch_json_url(url: str) -> Any:
+    request = urllib.request.Request(url, headers=HTTP_HEADERS)
+    with urllib.request.urlopen(request, timeout=20) as response:
+        return json.loads(response.read().decode("utf-8"))
+
+
+def parse_json_field(value: Any, fallback: Any) -> Any:
+    if isinstance(value, str):
+        try:
+            return json.loads(value)
+        except json.JSONDecodeError:
+            return fallback
+    return value if value is not None else fallback
+
+
+def best_book_level(levels: List[Dict[str, Any]], side: str) -> Tuple[Optional[float], Optional[float]]:
+    parsed: List[Tuple[float, float]] = []
+    for level in levels:
+        price = safe_float(level.get("price"))
+        size = safe_float(level.get("size"))
+        if price is not None and size is not None and price > 0 and size > 0:
+            parsed.append((price, size))
+    if not parsed:
+        return None, None
+    return max(parsed) if side == "bid" else min(parsed)
+
+
+def live_clob_book(token_id: str) -> Dict[str, Optional[float]]:
+    url = f"{CLOB_BOOK_URL}?{urllib.parse.urlencode({'token_id': token_id})}"
+    book = fetch_json_url(url)
+    bid, bid_size = best_book_level(book.get("bids", []), "bid")
+    ask, ask_size = best_book_level(book.get("asks", []), "ask")
+    return {
+        "bid": bid,
+        "ask": ask,
+        "bidSize": bid_size,
+        "askSize": ask_size,
+        "spread": (ask - bid) if bid is not None and ask is not None else None,
+    }
+
+
+def live_gamma_markets(event_slug: str) -> Dict[str, Dict[str, Any]]:
+    try:
+        event = fetch_json_url(f"{GAMMA_EVENT_URL}/{urllib.parse.quote(event_slug)}")
+    except Exception as exc:
+        print(f"Warning: live Gamma fetch failed for {event_slug}: {exc}")
+        return {}
+    markets: Dict[str, Dict[str, Any]] = {}
+    for market in event.get("markets", []):
+        market_id = str(market.get("id", ""))
+        if market_id:
+            markets[market_id] = market
+    return markets
+
+
+def live_clob_quote_for_market(market: Dict[str, Any]) -> Dict[str, Any]:
+    outcomes = parse_json_field(market.get("outcomes"), [])
+    token_ids = parse_json_field(market.get("clobTokenIds"), [])
+    if len(outcomes) != len(token_ids) or "Yes" not in outcomes or "No" not in outcomes:
+        return {}
+    try:
+        yes_book = live_clob_book(str(token_ids[outcomes.index("Yes")]))
+        no_book = live_clob_book(str(token_ids[outcomes.index("No")]))
+    except Exception as exc:
+        print(f"Warning: live CLOB fetch failed for market {market.get('id')}: {exc}")
+        return {}
+    yes_bid = yes_book.get("bid")
+    yes_ask = yes_book.get("ask")
+    if yes_bid is None or yes_ask is None or yes_bid <= 0 or yes_ask <= 0:
+        return {}
+    midpoint = (yes_bid + yes_ask) / 2
+    return {
+        "yesPrice": midpoint,
+        "bestBid": yes_bid,
+        "bestAsk": yes_ask,
+        "spread": yes_ask - yes_bid,
+        "liquidity": safe_float(market.get("liquidity")),
+        "volume": safe_float(market.get("volume")),
+        "quoteSource": "live_clob",
+        "noBestBid": no_book.get("bid"),
+        "noBestAsk": no_book.get("ask"),
+    }
+
+
 def build_rows(
     snapshot: Dict[str, Any],
     latest_valuations: Optional[Dict[str, str]] = None,
@@ -577,6 +668,7 @@ def build_rows(
     rows: List[RelativeValueRow] = []
 
     for event in snapshot.get("polymarket", []):
+        live_markets = live_gamma_markets(str(event.get("slug", "")))
         asset = str(event.get("asset", ""))
         option_symbol, option_snapshot = option_chain_for_asset(snapshot, asset)
         spot = safe_float(spots.get(asset))
@@ -635,10 +727,22 @@ def build_rows(
                 terminal_prob = lognormal_terminal_probability(option_underlying, option_strike, option_iv, model_dte_days, direction)
                 model_prob = touch_adjusted_probability(terminal_prob, direction, question)
 
-            pm_yes = safe_float(contract.get("yesPrice"))
-            bid = safe_float(contract.get("bestBid"))
-            ask = safe_float(contract.get("bestAsk"))
-            spread = safe_float(contract.get("spread"))
+            live_quote = live_clob_quote_for_market(live_markets.get(str(contract.get("marketId", "")), {}))
+            quote_source = live_quote.get("quoteSource", "snapshot")
+            pm_yes = safe_float(live_quote.get("yesPrice")) if live_quote else None
+            bid = safe_float(live_quote.get("bestBid")) if live_quote else None
+            ask = safe_float(live_quote.get("bestAsk")) if live_quote else None
+            spread = safe_float(live_quote.get("spread")) if live_quote else None
+            liquidity = safe_float(live_quote.get("liquidity")) if live_quote else liquidity
+            volume = safe_float(live_quote.get("volume")) if live_quote else safe_float(contract.get("volume"))
+            if pm_yes is None:
+                pm_yes = safe_float(contract.get("yesPrice"))
+            if bid is None:
+                bid = safe_float(contract.get("bestBid"))
+            if ask is None:
+                ask = safe_float(contract.get("bestAsk"))
+            if spread is None:
+                spread = safe_float(contract.get("spread"))
             if spread is None and bid is not None and ask is not None:
                 spread = ask - bid
             cap_yes = underlying_cap_yes_price(spot, strike, direction, question)
@@ -700,6 +804,10 @@ def build_rows(
                 notes.append(f"Settlement bucket modeled as probability between {range_bounds[0]:.0f} and {range_bounds[1]:.0f}.")
             if option_symbol == "IBIT":
                 notes.append("Strike scaled from underlying options proxy.")
+            if quote_source == "live_clob":
+                notes.append("Polymarket quote refreshed from live CLOB during heatmap generation.")
+            else:
+                flags.append("pm_quote_from_snapshot")
             if cap_yes is not None:
                 notes.append(f"Underlying upside cap YES price is {cap_yes:.1%}; PM trades at {cap_ratio:.0%} of cap." if cap_ratio is not None else f"Underlying upside cap YES price is {cap_yes:.1%}.")
 
@@ -727,8 +835,9 @@ def build_rows(
                     pm_best_bid=bid,
                     pm_best_ask=ask,
                     pm_spread=spread,
+                    pm_quote_source=quote_source,
                     liquidity=liquidity,
-                    volume=safe_float(contract.get("volume")),
+                    volume=volume,
                     underlying_cap_yes_price=cap_yes,
                     pm_to_underlying_cap_ratio=cap_ratio,
                     underlying_cap_signal=cap_signal,
@@ -933,6 +1042,7 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
             f"<td class='question'>{html.escape(row.contract_question)}</td>"
             f"<td>{html.escape(row.contract_month)}</td>"
             f"<td>{html.escape(fmt_pct(row.pm_yes_price))}</td>"
+            f"<td>{html.escape(row.pm_quote_source)}</td>"
             f"<td>{html.escape(fmt_pct(row.underlying_cap_yes_price))}</td>"
             f"<td>{html.escape(fmt_num(row.pm_to_underlying_cap_ratio, 2))}</td>"
             f"<td>{html.escape(fmt_num(row.settlement_yes_sum, 2))}</td>"
@@ -992,6 +1102,7 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
     Rows shown: {len(visible)} of {len(rows)}
   </div>
   <p>
+    PM YES/bid/ask are refreshed from live CLOB books at generation time when available.
     Positive edge means the model thinks PM YES is cheap versus options after using the PM ask.
     Negative edge means PM YES looks rich versus options after using the PM bid. This is a
     screening report, not a risk-free arbitrage ledger. Cap YES is the maximum rational
@@ -1023,6 +1134,7 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         <th>Contract</th>
         <th>Date</th>
         <th>PM YES</th>
+        <th>PM Quote</th>
         <th>Cap YES</th>
         <th>PM/Cap</th>
         <th>Settle Sum</th>
