@@ -76,6 +76,23 @@ def in_window(ts: str | None, start_utc: datetime, end_utc: datetime) -> bool:
     return bool(parsed and start_utc <= parsed < end_utc)
 
 
+def before_end(ts: str | None, end_utc: datetime) -> bool:
+    parsed = parse_ts(ts)
+    return bool(parsed and parsed < end_utc)
+
+
+def is_counted_real_trade(row: dict[str, Any]) -> bool:
+    close_reason = row.get("close_reason") or ""
+    thesis = row.get("thesis") or ""
+    return "DATA_CORRECTION_ARTIFACT" not in close_reason and "NON_LEARNING_CLOSE" not in thesis
+
+
+def win_loss(rows: list[dict[str, Any]]) -> tuple[int, int]:
+    wins = sum(1 for row in rows if num(row.get("pnl")) >= 0)
+    losses = sum(1 for row in rows if num(row.get("pnl")) < 0)
+    return wins, losses
+
+
 def local_hour(ts: str | None, tz: ZoneInfo) -> str:
     parsed = parse_ts(ts)
     if not parsed:
@@ -310,9 +327,18 @@ def build_report(window: ReportWindow) -> str:
     shadows = read_json(DATA_DIR / "blocked-signals.json", [])
     hypotheses = read_json(DATA_DIR / "hypotheses.json", [])
 
+    closed_trade_ids = {row.get("id") for row in closed_rows if row.get("id")}
     closed_trades = [row for row in closed_rows if in_window(row.get("closed_at"), window.start_utc, window.end_utc)]
+    counted_closed_trades = [row for row in closed_trades if is_counted_real_trade(row)]
+    cumulative_counted_trades = [
+        row for row in closed_rows
+        if is_counted_real_trade(row) and before_end(row.get("closed_at"), window.end_utc)
+    ]
     opened_real_from_closed = [row for row in closed_rows if in_window(row.get("opened_at"), window.start_utc, window.end_utc)]
-    open_positions = portfolio.get("positions", [])
+    open_positions = [
+        position for position in portfolio.get("positions", [])
+        if position.get("id") not in closed_trade_ids
+    ]
     opened_real_current = [
         {
             "opened_at": p.get("openedAt"),
@@ -333,6 +359,10 @@ def build_report(window: ReportWindow) -> str:
     resolved_shadows = [s for s in shadows if in_window(s.get("resolvedAt"), window.start_utc, window.end_utc)]
 
     realized = sum(num(row.get("pnl")) for row in closed_trades)
+    counted_realized = sum(num(row.get("pnl")) for row in counted_closed_trades)
+    cumulative_counted_realized = sum(num(row.get("pnl")) for row in cumulative_counted_trades)
+    daily_wins, daily_losses = win_loss(counted_closed_trades)
+    cumulative_wins, cumulative_losses = win_loss(cumulative_counted_trades)
     shadow_realized = sum(num((shadow.get("hypotheticalResult") or {}).get("pnl")) for shadow in resolved_shadows)
     open_unrealized = sum(open_position_pnl(position)[0] for position in open_positions)
 
@@ -358,12 +388,17 @@ def build_report(window: ReportWindow) -> str:
         "",
         "## Summary",
         f"- Real trades opened: {len(opened_real)}",
-        f"- Real trades closed: {len(closed_trades)} | realized P&L {money(realized)}",
+        f"- Real trades closed: {len(closed_trades)} ({len(counted_closed_trades)} counted) | "
+        f"realized P&L {money(realized)} (counted {money(counted_realized)})",
+        f"- Real trade W/L counted today: {daily_wins}/{len(counted_closed_trades)} "
+        f"({daily_losses} losses)",
+        "- Counted ledger excludes data-correction/non-learning closes.",
         f"- Current open real positions: {len(open_positions)} | unrealized P&L {money(open_unrealized)}",
         f"- Shadow trades opened: {len(opened_shadows)}",
         f"- Shadow trades resolved: {len(resolved_shadows)} | shadow P&L {money(shadow_realized)}",
-        f"- Portfolio realized P&L total: {money(num(portfolio.get('totalRealizedPnl')))}",
-        f"- Portfolio win rate: {portfolio.get('winCount', 0)}/{portfolio.get('totalTrades', 0)}",
+        f"- Closed-trade ledger P&L as of report end: {money(cumulative_counted_realized)}",
+        f"- Closed-trade ledger win rate as of report end: {cumulative_wins}/{len(cumulative_counted_trades)} "
+        f"({cumulative_losses} losses)",
         f"- Hypotheses: {dict(hypothesis_status)} | pending tests {pending_tests}",
         "",
         "## Hourly Closed P&L",
