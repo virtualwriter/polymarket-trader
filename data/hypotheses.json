@@ -318,8 +318,14 @@
       {
         "date": "2026-05-05",
         "triggered": true,
+        "outcome": "loss",
+        "actualMove": "HYPE moved 2.69% (41.808 → 42.933)"
+      },
+      {
+        "date": "2026-05-07",
+        "triggered": true,
         "outcome": "pending",
-        "actualMove": "Setup hype_funding_oi_normalization shadow test 12/20 opened via H-010 after current row satisfied variant conditions."
+        "actualMove": "Setup hype_funding_oi_normalization shadow test 13/20 opened via H-010 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0,
@@ -490,13 +496,13 @@
       {
         "date": "2026-04-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 2/9 opened after current row satisfied hypothesis conditions.",
+        "outcome": "win",
+        "actualMove": "GOLD moved 2.85% (4565 → 4695)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical Gold PM/P/C variants may include bad zero Gold P/C data."
       }
     ],
-    "winRate": 0,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data.",
@@ -4619,6 +4625,12 @@
         "triggered": true,
         "outcome": "win",
         "actualMove": "BTC moved 4.13% (71621 → 74581)"
+      },
+      {
+        "date": "2026-05-07",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup btc_put_call_exhaustion_reversal shadow test 19/20 opened via H-159 after current row satisfied variant conditions."
       }
     ],
     "winRate": 1,
@@ -5453,6 +5465,12 @@
         "actualMove": "OIL moved -0.43% (83.98 → 83.62)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical Oil IV/statistical tests used contaminated oil/CL data before WTI source correction."
+      },
+      {
+        "date": "2026-05-07",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup oil_iv_statistical_breakdown_arbitrage shadow test 2/20 opened via H-188 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0,
@@ -7942,8 +7960,8 @@
       {
         "date": "2026-05-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup btc_put_call_exhaustion_reversal shadow test 18/20 opened via H-276 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "BTC moved 3.76% (78280 → 81225)"
       }
     ],
     "winRate": 1,
@@ -11497,6 +11515,12 @@
         "actualMove": "BTC moved 1.47% (77440 → 78582)",
         "excludedFromSetupStats": true,
         "exclusionReason": "Excluded from setup-family stats: historical cross-asset positioning variants may include bad Gold/Oil P/C data."
+      },
+      {
+        "date": "2026-05-07",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup cross_asset_funding_positioning_exhaustion shadow test 2/20 opened via H-402 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0,
@@ -12089,11 +12113,11 @@
       {
         "date": "2026-04-27",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": ""
+        "outcome": "win",
+        "actualMove": "BTC moved 2.81% (79002 → 81225)"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Covered by promoted setup family hype_breakout_oi_surge_momentum via primary H-116.",
@@ -13061,8 +13085,8 @@
       {
         "date": "2026-04-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup oil_iv_statistical_breakdown_arbitrage shadow test 1/20 opened via H-457 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "OIL moved -10.13% (106.85 → 96.03)"
       }
     ],
     "winRate": 0,
@@ -13296,8 +13320,8 @@
       {
         "date": "2026-04-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup cross_asset_funding_positioning_exhaustion shadow test 1/20 opened via H-465 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "BTC moved 7.23% (75745 → 81225)"
       }
     ],
     "winRate": 1,
@@ -14937,7 +14961,7 @@
     "timeframeDays": 7,
     "confidence": 0.82,
     "tests": [],
-    "winRate": 0.6666666666666666,
+    "winRate": 0.6739130434782609,
     "status": "promoted",
     "promotedToSignal": true,
     "postMortem": "Regime-relative replacement for H-116; inherits setup-family promotion while removing brittle absolute spot thresholds.",
