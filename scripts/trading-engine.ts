@@ -41,9 +41,6 @@ const UNDERLYING_CAP_ENTRY_MAX_SPREAD = 0.02;
 const UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY = 1000;
 const UNDERLYING_CAP_BUY_NO_RATIO = 1.03;
 const UNDERLYING_CAP_BUY_YES_RATIO = 0.35;
-const RELATIVE_VALUE_HEATMAP_SHADOWS_ENABLED =
-  process.env.RELATIVE_VALUE_HEATMAP_SHADOWS_ENABLED === "1" ||
-  process.env.RELATIVE_VALUE_HEATMAP_SHADOWS_ENABLED === "true";
 const HYPOTHESIS_SHADOW_TESTS_REQUIRED = 20;
 const HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT = 25;
 const PROMOTE_THRESHOLD = 0.65;
@@ -1884,98 +1881,6 @@ function recordPolymarketProxyShortShadow(
     },
     position,
   });
-}
-
-function recordRelativeValueHeatmapShadows(
-  observations: RelativeValueObservation[],
-  latestRow: SnapshotRow,
-  latestSnapshot: InstrumentSnapshotFile | null,
-  learningParams: LearningParams,
-  blockedSignals: BlockedSignalShadow[],
-): number {
-  if (!RELATIVE_VALUE_HEATMAP_SHADOWS_ENABLED) return 0;
-  if (!latestSnapshot) return 0;
-  let recorded = 0;
-
-  const candidates = observations
-    .filter((obs) => ["buy_yes", "sell_yes_or_buy_no"].includes(obs.bestExpression))
-    .filter((obs) => obs.edgePts !== null)
-    .filter((obs) => !obs.flags.includes("wide_pm_spread") && !obs.flags.includes("low_pm_liquidity"))
-    .filter((obs) => !(obs.pmAsk !== null && obs.pmBid !== null && obs.pmAsk - obs.pmBid > HEATMAP_SHADOW_MAX_SPREAD))
-    .filter((obs) => !(obs.liquidity !== null && obs.liquidity < HEATMAP_SHADOW_MIN_LIQUIDITY))
-    .slice(0, 10);
-
-  for (const obs of candidates) {
-    const event = latestSnapshot.polymarket.find((candidate) => candidate.slug === obs.eventSlug && candidate.asset === obs.asset);
-    if (!event) continue;
-    const contract = event.contracts.find((candidate) =>
-      candidate.question === obs.question || (candidate.strike === obs.strike && candidate.direction === obs.direction)
-    );
-    if (!contract || !contract.marketId || contract.closed || contract.active === false) continue;
-
-    const instrumentType: "pm_yes" | "pm_no" = obs.bestExpression === "buy_yes" ? "pm_yes" : "pm_no";
-    const entryPrice = polymarketEntryPrice(contract, instrumentType);
-    if (entryPrice <= 0 || entryPrice >= 1) continue;
-
-    const instrumentId = `${event.slug}::${contract.marketId}`;
-    if (blockedSignals.some((shadow) =>
-      shadow.status === "open" &&
-      shadow.signalType === "RELATIVE_VALUE_HEATMAP" &&
-      shadow.position.instrumentId === instrumentId &&
-      shadow.position.instrumentType === instrumentType
-    )) continue;
-
-    const now = new Date().toISOString();
-    const expiryDate = obs.expiry || contract.endDate || new Date(Date.now() + 14 * 86400000).toISOString();
-    const position: Position = {
-      id: `RV-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
-      openedAt: now,
-      asset: obs.asset,
-      venue: "polymarket",
-      direction: instrumentType === "pm_yes" ? "long" : "short",
-      entryPrice,
-      currentPrice: entryPrice,
-      size: TRADE_SIZE,
-      leverage: 1,
-      signalType: "RELATIVE_VALUE_HEATMAP",
-      hypothesisId: null,
-      thesis: `[RELATIVE VALUE SHADOW] ${obs.bestExpression} edge=${(obs.edgePts ?? 0).toFixed(1)}pts, PM=${formatPct(obs.pmYes)}, model=${formatPct(obs.modelProb)}, optIV=${formatPct(obs.optionIv)}, pmIV=${formatPct(obs.pmIv)} — ${obs.question}`,
-      targetPct: 20,
-      stopPct: 12,
-      expiryDate,
-      instrumentType,
-      instrumentId,
-      instrumentLabel: `${event.slug} — ${instrumentType === "pm_yes" ? "YES" : "NO"} — ${contract.question}`,
-      entryUnderlyingPrice: getAssetPrice(latestRow, obs.asset) ?? undefined,
-      currentUnderlyingPrice: getAssetPrice(latestRow, obs.asset) ?? undefined,
-    };
-
-    blockedSignals.push({
-      id: position.id,
-      status: "open",
-      blockedAt: now,
-      blockedReason: "relative_value_heatmap",
-      signalType: "RELATIVE_VALUE_HEATMAP",
-      asset: obs.asset,
-      venue: "polymarket",
-      direction: position.direction,
-      confidence: Number(Math.min(1, Math.abs(obs.edgePts ?? 0) / 20).toFixed(4)),
-      thesis: position.thesis,
-      marketQuality: polymarketMarketQuality(position, latestSnapshot),
-      learningParamsSnapshot: {
-        macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
-        contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
-        positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
-        llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
-        momentumLongExpiryDays: learningParams.momentumLongExpiryDays,
-        signalRisk: learningParams.signalRisk,
-      },
-      position,
-    });
-    recorded++;
-  }
-
-  return recorded;
 }
 
 function recordMonotonicArbShadows(
@@ -4355,10 +4260,6 @@ async function main() {
         : shadow.blockedReason === "manual_shadow_trade" ? "Manual shadow" : "Blocked";
       console.log(`    ${emoji} ${shadowLabel}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${result.closeReason}: ${result.pnlPct >= 0 ? "+" : ""}${result.pnlPct.toFixed(2)}%`);
     }
-  }
-  const newRelativeValueShadows = recordRelativeValueHeatmapShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals);
-  if (newRelativeValueShadows > 0) {
-    console.log(`\n  Opened ${newRelativeValueShadows} relative-value heatmap shadow trades.`);
   }
   const newMonotonicArbShadows = recordMonotonicArbShadows(latestRow, latestSnapshot, learningParams, blockedSignals);
   if (newMonotonicArbShadows > 0) {

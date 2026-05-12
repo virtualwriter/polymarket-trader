@@ -37,6 +37,7 @@ HOSTED_DIR = ROOT / "relative-value"
 CSV_PATH = HOSTED_DIR / "cross_venue_relative_value.csv"
 HTML_PATH = HOSTED_DIR / "index.html"
 VALUATIONS_PATH = DATA_DIR / "daily-valuations.csv"
+MODEL_VERSION = "relative_value_heatmap_v2_one_touch"
 
 
 ASSET_TO_OPTION_SYMBOLS = {
@@ -50,6 +51,7 @@ ASSET_TO_OPTION_SYMBOLS = {
 @dataclass
 class RelativeValueRow:
     timestamp: str
+    model_version: str
     asset: str
     event_slug: str
     market_id: str
@@ -63,6 +65,7 @@ class RelativeValueRow:
     option_symbol: str
     option_underlying: Optional[float]
     option_source: str
+    iv_resolution: str
     option_iv: Optional[float]
     pm_iv: Optional[float]
     options_terminal_prob: Optional[float]
@@ -87,6 +90,9 @@ class RelativeValueRow:
     edge_score: Optional[float]
     edge_pts_per_dte: Optional[float]
     edge_pts_per_dte_7d_change: Optional[float]
+    eligible_displayable: bool
+    eligible_for_shadow: bool
+    eligible_for_backtest: bool
     edge_bucket: str
     perp_mark: Optional[float]
     perp_source: str
@@ -446,14 +452,55 @@ def lognormal_range_probability(
     return max(0.0, min(1.0, below_high - below_low))
 
 
-def touch_adjusted_probability(terminal_prob: Optional[float], direction: str, question: str) -> Optional[float]:
+def one_touch_probability(
+    spot: Optional[float],
+    strike: Optional[float],
+    iv: Optional[float],
+    dte_days: Optional[float],
+    direction: str,
+) -> Optional[float]:
+    """Approximate no-drift GBM one-touch probability for hit/reach/dip markets."""
+    if not spot or not strike or not iv or not dte_days or spot <= 0 or strike <= 0 or iv <= 0 or dte_days <= 0:
+        return None
+    if direction == "above" and spot >= strike:
+        return 1.0
+    if direction == "below" and spot <= strike:
+        return 1.0
+    t = dte_days / 365.0
+    sigma_t = iv * math.sqrt(t)
+    if sigma_t <= 0:
+        return None
+    d1 = (math.log(spot / strike) + 0.5 * iv * iv * t) / sigma_t
+    if direction == "above":
+        return min(0.99, max(0.0, 2.0 * norm_cdf(d1)))
+    if direction == "below":
+        return min(0.99, max(0.0, 2.0 * norm_cdf(-d1)))
+    return None
+
+
+def is_one_touch_question(question: str) -> bool:
+    q = question.lower()
+    return "hit" in q or "reach" in q or "dip" in q
+
+
+def touch_adjusted_probability(
+    terminal_prob: Optional[float],
+    direction: str,
+    question: str,
+    spot: Optional[float] = None,
+    strike: Optional[float] = None,
+    iv: Optional[float] = None,
+    dte_days: Optional[float] = None,
+) -> Optional[float]:
     if terminal_prob is None:
         return None
-    q = question.lower()
-    if "hit" not in q and "reach" not in q and "dip" not in q:
+    if not is_one_touch_question(question):
         return terminal_prob
-    # A one-touch style event is worth more than terminal probability. This is a
-    # deliberately simple approximation for screening, not a pricing model.
+    touch_prob = one_touch_probability(spot, strike, iv, dte_days, direction)
+    if touch_prob is not None:
+        return max(terminal_prob, touch_prob)
+    # Fallback for incomplete rows: preserve the old screening approximation,
+    # but keep the primary path on the named/tested one-touch helper above.
     if direction in {"above", "below"}:
         return min(0.99, max(0.0, 2.0 * terminal_prob))
     return terminal_prob
@@ -481,6 +528,56 @@ def underlying_cap_signal(pm_yes: Optional[float], cap: Optional[float]) -> Tupl
     if ratio <= 0.35:
         return ratio, "cheap_vs_underlying_cap_bearish"
     return ratio, "mid_underlying_cap_ratio"
+
+
+def iv_resolution_for(option_snapshot: Optional[Dict[str, Any]], valuation_iv_key: str, option_iv: Optional[float]) -> str:
+    if valuation_iv_key:
+        return "valuations_fallback"
+    if option_snapshot and option_iv is not None:
+        source = str(option_snapshot.get("source", "")).lower()
+        if "tradingview" in source or source == "tv":
+            return "tv_chain"
+        return "cme_snapshot"
+    return ""
+
+
+def eligibility_flags(
+    best_expression: str,
+    edge_score: Optional[float],
+    dte_days: Optional[float],
+    spread: Optional[float],
+    liquidity: Optional[float],
+    flags: List[str],
+) -> Tuple[bool, bool, bool]:
+    flag_set = set(flags)
+    display_blockers = {"wide_pm_spread", "low_pm_liquidity", "missing_options_iv", "no_listed_options_mapping"}
+    cap_blockers = {"above_underlying_cap", "near_underlying_cap_bullish"}
+    risk_blockers = display_blockers | cap_blockers | {"extreme_perp_funding"}
+    has_trade_expression = best_expression in {"buy_yes", "sell_yes_or_buy_no"}
+    has_edge = edge_score is not None and abs(edge_score) >= 5
+    has_dte = dte_days is not None and dte_days >= 7
+    displayable = has_trade_expression and edge_score is not None and not flag_set.intersection(display_blockers)
+    eligible_for_shadow = (
+        displayable
+        and has_edge
+        and has_dte
+        and not flag_set.intersection(risk_blockers)
+        and spread is not None
+        and spread <= 0.01
+        and liquidity is not None
+        and liquidity >= 5_000
+    )
+    eligible_for_backtest = (
+        displayable
+        and has_edge
+        and has_dte
+        and not flag_set.intersection(risk_blockers)
+        and spread is not None
+        and spread <= 0.02
+        and liquidity is not None
+        and liquidity >= 2_000
+    )
+    return displayable, eligible_for_shadow, eligible_for_backtest
 
 
 def settlement_bucket_metrics(contracts: Iterable[Dict[str, Any]]) -> Tuple[Optional[float], Optional[float], Optional[float], Optional[float]]:
@@ -717,6 +814,7 @@ def build_rows(
                     option_symbol = option_symbol or f"{asset}_VALUATION_IV"
                     option_underlying = option_underlying or spot
                     option_strike = option_strike or strike
+            iv_resolution = iv_resolution_for(option_snapshot, valuation_iv_key, option_iv)
             range_bounds = parse_settlement_range(question)
             if range_bounds and spot and option_underlying:
                 scaled_low = scaled_option_strike(asset, option_symbol, range_bounds[0], spot, option_underlying)
@@ -725,7 +823,7 @@ def build_rows(
                 model_prob = terminal_prob
             else:
                 terminal_prob = lognormal_terminal_probability(option_underlying, option_strike, option_iv, model_dte_days, direction)
-                model_prob = touch_adjusted_probability(terminal_prob, direction, question)
+                model_prob = touch_adjusted_probability(terminal_prob, direction, question, option_underlying, option_strike, option_iv, model_dte_days)
 
             live_quote = live_clob_quote_for_market(live_markets.get(str(contract.get("marketId", "")), {}))
             quote_source = live_quote.get("quoteSource", "snapshot")
@@ -790,6 +888,15 @@ def build_rows(
             if cap_signal in {"above_underlying_cap", "near_underlying_cap_bullish", "cheap_vs_underlying_cap_bearish"}:
                 flags.append(cap_signal)
 
+            displayable, eligible_for_shadow, eligible_for_backtest = eligibility_flags(
+                best_expression,
+                score,
+                dte_days,
+                spread,
+                liquidity,
+                flags,
+            )
+
             notes = []
             if valuation_iv_key:
                 notes.append(f"Options model falls back to latest {valuation_iv_key} from daily-valuations.csv.")
@@ -798,8 +905,8 @@ def build_rows(
                 notes.append(f"Options model uses {option_symbol} {option_snapshot.get('source', '')}; target month-end expiry {target_note}, IV expiry {iv_expiry or 'n/a'}, closest-strike IV sample.")
             else:
                 notes.append("No listed options model is used for this asset.")
-            if option_symbol and ("hit" in question.lower() or "reach" in question.lower()):
-                notes.append("Hit/reach market uses simple 2x terminal-prob touch adjustment.")
+            if option_symbol and is_one_touch_question(question):
+                notes.append("Hit/reach market uses tested one-touch probability model; incomplete rows fall back to 2x terminal probability.")
             if range_bounds:
                 notes.append(f"Settlement bucket modeled as probability between {range_bounds[0]:.0f} and {range_bounds[1]:.0f}.")
             if option_symbol == "IBIT":
@@ -814,6 +921,7 @@ def build_rows(
             rows.append(
                 RelativeValueRow(
                     timestamp=ts,
+                    model_version=MODEL_VERSION,
                     asset=asset,
                     event_slug=str(event.get("slug", "")),
                     market_id=str(contract.get("marketId", "")),
@@ -827,6 +935,7 @@ def build_rows(
                     option_symbol=option_symbol,
                     option_underlying=option_underlying,
                     option_source=str(option_snapshot.get("source", "")) if option_snapshot else "",
+                    iv_resolution=iv_resolution,
                     option_iv=option_iv,
                     pm_iv=pm_iv,
                     options_terminal_prob=terminal_prob,
@@ -851,6 +960,9 @@ def build_rows(
                     edge_score=score,
                     edge_pts_per_dte=edge_per_dte,
                     edge_pts_per_dte_7d_change=None,
+                    eligible_displayable=displayable,
+                    eligible_for_shadow=eligible_for_shadow,
+                    eligible_for_backtest=eligible_for_backtest,
                     edge_bucket=edge_bucket(score),
                     perp_mark=perp_mark,
                     perp_source=perp_source,
@@ -939,7 +1051,13 @@ def attach_edge_history(
     }
     for row in rows:
         previous = previous_by_key.get(relative_value_key(row))
-        if previous and row.edge_pts_per_dte is not None and previous.edge_pts_per_dte is not None:
+        if (
+            previous
+            and row.edge_pts_per_dte is not None
+            and previous.edge_pts_per_dte is not None
+            and row.model_version == previous.model_version
+            and row.iv_resolution == previous.iv_resolution
+        ):
             row.edge_pts_per_dte_7d_change = row.edge_pts_per_dte - previous.edge_pts_per_dte
 
 
@@ -948,6 +1066,8 @@ def row_to_dict(row: RelativeValueRow) -> Dict[str, Any]:
     for key, value in list(data.items()):
         if isinstance(value, float):
             data[key] = f"{value:.8f}"
+        elif isinstance(value, bool):
+            data[key] = "true" if value else "false"
         elif value is None:
             data[key] = ""
     return data
@@ -961,6 +1081,15 @@ def write_csv(rows: List[RelativeValueRow], path: Path) -> None:
         writer.writeheader()
         for row in rows:
             writer.writerow(row_to_dict(row))
+
+
+def archive_csv(rows: List[RelativeValueRow], csv_path: Path, snapshot_timestamp: str) -> Optional[Path]:
+    snapshot_dt = parse_time(snapshot_timestamp)
+    if not snapshot_dt:
+        return None
+    archive_path = csv_path.parent / "history" / snapshot_dt.date().isoformat() / csv_path.name
+    write_csv(rows, archive_path)
+    return archive_path
 
 
 def top_rows(rows: List[RelativeValueRow], limit: int = 80) -> List[RelativeValueRow]:
@@ -1053,6 +1182,9 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
             f"<td>{html.escape(fmt_pts(row.edge_pts_per_dte, 3))}</td>"
             f"<td>{html.escape(fmt_pts(row.edge_pts_per_dte_7d_change, 3))}</td>"
             f"<td>{html.escape(row.best_expression)}</td>"
+            f"<td>{'yes' if row.eligible_displayable else 'no'}</td>"
+            f"<td>{'yes' if row.eligible_for_shadow else 'no'}</td>"
+            f"<td>{'yes' if row.eligible_for_backtest else 'no'}</td>"
             f"<td><button type='button' data-command='{html.escape(command, quote=True)}' data-payload='{html.escape(payload, quote=True)}'>Add {html.escape(side)} shadow</button></td>"
             f"<td>{html.escape(fmt_num(row.pm_spread, 3))}</td>"
             f"<td>{html.escape(fmt_num(row.liquidity, 0))}</td>"
@@ -1061,6 +1193,8 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
             f"<td>{html.escape(row.perp_source)}</td>"
             f"<td>{html.escape(fmt_pct(row.perp_funding_ann))}</td>"
             f"<td>{html.escape(fmt_num(row.perp_basis_pct, 2))}</td>"
+            f"<td>{html.escape(row.model_version)}</td>"
+            f"<td>{html.escape(row.iv_resolution)}</td>"
             f"<td>{html.escape(row.flags)}</td>"
             "</tr>"
         )
@@ -1145,6 +1279,9 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         <th>Edge/Day</th>
         <th>7d Δ Edge/Day</th>
         <th>Best Expression</th>
+        <th>Display</th>
+        <th>Shadow Eligible</th>
+        <th>Backtest Eligible</th>
         <th>Manual Shadow</th>
         <th>PM Spread</th>
         <th>Liquidity</th>
@@ -1153,6 +1290,8 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         <th>Perp Source</th>
         <th>Perp Funding</th>
         <th>Basis %</th>
+        <th>Model</th>
+        <th>IV Resolution</th>
         <th>Flags</th>
       </tr>
     </thead>
@@ -1237,6 +1376,7 @@ def main() -> None:
     parser.add_argument("--csv", type=Path, default=CSV_PATH, help="Output CSV path")
     parser.add_argument("--html", type=Path, default=HTML_PATH, help="Output HTML heatmap path")
     parser.add_argument("--min-liquidity", type=float, default=0.0, help="Minimum Polymarket liquidity to include")
+    parser.add_argument("--no-archive", action="store_true", help="Skip daily CSV archive under relative-value/history")
     args = parser.parse_args()
 
     snapshot = read_latest_snapshot(args.snapshot)
@@ -1258,10 +1398,14 @@ def main() -> None:
             r.strike,
         )
     )
+    snapshot_timestamp = str(snapshot.get("timestamp", ""))
     write_csv(rows, args.csv)
-    write_html(rows, args.html, str(snapshot.get("timestamp", "")))
+    archived_path = None if args.no_archive else archive_csv(rows, args.csv, snapshot_timestamp)
+    write_html(rows, args.html, snapshot_timestamp)
     print_summary(rows)
     print(f"\nWrote CSV:  {args.csv}")
+    if archived_path:
+        print(f"Wrote archive CSV: {archived_path}")
     print(f"Wrote HTML: {args.html}")
 
 
