@@ -7881,3 +7881,30 @@ Session 2026-05-12T18: Key observations:
 
 ---
 
+### 2026-05-12 21:30 UTC
+
+**Portfolio:** $99.23 total | Cash $98.23 | 1 open | P&L $0.2256 | 55% win rate (117 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -233.41 is -2.6 std devs from mean since 2026-04-28 (-24.78 ± 79.00)
+- [correlation_flip] BTC-OIL correlation shifted from 0.21 to -0.72
+
+**Blocked signal learning:**
+- Open blocked shadows: 10
+- Resolved blocked shadows: 63 (28 wins / 35 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have expiry (+2.97%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+
+**LLM analysis:**
+2026-05-12T21 UTC. OIL LONG THESIS INTACT: Existing OIL long via HL perp at entry 98.94 is performing well with WTI at 99.14. Funding at -233% annualized (down from -442% peak) still generates positive carry for the long. PM settle EV at 86.8-87.1 is now BELOW spot (99.1), a significant shift from prior state where PM was above spot — consistent with mean reversion completing. Holding position. MACRO HEADWINDS FOR BTC: 5-day gap confirmed macro deterioration (composite 53 to 48, fed_score 25 to 15, btc_outperform_sp500 32% to 22%). BTC IBIT P/C ratio rose from 0.48 to 0.528 in May 12 snapshots, suggesting defensive put buying. BTC PM IV at 36.6-36.8% remains compressed (~-2 std devs below 30d mean), meeting H-523 promoted hypothesis conditions, but macro headwinds may delay vol expansion bounce. HYPE DISTRIBUTION CONTINUES: HYPE OI at 826M represents 13.7% decline from 957M peak. Killed H-508 family was correctly killed. HYPE funding at +10.95% means longs still paying — not a funding crash scenario. No new HYPE trades warranted. CHEAP-VS-CAP SHADOW TESTS: Placed two shadow tests for H-526 — BTC May $95k YES (tight spread, high liquidity, model edge +2.14pts) and Gold June $5,500 HIGH YES (borderline spread 0.02, positive model edge +1.57pts). H-526 family needs more data points. BLOCKED SIGNAL LEARNING: FUNDING_EXTREME_LONG trend filter blocked 5/7 profitable trades (71% would-have-won rate, avg +1.02%). Sample too small (7 resolved) to justify parameter change but worth monitoring. No parameter changes warranted this session.
+
+---
+
