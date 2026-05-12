@@ -7741,3 +7741,37 @@ Positioning exhaustion patterns demonstrating mathematical precision as institut
 
 ---
 
+### 2026-05-12 15:52 UTC
+
+**Portfolio:** $99.23 total | Cash $98.23 | 1 open | P&L $0.2256 | 55% win rate (117 trades)
+
+**Closed 3 trades:**
+- ✅ BTC short via spot/spot [BTC spot] (PC_RATIO_EXTREME_LOW) → expiry: +$0.0133 (1.3%, market 0.0133, funding 0.0000)
+- ✅ OIL long via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH) → target: +$0.0410 (4.1%, market 0.0410, funding 0.0000)
+- ✅ GOLD short via spot/spot [GOLD spot] (PC_RATIO_EXTREME_LOW) → expiry: +$0.0060 (0.6%, market 0.0060, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL long @ $98.94 via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 8 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 16.0pp (was 7.9, now -8.1)
+- [anomaly] oil_hl_funding_ann = -304.33 is -5.1 std devs from mean since 2026-04-28 (-16.07 ± 56.75)
+- [correlation_flip] BTC-OIL correlation shifted from 0.20 to -0.71
+
+**Blocked signal learning:**
+- Open blocked shadows: 8
+- Resolved blocked shadows: 63 (28 wins / 35 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have expiry (+2.97%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+
+---
+
