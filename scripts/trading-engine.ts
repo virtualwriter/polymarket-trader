@@ -3701,6 +3701,65 @@ function extractBalancedJsonObject(text: string): string | null {
   return null;
 }
 
+function normalizeLlmResult(value: any): LlmAnalysisResult {
+  const result = value && typeof value === "object" ? value : {};
+  const marketAssessment = typeof result.marketAssessment === "string" && result.marketAssessment.trim()
+    ? result.marketAssessment
+    : "LLM returned no marketAssessment.";
+
+  const newHypotheses = Array.isArray(result.newHypotheses)
+    ? result.newHypotheses
+      .filter((item: any) => item && typeof item === "object" && typeof item.description === "string" && item.description.trim())
+      .map((item: any) => ({
+        created: typeof item.created === "string" && item.created.trim()
+          ? item.created
+          : new Date().toISOString().slice(0, 10),
+        description: item.description,
+        conditions: item.conditions && typeof item.conditions === "object" && !Array.isArray(item.conditions)
+          ? item.conditions
+          : {},
+        prediction: typeof item.prediction === "string" ? item.prediction : "",
+        timeframeDays: Number.isFinite(Number(item.timeframeDays)) ? Number(item.timeframeDays) : 7,
+        confidence: Number.isFinite(Number(item.confidence)) ? Number(item.confidence) : 0.5,
+        source: "llm" as const,
+      }))
+    : [];
+
+  const hypothesisReviews = Array.isArray(result.hypothesisReviews)
+    ? result.hypothesisReviews
+      .filter((item: any) => item && typeof item === "object" && typeof item.id === "string" && typeof item.observation === "string")
+      .map((item: any) => ({ id: item.id, observation: item.observation }))
+    : [];
+
+  const trades = Array.isArray(result.trades)
+    ? result.trades
+      .filter((item: any) => item && typeof item === "object")
+      .map((item: any) => ({
+        action: item.action === "buy" || item.action === "sell" || item.action === "close" ? item.action : "close",
+        asset: typeof item.asset === "string" ? item.asset : "",
+        venue: item.venue === "polymarket" || item.venue === "hyperliquid" || item.venue === "spot" ? item.venue : "spot",
+        direction: item.direction === "long" || item.direction === "short" || item.direction === "any" ? item.direction : "any",
+        thesis: typeof item.thesis === "string" ? item.thesis : "",
+      }))
+      .filter((item: LlmTradeInstruction) => item.asset)
+    : [];
+
+  const parameterUpdates = result.parameterUpdates && typeof result.parameterUpdates === "object" && !Array.isArray(result.parameterUpdates)
+    ? result.parameterUpdates
+    : undefined;
+
+  return {
+    marketAssessment,
+    newHypotheses,
+    hypothesisReviews,
+    trades,
+    parameterUpdates,
+    journalEntry: typeof result.journalEntry === "string" && result.journalEntry.trim()
+      ? result.journalEntry
+      : marketAssessment,
+  };
+}
+
 function parseLlmJson(text: string): { result: LlmAnalysisResult | null; error: string | null; jsonText: string | null } {
   const trimmed = text.trim()
     .replace(/^```(?:json)?\s*/i, "")
@@ -3709,7 +3768,7 @@ function parseLlmJson(text: string): { result: LlmAnalysisResult | null; error: 
   if (!jsonText) return { result: null, error: "No balanced JSON object found in response", jsonText: null };
 
   try {
-    return { result: JSON.parse(jsonText) as LlmAnalysisResult, error: null, jsonText };
+    return { result: normalizeLlmResult(JSON.parse(jsonText)), error: null, jsonText };
   } catch (e: any) {
     return { result: null, error: e.message, jsonText };
   }
