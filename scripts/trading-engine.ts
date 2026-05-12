@@ -12,6 +12,7 @@
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statSync, openSync, readSync, closeSync } from "node:fs";
 import { join } from "node:path";
+import { z } from "zod";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -3701,63 +3702,58 @@ function extractBalancedJsonObject(text: string): string | null {
   return null;
 }
 
-function normalizeLlmResult(value: any): LlmAnalysisResult {
-  const result = value && typeof value === "object" ? value : {};
-  const marketAssessment = typeof result.marketAssessment === "string" && result.marketAssessment.trim()
-    ? result.marketAssessment
-    : "LLM returned no marketAssessment.";
+const llmTradeInstructionSchema = z.object({
+  action: z.enum(["buy", "sell", "close"]),
+  asset: z.string().min(1),
+  venue: z.enum(["polymarket", "hyperliquid", "spot"]),
+  direction: z.enum(["long", "short", "any"]),
+  thesis: z.string().min(1),
+});
 
-  const newHypotheses = Array.isArray(result.newHypotheses)
-    ? result.newHypotheses
-      .filter((item: any) => item && typeof item === "object" && typeof item.description === "string" && item.description.trim())
-      .map((item: any) => ({
-        created: typeof item.created === "string" && item.created.trim()
-          ? item.created
-          : new Date().toISOString().slice(0, 10),
-        description: item.description,
-        conditions: item.conditions && typeof item.conditions === "object" && !Array.isArray(item.conditions)
-          ? item.conditions
-          : {},
-        prediction: typeof item.prediction === "string" ? item.prediction : "",
-        timeframeDays: Number.isFinite(Number(item.timeframeDays)) ? Number(item.timeframeDays) : 7,
-        confidence: Number.isFinite(Number(item.confidence)) ? Number(item.confidence) : 0.5,
-        source: "llm" as const,
-      }))
-    : [];
+const llmNewHypothesisSchema = z.object({
+  created: z.string().min(1),
+  description: z.string().min(1),
+  conditions: z.record(z.string(), z.string()),
+  prediction: z.string().min(1),
+  timeframeDays: z.number().int().min(1).max(30),
+  confidence: z.number().min(0).max(1),
+  source: z.literal("llm"),
+});
 
-  const hypothesisReviews = Array.isArray(result.hypothesisReviews)
-    ? result.hypothesisReviews
-      .filter((item: any) => item && typeof item === "object" && typeof item.id === "string" && typeof item.observation === "string")
-      .map((item: any) => ({ id: item.id, observation: item.observation }))
-    : [];
+const llmSignalRiskUpdateSchema = z.object({
+  targetPct: z.number().min(0.5).max(15).nullable().optional(),
+  stopPct: z.number().min(0.5).max(10).optional(),
+});
 
-  const trades = Array.isArray(result.trades)
-    ? result.trades
-      .filter((item: any) => item && typeof item === "object")
-      .map((item: any) => ({
-        action: item.action === "buy" || item.action === "sell" || item.action === "close" ? item.action : "close",
-        asset: typeof item.asset === "string" ? item.asset : "",
-        venue: item.venue === "polymarket" || item.venue === "hyperliquid" || item.venue === "spot" ? item.venue : "spot",
-        direction: item.direction === "long" || item.direction === "short" || item.direction === "any" ? item.direction : "any",
-        thesis: typeof item.thesis === "string" ? item.thesis : "",
-      }))
-      .filter((item: LlmTradeInstruction) => item.asset)
-    : [];
+const llmParameterUpdatesSchema = z.object({
+  macroMomentum24hThresholdPts: z.number().min(2).max(20).optional(),
+  contrarianTrendMarginPct: z.number().min(0).max(5).optional(),
+  positiveMomentum24hPct: z.number().min(0).max(10).optional(),
+  llmTradeExpiryDays: z.number().int().min(3).max(30).optional(),
+  momentumLongExpiryDays: z.number().int().min(3).max(45).optional(),
+  signalRisk: z.record(z.string(), llmSignalRiskUpdateSchema).optional(),
+}).optional();
 
-  const parameterUpdates = result.parameterUpdates && typeof result.parameterUpdates === "object" && !Array.isArray(result.parameterUpdates)
-    ? result.parameterUpdates
-    : undefined;
+const llmAnalysisResultSchema = z.object({
+  marketAssessment: z.string().min(1),
+  newHypotheses: z.array(llmNewHypothesisSchema),
+  hypothesisReviews: z.array(z.object({
+    id: z.string().min(1),
+    observation: z.string().min(1),
+  })),
+  trades: z.array(llmTradeInstructionSchema),
+  parameterUpdates: llmParameterUpdatesSchema,
+  journalEntry: z.string().min(1),
+});
 
-  return {
-    marketAssessment,
-    newHypotheses,
-    hypothesisReviews,
-    trades,
-    parameterUpdates,
-    journalEntry: typeof result.journalEntry === "string" && result.journalEntry.trim()
-      ? result.journalEntry
-      : marketAssessment,
-  };
+function validateLlmResult(value: unknown): { result: LlmAnalysisResult | null; error: string | null } {
+  const parsed = llmAnalysisResultSchema.safeParse(value);
+  if (parsed.success) return { result: parsed.data as LlmAnalysisResult, error: null };
+  const issues = parsed.error.issues
+    .slice(0, 10)
+    .map((issue) => `${issue.path.join(".") || "<root>"}: ${issue.message}`)
+    .join("; ");
+  return { result: null, error: `Schema validation failed: ${issues}` };
 }
 
 function parseLlmJson(text: string): { result: LlmAnalysisResult | null; error: string | null; jsonText: string | null } {
@@ -3768,7 +3764,8 @@ function parseLlmJson(text: string): { result: LlmAnalysisResult | null; error: 
   if (!jsonText) return { result: null, error: "No balanced JSON object found in response", jsonText: null };
 
   try {
-    return { result: normalizeLlmResult(JSON.parse(jsonText)), error: null, jsonText };
+    const validation = validateLlmResult(JSON.parse(jsonText));
+    return { result: validation.result, error: validation.error, jsonText };
   } catch (e: any) {
     return { result: null, error: e.message, jsonText };
   }
@@ -3984,6 +3981,13 @@ Respond with ONLY valid JSON in this exact format:
 Parse error: ${parsed.error}
 
 Return ONLY a corrected JSON object that follows the original schema exactly. Do not include markdown, comments, or explanation. Preserve the same analysis as much as possible.
+Required top-level keys and types:
+- marketAssessment: non-empty string
+- newHypotheses: array of objects with created, description, conditions, prediction, timeframeDays, confidence, source="llm"
+- hypothesisReviews: array of {id, observation}
+- trades: array of {action, asset, venue, direction, thesis}
+- parameterUpdates: optional object
+- journalEntry: non-empty string
 
 Previous response:
 ${first.text.slice(0, 12000)}`;
