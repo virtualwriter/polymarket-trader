@@ -209,6 +209,15 @@ interface LlmTradeInstruction {
   thesis: string;
 }
 
+interface LlmAnalysisResult {
+  marketAssessment: string;
+  newHypotheses: Omit<Hypothesis, "id" | "tests" | "winRate" | "status" | "promotedToSignal" | "postMortem">[];
+  hypothesisReviews: { id: string; observation: string }[];
+  trades: LlmTradeInstruction[];
+  parameterUpdates?: Partial<Omit<LearningParams, "updatedAt">>;
+  journalEntry: string;
+}
+
 interface HypothesisTest {
   date: string;
   triggered: boolean;
@@ -3654,6 +3663,92 @@ function evaluateHypotheses(
 
 // ─── LLM Integration ─────────────────────────────────────────────────────────
 
+function extractBalancedJsonObject(text: string): string | null {
+  const candidates: number[] = [];
+  for (let i = 0; i < text.length; i++) {
+    if (text[i] === "{") candidates.push(i);
+  }
+
+  for (const start of candidates) {
+    let depth = 0;
+    let inString = false;
+    let escaped = false;
+
+    for (let i = start; i < text.length; i++) {
+      const ch = text[i];
+      if (escaped) {
+        escaped = false;
+        continue;
+      }
+      if (ch === "\\") {
+        escaped = inString;
+        continue;
+      }
+      if (ch === "\"") {
+        inString = !inString;
+        continue;
+      }
+      if (inString) continue;
+
+      if (ch === "{") depth++;
+      if (ch === "}") {
+        depth--;
+        if (depth === 0) return text.slice(start, i + 1);
+      }
+    }
+  }
+
+  return null;
+}
+
+function parseLlmJson(text: string): { result: LlmAnalysisResult | null; error: string | null; jsonText: string | null } {
+  const trimmed = text.trim()
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/\s*```$/i, "");
+  const jsonText = extractBalancedJsonObject(trimmed);
+  if (!jsonText) return { result: null, error: "No balanced JSON object found in response", jsonText: null };
+
+  try {
+    return { result: JSON.parse(jsonText) as LlmAnalysisResult, error: null, jsonText };
+  } catch (e: any) {
+    return { result: null, error: e.message, jsonText };
+  }
+}
+
+function anthropicText(data: any): string {
+  const content = Array.isArray(data?.content) ? data.content : [];
+  return content
+    .map((block: any) => typeof block?.text === "string" ? block.text : "")
+    .filter(Boolean)
+    .join("\n")
+    .trim();
+}
+
+async function requestAnthropicText(
+  apiKey: string,
+  model: string,
+  messages: { role: "user" | "assistant"; content: string }[],
+): Promise<{ text: string; stopReason: string | null }> {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model,
+      max_tokens: 4096,
+      temperature: 0.2,
+      messages,
+    }),
+  });
+
+  if (!res.ok) throw new Error(`API error: ${res.status} ${res.statusText}`);
+  const data = await res.json() as any;
+  return { text: anthropicText(data), stopReason: data.stop_reason ?? null };
+}
+
 async function callLLM(
   valuationRows: SnapshotRow[],
   macroRows: SnapshotRow[],
@@ -3667,14 +3762,7 @@ async function callLLM(
   blockedSummary: BlockedSignalLearningSummary,
   relativeValueRows: RelativeValueObservation[],
   journalTail: string,
-): Promise<{
-  marketAssessment: string;
-  newHypotheses: Omit<Hypothesis, "id" | "tests" | "winRate" | "status" | "promotedToSignal" | "postMortem">[];
-  hypothesisReviews: { id: string; observation: string }[];
-  trades: LlmTradeInstruction[];
-  parameterUpdates?: Partial<Omit<LearningParams, "updatedAt">>;
-  journalEntry: string;
-} | null> {
+): Promise<LlmAnalysisResult | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     console.log("  [LLM] No ANTHROPIC_API_KEY set, skipping LLM reasoning.");
@@ -3827,34 +3915,33 @@ Respond with ONLY valid JSON in this exact format:
 }`;
 
   try {
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model: anthropicModel,
-        max_tokens: 2048,
-        messages: [{ role: "user", content: prompt }],
-      }),
-    });
+    const first = await requestAnthropicText(apiKey, anthropicModel, [{ role: "user", content: prompt }]);
+    const parsed = parseLlmJson(first.text);
+    if (parsed.result) return parsed.result;
 
-    if (!res.ok) {
-      console.log(`  [LLM] API error: ${res.status} ${res.statusText}`);
-      return null;
+    console.log(`  [LLM] Invalid JSON (${parsed.error}); requesting repair.${first.stopReason ? ` stop_reason=${first.stopReason}` : ""}`);
+    const repairPrompt = `Your previous response was not valid JSON and could not be parsed.
+
+Parse error: ${parsed.error}
+
+Return ONLY a corrected JSON object that follows the original schema exactly. Do not include markdown, comments, or explanation. Preserve the same analysis as much as possible.
+
+Previous response:
+${first.text.slice(0, 12000)}`;
+
+    const repaired = await requestAnthropicText(apiKey, anthropicModel, [
+      { role: "user", content: prompt },
+      { role: "assistant", content: first.text },
+      { role: "user", content: repairPrompt },
+    ]);
+    const repairedParsed = parseLlmJson(repaired.text);
+    if (repairedParsed.result) {
+      console.log("  [LLM] Repaired JSON response parsed successfully.");
+      return repairedParsed.result;
     }
 
-    const data = await res.json() as any;
-    const text = data.content?.[0]?.text ?? "";
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      console.log("  [LLM] Could not parse JSON from response");
-      return null;
-    }
-
-    return JSON.parse(jsonMatch[0]);
+    console.log(`  [LLM] Repair failed: ${repairedParsed.error}${repaired.stopReason ? ` stop_reason=${repaired.stopReason}` : ""}`);
+    return null;
   } catch (e: any) {
     console.log(`  [LLM] Error: ${e.message}`);
     return null;
