@@ -11,7 +11,7 @@
 #      the VPS are stashed transparently and reapplied after, instead of aborting the
 #      rebase with "cannot pull with rebase: You have unstaged changes" (which has
 #      historically silently killed the hourly run for hours at a time).
-#   4. Installs deps, snapshots markets, runs the engine, regenerates the heatmap.
+#   4. Installs deps, snapshots markets, regenerates the heatmap, runs the engine.
 #   5. Commits and pushes the resulting state changes.
 set -euo pipefail
 
@@ -81,10 +81,11 @@ npm ci
 
 npx tsx scripts/market-scanner.ts --snapshot
 python3 scripts/compact_instrument_snapshots.py
-npx tsx scripts/trading-engine.ts
 
-# Generate static Vercel report from the same snapshot data.
+# Generate static Vercel report from the same snapshot data before the engine
+# reads relative-value/cross_venue_relative_value.csv for live heatmap signals.
 python3 scripts/cross_venue_relative_value_report.py
+npx tsx scripts/trading-engine.ts
 
 for data_file in "${DATA_FILES[@]}"; do
   if [[ -e "$data_file" ]]; then
