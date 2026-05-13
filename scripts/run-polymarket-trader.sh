@@ -21,6 +21,14 @@ STATE_DIR="/var/lib/polymarket-trader"
 export POLYMARKET_TRADER_STATE_DIR="$STATE_DIR"
 mkdir -p "$STATE_DIR"
 chmod 700 "$STATE_DIR"
+
+if [[ -f /etc/polymarket-trader.env ]]; then
+  set -a
+  # shellcheck disable=SC1091
+  . /etc/polymarket-trader.env
+  set +a
+fi
+
 DATA_FILES=(
   data/daily-valuations.csv
   data/daily-macro.csv
