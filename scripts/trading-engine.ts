@@ -90,6 +90,7 @@ const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
   LLM_HYPOTHESIS: { targetPct: 3.5, stopPct: 2.5 },
   MOMENTUM_LONG: { targetPct: 6, stopPct: 3.5 },
   PROMOTED_HYPOTHESIS: { targetPct: 6, stopPct: 3.5 },
+  ONE_TOUCH_HIGH_EDGE_NO: { targetPct: null, stopPct: 100 },
 };
 const SPOT_LONG_RISK_BY_ASSET: Record<string, SignalRiskParams> = {
   BTC: { targetPct: 3, stopPct: 1.5 },
@@ -289,6 +290,7 @@ interface Signal {
     preferredDirection?: "above" | "below";
     allowDirectionFallback?: boolean;
     forceInstrumentType?: "pm_yes" | "pm_no";
+    forceMarketId?: string;
   };
 }
 
@@ -1013,6 +1015,7 @@ function defaultWeights(): SignalWeight[] {
     "PC_RATIO_EXTREME_HIGH",
     "PC_RATIO_EXTREME_LOW",
     "LLM_HYPOTHESIS",
+    "ONE_TOUCH_HIGH_EDGE_NO",
   ];
   return types.map((t) => ({
     type: t,
@@ -1214,6 +1217,17 @@ function selectPolymarketContract(
   direction: "long" | "short",
   hint?: Signal["contractHint"],
 ): { event: InstrumentSnapshotEvent; contract: InstrumentSnapshotContract; instrumentType: "pm_yes" | "pm_no"; entryPrice: number } | null {
+  if (hint?.forceMarketId && hint?.forceInstrumentType) {
+    for (const event of snapshot.polymarket) {
+      if (event.asset !== asset) continue;
+      const contract = event.contracts.find((c) => c.marketId === hint.forceMarketId);
+      if (!contract || !(contract.yesPrice > 0 && contract.yesPrice < 1)) continue;
+      const entryPrice = polymarketEntryPrice(contract, hint.forceInstrumentType);
+      if (entryPrice <= 0 || entryPrice >= 1) continue;
+      return { event, contract, instrumentType: hint.forceInstrumentType, entryPrice };
+    }
+    return null;
+  }
   const preferredSlugs = hint?.preferredEventSlug ? [hint.preferredEventSlug, ...preferredPolymarketEventSlugs(asset)] : preferredPolymarketEventSlugs(asset);
   const events = snapshot.polymarket.filter((event) => event.asset === asset);
   const rankedEvents = preferredSlugs
@@ -2111,11 +2125,13 @@ function recordOneTouchHighEdgeShadows(
   latestSnapshot: InstrumentSnapshotFile | null,
   learningParams: LearningParams,
   blockedSignals: BlockedSignalShadow[],
+  liveCoveredKeys: Set<string> = new Set(),
 ): number {
   if (!latestSnapshot) return 0;
   const today = new Date().toISOString().slice(0, 10);
   const candidates = relativeValueRows
     .filter(strictOneTouchHighEdgeEligible)
+    .filter((row) => !liveCoveredKeys.has(`${row.asset}::${row.marketId}`))
     .sort((a, b) => {
       const sideRank = (row: RelativeValueObservation) => row.bestExpression === "sell_yes_or_buy_no" ? 1 : 0;
       return sideRank(b) - sideRank(a) || Math.abs(b.edgePts ?? 0) - Math.abs(a.edgePts ?? 0);
@@ -2161,6 +2177,74 @@ function recordOneTouchHighEdgeShadows(
   }
 
   return recorded;
+}
+
+const ONE_TOUCH_HIGH_EDGE_LIVE_ASSETS = new Set(["BTC", "OIL"]);
+
+function generateOneTouchHighEdgeNoSignals(
+  rows: RelativeValueObservation[],
+  weights: SignalWeight[],
+  learningParams: LearningParams,
+  latestSnapshot: InstrumentSnapshotFile | null,
+): Signal[] {
+  if (!latestSnapshot) return [];
+  const weight = weights.find((w) => w.type === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO);
+  if (!weight || !weight.enabled) return [];
+
+  const candidates = rows
+    .filter(strictOneTouchHighEdgeEligible)
+    .filter((row) => row.bestExpression === "sell_yes_or_buy_no")
+    .filter((row) => ONE_TOUCH_HIGH_EDGE_LIVE_ASSETS.has(row.asset))
+    .filter((row) => !weight.perAsset?.[row.asset]?.disabled)
+    .sort((a, b) => Math.abs(b.edgePts ?? 0) - Math.abs(a.edgePts ?? 0));
+
+  const risk = riskForSignal(learningParams, ONE_TOUCH_HIGH_EDGE_SIGNAL_NO);
+  const signals: Signal[] = [];
+
+  for (const row of candidates) {
+    const edgeMagnitude = Math.abs(row.edgePts ?? 0);
+    const event = latestSnapshot.polymarket.find((candidate) => candidate.slug === row.eventSlug);
+    const contract = event?.contracts.find((candidate) => candidate.marketId === row.marketId);
+    if (!event || !contract) continue;
+    const entryPrice = polymarketEntryPrice(contract, "pm_no");
+    if (entryPrice <= 0 || entryPrice >= 1) continue;
+    const underlyingPrice = latestSnapshot.spots[row.asset] ?? row.strike;
+    const strength = Math.min(1, edgeMagnitude / 30);
+    const highConviction = edgeMagnitude >= ONE_TOUCH_HIGH_EDGE_CONVICTION_EDGE;
+
+    signals.push({
+      type: ONE_TOUCH_HIGH_EDGE_SIGNAL_NO,
+      asset: row.asset,
+      venue: "polymarket",
+      direction: "short",
+      strength,
+      confidence: strength * weight.weight,
+      thesis: `[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO ${edgeMagnitude.toFixed(1)}pt edge on ${row.asset}; hold ${ONE_TOUCH_HIGH_EDGE_HOLD_DAYS}d for repricing.${highConviction ? " Edge >=20pt: high-conviction bucket." : ""}`,
+      hypothesisId: null,
+      entryPrice: underlyingPrice,
+      targetPct: risk.targetPct,
+      stopPct: risk.stopPct,
+      expiryDays: ONE_TOUCH_HIGH_EDGE_HOLD_DAYS,
+      contractHint: {
+        preferredEventSlug: row.eventSlug,
+        forceInstrumentType: "pm_no",
+        forceMarketId: row.marketId,
+        allowDirectionFallback: false,
+      },
+    });
+  }
+
+  return signals;
+}
+
+function liveOneTouchHighEdgeNoKeys(signals: Signal[]): Set<string> {
+  const keys = new Set<string>();
+  for (const sig of signals) {
+    if (sig.type !== ONE_TOUCH_HIGH_EDGE_SIGNAL_NO) continue;
+    const marketId = sig.contractHint?.forceMarketId;
+    if (marketId) keys.add(`${sig.asset}::${marketId}`);
+  }
+  return keys;
 }
 
 function isNestedLadderEvent(slug: string, title = ""): boolean {
@@ -4412,7 +4496,12 @@ async function main() {
   if (newMonotonicArbShadows > 0) {
     console.log(`\n  Opened ${newMonotonicArbShadows} monotonic-arb shadow package trades.`);
   }
-  const newOneTouchHighEdgeShadows = recordOneTouchHighEdgeShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals);
+  const oneTouchHighEdgeNoLiveSignals = generateOneTouchHighEdgeNoSignals(relativeValueRows, weights, learningParams, latestSnapshot);
+  const oneTouchHighEdgeLiveCoveredKeys = liveOneTouchHighEdgeNoKeys(oneTouchHighEdgeNoLiveSignals);
+  if (oneTouchHighEdgeNoLiveSignals.length > 0) {
+    console.log(`\n  Generated ${oneTouchHighEdgeNoLiveSignals.length} one-touch high-edge NO live signals (BTC/OIL, |edge|>=10, strict).`);
+  }
+  const newOneTouchHighEdgeShadows = recordOneTouchHighEdgeShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals, oneTouchHighEdgeLiveCoveredKeys);
   if (newOneTouchHighEdgeShadows > 0) {
     console.log(`\n  Opened ${newOneTouchHighEdgeShadows} one-touch high-edge shadow trades.`);
   }
@@ -4456,6 +4545,7 @@ async function main() {
   const signals = generateSignals(valRows, macroRows, weights, learningParams, latestSnapshot, blockedSignals);
   const promotedSignals = generatePromotedHypothesisSignals(hypotheses, valRows, latestRow, learningParams, latestSnapshot, blockedSignals, relativeValueRows);
   signals.push(...promotedSignals);
+  signals.push(...oneTouchHighEdgeNoLiveSignals);
   proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   blockedSummary = summarizeBlockedSignals(blockedSignals);
   blockedObs = [...blockedSignalObservations(blockedSummary), ...proxyComparisonObs];
