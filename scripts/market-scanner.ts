@@ -1409,12 +1409,12 @@ function impliedValuations(
 
     // HL funding vs Polymarket direction
     if (funding < -0.15 && pmSettleEV && wtiSpot && pmSettleEV > wtiSpot * 1.02) {
-      disc.push(`FUNDING vs PM: HL CL shorts crowded (${(funding * 100).toFixed(1)}% ann) but PM settlement EV $${fmt(pmSettleEV, 0)} above WTI spot → SHORTS MAY BE WRONG`);
+      disc.push(`FUNDING vs PM BUCKETS: HL CL shorts crowded (${(funding * 100).toFixed(1)}% ann) while PM settlement bucket-forward is $${fmt(pmSettleEV, 0)} above WTI spot; monitor bucket-forward drift, not spot reversion to PM EV`);
     }
 
     // Options forward vs PM settle EV
     if (optFwd && pmSettleEV && Math.abs(optFwd - pmSettleEV) / wtiSpot > 0.05) {
-      disc.push(`OPTIONS vs PM: Options forward $${fmt(optFwd, 1)} vs PM settle EV $${fmt(pmSettleEV, 0)} → ${Math.abs(optFwd - pmSettleEV).toFixed(1)} gap`);
+      disc.push(`OPTIONS vs PM BUCKETS: Options forward $${fmt(optFwd, 1)} vs PM settlement bucket-forward $${fmt(pmSettleEV, 0)} → ${Math.abs(optFwd - pmSettleEV).toFixed(1)} drift gap`);
     }
 
     if (!JSON_OUTPUT && (brentSpot > 0 || wtiSpot > 0)) {
