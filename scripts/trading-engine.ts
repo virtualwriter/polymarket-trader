@@ -4195,6 +4195,7 @@ IMPORTANT RULES:
 - Available assets: BTC, HYPE, GOLD, AMZN, OIL
 - Polymarket trades are real contract simulations: long = buy YES, short = buy NO on a specific contract
 - Hyperliquid trades are perp simulations and include funding carry in realized P&L
+- Hyperliquid funding sign convention: negative funding means shorts pay longs, so a FUNDING_EXTREME_SHORT long benefits from negative funding carry. More-negative funding is thesis continuation/intensification, not a carry cost and not by itself a close reason. Positive funding means longs pay shorts, so a FUNDING_EXTREME_LONG short benefits from positive funding carry. Only treat funding as thesis weakening when it normalizes materially toward zero/flips sign or when price action fails over the intended hold/risk window despite favorable carry.
 - Spot trades are marked only to the underlying spot price
 - Prefer polymarket only for assets with explicit contracts in the instrument snapshots
 - If you suggest parameter changes, keep them incremental and evidence-based
