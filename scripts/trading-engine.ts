@@ -1676,6 +1676,57 @@ function macroCompositeShiftPts(rows: SnapshotRow[], lookbackHours: number): { s
   };
 }
 
+function openPositionContextColumns(asset: string): string[] {
+  const map: Record<string, string[]> = {
+    BTC: ["btc_spot", "btc_pm_ev", "btc_pm_iv", "btc_hl_funding_ann", "btc_ibit_pc_ratio"],
+    HYPE: ["hype_spot", "hype_pm_ev", "hype_pm_iv", "hype_hl_funding_ann"],
+    GOLD: ["gold_gc_spot", "gold_pm_settle_ev", "gold_pm_iv", "gold_hl_funding_ann", "gold_gld_pc_ratio"],
+    AMZN: ["amzn_stock", "amzn_hl_perp", "amzn_opt_iv_30d", "amzn_hl_funding_ann", "amzn_pc_ratio"],
+    OIL: ["oil_wti_spot", "oil_pm_settle_ev", "oil_pm_iv", "oil_hl_funding_ann", "oil_cl_pc_ratio"],
+  };
+  return [...(map[asset] ?? []), "macro_composite", "fed_score"];
+}
+
+function formatPromptNumber(value: number): string {
+  const abs = Math.abs(value);
+  if (abs >= 100) return value.toFixed(1);
+  if (abs >= 10) return value.toFixed(2);
+  if (abs >= 1) return value.toFixed(3);
+  return value.toFixed(4);
+}
+
+function formatSinceOpenMetric(column: string, entryRow: SnapshotRow, latestRow: SnapshotRow): string | null {
+  const entry = num(entryRow[column]);
+  const latest = num(latestRow[column]);
+  if (entry === null || latest === null) return null;
+  const delta = latest - entry;
+  const pct = entry !== 0 ? `, ${delta >= 0 ? "+" : ""}${((delta / entry) * 100).toFixed(2)}%` : "";
+  return `${column}: ${formatPromptNumber(entry)} -> ${formatPromptNumber(latest)} (delta ${delta >= 0 ? "+" : ""}${formatPromptNumber(delta)}${pct})`;
+}
+
+function openPositionContextForLlm(positions: Position[], rows: SnapshotRow[]): string {
+  const latestRow = rows[rows.length - 1];
+  if (positions.length === 0) return "  None";
+  if (!latestRow) {
+    return positions.map((p) => `  ${p.asset} ${p.direction} via ${p.venue} / ${p.instrumentType ?? "legacy"} @ ${p.entryPrice} [${p.instrumentLabel ?? "n/a"}] (${p.signalType}) — ${p.thesis.slice(0, 100)}`).join("\n");
+  }
+
+  return positions.map((p) => {
+    const openedMs = Date.parse(p.openedAt);
+    const entryRow = isNaN(openedMs) ? null : findRowAtOrBefore(rows, openedMs);
+    const header = `  ${p.asset} ${p.direction} via ${p.venue} / ${p.instrumentType ?? "legacy"} @ ${p.entryPrice} [${p.instrumentLabel ?? "n/a"}] (${p.signalType}) — ${p.thesis.slice(0, 100)}`;
+    if (!entryRow) return `${header}\n    Since-open baseline: unavailable (no valuation row at or before ${p.openedAt})`;
+
+    const metricLines = openPositionContextColumns(p.asset)
+      .map((column) => formatSinceOpenMetric(column, entryRow, latestRow))
+      .filter((line): line is string => !!line);
+    const metrics = metricLines.length > 0
+      ? metricLines.map((line) => `      ${line}`).join("\n")
+      : "      No comparable asset/macro metrics available.";
+    return `${header}\n    Since-open baseline row: ${entryRow.date}; latest row: ${latestRow.date}\n${metrics}`;
+  }).join("\n");
+}
+
 function isAssetTrendAndMomentumPositive(rows: SnapshotRow[], asset: string, learningParams: LearningParams): boolean {
   const metrics = assetTrendMetrics(rows, asset, LOOKBACK_HOURS);
   if (!metrics) return false;
@@ -4004,6 +4055,7 @@ async function callLLM(
   const killedRecently = hypotheses.filter((h) => h.status === "killed").slice(-5);
   const activeWeights = weights.filter((w) => w.trades > 0);
   const hypothesisBacklog = llmHypothesisBacklog(hypotheses);
+  const openPositionContext = openPositionContextForLlm(portfolio.positions, valuationRows);
 
   const prompt = `You are a quantitative paper trading system analyzing cross-venue market data. Your job is to:
 1. Assess the current market state
@@ -4025,7 +4077,7 @@ Cash: $${portfolio.cash.toFixed(2)} | Open positions: ${portfolio.positions.leng
 Win rate: ${portfolio.totalTrades > 0 ? ((portfolio.winCount / portfolio.totalTrades) * 100).toFixed(0) : "N/A"}% over ${portfolio.totalTrades} trades
 
 OPEN POSITIONS:
-${portfolio.positions.map((p) => `  ${p.asset} ${p.direction} via ${p.venue} / ${p.instrumentType ?? "legacy"} @ ${p.entryPrice} [${p.instrumentLabel ?? "n/a"}] (${p.signalType}) — ${p.thesis.slice(0, 100)}`).join("\n") || "  None"}
+${openPositionContext}
 
 SIGNAL PERFORMANCE:
 ${activeWeights.map((w) => {
