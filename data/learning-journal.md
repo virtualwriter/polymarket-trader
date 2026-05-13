@@ -8310,3 +8310,33 @@ Key observations from this session: (1) OIL long (T-1778704145728-sjd7) remains 
 
 ---
 
+### 2026-05-13 21:29 UTC
+
+**Portfolio:** $99.07 total | Cash $97.07 | 2 open | P&L $0.0711 | 52% win rate (124 trades)
+
+**Opened 1 positions:**
+- GOLD short @ $4691 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -244.6 is -2.1 std devs from mean since 2026-04-28 (-36.45 ± 97.91)
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.69
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+Key observations this session: (1) The BTC IBIT P/C ratio spiked dramatically from 0.454 to 0.799 over roughly 6 hours during the May 13 US session, coinciding with a ~2% BTC pullback from 81k to 79.4k. This is consistent with H-320 (P/C exhaustion completion reversal) playing out - the extended low-P/C period (0.454 for multiple snapshots) followed by a sharp spike is the predicted signal. Worth monitoring whether BTC continues lower toward 77-78k range. (2) The macro composite dropped 3 points (48→45) with fed cut probability falling sharply from 38% to 31% - this is a meaningful hawkish repricing that likely contributed to the BTC pullback. H-423 (macro regime shift impact on crypto) is directionally consistent though the BULLISH→NEUTRAL transition condition was not precisely met. (3) The OIL PC_RATIO_EXTREME_HIGH long (T-1778704145728-sjd7) is essentially flat at -0.05% PnL. The P/C ratio has normalized from 1.9 to 1.47 but remains elevated. Oil funding normalized from -434% to -244% which is thesis continuation (still deeply negative, carry favorable). No close action taken as signal-family evidence columns show no thesis invalidation. (4) GOLD funding spiked to 44% at T21 after being at 5.48% - this oscillation pattern is consistent with several active hypotheses (H-387, H-390) about cross-asset funding exhaustion. (5) The hypothesis backlog remains at 13 setup families needing tests with 12 pending - no new hypotheses proposed per protocol. The relative-value heatmap continues to show significant edges on OIL upside contracts (CL $120-$150 June) and BTC upside contracts ($110k-$140k Dec 2026), but these require the pm_odds_underlying_payoff_cap setup family to be validated before live trading. (6) AMZN HL funding has been persistently elevated (16-60% annualized) throughout this window with positive basis, suggesting the perp is running hot relative to stock, but AMZN is disabled for FUNDING_EXTREME_LONG shorts per signal health.
+
+---
+
