@@ -7936,3 +7936,35 @@ Session 2026-05-12T18: Key observations:
 
 ---
 
+### 2026-05-13 01:30 UTC
+
+**Portfolio:** $99.22 total | Cash $98.22 | 1 open | P&L $0.2207 | 54% win rate (118 trades)
+
+**Closed 1 trades:**
+- ❌ OIL long via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT) → llm_decision: $-0.0050 (-0.5%, market -0.0077, funding 0.0027)
+
+**Opened 1 positions:**
+- OIL long @ $98.18 via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.72
+
+**Blocked signal learning:**
+- Open blocked shadows: 13
+- Resolved blocked shadows: 63 (28 wins / 35 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have expiry (+2.97%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+
+**LLM analysis:**
+2026-05-13T01 UTC. Key decisions: (1) CLOSING OIL LONG — Entry at 98.94, current spot 98.18. The original thesis had two pillars: extreme negative funding generating positive carry, and PM settle EV above spot signaling mean reversion upward. Both conditions have now resolved. Funding normalized from -442% to -93% (still positive carry but much reduced), and PM settle EV at 86.9 has INVERTED below spot at 98.18. The PM inversion is a clear signal that the convergence trade has completed and potentially overshot. Macro headwinds (oil_p_settle_above_current = 31%, oil_signal = DECLINING) reinforce the exit. Accumulated funding carry partially offsets the ~0.77% spot loss. Closing now avoids a potentially larger drawdown if PM-spot gap continues widening downward. (2) BTC MAY $95K YES — CHEAP-VS-CAP SHADOW TEST: Placing $1 on BTC May $95k YES at 4.35c. pmToUnderlyingCapRatio = 0.051 (far below 0.35 threshold), tight spread (0.1c), high liquidity ($96k), model edge +2.4pts. Shadow testing H-526 with a real position. The cheap-vs-cap family has only 1 prior variant test at 0% — needs more data. (3) NO NEW HYPOTHESES: Backlog has 13 setup families needing more tests with 11 pending. Returning empty newHypotheses array per instructions. (4) MACRO REGIME ASSESSMENT: The 5-day gap confirmed meaningful macro deterioration. Fed score dropped from 25 to 14, btc_outperform_sp500 from 32% to 22.5%, macro composite from 53 to 47. Iran peace probability dropped from 64.5% to 53.5%. BTC has been resilient (only -0.5% over the window) but macro headwinds make new BTC longs unattractive. (5) HYPE DISTRIBUTION CONTINUES: OI at 833M (13% below 957M peak), funding steady at +10.95%. No reversal signal present. (6) BLOCKED SIGNAL LEARNING: FUNDING_EXTREME_LONG trend filter blocked 5/7 profitable trades (71% win rate, avg +1.02%). Sample too small (7 resolved) to justify parameter changes but worth monitoring. (7) PARAMETER STABILITY: No parameter changes warranted. Current risk parameters are appropriate for the current regime.
+
+---
+
