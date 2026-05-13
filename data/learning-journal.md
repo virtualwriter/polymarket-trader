@@ -8138,3 +8138,49 @@ Oil structural distortion continues: Brent-WTI spread at 4.7-6.2 (compressed fro
 
 ---
 
+### 2026-05-13 18:29 UTC
+
+**Portfolio:** $99.07 total | Cash $98.07 | 1 open | P&L $0.0721 | 53% win rate (122 trades)
+
+**Closed 1 trades:**
+- ❌ OIL long via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT) → llm_decision: $-0.0059 (-0.6%, market -0.0059, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL long @ $97.1 via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT)
+
+**Signal weight changes:**
+- ⚠ FUNDING_EXTREME_SHORT accuracy dropped to 44% over 18 trades. Weight reduced to 0.49.
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -378.42 is -3.9 std devs from mean since 2026-04-28 (-31.77 ± 90.01)
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.70
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+Session 2026-05-13T18. Primary action: closing the OIL long position opened at 97.68. The FUNDING_EXTREME_SHORT signal family (47% win rate, -0.40% avg P&L) is marginally negative-expectation, and the signal-family evidence metrics show the thesis is not playing out — spot moved -0.59% against us and funding moved further negative (-355% → -378%), meaning the crowded short is intensifying rather than unwinding. The negative funding carry on a long position is a real cost that compounds each hour without reversal. Closing at approximately -0.59% loss on spot (plus funding drag) is correct risk management.
+
+Macro regime is the dominant theme. Fed_score at 9 is the most hawkish reading in the entire dataset. Macro_composite at 45 (down from 53 on May 7). Fed expected cuts dropped from 1.1 to 0.8. BTC-OIL correlation flipped to -0.71, a classic risk-off decoupling. In this environment, contrarian longs in commodities face significant headwinds from both macro and carry.
+
+BTC IBIT P/C ratio has surged to 0.702 — the highest in the dataset — while BTC spot has pulled back from ~81k to ~79.7k. This is a notable hedging demand signal. H-522 (BTC call-positioning exhaustion reversal) describes exactly this setup: spot rolling over from recent high while P/C is in bottom quartile. However, with 0 variant tests and the backlog at 13 families needing tests, I am not proposing new hypotheses. The pattern is noted for monitoring.
+
+No new hypotheses proposed per backlog discipline rules. 13 setup families still need condition-triggered shadow tests. Maintaining focus on reviewing existing families rather than generating new variants.
+
+Blocked signal learning: FUNDING_EXTREME_LONG trend filter continues to block profitable trades (5/7 resolved = wins, avg +1.02%). At 7 resolved samples this is suggestive but not yet statistically robust enough to change the filter. Will flag for review at 10+ resolved samples. The recent AMZN (+2.97%) and GOLD (+0.64%) blocked trades both would have been profitable, but the sample is small.
+
+No new trades opened. Cash position will be ~$98 after closing the OIL long. Waiting for higher-conviction setups with better signal family win rates (PC_RATIO_EXTREME_HIGH at 78% is the best available signal) or for promoted hypothesis conditions to trigger.
+
+---
+
