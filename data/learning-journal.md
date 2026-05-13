@@ -7908,3 +7908,31 @@ Session 2026-05-12T18: Key observations:
 
 ---
 
+### 2026-05-13 00:29 UTC
+
+**Portfolio:** $99.23 total | Cash $98.23 | 1 open | P&L $0.2256 | 55% win rate (117 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 8.4pp (was -14.8, now -6.4)
+- [anomaly] amzn_hl_funding_ann = 60.31 is 2.1 std devs from mean (11.83 ± 23.38)
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.72
+
+**Blocked signal learning:**
+- Open blocked shadows: 13
+- Resolved blocked shadows: 63 (28 wins / 35 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have expiry (+2.97%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+
+**LLM analysis:**
+2026-05-13T00 UTC. Key observations: (1) OIL LONG POSITION: Entry at 98.94, current WTI at 98.38 — slightly underwater but funding carry at -100% annualized means the long is earning ~0.27%/day in positive carry. Oil PM settle EV has now INVERTED below spot (87.1 vs 98.4), which is a new development. This could mean PM market is pricing in a spot decline, or it could be a lagging indicator. The Brent-WTI spread at 5.5 has recovered from the 4.4 extreme lows, consistent with structural recovery thesis. Holding position — the funding carry justifies holding even with slight spot weakness. (2) MACRO REGIME SHIFT CONFIRMED: The 5-day gap (May 7 to May 12) showed macro composite 53→48, fed_score 25→15, btc_outperform_sp500 32%→22%, iran_p_deal_ye 64.5%→53.5%. This is a meaningful deterioration. BTC IBIT P/C ratio rose from 0.48 to 0.454-0.543 range, showing increased put buying. The macro headwinds make BTC long trades unattractive. (3) HYPE DISTRIBUTION: OIL at 822-826M (14% decline from 957M peak) with funding steady at +10.95%. The killed HYPE distribution family (H-508 etc.) was correctly killed — the 19% win rate over 42 tests is definitive. No HYPE reversal trades warranted. (4) CHEAP-VS-CAP HYPOTHESIS H-526: BTC May $95k YES remains the cleanest expression — tight spread (0.1c), high liquidity ($98k), model edge +2.1pts. Placed shadow test. The BTC May $120k YES at 0.25c has 7.6pt model edge but the absolute probability is so low (0.25%) that even a 7.6pt edge represents minimal expected value. (5) BLOCKED SIGNAL LEARNING: The FUNDING_EXTREME_LONG trend filter blocked 5/7 profitable trades (71% win rate, avg +1.02%). This is a meaningful signal but sample size (7 resolved) is too small to justify parameter changes. Will continue monitoring. The PM_IV_GT_OPT_IV downside leg blocked 2/3 profitable trades (avg +8.41%) — this is the most interesting blocked signal but again sample too small. (6) NO NEW HYPOTHESES: Backlog has 13 setup families needing more tests with 11 pending. Correctly returning empty newHypotheses array per instructions. (7) PARAMETER STABILITY: No parameter changes warranted. The current risk parameters are appropriate for the current regime. The FUNDING_EXTREME_SHORT signal on the OIL long is performing as expected with the existing 4%/2.5% target/stop structure.
+
+---
+
