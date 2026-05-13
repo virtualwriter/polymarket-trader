@@ -41,6 +41,8 @@ const UNDERLYING_CAP_ENTRY_MAX_SPREAD = 0.02;
 const UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY = 1000;
 const UNDERLYING_CAP_BUY_NO_RATIO = 1.03;
 const UNDERLYING_CAP_BUY_YES_RATIO = 0.35;
+const MAX_PM_ENTRY_SPREAD = 0.03;
+const MIN_PM_ENTRY_LIQUIDITY = 1000;
 const ONE_TOUCH_HIGH_EDGE_SIGNAL_NO = "ONE_TOUCH_HIGH_EDGE_NO";
 const ONE_TOUCH_HIGH_EDGE_SIGNAL_YES = "ONE_TOUCH_HIGH_EDGE_YES_SHADOW";
 const ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE = 10;
@@ -1215,6 +1217,17 @@ function polymarketEntryPrice(contract: InstrumentSnapshotContract, instrumentTy
   return contract.bestBid && contract.bestBid > 0 ? 1 - contract.bestBid : 1 - contract.yesPrice;
 }
 
+function passesPolymarketEntryQualityGate(contract: InstrumentSnapshotContract): boolean {
+  const bid = contract.bestBid ?? 0;
+  const ask = contract.bestAsk ?? 0;
+  if (bid <= 0 || ask <= 0) return false;
+  const spread = contract.spread ?? Math.max(0, ask - bid);
+  if (spread > MAX_PM_ENTRY_SPREAD) return false;
+  const liquidity = contract.liquidity ?? 0;
+  if (liquidity < MIN_PM_ENTRY_LIQUIDITY) return false;
+  return true;
+}
+
 function polymarketExitPrice(contract: InstrumentSnapshotContract, instrumentType: "pm_yes" | "pm_no"): number {
   if (instrumentType === "pm_yes") return contract.bestBid && contract.bestBid > 0 ? contract.bestBid : contract.yesPrice;
   return contract.bestAsk && contract.bestAsk > 0 ? 1 - contract.bestAsk : 1 - contract.yesPrice;
@@ -1254,7 +1267,7 @@ function selectPolymarketContract(
     : preferredDirection === "above" ? ["above", "below"] : ["below", "above"];
 
   for (const event of eventOrder) {
-    const live = event.contracts.filter((c) => c.yesPrice > 0 && c.yesPrice < 1);
+    const live = event.contracts.filter((c) => c.yesPrice > 0 && c.yesPrice < 1 && passesPolymarketEntryQualityGate(c));
     for (const contractDirection of directionOrder) {
       const directional = live.filter((c) => c.direction === contractDirection);
       const preferredSide = directional
