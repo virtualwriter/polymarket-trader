@@ -8233,3 +8233,53 @@ No new hypotheses proposed per backlog discipline — 13 setup families still ne
 
 ---
 
+### 2026-05-13 20:29 UTC
+
+**Portfolio:** $99.07 total | Cash $98.07 | 1 open | P&L $0.0711 | 52% win rate (124 trades)
+
+**Closed 1 trades:**
+- ❌ OIL long via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT) → signal_killed: $-0.0002 (-0.0%, market -0.0002, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL long @ $97 via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH)
+
+**Signal weight changes:**
+- ⚠ FUNDING_EXTREME_SHORT accuracy dropped to 40% over 20 trades. Weight reduced to 0.47.
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -435.49 is -4.1 std devs from mean since 2026-04-28 (-35.46 ± 97.09)
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.69
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+Session 2026-05-13T20. No open positions entering this session. Key observations:
+
+1. IBIT P/C RATIO SPIKE: The most notable signal is BTC IBIT P/C ratio surging from 0.454 (May 12) to 0.799 (May 13T20) — the highest reading in the dataset. This represents a massive shift toward put buying/hedging. Historically, extreme P/C spikes during pullbacks precede bounces (H-069, H-085 family). However, the current macro environment (fed_score 9, macro_composite 45, expected cuts 0.8) is more hawkish than prior bounce setups, so conviction is moderate.
+
+2. RELATIVE-VALUE HEATMAP TRADES: Initiated two BTC December 2026 upside YES positions ($110k and $130k) based on the heatmap showing 18.67pt and 11.14pt model edges respectively. Both have tight spreads and adequate liquidity. The pmToUnderlyingCapRatio of 0.367 and 0.221 indicate cheap sentiment relative to the underlying payoff cap. These are 7-month duration trades with ample time for BTC to recover.
+
+3. OIL FUNDING ANOMALY PERSISTS: Oil funding at -435% annualized (-4.1σ) continues to intensify. The BTC-OIL correlation flip to -0.69 is a classic risk-off decoupling. No oil trades given FUNDING_EXTREME_SHORT is disabled for OIL and the signal family has poor performance.
+
+4. HYPOTHESIS BACKLOG: 13 setup families still need condition-triggered shadow tests. No new hypotheses proposed per backlog discipline. The promoted families H-521 (HYPE breakout) and H-523 (BTC PM IV compression) are being monitored but conditions are not cleanly met in the current snapshot.
+
+5. MACRO DETERIORATION: Fed score dropped to 9 (most hawkish), macro_composite at 45, expected cuts at 0.8. This is a meaningful deterioration from the 48/1.0 readings earlier in the session. The Iran peace probability remains high (73 score, 55.5% deal probability) which limits oil spike risk.
+
+6. GOLD PM PREMIUM: Gold PM settle EV at 5087 vs spot 4690 (397pt premium) persists. This appears structural. The gold funding oscillation (5.48-17.88%) is not extreme enough to trigger the H-339 setup.
+
+7. PARAMETER MAINTENANCE: No changes from prior session. FUNDING_EXTREME_SHORT remains at tightened 2.5/2.0 target/stop from last session update.
+
+---
+
