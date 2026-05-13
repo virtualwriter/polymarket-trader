@@ -7968,3 +7968,33 @@ Session 2026-05-12T18: Key observations:
 
 ---
 
+### 2026-05-13 15:33 UTC
+
+**Portfolio:** $99.22 total | Cash $98.22 | 1 open | P&L $0.2207 | 54% win rate (118 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 8.9pp (was -8.4, now 0.5)
+- [anomaly] oil_hl_funding_ann = -330.98 is -3.7 std devs from mean since 2026-04-28 (-27.01 ± 81.59)
+- [anomaly] oil_cl_pc_ratio = 2.018 is 3.0 std devs from mean since 2026-04-28 (1.10 ± 0.30)
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.72
+
+**Blocked signal learning:**
+- Open blocked shadows: 23
+- Resolved blocked shadows: 63 (28 wins / 35 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have expiry (+2.97%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+
+**LLM analysis:**
+2026-05-13T15 UTC. Key observations: (1) MACRO REGIME DETERIORATION CONFIRMED: The most significant development is the macro composite dropping to 45 with fed_score collapsing to 9 (from 25 a week ago). Fed cut probability is now only 29.9% with expected cuts at 0.8 — the most hawkish reading in the dataset. This is a meaningful headwind for risk assets. BTC has declined ~2.5% from the May 7 highs. The BTC-OIL correlation flip to -0.72 (from +0.22) is notable — oil rising while BTC falls suggests risk-off rotation. (2) OIL LONG RE-ENTRY: The previous OIL long was closed at a small loss (-0.5%) as PM settle EV inverted below spot. However, the funding extreme has INTENSIFIED further to -330.98% annualized (-3.7 std devs), and the oil P/C ratio has spiked to 2.018 (3.0 std devs above mean). This combination — extreme negative funding + extreme put buying — is the strongest signal in the dataset for a technical bounce. The funding carry alone (~0.91%/day) provides substantial buffer. Re-entering the long. (3) GOLD P/C RATIO SPIKE: The gold_gld_pc_ratio at 0.611 is the highest in the dataset (previous range was 0.347-0.498). This represents a dramatic increase in gold put buying relative to calls. Combined with gold funding at 18.22% (elevated), this could signal either protective hedging by gold longs ahead of a pullback, or speculative put buying that will be wrong. Watching but not trading — wide spreads on gold PM contracts make execution difficult. (4) HYPE DISTRIBUTION CONTINUES: OI at 799M represents a 16.5% decline from the 957M peak. Funding steady at +10.95%. The killed HYPE distribution family was correctly killed at 19% win rate. No reversal signal present. (5) BTC IBIT P/C RATIO RISING: The IBIT P/C ratio has risen to 0.554 (from 0.454-0.48 range earlier), consistent with increased hedging as BTC pulls back. Not yet at extreme levels that would signal a contrarian buy. (6) HYPOTHESIS BACKLOG: 13 setup families need more tests with 12 pending. No new hypotheses proposed per instructions. (7) BLOCKED SIGNAL LEARNING: The FUNDING_EXTREME_LONG trend filter continues to block profitable trades (5/7 wins, avg +1.02%). Sample size remains too small to justify parameter changes. (8) NO PARAMETER CHANGES beyond correcting ONE_TOUCH_HIGH_EDGE_NO stopPct to comply with schema bounds.
+
+---
+
