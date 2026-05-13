@@ -28,6 +28,12 @@ const OIL_CRUDE_HISTORY_START = process.env.OIL_CRUDE_HISTORY_START ?? "2026-04-
 const LEARNING_PARAMS_FILE = "learning-params.json";
 const BLOCKED_SIGNALS_FILE = "blocked-signals.json";
 const PROCESSED_CLOSED_TRADES_FILE = "processed-closed-trades.json";
+const ENGINE_STATE_FILE = "engine-state.json";
+const LLM_TRUTH_STATE_FILE = "llm-truth-state.json";
+const CANDIDATE_ACTIONS_FILE = "candidate-actions.json";
+const LLM_ADVICE_FILE = "llm-advice.json";
+const EXECUTION_PLAN_FILE = "execution-plan.json";
+const DRY_RUN_VERIFICATION_FILE = "dry-run-verification.json";
 const TRADE_SIZE = 1;
 const MAX_BANKROLL = 100;
 const MAX_OPEN_POSITIONS = 15;
@@ -75,6 +81,9 @@ const DATA_CONTAMINATED_SETUP_IDS = new Set([
 const LOOKBACK_HOURS = 24;
 const NO_LLM = process.argv.includes("--no-llm");
 const DRY_RUN = process.argv.includes("--dry-run");
+const SHADOW_ARCHITECTURE = process.argv.includes("--shadow-architecture") || DRY_RUN;
+const LLM_DRY_RUN = process.argv.includes("--llm-dry-run");
+const MUTATION_DISABLED = DRY_RUN || LLM_DRY_RUN;
 
 const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
   PM_IV_GT_OPT_IV: { targetPct: null, stopPct: 5 },
@@ -225,9 +234,12 @@ interface LearningParams {
 
 interface LlmTradeInstruction {
   action: "buy" | "sell" | "close";
+  positionId?: string;
   asset: string;
   venue: "polymarket" | "hyperliquid" | "spot";
   direction: "long" | "short" | "any";
+  closeReasonCategory?: "thesis_invalidated" | "data_quality_issue" | "hard_portfolio_risk" | "risk_stale" | "profit_taking";
+  evidenceColumns?: string[];
   thesis: string;
 }
 
@@ -488,6 +500,128 @@ interface InstrumentSnapshotFile {
   }>;
   polymarket: InstrumentSnapshotEvent[];
   options?: Record<string, InstrumentSnapshotOptions>;
+}
+
+interface PositionMarkSummary {
+  positionId: string;
+  asset: string;
+  venue: string;
+  direction: string;
+  signalType: string;
+  pnlPct: number | null;
+  currentPrice: number | null;
+  underlyingPrice: number | null;
+  targetPct: number | null;
+  stopPct: number;
+  closeReasonIfMechanical: ClosedTrade["closeReason"] | null;
+  evidenceColumns: string[];
+}
+
+interface SetupTruthRecord {
+  setupId: string;
+  setupLabel: string;
+  status: "eligible_live" | "validating" | "exploratory" | "disabled" | "needs_more_data" | "contaminated_retest";
+  currentConclusion: string;
+  evidenceSummary: {
+    cleanTrades: number;
+    tradeWins: number;
+    avgTradePnlPct: number;
+    resolvedShadows: number;
+    shadowWins: number;
+    avgShadowPnlPct: number;
+    hypothesisTests: number;
+    hypothesisWins: number;
+  };
+  allowedEvidenceColumns: string[];
+  knownInvalidAssumptions: string[];
+  representativeExamples: Array<{
+    id: string;
+    kind: "trade" | "shadow" | "hypothesis";
+    outcome: "win" | "loss" | "pending" | "n/a";
+    pnlPct?: number;
+    note: string;
+  }>;
+  lastReviewedAt: string;
+}
+
+interface LlmTruthState {
+  generatedAt: string;
+  contaminationRules: Array<{
+    id: string;
+    description: string;
+    affectedSetupIds: string[];
+    affectedColumns: string[];
+  }>;
+  setupFamilies: SetupTruthRecord[];
+}
+
+interface EngineState {
+  generatedAt: string;
+  dataFreshness: {
+    valuationRows: number;
+    latestValuationAt: string;
+    macroRows: number;
+    instrumentSnapshots: number;
+    latestInstrumentSnapshotAt: string | null;
+  };
+  portfolio: {
+    cash: number;
+    openPositions: number;
+    realizedPnl: number;
+    totalTrades: number;
+    winRatePct: number | null;
+    unrealizedPnl: number;
+  };
+  openPositions: PositionMarkSummary[];
+  signalHealth: Array<{
+    type: string;
+    enabled: boolean;
+    weight: number;
+    trades: number;
+    wins: number;
+    avgPnlPct: number;
+    disabledAssets: string[];
+  }>;
+  blockedSummary: BlockedSignalLearningSummary;
+  learningParams: LearningParams;
+}
+
+interface CandidateActions {
+  generatedAt: string;
+  mechanicalExits: Array<{ positionId: string; reason: ClosedTrade["closeReason"] }>;
+  signalKillExits: Array<{ positionId: string; signalType: string; asset: string }>;
+  entryCandidates: Signal[];
+  llmCloseEligibility: Array<{
+    positionId: string;
+    signalType: string;
+    asset: string;
+    venue: string;
+    direction: string;
+    allowed: boolean;
+    allowedCategories: NonNullable<LlmTradeInstruction["closeReasonCategory"]>[];
+    evidenceColumns: string[];
+    reason: string;
+  }>;
+}
+
+interface GatedLlmAdvice {
+  acceptedCloses: LlmTradeInstruction[];
+  rejectedCloses: Array<{ instruction: LlmTradeInstruction; reason: string }>;
+  skippedTrades: Array<{ instruction: LlmTradeInstruction; reason: string }>;
+  parameterUpdates: Partial<Omit<LearningParams, "updatedAt">> | undefined;
+}
+
+interface ExecutionPlan {
+  generatedAt: string;
+  dryRun: boolean;
+  llmDryRun: boolean;
+  mechanicalExits: Array<{ positionId: string; reason: ClosedTrade["closeReason"] }>;
+  signalKillExits: Array<{ positionId: string; signalType: string; asset: string }>;
+  llmCloses: LlmTradeInstruction[];
+  entrySignals: Signal[];
+  rejectedLlmActions: GatedLlmAdvice["rejectedCloses"];
+  skippedLlmActions: GatedLlmAdvice["skippedTrades"];
+  notes: string[];
 }
 
 // ─── File I/O ────────────────────────────────────────────────────────────────
@@ -1579,7 +1713,8 @@ function closePositionsFromLlm(
 
   for (const position of portfolio.positions) {
     const instruction = instructions.find((candidate) =>
-      candidate.asset === position.asset
+      candidate.positionId === position.id
+      && candidate.asset === position.asset
       && candidate.venue === position.venue
       && (candidate.direction === "any" || candidate.direction === position.direction),
     );
@@ -1756,13 +1891,13 @@ function openPositionContextForLlm(positions: Position[], rows: SnapshotRow[]): 
   const latestRow = rows[rows.length - 1];
   if (positions.length === 0) return "  None";
   if (!latestRow) {
-    return positions.map((p) => `  ${p.asset} ${p.direction} via ${p.venue} / ${p.instrumentType ?? "legacy"} @ ${p.entryPrice} [${p.instrumentLabel ?? "n/a"}] (${p.signalType}) — ${p.thesis.slice(0, 100)}`).join("\n");
+    return positions.map((p) => `  positionId=${p.id}; ${p.asset} ${p.direction} via ${p.venue} / ${p.instrumentType ?? "legacy"} @ ${p.entryPrice} [${p.instrumentLabel ?? "n/a"}] (${p.signalType}) — ${p.thesis.slice(0, 100)}`).join("\n");
   }
 
   return positions.map((p) => {
     const openedMs = Date.parse(p.openedAt);
     const entryRow = isNaN(openedMs) ? null : findRowAtOrBefore(rows, openedMs);
-    const header = `  ${p.asset} ${p.direction} via ${p.venue} / ${p.instrumentType ?? "legacy"} @ ${p.entryPrice} [${p.instrumentLabel ?? "n/a"}] (${p.signalType}) — ${p.thesis.slice(0, 100)}`;
+    const header = `  positionId=${p.id}; ${p.asset} ${p.direction} via ${p.venue} / ${p.instrumentType ?? "legacy"} @ ${p.entryPrice} [${p.instrumentLabel ?? "n/a"}] (${p.signalType}) — ${p.thesis.slice(0, 100)}`;
     if (!entryRow) return `${header}\n    Since-open baseline: unavailable (no valuation row at or before ${p.openedAt})`;
 
     const evidenceColumns = new Set(signalFamilyEvidenceColumns(p));
@@ -3927,6 +4062,468 @@ function evaluateHypotheses(
   return observations;
 }
 
+// ─── Lean Engine State / Truth / Policy Artifacts ─────────────────────────────
+
+function mechanicalCloseReason(position: Position, mark: { pnlPct: number } | null): ClosedTrade["closeReason"] | null {
+  if (!mark) return null;
+  if (position.targetPct !== null && mark.pnlPct >= position.targetPct) return "target";
+  if (fundingBreakevenStopHit(position, mark)) return "breakeven_stop";
+  if (mark.pnlPct <= -position.stopPct) return "stop";
+  if (new Date(position.expiryDate) <= new Date()) return "expiry";
+  return null;
+}
+
+function positionMarkSummary(position: Position, latestRow: SnapshotRow, snapshots: InstrumentSnapshotFile[]): PositionMarkSummary {
+  const mark = markPosition(position, latestRow, snapshots, true);
+  return {
+    positionId: position.id,
+    asset: position.asset,
+    venue: position.venue,
+    direction: position.direction,
+    signalType: position.signalType,
+    pnlPct: mark ? Number(mark.pnlPct.toFixed(2)) : null,
+    currentPrice: mark ? Number(mark.currentPrice.toFixed(6)) : null,
+    underlyingPrice: mark?.underlyingPrice ?? null,
+    targetPct: position.targetPct,
+    stopPct: position.stopPct,
+    closeReasonIfMechanical: mechanicalCloseReason(position, mark),
+    evidenceColumns: signalFamilyEvidenceColumns(position),
+  };
+}
+
+function buildEngineState(
+  valuationRows: SnapshotRow[],
+  macroRows: SnapshotRow[],
+  instrumentSnapshots: InstrumentSnapshotFile[],
+  portfolio: Portfolio,
+  weights: SignalWeight[],
+  learningParams: LearningParams,
+  blockedSummary: BlockedSignalLearningSummary,
+): EngineState {
+  const latestRow = valuationRows[valuationRows.length - 1];
+  const openPositions = latestRow
+    ? portfolio.positions.map((position) => positionMarkSummary(position, latestRow, instrumentSnapshots))
+    : [];
+  const unrealizedPnl = openPositions.reduce((sum, position) => {
+    const live = portfolio.positions.find((candidate) => candidate.id === position.positionId);
+    return sum + (live ? estimateOpenPositionPnl(live) : 0);
+  }, 0);
+
+  return {
+    generatedAt: new Date().toISOString(),
+    dataFreshness: {
+      valuationRows: valuationRows.length,
+      latestValuationAt: String(latestRow?.date ?? ""),
+      macroRows: macroRows.length,
+      instrumentSnapshots: instrumentSnapshots.length,
+      latestInstrumentSnapshotAt: latestInstrumentSnapshot(instrumentSnapshots)?.timestamp ?? null,
+    },
+    portfolio: {
+      cash: Number(portfolio.cash.toFixed(4)),
+      openPositions: portfolio.positions.length,
+      realizedPnl: Number(portfolio.totalRealizedPnl.toFixed(4)),
+      totalTrades: portfolio.totalTrades,
+      winRatePct: portfolio.totalTrades > 0 ? Number(((portfolio.winCount / portfolio.totalTrades) * 100).toFixed(1)) : null,
+      unrealizedPnl: Number(unrealizedPnl.toFixed(4)),
+    },
+    openPositions,
+    signalHealth: weights.map((weight) => ({
+      type: weight.type,
+      enabled: weight.enabled,
+      weight: Number(weight.weight.toFixed(4)),
+      trades: weight.trades,
+      wins: weight.wins,
+      avgPnlPct: Number(weight.avgPnlPct.toFixed(4)),
+      disabledAssets: Object.entries(weight.perAsset ?? {})
+        .filter(([, stats]) => stats.disabled)
+        .map(([asset]) => asset),
+    })),
+    blockedSummary,
+    learningParams,
+  };
+}
+
+function setupIdForSignalType(signalType: string): { setupId: string; setupLabel: string } {
+  if (signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO) return { setupId: "one_touch_high_edge_no", setupLabel: "One-touch high-edge NO" };
+  if (signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_YES) return { setupId: "one_touch_high_edge_yes_exploratory", setupLabel: "One-touch high-edge YES exploratory" };
+  if (signalType.includes("USER_PM_IV_TOUCH_CHEAP_YES")) return { setupId: "manual_iv_touch_cheap_yes", setupLabel: "Manual IV-touch cheap YES" };
+  if (signalType.includes("USER_PM_IV_TOUCH_RICH_NO")) return { setupId: "manual_iv_touch_rich_no", setupLabel: "Manual IV-touch rich NO" };
+  if (signalType === "MONOTONIC_ARB") return { setupId: "monotonic_arb", setupLabel: "Monotonic arb" };
+  const label = signalType
+    .replace(/_PM_PROXY_SHORT$/, " Polymarket proxy short")
+    .replace(/_DOWNSIDE$/, " downside leg")
+    .replace(/_/g, " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (ch) => ch.toUpperCase());
+  return { setupId: slugifySetupId(signalType), setupLabel: label };
+}
+
+function setupIdForTrade(trade: ClosedTrade, hypothesesById: Map<string, Hypothesis>): { setupId: string; setupLabel: string } {
+  const hypothesis = trade.hypothesisId ? hypothesesById.get(trade.hypothesisId) : null;
+  if (hypothesis?.setupId && hypothesis.setupLabel) return { setupId: hypothesis.setupId, setupLabel: hypothesis.setupLabel };
+  if (trade.signalType === "PROMOTED_HYPOTHESIS" && hypothesis?.setupId) {
+    return { setupId: hypothesis.setupId, setupLabel: hypothesis.setupLabel ?? hypothesis.setupId };
+  }
+  return setupIdForSignalType(trade.signalType);
+}
+
+function setupIdForShadow(shadow: BlockedSignalShadow): { setupId: string; setupLabel: string } {
+  if (shadow.blockedReason === "one_touch_high_edge_shadow") return setupIdForSignalType(shadow.signalType);
+  if (shadow.blockedReason === "manual_shadow_trade") return setupIdForSignalType(shadow.signalType);
+  if (shadow.blockedReason === "monotonic_arb_shadow") return setupIdForSignalType("MONOTONIC_ARB");
+  if (shadow.signalType.endsWith("_PM_PROXY_SHORT") || shadow.signalType.endsWith("_DOWNSIDE")) return setupIdForSignalType(shadow.signalType);
+  return setupIdForSignalType(shadow.signalType);
+}
+
+function isContaminatedTrade(trade: ClosedTrade, setupId: string): boolean {
+  if (trade.closeReason.includes("DATA_CORRECTION_ARTIFACT")) return true;
+  if (!DATA_CONTAMINATED_SETUP_IDS.has(setupId)) return false;
+  const opened = String(trade.openedAt ?? "");
+  const oilOrGoldPc = (trade.asset === "OIL" || trade.asset === "GOLD") && trade.signalType.includes("PC_RATIO");
+  return oilOrGoldPc && opened < "2026-04-30";
+}
+
+function allowedEvidenceColumnsForSetup(setupId: string, assetHint?: string): string[] {
+  const asset = assetHint ?? (
+    setupId.includes("btc") ? "BTC" :
+    setupId.includes("hype") ? "HYPE" :
+    setupId.includes("gold") ? "GOLD" :
+    setupId.includes("amzn") ? "AMZN" :
+    setupId.includes("oil") ? "OIL" : "BTC"
+  );
+  const columns = assetPromptColumns(asset);
+  if (setupId.includes("funding")) return uniqueColumns([columns.spot, columns.hlPerp, columns.funding]);
+  if (setupId.includes("pc_ratio") || setupId.includes("put_call") || setupId.includes("options")) return uniqueColumns([columns.spot, columns.pcRatio, columns.optIv30, columns.optIv90]);
+  if (setupId.includes("iv") || setupId.includes("vol")) return uniqueColumns([columns.spot, columns.pmIv, columns.optIv30, columns.optIv90]);
+  if (setupId.includes("one_touch") || setupId.includes("underlying_cap")) return uniqueColumns([columns.spot, columns.pmIv, columns.optIv30, columns.optIv90]);
+  return uniqueColumns([columns.spot, columns.hlPerp, columns.funding, columns.pcRatio, columns.pmIv, columns.optIv30, columns.optIv90]);
+}
+
+function buildTruthConclusion(record: SetupTruthRecord): string {
+  const e = record.evidenceSummary;
+  const tradeRate = e.cleanTrades > 0 ? `${e.tradeWins}/${e.cleanTrades}` : "no clean live trades";
+  const shadowRate = e.resolvedShadows > 0 ? `${e.shadowWins}/${e.resolvedShadows}` : "no resolved shadows";
+  if (record.status === "contaminated_retest") {
+    return `${record.setupLabel} is under clean retest: contaminated or superseded historical evidence is excluded. Clean live trades: ${tradeRate}, avg P&L ${e.avgTradePnlPct.toFixed(2)}%; shadows: ${shadowRate}.`;
+  }
+  if (record.status === "eligible_live") {
+    return `${record.setupLabel} is eligible for live consideration based on grouped setup-family evidence. Clean live trades: ${tradeRate}, avg P&L ${e.avgTradePnlPct.toFixed(2)}%; shadows: ${shadowRate}.`;
+  }
+  if (record.status === "disabled") {
+    return `${record.setupLabel} is disabled or weak on current clean evidence. Clean live trades: ${tradeRate}, avg P&L ${e.avgTradePnlPct.toFixed(2)}%; shadows: ${shadowRate}.`;
+  }
+  if (record.status === "validating") {
+    return `${record.setupLabel} is validating but still sample-size sensitive. Clean live trades: ${tradeRate}, avg P&L ${e.avgTradePnlPct.toFixed(2)}%; shadows: ${shadowRate}.`;
+  }
+  return `${record.setupLabel} remains exploratory. Clean live trades: ${tradeRate}, avg P&L ${e.avgTradePnlPct.toFixed(2)}%; shadows: ${shadowRate}.`;
+}
+
+function finalizeTruthRecord(record: SetupTruthRecord): SetupTruthRecord {
+  const e = record.evidenceSummary;
+  const tradeWinRate = e.cleanTrades > 0 ? e.tradeWins / e.cleanTrades : null;
+  const shadowWinRate = e.resolvedShadows > 0 ? e.shadowWins / e.resolvedShadows : null;
+  if (record.knownInvalidAssumptions.length > 0 && e.cleanTrades + e.resolvedShadows < 10) {
+    record.status = "contaminated_retest";
+  } else if ((e.cleanTrades >= 5 && tradeWinRate !== null && tradeWinRate < KILL_THRESHOLD) || (e.cleanTrades >= 10 && e.avgTradePnlPct < -1)) {
+    record.status = "disabled";
+  } else if ((e.cleanTrades >= 5 && tradeWinRate !== null && tradeWinRate >= PROMOTE_THRESHOLD && e.avgTradePnlPct > 0) || (e.resolvedShadows >= 10 && shadowWinRate !== null && shadowWinRate >= PROMOTE_THRESHOLD && e.avgShadowPnlPct > 0)) {
+    record.status = "eligible_live";
+  } else if (e.cleanTrades + e.resolvedShadows + e.hypothesisTests >= 5) {
+    record.status = "validating";
+  } else {
+    record.status = "exploratory";
+  }
+  record.currentConclusion = buildTruthConclusion(record);
+  return record;
+}
+
+function buildLlmTruthState(hypotheses: Hypothesis[], weights: SignalWeight[], closedTrades: ClosedTrade[], blockedSignals: BlockedSignalShadow[]): LlmTruthState {
+  const generatedAt = new Date().toISOString();
+  const hypothesesById = new Map(hypotheses.map((hypothesis) => [hypothesis.id, hypothesis]));
+  const records = new Map<string, SetupTruthRecord>();
+  const getRecord = (setupId: string, setupLabel: string, assetHint?: string): SetupTruthRecord => {
+    const existing = records.get(setupId);
+    if (existing) return existing;
+    const record: SetupTruthRecord = {
+      setupId,
+      setupLabel,
+      status: "exploratory",
+      currentConclusion: "",
+      evidenceSummary: {
+        cleanTrades: 0,
+        tradeWins: 0,
+        avgTradePnlPct: 0,
+        resolvedShadows: 0,
+        shadowWins: 0,
+        avgShadowPnlPct: 0,
+        hypothesisTests: 0,
+        hypothesisWins: 0,
+      },
+      allowedEvidenceColumns: allowedEvidenceColumnsForSetup(setupId, assetHint),
+      knownInvalidAssumptions: DATA_CONTAMINATED_SETUP_IDS.has(setupId)
+        ? ["Historical Oil/Gold-derived evidence for this setup family may include contaminated or superseded inputs; use clean post-correction evidence only."]
+        : [],
+      representativeExamples: [],
+      lastReviewedAt: generatedAt,
+    };
+    records.set(setupId, record);
+    return record;
+  };
+
+  for (const family of hypothesisSetupFamilies(hypotheses)) {
+    const record = getRecord(family.setupId, family.setupLabel, inferHypothesisAsset(family.primary) ?? undefined);
+    record.evidenceSummary.hypothesisTests += family.completed.length;
+    record.evidenceSummary.hypothesisWins += family.wins;
+    if (isDataContaminatedSetup(family.setupId) && record.knownInvalidAssumptions.length === 0) {
+      record.knownInvalidAssumptions.push("Historical tests for this family are excluded from promotion until clean retests accumulate.");
+    }
+    for (const test of family.completed.slice(-2)) {
+      record.representativeExamples.push({
+        id: family.primary.id,
+        kind: "hypothesis",
+        outcome: test.outcome,
+        note: test.actualMove.slice(0, 180),
+      });
+    }
+  }
+
+  for (const weight of weights) {
+    const setup = setupIdForSignalType(weight.type);
+    const record = getRecord(setup.setupId, setup.setupLabel);
+    if (!weight.enabled && !record.knownInvalidAssumptions.includes("Signal disabled by adaptive weight state.")) {
+      record.knownInvalidAssumptions.push("Signal disabled by adaptive weight state.");
+    }
+  }
+
+  for (const trade of closedTrades) {
+    const setup = setupIdForTrade(trade, hypothesesById);
+    if (isContaminatedTrade(trade, setup.setupId)) {
+      const record = getRecord(setup.setupId, setup.setupLabel, trade.asset);
+      if (!record.knownInvalidAssumptions.some((note) => note.includes("contaminated trade"))) {
+        record.knownInvalidAssumptions.push("At least one historical contaminated trade was excluded from this setup-family truth record.");
+      }
+      continue;
+    }
+    const record = getRecord(setup.setupId, setup.setupLabel, trade.asset);
+    const e = record.evidenceSummary;
+    e.cleanTrades++;
+    if (trade.pnl >= 0) e.tradeWins++;
+    e.avgTradePnlPct = ((e.avgTradePnlPct * (e.cleanTrades - 1)) + trade.pnlPct) / e.cleanTrades;
+    if (record.representativeExamples.length < 4) {
+      record.representativeExamples.push({
+        id: trade.id,
+        kind: "trade",
+        outcome: trade.pnl >= 0 ? "win" : "loss",
+        pnlPct: Number(trade.pnlPct.toFixed(2)),
+        note: `${trade.asset} ${trade.direction} ${trade.closeReason} via ${trade.venue}/${trade.instrumentType ?? "legacy"}`,
+      });
+    }
+  }
+
+  for (const shadow of blockedSignals) {
+    if (shadow.status !== "resolved" || !shadow.hypotheticalResult || shadow.learningExcluded) continue;
+    const setup = setupIdForShadow(shadow);
+    const record = getRecord(setup.setupId, setup.setupLabel, shadow.asset);
+    const e = record.evidenceSummary;
+    e.resolvedShadows++;
+    if (shadow.hypotheticalResult.outcome === "win") e.shadowWins++;
+    e.avgShadowPnlPct = ((e.avgShadowPnlPct * (e.resolvedShadows - 1)) + shadow.hypotheticalResult.pnlPct) / e.resolvedShadows;
+    if (record.representativeExamples.length < 4) {
+      record.representativeExamples.push({
+        id: shadow.id,
+        kind: "shadow",
+        outcome: shadow.hypotheticalResult.outcome,
+        pnlPct: Number(shadow.hypotheticalResult.pnlPct.toFixed(2)),
+        note: `${shadow.blockedReason}: ${shadow.signalType} ${shadow.asset} ${shadow.direction}`,
+      });
+    }
+  }
+
+  const setupFamilies = Array.from(records.values())
+    .map((record) => {
+      record.evidenceSummary.avgTradePnlPct = Number(record.evidenceSummary.avgTradePnlPct.toFixed(4));
+      record.evidenceSummary.avgShadowPnlPct = Number(record.evidenceSummary.avgShadowPnlPct.toFixed(4));
+      record.representativeExamples = record.representativeExamples.slice(0, 4);
+      return finalizeTruthRecord(record);
+    })
+    .sort((a, b) => b.evidenceSummary.cleanTrades + b.evidenceSummary.resolvedShadows - (a.evidenceSummary.cleanTrades + a.evidenceSummary.resolvedShadows));
+
+  return {
+    generatedAt,
+    contaminationRules: [
+      {
+        id: "oil_gold_pc_cl_source_cleanup",
+        description: "Exclude historical Oil/Gold P/C and CL-derived conclusions that predate corrected data/source handling.",
+        affectedSetupIds: Array.from(DATA_CONTAMINATED_SETUP_IDS),
+        affectedColumns: ["oil_cl_pc_ratio", "gold_gld_pc_ratio", "oil_pm_settle_ev", "gold_pm_settle_ev"],
+      },
+    ],
+    setupFamilies,
+  };
+}
+
+function buildCandidateActions(portfolio: Portfolio, weights: SignalWeight[], signals: Signal[], latestRow: SnapshotRow, snapshots: InstrumentSnapshotFile[]): CandidateActions {
+  const mechanicalExits = portfolio.positions
+    .map((position) => {
+      const reason = mechanicalCloseReason(position, markPosition(position, latestRow, snapshots, true));
+      return reason ? { positionId: position.id, reason } : null;
+    })
+    .filter((row): row is { positionId: string; reason: ClosedTrade["closeReason"] } => !!row);
+  const signalKillExits = portfolio.positions
+    .filter((position) => {
+      const weight = weights.find((candidate) => candidate.type === position.signalType);
+      const perAsset = weight?.perAsset?.[position.asset];
+      return !!weight && (!weight.enabled || perAsset?.disabled === true);
+    })
+    .map((position) => ({ positionId: position.id, signalType: position.signalType, asset: position.asset }));
+  const llmCloseEligibility = portfolio.positions.map((position) => {
+    const signalOwned = position.signalType === "LLM_HYPOTHESIS" || position.signalType === "PROMOTED_HYPOTHESIS";
+    const categories: NonNullable<LlmTradeInstruction["closeReasonCategory"]>[] = signalOwned
+      ? ["thesis_invalidated", "data_quality_issue", "hard_portfolio_risk", "risk_stale", "profit_taking"]
+      : ["thesis_invalidated", "data_quality_issue", "hard_portfolio_risk"];
+    return {
+      positionId: position.id,
+      signalType: position.signalType,
+      asset: position.asset,
+      venue: position.venue,
+      direction: position.direction,
+      allowed: true,
+      allowedCategories: categories,
+      evidenceColumns: signalFamilyEvidenceColumns(position),
+      reason: signalOwned
+        ? "LLM may advise exits for LLM-owned or promoted setups."
+        : "Rule-based signal exits require approved category and signal-family evidence.",
+    };
+  });
+  return {
+    generatedAt: new Date().toISOString(),
+    mechanicalExits,
+    signalKillExits,
+    entryCandidates: signals,
+    llmCloseEligibility,
+  };
+}
+
+function gateLlmAdvice(llmResult: LlmAnalysisResult | null, portfolio: Portfolio, candidateActions: CandidateActions): GatedLlmAdvice {
+  const acceptedCloses: LlmTradeInstruction[] = [];
+  const rejectedCloses: GatedLlmAdvice["rejectedCloses"] = [];
+  const skippedTrades: GatedLlmAdvice["skippedTrades"] = [];
+  if (!llmResult) return { acceptedCloses, rejectedCloses, skippedTrades, parameterUpdates: undefined };
+
+  for (const instruction of llmResult.trades ?? []) {
+    if (instruction.action !== "close") {
+      skippedTrades.push({ instruction, reason: "Direct LLM entries remain disabled; hypotheses must be promoted before trading." });
+      continue;
+    }
+    if (!instruction.positionId) {
+      rejectedCloses.push({ instruction, reason: "LLM close rejected: missing positionId." });
+      continue;
+    }
+    const position = portfolio.positions.find((candidate) => candidate.id === instruction.positionId);
+    if (!position) {
+      rejectedCloses.push({ instruction, reason: `LLM close rejected: unknown positionId ${instruction.positionId}.` });
+      continue;
+    }
+    if (instruction.asset !== position.asset || instruction.venue !== position.venue || (instruction.direction !== "any" && instruction.direction !== position.direction)) {
+      rejectedCloses.push({ instruction, reason: "LLM close rejected: position identity fields do not match the requested positionId." });
+      continue;
+    }
+    const eligibility = candidateActions.llmCloseEligibility.find((row) => row.positionId === position.id);
+    if (!eligibility?.allowed) {
+      rejectedCloses.push({ instruction, reason: "LLM close rejected: position is not eligible for LLM exits." });
+      continue;
+    }
+    const category = instruction.closeReasonCategory ?? "thesis_invalidated";
+    if (!eligibility.allowedCategories.includes(category)) {
+      rejectedCloses.push({ instruction, reason: `LLM close rejected: category ${category} is not allowed for ${position.signalType}.` });
+      continue;
+    }
+    const evidenceColumns = instruction.evidenceColumns ?? [];
+    const invalidEvidence = evidenceColumns.filter((column) => !eligibility.evidenceColumns.includes(column));
+    if (invalidEvidence.length > 0 && category !== "hard_portfolio_risk" && category !== "data_quality_issue") {
+      rejectedCloses.push({ instruction, reason: `LLM close rejected: evidence columns outside signal family (${invalidEvidence.join(", ")}).` });
+      continue;
+    }
+    if (position.signalType !== "LLM_HYPOTHESIS" && position.signalType !== "PROMOTED_HYPOTHESIS" && category === "profit_taking") {
+      rejectedCloses.push({ instruction, reason: "LLM close rejected: profit-taking on rule-based signals is handled by mechanical targets." });
+      continue;
+    }
+    acceptedCloses.push(instruction);
+  }
+
+  return {
+    acceptedCloses,
+    rejectedCloses,
+    skippedTrades,
+    parameterUpdates: llmResult.parameterUpdates,
+  };
+}
+
+function buildExecutionPlan(candidateActions: CandidateActions, gatedAdvice: GatedLlmAdvice, signals: Signal[]): ExecutionPlan {
+  return {
+    generatedAt: new Date().toISOString(),
+    dryRun: DRY_RUN,
+    llmDryRun: LLM_DRY_RUN,
+    mechanicalExits: candidateActions.mechanicalExits,
+    signalKillExits: candidateActions.signalKillExits,
+    llmCloses: gatedAdvice.acceptedCloses,
+    entrySignals: signals.sort((a, b) => b.confidence - a.confidence),
+    rejectedLlmActions: gatedAdvice.rejectedCloses,
+    skippedLlmActions: gatedAdvice.skippedTrades,
+    notes: [
+      MUTATION_DISABLED ? "Executor mutations disabled for dry-run verification." : "Executor mutations enabled.",
+      `${gatedAdvice.acceptedCloses.length} LLM closes accepted; ${gatedAdvice.rejectedCloses.length} rejected; ${gatedAdvice.skippedTrades.length} non-close instructions skipped.`,
+    ],
+  };
+}
+
+function executeApprovedPlan(
+  plan: ExecutionPlan,
+  portfolio: Portfolio,
+  latestRow: SnapshotRow,
+  snapshots: InstrumentSnapshotFile[],
+  learningParams: LearningParams,
+  blockedSignals: BlockedSignalShadow[],
+): { llmClosedTrades: ClosedTrade[]; openedPositions: Position[] } {
+  if (plan.dryRun || plan.llmDryRun) return { llmClosedTrades: [], openedPositions: [] };
+  const llmClosedTrades = closePositionsFromLlm(portfolio, plan.llmCloses, latestRow, snapshots);
+  const openedPositions = openPositions(portfolio, plan.entrySignals, latestRow, snapshots, learningParams, blockedSignals);
+  return { llmClosedTrades, openedPositions };
+}
+
+function writeLeanArtifacts(engineState: EngineState, truthState: LlmTruthState, candidateActions: CandidateActions, gatedAdvice: GatedLlmAdvice | null, executionPlan: ExecutionPlan | null) {
+  writeJson(ENGINE_STATE_FILE, engineState);
+  writeJson(LLM_TRUTH_STATE_FILE, truthState);
+  writeJson(CANDIDATE_ACTIONS_FILE, candidateActions);
+  if (gatedAdvice) writeJson(LLM_ADVICE_FILE, gatedAdvice);
+  if (executionPlan) writeJson(EXECUTION_PLAN_FILE, executionPlan);
+}
+
+function writeDryRunVerification(engineState: EngineState, candidateActions: CandidateActions, executionPlan: ExecutionPlan | null) {
+  if (!MUTATION_DISABLED && !SHADOW_ARCHITECTURE) return;
+  writeJson(DRY_RUN_VERIFICATION_FILE, {
+    generatedAt: new Date().toISOString(),
+    mutationDisabled: MUTATION_DISABLED,
+    checks: {
+      portfolioPositions: engineState.portfolio.openPositions,
+      mechanicalExitCandidates: candidateActions.mechanicalExits.length,
+      signalKillExitCandidates: candidateActions.signalKillExits.length,
+      entryCandidates: candidateActions.entryCandidates.length,
+      llmClosesAccepted: executionPlan?.llmCloses.length ?? 0,
+      llmClosesRejected: executionPlan?.rejectedLlmActions.length ?? 0,
+    },
+    protectedStateFiles: [
+      "portfolio.json",
+      "trades-detailed.csv",
+      "learning-journal.md",
+      "hypotheses.json",
+      "signal-weights.json",
+      "blocked-signals.json",
+      "learning-params.json",
+    ],
+  });
+}
+
 // ─── LLM Integration ─────────────────────────────────────────────────────────
 
 function extractBalancedJsonObject(text: string): string | null {
@@ -3969,9 +4566,12 @@ function extractBalancedJsonObject(text: string): string | null {
 
 const llmTradeInstructionSchema = z.object({
   action: z.enum(["buy", "sell", "close"]),
+  positionId: z.string().min(1).optional(),
   asset: z.string().min(1),
   venue: z.enum(["polymarket", "hyperliquid", "spot"]),
   direction: z.enum(["long", "short", "any"]),
+  closeReasonCategory: z.enum(["thesis_invalidated", "data_quality_issue", "hard_portfolio_risk", "risk_stale", "profit_taking"]).optional(),
+  evidenceColumns: z.array(z.string().min(1)).optional(),
   thesis: z.string().min(1),
 });
 
@@ -4097,6 +4697,9 @@ async function callLLM(
   blockedSummary: BlockedSignalLearningSummary,
   relativeValueRows: RelativeValueObservation[],
   journalTail: string,
+  engineState: EngineState,
+  truthState: LlmTruthState,
+  candidateActions: CandidateActions,
 ): Promise<LlmAnalysisResult | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
@@ -4136,6 +4739,20 @@ Win rate: ${portfolio.totalTrades > 0 ? ((portfolio.winCount / portfolio.totalTr
 OPEN POSITIONS:
 ${openPositionContext}
 
+CANONICAL ENGINE STATE:
+${JSON.stringify(engineState, null, 1)}
+
+CANONICAL CURRENT TRUTH BY SETUP FAMILY:
+${JSON.stringify(truthState, null, 1)}
+
+ALLOWED ACTION SURFACE:
+${JSON.stringify({
+  llmCloseEligibility: candidateActions.llmCloseEligibility,
+  candidateEntryCount: candidateActions.entryCandidates.length,
+  mechanicalExitCount: candidateActions.mechanicalExits.length,
+  signalKillExitCount: candidateActions.signalKillExits.length,
+}, null, 1)}
+
 SIGNAL PERFORMANCE:
 ${activeWeights.map((w) => {
   const disabledAssets = Object.entries(w.perAsset ?? {})
@@ -4170,8 +4787,8 @@ ${JSON.stringify(blockedSummary, null, 1)}
 RELATIVE-VALUE HEATMAP OBSERVATIONS (ranked by absolute executable edge):
 ${JSON.stringify(relativeValueRows, null, 1)}
 
-RECENT LEARNING JOURNAL:
-${journalTail || "  No entries yet"}
+AUDIT LOG TAIL${DRY_RUN ? " (dry-run debug only; not canonical truth)" : " (not canonical decision truth)"}:
+${DRY_RUN ? (journalTail || "  No entries yet") : "  Omitted from decision context. Use CANONICAL CURRENT TRUTH BY SETUP FAMILY instead."}
 
 IMPORTANT RULES:
 - Each hypothesis MUST be specific and testable with a clear timeframe (1-14 days)
@@ -4208,8 +4825,11 @@ IMPORTANT RULES:
 - Treat GOLD/OIL settle-at bucket markets as drifting Polymarket bucket-forwards / volatility shape indicators, not fair-value anchors for spot. Columns named *_pm_settle_ev are probability-weighted settlement-bucket values from Polymarket; they have their own drift and may stay far from spot for long periods. Do NOT argue that spot should revert to *_pm_settle_ev, and do NOT cite a static PM/spot gap as new close evidence. Anti-pattern: "oil_pm_settle_ev is $87 while spot is $97, so spot should drift to $87" — wrong unless oil_pm_settle_ev itself moved materially since the trade opened and belongs to the signal family under review. Supported aggregate keys: gold_pm_settle_yes_sum_max/min/avg, gold_pm_settle_overround_max/min/avg, gold_pm_settle_tail_yes_max/min/avg, gold_pm_settle_skew_yes_max/min/avg, plus oil_* equivalents. yes_sum/overround measure bucket-price breadth, tail_yes measures total top+bottom tail demand, and skew_yes measures upside minus downside tail demand.
 - Settlement-bucket volatility hypotheses must be replicable across changing ladders: use aggregate bucket metrics from the current active market prices, not hard-coded strikes or price levels. "Top tail" means the highest active settle-at bucket; "bottom tail" means the lowest active settle-at bucket.
 - You may return \"action: close\" to exit an existing open position; use that only when the thesis has clearly weakened or a target/stop is likely stale
+- Every close instruction MUST include the exact positionId from OPEN POSITIONS and ALLOWED ACTION SURFACE.
+- Every close instruction SHOULD include closeReasonCategory and evidenceColumns. Allowed categories are thesis_invalidated, data_quality_issue, hard_portfolio_risk, risk_stale, profit_taking.
+- Rule-based signal closes are policy-gated. Profit-taking on rule-based signals is rejected; mechanical targets handle routine profit-taking.
 - For close decisions, use each open position's "Signal-family evidence metrics" as the primary evidence. Do not justify closing a P/C-ratio trade with PM EV, funding, macro, or other context-only metrics unless there is a hard portfolio risk breach; if context-only metrics were already present at entry, do not describe them as new evidence.
-- For \"action: close\", set direction to long, short, or any to identify which existing position to close
+- For \"action: close\", set direction to long, short, or any and include positionId to identify which existing position to close.
 - Keep parameter updates inside these bounds:
   - macroMomentum24hThresholdPts: 2 to 20
   - contrarianTrendMarginPct: 0 to 5
@@ -4237,7 +4857,7 @@ Respond with ONLY valid JSON in this exact format:
     }
   ],
   "hypothesisReviews": [{"id": "H-xxx", "observation": "what happened and why"}],
-  "trades": [{"action": "buy", "asset": "BTC", "venue": "spot", "direction": "long", "thesis": "reason"}],
+  "trades": [{"action": "close", "positionId": "T-example", "asset": "BTC", "venue": "spot", "direction": "long", "closeReasonCategory": "thesis_invalidated", "evidenceColumns": ["btc_spot"], "thesis": "reason"}],
   "parameterUpdates": {
     "macroMomentum24hThresholdPts": 4,
     "contrarianTrendMarginPct": 0.5,
@@ -4268,7 +4888,7 @@ Required top-level keys and types:
 - marketAssessment: non-empty string
 - newHypotheses: array of objects with created, description, conditions, prediction, timeframeDays, confidence, source="llm"
 - hypothesisReviews: array of {id, observation}
-- trades: array of {action, asset, venue, direction, thesis}
+- trades: array of {action, positionId?, asset, venue, direction, closeReasonCategory?, evidenceColumns?, thesis}
 - parameterUpdates: optional object
 - journalEntry: non-empty string
 
@@ -4590,7 +5210,7 @@ async function main() {
     for (const t of closedTrades) {
       const emoji = t.pnl >= 0 ? "✅" : "❌";
       console.log(`    ${emoji} ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} [${t.instrumentLabel ?? "n/a"}] → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
-      appendTradeCsv(t);
+      if (!MUTATION_DISABLED) appendTradeCsv(t);
     }
   }
 
@@ -4605,7 +5225,7 @@ async function main() {
     for (const t of newPendingScannerClosedTrades) {
       const emoji = t.pnl >= 0 ? "✅" : "❌";
       console.log(`    ${emoji} ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} [${t.instrumentLabel ?? "n/a"}] → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
-      appendTradeCsv(t);
+      if (!MUTATION_DISABLED) appendTradeCsv(t);
       closedTrades.push(t);
     }
   }
@@ -4670,7 +5290,7 @@ async function main() {
     for (const t of killedSignalClosedTrades) {
       const emoji = t.pnl >= 0 ? "✅" : "❌";
       console.log(`    ${emoji} ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} [${t.instrumentLabel ?? "n/a"}] → signal_killed: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
-      appendTradeCsv(t);
+      if (!MUTATION_DISABLED) appendTradeCsv(t);
       closedTrades.push(t);
     }
     const killedSignalWeightObs = updateWeights(weights, killedSignalClosedTrades);
@@ -4704,12 +5324,19 @@ async function main() {
     console.log(`    ${s.asset} ${s.direction} (${s.type}) confidence=${s.confidence.toFixed(3)} — ${s.thesis.slice(0, 70)}`);
   }
 
+  const engineState = buildEngineState(valRows, macroRows, instrumentSnapshots, portfolio, weights, learningParams, blockedSummary);
+  const truthState = buildLlmTruthState(hypotheses, weights, [...readClosedTradeCsv(), ...closedTrades], blockedSignals);
+  const candidateActions = buildCandidateActions(portfolio, weights, signals, latestRow, instrumentSnapshots);
+  let gatedAdvice: GatedLlmAdvice = { acceptedCloses: [], rejectedCloses: [], skippedTrades: [], parameterUpdates: undefined };
+  let executionPlan: ExecutionPlan | null = null;
+  writeLeanArtifacts(engineState, truthState, candidateActions, null, null);
+
   // Step 6: LLM reasoning
   let llmJournal: string | null = null;
   if (!NO_LLM) {
     console.log(`\n  Calling LLM for pattern discovery...`);
     const journalTail = readJournalTail(40);
-    const llmResult = await callLLM(valRows, macroRows, instrumentSnapshots, portfolio, learningParams, weights, hypotheses, statObs, closedTrades, blockedSummary, relativeValueRows, journalTail);
+    const llmResult = await callLLM(valRows, macroRows, instrumentSnapshots, portfolio, learningParams, weights, hypotheses, statObs, closedTrades, blockedSummary, relativeValueRows, journalTail, engineState, truthState, candidateActions);
 
     if (llmResult) {
       console.log(`  LLM assessment: ${llmResult.marketAssessment.slice(0, 120)}`);
@@ -4718,8 +5345,6 @@ async function main() {
       for (const note of appliedUpdates.notes) {
         console.log(`    Param update: ${note}`);
       }
-
-      const llmCloseInstructions: LlmTradeInstruction[] = [];
 
       // Add new hypotheses only after the existing LLM backlog has enough repeat shadow tests.
       const currentHypothesisBacklog = llmHypothesisBacklog(hypotheses);
@@ -4751,35 +5376,12 @@ async function main() {
         }
       }
 
-      // LLM trade instructions are intentionally constrained to exits only.
-      // New LLM ideas must enter through hypothesis retesting and promotion.
-      for (const lt of llmResult.trades ?? []) {
-        if (!isValidVenue(lt.venue)) {
-          console.log(`    Skipping invalid LLM venue for ${lt.asset}: ${String(lt.venue)}`);
-          continue;
-        }
-        if (lt.action === "close") {
-          if (lt.direction !== "long" && lt.direction !== "short" && lt.direction !== "any") {
-            console.log(`    Skipping invalid LLM close direction for ${lt.asset}: ${String(lt.direction)}`);
-            continue;
-          }
-          llmCloseInstructions.push(lt);
-          continue;
-        }
-        console.log(`    Skipping LLM ${lt.action} trade for ${lt.asset}: direct LLM entries are disabled; hypotheses must be promoted before trading.`);
-        continue;
+      gatedAdvice = gateLlmAdvice(llmResult, portfolio, candidateActions);
+      for (const rejection of gatedAdvice.rejectedCloses) {
+        console.log(`    Rejected LLM close: ${rejection.reason}`);
       }
-
-      const llmClosedTrades = closePositionsFromLlm(portfolio, llmCloseInstructions, latestRow, instrumentSnapshots);
-      if (llmClosedTrades.length > 0) {
-        console.log(`\n  LLM closed ${llmClosedTrades.length} positions:`);
-        for (const t of llmClosedTrades) {
-          const emoji = t.pnl >= 0 ? "✅" : "❌";
-          console.log(`    ${emoji} ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} [${t.instrumentLabel ?? "n/a"}] → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
-          appendTradeCsv(t);
-          closedTrades.push(t);
-        }
-        weightObs = [...weightObs, ...updateWeights(weights, llmClosedTrades)];
+      for (const skipped of gatedAdvice.skippedTrades) {
+        console.log(`    Skipped LLM ${skipped.instruction.action}: ${skipped.reason}`);
       }
 
       llmJournal = llmResult.journalEntry;
@@ -4789,10 +5391,23 @@ async function main() {
     }
   }
 
+  executionPlan = buildExecutionPlan(candidateActions, gatedAdvice, signals);
+  writeLeanArtifacts(engineState, truthState, candidateActions, gatedAdvice, executionPlan);
+  writeDryRunVerification(engineState, candidateActions, executionPlan);
+
   // Step 7: Open new positions
-  if (!DRY_RUN) {
-    const sortedSignals = signals.sort((a, b) => b.confidence - a.confidence);
-    const opened = openPositions(portfolio, sortedSignals, latestRow, instrumentSnapshots, learningParams, blockedSignals);
+  if (!MUTATION_DISABLED) {
+    const { llmClosedTrades, openedPositions: opened } = executeApprovedPlan(executionPlan, portfolio, latestRow, instrumentSnapshots, learningParams, blockedSignals);
+    if (llmClosedTrades.length > 0) {
+      console.log(`\n  LLM closed ${llmClosedTrades.length} positions:`);
+      for (const t of llmClosedTrades) {
+        const emoji = t.pnl >= 0 ? "✅" : "❌";
+        console.log(`    ${emoji} ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} [${t.instrumentLabel ?? "n/a"}] → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
+        appendTradeCsv(t);
+        closedTrades.push(t);
+      }
+      weightObs = [...weightObs, ...updateWeights(weights, llmClosedTrades)];
+    }
     if (opened.length > 0) {
       console.log(`\n  Opened ${opened.length} new positions:`);
       for (const p of opened) {
@@ -4814,6 +5429,8 @@ async function main() {
       updatedAt: new Date().toISOString(),
     });
     clearPendingScannerClosedTrades();
+  } else {
+    console.log("\n  Dry-run verification: executor skipped; portfolio, trade ledger, journal, and learning state were not saved.");
   }
 
   // Summary

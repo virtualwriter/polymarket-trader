@@ -33,6 +33,11 @@ DATA_FILES=(
   data/blocked-signals.json
   data/processed-closed-trades.json
   data/learning-journal.md
+  data/engine-state.json
+  data/llm-truth-state.json
+  data/candidate-actions.json
+  data/llm-advice.json
+  data/execution-plan.json
   relative-value/index.html
   relative-value/cross_venue_relative_value.csv
 )

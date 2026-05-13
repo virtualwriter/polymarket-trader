@@ -53,6 +53,11 @@ jobs:
                    data/learning-params.json \
                    data/blocked-signals.json \
                    data/learning-journal.md \
+                   data/engine-state.json \
+                   data/llm-truth-state.json \
+                   data/candidate-actions.json \
+                   data/llm-advice.json \
+                   data/execution-plan.json \
                    relative-value/index.html \
                    relative-value/cross_venue_relative_value.csv; do
             [ -f "$f" ] && git add -f "$f"
