@@ -8041,3 +8041,51 @@ PARAMETER STABILITY: No parameter changes. The current risk parameters are appro
 
 ---
 
+### 2026-05-13 16:29 UTC
+
+**Portfolio:** $99.21 total | Cash $97.21 | 2 open | P&L $0.2099 | 54% win rate (119 trades)
+
+**Closed 1 trades:**
+- ❌ OIL long via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT) → llm_decision: $-0.0107 (-1.1%, market -0.0111, funding 0.0004)
+
+**Opened 2 positions:**
+- OIL long @ $97.09 via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH)
+- GOLD long @ $0.58 via polymarket/pm_yes [gc-over-under-jun-2026 — YES — Will Gold (GC) settle over $4,800 on the final trading day of June 2026?] (OPT_IV_GT_PM_IV)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 7.8pp (was -1.4, now -9.2)
+- [anomaly] oil_hl_funding_ann = -327.56 is -3.6 std devs from mean since 2026-04-28 (-28.49 ± 84.08)
+- [anomaly] oil_cl_pc_ratio = 1.836 is 2.4 std devs from mean since 2026-04-28 (1.10 ± 0.31)
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.71
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 63 (28 wins / 35 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have expiry (+2.97%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+
+**LLM analysis:**
+2026-05-13T16 UTC. Key decision: closing the OIL long position proactively rather than waiting for the mechanical stop. The thesis inversion is the critical factor — oil_pm_settle_ev at 87.1 is now ~10 points BELOW spot at 97.09, which is the opposite of the original FUNDING_EXTREME_SHORT setup condition (which implicitly assumed PM settle would converge upward toward spot). The PM market is now pricing oil significantly below current spot, which is a bearish signal that overrides the funding carry argument. The carry collected (~0.90%/day × ~1 day ≈ 0.9%) partially offsets the ~1.1% spot loss, so the net P&L is approximately flat to slightly negative. This is an acceptable outcome given the thesis invalidation.
+
+Macro regime shift is the dominant theme: fed_score at 9 is the most hawkish reading in the dataset, macro composite at 45, and BTC-OIL correlation flipped to -0.71. This combination — hawkish Fed + risk-off decoupling — is genuinely hostile to risk assets. BTC at 79k is holding above the 75k range but faces real headwinds. The IBIT P/C at 0.599 (rising from 0.454) suggests increasing hedging demand, which is a bearish sentiment indicator.
+
+No new hypotheses proposed per backlog rules (13 setup families need more tests, 12 pending). The promoted families (H-521 HYPE breakout, H-523 BTC PM IV compression) are correctly dormant in this pullback environment.
+
+Relative-value heatmap continues to show compelling cheap-vs-cap edges on OIL upside contracts (CL $115 June YES at 55.5¢ with 21.3pt edge, CL $120 June YES at 44.5¢ with 19.5pt edge), but the extreme_perp_funding flag on all OIL contracts means the funding distortion is contaminating the IV model. These edges are likely artifacts of the funding extreme rather than genuine PM mispricing. Avoiding.
+
+BTC May contracts show the most actionable heatmap edges: $110k YES at 0.55¢ (27.6pt edge), $105k YES at 0.85¢ (58.9pt edge), $100k YES at 1.55¢ (119.7pt edge). These are all cheap-vs-cap with tight spreads and good liquidity. However, with BTC at 79k and only ~19 days to June 1 expiry, these require a 25-35% move in under 3 weeks — the edge is real but the probability is genuinely low. The H-526 shadow test is already tracking this framework. No additional capital deployment warranted.
+
+Blocked signal learning update: The FUNDING_EXTREME_LONG trend filter has now blocked 5/7 profitable trades (avg +1.02%). This is becoming a meaningful signal that the trend filter may be too conservative for funding-carry trades specifically. However, with only 7 resolved samples, I'm maintaining the current filter. Will flag for review at 10+ resolved samples.
+
+Gold P/C ratio at 0.594-0.611 is the highest in the dataset. This is a dramatic spike in gold put buying. The PC_RATIO_EXTREME_HIGH signal has 75% win rate (6/8 wins, avg +1.07%). However, gold PM contracts have wide spreads and low liquidity, making execution impractical. Monitoring but not trading.
+
+---
+
