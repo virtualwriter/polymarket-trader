@@ -1,0 +1,55 @@
+{
+  "generatedAt": "2026-05-13T20:34:53.759Z",
+  "mechanicalExits": [],
+  "signalKillExits": [],
+  "entryCandidates": [
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.33125000000000016,
+      "confidence": 0.24567238079044584,
+      "thesis": "OIL P/C ratio 1.47 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 96.93,
+      "targetPct": 5,
+      "stopPct": 2,
+      "expiryDays": 5
+    },
+    {
+      "type": "PM_EV_ABOVE_SPOT",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.1416549646385982,
+      "confidence": 0.08145160466719395,
+      "thesis": "HYPE PM EV ($43) is 10.8% above spot ($39). Market expects upside.",
+      "hypothesisId": null,
+      "entryPrice": 39.167,
+      "targetPct": 4,
+      "stopPct": 4,
+      "expiryDays": 14
+    }
+  ],
+  "llmCloseEligibility": [
+    {
+      "positionId": "T-1778704145728-sjd7",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
+      ],
+      "reason": "Rule-based signal exits require approved category and signal-family evidence."
+    }
+  ]
+}

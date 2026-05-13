@@ -8283,3 +8283,30 @@ Session 2026-05-13T20. No open positions entering this session. Key observations
 
 ---
 
+### 2026-05-13 20:35 UTC
+
+**Portfolio:** $99.07 total | Cash $98.07 | 1 open | P&L $0.0711 | 52% win rate (124 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -434.53 is -4.1 std devs from mean since 2026-04-28 (-35.45 ± 97.07)
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.69
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+Key observations from this session: (1) OIL long (T-1778704145728-sjd7) remains open with no change in evidence metrics since entry — oil_wti_spot flat at 96.93, oil_cl_pc_ratio flat at 1.465. The position is at -0.07% PnL, well within the 2% stop. The thesis (heavy put buying → contrarian long) has not been invalidated; P/C has declined from the 1.922 peak to 1.465, which is directionally favorable but not yet at target. Holding. (2) The most notable development this session is the BTC IBIT P/C ratio surge from 0.454 to 0.799 over ~5 hours on May 13, coinciding with a ~1.5% BTC pullback from 81k highs. This is a significant put-buying surge that historically aligns with the PC_RATIO_EXTREME_HIGH family (7/9 wins, 78% win rate, avg +1.02%). However, BTC is not in the OIL-style extreme P/C territory (>1.3), and the signal family's evidence columns are btc_spot and btc_ibit_pc_ratio. The P/C at 0.799 is elevated but not yet at the extreme levels that have historically triggered the signal. Monitoring for further P/C expansion. (3) Macro composite dropped from 48 to 45 with fed cut probability falling from 38.2% to 30.8% — this is a meaningful hawkish shift that reduces the tailwind for risk assets. BTC outperform SP500 probability ticked up slightly to 23.5% but remains low. (4) The hypothesis backlog remains at 13/19 setup families needing more tests with 12 pending — no new hypotheses proposed per protocol. (5) Relative-value heatmap shows persistent cheap-vs-underlying-cap signals across BTC May upside contracts (e.g., $110k at 0.55% of cap, $120k at 0.25% of cap) and OIL/GOLD upside contracts, but these are all flagged with extreme_perp_funding which contaminates the signal. The BTC $90k Dec 2026 YES at 64.5% vs model 86.1% (21pt edge) remains the highest-quality shadow signal in the one-touch bucket. (6) No parameter changes warranted — current risk parameters are appropriate given the mixed signal environment.
+
+---
+
