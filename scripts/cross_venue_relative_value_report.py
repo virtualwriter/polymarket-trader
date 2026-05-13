@@ -16,6 +16,7 @@ Hyperliquid. It is a relative-value dashboard, not a risk-free arbitrage model.
 from __future__ import annotations
 
 import argparse
+from bisect import bisect_left
 import csv
 import html
 import json
@@ -42,9 +43,11 @@ MODEL_VERSION = "relative_value_heatmap_v2_one_touch"
 
 ASSET_TO_OPTION_SYMBOLS = {
     "BTC": ["CME_BTC", "IBIT"],
+    "ETH": ["ETHA"],
     "GOLD": ["CME_GC"],
     "OIL": ["CME_CL"],
     "AMZN": ["AMZN"],
+    "SPY": ["CME_ES", "SPY"],
 }
 
 
@@ -345,7 +348,7 @@ def scaled_option_strike(
 ) -> Optional[float]:
     if not asset_spot or not option_underlying or asset_spot <= 0:
         return None
-    if option_symbol == "IBIT":
+    if option_symbol in {"IBIT", "ETHA", "CME_ES", "SPY"}:
         return pm_strike * (option_underlying / asset_spot)
     return pm_strike
 
@@ -362,43 +365,71 @@ def choose_iv_for_expiry(
         return None, ""
 
     now = now or datetime.now(timezone.utc)
+    cache_key = f"_iv_expiry_buckets_{now.date().isoformat()}"
+    cached = option_snapshot.get(cache_key)
+    if isinstance(cached, dict):
+        expiry_buckets = cached
+    else:
+        buckets: Dict[str, Dict[str, Any]] = {}
+        for item in chains:
+            exp = parse_time(str(item.get("expiration", "")))
+            if not exp:
+                continue
+            exp_utc = exp.astimezone(timezone.utc)
+            dte = max(0.0, (exp_utc - now).total_seconds() / 86400)
+            if dte < 1.0:
+                continue
+            iv = safe_float(item.get("impliedVolatility"))
+            if not iv or iv <= 0:
+                continue
+            strike = safe_float(item.get("strike")) or underlying
+            expiry_iso = exp_utc.date().isoformat()
+            bucket = buckets.setdefault(expiry_iso, {"dte": dte, "rows": [], "liquid_rows": []})
+            row = (strike, item)
+            bucket["rows"].append(row)
+            if (safe_float(item.get("bid")) or 0) > 0 and (safe_float(item.get("ask")) or 0) > 0:
+                bucket["liquid_rows"].append(row)
+
+        expiry_buckets = {}
+        for expiry_iso, bucket in buckets.items():
+            rows = sorted(bucket["rows"], key=lambda row: row[0])
+            liquid_rows = sorted(bucket["liquid_rows"], key=lambda row: row[0])
+            if rows:
+                expiry_buckets[expiry_iso] = {
+                    "dte": bucket["dte"],
+                    "rows": rows,
+                    "strikes": [row[0] for row in rows],
+                    "liquid_rows": liquid_rows,
+                    "liquid_strikes": [row[0] for row in liquid_rows],
+                }
+        option_snapshot[cache_key] = expiry_buckets
+
     target_days = 60.0
     if target_expiry:
         target_days = max(1.0, (target_expiry - now).total_seconds() / 86400)
 
-    candidates: List[Tuple[float, str, float, Dict[str, Any]]] = []
-    for item in chains:
-        exp = parse_time(str(item.get("expiration", "")))
-        if not exp:
-            continue
-        exp_utc = exp.astimezone(timezone.utc)
-        dte = max(0.0, (exp_utc - now).total_seconds() / 86400)
-        if dte < 1.0:
-            continue
-        iv = safe_float(item.get("impliedVolatility"))
-        if not iv or iv <= 0:
-            continue
-        strike = safe_float(item.get("strike")) or underlying
-        strike_target = target_strike or underlying
-        expiry_penalty = abs(dte - target_days)
-        strike_penalty = abs(math.log(max(strike, 0.01) / max(strike_target, 0.01))) * 365
-        candidates.append((expiry_penalty, exp_utc.date().isoformat(), strike_penalty, item))
-
-    if not candidates:
+    if not expiry_buckets:
         return None, ""
 
-    candidates.sort(key=lambda row: (row[0], row[1]))
-    selected_expiry = candidates[0][1]
-    same_expiry = [row for row in candidates if row[1] == selected_expiry]
-    liquid_candidates = [
-        row for row in same_expiry
-        if (safe_float(row[3].get("bid")) or 0) > 0 and (safe_float(row[3].get("ask")) or 0) > 0
-    ]
-    ranked = liquid_candidates if len(liquid_candidates) >= 2 else same_expiry
-    ranked.sort(key=lambda row: row[2])
+    selected_expiry, selected_bucket = min(
+        expiry_buckets.items(),
+        key=lambda row: (abs(float(row[1]["dte"]) - target_days), row[0]),
+    )
+    use_liquid = len(selected_bucket["liquid_rows"]) >= 2
+    rows = selected_bucket["liquid_rows"] if use_liquid else selected_bucket["rows"]
+    strikes = selected_bucket["liquid_strikes"] if use_liquid else selected_bucket["strikes"]
+    strike_target = target_strike or underlying
+    idx = bisect_left(strikes, strike_target)
+    window = rows[max(0, idx - 6):idx + 6]
+    ranked = sorted(
+        window,
+        key=lambda row: abs(math.log(max(row[0], 0.01) / max(strike_target, 0.01))),
+    )
     top = ranked[:4]
-    iv = sum(float(item["impliedVolatility"]) for _, _, _, item in top) / len(top)
-    expiry = str(top[0][3].get("expiration", ""))
+    if not top:
+        return None, ""
+    iv = sum(float(item["impliedVolatility"]) for _, item in top) / len(top)
+    expiry = str(top[0][1].get("expiration", selected_expiry))
     return iv, expiry
 
 
@@ -1214,7 +1245,10 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
     .meta {{ color: #777; margin-bottom: 18px; }}
     table {{ border-collapse: collapse; width: 100%; font-size: 13px; }}
     th, td {{ border: 1px solid #ccc; padding: 6px 8px; vertical-align: top; }}
-    th {{ position: sticky; top: 0; background: Canvas; text-align: left; }}
+    th {{ position: sticky; top: 0; background: Canvas; text-align: left; cursor: pointer; user-select: none; }}
+    th::after {{ content: " \\2195"; color: #777; font-size: 11px; }}
+    th[aria-sort="ascending"]::after {{ content: " \\2191"; color: inherit; }}
+    th[aria-sort="descending"]::after {{ content: " \\2193"; color: inherit; }}
     .question {{ max-width: 430px; }}
     .pos3 {{ background: #006d2c; color: white; font-weight: 700; }}
     .pos2 {{ background: #31a354; color: white; font-weight: 700; }}
@@ -1259,7 +1293,7 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
     <span class="neg2">-10 pts</span>
     <span class="neg3">-20 pts</span>
   </div>
-  <table>
+  <table id="relative-value-table">
     <thead>
       <tr>
         <th>Asset</th>
@@ -1300,6 +1334,48 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
     </tbody>
   </table>
   <script>
+    function sortableValue(text) {{
+      const raw = (text || "").trim();
+      if (!raw || raw === "-") return {{ type: "missing", value: null }};
+      const lower = raw.toLowerCase();
+      const cleaned = lower
+        .replace(/[$,%]/g, "")
+        .replace(/ pts?$/g, "")
+        .replace(/x$/g, "")
+        .replace(/,/g, "")
+        .trim();
+      const number = Number(cleaned);
+      if (Number.isFinite(number)) return {{ type: "number", value: number }};
+      const timestamp = Date.parse(raw);
+      if (Number.isFinite(timestamp)) return {{ type: "number", value: timestamp }};
+      return {{ type: "text", value: lower }};
+    }}
+
+    function compareCells(aCell, bCell, direction) {{
+      const a = sortableValue(aCell ? aCell.textContent : "");
+      const b = sortableValue(bCell ? bCell.textContent : "");
+      if (a.type === "missing" && b.type !== "missing") return 1;
+      if (b.type === "missing" && a.type !== "missing") return -1;
+      if (a.type === "number" && b.type === "number") return direction * (a.value - b.value);
+      return direction * String(a.value ?? "").localeCompare(String(b.value ?? ""), undefined, {{ numeric: true, sensitivity: "base" }});
+    }}
+
+    document.querySelectorAll("#relative-value-table thead th").forEach((th, index) => {{
+      th.setAttribute("title", "Click to sort this column");
+      th.addEventListener("click", () => {{
+        const table = th.closest("table");
+        const tbody = table.querySelector("tbody");
+        const current = th.getAttribute("aria-sort");
+        const next = current === "descending" ? "ascending" : "descending";
+        const direction = next === "ascending" ? 1 : -1;
+        table.querySelectorAll("thead th").forEach((header) => header.removeAttribute("aria-sort"));
+        th.setAttribute("aria-sort", next);
+        const rows = Array.from(tbody.querySelectorAll("tr"));
+        rows.sort((a, b) => compareCells(a.children[index], b.children[index], direction));
+        tbody.replaceChildren(...rows);
+      }});
+    }});
+
     document.addEventListener("click", async (event) => {{
       const button = event.target.closest("button[data-command]");
       if (!button) return;

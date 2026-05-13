@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-13T21:29:38.054Z",
-  "dryRun": false,
+  "generatedAt": "2026-05-13T21:42:43.063Z",
+  "dryRun": true,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
@@ -11,15 +11,55 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.8305714285714286,
-      "confidence": 0.5390711050895548,
-      "thesis": "GOLD HL funding 44.1% annualized — crowded longs. Fade.",
+      "strength": 1,
+      "confidence": 0.6490364182364781,
+      "thesis": "GOLD HL funding 63.7% annualized — crowded longs. Fade.",
       "hypothesisId": null,
-      "entryPrice": 4691,
+      "entryPrice": 4692,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
       "leverage": 1
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.5850968253333334,
+      "confidence": 0.2925484126666667,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.6pt edge on BTC; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 79374,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "701501",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "OIL",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.5768248363333334,
+      "confidence": 0.2884124181666667,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.3pt edge on OIL; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 96.906,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-wti-hit-in-may-2026",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "2074237",
+        "allowDirectionFallback": false
+      }
     },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -30,7 +70,7 @@
       "confidence": 0.24567238079044584,
       "thesis": "OIL P/C ratio 1.47 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 96.95,
+      "entryPrice": 96.91,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -40,11 +80,25 @@
       "asset": "HYPE",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.17030203071848193,
-      "confidence": 0.0979236676631271,
+      "strength": 0.17058565870500653,
+      "confidence": 0.09808675375537874,
       "thesis": "HYPE PM EV ($43) is 11.4% above spot ($39). Market expects upside.",
       "hypothesisId": null,
-      "entryPrice": 38.804,
+      "entryPrice": 38.811,
+      "targetPct": 4,
+      "stopPct": 4,
+      "expiryDays": 14
+    },
+    {
+      "type": "PM_EV_ABOVE_SPOT",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.001390883664676057,
+      "confidence": 0.0007997581071887326,
+      "thesis": "BTC PM EV ($85746) is 8.0% above spot ($79374). Market expects upside.",
+      "hypothesisId": null,
+      "entryPrice": 79374,
       "targetPct": 4,
       "stopPct": 4,
       "expiryDays": 14
@@ -53,7 +107,7 @@
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
-    "Executor mutations enabled.",
+    "Executor mutations disabled for dry-run verification.",
     "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

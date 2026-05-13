@@ -91,14 +91,14 @@ interface OptionsSnapshot {
 const HL_API = "https://api.hyperliquid.xyz/info";
 const GAMMA_API = "https://gamma-api.polymarket.com";
 
-const HL_PERP_COINS = ["BTC", "HYPE"];
+const HL_PERP_COINS = ["BTC", "ETH", "HYPE"];
 const HL_BUILDER_COINS: { dex: string; coin: string; label: string }[] = [
   { dex: "xyz", coin: "xyz:AMZN", label: "AMZN" },
   { dex: "xyz", coin: "xyz:GOLD", label: "GOLD (GC)" },
   { dex: "xyz", coin: "xyz:CL", label: "OIL (CL)" },
   { dex: "xyz", coin: "xyz:BRENTOIL", label: "BRENT OIL" },
 ];
-const OPTIONS_SYMBOLS = ["IBIT", "AMZN", "GLD", "USO"];
+const OPTIONS_SYMBOLS = ["IBIT", "AMZN", "GLD", "USO", "ETHA", "SPY"];
 const CME_GREEKS_API_BASE = process.env.CME_GREEKS_API_BASE ?? "https://markets.api.cmegroup.com/greeks/v1";
 const CME_TOKEN_URL = process.env.CME_TOKEN_URL ?? "https://auth.cmegroup.com/as/token.oauth2";
 const CME_OPTIONS_QUERY_PARAM = process.env.CME_OPTIONS_QUERY_PARAM ?? "undlyProductCodes";
@@ -106,6 +106,7 @@ const CME_OPTIONS_CONFIG = [
   { snapshotKey: "CME_BTC", undlyProductCode: process.env.CME_BTC_UNDLY_PRODUCT_CODE ?? "BTC", label: "CME BTC futures options" },
   { snapshotKey: "CME_GC", undlyProductCode: process.env.CME_GOLD_UNDLY_PRODUCT_CODE ?? "GC", label: "CME GC futures options" },
   { snapshotKey: "CME_CL", undlyProductCode: process.env.CME_OIL_UNDLY_PRODUCT_CODE ?? "CL", label: "CME CL futures options" },
+  { snapshotKey: "CME_ES", undlyProductCode: process.env.CME_ES_UNDLY_PRODUCT_CODE ?? "ES", label: "CME E-mini S&P 500 futures options" },
 ];
 const TRADINGVIEW_OPTIONS_ENABLED = process.env.TRADINGVIEW_OPTIONS_ENABLED === "1" || process.env.TRADINGVIEW_OPTIONS_ENABLED === "true";
 
@@ -124,8 +125,10 @@ function currentMonthTouchEventSlugs(now = new Date()): string[] {
     const year = date.getUTCFullYear();
     return [
       `what-price-will-bitcoin-hit-in-${month}-${year}`,
+      `what-price-will-ethereum-hit-in-${month}-${year}`,
       `what-price-will-xauusd-hit-in-${month}-${year}`,
       `what-price-will-amzn-hit-in-${month}-${year}`,
+      `what-price-will-spx-hit-in-${month}-${year}`,
       `what-price-will-cl-hit-in-${month}-${year}`,
       `what-price-will-wti-hit-in-${month}-${year}`,
     ];
@@ -135,6 +138,7 @@ function currentMonthTouchEventSlugs(now = new Date()): string[] {
 const POLYMARKET_EVENT_SLUGS = [
   "what-price-will-bitcoin-hit-before-2027",
   "what-price-will-bitcoin-hit-in-may-2026",
+  "what-price-will-ethereum-hit-before-2027",
   "what-price-will-hyperliquid-hit-before-2027",
   "what-will-gold-gc-hit-by-end-of-december",
   "what-price-will-xauusd-hit-in-may-2026",
@@ -143,12 +147,14 @@ const POLYMARKET_EVENT_SLUGS = [
   "gc-hit-jun-2026",
   "gc-settle-jun-2026",
   "gc-over-under-jun-2026",
+  "spx-hit-jun-2026",
+  "spx-hit-dec-2026",
   "cl-hit-jun-2026",
   "cl-over-under-jun-2026",
   "cl-settle-jun-2026",
   ...currentMonthTouchEventSlugs(),
 ].filter((slug, idx, arr) => arr.indexOf(slug) === idx);
-const POLYMARKET_SEARCH_KEYWORDS = ["amazon stock", "AMZN"];
+const POLYMARKET_SEARCH_KEYWORDS = ["amazon stock", "AMZN", "ethereum", "S&P 500", "SPX"];
 
 const JSON_OUTPUT = process.argv.includes("--json");
 const SNAPSHOT_MODE = process.argv.includes("--snapshot");
@@ -392,6 +398,8 @@ function parseStrike(question: string): { strike: number; direction: "above" | "
   const highMatch = question.match(/(?:reach|hit\s*\(HIGH\)|settle\s+over|settle\s+at\s*>\s*)\s*\$?([\d,]+)/i);
   // "dip to $55,000" / "hit (LOW) $40" / "settle under" / "below"
   const lowMatch = question.match(/(?:dip\s+to|hit\s*\(LOW\)|settle\s+under|below)\s*\$?([\d,]+)/i);
+  const hitHighSuffix = question.match(/hit\s+\$?([\d,]+)\s*\(HIGH\)/i);
+  const hitLowSuffix = question.match(/hit\s+\$?([\d,]+)\s*\(LOW\)/i);
   // "settle at >$84"
   const settleAbove = question.match(/settle\s+at\s*>\s*\$?([\d,]+)/i);
   // "settle at $63-$70" (range bucket — use midpoint)
@@ -402,6 +410,8 @@ function parseStrike(question: string): { strike: number; direction: "above" | "
 
   if (highMatch) return { strike: parseFloat(highMatch[1].replace(/,/g, "")), direction: "above" };
   if (lowMatch) return { strike: parseFloat(lowMatch[1].replace(/,/g, "")), direction: "below" };
+  if (hitHighSuffix) return { strike: parseFloat(hitHighSuffix[1].replace(/,/g, "")), direction: "above" };
+  if (hitLowSuffix) return { strike: parseFloat(hitLowSuffix[1].replace(/,/g, "")), direction: "below" };
   if (settleAbove) return { strike: parseFloat(settleAbove[1].replace(/,/g, "")), direction: "above" };
   if (settleGt) return { strike: parseFloat(settleGt[1].replace(/,/g, "")), direction: "above" };
   if (settleLt) return { strike: parseFloat(settleLt[1].replace(/,/g, "")), direction: "below" };
@@ -2081,8 +2091,10 @@ function appendCsvRow(filename: string, headers: string[], row: Record<string, a
 
 function polymarketAssetForSlug(slug: string): string | null {
   if (slug.includes("bitcoin")) return "BTC";
+  if (slug.includes("ethereum")) return "ETH";
   if (slug.includes("hyperliquid")) return "HYPE";
   if (slug.startsWith("gc-") || slug.includes("gold-gc") || slug.includes("xauusd")) return "GOLD";
+  if (slug.startsWith("spx-") || slug.includes("s-p-500") || slug.includes("sp-500")) return "SPY";
   if (slug.startsWith("cl-") || slug.includes("wti") || slug.includes("crude-oil")) return "OIL";
   if (slug.includes("amazon")) return "AMZN";
   return null;
@@ -2159,6 +2171,8 @@ function writeSnapshot(
   let amznFwd: number | null = null;
   if (opts.AMZN && amznIv90) amznFwd = computeForwardFromOptions(opts.AMZN.chains, amznStock!, amznIv90.expiry);
   const amznBasis = amznHlPerp && amznStock ? ((amznHlPerp / amznStock) - 1) * 100 : null;
+  const ethSpot = hl.ETH?.markPx ?? null;
+  const spySpot = opts.SPY?.underlyingPrice ? opts.SPY.underlyingPrice * 10 : null;
 
   // OIL must use a crude reference. CBOE symbol CL is Colgate-Palmolive stock, not crude.
   const oilWti = hl["OIL (CL)"]?.markPx ?? null;
@@ -2262,9 +2276,11 @@ function writeSnapshot(
     timestamp: today,
     spots: {
       BTC: r(btcSpot, 6),
+      ETH: r(ethSpot, 6),
       HYPE: r(hypeSpot, 6),
       GOLD: r(goldGcSpot, 6),
       AMZN: r(amznStock, 6),
+      SPY: r(spySpot, 6),
       OIL: r(oilWti, 6),
     },
     hyperliquid: {
@@ -2275,6 +2291,14 @@ function writeSnapshot(
         bestBid: r(hl.BTC?.bestBid ?? null, 6),
         bestAsk: r(hl.BTC?.bestAsk ?? null, 6),
         spread: r(hl.BTC?.spread ?? null, 6),
+      },
+      ETH: {
+        markPx: r(hl.ETH?.markPx ?? null, 6),
+        fundingAnnualized: r(hl.ETH?.fundingAnnualized ?? null, 6),
+        openInterestUsd: r(hl.ETH?.openInterestUsd ?? null, 2),
+        bestBid: r(hl.ETH?.bestBid ?? null, 6),
+        bestAsk: r(hl.ETH?.bestAsk ?? null, 6),
+        spread: r(hl.ETH?.spread ?? null, 6),
       },
       HYPE: {
         markPx: r(hl.HYPE?.markPx ?? null, 6),

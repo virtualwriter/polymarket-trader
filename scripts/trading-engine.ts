@@ -51,18 +51,21 @@ const MAX_PM_ENTRY_SPREAD = 0.03;
 const MIN_PM_ENTRY_LIQUIDITY = 1000;
 const ONE_TOUCH_HIGH_EDGE_SIGNAL_NO = "ONE_TOUCH_HIGH_EDGE_NO";
 const ONE_TOUCH_HIGH_EDGE_SIGNAL_YES = "ONE_TOUCH_HIGH_EDGE_YES_SHADOW";
-const ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE = 10;
+const ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE = 15;
 const ONE_TOUCH_HIGH_EDGE_CONVICTION_EDGE = 20;
 const ONE_TOUCH_HIGH_EDGE_HOLD_DAYS = 14;
 const ONE_TOUCH_MODEL_VERSION = "relative_value_heatmap_v2_one_touch";
 const ONE_TOUCH_STRICT_BAD_FLAGS = new Set([
   "wide_pm_spread",
   "low_pm_liquidity",
-  "extreme_perp_funding",
   "above_underlying_cap",
   "near_underlying_cap_bullish",
   "missing_options_iv",
   "no_listed_options_mapping",
+]);
+const ONE_TOUCH_BUY_YES_BAD_FLAGS = new Set([
+  ...ONE_TOUCH_STRICT_BAD_FLAGS,
+  "extreme_perp_funding",
 ]);
 const HYPOTHESIS_SHADOW_TESTS_REQUIRED = 20;
 const HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT = 25;
@@ -1061,7 +1064,11 @@ function normalizeSignalWeight(weight: SignalWeight): SignalWeight {
 }
 
 function loadWeights(): SignalWeight[] {
-  return readJson<SignalWeight[]>("signal-weights.json", defaultWeights()).map(normalizeSignalWeight);
+  const defaults = defaultWeights();
+  const saved = readJson<SignalWeight[]>("signal-weights.json", []);
+  const byType = new Map(defaults.map((weight) => [weight.type, weight]));
+  for (const weight of saved) byType.set(weight.type, weight);
+  return Array.from(byType.values()).map(normalizeSignalWeight);
 }
 
 function saveWeights(w: SignalWeight[]) {
@@ -1252,8 +1259,8 @@ function formatTargetPct(targetPct: number | null): string {
 
 function getAssetPrice(row: SnapshotRow, asset: string): number | null {
   const map: Record<string, string> = {
-    BTC: "btc_spot", HYPE: "hype_spot", GOLD: "gold_gc_spot",
-    AMZN: "amzn_stock", OIL: "oil_wti_spot",
+    BTC: "btc_spot", ETH: "eth_spot", HYPE: "hype_spot", GOLD: "gold_gc_spot",
+    AMZN: "amzn_stock", SPY: "spy_spot", OIL: "oil_wti_spot",
   };
   const v = row[map[asset] ?? ""];
   return typeof v === "number" && v > 0 ? v : null;
@@ -1262,9 +1269,11 @@ function getAssetPrice(row: SnapshotRow, asset: string): number | null {
 function getHyperliquidPerpPrice(row: SnapshotRow, asset: string): number | null {
   const map: Record<string, string> = {
     BTC: "btc_spot",
+    ETH: "eth_spot",
     HYPE: "hype_spot",
     GOLD: "gold_gc_spot",
     AMZN: "amzn_hl_perp",
+    SPY: "spy_spot",
     OIL: "oil_wti_spot",
   };
   const v = row[map[asset] ?? ""];
@@ -1274,6 +1283,7 @@ function getHyperliquidPerpPrice(row: SnapshotRow, asset: string): number | null
 function getHyperliquidFundingAnnualized(row: SnapshotRow, asset: string): number | null {
   const map: Record<string, string> = {
     BTC: "btc_hl_funding_ann",
+    ETH: "eth_hl_funding_ann",
     HYPE: "hype_hl_funding_ann",
     GOLD: "gold_hl_funding_ann",
     AMZN: "amzn_hl_funding_ann",
@@ -1287,10 +1297,14 @@ function preferredPolymarketEventSlugs(asset: string): string[] {
   switch (asset) {
     case "BTC":
       return ["what-price-will-bitcoin-hit-before-2027"];
+    case "ETH":
+      return ["what-price-will-ethereum-hit-before-2027"];
     case "HYPE":
       return ["what-price-will-hyperliquid-hit-before-2027"];
     case "GOLD":
       return ["gc-over-under-jun-2026", "gc-hit-jun-2026", "what-will-gold-gc-hit-by-end-of-december"];
+    case "SPY":
+      return ["spx-hit-jun-2026", "spx-hit-dec-2026"];
     case "OIL":
       return ["cl-over-under-jun-2026", "cl-hit-jun-2026"];
     default:
@@ -1825,9 +1839,11 @@ interface AssetPromptColumns {
 function assetPromptColumns(asset: string): AssetPromptColumns {
   const map: Record<string, AssetPromptColumns> = {
     BTC: { spot: "btc_spot", pmEv: "btc_pm_ev", pmIv: "btc_pm_iv", funding: "btc_hl_funding_ann", pcRatio: "btc_ibit_pc_ratio" },
+    ETH: { spot: "eth_spot", optIv30: "eth_opt_iv_30d", optIv90: "eth_opt_iv_90d", funding: "eth_hl_funding_ann", pcRatio: "eth_pc_ratio" },
     HYPE: { spot: "hype_spot", pmEv: "hype_pm_ev", pmIv: "hype_pm_iv", funding: "hype_hl_funding_ann" },
     GOLD: { spot: "gold_gc_spot", pmEv: "gold_pm_settle_ev", pmIv: "gold_pm_iv", optIv30: "gold_opt_iv_30d", optIv90: "gold_opt_iv_90d", funding: "gold_hl_funding_ann", pcRatio: "gold_gld_pc_ratio" },
     AMZN: { spot: "amzn_stock", hlPerp: "amzn_hl_perp", optIv30: "amzn_opt_iv_30d", optIv90: "amzn_opt_iv_90d", funding: "amzn_hl_funding_ann", pcRatio: "amzn_pc_ratio" },
+    SPY: { spot: "spy_spot", optIv30: "spy_opt_iv_30d", optIv90: "spy_opt_iv_90d", pcRatio: "spy_pc_ratio" },
     OIL: { spot: "oil_wti_spot", pmEv: "oil_pm_settle_ev", pmIv: "oil_pm_iv", optIv30: "oil_opt_iv_30d", optIv90: "oil_opt_iv_90d", funding: "oil_hl_funding_ann", pcRatio: "oil_cl_pc_ratio" },
   };
   return map[asset] ?? {};
@@ -2336,7 +2352,8 @@ function strictOneTouchHighEdgeEligible(row: RelativeValueObservation): boolean 
   if (row.edgePts === null || Math.abs(row.edgePts) < ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE) return false;
   if (row.bestExpression !== "sell_yes_or_buy_no" && row.bestExpression !== "buy_yes") return false;
   const flags = relativeValueFlagSet(row);
-  return !Array.from(ONE_TOUCH_STRICT_BAD_FLAGS).some((flag) => flags.has(flag));
+  const badFlags = row.bestExpression === "buy_yes" ? ONE_TOUCH_BUY_YES_BAD_FLAGS : ONE_TOUCH_STRICT_BAD_FLAGS;
+  return !Array.from(badFlags).some((flag) => flags.has(flag));
 }
 
 function buildOneTouchHighEdgeShadowPosition(
@@ -2445,7 +2462,7 @@ function recordOneTouchHighEdgeShadows(
   return recorded;
 }
 
-const ONE_TOUCH_HIGH_EDGE_LIVE_ASSETS = new Set(["BTC", "OIL"]);
+const ONE_TOUCH_HIGH_EDGE_LIVE_ASSETS = new Set(["BTC", "ETH", "OIL", "SPY"]);
 
 function generateOneTouchHighEdgeNoSignals(
   rows: RelativeValueObservation[],
@@ -5269,7 +5286,7 @@ async function main() {
   const oneTouchHighEdgeNoLiveSignals = generateOneTouchHighEdgeNoSignals(relativeValueRows, weights, learningParams, latestSnapshot);
   const oneTouchHighEdgeLiveCoveredKeys = liveOneTouchHighEdgeNoKeys(oneTouchHighEdgeNoLiveSignals);
   if (oneTouchHighEdgeNoLiveSignals.length > 0) {
-    console.log(`\n  Generated ${oneTouchHighEdgeNoLiveSignals.length} one-touch high-edge NO live signals (BTC/OIL, |edge|>=10, strict).`);
+    console.log(`\n  Generated ${oneTouchHighEdgeNoLiveSignals.length} one-touch high-edge NO live signals (${Array.from(ONE_TOUCH_HIGH_EDGE_LIVE_ASSETS).join("/")}, |edge|>=${ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE}, strict).`);
   }
   const newOneTouchHighEdgeShadows = recordOneTouchHighEdgeShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals, oneTouchHighEdgeLiveCoveredKeys);
   if (newOneTouchHighEdgeShadows > 0) {

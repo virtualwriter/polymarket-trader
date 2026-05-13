@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-13T21:28:07.223Z",
+  "generatedAt": "2026-05-13T21:42:43.056Z",
   "dataFreshness": {
     "valuationRows": 356,
     "latestValuationAt": "2026-05-13T21",
     "macroRows": 356,
-    "instrumentSnapshots": 12,
+    "instrumentSnapshots": 4,
     "latestInstrumentSnapshotAt": "2026-05-13T21"
   },
   "portfolio": {
-    "cash": 98.0711,
-    "openPositions": 1,
+    "cash": 97.0711,
+    "openPositions": 2,
     "realizedPnl": 0.0711,
     "totalTrades": 124,
     "winRatePct": 52.4,
-    "unrealizedPnl": -0.0005
+    "unrealizedPnl": -0.0011
   },
   "openPositions": [
     {
@@ -22,15 +22,32 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.05,
-      "currentPrice": 96.95,
-      "underlyingPrice": 96.95,
+      "pnlPct": -0.09,
+      "currentPrice": 96.91,
+      "underlyingPrice": 96.91,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "oil_wti_spot",
         "oil_cl_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1778707778058-9nsi",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "pnlPct": -0.02,
+      "currentPrice": 4692,
+      "underlyingPrice": 4692,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
       ]
     }
   ],
@@ -159,10 +176,19 @@
       "disabledAssets": [
         "OIL"
       ]
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "enabled": true,
+      "weight": 0.5,
+      "trades": 0,
+      "wins": 0,
+      "avgPnlPct": 0,
+      "disabledAssets": []
     }
   ],
   "blockedSummary": {
-    "openCount": 27,
+    "openCount": 30,
     "resolvedCount": 64,
     "wouldHaveWon": 28,
     "wouldHaveLost": 36,
@@ -382,22 +408,6 @@
         "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
         "asset": "GOLD",
         "blockedReason": "manual_shadow_trade",
-        "instrumentLabel": "gc-hit-jun-2026 — YES — Will Gold (GC) hit (LOW) $4,300 by end of June?",
-        "marketQuality": {
-          "yesBid": 0.34,
-          "yesAsk": 0.38,
-          "yesSpread": 0.04,
-          "liquidity": 1509.53,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "Manual user IV-touch shadow signal: PM YES 36.0% vs IV touch model 55.8%; edge +17.8 pts. Exclude from official live-trader performance until validated."
-      },
-      {
-        "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
-        "asset": "GOLD",
-        "blockedReason": "manual_shadow_trade",
         "instrumentLabel": "gc-hit-jun-2026 — YES — Will Gold (GC) hit (LOW) $4,400 by end of June?",
         "marketQuality": {
           "quoteSource": "live_clob",
@@ -510,6 +520,54 @@
           ]
         },
         "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 11.3pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
+      },
+      {
+        "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
+        "asset": "GOLD",
+        "blockedReason": "polymarket_proxy_short",
+        "instrumentLabel": "gc-over-under-jun-2026 — NO — Will Gold (GC) settle over $6,500 on the final trading day of June 2026?",
+        "marketQuality": {
+          "yesBid": 0.017,
+          "yesAsk": 0.032,
+          "yesSpread": 0.015,
+          "liquidity": 1000.41,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[PM PROXY SHORT SHADOW] Real GOLD short via hyperliquid/hl_perp (FUNDING_EXTREME_LONG). Track buying NO on the comparable Polymarket upside contract."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+        "asset": "SPY",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "spx-hit-dec-2026 — YES — Will S&P 500 (SPX) hit $8,200 (HIGH) in December?",
+        "marketQuality": {
+          "yesBid": 0.21,
+          "yesAsk": 0.23,
+          "yesSpread": 0.02,
+          "liquidity": 2537.55,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 20.9pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+        "asset": "SPY",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "spx-hit-jun-2026 — YES — Will S&P 500 (SPX) hit $7,700 (HIGH) in June?",
+        "marketQuality": {
+          "yesBid": 0.271,
+          "yesAsk": 0.345,
+          "yesSpread": 0.074,
+          "liquidity": 4269.87,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 18.8pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
       }
     ]
   },
