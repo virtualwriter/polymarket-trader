@@ -41,6 +41,21 @@ const UNDERLYING_CAP_ENTRY_MAX_SPREAD = 0.02;
 const UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY = 1000;
 const UNDERLYING_CAP_BUY_NO_RATIO = 1.03;
 const UNDERLYING_CAP_BUY_YES_RATIO = 0.35;
+const ONE_TOUCH_HIGH_EDGE_SIGNAL_NO = "ONE_TOUCH_HIGH_EDGE_NO";
+const ONE_TOUCH_HIGH_EDGE_SIGNAL_YES = "ONE_TOUCH_HIGH_EDGE_YES_SHADOW";
+const ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE = 10;
+const ONE_TOUCH_HIGH_EDGE_CONVICTION_EDGE = 20;
+const ONE_TOUCH_HIGH_EDGE_HOLD_DAYS = 14;
+const ONE_TOUCH_MODEL_VERSION = "relative_value_heatmap_v2_one_touch";
+const ONE_TOUCH_STRICT_BAD_FLAGS = new Set([
+  "wide_pm_spread",
+  "low_pm_liquidity",
+  "extreme_perp_funding",
+  "above_underlying_cap",
+  "near_underlying_cap_bullish",
+  "missing_options_iv",
+  "no_listed_options_mapping",
+]);
 const HYPOTHESIS_SHADOW_TESTS_REQUIRED = 20;
 const HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT = 25;
 const PROMOTE_THRESHOLD = 0.65;
@@ -282,7 +297,7 @@ interface BlockedSignalShadow {
   status: "open" | "resolved" | "cancelled";
   blockedAt: string;
   resolvedAt?: string;
-  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short" | "relative_value_heatmap" | "monotonic_arb_shadow";
+  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short" | "relative_value_heatmap" | "monotonic_arb_shadow" | "one_touch_high_edge_shadow";
   signalType: string;
   asset: string;
   venue: Signal["venue"];
@@ -378,8 +393,10 @@ interface StatObservation {
 
 interface RelativeValueObservation {
   timestamp: string;
+  modelVersion: string;
   asset: string;
   eventSlug: string;
+  marketId: string;
   question: string;
   contractMonth: string;
   direction: "above" | "below";
@@ -560,8 +577,10 @@ function readRelativeValueObservations(limit = 30): RelativeValueObservation[] {
       if (edgePts === null && capRatio === null) return null;
       return {
         timestamp: row.timestamp ?? "",
+        modelVersion: row.model_version ?? "",
         asset: row.asset ?? "",
         eventSlug: row.event_slug ?? "",
+        marketId: row.market_id ?? "",
         question: row.contract_question ?? "",
         contractMonth: row.contract_month ?? "",
         direction,
@@ -2027,6 +2046,123 @@ function recordMonotonicArbShadows(
   return recorded;
 }
 
+function relativeValueFlagSet(row: RelativeValueObservation): Set<string> {
+  return new Set(row.flags.split(";").map((flag) => flag.trim()).filter(Boolean));
+}
+
+function strictOneTouchHighEdgeEligible(row: RelativeValueObservation): boolean {
+  if (row.modelVersion !== ONE_TOUCH_MODEL_VERSION) return false;
+  if (!row.marketId || !row.eventSlug) return false;
+  if (row.edgePts === null || Math.abs(row.edgePts) < ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE) return false;
+  if (row.bestExpression !== "sell_yes_or_buy_no" && row.bestExpression !== "buy_yes") return false;
+  const flags = relativeValueFlagSet(row);
+  return !Array.from(ONE_TOUCH_STRICT_BAD_FLAGS).some((flag) => flags.has(flag));
+}
+
+function buildOneTouchHighEdgeShadowPosition(
+  row: RelativeValueObservation,
+  latestRow: SnapshotRow,
+  latestSnapshot: InstrumentSnapshotFile,
+): Position | null {
+  const event = latestSnapshot.polymarket.find((candidate) => candidate.slug === row.eventSlug);
+  const contract = event?.contracts.find((candidate) => candidate.marketId === row.marketId);
+  if (!event || !contract) return null;
+
+  const instrumentType: "pm_yes" | "pm_no" = row.bestExpression === "buy_yes" ? "pm_yes" : "pm_no";
+  const entryPrice = polymarketEntryPrice(contract, instrumentType);
+  if (entryPrice <= 0 || entryPrice >= 1) return null;
+
+  const openedAt = new Date().toISOString();
+  const expiryDate = new Date(openedAt);
+  expiryDate.setDate(expiryDate.getDate() + ONE_TOUCH_HIGH_EDGE_HOLD_DAYS);
+
+  const highConviction = Math.abs(row.edgePts ?? 0) >= ONE_TOUCH_HIGH_EDGE_CONVICTION_EDGE;
+  const sideLabel = instrumentType === "pm_no" ? "NO" : "YES";
+  const signalType = instrumentType === "pm_no" ? ONE_TOUCH_HIGH_EDGE_SIGNAL_NO : ONE_TOUCH_HIGH_EDGE_SIGNAL_YES;
+  const underlyingPrice = getAssetPrice(latestRow, row.asset) ?? latestSnapshot.spots[row.asset] ?? row.strike;
+  return {
+    id: `OT-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    openedAt,
+    asset: row.asset,
+    venue: "polymarket",
+    direction: instrumentType === "pm_no" ? "short" : "long",
+    entryPrice,
+    currentPrice: entryPrice,
+    size: TRADE_SIZE,
+    leverage: 1,
+    signalType,
+    hypothesisId: null,
+    thesis: `[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch ${sideLabel} ${Math.abs(row.edgePts ?? 0).toFixed(1)}pt edge on ${row.asset}; hold ${ONE_TOUCH_HIGH_EDGE_HOLD_DAYS}d to test high-edge repricing. ${instrumentType === "pm_no" ? "NO prioritized by backtest." : "YES tracked separately as weaker exploratory side."}${highConviction ? " Edge >=20pt: higher-conviction bucket, monitor concentration." : ""}`,
+    targetPct: null,
+    stopPct: 100,
+    expiryDate: expiryDate.toISOString(),
+    instrumentType,
+    instrumentId: `${event.slug}::${contract.marketId}`,
+    instrumentLabel: `${event.slug} — ${sideLabel} — ${contract.question}`,
+    entryUnderlyingPrice: underlyingPrice,
+    currentUnderlyingPrice: underlyingPrice,
+    fundingPnlAccrued: 0,
+  };
+}
+
+function recordOneTouchHighEdgeShadows(
+  relativeValueRows: RelativeValueObservation[],
+  latestRow: SnapshotRow,
+  latestSnapshot: InstrumentSnapshotFile | null,
+  learningParams: LearningParams,
+  blockedSignals: BlockedSignalShadow[],
+): number {
+  if (!latestSnapshot) return 0;
+  const today = new Date().toISOString().slice(0, 10);
+  const candidates = relativeValueRows
+    .filter(strictOneTouchHighEdgeEligible)
+    .sort((a, b) => {
+      const sideRank = (row: RelativeValueObservation) => row.bestExpression === "sell_yes_or_buy_no" ? 1 : 0;
+      return sideRank(b) - sideRank(a) || Math.abs(b.edgePts ?? 0) - Math.abs(a.edgePts ?? 0);
+    });
+  const seenThisRun = new Set<string>();
+  let recorded = 0;
+
+  for (const row of candidates) {
+    const position = buildOneTouchHighEdgeShadowPosition(row, latestRow, latestSnapshot);
+    if (!position || !position.instrumentId) continue;
+    const dedupKey = `${position.signalType}|${position.instrumentId}`;
+    if (seenThisRun.has(dedupKey)) continue;
+    seenThisRun.add(dedupKey);
+    if (blockedSignals.some((shadow) =>
+      shadow.signalType === position.signalType &&
+      shadow.position.instrumentId === position.instrumentId &&
+      (shadow.status === "open" || shadow.blockedAt.slice(0, 10) === today)
+    )) continue;
+
+    blockedSignals.push({
+      id: position.id,
+      status: "open",
+      blockedAt: position.openedAt,
+      blockedReason: "one_touch_high_edge_shadow",
+      signalType: position.signalType,
+      asset: row.asset,
+      venue: "polymarket",
+      direction: position.direction,
+      confidence: Math.abs(row.edgePts ?? 0) >= ONE_TOUCH_HIGH_EDGE_CONVICTION_EDGE ? 0.7 : 0.5,
+      thesis: position.thesis,
+      marketQuality: polymarketMarketQuality(position, latestSnapshot),
+      learningParamsSnapshot: {
+        macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+        contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
+        positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
+        llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
+        momentumLongExpiryDays: learningParams.momentumLongExpiryDays,
+        signalRisk: learningParams.signalRisk,
+      },
+      position,
+    });
+    recorded++;
+  }
+
+  return recorded;
+}
+
 function isNestedLadderEvent(slug: string, title = ""): boolean {
   const haystack = `${slug} ${title}`.toLowerCase();
   if (haystack.includes("settle") || haystack.includes("final trading day") || haystack.includes("over-under")) return false;
@@ -2085,7 +2221,7 @@ function resolveBlockedSignalShadows(
     const mark = markPosition(shadow.position, latestRow, snapshots, true);
     if (!mark) continue;
 
-    const expiryOnlyShadow = shadow.blockedReason === "manual_shadow_trade";
+    const expiryOnlyShadow = shadow.blockedReason === "manual_shadow_trade" || shadow.blockedReason === "one_touch_high_edge_shadow";
     let closeReason: ClosedTrade["closeReason"] | null = null;
     if (!expiryOnlyShadow && shadow.position.targetPct !== null && mark.pnlPct >= shadow.position.targetPct) closeReason = "target";
     else if (!expiryOnlyShadow && mark.pnlPct <= -shadow.position.stopPct) closeReason = "stop";
@@ -2258,6 +2394,15 @@ function blockedSignalObservations(summary: BlockedSignalLearningSummary): strin
         notes.push(`MONOTONIC_ARB setup category has execution/model breaks: ${row.wouldHaveLost}/${row.resolved} shadow packages lost money despite locked-edge screening, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
       } else {
         notes.push(`MONOTONIC_ARB setup category is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadow packages, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
+      }
+    } else if (row.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO || row.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_YES) {
+      const side = row.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO ? "NO-priority" : "YES exploratory";
+      if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
+        notes.push(`${side} one-touch high-edge shadow is validating: ${row.wouldHaveWon}/${row.resolved} 14d shadows won, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
+      } else if (row.wouldHaveLost >= row.wouldHaveWon + 2) {
+        notes.push(`${side} one-touch high-edge shadow is weak: ${row.wouldHaveLost}/${row.resolved} 14d shadows lost, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
+      } else {
+        notes.push(`${side} one-touch high-edge shadow is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
       }
     } else if (row.signalType.startsWith("USER_")) {
       if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
@@ -3991,6 +4136,7 @@ function writeJournalEntry(
         ? "Missing downside leg"
         : shadow.blockedReason === "polymarket_proxy_short" ? "PM proxy short"
         : shadow.blockedReason === "relative_value_heatmap" ? "Relative-value heatmap"
+        : shadow.blockedReason === "one_touch_high_edge_shadow" ? "One-touch high-edge"
         : shadow.blockedReason === "manual_shadow_trade" ? "Manual shadow" : "Blocked";
       lines.push(`- ${emoji} ${label}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${shadow.closeReason} (${shadow.pnlPct >= 0 ? "+" : ""}${shadow.pnlPct.toFixed(2)}%)`);
     }
@@ -4203,7 +4349,7 @@ async function main() {
   // Step 1: Mark-to-market and close positions
   const latestRow = valRows[valRows.length - 1];
   const latestSnapshot = latestInstrumentSnapshot(instrumentSnapshots);
-  const relativeValueRows = readRelativeValueObservations(30);
+  const relativeValueRows = readRelativeValueObservations(250);
   const closedTrades = markToMarket(portfolio, latestRow, instrumentSnapshots);
   if (closedTrades.length > 0) {
     console.log(`\n  Closed ${closedTrades.length} positions:`);
@@ -4256,6 +4402,7 @@ async function main() {
         ? "Missing downside leg"
         : shadow.blockedReason === "polymarket_proxy_short" ? "PM proxy short"
         : shadow.blockedReason === "relative_value_heatmap" ? "Relative-value heatmap"
+        : shadow.blockedReason === "one_touch_high_edge_shadow" ? "One-touch high-edge"
         : shadow.blockedReason === "monotonic_arb_shadow" ? "Monotonic arb"
         : shadow.blockedReason === "manual_shadow_trade" ? "Manual shadow" : "Blocked";
       console.log(`    ${emoji} ${shadowLabel}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${result.closeReason}: ${result.pnlPct >= 0 ? "+" : ""}${result.pnlPct.toFixed(2)}%`);
@@ -4264,6 +4411,10 @@ async function main() {
   const newMonotonicArbShadows = recordMonotonicArbShadows(latestRow, latestSnapshot, learningParams, blockedSignals);
   if (newMonotonicArbShadows > 0) {
     console.log(`\n  Opened ${newMonotonicArbShadows} monotonic-arb shadow package trades.`);
+  }
+  const newOneTouchHighEdgeShadows = recordOneTouchHighEdgeShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals);
+  if (newOneTouchHighEdgeShadows > 0) {
+    console.log(`\n  Opened ${newOneTouchHighEdgeShadows} one-touch high-edge shadow trades.`);
   }
   let proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   let blockedSummary = summarizeBlockedSignals(blockedSignals);
