@@ -8184,3 +8184,52 @@ No new trades opened. Cash position will be ~$98 after closing the OIL long. Wai
 
 ---
 
+### 2026-05-13 19:29 UTC
+
+**Portfolio:** $99.07 total | Cash $98.07 | 1 open | P&L $0.0713 | 53% win rate (123 trades)
+
+**Closed 1 trades:**
+- ❌ OIL long via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT) → llm_decision: $-0.0008 (-0.1%, market -0.0008, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL long @ $97.02 via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT)
+
+**Signal weight changes:**
+- ⚠ FUNDING_EXTREME_SHORT accuracy dropped to 42% over 19 trades. Weight reduced to 0.48.
+- 🛑 FUNDING_EXTREME_SHORT on OIL DISABLED — 5/13 wins is below per-asset kill threshold.
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -394.49 is -3.9 std devs from mean since 2026-04-28 (-33.52 ± 93.25)
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.70
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+Session 2026-05-13T19. Primary action: closing the OIL long position. The FUNDING_EXTREME_SHORT signal family (44% win rate, -0.41% avg P&L) is negative-expectation, and the signal-family evidence metrics confirm the thesis is not playing out — spot moved -0.08% against us and funding moved further negative from -378% to -394% annualized. The crowded short is intensifying, not unwinding. Closing is correct risk management.
+
+Key macro observations: Fed_score at 9-10 is the most hawkish reading in the dataset. Macro_composite at 45, down from 53 on May 7. Expected cuts dropped from 1.1 to 0.8. BTC-OIL correlation flipped to -0.70, a classic risk-off decoupling signal. In this environment, contrarian commodity longs face headwinds from both macro and carry.
+
+BTC IBIT P/C ratio surged to 0.686-0.702, the highest in the dataset, while BTC spot pulled back from ~81k to ~79.4k. This elevated put/call ratio indicates significant hedging demand but is NOT the call-exhaustion signal described in H-522 (which requires P/C in the bottom quartile). The current elevated P/C could paradoxically be a contrarian bullish signal if the hedging demand is excessive, but with only 0 variant tests on H-522 and the backlog at 13 families needing tests, no new trade is warranted.
+
+HYPE OI has declined from 843M to 807M (4.3% decline from peak) while spot is at 39.1. The deceleration pattern in H-084 is playing out. No actionable trade given the macro headwinds.
+
+Gold PM settle EV at 5087 vs spot 4690 (397pt premium) continues to persist. This appears to be a structural feature of the PM settlement market rather than a near-term convergence trade.
+
+SignalRisk update: Tightening FUNDING_EXTREME_SHORT target from 4% to 3.5% and stop from 2.5% to 2.0%. The signal has 44% win rate and -0.41% avg P&L. Tighter stops reduce the damage from losing trades while the signal family is underperforming. This is incremental and evidence-based.
+
+No new hypotheses proposed per backlog discipline — 13 setup families still need condition-triggered shadow tests. Maintaining focus on reviewing existing families. Cash position ~$98 after closing OIL long. Waiting for higher-conviction setups, particularly PC_RATIO_EXTREME_HIGH (78% win rate) or promoted hypothesis conditions.
+
+---
+
