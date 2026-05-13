@@ -2661,7 +2661,7 @@ function generateSignals(
           type: "FUNDING_EXTREME_SHORT", asset: a.key, venue: "hyperliquid", direction: "long",
           strength, confidence: strength * w.weight,
           thesis: `${a.key} HL funding ${funding.toFixed(1)}% annualized — crowded shorts. Buy.`,
-          hypothesisId: null, entryPrice: perpEntry, targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 3, leverage: 1,
+          hypothesisId: null, entryPrice: perpEntry, targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 7, leverage: 1,
         }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
       }
