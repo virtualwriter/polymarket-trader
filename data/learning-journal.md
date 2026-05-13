@@ -8089,3 +8089,52 @@ Gold P/C ratio at 0.594-0.611 is the highest in the dataset. This is a dramatic 
 
 ---
 
+### 2026-05-13 17:29 UTC
+
+**Portfolio:** $99.08 total | Cash $98.08 | 1 open | P&L $0.0781 | 54% win rate (121 trades)
+
+**Closed 2 trades:**
+- ❌ GOLD long via polymarket/pm_yes [gc-over-under-jun-2026 — YES — Will Gold (GC) settle over $4,800 on the final trading day of June 2026?] (OPT_IV_GT_PM_IV) → stop: $-0.1379 (-13.8%, market -0.1379, funding 0.0000)
+- ✅ OIL long via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH) → llm_decision: +$0.0061 (0.6%, market 0.0061, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL long @ $97.68 via hyperliquid/hl_perp [HL OIL perp] (FUNDING_EXTREME_SHORT)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved wider by 8.0pp (was -9.2, now -1.2)
+- [anomaly] oil_hl_funding_ann = -355.28 is -3.7 std devs from mean since 2026-04-28 (-30.08 ± 86.91)
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.71
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+2026-05-13T17 UTC. Primary action: closing the OIL long position. The PC_RATIO_EXTREME_HIGH signal (75% win rate, avg +1.07%) triggered this trade on the thesis that extreme put buying (P/C at 1.84) was a contrarian bullish signal. However, the thesis has inverted: oil_pm_settle_ev at ~87 is now ~10 points BELOW spot at ~97, meaning the PM market — which aggregates informed views on settlement — is pricing oil significantly lower than current spot. This is a structural bearish signal that overrides the funding carry argument. The original setup assumed PM would converge upward toward spot; instead spot may converge downward toward PM. Closing proactively is the correct risk management decision.
+
+Macro regime is the dominant theme this session. Fed_score at 9 is the most hawkish reading in the entire dataset. Macro composite at 45 (down from 53 on May 7). Fed expected cuts dropped from 1.1 to 0.8. BTC-OIL correlation flipped from +0.22 to -0.71, which is a classic risk-off decoupling signal. In this environment, contrarian longs in risk assets face significant headwinds.
+
+BTC at 79k is holding above the 75k range but IBIT P/C has risen from 0.454 to 0.561-0.599, indicating increasing hedging demand. BTC PM IV at 36.5-38.7% remains compressed relative to options IV at 37.5-38.7%, but the compression is less extreme than prior sessions. The promoted H-523 (BTC PM IV compression) is correctly dormant — the z-score condition requires bottom 20th percentile which may not be met at current levels.
+
+HYPE OI has declined from 957M peak to ~806M (16% decline). The killed HYPE institutional distribution family (H-508 through H-520) was correctly killed at 19% win rate. The promoted H-521 (HYPE breakout continuation) is correctly dormant — OI is near lows, not top 15%, and spot is ~6% below 7d high.
+
+Blocked signal learning update: FUNDING_EXTREME_LONG trend filter has now blocked 5/7 profitable trades (avg +1.02%). This is a meaningful pattern but with only 7 resolved samples, maintaining current filter. Will flag for review at 10+ resolved samples. The recent blocked AMZN short (+2.97%) and GOLD short (+0.64%) both would have been profitable, suggesting the trend filter may be too conservative for funding-carry trades specifically.
+
+No new hypotheses proposed — backlog has 13 setup families needing more tests and 12 pending. Maintaining discipline on hypothesis generation.
+
+Gold P/C ratio at 0.507-0.594 is elevated (highest in dataset), suggesting defensive gold positioning. Gold PM settle EV at 5007-5071 vs spot at 4667-4727 represents a persistent 300-400pt premium. This is interesting but gold PM contracts have wide spreads and low liquidity making execution impractical. The OPT_IV_GT_PM_IV_DOWNSIDE blocked shadow that recently resolved as a loss (-26.44%) on a wide-spread gold PM contract reinforces the importance of the spread/liquidity filter.
+
+Oil structural distortion continues: Brent-WTI spread at 4.7-6.2 (compressed from historical 15-25 range), oil_hl_funding_ann at -327 to -430% (extreme negative), oil_cl_pc_ratio at 1.123-1.922 (elevated). The oil complex remains structurally broken and the LLM_HYPOTHESIS signal is correctly disabled for OIL. No oil trades warranted.
+
+---
+
