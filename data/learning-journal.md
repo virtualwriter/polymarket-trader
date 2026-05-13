@@ -7998,3 +7998,46 @@ Session 2026-05-12T18: Key observations:
 
 ---
 
+### 2026-05-13 15:44 UTC
+
+**Portfolio:** $99.22 total | Cash $98.22 | 1 open | P&L $0.2207 | 54% win rate (118 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 9.0pp (was -8.4, now 0.6)
+- [anomaly] oil_hl_funding_ann = -332.32 is -3.7 std devs from mean since 2026-04-28 (-27.01 ± 81.61)
+- [anomaly] oil_cl_pc_ratio = 1.922 is 2.7 std devs from mean since 2026-04-28 (1.09 ± 0.30)
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.72
+
+**Blocked signal learning:**
+- Open blocked shadows: 23
+- Resolved blocked shadows: 63 (28 wins / 35 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: FUNDING_EXTREME_LONG AMZN short via hyperliquid would have expiry (+2.97%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+
+**LLM analysis:**
+2026-05-13T15 UTC. The dominant theme is macro deterioration: fed_score collapsed to 9 (most hawkish in dataset), macro composite at 45, and BTC-OIL correlation flipped to -0.72. This is a meaningful regime shift — the Fed is signaling no cuts until December at earliest, and the market is pricing only 0.8 expected cuts. Risk assets face a genuine headwind.
+
+OIL RE-ENTRY RATIONALE: The previous OIL long was correctly closed when PM settle EV inverted below spot (thesis invalidated). However, the funding extreme has re-intensified to -332% annualized (-3.7σ), and the P/C ratio has spiked to 1.922 (2.7σ) — the highest combined stress reading in the dataset. The funding carry thesis is compelling: at -332% annualized, longs collect ~0.91%/day in positive carry. The P/C spike suggests panic put buying that historically precedes technical bounces. The key risk is that oil is genuinely declining (macro signal = DECLINING, oil_p_settle_above_current = 33%), so the carry must compensate for potential spot drift. Setting a 4% target / 2.5% stop per FUNDING_EXTREME_SHORT parameters.
+
+BTC ASSESSMENT: BTC at 79,288 is ~2.5% below May 7 highs. IBIT P/C at 0.512 is rising but not at extreme levels. The macro headwinds (hawkish Fed, declining btc_outperform_sp500 to 22.5%) make new BTC longs unattractive. The existing BTC May $95k YES position (H-526 shadow test) is underwater as spot has declined, but the cheap-vs-cap edge remains valid as a long-duration test.
+
+HYPE: OI at 801M represents 16.5% decline from 957M peak. The HYPE distribution setup family was correctly killed at 19% win rate. No reversal signal present — funding steady at +10.95% but OI continues declining. Avoiding.
+
+GOLD P/C SPIKE: gold_gld_pc_ratio at 0.611 is the highest in the dataset (previous range 0.347-0.498). This is a dramatic increase in gold put buying. However, gold PM contracts have wide spreads and low liquidity, making execution difficult. The PC_RATIO_EXTREME_HIGH signal has 75% win rate (6/8) — worth monitoring but execution quality is poor for gold PM.
+
+BLOCKED SIGNAL LEARNING: The FUNDING_EXTREME_LONG trend filter has now blocked 5/7 profitable trades (avg +1.02%). The sample is growing but still small. The key question is whether the trend filter is correctly identifying regime-dependent failures or is systematically too conservative. With only 7 resolved samples, I'm not yet comfortable loosening the filter. Will continue monitoring.
+
+HYPOTHESIS BACKLOG: 13 setup families need more tests with 12 pending. No new hypotheses proposed per instructions. The promoted families (H-521 HYPE breakout, H-523 BTC PM IV compression) are not currently triggering due to the pullback environment — this is appropriate behavior for momentum-continuation setups.
+
+PARAMETER STABILITY: No parameter changes. The current risk parameters are appropriate. The FUNDING_EXTREME_SHORT target of 4% / stop of 2.5% is well-calibrated for the OIL funding carry trade.
+
+---
+
