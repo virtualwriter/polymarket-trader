@@ -92,6 +92,12 @@ const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
   PROMOTED_HYPOTHESIS: { targetPct: 6, stopPct: 3.5 },
   ONE_TOUCH_HIGH_EDGE_NO: { targetPct: null, stopPct: 100 },
 };
+// Signals whose risk params are dictated by their backtest convention and must not be
+// retuned by the hourly LLM. The LLM's signalRisk schema caps stopPct at 10, which would
+// silently retighten ONE_TOUCH_HIGH_EDGE_NO (held to expiry, deep drawdowns expected)
+// every run. We strip these entries from parameterUpdates.signalRisk before validation
+// and again before applying, so the LLM cannot rewrite them.
+const LLM_LOCKED_SIGNAL_RISK: ReadonlySet<string> = new Set(["ONE_TOUCH_HIGH_EDGE_NO"]);
 const SPOT_LONG_RISK_BY_ASSET: Record<string, SignalRiskParams> = {
   BTC: { targetPct: 3, stopPct: 1.5 },
   AMZN: { targetPct: 3, stopPct: 1.5 },
@@ -941,6 +947,10 @@ function defaultLearningParams(): LearningParams {
 function normalizeSignalRisk(raw: Partial<LearningParams>["signalRisk"]): Record<string, SignalRiskParams> {
   const normalized: Record<string, SignalRiskParams> = {};
   for (const [signalType, defaults] of Object.entries(DEFAULT_SIGNAL_RISK)) {
+    if (LLM_LOCKED_SIGNAL_RISK.has(signalType)) {
+      normalized[signalType] = { ...defaults };
+      continue;
+    }
     const candidate = raw?.[signalType];
     normalized[signalType] = {
       targetPct: candidate?.targetPct === null || typeof candidate?.targetPct === "number" ? candidate.targetPct : defaults.targetPct,
@@ -3890,6 +3900,18 @@ function validateLlmResult(value: unknown): { result: LlmAnalysisResult | null; 
   return { result: null, error: `Schema validation failed: ${issues}` };
 }
 
+function stripLockedSignalRiskUpdates(raw: unknown): void {
+  if (!raw || typeof raw !== "object") return;
+  const root = raw as Record<string, unknown>;
+  const updates = root.parameterUpdates;
+  if (!updates || typeof updates !== "object") return;
+  const signalRisk = (updates as Record<string, unknown>).signalRisk;
+  if (!signalRisk || typeof signalRisk !== "object") return;
+  for (const key of Object.keys(signalRisk as Record<string, unknown>)) {
+    if (LLM_LOCKED_SIGNAL_RISK.has(key)) delete (signalRisk as Record<string, unknown>)[key];
+  }
+}
+
 function parseLlmJson(text: string): { result: LlmAnalysisResult | null; error: string | null; jsonText: string | null } {
   const trimmed = text.trim()
     .replace(/^```(?:json)?\s*/i, "")
@@ -3898,7 +3920,9 @@ function parseLlmJson(text: string): { result: LlmAnalysisResult | null; error: 
   if (!jsonText) return { result: null, error: "No balanced JSON object found in response", jsonText: null };
 
   try {
-    const validation = validateLlmResult(JSON.parse(jsonText));
+    const parsed = JSON.parse(jsonText);
+    stripLockedSignalRiskUpdates(parsed);
+    const validation = validateLlmResult(parsed);
     return { result: validation.result, error: validation.error, jsonText };
   } catch (e: any) {
     return { result: null, error: e.message, jsonText };
@@ -3928,7 +3952,7 @@ async function requestAnthropicText(
     },
     body: JSON.stringify({
       model,
-      max_tokens: 4096,
+      max_tokens: 8192,
       temperature: 0.2,
       messages,
     }),
@@ -4072,6 +4096,7 @@ IMPORTANT RULES:
   - signalRisk.<signal>.stopPct: 0.5 to 10
 - You may update signalRisk when realized wins are too small, losses are too large, or shadow/blocked learning shows a better payoff shape.
 - Keep signalRisk updates incremental and explain them in journalEntry.
+- Do NOT include parameterUpdates.signalRisk entries for these locked signals; their risk is fixed by their backtest convention and any proposed change will be silently dropped: ONE_TOUCH_HIGH_EDGE_NO.
 
 Respond with ONLY valid JSON in this exact format:
 {
@@ -4345,6 +4370,7 @@ function applyLearningParamUpdates(
     const nextSignalRisk = { ...next.signalRisk };
     for (const [signalType, proposed] of Object.entries(updates.signalRisk)) {
       if (!DEFAULT_SIGNAL_RISK[signalType] || !proposed) continue;
+      if (LLM_LOCKED_SIGNAL_RISK.has(signalType)) continue;
       const currentRisk = nextSignalRisk[signalType] ?? DEFAULT_SIGNAL_RISK[signalType];
       const nextRisk = { ...currentRisk };
       if (proposed.targetPct === null) {
