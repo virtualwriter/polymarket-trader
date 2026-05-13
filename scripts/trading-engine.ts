@@ -1676,15 +1676,63 @@ function macroCompositeShiftPts(rows: SnapshotRow[], lookbackHours: number): { s
   };
 }
 
-function openPositionContextColumns(asset: string): string[] {
-  const map: Record<string, string[]> = {
-    BTC: ["btc_spot", "btc_pm_ev", "btc_pm_iv", "btc_hl_funding_ann", "btc_ibit_pc_ratio"],
-    HYPE: ["hype_spot", "hype_pm_ev", "hype_pm_iv", "hype_hl_funding_ann"],
-    GOLD: ["gold_gc_spot", "gold_pm_settle_ev", "gold_pm_iv", "gold_hl_funding_ann", "gold_gld_pc_ratio"],
-    AMZN: ["amzn_stock", "amzn_hl_perp", "amzn_opt_iv_30d", "amzn_hl_funding_ann", "amzn_pc_ratio"],
-    OIL: ["oil_wti_spot", "oil_pm_settle_ev", "oil_pm_iv", "oil_hl_funding_ann", "oil_cl_pc_ratio"],
+interface AssetPromptColumns {
+  spot?: string;
+  pmEv?: string;
+  pmIv?: string;
+  optIv30?: string;
+  optIv90?: string;
+  funding?: string;
+  pcRatio?: string;
+  hlPerp?: string;
+}
+
+function assetPromptColumns(asset: string): AssetPromptColumns {
+  const map: Record<string, AssetPromptColumns> = {
+    BTC: { spot: "btc_spot", pmEv: "btc_pm_ev", pmIv: "btc_pm_iv", funding: "btc_hl_funding_ann", pcRatio: "btc_ibit_pc_ratio" },
+    HYPE: { spot: "hype_spot", pmEv: "hype_pm_ev", pmIv: "hype_pm_iv", funding: "hype_hl_funding_ann" },
+    GOLD: { spot: "gold_gc_spot", pmEv: "gold_pm_settle_ev", pmIv: "gold_pm_iv", optIv30: "gold_opt_iv_30d", optIv90: "gold_opt_iv_90d", funding: "gold_hl_funding_ann", pcRatio: "gold_gld_pc_ratio" },
+    AMZN: { spot: "amzn_stock", hlPerp: "amzn_hl_perp", optIv30: "amzn_opt_iv_30d", optIv90: "amzn_opt_iv_90d", funding: "amzn_hl_funding_ann", pcRatio: "amzn_pc_ratio" },
+    OIL: { spot: "oil_wti_spot", pmEv: "oil_pm_settle_ev", pmIv: "oil_pm_iv", optIv30: "oil_opt_iv_30d", optIv90: "oil_opt_iv_90d", funding: "oil_hl_funding_ann", pcRatio: "oil_cl_pc_ratio" },
   };
-  return [...(map[asset] ?? []), "macro_composite", "fed_score"];
+  return map[asset] ?? {};
+}
+
+function uniqueColumns(columns: Array<string | undefined>): string[] {
+  return [...new Set(columns.filter((column): column is string => !!column))];
+}
+
+function openPositionContextColumns(asset: string): string[] {
+  const columns = assetPromptColumns(asset);
+  return uniqueColumns([
+    columns.spot, columns.hlPerp, columns.pmEv, columns.pmIv, columns.optIv30, columns.optIv90, columns.funding, columns.pcRatio,
+    "macro_composite", "fed_score",
+  ]);
+}
+
+function signalFamilyEvidenceColumns(position: Position): string[] {
+  const columns = assetPromptColumns(position.asset);
+  switch (position.signalType) {
+    case "PC_RATIO_EXTREME_HIGH":
+    case "PC_RATIO_EXTREME_LOW":
+      return uniqueColumns([columns.spot, columns.pcRatio]);
+    case "PM_IV_GT_OPT_IV":
+    case "OPT_IV_GT_PM_IV":
+      return uniqueColumns([columns.spot, columns.pmIv, columns.optIv30, columns.optIv90]);
+    case "FUNDING_EXTREME_LONG":
+    case "FUNDING_EXTREME_SHORT":
+      return uniqueColumns([columns.spot, columns.hlPerp, columns.funding]);
+    case "PM_EV_ABOVE_SPOT":
+    case "PM_EV_BELOW_SPOT":
+      return uniqueColumns([columns.spot, columns.pmEv]);
+    case "MACRO_MOMENTUM_UP":
+    case "MACRO_MOMENTUM_DOWN":
+      return uniqueColumns([columns.spot, "macro_composite", "fed_score"]);
+    case "MOMENTUM_LONG":
+      return uniqueColumns([columns.spot]);
+    default:
+      return uniqueColumns([columns.spot]);
+  }
 }
 
 function formatPromptNumber(value: number): string {
@@ -1717,13 +1765,22 @@ function openPositionContextForLlm(positions: Position[], rows: SnapshotRow[]): 
     const header = `  ${p.asset} ${p.direction} via ${p.venue} / ${p.instrumentType ?? "legacy"} @ ${p.entryPrice} [${p.instrumentLabel ?? "n/a"}] (${p.signalType}) — ${p.thesis.slice(0, 100)}`;
     if (!entryRow) return `${header}\n    Since-open baseline: unavailable (no valuation row at or before ${p.openedAt})`;
 
-    const metricLines = openPositionContextColumns(p.asset)
+    const evidenceColumns = new Set(signalFamilyEvidenceColumns(p));
+    const signalMetricLines = openPositionContextColumns(p.asset)
+      .filter((column) => evidenceColumns.has(column))
       .map((column) => formatSinceOpenMetric(column, entryRow, latestRow))
       .filter((line): line is string => !!line);
-    const metrics = metricLines.length > 0
-      ? metricLines.map((line) => `      ${line}`).join("\n")
+    const contextMetricLines = openPositionContextColumns(p.asset)
+      .filter((column) => !evidenceColumns.has(column))
+      .map((column) => formatSinceOpenMetric(column, entryRow, latestRow))
+      .filter((line): line is string => !!line);
+    const signalMetrics = signalMetricLines.length > 0
+      ? signalMetricLines.map((line) => `      ${line}`).join("\n")
       : "      No comparable asset/macro metrics available.";
-    return `${header}\n    Since-open baseline row: ${entryRow.date}; latest row: ${latestRow.date}\n${metrics}`;
+    const contextMetrics = contextMetricLines.length > 0
+      ? contextMetricLines.map((line) => `      ${line}`).join("\n")
+      : "      No off-thesis context metrics available.";
+    return `${header}\n    Since-open baseline row: ${entryRow.date}; latest row: ${latestRow.date}\n    Signal-family evidence metrics (use for close decisions):\n${signalMetrics}\n    Context-only metrics (do not cite as close evidence unless there is a hard risk breach):\n${contextMetrics}`;
   }).join("\n");
 }
 
@@ -4150,6 +4207,7 @@ IMPORTANT RULES:
 - Treat GOLD/OIL settle-at bucket markets as volatility/tail-shape indicators, not spot EV. Supported aggregate keys: gold_pm_settle_yes_sum_max/min/avg, gold_pm_settle_overround_max/min/avg, gold_pm_settle_tail_yes_max/min/avg, gold_pm_settle_skew_yes_max/min/avg, plus oil_* equivalents. yes_sum/overround measure bucket-price breadth, tail_yes measures total top+bottom tail demand, and skew_yes measures upside minus downside tail demand.
 - Settlement-bucket volatility hypotheses must be replicable across changing ladders: use aggregate bucket metrics from the current active market prices, not hard-coded strikes or price levels. "Top tail" means the highest active settle-at bucket; "bottom tail" means the lowest active settle-at bucket.
 - You may return \"action: close\" to exit an existing open position; use that only when the thesis has clearly weakened or a target/stop is likely stale
+- For close decisions, use each open position's "Signal-family evidence metrics" as the primary evidence. Do not justify closing a P/C-ratio trade with PM EV, funding, macro, or other context-only metrics unless there is a hard portfolio risk breach; if context-only metrics were already present at entry, do not describe them as new evidence.
 - For \"action: close\", set direction to long, short, or any to identify which existing position to close
 - Keep parameter updates inside these bounds:
   - macroMomentum24hThresholdPts: 2 to 20
