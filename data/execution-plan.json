@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-14T22:29:15.118Z",
+  "generatedAt": "2026-05-14T23:29:11.734Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,15 +7,29 @@
   "llmCloses": [],
   "entrySignals": [
     {
+      "type": "PROMOTED_HYPOTHESIS",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.6739130434782609,
+      "confidence": 0.5526086956521739,
+      "thesis": "[PROMOTED HYPE breakout / OI surge momentum via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
+      "hypothesisId": "H-521",
+      "entryPrice": 44.402,
+      "targetPct": 6,
+      "stopPct": 3.5,
+      "expiryDays": 21
+    },
+    {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.7130521806666666,
-      "confidence": 0.3030471767833333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 21.4pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
+      "strength": 0.6835880710000001,
+      "confidence": 0.29052493017500003,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 20.5pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
       "hypothesisId": null,
-      "entryPrice": 81400,
+      "entryPrice": 81261,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -31,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6591255646666667,
-      "confidence": 0.2801283649833333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.8pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6349538136666666,
+      "confidence": 0.2698553708083333,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.0pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 81400,
+      "entryPrice": 81261,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,36 +59,22 @@
         "forceMarketId": "1339767",
         "allowDirectionFallback": false
       }
-    },
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.30714285714285716,
-      "confidence": 0.19248057918959485,
-      "thesis": "GOLD HL funding 25.8% annualized — crowded longs. Fade.",
-      "hypothesisId": null,
-      "entryPrice": 4661,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
     }
   ],
   "rejectedLlmActions": [
     {
       "instruction": {
         "action": "close",
-        "positionId": "T-1778786973532-d1pw",
-        "asset": "HYPE",
-        "venue": "spot",
-        "direction": "long",
+        "positionId": "T-1778794152516-60c7",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "short",
         "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
-          "hype_spot"
+          "gold_gc_spot",
+          "gold_hl_funding_ann"
         ],
-        "thesis": "HYPE spot peaked at 44.471 at entry and has declined to 44.008 (-1.04%). More critically, HYPE HL funding flipped from +10.95% to -8.98% annualized, indicating the crowded long positioning that drove the OI surge is now unwinding. OI declined from the 972M peak to 936M (-3.8%). The PROMOTED_HYPOTHESIS H-521 requires OI in top 15% of 24h range, spot within 6% of 7d high, and normalized funding - the funding flip to negative is a direct thesis invalidation signal per the hypothesis conditions. With the position at -1.04% and approaching the 3.5% stop, closing now preserves capital while the thesis signal has clearly weakened."
+        "thesis": "The FUNDING_EXTREME_LONG short thesis was predicated on 67.52% annualized funding indicating crowded longs. The primary evidence metric gold_hl_funding_ann has collapsed from 67.52% to 12.88% — an 80.9% decline — within 2 hours of entry. The funding normalization that was the thesis trigger has largely completed. Meanwhile spot has moved slightly against the position (+4 pts, -0.09%). With the funding signal exhausted and spot not cooperating, the thesis is invalidated. The FUNDING_EXTREME_LONG setup family has avg P&L of -0.48% on clean live trades, and the blocked shadow learning shows the trend-block was correct in prior instances. Closing to avoid holding a short into a recovering spot with no remaining funding edge."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

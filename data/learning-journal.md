@@ -8997,3 +8997,45 @@ Key session observations: (1) OIL PC_RATIO_EXTREME_HIGH trade (T-1778704145728-s
 
 ---
 
+### 2026-05-14 23:29 UTC
+
+**Portfolio:** $99.09 total | Cash $94.09 | 5 open | P&L $0.0894 | 52% win rate (127 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_gld_pc_ratio = 1.006 is 2.7 std devs from mean (0.53 ± 0.18)
+- [anomaly] hype_hl_oi = 946815529 is 2.4 std devs from mean (826949426.53 ± 49713639.36)
+- [correlation_flip] BTC-OIL correlation shifted from 0.24 to -0.61
+
+**Blocked signal learning:**
+- Open blocked shadows: 48
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key session observations for 2026-05-14:
+
+1. GOLD FUNDING EXTREME LONG SHORT (T-1778794152516-60c7): The position was entered at T21 when gold_hl_funding_ann spiked to 67.52% — a genuine extreme. However, the funding collapsed to 12.88% within just 2 hours (by T23), representing an 80.9% normalization of the primary evidence metric. This is the thesis completing, not continuing. Closing now rather than waiting for the mechanical stop, as the signal family evidence has exhausted. The FUNDING_EXTREME_LONG setup has a weak live track record (-0.48% avg) and the blocked shadow learning shows trend-blocks were directionally correct. This reinforces the lesson: GOLD funding extremes can normalize very rapidly (within hours), making the hold window for this signal very short. Consider whether the FUNDING_EXTREME_LONG stop should be tightened for GOLD specifically given its rapid mean-reversion pattern.
+
+2. OIL PC_RATIO_EXTREME_HIGH LONG (T-1778704145728-sjd7): The primary evidence is working well — oil_wti_spot +0.87% and oil_cl_pc_ratio collapsed from 1.465 to 0.847 (-42.2%). This is strong thesis confirmation. The position is at +0.79% P&L with a 4% target. Hold.
+
+3. BTC ONE_TOUCH_HIGH_EDGE_NO (T-1778718867328-fb7r): BTC spot has risen 2.15% since entry (79,548 → 81,261), which is adverse for the NO position on $55k dip. However, the contract is a 2026 year-end dip-to-$55k NO — BTC at 81k is still very far from $55k. The PM price has moved from 0.53 to 0.54 (only 1.9% adverse). The thesis remains intact as BTC would need to fall ~32% from current levels to threaten the contract. Hold per the 14-day policy.
+
+4. OIL ONE_TOUCH_HIGH_EDGE_NO (T-1778722157808-15xu): WTI at 97.77 is well above the $90 low threshold. The NO position is at +7.5% P&L. Oil spot has moved slightly in our favor (+0.92% since entry). The thesis that WTI won't dip to $90 in May remains very strong given current levels. Hold.
+
+5. HYPE PROMOTED_HYPOTHESIS LONG (T-1778786973532-d1pw): Entered at 44.471, currently at 44.402 (-0.16%). OI at 946M is near session highs, funding at +10.95%, spot within 0.2% of entry. The H-521 conditions remain met. Hold with 4% target / 3.5% stop.
+
+6. HYPOTHESIS BACKLOG: 13/19 setup families need more shadow tests with 12 pending. No new hypotheses proposed per the backlog rules. The hype_oi_distribution_exhaustion_reversal family (H-508 through H-520 killed) confirms that OI decline alone is not a reliable reversal signal — the promoted H-521 (breakout continuation when OI is high) is the correct framing.
+
+7. RELATIVE VALUE HEATMAP: Several ETH May contracts show large model edges (ETH $3,200 in May: +18.3 edge pts, ETH $3,000 in May: +19.2 edge pts) but ETH is not in the available asset list for trading. BTC $90k by Dec 2026 YES shows a 20.2 pt edge with good liquidity — this is already tracked as a shadow. The BTC $110k by Dec 2026 YES also shows a 20.2 pt edge. These remain in shadow tracking.
+
+---
+
