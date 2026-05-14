@@ -8380,3 +8380,35 @@ Macro context: Fed remains very hawkish (score 10, expected 0.8 cuts), macro com
 
 ---
 
+### 2026-05-14 01:29 UTC
+
+**Portfolio:** $99.05 total | Cash $96.05 | 3 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Closed 1 trades:**
+- ❌ OIL short via polymarket/pm_no [what-price-will-wti-hit-in-may-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $110 in May?] (ONE_TOUCH_HIGH_EDGE_NO) → stop: $-0.0200 (-2.0%, market -0.0200, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL short @ $0.4 via polymarket/pm_no [what-price-will-wti-hit-in-may-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $90 in May?] (ONE_TOUCH_HIGH_EDGE_NO)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.68
+
+**Blocked signal learning:**
+- Open blocked shadows: 35
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+Key observations this cycle: (1) OIL PC_RATIO_EXTREME_HIGH long (T-1778704145728-sjd7) remains on thesis — signal-family evidence shows oil_wti_spot barely moved (-0.05%) and oil_cl_pc_ratio unchanged at 1.465. The dramatic oil funding flip from -434% to +5.48% is notable context but is explicitly a context-only metric for this signal family and should not drive a close decision. The P/C ratio at 1.465 remains elevated (heavy put buying = contrarian long thesis intact). Holding. (2) BTC ONE_TOUCH_HIGH_EDGE_NO (T-1778718867328-fb7r) — buying NO on 'Will Bitcoin dip to $55,000 by Dec 31, 2026?' at 0.53. BTC spot has ticked up slightly (+0.04%) since entry, which is mildly adverse for the NO position (higher spot = lower probability of dipping to $55k = NO should appreciate). Current PM price appears to have moved to ~0.485 (from the heatmap showing 0.485 YES = 0.515 NO), suggesting the NO position has actually improved slightly. The position is marked at -3.77% which may reflect bid/ask spread at entry. The thesis (BTC at $79,582 is far from $55k, requiring a ~31% decline by year-end) remains valid. Holding for repricing over the 14-day window. (3) Hypothesis backlog: 13/19 setup families need more tests with 11 pending — correctly returning newHypotheses: [] per instructions. The shadow test backlog must be cleared before new hypotheses are proposed. (4) Relative-value heatmap shows interesting edges in OIL upside contracts (CL $115 June at 49.85% YES vs model 71.5% = +21.5pt edge) and BTC $110k December (26.5% YES vs model 45.9% = +18.9pt edge), but these are blocked by the hypothesis backlog constraint and the ONE_TOUCH_HIGH_EDGE_NO signal's exploratory status (0/2 wins). (5) The macro composite drop from 48 to 45 with Fed hawkishness intensifying (fed_p_at_least_one_cut dropped from 37.5% to 30.8%) is a meaningful regime shift that could weigh on risk assets including BTC and HYPE. Iran peace probability rising (57.5% deal by year-end) is a mild oil bearish factor consistent with the oil macro declining signal. (6) No parameter changes warranted — current risk parameters are appropriate given the mixed signal performance and the need to accumulate more clean test data across setup families.
+
+---
+

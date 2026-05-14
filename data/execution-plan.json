@@ -1,35 +1,41 @@
 {
-  "generatedAt": "2026-05-14T00:34:27.325Z",
+  "generatedAt": "2026-05-14T01:29:17.801Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1778707778058-9nsi",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
-      ],
-      "thesis": "The FUNDING_EXTREME_LONG short thesis was predicated on crowded longs with 63.68% annualized funding. Gold HL funding has collapsed from 63.68% to 6.76% — an 89% decline — which is the primary signal-family evidence metric for this trade. The crowded-long condition that justified the short has been fully resolved. Meanwhile gold spot has moved against the position (+0.21% from entry). With the thesis signal now normalized and price moving adversely, the position should be closed before it reaches the 2.5% stop."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "OIL",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.882039296,
+      "confidence": 0.441019648,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 26.5pt edge on OIL; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
+      "hypothesisId": null,
+      "entryPrice": 96.878,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-wti-hit-in-may-2026",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "2230536",
+        "allowDirectionFallback": false
+      }
+    },
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5850968253333334,
-      "confidence": 0.2925484126666667,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.6pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.7529182286666667,
+      "confidence": 0.37645911433333334,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 22.6pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
       "hypothesisId": null,
-      "entryPrice": 79548,
+      "entryPrice": 79582,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,18 +51,78 @@
       "asset": "OIL",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5768248363333334,
-      "confidence": 0.2884124181666667,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.3pt edge on OIL; hold 14d for repricing.",
+      "strength": 0.7007163753333334,
+      "confidence": 0.3503581876666667,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 21.0pt edge on OIL; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
       "hypothesisId": null,
-      "entryPrice": 96.935,
+      "entryPrice": 96.878,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
       "contractHint": {
         "preferredEventSlug": "what-price-will-wti-hit-in-may-2026",
         "forceInstrumentType": "pm_no",
-        "forceMarketId": "2074237",
+        "forceMarketId": "2230535",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.6327192056666667,
+      "confidence": 0.31635960283333336,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.0pt edge on BTC; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 79582,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "1339767",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "OIL",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.5459099843333333,
+      "confidence": 0.27295499216666663,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.4pt edge on OIL; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 96.878,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-wti-hit-in-may-2026",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "2132637",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "OIL",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.5249693253333334,
+      "confidence": 0.2624846626666667,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.7pt edge on OIL; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 96.878,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "cl-hit-jun-2026",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "1652706",
         "allowDirectionFallback": false
       }
     },
@@ -69,7 +135,7 @@
       "confidence": 0.24567238079044584,
       "thesis": "OIL P/C ratio 1.47 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 96.94,
+      "entryPrice": 96.88,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -79,11 +145,11 @@
       "asset": "HYPE",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.15383942131953524,
-      "confidence": 0.08845766725873275,
+      "strength": 0.1538477303002354,
+      "confidence": 0.08846244492263536,
       "thesis": "HYPE PM EV ($43) is 11.1% above spot ($39). Market expects upside.",
       "hypothesisId": null,
-      "entryPrice": 38.847,
+      "entryPrice": 39.036,
       "targetPct": 4,
       "stopPct": 4,
       "expiryDays": 14
@@ -93,6 +159,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

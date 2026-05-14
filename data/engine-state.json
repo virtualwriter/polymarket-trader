@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-14T00:33:34.212Z",
+  "generatedAt": "2026-05-14T01:28:12.868Z",
   "dataFreshness": {
-    "valuationRows": 357,
-    "latestValuationAt": "2026-05-14T00",
-    "macroRows": 357,
+    "valuationRows": 358,
+    "latestValuationAt": "2026-05-14T01",
+    "macroRows": 358,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-14T00"
+    "latestInstrumentSnapshotAt": "2026-05-14T01"
   },
   "portfolio": {
-    "cash": 97.0711,
+    "cash": 97.0488,
     "openPositions": 2,
-    "realizedPnl": 0.0711,
-    "totalTrades": 124,
-    "winRatePct": 52.4,
-    "unrealizedPnl": -0.003
+    "realizedPnl": 0.0488,
+    "totalTrades": 126,
+    "winRatePct": 51.6,
+    "unrealizedPnl": -0.0295
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.06,
-      "currentPrice": 96.94,
-      "underlyingPrice": 96.94,
+      "pnlPct": -0.12,
+      "currentPrice": 96.88,
+      "underlyingPrice": 96.88,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -34,20 +34,19 @@
       ]
     },
     {
-      "positionId": "T-1778707778058-9nsi",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
+      "positionId": "T-1778718867328-fb7r",
+      "asset": "BTC",
+      "venue": "polymarket",
       "direction": "short",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -0.23,
-      "currentPrice": 4702,
-      "underlyingPrice": 4702,
-      "targetPct": 5,
-      "stopPct": 2.5,
+      "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+      "pnlPct": -3.77,
+      "currentPrice": 0.51,
+      "underlyingPrice": 79582,
+      "targetPct": null,
+      "stopPct": 100,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
+        "btc_spot"
       ]
     }
   ],
@@ -73,10 +72,10 @@
     {
       "type": "FUNDING_EXTREME_LONG",
       "enabled": true,
-      "weight": 0.649,
-      "trades": 13,
+      "weight": 0.6267,
+      "trades": 14,
       "wins": 7,
-      "avgPnlPct": -0.499,
+      "avgPnlPct": -0.4801,
       "disabledAssets": [
         "AMZN"
       ]
@@ -180,15 +179,15 @@
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "enabled": true,
-      "weight": 0.5,
-      "trades": 0,
+      "weight": 0.425,
+      "trades": 1,
       "wins": 0,
-      "avgPnlPct": 0,
+      "avgPnlPct": -2,
       "disabledAssets": []
     }
   ],
   "blockedSummary": {
-    "openCount": 30,
+    "openCount": 35,
     "resolvedCount": 64,
     "wouldHaveWon": 28,
     "wouldHaveLost": 36,
@@ -405,34 +404,6 @@
     ],
     "openQualityWarnings": [
       {
-        "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
-        "asset": "GOLD",
-        "blockedReason": "manual_shadow_trade",
-        "instrumentLabel": "gc-hit-jun-2026 — YES — Will Gold (GC) hit (LOW) $4,400 by end of June?",
-        "marketQuality": {
-          "quoteSource": "live_clob",
-          "quotedAt": "2026-05-06T16:17:54Z",
-          "gammaUpdatedAt": "2026-05-06T16:10:18.92897Z",
-          "clobTimestamp": "1778083996287",
-          "yesBid": 0.38,
-          "yesAsk": 0.42,
-          "yesSpread": 0.04,
-          "yesBidSize": 40,
-          "yesAskSize": 55.79,
-          "noBid": 0.58,
-          "noAsk": 0.62,
-          "noSpread": 0.04,
-          "noBidSize": 55.79,
-          "noAskSize": 40,
-          "liquidity": 4679.75,
-          "flags": [
-            "wide_pm_spread",
-            "wide_pm_no_spread"
-          ]
-        },
-        "thesis": "Manual user IV-touch shadow signal: PM YES 38.5% vs IV touch model 50.0%; edge +10.0 pts. Exclude from official live-trader performance until validated."
-      },
-      {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
         "asset": "GOLD",
         "blockedReason": "manual_shadow_trade",
@@ -568,6 +539,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 18.8pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+        "asset": "OIL",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "cl-hit-jun-2026 — YES — Will Crude Oil (CL) hit (HIGH) $120 by end of June?",
+        "marketQuality": {
+          "yesBid": 0.41,
+          "yesAsk": 0.44,
+          "yesSpread": 0.03,
+          "liquidity": 20269.26,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 16.9pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
       }
     ]
   },
