@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-14T09:28:15.564Z",
+  "generatedAt": "2026-05-14T10:28:12.600Z",
   "dataFreshness": {
-    "valuationRows": 366,
-    "latestValuationAt": "2026-05-14T09",
-    "macroRows": 366,
+    "valuationRows": 367,
+    "latestValuationAt": "2026-05-14T10",
+    "macroRows": 367,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-14T09"
+    "latestInstrumentSnapshotAt": "2026-05-14T10"
   },
   "portfolio": {
     "cash": 96.0488,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.0488,
     "totalTrades": 126,
     "winRatePct": 51.6,
-    "unrealizedPnl": 0.0074
+    "unrealizedPnl": -0.0427
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.43,
-      "currentPrice": 97.42,
-      "underlyingPrice": 97.42,
+      "pnlPct": -0.82,
+      "currentPrice": 96.2,
+      "underlyingPrice": 96.2,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -41,7 +41,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -1.89,
       "currentPrice": 0.52,
-      "underlyingPrice": 79732,
+      "underlyingPrice": 79669,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -55,9 +55,9 @@
       "venue": "polymarket",
       "direction": "short",
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-      "pnlPct": 0,
-      "currentPrice": 0.4,
-      "underlyingPrice": 97.42,
+      "pnlPct": -5,
+      "currentPrice": 0.38,
+      "underlyingPrice": 96.2,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -204,9 +204,9 @@
   ],
   "blockedSummary": {
     "openCount": 38,
-    "resolvedCount": 64,
+    "resolvedCount": 65,
     "wouldHaveWon": 28,
-    "wouldHaveLost": 36,
+    "wouldHaveLost": 37,
     "bySignal": [
       {
         "signalType": "USER_PM_APR_XAU_TAIL_NO",
@@ -274,21 +274,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "PM_EV_BELOW_SPOT",
-        "asset": "OIL",
-        "venue": "spot",
-        "direction": "short",
-        "blockedReason": "short_blocked_by_positive_trend",
-        "outcome": "win",
-        "closeReason": "target",
-        "pnlPct": 3.68,
-        "resolvedAt": "2026-05-05T23:27:59.234Z",
-        "trendMetrics": {
-          "aboveTrendPct": 2.26,
-          "momentumPct": 1.96
-        }
-      },
       {
         "signalType": "PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT",
         "asset": "GOLD",
@@ -416,38 +401,27 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "OPT_IV_GT_PM_IV_DOWNSIDE",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "long",
+        "blockedReason": "iv_downside_leg_untracked",
+        "outcome": "loss",
+        "closeReason": "stop",
+        "pnlPct": -4.76,
+        "resolvedAt": "2026-05-14T10:28:12.517Z",
+        "marketQuality": {
+          "yesBid": 0.2,
+          "yesAsk": 0.21,
+          "yesSpread": 0.01,
+          "liquidity": 2545.05,
+          "flags": []
+        }
       }
     ],
     "openQualityWarnings": [
-      {
-        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-        "asset": "GOLD",
-        "blockedReason": "manual_shadow_trade",
-        "instrumentLabel": "gc-over-under-jun-2026 — NO — Will Gold (GC) settle over $4,800 on the final trading day of June 2026?",
-        "marketQuality": {
-          "quoteSource": "live_clob",
-          "quotedAt": "2026-05-06T16:18:02Z",
-          "gammaUpdatedAt": "2026-05-06T16:12:48.155857Z",
-          "clobTimestamp": "1778084141030",
-          "yesBid": 0.51,
-          "yesAsk": 0.57,
-          "yesSpread": 0.06,
-          "yesBidSize": 6.78,
-          "yesAskSize": 12.86,
-          "noBid": 0.43,
-          "noAsk": 0.49,
-          "noSpread": 0.06,
-          "noBidSize": 12.86,
-          "noAskSize": 6.78,
-          "liquidity": 646.67,
-          "flags": [
-            "wide_pm_spread",
-            "wide_pm_no_spread",
-            "low_pm_liquidity"
-          ]
-        },
-        "thesis": "Manual user IV-touch shadow signal: PM YES 53.0% vs IV touch model 39.7%; edge -9.3 pts. Exclude from official live-trader performance until validated."
-      },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
         "asset": "OIL",
@@ -571,6 +545,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 16.9pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
+      },
+      {
+        "signalType": "OPT_IV_GT_PM_IV_DOWNSIDE",
+        "asset": "GOLD",
+        "blockedReason": "iv_downside_leg_untracked",
+        "instrumentLabel": "gc-hit-jun-2026 — YES — Will Gold (GC) hit (LOW) $4,500 by end of June?",
+        "marketQuality": {
+          "yesBid": 0.54,
+          "yesAsk": 0.56,
+          "yesSpread": 0.02,
+          "liquidity": 1684.7,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[DOWNSIDE LEG SHADOW] GOLD Options IV (23.4%) >> PM IV (14.8%), ratio 0.63. PM underpricing vol → buy PM upside."
       }
     ]
   },

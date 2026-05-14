@@ -1,6 +1,23 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [],
+  "rejectedCloses": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1778704145728-sjd7",
+        "asset": "OIL",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "oil_wti_spot",
+          "oil_cl_pc_ratio"
+        ],
+        "thesis": "The PC_RATIO_EXTREME_HIGH contrarian long thesis required the elevated P/C ratio (1.465) to resolve as put-heavy positioning unwinds and spot recovers. However, oil_wti_spot has declined from the entry baseline of $96.93 to $96.20 (-0.75%), approaching the 2% stop level, and the oil_cl_pc_ratio has not moved (still 1.465) — the signal has not repriced. With macro composite now BEARISH and oil macro signal 'DECLINING' with only 33% probability of settling above current, the contrarian thesis is not gaining traction. The position is at -0.82% P&L and the stop is at -2%; closing now to preserve capital rather than wait for mechanical stop given the deteriorating macro backdrop and lack of signal evidence improvement."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    }
+  ],
   "skippedTrades": [],
   "parameterUpdates": {
     "macroMomentum24hThresholdPts": 4,

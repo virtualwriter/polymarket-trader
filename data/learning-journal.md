@@ -8636,3 +8636,29 @@ Key observations this session: (1) All three open positions are behaving within 
 
 ---
 
+### 2026-05-14 10:29 UTC
+
+**Portfolio:** $99.05 total | Cash $96.05 | 3 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.23 to -0.64
+
+**Blocked signal learning:**
+- Open blocked shadows: 38
+- Resolved blocked shadows: 65 (28 wins / 37 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+
+**LLM analysis:**
+Key observations this session: (1) The OIL PC_RATIO_EXTREME_HIGH long is being closed early at -0.82% rather than waiting for the mechanical -2% stop. The signal evidence (oil_wti_spot declining, oil_cl_pc_ratio flat) shows no thesis progression after ~14 hours, and the macro backdrop has shifted to BEARISH with oil macro 'DECLINING'. The PC_RATIO_EXTREME_HIGH signal has a 7/9 win rate and 1.02% avg P&L, but those wins likely came with faster price recovery. When the P/C ratio doesn't normalize and spot drifts lower, the contrarian thesis is failing. Early exit preserves capital. (2) The BTC ONE_TOUCH_HIGH_EDGE_NO position (NO on $55k dip by Dec 2026) is performing as expected — BTC spot has risen slightly from $79,548 to $79,669, moving further from the $55k strike. The position is at -1.89% P&L (YES price moved from 0.53 to 0.52 in our favor but not enough to offset). This is a 14-day hold thesis; no action needed. (3) The OIL ONE_TOUCH_HIGH_EDGE_NO position (NO on $90 low in May) is at -5% P&L with YES price at 0.38 vs entry 0.40. WTI spot at $96.20 remains well above $90, so the underlying thesis is intact — the market is pricing a 38% chance of WTI touching $90 in May, which seems elevated given current spot. Hold. (4) The hypothesis backlog remains at 12 pending tests across 13 setup families needing more tests. No new hypotheses proposed per the backlog constraint. (5) The relative-value heatmap continues to show large model edges on OIL upside contracts (CL $150 June at +13.3 edge pts, CL $140 June at +15 edge pts) but these are flagged with oil_snapshot_uses_brent which introduces basis risk. The BTC $130k Dec 2026 YES shows +12.2 edge pts with tight spread and good liquidity — worth monitoring for a ONE_TOUCH_HIGH_EDGE_YES entry if the shadow track record improves. (6) Gold PM IV at 14.8% vs options IV at 23.4% remains a persistent anomaly. The OPT_IV_GT_PM_IV_DOWNSIDE shadow has 2/8 wins (-4.4% avg) — the setup is not working well in practice despite the theoretical edge. The two recent GOLD downside leg losses (-26.44% and -4.76%) reinforce caution. (7) BTC-OIL correlation flip noted (0.23 to -0.64) — this is consistent with oil declining on macro/demand concerns while BTC holds up on crypto-specific flows. This regime shift may reduce the effectiveness of cross-asset positioning exhaustion hypotheses that assume correlated moves.
+
+---
+
