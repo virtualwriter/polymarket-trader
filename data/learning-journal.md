@@ -8662,3 +8662,29 @@ Key observations this session: (1) The OIL PC_RATIO_EXTREME_HIGH long is being c
 
 ---
 
+### 2026-05-14 11:29 UTC
+
+**Portfolio:** $99.05 total | Cash $96.05 | 3 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.23 to -0.64
+
+**Blocked signal learning:**
+- Open blocked shadows: 38
+- Resolved blocked shadows: 65 (28 wins / 37 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+
+**LLM analysis:**
+Key observations from this session: (1) The OIL PC_RATIO_EXTREME_HIGH long (T-1778704145728-sjd7) is being closed after 15 hours with no signal resolution — the P/C ratio has not compressed at all (still 1.465) and spot is slightly lower. This is the correct close: the signal-family evidence columns show no progress, and the 2% stop is approaching. The PC_RATIO_EXTREME_HIGH family has a 78% win rate (7/9) so this is not a signal kill, just a position that didn't trigger. (2) The two ONE_TOUCH_HIGH_EDGE_NO positions remain open. The BTC NO on $55k dip (T-1778718867328-fb7r) is at -1.89% with BTC spot at 79,308 — well above the $55k strike, so the thesis is intact. The OIL NO on WTI hitting $90 low (T-1778722157808-15xu) is at -2.5% with WTI at 96.81 — also well above $90, thesis intact. Both should be held to expiry or until BTC/OIL approach the strike levels. (3) Gold PM IV compression (14.8% vs options IV 23.1%) continues to be the most persistent cross-venue anomaly. However, the two recent blocked GOLD downside-leg shadow trades both stopped out, which is a meaningful negative update. The OPT_IV_GT_PM_IV_DOWNSIDE shadow family has 2/8 wins (-4.41% avg). This argues against live trading the GOLD downside leg until more shadow evidence accumulates. (4) The BTC-OIL correlation flip to -0.64 (from +0.23) is notable — oil appears to be decoupling from crypto momentum, possibly driven by Iran peace probability rising (58.5% deal by year-end) and the oil macro signal remaining DECLINING. (5) No new hypotheses proposed per backlog rules — 13 setup families still need more shadow tests. (6) The relative-value heatmap continues to show strong model edges on OIL upside (CL $120 June: +17pt edge, $140 June: +14.7pt edge) and BTC upside (BTC $130k Dec: +11.9pt edge, $110k Dec: +18.2pt edge), but these are in the ONE_TOUCH_HIGH_EDGE_YES_SHADOW bucket and not yet live-tradeable. The SPY $8,200 December YES shadow (20.9pt edge) is worth monitoring as it approaches the 20pt threshold for higher-conviction tracking.
+
+---
+
