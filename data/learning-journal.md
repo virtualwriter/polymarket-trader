@@ -8609,3 +8609,30 @@ Key observations from this session: (1) OIL position is performing as expected �
 
 ---
 
+### 2026-05-14 09:29 UTC
+
+**Portfolio:** $99.05 total | Cash $96.05 | 3 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 7.2pp (was -1.1, now -8.3)
+- [correlation_flip] BTC-OIL correlation shifted from 0.23 to -0.65
+
+**Blocked signal learning:**
+- Open blocked shadows: 38
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+Key observations this session: (1) All three open positions are behaving within thesis. OIL spot long (PC_RATIO_EXTREME_HIGH) is +0.43% with oil_wti_spot moving from 96.93 to 97.42 and P/C ratio stable at 1.465 - thesis intact, hold toward 4% target. BTC ONE_TOUCH_HIGH_EDGE_NO is -1.89% with BTC spot only +0.23% since entry - the NO on BTC dipping to $55k remains structurally sound with BTC at $79,732 and 17+ weeks to expiry. OIL ONE_TOUCH_HIGH_EDGE_NO (WTI hitting LOW $90 in May) is flat at 0% with oil moving slightly higher to 97.42 - thesis strengthening as oil moves further from the $90 strike. (2) The BTC-OIL correlation flip from +0.23 to -0.65 is the most interesting structural observation. This may reflect oil's geopolitical/macro premium (Iran peace probability rising to 55.5%, oil macro score DECLINING) diverging from crypto's risk-on beta. Worth monitoring as a potential cross-asset regime signal. (3) Macro composite dropped to BEARISH (44) with Fed cut probability falling to 28.6% - this is modestly negative for BTC but the move is small and BTC has been resilient. The very hawkish Fed stance has been persistent throughout all 14 snapshots. (4) GOLD PM IV dropped sharply to 14.8% in the T09 snapshot (from 22.1% in prior snapshots) - this appears to be a data anomaly or model update rather than a genuine IV collapse, as gold spot was stable at 4696. The gold_med_max also dropped from 5000 to 4800 in T09. These changes warrant caution before acting on gold IV signals. (5) Hypothesis backlog: 13/19 setup families need more tests with 12 pending. No new hypotheses proposed per rules. The relative-value heatmap shows many cheap-vs-cap BTC/ETH/OIL upside contracts but the pm_odds_underlying_payoff_cap setup family is exploratory with zero clean trades - not actionable yet. (6) ONE_TOUCH_HIGH_EDGE_NO signal has 0/1 wins and -2% avg P&L - still exploratory but both current positions have strong structural support (BTC far above $55k strike, oil far above $90 strike). The signal's weakness in the one prior trade was likely a different setup. No parameter changes warranted given stable performance across other signals.
+
+---
+
