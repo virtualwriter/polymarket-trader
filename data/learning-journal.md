@@ -8531,3 +8531,29 @@ Session 2026-05-14T05: Three open positions, all within normal operating paramet
 
 ---
 
+### 2026-05-14 06:29 UTC
+
+**Portfolio:** $99.05 total | Cash $96.05 | 3 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.66
+
+**Blocked signal learning:**
+- Open blocked shadows: 36
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+Key observations this cycle: (1) All three open positions remain within thesis — no close actions warranted. The OIL PC_RATIO_EXTREME_HIGH long is flat with the signal (P/C at 1.465, unchanged) and oil funding has fully normalized from extreme negative to positive, which is the completion signal for the structural recovery. The BTC ONE_TOUCH_HIGH_EDGE_NO is benefiting from spot moving higher (+0.31%), and the OIL ONE_TOUCH_HIGH_EDGE_NO on WTI-dip-to-$90 is intact with spot moving away from the strike. (2) The hypothesis backlog remains at 13/19 setup families needing more tests with 12 pending — no new hypotheses proposed per protocol. (3) The BTC-OIL correlation flip to -0.66 is notable: BTC has been grinding higher while oil has been range-bound/slightly declining, which is consistent with the cross-asset positioning exhaustion bounce thesis (H-440, H-465) playing out in BTC while oil lags. (4) The relative-value heatmap shows persistent cheap-vs-underlying-cap pricing across BTC May upside contracts (e.g., $100k YES at 1.25c vs model 2.66c), but these are all flagged as cheap_vs_underlying_cap_bearish — the market is pricing low probability of large upside moves in May, consistent with BTC consolidating rather than breaking out. No actionable edge given the 14-day expiry and current spot level. (5) Gold PM IV (22.1-22.2%) remains compressed well below options IV (22.8-23.8%), but the gold_pm_premium_futures_spread family is in contaminated_retest status — no clean trade. (6) AMZN funding has normalized significantly from 40-47% to 9.8%, which is thesis completion for any FUNDING_EXTREME_LONG short — but AMZN is disabled for that signal. (7) No parameter changes warranted — the current risk parameters are appropriate given the mixed signal performance and the exploratory status of ONE_TOUCH_HIGH_EDGE_NO.
+
+---
+
