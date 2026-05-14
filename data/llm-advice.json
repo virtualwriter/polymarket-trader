@@ -4,15 +4,15 @@
     {
       "instruction": {
         "action": "close",
-        "positionId": "T-1778704145728-sjd7",
-        "asset": "OIL",
+        "positionId": "T-1778786973532-d1pw",
+        "asset": "HYPE",
         "venue": "spot",
         "direction": "long",
         "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
-          "oil_cl_pc_ratio"
+          "hype_spot"
         ],
-        "thesis": "The PC_RATIO_EXTREME_HIGH signal thesis was that extreme put buying (P/C ratio 1.47) was contrarian bullish. The oil_cl_pc_ratio has collapsed from 1.465 to 0.847 — a 42% decline — meaning the extreme put positioning that triggered the trade has fully normalized. The contrarian signal has resolved: put buyers have unwound. The spot is up +0.77% from entry which is a partial win, but the signal evidence (P/C ratio normalization) indicates the thesis has played out and the edge is gone. Taking profit at +0.7% rather than waiting for the 3% target given signal exhaustion."
+        "thesis": "HYPE spot declined from entry 44.471 to 43.82 (-1.46%), approaching the 3.5% stop. More critically, hype_hl_funding_ann flipped sharply negative to -9.87% (from +10.95% at entry) and hype_hl_oi declined from the 972M peak to 937M, indicating the OI surge momentum that triggered the H-521 promoted hypothesis has reversed. The breakout continuation conditions (OI in top 15% of 24h range, spot within 6% of 7d high, normalized funding) are no longer cleanly met as funding has become extreme negative, signaling forced liquidations rather than healthy accumulation. Closing to preserve capital before the mechanical stop is hit."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

@@ -8926,3 +8926,46 @@ Key session observations: (1) OIL PC_RATIO_EXTREME_HIGH trade (T-1778704145728-s
 
 ---
 
+### 2026-05-14 21:29 UTC
+
+**Portfolio:** $99.09 total | Cash $94.09 | 5 open | P&L $0.0894 | 52% win rate (127 trades)
+
+**Opened 1 positions:**
+- GOLD short @ $4661 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_gld_pc_ratio = 1.006 is 2.8 std devs from mean (0.53 ± 0.17)
+- [anomaly] hype_hl_oi = 937069391 is 2.3 std devs from mean (826339317.77 ± 49133471.38)
+- [correlation_flip] BTC-OIL correlation shifted from 0.23 to -0.61
+
+**Blocked signal learning:**
+- Open blocked shadows: 47
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key session observations for 2026-05-14:
+
+1. OIL PC_RATIO_EXTREME_HIGH working well: The oil P/C ratio collapsed 42% from 1.465 to 0.847 while spot held firm at 97.6, validating the contrarian long thesis. Position T-1778704145728-sjd7 is up 0.63% with the primary evidence column (oil_cl_pc_ratio) moving strongly in thesis direction. The signal family (7/9 wins, 78% win rate) continues to perform.
+
+2. HYPE momentum exhaustion: The H-521 promoted hypothesis triggered a long at 44.471 when HYPE OI surged to 972M. However, within 2 hours, funding crashed from +10.95% to -9.87% and OI declined to 937M. This is a classic momentum exhaustion pattern - the OI surge attracted late longs who are now being liquidated. Closing the position proactively before the mechanical stop. Lesson: PROMOTED_HYPOTHESIS entries on HYPE need tighter monitoring of funding sign flips as an early exit signal.
+
+3. BTC rally with IBIT P/C collapse: BTC rallied ~2% while IBIT P/C ratio collapsed from 0.799 to 0.419. The ONE_TOUCH_HIGH_EDGE_NO position on BTC $55k dip (T-1778718867328-fb7r) is up 1.89% - the BTC rally is working against the dip scenario, which is thesis continuation for the NO position. Hold.
+
+4. OIL ONE_TOUCH_HIGH_EDGE_NO performing: T-1778722157808-15xu (NO on WTI hitting $90 low in May) is up 7.5% as WTI holds at 97.6. With 17 days remaining in May and WTI ~8.5% above the $90 strike, this position is well-positioned. The oil_wti_spot evidence column (+0.75% since entry) confirms thesis continuation.
+
+5. Hypothesis backlog: 13/19 setup families still need more shadow tests. No new hypotheses proposed per protocol. The HYPE OI distribution exhaustion/reversal family (H-201 etc.) has only 8/42 wins (19%) - this is the killed family, confirming the right decision to kill those variants. The promoted H-521 (breakout continuation) is a different, better-specified variant that should continue accumulating evidence.
+
+6. Gold funding anomaly: gold_hl_funding_ann spiked to 67.52% at T21 (2.8σ anomaly per statistical observations), while gold_gld_pc_ratio hit 1.006 (also 2.8σ anomaly). These extreme readings suggest gold perp positioning is very stretched long. The FUNDING_EXTREME_LONG blocked shadow trades on GOLD have been winning (5/7 resolved shadows, avg +1.02%), suggesting the block is too conservative. However, gold spot is declining (-0.7% session), so the trend filter is correctly blocking shorts. Monitor for a clean short setup if gold continues to weaken.
+
+---
+
