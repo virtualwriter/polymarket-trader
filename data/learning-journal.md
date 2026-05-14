@@ -8740,3 +8740,34 @@ Key session observations: (1) HYPE breakout is the dominant signal — the 917M 
 
 ---
 
+### 2026-05-14 15:29 UTC
+
+**Portfolio:** $99.05 total | Cash $95.05 | 4 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Opened 1 positions:**
+- HYPE long @ $42.542 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 8.6pp (was 0.2, now -8.4)
+- [anomaly] hype_hl_oi = 933703803 is 2.3 std devs from mean (824737250.52 ± 47441138.61)
+- [correlation_flip] BTC-OIL correlation shifted from 0.23 to -0.62
+
+**Blocked signal learning:**
+- Open blocked shadows: 45
+- Resolved blocked shadows: 65 (28 wins / 37 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+
+**LLM analysis:**
+Key session observations: (1) OIL PC_RATIO_EXTREME_HIGH long (T-1778704145728-sjd7) should be closed — the oil_cl_pc_ratio collapsed from 1.465 to 0.610 (-58%), which is the exact signal-family evidence metric for this trade. The put-buying extreme that justified the contrarian long has fully normalized. This is a clean thesis_invalidated close per the evidence column rules. (2) HYPE had a major breakout session: spot +9.2%, OI +16% (805M→934M), consistent with H-521 promoted hypothesis conditions. The OI-surge breakout momentum pattern is strongly confirmed. (3) BTC ONE_TOUCH_HIGH_EDGE_NO position (T-1778718867328-fb7r) on the $55k dip contract: BTC spot moved from ~79,548 to ~80,976 (+1.8%), which is adverse for the NO position (higher spot = lower probability of dipping to $55k). However, the contract is a 2026 year-end dip-to-$55k NO, and BTC at $81k is still well above $55k. The btc_spot evidence column shows +1.8% move against the thesis direction, but this is within normal noise for a 14-day hold on a far-OTM contract. No close warranted yet — the thesis (BTC won't dip to $55k by year-end) remains intact. (4) OIL ONE_TOUCH_HIGH_EDGE_NO position (T-1778722157808-15xu) on WTI LOW $90 in May: WTI spot is at 96.46, well above $90, so the NO thesis (WTI won't dip to $90 in May) remains intact despite the -5% mark-to-market on the PM contract. The oil_wti_spot evidence column shows -0.43% from entry, which is not a thesis invalidation signal. Hold. (5) The BTC-OIL correlation flip from +0.23 to -0.62 is notable — BTC rallied while oil was flat/slightly down, suggesting crypto-specific momentum decoupled from commodities. (6) Gold perp funding at 18.9% annualized is elevated but gold spot is stable near 4691. The FUNDING_EXTREME_LONG_PM_PROXY_SHORT shadow on gold (NO on $6,500 June settle) remains valid as a shadow. (7) No new hypotheses proposed — the backlog of 13 setup families needing more shadow tests must be cleared first. The HYPE breakout and BTC IV compression families are accumulating strong confirming evidence this session.
+
+---
+
