@@ -8505,3 +8505,29 @@ Key observations this session: (1) All three open positions are behaving within 
 
 ---
 
+### 2026-05-14 05:29 UTC
+
+**Portfolio:** $99.05 total | Cash $96.05 | 3 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.66
+
+**Blocked signal learning:**
+- Open blocked shadows: 36
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+Session 2026-05-14T05: Three open positions, all within normal operating parameters. The OIL long (PC_RATIO_EXTREME_HIGH) is up 0.26% with the signal-family evidence intact - oil_wti_spot moved +0.32% and oil_cl_pc_ratio is unchanged at 1.465. The funding normalization from -434% to +5.48% is a thesis confirmation (H-439 pattern), not a close signal. Hold toward the 5% target. The BTC Polymarket NO on $55k dip is down 3.77% (YES price moved from 0.53 to 0.51) - BTC spot is essentially flat at $79,531 vs $79,548 entry, so the underlying hasn't moved against the thesis. The position has 14d expiry and the thesis (BTC won't dip to $55k by year-end) remains intact. The OIL Polymarket NO on WTI hitting $80 low in May is up 2.5% (YES price moved from 0.40 to 0.41) - WTI at $97.25 is moving further from the $80 strike, thesis strengthening. No new trades proposed this session: (1) hypothesis backlog has 13 setup families needing more tests and 12 pending, so no new hypotheses per rules; (2) no clean new signal triggers visible; (3) existing positions are performing within expectations. Key observation: BTC funding dropped sharply from 10.95% to 3.56% annualized over the session, suggesting leveraged long positioning is unwinding. This is consistent with H-523 (BTC PM IV compression / vol reversion) conditions - PM IV at 36.9% is compressed while spot consolidates. The BTC-OIL correlation flip noted (-0.66 from +0.22) is interesting but not actionable without a cleaner signal. AMZN perp funding has normalized to 10.73% annualized with basis near zero (-0.05%), suggesting the perp-spot convergence has largely completed - no new AMZN trade warranted. Gold funding is stable at 5.53% with no extreme readings. The relative-value heatmap shows many 'cheap vs underlying cap' signals across BTC/ETH/OIL/GOLD upside contracts, but the setup family (pm_odds_underlying_payoff_cap) is exploratory with 0 clean trades and 0 hypothesis tests - not ready for live deployment. The ONE_TOUCH_HIGH_EDGE_NO family remains exploratory (0/1 wins, -2% avg) - the two existing positions are the active tests of this family.
+
+---
+
