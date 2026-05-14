@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-14T01:28:12.868Z",
+  "generatedAt": "2026-05-14T02:28:06.989Z",
   "dataFreshness": {
-    "valuationRows": 358,
-    "latestValuationAt": "2026-05-14T01",
-    "macroRows": 358,
+    "valuationRows": 359,
+    "latestValuationAt": "2026-05-14T02",
+    "macroRows": 359,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-14T01"
+    "latestInstrumentSnapshotAt": "2026-05-14T02"
   },
   "portfolio": {
-    "cash": 97.0488,
-    "openPositions": 2,
+    "cash": 96.0488,
+    "openPositions": 3,
     "realizedPnl": 0.0488,
     "totalTrades": 126,
     "winRatePct": 51.6,
-    "unrealizedPnl": -0.0295
+    "unrealizedPnl": -0.0426
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.12,
-      "currentPrice": 96.88,
-      "underlyingPrice": 96.88,
+      "pnlPct": -0.18,
+      "currentPrice": 96.83,
+      "underlyingPrice": 96.83,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -41,12 +41,28 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -3.77,
       "currentPrice": 0.51,
-      "underlyingPrice": 79582,
+      "underlyingPrice": 79607,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "btc_spot"
+      ]
+    },
+    {
+      "positionId": "T-1778722157808-15xu",
+      "asset": "OIL",
+      "venue": "polymarket",
+      "direction": "short",
+      "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+      "pnlPct": -2.5,
+      "currentPrice": 0.39,
+      "underlyingPrice": 96.825,
+      "targetPct": null,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "oil_wti_spot"
       ]
     }
   ],

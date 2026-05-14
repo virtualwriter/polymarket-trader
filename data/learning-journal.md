@@ -8412,3 +8412,44 @@ Key observations this cycle: (1) OIL PC_RATIO_EXTREME_HIGH long (T-1778704145728
 
 ---
 
+### 2026-05-14 02:29 UTC
+
+**Portfolio:** $99.05 total | Cash $96.05 | 3 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.67
+
+**Blocked signal learning:**
+- Open blocked shadows: 35
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+Key observations from this session:
+
+1. OIL FUNDING NORMALIZATION: The most dramatic development is oil_hl_funding_ann swinging from -434% to +5.48% between the T-1778704145728-sjd7 open baseline and now. This is a massive structural shift. However, for the PC_RATIO_EXTREME_HIGH signal, funding is context-only — the thesis is about put-call exhaustion reversal, not funding carry. The P/C ratio at 1.465 remains elevated (contrarian long thesis intact), and price has barely moved (-0.10%). No close warranted.
+
+2. ONE_TOUCH_HIGH_EDGE_NO POSITIONS: Both the BTC ($55k dip NO) and OIL ($90 low NO) positions are slightly underwater (-3.77% and -2.5% respectively). BTC spot at $79,607 is moving slightly away from $55k (favorable for the NO), while OIL at $96.83 remains well above $90 (favorable for the NO). These are 14-day hold positions with 100% stop — no action needed.
+
+3. MACRO DETERIORATION: Fed cut probability dropped from 37% to 30% over this window, and macro_composite fell from 48 to 45. This is a meaningful hawkish repricing that creates headwinds for BTC and risk assets generally. No new trades triggered by this alone given MACRO_MOMENTUM_DOWN has 0/3 win rate.
+
+4. HYPOTHESIS BACKLOG: 13/19 setup families need more shadow tests with 12 pending. The instruction is clear — no new hypotheses until backlog clears. Returning newHypotheses: [] as required.
+
+5. RELATIVE VALUE HEATMAP: Multiple BTC May upside contracts show large positive edges vs the one-touch model but are flagged with extreme_perp_funding which may distort IV model inputs. The $90k YES at 0.655 with 19.8pt edge is the most liquid candidate but the setup family remains exploratory/validating — not a live trade.
+
+6. GOLD PM EV DRIFT: gold_pm_settle_ev has risen while gold_gc_spot has drifted lower. Per rules, this is NOT a reversion signal — PM settle EV drifts independently. No action.
+
+7. PARAMETER STABILITY: No parameter changes warranted. PC_RATIO_EXTREME_HIGH at 7/9 wins (78%) with 1.02% avg P&L is the strongest signal and its 5%/2% target/stop is well-calibrated.
+
+---
+
