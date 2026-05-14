@@ -8340,3 +8340,43 @@ Key observations this session: (1) The BTC IBIT P/C ratio spiked dramatically fr
 
 ---
 
+### 2026-05-14 00:34 UTC
+
+**Portfolio:** $99.07 total | Cash $96.07 | 3 open | P&L $0.0688 | 52% win rate (125 trades)
+
+**Closed 1 trades:**
+- ❌ GOLD short via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG) → llm_decision: $-0.0023 (-0.2%, market -0.0023, funding 0.0000)
+
+**Opened 2 positions:**
+- BTC short @ $0.53 via polymarket/pm_no [what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin dip to $55,000 by December 31, 2026?] (ONE_TOUCH_HIGH_EDGE_NO)
+- OIL short @ $0.5 via polymarket/pm_no [what-price-will-wti-hit-in-may-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $110 in May?] (ONE_TOUCH_HIGH_EDGE_NO)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.68
+
+**Blocked signal learning:**
+- Open blocked shadows: 30
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+Key decision this session: closing the GOLD FUNDING_EXTREME_LONG short (T-1778707778058-9nsi). The signal-family evidence is unambiguous — gold_hl_funding_ann collapsed from 63.68% to 6.76% (89% decline), which is the exact metric that triggered the trade. The crowded-long condition is resolved. Gold spot moved +0.21% against the position. Holding further risks the 2.5% stop with no remaining thesis support. This is a clean thesis_invalidated close based solely on signal-family evidence columns.
+
+The OIL PC_RATIO_EXTREME_HIGH long (T-1778704145728-sjd7) is being held. The oil_cl_pc_ratio remains at 1.465 (unchanged from baseline), and oil_wti_spot is essentially flat (+0.01%). The dramatic funding flip from -434% to +5.48% is a context-only metric and not signal-family evidence — it should not drive a close. The P/C ratio signal remains intact and the position is within normal noise. The 4% target and 2% stop remain appropriate.
+
+No new hypotheses proposed this session per instructions — the shadow test backlog has 13 setup families needing more tests and 11 pending. The hypothesis review queue should be prioritized over new hypothesis generation. The HYPE institutional distribution family was correctly killed given 19% win rate over 42 tests — this is a good example of the kill discipline working properly.
+
+Macro context: Fed remains very hawkish (score 10, expected 0.8 cuts), macro composite at 45 (neutral), Iran peace likely. These are stable background conditions not driving near-term trades. The BTC-OIL correlation flip from +0.22 to -0.68 is notable and worth monitoring as a potential regime indicator for cross-asset positioning.
+
+---
+

@@ -1,26 +1,25 @@
 {
-  "generatedAt": "2026-05-13T21:42:43.063Z",
-  "dryRun": true,
+  "generatedAt": "2026-05-14T00:34:27.325Z",
+  "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
-  "entrySignals": [
+  "llmCloses": [
     {
-      "type": "FUNDING_EXTREME_LONG",
+      "action": "close",
+      "positionId": "T-1778707778058-9nsi",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 1,
-      "confidence": 0.6490364182364781,
-      "thesis": "GOLD HL funding 63.7% annualized — crowded longs. Fade.",
-      "hypothesisId": null,
-      "entryPrice": 4692,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
-    },
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
+      ],
+      "thesis": "The FUNDING_EXTREME_LONG short thesis was predicated on crowded longs with 63.68% annualized funding. Gold HL funding has collapsed from 63.68% to 6.76% — an 89% decline — which is the primary signal-family evidence metric for this trade. The crowded-long condition that justified the short has been fully resolved. Meanwhile gold spot has moved against the position (+0.21% from entry). With the thesis signal now normalized and price moving adversely, the position should be closed before it reaches the 2.5% stop."
+    }
+  ],
+  "entrySignals": [
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
@@ -30,7 +29,7 @@
       "confidence": 0.2925484126666667,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.6pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 79374,
+      "entryPrice": 79548,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -50,7 +49,7 @@
       "confidence": 0.2884124181666667,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.3pt edge on OIL; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 96.906,
+      "entryPrice": 96.935,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -70,7 +69,7 @@
       "confidence": 0.24567238079044584,
       "thesis": "OIL P/C ratio 1.47 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 96.91,
+      "entryPrice": 96.94,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -80,25 +79,11 @@
       "asset": "HYPE",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.17058565870500653,
-      "confidence": 0.09808675375537874,
-      "thesis": "HYPE PM EV ($43) is 11.4% above spot ($39). Market expects upside.",
+      "strength": 0.15383942131953524,
+      "confidence": 0.08845766725873275,
+      "thesis": "HYPE PM EV ($43) is 11.1% above spot ($39). Market expects upside.",
       "hypothesisId": null,
-      "entryPrice": 38.811,
-      "targetPct": 4,
-      "stopPct": 4,
-      "expiryDays": 14
-    },
-    {
-      "type": "PM_EV_ABOVE_SPOT",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.001390883664676057,
-      "confidence": 0.0007997581071887326,
-      "thesis": "BTC PM EV ($85746) is 8.0% above spot ($79374). Market expects upside.",
-      "hypothesisId": null,
-      "entryPrice": 79374,
+      "entryPrice": 38.847,
       "targetPct": 4,
       "stopPct": 4,
       "expiryDays": 14
@@ -107,7 +92,7 @@
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
-    "Executor mutations disabled for dry-run verification.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "Executor mutations enabled.",
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
