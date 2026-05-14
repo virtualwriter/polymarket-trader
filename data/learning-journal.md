@@ -8453,3 +8453,29 @@ Key observations from this session:
 
 ---
 
+### 2026-05-14 03:29 UTC
+
+**Portfolio:** $99.05 total | Cash $96.05 | 3 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.67
+
+**Blocked signal learning:**
+- Open blocked shadows: 35
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+Key observations this session: (1) BTC has pulled back ~2% from the 81k high to 79.2k, with IBIT P/C ratio elevated at 0.799 — this is a bearish sentiment signal but the PC_RATIO_EXTREME_HIGH signal (contrarian bullish) is already expressed via the OIL long, not BTC. BTC funding has normalized from the 10.95% cap to 2.91%, which is a meaningful reduction in long-side crowding. (2) The OIL long (T-1778704145728-sjd7) is flat at -0.08% — the P/C ratio signal remains intact at 1.465 and funding normalized from extreme negative to positive, which is the H-439 pattern. No close warranted. (3) The two ONE_TOUCH_HIGH_EDGE_NO positions are both slightly underwater (-3.77% and -5%) but well within their 100% stop limits and the underlying theses (BTC not dipping to $55k, WTI not dipping to $90 in May) remain intact given current spot levels. (4) The hypothesis backlog has 13 setup families needing more tests and 12 pending — correctly returning newHypotheses: [] per instructions. (5) The relative-value heatmap shows interesting cheap-vs-cap signals on BTC $130k December (edge 11.9pts), OIL $115 June (edge 22.3pts), and SPY $8,200 December (edge 19.3pts), but these are in setup families still validating or exploratory, and the ONE_TOUCH_HIGH_EDGE_NO signal has 0/1 win rate so far — not adding new positions in this family until more evidence accumulates. (6) The BTC-OIL correlation flip to -0.67 is notable — oil is holding up while BTC pulls back, which is consistent with the macro shift (Fed more hawkish, macro composite down to 45) where risk assets diverge from commodities. (7) No parameter changes warranted — current risk parameters are appropriate given the mixed signal performance. All three open positions remain within thesis and stop bounds; no closes initiated this session.
+
+---
+
