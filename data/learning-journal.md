@@ -8557,3 +8557,29 @@ Key observations this cycle: (1) All three open positions remain within thesis �
 
 ---
 
+### 2026-05-14 07:29 UTC
+
+**Portfolio:** $99.05 total | Cash $96.05 | 3 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.23 to -0.65
+
+**Blocked signal learning:**
+- Open blocked shadows: 37
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+Key observations from this session: (1) BTC funding turned negative (-4.68% annualized) at T07 for the first time in the window, which is a meaningful positioning shift - shorts are now being paid, suggesting the recent rally has exhausted leveraged longs. This is consistent with H-440/H-465 cross-asset exhaustion completion hypotheses. (2) The BTC-OIL correlation flip to -0.65 is notable and worth tracking - historically these assets have been positively correlated during risk-on phases. A sustained negative correlation could indicate oil is pricing in macro deterioration while crypto is pricing in something else. (3) Oil funding normalization from extreme negative (-434%) to near-zero is a significant development for the PC_RATIO_EXTREME_HIGH long position - the carry tailwind has dissipated, but the signal thesis (contrarian long on extreme put buying) remains intact as long as P/C ratio stays elevated and spot has not hit the 2% stop. (4) The ONE_TOUCH_HIGH_EDGE_NO positions are both underwater but thesis-intact: BTC moving higher strengthens the $55k dip NO, and WTI at 97 moving away from $90 strengthens that NO. The market is pricing these downside scenarios too richly. (5) Hypothesis backlog remains at 13/19 setup families needing tests with 12 pending - no new hypotheses proposed per protocol. (6) The relative-value heatmap shows persistent cheap-vs-cap pricing across BTC, ETH, OIL, and GOLD upside contracts, but most actionable edges are in contracts with wide spreads or low liquidity. The SPY $8,200 December YES at 22% with 19.3pt edge and $2,520 liquidity is borderline on liquidity but has a tight spread - worth monitoring for a future entry if liquidity improves. (7) No parameter changes warranted - the current risk settings are appropriate given the mixed signal performance and the exploratory status of ONE_TOUCH_HIGH_EDGE_NO.
+
+---
+
