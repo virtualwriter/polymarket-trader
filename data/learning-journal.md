@@ -8479,3 +8479,29 @@ Key observations this session: (1) BTC has pulled back ~2% from the 81k high to 
 
 ---
 
+### 2026-05-14 04:28 UTC
+
+**Portfolio:** $99.05 total | Cash $96.05 | 3 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.22 to -0.66
+
+**Blocked signal learning:**
+- Open blocked shadows: 35
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+Key observations this session: (1) All three open positions are behaving within thesis. The OIL spot long (PC_RATIO_EXTREME_HIGH) is up +0.09% with oil_wti_spot moving from 96.93 to 97.09 and the P/C ratio holding at 1.465 — thesis intact, no close warranted. The BTC Polymarket NO on $55k dip is at -3.77% mark-to-market (contract moved from 0.53 to 0.51) but BTC spot has only moved -0.33% from entry — this is within normal noise for a 14-day hold, and the thesis (BTC won't dip to $55k by year-end) remains strongly supported by spot at $79,288. The OIL Polymarket NO on WTI hitting $90 low in May is up +2.5% with oil_wti_spot moving from 96.88 to 97.09 — thesis strongly intact with WTI well above $90. (2) The BTC-OIL correlation flip to -0.66 is notable and worth monitoring. Oil's extreme negative funding earlier (-434% annualized) followed by normalization to +5.48% represents the kind of structural overcorrection that historically creates bounces — consistent with the existing OIL long thesis. (3) BTC funding normalization from 10.95% to 1.42% over the session is significant — the leveraged long overhang is clearing, which is actually constructive for spot stability. This is not a close signal for the BTC Polymarket position. (4) The hypothesis backlog remains at 13/19 setup families needing more tests with 12 pending — no new hypotheses proposed per protocol. (5) Relative-value heatmap continues to show deep cheap-vs-underlying-cap signals on ETH May contracts (e.g., ETH $3,000 in May at 1.5% vs model 9.8%) but ETH has no listed options mapping and extreme perp funding flags, making these unreliable for clean entry. The BTC $130k December contract at 12.5% vs model 24.9% (edge +11.9pts) remains interesting but the ONE_TOUCH_HIGH_EDGE_NO family is still exploratory with 0/1 wins. (6) No parameter changes warranted — current risk settings are appropriate given the mixed signal performance across families.
+
+---
+
