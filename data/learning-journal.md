@@ -8688,3 +8688,29 @@ Key observations from this session: (1) The OIL PC_RATIO_EXTREME_HIGH long (T-17
 
 ---
 
+### 2026-05-14 12:29 UTC
+
+**Portfolio:** $99.05 total | Cash $96.05 | 3 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.23 to -0.63
+
+**Blocked signal learning:**
+- Open blocked shadows: 39
+- Resolved blocked shadows: 65 (28 wins / 37 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+
+**LLM analysis:**
+Key observations from this session: (1) OIL PC_RATIO_EXTREME_HIGH long is failing — the P/C ratio at 1.465 has been completely static across all 14 snapshots, suggesting the 'extreme put buying' signal may be stale or the ratio is not updating in real-time. The contrarian bounce thesis requires the put-heavy positioning to unwind, but there's no evidence of that. Closing proactively near the stop rather than waiting for mechanical execution. (2) HYPE showed the most interesting development: OI surged from ~800M trough to 848M at T12 with spot breaking above 40 — this is the first meaningful OI expansion in several sessions and aligns with the promoted H-521 setup. Unfortunately portfolio constraints (3 open positions, limited cash) prevent adding a new position. (3) BTC-OIL correlation flip to -0.63 is a notable regime shift. This means oil weakness is no longer a BTC headwind, which is mildly supportive for the BTC ONE_TOUCH_HIGH_EDGE_NO position (betting BTC won't dip to $55k). (4) The ONE_TOUCH_HIGH_EDGE_NO positions remain within thesis — BTC spot is stable around 79,388 and the $55k dip contract at 0.475 YES (we hold NO at 0.53) still has edge. The OIL WTI $90 low contract (we hold NO at 0.40) has moved against us to 0.885 YES — WTI at 95.82 means a $90 touch is more plausible than when we entered at 96.88. This position is at -22.5% P&L and is the most concerning. (5) Hypothesis backlog: 13 setup families still need more tests. No new hypotheses proposed per the backlog constraint. Focus should be on letting the promoted H-521 and H-523 accumulate shadow test evidence through the current HYPE breakout and BTC IV compression regime.
+
+---
+
