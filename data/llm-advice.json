@@ -1,23 +1,6 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778704145728-sjd7",
-        "asset": "OIL",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "oil_wti_spot",
-          "oil_cl_pc_ratio"
-        ],
-        "thesis": "The PC_RATIO_EXTREME_HIGH contrarian long thesis required oil to bounce from put-heavy positioning. Instead, oil_wti_spot has declined -1.15% from entry (97→95.82) and is now at -1.22% P&L, approaching the 2% stop. Critically, oil_cl_pc_ratio has not moved at all (1.465 throughout all 14 snapshots) — the signal that triggered entry has shown zero mean-reversion. With WTI now at 95.82 and the BTC-OIL correlation having flipped to -0.63 (a regime shift), the contrarian bounce thesis is not materializing. The position is near its mechanical stop and the signal evidence shows no improvement. Closing proactively to preserve capital rather than waiting for the mechanical stop to trigger."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedCloses": [],
   "skippedTrades": [],
   "parameterUpdates": {
     "macroMomentum24hThresholdPts": 4,

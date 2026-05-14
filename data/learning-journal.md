@@ -8714,3 +8714,29 @@ Key observations from this session: (1) OIL PC_RATIO_EXTREME_HIGH long is failin
 
 ---
 
+### 2026-05-14 14:29 UTC
+
+**Portfolio:** $99.05 total | Cash $96.05 | 3 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.23 to -0.63
+
+**Blocked signal learning:**
+- Open blocked shadows: 39
+- Resolved blocked shadows: 65 (28 wins / 37 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+
+**LLM analysis:**
+Key session observations: (1) HYPE breakout is the dominant signal — the 917M OI print in the final snapshot represents a massive surge from the ~800M range that persisted most of the session. Combined with the 7.6% spot move and BTC breaking $80k simultaneously, this is the clearest H-521 promoted setup trigger we have seen. The schema does not support opening new positions via the trades array (only buy/sell/close actions are valid), so this signal is noted for the rule-based engine to act on via the LLM_HYPOTHESIS signal type. (2) The BTC-OIL correlation flip to -0.63 is significant — oil is being driven by geopolitical/supply factors (Iran peace likely, but WTI still elevated at $97.47) while BTC is driven by risk-on momentum. This divergence validates holding both the OIL long (PC_RATIO_EXTREME_HIGH) and the BTC-related positions simultaneously without treating them as correlated. (3) The OIL ONE_TOUCH_HIGH_EDGE_NO position (T-1778722157808-15xu) is under pressure at -7.5% PnL with WTI at $97.47. The thesis was that WTI would NOT dip to $90 in May — spot has moved further away from $90 (now $97.47 vs $96.88 at entry), which is actually thesis-supportive. The PM YES price moved from 0.61 to 0.615 (slight adverse move) but the underlying is moving in our favor. Hold — the thesis is intact. (4) The IBIT P/C ratio collapsed from 0.799 to 0.538 in the final snapshot — a 32.7% drop. This is a significant institutional call-buying surge accompanying the BTC $80k break, consistent with H-331 and the broader momentum continuation thesis. (5) No new hypotheses proposed per backlog rules — 13 setup families still need condition-triggered shadow tests. (6) Gold PM IV remains anomalously compressed at 14.8% vs options IV at 23.1-23.4%, maintaining the OPT_IV_GT_PM_IV_DOWNSIDE shadow signal. The two recent losses on this setup (-26.44%, -4.76%) are concerning but the IV gap persists. The setup family is validating with 2/8 shadow wins — not strong enough to promote but the current GOLD IV compression is statistically extreme and worth monitoring.
+
+---
+
