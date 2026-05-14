@@ -8808,3 +8808,41 @@ Relative-value heatmap: Several ETH May contracts show large model edges (ETH $3
 
 ---
 
+### 2026-05-14 17:29 UTC
+
+**Portfolio:** $99.05 total | Cash $95.05 | 4 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 944861161 is 2.5 std devs from mean (825337709.93 ± 48019070.90)
+- [anomaly] btc_hl_funding_ann = -19.24 is -2.3 std devs from mean (0.17 ± 8.40)
+- [correlation_flip] BTC-OIL correlation shifted from 0.23 to -0.62
+
+**Blocked signal learning:**
+- Open blocked shadows: 45
+- Resolved blocked shadows: 65 (28 wins / 37 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+
+**LLM analysis:**
+Strong session with BTC breaking out from 79k to 81.4k and HYPE surging 13% with OI hitting 944M (2.5σ anomaly). The HYPE breakout hypothesis (H-521) is being confirmed in real-time with the live PROMOTED_HYPOTHESIS trade up 2.22%. Key observation: the BTC-OIL correlation flipped from +0.23 to -0.62, which is a significant regime signal — crypto is decoupling from commodity/macro headwinds. This supports holding the HYPE long and the BTC polymarket NO position.
+
+Closing the OIL PC_RATIO_EXTREME_HIGH long (T-1778704145728-sjd7) because the signal-family evidence metric (oil_cl_pc_ratio) has fully normalized from 1.465 to 0.624 — a 57% collapse that invalidates the contrarian thesis. The position captured a small +0.21% gain. This is the correct behavior: close when the thesis driver disappears, not when price hits a target.
+
+The PC_RATIO_EXTREME_HIGH signal has a 78% win rate (7/9) with avg P&L of 1.02%, but the target of 5% seems too ambitious for oil P/C mean-reversion trades that typically resolve in hours. Reducing target to 3% to better match the actual payoff profile of these quick-reversion trades.
+
+The BTC ONE_TOUCH_HIGH_EDGE_NO position (T-1778718867328-fb7r) on the $55k downside strike is up 1.89% as BTC moves further away from $55k. The thesis remains intact — BTC at 81.4k makes a $55k touch by year-end increasingly unlikely. Hold.
+
+The OIL polymarket NO position (T-1778722157808-15xu) on WTI hitting $90 low in May is down 7.5% as WTI remains above $97. The thesis is that WTI won't dip to $90 in May — with spot at $97.2 and only ~2.5 weeks left in May, this seems structurally sound. The PM market is pricing 61.5% YES for a $90 low touch, which seems too high given current spot levels. Hold — the thesis is intact even if the mark-to-market is negative.
+
+Hypothesis backlog: 13/19 setup families still need more shadow tests. Not proposing new hypotheses per the rules. The cross-asset positioning exhaustion family (H-440, H-462, H-465 etc.) is showing strong confirmation today with the multi-asset bounce. The HYPE OI distribution exhaustion family (H-201 etc.) has a very poor win rate (8/42 = 19%) and was correctly killed. The promoted HYPE breakout family (H-521) is the right framework for the current regime.
+
+---
+
