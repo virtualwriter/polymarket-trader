@@ -8771,3 +8771,40 @@ Key session observations: (1) OIL PC_RATIO_EXTREME_HIGH long (T-1778704145728-sj
 
 ---
 
+### 2026-05-14 16:29 UTC
+
+**Portfolio:** $99.05 total | Cash $95.05 | 4 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 11.2pp (was -8.4, now 2.8)
+- [anomaly] hype_hl_oi = 928584699 is 2.2 std devs from mean (825016410.33 ± 47681480.37)
+- [anomaly] oil_opt_fwd_90d = 141.1 is 2.1 std devs from mean since 2026-04-28 (90.88 ± 24.15)
+- [correlation_flip] BTC-OIL correlation shifted from 0.23 to -0.62
+
+**Blocked signal learning:**
+- Open blocked shadows: 45
+- Resolved blocked shadows: 65 (28 wins / 37 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+
+**LLM analysis:**
+Key session: BTC broke above $81k during US hours with IBIT P/C collapsing from 0.799 to 0.48 — a strong institutional repositioning signal. HYPE surged ~10% with OI expanding to 929M, confirming H-521 promoted hypothesis conditions. The BTC-OIL correlation flip (-0.62 from +0.23) is notable and consistent with crypto decoupling from commodity macro.
+
+Closed OIL spot long (T-1778704145728-sjd7): The PC_RATIO_EXTREME_HIGH signal was triggered by oil P/C at 1.465, but the ratio has collapsed to 0.57 — the thesis-defining evidence column has fully normalized. This is a clean thesis invalidation per signal-family rules. The -0.69% loss is within the 2% stop tolerance and the exit is appropriate given signal resolution.
+
+Holding positions: (1) BTC NO on $55k dip (T-1778718867328-fb7r) — BTC moving up is thesis-consistent, position is performing as intended. (2) OIL NO on $90 low in May (T-1778722157808-15xu) — WTI at $96.33 with 18 days to expiry, well above $90 strike, thesis intact despite slight P&L drag from spread. (3) HYPE long (T-1778772541388-y4zr) — momentum confirmed, OI expanding, hold toward 6% target.
+
+Hypothesis backlog: 13 setup families still need shadow tests. No new hypotheses proposed this cycle per backlog rules. Focus remains on condition-triggered retests of existing families, particularly hype_breakout_oi_surge_momentum (H-521 live confirmation is valuable data), btc_iv_compression_vol_reversion, and cross_asset_funding_positioning_exhaustion.
+
+Relative-value heatmap: Several ETH May contracts show large model edges (ETH $3,200 at +19.2pts, ETH $3,000 at +22.7pts) but these are flagged with extreme_perp_funding which inflates the options IV model. Not actionable without cleaner IV inputs. BTC $110k Dec 2026 YES at 25.5% shows a clean +21.7pt edge with good liquidity — worth monitoring as a shadow test candidate for the one_touch_high_edge setup family once the current backlog clears.
+
+---
+

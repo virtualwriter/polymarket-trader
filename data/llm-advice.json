@@ -10,9 +10,10 @@
         "direction": "long",
         "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
+          "oil_wti_spot",
           "oil_cl_pc_ratio"
         ],
-        "thesis": "The PC_RATIO_EXTREME_HIGH thesis was predicated on oil_cl_pc_ratio at 1.465 (heavy put buying → contrarian long). The ratio has collapsed from 1.465 to 0.610 — a 58% decline — which is the primary signal-family evidence metric for this position. The extreme put-buying that justified the contrarian long has fully unwound. The thesis is invalidated by the signal-family evidence. Oil spot is also slightly lower (-0.48%) since entry. Closing per thesis_invalidated on the evidence column."
+        "thesis": "The PC_RATIO_EXTREME_HIGH thesis for OIL long was predicated on extreme put buying (P/C ratio 1.465) signaling a contrarian long opportunity. The oil_cl_pc_ratio has collapsed from 1.465 to 0.57 — a 61% decline — which is the primary signal-family evidence metric for this trade. The contrarian signal has fully resolved: put-call exhaustion has normalized, removing the thesis basis. Oil spot is also down slightly (-0.62%) from entry. The thesis is invalidated by the signal-family evidence column showing the P/C ratio has mean-reverted."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

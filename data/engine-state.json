@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-14T15:28:14.525Z",
+  "generatedAt": "2026-05-14T16:28:12.678Z",
   "dataFreshness": {
-    "valuationRows": 371,
-    "latestValuationAt": "2026-05-14T15",
-    "macroRows": 371,
+    "valuationRows": 372,
+    "latestValuationAt": "2026-05-14T16",
+    "macroRows": 372,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-14T15"
+    "latestInstrumentSnapshotAt": "2026-05-14T16"
   },
   "portfolio": {
-    "cash": 96.0488,
-    "openPositions": 3,
+    "cash": 95.0488,
+    "openPositions": 4,
     "realizedPnl": 0.0488,
     "totalTrades": 126,
     "winRatePct": 51.6,
-    "unrealizedPnl": -0.0086
+    "unrealizedPnl": -0.0068
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.56,
-      "currentPrice": 96.46,
-      "underlyingPrice": 96.46,
+      "pnlPct": -0.69,
+      "currentPrice": 96.33,
+      "underlyingPrice": 96.33,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -41,7 +41,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": 0,
       "currentPrice": 0.53,
-      "underlyingPrice": 80976,
+      "underlyingPrice": 81445,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -57,12 +57,28 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -5,
       "currentPrice": 0.38,
-      "underlyingPrice": 96.46,
+      "underlyingPrice": 96.33,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "oil_wti_spot"
+      ]
+    },
+    {
+      "positionId": "T-1778772541388-y4zr",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "pnlPct": 0.32,
+      "currentPrice": 42.677,
+      "underlyingPrice": 42.677,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "hype_spot"
       ]
     }
   ],
