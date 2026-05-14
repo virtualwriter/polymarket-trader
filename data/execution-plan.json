@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-14T19:29:33.527Z",
+  "generatedAt": "2026-05-14T20:29:14.902Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.5526086956521739,
       "thesis": "[PROMOTED HYPE breakout / OI surge momentum via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 44.471,
+      "entryPrice": 43.693,
       "targetPct": 6,
       "stopPct": 3.5,
       "expiryDays": 21
@@ -25,11 +25,11 @@
       "asset": "OIL",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.7927280636666667,
-      "confidence": 0.3369094270583333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 23.8pt edge on OIL; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
+      "strength": 0.8103023796666666,
+      "confidence": 0.3443785113583333,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 24.3pt edge on OIL; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
       "hypothesisId": null,
-      "entryPrice": 97.267,
+      "entryPrice": 97.682,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -42,34 +42,14 @@
     },
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.7277707640000001,
-      "confidence": 0.3093025747,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 21.8pt edge on OIL; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
-      "hypothesisId": null,
-      "entryPrice": 97.267,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-wti-hit-in-may-2026",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "2230536",
-        "allowDirectionFallback": false
-      }
-    },
-    {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6963659753333334,
-      "confidence": 0.2959555395166667,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 20.9pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
+      "strength": 0.6869485696666667,
+      "confidence": 0.29195314210833334,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 20.6pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
       "hypothesisId": null,
-      "entryPrice": 81294,
+      "entryPrice": 81181,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -85,11 +65,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6432829236666666,
-      "confidence": 0.2733952425583333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.3pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6363752106666667,
+      "confidence": 0.27045946453333336,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.1pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 81294,
+      "entryPrice": 81181,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -105,11 +85,11 @@
       "asset": "OIL",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5327905243333333,
-      "confidence": 0.22643597284166664,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.0pt edge on OIL; hold 14d for repricing.",
+      "strength": 0.5523283630000001,
+      "confidence": 0.23473955427500004,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.6pt edge on OIL; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 97.267,
+      "entryPrice": 97.682,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -121,21 +101,34 @@
       }
     },
     {
-      "type": "OPT_IV_GT_PM_IV",
-      "asset": "GOLD",
-      "venue": "polymarket",
+      "type": "FUNDING_EXTREME_SHORT",
+      "asset": "BTC",
+      "venue": "hyperliquid",
       "direction": "long",
-      "strength": 0.06666666666666636,
-      "confidence": 0.036024749735449814,
-      "thesis": "GOLD Options IV (22.5%) >> PM IV (15.3%), ratio 0.68. PM underpricing vol → buy PM upside.",
+      "strength": 0.07457142857142855,
+      "confidence": 0.034964122147886675,
+      "thesis": "BTC HL funding -17.6% annualized — crowded shorts. Buy.",
       "hypothesisId": null,
-      "entryPrice": 4670,
+      "entryPrice": 81181,
+      "targetPct": 6,
+      "stopPct": 2,
+      "expiryDays": 21,
+      "leverage": 1
+    },
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.035428571428571386,
+      "confidence": 0.02220241099489277,
+      "thesis": "GOLD HL funding 16.2% annualized — crowded longs. Fade.",
+      "hypothesisId": null,
+      "entryPrice": 4651,
       "targetPct": 5,
-      "stopPct": 3.5,
-      "expiryDays": 7,
-      "contractHint": {
-        "preferredDirection": "above"
-      }
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [
@@ -150,7 +143,7 @@
         "evidenceColumns": [
           "oil_cl_pc_ratio"
         ],
-        "thesis": "The PC_RATIO_EXTREME_HIGH signal thesis was that extreme put buying (P/C 1.465) was a contrarian long signal. The oil_cl_pc_ratio has collapsed from 1.465 to 0.876 (-40.2%), which is a 40% normalization of the signal. The original thesis was that heavy put buying would reverse — it has reversed substantially. The signal family evidence column (oil_cl_pc_ratio) has moved decisively toward neutral, invalidating the contrarian thesis. Oil spot is only +0.35% since open, well below the 4% target, and the P/C normalization means the contrarian setup no longer exists. Closing to redeploy capital."
+        "thesis": "The PC_RATIO_EXTREME_HIGH signal thesis was that extreme put buying (P/C ratio 1.47) was contrarian bullish. The oil_cl_pc_ratio has collapsed from 1.465 to 0.847 — a 42% decline — meaning the extreme put positioning that triggered the trade has fully normalized. The contrarian signal has resolved: put buyers have unwound. The spot is up +0.77% from entry which is a partial win, but the signal evidence (P/C ratio normalization) indicates the thesis has played out and the edge is gone. Taking profit at +0.7% rather than waiting for the 3% target given signal exhaustion."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

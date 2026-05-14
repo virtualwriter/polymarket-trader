@@ -8896,3 +8896,33 @@ Key session observations (2026-05-14):
 
 ---
 
+### 2026-05-14 20:29 UTC
+
+**Portfolio:** $99.09 total | Cash $95.09 | 4 open | P&L $0.0894 | 52% win rate (127 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved wider by 7.1pp (was -7.2, now -0.1)
+- [anomaly] oil_opt_fwd_90d = 6.5 is -3.3 std devs from mean since 2026-04-28 (90.25 ± 25.02)
+- [anomaly] gold_gld_pc_ratio = 1.006 is 2.8 std devs from mean (0.53 ± 0.17)
+- [anomaly] hype_hl_oi = 942937541 is 2.4 std devs from mean (826044037.57 ± 48864629.51)
+- [anomaly] btc_hl_funding_ann = -17.61 is -2.1 std devs from mean (0.08 ± 8.46)
+
+**Blocked signal learning:**
+- Open blocked shadows: 47
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key session observations: (1) OIL PC_RATIO_EXTREME_HIGH trade (T-1778704145728-sjd7): The signal evidence — oil_cl_pc_ratio collapsing from 1.465 to 0.847 — confirms the contrarian thesis has fully resolved. The put-buying extreme that triggered the trade has normalized completely. Closing at +0.7% is appropriate signal-family discipline; the edge is gone even though the mechanical target (3%) hasn't been hit. Reducing PC_RATIO_EXTREME_HIGH target from 3% to 2% to better capture these fast-resolving contrarian setups — the P/C ratio tends to normalize quickly and waiting for 3% often means giving back gains. (2) HYPE position (T-1778786973532-d1pw): Entered at 44.471, now at 43.693 (-1.75%). The OI surge from 805M to 972M peak and spot move from 38.8 to 44.5 peak are exactly what H-521 predicted. The current pullback is normal consolidation after a large move. OI remains elevated at 943M (well above the 826M mean). Holding — the stop at -3.5% (≈43.02) has not been hit and the thesis is intact. (3) BTC ONE_TOUCH_HIGH_EDGE_NO (T-1778718867328-fb7r): BTC spot rose from 79,548 to 81,181 (+2.05%), moving against the NO position on 'Will Bitcoin dip to $55,000'. The contract YES price moved from 0.53 to 0.455 — the NO position is +1.89%. The underlying BTC move is adverse to the thesis directionally but the contract is about a $55k dip which remains very far from current price. Holding — the thesis is that $55k is not reached by year-end, and BTC at $81k makes that even less likely. (4) OIL ONE_TOUCH_HIGH_EDGE_NO (T-1778722157808-15xu): WTI at 97.68, well above $90 threshold. The NO position on 'Will WTI hit LOW $90 in May' is at +5% and the underlying is moving away from the strike. Holding — thesis strongly intact. (5) Statistical anomaly: gold_gld_pc_ratio at 1.006 is +2.8σ from mean — extreme put/call ratio on GLD. This is a potential PC_RATIO_EXTREME_HIGH setup for GOLD but the signal is disabled for AMZN and the gold trend is negative (spot declining from 4706 to 4651). The trend filter would likely block a long. Monitoring. (6) BTC-OIL correlation flipped from +0.23 to -0.61 — notable regime shift. BTC rallied while oil was flat/slightly up. This decoupling is consistent with crypto-specific momentum (HYPE/BTC breakout) rather than macro-driven moves. (7) Hypothesis backlog: 13/19 setup families still need more shadow tests. No new hypotheses proposed per protocol — focusing on completing existing backlog tests.
+
+---
+
