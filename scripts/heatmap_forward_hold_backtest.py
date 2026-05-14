@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import os
 import statistics
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
@@ -26,7 +27,7 @@ from typing import Dict, Iterable, List, Optional, Tuple
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_HISTORY_DIR = ROOT / "relative-value" / "history"
+DEFAULT_HISTORY_DIR = Path(os.getenv("RELATIVE_VALUE_HISTORY_DIR", str(ROOT / "relative-value" / "history")))
 DEFAULT_RESULTS_PATH = ROOT / "relative-value" / "backtest_results.csv"
 DEFAULT_SUMMARY_PATH = ROOT / "relative-value" / "backtest_summary.md"
 
@@ -75,7 +76,7 @@ def fmt_num(value: Optional[float], places: int = 8) -> str:
 def archive_files(history_dir: Path) -> List[Path]:
     if not history_dir.exists():
         return []
-    return sorted(history_dir.glob("*/cross_venue_relative_value.csv"))
+    return sorted(history_dir.glob("**/*cross_venue_relative_value*.csv"))
 
 
 def read_history(history_dir: Path) -> List[Tuple[datetime, Path, List[Dict[str, str]]]]:

@@ -7,12 +7,14 @@
 #   1. Acquires a non-blocking flock so two timer invocations cannot overlap.
 #   2. Auto-commits trader STATE files (data/*, relative-value/*) left behind by an
 #      interrupted previous run, so they survive the upcoming git pull.
-#   3. Pulls the latest code with --autostash so any unexpected tracked-file edits on
+#   3. Moves generated untracked report/backtest artifacts aside before pulling, so
+#      a newly tracked upstream file cannot block the hourly trader.
+#   4. Pulls the latest code with --autostash so any unexpected tracked-file edits on
 #      the VPS are stashed transparently and reapplied after, instead of aborting the
 #      rebase with "cannot pull with rebase: You have unstaged changes" (which has
 #      historically silently killed the hourly run for hours at a time).
-#   4. Installs deps, snapshots markets, regenerates the heatmap, runs the engine.
-#   5. Commits and pushes the resulting state changes.
+#   5. Installs deps, snapshots markets, regenerates the heatmap, runs the engine.
+#   6. Commits and pushes the resulting state changes.
 set -euo pipefail
 
 LOCK_FILE="/var/lock/polymarket-trader.lock"
@@ -50,6 +52,30 @@ DATA_FILES=(
   relative-value/cross_venue_relative_value.csv
 )
 
+move_generated_untracked_artifacts() {
+  local backup_dir="$STATE_DIR/generated-artifact-backups/$(date -u +%Y%m%dT%H%M%SZ)"
+  local moved=0
+  local path
+  local target
+
+  while IFS= read -r -d '' path; do
+    if [[ "$moved" -eq 0 ]]; then
+      mkdir -p "$backup_dir"
+    fi
+
+    target="$backup_dir/$path"
+    mkdir -p "$(dirname "$target")"
+    mv "$path" "$target"
+    echo "Moved generated untracked artifact before git pull: $path -> $target"
+    moved=1
+  done < <(
+    git ls-files --others --exclude-standard -z -- \
+      relative-value/backtests \
+      relative-value/backtest-history \
+      relative-value/history
+  )
+}
+
 exec 9>"$LOCK_FILE"
 if ! flock -n 9; then
   echo "Another trader run is already active; exiting."
@@ -79,6 +105,8 @@ if ! git diff --cached --quiet; then
       commit -m "recover trader state $(date -u +%Y-%m-%d-%H%M)"
 fi
 
+move_generated_untracked_artifacts
+
 # Diagnostic: surface any unexpected tracked-file modifications so we can see when the
 # autostash kicks in. These are files the wrapper does NOT explicitly manage; if they
 # ever appear here it means someone (likely an agent or a manual edit on the VPS) left
@@ -97,7 +125,9 @@ python3 scripts/compact_instrument_snapshots.py
 
 # Generate static Vercel report from the same snapshot data before the engine
 # reads relative-value/cross_venue_relative_value.csv for live heatmap signals.
-python3 scripts/cross_venue_relative_value_report.py
+if ! timeout "${RELATIVE_VALUE_REPORT_TIMEOUT:-10m}" python3 scripts/cross_venue_relative_value_report.py --archive-dir "$STATE_DIR/relative-value-history"; then
+  echo "WARNING: relative-value report timed out or failed; continuing trader run with the last available heatmap CSV."
+fi
 npx tsx scripts/trading-engine.ts
 
 for data_file in "${DATA_FILES[@]}"; do

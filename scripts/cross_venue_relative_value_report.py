@@ -16,6 +16,7 @@ Hyperliquid. It is a relative-value dashboard, not a risk-free arbitrage model.
 from __future__ import annotations
 
 import argparse
+import os
 from bisect import bisect_left
 import csv
 import html
@@ -37,8 +38,11 @@ SNAPSHOT_PATH = DATA_DIR / "instrument-snapshots.jsonl"
 HOSTED_DIR = ROOT / "relative-value"
 CSV_PATH = HOSTED_DIR / "cross_venue_relative_value.csv"
 HTML_PATH = HOSTED_DIR / "index.html"
+DEFAULT_ARCHIVE_DIR = Path(os.getenv("RELATIVE_VALUE_HISTORY_DIR", str(HOSTED_DIR / "history")))
 VALUATIONS_PATH = DATA_DIR / "daily-valuations.csv"
 MODEL_VERSION = "relative_value_heatmap_v2_one_touch"
+OPTION_EXPIRY_WINDOW_DAYS = 45.0
+OPTION_STRIKE_LOG_WINDOW = 0.35
 
 
 ASSET_TO_OPTION_SYMBOLS = {
@@ -218,29 +222,34 @@ def snapshot_time(snapshot: Dict[str, Any]) -> datetime:
 def read_latest_snapshot(path: Path) -> Dict[str, Any]:
     if not path.exists():
         raise FileNotFoundError(f"Missing snapshot file: {path}")
-    last_line = ""
     with path.open("rb") as fh:
-        try:
-            fh.seek(0, 2)
-            pos = fh.tell()
-            chunk = 8192
-            buffer = b""
-            while pos > 0:
-                read_size = min(chunk, pos)
-                pos -= read_size
-                fh.seek(pos)
-                buffer = fh.read(read_size) + buffer
-                lines = buffer.splitlines()
-                if len(lines) > 1:
-                    last_line = lines[-1].decode("utf-8")
-                    break
-            if not last_line:
-                last_line = buffer.decode("utf-8").strip().splitlines()[-1]
-        except OSError:
-            for line in fh:
-                if line.strip():
-                    last_line = line.decode("utf-8")
-    return json.loads(last_line)
+        fh.seek(0, 2)
+        end = fh.tell()
+        if end <= 0:
+            raise ValueError(f"Snapshot file is empty: {path}")
+
+        # Skip trailing newlines, then scan backward to the previous newline.
+        while end > 0:
+            fh.seek(end - 1)
+            if fh.read(1) not in (b"\n", b"\r"):
+                break
+            end -= 1
+
+        pos = end
+        chunks: List[bytes] = []
+        while pos > 0:
+            read_size = min(1024 * 1024, pos)
+            pos -= read_size
+            fh.seek(pos)
+            chunk = fh.read(read_size)
+            newline_idx = chunk.rfind(b"\n")
+            if newline_idx >= 0:
+                chunks.append(chunk[newline_idx + 1:])
+                break
+            chunks.append(chunk)
+
+    latest = b"".join(reversed(chunks)).decode("utf-8")
+    return json.loads(latest)
 
 
 def read_latest_csv_row(path: Path) -> Dict[str, str]:
@@ -358,6 +367,7 @@ def choose_iv_for_expiry(
     target_expiry: Optional[datetime],
     target_strike: Optional[float],
     now: Optional[datetime] = None,
+    relevant_targets: Optional[List[Tuple[Optional[datetime], Optional[float]]]] = None,
 ) -> Tuple[Optional[float], str]:
     chains = option_snapshot.get("chains", [])
     underlying = safe_float(option_snapshot.get("underlyingPrice"))
@@ -365,7 +375,15 @@ def choose_iv_for_expiry(
         return None, ""
 
     now = now or datetime.now(timezone.utc)
-    cache_key = f"_iv_expiry_buckets_{now.date().isoformat()}"
+    target_specs: List[Tuple[float, Optional[float]]] = []
+    for expiry, strike in relevant_targets or []:
+        if expiry:
+            days = max(1.0, (expiry - now).total_seconds() / 86400)
+        else:
+            days = 60.0
+        target_specs.append((days, strike))
+    target_key = "|".join(f"{round(days, 1)}:{round(strike or 0.0, 2)}" for days, strike in target_specs[:80])
+    cache_key = f"_iv_expiry_buckets_{now.date().isoformat()}_{target_key}"
     cached = option_snapshot.get(cache_key)
     if isinstance(cached, dict):
         expiry_buckets = cached
@@ -383,6 +401,15 @@ def choose_iv_for_expiry(
             if not iv or iv <= 0:
                 continue
             strike = safe_float(item.get("strike")) or underlying
+            if target_specs and not any(
+                abs(dte - target_days) <= OPTION_EXPIRY_WINDOW_DAYS
+                and (
+                    target_strike is None
+                    or abs(math.log(max(strike, 0.01) / max(target_strike, 0.01))) <= OPTION_STRIKE_LOG_WINDOW
+                )
+                for target_days, target_strike in target_specs
+            ):
+                continue
             expiry_iso = exp_utc.date().isoformat()
             bucket = buckets.setdefault(expiry_iso, {"dte": dte, "rows": [], "liquid_rows": []})
             row = (strike, item)
@@ -431,6 +458,37 @@ def choose_iv_for_expiry(
     iv = sum(float(item["impliedVolatility"]) for _, item in top) / len(top)
     expiry = str(top[0][1].get("expiration", selected_expiry))
     return iv, expiry
+
+
+def relevant_option_targets_for_event(
+    event: Dict[str, Any],
+    asset: str,
+    option_symbol: str,
+    option_snapshot: Optional[Dict[str, Any]],
+    spot: Optional[float],
+) -> List[Tuple[Optional[datetime], Optional[float]]]:
+    if not option_snapshot:
+        return []
+    option_underlying = safe_float(option_snapshot.get("underlyingPrice")) or spot
+    targets: List[Tuple[Optional[datetime], Optional[float]]] = []
+    seen = set()
+    for contract in event.get("contracts", []):
+        if contract.get("closed") or not contract.get("active", True):
+            continue
+        strike = safe_float(contract.get("strike"))
+        question = str(contract.get("question", ""))
+        expiry_dt = parse_time(str(contract.get("endDate") or ""))
+        model_expiry_dt = option_model_expiry_target(question, expiry_dt)
+        option_strike = scaled_option_strike(asset, option_symbol, strike or 0.0, spot, option_underlying)
+        key = (
+            model_expiry_dt.date().isoformat() if model_expiry_dt else "",
+            round(option_strike or 0.0, 2),
+        )
+        if key in seen:
+            continue
+        seen.add(key)
+        targets.append((model_expiry_dt, option_strike))
+    return targets
 
 
 def lognormal_terminal_probability(
@@ -786,6 +844,7 @@ def build_rows(
     latest_valuations: Optional[Dict[str, str]] = None,
     hyperliquid_overrides: Optional[Dict[str, Dict[str, Optional[float]]]] = None,
     min_liquidity: float = 0.0,
+    refresh_live_quotes: bool = False,
 ) -> List[RelativeValueRow]:
     ts = str(snapshot.get("timestamp", ""))
     snap_dt = snapshot_time(snapshot)
@@ -794,12 +853,30 @@ def build_rows(
     latest_valuations = latest_valuations or {}
     hyperliquid_overrides = hyperliquid_overrides or {}
     rows: List[RelativeValueRow] = []
+    events = snapshot.get("polymarket", [])
+    relevant_targets_by_asset: Dict[str, List[Tuple[Optional[datetime], Optional[float]]]] = {}
+    seen_targets_by_asset: Dict[str, set] = {}
 
-    for event in snapshot.get("polymarket", []):
-        live_markets = live_gamma_markets(str(event.get("slug", "")))
+    for event in events:
         asset = str(event.get("asset", ""))
         option_symbol, option_snapshot = option_chain_for_asset(snapshot, asset)
         spot = safe_float(spots.get(asset))
+        targets = relevant_option_targets_for_event(event, asset, option_symbol, option_snapshot, spot)
+        asset_targets = relevant_targets_by_asset.setdefault(asset, [])
+        seen_targets = seen_targets_by_asset.setdefault(asset, set())
+        for expiry, strike in targets:
+            key = (expiry.date().isoformat() if expiry else "", round(strike or 0.0, 2))
+            if key in seen_targets:
+                continue
+            seen_targets.add(key)
+            asset_targets.append((expiry, strike))
+
+    for event in events:
+        asset = str(event.get("asset", ""))
+        option_symbol, option_snapshot = option_chain_for_asset(snapshot, asset)
+        spot = safe_float(spots.get(asset))
+        live_markets = live_gamma_markets(str(event.get("slug", ""))) if refresh_live_quotes else {}
+        relevant_option_targets = relevant_targets_by_asset.get(asset, [])
         pm_iv = pm_iv_for_asset(latest_valuations, asset)
         hl = hyperliquid_overrides.get(asset)
         perp_source = "snapshot"
@@ -837,7 +914,13 @@ def build_rows(
 
             option_underlying = safe_float(option_snapshot.get("underlyingPrice")) if option_snapshot else spot
             option_strike = scaled_option_strike(asset, option_symbol, strike or 0.0, spot, option_underlying)
-            option_iv, iv_expiry = choose_iv_for_expiry(option_snapshot, model_expiry_dt, option_strike, snap_dt) if option_snapshot else (None, "")
+            option_iv, iv_expiry = choose_iv_for_expiry(
+                option_snapshot,
+                model_expiry_dt,
+                option_strike,
+                snap_dt,
+                relevant_option_targets,
+            ) if option_snapshot else (None, "")
             valuation_iv_key = ""
             if option_iv is None:
                 option_iv, valuation_iv_key = option_iv_from_valuations(latest_valuations, asset, model_dte_days)
@@ -856,7 +939,7 @@ def build_rows(
                 terminal_prob = lognormal_terminal_probability(option_underlying, option_strike, option_iv, model_dte_days, direction)
                 model_prob = touch_adjusted_probability(terminal_prob, direction, question, option_underlying, option_strike, option_iv, model_dte_days)
 
-            live_quote = live_clob_quote_for_market(live_markets.get(str(contract.get("marketId", "")), {}))
+            live_quote = live_clob_quote_for_market(live_markets.get(str(contract.get("marketId", "")), {})) if refresh_live_quotes else {}
             quote_source = live_quote.get("quoteSource", "snapshot")
             pm_yes = safe_float(live_quote.get("yesPrice")) if live_quote else None
             bid = safe_float(live_quote.get("bestBid")) if live_quote else None
@@ -1114,11 +1197,12 @@ def write_csv(rows: List[RelativeValueRow], path: Path) -> None:
             writer.writerow(row_to_dict(row))
 
 
-def archive_csv(rows: List[RelativeValueRow], csv_path: Path, snapshot_timestamp: str) -> Optional[Path]:
+def archive_csv(rows: List[RelativeValueRow], archive_dir: Path, csv_path: Path, snapshot_timestamp: str) -> Optional[Path]:
     snapshot_dt = parse_time(snapshot_timestamp)
     if not snapshot_dt:
         return None
-    archive_path = csv_path.parent / "history" / snapshot_dt.date().isoformat() / csv_path.name
+    timestamp_slug = snapshot_dt.astimezone(timezone.utc).strftime("%Y-%m-%dT%H%M%SZ")
+    archive_path = archive_dir / snapshot_dt.date().isoformat() / f"{timestamp_slug}-{csv_path.name}"
     write_csv(rows, archive_path)
     return archive_path
 
@@ -1452,19 +1536,25 @@ def main() -> None:
     parser.add_argument("--csv", type=Path, default=CSV_PATH, help="Output CSV path")
     parser.add_argument("--html", type=Path, default=HTML_PATH, help="Output HTML heatmap path")
     parser.add_argument("--min-liquidity", type=float, default=0.0, help="Minimum Polymarket liquidity to include")
-    parser.add_argument("--no-archive", action="store_true", help="Skip daily CSV archive under relative-value/history")
+    parser.add_argument("--live-quotes", action="store_true", help="Refresh Polymarket CLOB quotes live. Default uses snapshot quotes for fast hourly runs.")
+    parser.add_argument("--live-hyperliquid", action="store_true", help="Refresh Hyperliquid xyz OIL mark live. Default uses snapshot data for fast hourly runs.")
+    parser.add_argument("--edge-history", action="store_true", help="Compute 7d edge-per-DTE changes by reading historical snapshots. Disabled by default for fast hourly runs.")
+    parser.add_argument("--archive-dir", type=Path, default=DEFAULT_ARCHIVE_DIR, help="Directory for dated heatmap CSV archives")
+    parser.add_argument("--no-archive", action="store_true", help="Skip dated heatmap CSV archive")
     args = parser.parse_args()
 
     snapshot = read_latest_snapshot(args.snapshot)
     latest_valuations = read_latest_csv_row(VALUATIONS_PATH)
-    hyperliquid_overrides = {"OIL": fetch_hyperliquid_xyz_market("xyz:CL")}
+    hyperliquid_overrides = {"OIL": fetch_hyperliquid_xyz_market("xyz:CL")} if args.live_hyperliquid else {}
     rows = build_rows(
         snapshot,
         latest_valuations=latest_valuations,
         hyperliquid_overrides=hyperliquid_overrides,
         min_liquidity=args.min_liquidity,
+        refresh_live_quotes=args.live_quotes,
     )
-    attach_edge_history(rows, args.snapshot, latest_valuations, args.min_liquidity)
+    if args.edge_history:
+        attach_edge_history(rows, args.snapshot, latest_valuations, args.min_liquidity)
     rows.sort(
         key=lambda r: (
             expiry_sort_key(r),
@@ -1476,7 +1566,7 @@ def main() -> None:
     )
     snapshot_timestamp = str(snapshot.get("timestamp", ""))
     write_csv(rows, args.csv)
-    archived_path = None if args.no_archive else archive_csv(rows, args.csv, snapshot_timestamp)
+    archived_path = None if args.no_archive else archive_csv(rows, args.archive_dir, args.csv, snapshot_timestamp)
     write_html(rows, args.html, snapshot_timestamp)
     print_summary(rows)
     print(f"\nWrote CSV:  {args.csv}")

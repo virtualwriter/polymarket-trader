@@ -20,3 +20,9 @@ logs/
 __pycache__/
 *.pyc
 .vercel
+
+# Generated analysis/report artifacts. The hourly VPS runner must never be
+# blocked because a local generated file later becomes tracked upstream.
+relative-value/backtests/
+relative-value/backtest-history/
+relative-value/history/

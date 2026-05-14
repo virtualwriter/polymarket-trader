@@ -87,6 +87,7 @@ const DRY_RUN = process.argv.includes("--dry-run");
 const SHADOW_ARCHITECTURE = process.argv.includes("--shadow-architecture") || DRY_RUN;
 const LLM_DRY_RUN = process.argv.includes("--llm-dry-run");
 const MUTATION_DISABLED = DRY_RUN || LLM_DRY_RUN;
+const ALLOW_HOURLY_LLM_CLOSES = process.env.ALLOW_HOURLY_LLM_CLOSES === "1" || process.env.ALLOW_HOURLY_LLM_CLOSES === "true";
 
 const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
   PM_IV_GT_OPT_IV: { targetPct: null, stopPct: 5 },
@@ -1227,6 +1228,14 @@ function applySpotRiskToOpenPositions(portfolio: Portfolio): string[] {
 
 function applyProductionPolymarketRisk(position: Position): string | null {
   if (position.venue !== "polymarket" || (position.instrumentType !== "pm_yes" && position.instrumentType !== "pm_no")) return null;
+  if (position.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO) {
+    const risk = DEFAULT_SIGNAL_RISK[ONE_TOUCH_HIGH_EDGE_SIGNAL_NO];
+    if (position.targetPct === risk.targetPct && position.stopPct === risk.stopPct) return null;
+    const note = `${position.asset} ${position.direction} ${position.instrumentType} ${position.signalType}: ${formatTargetPct(position.targetPct)}/-${position.stopPct} -> ${formatTargetPct(risk.targetPct)}/-${risk.stopPct}`;
+    position.targetPct = risk.targetPct;
+    position.stopPct = risk.stopPct;
+    return note;
+  }
   if (position.targetPct === PRODUCTION_POLYMARKET_RISK.targetPct && position.stopPct === PRODUCTION_POLYMARKET_RISK.stopPct) return null;
   const note = `${position.asset} ${position.direction} ${position.instrumentType} ${position.signalType}: ${formatTargetPct(position.targetPct)}/-${position.stopPct} -> ${formatTargetPct(PRODUCTION_POLYMARKET_RISK.targetPct)}/-${PRODUCTION_POLYMARKET_RISK.stopPct}`;
   position.targetPct = PRODUCTION_POLYMARKET_RISK.targetPct;
@@ -4432,6 +4441,10 @@ function gateLlmAdvice(llmResult: LlmAnalysisResult | null, portfolio: Portfolio
       skippedTrades.push({ instruction, reason: "Direct LLM entries remain disabled; hypotheses must be promoted before trading." });
       continue;
     }
+    if (!ALLOW_HOURLY_LLM_CLOSES) {
+      rejectedCloses.push({ instruction, reason: "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits." });
+      continue;
+    }
     if (!instruction.positionId) {
       rejectedCloses.push({ instruction, reason: "LLM close rejected: missing positionId." });
       continue;
@@ -4676,29 +4689,44 @@ function anthropicText(data: any): string {
     .trim();
 }
 
+const ANTHROPIC_REQUEST_TIMEOUT_MS = Number(process.env.ANTHROPIC_REQUEST_TIMEOUT_MS ?? 180_000);
+
 async function requestAnthropicText(
   apiKey: string,
   model: string,
   messages: { role: "user" | "assistant"; content: string }[],
 ): Promise<{ text: string; stopReason: string | null }> {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-    },
-    body: JSON.stringify({
-      model,
-      max_tokens: 8192,
-      temperature: 0.2,
-      messages,
-    }),
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), ANTHROPIC_REQUEST_TIMEOUT_MS);
 
-  if (!res.ok) throw new Error(`API error: ${res.status} ${res.statusText}`);
-  const data = await res.json() as any;
-  return { text: anthropicText(data), stopReason: data.stop_reason ?? null };
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      signal: controller.signal,
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model,
+        max_tokens: 8192,
+        temperature: 0.2,
+        messages,
+      }),
+    });
+
+    if (!res.ok) throw new Error(`API error: ${res.status} ${res.statusText}`);
+    const data = await res.json() as any;
+    return { text: anthropicText(data), stopReason: data.stop_reason ?? null };
+  } catch (e: any) {
+    if (e?.name === "AbortError") {
+      throw new Error(`API timeout after ${Math.round(ANTHROPIC_REQUEST_TIMEOUT_MS / 1000)}s`);
+    }
+    throw e;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 async function callLLM(
