@@ -8583,3 +8583,29 @@ Key observations from this session: (1) BTC funding turned negative (-4.68% annu
 
 ---
 
+### 2026-05-14 08:30 UTC
+
+**Portfolio:** $99.05 total | Cash $96.05 | 3 open | P&L $0.0488 | 52% win rate (126 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.23 to -0.65
+
+**Blocked signal learning:**
+- Open blocked shadows: 37
+- Resolved blocked shadows: 64 (28 wins / 36 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expiry (+1.23%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expiry (+0.91%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+
+**LLM analysis:**
+Key observations from this session: (1) OIL position is performing as expected — the PC_RATIO_EXTREME_HIGH signal with oil_cl_pc_ratio at 1.465 has been validated by the funding normalization from -434% to +5.48% and a modest spot gain of +0.46%. The signal family has a 78% win rate and this trade is tracking well. No close warranted — thesis intact and price action supportive. (2) BTC ONE_TOUCH_HIGH_EDGE_NO is slightly adverse on the underlying (+0.22% spot move) but the PM contract price has actually improved slightly (YES went from 0.53 to 0.52), suggesting the market is not pricing in a $55k dip scenario more aggressively. Thesis intact, holding for repricing over the 14-day window. (3) OIL ONE_TOUCH_HIGH_EDGE_NO is performing well with spot moving further from the $90 strike — directionally favorable for the NO position. (4) The macro composite ticked to BEARISH (44) at T08 with Fed score dropping to 8 — this is a mild deterioration but not a regime shift. The Fed remains VERY HAWKISH with first cut expected December 2026. (5) BTC-OIL correlation has flipped to -0.65, consistent with oil being driven by geopolitical/supply factors while BTC consolidates on its own crypto-specific dynamics. (6) The hypothesis backlog remains large (530 hypotheses, 13 setup families needing tests) — no new hypotheses proposed per protocol. (7) The relative-value heatmap shows interesting cheap-vs-cap opportunities in OIL upside contracts but LLM_HYPOTHESIS is disabled for OIL. The BTC $110k December contract at 26.5% YES vs 72.5% cap (19.3pt edge) is interesting but ONE_TOUCH_HIGH_EDGE_NO family is exploratory with 0/1 wins — not adding more exposure until it validates. (8) No parameter changes warranted — current risk parameters are appropriate given the mixed signal performance.
+
+---
+
