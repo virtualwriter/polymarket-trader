@@ -1,33 +1,18 @@
 {
-  "generatedAt": "2026-05-14T21:28:17.690Z",
+  "generatedAt": "2026-05-14T22:28:18.935Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 1,
-      "confidence": 0.6266809555010064,
-      "thesis": "GOLD HL funding 67.5% annualized — crowded longs. Fade.",
-      "hypothesisId": null,
-      "entryPrice": 4661,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
-    },
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6925292343333334,
-      "confidence": 0.29432492459166665,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 20.8pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
+      "strength": 0.7130521806666666,
+      "confidence": 0.3030471767833333,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 21.4pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
       "hypothesisId": null,
-      "entryPrice": 81318,
+      "entryPrice": 81400,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -43,11 +28,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.640690416,
-      "confidence": 0.27229342679999996,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.2pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6591255646666667,
+      "confidence": 0.2801283649833333,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.8pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 81318,
+      "entryPrice": 81400,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -59,44 +44,19 @@
       }
     },
     {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "OIL",
-      "venue": "polymarket",
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.5875399746666666,
-      "confidence": 0.2497044892333333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.6pt edge on OIL; hold 14d for repricing.",
+      "strength": 0.30714285714285716,
+      "confidence": 0.19248057918959485,
+      "thesis": "GOLD HL funding 25.8% annualized — crowded longs. Fade.",
       "hypothesisId": null,
-      "entryPrice": 97.612,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-wti-hit-in-may-2026",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "2230535",
-        "allowDirectionFallback": false
-      }
-    },
-    {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.5165710543333334,
-      "confidence": 0.21954269809166668,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.5pt edge on OIL; hold 14d for repricing.",
-      "hypothesisId": null,
-      "entryPrice": 97.612,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-wti-hit-in-may-2026",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "2230536",
-        "allowDirectionFallback": false
-      }
+      "entryPrice": 4661,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "llmCloseEligibility": [
@@ -170,6 +130,24 @@
         "hype_spot"
       ],
       "reason": "LLM may advise exits for LLM-owned or promoted setups."
+    },
+    {
+      "positionId": "T-1778794152516-60c7",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
+      ],
+      "reason": "Rule-based signal exits require approved category and signal-family evidence."
     }
   ]
 }

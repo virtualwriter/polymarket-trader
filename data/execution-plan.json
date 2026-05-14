@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-14T21:29:12.512Z",
+  "generatedAt": "2026-05-14T22:29:15.118Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,30 +7,15 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 1,
-      "confidence": 0.6266809555010064,
-      "thesis": "GOLD HL funding 67.5% annualized — crowded longs. Fade.",
-      "hypothesisId": null,
-      "entryPrice": 4661,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
-    },
-    {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6925292343333334,
-      "confidence": 0.29432492459166665,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 20.8pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
+      "strength": 0.7130521806666666,
+      "confidence": 0.3030471767833333,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 21.4pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
       "hypothesisId": null,
-      "entryPrice": 81318,
+      "entryPrice": 81400,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -46,11 +31,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.640690416,
-      "confidence": 0.27229342679999996,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.2pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6591255646666667,
+      "confidence": 0.2801283649833333,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.8pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 81318,
+      "entryPrice": 81400,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -62,44 +47,19 @@
       }
     },
     {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "OIL",
-      "venue": "polymarket",
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.5875399746666666,
-      "confidence": 0.2497044892333333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.6pt edge on OIL; hold 14d for repricing.",
+      "strength": 0.30714285714285716,
+      "confidence": 0.19248057918959485,
+      "thesis": "GOLD HL funding 25.8% annualized — crowded longs. Fade.",
       "hypothesisId": null,
-      "entryPrice": 97.612,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-wti-hit-in-may-2026",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "2230535",
-        "allowDirectionFallback": false
-      }
-    },
-    {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.5165710543333334,
-      "confidence": 0.21954269809166668,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.5pt edge on OIL; hold 14d for repricing.",
-      "hypothesisId": null,
-      "entryPrice": 97.612,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-wti-hit-in-may-2026",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "2230536",
-        "allowDirectionFallback": false
-      }
+      "entryPrice": 4661,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [
@@ -114,7 +74,7 @@
         "evidenceColumns": [
           "hype_spot"
         ],
-        "thesis": "HYPE spot declined from entry 44.471 to 43.82 (-1.46%), approaching the 3.5% stop. More critically, hype_hl_funding_ann flipped sharply negative to -9.87% (from +10.95% at entry) and hype_hl_oi declined from the 972M peak to 937M, indicating the OI surge momentum that triggered the H-521 promoted hypothesis has reversed. The breakout continuation conditions (OI in top 15% of 24h range, spot within 6% of 7d high, normalized funding) are no longer cleanly met as funding has become extreme negative, signaling forced liquidations rather than healthy accumulation. Closing to preserve capital before the mechanical stop is hit."
+        "thesis": "HYPE spot peaked at 44.471 at entry and has declined to 44.008 (-1.04%). More critically, HYPE HL funding flipped from +10.95% to -8.98% annualized, indicating the crowded long positioning that drove the OI surge is now unwinding. OI declined from the 972M peak to 936M (-3.8%). The PROMOTED_HYPOTHESIS H-521 requires OI in top 15% of 24h range, spot within 6% of 7d high, and normalized funding - the funding flip to negative is a direct thesis invalidation signal per the hypothesis conditions. With the position at -1.04% and approaching the 3.5% stop, closing now preserves capital while the thesis signal has clearly weakened."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

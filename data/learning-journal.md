@@ -8969,3 +8969,31 @@ Key session observations for 2026-05-14:
 
 ---
 
+### 2026-05-14 22:29 UTC
+
+**Portfolio:** $99.09 total | Cash $94.09 | 5 open | P&L $0.0894 | 52% win rate (127 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_gld_pc_ratio = 1.006 is 2.7 std devs from mean (0.53 ± 0.17)
+- [anomaly] hype_hl_oi = 936484220 is 2.2 std devs from mean (826631479.31 ± 49394223.48)
+- [correlation_flip] BTC-OIL correlation shifted from 0.23 to -0.61
+
+**Blocked signal learning:**
+- Open blocked shadows: 48
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key session observations: (1) OIL PC_RATIO_EXTREME_HIGH trade (T-1778704145728-sjd7) is performing well at +0.33% with the P/C ratio collapsing from 1.465 to 0.847 (-42%), confirming the contrarian long thesis. The signal family evidence is strongly supportive - hold. (2) BTC ONE_TOUCH_HIGH_EDGE_NO (T-1778718867328-fb7r) on the $55k dip contract: BTC rallied +2.33% since entry, which is adverse for the NO position (YES price likely moved from 0.455 to higher). However the contract is a year-end dip-to-55k bet and BTC at 81.4k is still far from 55k. The position is at +1.89% per the engine, suggesting the NO repriced favorably despite spot rising - this makes sense as the market correctly prices the 55k dip as less likely when BTC is at 81k. Hold. (3) OIL ONE_TOUCH_HIGH_EDGE_NO (T-1778722157808-15xu) on WTI $90 low in May: WTI at 97.32 with only ~2.5 weeks left in May. The $90 low requires a 7.5% drop in 2.5 weeks from current levels. Position at +5% - thesis intact, hold. (4) GOLD FUNDING_EXTREME_LONG short (T-1778794152516-60c7): Gold funding normalized from 67.52% to 25.75% in one snapshot - the extreme funding is unwinding as expected. Gold spot flat at 4661. The thesis is playing out but slowly. Hold with 2.5% stop. (5) HYPE PROMOTED_HYPOTHESIS long: Closing due to funding flip from +10.95% to -8.98%, which directly invalidates the H-521 conditions requiring normalized funding. The OI surge momentum appears to be exhausting. (6) PC_RATIO_EXTREME_HIGH target increased from 2% to 4%: The signal has 7/9 wins (78%) and avg P&L of 1.02%. The current OIL long has room to run given the strong P/C ratio collapse signal. Increasing target from 2% to 4% to capture more of the mean reversion. (7) Hypothesis backlog: 13 setup families need more tests with 12 pending - no new hypotheses proposed per rules. The shadow test backlog remains the priority. (8) BTC IBIT P/C ratio collapse from 0.799 to 0.433 is a significant bullish signal - this is consistent with the BTC put-call exhaustion reversal family (H-523 promoted). The BTC rally from 79.3k to 81.4k is consistent with this signal. No new trade opened due to portfolio concentration (already 5 positions) and the need to let existing positions resolve.
+
+---
+
