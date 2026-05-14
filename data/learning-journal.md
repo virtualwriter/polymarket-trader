@@ -8846,3 +8846,53 @@ Hypothesis backlog: 13/19 setup families still need more shadow tests. Not propo
 
 ---
 
+### 2026-05-14 19:29 UTC
+
+**Portfolio:** $99.09 total | Cash $95.09 | 4 open | P&L $0.0894 | 52% win rate (127 trades)
+
+**Closed 1 trades:**
+- ✅ HYPE long via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS) → target: +$0.0406 (4.1%, market 0.0406, funding 0.0000)
+
+**Opened 1 positions:**
+- HYPE long @ $44.471 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 1 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_med_min = 4591 is 3.6 std devs from mean (4385.90 ± 57.62)
+- [anomaly] hype_hl_oi = 972610744 is 3.0 std devs from mean (825731488.10 ± 48554131.55)
+- [correlation_flip] BTC-OIL correlation shifted from 0.23 to -0.62
+
+**Blocked signal learning:**
+- Open blocked shadows: 46
+- Resolved blocked shadows: 66 (28 wins / 38 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expiry (+0.64%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+
+**LLM analysis:**
+Key session observations (2026-05-14):
+
+1. OIL PC_RATIO CLOSE: The oil P/C ratio collapsed 40% from 1.465 to 0.876 during the session, which is the primary signal-family evidence for the PC_RATIO_EXTREME_HIGH long. The contrarian thesis (heavy put buying = oversold bounce) has played out in terms of positioning normalization, but spot only moved +0.35% — the signal worked in terms of P/C normalization but not in terms of price appreciation. Closing as the thesis (extreme put positioning) is now invalidated by the normalization. This is a lesson: P/C normalization can happen without meaningful spot appreciation, especially when macro is bearish and oil fundamentals are weak (oil_macro_score 67, DECLINING signal).
+
+2. HYPE BREAKOUT CONFIRMATION: HYPE surged 15% with OI hitting a 3σ anomaly (972M vs mean 825M). This is a strong H-521 trigger. The promoted hypothesis is working well — 3/4 clean live trades won with avg +3.08%. The OI surge + spot momentum + funding normalization pattern is the most reliable setup in the current book.
+
+3. BTC-OIL CORRELATION FLIP: The statistical observation of BTC-OIL correlation shifting from +0.23 to -0.62 is significant. This suggests a risk-on rotation specifically into crypto while oil/commodities lag. This is consistent with the macro backdrop: VERY HAWKISH Fed (bad for commodities/inflation hedges) but crypto momentum driven by other factors. This correlation regime shift should inform future cross-asset trades.
+
+4. IBIT P/C COLLAPSE: The btc_ibit_pc_ratio dropped from 0.799 to 0.419 (-47.6%) as BTC rallied. This is a massive options market repositioning — call buyers overwhelmed put buyers as BTC broke higher. The ONE_TOUCH_HIGH_EDGE_NO position on BTC $55k dip is performing well (+1.89%) as BTC moves further from the strike.
+
+5. OIL ONE-TOUCH NO POSITION: The WTI $90 low NO position is performing well (+5%) as oil remains near 97. The thesis (oil won't dip to $90 in May) is strongly supported by current spot levels. The P/C ratio normalization from 1.465 to 0.876 actually supports this — the extreme put buying that might have predicted a crash has unwound without the crash materializing.
+
+6. GOLD WEAKNESS: Gold drifted from 4,706 to 4,670 (-0.8%) while crypto rallied strongly. This is consistent with the BTC-OIL correlation flip — risk-on rotation is going into crypto, not gold. The gold_hl_funding_ann has been elevated (5-19%) suggesting perp longs are paying, which is a mild bearish signal for gold perps.
+
+7. HYPOTHESIS BACKLOG: 13/19 setup families still need more shadow tests. No new hypotheses proposed per the backlog rule. Focus should be on accumulating condition-triggered tests for existing families, particularly the promoted H-521 and H-523 which are showing the strongest live performance.
+
+8. AMZN FUNDING ANOMALY: AMZN hl_funding_ann ranged from 5.48% to 33.56% during the session — extremely elevated. This is consistent with H-408 (funding spike above 15% with positive basis creates unsustainable perp positioning). However, AMZN stock is actually declining slightly (270.41 → 267.67), suggesting the perp premium is not being validated by spot. Worth monitoring for a convergence trade opportunity when market quality improves.
+
+---
+
