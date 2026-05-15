@@ -9170,3 +9170,32 @@ Key observations from this session: (1) GOLD FUNDING_EXTREME_LONG short is being
 
 ---
 
+### 2026-05-15 04:29 UTC
+
+**Portfolio:** $99.13 total | Cash $93.13 | 6 open | P&L $0.1309 | 52% win rate (128 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1043605665 is 4.1 std devs from mean (828843165.68 ± 52869287.30)
+- [anomaly] hype_spot = 46.722 is 2.6 std devs from mean (41.15 ± 2.15)
+- [anomaly] gold_gld_pc_ratio = 1.006 is 2.6 std devs from mean (0.54 ± 0.18)
+- [correlation_flip] BTC-OIL correlation shifted from 0.24 to -0.60
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key observations from this session: (1) GOLD FUNDING_EXTREME_LONG short is being closed because the primary signal driver — extreme funding at 67.52% — has fully normalized to 5.48%. This is textbook thesis resolution: the signal that triggered the trade is gone, and we've captured +1.04% gain. Holding further without the funding catalyst would be speculating on continued spot decline without signal support. Reducing FUNDING_EXTREME_LONG target from 5% to 3% to better match the typical payoff window — the signal resolves quickly (within hours) and the price move tends to be modest. (2) HYPE breakout (H-521) is performing strongly with OI at a 4.1σ statistical anomaly. The $46 Polymarket contract has effectively resolved YES. Key watch: OI above 1.04B is unprecedented in our dataset — monitor for distribution signals (OI decline >5% from peak, funding flip negative) as potential exit triggers for the HYPE long. (3) BTC is consolidating with persistent negative funding (-1% to -19%), which is unusual given the spot level. This negative funding in a bull market suggests leveraged shorts are building, which could be a setup for a squeeze. The PROMOTED_HYPOTHESIS BTC long (T-1778804969344-xd1q) is slightly underwater at -0.59% but within normal noise. (4) Oil PC ratio normalization from 1.465 to 0.847 is the strongest evidence column move in the portfolio — the PC_RATIO_EXTREME_HIGH long is working as designed (+1.42%). (5) The ONE_TOUCH NO positions on BTC $55k dip and OIL $90 low in May are both performing well (+1.89% and +20% respectively) as the underlying assets remain well above those levels. No new hypotheses proposed this session — the backlog of 12 setup families needing tests must be cleared first, and the existing promoted hypotheses (H-521, H-523) are actively being tested through live trades.
+
+---
+

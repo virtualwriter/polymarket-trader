@@ -13,7 +13,7 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "FUNDING_EXTREME_LONG thesis has been substantially realized: gold_hl_funding_ann has collapsed from 67.52% to 5.48% (-91.88% normalization), which is the primary signal-family evidence for this trade. Gold spot has moved -0.97% in our favor to $4,616. The funding has normalized to near-baseline levels (5.48% is the floor/default rate seen across assets), meaning the crowded-long squeeze thesis is complete. Continuing to hold exposes us to reversal risk without the funding carry advantage that justified the short. Taking profit at ~0.97% gain with thesis fully played out."
+        "thesis": "The FUNDING_EXTREME_LONG thesis has fully resolved: gold_hl_funding_ann dropped from 67.52% to 5.48% (91.88% normalization), which is the primary signal-family evidence. The funding signal that triggered the short is now gone — funding has normalized to baseline levels. Gold spot has moved -1.03% in our favor (4,661 to 4,613). With the thesis driver (extreme funding) fully resolved and the position up +1.04%, closing now captures the signal's payoff before potential mean-reversion in spot. Holding further would be speculating on continued spot decline without the original funding catalyst."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -35,7 +35,7 @@
         "stopPct": 3.5
       },
       "FUNDING_EXTREME_LONG": {
-        "targetPct": 4,
+        "targetPct": 3,
         "stopPct": 2.5
       },
       "FUNDING_EXTREME_SHORT": {
