@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-15T06:29:19.760Z",
+  "generatedAt": "2026-05-15T08:29:48.739Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,9 +15,9 @@
       "confidence": 0.42250000000000004,
       "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-159] BTC pullback completion signal when drops stabilize above 70.5k with P/C normalization",
       "hypothesisId": "H-159",
-      "entryPrice": 80457,
-      "targetPct": 6,
-      "stopPct": 3.5,
+      "entryPrice": 80573,
+      "targetPct": 4,
+      "stopPct": 2,
       "expiryDays": 5
     },
     {
@@ -25,11 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6539468883333334,
-      "confidence": 0.27792742754166666,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.6pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6630252793333333,
+      "confidence": 0.28178574371666665,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.9pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 80457,
+      "entryPrice": 80573,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6515297843333333,
-      "confidence": 0.27690015834166665,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.5pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6238396113333333,
+      "confidence": 0.26513183481666663,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.7pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 80457,
+      "entryPrice": 80573,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -69,28 +69,28 @@
       "confidence": 0.11264729302520399,
       "thesis": "BTC P/C ratio 0.43 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 80457,
+      "entryPrice": 80573,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
+    },
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.14199999999999996,
+      "confidence": 0.08898869568114288,
+      "thesis": "GOLD HL funding 20.0% annualized — crowded longs. Fade.",
+      "hypothesisId": null,
+      "entryPrice": 4561,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778804969344-xd1q",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_spot"
-        ],
-        "thesis": "BTC spot has declined from entry 81,377 to 80,457 (-1.13%), approaching the 1.5% stop. The signal-family evidence shows btc_ibit_pc_ratio fully normalized from 0.799 at open to 0.433 and has been flat for 8+ snapshots — the P/C exhaustion reversal thesis has resolved without the expected price follow-through. With the P/C ratio no longer elevated and price drifting lower, the thesis is invalidated. Closing proactively before mechanical stop to preserve capital."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
     {
       "instruction": {
         "action": "close",
@@ -103,7 +103,23 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "GOLD short via FUNDING_EXTREME_LONG: gold_gc_spot has moved from 4,661 to 4,578 (-1.78% gain on short), and gold_hl_funding_ann has collapsed from 67.52% to 5.48% (-91.88% normalization). Both signal-family evidence columns confirm thesis completion: price moved in the expected direction AND the funding extreme that triggered the trade has fully normalized. The 5% target is not yet reached (1.79% P&L) but the thesis driver (extreme funding) is exhausted. However, since this is a FUNDING_EXTREME_LONG signal, profit-taking is not allowed via LLM close — mechanical target handles this. Withdrawing this close recommendation."
+        "thesis": "GOLD short (FUNDING_EXTREME_LONG) has achieved +2.16% gain. Gold spot has fallen from 4,661 to 4,561 (-2.15%), and the primary signal — extreme funding at 67.52% annualized — has normalized dramatically to 19.97% (a -70% decline). The funding normalization is the core thesis completion signal: crowded longs have been flushed, funding is no longer extreme, and the easy carry + mean reversion trade is largely done. The 5% target has not been hit but the signal family evidence shows thesis completion. With gold PM IV now elevated at 26.3% (vs 22.5% at entry) and gold_pm_settle_ev rising to 5,097 (vs 5,040 at entry), there is some upside risk if gold rebounds. Taking profit near the 2% gain level while the thesis evidence is clear."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1778704145728-sjd7",
+        "asset": "OIL",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "profit_taking",
+        "evidenceColumns": [
+          "oil_wti_spot",
+          "oil_cl_pc_ratio"
+        ],
+        "thesis": "OIL long (PC_RATIO_EXTREME_HIGH) has achieved +3.53% gain, approaching the 4% target. The primary signal evidence shows strong thesis completion: oil_wti_spot has risen from 97 to 100.42 (+3.6%) and oil_cl_pc_ratio has collapsed from 1.465 to 0.847 (-42%), fully normalizing from the extreme put-heavy positioning that triggered the contrarian long. The P/C ratio is now below 1.0 and no longer extreme. The signal thesis (heavy put buying → contrarian long) has fully played out. Closing near target to lock in gains before any reversal, as oil is now above $100 and the original contrarian catalyst is exhausted."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

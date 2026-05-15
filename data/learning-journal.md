@@ -9273,3 +9273,33 @@ Key observations this session: (1) GOLD FUNDING_EXTREME_LONG short (T-1778794152
 
 ---
 
+### 2026-05-15 08:29 UTC
+
+**Portfolio:** $99.11 total | Cash $94.11 | 5 open | P&L $0.1104 | 52% win rate (129 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 19.7pp (was 5.4, now -14.3)
+- [divergence] GOLD PM-Options IV gap moved wider by 5.6pp (was -3.1, now 2.5)
+- [anomaly] amzn_hl_basis_pct = -1.27 is -3.1 std devs from mean (0.02 ± 0.42)
+- [anomaly] hype_hl_oi = 993511875 is 3.0 std devs from mean (830116096.91 ± 54588033.18)
+- [anomaly] gold_gld_pc_ratio = 1.006 is 2.5 std devs from mean (0.54 ± 0.19)
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Strong session for the rule-based signals. The PC_RATIO_EXTREME_HIGH OIL long is the standout performer — the P/C ratio collapsed 42% from extreme levels and spot rallied 3.6%, exactly as the contrarian thesis predicted. Closing near target as the signal is fully exhausted. The FUNDING_EXTREME_LONG GOLD short also performed well: funding normalized from 67.5% to 20% and spot fell 2.15%. Closing to lock in gains as the primary evidence (funding normalization) shows thesis completion. The GOLD PM IV has risen to 26.3% (+2.2σ from mean) which is a mild risk to the short thesis if gold rebounds. The OIL polymarket NO on '$90 low in May' is at +32.5% with oil now at $100.42 — this position is effectively a free carry trade at this point with 2 weeks to expiry. The BTC PROMOTED_HYPOTHESIS long is the weak spot at -0.99%, approaching its 1.5% stop. The P/C normalization signal fired correctly (IBIT P/C fell from 0.799 to 0.433) but BTC has not followed through in a BEARISH macro environment. This is a useful lesson: P/C normalization signals may have lower predictive power when macro composite is deeply bearish (44/100). HYPE continues to be the strongest performer in the portfolio context — spot up 7.7% from the 14T16 baseline with OI expanding and funding stable. The BTC-OIL correlation flip from +0.24 to -0.59 is notable and consistent with oil being driven by geopolitical/supply factors while BTC is macro-rate sensitive. No new hypotheses proposed as the backlog of 12 setup families needing tests must be cleared first. The relative-value heatmap continues to show interesting edges in ETH May contracts (e.g., ETH $3,200 in May at 0.85¢ vs 16.6pt model edge) but these are flagged with extreme_perp_funding which inflates the ETH IV model and makes the edge unreliable.
+
+---
+
