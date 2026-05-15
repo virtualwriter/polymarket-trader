@@ -9452,3 +9452,34 @@ Key observations this session: (1) GOLD FUNDING_EXTREME_LONG short is the clear 
 
 ---
 
+### 2026-05-15 15:29 UTC
+
+**Portfolio:** $99.14 total | Cash $95.14 | 4 open | P&L $0.1350 | 52% win rate (131 trades)
+
+**Opened 1 positions:**
+- HYPE long @ $44.122 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 6.7pp (was -2.5, now -9.2)
+- [anomaly] hype_hl_oi = 1029151081 is 3.4 std devs from mean (832687662.80 ± 57991765.65)
+- [correlation_flip] BTC-OIL correlation shifted from 0.25 to -0.58
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key session observations: (1) GOLD FUNDING_EXTREME_LONG short is performing well — funding collapsed 70.8% from entry (67.5% → 19.7% annualized) and spot declined 2.4%. Closing near the 5% target as the primary thesis signal (extreme funding) has normalized. This is a clean example of the signal working as intended. (2) OIL position (NO on WTI LOW $90 in May) is the most concerning open position. WTI spot has risen from ~96.9 at entry to ~100.3 — moving further away from the $90 LOW strike, which is actually favorable for the NO position (YES requires WTI to dip to $90, which becomes less likely as spot rises). The position is at +45% P&L per the engine state. However, the ONE_TOUCH_HIGH_EDGE_NO signal has a 100% stop, so mechanical exit is not triggered. The oil IV spike (+4-5σ anomaly) and Brent-WTI spread compression are unusual structural signals worth monitoring. (3) BTC ONE_TOUCH_HIGH_EDGE_NO position (NO on $55k dip by Dec 2026) remains valid — BTC at ~79k is far from the $55k strike. The position is slightly positive. (4) Macro composite improved from 44 (BEARISH) to 47 (NEUTRAL) driven by rising fed cut probability (27.9% → 33.1%) and Iran peace signals. This is a meaningful regime shift that could support risk assets. (5) The hypothesis backlog remains large (530 hypotheses, 12 setup families needing tests). No new hypotheses proposed per instructions — focusing on reviewing existing ones. (6) Oil's sustained move above $100 is challenging the oil IV statistical breakdown arbitrage family of hypotheses (H-500 series) — the mathematical mean-reversion thesis is not playing out on the expected timeline, suggesting geopolitical/supply factors are overriding statistical relationships. (7) Relative-value heatmap shows strong buy-YES edges on OIL upside contracts (CL $150 June: +10.6 edge pts, CL $140 June: +12.4 edge pts, CL $120 May: +7.1 edge pts) — but LLM_HYPOTHESIS is disabled for OIL, so no new OIL trades are initiated. The BTC $90k by Dec 2026 YES contract shows +11.4 edge pts with good liquidity — worth monitoring for a potential entry if the BTC trend stabilizes.
+
+---
+
