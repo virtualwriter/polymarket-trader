@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-15T21:29:28.277Z",
+  "generatedAt": "2026-05-15T22:29:31.086Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.45499999999999996,
       "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-145] BTC momentum exhaustion confirmation when P/C ratio spike above 0.4 after staying below 0.4 during new highs creates 3-5 day pullback acceleration as systematic call unwind begins",
       "hypothesisId": "H-145",
-      "entryPrice": 79085,
+      "entryPrice": 79017,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 3
@@ -25,11 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.595858454,
-      "confidence": 0.25323984295,
+      "strength": 0.5959500226666666,
+      "confidence": 0.2532787596333333,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.9pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 79085,
+      "entryPrice": 79017,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.57416713,
-      "confidence": 0.24402103025,
+      "strength": 0.574257823,
+      "confidence": 0.24405957477499998,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.2pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 79085,
+      "entryPrice": 79017,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -65,31 +65,17 @@
       "asset": "GOLD",
       "venue": "polymarket",
       "direction": "long",
-      "strength": 0.18948824343015222,
-      "confidence": 0.10239399821071886,
-      "thesis": "GOLD Options IV (24.1%) >> PM IV (15.5%), ratio 0.64. PM underpricing vol → buy PM upside.",
+      "strength": 0.1715481171548113,
+      "confidence": 0.09269966982134596,
+      "thesis": "GOLD Options IV (23.9%) >> PM IV (15.5%), ratio 0.65. PM underpricing vol → buy PM upside.",
       "hypothesisId": null,
-      "entryPrice": 4544,
+      "entryPrice": 4545,
       "targetPct": 5,
       "stopPct": 3.5,
       "expiryDays": 7,
       "contractHint": {
         "preferredDirection": "above"
       }
-    },
-    {
-      "type": "PM_EV_ABOVE_SPOT",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.003363469684516662,
-      "confidence": 0.0019339950685970805,
-      "thesis": "BTC PM EV ($85465) is 8.1% above spot ($79085). Market expects upside.",
-      "hypothesisId": null,
-      "entryPrice": 79085,
-      "targetPct": 4,
-      "stopPct": 4,
-      "expiryDays": 14
     }
   ],
   "rejectedLlmActions": [
@@ -105,7 +91,22 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "GOLD short via FUNDING_EXTREME_LONG: gold_gc_spot has declined 2.51% from entry (4661 → 4544), approaching the 5% target. More importantly, gold_hl_funding_ann has normalized dramatically from 67.52% at entry to 13.23% — an 80% collapse in the funding rate that was the core thesis signal. The primary evidence (funding normalization) is substantially complete. With the position at +2.54% P&L and the funding signal largely exhausted, taking profit now locks in gains before potential mean-reversion. The remaining upside to the 5% target is modest relative to the risk of funding re-expansion or spot bounce."
+        "thesis": "GOLD HL short (FUNDING_EXTREME_LONG) has achieved 2.52% gain. The primary thesis signal — gold_hl_funding_ann — has collapsed from 67.52% at entry to 6.80% at latest, a -89.93% normalization. This is the core thesis completion signal: the extreme long crowding has fully unwound. gold_gc_spot has moved from 4,661 to 4,545 (-2.49%), confirming the short direction. With funding now at 6.8% (well within normal range) and the 5% target nearly reached, the thesis is complete and holding further risks mean-reversion. Closing to lock in gains before funding potentially flips negative and creates carry headwind."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1778873386400-hqum",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_spot"
+        ],
+        "thesis": "BTC spot long (PROMOTED_HYPOTHESIS via H-145 put-call exhaustion reversal) is down -0.10% with btc_spot at 79,017 vs entry 79,093. The reversal thesis required BTC to bounce after P/C exhaustion, but btc_spot has continued drifting lower through the session (from ~80,500 highs to 79,017). The btc_ibit_pc_ratio has ticked up from 0.705 to 0.713, suggesting put-buying is resuming rather than exhausting — the opposite of what the reversal thesis requires. With the 1.5% stop at risk and no bounce confirmation after 3 hours, the thesis is not playing out. Closing to preserve capital before the mechanical stop triggers."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -113,6 +114,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 2 rejected; 0 non-close instructions skipped."
   ]
 }

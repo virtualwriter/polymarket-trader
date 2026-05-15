@@ -13,7 +13,22 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "GOLD short via FUNDING_EXTREME_LONG: gold_gc_spot has declined 2.51% from entry (4661 → 4544), approaching the 5% target. More importantly, gold_hl_funding_ann has normalized dramatically from 67.52% at entry to 13.23% — an 80% collapse in the funding rate that was the core thesis signal. The primary evidence (funding normalization) is substantially complete. With the position at +2.54% P&L and the funding signal largely exhausted, taking profit now locks in gains before potential mean-reversion. The remaining upside to the 5% target is modest relative to the risk of funding re-expansion or spot bounce."
+        "thesis": "GOLD HL short (FUNDING_EXTREME_LONG) has achieved 2.52% gain. The primary thesis signal — gold_hl_funding_ann — has collapsed from 67.52% at entry to 6.80% at latest, a -89.93% normalization. This is the core thesis completion signal: the extreme long crowding has fully unwound. gold_gc_spot has moved from 4,661 to 4,545 (-2.49%), confirming the short direction. With funding now at 6.8% (well within normal range) and the 5% target nearly reached, the thesis is complete and holding further risks mean-reversion. Closing to lock in gains before funding potentially flips negative and creates carry headwind."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1778873386400-hqum",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_spot"
+        ],
+        "thesis": "BTC spot long (PROMOTED_HYPOTHESIS via H-145 put-call exhaustion reversal) is down -0.10% with btc_spot at 79,017 vs entry 79,093. The reversal thesis required BTC to bounce after P/C exhaustion, but btc_spot has continued drifting lower through the session (from ~80,500 highs to 79,017). The btc_ibit_pc_ratio has ticked up from 0.705 to 0.713, suggesting put-buying is resuming rather than exhausting — the opposite of what the reversal thesis requires. With the 1.5% stop at risk and no bounce confirmation after 3 hours, the thesis is not playing out. Closing to preserve capital before the mechanical stop triggers."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -35,7 +50,7 @@
         "stopPct": 3.5
       },
       "FUNDING_EXTREME_LONG": {
-        "targetPct": 5,
+        "targetPct": 4,
         "stopPct": 2.5
       },
       "FUNDING_EXTREME_SHORT": {

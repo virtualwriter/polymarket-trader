@@ -9654,3 +9654,30 @@ Key session observations (2026-05-15): (1) GOLD FUNDING_EXTREME_LONG short is th
 
 ---
 
+### 2026-05-15 22:29 UTC
+
+**Portfolio:** $99.14 total | Cash $94.14 | 5 open | P&L $0.1350 | 52% win rate (131 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 998770216 is 2.7 std devs from mean (835382178.96 ± 61536206.89)
+- [correlation_flip] BTC-OIL correlation shifted from 0.26 to -0.57
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 68 (28 wins / 40 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+
+**LLM analysis:**
+Key session observations: (1) GOLD FUNDING_EXTREME_LONG short is the cleanest win of the session — funding collapsed from 67.5% to 6.8% (-90%) while spot fell 2.49%. This is textbook thesis completion and we're closing to lock in ~2.5% gain before the carry advantage disappears. The FUNDING_EXTREME_LONG signal continues to show better shadow performance (5/7 wins, +1.02% avg) than live performance (6/14 wins, -0.81% avg), suggesting the blocking filters may be too aggressive — but the current live trade validates the signal when conditions are extreme enough. (2) BTC PROMOTED_HYPOTHESIS long (H-145 put-call exhaustion reversal) is not working — btc_spot drifted lower through the session and btc_ibit_pc_ratio ticked UP (more put-buying), which is the opposite of the reversal signal. Closing early rather than waiting for the mechanical stop. This is the second consecutive loss for the btc_put_call_exhaustion_reversal setup family (0/2 live trades, -2.56% avg). The hypothesis backlog shows 13/20 wins in shadow tests, but live execution is not confirming. The setup may be sensitive to the direction of the broader session trend — entering a reversal long into a downtrending session is fighting the tape. (3) OIL ONE_TOUCH_HIGH_EDGE_NO ($90 low in May) is at 61 cents YES (we're short NO at 40 cents entry, now at 52.5% gain). WTI has risen from 96.88 to 101.20 (+4.46%), moving further from the $90 strike. The thesis remains intact — $90 low in May is increasingly unlikely with WTI at $101. However, the HL funding on OIL has flipped to -11.65% annualized (shorts paying longs), which is a context-only metric for this PM position but worth monitoring. The PM contract YES price at 0.605 (our NO at 0.395) still has room to compress further. Holding. (4) HYPE long (H-521 breakout/OI surge) is essentially flat at +0.07%. OI remains elevated at ~999M (2.7σ anomaly), funding steady at 10.95%. The hypothesis conditions remain intact. The 14-day hold window is still early. Holding. (5) BTC PM short (ONE_TOUCH_HIGH_EDGE_NO $55k dip) is at +1.89% with BTC at 79,017. The $55k dip by year-end remains very unlikely. Holding. (6) Hypothesis backlog: 12/19 setup families need more shadow tests with 10 pending. No new hypotheses proposed per rules — focus remains on completing the existing backlog. The HYPE OI distribution exhaustion/reversal family (H-201 etc.) has only 8/42 wins (19%) and was the basis for the recently killed H-508 through H-520 series — this family appears to be a genuine loser and should be monitored for kill at the family level. (7) FUNDING_EXTREME_LONG target reduced from 5% to 4% — the GOLD trade is closing at ~2.5% which is below the 5% target, and the signal's live avg P&L is negative. A tighter 4% target would have captured more of the available gains on this trade while reducing exposure time. This is an incremental adjustment.
+
+---
+
