@@ -9039,3 +9039,53 @@ Key session observations for 2026-05-14:
 
 ---
 
+### 2026-05-15 00:29 UTC
+
+**Portfolio:** $99.09 total | Cash $93.09 | 6 open | P&L $0.0894 | 52% win rate (127 trades)
+
+**Opened 1 positions:**
+- BTC long @ $81377 via spot/spot [BTC spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🎯 Setup family btc_put_call_exhaustion_reversal PROMOTED via H-148 (65% over 20 tests across 17 variants): BTC put-call exhaustion / reversal
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 961852950 is 2.7 std devs from mean (827305372.50 ± 50128002.57)
+- [anomaly] gold_gld_pc_ratio = 1.006 is 2.7 std devs from mean (0.53 ± 0.18)
+- [correlation_flip] BTC-OIL correlation shifted from 0.24 to -0.60
+
+**Blocked signal learning:**
+- Open blocked shadows: 48
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key session observations (2026-05-14T09 to 2026-05-15T00):
+
+1. GOLD FUNDING_EXTREME_LONG short (T-1778794152516-60c7): This is the cleanest trade of the session. Gold funding spiked to 67.52% annualized at T21 — a clear crowded-long signal. Within ~3 hours, funding normalized to 12.73% and spot fell 0.56%. Recommending close now while the thesis evidence is clear rather than waiting for the mechanical 5% target, which may not be reached as the easy move is done. This validates the FUNDING_EXTREME_LONG signal for GOLD when funding is genuinely extreme (>50% annualized).
+
+2. OIL PC_RATIO_EXTREME_HIGH long (T-1778704145728-sjd7): The P/C ratio has collapsed from 1.465 to 0.847 (-42%), which is the primary evidence column. This is strong thesis confirmation — the extreme put buying has been absorbed and the contrarian long is working (+0.74% on spot). The P/C ratio is now in a more normal range; the signal is partially exhausted but spot has only moved 0.74% vs the 4% target. Holding — the P/C normalization is thesis confirmation, not invalidation.
+
+3. BTC ONE_TOUCH_HIGH_EDGE_NO on $55k dip (T-1778718867328-fb7r): BTC has rallied from 79,548 to 81,377 (+2.3%), which is adverse for the $55k dip NO contract. However, the contract is priced at 0.455 YES (we hold NO at 0.53 entry), so we're at +1.89% P&L. The $55k dip by year-end remains very unlikely with BTC at 81k. Holding — the underlying thesis (BTC won't dip to $55k by Dec 31) is strengthened by the rally.
+
+4. OIL ONE_TOUCH_HIGH_EDGE_NO on $90 low (T-1778722157808-15xu): WTI at 97.65 is well above $90, and the contract is at 0.44 YES (we hold NO at 0.40 entry), +10% P&L. Strong thesis continuation. Holding.
+
+5. HYPE PROMOTED_HYPOTHESIS long (T-1778786973532-d1pw): HYPE at 44.75 vs entry 44.47 (+0.63%). OI has expanded to 961M (near session highs), funding is positive at 10.95%, and spot is above the 24h average. H-521 conditions remain met. Holding.
+
+6. BTC-OIL correlation flip (-0.60 from +0.24): Notable regime shift. BTC rallied while oil was relatively flat/mixed. This may indicate crypto is decoupling from macro/commodity risk-off dynamics, which would be bullish for BTC momentum continuation.
+
+7. IBIT P/C ratio collapse (0.799 → 0.433): Dramatic shift from put-heavy to call-heavy positioning in BTC ETF options. This is a significant sentiment shift that historically precedes continued upside momentum in BTC. The H-148 / H-300 family of hypotheses about P/C exhaustion reversal is relevant here.
+
+8. Hypothesis backlog: 12/19 setup families still need more shadow tests. Not proposing new hypotheses per the rules. The HYPE distribution exhaustion family (H-508 through H-520) was correctly killed — the 19% win rate over 42 tests confirms the thesis was wrong. The GOLD funding oscillation family continues to show promise with the current trade.
+
+9. No new trades proposed: Portfolio is at 5 open positions with $94 cash. The GOLD close will free up capacity. The relative-value heatmap shows many 'buy_yes' signals on ETH and BTC upside contracts, but these are flagged as 'cheap_vs_underlying_cap_bearish' — meaning the model thinks they're cheap relative to the underlying payoff cap, but the underlying cap itself is far OTM. These are not actionable without a clearer directional catalyst.
+
+---
+
