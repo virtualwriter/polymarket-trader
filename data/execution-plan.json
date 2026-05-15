@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-15T16:29:29.631Z",
+  "generatedAt": "2026-05-15T18:29:28.266Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,11 +11,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.594581107,
-      "confidence": 0.252696970475,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.8pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6025306846666666,
+      "confidence": 0.2560755409833333,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.1pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 79192,
+      "entryPrice": 79268,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -31,11 +31,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5728596069999999,
-      "confidence": 0.24346533297499998,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.2pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5792961693333333,
+      "confidence": 0.24620087196666662,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.4pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 79192,
+      "entryPrice": 79268,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -47,30 +47,15 @@
       }
     },
     {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.31599999999999995,
-      "confidence": 0.198031181938318,
-      "thesis": "GOLD HL funding 26.1% annualized — crowded longs. Fade.",
-      "hypothesisId": null,
-      "entryPrice": 4544,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
-    },
-    {
       "type": "PM_EV_ABOVE_SPOT",
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.008879684816648137,
-      "confidence": 0.005105818769572678,
-      "thesis": "BTC PM EV ($85668) is 8.2% above spot ($79192). Market expects upside.",
+      "strength": 0.003630721098047118,
+      "confidence": 0.002087664631377093,
+      "thesis": "BTC PM EV ($85667) is 8.1% above spot ($79268). Market expects upside.",
       "hypothesisId": null,
-      "entryPrice": 79192,
+      "entryPrice": 79268,
       "targetPct": 4,
       "stopPct": 4,
       "expiryDays": 14
@@ -88,23 +73,7 @@
         "evidenceColumns": [
           "oil_wti_spot"
         ],
-        "thesis": "OIL NO position thesis was that WTI would NOT hit $90 low in May — the underlying signal was a ONE_TOUCH_HIGH_EDGE_NO on the downside touch. WTI spot has rallied from $96.88 at entry to $100.59 (+3.83%), moving further away from the $90 downside strike, which should be favorable for the NO position. However, the PM YES price has moved from 0.40 to 0.60 (50% loss on the NO position), which is anomalous given spot is moving away from the strike. The 30d IV has spiked from 60.7% to 72.3% — a +11.6pp increase — suggesting the market is pricing significantly higher probability of extreme moves in both directions. The oil_opt_iv_30d spike to 72.3% vs 90d at 60.2% creates a term-structure inversion that implies elevated near-term tail risk. The PM market is repricing the downside touch probability higher despite spot moving up, likely due to the IV spike increasing the probability of a round-trip. With PM YES at 0.60 (NO at 0.40) and the position at 50% loss, the thesis that PM was overpricing the downside touch is no longer supported — the IV spike has validated higher tail risk. The ONE_TOUCH_HIGH_EDGE_NO signal family has 0/1 wins and -2% avg P&L. Close to prevent further deterioration."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778794152516-60c7",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "closeReasonCategory": "profit_taking",
-        "evidenceColumns": [
-          "gold_gc_spot",
-          "gold_hl_funding_ann"
-        ],
-        "thesis": "GOLD short via HL perp has achieved +2.53% gain. The primary signal evidence shows: gold_gc_spot declined from 4,661 to 4,544 (-2.51%), and gold_hl_funding_ann has normalized sharply from 67.52% to 26.06% (-41.46pp, -61.4%). The funding normalization is the key thesis metric — at 26%, funding is still elevated but has normalized more than halfway toward neutral. The FUNDING_EXTREME_LONG signal has targetPct=5% and stopPct=2.5%. The position is at +2.53%, approaching the 5% target. However, the funding normalization from 67.5% to 26% represents substantial thesis completion. The gold_gld_pc_ratio has also dropped sharply from 1.006 to 0.606, suggesting significant options repositioning. With the position profitable and the primary evidence (funding normalization) showing substantial completion, taking profit here is appropriate. The FUNDING_EXTREME_LONG setup family has 6/14 wins at -0.81% avg — locking in a +2.53% winner improves the family average meaningfully."
+        "thesis": "WTI spot has risen from $96.88 (entry baseline) to $100.91, a +4.16% move that materially increases the probability of touching $90 on the downside within May. The ONE_TOUCH_HIGH_EDGE_NO thesis was predicated on WTI staying well above $90 with the NO contract repricing toward 1.0; instead WTI has broken above $100 and the PM YES price has moved from 0.40 entry to 0.61 current (52.5% loss). The signal-family evidence column oil_wti_spot shows sustained upward momentum with no reversal signal. The oil_opt_fwd_90d = 8.1 anomaly is flagged as a -3.2 std dev outlier and may indicate data quality issues, but the spot price move is unambiguous. Closing to prevent further loss as the thesis is invalidated by the spot trajectory."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -112,6 +81,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 2 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
   ]
 }

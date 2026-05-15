@@ -9510,3 +9510,46 @@ Key session observations: (1) OIL NO position (T-1778722157808-15xu) is being cl
 
 ---
 
+### 2026-05-15 18:29 UTC
+
+**Portfolio:** $99.14 total | Cash $95.14 | 4 open | P&L $0.1350 | 52% win rate (131 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 6.2pp (was -12.6, now -6.4)
+- [anomaly] oil_opt_fwd_90d = 8.1 is -3.2 std devs from mean since 2026-04-28 (90.05 ± 25.23)
+- [anomaly] hype_hl_oi = 1011894801 is 3.0 std devs from mean (833604853.54 ± 59248608.84)
+- [correlation_flip] BTC-OIL correlation shifted from 0.26 to -0.58
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key session observations (2026-05-15): 
+
+1. OIL NO POSITION FAILURE: The WTI $90 low-touch NO position is being closed at ~52.5% loss. WTI broke above $100 during the session (from $96.88 entry baseline), driven by what appears to be a genuine supply/geopolitical shock rather than mean reversion. The ONE_TOUCH_HIGH_EDGE_NO signal had only 0/1 clean trades (0% win rate) and this confirms the signal is exploratory and risky. The oil_opt_fwd_90d = 8.1 anomaly (-3.2 std devs) is a data quality flag that should have been a warning sign. Lesson: ONE_TOUCH_HIGH_EDGE_NO on oil is particularly dangerous when spot is already elevated and IV is spiking - the combination of high spot + high IV means the tail risk of touching lower strikes is actually reduced, not increased.
+
+2. GOLD SHORT PERFORMING: The FUNDING_EXTREME_LONG gold short (T-1778794152516-60c7) is at +2.19% P&L with gold declining from 4661 to 4560. The funding normalization from 67.5% to 14.55% is the primary driver. The position has room to run toward the 5% target as funding is still elevated. The gold_gld_pc_ratio drop from 1.006 to 0.631 is a context-only metric but suggests options market repositioning.
+
+3. HYPE LONG EARLY: The HYPE promoted hypothesis position (T-1778858963408-psx1) is up 0.34% with OI stable above 1B and funding normalizing. The 1.5% stop is tight - need to monitor closely. HYPE funding dropped from 10.95% to 3.61%, which is normalization but not reversal. The position is within thesis parameters.
+
+4. BTC SHORT PM NO HOLDING: The BTC $55k dip NO position (T-1778718867328-fb7r) is at +1.89% P&L. BTC has declined from ~81.4k to ~79.3k but remains well above $55k. The btc_ibit_pc_ratio spike from 0.433 to 0.72 during the session is a context-only metric showing increased put demand, but the thesis (BTC won't dip to $55k by year-end) remains intact.
+
+5. MACRO SHIFT: The macro composite moved from 44 (BEARISH) to 47 (NEUTRAL) during the session, driven by iran_p_deal_ye rising from 55% to 59.5% and fed_p_at_least_one_cut rising from 27.8% to 33.1%. This is a meaningful shift that could support risk assets near-term, but the BTC-OIL correlation flip to -0.58 suggests oil's move is idiosyncratic.
+
+6. HYPOTHESIS BACKLOG: 12/19 setup families still need more shadow tests. No new hypotheses proposed per protocol. The hype_oi_distribution_exhaustion_reversal family (H-201 etc.) has only 8/42 wins (19%) which is very weak - this family may be approaching kill threshold.
+
+7. RELATIVE VALUE: The heatmap shows strong buy_yes signals on ETH May contracts (3200, 3400, 3600, 2800, 2600) with edge pts of 3-6pts. These are interesting but ETH has no direct trading venue available and the signals are in the relative_value_heatmap family which has poor shadow performance (4/15 wins, -8% avg). Not acting on these.
+
+---
+

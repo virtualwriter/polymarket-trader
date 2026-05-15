@@ -12,23 +12,7 @@
         "evidenceColumns": [
           "oil_wti_spot"
         ],
-        "thesis": "OIL NO position thesis was that WTI would NOT hit $90 low in May — the underlying signal was a ONE_TOUCH_HIGH_EDGE_NO on the downside touch. WTI spot has rallied from $96.88 at entry to $100.59 (+3.83%), moving further away from the $90 downside strike, which should be favorable for the NO position. However, the PM YES price has moved from 0.40 to 0.60 (50% loss on the NO position), which is anomalous given spot is moving away from the strike. The 30d IV has spiked from 60.7% to 72.3% — a +11.6pp increase — suggesting the market is pricing significantly higher probability of extreme moves in both directions. The oil_opt_iv_30d spike to 72.3% vs 90d at 60.2% creates a term-structure inversion that implies elevated near-term tail risk. The PM market is repricing the downside touch probability higher despite spot moving up, likely due to the IV spike increasing the probability of a round-trip. With PM YES at 0.60 (NO at 0.40) and the position at 50% loss, the thesis that PM was overpricing the downside touch is no longer supported — the IV spike has validated higher tail risk. The ONE_TOUCH_HIGH_EDGE_NO signal family has 0/1 wins and -2% avg P&L. Close to prevent further deterioration."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778794152516-60c7",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "closeReasonCategory": "profit_taking",
-        "evidenceColumns": [
-          "gold_gc_spot",
-          "gold_hl_funding_ann"
-        ],
-        "thesis": "GOLD short via HL perp has achieved +2.53% gain. The primary signal evidence shows: gold_gc_spot declined from 4,661 to 4,544 (-2.51%), and gold_hl_funding_ann has normalized sharply from 67.52% to 26.06% (-41.46pp, -61.4%). The funding normalization is the key thesis metric — at 26%, funding is still elevated but has normalized more than halfway toward neutral. The FUNDING_EXTREME_LONG signal has targetPct=5% and stopPct=2.5%. The position is at +2.53%, approaching the 5% target. However, the funding normalization from 67.5% to 26% represents substantial thesis completion. The gold_gld_pc_ratio has also dropped sharply from 1.006 to 0.606, suggesting significant options repositioning. With the position profitable and the primary evidence (funding normalization) showing substantial completion, taking profit here is appropriate. The FUNDING_EXTREME_LONG setup family has 6/14 wins at -0.81% avg — locking in a +2.53% winner improves the family average meaningfully."
+        "thesis": "WTI spot has risen from $96.88 (entry baseline) to $100.91, a +4.16% move that materially increases the probability of touching $90 on the downside within May. The ONE_TOUCH_HIGH_EDGE_NO thesis was predicated on WTI staying well above $90 with the NO contract repricing toward 1.0; instead WTI has broken above $100 and the PM YES price has moved from 0.40 entry to 0.61 current (52.5% loss). The signal-family evidence column oil_wti_spot shows sustained upward momentum with no reversal signal. The oil_opt_fwd_90d = 8.1 anomaly is flagged as a -3.2 std dev outlier and may indicate data quality issues, but the spot price move is unambiguous. Closing to prevent further loss as the thesis is invalidated by the spot trajectory."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
