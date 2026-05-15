@@ -4,16 +4,15 @@
     {
       "instruction": {
         "action": "close",
-        "positionId": "T-1778794152516-60c7",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "closeReasonCategory": "profit_taking",
+        "positionId": "T-1778804969344-xd1q",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
-          "gold_gc_spot",
-          "gold_hl_funding_ann"
+          "btc_spot"
         ],
-        "thesis": "GOLD short (FUNDING_EXTREME_LONG) has achieved +2.16% gain. Gold spot has fallen from 4,661 to 4,561 (-2.15%), and the primary signal — extreme funding at 67.52% annualized — has normalized dramatically to 19.97% (a -70% decline). The funding normalization is the core thesis completion signal: crowded longs have been flushed, funding is no longer extreme, and the easy carry + mean reversion trade is largely done. The 5% target has not been hit but the signal family evidence shows thesis completion. With gold PM IV now elevated at 26.3% (vs 22.5% at entry) and gold_pm_settle_ev rising to 5,097 (vs 5,040 at entry), there is some upside risk if gold rebounds. Taking profit near the 2% gain level while the thesis evidence is clear."
+        "thesis": "BTC spot has declined from entry at 81,377 to 80,465 (-1.12%), approaching the 1.5% stop threshold. The signal-family evidence column (btc_spot) shows continued weakness with no reversal. The P/C normalization that triggered the trade has fully completed (0.799 → 0.433) but has not produced the predicted upside momentum. The thesis — that P/C normalization after a spike above 0.8 creates a continuation signal — has been tested and the directional prediction has not materialized. Closing before mechanical stop to preserve capital, as the promoted hypothesis setup family has only 0/1 clean live trade wins and the current price action contradicts the bullish thesis."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     },
@@ -29,7 +28,7 @@
           "oil_wti_spot",
           "oil_cl_pc_ratio"
         ],
-        "thesis": "OIL long (PC_RATIO_EXTREME_HIGH) has achieved +3.53% gain, approaching the 4% target. The primary signal evidence shows strong thesis completion: oil_wti_spot has risen from 97 to 100.42 (+3.6%) and oil_cl_pc_ratio has collapsed from 1.465 to 0.847 (-42%), fully normalizing from the extreme put-heavy positioning that triggered the contrarian long. The P/C ratio is now below 1.0 and no longer extreme. The signal thesis (heavy put buying → contrarian long) has fully played out. Closing near target to lock in gains before any reversal, as oil is now above $100 and the original contrarian catalyst is exhausted."
+        "thesis": "OIL long via PC_RATIO_EXTREME_HIGH: spot has moved from 97 to 100.5 (+3.62%), approaching the 4% target. The signal-family evidence strongly supports closing: oil_wti_spot is up 3.69% from baseline and oil_cl_pc_ratio has collapsed from 1.465 to 0.847 (-42%), confirming the contrarian thesis has fully played out. The P/C ratio is no longer extreme (0.847 is near neutral), meaning the original signal condition has resolved. PC_RATIO_EXTREME_HIGH is the strongest signal in the system (7/9 wins, 78% win rate, weight 0.74). Closing near target to lock in gains before potential reversal."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -99,8 +98,8 @@
         "stopPct": 3.5
       },
       "PROMOTED_HYPOTHESIS": {
-        "targetPct": 4,
-        "stopPct": 2
+        "targetPct": 3,
+        "stopPct": 1.5
       }
     }
   }

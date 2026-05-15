@@ -9303,3 +9303,32 @@ Strong session for the rule-based signals. The PC_RATIO_EXTREME_HIGH OIL long is
 
 ---
 
+### 2026-05-15 09:29 UTC
+
+**Portfolio:** $99.11 total | Cash $94.11 | 5 open | P&L $0.1104 | 52% win rate (129 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 6.8pp (was 2.5, now -4.3)
+- [anomaly] hype_hl_oi = 982788575 is 2.8 std devs from mean (830511621.46 ± 55066893.98)
+- [anomaly] gold_gld_pc_ratio = 1.006 is 2.5 std devs from mean (0.54 ± 0.19)
+- [correlation_flip] BTC-OIL correlation shifted from 0.25 to -0.59
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key observations from this session: (1) PC_RATIO_EXTREME_HIGH continues to be the system's strongest signal — the OIL long from P/C 1.47 has delivered ~3.6% with the ratio collapsing to 0.85, validating the contrarian thesis cleanly. This signal's 78% win rate and 0.74 weight are well-earned. (2) The PROMOTED_HYPOTHESIS BTC long (H-085) is failing — P/C normalization from 0.8 to 0.43 occurred as predicted but BTC spot moved against the position. This suggests the P/C exhaustion reversal setup may be better suited as a short signal (when P/C is extremely low, not high) or requires additional confirmation from funding/IV. Tightening PROMOTED_HYPOTHESIS stop to 1.5% and target to 3% to reflect the exploratory nature of this family (0/1 clean live trades). (3) GOLD short via FUNDING_EXTREME_LONG is working well (+2.29%) with gold declining from 4,661 to 4,555 and funding normalizing from 67.5% to 25%. The thesis is intact but funding has not yet fully normalized — holding. (4) OIL Polymarket NO position (T-1778722157808-15xu) is at +42.5% — WTI has surged above $100, making the $90 low touch extremely unlikely with only ~2 weeks to May expiry. This is a strong winner. (5) The BTC-OIL correlation flip to -0.59 is notable — oil's surge appears driven by geopolitical/supply factors rather than risk-on sentiment, which is consistent with the Iran peace probability staying elevated (55%) while oil rises. This decoupling may create opportunities. (6) Hypothesis backlog remains at 12/19 setup families needing tests — no new hypotheses proposed per system rules. (7) Gold P/C ratio at 1.006 remains 2.5 standard deviations above mean — this is a persistent anomaly that the GOLD short position is correctly positioned against.
+
+---
+
