@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-15T05:28:18.615Z",
+  "generatedAt": "2026-05-15T06:28:22.646Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -7,26 +7,26 @@
       "type": "PROMOTED_HYPOTHESIS",
       "asset": "BTC",
       "venue": "spot",
-      "direction": "long",
-      "strength": 1,
-      "confidence": 0.7,
-      "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-085] BTC P/C normalization after spike above 0.8 during momentum phases creates continuation signal",
-      "hypothesisId": "H-085",
-      "entryPrice": 80754,
+      "direction": "short",
+      "strength": 0.65,
+      "confidence": 0.42250000000000004,
+      "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-159] BTC pullback completion signal when drops stabilize above 70.5k with P/C normalization",
+      "hypothesisId": "H-159",
+      "entryPrice": 80457,
       "targetPct": 6,
       "stopPct": 3.5,
-      "expiryDays": 3
+      "expiryDays": 5
     },
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6716017336666666,
-      "confidence": 0.2854307368083333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 20.1pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
+      "strength": 0.6539468883333334,
+      "confidence": 0.27792742754166666,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.6pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 80754,
+      "entryPrice": 80457,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -42,11 +42,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6627482376666667,
-      "confidence": 0.28166800100833334,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.9pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6515297843333333,
+      "confidence": 0.27690015834166665,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.5pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 80754,
+      "entryPrice": 80457,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -66,7 +66,7 @@
       "confidence": 0.11264729302520399,
       "thesis": "BTC P/C ratio 0.43 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 80754,
+      "entryPrice": 80457,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -159,25 +159,6 @@
       ],
       "evidenceColumns": [
         "btc_spot"
-      ],
-      "reason": "LLM may advise exits for LLM-owned or promoted setups."
-    },
-    {
-      "positionId": "T-1778815740373-7b2q",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk",
-        "risk_stale",
-        "profit_taking"
-      ],
-      "evidenceColumns": [
-        "hype_spot"
       ],
       "reason": "LLM may advise exits for LLM-owned or promoted setups."
     }

@@ -4,16 +4,15 @@
     {
       "instruction": {
         "action": "close",
-        "positionId": "T-1778815740373-7b2q",
-        "asset": "HYPE",
+        "positionId": "T-1778804969344-xd1q",
+        "asset": "BTC",
         "venue": "spot",
         "direction": "long",
         "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
-          "hype_spot",
-          "hype_hl_funding_ann"
+          "btc_spot"
         ],
-        "thesis": "HYPE breakout continuation thesis (H-521) requires OI in top 15% of 24h range and spot above 24h SMA. OI has declined from the 1.031B peak at entry to 997M (-1.28% on spot), and funding has flipped negative (-5.87% annualized) — the opposite of the positive/neutral funding condition required for breakout continuation. Spot is now below the 24h average. The position is approaching the 2% stop and the thesis conditions are no longer met. Closing to avoid mechanical stop and preserve capital."
+        "thesis": "BTC spot has declined from entry 81,377 to 80,457 (-1.13%), approaching the 1.5% stop. The signal-family evidence shows btc_ibit_pc_ratio fully normalized from 0.799 at open to 0.433 and has been flat for 8+ snapshots — the P/C exhaustion reversal thesis has resolved without the expected price follow-through. With the P/C ratio no longer elevated and price drifting lower, the thesis is invalidated. Closing proactively before mechanical stop to preserve capital."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     },
@@ -29,7 +28,7 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "GOLD FUNDING_EXTREME_LONG short thesis has played out: gold_gc_spot declined from 4,661 to 4,589 (+1.55% gain on short) and gold_hl_funding_ann normalized from 67.52% to 6.83% — an 89.9% decline. The primary evidence columns both confirm thesis completion. Funding is no longer extreme (6.83% is near the baseline 5.48% HL floor), removing the carry advantage. With the thesis fully validated and the position at +1.55% (approaching the 5% target but with diminishing edge), closing to lock in gains before potential mean-reversion. Note: profit_taking is allowed for PROMOTED_HYPOTHESIS category but this is FUNDING_EXTREME_LONG — however the thesis is genuinely invalidated by funding normalization, so thesis_invalidated is the correct category."
+        "thesis": "GOLD short via FUNDING_EXTREME_LONG: gold_gc_spot has moved from 4,661 to 4,578 (-1.78% gain on short), and gold_hl_funding_ann has collapsed from 67.52% to 5.48% (-91.88% normalization). Both signal-family evidence columns confirm thesis completion: price moved in the expected direction AND the funding extreme that triggered the trade has fully normalized. The 5% target is not yet reached (1.79% P&L) but the thesis driver (extreme funding) is exhausted. However, since this is a FUNDING_EXTREME_LONG signal, profit-taking is not allowed via LLM close — mechanical target handles this. Withdrawing this close recommendation."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -51,7 +50,7 @@
         "stopPct": 3.5
       },
       "FUNDING_EXTREME_LONG": {
-        "targetPct": 4,
+        "targetPct": 5,
         "stopPct": 2.5
       },
       "FUNDING_EXTREME_SHORT": {
@@ -99,8 +98,8 @@
         "stopPct": 3.5
       },
       "PROMOTED_HYPOTHESIS": {
-        "targetPct": 6,
-        "stopPct": 3.5
+        "targetPct": 4,
+        "stopPct": 2
       }
     }
   }

@@ -9240,3 +9240,36 @@ Key observations from this session:
 
 ---
 
+### 2026-05-15 06:29 UTC
+
+**Portfolio:** $99.11 total | Cash $94.11 | 5 open | P&L $0.1104 | 52% win rate (129 trades)
+
+**Closed 1 trades:**
+- ❌ HYPE long via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS) → stop: $-0.0205 (-2.0%, market -0.0205, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 8.1pp (was -2.7, now 5.4)
+- [anomaly] hype_hl_oi = 986346313 is 2.9 std devs from mean (829690587.07 ± 54017643.70)
+- [anomaly] gold_gld_pc_ratio = 1.006 is 2.5 std devs from mean (0.54 ± 0.18)
+- [anomaly] hype_spot = 45.746 is 2.1 std devs from mean (41.18 ± 2.17)
+- [anomaly] amzn_hl_basis_pct = -0.83 is -2.1 std devs from mean (0.02 ± 0.41)
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key observations this session: (1) GOLD FUNDING_EXTREME_LONG short (T-1778794152516-60c7) is performing well with both signal-family evidence columns confirming thesis — gold_gc_spot down 1.78% and gold_hl_funding_ann collapsed 91.88% from 67.52% to 5.48%. This is a textbook FUNDING_EXTREME_LONG resolution. The mechanical 5% target should handle exit. (2) BTC PROMOTED_HYPOTHESIS long (T-1778804969344-xd1q) is failing — the P/C ratio normalized as predicted but price did not follow through. This is the second loss for the promoted_hypothesis setup family (shadow also lost -3.65%). The PROMOTED_HYPOTHESIS stop is being tightened from 3.5% to 2% to reflect the weak live track record; the target is also reduced from 6% to 4% since the setup hasn't demonstrated large wins. (3) OIL PC_RATIO_EXTREME_HIGH long (T-1778704145728-sjd7) continues working well (+2.04%) with P/C ratio collapsing from 1.47 to 0.85 — thesis intact, approaching 4% target. (4) OIL ONE_TOUCH_HIGH_EDGE_NO (T-1778722157808-15xu) is performing strongly (+30%) as WTI has risen from 96.88 to 98.98, making the $90 low touch increasingly unlikely. (5) BTC ONE_TOUCH_HIGH_EDGE_NO (T-1778718867328-fb7r) is slightly positive (+1.89%) with BTC at 80,457 — the $55k dip contract remains far out of the money. (6) HYPE is showing strong momentum with OI surging to 986M and spot up 7.5% from window open — H-521 conditions appear met but no capital available for new entry. (7) The hypothesis backlog remains at 12/19 setup families needing tests with 10 pending — no new hypotheses proposed per protocol. (8) Gold P/C ratio at 1.006 remains a 2.5σ anomaly — this elevated put-call ratio in gold options is worth monitoring as a potential PC_RATIO_EXTREME_HIGH signal for gold if it persists, but gold is currently in a downtrend so the contrarian long would be blocked by trend filters.
+
+---
+
