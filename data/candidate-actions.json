@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-15T11:28:18.432Z",
+  "generatedAt": "2026-05-15T13:28:27.700Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.42250000000000004,
       "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-159] BTC pullback completion signal when drops stabilize above 70.5k with P/C normalization",
       "hypothesisId": "H-159",
-      "entryPrice": 80568,
+      "entryPrice": 80033,
       "targetPct": 3,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -22,11 +22,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6647245533333332,
-      "confidence": 0.2825079351666666,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.9pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.643617556,
+      "confidence": 0.2735374613,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 80568,
+      "entryPrice": 80033,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -42,11 +42,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6251698783333333,
-      "confidence": 0.2656971982916666,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.8pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6108640523333333,
+      "confidence": 0.25961722224166667,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 80568,
+      "entryPrice": 80033,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -66,7 +66,7 @@
       "confidence": 0.11264729302520399,
       "thesis": "BTC P/C ratio 0.43 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 80568,
+      "entryPrice": 80033,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -76,11 +76,11 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.0005714285714285592,
-      "confidence": 0.0003581034031434246,
-      "thesis": "GOLD HL funding 15.0% annualized — crowded longs. Fade.",
+      "strength": 0.06371428571428572,
+      "confidence": 0.0399285294504927,
+      "thesis": "GOLD HL funding 17.2% annualized — crowded longs. Fade.",
       "hypothesisId": null,
-      "entryPrice": 4564,
+      "entryPrice": 4556,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
@@ -139,25 +139,6 @@
         "gold_hl_funding_ann"
       ],
       "reason": "Rule-based signal exits require approved category and signal-family evidence."
-    },
-    {
-      "positionId": "T-1778804969344-xd1q",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk",
-        "risk_stale",
-        "profit_taking"
-      ],
-      "evidenceColumns": [
-        "btc_spot"
-      ],
-      "reason": "LLM may advise exits for LLM-owned or promoted setups."
     }
   ]
 }
