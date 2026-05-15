@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-15T13:29:25.046Z",
+  "generatedAt": "2026-05-15T14:29:36.682Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,29 +7,15 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "strength": 0.65,
-      "confidence": 0.42250000000000004,
-      "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-159] BTC pullback completion signal when drops stabilize above 70.5k with P/C normalization",
-      "hypothesisId": "H-159",
-      "entryPrice": 80033,
-      "targetPct": 3,
-      "stopPct": 1.5,
-      "expiryDays": 5
-    },
-    {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.643617556,
-      "confidence": 0.2735374613,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.3pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.596566967,
+      "confidence": 0.253540960975,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.9pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 80033,
+      "entryPrice": 79055,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +31,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6108640523333333,
-      "confidence": 0.25961722224166667,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.3pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5743012953333333,
+      "confidence": 0.24407805051666664,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.2pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 80033,
+      "entryPrice": 79055,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -61,33 +47,33 @@
       }
     },
     {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "strength": 0.22333333333333336,
-      "confidence": 0.11264729302520399,
-      "thesis": "BTC P/C ratio 0.43 — heavy call buying → contrarian short.",
-      "hypothesisId": null,
-      "entryPrice": 80033,
-      "targetPct": 5,
-      "stopPct": 2,
-      "expiryDays": 5
-    },
-    {
       "type": "FUNDING_EXTREME_LONG",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.06371428571428572,
-      "confidence": 0.0399285294504927,
-      "thesis": "GOLD HL funding 17.2% annualized — crowded longs. Fade.",
+      "strength": 0.06571428571428574,
+      "confidence": 0.04118189136149472,
+      "thesis": "GOLD HL funding 17.3% annualized — crowded longs. Fade.",
       "hypothesisId": null,
-      "entryPrice": 4556,
+      "entryPrice": 4557,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
       "leverage": 1
+    },
+    {
+      "type": "PM_EV_ABOVE_SPOT",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.019518057048890026,
+      "confidence": 0.011222882803111765,
+      "thesis": "BTC PM EV ($85688) is 8.4% above spot ($79055). Market expects upside.",
+      "hypothesisId": null,
+      "entryPrice": 79055,
+      "targetPct": 4,
+      "stopPct": 4,
+      "expiryDays": 14
     }
   ],
   "rejectedLlmActions": [
@@ -98,12 +84,12 @@
         "asset": "GOLD",
         "venue": "hyperliquid",
         "direction": "short",
-        "closeReasonCategory": "profit_taking",
+        "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "GOLD short has achieved 2.27% gain with spot down 2.25% from entry (4661 to 4556) and funding collapsed from 67.52% to 17.23% — the primary thesis signal (extreme funding normalization) has largely played out. Funding is now at 17.23%, well within normal range and no longer extreme. The 5% target has not been reached but the signal family evidence (gold_hl_funding_ann normalizing from 67.5% toward baseline) indicates the crowded-long unwind is substantially complete. Closing to lock in gains before potential mean reversion in gold spot, which has already declined significantly. Note: mechanical target is 5% and stop is 2.5%; closing early as thesis evidence (funding normalization) is the primary driver and it has largely resolved."
+        "thesis": "GOLD short thesis (FUNDING_EXTREME_LONG) has largely played out: gold_gc_spot declined from 4661 to 4557 (-2.2%, approaching the 5% target), and gold_hl_funding_ann collapsed from 67.5% to 17.3% (-74%), confirming the crowded-long unwind. The signal-family evidence shows both primary evidence columns have moved substantially in the thesis direction. With funding now at 17.3% (no longer extreme), the carry advantage is diminished and the mean-reversion catalyst is largely exhausted. Taking profit near the mechanical target rather than risking reversal."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

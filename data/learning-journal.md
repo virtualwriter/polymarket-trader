@@ -9425,3 +9425,30 @@ Key observations from this session: (1) GOLD FUNDING_EXTREME_LONG short is the s
 
 ---
 
+### 2026-05-15 14:29 UTC
+
+**Portfolio:** $99.14 total | Cash $96.14 | 3 open | P&L $0.1350 | 52% win rate (131 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1009309287 is 3.1 std devs from mean (832183910.45 ± 57205291.71)
+- [correlation_flip] BTC-OIL correlation shifted from 0.25 to -0.58
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key observations this session: (1) GOLD FUNDING_EXTREME_LONG short is the clear winner — funding collapsed 74% from 67.5% to 17.3% annualized and spot declined 2.2% from entry. Closing near the 5% mechanical target as the thesis is substantially exhausted. The crowded-long unwind pattern continues to be the most reliable signal in the portfolio. (2) OIL ONE_TOUCH_HIGH_EDGE_NO position (WTI LOW $90 in May) is under pressure with WTI now at $99.86, up 3.1% from entry. The contract asks whether WTI will dip to $90 in May — with spot at ~$100 and only ~2 weeks left in May, the NO thesis remains structurally sound (WTI would need to drop 10%+ to hit $90), but the rising spot is uncomfortable. The PM YES price has moved from 0.40 to 0.56, a 40% adverse move. Holding per the ONE_TOUCH_HIGH_EDGE_NO protocol (no mechanical stop until 100%). (3) BTC ONE_TOUCH_HIGH_EDGE_NO ($55k dip by Dec 2026) remains at 0.54 YES, essentially flat from 0.53 entry. BTC spot declining from ~81.4k to ~79k is actually mildly favorable for this position (lower spot = lower probability of dipping to $55k is wrong — actually lower spot increases the probability of further decline). However, the contract is asking about a dip to $55k from current ~$79k, which is still a 30%+ decline. PM YES at 0.455 (from the instrument snapshot) suggests the market prices this at ~45.5% probability — still elevated. Monitoring. (4) Macro composite improved from BEARISH (44) to NEUTRAL (47) with fed cut probability rising to 33.1% — a modest dovish shift that could support risk assets. Iran peace probability remains high (75 score, 61% deal probability). (5) HYPE OI surged to a new high of ~1.044B before pulling back to ~1.009B, with erratic funding. The OI surge followed by pullback and the sharp spot decline at T13-T14 suggests the breakout momentum is stalling. No new trades initiated given the hypothesis backlog (12/19 setup families need more tests) and the instruction to not propose new hypotheses while the backlog is incomplete. (6) The relative-value heatmap shows interesting edges in ETH May contracts (e.g., ETH $2,800 YES at 3.6¢ with model prob 14.6% = +10.6pt edge) but ETH has extreme perp funding flags and the setup family for these contracts is not yet validated. Avoiding until the pm_odds_underlying_payoff_cap family accumulates more test data.
+
+---
+

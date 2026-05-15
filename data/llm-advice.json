@@ -8,12 +8,12 @@
         "asset": "GOLD",
         "venue": "hyperliquid",
         "direction": "short",
-        "closeReasonCategory": "profit_taking",
+        "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "GOLD short has achieved 2.27% gain with spot down 2.25% from entry (4661 to 4556) and funding collapsed from 67.52% to 17.23% — the primary thesis signal (extreme funding normalization) has largely played out. Funding is now at 17.23%, well within normal range and no longer extreme. The 5% target has not been reached but the signal family evidence (gold_hl_funding_ann normalizing from 67.5% toward baseline) indicates the crowded-long unwind is substantially complete. Closing to lock in gains before potential mean reversion in gold spot, which has already declined significantly. Note: mechanical target is 5% and stop is 2.5%; closing early as thesis evidence (funding normalization) is the primary driver and it has largely resolved."
+        "thesis": "GOLD short thesis (FUNDING_EXTREME_LONG) has largely played out: gold_gc_spot declined from 4661 to 4557 (-2.2%, approaching the 5% target), and gold_hl_funding_ann collapsed from 67.5% to 17.3% (-74%), confirming the crowded-long unwind. The signal-family evidence shows both primary evidence columns have moved substantially in the thesis direction. With funding now at 17.3% (no longer extreme), the carry advantage is diminished and the mean-reversion catalyst is largely exhausted. Taking profit near the mechanical target rather than risking reversal."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
