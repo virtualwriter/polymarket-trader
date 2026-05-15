@@ -9332,3 +9332,35 @@ Key observations from this session: (1) PC_RATIO_EXTREME_HIGH continues to be th
 
 ---
 
+### 2026-05-15 10:29 UTC
+
+**Portfolio:** $99.15 total | Cash $95.15 | 4 open | P&L $0.1505 | 52% win rate (130 trades)
+
+**Closed 1 trades:**
+- ✅ OIL long via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH) → target: +$0.0401 (4.0%, market 0.0401, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 7.7pp (was -14.3, now -6.6)
+- [anomaly] hype_hl_oi = 985881039 is 2.8 std devs from mean (830913092.83 ± 55558459.68)
+- [anomaly] gold_gld_pc_ratio = 1.006 is 2.4 std devs from mean (0.54 ± 0.19)
+- [correlation_flip] BTC-OIL correlation shifted from 0.25 to -0.59
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key observations this session: (1) GOLD FUNDING_EXTREME_LONG short (T-1778794152516-60c7) is working well — spot down 2.21% and funding normalized from 67.5% to 25.2%. This is the cleanest trade in the book. Hold for the 5% mechanical target. (2) BTC PROMOTED_HYPOTHESIS long (T-1778804969344-xd1q) is failing — the P/C normalization signal (H-085) resolved without producing the predicted upside. BTC has drifted lower -1.06% from entry. Closing proactively before the 1.5% mechanical stop to preserve capital and acknowledge the thesis did not play out. This is a useful data point: P/C ratio normalization from extreme levels does not reliably predict upside continuation in the current bearish macro regime (macro_composite=44, BEARISH, Fed VERY HAWKISH). (3) OIL ONE_TOUCH_HIGH_EDGE_NO (T-1778722157808-15xu) — WTI has broken above $100 (from $96.88 at entry to $100.06), which is adverse for the NO on 'WTI hit LOW $90 in May' contract. However, the contract is about WTI hitting a LOW of $90, not a high — so WTI moving higher actually makes it LESS likely that WTI will dip to $90 in May. The current price at $100+ means the market needs to drop 10%+ in the remaining days of May to hit $90. The PM YES price has moved from ~0.60 to 0.56 (favorable for our NO position). The thesis remains intact — hold. (4) BTC ONE_TOUCH_HIGH_EDGE_NO (T-1778718867328-fb7r) — BTC spot has risen slightly from 79,548 to 80,515 (+1.22%), which is adverse for the NO on 'BTC dip to $55,000 by Dec 31, 2026'. However, BTC at $80,515 still needs to fall 32% to hit $55,000. The PM YES price is at 0.54 (we entered NO at 0.53), essentially flat. The thesis remains intact — hold. (5) Oil IV spike to 72.8pp (30d) at T08 was notable — the BTC-OIL correlation flipped from +0.25 to -0.59, consistent with oil moving on its own geopolitical/supply dynamics while BTC consolidates. The oil IV spike has since partially compressed back to 65.1pp. (6) Hypothesis backlog: 12/19 setup families need more shadow tests. No new hypotheses proposed this session per the rules — focus remains on completing the existing backlog. (7) The GOLD PM settle EV rising to $5,199 while spot is at $4,558 is a large gap (~14%), but per the rules this is a contaminated/drifting PM bucket metric and should not be used as a close signal for the GOLD short. The funding normalization and spot decline are the valid evidence columns.
+
+---
+
