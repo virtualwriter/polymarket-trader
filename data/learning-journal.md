@@ -9089,3 +9089,49 @@ Key session observations (2026-05-14T09 to 2026-05-15T00):
 
 ---
 
+### 2026-05-15 01:29 UTC
+
+**Portfolio:** $99.09 total | Cash $93.09 | 6 open | P&L $0.0894 | 52% win rate (127 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 5.7pp (was -0.6, now -6.3)
+- [anomaly] hype_hl_oi = 994977970 is 3.3 std devs from mean (827746616.18 ± 50793638.81)
+- [anomaly] gold_gld_pc_ratio = 1.006 is 2.6 std devs from mean (0.53 ± 0.18)
+- [anomaly] hype_spot = 45.728 is 2.2 std devs from mean (41.12 ± 2.12)
+- [correlation_flip] BTC-OIL correlation shifted from 0.24 to -0.61
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key session observations (2026-05-15T01):
+
+1. GOLD FUNDING SHORT THESIS COMPLETED: The FUNDING_EXTREME_LONG short on GOLD (T-1778794152516-60c7) opened at 4661 with funding at 67.52% annualized. Funding has now normalized to 8.8% — an 87% decline — which is the primary thesis completion signal. Gold spot moved -0.92% in our favor. Closing to lock the gain rather than waiting for the 5% target, as the thesis driver (extreme funding) has fully resolved and holding risks funding reversal. This is a clean example of the FUNDING_EXTREME_LONG setup working as designed.
+
+2. HYPE BREAKOUT AT RECORD OI: HYPE OI reached ~995M, which is 3.3 standard deviations above the 14-snapshot mean of ~828M. This is the highest OI observed in the dataset. The H-521 promoted hypothesis is performing (+2.83% on T-1778786973532-d1pw), but record OI levels historically precede distribution phases. Taking profit near the 4% target with OI at statistical extremes is prudent. The hypothesis itself remains valid — the setup worked — but the risk/reward at record OI favors exit.
+
+3. BTC P/C NORMALIZATION WORKING: The IBIT P/C ratio collapsed from 0.799 to 0.433 over the session, consistent with H-085 (BTC P/C normalization after spike above 0.8 creates continuation signal). BTC spot rose +2.3% from the session open. The BTC long T-1778804969344-xd1q opened at $81,377 is only +0.02% because it was opened late in the session after most of the move. The thesis remains intact — P/C at 0.433 is normalized, BTC is consolidating above $81k.
+
+4. OIL POSITIONS PERFORMING: The OIL spot long (T-1778704145728-sjd7, +1.3%) and OIL Polymarket NO (T-1778722157808-15xu, +15%) are both working. The P/C ratio collapsed from 1.465 to 0.847 (-42%), confirming the contrarian long thesis. The Polymarket NO on WTI hitting $90 low in May is well in the money with WTI at $98.26. Both positions should be held toward their targets.
+
+5. BTC POLYMARKET NO POSITION: T-1778718867328-fb7r (NO on BTC dipping to $55k by Dec 2026) is +1.89% with BTC at $81,396. The underlying has moved further from the strike, which is favorable. Hold.
+
+6. HYPOTHESIS BACKLOG: 12/19 setup families need more shadow tests with 10 pending. No new hypotheses proposed per the backlog constraint. Focus remains on accumulating condition-triggered tests for existing families.
+
+7. RELATIVE VALUE HEATMAP: Several ETH May contracts show large model edges (ETH $3,200 in May: +17.8 edge pts, ETH $3,400: +11 edge pts) but ETH has extreme perp funding flags and no listed options mapping for IV calibration. These edges may be model artifacts from the IV extrapolation. Not acting on these without better IV calibration for ETH.
+
+8. GOLD FUNDING PATTERN: The gold_hl_funding_ann showed extreme oscillation throughout the session (ranging from 5.48% to 67.52%), which is consistent with the gold funding oscillation hypotheses (H-278, H-281, H-417). The normalization from 67.52% to 8.8% in ~4 hours is rapid and confirms the mean-reversion thesis for extreme funding spikes.
+
+---
+
