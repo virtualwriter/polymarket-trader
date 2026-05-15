@@ -9626,3 +9626,31 @@ Key session observations: (1) OIL position T-1778722157808-15xu is the most urge
 
 ---
 
+### 2026-05-15 21:29 UTC
+
+**Portfolio:** $99.14 total | Cash $94.14 | 5 open | P&L $0.1350 | 52% win rate (131 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 5.1pp (was -12.6, now -17.7)
+- [anomaly] hype_hl_oi = 999442624 is 2.7 std devs from mean (834969582.91 ± 61062948.25)
+- [correlation_flip] BTC-OIL correlation shifted from 0.26 to -0.57
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key session observations (2026-05-15): (1) GOLD FUNDING_EXTREME_LONG short is the standout performer — funding normalized 80% from entry (67.5% → 13.2%) and spot is down 2.5%. Closing early to lock in gains as the primary signal is largely exhausted; the remaining 2.5% to the mechanical target carries meaningful reversal risk now that funding is no longer extreme. This is a lesson: when the signal-family evidence (funding) normalizes this completely, the edge is gone even if the mechanical target hasn't been hit. (2) OIL ONE_TOUCH_HIGH_EDGE_NO short is up 52.5% — WTI has continued rising to $101.16 (well above the $90 strike), and the PM market has repriced the NO from 0.60 to 0.39. This is working as expected; the contract expires June 1 and the thesis remains intact. Hold. (3) BTC has pulled back ~2% from session highs with HL funding flipping sharply negative (-11.11%). This is consistent with the BTC long thesis (H-145, put-call exhaustion reversal) — negative funding means shorts are paying longs, which is carry-positive for the long. The position is essentially flat; hold within the 1.5% stop. (4) HYPE long is flat (-0.12%) with OI at 999M (statistically elevated). The breakout/OI surge momentum thesis (H-521) requires OI to remain elevated and spot to hold near 7d highs. Both conditions are met. Hold within the 2% stop. (5) Macro composite has risen from BEARISH (44) to NEUTRAL (47) during the session — a meaningful shift that supports the existing long-biased positions in BTC and HYPE. (6) Oil IV spike to 77.1% (30d) is statistically extreme and warrants monitoring — the cross-asset positioning exhaustion hypotheses (H-440, H-501) predict a multi-asset bounce within 5-7 days. No new trades initiated due to hypothesis backlog (12/19 setup families still need more tests). (7) No new hypotheses proposed per backlog rules — existing setup families need more condition-triggered shadow tests before new variants are warranted.
+
+---
+
