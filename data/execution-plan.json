@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-15T01:29:22.783Z",
+  "generatedAt": "2026-05-15T03:29:00.367Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.7,
       "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-085] BTC P/C normalization after spike above 0.8 during momentum phases creates continuation signal",
       "hypothesisId": "H-085",
-      "entryPrice": 81396,
+      "entryPrice": 81180,
       "targetPct": 6,
       "stopPct": 3.5,
       "expiryDays": 21
@@ -29,7 +29,7 @@
       "confidence": 0.5526086956521739,
       "thesis": "[PROMOTED HYPE breakout / OI surge momentum via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 45.728,
+      "entryPrice": 46.418,
       "targetPct": 6,
       "stopPct": 3.5,
       "expiryDays": 21
@@ -39,11 +39,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.7047012709999999,
-      "confidence": 0.299498040175,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 21.1pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
+      "strength": 0.6902596126666667,
+      "confidence": 0.29336033538333334,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 20.7pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
       "hypothesisId": null,
-      "entryPrice": 81396,
+      "entryPrice": 81180,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -59,11 +59,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6501168143333333,
-      "confidence": 0.2762996460916667,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.5pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6748426626666666,
+      "confidence": 0.2868081316333333,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 20.2pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
       "hypothesisId": null,
-      "entryPrice": 81396,
+      "entryPrice": 81180,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -88,22 +88,7 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "GOLD short thesis was FUNDING_EXTREME_LONG: gold_hl_funding_ann spiked to 67.52% at entry. Funding has now normalized to 8.8% (a -86.97% decline), which is the primary thesis completion signal for this setup family. The signal-family evidence shows gold_gc_spot moved from 4661 to 4618 (-0.92%) and gold_hl_funding_ann collapsed from 67.52% to 8.8%. The funding normalization is the thesis completion event — the crowded long unwind has occurred. Holding further risks a funding reversal to negative territory which would hurt the short carry. Target of 5% is not yet reached but the thesis driver (extreme funding) has resolved. Close to lock in the ~0.93% gain and free capital."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778786973532-d1pw",
-        "asset": "HYPE",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "profit_taking",
-        "evidenceColumns": [
-          "hype_spot"
-        ],
-        "thesis": "HYPE long via H-521 promoted hypothesis: hype_spot has moved from 44.471 to 45.728 (+2.83%), approaching the 4% target. HYPE OI has surged to a record ~995M (3.3σ above mean), which is the top of the observed distribution. At record OI levels, the risk of distribution/reversal increases significantly. The promoted hypothesis H-521 conditions (OI in top 15%, spot within 6% of 7d high, funding normalized) remain met, but the OI at 3.3σ above mean represents an extreme that historically precedes distribution. Taking profit near the target with OI at record levels is prudent risk management for this PROMOTED_HYPOTHESIS signal type."
+        "thesis": "FUNDING_EXTREME_LONG thesis has been substantially realized: gold_hl_funding_ann has collapsed from 67.52% to 5.48% (-91.88% normalization), which is the primary signal-family evidence for this trade. Gold spot has moved -0.97% in our favor to $4,616. The funding has normalized to near-baseline levels (5.48% is the floor/default rate seen across assets), meaning the crowded-long squeeze thesis is complete. Continuing to hold exposes us to reversal risk without the funding carry advantage that justified the short. Taking profit at ~0.97% gain with thesis fully played out."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -111,6 +96,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 2 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
   ]
 }
