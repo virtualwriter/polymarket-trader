@@ -9483,3 +9483,30 @@ Key session observations: (1) GOLD FUNDING_EXTREME_LONG short is performing well
 
 ---
 
+### 2026-05-15 16:29 UTC
+
+**Portfolio:** $99.14 total | Cash $95.14 | 4 open | P&L $0.1350 | 52% win rate (131 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1013936485 is 3.1 std devs from mean (833150032.25 ± 58634936.84)
+- [correlation_flip] BTC-OIL correlation shifted from 0.26 to -0.58
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key session observations: (1) OIL NO position (T-1778722157808-15xu) is being closed at -50% loss. The thesis was a ONE_TOUCH_HIGH_EDGE_NO on WTI hitting $90 low in May. Despite spot rallying to $100.59 (moving away from the $90 strike), PM YES repriced from 0.40 to 0.60 — driven by a massive 30d IV spike from 60.7% to 72.3%. This is a critical lesson: when near-term IV spikes sharply (term-structure inversion), PM markets correctly reprice tail probabilities higher even when spot moves away from the strike. The IV spike dominates the directional spot move for near-term touch contracts. The ONE_TOUCH_HIGH_EDGE_NO signal family needs to incorporate IV regime checks — avoid entering when 30d IV is already elevated or when 30d/90d IV spread is inverted. (2) GOLD short (T-1778794152516-60c7) is being closed at +2.53% profit. The FUNDING_EXTREME_LONG thesis has substantially played out: funding normalized from 67.5% to 26% (-61%), spot declined 2.51%. Locking in profit before potential mean-reversion of the funding normalization. The gold_gld_pc_ratio drop from 1.006 to 0.606 is a notable secondary signal — this sharp P/C collapse during a gold decline suggests options market repositioning that may accelerate further moves. (3) HYPE long (T-1778858963408-psx1) is being held. OI at 3.1σ anomaly high is a strong confirmation of the H-521 breakout/OI surge momentum setup. The -0.5% drawdown is within the 1.5% stop. The PROMOTED_HYPOTHESIS targetPct is being raised from 3% to 4% to better capture momentum setups that have shown larger moves in the hypothesis test history. (4) BTC NO position (T-1778718867328-fb7r) is being held. The IBIT P/C ratio spike from 0.433 to 0.652 at T14 (then settling to 0.589) is consistent with H-148 put-call exhaustion reversal playing out — BTC has declined 2.7% from session highs. The ONE_TOUCH_HIGH_EDGE_NO on BTC $55k downside is not directly affected by this price action. (5) No new hypotheses proposed — the backlog of 12 setup families needing tests must be cleared first. The oil IV term-structure inversion pattern (30d IV >> 90d IV during spot spikes) is worth tracking as a potential new condition modifier for existing oil hypotheses, but will be incorporated as a variant test rather than a new family.
+
+---
+

@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-15T15:28:20.586Z",
+  "generatedAt": "2026-05-15T16:28:24.500Z",
   "dataFreshness": {
-    "valuationRows": 391,
-    "latestValuationAt": "2026-05-15T15",
-    "macroRows": 391,
+    "valuationRows": 392,
+    "latestValuationAt": "2026-05-15T16",
+    "macroRows": 392,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-15T15"
+    "latestInstrumentSnapshotAt": "2026-05-15T16"
   },
   "portfolio": {
-    "cash": 96.135,
-    "openPositions": 3,
+    "cash": 95.135,
+    "openPositions": 4,
     "realizedPnl": 0.135,
     "totalTrades": 131,
     "winRatePct": 51.9,
-    "unrealizedPnl": 0.5525
+    "unrealizedPnl": 0.5736
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": 1.89,
       "currentPrice": 0.54,
-      "underlyingPrice": 79161,
+      "underlyingPrice": 79192,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -38,9 +38,9 @@
       "venue": "polymarket",
       "direction": "short",
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-      "pnlPct": 45,
-      "currentPrice": 0.58,
-      "underlyingPrice": 100.33,
+      "pnlPct": 50,
+      "currentPrice": 0.6,
+      "underlyingPrice": 100.59,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -54,15 +54,31 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 2.42,
-      "currentPrice": 4549,
-      "underlyingPrice": 4549,
+      "pnlPct": 2.53,
+      "currentPrice": 4544,
+      "underlyingPrice": 4544,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "gold_gc_spot",
         "gold_hl_funding_ann"
+      ]
+    },
+    {
+      "positionId": "T-1778858963408-psx1",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "pnlPct": -0.5,
+      "currentPrice": 43.902,
+      "underlyingPrice": 43.902,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "hype_spot"
       ]
     }
   ],
