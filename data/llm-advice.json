@@ -12,7 +12,7 @@
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has declined from entry at 81,377 to 80,515 (-1.06%), approaching the 1.5% mechanical stop. The signal-family evidence column (btc_spot) shows continued weakness with no reversal. The ibit_pc_ratio that triggered the trade (H-085 P/C normalization after spike above 0.8) has fully normalized to 0.433 and has been flat for 10+ snapshots — the normalization event is complete and did not produce the predicted upside. The position is a PROMOTED_HYPOTHESIS trade with a 1.5% stop; with spot at -1.06% and no evidence of reversal, closing now to avoid hitting the mechanical stop and to preserve capital given the thesis has not played out."
+        "thesis": "BTC spot has declined from entry at 81,377 to 80,568 (-0.99%), approaching the 1.5% stop threshold. The H-085 thesis (P/C normalization after spike above 0.8) has not materialized — IBIT P/C ratio has remained flat at 0.433 throughout the session rather than normalizing upward from an elevated level. The signal-family evidence (btc_spot) shows continued weakness with no reversal catalyst. Closing to avoid stop-out and preserve capital given the thesis has not confirmed."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     },
@@ -28,7 +28,7 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "The FUNDING_EXTREME_LONG short thesis has played out well: gold_gc_spot has declined from 4,661 at entry to 4,558 (-2.21%), and gold_hl_funding_ann has normalized dramatically from 67.52% to 25.2% (-62.7%). The position is at +2.23% P&L, approaching the 5% target but with the primary signal (extreme funding) now substantially normalized. The funding at 25.2% is still elevated but no longer in the extreme territory that triggered the trade. With the 5% target not yet reached but the thesis largely resolved, and given the FUNDING_EXTREME_LONG signal family has a 5% target, I am recommending holding — however, the gold_pm_settle_ev has risen from 5,040 to 5,199 (+3.15%) which is a context-only metric suggesting upside pressure. Keeping the position open as the mechanical target has not been hit and funding remains above baseline. CORRECTION: Do not close — thesis still partially intact with funding at 25.2% and spot down 2.21%. Hold for mechanical target."
+        "thesis": "The GOLD FUNDING_EXTREME_LONG short has achieved strong thesis confirmation: gold_gc_spot declined from 4,661 to 4,564 (-2.08%) and gold_hl_funding_ann normalized from 67.52% to 15.02% (-77.75%). Both signal-family evidence columns have moved decisively in the predicted direction. The position is at +2.1% P&L approaching the 5% target, but with funding now at 15% (no longer extreme), the carry advantage is diminishing and the primary thesis driver (crowded longs unwinding) has largely played out. Taking profit here rather than risking reversal as funding normalizes further."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

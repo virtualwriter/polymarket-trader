@@ -9364,3 +9364,31 @@ Key observations this session: (1) GOLD FUNDING_EXTREME_LONG short (T-1778794152
 
 ---
 
+### 2026-05-15 11:29 UTC
+
+**Portfolio:** $99.15 total | Cash $95.15 | 4 open | P&L $0.1505 | 52% win rate (130 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 980199580 is 2.7 std devs from mean (831297851.81 ± 56000698.20)
+- [anomaly] gold_gld_pc_ratio = 1.006 is 2.4 std devs from mean (0.55 ± 0.19)
+- [correlation_flip] BTC-OIL correlation shifted from 0.25 to -0.59
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Session 2026-05-15T11: Two closes recommended. (1) GOLD short (T-1778794152516-60c7): The FUNDING_EXTREME_LONG thesis played out cleanly — gold_hl_funding_ann collapsed from 67.52% to 15.02% and spot fell 2.08%. With funding no longer extreme, the carry advantage is gone and the primary thesis driver has resolved. Taking profit near the 2.1% mark rather than holding for the full 5% target given diminishing edge. This is a clean win for the FUNDING_EXTREME_LONG signal family. (2) BTC long (T-1778804969344-xd1q): The H-085 promoted hypothesis (P/C normalization after spike above 0.8) has not confirmed — IBIT P/C stayed flat at 0.433 throughout the session rather than normalizing from an elevated spike. BTC spot has drifted -0.99% toward the 1.5% stop. Closing proactively to avoid mechanical stop-out and preserve capital. This is a loss for the PROMOTED_HYPOTHESIS signal family and reinforces that H-085 trigger conditions need to be more precisely defined (actual spike above 0.8 at entry, not just a recent historical spike). The OIL NO position (T-1778722157808-15xu) remains valid — WTI is at $99.58, well above the $90 strike, and the position is +30% P&L. The BTC NO position (T-1778718867328-fb7r) also holds — BTC at 80,568 is far from the $55,000 strike. No new hypotheses proposed given the backlog of 12 setup families needing shadow tests. Key macro observation: macro_composite ticked from BEARISH (44) to NEUTRAL (46) with fed_p_at_least_one_cut rising to 33.1% and iran_p_deal_ye rising to 61% — this is a mild positive shift but not enough to change positioning. BTC-OIL correlation flip to -0.59 is notable and worth monitoring as a potential regime indicator.
+
+---
+
