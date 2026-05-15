@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-15T18:29:28.266Z",
+  "generatedAt": "2026-05-15T19:29:46.395Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,15 +7,43 @@
   "llmCloses": [],
   "entrySignals": [
     {
+      "type": "PROMOTED_HYPOTHESIS",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.6739130434782609,
+      "confidence": 0.5526086956521739,
+      "thesis": "[PROMOTED HYPE breakout / OI surge momentum via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
+      "hypothesisId": "H-521",
+      "entryPrice": 44.867,
+      "targetPct": 4,
+      "stopPct": 1.5,
+      "expiryDays": 7
+    },
+    {
+      "type": "PROMOTED_HYPOTHESIS",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.65,
+      "confidence": 0.45499999999999996,
+      "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-145] BTC momentum exhaustion confirmation when P/C ratio spike above 0.4 after staying below 0.4 during new highs creates 3-5 day pullback acceleration as systematic call unwind begins",
+      "hypothesisId": "H-145",
+      "entryPrice": 79093,
+      "targetPct": 4,
+      "stopPct": 1.5,
+      "expiryDays": 3
+    },
+    {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6025306846666666,
-      "confidence": 0.2560755409833333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.1pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.594354805,
+      "confidence": 0.25260079212500003,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.8pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 79268,
+      "entryPrice": 79093,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -31,11 +59,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5792961693333333,
-      "confidence": 0.24620087196666662,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.4pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5729735613333333,
+      "confidence": 0.24351376356666665,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.2pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 79268,
+      "entryPrice": 79093,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -47,15 +75,30 @@
       }
     },
     {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.25457142857142856,
+      "confidence": 0.15953506610039905,
+      "thesis": "GOLD HL funding 23.9% annualized — crowded longs. Fade.",
+      "hypothesisId": null,
+      "entryPrice": 4552,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
+    },
+    {
       "type": "PM_EV_ABOVE_SPOT",
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.003630721098047118,
-      "confidence": 0.002087664631377093,
-      "thesis": "BTC PM EV ($85667) is 8.1% above spot ($79268). Market expects upside.",
+      "strength": 0.009581126016208774,
+      "confidence": 0.0055091474593200445,
+      "thesis": "BTC PM EV ($85572) is 8.2% above spot ($79093). Market expects upside.",
       "hypothesisId": null,
-      "entryPrice": 79268,
+      "entryPrice": 79093,
       "targetPct": 4,
       "stopPct": 4,
       "expiryDays": 14
@@ -73,7 +116,23 @@
         "evidenceColumns": [
           "oil_wti_spot"
         ],
-        "thesis": "WTI spot has risen from $96.88 (entry baseline) to $100.91, a +4.16% move that materially increases the probability of touching $90 on the downside within May. The ONE_TOUCH_HIGH_EDGE_NO thesis was predicated on WTI staying well above $90 with the NO contract repricing toward 1.0; instead WTI has broken above $100 and the PM YES price has moved from 0.40 entry to 0.61 current (52.5% loss). The signal-family evidence column oil_wti_spot shows sustained upward momentum with no reversal signal. The oil_opt_fwd_90d = 8.1 anomaly is flagged as a -3.2 std dev outlier and may indicate data quality issues, but the spot price move is unambiguous. Closing to prevent further loss as the thesis is invalidated by the spot trajectory."
+        "thesis": "OIL NO position on WTI hitting LOW $90 in May has moved severely against us — WTI spot has risen from $96.88 at entry to $101.02 (+4.27%), and the current PM price is 0.64 vs entry at 0.40 (60% loss). The signal-family evidence metric oil_wti_spot has moved decisively in the wrong direction. With WTI now above $101 and the Brent-WTI spread compressing to 3.7, the probability of WTI touching $90 in May has declined further, but the NO contract has already repriced to reflect this. The thesis that WTI would not touch $90 is still directionally correct (WTI is moving away from $90, not toward it), but the PM market has repriced the NO contract upward due to the overall bullish oil move. However, at 60% loss and with oil funding turning sharply negative (-11.79%), indicating crowded longs that could unwind, and the Brent-WTI spread at historic lows (3.7), there is structural risk of a sharp oil reversal that could move the NO contract further against us before expiry. The ONE_TOUCH_HIGH_EDGE_NO signal has only 0/1 wins historically. Closing to preserve capital given the 60% loss and uncertain path to expiry."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1778794152516-60c7",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "short",
+        "closeReasonCategory": "profit_taking",
+        "evidenceColumns": [
+          "gold_gc_spot",
+          "gold_hl_funding_ann"
+        ],
+        "thesis": "GOLD FUNDING_EXTREME_LONG short has achieved +2.37% gain. The signal-family evidence shows gold_gc_spot declined from 4,661 to 4,552 (-2.34%) and gold_hl_funding_ann has normalized dramatically from 67.52% to 23.91% (-43.61 pts, -64.59%). The funding normalization is the primary thesis signal and it has largely played out — funding dropped from extreme 67.52% to 23.91%, which is approaching normal territory. The target for FUNDING_EXTREME_LONG is 5% gain and we are at 2.37%, but the funding normalization is 64% complete. With gold_gld_pc_ratio having collapsed from 1.006 to 0.648 (a major structural shift in options positioning) and gold funding still at 23.91% (still elevated but normalizing), there is remaining upside. However, the PROMOTED_HYPOTHESIS stop is 2.5% and we are approaching that level from the profit side. Given the funding has normalized substantially and gold spot has found support around 4,550, the remaining edge is diminishing. Holding for now as funding at 23.91% is still above normal and the 5% target has not been reached — NOT closing, keeping position open."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -81,6 +140,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 2 rejected; 0 non-close instructions skipped."
   ]
 }

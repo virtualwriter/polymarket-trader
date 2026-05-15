@@ -9553,3 +9553,49 @@ Key session observations (2026-05-15):
 
 ---
 
+### 2026-05-15 19:29 UTC
+
+**Portfolio:** $99.14 total | Cash $94.14 | 5 open | P&L $0.1350 | 52% win rate (131 trades)
+
+**Opened 1 positions:**
+- BTC long @ $79093 via spot/spot [BTC spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1025755103 is 3.2 std devs from mean (834092544.53 ± 59957986.24)
+- [correlation_flip] BTC-OIL correlation shifted from 0.26 to -0.58
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 67 (28 wins / 39 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-26.44%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-4.76%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+
+**LLM analysis:**
+Key session observations (2026-05-15):
+
+1. OIL NO POSITION CRITICAL: The OIL NO position (T-1778722157808-15xu) is at 60% loss with WTI at $101.02. The ONE_TOUCH_HIGH_EDGE_NO signal family has 0/1 wins historically. The thesis (WTI won't touch $90 in May) is directionally correct — WTI is moving AWAY from $90 — but the PM market has repriced the NO contract upward as oil rallied broadly. This is a structural issue with ONE_TOUCH_HIGH_EDGE_NO: even when the underlying thesis is correct (WTI won't touch $90), the NO contract can lose value if the underlying moves in the opposite direction from the strike. The signal needs more careful consideration of directional risk in the underlying. Closing this position.
+
+2. GOLD SHORT PERFORMING: The GOLD FUNDING_EXTREME_LONG short (T-1778794152516-60c7) is working well — gold_hl_funding_ann normalized from 67.52% to 23.91% and spot declined 2.34%. The funding normalization thesis is playing out. Keeping open as funding at 23.91% is still above normal and the 5% target hasn't been reached.
+
+3. HYPE LONG WORKING: The HYPE promoted hypothesis long (T-1778858963408-psx1) is up +1.69% with OI at a statistical anomaly (3.2σ above mean) and funding positive. H-521 conditions remain met. Hold.
+
+4. BTC NO POSITION: The BTC NO on $55k dip (T-1778718867328-fb7r) is up +1.89% (PM price moved from 0.53 to 0.54). BTC spot has declined from 79,548 to 79,093 (-0.57%), which is directionally supportive (lower spot = lower probability of touching $55k). Hold.
+
+5. OIL STRUCTURAL DYNAMICS: Oil's negative funding (-11.79% annualized) and collapsing P/C ratio (0.847→0.654) signal crowded longs. The Brent-WTI spread has compressed to 3.7 (historically very low). These are warning signs for oil bulls. The mathematical arbitrage hypotheses (H-472, H-500) predicted oil correction but it hasn't materialized yet — oil is up 4%+ from entry levels.
+
+6. MACRO REGIME SHIFT: Macro composite moved from BEARISH (44) to NEUTRAL (47) with Fed cut probability rising from 27.6% to 33.1% and Iran peace probability improving. This is a positive development but insufficient to drive strong crypto momentum given the very hawkish Fed stance.
+
+7. HYPOTHESIS BACKLOG: 12/19 setup families need more shadow tests with 10 pending. Not proposing new hypotheses per instructions. Focus should be on completing existing shadow test backlog.
+
+8. RELATIVE VALUE HEATMAP: Several interesting edges visible — ETH $3,400 May contract shows 1.97pt edge (buy YES), BTC $130k Dec shows 7.55pt edge (buy YES), ETH $4,500 Dec shows 12.42pt edge (buy YES). These are flagged for monitoring but not actioning given portfolio concentration and the hypothesis backlog requirement.
+
+---
+
