@@ -9681,3 +9681,30 @@ Key session observations: (1) GOLD FUNDING_EXTREME_LONG short is the cleanest wi
 
 ---
 
+### 2026-05-15 23:29 UTC
+
+**Portfolio:** $99.14 total | Cash $94.14 | 5 open | P&L $0.1350 | 52% win rate (131 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 998693663 is 2.6 std devs from mean (835792509.33 ± 62000271.89)
+- [correlation_flip] BTC-OIL correlation shifted from 0.26 to -0.57
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 69 (28 wins / 41 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-33.93%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+
+**LLM analysis:**
+Key session observations: (1) GOLD FUNDING_EXTREME_LONG short is the clear winner today — gold_gc_spot dropped 2.51% and gold_hl_funding_ann collapsed 91.88% from 67.52% to 5.48%, completing the thesis. Closing at +2.54% P&L. This is a textbook FUNDING_EXTREME_LONG trade: extreme crowding → price correction → funding normalization → exit. The signal family evidence (both price and funding) confirmed the thesis completion simultaneously. (2) BTC is consolidating around 79,000 with HL funding deeply negative (-7.42% to -11.65% annualized in recent snapshots). This negative funding suggests short-side crowding after the pullback from 80,500 highs, which is actually supportive of the existing BTC long (T-1778873386400-hqum via H-145). The IBIT P/C ratio has been rising (0.433 early session → 0.713 now), indicating put buying that the H-145 thesis predicted as a reversal signal. (3) OIL short via Polymarket NO on WTI $90 low (T-1778722157808-15xu) is now at +57.5% P&L with WTI at 101.17 — well above the $90 threshold. This position is working well; the ONE_TOUCH_HIGH_EDGE_NO signal has no mechanical target, so we hold per the 14-day thesis. (4) HYPE long (T-1778858963408-psx1) is +0.26% with OI at 998.7M (2.6σ above mean) and funding stable. The H-521 promoted hypothesis conditions remain intact. (5) The hypothesis backlog remains at 12/19 setup families needing more tests with 10 pending — no new hypotheses proposed this session per the backlog constraint. (6) The relative-value heatmap shows several interesting edges (OIL $140 June +12.97pts, OIL $130 June +15.02pts, BTC $110k Dec +15.28pts, ETH $4,500 Dec +11.99pts) but most have wide spreads or are in setup families still under contaminated retest. Will monitor for clean entry opportunities when spread/liquidity conditions improve.
+
+---
+
