@@ -8,12 +8,27 @@
         "asset": "GOLD",
         "venue": "hyperliquid",
         "direction": "short",
-        "closeReasonCategory": "profit_taking",
+        "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "The FUNDING_EXTREME_LONG thesis has largely resolved: gold_hl_funding_ann has collapsed from 67.5% at entry to 5.48% currently (a 91.9% decline), and gold_gc_spot has moved from 4661 to 4542 (-2.55%), delivering approximately 2.58% P&L. The primary signal — extreme crowded longs indicated by 67%+ annualized funding — has normalized to near-baseline levels. Continuing to hold risks a funding reversal that would erode carry gains. The 5% target has not been reached but the thesis is substantially complete with funding normalization. Taking profit near the 2.5% stop level to lock in gains before potential mean reversion."
+        "thesis": "GOLD FUNDING_EXTREME_LONG short thesis has largely played out: gold_gc_spot has moved from 4,661 to 4,544 (-2.51%), capturing the 5% target zone, and gold_hl_funding_ann has collapsed from 67.52% to 5.48% (-91.88% relative change), which is the primary signal-family evidence for this trade. The funding normalization is the core thesis completion signal - funding has returned to near-baseline levels, meaning the crowded-long squeeze is complete. Holding further risks mean reversion in gold spot as the funding carry advantage has evaporated. The position is at +2.53% P&L against a 5% target and 2.5% stop, and with funding now at 5.48% (no longer extreme), the thesis is invalidated."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1778873386400-hqum",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_spot"
+        ],
+        "thesis": "BTC PROMOTED_HYPOTHESIS long entered at 79,093 is essentially flat (+0.05%) after 8+ hours. The promoted H-148 put-call exhaustion reversal thesis predicted a bounce from the P/C ratio spike, but BTC spot has failed to make meaningful upside progress - it dropped to 79,017 intraday and has only recovered to 79,133. The 1.5% stop is at ~77,900 and the 4% target is at ~82,257. With BTC HL funding persistently negative (-4 to -5% annualized) indicating short-side crowding rather than bullish positioning, and BTC spot failing to hold above 79,200 despite multiple attempts, the momentum reversal thesis is not materializing within the expected timeframe. The risk/reward has deteriorated given the flat price action and the stop is close enough that holding further adds asymmetric downside risk. Closing to preserve capital for better setups."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -35,7 +50,7 @@
         "stopPct": 3.5
       },
       "FUNDING_EXTREME_LONG": {
-        "targetPct": 4,
+        "targetPct": 5,
         "stopPct": 2.5
       },
       "FUNDING_EXTREME_SHORT": {

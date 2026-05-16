@@ -9768,3 +9768,31 @@ Key observations from this session: (1) GOLD FUNDING_EXTREME_LONG short is the s
 
 ---
 
+### 2026-05-16 03:29 UTC
+
+**Portfolio:** $99.11 total | Cash $95.11 | 4 open | P&L $0.1142 | 52% win rate (132 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_med_min = 4224 is -2.8 std devs from mean (4383.57 ± 57.92)
+- [anomaly] hype_hl_oi = 968060981 is 2.1 std devs from mean (836873684.24 ± 63022210.98)
+- [correlation_flip] BTC-OIL correlation shifted from 0.27 to -0.56
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 70 (28 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+
+**LLM analysis:**
+Key observations from this session: (1) GOLD FUNDING_EXTREME_LONG short (T-1778794152516-60c7) is being closed as thesis completion - gold_hl_funding_ann collapsed from 67.52% to 5.48%, the primary signal evidence, and spot moved -2.51% in our favor. This is a clean thesis-completion close, not a stop. The FUNDING_EXTREME_LONG signal family has 7/14 live wins but the shadow record (5/7 wins, +1.02% avg) is actually better than live, suggesting the trend-blocking filter may be too aggressive. (2) BTC PROMOTED_HYPOTHESIS long (T-1778873386400-hqum) is being closed as thesis-not-materializing. The H-148 put-call exhaustion reversal predicted upside from P/C normalization, but BTC has been flat for 8+ hours with persistently negative HL funding (-4 to -11%) indicating short crowding rather than bullish positioning. The PROMOTED_HYPOTHESIS setup family has 0/1 live wins and 0/1 shadow wins - the evidence base is too thin to hold through a stale thesis. (3) OIL short via polymarket (T-1778722157808-15xu) is performing well (+60%) as oil_wti_spot has risen to $101 (above the $90 strike), but the one-touch NO thesis is intact - the contract resolves on whether WTI hits LOW $90 in May, and with spot at $101 and rising, the NO is increasingly valuable. Hold. (4) BTC polymarket NO (T-1778718867328-fb7r) on $55k dip is also intact - BTC at $79,133 is far from $55k. Hold. (5) Oil 30d IV at 77.1% vs 90d IV at 60.5% represents a significant term structure inversion (+16.6pp gap) that historically reverts. The oil_iv_statistical_breakdown_arbitrage setup family is in contaminated_retest but the statistical anomaly is clearly present. No new trade recommended given the OIL signal is already disabled for LLM_HYPOTHESIS and the existing polymarket NO position captures the directional view. (6) The BTC-OIL correlation flip from +0.27 to -0.56 is notable - oil rising while BTC consolidates suggests macro risk-on is being expressed through commodities rather than crypto, consistent with the VERY HAWKISH Fed signal and Iran peace probability at 61%. (7) Hypothesis backlog: 12/19 setup families need more shadow tests with 10 pending. No new hypotheses proposed per instructions. Focus should be on completing existing shadow tests for oil_funding_volatility_mean_reversion, gold_pm_premium_futures_spread_mean_reversion, and hype_breakout_oi_surge_momentum families which have the most pending tests.
+
+---
+
