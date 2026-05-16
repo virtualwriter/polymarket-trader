@@ -10000,3 +10000,30 @@ Key observations this session: (1) GOLD funding is exhibiting extreme oscillatio
 
 ---
 
+### 2026-05-16 11:29 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_med_min = 4222 is -2.6 std devs from mean (4380.46 ± 61.44)
+- [correlation_flip] BTC-OIL correlation shifted from 0.28 to -0.53
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 71 (29 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+
+**LLM analysis:**
+Key observations this session: (1) The GOLD short (T-1778794152516-60c7) opened on extreme positive funding at 67.5% is working well at +2.93% — gold dropped ~137 points and funding normalized from +67.5% to -7.55%, validating the FUNDING_EXTREME_LONG thesis. This is a clean example of the signal working as intended. (2) The GOLD long (T-1778916565173-2wqk) opened on extreme negative funding at -44.78% has seen funding normalize to -7.55% — the primary thesis driver has resolved but spot moved slightly against us. Closing this position as the signal edge is gone even though the mechanical stop hasn't been hit. This illustrates an important principle: when the funding normalization that created the edge has already occurred, holding for spot appreciation becomes speculative. (3) The BTC long (T-1778923758531-nlyu) via PROMOTED_HYPOTHESIS is the live test of H-523/H-148. BTC stabilized above 77.8k and recovered to 78k after the pullback — consistent with the vol-reversion thesis. The 1.5% stop is tight; monitoring closely. (4) The OIL short via Polymarket NO on WTI hitting $90 in May (T-1778722157808-15xu) is now at +62.5% P&L as WTI at 101.86 makes the $90 touch increasingly unlikely with only ~2 weeks left in May. This is a strong performer. (5) The BTC-OIL correlation flip to -0.53 from +0.28 is notable — oil rising while BTC falls suggests macro regime divergence. Oil's elevated IV (77% 30d) vs BTC's compressed PM IV (37.4%) continues to be a cross-asset anomaly worth monitoring. (6) Hypothesis backlog remains at 12/19 setup families needing tests — no new hypotheses proposed per protocol. Focus should remain on completing shadow tests for existing families before adding new variants. (7) AMZN long (T-1778916565173-vz22) funding normalized from -29.81% to +5.48% — thesis driver resolved but position is only -0.08%. The AMZN stock price hasn't moved (262.64 throughout), suggesting the perp is slowly converging. Will hold to target given minimal adverse movement.
+
+---
+
