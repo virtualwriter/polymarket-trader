@@ -10291,3 +10291,44 @@ Key session observations: (1) FUNDING_EXTREME_SHORT signals on GOLD and AMZN res
 
 ---
 
+### 2026-05-16 22:30 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved wider by 9.8pp (was -0.1, now 9.7)
+- [anomaly] gold_med_min = 4219 is -2.5 std devs from mean (4378.31 ± 63.77)
+- [anomaly] btc_pm_iv = 46.6 is 2.2 std devs from mean (39.53 ± 3.24)
+- [correlation_flip] BTC-OIL correlation shifted from 0.30 to -0.49
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 73 (30 wins / 43 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+
+**LLM analysis:**
+Key session observations for 2026-05-16T08-22:
+
+1. FUNDING NORMALIZATION COMPLETIONS: Both GOLD positions (short from 67.52% funding, long from -44.78% funding) and the AMZN long (from -29.81% funding) have all seen their thesis signals fully normalize. Gold funding went from +67.52% → +5.48% (short thesis) and -44.78% → +5.48% (long thesis). AMZN went from -29.81% → +3.47%. All three are being closed as thesis-complete. The GOLD short captured ~2.68% spot gain plus positive carry; the GOLD long captured funding carry with flat spot; AMZN captured small convergence. The simultaneous GOLD long+short created a net-flat position that was inefficient — future FUNDING_EXTREME signals should be monitored for overlap with existing positions in the same asset.
+
+2. BTC PM IV SPIKE AT T22: The most notable statistical event of the session was btc_pm_iv jumping from 36.8% to 46.6% in the final snapshot — a 9.8pp gap vs options IV (36.9% 30d). This is a 2.2σ anomaly and triggers the PM_IV_GT_OPT_IV signal family. The promoted H-523 (BTC IV compression/vol reversion) appears to be resolving with this expansion. The BTC long position (T-1778923758531-nlyu) is up 0.28% and the IV expansion is a positive development. However, the spike could also be a data artifact or end-of-session pricing anomaly — monitoring is warranted before acting on it.
+
+3. OIL POSITION PERFORMING WELL: The OIL NO position (T-1778722157808-15xu) is up 57.5% with WTI holding above $101 despite the macro signal showing 'DECLINING' oil. The extreme funding oscillations (80% → -74% → 125% → 24%) confirm the thesis of crowded positioning. The position is approaching meaningful profit territory but has no mechanical target (ONE_TOUCH_HIGH_EDGE_NO has no target). Monitoring for thesis invalidation signals.
+
+4. BTC SHORT NO POSITION: The BTC NO position (T-1778718867328-fb7r) is down 7.55% with BTC spot declining from 79,548 to 78,236 (-1.65%) — directionally correct for the NO thesis (BTC dipping to $55k is less likely as BTC falls). However, the PM price moved from 0.53 to 0.49 (favorable for NO holder). The position is working as intended.
+
+5. HYPOTHESIS BACKLOG: 12 setup families still need more shadow tests and 10 are pending. No new hypotheses are being proposed per the rules. The promoted H-521 (HYPE breakout) and H-523 (BTC IV compression) are the active promoted setups to monitor.
+
+6. CROSS-ASSET CORRELATION FLIP: BTC-OIL correlation shifted from +0.30 to -0.49, suggesting decoupling. This is consistent with oil being driven by geopolitical/supply factors (Iran peace probability rising to 62.5%) while BTC is driven by crypto-specific positioning. The Iran peace signal is notable — higher peace probability should reduce oil risk premium over time, supporting the oil declining macro signal.
+
+---
+
