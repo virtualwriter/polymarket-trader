@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-16T12:29:20.044Z",
+  "generatedAt": "2026-05-16T13:29:20.063Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.45499999999999996,
       "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-145] BTC momentum exhaustion confirmation when P/C ratio spike above 0.4 after staying below 0.4 during new highs creates 3-5 day pullback acceleration as systematic call unwind begins",
       "hypothesisId": "H-145",
-      "entryPrice": 77945,
+      "entryPrice": 77848,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 3
@@ -25,11 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6305677936666666,
-      "confidence": 0.2679913123083333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.9pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6973263826666667,
+      "confidence": 0.29636371263333333,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 20.9pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
       "hypothesisId": null,
-      "entryPrice": 77945,
+      "entryPrice": 77848,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6104248216666667,
-      "confidence": 0.2594305492083333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.3pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6127355376666667,
+      "confidence": 0.26041260350833334,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.4pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77945,
+      "entryPrice": 77848,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -65,11 +65,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6088629323333333,
-      "confidence": 0.2587667462416667,
+      "strength": 0.608953922,
+      "confidence": 0.25880541684999997,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77945,
+      "entryPrice": 77848,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -85,11 +85,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5531441073333333,
-      "confidence": 0.23508624561666663,
+      "strength": 0.5532503543333332,
+      "confidence": 0.23513140059166662,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.6pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77945,
+      "entryPrice": 77848,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -105,48 +105,17 @@
       "asset": "HYPE",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.08504741064916059,
-      "confidence": 0.048902261123267336,
-      "thesis": "HYPE PM EV ($45) is 9.7% above spot ($41). Market expects upside.",
+      "strength": 0.10832925036746674,
+      "confidence": 0.06228931896129337,
+      "thesis": "HYPE PM EV ($45) is 10.2% above spot ($41). Market expects upside.",
       "hypothesisId": null,
-      "entryPrice": 41.13,
+      "entryPrice": 40.82,
       "targetPct": 4,
       "stopPct": 4,
       "expiryDays": 14
-    },
-    {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "BTC",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 0.03228571428571426,
-      "confidence": 0.015137723382035218,
-      "thesis": "BTC HL funding -16.1% annualized — crowded shorts. Buy.",
-      "hypothesisId": null,
-      "entryPrice": 77945,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
     }
   ],
   "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778794152516-60c7",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "closeReasonCategory": "profit_taking",
-        "evidenceColumns": [
-          "gold_gc_spot",
-          "gold_hl_funding_ann"
-        ],
-        "thesis": "GOLD short (FUNDING_EXTREME_LONG) entered at 4,661 is now at 4,528, a gain of ~2.84% against the 5% target. The original thesis was crowded longs signaled by extreme positive funding (67.5% annualized). Funding has fully normalized to +5.48% (from 67.5%), which is the primary thesis completion signal — the crowded-long unwind has occurred. However, we now hold a simultaneous GOLD long (T-1778916565173-2wqk) entered at 4,536 on the opposite thesis (crowded shorts at -44.8% funding), creating a net-flat GOLD position that is capital-inefficient. Closing the short to resolve the conflicting position and lock in the gain; the short thesis is complete given funding normalization."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
     {
       "instruction": {
         "action": "close",
@@ -159,7 +128,7 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "GOLD long (FUNDING_EXTREME_SHORT) entered at 4,536 when funding was -44.78%. Funding has already normalized to +5.48% — the crowded-short unwind thesis has completed within hours of entry. However, gold spot has moved from 4,536 to 4,528, a -0.17% loss. The thesis trigger (extreme negative funding) is fully resolved and the position is now holding against a neutral/slightly-positive funding environment with no carry benefit. With the simultaneous GOLD short also being closed, this removes the conflicting pair. The thesis is complete (funding normalized) but price has not followed through, so closing to avoid holding a directionless position."
+        "thesis": "The FUNDING_EXTREME_SHORT thesis was triggered at gold_hl_funding_ann = -44.78%. Funding has now fully normalized to +5.48%, which is the primary signal-family evidence for this setup. The funding reversal thesis has played out: the crowded short has been squeezed and funding is now positive (longs pay shorts), meaning carry has flipped against the long. Gold spot is essentially flat from entry (4536 -> 4532, -0.09%), so this is a clean exit at near-breakeven with thesis completion rather than waiting for the 4% target that may not materialize given the normalized funding environment."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     },
@@ -176,7 +145,22 @@
           "amzn_hl_perp",
           "amzn_hl_funding_ann"
         ],
-        "thesis": "AMZN long (FUNDING_EXTREME_SHORT) entered at 262.02 when funding was -29.81%. Funding has fully normalized to +5.48% within hours of entry — the crowded-short unwind thesis is complete. AMZN stock is unchanged at 262.64 while the perp is at 261.87, a -0.06% loss. The carry benefit from negative funding is gone (now paying positive funding as a long), and the price has not moved in our favor. With the thesis trigger fully resolved and no remaining carry advantage, closing to avoid holding a position with no active edge."
+        "thesis": "The FUNDING_EXTREME_SHORT thesis was triggered at amzn_hl_funding_ann = -29.81%. Funding has fully normalized to +5.48%, which is the primary signal-family evidence for this setup. The perp-spot convergence thesis has completed: amzn_hl_perp moved from 262.02 to 261.91 while stock is at 262.64, so the basis remains slightly negative (-0.28%) but funding normalization is the key signal-family metric confirming thesis completion. Carry has flipped against the long. Exit at near-breakeven (-0.04%) with thesis complete."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1778923758531-nlyu",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_spot"
+        ],
+        "thesis": "The PROMOTED_HYPOTHESIS BTC long (H-145 put-call exhaustion reversal) was entered at 78018 with a 1.5% stop. BTC spot has declined to 77848, a -0.22% move against the position. The thesis required BTC momentum exhaustion confirmation and reversal, but price action has continued lower through the session (79k -> 77.8k) with no bounce. BTC HL funding remains deeply negative (-11.73%), suggesting continued deleveraging pressure rather than the reversal the hypothesis predicted. The stop is at 1.5% (76,797), and with continued downward momentum and no confirming reversal signal, closing now at -0.22% is preferable to risking the full stop. The PROMOTED_HYPOTHESIS setup family has 0/1 resolved shadows at -3.65% avg, supporting early exit."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

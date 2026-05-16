@@ -10057,3 +10057,31 @@ Key observations this session: (1) FUNDING_EXTREME_LONG on GOLD worked well — 
 
 ---
 
+### 2026-05-16 13:29 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 5.3pp (was 6.5, now 1.2)
+- [anomaly] gold_med_min = 4223 is -2.5 std devs from mean (4379.69 ± 62.26)
+- [correlation_flip] BTC-OIL correlation shifted from 0.28 to -0.52
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 71 (29 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+
+**LLM analysis:**
+Key session observations: (1) FUNDING_EXTREME_SHORT exits - Both the GOLD long (T-2wqk) and AMZN long (T-vz22) had their thesis complete as funding normalized from extreme negative to +5.48%. This is the correct exit signal for this setup family - the crowded short has been squeezed and carry has flipped. Both positions exit near breakeven which is acceptable given the thesis played out without price follow-through. This is a pattern worth noting: funding normalization can happen without significant spot appreciation, especially in a risk-off macro environment. (2) PROMOTED_HYPOTHESIS BTC long - Closing early at -0.22% rather than waiting for the 1.5% stop. The H-145/H-523 thesis required a reversal bounce but BTC has continued declining through the session. The PROMOTED_HYPOTHESIS setup family has poor shadow performance (0/1 at -3.65%) and the macro backdrop (fed score declining, macro composite at 46) is not supportive of a bounce. Better to take the small loss now. (3) HYPE OI distribution - HYPE OI has declined from ~999M to ~897M over the session, a 10% decline. The setup family for HYPE OI distribution exhaustion was killed (H-508 through H-520 series) due to 19% win rate over 42 tests. This is consistent with the current observation that OI decline alone is not a reliable reversal signal. (4) Gold funding oscillation - The extreme -44.78% funding at T07 that triggered the GOLD long has fully normalized. The GOLD short (T-60c7, FUNDING_EXTREME_LONG) is at +2.76% profit and approaching its 5% target - hold. (5) OIL position (T-15xu) - At +62.5% profit on the NO contract for WTI hitting $90 in May. WTI is at 101.74, well above $90, so this NO contract should continue to appreciate toward 1.0. Hold. (6) BTC short via PM (T-fb7r) - At -5.66% on the NO contract for BTC dipping to $55k. BTC at 77.8k is far from $55k, so this NO should be worth close to 1.0 eventually. The position is correctly held. (7) No new hypotheses proposed - the backlog of 12 setup families needing shadow tests takes priority over new hypothesis creation.
+
+---
+
