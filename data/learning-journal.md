@@ -10165,3 +10165,29 @@ Key session observations: (1) FUNDING_EXTREME_SHORT exits — both GOLD and AMZN
 
 ---
 
+### 2026-05-16 18:29 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.29 to -0.50
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 71 (29 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+
+**LLM analysis:**
+Key session observations: (1) FUNDING_EXTREME_SHORT positions in GOLD and AMZN both had their thesis catalysts fully resolve within ~11 hours of entry — funding normalized from -44.78% and -29.81% respectively back to +5.48%. This is a pattern worth noting: extreme funding events in non-crypto assets (GOLD, AMZN) on Hyperliquid tend to normalize very quickly, often within a single trading session. The 4% target and 2% stop for FUNDING_EXTREME_SHORT may need to be reconsidered for these assets — the hold window is very short and the price move often doesn't materialize before funding normalizes. (2) The BTC PROMOTED_HYPOTHESIS long (H-145) also had its catalyst (extreme negative funding at -25.46%) normalize within hours. The promoted hypothesis stop of 1.5% is appropriate given the short catalyst window. (3) The OIL ONE_TOUCH_HIGH_EDGE_NO position (WTI $90 low-touch) is performing well at +62.5% gain as WTI has risen above 101 — the thesis that WTI would not dip to $90 in May is being validated by price action. (4) The GOLD FUNDING_EXTREME_LONG short from 4661 is at +2.69% with gold now at 4535 — approaching the 5% target. (5) No new hypotheses proposed this cycle as the backlog of 12 setup families needing shadow tests remains incomplete. (6) The BTC-OIL correlation flip from +0.29 to -0.50 is notable — oil has been rising while BTC drifts lower, consistent with the macro regime where oil is elevated on geopolitical factors while crypto faces hawkish Fed headwinds. (7) Relative-value heatmap shows persistent cheap-vs-underlying-cap signals across ETH, BTC, and OIL upside contracts, but these are flagged as exploratory (H-526) and the hypothesis backlog prevents new entries.
+
+---
+
