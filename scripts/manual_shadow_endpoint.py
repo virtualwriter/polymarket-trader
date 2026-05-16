@@ -124,11 +124,22 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
 
 
+def heatmap_generated_at(path: Path) -> datetime:
+    if not path.exists():
+        return datetime.fromtimestamp(0, tz=timezone.utc)
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        generated_at = str(payload.get("generatedAt") or "")
+        parsed = datetime.fromisoformat(generated_at.replace("Z", "+00:00"))
+        if parsed.tzinfo is None:
+            parsed = parsed.replace(tzinfo=timezone.utc)
+        return parsed.astimezone(timezone.utc)
+    except Exception:
+        return datetime.fromtimestamp(0, tz=timezone.utc)
+
+
 def heatmap_path_to_serve() -> Path:
-    if HEATMAP_LIVE_PATH.exists() and (
-        not HEATMAP_LATEST_PATH.exists()
-        or HEATMAP_LIVE_PATH.stat().st_mtime >= HEATMAP_LATEST_PATH.stat().st_mtime
-    ):
+    if HEATMAP_LIVE_PATH.exists() and heatmap_generated_at(HEATMAP_LIVE_PATH) >= heatmap_generated_at(HEATMAP_LATEST_PATH):
         return HEATMAP_LIVE_PATH
     return HEATMAP_LATEST_PATH
 
