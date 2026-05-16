@@ -10332,3 +10332,32 @@ Key session observations for 2026-05-16T08-22:
 
 ---
 
+### 2026-05-16 23:30 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved narrower by 9.8pp (was 9.7, now -0.1)
+- [anomaly] gold_med_min = 4211 is -2.6 std devs from mean (4377.91 ± 64.22)
+- [anomaly] gold_pm_iv = 26.6 is 2.1 std devs from mean (17.43 ± 4.28)
+- [correlation_flip] BTC-OIL correlation shifted from 0.30 to -0.49
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 73 (30 wins / 43 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+
+**LLM analysis:**
+Key session observations: (1) GOLD FUNDING PAIR TRADE LESSON - The simultaneous long (FUNDING_EXTREME_SHORT) and short (FUNDING_EXTREME_LONG) gold positions created a near-perfect hedge that generated minimal net P&L. The short from 4661 worked well (-2.64% gain) but the long from 4536 went nowhere (+0.04%). In future, when a FUNDING_EXTREME_LONG short is already open and profitable, avoid opening a FUNDING_EXTREME_SHORT long on the same asset as it creates a synthetic straddle with high carry costs. (2) BTC PROMOTED HYPOTHESIS - The funding normalization from -25% to near zero was the correct catalyst but BTC only moved +0.23% in 14 hours. The PROMOTED_HYPOTHESIS signal for BTC put-call exhaustion reversal has a weak live trade record (0/3 wins, -2.21% avg) and this trade is consistent with that pattern. The hypothesis may be identifying real signals but the magnitude of move is insufficient to overcome transaction costs. (3) OIL NO POSITION - The T-1778722157808-15xu position (WTI $90 low NO) is performing excellently at +57.5% with oil spot at $101.85, well above the $90 threshold. This is a clean ONE_TOUCH_HIGH_EDGE_NO trade working as intended. No action needed - hold to expiry. (4) BTC $55K NO POSITION - The T-1778718867328-fb7r position is at -5.66% with BTC at $78,194. The thesis (BTC won't dip to $55K by year-end) remains intact - BTC is far above $55K. The PM price moved from 0.53 to 0.50 (slight improvement for our NO position). Hold. (5) AMZN LONG - The FUNDING_EXTREME_SHORT AMZN long at 262.02 is essentially flat with funding improving from -29.81% to -10.5%. The thesis is partially playing out but slowly. The stock hasn't moved (frozen at 262.64) which limits the perp's ability to converge. Hold with current parameters. (6) HYPOTHESIS BACKLOG - 12 setup families still need shadow tests. No new hypotheses proposed per the backlog constraint. Focus should be on completing existing shadow tests before generating new variants.
+
+---
+
