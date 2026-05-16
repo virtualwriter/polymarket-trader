@@ -9708,3 +9708,31 @@ Key session observations: (1) GOLD FUNDING_EXTREME_LONG short is the clear winne
 
 ---
 
+### 2026-05-16 00:29 UTC
+
+**Portfolio:** $99.14 total | Cash $94.14 | 5 open | P&L $0.1350 | 52% win rate (131 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 999741434 is 2.6 std devs from mean (836203408.89 ± 62462766.89)
+- [correlation_flip] BTC-OIL correlation shifted from 0.26 to -0.56
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 70 (28 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+
+**LLM analysis:**
+Key observations this session: (1) GOLD FUNDING_EXTREME_LONG short is the clear winner — funding collapsed 92% from entry (67.5% → 5.5%) and spot moved 2.55% in our favor. Closing at ~2.58% P&L as the thesis is complete; holding for the remaining 2.4% to target with no carry advantage is poor risk/reward. (2) OIL ONE_TOUCH_HIGH_EDGE_NO position is at +60% P&L (bought NO on WTI hitting $90 in May at 0.40, now priced at 0.64 YES = 0.36 NO). WTI spot has risen from 96.88 to 100.95, which is adverse for the thesis, but the contract is still well out of the money with limited time remaining. The position has no mechanical stop (100% stop) so we hold per signal rules. (3) BTC HL funding has turned sharply negative (-4% to -11% annualized) during the pullback from 80,500 to 79,100 — this is consistent with short-side crowding after the drop and may support the existing BTC long thesis (T-1778873386400-hqum). The IBIT P/C ratio has moved from 0.705 to 0.713, a slight normalization consistent with H-145. (4) HYPE OI has recovered to ~1B after dipping, with spot at 44.37 vs entry 44.12 (+0.55%). The promoted H-521 conditions remain broadly intact. (5) No new hypotheses proposed — the shadow test backlog (12/19 setup families need more tests, 9 pending) takes priority over new hypothesis creation per system rules. (6) The relative-value heatmap shows interesting edges on OIL upside contracts (CL $140 June at 17.5% YES vs 31% model = 13pt edge, CL $130 June at 28% YES vs 43% model = 13pt edge) but OIL LLM_HYPOTHESIS is disabled and these are flagged with extreme_perp_funding and oil_snapshot_uses_brent, making them unreliable. Avoiding. (7) BTC $100K December YES at 43.5% vs 59.3% model = 15.3pt edge is notable but the ONE_TOUCH_HIGH_EDGE_NO signal family is exploratory with 0/1 wins. Not acting.
+
+---
+
