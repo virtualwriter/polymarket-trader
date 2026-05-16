@@ -50,6 +50,7 @@ DATA_FILES=(
   data/execution-plan.json
   relative-value/index.html
   relative-value/cross_venue_relative_value.csv
+  relative-value/latest.json
 )
 
 move_generated_untracked_artifacts() {
@@ -125,7 +126,17 @@ python3 scripts/compact_instrument_snapshots.py
 
 # Generate static Vercel report from the same snapshot data before the engine
 # reads relative-value/cross_venue_relative_value.csv for live heatmap signals.
-if ! timeout "${RELATIVE_VALUE_REPORT_TIMEOUT:-10m}" python3 scripts/cross_venue_relative_value_report.py --archive-dir "$STATE_DIR/relative-value-history"; then
+relative_value_args=(--archive-dir "$STATE_DIR/relative-value-history")
+if [[ "${RELATIVE_VALUE_LIVE_QUOTES:-1}" != "0" ]]; then
+  relative_value_args+=(--live-quotes)
+fi
+if [[ "${RELATIVE_VALUE_LIVE_HYPERLIQUID:-1}" != "0" ]]; then
+  relative_value_args+=(--live-hyperliquid)
+fi
+if [[ "${RELATIVE_VALUE_EDGE_HISTORY:-0}" == "1" ]]; then
+  relative_value_args+=(--edge-history)
+fi
+if ! timeout "${RELATIVE_VALUE_REPORT_TIMEOUT:-10m}" python3 scripts/cross_venue_relative_value_report.py "${relative_value_args[@]}"; then
   echo "WARNING: relative-value report timed out or failed; continuing trader run with the last available heatmap CSV."
 fi
 npx tsx scripts/trading-engine.ts

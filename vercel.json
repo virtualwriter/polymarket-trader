@@ -1,5 +1,16 @@
 {
   "buildCommand": "true",
   "installCommand": "true",
-  "outputDirectory": "relative-value"
+  "outputDirectory": "relative-value",
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store"
+        }
+      ]
+    }
+  ]
 }

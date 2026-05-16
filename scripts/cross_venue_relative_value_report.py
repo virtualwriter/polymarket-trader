@@ -30,6 +30,7 @@ from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Tuple
+from zoneinfo import ZoneInfo
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -38,9 +39,11 @@ SNAPSHOT_PATH = DATA_DIR / "instrument-snapshots.jsonl"
 HOSTED_DIR = ROOT / "relative-value"
 CSV_PATH = HOSTED_DIR / "cross_venue_relative_value.csv"
 HTML_PATH = HOSTED_DIR / "index.html"
+LATEST_JSON_PATH = HOSTED_DIR / "latest.json"
 DEFAULT_ARCHIVE_DIR = Path(os.getenv("RELATIVE_VALUE_HISTORY_DIR", str(HOSTED_DIR / "history")))
 VALUATIONS_PATH = DATA_DIR / "daily-valuations.csv"
 MODEL_VERSION = "relative_value_heatmap_v2_one_touch"
+EASTERN_TIME = ZoneInfo("America/New_York")
 OPTION_EXPIRY_WINDOW_DAYS = 45.0
 OPTION_STRIKE_LOG_WINDOW = 0.35
 
@@ -136,6 +139,13 @@ def parse_time(value: str) -> Optional[datetime]:
         return parsed
     except ValueError:
         return None
+
+
+def fmt_eastern_time(value: str) -> str:
+    parsed = parse_time(value)
+    if not parsed:
+        return value
+    return parsed.astimezone(EASTERN_TIME).strftime("%Y-%m-%d %I:%M %p %Z")
 
 
 MONTHS = {
@@ -1197,6 +1207,24 @@ def write_csv(rows: List[RelativeValueRow], path: Path) -> None:
             writer.writerow(row_to_dict(row))
 
 
+def write_latest_json(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    generated_at = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    payload = {
+        "schemaVersion": 1,
+        "snapshotTimestamp": snapshot_timestamp,
+        "generatedAt": generated_at,
+        "rowCount": len(rows),
+        "dataSources": {
+            "polymarketQuotes": "snapshot_or_live_clob_at_generation_time",
+            "options": "TradingView option chain at generation time",
+            "hyperliquid": "snapshot_or_live_at_generation_time",
+        },
+        "rows": [row_to_dict(row) for row in rows],
+    }
+    path.write_text(json.dumps(payload, separators=(",", ":")), encoding="utf-8")
+
+
 def archive_csv(rows: List[RelativeValueRow], archive_dir: Path, csv_path: Path, snapshot_timestamp: str) -> Optional[Path]:
     snapshot_dt = parse_time(snapshot_timestamp)
     if not snapshot_dt:
@@ -1272,6 +1300,8 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
     path.parent.mkdir(parents=True, exist_ok=True)
     visible = rows
     generated = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+    snapshot_display = fmt_eastern_time(snapshot_timestamp)
+    generated_display = fmt_eastern_time(generated)
     body_rows = []
     for row in visible:
         cls = html_class(row.edge_score)
@@ -1345,13 +1375,19 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
     .legend span {{ display: inline-block; padding: 4px 8px; margin-right: 4px; border: 1px solid #aaa; }}
     button {{ cursor: pointer; white-space: nowrap; }}
     .copied {{ background: #1f7a1f; color: white; }}
+    .live-refresh {{ color: #777; margin-top: 4px; }}
+    .live-refresh.stale {{ color: #a50f15; font-weight: 700; }}
   </style>
 </head>
 <body>
   <h1>Cross-Venue Relative Value Heatmap</h1>
-  <div class="meta">
-    Snapshot: {html.escape(snapshot_timestamp)} | Generated: {html.escape(generated)} |
-    Rows shown: {len(visible)} of {len(rows)}
+  <div class="meta" id="heatmap-meta">
+    Snapshot: <span id="snapshot-timestamp">{html.escape(snapshot_display)}</span> |
+    Generated: <span id="generated-timestamp">{html.escape(generated_display)}</span> |
+    Rows shown: <span id="row-count">{len(visible)} of {len(rows)}</span>
+    <div class="live-refresh" id="live-refresh-status">
+      Static render. Checking VPS latest data...
+    </div>
   </div>
   <p>
     PM YES/bid/ask are refreshed from live CLOB books at generation time when available.
@@ -1418,6 +1454,228 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
     </tbody>
   </table>
   <script>
+    const columnDefs = [
+      {{ key: "asset" }},
+      {{ key: "direction" }},
+      {{ key: "strike", format: (row) => fmtNum(row.strike, 2) }},
+      {{ key: "contract_question", className: "question" }},
+      {{ key: "contract_month" }},
+      {{ key: "pm_yes_price", format: (row) => fmtPct(row.pm_yes_price) }},
+      {{ key: "pm_quote_source" }},
+      {{ key: "underlying_cap_yes_price", format: (row) => fmtPct(row.underlying_cap_yes_price) }},
+      {{ key: "pm_to_underlying_cap_ratio", format: (row) => fmtNum(row.pm_to_underlying_cap_ratio, 2) }},
+      {{ key: "settlement_yes_sum", format: (row) => fmtNum(row.settlement_yes_sum, 2) }},
+      {{ key: "settlement_tail_yes", format: (row) => fmtNum(row.settlement_tail_yes, 2) }},
+      {{ key: "settlement_skew_yes", format: (row) => fmtNum(row.settlement_skew_yes, 2) }},
+      {{ key: "options_touch_adjusted_prob", format: (row) => fmtPct(row.options_touch_adjusted_prob) }},
+      {{ key: "edge_score", format: (row) => fmtPts(row.edge_score), className: (row) => htmlClassFromEdge(row.edge_score) }},
+      {{ key: "edge_pts_per_dte", format: (row) => fmtPts(row.edge_pts_per_dte, 3) }},
+      {{ key: "edge_pts_per_dte_7d_change", format: (row) => fmtPts(row.edge_pts_per_dte_7d_change, 3) }},
+      {{ key: "best_expression" }},
+      {{ key: "eligible_displayable", format: (row) => yesNo(row.eligible_displayable) }},
+      {{ key: "eligible_for_shadow", format: (row) => yesNo(row.eligible_for_shadow) }},
+      {{ key: "eligible_for_backtest", format: (row) => yesNo(row.eligible_for_backtest) }},
+      {{ key: "manual_shadow", manualShadow: true }},
+      {{ key: "pm_spread", format: (row) => fmtNum(row.pm_spread, 3) }},
+      {{ key: "liquidity", format: (row) => fmtNum(row.liquidity, 0) }},
+      {{ key: "option_iv", format: (row) => fmtPct(row.option_iv) }},
+      {{ key: "pm_iv", format: (row) => fmtPct(row.pm_iv) }},
+      {{ key: "perp_source" }},
+      {{ key: "perp_funding_ann", format: (row) => fmtPct(row.perp_funding_ann) }},
+      {{ key: "perp_basis_pct", format: (row) => fmtNum(row.perp_basis_pct, 2) }},
+      {{ key: "model_version" }},
+      {{ key: "iv_resolution" }},
+      {{ key: "flags" }},
+    ];
+
+    function dateFromTimestamp(value) {{
+      const raw = String(value || "");
+      if (!raw) return null;
+      let normalized = raw;
+      if (/^\\d{{4}}-\\d{{2}}-\\d{{2}}T\\d{{2}}$/.test(raw)) normalized = `${{raw}}:00:00Z`;
+      else if (/^\\d{{4}}-\\d{{2}}-\\d{{2}}T\\d{{2}}:\\d{{2}}$/.test(raw)) normalized = `${{raw}}:00Z`;
+      const date = new Date(normalized);
+      return Number.isFinite(date.getTime()) ? date : null;
+    }}
+
+    function fmtEasternTime(value) {{
+      const date = dateFromTimestamp(value);
+      if (!date) return String(value || "");
+      return new Intl.DateTimeFormat("en-US", {{
+        timeZone: "America/New_York",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "numeric",
+        minute: "2-digit",
+        timeZoneName: "short",
+      }}).format(date);
+    }}
+
+    function numeric(value) {{
+      if (value === null || value === undefined || value === "") return null;
+      const number = Number(value);
+      return Number.isFinite(number) ? number : null;
+    }}
+
+    function fmtNum(value, decimals) {{
+      const number = numeric(value);
+      return number === null ? "" : number.toFixed(decimals);
+    }}
+
+    function fmtPct(value) {{
+      const number = numeric(value);
+      return number === null ? "" : `${{(number * 100).toFixed(1)}}%`;
+    }}
+
+    function fmtPts(value, decimals = 1) {{
+      const number = numeric(value);
+      if (number === null) return "";
+      return `${{number >= 0 ? "+" : ""}}${{number.toFixed(decimals)}}`;
+    }}
+
+    function truthy(value) {{
+      return value === true || value === "true" || value === "yes" || value === 1 || value === "1";
+    }}
+
+    function yesNo(value) {{
+      return truthy(value) ? "yes" : "no";
+    }}
+
+    function htmlClassFromEdge(value) {{
+      const edge = numeric(value);
+      if (edge === null) return "missing";
+      if (edge >= 20) return "pos3";
+      if (edge >= 10) return "pos2";
+      if (edge >= 5) return "pos1";
+      if (edge <= -20) return "neg3";
+      if (edge <= -10) return "neg2";
+      if (edge <= -5) return "neg1";
+      return "neutral";
+    }}
+
+    function manualSide(row) {{
+      return row.best_expression === "sell_yes_or_buy_no" ? "no" : "yes";
+    }}
+
+    function manualSignalType(row) {{
+      return manualSide(row) === "no" ? "USER_PM_IV_TOUCH_RICH_NO" : "USER_PM_IV_TOUCH_CHEAP_YES";
+    }}
+
+    function manualPayload(row) {{
+      const side = manualSide(row);
+      const signalType = manualSignalType(row);
+      return {{
+        event: String(row.event_slug || ""),
+        marketId: String(row.market_id || ""),
+        side,
+        signalType,
+        reason: `PM YES ${{fmtPct(row.pm_yes_price)}} vs IV touch model ${{fmtPct(row.options_touch_adjusted_prob)}}; edge ${{fmtPts(row.edge_score)}} pts.`,
+        heatmapRowSnapshot: {{
+          schemaVersion: 1,
+          source: "cross_venue_relative_value_heatmap",
+          row,
+          selectedSide: side,
+          selectedSignalType: signalType,
+        }},
+      }};
+    }}
+
+    function renderManualShadowCell(row) {{
+      const cell = document.createElement("td");
+      const side = manualSide(row).toUpperCase();
+      const button = document.createElement("button");
+      button.type = "button";
+      button.textContent = `Add ${{side}} shadow`;
+      button.dataset.payload = JSON.stringify(manualPayload(row));
+      button.dataset.command = `python3 scripts/add_manual_iv_touch_shadow.py --event ${{row.event_slug || ""}} --market-id ${{row.market_id || ""}} --side ${{manualSide(row)}} --signal-type ${{manualSignalType(row)}} --heatmap-row-json '${{JSON.stringify({{ schemaVersion: 1, source: "cross_venue_relative_value_heatmap", row }})}}'`;
+      cell.appendChild(button);
+      return cell;
+    }}
+
+    function renderRows(rows) {{
+      const tbody = document.querySelector("#relative-value-table tbody");
+      const rendered = rows.map((row) => {{
+        const tr = document.createElement("tr");
+        columnDefs.forEach((column) => {{
+          if (column.manualShadow) {{
+            tr.appendChild(renderManualShadowCell(row));
+            return;
+          }}
+          const td = document.createElement("td");
+          const className = typeof column.className === "function" ? column.className(row) : column.className;
+          if (className) td.className = className;
+          td.textContent = column.format ? column.format(row) : String(row[column.key] || "");
+          tr.appendChild(td);
+        }});
+        return tr;
+      }});
+      tbody.replaceChildren(...rendered);
+    }}
+
+    function updateFreshnessStatus(generatedAt) {{
+      const status = document.getElementById("live-refresh-status");
+      const generatedMs = Date.parse(generatedAt || "");
+      if (!Number.isFinite(generatedMs)) {{
+        status.textContent = "Live data loaded, but freshness timestamp was missing.";
+        status.classList.add("stale");
+        return;
+      }}
+      const ageMinutes = Math.round((Date.now() - generatedMs) / 60000);
+      status.textContent = `Live VPS data loaded ${{ageMinutes}} minutes ago. Auto-refreshing every 5 minutes.`;
+      status.classList.toggle("stale", ageMinutes > 90);
+    }}
+
+    async function refreshLatestHeatmap() {{
+      const status = document.getElementById("live-refresh-status");
+      try {{
+        const response = await fetch(`/api/heatmap-latest?ts=${{Date.now()}}`, {{ cache: "no-store" }});
+        const payload = await response.json();
+        if (!response.ok) throw new Error(payload.error || `HTTP ${{response.status}}`);
+        if (!Array.isArray(payload.rows)) throw new Error("Latest payload has no rows");
+        renderRows(payload.rows);
+        document.getElementById("snapshot-timestamp").textContent = fmtEasternTime(payload.snapshotTimestamp);
+        document.getElementById("generated-timestamp").textContent = fmtEasternTime(payload.generatedAt);
+        document.getElementById("row-count").textContent = `${{payload.rows.length}} of ${{payload.rowCount || payload.rows.length}}`;
+        updateFreshnessStatus(payload.generatedAt);
+      }} catch (err) {{
+        status.textContent = `Could not load VPS latest data: ${{err.message || err}}. Showing static Vercel render.`;
+        status.classList.add("stale");
+      }}
+    }}
+
+    function pollLatestForLiveRefresh(attempt = 1) {{
+      if (attempt > 18) return;
+      setTimeout(async () => {{
+        await refreshLatestHeatmap();
+        pollLatestForLiveRefresh(attempt + 1);
+      }}, 10 * 1000);
+    }}
+
+    async function requestLiveHeatmapRefresh() {{
+      const status = document.getElementById("live-refresh-status");
+      try {{
+        const response = await fetch("/api/heatmap-refresh", {{
+          method: "POST",
+          cache: "no-store",
+        }});
+        const result = await response.json().catch(() => ({{}}));
+        if (!response.ok) throw new Error(result.error || `HTTP ${{response.status}}`);
+        status.classList.remove("stale");
+        status.textContent = result.status === "already_running"
+          ? "Live CLOB refresh is already running on the VPS. Polling for updated rows..."
+          : "Started live CLOB refresh on the VPS. Polling for updated rows...";
+        pollLatestForLiveRefresh();
+      }} catch (err) {{
+        status.textContent = `Could not start live CLOB refresh: ${{err.message || err}}. Showing latest hourly snapshot.`;
+        status.classList.add("stale");
+      }}
+    }}
+
+    refreshLatestHeatmap();
+    requestLiveHeatmapRefresh();
+    setInterval(refreshLatestHeatmap, 5 * 60 * 1000);
+
     function sortableValue(text) {{
       const raw = (text || "").trim();
       if (!raw || raw === "-") return {{ type: "missing", value: null }};
@@ -1540,6 +1798,9 @@ def main() -> None:
     parser.add_argument("--live-hyperliquid", action="store_true", help="Refresh Hyperliquid xyz OIL mark live. Default uses snapshot data for fast hourly runs.")
     parser.add_argument("--edge-history", action="store_true", help="Compute 7d edge-per-DTE changes by reading historical snapshots. Disabled by default for fast hourly runs.")
     parser.add_argument("--archive-dir", type=Path, default=DEFAULT_ARCHIVE_DIR, help="Directory for dated heatmap CSV archives")
+    parser.add_argument("--latest-json", type=Path, default=LATEST_JSON_PATH, help="Output compact JSON for live heatmap refresh")
+    parser.add_argument("--skip-csv", action="store_true", help="Skip writing the CSV artifact")
+    parser.add_argument("--skip-html", action="store_true", help="Skip writing the HTML artifact")
     parser.add_argument("--no-archive", action="store_true", help="Skip dated heatmap CSV archive")
     args = parser.parse_args()
 
@@ -1565,14 +1826,26 @@ def main() -> None:
         )
     )
     snapshot_timestamp = str(snapshot.get("timestamp", ""))
-    write_csv(rows, args.csv)
-    archived_path = None if args.no_archive else archive_csv(rows, args.archive_dir, args.csv, snapshot_timestamp)
-    write_html(rows, args.html, snapshot_timestamp)
+    if not args.skip_csv:
+        write_csv(rows, args.csv)
+    write_latest_json(rows, args.latest_json, snapshot_timestamp)
+    archived_path = None
+    if not args.skip_csv and not args.no_archive:
+        archived_path = archive_csv(rows, args.archive_dir, args.csv, snapshot_timestamp)
+    if not args.skip_html:
+        write_html(rows, args.html, snapshot_timestamp)
     print_summary(rows)
-    print(f"\nWrote CSV:  {args.csv}")
+    if not args.skip_csv:
+        print(f"\nWrote CSV:  {args.csv}")
+    else:
+        print("\nSkipped CSV write")
+    print(f"Wrote JSON: {args.latest_json}")
     if archived_path:
         print(f"Wrote archive CSV: {archived_path}")
-    print(f"Wrote HTML: {args.html}")
+    if not args.skip_html:
+        print(f"Wrote HTML: {args.html}")
+    else:
+        print("Skipped HTML write")
 
 
 if __name__ == "__main__":
