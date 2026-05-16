@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-16T06:28:16.785Z",
+  "generatedAt": "2026-05-16T07:28:22.334Z",
   "dataFreshness": {
-    "valuationRows": 404,
-    "latestValuationAt": "2026-05-16T06",
-    "macroRows": 404,
+    "valuationRows": 405,
+    "latestValuationAt": "2026-05-16T07",
+    "macroRows": 405,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-16T06"
+    "latestInstrumentSnapshotAt": "2026-05-16T07"
   },
   "portfolio": {
     "cash": 95.1142,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.1142,
     "totalTrades": 132,
     "winRatePct": 51.5,
-    "unrealizedPnl": 0.6618
+    "unrealizedPnl": 0.6408
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "polymarket",
       "direction": "short",
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-      "pnlPct": 1.89,
-      "currentPrice": 0.54,
-      "underlyingPrice": 78771,
+      "pnlPct": 0,
+      "currentPrice": 0.53,
+      "underlyingPrice": 78455,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,7 +40,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": 60,
       "currentPrice": 0.64,
-      "underlyingPrice": 101.15,
+      "underlyingPrice": 101.43,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -54,9 +54,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 2.5,
-      "currentPrice": 4545,
-      "underlyingPrice": 4545,
+      "pnlPct": 2.7,
+      "currentPrice": 4536,
+      "underlyingPrice": 4536,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -71,9 +71,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": -0.41,
-      "currentPrice": 78771,
-      "underlyingPrice": 78771,
+      "pnlPct": -0.81,
+      "currentPrice": 78455,
+      "underlyingPrice": 78455,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -219,9 +219,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 52,
-    "resolvedCount": 70,
-    "wouldHaveWon": 28,
+    "openCount": 51,
+    "resolvedCount": 71,
+    "wouldHaveWon": 29,
     "wouldHaveLost": 42,
     "bySignal": [
       {
@@ -265,6 +265,14 @@
         "avgPnlPct": 0.07
       },
       {
+        "signalType": "PC_RATIO_EXTREME_LOW",
+        "blocked": 10,
+        "resolved": 10,
+        "wouldHaveWon": 5,
+        "wouldHaveLost": 5,
+        "avgPnlPct": -0.29
+      },
+      {
         "signalType": "MONOTONIC_ARB",
         "blocked": 3,
         "resolved": 0,
@@ -279,32 +287,9 @@
         "wouldHaveWon": 0,
         "wouldHaveLost": 0,
         "avgPnlPct": 0
-      },
-      {
-        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-        "blocked": 4,
-        "resolved": 0,
-        "wouldHaveWon": 0,
-        "wouldHaveLost": 0,
-        "avgPnlPct": 0
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "FUNDING_EXTREME_LONG",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "blockedReason": "short_blocked_by_positive_trend",
-        "outcome": "win",
-        "closeReason": "expiry",
-        "pnlPct": 0.64,
-        "resolvedAt": "2026-05-12T15:51:57.120Z",
-        "trendMetrics": {
-          "aboveTrendPct": 0.67,
-          "momentumPct": 2.89
-        }
-      },
       {
         "signalType": "OPT_IV_GT_PM_IV_DOWNSIDE",
         "asset": "GOLD",
@@ -435,6 +420,21 @@
           "yesSpread": 0.007,
           "liquidity": 14145.73,
           "flags": []
+        }
+      },
+      {
+        "signalType": "PC_RATIO_EXTREME_LOW",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "short",
+        "blockedReason": "short_blocked_by_positive_trend",
+        "outcome": "win",
+        "closeReason": "target",
+        "pnlPct": 3.11,
+        "resolvedAt": "2026-05-16T07:28:22.234Z",
+        "trendMetrics": {
+          "aboveTrendPct": 1.74,
+          "momentumPct": 2.13
         }
       }
     ],

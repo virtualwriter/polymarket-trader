@@ -9877,3 +9877,35 @@ Key decisions this session: (1) Closing GOLD short (T-1778794152516-60c7) at tar
 
 ---
 
+### 2026-05-16 07:29 UTC
+
+**Portfolio:** $99.11 total | Cash $93.11 | 6 open | P&L $0.1142 | 52% win rate (132 trades)
+
+**Opened 2 positions:**
+- GOLD long @ $4536 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_SHORT)
+- AMZN long @ $262.02 via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_hl_funding_ann = -24.16 is -2.9 std devs from mean (-0.08 ± 8.42)
+- [anomaly] gold_med_min = 4227 is -2.6 std devs from mean (4382.02 ± 59.69)
+- [correlation_flip] BTC-OIL correlation shifted from 0.27 to -0.54
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 71 (29 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+
+**LLM analysis:**
+Key session observations: (1) GOLD short (FUNDING_EXTREME_LONG) is the clear winner — funding flipped from +67.5% to -44.78%, a textbook crowded-long unwind with 2.7% spot gain. Closing proactively as the carry now works against the short and the thesis is fully resolved. This validates the FUNDING_EXTREME_LONG signal for GOLD when funding is genuinely extreme (>50%). (2) BTC long (PROMOTED_HYPOTHESIS H-148) is failing — spot declined 0.81% with no bounce despite deeply negative HL funding (-24.16%). The pattern of 'deeply negative funding + no spot bounce' is a bearish divergence that invalidates the reversal thesis. Closing before the mechanical stop. This is the second consecutive loss for the btc_put_call_exhaustion_reversal setup family (0/2 clean trades, -2.56% avg). The setup family needs more shadow tests before further live trades. (3) OIL NO position (T-1778722157808-15xu) is at 60% loss with WTI at 101.43 having breached $105 in May. The one-touch NO thesis required WTI to NOT hit $90 low in May — WTI has stayed well above $90 so the NO contract should still be winning. Wait, re-reading: the position is 'Will WTI hit (LOW) $90 in May?' NO — WTI is at 101.43, well above $90, so the NO should be profitable. The 60% loss figure in the engine state seems inconsistent with WTI at 101 vs $90 strike. Holding as the underlying thesis (WTI won't dip to $90 in May) remains intact with spot at 101. (4) BTC NO position (T-1778718867328-fb7r) on '$55,000 dip by Dec 2026' — BTC at 78,455 is far above $55k, thesis intact, hold. (5) Hypothesis backlog: 12/19 setup families need more tests with 10 pending — no new hypotheses proposed per rules. Focus should be on completing shadow tests for existing families, particularly btc_put_call_exhaustion_reversal which has underperformed. (6) FUNDING_EXTREME_LONG target reduced from 5% to 4% — the GOLD trade is closing at 2.7% because funding flipped before reaching 5%. A tighter target of 4% would have captured this trade cleanly. The signal has 7/14 wins at -0.48% avg, suggesting the wins are small and losses are large; tightening the target slightly may improve the payoff profile.
+
+---
+
