@@ -9850,3 +9850,30 @@ Key observations this session: (1) GOLD FUNDING_EXTREME_LONG short is the stando
 
 ---
 
+### 2026-05-16 06:29 UTC
+
+**Portfolio:** $99.11 total | Cash $95.11 | 4 open | P&L $0.1142 | 52% win rate (132 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_med_min = 4227 is -2.6 std devs from mean (4382.41 ± 59.26)
+- [correlation_flip] BTC-OIL correlation shifted from 0.27 to -0.55
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 70 (28 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+
+**LLM analysis:**
+Key decisions this session: (1) Closing GOLD short (T-1778794152516-60c7) at target — the FUNDING_EXTREME_LONG thesis has fully resolved with funding collapsing from 67.5% to 5.5% annualized and spot declining ~2.5% from entry. This is a clean win and the signal is exhausted. (2) Closing BTC long (T-1778873386400-hqum) early — the PROMOTED_HYPOTHESIS reversal trade has not confirmed after 14 snapshots of data. BTC drifted lower from 79,093 to 78,771 with increasingly negative HL funding (-6.6%), suggesting shorts are building rather than covering. The P/C ratio remained stable at 0.713 without the normalization spike that would confirm exhaustion completion. Rather than waiting for the 1.5% mechanical stop at ~77,700, closing early preserves ~0.4% loss vs potential 1.5% loss. The PROMOTED_HYPOTHESIS setup family has 0/1 clean live trades and 0/1 resolved shadows — sample size is too small to have confidence. (3) OIL NO position (T-1778722157808-15xu) remains open with WTI at 101.15, well above the $90 strike. The position is profitable at 60% P&L (bought NO at 0.40, now 0.64) but oil has been grinding higher. The one-touch NO thesis requires oil NOT to touch $90 by June 1 — with spot at 101 and 16 days remaining, this seems likely to resolve in our favor, but the macro signal shows oil declining probability (oil_p_settle_above_current at 29.9%) and Iran peace probability at 58.5% which is bearish for oil. Holding. (4) BTC short via PM NO (T-1778718867328-fb7r) on $55k dip contract remains valid — BTC at 78,771 is far from $55k, the NO is worth 0.54 (bought at 0.53), small gain. Holding. (5) No new hypotheses proposed — the backlog has 12/19 setup families needing more shadow tests and 10 pending. Focusing on existing validation rather than adding new setups. The hypothesis shadow test backlog is the priority. (6) The BTC-OIL correlation flip from +0.27 to -0.55 is notable — oil rising while BTC falls is an unusual regime. This may reflect oil's geopolitical premium (Iran deal probability declining slightly) while BTC faces crypto-specific selling pressure from negative funding. Worth monitoring but not actionable without more data.
+
+---
+

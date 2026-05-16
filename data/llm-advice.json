@@ -8,12 +8,27 @@
         "asset": "GOLD",
         "venue": "hyperliquid",
         "direction": "short",
-        "closeReasonCategory": "profit_taking",
+        "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "GOLD short via HL perp (FUNDING_EXTREME_LONG) has achieved +2.49% P&L against a 5% target and 2.5% stop. The primary thesis signal — gold_hl_funding_ann — has collapsed from 67.52% at entry to 9.32% at latest snapshot, an 86% normalization. The crowded-longs thesis has substantially played out: funding has normalized from extreme positive territory toward baseline, and spot has declined 2.47% from entry. With funding now near the 5.48% baseline level and the signal-family evidence showing thesis completion, this is an appropriate point to take profit before potential mean-reversion of the funding normalization. The 5% target has not been mechanically hit but the thesis driver (extreme funding) has largely resolved."
+        "thesis": "GOLD short was entered at 4,661 on FUNDING_EXTREME_LONG signal (funding was 67.5% annualized). Gold spot has declined to 4,545 (+2.5% P&L, at target). More critically, gold_hl_funding_ann has collapsed from 67.5% to 5.48% — a 91.9% normalization. The core thesis (crowded longs being unwound due to extreme funding) has fully played out: funding is now near baseline, the crowding signal is gone, and holding further exposes us to reversal risk without the carry advantage. The position has reached its 5% target and the signal is exhausted."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1778873386400-hqum",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_spot"
+        ],
+        "thesis": "BTC long was entered at 79,093 on PROMOTED_HYPOTHESIS (H-145/H-148 put-call exhaustion reversal). BTC spot has declined to 78,771 (-0.41%), moving against the thesis. The reversal has not materialized: BTC has drifted lower across 14 snapshots with no bounce, HL funding has turned increasingly negative (-6.6% annualized), suggesting shorts are accumulating rather than covering. The P/C ratio at 0.713 has not shown the normalization/spike that would confirm exhaustion completion. With the stop at 1.5% (~77,700) and no confirming evidence of reversal, the thesis is not playing out within the expected timeframe. Closing to preserve capital rather than waiting for the mechanical stop."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

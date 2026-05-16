@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-16T05:29:23.597Z",
+  "generatedAt": "2026-05-16T06:29:21.576Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,11 +11,11 @@
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
-      "strength": 1,
-      "confidence": 0.6,
-      "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-069] BTC P/C ratio spike above 1.0 during consolidation above 68500 creates oversold bounce setup as options positioning becomes too bearish",
-      "hypothesisId": "H-069",
-      "entryPrice": 78980,
+      "strength": 0.65,
+      "confidence": 0.45499999999999996,
+      "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-145] BTC momentum exhaustion confirmation when P/C ratio spike above 0.4 after staying below 0.4 during new highs creates 3-5 day pullback acceleration as systematic call unwind begins",
+      "hypothesisId": "H-145",
+      "entryPrice": 78771,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 3
@@ -25,11 +25,31 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.596591664,
-      "confidence": 0.2535514572,
+      "strength": 0.6083174113333333,
+      "confidence": 0.25853489981666666,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.2pt edge on BTC; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 78771,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "1339767",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.5966834213333333,
+      "confidence": 0.25359045406666664,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.9pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78980,
+      "entryPrice": 78771,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -41,24 +61,18 @@
       }
     },
     {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.574893227,
-      "confidence": 0.244329621475,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.2pt edge on BTC; hold 14d for repricing.",
+      "type": "PM_EV_ABOVE_SPOT",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.002741157747215528,
+      "confidence": 0.0015761657046489284,
+      "thesis": "HYPE PM EV ($45) is 8.1% above spot ($42). Market expects upside.",
       "hypothesisId": null,
-      "entryPrice": 78980,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "1339767",
-        "allowDirectionFallback": false
-      }
+      "entryPrice": 42.099,
+      "targetPct": 4,
+      "stopPct": 4,
+      "expiryDays": 14
     }
   ],
   "rejectedLlmActions": [
@@ -69,12 +83,27 @@
         "asset": "GOLD",
         "venue": "hyperliquid",
         "direction": "short",
-        "closeReasonCategory": "profit_taking",
+        "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "GOLD short via HL perp (FUNDING_EXTREME_LONG) has achieved +2.49% P&L against a 5% target and 2.5% stop. The primary thesis signal — gold_hl_funding_ann — has collapsed from 67.52% at entry to 9.32% at latest snapshot, an 86% normalization. The crowded-longs thesis has substantially played out: funding has normalized from extreme positive territory toward baseline, and spot has declined 2.47% from entry. With funding now near the 5.48% baseline level and the signal-family evidence showing thesis completion, this is an appropriate point to take profit before potential mean-reversion of the funding normalization. The 5% target has not been mechanically hit but the thesis driver (extreme funding) has largely resolved."
+        "thesis": "GOLD short was entered at 4,661 on FUNDING_EXTREME_LONG signal (funding was 67.5% annualized). Gold spot has declined to 4,545 (+2.5% P&L, at target). More critically, gold_hl_funding_ann has collapsed from 67.5% to 5.48% — a 91.9% normalization. The core thesis (crowded longs being unwound due to extreme funding) has fully played out: funding is now near baseline, the crowding signal is gone, and holding further exposes us to reversal risk without the carry advantage. The position has reached its 5% target and the signal is exhausted."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1778873386400-hqum",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_spot"
+        ],
+        "thesis": "BTC long was entered at 79,093 on PROMOTED_HYPOTHESIS (H-145/H-148 put-call exhaustion reversal). BTC spot has declined to 78,771 (-0.41%), moving against the thesis. The reversal has not materialized: BTC has drifted lower across 14 snapshots with no bounce, HL funding has turned increasingly negative (-6.6% annualized), suggesting shorts are accumulating rather than covering. The P/C ratio at 0.713 has not shown the normalization/spike that would confirm exhaustion completion. With the stop at 1.5% (~77,700) and no confirming evidence of reversal, the thesis is not playing out within the expected timeframe. Closing to preserve capital rather than waiting for the mechanical stop."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -82,6 +111,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 2 rejected; 0 non-close instructions skipped."
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-16T05:28:23.218Z",
+  "generatedAt": "2026-05-16T06:28:16.807Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
-      "strength": 1,
-      "confidence": 0.6,
-      "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-069] BTC P/C ratio spike above 1.0 during consolidation above 68500 creates oversold bounce setup as options positioning becomes too bearish",
-      "hypothesisId": "H-069",
-      "entryPrice": 78980,
+      "strength": 0.65,
+      "confidence": 0.45499999999999996,
+      "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-145] BTC momentum exhaustion confirmation when P/C ratio spike above 0.4 after staying below 0.4 during new highs creates 3-5 day pullback acceleration as systematic call unwind begins",
+      "hypothesisId": "H-145",
+      "entryPrice": 78771,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 3
@@ -22,11 +22,31 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.596591664,
-      "confidence": 0.2535514572,
+      "strength": 0.6083174113333333,
+      "confidence": 0.25853489981666666,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.2pt edge on BTC; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 78771,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "1339767",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.5966834213333333,
+      "confidence": 0.25359045406666664,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.9pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78980,
+      "entryPrice": 78771,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -38,24 +58,18 @@
       }
     },
     {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.574893227,
-      "confidence": 0.244329621475,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.2pt edge on BTC; hold 14d for repricing.",
+      "type": "PM_EV_ABOVE_SPOT",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.002741157747215528,
+      "confidence": 0.0015761657046489284,
+      "thesis": "HYPE PM EV ($45) is 8.1% above spot ($42). Market expects upside.",
       "hypothesisId": null,
-      "entryPrice": 78980,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "1339767",
-        "allowDirectionFallback": false
-      }
+      "entryPrice": 42.099,
+      "targetPct": 4,
+      "stopPct": 4,
+      "expiryDays": 14
     }
   ],
   "llmCloseEligibility": [
