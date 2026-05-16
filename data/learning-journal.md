@@ -10264,3 +10264,30 @@ Key session observations for 2026-05-16:
 
 ---
 
+### 2026-05-16 21:30 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_med_min = 4211 is -2.6 std devs from mean (4378.69 ± 63.37)
+- [correlation_flip] BTC-OIL correlation shifted from 0.30 to -0.49
+
+**Blocked signal learning:**
+- Open blocked shadows: 54
+- Resolved blocked shadows: 72 (30 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+
+**LLM analysis:**
+Key session observations: (1) FUNDING_EXTREME_SHORT signals on GOLD and AMZN resolved extremely quickly — both funding rates normalized within ~14 hours of entry. This is a pattern worth noting: when funding is at -30% to -45% annualized (rather than the more extreme -75%+ levels), mean reversion can happen within a single trading session, leaving little time to capture carry. The FUNDING_EXTREME_SHORT targetPct is being reduced from 4% to 3% to reflect that these trades often resolve before reaching the full target, and a tighter target captures more of the realized edge. (2) The GOLD FUNDING_EXTREME_LONG short (T-1778794152516-60c7) is performing well at +2.66% with funding having collapsed from +67.5% to -6.4% — this is the thesis working as intended. The position should be held toward the 5% target. (3) The OIL ONE_TOUCH_HIGH_EDGE_NO position (T-1778722157808-15xu) is up 55% — the macro 'DECLINING' signal combined with the PM IV > options IV setup continues to be the strongest signal family by average P&L. (4) BTC correlation with OIL has flipped from +0.30 to -0.49, suggesting a regime shift where crypto is decoupling from commodity volatility. This is worth monitoring for cross-asset hypothesis testing. (5) The hypothesis backlog remains at 12/19 setup families needing more tests — no new hypotheses proposed this session per the backlog constraint. (6) The relative-value heatmap shows persistent cheap-vs-underlying-cap pricing across ETH, BTC, and OIL upside contracts, but most have wide spreads or thin liquidity that prevent clean entry. The SPY $7,700 June contract (29.5% YES vs 38.8% model, 6.8pt edge, $3,885 liquidity) remains the cleanest heatmap opportunity but spread is 5c — borderline for entry.
+
+---
+

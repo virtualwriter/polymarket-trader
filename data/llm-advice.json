@@ -13,7 +13,7 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "The FUNDING_EXTREME_SHORT thesis has fully resolved: gold_hl_funding_ann has normalized from -44.78% to +5.48%, which is the primary signal-family evidence for this trade. The funding has not just normalized but flipped to positive, meaning the crowded-shorts thesis is complete. Gold spot moved from 4,536 to 4,540 (+0.09%), a minimal gain. With funding now positive (longs paying shorts), holding this long position incurs carry cost against us. The thesis is fully played out - take the small gain and exit."
+        "thesis": "The FUNDING_EXTREME_SHORT long thesis was triggered by gold_hl_funding_ann at -44.78%. Funding has now normalized to -6.44%, which is a 86% recovery toward zero — the carry signal that justified the trade has largely resolved. Gold spot is essentially flat (+$1 from entry at 4,536). With funding no longer extreme and the carry benefit gone, the thesis is invalidated. The position is at +0.02% P&L with no remaining edge from the original signal."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     },
@@ -30,7 +30,7 @@
           "amzn_hl_perp",
           "amzn_hl_funding_ann"
         ],
-        "thesis": "The FUNDING_EXTREME_SHORT thesis has fully resolved: amzn_hl_funding_ann normalized from -29.81% to +5.48%, which is the primary signal-family evidence. The perp has converged from 262.02 to 262.38 (basis improved from -0.24% to -0.10%), confirming the convergence trade worked. With funding now positive and basis nearly closed, the thesis is complete. AMZN stock is unchanged at 262.64. Exit with the small gain before positive funding creates carry drag."
+        "thesis": "The FUNDING_EXTREME_SHORT long thesis was triggered by amzn_hl_funding_ann at -29.81%. Funding has now normalized to +5.48%, a complete sign flip — the carry signal has fully resolved and reversed. AMZN stock is flat at 262.64 and the perp has recovered from 262.02 to 262.28 (+0.10%). With funding now positive (longs pay shorts), holding this position incurs negative carry against the original thesis. The signal is invalidated; exit at +0.09% P&L."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -56,7 +56,7 @@
         "stopPct": 2.5
       },
       "FUNDING_EXTREME_SHORT": {
-        "targetPct": 4,
+        "targetPct": 3,
         "stopPct": 2
       },
       "PM_EV_ABOVE_SPOT": {
