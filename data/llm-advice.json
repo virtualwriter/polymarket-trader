@@ -4,16 +4,33 @@
     {
       "instruction": {
         "action": "close",
-        "positionId": "T-1778794152516-60c7",
+        "positionId": "T-1778916565173-2wqk",
         "asset": "GOLD",
         "venue": "hyperliquid",
-        "direction": "short",
+        "direction": "long",
         "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "GOLD FUNDING_EXTREME_LONG short thesis: the crowded-long signal was gold_hl_funding_ann at +67.5% ann at entry. Funding has now normalized to +5.48% — a 91.9% collapse in the funding signal. The position is up ~2.67% (near the 5% target) and the primary evidence column gold_hl_funding_ann has fully normalized. With a simultaneous GOLD long open (T-1778916565173-2wqk) from the subsequent FUNDING_EXTREME_SHORT signal, holding both a short and a long on the same HL GOLD perp creates a net-flat position that earns no directional return. Closing the short to avoid the offsetting position and lock in the gain while the thesis evidence (funding normalization) is complete."
+        "thesis": "The FUNDING_EXTREME_SHORT thesis for this GOLD long was triggered by -44.78% annualized funding at entry (crowded shorts). The funding has now fully normalized to +5.48% — the crowded-short condition that justified the trade has completely resolved. GOLD spot is unchanged at 4,536 (0% P&L), meaning the expected short-squeeze bounce has not materialized despite the funding normalization. With the thesis signal (extreme negative funding) gone and no price appreciation, there is no remaining edge. Closing at breakeven rather than waiting for a potential reversal against the position."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1778916565173-vz22",
+        "asset": "AMZN",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "amzn_stock",
+          "amzn_hl_perp",
+          "amzn_hl_funding_ann"
+        ],
+        "thesis": "The FUNDING_EXTREME_SHORT thesis for this AMZN long was triggered by -29.81% annualized funding at entry (crowded shorts). The funding has now flipped to +32.76% — a complete sign reversal from deeply negative to strongly positive. This is the most extreme form of thesis resolution: not only has the crowded-short condition resolved, but funding has overcorrected to the opposite extreme (longs now paying shorts). The perp has moved from 262.02 to 262.34 (+0.12%), a minimal gain. With funding now strongly positive and the original crowded-short thesis fully resolved, the position should be closed. The overcorrection to +32.76% funding also suggests the perp may face downward pressure as longs unwind."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

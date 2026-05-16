@@ -10138,3 +10138,30 @@ Key session observations: (1) GOLD funding normalization is the clearest complet
 
 ---
 
+### 2026-05-16 17:29 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 5.3pp (was -0.6, now -5.9)
+- [correlation_flip] BTC-OIL correlation shifted from 0.29 to -0.51
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 71 (29 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+
+**LLM analysis:**
+Key session observations: (1) FUNDING_EXTREME_SHORT exits — both GOLD and AMZN long positions opened on extreme negative funding have had their thesis fully resolved. GOLD funding went from -44.78% to +5.48% with zero price appreciation, and AMZN funding went from -29.81% to +32.76% with only +0.12% price gain. This is a recurring pattern: funding normalization without price follow-through. The FUNDING_EXTREME_SHORT family has a 40% win rate (8/20) and -0.37% avg P&L, suggesting the signal fires correctly on funding normalization but the price response is inconsistent. The AMZN case is particularly instructive — funding overcorrected to +32.76%, which historically (H-238, H-328, H-408) signals unsustainable perp positioning requiring correction. Closing both at near-breakeven is the right discipline. (2) OIL NO position (T-1778722157808-15xu) is performing well at +62.5% as WTI has moved from 96.88 to 101.41, further from the $90 strike. The ONE_TOUCH_HIGH_EDGE_NO family has only 1 prior trade (a loss), so this is building the evidence base. The macro signal (oil_signal: DECLINING, oil_p_settle_above_current: 30%) remains supportive. (3) BTC long (T-1778923758531-nlyu) is +0.31% — the H-145/H-148 promoted hypothesis fired on P/C exhaustion and funding normalization. The bounce is occurring but is modest. The 1.5% stop is tight; the position needs to move toward the 3% target soon or the stop will be tested. (4) GOLD short (T-1778794152516-60c7) is +2.67% — the FUNDING_EXTREME_LONG thesis (67.5% funding at entry) has played out well with GOLD declining from 4,661 to 4,536. Funding has normalized to +5.48%. The position is approaching the 5% target; mechanical exit should handle this. (5) No new hypotheses proposed — the backlog of 12 setup families needing shadow tests takes priority. The hypothesis queue is deep and adding more variants would dilute testing resources. (6) Relative-value heatmap shows interesting edges in ETH May contracts (ETH $4,500 YES at 11.5% vs model 25.1%, edge +13.1pts) and OIL June $140 YES (edge +12.6pts), but these are flagged with extreme_perp_funding and oil_snapshot_uses_brent caveats that reduce confidence. The ETH edges are particularly notable given ETH has already dipped below $2,200 (closed market) and is trading at $2,177 — the downside contracts may be mispriced. However, ETH has no active hypothesis family and the extreme_perp_funding flag on ETH contracts warrants caution.
+
+---
+
