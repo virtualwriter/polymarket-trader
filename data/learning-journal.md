@@ -10191,3 +10191,33 @@ Key session observations: (1) FUNDING_EXTREME_SHORT positions in GOLD and AMZN b
 
 ---
 
+### 2026-05-16 19:30 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Closed 1 trades:**
+- ✅ OIL short via polymarket/pm_no [what-price-will-wti-hit-in-may-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $90 in May?] (ONE_TOUCH_HIGH_EDGE_NO) → target: +$0.6250 (62.5%, market 0.6250, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_med_min = 4215 is -2.6 std devs from mean (4379.49 ± 62.44)
+- [correlation_flip] BTC-OIL correlation shifted from 0.29 to -0.50
+
+**Blocked signal learning:**
+- Open blocked shadows: 54
+- Resolved blocked shadows: 72 (30 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+
+**LLM analysis:**
+Key observations from this session: (1) FUNDING_EXTREME_SHORT positions in GOLD and AMZN both had their thesis fully exhausted within ~12 hours of entry — funding normalized from extreme negative to positive territory in both cases. The positions captured minimal price appreciation (+0.11% GOLD, +0.06% AMZN) because the underlying assets barely moved; the edge was purely in the funding carry and mean-reversion of the crowded-short positioning. This suggests the FUNDING_EXTREME_SHORT target of 4% may be too ambitious for assets like GOLD and AMZN where spot doesn't move much — reducing target to 3% to capture the funding normalization profit before carry reverses. (2) The OIL ONE_TOUCH_HIGH_EDGE_NO position is performing excellently at +60% with WTI at $101 vs the $90 strike — the macro DECLINING signal and oil_p_settle_above_current at only 30% are consistent with the thesis. No action needed; hold for further repricing. (3) The BTC PROMOTED_HYPOTHESIS long (H-148/H-523 basis) is +0.28% with funding having normalized from -25% to +6.7% — a strong confirmation of the reversal thesis. The P/C ratio at 0.713 has been stable, not showing the exhaustion spike pattern, but the funding normalization is the primary driver. Hold toward the 4% target. (4) The GOLD FUNDING_EXTREME_LONG short is +2.57% with spot down 120 from entry — performing well. Funding has normalized from +67.52% to +11.26%, still positive (favorable carry for the short). Hold toward the 5% target. (5) No new hypotheses proposed — the shadow test backlog has 12 setup families needing more tests and 10 pending tests. Existing promoted families (H-521 HYPE breakout, H-523 BTC IV compression) need more condition-triggered tests before any new variants are warranted. (6) The BTC-OIL correlation flip noted in statistical observations (-0.50 from +0.29) is interesting — BTC has been consolidating while OIL has been rising, which is unusual. This could reflect the Iran peace deal probability rising (reducing geopolitical risk premium for BTC) while oil supply concerns persist independently.
+
+---
+

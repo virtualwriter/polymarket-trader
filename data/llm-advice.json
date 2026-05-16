@@ -13,7 +13,7 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "The FUNDING_EXTREME_SHORT thesis was triggered by gold_hl_funding_ann at -44.78%. Funding has now fully normalized to +5.48% — the extreme short crowding that was the thesis catalyst has completely resolved. Gold spot is essentially flat (-0.02%) since entry at 4536. The carry benefit from negative funding is gone and funding has flipped positive, meaning longs now pay shorts. With the thesis catalyst spent and no price appreciation, closing to free capital for better setups."
+        "thesis": "FUNDING_EXTREME_SHORT thesis has fully played out: gold_hl_funding_ann has normalized from -44.78% at entry to +11.26% currently — a complete sign flip from extreme short to positive territory. The signal family's edge was the extreme negative funding creating a crowded-shorts reversal; with funding now positive, longs are paying shorts and the carry has reversed against the position. Gold spot moved only +5 from 4536 to 4541 (+0.11%), so the price target has not been reached, but the funding thesis is fully exhausted. Holding further risks carry costs and the position has no remaining edge from the original signal."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     },
@@ -30,22 +30,7 @@
           "amzn_hl_perp",
           "amzn_hl_funding_ann"
         ],
-        "thesis": "The FUNDING_EXTREME_SHORT thesis was triggered by amzn_hl_funding_ann at -29.81%. Funding has fully normalized to +5.48% — the extreme short crowding has resolved. AMZN stock is flat at 262.64 and the perp has moved only +0.12% since entry. The basis has improved from -0.24% to -0.19% but remains negative. With the primary thesis catalyst (extreme negative funding) fully spent and minimal price appreciation, closing to free capital."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778923758531-nlyu",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "profit_taking",
-        "evidenceColumns": [
-          "btc_spot"
-        ],
-        "thesis": "The PROMOTED_HYPOTHESIS (H-145 BTC put-call exhaustion reversal) triggered this long at 78018. BTC has moved +0.14% to 78125. The primary thesis catalyst — extreme negative HL funding at -25.46% — has fully normalized to +1.15%, meaning the funding exhaustion reversal is complete. The position is slightly profitable but the thesis driver is spent. Closing while in profit rather than waiting for the 3% target given the catalyst has resolved and BTC has been drifting lower through the session (from 79k to 78.1k). Allowed category includes profit_taking for PROMOTED_HYPOTHESIS."
+        "thesis": "FUNDING_EXTREME_SHORT thesis has fully played out: amzn_hl_funding_ann normalized from -29.81% at entry to +5.48% currently — a complete sign flip. The crowded-shorts reversal edge is gone. AMZN stock has not moved (262.64 throughout), and the perp has only recovered from 262.02 to 262.18 (+0.06%). With funding now positive (longs pay shorts), the carry has reversed against the position and the original thesis is exhausted. The position is at +0.05% — essentially flat — and should be closed before funding costs accumulate."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -71,7 +56,7 @@
         "stopPct": 2.5
       },
       "FUNDING_EXTREME_SHORT": {
-        "targetPct": 4,
+        "targetPct": 3,
         "stopPct": 2
       },
       "PM_EV_ABOVE_SPOT": {
