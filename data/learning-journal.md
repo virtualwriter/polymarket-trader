@@ -10112,3 +10112,29 @@ Key session observations: (1) FUNDING_EXTREME_SHORT thesis completion pattern co
 
 ---
 
+### 2026-05-16 16:29 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.28 to -0.51
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 71 (29 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+
+**LLM analysis:**
+Key session observations: (1) GOLD funding normalization is the clearest completed thesis — the FUNDING_EXTREME_LONG short (T-1778794152516-60c7) has achieved ~2.67% gain with funding collapsing 91.9% from +67.5% to +5.5%. Closing this to avoid the net-flat position created by holding both a GOLD short and GOLD long simultaneously. (2) The FUNDING_EXTREME_SHORT GOLD long (T-1778916565173-2wqk) opened at the -44.8% funding extreme is now at breakeven with funding normalized to +5.5% — the carry benefit has been captured but the directional thesis (crowded shorts covering) hasn't produced a price move yet. Will hold for the mechanical target. (3) BTC intraday pattern: funding went from -25% to +4.3% while spot recovered from ~77,794 low to ~78,288, consistent with the H-145/H-148 promoted hypothesis. The long (T-1778923758531-nlyu) is up 0.35% — early but directionally correct. (4) OIL NO position (T-1778722157808-15xu) is the most concerning: WTI has risen from ~96.9 to ~101.4 since entry, moving toward the $110 range that would threaten the $90 low-touch NO thesis. However, the contract is a 'will WTI hit LOW $90 in May' — with spot at $101.4 and only ~2 weeks left in May, the probability of touching $90 remains low. The 62.5% gain on this position reflects the market's assessment. (5) No new hypotheses proposed — the backlog of 12 setup families needing shadow tests must be cleared first. (6) The BTC-OIL correlation flip from +0.28 to -0.51 is notable: oil is rising while BTC is declining, which is unusual and may reflect different macro drivers (oil responding to geopolitical/supply factors while BTC responds to risk-off/hawkish Fed). This divergence could create cross-asset opportunities but needs more data before acting. (7) AMZN perp long (T-1778916565173-vz22) is essentially flat (-0.06%) with funding normalized — holding for mechanical target as the basis is still slightly negative (-0.29%) suggesting some convergence potential remains.
+
+---
+

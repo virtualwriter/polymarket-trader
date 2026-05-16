@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-16T15:29:21.289Z",
+  "generatedAt": "2026-05-16T16:29:31.267Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.6,
       "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-069] BTC P/C ratio spike above 1.0 during consolidation above 68500 creates oversold bounce setup as options positioning becomes too bearish",
       "hypothesisId": "H-069",
-      "entryPrice": 78143,
+      "entryPrice": 78288,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 3
@@ -25,11 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6975102983333333,
-      "confidence": 0.29644187679166667,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 20.9pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
+      "strength": 0.7309356253333333,
+      "confidence": 0.3106476407666667,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 21.9pt edge on BTC; hold 14d for repricing. Edge >=20pt: high-conviction bucket.",
       "hypothesisId": null,
-      "entryPrice": 78143,
+      "entryPrice": 78288,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.60913596,
-      "confidence": 0.258882783,
+      "strength": 0.6092270089999999,
+      "confidence": 0.25892147882499994,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78143,
+      "entryPrice": 78288,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -65,11 +65,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.553462883,
-      "confidence": 0.235221725275,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.6pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5202358313333334,
+      "confidence": 0.22110022831666667,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.6pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78143,
+      "entryPrice": 78288,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -81,35 +81,15 @@
       }
     },
     {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.5507200566666667,
-      "confidence": 0.23405602408333334,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.5pt edge on BTC; hold 14d for repricing.",
-      "hypothesisId": null,
-      "entryPrice": 78143,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-bitcoin-hit-in-may-2026",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "2132778",
-        "allowDirectionFallback": false
-      }
-    },
-    {
       "type": "PM_EV_ABOVE_SPOT",
       "asset": "HYPE",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.09829861196112581,
-      "confidence": 0.05652170187764734,
+      "strength": 0.09897169718930572,
+      "confidence": 0.056908725883850785,
       "thesis": "HYPE PM EV ($45) is 10.0% above spot ($41). Market expects upside.",
       "hypothesisId": null,
-      "entryPrice": 40.849,
+      "entryPrice": 40.844,
       "targetPct": 4,
       "stopPct": 4,
       "expiryDays": 14
@@ -119,48 +99,16 @@
     {
       "instruction": {
         "action": "close",
-        "positionId": "T-1778916565173-2wqk",
+        "positionId": "T-1778794152516-60c7",
         "asset": "GOLD",
         "venue": "hyperliquid",
-        "direction": "long",
+        "direction": "short",
         "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "The FUNDING_EXTREME_SHORT long was entered at 4,536 when GOLD HL funding was -44.8% annualized. Funding has now normalized to +7.91% — a full sign flip from deeply negative to positive, which is the canonical thesis completion signal for this setup family. The gold_gc_spot has moved from 4,536 to 4,532 (-0.09%), so the position is essentially flat with no price appreciation despite the funding normalization. With funding now positive (longs pay shorts), the carry has turned adverse and the original thesis is fully spent. Closing at near-breakeven is the correct action per the FUNDING_EXTREME_SHORT playbook."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778916565173-vz22",
-        "asset": "AMZN",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "amzn_stock",
-          "amzn_hl_perp",
-          "amzn_hl_funding_ann"
-        ],
-        "thesis": "The FUNDING_EXTREME_SHORT long was entered at 262.02 when AMZN HL funding was -29.81% annualized. Funding has now normalized to +2.11% — a full sign flip from deeply negative to positive, which is the canonical thesis completion signal. The amzn_hl_perp has moved from 262.02 to 261.68 (-0.13%), a small loss, while amzn_stock is unchanged at 262.64. The basis remains slightly negative (-0.36%) but funding normalization is complete. With funding now positive, carry has turned adverse and the original crowded-shorts thesis is spent. Closing to avoid adverse carry accumulation."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778923758531-nlyu",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "profit_taking",
-        "evidenceColumns": [
-          "btc_spot"
-        ],
-        "thesis": "The PROMOTED_HYPOTHESIS BTC long (H-145/H-148 exhaustion reversal) was entered at 78,018 when BTC HL funding was -25.46% and P/C ratio spiked. BTC has recovered to 78,143 (+0.16%), a modest gain. The primary signal catalysts — extreme negative funding and P/C exhaustion — have fully normalized (funding now +0.99%, P/C unchanged at 0.713). The thesis is stale: the funding exhaustion bounce has occurred but the magnitude was small. The 1.5% stop is at ~76,847 and the 4% target is at ~81,139. Given the signal is spent and BTC is showing continued weakness in the session (down from 79,142 open), the risk/reward of holding for a further 3.8% gain with a stale signal is unfavorable. Taking the small gain and freeing capital."
+        "thesis": "GOLD FUNDING_EXTREME_LONG short thesis: the crowded-long signal was gold_hl_funding_ann at +67.5% ann at entry. Funding has now normalized to +5.48% — a 91.9% collapse in the funding signal. The position is up ~2.67% (near the 5% target) and the primary evidence column gold_hl_funding_ann has fully normalized. With a simultaneous GOLD long open (T-1778916565173-2wqk) from the subsequent FUNDING_EXTREME_SHORT signal, holding both a short and a long on the same HL GOLD perp creates a net-flat position that earns no directional return. Closing the short to avoid the offsetting position and lock in the gain while the thesis evidence (funding normalization) is complete."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -168,6 +116,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 3 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
   ]
 }
