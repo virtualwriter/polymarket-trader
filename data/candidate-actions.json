@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-16T07:28:22.358Z",
+  "generatedAt": "2026-05-16T08:28:24.031Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,36 +12,21 @@
       "confidence": 0.45499999999999996,
       "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-145] BTC momentum exhaustion confirmation when P/C ratio spike above 0.4 after staying below 0.4 during new highs creates 3-5 day pullback acceleration as systematic call unwind begins",
       "hypothesisId": "H-145",
-      "entryPrice": 78455,
+      "entryPrice": 78346,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 3
-    },
-    {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 0.8508571428571429,
-      "confidence": 0.39893929408584883,
-      "thesis": "GOLD HL funding -44.8% annualized — crowded shorts. Buy.",
-      "hypothesisId": null,
-      "entryPrice": 4536,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
     },
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6301085353333333,
-      "confidence": 0.26779612751666665,
+      "strength": 0.63020034,
+      "confidence": 0.2678351445,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.9pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78455,
+      "entryPrice": 78346,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -57,11 +42,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5750749486666666,
-      "confidence": 0.24440685318333333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.3pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6084991726666666,
+      "confidence": 0.2586121483833333,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78455,
+      "entryPrice": 78346,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -74,29 +59,14 @@
     },
     {
       "type": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 0.4231428571428571,
-      "confidence": 0.19839794981233783,
-      "thesis": "AMZN HL funding -29.8% annualized — crowded shorts. Buy.",
-      "hypothesisId": null,
-      "entryPrice": 262.02,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
-    },
-    {
-      "type": "FUNDING_EXTREME_SHORT",
       "asset": "BTC",
       "venue": "hyperliquid",
       "direction": "long",
-      "strength": 0.26171428571428573,
-      "confidence": 0.12270933290216171,
-      "thesis": "BTC HL funding -24.2% annualized — crowded shorts. Buy.",
+      "strength": 0.13914285714285718,
+      "confidence": 0.06523956891195716,
+      "thesis": "BTC HL funding -19.9% annualized — crowded shorts. Buy.",
       "hypothesisId": null,
-      "entryPrice": 78455,
+      "entryPrice": 78346,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 7,
@@ -107,11 +77,11 @@
       "asset": "HYPE",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.028892019003508997,
-      "confidence": 0.016612910927017673,
-      "thesis": "HYPE PM EV ($45) is 8.6% above spot ($42). Market expects upside.",
+      "strength": 0.04254360743722483,
+      "confidence": 0.024462574276404275,
+      "thesis": "HYPE PM EV ($45) is 8.9% above spot ($42). Market expects upside.",
       "hypothesisId": null,
-      "entryPrice": 41.887,
+      "entryPrice": 41.736,
       "targetPct": 4,
       "stopPct": 4,
       "expiryDays": 14
@@ -121,11 +91,11 @@
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.005519087374928322,
-      "confidence": 0.003173475240583785,
-      "thesis": "BTC PM EV ($84818) is 8.1% above spot ($78455). Market expects upside.",
+      "strength": 0.008891328210757443,
+      "confidence": 0.00511251372118553,
+      "thesis": "BTC PM EV ($84753) is 8.2% above spot ($78346). Market expects upside.",
       "hypothesisId": null,
-      "entryPrice": 78455,
+      "entryPrice": 78346,
       "targetPct": 4,
       "stopPct": 4,
       "expiryDays": 14
@@ -202,6 +172,43 @@
         "btc_spot"
       ],
       "reason": "LLM may advise exits for LLM-owned or promoted setups."
+    },
+    {
+      "positionId": "T-1778916565173-2wqk",
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
+      ],
+      "reason": "Rule-based signal exits require approved category and signal-family evidence."
+    },
+    {
+      "positionId": "T-1778916565173-vz22",
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
+      "evidenceColumns": [
+        "amzn_stock",
+        "amzn_hl_perp",
+        "amzn_hl_funding_ann"
+      ],
+      "reason": "Rule-based signal exits require approved category and signal-family evidence."
     }
   ]
 }

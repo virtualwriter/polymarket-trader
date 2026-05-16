@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-16T07:28:22.334Z",
+  "generatedAt": "2026-05-16T08:28:24.006Z",
   "dataFreshness": {
-    "valuationRows": 405,
-    "latestValuationAt": "2026-05-16T07",
-    "macroRows": 405,
+    "valuationRows": 406,
+    "latestValuationAt": "2026-05-16T08",
+    "macroRows": 406,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-16T07"
+    "latestInstrumentSnapshotAt": "2026-05-16T08"
   },
   "portfolio": {
-    "cash": 95.1142,
-    "openPositions": 4,
+    "cash": 93.1142,
+    "openPositions": 6,
     "realizedPnl": 0.1142,
     "totalTrades": 132,
     "winRatePct": 51.5,
-    "unrealizedPnl": 0.6408
+    "unrealizedPnl": 0.6648
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": 0,
       "currentPrice": 0.53,
-      "underlyingPrice": 78455,
+      "underlyingPrice": 78346,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -38,9 +38,9 @@
       "venue": "polymarket",
       "direction": "short",
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-      "pnlPct": 60,
-      "currentPrice": 0.64,
-      "underlyingPrice": 101.43,
+      "pnlPct": 62.5,
+      "currentPrice": 0.65,
+      "underlyingPrice": 101.8,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -54,9 +54,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 2.7,
-      "currentPrice": 4536,
-      "underlyingPrice": 4536,
+      "pnlPct": 2.6,
+      "currentPrice": 4540,
+      "underlyingPrice": 4540,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -71,14 +71,49 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": -0.81,
-      "currentPrice": 78455,
-      "underlyingPrice": 78455,
+      "pnlPct": -0.94,
+      "currentPrice": 78346,
+      "underlyingPrice": 78346,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "btc_spot"
+      ]
+    },
+    {
+      "positionId": "T-1778916565173-2wqk",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "pnlPct": 0.09,
+      "currentPrice": 4540,
+      "underlyingPrice": 4540,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
+      ]
+    },
+    {
+      "positionId": "T-1778916565173-vz22",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "pnlPct": 0.05,
+      "currentPrice": 262.14,
+      "underlyingPrice": 262.64,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "amzn_stock",
+        "amzn_hl_perp",
+        "amzn_hl_funding_ann"
       ]
     }
   ],
@@ -219,7 +254,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 51,
+    "openCount": 52,
     "resolvedCount": 71,
     "wouldHaveWon": 29,
     "wouldHaveLost": 42,
@@ -441,22 +476,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
-        "asset": "BTC",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — YES — Will Bitcoin reach $90,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.65,
-          "yesAsk": 0.68,
-          "yesSpread": 0.03,
-          "liquidity": 41507.65,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 21.0pt edge on BTC; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
         "asset": "GOLD",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-price-will-xauusd-hit-in-may-2026 — YES — Will Gold (XAUUSD) hit (HIGH) $5,000 in May?",
@@ -566,6 +585,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.0pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+        "asset": "SPY",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "spx-hit-dec-2026 — YES — Will S&P 500 (SPX) hit $7,600 (HIGH) in December?",
+        "marketQuality": {
+          "yesBid": 0.65,
+          "yesAsk": 0.68,
+          "yesSpread": 0.03,
+          "liquidity": 6560.53,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 19.4pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
       }
     ]
   },
@@ -641,6 +676,6 @@
         "stopPct": 100
       }
     },
-    "updatedAt": "2026-05-16T02:29:27.704Z"
+    "updatedAt": "2026-05-16T07:29:25.120Z"
   }
 }

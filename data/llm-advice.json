@@ -4,6 +4,21 @@
     {
       "instruction": {
         "action": "close",
+        "positionId": "T-1778873386400-hqum",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_spot"
+        ],
+        "thesis": "BTC spot has declined from entry at 79,093 to 78,346, a -0.94% move that is approaching the 1.5% stop threshold for PROMOTED_HYPOTHESIS. The promoted H-145/H-523 thesis was that BTC P/C exhaustion and IV compression would drive a reversal, but spot has continued to drift lower over 14 snapshots with no reversal signal. BTC funding is deeply negative (-19.87%) suggesting continued perp selling pressure. With the position near its stop and no confirming reversal evidence in the signal-family evidence column (btc_spot), closing to preserve capital before mechanical stop is triggered."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
+    {
+      "instruction": {
+        "action": "close",
         "positionId": "T-1778794152516-60c7",
         "asset": "GOLD",
         "venue": "hyperliquid",
@@ -13,22 +28,7 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "GOLD short entered at 4,661 with thesis of crowded longs (funding at 67.5% annualized). Gold spot has declined to 4,536 (-2.7% gain, approaching the 5% target). Critically, gold_hl_funding_ann has collapsed from +67.5% to -44.78% — a complete sign flip and 112pp swing — which is the primary signal-family evidence that the crowded-long thesis has fully resolved. Funding normalization and sign flip confirm the positioning unwind is complete. Taking profit near the 2.7% mark before funding reversal creates adverse carry on the short position."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778873386400-hqum",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_spot"
-        ],
-        "thesis": "BTC long entered at 79,093 based on promoted H-148 (put-call exhaustion reversal). BTC spot has declined to 78,455 (-0.81%), approaching the 1.5% mechanical stop. The signal-family evidence column (btc_spot) shows continued weakness with no bounce. BTC HL funding has crashed to -24.16% (a -2.9σ anomaly) indicating crowded perp shorts, but spot is not responding with a bounce — this is a bearish divergence suggesting the reversal thesis is not playing out. Closing proactively at -0.81% rather than waiting for the mechanical stop at -1.5% given the deteriorating price action and the fact that deeply negative funding with no spot bounce is a thesis-invalidating pattern for a long reversal trade."
+        "thesis": "The GOLD short (FUNDING_EXTREME_LONG) has achieved +2.6% P&L. The original thesis was crowded longs at 67.52% annualized funding; gold_hl_funding_ann has collapsed from 67.52% to 5.48% — a 91.88% normalization. The primary signal (extreme funding) has fully resolved. Gold spot has declined from 4,661 to 4,540 (-2.6%). With funding normalized and a new opposing GOLD long position (T-1778916565173-2wqk) now open on the same instrument, holding both creates a near-flat net position with unnecessary carry exposure. Closing the short to realize the gain and allow the new long thesis to run cleanly. Note: profit_taking is allowed for FUNDING_EXTREME_LONG per the allowed categories."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -50,7 +50,7 @@
         "stopPct": 3.5
       },
       "FUNDING_EXTREME_LONG": {
-        "targetPct": 4,
+        "targetPct": 5,
         "stopPct": 2.5
       },
       "FUNDING_EXTREME_SHORT": {
