@@ -13,24 +13,7 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "The FUNDING_EXTREME_SHORT thesis was triggered by gold_hl_funding_ann at -44.78%. The funding has now fully normalized to +5.48% (a +50pt swing), which is the primary thesis completion signal. Gold spot has moved only +3 points (+0.07%) from entry at 4536, well short of the 4% target. With funding normalized and no further carry benefit, the thesis is complete — holding further exposes the position to directional risk without the funding tailwind that justified the entry. Closing at near-breakeven captures the thesis resolution."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778916565173-vz22",
-        "asset": "AMZN",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "amzn_stock",
-          "amzn_hl_perp",
-          "amzn_hl_funding_ann"
-        ],
-        "thesis": "The FUNDING_EXTREME_SHORT thesis was triggered by amzn_hl_funding_ann at -29.81%. Funding has now normalized to +2.42% (a +32pt swing), completing the primary thesis signal. The amzn_hl_perp has declined from 262.02 to 261.70 (-0.12%) while amzn_stock is unchanged at 262.64, meaning the basis has not converged favorably — the perp is still at a discount. With funding normalized and the perp underperforming spot, the carry benefit is gone and the convergence trade has not materialized. Closing to avoid further directional exposure without the funding tailwind."
+        "thesis": "The FUNDING_EXTREME_SHORT long was opened at gold_hl_funding_ann = -44.78% as a crowded-shorts fade. Since open, gold_gc_spot has declined from 4536 to 4524 (-0.26%) and gold_hl_funding_ann has deepened further negative to -75.61% — the opposite of the expected normalization. Funding intensifying more negative rather than normalizing toward zero is thesis invalidation for a FUNDING_EXTREME_SHORT long: the crowded-short squeeze is not materializing and the carry is worsening. The position is at -0.27% and approaching the 2% stop; closing now preserves capital given the clear directional failure of the normalization thesis within the first 3 snapshots."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

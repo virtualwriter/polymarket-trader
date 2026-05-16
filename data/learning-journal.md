@@ -9971,3 +9971,32 @@ Key observations this session: (1) Both FUNDING_EXTREME_SHORT positions (GOLD an
 
 ---
 
+### 2026-05-16 10:29 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_med_min = 4222 is -2.6 std devs from mean (4380.85 ± 61.01)
+- [anomaly] btc_hl_funding_ann = -21.41 is -2.5 std devs from mean (-0.24 ± 8.60)
+- [anomaly] gold_hl_funding_ann = -75.61 is -2.3 std devs from mean (5.85 ± 35.48)
+- [correlation_flip] BTC-OIL correlation shifted from 0.28 to -0.53
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 71 (29 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+
+**LLM analysis:**
+Key observations this session: (1) GOLD funding is exhibiting extreme oscillation — it was +67.5% when the short was opened, crashed to -44.78% triggering a long entry, and has now deepened to -75.61%. This rapid cycling between extremes within 24 hours is a pattern that has appeared before (H-165, H-278, H-339) and suggests the gold perp market is experiencing structural instability rather than clean mean-reversion. The FUNDING_EXTREME_SHORT long thesis requires normalization toward zero, but deepening negative funding is the opposite signal. Closing the long while the FUNDING_EXTREME_LONG short remains open (now +2.94%) is the correct asymmetric response. (2) BTC-OIL correlation has flipped from +0.28 to -0.53, a significant regime shift. BTC is declining while OIL is rising — this divergence is worth monitoring as it may affect cross-asset hypotheses that assume correlated moves. (3) The OIL NO position (T-1778722157808-15xu) is under pressure with WTI spot at $102 vs the $90 low strike, but the one-touch NO thesis only fails if WTI actually touches $90 before May expiry — with spot at $102 and macro signal 'DECLINING', the thesis remains intact despite the 62.5% unrealized loss on the PM contract price. The contract price moving from 0.40 to 0.65 reflects market repricing of the probability that WTI will dip to $90, but the underlying macro thesis (Iran peace likely, oil declining) has not changed. (4) The hypothesis backlog remains at 12/19 setup families needing tests with 10 pending — no new hypotheses proposed per protocol. (5) The BTC long (T-1778923758531-nlyu) via promoted H-523 is only 1 hour old and within normal noise; no action warranted yet.
+
+---
+
