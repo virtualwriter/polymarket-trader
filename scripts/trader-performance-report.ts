@@ -99,6 +99,9 @@ interface BlockedSignalShadow {
     reason: string;
     note: string;
   };
+  heatmapRowSnapshot?: {
+    row?: Record<string, string>;
+  };
 }
 
 interface Stats {
@@ -111,6 +114,10 @@ interface Stats {
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DATA_DIR = join(ROOT, "data");
+const OPERATIONALLY_TAINTED_TRADES: Record<string, string> = {
+  "T-1778707778058-9nsi": "hourly LLM close had authority over rule-owned funding trade",
+  "T-1778718867328-1tjp": "one-touch NO inherited generic 2% Polymarket stop instead of 100% hold-to-expiry stop",
+};
 const CSV_HEADER = [
   "section",
   "group",
@@ -134,6 +141,10 @@ const CSV_HEADER = [
   "instrument_id",
   "instrument_label",
   "opened_at",
+  "entry_one_touch_model_recomputed",
+  "current_one_touch_model",
+  "current_bid",
+  "current_ask",
 ] as const;
 
 function readJson<T>(path: string, fallback: T): T {
@@ -264,6 +275,104 @@ function csvLine(values: Array<string | number | null | undefined>): string {
   return values.map(csvCell).join(",");
 }
 
+function safeNumber(value: unknown): number | null {
+  const parsed = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function normalCdf(x: number): number {
+  // Abramowitz and Stegun 7.1.26 approximation.
+  const sign = x < 0 ? -1 : 1;
+  const abs = Math.abs(x) / Math.sqrt(2);
+  const t = 1 / (1 + 0.3275911 * abs);
+  const a1 = 0.254829592;
+  const a2 = -0.284496736;
+  const a3 = 1.421413741;
+  const a4 = -1.453152027;
+  const a5 = 1.061405429;
+  const erf = 1 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-abs * abs);
+  return 0.5 * (1 + sign * erf);
+}
+
+function parseHeatmapTimestamp(value: string | undefined): Date | null {
+  if (!value) return null;
+  const normalized = /^\d{4}-\d{2}-\d{2}T\d{2}$/.test(value) ? `${value}:00:00Z` : value;
+  const parsed = new Date(normalized);
+  return Number.isFinite(parsed.getTime()) ? parsed : null;
+}
+
+function modelDteDays(row: Record<string, string>): number | null {
+  const timestamp = parseHeatmapTimestamp(row.timestamp);
+  const target = row.notes?.match(/target month-end expiry (\d{4}-\d{2}-\d{2})/i)?.[1];
+  if (timestamp && target) {
+    const expiry = new Date(`${target}T04:00:00Z`);
+    if (Number.isFinite(expiry.getTime()) && expiry > timestamp) {
+      return (expiry.getTime() - timestamp.getTime()) / 86_400_000;
+    }
+  }
+  return safeNumber(row.dte_days);
+}
+
+function recomputedOneTouchProbability(row: Record<string, string> | undefined): number | null {
+  if (!row) return null;
+  const question = row.contract_question?.toLowerCase() ?? "";
+  if (!question.includes("hit") && !question.includes("reach") && !question.includes("dip")) return null;
+  const spot = safeNumber(row.option_underlying) ?? safeNumber(row.spot);
+  const strike = safeNumber(row.strike);
+  const iv = safeNumber(row.option_iv);
+  const dteDays = modelDteDays(row);
+  const direction = row.direction;
+  if (!spot || !strike || !iv || !dteDays || spot <= 0 || strike <= 0 || iv <= 0 || dteDays <= 0) return null;
+  if (direction === "above" && spot >= strike) return 1;
+  if (direction === "below" && spot <= strike) return 1;
+
+  const t = dteDays / 365;
+  const sigmaT = iv * Math.sqrt(t);
+  if (sigmaT <= 0) return null;
+  const d1 = (Math.log(spot / strike) + 0.5 * iv * iv * t) / sigmaT;
+  if (direction === "above") return Math.min(0.99, Math.max(0, 2 * normalCdf(d1)));
+  if (direction === "below") return Math.min(0.99, Math.max(0, 2 * normalCdf(-d1)));
+  return null;
+}
+
+function readRelativeValueRows(): Map<string, Record<string, string>> {
+  const file = join(ROOT, "relative-value", "cross_venue_relative_value.csv");
+  if (!existsSync(file)) return new Map();
+  const lines = readFileSync(file, "utf-8").split("\n").filter((line) => line.trim());
+  const [headerLine, ...rows] = lines;
+  if (!headerLine) return new Map();
+  const headers = parseCsvLine(headerLine);
+  const map = new Map<string, Record<string, string>>();
+  for (const line of rows) {
+    const values = parseCsvLine(line);
+    const row = Object.fromEntries(headers.map((header, idx) => [header, values[idx] ?? ""]));
+    if (row.event_slug && row.market_id) map.set(`${row.event_slug}::${row.market_id}`, row);
+  }
+  return map;
+}
+
+function relativeValueKey(position?: Position): string | null {
+  if (!position?.instrumentId) return null;
+  const [eventSlug, marketId] = position.instrumentId.split("::");
+  return eventSlug && marketId ? `${eventSlug}::${marketId}` : null;
+}
+
+function currentBidAsk(row: Record<string, string> | undefined, instrumentType: string | undefined): { bid: number | null; ask: number | null } {
+  const yesBid = safeNumber(row?.pm_best_bid);
+  const yesAsk = safeNumber(row?.pm_best_ask);
+  if (yesBid === null || yesAsk === null) return { bid: null, ask: null };
+  if (instrumentType === "pm_no") return { bid: 1 - yesAsk, ask: 1 - yesBid };
+  return { bid: yesBid, ask: yesAsk };
+}
+
+function fmtModelValue(value: number | null): string {
+  return value === null ? "" : value.toFixed(6);
+}
+
+function fmtPriceValue(value: number | null): string {
+  return value === null ? "" : value.toFixed(4);
+}
+
 function escapeMd(value: string): string {
   return value.replace(/\|/g, "\\|").replace(/\n/g, " ");
 }
@@ -278,6 +387,9 @@ function setupLabel(hypothesis: Hypothesis | undefined): string {
 }
 
 function reportSignalType(trade: ClosedTrade): string {
+  if (OPERATIONALLY_TAINTED_TRADES[trade.id]) {
+    return `${trade.signalType}_OPERATIONALLY_TAINTED`;
+  }
   if (trade.signalType === "PC_RATIO_EXTREME_LOW" && trade.closeReason.includes("DATA_CORRECTION_ARTIFACT")) {
     return "PC_RATIO_EXTREME_LOW_DATA_CORRECTION_ARTIFACT";
   }
@@ -492,6 +604,7 @@ function buildCsvReport(args: {
   allTradeStats: Stats;
   allShadowStats: Stats;
   duplicateTradeIds: Set<string>;
+  operationallyTaintedTrades: ClosedTrade[];
   resolvedTrades: ClosedTrade[];
   resolvedShadows: BlockedSignalShadow[];
   tradeSetupRows: Array<[string, Stats]>;
@@ -506,6 +619,7 @@ function buildCsvReport(args: {
   hypothesesById: Map<string, Hypothesis>;
 }): string {
   const rows: string[][] = [CSV_HEADER.slice()];
+  const relativeValueRows = readRelativeValueRows();
 
   rows.push(["summary", "generated_at", "", "", "", "", "", "", "", "", "", "", args.generatedAt, "", "", "", "", "", "", "", "", ""]);
   rows.push(["summary", "portfolio_realized_pnl", String(args.portfolio.totalTrades), String(args.portfolio.winCount), String(args.portfolio.lossCount), args.portfolio.totalTrades > 0 ? ((args.portfolio.winCount / args.portfolio.totalTrades) * 100).toFixed(1) : "", args.portfolio.totalRealizedPnl.toFixed(6), "", "", "", "", "", `source=portfolio.json; cash=${args.portfolio.cash.toFixed(6)}; last_updated=${args.portfolio.lastUpdated}`, "", args.portfolio.totalRealizedPnl.toFixed(6), "", "", "", "", "", "", ""]);
@@ -513,6 +627,7 @@ function buildCsvReport(args: {
   rows.push(detailCsvRow("summary", "resolved_shadow_rollup", args.allShadowStats, "", "", "", `source=blocked-signals.json; resolved_shadows=${args.resolvedShadows.length}`));
   rows.push(["summary", "open_positions", String(args.portfolio.positions.length), "", "", "", "", "", "", "", "", "", "Current live/open positions from portfolio.json", "", args.portfolio.totalRealizedPnl.toFixed(6), "", "", "", "", "", "", ""]);
   rows.push(["summary", "duplicate_trade_ids", String(args.duplicateTradeIds.size), "", "", "", "", "", "", "", "", "", [...args.duplicateTradeIds].join("; "), "", "", "", "", "", "", "", "", ""]);
+  rows.push(["summary", "operationally_tainted_trade_ids", String(args.operationallyTaintedTrades.length), "", "", "", "", "", "", "", "", "", args.operationallyTaintedTrades.map((trade) => `${trade.id}: ${OPERATIONALLY_TAINTED_TRADES[trade.id]}`).join("; "), "", "", "", "", "", "", "", "", ""]);
 
   for (const [group, stats] of args.tradeSetupRows) rows.push(statsCsvRow("trade_setup_type", group, stats));
   for (const row of llmHypothesisTradeBreakoutRows(args.resolvedTrades, args.hypothesesById)) {
@@ -538,6 +653,9 @@ function buildCsvReport(args: {
   }
 
   for (const shadow of args.shadows.filter((shadow) => shadow.status === "open")) {
+    const currentRowKey = relativeValueKey(shadow.position);
+    const currentRow = currentRowKey ? relativeValueRows.get(currentRowKey) : undefined;
+    const bidAsk = currentBidAsk(currentRow, shadow.position?.instrumentType);
     rows.push([
       "currently_open_shadow_trade",
       shadowKey(shadow),
@@ -561,6 +679,10 @@ function buildCsvReport(args: {
       shadow.position?.instrumentId ?? "",
       shadow.position?.instrumentLabel ?? "",
       shadow.blockedAt,
+      fmtModelValue(recomputedOneTouchProbability(shadow.heatmapRowSnapshot?.row)),
+      fmtModelValue(safeNumber(currentRow?.options_touch_adjusted_prob)),
+      fmtPriceValue(bidAsk.bid),
+      fmtPriceValue(bidAsk.ask),
     ]);
   }
 
@@ -569,6 +691,9 @@ function buildCsvReport(args: {
     const signal = position.signalType === "LLM_HYPOTHESIS" || position.signalType === "PROMOTED_HYPOTHESIS"
       ? `${position.signalType} / ${setupLabel(hypothesis)}`
       : position.signalType;
+    const currentRowKey = relativeValueKey(position);
+    const currentRow = currentRowKey ? relativeValueRows.get(currentRowKey) : undefined;
+    const bidAsk = currentBidAsk(currentRow, position.instrumentType);
     rows.push([
       "open_position",
       signal,
@@ -592,6 +717,10 @@ function buildCsvReport(args: {
       position.instrumentId ?? "",
       position.instrumentLabel ?? "",
       position.openedAt,
+      "",
+      fmtModelValue(safeNumber(currentRow?.options_touch_adjusted_prob)),
+      fmtPriceValue(bidAsk.bid),
+      fmtPriceValue(bidAsk.ask),
     ]);
   }
 
@@ -607,6 +736,7 @@ function buildMarkdownReport(args: {
   allTradeStats: Stats;
   allShadowStats: Stats;
   duplicateTradeIds: Set<string>;
+  operationallyTaintedTrades: ClosedTrade[];
   tradeSetupRows: Array<[string, Stats]>;
   assetRows: Array<[string, Stats]>;
   tradeTypeAssetRows: Array<[string, Stats]>;
@@ -630,6 +760,9 @@ function buildMarkdownReport(args: {
   lines.push(`- Detailed trade ledger rollup: ${fmtUsd(args.allTradeStats.pnl)} (${args.allTradeStats.trades} closed trade rows, ${args.allTradeStats.wins}W/${args.allTradeStats.losses}L, ${winRate(args.allTradeStats)} win rate)`);
   if (args.duplicateTradeIds.size > 0) {
     lines.push(`- Ledger note: ${args.duplicateTradeIds.size} duplicate trade IDs found in trades-detailed.csv; grouped tables below use ledger rows so they tie to the visible detailed history, while total P&L above uses portfolio.json as canonical.`);
+  }
+  if (args.operationallyTaintedTrades.length > 0) {
+    lines.push(`- Operationally tainted trades labeled separately: ${args.operationallyTaintedTrades.map((trade) => `${trade.id} (${OPERATIONALLY_TAINTED_TRADES[trade.id]})`).join("; ")}`);
   }
   lines.push(`- Current cash: $${args.portfolio.cash.toFixed(4)}`);
   lines.push(`- Open positions: ${args.portfolio.positions.length}`);
@@ -699,6 +832,7 @@ function main() {
 
   const allTradeStats = emptyStats();
   for (const trade of trades) addStats(allTradeStats, trade.pnl, trade.pnlPct);
+  const operationallyTaintedTrades = trades.filter((trade) => OPERATIONALLY_TAINTED_TRADES[trade.id]);
 
   const resolvedShadows = shadows.filter((shadow) => shadow.status === "resolved" && shadow.hypotheticalResult);
   const allShadowStats = emptyStats();
@@ -714,6 +848,7 @@ function main() {
     allTradeStats,
     allShadowStats,
     duplicateTradeIds,
+    operationallyTaintedTrades,
     resolvedTrades: trades,
     resolvedShadows,
     tradeSetupRows: grouped(trades, (trade) => tradeSetupKey(trade, hypothesesById), (stats, trade) => addStats(stats, trade.pnl, trade.pnlPct)),
