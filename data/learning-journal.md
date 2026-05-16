@@ -10221,3 +10221,46 @@ Key observations from this session: (1) FUNDING_EXTREME_SHORT positions in GOLD 
 
 ---
 
+### 2026-05-16 20:30 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_med_min = 4211 is -2.7 std devs from mean (4379.09 ± 62.91)
+- [correlation_flip] BTC-OIL correlation shifted from 0.29 to -0.49
+
+**Blocked signal learning:**
+- Open blocked shadows: 54
+- Resolved blocked shadows: 72 (30 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+
+**LLM analysis:**
+Key session observations for 2026-05-16:
+
+1. FUNDING_EXTREME_SHORT exits: Both the GOLD long (T-2wqk) and AMZN long (T-vz22) opened this morning on extreme negative funding (-44.8% and -29.8% respectively) have fully resolved their thesis within ~13 hours. Gold funding normalized from -44.78% to +5.48%; AMZN from -29.81% to +5.48%. This is textbook thesis completion for FUNDING_EXTREME_SHORT - the crowded shorts covered, funding normalized, and the perp/spot basis converged. Closing both to avoid carry drag from now-positive funding. The signal worked as designed but the gains are small (0.09% and 0.13%) because the underlying assets barely moved - the edge was purely in the funding carry and basis convergence, not spot direction.
+
+2. GOLD short (T-60c7) remains open at +2.59% gain. The FUNDING_EXTREME_LONG thesis (67.5% funding at entry) has also normalized (now +5.48%), but this position is profitable and the mechanical target (5%) hasn't been hit. The funding normalization is thesis completion evidence, but the position is still within normal hold parameters. Will let the mechanical target handle exit.
+
+3. BTC long (T-nlyu) via PROMOTED_HYPOTHESIS is up 0.32% from 78,018 entry. HL funding normalized from -25.46% to -1.07%, confirming the short squeeze exhaustion thesis. The position needs to reach 3% target or hit 1.5% stop. Current trajectory is slow but intact.
+
+4. OIL NO position (T-15xu) is up 55% (current price 0.62 vs entry 0.40). WTI has risen from 96.88 to 101.32 (+4.58%), moving against the thesis that WTI would NOT hit $90 low in May. However, the contract is a NO on WTI hitting LOW $90 - with WTI at $101, the $90 low is even less likely to be hit. The position is working correctly despite the spot move being 'against' intuition. The ONE_TOUCH_HIGH_EDGE_NO signal is performing well here.
+
+5. BTC PM IV has been remarkably stable at 36.8-37.5% all session despite spot volatility. This compressed IV relative to options IV (36.9% 30d) is unusual and may signal upcoming vol expansion per H-523.
+
+6. Oil HL funding has been extremely volatile today: ranging from -74% to +80% annualized in a single session. This is the most extreme intraday funding oscillation observed. The oil_funding_volatility_mean_reversion family of hypotheses (H-439 etc.) may be capturing something real here, but the signal is noisy and hard to trade.
+
+7. No new hypotheses proposed - the backlog of 12 setup families needing tests takes priority. The hypothesis shadow test backlog remains at 10 pending tests. Focus should be on completing existing shadow tests rather than generating new variants.
+
+8. Relative-value heatmap shows interesting edges in ETH May contracts (buy YES on $4,500 at 11.5% edge, $5,000 at 6.75% edge) and OIL June contracts (buy YES on $140 at 12.5% edge, $150 at 10.4% edge). These are flagged as 'extreme_perp_funding' for OIL, which may distort the model. ETH edges look cleaner but ETH is not in our active asset universe for direct trading. Will monitor.
+
+---
+

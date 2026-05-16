@@ -13,7 +13,7 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "FUNDING_EXTREME_SHORT thesis has fully played out: gold_hl_funding_ann has normalized from -44.78% at entry to +11.26% currently — a complete sign flip from extreme short to positive territory. The signal family's edge was the extreme negative funding creating a crowded-shorts reversal; with funding now positive, longs are paying shorts and the carry has reversed against the position. Gold spot moved only +5 from 4536 to 4541 (+0.11%), so the price target has not been reached, but the funding thesis is fully exhausted. Holding further risks carry costs and the position has no remaining edge from the original signal."
+        "thesis": "The FUNDING_EXTREME_SHORT thesis has fully resolved: gold_hl_funding_ann has normalized from -44.78% to +5.48%, which is the primary signal-family evidence for this trade. The funding has not just normalized but flipped to positive, meaning the crowded-shorts thesis is complete. Gold spot moved from 4,536 to 4,540 (+0.09%), a minimal gain. With funding now positive (longs paying shorts), holding this long position incurs carry cost against us. The thesis is fully played out - take the small gain and exit."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     },
@@ -30,7 +30,7 @@
           "amzn_hl_perp",
           "amzn_hl_funding_ann"
         ],
-        "thesis": "FUNDING_EXTREME_SHORT thesis has fully played out: amzn_hl_funding_ann normalized from -29.81% at entry to +5.48% currently — a complete sign flip. The crowded-shorts reversal edge is gone. AMZN stock has not moved (262.64 throughout), and the perp has only recovered from 262.02 to 262.18 (+0.06%). With funding now positive (longs pay shorts), the carry has reversed against the position and the original thesis is exhausted. The position is at +0.05% — essentially flat — and should be closed before funding costs accumulate."
+        "thesis": "The FUNDING_EXTREME_SHORT thesis has fully resolved: amzn_hl_funding_ann normalized from -29.81% to +5.48%, which is the primary signal-family evidence. The perp has converged from 262.02 to 262.38 (basis improved from -0.24% to -0.10%), confirming the convergence trade worked. With funding now positive and basis nearly closed, the thesis is complete. AMZN stock is unchanged at 262.64. Exit with the small gain before positive funding creates carry drag."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -56,7 +56,7 @@
         "stopPct": 2.5
       },
       "FUNDING_EXTREME_SHORT": {
-        "targetPct": 3,
+        "targetPct": 4,
         "stopPct": 2
       },
       "PM_EV_ABOVE_SPOT": {
