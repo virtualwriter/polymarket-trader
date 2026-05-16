@@ -9937,3 +9937,37 @@ Key observations this session: (1) BTC PROMOTED_HYPOTHESIS long (T-1778873386400
 
 ---
 
+### 2026-05-16 09:29 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Closed 1 trades:**
+- ❌ BTC long via spot/spot [BTC spot] (PROMOTED_HYPOTHESIS) → stop: $-0.0151 (-1.5%, market -0.0151, funding 0.0000)
+
+**Opened 1 positions:**
+- BTC long @ $78018 via spot/spot [BTC spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_hl_funding_ann = -25.46 is -3.0 std devs from mean (-0.19 ± 8.55)
+- [anomaly] gold_med_min = 4223 is -2.6 std devs from mean (4381.24 ± 60.57)
+- [correlation_flip] BTC-OIL correlation shifted from 0.28 to -0.53
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 71 (29 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+
+**LLM analysis:**
+Key observations this session: (1) Both FUNDING_EXTREME_SHORT positions (GOLD and AMZN) have had their primary thesis signal — extreme negative funding — fully normalize within ~2 hours of entry. This is the intended thesis completion event. However, neither position has moved meaningfully in price (GOLD +0.07%, AMZN -0.12%), suggesting the funding normalization did not translate into spot/perp convergence in this instance. Closing both as thesis-complete rather than waiting for price action that may not materialize. (2) The GOLD FUNDING_EXTREME_LONG short (T-1778794152516-60c7) is performing well at +2.62% with funding normalized from +67.5% to +5.48% — this is approaching its 5% target and should be monitored for mechanical close. (3) BTC continues its slow grind lower with deeply negative HL funding (-25.5%), which is a statistical anomaly (-3σ) but has not reversed. The BTC ONE_TOUCH_HIGH_EDGE_NO position on the $55k dip contract is now at 0.64 YES (up from 0.53 entry), meaning the NO position is losing. BTC spot has declined 1.9% since entry, moving the market closer to the $55k scenario in participants' minds even though it remains far away in absolute terms. This is a key risk to monitor — if BTC continues declining, the $55k dip contract will continue repricing higher. (4) The OIL ONE_TOUCH_HIGH_EDGE_NO position on WTI $90 low is at 0.585 YES (up from 0.40 entry, -60% P&L) as WTI has risen from 96.88 to 101.75. This is a significant adverse move. The $90 low contract is now pricing 58.5% probability of WTI touching $90, which with WTI at 101.75 implies the market sees meaningful downside risk. The oil_opt_iv_30d at 77.1% (up from 60.7% at entry) confirms elevated volatility expectations. This position is approaching a critical juncture — the macro signal (oil_macro_score=70, DECLINING) and the forward curve (opt_fwd_90d at 89.2, below spot) support the original thesis, but the price action has been adverse. The ONE_TOUCH_HIGH_EDGE_NO signal has only 0/1 clean trades (loss), so this family remains exploratory with weak evidence. (5) Hypothesis backlog: 12/19 setup families need more tests with 10 pending — no new hypotheses proposed per protocol. (6) The FUNDING_EXTREME_SHORT signal has 9/19 wins (47%) with avg P&L +0.18% — marginally positive but below the 4% target rate. The pattern of funding normalizing quickly without price follow-through (as seen in today's GOLD and AMZN entries) suggests the signal may be capturing mean-reversion in funding rates rather than genuine perp/spot convergence opportunities. Worth monitoring whether tighter entry conditions (e.g., requiring basis also at extreme) would improve the signal quality.
+
+---
+
