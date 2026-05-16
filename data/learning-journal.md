@@ -9823,3 +9823,30 @@ Key observations this session: (1) GOLD short (T-1778794152516-60c7) is being cl
 
 ---
 
+### 2026-05-16 05:29 UTC
+
+**Portfolio:** $99.11 total | Cash $95.11 | 4 open | P&L $0.1142 | 52% win rate (132 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_med_min = 4225 is -2.7 std devs from mean (4382.79 ± 58.83)
+- [correlation_flip] BTC-OIL correlation shifted from 0.27 to -0.55
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 70 (28 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+
+**LLM analysis:**
+Key observations this session: (1) GOLD FUNDING_EXTREME_LONG short is the standout performer — gold_hl_funding_ann collapsed from 67.5% to 9.3% and spot fell 2.47%, confirming the crowded-longs thesis. Recommending early close at ~2.49% P&L since the primary signal driver has normalized 86% and the remaining upside to the 5% target is asymmetrically risky given funding is now near baseline. (2) OIL ONE_TOUCH_HIGH_EDGE_NO position (WTI $90 low) is under pressure with spot rallying from $96.88 to $101.03 (+4.3%). The macro backdrop (Iran peace likely, oil signal DECLINING, p_settle_above_current ~30%) still supports the thesis that WTI will not dip to $90 in May, but the rally has reduced the safety margin. The PM contract (WTI LOW $90 in May) is at 0.585 YES (up from 0.40 entry), meaning the NO position is now at 0.415 vs 0.60 entry — a 60% loss on the PM position. This is a significant adverse move but the thesis remains intact: WTI would need to fall ~11% from current levels to hit $90 with ~2 weeks remaining in May. Monitoring closely. (3) BTC long (PROMOTED_HYPOTHESIS via H-148/H-523) is -0.14% — essentially flat. BTC funding has gone deeply negative (-9.76%), which is consistent with short-side crowding and supports the reversal thesis. IBIT P/C has normalized slightly from 0.705 to 0.713. No close signal. (4) BTC PM IV continues compressing (37.3% at latest), maintaining the H-523 vol-reversion setup. The hypothesis backlog has 12 setup families needing more tests and 10 pending — no new hypotheses proposed per instructions. (5) Statistical anomaly: gold_med_min at 4225 is -2.7σ from mean, suggesting the market is pricing in meaningful downside tail risk for gold. The BTC-OIL correlation flip from +0.27 to -0.55 is notable — oil rallying while BTC consolidates/weakens suggests a risk-off/commodity-specific dynamic rather than broad risk-on. (6) No new trades proposed beyond the GOLD close — portfolio is at 4 positions (3 after close) with $95 cash, well within risk limits. The OIL PM position is the highest-risk open trade given the adverse price move.
+
+---
+

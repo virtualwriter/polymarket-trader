@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-16T04:29:19.566Z",
+  "generatedAt": "2026-05-16T05:29:23.597Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,11 +11,11 @@
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.65,
-      "confidence": 0.45499999999999996,
-      "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-145] BTC momentum exhaustion confirmation when P/C ratio spike above 0.4 after staying below 0.4 during new highs creates 3-5 day pullback acceleration as systematic call unwind begins",
-      "hypothesisId": "H-145",
-      "entryPrice": 79039,
+      "strength": 1,
+      "confidence": 0.6,
+      "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-069] BTC P/C ratio spike above 1.0 during consolidation above 68500 creates oversold bounce setup as options positioning becomes too bearish",
+      "hypothesisId": "H-069",
+      "entryPrice": 78980,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 3
@@ -25,11 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5964999303333334,
-      "confidence": 0.2535124703916667,
+      "strength": 0.596591664,
+      "confidence": 0.2535514572,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.9pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 79039,
+      "entryPrice": 78980,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5748023956666667,
-      "confidence": 0.24429101815833335,
+      "strength": 0.574893227,
+      "confidence": 0.244329621475,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.2pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 79039,
+      "entryPrice": 78980,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -74,7 +74,7 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "GOLD short via FUNDING_EXTREME_LONG has achieved +2.55% gain. The primary thesis signal — gold_hl_funding_ann — has collapsed from 67.52% at entry to 5.48% now (-91.9% normalization), which is the core thesis completion signal. Gold spot has moved from 4,661 to 4,543 (-2.53%), capturing the crowded-long unwind. The funding has normalized to near the default 5.48% floor, meaning the extreme long crowding that motivated the trade has fully resolved. The target is 5% and we are at 2.55%, but with funding normalized and the gold_med_min statistical anomaly at -2.7σ (suggesting potential support), the risk/reward of holding for the remaining 2.45% is asymmetric. Taking profit at the thesis completion signal rather than waiting for mechanical target."
+        "thesis": "GOLD short via HL perp (FUNDING_EXTREME_LONG) has achieved +2.49% P&L against a 5% target and 2.5% stop. The primary thesis signal — gold_hl_funding_ann — has collapsed from 67.52% at entry to 9.32% at latest snapshot, an 86% normalization. The crowded-longs thesis has substantially played out: funding has normalized from extreme positive territory toward baseline, and spot has declined 2.47% from entry. With funding now near the 5.48% baseline level and the signal-family evidence showing thesis completion, this is an appropriate point to take profit before potential mean-reversion of the funding normalization. The 5% target has not been mechanically hit but the thesis driver (extreme funding) has largely resolved."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
