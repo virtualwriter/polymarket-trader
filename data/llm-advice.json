@@ -8,27 +8,12 @@
         "asset": "GOLD",
         "venue": "hyperliquid",
         "direction": "short",
-        "closeReasonCategory": "thesis_invalidated",
+        "closeReasonCategory": "profit_taking",
         "evidenceColumns": [
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "GOLD FUNDING_EXTREME_LONG short thesis has largely played out: gold_gc_spot has moved from 4,661 to 4,544 (-2.51%), capturing the 5% target zone, and gold_hl_funding_ann has collapsed from 67.52% to 5.48% (-91.88% relative change), which is the primary signal-family evidence for this trade. The funding normalization is the core thesis completion signal - funding has returned to near-baseline levels, meaning the crowded-long squeeze is complete. Holding further risks mean reversion in gold spot as the funding carry advantage has evaporated. The position is at +2.53% P&L against a 5% target and 2.5% stop, and with funding now at 5.48% (no longer extreme), the thesis is invalidated."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778873386400-hqum",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_spot"
-        ],
-        "thesis": "BTC PROMOTED_HYPOTHESIS long entered at 79,093 is essentially flat (+0.05%) after 8+ hours. The promoted H-148 put-call exhaustion reversal thesis predicted a bounce from the P/C ratio spike, but BTC spot has failed to make meaningful upside progress - it dropped to 79,017 intraday and has only recovered to 79,133. The 1.5% stop is at ~77,900 and the 4% target is at ~82,257. With BTC HL funding persistently negative (-4 to -5% annualized) indicating short-side crowding rather than bullish positioning, and BTC spot failing to hold above 79,200 despite multiple attempts, the momentum reversal thesis is not materializing within the expected timeframe. The risk/reward has deteriorated given the flat price action and the stop is close enough that holding further adds asymmetric downside risk. Closing to preserve capital for better setups."
+        "thesis": "GOLD short via FUNDING_EXTREME_LONG has achieved +2.55% gain. The primary thesis signal — gold_hl_funding_ann — has collapsed from 67.52% at entry to 5.48% now (-91.9% normalization), which is the core thesis completion signal. Gold spot has moved from 4,661 to 4,543 (-2.53%), capturing the crowded-long unwind. The funding has normalized to near the default 5.48% floor, meaning the extreme long crowding that motivated the trade has fully resolved. The target is 5% and we are at 2.55%, but with funding normalized and the gold_med_min statistical anomaly at -2.7σ (suggesting potential support), the risk/reward of holding for the remaining 2.45% is asymmetric. Taking profit at the thesis completion signal rather than waiting for mechanical target."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

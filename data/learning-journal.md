@@ -9796,3 +9796,30 @@ Key observations from this session: (1) GOLD FUNDING_EXTREME_LONG short (T-17787
 
 ---
 
+### 2026-05-16 04:29 UTC
+
+**Portfolio:** $99.11 total | Cash $95.11 | 4 open | P&L $0.1142 | 52% win rate (132 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_med_min = 4227 is -2.7 std devs from mean (4383.18 ± 58.37)
+- [correlation_flip] BTC-OIL correlation shifted from 0.27 to -0.56
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 70 (28 wins / 42 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-37.50%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+
+**LLM analysis:**
+Key observations this session: (1) GOLD short (T-1778794152516-60c7) is being closed at +2.55% as the primary thesis signal — gold_hl_funding_ann — has fully normalized from 67.52% to 5.48%, completing the crowded-long unwind thesis. The gold_med_min statistical anomaly at -2.7σ also suggests potential support forming, making continued short holding less attractive. (2) OIL short via Polymarket (T-1778722157808-15xu) is at +60% gain on the NO contract (current price 0.64 vs entry 0.40). WTI has risen from $96.88 to $101.02 (+4.27%), which is adverse for the underlying but the PM contract is pricing the $90 low touch at 64% probability — still elevated. The 30d options IV has spiked dramatically (60.7% → 77.2%, +27%) while PM IV is ~60%, creating a PM_IV_GT_OPT_IV_DOWNSIDE signal. However, the ONE_TOUCH_HIGH_EDGE_NO signal has no mechanical target, so we hold. The oil_opt_iv_30d spike is a context-only metric for this position. (3) BTC long (T-1778873386400-hqum) is essentially flat at -0.07%. BTC funding has flipped negative (-3% to -5% annualized), which is actually supportive for longs (shorts paying longs). The P/C ratio at 0.713 is not in extreme territory. Holding with 1.5% stop. (4) BTC NO position (T-1778718867328-fb7r) on $55k dip is at +1.89% with the contract at 0.54. BTC at $79k is far from $55k, so this is performing as expected. (5) The hypothesis backlog remains at 12/19 setup families needing tests — no new hypotheses proposed per protocol. (6) The BTC-OIL correlation flip (-0.56 from +0.27) is notable and worth monitoring — oil rising while BTC consolidates suggests macro divergence rather than risk-on correlation. (7) HYPE distribution continues with OI declining from ~1.03B to ~960M and spot from ~$44.9 to ~$43.0. The HYPE funding remains elevated at 10.95% annualized, suggesting longs are still paying — potential mean reversion setup but the killed HYPE distribution family (H-508 through H-520) warns against fading this too aggressively.
+
+---
+
