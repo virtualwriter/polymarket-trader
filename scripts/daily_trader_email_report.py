@@ -28,6 +28,10 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 REPORT_DIR = DATA_DIR / "daily-email-reports"
+OPERATIONALLY_TAINTED_TRADES = {
+    "T-1778707778058-9nsi": "hourly LLM close had authority over rule-owned funding trade",
+    "T-1778718867328-1tjp": "one-touch NO inherited generic 2% Polymarket stop instead of 100% hold-to-expiry stop",
+}
 
 
 def parse_ts(value: str | None) -> datetime | None:
@@ -64,6 +68,29 @@ def read_csv(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
+def dedupe_closed_trade_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Keep each trade ID once, using its earliest recorded close."""
+    by_id: dict[str, dict[str, str]] = {}
+    anonymous_rows: list[dict[str, str]] = []
+    for row in rows:
+        trade_id = row.get("id")
+        if not trade_id:
+            anonymous_rows.append(row)
+            continue
+        existing = by_id.get(trade_id)
+        if existing is None:
+            by_id[trade_id] = row
+            continue
+        existing_closed = parse_ts(existing.get("closed_at"))
+        candidate_closed = parse_ts(row.get("closed_at"))
+        if existing_closed is None or (candidate_closed is not None and candidate_closed < existing_closed):
+            by_id[trade_id] = row
+    return sorted(
+        [*by_id.values(), *anonymous_rows],
+        key=lambda row: parse_ts(row.get("closed_at")) or datetime.max.replace(tzinfo=timezone.utc),
+    )
+
+
 def read_json(path: Path, default: Any) -> Any:
     if not path.exists():
         return default
@@ -84,7 +111,11 @@ def before_end(ts: str | None, end_utc: datetime) -> bool:
 def is_counted_real_trade(row: dict[str, Any]) -> bool:
     close_reason = row.get("close_reason") or ""
     thesis = row.get("thesis") or ""
-    return "DATA_CORRECTION_ARTIFACT" not in close_reason and "NON_LEARNING_CLOSE" not in thesis
+    return (
+        row.get("id") not in OPERATIONALLY_TAINTED_TRADES
+        and "DATA_CORRECTION_ARTIFACT" not in close_reason
+        and "NON_LEARNING_CLOSE" not in thesis
+    )
 
 
 def win_loss(rows: list[dict[str, Any]]) -> tuple[int, int]:
@@ -109,12 +140,16 @@ def short_label(label: str | None, max_len: int = 120) -> str:
 
 def trade_line(row: dict[str, Any], tz: ZoneInfo, closed: bool) -> str:
     if closed:
+        taint_note = (
+            f" | operationally tainted: {OPERATIONALLY_TAINTED_TRADES[row.get('id')]}"
+            if row.get("id") in OPERATIONALLY_TAINTED_TRADES else ""
+        )
         return (
             f"- {local_hour(row.get('closed_at'), tz)} | CLOSED | {row.get('asset')} "
             f"{row.get('direction')} via {row.get('venue')}/{row.get('instrument_type') or 'legacy'} "
             f"({row.get('signal_type')}) {row.get('close_reason')}: "
             f"{money(num(row.get('pnl')))} / {pct(num(row.get('pnl_pct')))} "
-            f"[{short_label(row.get('instrument_label'))}]"
+            f"[{short_label(row.get('instrument_label'))}]{taint_note}"
         )
     return (
         f"- {local_hour(row.get('opened_at'), tz)} | OPENED | {row.get('asset')} "
@@ -272,6 +307,7 @@ def risk_shape_report_lines(closed_rows: list[dict[str, str]]) -> list[str]:
         rows = [
             row for row in closed_rows
             if row.get("signal_type") == signal and "DATA_CORRECTION_ARTIFACT" not in (row.get("close_reason") or "")
+            and row.get("id") not in OPERATIONALLY_TAINTED_TRADES
         ]
         if not rows:
             continue
@@ -322,14 +358,17 @@ def get_report_window(date_arg: str | None, tz_name: str) -> ReportWindow:
 
 
 def build_report(window: ReportWindow) -> str:
-    closed_rows = read_csv(DATA_DIR / "trades-detailed.csv")
+    raw_closed_rows = read_csv(DATA_DIR / "trades-detailed.csv")
+    closed_rows = dedupe_closed_trade_rows(raw_closed_rows)
     portfolio = read_json(DATA_DIR / "portfolio.json", {"positions": []})
     shadows = read_json(DATA_DIR / "blocked-signals.json", [])
     hypotheses = read_json(DATA_DIR / "hypotheses.json", [])
+    duplicate_closed_trade_rows = len(raw_closed_rows) - len(closed_rows)
 
     closed_trade_ids = {row.get("id") for row in closed_rows if row.get("id")}
     closed_trades = [row for row in closed_rows if in_window(row.get("closed_at"), window.start_utc, window.end_utc)]
     counted_closed_trades = [row for row in closed_trades if is_counted_real_trade(row)]
+    tainted_closed_trades = [row for row in closed_trades if row.get("id") in OPERATIONALLY_TAINTED_TRADES]
     cumulative_counted_trades = [
         row for row in closed_rows
         if is_counted_real_trade(row) and before_end(row.get("closed_at"), window.end_utc)
@@ -363,6 +402,10 @@ def build_report(window: ReportWindow) -> str:
     cumulative_counted_realized = sum(num(row.get("pnl")) for row in cumulative_counted_trades)
     daily_wins, daily_losses = win_loss(counted_closed_trades)
     cumulative_wins, cumulative_losses = win_loss(cumulative_counted_trades)
+    portfolio_realized = num(portfolio.get("totalRealizedPnl"))
+    portfolio_wins = int(num(portfolio.get("winCount")))
+    portfolio_losses = int(num(portfolio.get("lossCount")))
+    portfolio_trades = int(num(portfolio.get("totalTrades")))
     shadow_realized = sum(num((shadow.get("hypotheticalResult") or {}).get("pnl")) for shadow in resolved_shadows)
     open_unrealized = sum(open_position_pnl(position)[0] for position in open_positions)
 
@@ -392,13 +435,16 @@ def build_report(window: ReportWindow) -> str:
         f"realized P&L {money(realized)} (counted {money(counted_realized)})",
         f"- Real trade W/L counted today: {daily_wins}/{len(counted_closed_trades)} "
         f"({daily_losses} losses)",
-        "- Counted ledger excludes data-correction/non-learning closes.",
+        "- Counted ledger excludes data-correction/non-learning/operationally tainted closes.",
+        f"- Duplicate closed-trade rows removed before ledger totals: {duplicate_closed_trade_rows}",
+        f"- Operationally tainted closes today: {len(tainted_closed_trades)}",
         f"- Current open real positions: {len(open_positions)} | unrealized P&L {money(open_unrealized)}",
         f"- Shadow trades opened: {len(opened_shadows)}",
         f"- Shadow trades resolved: {len(resolved_shadows)} | shadow P&L {money(shadow_realized)}",
-        f"- Closed-trade ledger P&L as of report end: {money(cumulative_counted_realized)}",
-        f"- Closed-trade ledger win rate as of report end: {cumulative_wins}/{len(cumulative_counted_trades)} "
-        f"({cumulative_losses} losses)",
+        f"- Realized P&L source of truth: {money(portfolio_realized)} "
+        f"({portfolio_trades} trades, {portfolio_wins}W/{portfolio_losses}L)",
+        f"- Deduped closed-trade ledger audit: {money(cumulative_counted_realized)} "
+        f"({len(cumulative_counted_trades)} counted, {cumulative_wins}W/{cumulative_losses}L)",
         f"- Hypotheses: {dict(hypothesis_status)} | pending tests {pending_tests}",
         "",
         "## Hourly Closed P&L",

@@ -81,6 +81,10 @@ const DATA_CONTAMINATED_SETUP_IDS = new Set([
   "gold_pm_premium_futures_spread_mean_reversion",
   "cross_asset_funding_positioning_exhaustion",
 ]);
+const OPERATIONALLY_TAINTED_TRADE_IDS = new Set([
+  "T-1778707778058-9nsi", // Hourly LLM close had authority over a rule-owned funding trade.
+  "T-1778718867328-1tjp", // One-touch NO inherited generic 2% Polymarket stop instead of 100%.
+]);
 const LOOKBACK_HOURS = 24;
 const NO_LLM = process.argv.includes("--no-llm");
 const DRY_RUN = process.argv.includes("--dry-run");
@@ -4202,6 +4206,7 @@ function setupIdForShadow(shadow: BlockedSignalShadow): { setupId: string; setup
 }
 
 function isContaminatedTrade(trade: ClosedTrade, setupId: string): boolean {
+  if (OPERATIONALLY_TAINTED_TRADE_IDS.has(trade.id)) return true;
   if (trade.closeReason.includes("DATA_CORRECTION_ARTIFACT")) return true;
   if (!DATA_CONTAMINATED_SETUP_IDS.has(setupId)) return false;
   const opened = String(trade.openedAt ?? "");
