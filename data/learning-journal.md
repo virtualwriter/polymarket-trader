@@ -10361,3 +10361,32 @@ Key session observations: (1) GOLD FUNDING PAIR TRADE LESSON - The simultaneous 
 
 ---
 
+### 2026-05-17 00:30 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_med_min = 4218 is -2.5 std devs from mean (4377.53 ± 64.61)
+- [anomaly] gold_pm_iv = 26.1 is 2.0 std devs from mean (17.45 ± 4.29)
+- [correlation_flip] BTC-OIL correlation shifted from 0.30 to -0.48
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 73 (30 wins / 43 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+
+**LLM analysis:**
+Key session observations: (1) FUNDING_EXTREME_SHORT thesis completion pattern confirmed again — both GOLD and AMZN longs saw funding normalize from extreme negative to positive within ~17 hours of entry, but spot moves were minimal (+0.04% and +0.09% respectively). This reinforces that FUNDING_EXTREME_SHORT trades capture carry normalization rather than spot appreciation; the mechanical 4% target may be too ambitious for spot-based P&L when the underlying asset is range-bound. Consider whether FUNDING_EXTREME_SHORT should be evaluated primarily on carry P&L rather than spot mark. (2) The GOLD short (T-1778794152516-60c7) from the FUNDING_EXTREME_LONG signal is up 2.65% with gold_gc_spot down from 4,661 to 4,538 (-2.64%) and funding normalized from +67.52% to +5.48% — this is the better-performing side of the funding pair trade, suggesting FUNDING_EXTREME_LONG shorts have more spot-move potential than FUNDING_EXTREME_SHORT longs in the current regime. (3) BTC is in a tight consolidation with PM IV at 36.9% (extreme compression) and funding near zero — the promoted H-523 and H-521 setups are active via the BTC spot long. The 1.5% stop is tight; BTC needs to hold above ~76,900 for the thesis to remain valid. (4) OIL HL funding has swung dramatically: from +125% at T21 to -44.93% at T00, representing a massive overcorrection. This is a potential FUNDING_EXTREME_SHORT signal for OIL but the signal is disabled for OIL per the engine state. The oil_cl_pc_ratio also jumped from 0.668 to 0.782 at the latest snapshot, suggesting options market repositioning. (5) Hypothesis backlog remains at 12/19 setup families needing tests with 10 pending — no new hypotheses proposed per protocol. (6) The BTC-OIL correlation flip from +0.30 to -0.48 is notable: oil has been declining while BTC consolidates, suggesting decoupling from the earlier correlated risk-on move. This supports the oil macro bearish signal (oil_p_settle_above_current at 30%) while BTC holds its own. (7) Gold median minimum anomaly at -2.5σ from mean (4,218 vs mean 4,378) suggests the market is pricing in meaningful downside tail risk for gold, consistent with the GOLD short thesis remaining valid.
+
+---
+
