@@ -10699,3 +10699,33 @@ Key observations this session: (1) AMZN FUNDING_EXTREME_SHORT is being closed be
 
 ---
 
+### 2026-05-17 14:30 UTC
+
+**Portfolio:** $99.72 total | Cash $94.72 | 5 open | P&L $0.7241 | 51% win rate (134 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved wider by 6.3pp (was 0.3, now 6.6)
+- [anomaly] gold_pm_iv = 30.9 is 3.0 std devs from mean (17.58 ± 4.40)
+- [anomaly] gold_med_min = 4221 is -2.3 std devs from mean (4375.12 ± 67.08)
+- [correlation_flip] BTC-OIL correlation shifted from 0.32 to -0.45
+- [correlation_flip] BTC-GOLD correlation shifted from -0.09 to 0.36
+
+**Blocked signal learning:**
+- Open blocked shadows: 55
+- Resolved blocked shadows: 75 (30 wins / 45 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+
+**LLM analysis:**
+Key session observations: (1) Both FUNDING_EXTREME_SHORT positions (GOLD long and AMZN long) have reached thesis completion - funding has normalized from extreme negative to near-zero or positive in both cases. Closing both to avoid carry drag and free capital. The GOLD short (T-1778794152516-60c7) from the FUNDING_EXTREME_LONG signal is up ~2.69% and should be allowed to run toward its 5% target since gold spot has declined from 4661 to 4536. (2) The BTC ONE_TOUCH_HIGH_EDGE_NO position (T-1778718867328-fb7r) on the $55k dip contract is slightly underwater at -1.89% but the thesis remains intact - BTC at 78k is nowhere near $55k and the 14-day hold period is not yet complete. No close warranted. (3) The BTC PROMOTED_HYPOTHESIS long (T-1778923758531-nlyu) is essentially flat at +0.07% with BTC consolidating. The 1.5% stop is tight - monitoring closely. (4) FUNDING_EXTREME_SHORT target reduced slightly from 4% to 3% given that these trades tend to resolve quickly once funding normalizes (as seen today) but the spot move is often minimal, making the 4% target hard to reach before the carry advantage disappears. (5) Hypothesis backlog: 12 setup families still need shadow tests. No new hypotheses proposed per protocol. The promoted H-521 (HYPE breakout) and H-523 (BTC IV compression) are the priority tracking items. (6) Statistical anomaly noted: gold_pm_iv spiked to 30.9 (3 standard deviations above mean) - this is a significant divergence from options IV (~24%) and warrants monitoring for the OPT_IV_GT_PM_IV_DOWNSIDE setup family, though recent shadow performance on that family has been poor (-10.37% avg). (7) BTC-GOLD correlation flip from -0.09 to +0.36 is notable - both assets moving together suggests macro risk-on/off dynamics rather than asset-specific flows.
+
+---
+

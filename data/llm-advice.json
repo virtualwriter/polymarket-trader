@@ -14,7 +14,23 @@
           "amzn_hl_perp",
           "amzn_hl_funding_ann"
         ],
-        "thesis": "AMZN FUNDING_EXTREME_SHORT thesis has fully resolved: funding has flipped from -29.81% at entry to +24.74% at T13, well past the normalization point. The perp has converged from -0.27% basis to +0.04% basis (amzn_hl_basis_pct). The signal family target of 4% is not yet reached (+0.27% P&L) but the thesis is fully played out - funding has overcorrected to extreme positive territory (+24.74%), meaning the carry is now working against the long. Closing to capture the convergence gain and avoid paying positive funding on a position whose thesis is exhausted. The amzn_hl_funding_ann evidence column shows clear thesis completion."
+        "thesis": "FUNDING_EXTREME_SHORT thesis has fully resolved: amzn_hl_funding_ann has normalized from -29.81% at entry to +5.48% (and spiked as high as +24.74%), and amzn_hl_basis_pct has flipped from -0.27% to +0.02-0.04%. The perp-spot convergence trade is complete. Funding is now positive (longs pay shorts), which is the opposite of the entry thesis. The position is up +0.24% which is modest but the carry is now working against the long. Closing to capture the gain before funding drag erodes it."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1778916565173-2wqk",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "gold_gc_spot",
+          "gold_hl_funding_ann"
+        ],
+        "thesis": "FUNDING_EXTREME_SHORT thesis has fully resolved: gold_hl_funding_ann has normalized from -44.78% at entry to +0.57% currently. The crowded-shorts reversal trade is complete - funding has crossed zero and is now slightly positive. Gold spot is flat at 4536 (entry was 4536), so the position is essentially breakeven. With the thesis signal fully resolved and funding now working against the long, closing to free capital and avoid carry drag."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -40,7 +56,7 @@
         "stopPct": 2.5
       },
       "FUNDING_EXTREME_SHORT": {
-        "targetPct": 4,
+        "targetPct": 3,
         "stopPct": 2
       },
       "PM_EV_ABOVE_SPOT": {
