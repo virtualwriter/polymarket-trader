@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-17T11:30:15.560Z",
+  "generatedAt": "2026-05-17T13:30:21.418Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.6,
       "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-069] BTC P/C ratio spike above 1.0 during consolidation above 68500 creates oversold bounce setup as options positioning becomes too bearish",
       "hypothesisId": "H-069",
-      "entryPrice": 78331,
+      "entryPrice": 78225,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 3
@@ -25,11 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6660213363333334,
-      "confidence": 0.2905518079754167,
+      "strength": 0.666206296,
+      "confidence": 0.29063249663,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 20.0pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78331,
+      "entryPrice": 78225,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6109607086666667,
-      "confidence": 0.26653160915583335,
+      "strength": 0.6111436206666667,
+      "confidence": 0.2666114045158333,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78331,
+      "entryPrice": 78225,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -65,11 +65,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5222573753333334,
-      "confidence": 0.22783477998916668,
+      "strength": 0.522470412,
+      "confidence": 0.227927717235,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.7pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78331,
+      "entryPrice": 78225,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -85,22 +85,6 @@
     {
       "instruction": {
         "action": "close",
-        "positionId": "T-1778916565173-2wqk",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "gold_gc_spot",
-          "gold_hl_funding_ann"
-        ],
-        "thesis": "FUNDING_EXTREME_SHORT thesis was predicated on extreme negative funding (-44.78% annualized) creating a crowded-shorts reversal. Funding has fully normalized to +5.48% (delta +50.26pp from entry), which is the primary thesis completion signal. Gold spot is essentially flat (+$1 from 4,536 entry). The funding carry benefit has been captured and the signal has fully resolved - holding further exposes to directional risk without the funding edge that justified the position."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
         "positionId": "T-1778916565173-vz22",
         "asset": "AMZN",
         "venue": "hyperliquid",
@@ -111,7 +95,7 @@
           "amzn_hl_perp",
           "amzn_hl_funding_ann"
         ],
-        "thesis": "FUNDING_EXTREME_SHORT thesis was predicated on extreme negative funding (-29.81% annualized) with crowded shorts. Funding has fully normalized and flipped to +15.33% (delta +45.14pp from entry), which is the primary thesis completion signal. The perp has converged to near-parity with stock (basis improved from -0.27% to +0.01%). Both the funding normalization and basis convergence confirm the thesis has fully played out. Holding further with positive funding now creates carry headwind."
+        "thesis": "AMZN FUNDING_EXTREME_SHORT thesis has fully resolved: funding has flipped from -29.81% at entry to +24.74% at T13, well past the normalization point. The perp has converged from -0.27% basis to +0.04% basis (amzn_hl_basis_pct). The signal family target of 4% is not yet reached (+0.27% P&L) but the thesis is fully played out - funding has overcorrected to extreme positive territory (+24.74%), meaning the carry is now working against the long. Closing to capture the convergence gain and avoid paying positive funding on a position whose thesis is exhausted. The amzn_hl_funding_ann evidence column shows clear thesis completion."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -119,6 +103,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 2 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
   ]
 }
