@@ -11015,3 +11015,37 @@ Key observations from this session:
 
 ---
 
+### 2026-05-17 22:30 UTC
+
+**Portfolio:** $99.80 total | Cash $93.80 | 6 open | P&L $0.7972 | 52% win rate (136 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved narrower by 7.6pp (was -1.4, now -9.0)
+- [anomaly] btc_opt_iv_90d = 29.7 is -4.1 std devs from mean (41.98 ± 3.02)
+- [anomaly] hype_hl_oi = 1056586948 is 3.1 std devs from mean (846615574.63 ± 68782053.90)
+- [anomaly] hype_spot = 46.548 is 2.3 std devs from mean (41.43 ± 2.20)
+- [anomaly] gold_opt_iv_90d = 29.7 is 2.3 std devs from mean (24.23 ± 2.37)
+
+**Blocked signal learning:**
+- Open blocked shadows: 60
+- Resolved blocked shadows: 76 (30 wins / 46 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-0.21%)
+
+**LLM analysis:**
+Key session observations: (1) HYPE breakout is the dominant story — OI surged from 945M to 1.057B (+3.1 std devs from mean) while spot hit 46.55, a 2.3 std dev anomaly. The T-1779046229359-gbig position is working well at +0.87%. The funding flip to -15% at T22 is a normal post-surge overcorrection and not a close signal per H-521's family evidence. (2) BTC term structure inversion at T22 (30d IV 46.2% >> 90d IV 29.7%) is anomalous — this may be an options expiry artifact or a genuine short-term vol spike. The btc_opt_iv_90d at 29.7 is -4.1 std devs from its mean, which is statistically extreme. This warrants monitoring but the PM IV (37.2%) hasn't moved, suggesting the options market is pricing near-term event risk that PM hasn't priced. (3) The BTC long (T-1778923758531-nlyu) is being closed proactively — spot is at 7d lows with 35h remaining and the peak was only +0.62% vs a +3% target. The btc_put_call_exhaustion family has 0/3 clean live trade wins, and this position is tracking that poor record. Better to close at near-breakeven than risk the -1.5% stop. (4) The OIL one-touch NO position (T-1779049817841-htfg) is down -44.74% with WTI at $102.48 — this is a mechanical position and cannot be closed by LLM. The thesis (WTI stays below $56 through June) remains structurally valid given WTI is at $102, but the PM market has repriced the NO contract sharply. This is likely a liquidity/spread artifact in a thinly-traded contract. (5) Gold FUNDING_EXTREME_SHORT (T-1778916565173-2wqk) is working at +0.16% with gold spot at $4,543 — the funding has normalized from -44.78% to +5.48%, which is thesis completion. The mechanical scanner will handle the exit. (6) AMZN FUNDING_EXTREME_SHORT (T-1778916565173-vz22) is at +0.44% with basis improving from -0.14% to +0.21% — thesis playing out well. (7) No new hypotheses proposed — the backlog has 12 setup families needing tests and 10 pending, so hypothesis generation is paused per policy. (8) The BTC-OIL correlation flip (-0.46 from +0.34) and BTC-GOLD correlation flip (+0.41 from -0.10) are notable regime signals worth tracking for cross-asset positioning hypotheses once the backlog clears.
+
+**LLM close rejections today (2026-05-17, token-burn signal):**
+- Total rejected close instructions: 3
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (2); PROMOTED_HYPOTHESIS / HYPE (1)
+
+---
+

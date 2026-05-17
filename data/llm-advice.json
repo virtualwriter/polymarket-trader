@@ -8,11 +8,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "profit_taking",
+        "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has been range-bound between 77,906 and 78,462 for the entire 36-hour hold with no directional momentum. The position is +0.43% with only 36 hours remaining before expiry. The promoted hypothesis (H-145/H-523) requires IV expansion or P/C exhaustion reversal — neither has materialized. BTC PM IV has barely moved (36.7-37.2%) and IBIT P/C has been frozen at 0.713 for 14 consecutive snapshots. With the position near flat and expiry approaching, taking the small gain avoids the risk of a late reversal erasing it."
+        "thesis": "BTC spot has drifted to $77,967, sitting at the 4th percentile of its 7d range and 17th percentile of its 24h range. The position is at -0.07% with only 35h remaining before expiry and peak was only +0.62% — well below the +3% target. The promoted hypothesis (H-148/H-523) required BTC to hold above recent consolidation levels and show momentum resumption; instead spot has made a lower low within the session. With 35h left and BTC at multi-day lows, the risk/reward of holding to expiry is unfavorable. The btc_spot trajectory shows consistent weakness: 78462 → 78331 → 78225 → 78074 → 77991 → 78096 → 77906 → 78074 → 78209 → 78254 → 78355 → 77967 — a clear downward drift with no recovery above 78,400. Closing to preserve capital rather than risk hitting the -1.5% stop."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

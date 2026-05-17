@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-17T21:30:12.831Z",
+  "generatedAt": "2026-05-17T22:30:22.590Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,36 +15,21 @@
       "confidence": 0.6,
       "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-069] BTC P/C ratio spike above 1.0 during consolidation above 68500 creates oversold bounce setup as options positioning becomes too bearish",
       "hypothesisId": "H-069",
-      "entryPrice": 78355,
+      "entryPrice": 77967,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 3
-    },
-    {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 1,
-      "confidence": 0.4688675383816222,
-      "thesis": "GOLD HL funding -73.4% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4534,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
     },
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.60417467,
-      "confidence": 0.2635711997875,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.1pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5390233406666667,
+      "confidence": 0.2351489323658333,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.2pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78355,
+      "entryPrice": 77967,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -52,46 +37,6 @@
         "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
         "forceInstrumentType": "pm_no",
         "forceMarketId": "1339767",
-        "allowDirectionFallback": false
-      }
-    },
-    {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.589748326,
-      "confidence": 0.2572777072175,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.7pt edge on BTC; hold 14d for repricing.",
-      "hypothesisId": null,
-      "entryPrice": 78355,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "701501",
-        "allowDirectionFallback": false
-      }
-    },
-    {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.517204162,
-      "confidence": 0.22563031567249997,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.5pt edge on BTC; hold 14d for repricing.",
-      "hypothesisId": null,
-      "entryPrice": 78355,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "701502",
         "allowDirectionFallback": false
       }
     }
@@ -104,11 +49,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "profit_taking",
+        "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has been range-bound between 77,906 and 78,462 for the entire 36-hour hold with no directional momentum. The position is +0.43% with only 36 hours remaining before expiry. The promoted hypothesis (H-145/H-523) requires IV expansion or P/C exhaustion reversal — neither has materialized. BTC PM IV has barely moved (36.7-37.2%) and IBIT P/C has been frozen at 0.713 for 14 consecutive snapshots. With the position near flat and expiry approaching, taking the small gain avoids the risk of a late reversal erasing it."
+        "thesis": "BTC spot has drifted to $77,967, sitting at the 4th percentile of its 7d range and 17th percentile of its 24h range. The position is at -0.07% with only 35h remaining before expiry and peak was only +0.62% — well below the +3% target. The promoted hypothesis (H-148/H-523) required BTC to hold above recent consolidation levels and show momentum resumption; instead spot has made a lower low within the session. With 35h left and BTC at multi-day lows, the risk/reward of holding to expiry is unfavorable. The btc_spot trajectory shows consistent weakness: 78462 → 78331 → 78225 → 78074 → 77991 → 78096 → 77906 → 78074 → 78209 → 78254 → 78355 → 77967 — a clear downward drift with no recovery above 78,400. Closing to preserve capital rather than risk hitting the -1.5% stop."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
