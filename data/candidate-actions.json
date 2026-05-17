@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-17T20:29:14.939Z",
+  "generatedAt": "2026-05-17T21:29:15.267Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,41 +12,36 @@
       "confidence": 0.6,
       "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-069] BTC P/C ratio spike above 1.0 during consolidation above 68500 creates oversold bounce setup as options positioning becomes too bearish",
       "hypothesisId": "H-069",
-      "entryPrice": 78254,
+      "entryPrice": 78355,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 3
     },
     {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.6351316206666666,
-      "confidence": 0.2770761695158333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.1pt edge on OIL; hold 14d for repricing.",
+      "type": "FUNDING_EXTREME_SHORT",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "strength": 1,
+      "confidence": 0.4688675383816222,
+      "thesis": "GOLD HL funding -73.4% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 101.9,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "cl-over-under-jun-2026",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "1032423",
-        "allowDirectionFallback": false
-      }
+      "entryPrice": 4534,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 7,
+      "leverage": 1
     },
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6040833196666667,
-      "confidence": 0.26353134820458335,
+      "strength": 0.60417467,
+      "confidence": 0.2635711997875,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.1pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78254,
+      "entryPrice": 78355,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -62,11 +57,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5896564416666668,
-      "confidence": 0.25723762267708333,
+      "strength": 0.589748326,
+      "confidence": 0.2572777072175,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.7pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78254,
+      "entryPrice": 78355,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -82,11 +77,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5170970906666666,
-      "confidence": 0.2255836058033333,
+      "strength": 0.517204162,
+      "confidence": 0.22563031567249997,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.5pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78254,
+      "entryPrice": 78355,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -115,24 +110,6 @@
         "btc_spot",
         "btc_pm_iv",
         "btc_hl_funding_ann"
-      ],
-      "reason": "Rule-based signal exits require approved category and signal-family evidence."
-    },
-    {
-      "positionId": "T-1778794152516-60c7",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
       ],
       "reason": "Rule-based signal exits require approved category and signal-family evidence."
     },
@@ -210,6 +187,27 @@
         "hype_spot"
       ],
       "reason": "LLM may advise exits for LLM-owned or promoted setups."
+    },
+    {
+      "positionId": "T-1779049817841-htfg",
+      "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "OIL",
+      "venue": "polymarket",
+      "direction": "short",
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_pm_iv",
+        "oil_opt_iv_30d",
+        "oil_opt_iv_90d",
+        "oil_hl_funding_ann"
+      ],
+      "reason": "Rule-based signal exits require approved category and signal-family evidence."
     }
   ]
 }

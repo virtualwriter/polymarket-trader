@@ -4,16 +4,15 @@
     {
       "instruction": {
         "action": "close",
-        "positionId": "T-1779046229359-gbig",
-        "asset": "HYPE",
+        "positionId": "T-1778923758531-nlyu",
+        "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
+        "closeReasonCategory": "profit_taking",
         "evidenceColumns": [
-          "hype_spot",
-          "hype_hl_funding_ann"
+          "btc_spot"
         ],
-        "thesis": "HYPE funding crashed to -25.04% annualized at T20 (3.0σ below mean) while OI surged to 1.057B. Per the H-521 promoted setup family, extreme negative funding after a breakout surge signals crowded longs being squeezed and potential momentum deceleration. The spot moved from 46.15 to 46.27 (+0.27%) but the funding flip from +10.95% to -25.04% in a single snapshot is a sharp reversal that historically precedes short-term pullbacks in HYPE breakout setups. The peak PnL was +1.85% at some point during the hour, and current PnL is +0.27%. Given the funding extreme and the position being only 1 hour old with a 503-hour expiry, closing now captures the small gain while avoiding the funding-driven reversal risk. The thesis was momentum continuation on OI surge; the funding crash is a thesis-weakening signal within the allowed evidence columns."
+        "thesis": "BTC spot has been range-bound between 77,906 and 78,462 for the entire 36-hour hold with no directional momentum. The position is +0.43% with only 36 hours remaining before expiry. The promoted hypothesis (H-145/H-523) requires IV expansion or P/C exhaustion reversal — neither has materialized. BTC PM IV has barely moved (36.7-37.2%) and IBIT P/C has been frozen at 0.713 for 14 consecutive snapshots. With the position near flat and expiry approaching, taking the small gain avoids the risk of a late reversal erasing it."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

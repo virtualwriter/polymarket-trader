@@ -10966,3 +10966,52 @@ Key observations from this session:
 
 ---
 
+### 2026-05-17 21:30 UTC
+
+**Portfolio:** $99.80 total | Cash $93.80 | 6 open | P&L $0.7972 | 52% win rate (136 trades)
+
+**Closed 1 trades:**
+- ✅ GOLD short via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG) → expiry: +$0.0273 (2.7%, market 0.0272, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1061886000 is 3.2 std devs from mean (846138366.96 ± 68127053.87)
+- [anomaly] btc_opt_iv_90d = 33.9 is -2.7 std devs from mean (42.00 ± 2.97)
+- [anomaly] hype_spot = 46.517 is 2.3 std devs from mean (41.42 ± 2.19)
+- [anomaly] gold_hl_funding_ann = -73.41 is -2.3 std devs from mean (5.51 ± 34.40)
+- [anomaly] gold_med_min = 4213 is -2.3 std devs from mean (4372.51 ± 69.64)
+
+**Blocked signal learning:**
+- Open blocked shadows: 59
+- Resolved blocked shadows: 76 (30 wins / 46 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-0.21%)
+
+**LLM analysis:**
+Key observations from this session:
+
+1. HYPE BREAKOUT CONFIRMED: HYPE spot surged from ~44 to 46.5 with OI hitting 1.06B (3.2σ anomaly). The H-521 promoted hypothesis is performing as expected. The HYPE long (T-1779046229359-gbig) opened at the right time and is tracking the breakout. Key watch: OI needs to hold above 1.0B and funding should stay normalized (not spike above +25%) for continuation.
+
+2. BTC STASIS: BTC has been in an unusually tight range for 14+ hours. The IBIT P/C ratio frozen at 0.713 for every single snapshot is suspicious — this may indicate stale data or a genuine market pause. The BTC IV term structure inversion (30d=38.6 vs 90d=33.9) is a new anomaly worth monitoring; normally 90d IV > 30d IV. This inversion could signal near-term vol expectations are elevated relative to longer-term.
+
+3. OIL ONE-TOUCH POSITION CONCERN: T-1779049817841-htfg (OIL NO on $56 settle over) is down -44.7% after 1 hour. The contract is 'Will CL settle over $56 at June end' — with WTI at $101.93, this is extremely deep in-the-money for YES, making our NO position very unfavorable. The model showed a 19pt edge at entry but the current price of 0.969 YES reflects the market correctly pricing near-certainty of settling above $56. This appears to be a case where the one-touch model edge was real but the contract was already near-certain, making the NO position essentially a lottery ticket. The mechanical scanner owns this exit.
+
+4. GOLD FUNDING EXTREME: Gold HL funding hit -73.4% annualized (2.3σ below mean) — the most extreme reading in the session. The FUNDING_EXTREME_SHORT GOLD long (T-1778916565173-2wqk) is essentially flat (-0.05%). The crowded short thesis is intact but gold spot has been range-bound (4,531-4,539). The -73% funding is thesis continuation/intensification per our convention.
+
+5. HYPOTHESIS BACKLOG: 12 setup families still need more shadow tests. No new hypotheses proposed per policy. The HYPE breakout family (H-521) is the most active and performing well. The BTC put-call exhaustion family (H-145/H-148) has 3 clean live trades with 0 wins and -2.2% avg — this family is underperforming and should be watched carefully before any new promotions.
+
+6. RELATIVE VALUE: The heatmap shows strong buy-YES edges on BTC $90k May (50.9pt edge), BTC $95k May (44.9pt edge), and ETH $1,800 May dip (11.9pt edge). These are eligible for shadow tracking but not actionable as live trades given cash constraints and existing 6 open positions.
+
+**LLM close rejections today (2026-05-17, token-burn signal):**
+- Total rejected close instructions: 2
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / HYPE (1); PROMOTED_HYPOTHESIS / BTC (1)
+
+---
+
