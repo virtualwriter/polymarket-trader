@@ -10867,3 +10867,53 @@ BTC-OIL correlation flip (0.33 to -0.46) and BTC-GOLD correlation flip (-0.09 to
 
 ---
 
+### 2026-05-17 19:30 UTC
+
+**Portfolio:** $99.77 total | Cash $93.77 | 6 open | P&L $0.7699 | 52% win rate (135 trades)
+
+**Closed 1 trades:**
+- ✅ HYPE long via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS) → target: +$0.0458 (4.6%, market 0.0458, funding 0.0000)
+
+**Opened 1 positions:**
+- HYPE long @ $46.146 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1051226655 is 3.1 std devs from mean (845164603.51 ± 66737192.42)
+- [anomaly] gold_med_min = 4210 is -2.4 std devs from mean (4373.24 ± 68.95)
+- [anomaly] hype_spot = 46.146 is 2.2 std devs from mean (41.39 ± 2.17)
+- [correlation_flip] BTC-OIL correlation shifted from 0.34 to -0.46. Rolling correlation: 24h=-0.24, 7d=-0.38, 30d=0.56. Current 24h corr is at 67th pct of last 18 daily 24h-rolling values (range -0.89 to 0.79).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.10 to 0.39. Rolling correlation: 24h=0.25, 7d=0.51, 30d=-0.35. Current 24h corr is at 39th pct of last 18 daily 24h-rolling values (range -0.45 to 0.88).
+
+**Blocked signal learning:**
+- Open blocked shadows: 56
+- Resolved blocked shadows: 75 (30 wins / 45 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+
+**LLM analysis:**
+Key session observations (2026-05-17):
+
+1. HYPE BREAKOUT CONFIRMATION (H-521 active): The most significant development is HYPE's surge to 46.15 with OI exploding to 1.051B — a 3.1σ anomaly. This is the strongest single-session OI surge observed in the dataset and directly confirms the H-521 promoted setup conditions. The live BTC long (T-1778923758531-nlyu) is the current expression but a direct HYPE long would have been the cleaner expression. The HYPE breakout/OI surge momentum family (hype_breakout_oi_surge_momentum) continues to show the best hypothesis win rate in the backlog.
+
+2. GOLD POSITIONS: The FUNDING_EXTREME_LONG gold short (T-1778794152516-60c7) is performing well at +2.77% with only 2h to expiry — the breakeven stop is armed and the position is near its +5% target. Gold has declined from 4,661 to 4,532 (-2.77%), validating the crowded-longs fade thesis. The FUNDING_EXTREME_SHORT gold long (T-1778916565173-2wqk) is -0.09% — the entry was at 4,536 and spot is now 4,532. The funding signal that triggered this (extreme negative at -44.78%) has fully normalized to -3.09%, which means the carry thesis has resolved but the price thesis has not delivered. This position has 132h remaining and the stop is at -2% (4,445), so there is room for gold to recover. However, the gold_med_min is at a -2.4σ anomaly (4,210), suggesting the market is pricing in downside risk. The position is not at a close trigger but warrants monitoring.
+
+3. BTC CONSOLIDATION: BTC has been range-bound at 77,900–78,500 for the entire session. PM IV at 37.1% remains compressed (bottom third of 30d range) but has not deepened further. The IBIT P/C at 0.713 is stable — no exhaustion signal. The BTC long (T-1778923758531-nlyu) is +0.24% with 38h remaining. The H-523 IV compression setup is the primary thesis; the compression has persisted but not resolved into expansion yet.
+
+4. OIL STRUCTURE: Oil 30d IV spiked to 74% (from 71% earlier in session) while Brent-WTI spread widened to 4.0. The oil_pm_settle_ev at 89.2 vs spot 101.92 represents a large gap but per policy this is not a directional signal. The macro signal for oil remains 'DECLINING' with only 30% probability of settling above current. Oil funding has been volatile (ranging from -42% to +41% intraday) — consistent with the oil_funding_volatility_mean_reversion family but no clean entry signal.
+
+5. AMZN: The FUNDING_EXTREME_SHORT AMZN long (T-1778916565173-vz22) is +0.32% with the perp at 262.88 vs stock at 262.64. Funding normalized from -29.81% to +5.48%, confirming the thesis. The basis has moved from -0.16% to +0.09% — convergence is complete. The position is approaching its +4% target but is only at +0.32%; the stock has been frozen at 262.64 throughout the session, limiting perp upside. The position is healthy and within parameters.
+
+6. HYPOTHESIS BACKLOG: 12/19 setup families still need more shadow tests with 10 pending. No new hypotheses proposed per policy. The hype_oi_distribution_exhaustion_reversal family (H-201 etc.) has a very poor win rate (8/42 = 19%) and was correctly killed. The hype_breakout_oi_surge_momentum family is the strongest performer and the current HYPE surge is a live test of H-521.
+
+7. RELATIVE VALUE HEATMAP: The most interesting edges from the heatmap are: (a) BTC $130k Dec 2026 YES at 0.12 with model prob 0.213 — 8.3pt edge, tight spread, good liquidity; (b) BTC $110k Dec 2026 YES at 0.235 with model prob 0.410 — 17pt edge; (c) OIL $140 Jun YES at 0.185 with model prob 0.364 — 17.4pt edge; (d) SPY $8,000 Jun YES at 0.0995 with model prob 0.915 — 79.5pt edge (but wide spread). These are noted for the ONE_TOUCH_HIGH_EDGE_NO family review but no new trades are initiated given the 5-position limit and existing exposure.
+
+---
+
