@@ -40,6 +40,7 @@ HOSTED_DIR = ROOT / "relative-value"
 CSV_PATH = HOSTED_DIR / "cross_venue_relative_value.csv"
 HTML_PATH = HOSTED_DIR / "index.html"
 LATEST_JSON_PATH = HOSTED_DIR / "latest.json"
+ONE_TOUCH_TERMINAL_ONLY_SIGMA = 1.5
 DEFAULT_ARCHIVE_DIR = Path(os.getenv("RELATIVE_VALUE_HISTORY_DIR", str(HOSTED_DIR / "history")))
 VALUATIONS_PATH = DATA_DIR / "daily-valuations.csv"
 MODEL_VERSION = "relative_value_heatmap_v2_one_touch"
@@ -577,6 +578,20 @@ def one_touch_probability(
     return None
 
 
+def barrier_sigma_distance(
+    spot: Optional[float],
+    strike: Optional[float],
+    iv: Optional[float],
+    dte_days: Optional[float],
+) -> Optional[float]:
+    if not spot or not strike or not iv or not dte_days or spot <= 0 or strike <= 0 or iv <= 0 or dte_days <= 0:
+        return None
+    sigma_t = iv * math.sqrt(dte_days / 365.0)
+    if sigma_t <= 0:
+        return None
+    return abs(math.log(strike / spot)) / sigma_t
+
+
 def is_one_touch_question(question: str) -> bool:
     q = question.lower()
     return "hit" in q or "reach" in q or "dip" in q
@@ -594,6 +609,9 @@ def touch_adjusted_probability(
     if terminal_prob is None:
         return None
     if not is_one_touch_question(question):
+        return terminal_prob
+    sigma_distance = barrier_sigma_distance(spot, strike, iv, dte_days)
+    if sigma_distance is not None and sigma_distance > ONE_TOUCH_TERMINAL_ONLY_SIGMA:
         return terminal_prob
     touch_prob = one_touch_probability(spot, strike, iv, dte_days, direction)
     if touch_prob is not None:

@@ -120,6 +120,7 @@ const RELATIVE_VALUE_HISTORY_DIRS = [
   join(ROOT, "relative-value", "history"),
   join(ROOT, "relative-value", "backtest-history"),
 ].filter((path): path is string => Boolean(path));
+const ONE_TOUCH_TERMINAL_ONLY_SIGMA = 1.5;
 const OPERATIONALLY_TAINTED_TRADES: Record<string, string> = {
   "T-1778707778058-9nsi": "hourly LLM close had authority over rule-owned funding trade",
   "T-1778718867328-1tjp": "one-touch NO inherited generic 2% Polymarket stop instead of 100% hold-to-expiry stop",
@@ -343,6 +344,11 @@ function optionModelStrike(row: Record<string, string>): number | null {
   return strike;
 }
 
+function barrierSigmaDistance(spot: number, strike: number, iv: number, dteDays: number): number | null {
+  const sigmaT = iv * Math.sqrt(dteDays / 365);
+  return sigmaT > 0 ? Math.abs(Math.log(strike / spot)) / sigmaT : null;
+}
+
 function recomputedOneTouchProbability(row: Record<string, string> | undefined): number | null {
   if (!row) return null;
   const question = row.contract_question?.toLowerCase() ?? "";
@@ -359,6 +365,16 @@ function recomputedOneTouchProbability(row: Record<string, string> | undefined):
   const t = dteDays / 365;
   const sigmaT = iv * Math.sqrt(t);
   if (sigmaT <= 0) return null;
+  const d2 = (Math.log(spot / strike) - 0.5 * iv * iv * t) / sigmaT;
+  const terminalProb = direction === "above"
+    ? normalCdf(d2)
+    : direction === "below"
+      ? normalCdf(-d2)
+      : null;
+  const sigmaDistance = barrierSigmaDistance(spot, strike, iv, dteDays);
+  if (terminalProb !== null && sigmaDistance !== null && sigmaDistance > ONE_TOUCH_TERMINAL_ONLY_SIGMA) {
+    return terminalProb;
+  }
   const d1 = (Math.log(spot / strike) + 0.5 * iv * iv * t) / sigmaT;
   if (direction === "above") return Math.min(0.99, Math.max(0, 2 * normalCdf(d1)));
   if (direction === "below") return Math.min(0.99, Math.max(0, 2 * normalCdf(-d1)));
