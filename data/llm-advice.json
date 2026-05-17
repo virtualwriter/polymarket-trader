@@ -1,6 +1,23 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [],
+  "rejectedCloses": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1779046229359-gbig",
+        "asset": "HYPE",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "hype_spot",
+          "hype_hl_funding_ann"
+        ],
+        "thesis": "HYPE funding crashed to -25.04% annualized at T20 (3.0σ below mean) while OI surged to 1.057B. Per the H-521 promoted setup family, extreme negative funding after a breakout surge signals crowded longs being squeezed and potential momentum deceleration. The spot moved from 46.15 to 46.27 (+0.27%) but the funding flip from +10.95% to -25.04% in a single snapshot is a sharp reversal that historically precedes short-term pullbacks in HYPE breakout setups. The peak PnL was +1.85% at some point during the hour, and current PnL is +0.27%. Given the funding extreme and the position being only 1 hour old with a 503-hour expiry, closing now captures the small gain while avoiding the funding-driven reversal risk. The thesis was momentum continuation on OI surge; the funding crash is a thesis-weakening signal within the allowed evidence columns."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    }
+  ],
   "skippedTrades": [],
   "parameterUpdates": {
     "macroMomentum24hThresholdPts": 4,

@@ -10917,3 +10917,52 @@ Key session observations (2026-05-17):
 
 ---
 
+### 2026-05-17 20:30 UTC
+
+**Portfolio:** $99.77 total | Cash $92.77 | 7 open | P&L $0.7699 | 52% win rate (135 trades)
+
+**Opened 1 positions:**
+- OIL short @ $0.038000000000000034 via polymarket/pm_no [cl-over-under-jun-2026 — NO — Will Crude Oil (CL) settle over $56 on the final trading day of June 2026?] (ONE_TOUCH_HIGH_EDGE_NO)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 5.6pp (was -14.9, now -9.3)
+- [anomaly] hype_hl_oi = 1056899126 is 3.1 std devs from mean (845646914.49 ± 67421040.22)
+- [anomaly] hype_hl_funding_ann = -25.04 is -3.0 std devs from mean (6.25 ± 10.48)
+- [anomaly] btc_opt_iv_90d = 33.9 is -2.8 std devs from mean (42.02 ± 2.95)
+- [anomaly] gold_med_min = 4212 is -2.3 std devs from mean (4372.87 ± 69.30)
+
+**Blocked signal learning:**
+- Open blocked shadows: 60
+- Resolved blocked shadows: 75 (30 wins / 45 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+
+**LLM analysis:**
+Key observations from this session:
+
+1. HYPE BREAKOUT CONFIRMED BUT FUNDING FLIP IS CRITICAL: The H-521 promoted hypothesis fired cleanly - HYPE moved +4.7% from ~$44.18 to $46.27 with OI surging from 971M to 1.057B in the T18-T20 window. However, the funding rate crashed from +10.95% to -25.04% annualized in a single snapshot at T20. This is a 3.0σ funding extreme in the negative direction. Per the setup family evidence, extreme negative funding after a breakout surge signals crowded long positioning that can reverse quickly. I'm closing the HYPE long at +0.27% to avoid the funding-driven reversal risk. The peak was +1.85% intra-hour, suggesting the momentum was real but the funding flip is a clear deceleration signal.
+
+2. BTC IV TERM STRUCTURE INVERSION: The T20 snapshot shows btc_opt_iv_30d=38.6% vs btc_opt_iv_90d=33.9% - a significant inversion where near-term IV exceeds long-term IV. This is unusual and the 90d IV at 33.9% is -2.8σ below mean. This could indicate the market expects near-term volatility but longer-term calm, or it could be a data artifact. Worth monitoring as it may create opportunities in the BTC IV compression/vol reversion setup family.
+
+3. GOLD POSITIONS: The FUNDING_EXTREME_LONG short (T-1778794152516-60c7) is at +2.79% with 1 hour to expiry - mechanical exit expected soon. The FUNDING_EXTREME_SHORT long (T-1778916565173-2wqk) is at -0.11% with 131 hours remaining. Gold spot has drifted from $4,536 to $4,531 since entry, essentially flat. The funding has normalized from -44.78% to +3.27%, which is thesis completion for the FUNDING_EXTREME_SHORT signal - the crowded shorts have been squeezed out. However, spot hasn't moved in our favor yet. The position is within stop parameters and the mechanical system will handle it.
+
+4. AMZN LONG: The FUNDING_EXTREME_SHORT long (T-1778916565173-vz22) is at +0.42% with the perp at $263.14 vs stock at $262.64. Funding has normalized from -29.81% to +28.69% - a massive swing that confirms the crowded shorts were squeezed. The basis has moved from negative to positive (+0.19%), which is thesis completion. The mechanical target at +4% hasn't been hit yet but the setup is working.
+
+5. HYPOTHESIS BACKLOG: 12/19 setup families still need more shadow tests. No new hypotheses proposed this session per the backlog constraint. Focus should remain on accumulating condition-triggered tests for existing families, particularly the HYPE breakout/OI surge family which now has strong live evidence.
+
+6. RELATIVE VALUE HEATMAP: The BTC $95k May contract at 1.05% YES with model probability 46% represents a massive 45pt edge per the heatmap. However, this is almost certainly a model artifact - the model is using options IV to price a 2-week touch probability and the contract is already effectively resolved (BTC is at $78k, needs to reach $95k in 2 weeks). The $90k May contract at 3.45% YES with model probability 54.5% and 51pt edge is similarly suspect. These extreme edges in near-expiry far-OTM contracts should not be traded as the model probability is unreliable for such extreme moves in short timeframes.
+
+**LLM close rejections today (2026-05-17, token-burn signal):**
+- Total rejected close instructions: 1
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / HYPE (1)
+
+---
+
