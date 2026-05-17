@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-17T15:29:19.434Z",
+  "generatedAt": "2026-05-17T16:29:16.830Z",
   "dataFreshness": {
-    "valuationRows": 434,
-    "latestValuationAt": "2026-05-17T15",
-    "macroRows": 434,
+    "valuationRows": 435,
+    "latestValuationAt": "2026-05-17T16",
+    "macroRows": 435,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-17T15"
+    "latestInstrumentSnapshotAt": "2026-05-17T16"
   },
   "portfolio": {
     "cash": 94.7241,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.7241,
     "totalTrades": 134,
     "winRatePct": 51.5,
-    "unrealizedPnl": 0.0197
+    "unrealizedPnl": 0.0023
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "polymarket",
       "direction": "short",
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-      "pnlPct": -1.89,
-      "currentPrice": 0.52,
-      "underlyingPrice": 77991,
+      "pnlPct": -3.77,
+      "currentPrice": 0.51,
+      "underlyingPrice": 78096,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -72,8 +72,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.26,
-      "currentPrice": 262.74,
+      "pnlPct": 0.28,
+      "currentPrice": 262.79,
       "underlyingPrice": 262.64,
       "targetPct": 4,
       "stopPct": 2,
@@ -90,9 +90,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": -0.03,
-      "currentPrice": 77991,
-      "underlyingPrice": 77991,
+      "pnlPct": 0.1,
+      "currentPrice": 78096,
+      "underlyingPrice": 78096,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -238,7 +238,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 55,
+    "openCount": 56,
     "resolvedCount": 75,
     "wouldHaveWon": 30,
     "wouldHaveLost": 45,
@@ -463,22 +463,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
-        "asset": "GOLD",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-xauusd-hit-in-may-2026 — YES — Will Gold (XAUUSD) hit (HIGH) $5,000 in May?",
-        "marketQuality": {
-          "yesBid": 0.15,
-          "yesAsk": 0.2,
-          "yesSpread": 0.05,
-          "liquidity": 2065.46,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 11.3pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
         "asset": "SPY",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "spx-hit-dec-2026 — YES — Will S&P 500 (SPX) hit $8,200 (HIGH) in December?",
@@ -588,6 +572,22 @@
           ]
         },
         "thesis": "[DOWNSIDE LEG SHADOW] GOLD Options IV (24.2%) >> PM IV (16.8%), ratio 0.69. PM underpricing vol → buy PM upside."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+        "asset": "SPY",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "spx-hit-jun-2026 — YES — Will S&P 500 (SPX) hit $8,000 (HIGH) in June?",
+        "marketQuality": {
+          "yesBid": 0.079,
+          "yesAsk": 0.12,
+          "yesSpread": 0.041,
+          "liquidity": 11408.97,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 79.6pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration."
       }
     ]
   },

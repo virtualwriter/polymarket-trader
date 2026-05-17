@@ -4,22 +4,6 @@
     {
       "instruction": {
         "action": "close",
-        "positionId": "T-1778794152516-60c7",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "gold_gc_spot",
-          "gold_hl_funding_ann"
-        ],
-        "thesis": "FUNDING_EXTREME_LONG short thesis is complete: gold_hl_funding_ann has collapsed from 67.52% at entry to 5.48% now (-91.9% normalization), which is the core signal-family evidence for this trade. Gold spot has moved from $4,661 to $4,539 (+2.6% gain). The funding crowded-longs thesis has fully resolved — funding is now at baseline levels with no remaining edge. Taking profit at target-adjacent levels before funding potentially reverses."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
         "positionId": "T-1778916565173-2wqk",
         "asset": "GOLD",
         "venue": "hyperliquid",
@@ -29,7 +13,7 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "FUNDING_EXTREME_SHORT long thesis is complete: gold_hl_funding_ann has normalized from -44.78% at entry to +5.48% now (+50.26pp normalization), which is the core signal-family evidence. Gold spot is essentially flat ($4,536 entry vs $4,539 now, +0.07%). The crowded-shorts funding carry thesis has fully resolved — funding has flipped positive, meaning the carry benefit is now reversed (longs now pay shorts). Closing to avoid paying positive funding carry with no remaining thesis edge."
+        "thesis": "The FUNDING_EXTREME_SHORT thesis for GOLD was triggered when gold_hl_funding_ann was -44.78%. Funding has now fully normalized to +5.48% (a +50pp swing), which is the thesis completion signal. Gold spot is essentially flat (+0.07% from entry at 4536 to current 4539). The carry benefit has been captured and the funding signal is exhausted — holding further exposes to directional risk without the original carry thesis. Closing at near-breakeven with thesis complete."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     },
@@ -40,28 +24,13 @@
         "asset": "AMZN",
         "venue": "hyperliquid",
         "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
+        "closeReasonCategory": "profit_taking",
         "evidenceColumns": [
           "amzn_stock",
           "amzn_hl_perp",
           "amzn_hl_funding_ann"
         ],
-        "thesis": "FUNDING_EXTREME_SHORT long thesis is complete: amzn_hl_funding_ann has normalized from -29.81% at entry to +5.48% now (+35.29pp normalization). The perp has converged to near-zero basis (amzn_hl_basis_pct moved from -0.27% to +0.04%), and amzn_hl_perp has risen from $262.02 to $262.74 (+0.27%). All three signal-family evidence columns confirm thesis completion. Funding has flipped positive, reversing the carry benefit. Closing with a small gain."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778923758531-nlyu",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "risk_stale",
-        "evidenceColumns": [
-          "btc_spot"
-        ],
-        "thesis": "PROMOTED_HYPOTHESIS BTC long (H-148 put-call exhaustion reversal): btc_spot has moved from $78,018 at entry to $77,991 now (-0.03%), essentially flat after 14 snapshots. The BTC funding that was -25.46% at entry has fully normalized to +1.41%, which was the carry tailwind for this trade. With funding now positive (longs pay shorts), the carry has reversed. The spot has not moved in the predicted direction and the funding thesis has resolved. The 1.5% stop is at ~$76,848 — risk/reward is now unfavorable with no remaining thesis catalyst. Closing to preserve capital."
+        "thesis": "The FUNDING_EXTREME_SHORT thesis for AMZN was triggered when amzn_hl_funding_ann was -29.81%. Funding has fully normalized to +5.48% and the basis has improved from -0.27% to +0.06% — the perp-spot convergence is complete. The perp has moved from 262.02 to 262.79 (+0.29%) while stock is flat. With funding normalized and basis positive, the carry thesis is exhausted and the position is at its natural completion point. Taking profit at +0.28%."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
