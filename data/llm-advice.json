@@ -4,33 +4,16 @@
     {
       "instruction": {
         "action": "close",
-        "positionId": "T-1778916565173-2wqk",
+        "positionId": "T-1778794152516-60c7",
         "asset": "GOLD",
         "venue": "hyperliquid",
-        "direction": "long",
+        "direction": "short",
         "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "The FUNDING_EXTREME_SHORT thesis for GOLD was triggered when gold_hl_funding_ann was -44.78%. Funding has now fully normalized to +5.48% (a +50pp swing), which is the thesis completion signal. Gold spot is essentially flat (+0.07% from entry at 4536 to current 4539). The carry benefit has been captured and the funding signal is exhausted — holding further exposes to directional risk without the original carry thesis. Closing at near-breakeven with thesis complete."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778916565173-vz22",
-        "asset": "AMZN",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "closeReasonCategory": "profit_taking",
-        "evidenceColumns": [
-          "amzn_stock",
-          "amzn_hl_perp",
-          "amzn_hl_funding_ann"
-        ],
-        "thesis": "The FUNDING_EXTREME_SHORT thesis for AMZN was triggered when amzn_hl_funding_ann was -29.81%. Funding has fully normalized to +5.48% and the basis has improved from -0.27% to +0.06% — the perp-spot convergence is complete. The perp has moved from 262.02 to 262.79 (+0.29%) while stock is flat. With funding normalized and basis positive, the carry thesis is exhausted and the position is at its natural completion point. Taking profit at +0.28%."
+        "thesis": "GOLD FUNDING_EXTREME_LONG short thesis has played out: gold_hl_funding_ann normalized from +67.52% at entry to -8.98% now (delta -76.5pp), well past the mean-reversion target. Gold spot declined from 4661 to 4536 (-2.68%), capturing the move. Funding has now flipped negative, which means the crowded-longs thesis is fully resolved and the position is now fighting against the FUNDING_EXTREME_SHORT signal direction. At +2.69% P&L, this is near the 5% target and the thesis is complete. Closing to avoid carry reversal."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
