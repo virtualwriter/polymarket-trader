@@ -4,6 +4,22 @@
     {
       "instruction": {
         "action": "close",
+        "positionId": "T-1778794152516-60c7",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "short",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "gold_gc_spot",
+          "gold_hl_funding_ann"
+        ],
+        "thesis": "FUNDING_EXTREME_LONG short thesis has fully played out: gold_hl_funding_ann has collapsed from +67.5% at entry to +0.29% now (99.6% normalization), and gold_gc_spot has declined from 4661 to 4535 (-2.7%), capturing the target move. The crowded-longs thesis is exhausted - funding is no longer extreme, the position is at +2.71% P&L, and holding further risks reversal now that the signal is gone. Closing to lock in gains and free capital."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
+    {
+      "instruction": {
+        "action": "close",
         "positionId": "T-1778916565173-2wqk",
         "asset": "GOLD",
         "venue": "hyperliquid",
@@ -13,7 +29,7 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "The FUNDING_EXTREME_SHORT thesis has been fully realized: gold_hl_funding_ann has normalized from -44.78% at entry to +5.48% currently, completing the funding reversal. The signal-family evidence shows gold_gc_spot moved only +$2 (+0.04%) while funding normalized completely. With funding now positive (longs pay shorts), the carry has flipped against the long position. The thesis was funding normalization, not a spot rally, and that normalization is complete. Closing to avoid paying positive funding carry with no remaining thesis edge."
+        "thesis": "FUNDING_EXTREME_SHORT long thesis has also resolved: gold_hl_funding_ann has recovered from -44.78% at entry to +0.29% now (full normalization), which was the signal condition. However, gold_gc_spot is essentially flat (-0.02%) since entry - the expected bounce from crowded-short covering has not materialized in price. With funding fully normalized and no price follow-through, the thesis is exhausted without profit. Closing to avoid holding a directionless position with no remaining signal edge. P&L is approximately breakeven (-0.03%)."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     },
@@ -30,7 +46,7 @@
           "amzn_hl_perp",
           "amzn_hl_funding_ann"
         ],
-        "thesis": "The FUNDING_EXTREME_SHORT thesis has been fully realized: amzn_hl_funding_ann normalized from -29.81% at entry to +5.48% currently. The amzn_hl_perp moved from 262.02 to 262.25 (+0.09%) and amzn_stock is unchanged at 262.64. With funding now positive, the carry has flipped against the long. The basis has improved from -0.62% to -0.15%, confirming perp-spot convergence occurred as expected. Closing as the funding normalization thesis is complete and positive funding now creates carry headwind."
+        "thesis": "FUNDING_EXTREME_SHORT long thesis on AMZN: funding has partially normalized from -29.81% to -10.74% (64% recovery toward zero), but amzn_stock remains flat at 262.64 and amzn_hl_perp has drifted slightly lower to 261.93. The basis has improved from -0.29% to -0.27% but remains negative. With funding still negative but no longer extreme, and stock price showing no upward momentum, the crowded-short squeeze thesis has not triggered a meaningful price move. The signal is weakening without delivering the expected convergence. Closing at near-breakeven (-0.04%) to avoid further decay."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -52,11 +68,11 @@
         "stopPct": 3.5
       },
       "FUNDING_EXTREME_LONG": {
-        "targetPct": 5,
+        "targetPct": 4,
         "stopPct": 2.5
       },
       "FUNDING_EXTREME_SHORT": {
-        "targetPct": 4,
+        "targetPct": 3,
         "stopPct": 2
       },
       "PM_EV_ABOVE_SPOT": {

@@ -10390,3 +10390,31 @@ Key session observations: (1) FUNDING_EXTREME_SHORT thesis completion pattern co
 
 ---
 
+### 2026-05-17 01:30 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_pm_iv = 31.1 is 3.1 std devs from mean (17.49 ± 4.34)
+- [anomaly] gold_med_min = 4210 is -2.6 std devs from mean (4377.13 ± 65.05)
+- [correlation_flip] BTC-OIL correlation shifted from 0.30 to -0.48
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 73 (30 wins / 43 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+
+**LLM analysis:**
+Key observations this cycle: (1) GOLD funding trades resolved asymmetrically - the FUNDING_EXTREME_LONG short captured a clean 2.7% price move as expected, while the FUNDING_EXTREME_SHORT long captured zero price move despite full funding normalization. This suggests crowded-short squeezes in GOLD don't reliably produce spot bounces - the funding normalization may be driven by position unwinding rather than new buying pressure. Consider tightening FUNDING_EXTREME_SHORT targetPct from 4% to 3% to capture faster exits when funding normalizes without price follow-through. (2) AMZN FUNDING_EXTREME_SHORT: similar pattern - funding partially normalized but stock flat. The perp-spot convergence thesis works better when there's an active catalyst (stock moving) rather than just funding normalization in isolation. (3) BTC is in a tight consolidation range with PM IV still compressed (~37%) and funding near zero - the PROMOTED_HYPOTHESIS long (H-523 variant) remains valid but needs price to break higher to confirm. The 1.5% stop is tight; monitoring closely. (4) OIL position (T-1778722157808-15xu) is performing well at +55% P&L - the $90 low touch NO is deeply in the money with WTI at $101.66. No close signal as the contract expires June 1 and spot remains far from $90. (5) BTC short via PM NO (T-1778718867328-fb7r) is slightly underwater at -5.66% - the $55k dip contract YES is at 0.495-0.50, meaning the market assigns ~50% probability to BTC dipping to $55k by year end. With BTC at $77,906, this seems overpriced but the market is sticky. Hold per original thesis. (6) The hypothesis backlog remains large (12 setup families need more tests) - no new hypotheses proposed this cycle per rules. Focus should be on completing shadow tests for existing families before expanding.
+
+---
+
