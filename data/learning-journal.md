@@ -10501,3 +10501,32 @@ Key observations this session: (1) Both FUNDING_EXTREME_SHORT positions (GOLD an
 
 ---
 
+### 2026-05-17 06:30 UTC
+
+**Portfolio:** $99.72 total | Cash $94.72 | 5 open | P&L $0.7241 | 51% win rate (134 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved narrower by 9.3pp (was 9.5, now 0.2)
+- [anomaly] hype_hl_funding_ann = -44.04 is -4.9 std devs from mean (6.47 ± 10.30)
+- [correlation_flip] BTC-OIL correlation shifted from 0.31 to -0.47
+- [correlation_flip] BTC-GOLD correlation shifted from -0.07 to 0.34
+
+**Blocked signal learning:**
+- Open blocked shadows: 55
+- Resolved blocked shadows: 75 (30 wins / 45 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+
+**LLM analysis:**
+Key observations this session: (1) FUNDING_EXTREME_SHORT positions in GOLD and AMZN have both reached thesis completion — funding normalized to near-zero in both cases. Closing both to recycle capital. The GOLD short (FUNDING_EXTREME_LONG, T-1778794152516-60c7) is at +2.82% and approaching its 5% target — holding as the thesis (crowded longs fading) remains intact with gold spot down $131 from entry. (2) The BTC PM-Options IV gap narrowed by 9.3pp per statistical observations — this is a significant compression event that may signal the PM_IV_GT_OPT_IV setup (BTC NO position T-1778718867328-fb7r) is working as expected. The BTC NO position is at +1.89% and should be held per its 14-day thesis. (3) HYPE experienced a -4.9σ funding anomaly at T06 (-44% annualized), which is notable but the HYPE OI distribution exhaustion family was killed at 19% win rate. Not initiating new HYPE trades until the hypothesis backlog clears. (4) Cross-asset correlation regime shift detected: BTC-GOLD correlation flipped positive (+0.34) while BTC-OIL went negative (-0.47). This is consistent with the macro backdrop (hawkish Fed, Iran peace signals reducing oil risk premium). (5) No new hypotheses proposed — the backlog of 12 setup families needing tests must be cleared first. (6) The relative-value heatmap shows several interesting edges (ETH $4,500 Dec YES at 13.2pt edge, BTC $110k Dec YES at 17.1pt edge, OIL $150 June YES at 10.1pt edge) but these are all flagged as cheap_vs_underlying_cap_bearish with wide spreads or insufficient liquidity for most. The BTC $90k Dec YES (1345531) at 17.3pt edge with $46,978 liquidity and tight spread is the cleanest opportunity but we are at 5 open positions and closing 2 today, so capital will be available next cycle.
+
+---
+
