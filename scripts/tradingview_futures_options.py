@@ -133,6 +133,15 @@ def normalize_iv(value: Any) -> Optional[float]:
     return iv / 100.0 if iv > 3 else iv
 
 
+def row_implied_volatility(row: Dict[str, Any]) -> Optional[float]:
+    bid_iv = normalize_iv(row.get("bid_iv"))
+    ask_iv = normalize_iv(row.get("ask_iv"))
+    quote_ivs = [iv for iv in (bid_iv, ask_iv) if iv is not None and iv > 0]
+    if quote_ivs:
+        return sum(quote_ivs) / len(quote_ivs)
+    return normalize_iv(row.get("iv"))
+
+
 def tradingview_close(symbol: str) -> Optional[float]:
     payload = {
         "columns": ["close"],
@@ -244,7 +253,7 @@ def row_to_quote(row: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         else:
             return None
 
-    iv = normalize_iv(row.get("iv")) or normalize_iv(row.get("ask_iv")) or normalize_iv(row.get("bid_iv"))
+    iv = row_implied_volatility(row)
     if strike is None or strike <= 0 or not expiration or iv is None:
         return None
 
