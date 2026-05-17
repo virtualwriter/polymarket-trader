@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -114,6 +114,12 @@ interface Stats {
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DATA_DIR = join(ROOT, "data");
+const RELATIVE_VALUE_HISTORY_DIRS = [
+  process.env.RELATIVE_VALUE_HISTORY_DIR,
+  "/var/lib/polymarket-trader/relative-value-history",
+  join(ROOT, "relative-value", "history"),
+  join(ROOT, "relative-value", "backtest-history"),
+].filter((path): path is string => Boolean(path));
 const OPERATIONALLY_TAINTED_TRADES: Record<string, string> = {
   "T-1778707778058-9nsi": "hourly LLM close had authority over rule-owned funding trade",
   "T-1778718867328-1tjp": "one-touch NO inherited generic 2% Polymarket stop instead of 100% hold-to-expiry stop",
@@ -301,6 +307,12 @@ function parseHeatmapTimestamp(value: string | undefined): Date | null {
   return Number.isFinite(parsed.getTime()) ? parsed : null;
 }
 
+function parseTimestamp(value: string | undefined): Date | null {
+  if (!value) return null;
+  const parsed = new Date(value);
+  return Number.isFinite(parsed.getTime()) ? parsed : null;
+}
+
 function modelDteDays(row: Record<string, string>): number | null {
   const timestamp = parseHeatmapTimestamp(row.timestamp);
   const target = row.notes?.match(/target month-end expiry (\d{4}-\d{2}-\d{2})/i)?.[1];
@@ -338,7 +350,17 @@ function recomputedOneTouchProbability(row: Record<string, string> | undefined):
 function readRelativeValueRows(): Map<string, Record<string, string>> {
   const file = join(ROOT, "relative-value", "cross_venue_relative_value.csv");
   if (!existsSync(file)) return new Map();
-  const lines = readFileSync(file, "utf-8").split("\n").filter((line) => line.trim());
+  return readRelativeValueCsv(file);
+}
+
+function readRelativeValueCsv(file: string): Map<string, Record<string, string>> {
+  if (!existsSync(file)) return new Map();
+  let lines: string[];
+  try {
+    lines = readFileSync(file, "utf-8").split("\n").filter((line) => line.trim());
+  } catch {
+    return new Map();
+  }
   const [headerLine, ...rows] = lines;
   if (!headerLine) return new Map();
   const headers = parseCsvLine(headerLine);
@@ -355,6 +377,72 @@ function relativeValueKey(position?: Position): string | null {
   if (!position?.instrumentId) return null;
   const [eventSlug, marketId] = position.instrumentId.split("::");
   return eventSlug && marketId ? `${eventSlug}::${marketId}` : null;
+}
+
+function relativeValueHistoryFiles(): string[] {
+  const files = new Set<string>();
+  const visit = (dir: string) => {
+    if (!existsSync(dir)) return;
+    let entries: Array<{ name: string; isDirectory: () => boolean; isFile: () => boolean }>;
+    try {
+      entries = readdirSync(dir, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const entry of entries) {
+      const path = join(dir, entry.name);
+      if (entry.isDirectory()) visit(path);
+      else if (entry.isFile() && entry.name.endsWith("cross_venue_relative_value.csv")) files.add(path);
+    }
+  };
+  for (const dir of RELATIVE_VALUE_HISTORY_DIRS) visit(dir);
+  const current = join(ROOT, "relative-value", "cross_venue_relative_value.csv");
+  if (existsSync(current)) files.add(current);
+  return [...files].sort();
+}
+
+function readRelativeValueHistoryRows(): Map<string, Array<{ timestamp: Date; row: Record<string, string> }>> {
+  const byKey = new Map<string, Array<{ timestamp: Date; row: Record<string, string> }>>();
+  for (const file of relativeValueHistoryFiles()) {
+    for (const [key, row] of readRelativeValueCsv(file)) {
+      const timestamp = parseHeatmapTimestamp(row.timestamp);
+      if (!timestamp) continue;
+      const rows = byKey.get(key) ?? [];
+      rows.push({ timestamp, row });
+      byKey.set(key, rows);
+    }
+  }
+  for (const rows of byKey.values()) {
+    rows.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+  }
+  return byKey;
+}
+
+function nearestRelativeValueEntryRow(
+  historyRows: Map<string, Array<{ timestamp: Date; row: Record<string, string> }>>,
+  position: Position | undefined,
+  openedAt: string | undefined,
+): Record<string, string> | undefined {
+  const key = relativeValueKey(position);
+  const opened = parseTimestamp(openedAt);
+  if (!key || !opened) return undefined;
+  const rows = historyRows.get(key);
+  if (!rows?.length) return undefined;
+  let best: { timestamp: Date; row: Record<string, string> } | undefined;
+  let bestDistance = Number.POSITIVE_INFINITY;
+  for (const candidate of rows) {
+    const distance = Math.abs(candidate.timestamp.getTime() - opened.getTime());
+    if (distance < bestDistance) {
+      best = candidate;
+      bestDistance = distance;
+    }
+  }
+  const maxDistanceMs = 36 * 60 * 60 * 1000;
+  return best && bestDistance <= maxDistanceMs ? best.row : undefined;
+}
+
+function entryOneTouchModel(row: Record<string, string> | undefined): number | null {
+  return recomputedOneTouchProbability(row) ?? safeNumber(row?.options_touch_adjusted_prob);
 }
 
 function currentBidAsk(row: Record<string, string> | undefined, instrumentType: string | undefined): { bid: number | null; ask: number | null } {
@@ -620,6 +708,7 @@ function buildCsvReport(args: {
 }): string {
   const rows: string[][] = [CSV_HEADER.slice()];
   const relativeValueRows = readRelativeValueRows();
+  const relativeValueHistoryRows = readRelativeValueHistoryRows();
 
   rows.push(["summary", "generated_at", "", "", "", "", "", "", "", "", "", "", args.generatedAt, "", "", "", "", "", "", "", "", ""]);
   rows.push(["summary", "portfolio_realized_pnl", String(args.portfolio.totalTrades), String(args.portfolio.winCount), String(args.portfolio.lossCount), args.portfolio.totalTrades > 0 ? ((args.portfolio.winCount / args.portfolio.totalTrades) * 100).toFixed(1) : "", args.portfolio.totalRealizedPnl.toFixed(6), "", "", "", "", "", `source=portfolio.json; cash=${args.portfolio.cash.toFixed(6)}; last_updated=${args.portfolio.lastUpdated}`, "", args.portfolio.totalRealizedPnl.toFixed(6), "", "", "", "", "", "", ""]);
@@ -655,6 +744,7 @@ function buildCsvReport(args: {
   for (const shadow of args.shadows.filter((shadow) => shadow.status === "open")) {
     const currentRowKey = relativeValueKey(shadow.position);
     const currentRow = currentRowKey ? relativeValueRows.get(currentRowKey) : undefined;
+    const entryRow = shadow.heatmapRowSnapshot?.row ?? nearestRelativeValueEntryRow(relativeValueHistoryRows, shadow.position, shadow.blockedAt);
     const bidAsk = currentBidAsk(currentRow, shadow.position?.instrumentType);
     rows.push([
       "currently_open_shadow_trade",
@@ -679,7 +769,7 @@ function buildCsvReport(args: {
       shadow.position?.instrumentId ?? "",
       shadow.position?.instrumentLabel ?? "",
       shadow.blockedAt,
-      fmtModelValue(recomputedOneTouchProbability(shadow.heatmapRowSnapshot?.row)),
+      fmtModelValue(entryOneTouchModel(entryRow)),
       fmtModelValue(safeNumber(currentRow?.options_touch_adjusted_prob)),
       fmtPriceValue(bidAsk.bid),
       fmtPriceValue(bidAsk.ask),
@@ -693,6 +783,7 @@ function buildCsvReport(args: {
       : position.signalType;
     const currentRowKey = relativeValueKey(position);
     const currentRow = currentRowKey ? relativeValueRows.get(currentRowKey) : undefined;
+    const entryRow = nearestRelativeValueEntryRow(relativeValueHistoryRows, position, position.openedAt);
     const bidAsk = currentBidAsk(currentRow, position.instrumentType);
     rows.push([
       "open_position",
@@ -717,7 +808,7 @@ function buildCsvReport(args: {
       position.instrumentId ?? "",
       position.instrumentLabel ?? "",
       position.openedAt,
-      "",
+      fmtModelValue(entryOneTouchModel(entryRow)),
       fmtModelValue(safeNumber(currentRow?.options_touch_adjusted_prob)),
       fmtPriceValue(bidAsk.bid),
       fmtPriceValue(bidAsk.ask),
