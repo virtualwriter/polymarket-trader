@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-17T10:30:08.446Z",
+  "generatedAt": "2026-05-17T11:30:15.560Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.6,
       "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-069] BTC P/C ratio spike above 1.0 during consolidation above 68500 creates oversold bounce setup as options positioning becomes too bearish",
       "hypothesisId": "H-069",
-      "entryPrice": 78462,
+      "entryPrice": 78331,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 3
@@ -25,31 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6442026156666666,
-      "confidence": 0.2810333910845833,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.3pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6660213363333334,
+      "confidence": 0.2905518079754167,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 20.0pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78462,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "1339767",
-        "allowDirectionFallback": false
-      }
-    },
-    {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.6325955586666667,
-      "confidence": 0.27596981246833335,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.0pt edge on BTC; hold 14d for repricing.",
-      "hypothesisId": null,
-      "entryPrice": 78462,
+      "entryPrice": 78331,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -65,11 +45,31 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5221508743333333,
-      "confidence": 0.22778831892791662,
+      "strength": 0.6109607086666667,
+      "confidence": 0.26653160915583335,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.3pt edge on BTC; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 78331,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "1339767",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.5222573753333334,
+      "confidence": 0.22783477998916668,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.7pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78462,
+      "entryPrice": 78331,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -85,6 +85,22 @@
     {
       "instruction": {
         "action": "close",
+        "positionId": "T-1778916565173-2wqk",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "gold_gc_spot",
+          "gold_hl_funding_ann"
+        ],
+        "thesis": "FUNDING_EXTREME_SHORT thesis was predicated on extreme negative funding (-44.78% annualized) creating a crowded-shorts reversal. Funding has fully normalized to +5.48% (delta +50.26pp from entry), which is the primary thesis completion signal. Gold spot is essentially flat (+$1 from 4,536 entry). The funding carry benefit has been captured and the signal has fully resolved - holding further exposes to directional risk without the funding edge that justified the position."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
+    {
+      "instruction": {
+        "action": "close",
         "positionId": "T-1778916565173-vz22",
         "asset": "AMZN",
         "venue": "hyperliquid",
@@ -95,7 +111,7 @@
           "amzn_hl_perp",
           "amzn_hl_funding_ann"
         ],
-        "thesis": "The FUNDING_EXTREME_SHORT thesis has fully resolved: AMZN HL funding has flipped from -29.81% to +13.37% annualized, and the perp has converged from -0.27% basis to -0.10% basis. The crowded-shorts signal that triggered entry has completely normalized. The position is +0.13% — near breakeven — and holding further risks paying positive funding carry with no remaining thesis edge. Closing to capture the convergence trade completion and avoid funding drag."
+        "thesis": "FUNDING_EXTREME_SHORT thesis was predicated on extreme negative funding (-29.81% annualized) with crowded shorts. Funding has fully normalized and flipped to +15.33% (delta +45.14pp from entry), which is the primary thesis completion signal. The perp has converged to near-parity with stock (basis improved from -0.27% to +0.01%). Both the funding normalization and basis convergence confirm the thesis has fully played out. Holding further with positive funding now creates carry headwind."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -103,6 +119,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 2 rejected; 0 non-close instructions skipped."
   ]
 }

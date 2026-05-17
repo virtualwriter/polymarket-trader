@@ -10642,3 +10642,32 @@ Key observations this session: (1) AMZN FUNDING_EXTREME_SHORT trade is being clo
 
 ---
 
+### 2026-05-17 11:30 UTC
+
+**Portfolio:** $99.72 total | Cash $94.72 | 5 open | P&L $0.7241 | 51% win rate (134 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_funding_ann = -21.29 is -2.7 std devs from mean (6.35 ± 10.39)
+- [anomaly] gold_med_min = 4213 is -2.5 std devs from mean (4375.85 ± 66.36)
+- [correlation_flip] BTC-OIL correlation shifted from 0.32 to -0.45
+- [correlation_flip] BTC-GOLD correlation shifted from -0.08 to 0.36
+
+**Blocked signal learning:**
+- Open blocked shadows: 55
+- Resolved blocked shadows: 75 (30 wins / 45 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+
+**LLM analysis:**
+Key session observations: (1) Both FUNDING_EXTREME_SHORT positions (GOLD and AMZN) have reached thesis completion - funding has fully normalized and flipped positive in both cases, and the perp/spot convergence is complete for AMZN. Closing both to lock in the carry gains and avoid the now-adverse funding headwind. The GOLD short (T-1778794152516-60c7) remains open as it is still within its target range at +2.67% P&L with funding normalized but not yet at the 5% target. (2) BTC PM IV compression continues at 36.7% vs 40.3% options IV - the H-523 promoted hypothesis conditions are approaching but not yet triggered on a z-score basis. The BTC long (T-1778923758531-nlyu) is up +0.40% and the thesis remains intact. (3) Oil funding volatility is extreme and oscillating wildly (125% to -44% and back multiple times in 14 snapshots) while spot remains stable around $101.5 - this is the structural anomaly pattern that H-439 and related hypotheses track. The oil IV at 71% 30d vs 59% PM IV remains a notable divergence. (4) The BTC-GOLD correlation flip from -0.08 to +0.36 and BTC-OIL flip from +0.32 to -0.45 are statistically notable regime shifts worth monitoring. (5) No new hypotheses proposed per backlog rules - 12 setup families still need condition-triggered shadow tests. (6) The HYPE IBIT P/C ratio at 0.713 is stable and not triggering any extreme signals. HYPE OI is rising modestly (930M to 955M) with spot momentum, consistent with H-521 promoted conditions being partially met but not cleanly triggered yet.
+
+---
+
