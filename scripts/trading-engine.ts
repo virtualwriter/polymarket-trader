@@ -369,6 +369,13 @@ interface BlockedSignalShadow {
     reason: string;
     note: string;
   };
+  heatmapRowSnapshot?: {
+    schemaVersion: number;
+    source: string;
+    row: Record<string, string>;
+    selectedSide?: string;
+    selectedSignalType?: string;
+  };
 }
 
 interface BlockedSignalLearningSummary {
@@ -450,6 +457,7 @@ interface RelativeValueObservation {
   pmIv: number | null;
   liquidity: number | null;
   flags: string;
+  rawRow: Record<string, string>;
 }
 
 interface InstrumentSnapshotContract {
@@ -756,6 +764,7 @@ function readRelativeValueObservations(limit = 30): RelativeValueObservation[] {
         pmIv: num(row.pm_iv),
         liquidity: num(row.liquidity),
         flags: row.flags ?? "",
+        rawRow: row,
       };
     })
     .filter((row): row is RelativeValueObservation => !!row)
@@ -2607,6 +2616,7 @@ function recordOneTouchHighEdgeShadows(
       (shadow.status === "open" || shadow.blockedAt.slice(0, 10) === today)
     )) continue;
 
+    const selectedSide = position.instrumentType === "pm_no" ? "no" : "yes";
     blockedSignals.push({
       id: position.id,
       status: "open",
@@ -2628,6 +2638,13 @@ function recordOneTouchHighEdgeShadows(
         signalRisk: learningParams.signalRisk,
       },
       position,
+      heatmapRowSnapshot: {
+        schemaVersion: 1,
+        source: "cross_venue_relative_value_heatmap",
+        row: row.rawRow,
+        selectedSide,
+        selectedSignalType: position.signalType,
+      },
     });
     recorded++;
   }
