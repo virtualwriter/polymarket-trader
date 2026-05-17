@@ -10530,3 +10530,30 @@ Key observations this session: (1) FUNDING_EXTREME_SHORT positions in GOLD and A
 
 ---
 
+### 2026-05-17 07:30 UTC
+
+**Portfolio:** $99.72 total | Cash $94.72 | 5 open | P&L $0.7241 | 51% win rate (134 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] BTC-OIL correlation shifted from 0.31 to -0.46
+- [correlation_flip] BTC-GOLD correlation shifted from -0.07 to 0.34
+
+**Blocked signal learning:**
+- Open blocked shadows: 55
+- Resolved blocked shadows: 75 (30 wins / 45 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+
+**LLM analysis:**
+Key observations this session: (1) Both FUNDING_EXTREME_SHORT positions (GOLD and AMZN) have had their primary thesis signal — extreme negative funding — fully normalize to positive territory. The GOLD long entered at -44.78% funding is now at +5.48%; AMZN entered at -29.81% is now at +5.48%. In both cases spot has barely moved (+0.08% AMZN, -0.09% GOLD), meaning the carry benefit was the main thesis driver and that benefit has now reversed. Closing both is the correct action per signal-family evidence rules. (2) The GOLD short (T-1778794152516-60c7) is performing well at +2.77% with funding having normalized from 67.5% extreme long — this is approaching its 5% target and should be held. (3) The BTC spot long (T-1778923758531-nlyu) via promoted H-145 is up only 0.12% — the thesis requires patience as BTC consolidates. The 1.5% stop is tight; monitoring closely. (4) The BTC PM NO position (T-1778718867328-fb7r) at +1.89% continues to work as BTC remains well below $55k. (5) No new hypotheses proposed this session — the backlog of 12 setup families needing shadow tests must be cleared first. The hypothesis shadow test backlog remains the priority. (6) FUNDING_EXTREME_SHORT signal has 40% win rate (8/20) with avg P&L -0.37% — the signal is marginal. The pattern of funding normalizing quickly without spot appreciation (as seen in both current positions) suggests the carry window is shorter than the 4% target implies. Consider whether a tighter target (2-2.5%) would improve the win rate by capturing the carry before spot mean-reverts. Will monitor the closed positions' outcomes to inform a future parameter update.
+
+---
+

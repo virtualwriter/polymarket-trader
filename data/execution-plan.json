@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-17T06:30:27.322Z",
+  "generatedAt": "2026-05-17T07:30:17.866Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.6,
       "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-069] BTC P/C ratio spike above 1.0 during consolidation above 68500 creates oversold bounce setup as options positioning becomes too bearish",
       "hypothesisId": "H-069",
-      "entryPrice": 77983,
+      "entryPrice": 78109,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 3
@@ -25,11 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6105037763333333,
-      "confidence": 0.2663322724254166,
+      "strength": 0.610595123,
+      "confidence": 0.26637212240874997,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77983,
+      "entryPrice": 78109,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5988926866666666,
-      "confidence": 0.2612669345583333,
+      "strength": 0.5989850356666667,
+      "confidence": 0.2613072218095833,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.0pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77983,
+      "entryPrice": 78109,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -65,11 +65,31 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5217249856666667,
-      "confidence": 0.22760252499708333,
+      "strength": 0.5227547503333334,
+      "confidence": 0.22805175983291667,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.7pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77983,
+      "entryPrice": 78109,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-bitcoin-hit-in-may-2026",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "2132778",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.5218314406666666,
+      "confidence": 0.2276489659908333,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.7pt edge on BTC; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 78109,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -79,9 +99,42 @@
         "forceMarketId": "701502",
         "allowDirectionFallback": false
       }
+    },
+    {
+      "type": "OPT_IV_GT_PM_IV",
+      "asset": "GOLD",
+      "venue": "polymarket",
+      "direction": "long",
+      "strength": 0.17486338797814177,
+      "confidence": 0.09449114684708175,
+      "thesis": "GOLD Options IV (24.4%) >> PM IV (15.8%), ratio 0.65. PM underpricing vol → buy PM upside.",
+      "hypothesisId": null,
+      "entryPrice": 4532,
+      "targetPct": 5,
+      "stopPct": 3.5,
+      "expiryDays": 7,
+      "contractHint": {
+        "preferredDirection": "above"
+      }
     }
   ],
   "rejectedLlmActions": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1778916565173-2wqk",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "gold_gc_spot",
+          "gold_hl_funding_ann"
+        ],
+        "thesis": "FUNDING_EXTREME_SHORT thesis was triggered by gold_hl_funding_ann at -44.78%. Funding has now fully normalized to +5.48% (thesis completion), which is the primary signal-family evidence for this trade. Gold spot has moved only -0.09% from entry ($4,536 to $4,532), so the carry benefit was the main thesis driver. With funding normalized and no meaningful spot appreciation, the thesis is complete and the position should be closed to free capital. The 4% target has not been reached but the signal has resolved."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
     {
       "instruction": {
         "action": "close",
@@ -95,23 +148,7 @@
           "amzn_hl_perp",
           "amzn_hl_funding_ann"
         ],
-        "thesis": "AMZN FUNDING_EXTREME_SHORT thesis has fully resolved: amzn_hl_funding_ann has normalized from -29.81% to +5.48% (a complete sign flip and normalization), which is the primary thesis completion signal. The perp has converged toward spot (basis improved from -0.29% to -0.16%). The position is at +0.08% P&L — the carry benefit has been captured and the funding edge is gone. Holding further exposes to positive funding carry cost with no remaining thesis edge."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778916565173-2wqk",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "gold_gc_spot",
-          "gold_hl_funding_ann"
-        ],
-        "thesis": "GOLD FUNDING_EXTREME_SHORT thesis has fully resolved: gold_hl_funding_ann normalized from -44.78% to -0.77% (near zero), which is the primary thesis completion signal. Gold spot has moved from 4536 to 4530 (-0.13%), essentially flat. The position is at -0.14% P&L. The funding edge that justified the long is gone — funding has normalized and the carry benefit is exhausted. Continuing to hold exposes to directional gold risk with no funding edge remaining. Close to free up capital."
+        "thesis": "FUNDING_EXTREME_SHORT thesis was triggered by amzn_hl_funding_ann at -29.81%. Funding has now fully normalized to +5.48% (thesis completion — the primary signal-family evidence). AMZN stock is unchanged at $262.64 and the perp has moved only +$0.22 from entry. With funding normalized and no meaningful spot appreciation, the carry-driven thesis is complete. The 4% target has not been reached but the signal has resolved and holding further exposes to reversal risk."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
