@@ -10586,3 +10586,31 @@ Key observations this session: (1) Both FUNDING_EXTREME_SHORT positions (GOLD lo
 
 ---
 
+### 2026-05-17 09:30 UTC
+
+**Portfolio:** $99.72 total | Cash $94.72 | 5 open | P&L $0.7241 | 51% win rate (134 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_med_min = 4211 is -2.5 std devs from mean (4376.62 ± 65.55)
+- [correlation_flip] BTC-OIL correlation shifted from 0.32 to -0.46
+- [correlation_flip] BTC-GOLD correlation shifted from -0.08 to 0.35
+
+**Blocked signal learning:**
+- Open blocked shadows: 55
+- Resolved blocked shadows: 75 (30 wins / 45 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+
+**LLM analysis:**
+Key observations this session: (1) GOLD FUNDING_EXTREME_LONG short (T-1778794152516-60c7) has fully resolved its thesis — funding normalized from +67.5% to +5.5% and spot moved ~$129 in our favor for +2.77% P&L. Recommending close as the signal is exhausted. The mechanical target at 5% remains valid but with funding normalized, holding further is speculative. (2) The paired GOLD FUNDING_EXTREME_SHORT long (T-1778916565173-2wqk) is essentially flat (-0.09%) with funding also normalized. This position's thesis (crowded shorts reversing) has also played out in terms of funding, but spot hasn't moved. The position is within stop range; monitoring for spot follow-through. (3) AMZN long (T-1778916565173-vz22) is +0.10% with funding normalized from -29.8% to +5.48%. Thesis resolved on funding side; spot is flat. Holding as the basis has improved from -0.27% to -0.13%, consistent with perp-spot convergence. (4) BTC long (T-1778923758531-nlyu) is +0.09% — minimal movement since entry. The promoted H-145 thesis (P/C exhaustion reversal) is not strongly triggered at current P/C of 0.713. Position is within normal noise; holding with 1.5% stop. (5) Statistical anomaly: gold_med_min at 4211 is -2.5σ from mean, suggesting the market is pricing in a wider downside range for gold. BTC-GOLD correlation has flipped positive (+0.35 from -0.08), which is unusual and worth monitoring — if both assets are moving together, a macro risk-off event could affect both positions simultaneously. (6) Hypothesis backlog: 12 setup families still need tests, 10 pending. Not proposing new hypotheses per instructions. (7) Oil funding remains highly volatile (swings from -44.93% to +125.14% within the window) but spot is stable ~$101. The Polymarket settle >$84 at 71% suggests the market expects oil to hold current levels, consistent with the macro DECLINING signal but not a crash. (8) No new trades proposed beyond the GOLD short close — cash position is adequate and existing positions cover the key setups. The relative-value heatmap shows interesting edges in OIL CL $150 June (10pt edge, buy YES) and BTC $110k December (17pt edge, buy YES) but these are in setup families with insufficient clean evidence to justify new entries at this time.
+
+---
+
