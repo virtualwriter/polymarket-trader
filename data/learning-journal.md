@@ -10729,3 +10729,32 @@ Key session observations: (1) Both FUNDING_EXTREME_SHORT positions (GOLD long an
 
 ---
 
+### 2026-05-17 15:30 UTC
+
+**Portfolio:** $99.72 total | Cash $94.72 | 5 open | P&L $0.7241 | 51% win rate (134 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 5.4pp (was 6.6, now 1.2)
+- [anomaly] gold_med_min = 4210 is -2.4 std devs from mean (4374.74 ± 67.47)
+- [correlation_flip] BTC-OIL correlation shifted from 0.33 to -0.45
+- [correlation_flip] BTC-GOLD correlation shifted from -0.09 to 0.37
+
+**Blocked signal learning:**
+- Open blocked shadows: 55
+- Resolved blocked shadows: 75 (30 wins / 45 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+
+**LLM analysis:**
+Session 2026-05-17: The dominant theme today is thesis completion across multiple open positions. All three funding-based trades (GOLD short, GOLD long, AMZN long) have seen their core signal — extreme funding rates — fully normalize, which is the textbook exit condition for FUNDING_EXTREME signals. The GOLD short captured ~2.6% on a clean crowded-longs unwind; the GOLD long captured ~0.07% (essentially flat) on a crowded-shorts unwind that didn't produce meaningful spot appreciation; the AMZN long captured ~0.27% on perp-spot convergence. The PROMOTED_HYPOTHESIS BTC long (H-148) is being closed as risk-stale: BTC funding has normalized from -25% to +1.4%, reversing the carry tailwind, and spot is flat after 14 snapshots with no directional follow-through. The 1.5% stop remains intact but the thesis catalyst is exhausted. Key learning: FUNDING_EXTREME_SHORT trades in low-volatility assets (GOLD, AMZN) tend to capture carry normalization but not spot appreciation — the carry is the alpha, not the directional move. For future FUNDING_EXTREME_SHORT entries, consider tightening the target to 2-3% since the carry normalization typically completes before meaningful spot movement. No new hypotheses proposed this session — the backlog of 12 setup families needing shadow tests takes priority over new idea generation. The hypothesis shadow test backlog remains the binding constraint on system learning. HYPE is showing interesting momentum (+4.1% today with OI expansion from 930M to 958M) consistent with H-521 conditions, but no new trade is warranted given the 5-position limit and pending closures.
+
+---
+
