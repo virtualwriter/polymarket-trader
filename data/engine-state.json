@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-17T03:29:22.285Z",
+  "generatedAt": "2026-05-17T04:29:17.866Z",
   "dataFreshness": {
-    "valuationRows": 423,
-    "latestValuationAt": "2026-05-17T03",
-    "macroRows": 423,
+    "valuationRows": 424,
+    "latestValuationAt": "2026-05-17T04",
+    "macroRows": 424,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-17T03"
+    "latestInstrumentSnapshotAt": "2026-05-17T04"
   },
   "portfolio": {
     "cash": 93.0991,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.0991,
     "totalTrades": 133,
     "winRatePct": 51.1,
-    "unrealizedPnl": 0.5151
+    "unrealizedPnl": 0.5187
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -9.43,
       "currentPrice": 0.48,
-      "underlyingPrice": 77932,
+      "underlyingPrice": 78088,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,7 +40,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": 55,
       "currentPrice": 0.62,
-      "underlyingPrice": 101.61,
+      "underlyingPrice": 101.54,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -54,9 +54,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 2.75,
-      "currentPrice": 4533,
-      "underlyingPrice": 4533,
+      "pnlPct": 2.73,
+      "currentPrice": 4534,
+      "underlyingPrice": 4534,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -71,9 +71,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -0.07,
-      "currentPrice": 4533,
-      "underlyingPrice": 4533,
+      "pnlPct": -0.05,
+      "currentPrice": 4534,
+      "underlyingPrice": 4534,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -88,8 +88,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -0.07,
-      "currentPrice": 261.84,
+      "pnlPct": 0.09,
+      "currentPrice": 262.26,
       "underlyingPrice": 262.64,
       "targetPct": 4,
       "stopPct": 2,
@@ -106,9 +106,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": -0.11,
-      "currentPrice": 77932,
-      "underlyingPrice": 77932,
+      "pnlPct": 0.09,
+      "currentPrice": 78088,
+      "underlyingPrice": 78088,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -254,10 +254,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 54,
-    "resolvedCount": 73,
+    "openCount": 55,
+    "resolvedCount": 74,
     "wouldHaveWon": 30,
-    "wouldHaveLost": 43,
+    "wouldHaveLost": 44,
     "bySignal": [
       {
         "signalType": "USER_PM_APR_XAU_TAIL_NO",
@@ -325,26 +325,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "OPT_IV_GT_PM_IV_DOWNSIDE",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "long",
-        "blockedReason": "iv_downside_leg_untracked",
-        "outcome": "loss",
-        "closeReason": "stop",
-        "pnlPct": -33.93,
-        "resolvedAt": "2026-05-14T19:28:29.603Z",
-        "marketQuality": {
-          "yesBid": 0.54,
-          "yesAsk": 0.56,
-          "yesSpread": 0.02,
-          "liquidity": 1684.7,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "OPT_IV_GT_PM_IV_DOWNSIDE",
         "asset": "GOLD",
@@ -477,6 +457,24 @@
           "sourcePnlPct": -0.23,
           "proxyOutperformed": false,
           "correlation": "same_direction"
+        }
+      },
+      {
+        "signalType": "OPT_IV_GT_PM_IV_DOWNSIDE",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "long",
+        "blockedReason": "iv_downside_leg_untracked",
+        "outcome": "loss",
+        "closeReason": "stop",
+        "pnlPct": -3.85,
+        "resolvedAt": "2026-05-17T04:29:17.770Z",
+        "marketQuality": {
+          "yesBid": 0.25,
+          "yesAsk": 0.26,
+          "yesSpread": 0.01,
+          "liquidity": 6550.68,
+          "flags": []
         }
       }
     ],

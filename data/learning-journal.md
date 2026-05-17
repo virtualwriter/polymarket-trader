@@ -10447,3 +10447,30 @@ Key session observations: (1) BTC PM IV spiked to 46.4 (2.1σ above mean) while 
 
 ---
 
+### 2026-05-17 04:30 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_pm_iv = 46.1 is 2.0 std devs from mean (39.54 ± 3.27)
+- [correlation_flip] BTC-OIL correlation shifted from 0.31 to -0.48
+
+**Blocked signal learning:**
+- Open blocked shadows: 55
+- Resolved blocked shadows: 74 (30 wins / 44 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+
+**LLM analysis:**
+Key observations this cycle: (1) FUNDING_EXTREME_SHORT positions in GOLD and AMZN have both reached thesis exhaustion — funding normalized completely in both cases but price appreciation did not materialize, confirming that the funding normalization signal captures the carry trade unwind but not necessarily directional spot moves. Closing both to free capital and avoid paying positive funding carry. (2) BTC PM IV spiked to 46.1 (2σ anomaly) while spot has been range-bound at 77,900-78,300 — this is consistent with H-523 (BTC IV compression/vol reversion) playing out: the compression predicted vol expansion, and we're seeing it. The BTC long (T-1778923758531-nlyu) entered on this thesis is showing early confirmation. (3) The GOLD short (T-1778794152516-60c7) is at +2.73% P&L with gold declining from 4,661 to 4,534 — approaching the 5% target. The funding extreme long thesis has worked well here. (4) The OIL NO position (T-1778722157808-15xu) is at +55% P&L with WTI at 101.54 — well above the $90 strike, thesis intact. (5) BTC-OIL correlation flip to -0.48 is notable and may indicate a regime shift where crypto and energy are pricing different macro scenarios. (6) No new hypotheses proposed as the backlog of 12 setup families needing shadow tests remains incomplete. (7) The hypothesis backlog discipline is working — resisting the urge to add new variants when existing families need more test data. (8) AMZN P/C ratio moved from 0.489 to 0.532 — a modest increase suggesting slightly more put demand, consistent with the stock being range-bound and the crowded-short unwind completing.
+
+---
+
