@@ -4,22 +4,6 @@
     {
       "instruction": {
         "action": "close",
-        "positionId": "T-1778794152516-60c7",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "gold_gc_spot",
-          "gold_hl_funding_ann"
-        ],
-        "thesis": "FUNDING_EXTREME_LONG short thesis has fully played out: gold_hl_funding_ann has collapsed from +67.5% at entry to +0.29% now (99.6% normalization), and gold_gc_spot has declined from 4661 to 4535 (-2.7%), capturing the target move. The crowded-longs thesis is exhausted - funding is no longer extreme, the position is at +2.71% P&L, and holding further risks reversal now that the signal is gone. Closing to lock in gains and free capital."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
         "positionId": "T-1778916565173-2wqk",
         "asset": "GOLD",
         "venue": "hyperliquid",
@@ -29,7 +13,7 @@
           "gold_gc_spot",
           "gold_hl_funding_ann"
         ],
-        "thesis": "FUNDING_EXTREME_SHORT long thesis has also resolved: gold_hl_funding_ann has recovered from -44.78% at entry to +0.29% now (full normalization), which was the signal condition. However, gold_gc_spot is essentially flat (-0.02%) since entry - the expected bounce from crowded-short covering has not materialized in price. With funding fully normalized and no price follow-through, the thesis is exhausted without profit. Closing to avoid holding a directionless position with no remaining signal edge. P&L is approximately breakeven (-0.03%)."
+        "thesis": "FUNDING_EXTREME_SHORT thesis has played out: gold_hl_funding_ann normalized from -44.78% at open to +5.48% currently — the extreme short crowding has fully unwound. Gold spot is flat at -0.07% from entry (4536→4533), well below the +4% target. With funding now positive (longs pay shorts), the carry benefit has reversed and the original thesis driver is gone. Closing to avoid paying positive funding carry with no price momentum."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     },
@@ -46,7 +30,7 @@
           "amzn_hl_perp",
           "amzn_hl_funding_ann"
         ],
-        "thesis": "FUNDING_EXTREME_SHORT long thesis on AMZN: funding has partially normalized from -29.81% to -10.74% (64% recovery toward zero), but amzn_stock remains flat at 262.64 and amzn_hl_perp has drifted slightly lower to 261.93. The basis has improved from -0.29% to -0.27% but remains negative. With funding still negative but no longer extreme, and stock price showing no upward momentum, the crowded-short squeeze thesis has not triggered a meaningful price move. The signal is weakening without delivering the expected convergence. Closing at near-breakeven (-0.04%) to avoid further decay."
+        "thesis": "FUNDING_EXTREME_SHORT thesis has played out: amzn_hl_funding_ann normalized from -29.81% at open to +5.48% currently — the extreme short crowding has fully unwound. AMZN stock is flat at 262.64 (unchanged from entry), perp at 261.84 vs 262.02 entry (-0.07%). With funding now positive, the carry benefit has reversed. The basis remains slightly negative (-0.30%) but funding normalization removes the primary thesis driver. Closing to avoid paying positive funding carry with no price momentum."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -68,11 +52,11 @@
         "stopPct": 3.5
       },
       "FUNDING_EXTREME_LONG": {
-        "targetPct": 4,
+        "targetPct": 5,
         "stopPct": 2.5
       },
       "FUNDING_EXTREME_SHORT": {
-        "targetPct": 3,
+        "targetPct": 4,
         "stopPct": 2
       },
       "PM_EV_ABOVE_SPOT": {

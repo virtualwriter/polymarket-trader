@@ -10418,3 +10418,32 @@ Key observations this cycle: (1) GOLD funding trades resolved asymmetrically - t
 
 ---
 
+### 2026-05-17 03:30 UTC
+
+**Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 15.3pp (was 7.0, now -8.3)
+- [divergence] BTC PM-Options IV gap moved wider by 9.4pp (was 0.1, now 9.5)
+- [anomaly] btc_pm_iv = 46.4 is 2.1 std devs from mean (39.53 ± 3.25)
+- [correlation_flip] BTC-OIL correlation shifted from 0.30 to -0.48
+
+**Blocked signal learning:**
+- Open blocked shadows: 54
+- Resolved blocked shadows: 73 (30 wins / 43 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-13.73%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have target (+3.11%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+
+**LLM analysis:**
+Key session observations: (1) BTC PM IV spiked to 46.4 (2.1σ above mean) while options IV remains at 36.9% — this is the largest PM-Options IV gap observed (+9.5pp) and is flagged as a statistical anomaly. The BTC long (T-1778923758531-nlyu) via H-523 promotion is well-positioned to benefit from vol normalization. (2) Both FUNDING_EXTREME_SHORT positions (GOLD and AMZN) have had their primary thesis driver (extreme negative funding) fully normalize to positive territory. With funding now positive and price flat, continuing to hold means paying carry with no momentum — closing both is the disciplined action. The GOLD short (T-1778794152516-60c7) remains valid as it's a FUNDING_EXTREME_LONG fade with 2.75% unrealized gain and funding has normalized from +67.5% to +5.48%, approaching the target zone. (3) The OIL NO position (T-1778722157808-15xu) at +55% P&L continues to perform well — WTI at 101.61 remains well below the $90 strike, and the position benefits from time decay. No close warranted. (4) The BTC PM NO position (T-1778718867328-fb7r) at -9.43% is the weakest position. BTC has pulled back from 79,548 to 77,932 (-2%), which is directionally correct for the thesis (BTC dipping to $55k by year-end), but the PM contract has moved against us (0.53→0.48 is actually favorable — wait, current price 0.48 vs entry 0.53 means the NO is worth more, so P&L should be positive). The -9.43% P&L suggests the contract moved from 0.53 to ~0.58 YES price (NO worth less). BTC at 77,932 is still far from $55k, so the NO thesis remains intact with 14d hold window. (5) No new hypotheses proposed — the backlog of 12 setup families needing shadow tests must be cleared first. The BTC-OIL correlation flip to -0.48 is notable and worth monitoring as a potential regime signal.
+
+---
+
