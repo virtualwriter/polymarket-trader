@@ -10474,3 +10474,30 @@ Key observations this cycle: (1) FUNDING_EXTREME_SHORT positions in GOLD and AMZ
 
 ---
 
+### 2026-05-17 05:30 UTC
+
+**Portfolio:** $99.72 total | Cash $94.72 | 5 open | P&L $0.7241 | 51% win rate (134 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_pm_iv = 46.4 is 2.1 std devs from mean (39.56 ± 3.28)
+- [correlation_flip] BTC-OIL correlation shifted from 0.31 to -0.47
+
+**Blocked signal learning:**
+- Open blocked shadows: 55
+- Resolved blocked shadows: 75 (30 wins / 45 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have signal_killed (+64.81%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+
+**LLM analysis:**
+Key observations this session: (1) Both FUNDING_EXTREME_SHORT positions (GOLD and AMZN) have reached thesis completion — funding has normalized from deeply negative to positive territory in both cases. The GOLD long is essentially flat on price (-0.04%) but the carry benefit was the thesis, and with funding now +5.48%, we are now paying rather than receiving. Closing both is the correct disciplined action per the signal family rules. (2) BTC PM IV has spiked to 46.4 (2.1σ above mean) while spot is stable at 78,164 — this is a notable divergence. The options market is pricing a volatility event that hasn't materialized in spot yet. This is the inverse of the H-523 compression setup, but worth monitoring: if IV spikes without spot follow-through, it may create a PM IV > Options IV setup (PM_IV_GT_OPT_IV signal) which has the best track record in the system (60% win rate, 9.82% avg P&L). (3) The GOLD FUNDING_EXTREME_LONG short (T-1778794152516-60c7) is at +2.73% P&L with funding normalized. It is approaching its 5% target. The thesis was crowded longs fading — gold spot has fallen from 4,661 to 4,534 (-2.72%) which is strong confirmation. Hold for target. (4) The BTC ONE_TOUCH_HIGH_EDGE_NO position (T-1778718867328-fb7r) is at -7.55% P&L with the contract at 0.49 (was 0.53 at entry). BTC spot has declined from 79,548 to 78,164 (-1.74%), which is directionally favorable for the NO on $55k dip — the further BTC is from $55k, the less likely the touch. The thesis remains intact; hold per the 14-day window. (5) The BTC PROMOTED_HYPOTHESIS long (T-1778923758531-nlyu) is at +0.19% P&L. BTC has been stable. The H-145 exhaustion reversal thesis is still in early stages. Hold with 1.5% stop. (6) No new hypotheses proposed — the backlog of 12 setup families needing shadow tests must be cleared first. The hypothesis queue is at capacity and adding new setups would dilute testing resources. (7) Oil continues to show extreme negative HL funding (-25.6% annualized) suggesting crowded longs are being squeezed. This is a potential FUNDING_EXTREME_LONG short setup on OIL, but OIL is disabled for FUNDING_EXTREME_LONG per the signal health data. The macro signal for oil is 'DECLINING' with 30% probability of settling above current — bearish macro backdrop supports the fade thesis but the signal is disabled.
+
+---
+

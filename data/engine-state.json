@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-17T04:29:17.866Z",
+  "generatedAt": "2026-05-17T05:29:16.174Z",
   "dataFreshness": {
-    "valuationRows": 424,
-    "latestValuationAt": "2026-05-17T04",
-    "macroRows": 424,
+    "valuationRows": 425,
+    "latestValuationAt": "2026-05-17T05",
+    "macroRows": 425,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-17T04"
+    "latestInstrumentSnapshotAt": "2026-05-17T05"
   },
   "portfolio": {
-    "cash": 93.0991,
-    "openPositions": 6,
-    "realizedPnl": 0.0991,
-    "totalTrades": 133,
-    "winRatePct": 51.1,
-    "unrealizedPnl": 0.5187
+    "cash": 94.7241,
+    "openPositions": 5,
+    "realizedPnl": 0.7241,
+    "totalTrades": 134,
+    "winRatePct": 51.5,
+    "unrealizedPnl": -0.0367
   },
   "openPositions": [
     {
@@ -22,30 +22,14 @@
       "venue": "polymarket",
       "direction": "short",
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-      "pnlPct": -9.43,
-      "currentPrice": 0.48,
-      "underlyingPrice": 78088,
+      "pnlPct": -7.55,
+      "currentPrice": 0.49,
+      "underlyingPrice": 78164,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "btc_spot"
-      ]
-    },
-    {
-      "positionId": "T-1778722157808-15xu",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "short",
-      "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-      "pnlPct": 55,
-      "currentPrice": 0.62,
-      "underlyingPrice": 101.54,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot"
       ]
     },
     {
@@ -88,8 +72,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.09,
-      "currentPrice": 262.26,
+      "pnlPct": 0.07,
+      "currentPrice": 262.22,
       "underlyingPrice": 262.64,
       "targetPct": 4,
       "stopPct": 2,
@@ -106,9 +90,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 0.09,
-      "currentPrice": 78088,
-      "underlyingPrice": 78088,
+      "pnlPct": 0.19,
+      "currentPrice": 78164,
+      "underlyingPrice": 78164,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -255,9 +239,9 @@
   ],
   "blockedSummary": {
     "openCount": 55,
-    "resolvedCount": 74,
+    "resolvedCount": 75,
     "wouldHaveWon": 30,
-    "wouldHaveLost": 44,
+    "wouldHaveLost": 45,
     "bySignal": [
       {
         "signalType": "USER_PM_APR_XAU_TAIL_NO",
@@ -325,26 +309,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "OPT_IV_GT_PM_IV_DOWNSIDE",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "long",
-        "blockedReason": "iv_downside_leg_untracked",
-        "outcome": "loss",
-        "closeReason": "stop",
-        "pnlPct": -37.5,
-        "resolvedAt": "2026-05-14T20:28:17.068Z",
-        "marketQuality": {
-          "yesBid": 0.37,
-          "yesAsk": 0.4,
-          "yesSpread": 0.03,
-          "liquidity": 2761.62,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "OPT_IV_GT_PM_IV_DOWNSIDE",
         "asset": "GOLD",
@@ -476,25 +440,27 @@
           "liquidity": 6550.68,
           "flags": []
         }
+      },
+      {
+        "signalType": "OPT_IV_GT_PM_IV_DOWNSIDE",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "long",
+        "blockedReason": "iv_downside_leg_untracked",
+        "outcome": "loss",
+        "closeReason": "stop",
+        "pnlPct": -3.85,
+        "resolvedAt": "2026-05-17T05:29:16.065Z",
+        "marketQuality": {
+          "yesBid": 0.25,
+          "yesAsk": 0.26,
+          "yesSpread": 0.01,
+          "liquidity": 5231.21,
+          "flags": []
+        }
       }
     ],
     "openQualityWarnings": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
-        "asset": "BTC",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — YES — Will Bitcoin reach $90,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.65,
-          "yesAsk": 0.68,
-          "yesSpread": 0.03,
-          "liquidity": 41507.65,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 21.0pt edge on BTC; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration."
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
         "asset": "GOLD",
@@ -606,6 +572,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 19.4pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
+      },
+      {
+        "signalType": "OPT_IV_GT_PM_IV_DOWNSIDE",
+        "asset": "GOLD",
+        "blockedReason": "iv_downside_leg_untracked",
+        "instrumentLabel": "gc-hit-jun-2026 — YES — Will Gold (GC) hit (LOW) $4,500 by end of June?",
+        "marketQuality": {
+          "yesBid": 0.81,
+          "yesAsk": 0.83,
+          "yesSpread": 0.02,
+          "liquidity": 1636.55,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[DOWNSIDE LEG SHADOW] GOLD Options IV (24.2%) >> PM IV (16.8%), ratio 0.69. PM underpricing vol → buy PM upside."
       }
     ]
   },

@@ -4,6 +4,22 @@
     {
       "instruction": {
         "action": "close",
+        "positionId": "T-1778916565173-2wqk",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "gold_gc_spot",
+          "gold_hl_funding_ann"
+        ],
+        "thesis": "The FUNDING_EXTREME_SHORT thesis for GOLD long was triggered when HL funding was -44.78% annualized. Funding has now fully normalized to +5.48% annualized — a +50pp swing — which is the primary thesis completion signal. Gold spot is essentially flat from entry (4,536 → 4,534, -0.04%), so the carry benefit has been the main return driver. With funding now positive, the thesis is complete: the crowded shorts have covered and funding has normalized. Holding further exposes us to paying positive funding with no directional edge. Close at near-breakeven to free capital."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
+    {
+      "instruction": {
+        "action": "close",
         "positionId": "T-1778916565173-vz22",
         "asset": "AMZN",
         "venue": "hyperliquid",
@@ -14,23 +30,7 @@
           "amzn_hl_perp",
           "amzn_hl_funding_ann"
         ],
-        "thesis": "The FUNDING_EXTREME_SHORT thesis for AMZN has fully resolved: funding flipped from -29.8% at entry to +23.5% (latest snapshot), and the perp has converged toward spot (basis improved from -0.29% to -0.14%). The signal family evidence shows the crowded-short unwind is complete — funding is now positive (longs paying shorts), which is the opposite of the entry condition. Holding further risks paying positive funding carry with no remaining thesis edge. P&L is approximately flat (+0.09%) and the mechanical target of 4% has not been reached, but the thesis is exhausted."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778916565173-2wqk",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "gold_gc_spot",
-          "gold_hl_funding_ann"
-        ],
-        "thesis": "The FUNDING_EXTREME_SHORT thesis for GOLD long has fully resolved: gold HL funding normalized from -44.8% at entry to +5.48% (current), which is a complete sign flip. The crowded-short unwind is complete. Gold spot has moved from 4,536 to 4,534 (essentially flat, -0.04%), so no price appreciation has materialized. The thesis was funding normalization, not directional gold appreciation, and that normalization is complete. Continuing to hold means paying positive funding carry with no remaining edge. The position is at -0.05% P&L and the 4% target is unlikely given the thesis exhaustion."
+        "thesis": "The FUNDING_EXTREME_SHORT thesis for AMZN long was triggered when HL funding was -29.81% annualized. Funding has now normalized to +5.48% annualized — a +35pp swing — which is the primary thesis completion signal. The perp has converged toward spot (basis improved from -0.36% to -0.16%), and the stock is flat. The thesis is complete: crowded shorts have covered and funding normalized. With funding now positive, we are paying carry with no remaining edge. The AMZN P/C ratio has risen from 0.489 to 0.532, indicating some put buying which is a mild headwind. Close at small profit to free capital."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
