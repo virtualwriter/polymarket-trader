@@ -1894,6 +1894,15 @@ function signalFamilyEvidenceColumns(position: Position): string[] {
       return uniqueColumns([columns.spot, "macro_composite", "fed_score"]);
     case "MOMENTUM_LONG":
       return uniqueColumns([columns.spot]);
+    case "ONE_TOUCH_HIGH_EDGE_NO":
+    case "ONE_TOUCH_HIGH_EDGE_YES_SHADOW":
+      // One-touch positions live or die on how spot moves relative to the
+      // touch strike, but the LLM repeatedly reaches for funding and IV as
+      // secondary thesis evidence ("HL funding spiked to +80%, extreme
+      // crowding") with no rolling baseline. Promote pmIv/optIv/funding to
+      // evidence columns so they pick up the trajectory + 24h/7d/30d
+      // percentile context instead of bare current values.
+      return uniqueColumns([columns.spot, columns.pmIv, columns.optIv30, columns.optIv90, columns.funding]);
     default:
       return uniqueColumns([columns.spot]);
   }
@@ -1981,6 +1990,52 @@ function isRuleBasedSignal(signalType: string): boolean {
   return signalType !== "LLM_HYPOTHESIS" && signalType !== "PROMOTED_HYPOTHESIS";
 }
 
+// For one-touch positions, the directional logic is non-trivial (buying NO on a
+// LOW-touch question wins when spot stays HIGH, etc.) and the LLM has been
+// observed flipping the sign on PnL/favorability multiple times within a
+// single trade's life. Resolve the touch side + strike from the latest
+// instrument snapshot (authoritative; question text is freeform and varies
+// per asset — "(LOW) $90" vs "dip to $55,000") so the LLM never has to
+// derive direction.
+function formatOneTouchDirectionalLine(
+  p: Position,
+  latestSnapshot: InstrumentSnapshotFile | null,
+): string | null {
+  if (!p.signalType.startsWith("ONE_TOUCH_HIGH_EDGE")) return null;
+  if (p.instrumentType !== "pm_no" && p.instrumentType !== "pm_yes") return null;
+  if (!latestSnapshot) return null;
+  const [eventSlug, marketId] = p.instrumentId?.split("::") ?? [];
+  if (!eventSlug || !marketId) return null;
+  const event = latestSnapshot.polymarket.find((candidate) => candidate.slug === eventSlug);
+  const contract = event?.contracts.find((candidate) => candidate.marketId === marketId);
+  if (!contract) return null;
+
+  const isLow = contract.direction === "below";
+  const strikeStr = `$${contract.strike.toLocaleString("en-US")}`;
+  const isNo = p.instrumentType === "pm_no";
+  let winCondition: string;
+  let favorable: string;
+  let adverse: string;
+  if (isNo && isLow) {
+    winCondition = `Spot stays ABOVE ${strikeStr} through expiry`;
+    favorable = `Spot moving UP (away from ${strikeStr}) is FAVORABLE`;
+    adverse = `spot moving DOWN (toward ${strikeStr}) is ADVERSE`;
+  } else if (isNo && !isLow) {
+    winCondition = `Spot stays BELOW ${strikeStr} through expiry`;
+    favorable = `Spot moving DOWN (away from ${strikeStr}) is FAVORABLE`;
+    adverse = `spot moving UP (toward ${strikeStr}) is ADVERSE`;
+  } else if (!isNo && isLow) {
+    winCondition = `Spot touches ${strikeStr} (or below) before expiry`;
+    favorable = `Spot moving DOWN (toward ${strikeStr}) is FAVORABLE`;
+    adverse = `spot moving UP (away from ${strikeStr}) is ADVERSE`;
+  } else {
+    winCondition = `Spot touches ${strikeStr} (or above) before expiry`;
+    favorable = `Spot moving UP (toward ${strikeStr}) is FAVORABLE`;
+    adverse = `spot moving DOWN (away from ${strikeStr}) is ADVERSE`;
+  }
+  return `One-touch decoder: bought ${isNo ? "NO" : "YES"} at ${p.entryPrice.toFixed(2)} on (${isLow ? "LOW" : "HIGH"}) ${strikeStr} touch — ${winCondition}. ${favorable}; ${adverse}.`;
+}
+
 function formatMechanicalContextLine(
   position: Position,
   mark: { pnlPct: number } | null,
@@ -2029,7 +2084,9 @@ function openPositionContextForLlm(
     const ownershipLine = isRuleBasedSignal(p.signalType)
       ? `    LLM closes are not permitted on this trade — mechanical scanner owns exits via target / stop / breakeven_stop / expiry. Do NOT emit a close instruction for this positionId in 'trades'; rule-based closes are policy-gated and will be rejected. Use 'journalEntry' if you have structural concerns about the signal family.`
       : `    LLM closes are permitted for this LLM-owned setup. Allowed close categories: thesis_invalidated, data_quality_issue, hard_portfolio_risk, risk_stale, profit_taking. Use signal-family evidence metrics below as primary justification.`;
-    if (!entryRow) return `${header}\n${mechanicalLine}\n${ownershipLine}\n    Since-open baseline: unavailable (no valuation row at or before ${p.openedAt})`;
+    const decoderLine = formatOneTouchDirectionalLine(p, latestInstrumentSnapshot(instrumentSnapshots));
+    const decoderBlock = decoderLine ? `\n    ${decoderLine}` : "";
+    if (!entryRow) return `${header}\n${mechanicalLine}\n${ownershipLine}${decoderBlock}\n    Since-open baseline: unavailable (no valuation row at or before ${p.openedAt})`;
 
     const evidenceColumns = new Set(signalFamilyEvidenceColumns(p));
     const signalMetricLines: string[] = [];
@@ -2047,7 +2104,7 @@ function openPositionContextForLlm(
     const contextMetrics = contextMetricLines.length > 0
       ? contextMetricLines.map((line) => `      ${line}`).join("\n")
       : "      No off-thesis context metrics available.";
-    return `${header}\n${mechanicalLine}\n${ownershipLine}\n    Since-open baseline row: ${entryRow.date}; latest row: ${latestRow.date}\n    Signal-family evidence metrics (use for close decisions):\n${signalMetrics}\n    Context-only metrics (do not cite as close evidence unless there is a hard risk breach):\n${contextMetrics}`;
+    return `${header}\n${mechanicalLine}\n${ownershipLine}${decoderBlock}\n    Since-open baseline row: ${entryRow.date}; latest row: ${latestRow.date}\n    Signal-family evidence metrics (use for close decisions):\n${signalMetrics}\n    Context-only metrics (do not cite as close evidence unless there is a hard risk breach):\n${contextMetrics}`;
   }).join("\n");
 }
 
@@ -3280,12 +3337,41 @@ function statisticalScan(rows: SnapshotRow[], macroRows: SnapshotRow[]): StatObs
       const corrRecent = pearson(recentA.slice(0, len), recentB.slice(0, len));
       const corrOlder = pearson(olderA.slice(0, len), olderB.slice(0, len));
       if (Math.abs(corrRecent - corrOlder) > 0.4) {
+        const rolling24h = rollingPairwiseCorrelation(rows, colA, colB, 24);
+        const rolling7d = rollingPairwiseCorrelation(rows, colA, colB, 168);
+        const rolling30d = rollingPairwiseCorrelation(rows, colA, colB, 720);
+        const ctxParts: string[] = [];
+        if (rolling24h !== null) ctxParts.push(`24h=${rolling24h.toFixed(2)}`);
+        if (rolling7d !== null) ctxParts.push(`7d=${rolling7d.toFixed(2)}`);
+        if (rolling30d !== null) ctxParts.push(`30d=${rolling30d.toFixed(2)}`);
+        const rollingSuffix = ctxParts.length > 0 ? ` Rolling correlation: ${ctxParts.join(", ")}.` : "";
+
+        const dist = dailyCorrelationDistribution(rows, colA, colB, 720, 24);
+        let percentileSuffix = "";
+        if (dist.length >= 7 && rolling24h !== null) {
+          const pct = percentileRank(dist, rolling24h);
+          if (pct !== null) {
+            const lo = Math.min(...dist);
+            const hi = Math.max(...dist);
+            percentileSuffix = ` Current 24h corr is at ${pct.toFixed(0)}th pct of last ${dist.length} daily 24h-rolling values (range ${lo.toFixed(2)} to ${hi.toFixed(2)}).`;
+          }
+        }
+
+        const dataRollups: Record<string, number> = { corrRecent, corrOlder };
+        if (rolling24h !== null) dataRollups.rolling24h = rolling24h;
+        if (rolling7d !== null) dataRollups.rolling7d = rolling7d;
+        if (rolling30d !== null) dataRollups.rolling30d = rolling30d;
+        if (dist.length > 0) {
+          dataRollups.distributionCount = dist.length;
+          dataRollups.distributionMin = Math.min(...dist);
+          dataRollups.distributionMax = Math.max(...dist);
+        }
         obs.push({
           type: "correlation_flip",
-          description: `${assetA}-${assetB} correlation shifted from ${corrOlder.toFixed(2)} to ${corrRecent.toFixed(2)}`,
+          description: `${assetA}-${assetB} correlation shifted from ${corrOlder.toFixed(2)} to ${corrRecent.toFixed(2)}.${rollingSuffix}${percentileSuffix}`,
           assets: [assetA, assetB],
           magnitude: Math.abs(corrRecent - corrOlder),
-          data: { corrRecent, corrOlder },
+          data: dataRollups,
         });
       }
     }
@@ -3318,6 +3404,64 @@ function pearson(x: number[], y: number[]): number {
   }
   const denom = Math.sqrt(dx * dy);
   return denom === 0 ? 0 : num / denom;
+}
+
+// Pairwise correlation over the trailing `lookbackHours` rows, requiring at
+// least half the window to have non-null observations for both columns.
+function rollingPairwiseCorrelation(
+  rows: SnapshotRow[],
+  colA: string,
+  colB: string,
+  lookbackHours: number,
+): number | null {
+  if (rows.length < Math.min(lookbackHours, 6)) return null;
+  const slice = rows.slice(-lookbackHours);
+  const a: number[] = [];
+  const b: number[] = [];
+  for (const r of slice) {
+    const va = num(r[colA]);
+    const vb = num(r[colB]);
+    if (va !== null && vb !== null) {
+      a.push(va);
+      b.push(vb);
+    }
+  }
+  const minPoints = Math.min(Math.floor(lookbackHours / 2), 12);
+  if (a.length < Math.max(3, minPoints)) return null;
+  return pearson(a, b);
+}
+
+// Distribution of daily-stepped rolling-window correlations across the full
+// historical window. Used to surface "is the current correlation a regime
+// extreme or a routine fluctuation?" by computing a percentile rank for the
+// current 24h correlation against the empirical 30d daily distribution.
+function dailyCorrelationDistribution(
+  rows: SnapshotRow[],
+  colA: string,
+  colB: string,
+  totalHours: number,
+  windowHours: number,
+): number[] {
+  if (rows.length < windowHours + 24) return [];
+  const slice = rows.slice(-Math.min(rows.length, totalHours));
+  const values: number[] = [];
+  for (let end = slice.length; end >= windowHours; end -= 24) {
+    const window = slice.slice(end - windowHours, end);
+    const a: number[] = [];
+    const b: number[] = [];
+    for (const r of window) {
+      const va = num(r[colA]);
+      const vb = num(r[colB]);
+      if (va !== null && vb !== null) {
+        a.push(va);
+        b.push(vb);
+      }
+    }
+    const minPoints = Math.min(Math.floor(windowHours / 2), 12);
+    if (a.length < Math.max(3, minPoints)) continue;
+    values.push(pearson(a, b));
+  }
+  return values;
 }
 
 // ─── Position Management ─────────────────────────────────────────────────────
