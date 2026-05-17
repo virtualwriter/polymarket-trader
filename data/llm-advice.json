@@ -1,23 +1,6 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778794152516-60c7",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "gold_gc_spot",
-          "gold_hl_funding_ann"
-        ],
-        "thesis": "GOLD FUNDING_EXTREME_LONG short thesis has played out: gold_hl_funding_ann normalized from +67.52% at entry to -8.98% now (delta -76.5pp), well past the mean-reversion target. Gold spot declined from 4661 to 4536 (-2.68%), capturing the move. Funding has now flipped negative, which means the crowded-longs thesis is fully resolved and the position is now fighting against the FUNDING_EXTREME_SHORT signal direction. At +2.69% P&L, this is near the 5% target and the thesis is complete. Closing to avoid carry reversal."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedCloses": [],
   "skippedTrades": [],
   "parameterUpdates": {
     "macroMomentum24hThresholdPts": 4,
