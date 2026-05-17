@@ -325,12 +325,30 @@ function modelDteDays(row: Record<string, string>): number | null {
   return safeNumber(row.dte_days);
 }
 
+function optionModelStrike(row: Record<string, string>): number | null {
+  const strike = safeNumber(row.strike);
+  if (strike === null) return null;
+  const optionSymbol = row.option_symbol;
+  const spot = safeNumber(row.spot);
+  const optionUnderlying = safeNumber(row.option_underlying);
+  if (
+    optionSymbol &&
+    ["IBIT", "ETHA", "CME_ES", "SPY"].includes(optionSymbol) &&
+    spot !== null &&
+    optionUnderlying !== null &&
+    spot > 0
+  ) {
+    return strike * (optionUnderlying / spot);
+  }
+  return strike;
+}
+
 function recomputedOneTouchProbability(row: Record<string, string> | undefined): number | null {
   if (!row) return null;
   const question = row.contract_question?.toLowerCase() ?? "";
   if (!question.includes("hit") && !question.includes("reach") && !question.includes("dip")) return null;
   const spot = safeNumber(row.option_underlying) ?? safeNumber(row.spot);
-  const strike = safeNumber(row.strike);
+  const strike = optionModelStrike(row);
   const iv = safeNumber(row.option_iv);
   const dteDays = modelDteDays(row);
   const direction = row.direction;
