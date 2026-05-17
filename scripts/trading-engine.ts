@@ -1912,11 +1912,108 @@ function formatSinceOpenMetric(column: string, entryRow: SnapshotRow, latestRow:
   const latest = num(latestRow[column]);
   if (entry === null || latest === null) return null;
   const delta = latest - entry;
-  const pct = entry !== 0 ? `, ${delta >= 0 ? "+" : ""}${((delta / entry) * 100).toFixed(2)}%` : "";
+  // For negative-base values, naive (delta/entry) flips the sign and produces
+  // confusing strings like "+-118%". Anchor the percentage to |entry| so the
+  // sign reflects the direction of the move, not the sign of the base.
+  let pct = "";
+  if (entry !== 0) {
+    const pctNum = (delta / Math.abs(entry)) * 100;
+    pct = `, ${pctNum >= 0 ? "+" : ""}${pctNum.toFixed(2)}%`;
+  }
   return `${column}: ${formatPromptNumber(entry)} -> ${formatPromptNumber(latest)} (delta ${delta >= 0 ? "+" : ""}${formatPromptNumber(delta)}${pct})`;
 }
 
-function openPositionContextForLlm(positions: Position[], rows: SnapshotRow[]): string {
+// Last N consecutive numeric readings for a column, oldest first, trailing the
+// latest row. Used to show the LLM the *shape* of how a metric evolved, not
+// just endpoints.
+function recentColumnReadings(rows: SnapshotRow[], column: string, count: number): number[] {
+  const out: number[] = [];
+  for (let i = rows.length - 1; i >= 0 && out.length < count; i--) {
+    const value = num(rows[i]?.[column]);
+    if (value === null) continue;
+    out.push(value);
+  }
+  return out.reverse();
+}
+
+// Format a percentile/range line for a column at a fixed lookback window.
+function formatRollingPercentile(rows: SnapshotRow[], column: string, hours: number, label: string): string | null {
+  const window = rows.slice(-Math.min(rows.length, hours));
+  const values = valuesForKey(window, column);
+  if (values.length < 4) return null;
+  const latest = num(rows[rows.length - 1]?.[column]);
+  if (latest === null) return null;
+  const rank = percentileRank(values, latest);
+  if (rank === null) return null;
+  const lo = Math.min(...values);
+  const hi = Math.max(...values);
+  return `${label}: percentile ${rank.toFixed(0)} (range ${formatPromptNumber(lo)} to ${formatPromptNumber(hi)})`;
+}
+
+// Enriched evidence line for signal-family columns: the existing entry->latest
+// delta, plus a recent trajectory and rolling-window percentile context so the
+// LLM can tell whether a move was a single tick vs. a sustained regime change.
+function formatSignalEvidenceMetric(
+  column: string,
+  entryRow: SnapshotRow,
+  latestRow: SnapshotRow,
+  rows: SnapshotRow[],
+): string[] {
+  const head = formatSinceOpenMetric(column, entryRow, latestRow);
+  if (!head) return [];
+  const lines: string[] = [head];
+  const trajectory = recentColumnReadings(rows, column, 12);
+  if (trajectory.length >= 3) {
+    lines.push(`  trajectory (last ${trajectory.length} hourly readings, oldest first): ${trajectory.map(formatPromptNumber).join(" -> ")}`);
+  }
+  const contextParts: string[] = [];
+  for (const [hours, label] of [[24, "24h"], [168, "7d"], [720, "30d"]] as Array<[number, string]>) {
+    const line = formatRollingPercentile(rows, column, hours, label);
+    if (line) contextParts.push(line);
+  }
+  if (contextParts.length > 0) {
+    lines.push(`  rolling context: ${contextParts.join("; ")}`);
+  }
+  return lines;
+}
+
+function isRuleBasedSignal(signalType: string): boolean {
+  return signalType !== "LLM_HYPOTHESIS" && signalType !== "PROMOTED_HYPOTHESIS";
+}
+
+function formatMechanicalContextLine(
+  position: Position,
+  mark: { pnlPct: number } | null,
+): string {
+  const openedMs = Date.parse(position.openedAt);
+  const hoursOpen = isNaN(openedMs) ? null : (Date.now() - openedMs) / (60 * 60 * 1000);
+  const expiryMs = Date.parse(position.expiryDate);
+  const hoursToExpiry = isNaN(expiryMs) ? null : (expiryMs - Date.now()) / (60 * 60 * 1000);
+
+  const parts: string[] = [];
+  parts.push(`open ${hoursOpen === null ? "?" : hoursOpen.toFixed(1)}h`);
+  if (mark) parts.push(`current PnL ${mark.pnlPct >= 0 ? "+" : ""}${mark.pnlPct.toFixed(2)}%`);
+  else parts.push("current PnL n/a (mark unavailable)");
+  if (typeof position.peakPnlPct === "number") parts.push(`peak ${position.peakPnlPct >= 0 ? "+" : ""}${position.peakPnlPct.toFixed(2)}%`);
+  parts.push(`target ${position.targetPct === null ? "uncapped" : `+${position.targetPct}%`}`);
+  parts.push(`stop -${position.stopPct}%`);
+  if (hoursToExpiry !== null) {
+    parts.push(hoursToExpiry >= 0 ? `expires in ${hoursToExpiry.toFixed(1)}h` : `expired ${Math.abs(hoursToExpiry).toFixed(1)}h ago`);
+  }
+
+  if (isFundingSignal(position.signalType)) {
+    const armed = (position.peakPnlPct ?? mark?.pnlPct ?? 0) >= FUNDING_BREAKEVEN_ARM_PCT;
+    parts.push(`breakeven arm: ${armed ? "armed" : "not armed"} (arms at peak ≥ +${FUNDING_BREAKEVEN_ARM_PCT}%, locks at PnL ≤ +${FUNDING_BREAKEVEN_LOCK_PCT}%)`);
+  }
+
+  return `Mechanical context: ${parts.join(", ")}.`;
+}
+
+function openPositionContextForLlm(
+  positions: Position[],
+  rows: SnapshotRow[],
+  instrumentSnapshots: InstrumentSnapshotFile[],
+): string {
   const latestRow = rows[rows.length - 1];
   if (positions.length === 0) return "  None";
   if (!latestRow) {
@@ -1927,13 +2024,19 @@ function openPositionContextForLlm(positions: Position[], rows: SnapshotRow[]): 
     const openedMs = Date.parse(p.openedAt);
     const entryRow = isNaN(openedMs) ? null : findRowAtOrBefore(rows, openedMs);
     const header = `  positionId=${p.id}; ${p.asset} ${p.direction} via ${p.venue} / ${p.instrumentType ?? "legacy"} @ ${p.entryPrice} [${p.instrumentLabel ?? "n/a"}] (${p.signalType}) — ${p.thesis.slice(0, 100)}`;
-    if (!entryRow) return `${header}\n    Since-open baseline: unavailable (no valuation row at or before ${p.openedAt})`;
+    const mark = markPosition(p, latestRow, instrumentSnapshots, true);
+    const mechanicalLine = `    ${formatMechanicalContextLine(p, mark)}`;
+    const ownershipLine = isRuleBasedSignal(p.signalType)
+      ? `    LLM closes are not permitted on this trade — mechanical scanner owns exits via target / stop / breakeven_stop / expiry. Do NOT emit a close instruction for this positionId in 'trades'; rule-based closes are policy-gated and will be rejected. Use 'journalEntry' if you have structural concerns about the signal family.`
+      : `    LLM closes are permitted for this LLM-owned setup. Allowed close categories: thesis_invalidated, data_quality_issue, hard_portfolio_risk, risk_stale, profit_taking. Use signal-family evidence metrics below as primary justification.`;
+    if (!entryRow) return `${header}\n${mechanicalLine}\n${ownershipLine}\n    Since-open baseline: unavailable (no valuation row at or before ${p.openedAt})`;
 
     const evidenceColumns = new Set(signalFamilyEvidenceColumns(p));
-    const signalMetricLines = openPositionContextColumns(p.asset)
-      .filter((column) => evidenceColumns.has(column))
-      .map((column) => formatSinceOpenMetric(column, entryRow, latestRow))
-      .filter((line): line is string => !!line);
+    const signalMetricLines: string[] = [];
+    for (const column of openPositionContextColumns(p.asset)) {
+      if (!evidenceColumns.has(column)) continue;
+      signalMetricLines.push(...formatSignalEvidenceMetric(column, entryRow, latestRow, rows));
+    }
     const contextMetricLines = openPositionContextColumns(p.asset)
       .filter((column) => !evidenceColumns.has(column))
       .map((column) => formatSinceOpenMetric(column, entryRow, latestRow))
@@ -1944,7 +2047,7 @@ function openPositionContextForLlm(positions: Position[], rows: SnapshotRow[]): 
     const contextMetrics = contextMetricLines.length > 0
       ? contextMetricLines.map((line) => `      ${line}`).join("\n")
       : "      No off-thesis context metrics available.";
-    return `${header}\n    Since-open baseline row: ${entryRow.date}; latest row: ${latestRow.date}\n    Signal-family evidence metrics (use for close decisions):\n${signalMetrics}\n    Context-only metrics (do not cite as close evidence unless there is a hard risk breach):\n${contextMetrics}`;
+    return `${header}\n${mechanicalLine}\n${ownershipLine}\n    Since-open baseline row: ${entryRow.date}; latest row: ${latestRow.date}\n    Signal-family evidence metrics (use for close decisions):\n${signalMetrics}\n    Context-only metrics (do not cite as close evidence unless there is a hard risk breach):\n${contextMetrics}`;
   }).join("\n");
 }
 
@@ -2932,7 +3035,7 @@ function generateSignals(
         const signal = finalizeSignal({
           type: "FUNDING_EXTREME_LONG", asset: a.key, venue: "hyperliquid", direction: "short",
           strength, confidence: strength * w.weight,
-          thesis: `${a.key} HL funding ${funding.toFixed(1)}% annualized — crowded longs. Fade.`,
+          thesis: `${a.key} HL funding ${funding.toFixed(1)}% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)`,
           hypothesisId: null, entryPrice: perpEntry, targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 3, leverage: 1,
         }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
@@ -2946,7 +3049,7 @@ function generateSignals(
         const signal = finalizeSignal({
           type: "FUNDING_EXTREME_SHORT", asset: a.key, venue: "hyperliquid", direction: "long",
           strength, confidence: strength * w.weight,
-          thesis: `${a.key} HL funding ${funding.toFixed(1)}% annualized — crowded shorts. Buy.`,
+          thesis: `${a.key} HL funding ${funding.toFixed(1)}% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)`,
           hypothesisId: null, entryPrice: perpEntry, targetPct: risk.targetPct, stopPct: risk.stopPct, expiryDays: 7, leverage: 1,
         }, rows, learningParams, { latestRow: latest, latestSnapshot, blockedSignals });
         if (signal) signals.push(signal);
@@ -4752,10 +4855,6 @@ async function callLLM(
   candidateActions: CandidateActions,
 ): Promise<LlmAnalysisResult | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    console.log("  [LLM] No ANTHROPIC_API_KEY set, skipping LLM reasoning.");
-    return null;
-  }
   const anthropicModel = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-6";
 
   const recentValuations = sanitizeValuationsForLlm(valuationRows.slice(-14));
@@ -4765,7 +4864,7 @@ async function callLLM(
   const killedRecently = hypotheses.filter((h) => h.status === "killed").slice(-5);
   const activeWeights = weights.filter((w) => w.trades > 0);
   const hypothesisBacklog = llmHypothesisBacklog(hypotheses);
-  const openPositionContext = openPositionContextForLlm(portfolio.positions, valuationRows);
+  const openPositionContext = openPositionContextForLlm(portfolio.positions, valuationRows, instrumentSnapshots);
 
   const prompt = `You are a quantitative paper trading system analyzing cross-venue market data. Your job is to:
 1. Assess the current market state
@@ -4923,6 +5022,18 @@ Respond with ONLY valid JSON in this exact format:
   "journalEntry": "Key observations and lessons from today's analysis..."
 }`;
 
+  if (DRY_RUN) {
+    ensureLiveStateDir();
+    const dumpFile = join(LIVE_STATE_DIR, "dry-run-prompt.txt");
+    writeFileSync(dumpFile, prompt);
+    console.log(`  [LLM] Dry-run: prompt written to ${dumpFile} (${prompt.length} chars).`);
+  }
+
+  if (!apiKey) {
+    console.log("  [LLM] No ANTHROPIC_API_KEY set, skipping LLM reasoning.");
+    return null;
+  }
+
   try {
     const first = await requestAnthropicText(apiKey, anthropicModel, [{ role: "user", content: prompt }]);
     const parsed = parseLlmJson(first.text);
@@ -4968,6 +5079,122 @@ function formatPct(v: number | null): string {
   return v === null ? "n/a" : `${(v * 100).toFixed(1)}%`;
 }
 
+// ─── LLM Close Rejection Tracking ────────────────────────────────────────────
+// Surfaces "token burn" — when the LLM repeatedly recommends closing trades
+// that the gate is going to reject anyway. A single open position racking up
+// 14+ rejected close instructions across 22 hours (as happened with
+// T-1778794152516-60c7 on 2026-05-15) is a strong signal that either the
+// prompt isn't communicating ownership clearly enough, or the LLM is wasting
+// context budget restating the same recommendation. Persisted per-day so we
+// can track the trend across runs without parsing terminal output.
+
+interface RejectedCloseRecord {
+  positionId: string | null;
+  signalType: string | null;
+  asset: string | null;
+  reason: string;
+  category: string | null;
+  evidenceColumns: string[];
+  recordedAt: string;
+}
+
+interface DailyRejectionBucket {
+  byPositionId: Record<string, number>;
+  bySignalType: Record<string, number>;
+  bySignalAsset: Record<string, number>;
+  total: number;
+  recent: RejectedCloseRecord[];
+}
+
+interface RejectionRollup {
+  updatedAt: string;
+  daily: Record<string, DailyRejectionBucket>;
+}
+
+const REJECTION_ROLLUP_FILE = "llm-close-rejections.json";
+const REJECTION_RECENT_KEEP = 20;
+const REJECTION_DAILY_RETENTION_DAYS = 30;
+
+function emptyRejectionBucket(): DailyRejectionBucket {
+  return { byPositionId: {}, bySignalType: {}, bySignalAsset: {}, total: 0, recent: [] };
+}
+
+function loadRejectionRollup(): RejectionRollup {
+  return readJson<RejectionRollup>(REJECTION_ROLLUP_FILE, { updatedAt: "", daily: {} });
+}
+
+function saveRejectionRollup(rollup: RejectionRollup) {
+  writeJson(REJECTION_ROLLUP_FILE, rollup);
+}
+
+function prunedRollup(rollup: RejectionRollup, today: string): RejectionRollup {
+  const cutoffMs = Date.parse(today + "T00:00:00Z") - REJECTION_DAILY_RETENTION_DAYS * 24 * 60 * 60 * 1000;
+  const next: RejectionRollup = { updatedAt: rollup.updatedAt, daily: {} };
+  for (const [date, bucket] of Object.entries(rollup.daily)) {
+    const ts = Date.parse(date + "T00:00:00Z");
+    if (!isNaN(ts) && ts >= cutoffMs) next.daily[date] = bucket;
+  }
+  return next;
+}
+
+function recordLlmCloseRejections(
+  rejections: GatedLlmAdvice["rejectedCloses"],
+  portfolio: Portfolio,
+): { todayBucket: DailyRejectionBucket; dateKey: string } {
+  const dateKey = new Date().toISOString().slice(0, 10);
+  const rollup = prunedRollup(loadRejectionRollup(), dateKey);
+  const bucket = rollup.daily[dateKey] ?? emptyRejectionBucket();
+
+  for (const rejection of rejections) {
+    const positionId = rejection.instruction.positionId ?? null;
+    const position = positionId ? portfolio.positions.find((candidate) => candidate.id === positionId) : null;
+    const signalType = position?.signalType ?? null;
+    const asset = position?.asset ?? rejection.instruction.asset ?? null;
+    const record: RejectedCloseRecord = {
+      positionId,
+      signalType,
+      asset,
+      reason: rejection.reason,
+      category: rejection.instruction.closeReasonCategory ?? null,
+      evidenceColumns: rejection.instruction.evidenceColumns ?? [],
+      recordedAt: new Date().toISOString(),
+    };
+    bucket.total += 1;
+    if (positionId) bucket.byPositionId[positionId] = (bucket.byPositionId[positionId] ?? 0) + 1;
+    if (signalType) bucket.bySignalType[signalType] = (bucket.bySignalType[signalType] ?? 0) + 1;
+    if (signalType && asset) {
+      const key = `${signalType} / ${asset}`;
+      bucket.bySignalAsset[key] = (bucket.bySignalAsset[key] ?? 0) + 1;
+    }
+    bucket.recent.push(record);
+  }
+  if (bucket.recent.length > REJECTION_RECENT_KEEP) {
+    bucket.recent = bucket.recent.slice(-REJECTION_RECENT_KEEP);
+  }
+  rollup.daily[dateKey] = bucket;
+  rollup.updatedAt = new Date().toISOString();
+  saveRejectionRollup(rollup);
+  return { todayBucket: bucket, dateKey };
+}
+
+function formatRejectionJournalSection(bucket: DailyRejectionBucket, dateKey: string): string[] {
+  if (bucket.total === 0) return [];
+  const lines: string[] = [`**LLM close rejections today (${dateKey}, token-burn signal):**`];
+  lines.push(`- Total rejected close instructions: ${bucket.total}`);
+  const topSignalAssets = Object.entries(bucket.bySignalAsset).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  if (topSignalAssets.length > 0) {
+    lines.push(`- Top signal/asset pairs: ${topSignalAssets.map(([k, v]) => `${k} (${v})`).join("; ")}`);
+  }
+  const topPositions = Object.entries(bucket.byPositionId).sort((a, b) => b[1] - a[1]).slice(0, 3);
+  if (topPositions.length > 0) {
+    const flagged = topPositions.filter(([, count]) => count >= 3);
+    if (flagged.length > 0) {
+      lines.push(`- Repeat-offender positions (≥3 rejections today): ${flagged.map(([id, n]) => `${id} (${n})`).join("; ")} — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.`);
+    }
+  }
+  return lines;
+}
+
 // ─── Journal Writer ──────────────────────────────────────────────────────────
 
 function writeJournalEntry(
@@ -4980,6 +5207,7 @@ function writeJournalEntry(
   blockedSummary: BlockedSignalLearningSummary,
   llmJournal: string | null,
   portfolio: Portfolio,
+  rejectionSection: string[],
 ) {
   const now = new Date();
   const dateStr = now.toISOString().slice(0, 16).replace("T", " ");
@@ -5049,6 +5277,11 @@ function writeJournalEntry(
   if (llmJournal) {
     lines.push("**LLM analysis:**");
     lines.push(llmJournal);
+    lines.push("");
+  }
+
+  if (rejectionSection.length > 0) {
+    for (const line of rejectionSection) lines.push(line);
     lines.push("");
   }
 
@@ -5383,6 +5616,7 @@ async function main() {
 
   // Step 6: LLM reasoning
   let llmJournal: string | null = null;
+  let rejectionJournalSection: string[] = [];
   if (!NO_LLM) {
     console.log(`\n  Calling LLM for pattern discovery...`);
     const journalTail = readJournalTail(40);
@@ -5433,6 +5667,12 @@ async function main() {
       for (const skipped of gatedAdvice.skippedTrades) {
         console.log(`    Skipped LLM ${skipped.instruction.action}: ${skipped.reason}`);
       }
+      if (gatedAdvice.rejectedCloses.length > 0 && !MUTATION_DISABLED) {
+        const tracked = recordLlmCloseRejections(gatedAdvice.rejectedCloses, portfolio);
+        rejectionJournalSection = formatRejectionJournalSection(tracked.todayBucket, tracked.dateKey);
+        const totalToday = tracked.todayBucket.total;
+        console.log(`    LLM close rejections logged: ${gatedAdvice.rejectedCloses.length} this run, ${totalToday} so far today (see data/${REJECTION_ROLLUP_FILE}).`);
+      }
 
       llmJournal = llmResult.journalEntry;
       proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
@@ -5466,7 +5706,7 @@ async function main() {
     }
 
     // Step 8: Write journal entry
-    writeJournalEntry(closedTrades, opened, weightObs, hypothesisObs, statObs, blockedObs, blockedSummary, llmJournal, portfolio);
+    writeJournalEntry(closedTrades, opened, weightObs, hypothesisObs, statObs, blockedObs, blockedSummary, llmJournal, portfolio, rejectionJournalSection);
 
     // Step 9: Save all state
     savePortfolio(portfolio);
