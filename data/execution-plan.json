@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T21:30:21.178Z",
+  "generatedAt": "2026-05-18T23:29:55.546Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,21 +15,21 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE breakout / OI surge momentum via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 47.03,
-      "targetPct": 3,
+      "entryPrice": 47.36,
+      "targetPct": 6,
       "stopPct": 1.5,
-      "expiryDays": 7
+      "expiryDays": 21
     },
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.593253578,
-      "confidence": 0.24964852129212498,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.8pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5957463393333333,
+      "confidence": 0.2506975064207083,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.9pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76980,
+      "entryPrice": 77027,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5226887546666666,
-      "confidence": 0.21995396157316666,
+      "strength": 0.524659514,
+      "confidence": 0.220783281735125,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.7pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76980,
+      "entryPrice": 77027,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -59,43 +59,12 @@
         "forceMarketId": "1339767",
         "allowDirectionFallback": false
       }
-    },
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.30428571428571427,
-      "confidence": 0.18642940999065316,
-      "thesis": "GOLD HL funding 25.6% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4570,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
     }
   ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779089415632-pbo3",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_spot"
-        ],
-        "thesis": "The promoted H-069 BTC put-call exhaustion/reversal thesis required BTC spot to be consolidating near recent highs with P/C ratio spike. BTC spot is now at $76,980, which is at the 8th percentile of the 7d range (range: $76,200-$82,646), approximately 6.9% below the 7d high. The position has been open 14h with essentially flat P&L (-0.01%) and peak of only +0.94% — well below the 3% target. The btc_spot trajectory shows continued range-bound weakness with no upward momentum. The setup family (btc_put_call_exhaustion_reversal) has 0/4 clean live trade wins with avg P&L of -2.05%, and this position is not showing the expected reversal. Closing to preserve capital before the stop at -1.5% is hit."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

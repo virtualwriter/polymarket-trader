@@ -12183,3 +12183,48 @@ Key observations from this session:
 
 ---
 
+### 2026-05-18 23:29 UTC
+
+**Portfolio:** $99.75 total | Cash $91.75 | 8 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 9.8pp (was 0.0, now -9.8)
+- [anomaly] btc_opt_iv_90d = 24.4 is -3.7 std devs from mean (41.26 ± 4.53)
+- [anomaly] btc_opt_iv_term_spread = 12.08 is 3.4 std devs from mean (-1.84 ± 4.04)
+- [anomaly] hype_hl_oi = 1071295230 is 2.8 std devs from mean (854972935.20 ± 76600379.08)
+- [anomaly] hype_spot = 47.36 is 2.5 std devs from mean (41.64 ± 2.34)
+
+**Blocked signal learning:**
+- Open blocked shadows: 31
+- Resolved blocked shadows: 105 (42 wins / 63 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 4/5 shadows would have won, avg P&L 40.69%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.89%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.50%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have closed with thesis validated profitably (+34.52%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+
+**LLM analysis:**
+Key observations from 2026-05-18 end-of-day analysis:
+
+1. HYPE BREAKOUT CONFIRMED (H-521): HYPE at $47.36 is at 30d highs with OI at $1.07B (2.8σ above mean). The T-1779139821182-qwpf long entered at $47.03 is performing as expected. The funding oscillation pattern (extreme negative -95.59% at T-6, -55.94% at T-7, then recovery to +10.95%) appears to have been a short-squeeze setup that resolved bullishly — this is a useful pattern to track for future HYPE entries.
+
+2. GOLD CONFLICTING SIGNALS: We have two opposing GOLD positions — a FUNDING_EXTREME_SHORT long (T-1778916565173-2wqk, +1.14%) and a FUNDING_EXTREME_LONG short (T-1779139821182-o43q, -0.39%). The funding spiked to 25.65% at entry of the short, then immediately normalized to 5.48% — this is a fast normalization that weakens the short thesis. However, the mechanical scanner owns both exits, so no LLM action is taken. The gold_hl_funding_ann trajectory (9.48 → 19.51 → 16.91 → 17.96 → 17.27 → 16.70 → 17.89 → 14.28 → 12.60 → 22.20 → 25.65 → 5.48) shows extreme volatility — the funding signal for GOLD on HL is noisy and may not be reliable for short-term mean reversion.
+
+3. OIL ONE-TOUCH NO POSITION (T-1779049817841-htfg): The $56 settle-over NO position is at -47.37% with oil_wti_spot at $102.37 — well above $56. This is a long-duration position (309h remaining) and the thesis is intact (spot staying above $56 through June expiry). The current mark-to-market loss reflects the binary nature of the contract, not thesis failure. No action warranted.
+
+4. BTC TERM STRUCTURE ANOMALY: btc_opt_iv_90d at 24.4 is -3.7σ from mean, while btc_opt_iv_term_spread at 12.08 is +3.4σ. This extreme term structure inversion (30d IV >> 90d IV) is unusual and suggests near-term uncertainty premium. The BTC long (T-1779089415632-pbo3) is barely positive after 16h — the P/C ratio reversal thesis hasn't generated momentum yet. Will monitor for another 24-48h before reassessing.
+
+5. HEATMAP OBSERVATIONS: The relative-value heatmap shows significant buy-YES edges on ETH May contracts ($2,600-$3,600 range) and OIL June contracts ($115-$150 range), but these are all flagged with extreme_perp_funding and cheap_vs_underlying_cap_bearish — the ETH funding at 10.95% annualized creates carry headwinds for long ETH positions. The OIL $150 June YES at 12.5% PM vs 21.3% model probability is interesting but OIL is already crowded in our book.
+
+6. MACRO CONTEXT: Iran peace probability rising (56.5% → 65.5% deal by year-end), which is bearish for oil risk premium. Fed remains very hawkish (score 9-10/10). Macro composite stable at 46-48 (NEUTRAL). No macro catalyst for directional trades.
+
+7. NO NEW HYPOTHESES: Backlog has 9/20 setup families needing more tests with 6 pending. Focusing on existing shadow test completion rather than new hypothesis creation.
+
+---
+
