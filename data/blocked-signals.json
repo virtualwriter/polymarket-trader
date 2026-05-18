@@ -19471,7 +19471,7 @@
   },
   {
     "id": "MANUAL-IVTOUCH-ETH-YES-2132800-1778956426",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-16T18:33:46Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -19479,7 +19479,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 8.8% vs IV touch model 21.3%; edge +12.4 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 8.8% vs IV touch model 21.3%; edge +12.4 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-18: thesis_validated_profitable \u2014 Manual close: ETH $1,800 May YES edge compressed to +2.2 pts with PM YES 0.113 vs model 0.137; entry 0.084 -> exit 0.113. Original cheap-touch thesis repriced profitably, so close rather than carry near-expiry tail risk.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -19560,7 +19560,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.084,
-      "currentPrice": 0.11,
+      "currentPrice": 0.113,
       "size": 1,
       "leverage": 1,
       "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -19666,6 +19666,16 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    },
+    "resolvedAt": "2026-05-18T20:52:11.316Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated_profitable",
+      "exitPrice": 0.113,
+      "pnl": 0.3452,
+      "pnlPct": 34.52,
+      "marketPnl": 0.3452,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
