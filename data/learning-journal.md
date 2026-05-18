@@ -11933,3 +11933,52 @@ Key observations from this session:
 
 ---
 
+### 2026-05-18 17:30 UTC
+
+**Portfolio:** $99.75 total | Cash $93.75 | 6 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_90d = 22.7 is -4.2 std devs from mean (41.34 ± 4.41)
+- [anomaly] btc_opt_iv_term_spread = 14.41 is 4.1 std devs from mean (-1.90 ± 3.94)
+- [correlation_flip] BTC-OIL correlation shifted from 0.37 to -0.47. Rolling correlation: 24h=-0.35, 7d=-0.47, 30d=0.55. Current 24h corr is at 58th pct of last 19 daily 24h-rolling values (range -0.88 to 0.53).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.13 to 0.48. Rolling correlation: 24h=-0.23, 7d=0.58, 30d=-0.34. Current 24h corr is at 32th pct of last 19 daily 24h-rolling values (range -0.59 to 0.89).
+
+**Blocked signal learning:**
+- Open blocked shadows: 28
+- Resolved blocked shadows: 103 (40 wins / 63 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 3/4 shadows would have won, avg P&L 49.58%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Manual shadow: USER_PM_IV_TOUCH_RICH_NO BTC short via polymarket would have closed with thesis validated (near-money repriced) (-47.56%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW SPY long via polymarket would have closed with thesis validated (near-money repriced) (-18.75%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have closed with thesis validated (near-money repriced) (-7.89%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have closed with thesis validated (near-money repriced) (-7.50%)
+
+**LLM analysis:**
+Key observations from this session:
+
+1. BTC PROMOTED HYPOTHESIS CLOSE: The T-1779089415632-pbo3 BTC long (PROMOTED_HYPOTHESIS via H-069 P/C exhaustion) is being closed proactively. The btc_spot has drifted consistently lower across all 12 recent snapshots with no reversal. The P/C ratio normalized quickly after the spike, removing the thesis catalyst. With 62h to expiry and -0.48% PnL against a -1.5% stop, the risk/reward of holding is poor. The btc_put_call_exhaustion_reversal setup family has 0/4 clean live trade wins — this is consistent with the family's poor track record.
+
+2. OIL P/C EXTREME HIGH WORKING: The T-1779114618102-igou OIL long (PC_RATIO_EXTREME_HIGH) is +1.15% after only 3 hours, with the P/C ratio normalizing from 1.495 to 1.255. This is the PC_RATIO_EXTREME_HIGH signal performing as expected (8/10 wins, 80% win rate). The position has mechanical management and should be left to run.
+
+3. GOLD FUNDING REVERSAL CONFIRMED: The T-1778916565173-2wqk GOLD long (FUNDING_EXTREME_SHORT) is +0.43% with funding having reversed from -44.78% to +17.89%. The funding normalization is complete and now in positive territory — the original thesis (crowded shorts reversing) has played out. The position is approaching the breakeven arm threshold (+1.5% peak needed). The mechanical scanner owns this exit.
+
+4. AMZN BREAKEVEN ARM ARMED: T-1778916565173-vz22 AMZN long is +1.22% with the breakeven arm armed (peak was +2.55%). The P/C ratio has normalized from extreme lows (0.242) back to 0.32, suggesting the institutional repositioning phase is largely complete. The mechanical scanner will protect gains.
+
+5. BTC OIL ONE-TOUCH POSITIONS: Both mechanical ONE_TOUCH_HIGH_EDGE_NO positions (T-1778718867328-fb7r BTC and T-1779049817841-htfg OIL) are held per policy. The OIL $56 NO is deeply underwater (-47%) but this is expected for a binary with 315h remaining — the thesis is that WTI stays above $56 through June expiry, which remains highly probable given current $102 spot.
+
+6. HYPOTHESIS BACKLOG: 9/20 setup families need more tests with 6 pending. No new hypotheses proposed per policy. The btc_iv_compression_vol_reversion (H-523) and hype_breakout_oi_surge_momentum (H-521) promoted families are being monitored but current conditions don't fully meet their regime-relative triggers.
+
+7. STATISTICAL ANOMALY: btc_opt_iv_90d at 22.7 is -4.2 std devs from mean — this extreme 90d IV compression is notable. The BTC term structure has inverted (30d IV 37.1% >> 90d IV 22.7%, spread +14.4pts at latest snapshot). This is an unusual regime that may indicate the market expects near-term volatility to resolve quickly. Worth monitoring for mean reversion in the term spread.
+
+**LLM close rejections today (2026-05-18, token-burn signal):**
+- Total rejected close instructions: 8
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (8)
+- Repeat-offender positions (≥3 rejections today): T-1779089415632-pbo3 (8) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+
