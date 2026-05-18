@@ -1,22 +1,6 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779089415632-pbo3",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_spot"
-        ],
-        "thesis": "The BTC put-call exhaustion / reversal thesis (H-069 family) required a P/C spike above 1.0 to signal reversal. The IBIT P/C ratio has since declined from 0.713 to 0.701 and BTC spot has drifted -0.51% from entry with no bounce materializing after 12 hours. The setup family has 0/4 live wins with avg P&L of -2.05%, and the promoted hypothesis family is exploratory with only 1 shadow loss. BTC is at the 17th percentile of its 24h range and 2nd percentile of its 7d range — momentum is adverse. Closing to preserve capital given weak family track record and deteriorating spot trajectory."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedCloses": [],
   "skippedTrades": [],
   "parameterUpdates": {
     "macroMomentum24hThresholdPts": 4,

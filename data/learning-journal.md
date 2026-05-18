@@ -12082,3 +12082,50 @@ Key observations from this session:
 
 ---
 
+### 2026-05-18 20:30 UTC
+
+**Portfolio:** $99.75 total | Cash $93.75 | 6 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_90d = 24.5 is -3.8 std devs from mean (41.30 ± 4.47)
+- [anomaly] btc_opt_iv_term_spread = 12.53 is 3.6 std devs from mean (-1.87 ± 3.99)
+- [anomaly] hype_pm_ev = 48.19 is 2.1 std devs from mean (44.28 ± 1.90)
+- [correlation_flip] BTC-OIL correlation shifted from 0.38 to -0.47. Rolling correlation: 24h=-0.36, 7d=-0.51, 30d=0.55. Current 24h corr is at 58th pct of last 19 daily 24h-rolling values (range -0.89 to 0.79).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.14 to 0.49. Rolling correlation: 24h=-0.14, 7d=0.59, 30d=-0.34. Current 24h corr is at 21th pct of last 19 daily 24h-rolling values (range -0.45 to 0.88).
+
+**Blocked signal learning:**
+- Open blocked shadows: 28
+- Resolved blocked shadows: 103 (40 wins / 63 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 3/4 shadows would have won, avg P&L 49.58%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Manual shadow: USER_PM_IV_TOUCH_RICH_NO BTC short via polymarket would have closed with thesis validated (near-money repriced) (-47.56%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW SPY long via polymarket would have closed with thesis validated (near-money repriced) (-18.75%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have closed with thesis validated (near-money repriced) (-7.89%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have closed with thesis validated (near-money repriced) (-7.50%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. BTC IV COMPRESSION REMAINS EXTREME: BTC PM IV at 35.2% is at -7σ from the 30d mean — the most extreme compression in the dataset. The promoted H-523 conditions are fully met (PM IV bottom 20% of 30d range, spot within 5% of 7d high). The BTC spot long (T-1779089415632-pbo3) is +0.11% after 13 hours. The thesis is intact but the vol expansion hasn't materialized yet. BTC HL OI has been steadily rising from 2.05B to 2.15B over the session, suggesting accumulation rather than distribution — this is consistent with the momentum continuation thesis.
+
+2. OIL POSITIONS: The OIL P/C ratio long (T-1779114618102-igou) peaked at +3.66% when oil hit $104.37 but has since pulled back to +0.25% as oil settled at $101.55. The P/C ratio has normalized from 1.495 to 1.040 — the signal has largely played out. The mechanical system will handle the exit. The OIL PM NO position (T-1779049817841-htfg) on the $56 settle-over contract is at -47.37% — this is a one-touch NO on a contract that is essentially certain to resolve YES (oil is at $101.55, far above $56). The position was entered at 0.04 and the contract is now at 0.97. This is a structural loss — the ONE_TOUCH_HIGH_EDGE_NO signal on a contract this deep in-the-money was a poor application of the signal family. The signal is designed for contracts where the underlying is near the strike, not 80% above it. The mechanical stop at -100% will handle this, but this is a lesson: ONE_TOUCH_HIGH_EDGE_NO should only be applied when the underlying is meaningfully below the strike level, not when the contract is already deep in-the-money.
+
+3. GOLD FUNDING REVERSAL: The GOLD long (T-1778916565173-2wqk) opened when gold HL funding was -44.78% (crowded shorts). Funding has now swung to +21.56% — a 66-point swing. Gold spot is up 32 from entry. The position is +0.70% and approaching the +4% target. The funding reversal thesis is working exactly as designed. The gold_gld_pc_ratio has also dropped from 0.681 to 0.546, suggesting options market repositioning consistent with the bullish thesis.
+
+4. AMZN CONVERGENCE COMPLETE: AMZN funding has normalized from -29.81% to +12.07% and the basis is near zero (+0.04%). The AMZN long (T-1778916565173-vz22) is +1.08% with the breakeven stop armed. The FUNDING_EXTREME_SHORT thesis has played out — the perp/spot convergence is complete. The mechanical system will manage the exit.
+
+5. BTC ONE-TOUCH NO POSITION: The BTC PM NO on $55,000 dip (T-1778718867328-fb7r) is at -3.77%. BTC spot has declined from 79,548 at open to 77,072 — moving toward the $55,000 strike but still 40% above it. The PM IV has compressed from 36.6% to 35.2%, which is favorable (lower IV = lower probability of extreme moves). The HL funding at 10.95% cap suggests continued bullish positioning. The thesis (spot stays above $55k through year-end) remains intact. The position is within normal noise for a 220-hour remaining window.
+
+6. HYPE SITUATION: HYPE spot at 46.15 is near its 7d high with OI at 995M (declining from 1.034B peak). The funding has been volatile — spiking to -95.59% and -55.94% intraday before normalizing back to 10.95%. These extreme funding spikes suggest liquidation events followed by recovery. The H-521 promoted hypothesis conditions are partially met but OI is not expanding. No new trade warranted.
+
+7. RELATIVE VALUE HEATMAP: The heatmap shows several interesting patterns. ETH May contracts (reach $2,600, $2,800, $3,000) show large positive edges (14-20x) from the options model vs PM prices — but these are likely model artifacts from the ETHA proxy IV being very high (84-122%) applied to near-term strikes. The ETH December contracts (reach $3,500, $4,000, $4,500) also show large positive edges. These should be treated with caution as the ETHA IV proxy may not accurately reflect ETH-specific vol. The OIL June contracts (hit $130, $140, $150) show positive edges of 9-10x — these are the same contracts that generated the recent shadow wins (+27%, +29%). The ONE_TOUCH_HIGH_EDGE_YES_SHADOW family has 6/17 shadow wins at -10% avg — not strong enough to promote to live trading yet.
+
+8. NO NEW HYPOTHESES: The backlog has 9 setup families needing more tests and 6 pending. Per policy, no new hypotheses are proposed this session. The focus should be on completing shadow tests for existing families, particularly the oil upside hit contracts which have shown the most promising shadow performance.
+
+---
+

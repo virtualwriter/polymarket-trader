@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T19:29:11.382Z",
+  "generatedAt": "2026-05-18T20:29:13.698Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5463488803333333,
-      "confidence": 0.2299104382052708,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.4pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5977007249999999,
+      "confidence": 0.25151993633906244,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.9pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76594,
+      "entryPrice": 77072,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -25,14 +25,34 @@
     },
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "OIL",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.5757847116666667,
+      "confidence": 0.24229740397822916,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.3pt edge on OIL; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 101.55,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "cl-hit-jun-2026",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "1652706",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5124952573333333,
-      "confidence": 0.21566441047658333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.4pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.526100361,
+      "confidence": 0.2213896081633125,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.8pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76594,
+      "entryPrice": 77072,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -42,6 +62,21 @@
         "forceMarketId": "1339767",
         "allowDirectionFallback": false
       }
+    },
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.1874285714285714,
+      "confidence": 0.11483351451067461,
+      "thesis": "GOLD HL funding 21.6% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4568,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "llmCloseEligibility": [
