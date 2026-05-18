@@ -127,10 +127,10 @@ python3 scripts/compact_instrument_snapshots.py
 # Generate static Vercel report from the same snapshot data before the engine
 # reads relative-value/cross_venue_relative_value.csv for live heatmap signals.
 relative_value_args=(--archive-dir "$STATE_DIR/relative-value-history")
-if [[ "${RELATIVE_VALUE_LIVE_QUOTES:-1}" != "0" ]]; then
+if [[ "${RELATIVE_VALUE_LIVE_QUOTES:-0}" != "0" ]]; then
   relative_value_args+=(--live-quotes)
 fi
-if [[ "${RELATIVE_VALUE_LIVE_HYPERLIQUID:-1}" != "0" ]]; then
+if [[ "${RELATIVE_VALUE_LIVE_HYPERLIQUID:-0}" != "0" ]]; then
   relative_value_args+=(--live-hyperliquid)
 fi
 if [[ "${RELATIVE_VALUE_EDGE_HISTORY:-0}" == "1" ]]; then
