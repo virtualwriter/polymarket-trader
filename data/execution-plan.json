@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T09:30:16.318Z",
+  "generatedAt": "2026-05-18T11:30:25.966Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,11 +11,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6198909130000001,
-      "confidence": 0.2608578448268125,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.6pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6172837373333333,
+      "confidence": 0.2597607127165833,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.5pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76899,
+      "entryPrice": 76815,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -31,11 +31,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.542584061,
-      "confidence": 0.22832615516956248,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.3pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5382799173333334,
+      "confidence": 0.22651491771283333,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.1pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76899,
+      "entryPrice": 76815,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -59,7 +59,7 @@
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "The PROMOTED_HYPOTHESIS long was entered on H-069 (BTC P/C ratio spike above 1.0 creating oversold bounce). The IBIT P/C ratio has since dropped sharply from 0.713 to 0.600 — a 15.8% decline — which represents the opposite of the spike condition that triggered the trade. Rather than a sustained P/C spike indicating excessive bearish options positioning, the ratio has normalized and moved toward bullish territory, suggesting the options exhaustion signal has resolved without the anticipated spot bounce materializing. BTC spot is at 76,899, down 0.12% from entry at 76,989, sitting at the 17th percentile of the 24h range and 2nd percentile of the 7d range — continued weakness with no bounce confirmation. The setup-family evidence (btc_spot declining, P/C ratio normalizing away from the trigger condition) indicates the thesis has not played out and the position should be closed to preserve capital for a cleaner re-entry."
+        "thesis": "The promoted H-069 BTC P/C exhaustion reversal thesis required a bounce after the P/C spike above 1.0. Instead, the IBIT P/C ratio has collapsed from 0.713 to 0.600 (a -15.8% drop) — this is a continuation of call-side unwinding rather than a reversal signal, and BTC spot has drifted -0.23% since entry with no bounce materializing in 4 hours. The P/C normalization/collapse invalidates the oversold bounce setup. The position is approaching the -1.5% stop and the thesis is no longer supported by the evidence column (btc_spot trending lower, now at 7d percentile 2). Closing to preserve capital rather than waiting for mechanical stop."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

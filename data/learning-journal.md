@@ -11622,3 +11622,51 @@ Key observations this session: (1) IBIT P/C ratio dropped sharply from 0.713 to 
 
 ---
 
+### 2026-05-18 11:30 UTC
+
+**Portfolio:** $99.75 total | Cash $94.75 | 5 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_90d = 24.4 is -4.2 std devs from mean (41.53 ± 4.04)
+- [anomaly] hype_hl_oi = 1010368534 is 2.2 std devs from mean (851338853.47 ± 73675283.45)
+- [correlation_flip] BTC-OIL correlation shifted from 0.36 to -0.48. Rolling correlation: 24h=-0.75, 7d=-0.42, 30d=0.56. Current 24h corr is at 33th pct of last 18 daily 24h-rolling values (range -0.87 to 0.74).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.12 to 0.47. Rolling correlation: 24h=-0.08, 7d=0.55, 30d=-0.34. Current 24h corr is at 28th pct of last 18 daily 24h-rolling values (range -0.76 to 0.87).
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 83 (36 wins / 47 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 3/3 shadows would have won, avg P&L 81.96%.
+- YES exploratory one-touch high-edge shadow is validating: 3/3 14d shadows won, avg P&L 47.14%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated (near-money repriced) (+20.59%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated (near-money repriced) (+20.83%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have closed with thesis validated (near-money repriced) (+100.00%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have hit stop (-3.61%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. BTC IBIT P/C RATIO COLLAPSE: The most notable development is the IBIT P/C ratio dropping from 0.713 to 0.600 over the last two snapshots — a 15.8% decline. This is a significant options market repositioning event. Rather than confirming the H-069 oversold bounce thesis (which required P/C spike → bounce), the collapse suggests call-side unwinding is accelerating, not reversing. Closing the promoted BTC long (T-1779089415632-pbo3) as thesis invalidated.
+
+2. GOLD FUNDING NORMALIZATION: The GOLD HL funding has normalized from -44.8% at entry to +9.48% currently — a massive 54pp swing. This is thesis continuation for the FUNDING_EXTREME_SHORT long (T-1778916565173-2wqk), as the crowded shorts have been squeezed out. However, the gold_pm_iv has dropped dramatically from 22.4% to 17.1% (a -23.7% move), which is a context-only metric. The position is only +0.04% PnL despite the funding normalization, suggesting gold spot hasn't moved much. The breakeven arm hasn't triggered yet (needs peak ≥ +1.5%). Holding — mechanical scanner owns this.
+
+3. OIL POSITION CONCERN: T-1779049817841-htfg (OIL NO on $56 settle-over) is showing -47.37% PnL. The contract is priced at 0.97 YES (we bought NO at 0.038). WTI at 102 means this contract will almost certainly settle YES (oil will settle above $56 in June). However, this is a mechanical ONE_TOUCH_HIGH_EDGE_NO position with a 100% stop — the scanner owns exits. The thesis was that PM was overpricing the NO side relative to options model. The options model shows 97% probability of settling above $56, and PM YES is at 97% — so there's essentially no edge remaining. The position is deeply adverse but mechanical rules prevent LLM close. Noting this in journal for future signal family review.
+
+4. HYPOTHESIS BACKLOG: 12/19 setup families need more tests with 9 pending. Not proposing new hypotheses per policy. The btc_put_call_exhaustion_reversal family (H-069's parent) has 0/4 clean live trades — this is a concerning track record that should inform future promotion decisions. The IBIT P/C ratio behavior today (collapse rather than bounce) adds another data point against this setup family.
+
+5. RELATIVE VALUE HEATMAP: The heatmap shows strong buy-YES edges on BTC $90k May (32.3pt edge) and BTC $95k May (31.4pt edge) — these are options-model-implied probabilities far above PM pricing. However, these are already tracked as ONE_TOUCH_HIGH_EDGE_YES_SHADOW positions. The OIL $150 June (11pt edge) and OIL $140 June (13.6pt edge) also show strong buy-YES signals consistent with the shadow tracking. No new trades initiated from heatmap given existing position concentration.
+
+6. AMZN POSITION: T-1778916565173-vz22 (AMZN long) is essentially flat at +0.01% with funding normalized to +6.8%. The stock dropped to 261.53 in the latest snapshot (from 262.64 baseline), which is adverse. The HL perp is at 262.04, showing a slight positive basis. The funding normalization thesis is intact but price action is mildly adverse. Mechanical scanner owns this — holding.
+
+**LLM close rejections today (2026-05-18, token-burn signal):**
+- Total rejected close instructions: 3
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (3)
+- Repeat-offender positions (≥3 rejections today): T-1779089415632-pbo3 (3) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+
