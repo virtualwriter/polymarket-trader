@@ -4021,6 +4021,10 @@ function classifyHypothesisSetup(hypothesis: Hypothesis): { setupId: string; set
     label = "Cross-asset options repositioning";
   } else if (text.includes("btc") && mentionsHypeAsset && (text.includes("correlation") || text.includes("coordinated"))) {
     label = "BTC momentum / correlation breakout";
+  } else if (mentionsHypeAsset && text.includes("funding/oi long bounce")) {
+    label = "HYPE funding/OI long bounce";
+  } else if (mentionsHypeAsset && text.includes("funding/oi liquidation short")) {
+    label = "HYPE funding/OI liquidation short";
   } else if (mentionsHypeAsset && (text.includes("oi") || text.includes("open interest")) && (text.includes("distribution") || text.includes("exhaustion"))) {
     label = "HYPE OI distribution exhaustion / reversal";
   } else if (mentionsHypeAsset && (text.includes("breakout") || text.includes("momentum") || text.includes("fomo") || text.includes("surge"))) {
@@ -5329,6 +5333,14 @@ ${JSON.stringify(hypothesisBacklog, null, 1)}
 ${hypothesisBacklog.complete ? "Existing LLM setup-family backlog is complete; new hypotheses may be proposed." : `Do NOT propose unrelated new setup families right now. Existing LLM setup families still need condition-triggered repeat shadow tests (${hypothesisBacklog.needingTests}/${hypothesisBacklog.setupFamilies} setup families need more tests, ${hypothesisBacklog.pending} pending). Only the first ${HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT} setup families are active for retesting; others wait. You MAY propose regime-relative replacement variants for already-promoted setup families when existing variants use brittle absolute price levels. Otherwise return newHypotheses: [] and focus on reviewing/testing existing setup families.`}
 Retired LLM setup families are blocked from live trading and new hypothesis creation: ${Array.from(RETIRED_LLM_SETUP_IDS).join(", ")}. Do not recreate these broad families under a new name; propose only narrower replacement variants with distinct measurable inputs.
 Current live production signal allowlist: ${Array.from(LIVE_SIGNAL_ALLOWLIST).join(", ")} plus promoted hypothesis IDs ${Array.from(LIVE_PROMOTED_HYPOTHESIS_IDS).join(", ")}. Treat all other signal families as shadow/research only.
+Active LLM hypothesis families that may continue shadow testing after regime-relative rewrites:
+  - BTC dealer hedge stress / pullback: SHORT BTC pullback only; requires near-high spot, stressed front IV/term structure, and crowded long positioning.
+  - PM odds / underlying payoff cap: Polymarket one-touch cap-ratio only; rich/over-cap upside contracts are buy-NO or avoid-YES, deeply cheap cap-adjusted upside contracts are buy-YES.
+  - BTC momentum / correlation breakout: LONG BTC momentum continuation only; requires spot strength relative to recent trend and optional HYPE confirmation, not absolute BTC price levels.
+  - AMZN options positioning / momentum: LONG AMZN momentum only; requires low put-call ratio relative to its own history plus positive stock momentum, not fixed stock prices.
+  - HYPE funding/OI long bounce: LONG HYPE bounce only; requires funding in its low/negative regime, OI stabilizing, and spot lifting from recent lows.
+  - HYPE funding/OI liquidation short: SHORT HYPE liquidation only; requires funding in its high/crowded-long regime, OI falling, and spot losing short-term trend.
+Do not mix long-bounce and liquidation-short HYPE evidence in a single hypothesis. Every hypothesis description should name LONG or SHORT and every prediction should match that direction.
 
 RECENTLY KILLED HYPOTHESES:
 ${killedRecently.map((h) => `  ${h.id}: ${h.description} — ${h.postMortem}`).join("\n") || "  None"}

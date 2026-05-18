@@ -59,13 +59,14 @@
   {
     "id": "H-003",
     "created": "2026-04-03",
-    "description": "HYPE funding rate acceleration with declining OI suggests forced liquidations",
+    "description": "SHORT HYPE funding/OI liquidation short shadow test: HYPE funding is in a crowded-long high regime while open interest is contracting and spot is below short-term trend. Tests whether long leverage is being liquidated into downside follow-through, not whether funding is merely elevated.",
     "conditions": {
-      "hype_hl_funding_ann": "> 8",
-      "hype_hl_oi": "< 765000000"
+      "hype_hl_funding_ann_percentile_30d": "> 85",
+      "hype_hl_oi_change_pct_24h": "< -1",
+      "hype_spot_pct_vs_24h_sma": "< 0"
     },
-    "prediction": "HYPE spot price will decline >3% within 24 hours when funding spikes while OI drops",
-    "timeframeDays": 1,
+    "prediction": "Short HYPE spot/perp should outperform over 1-3 days, with downside continuation, when high funding meets falling OI and weak spot trend. OI stabilization plus spot recovery invalidates this short setup.",
+    "timeframeDays": 3,
     "confidence": 0.6,
     "tests": [
       {
@@ -86,8 +87,8 @@
     "promotedToSignal": false,
     "postMortem": "HYPE funding accelerating further to 10.73% while OI increased slightly (+4M). Pattern may be momentum-driven rather than liquidation-based. | Mixed results - HYPE funding peaked at 10.73% then normalized to 4.07%, but took longer than expected. OI decline was temporary. Funding spikes may indicate momentum rather than liquidations. | Mixed results - HYPE funding did decline from 10.73% to 4.6% but took longer than expected. OI decline rate may be better predictor than absolute funding level. | MIXED - HYPE funding did moderate but remains elevated at 8.72%. OI decline rate (~2M/day) may predict normalization speed better than absolute levels",
     "source": "llm",
-    "setupId": "hype_funding_oi_normalization",
-    "setupLabel": "HYPE funding/OI normalization"
+    "setupId": "hype_funding_oi_liquidation_short",
+    "setupLabel": "HYPE funding/OI liquidation short"
   },
   {
     "id": "H-004",
@@ -288,13 +289,14 @@
   {
     "id": "H-010",
     "created": "2026-04-04",
-    "description": "HYPE open interest decline rate predicts funding normalization speed",
+    "description": "SHORT HYPE funding/OI liquidation short shadow test: HYPE funding is in a crowded-long high regime while open interest is contracting and spot is below short-term trend. Tests whether long leverage is being liquidated into downside follow-through, not whether funding is merely elevated.",
     "conditions": {
-      "hype_hl_oi": "declining > 2M/day",
-      "hype_hl_funding_ann": "> 8%"
+      "hype_hl_funding_ann_percentile_30d": "> 85",
+      "hype_hl_oi_change_pct_24h": "< -1",
+      "hype_spot_pct_vs_24h_sma": "< 0"
     },
-    "prediction": "When HYPE OI drops >2M daily with high funding, expect 50%+ funding reduction within 12-24 hours",
-    "timeframeDays": 2,
+    "prediction": "Short HYPE spot/perp should outperform over 1-3 days, with downside continuation, when high funding meets falling OI and weak spot trend. OI stabilization plus spot recovery invalidates this short setup.",
+    "timeframeDays": 3,
     "confidence": 0.7,
     "tests": [
       {
@@ -357,8 +359,8 @@
     "promotedToSignal": false,
     "postMortem": null,
     "source": "llm",
-    "setupId": "hype_funding_oi_normalization",
-    "setupLabel": "HYPE funding/OI normalization"
+    "setupId": "hype_funding_oi_liquidation_short",
+    "setupLabel": "HYPE funding/OI liquidation short"
   },
   {
     "id": "H-011",
@@ -392,13 +394,15 @@
   {
     "id": "H-012",
     "created": "2026-04-04",
-    "description": "BTC momentum confirmation via IV expansion - when BTC spot moves >1% with simultaneous IV expansion (>0.2pp), momentum continues for 12-24 hours",
+    "description": "LONG BTC momentum / volatility-confirmed breakout shadow test: BTC is gaining versus its short-term trend near recent highs while options volatility or forward-curve behavior confirms demand for upside exposure. Tests continuation using relative momentum and vol confirmation, not fixed BTC thresholds.",
     "conditions": {
-      "btc_spot": "> 67000",
-      "btc_opt_iv_30d": "> 49.0"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "btc_spot_change_pct_24h": "> 0.75",
+      "btc_opt_iv_30d_change_pct_24h": "> 0"
     },
-    "prediction": "BTC will maintain upward momentum with spot reaching 67500+ within 24 hours when IV confirms price move",
-    "timeframeDays": 1,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when spot momentum is confirmed by rising option-implied demand. Failure to hold above short-term trend invalidates the breakout thesis.",
+    "timeframeDays": 7,
     "confidence": 0.65,
     "tests": [
       {
@@ -1596,13 +1600,14 @@
   {
     "id": "H-052",
     "created": "2026-04-06",
-    "description": "AMZN weekend put-call ratio acceleration pattern - when P/C moves >0.3 from Friday baseline during stock freeze, Monday gap-up follows",
+    "description": "LONG AMZN options positioning / momentum shadow test: AMZN put-call ratio is low versus its own recent history while the stock is already above short-term trend. Tests whether bullish options repositioning plus confirmed stock momentum leads to continuation, without using fixed AMZN price levels or weekend freeze assumptions.",
     "conditions": {
-      "amzn_pc_ratio": "< 0.6",
-      "amzn_stock": "= previous_weekend_freeze_price"
+      "amzn_pc_ratio_percentile_30d": "< 20",
+      "amzn_stock_pct_vs_24h_sma": "> 0",
+      "amzn_stock_change_pct_24h": "> 0"
     },
-    "prediction": "AMZN opens >1% higher on first trading day after weekend freeze period",
-    "timeframeDays": 3,
+    "prediction": "Long AMZN spot should outperform over 1-5 trading days when low relative P/C confirms positive stock momentum. A negative stock trend despite low P/C invalidates the momentum setup.",
+    "timeframeDays": 5,
     "confidence": 0.8,
     "tests": [
       {
@@ -1680,13 +1685,14 @@
   {
     "id": "H-055",
     "created": "2026-04-06",
-    "description": "AMZN weekend put-call ratio acceleration below 0.75 during stock freeze creates Monday gap signal",
+    "description": "LONG AMZN options positioning / momentum shadow test: AMZN put-call ratio is low versus its own recent history while the stock is already above short-term trend. Tests whether bullish options repositioning plus confirmed stock momentum leads to continuation, without using fixed AMZN price levels or weekend freeze assumptions.",
     "conditions": {
-      "amzn_pc_ratio": "< 0.75",
-      "amzn_stock": "unchanged_from_friday"
+      "amzn_pc_ratio_percentile_30d": "< 20",
+      "amzn_stock_pct_vs_24h_sma": "> 0",
+      "amzn_stock_change_pct_24h": "> 0"
     },
-    "prediction": "AMZN gaps up at Monday open when weekend P/C drops significantly below Friday baseline",
-    "timeframeDays": 3,
+    "prediction": "Long AMZN spot should outperform over 1-5 trading days when low relative P/C confirms positive stock momentum. A negative stock trend despite low P/C invalidates the momentum setup.",
+    "timeframeDays": 5,
     "confidence": 0.8,
     "tests": [
       {
@@ -2731,14 +2737,15 @@
   {
     "id": "H-092",
     "created": "2026-04-09",
-    "description": "BTC-HYPE correlation momentum resumption - when BTC holds above 70k with HYPE OI stabilizing above 790M after decline from peaks and both assets moving together again, breakout continuation follows",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 70500",
-      "hype_hl_oi": "> 790000000",
-      "hype_spot": "> 38.5"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC breaks above 72k within 5 days when momentum correlation resumes",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.65,
     "tests": [
       {
@@ -2848,13 +2855,13 @@
   {
     "id": "H-096",
     "created": "2026-04-09",
-    "description": "HYPE funding normalization pattern - when HYPE funding drops below -3% from positive territory while OI stabilizes above 790M and spot holds above 38, oversold bounce follows within 3-5 days",
+    "description": "LONG HYPE funding/OI long bounce shadow test: HYPE funding is in a low/negative regime after stress while open interest has stopped contracting and spot is lifting from a recent low. Tests whether forced selling is exhausted and funding normalization supports a bounce, not a liquidation short.",
     "conditions": {
-      "hype_hl_funding_ann": "< -3",
-      "hype_hl_oi": "> 790000000",
-      "hype_spot": "> 38"
+      "hype_hl_funding_ann_percentile_30d": "< 15",
+      "hype_hl_oi_change_pct_24h": "> -2",
+      "hype_spot_pct_from_3d_low": "> 1"
     },
-    "prediction": "HYPE spot price recovery and funding normalization back toward positive within 5 days",
+    "prediction": "Long HYPE spot/perp should outperform over 3-5 days as funding normalizes from a stressed low and OI stabilizes. Renewed OI contraction or a break back toward recent lows invalidates the bounce setup.",
     "timeframeDays": 5,
     "confidence": 0.6,
     "tests": [
@@ -2876,8 +2883,8 @@
     "promotedToSignal": false,
     "postMortem": "Validated - HYPE funding crashed to -25.58% from positive territory while OI stabilized at 829M and spot holds above 40, oversold bounce setup confirmed",
     "source": "llm",
-    "setupId": "hype_funding_oi_normalization",
-    "setupLabel": "HYPE funding/OI normalization"
+    "setupId": "hype_funding_oi_long_bounce",
+    "setupLabel": "HYPE funding/OI long bounce"
   },
   {
     "id": "H-097",
@@ -3077,12 +3084,14 @@
   {
     "id": "H-104",
     "created": "2026-04-09",
-    "description": "BTC momentum acceleration above 72k with HYPE correlation restoration creates breakout continuation",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 72000",
-      "hype_spot": "> 39.5"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC-HYPE coordinated momentum continues for 5-7 days above key levels",
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
     "timeframeDays": 7,
     "confidence": 0.65,
     "tests": [
@@ -3133,12 +3142,13 @@
   {
     "id": "H-106",
     "created": "2026-04-09",
-    "description": "AMZN weekend put-call ratio acceleration creates Monday momentum - when P/C drops below 0.5 during stock live periods after extreme moves, systematic options repositioning indicates momentum continuation",
+    "description": "LONG AMZN options positioning / momentum shadow test: AMZN put-call ratio is low versus its own recent history while the stock is already above short-term trend. Tests whether bullish options repositioning plus confirmed stock momentum leads to continuation, without using fixed AMZN price levels or weekend freeze assumptions.",
     "conditions": {
-      "amzn_pc_ratio": "< 0.5",
-      "amzn_stock": "> 230"
+      "amzn_pc_ratio_percentile_30d": "< 20",
+      "amzn_stock_pct_vs_24h_sma": "> 0",
+      "amzn_stock_change_pct_24h": "> 0"
     },
-    "prediction": "AMZN momentum continues for 3-5 days when P/C drops below 0.5 during stock live periods above $230",
+    "prediction": "Long AMZN spot should outperform over 1-5 trading days when low relative P/C confirms positive stock momentum. A negative stock trend despite low P/C invalidates the momentum setup.",
     "timeframeDays": 5,
     "confidence": 0.7,
     "tests": [
@@ -3207,12 +3217,14 @@
   {
     "id": "H-108",
     "created": "2026-04-09",
-    "description": "BTC momentum acceleration above 72k with HYPE correlation restoration creates breakout continuation - when both BTC above 72k and HYPE above 39.8 with positive correlation",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 72000",
-      "hype_spot": "> 39.8"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC-HYPE coordinated breakout continues for 5-7 days when both break above key levels together",
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
     "timeframeDays": 7,
     "confidence": 0.8,
     "tests": [
@@ -3234,13 +3246,13 @@
   {
     "id": "H-109",
     "created": "2026-04-10",
-    "description": "HYPE funding rate crash below -25% after positive territory creates oversold bounce setup when OI stabilizes above 825M and spot holds above 40",
+    "description": "LONG HYPE funding/OI long bounce shadow test: HYPE funding is in a low/negative regime after stress while open interest has stopped contracting and spot is lifting from a recent low. Tests whether forced selling is exhausted and funding normalization supports a bounce, not a liquidation short.",
     "conditions": {
-      "hype_hl_funding_ann": "< -20.0",
-      "hype_hl_oi": "> 825000000",
-      "hype_spot": "> 40.0"
+      "hype_hl_funding_ann_percentile_30d": "< 15",
+      "hype_hl_oi_change_pct_24h": "> -2",
+      "hype_spot_pct_from_3d_low": "> 1"
     },
-    "prediction": "HYPE oversold bounce of 2-5% within 3-5 days as funding normalizes from extreme negative levels",
+    "prediction": "Long HYPE spot/perp should outperform over 3-5 days as funding normalizes from a stressed low and OI stabilizes. Renewed OI contraction or a break back toward recent lows invalidates the bounce setup.",
     "timeframeDays": 5,
     "confidence": 0.7,
     "tests": [
@@ -3256,8 +3268,8 @@
     "promotedToSignal": false,
     "postMortem": "Perfect validation - HYPE funding crashed to -25.6% from positive territory, with OI at 829M+ and spot at 40.2, creating oversold bounce to 40.4+. Framework working exactly as predicted.",
     "source": "llm",
-    "setupId": "hype_funding_oi_normalization",
-    "setupLabel": "HYPE funding/OI normalization"
+    "setupId": "hype_funding_oi_long_bounce",
+    "setupLabel": "HYPE funding/OI long bounce"
   },
   {
     "id": "H-110",
@@ -3350,14 +3362,15 @@
   {
     "id": "H-113",
     "created": "2026-04-10",
-    "description": "BTC momentum persistence above 71.9k with HYPE funding normalization to positive territory creates consolidated breakout continuation setup when both assets show positive correlation restoration",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 71900",
-      "hype_hl_funding_ann": "> 0",
-      "hype_spot": "> 40.3"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC-HYPE correlation positive restoration creates 3-5 day momentum continuation above 72.5k/40.8 levels",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
       {
@@ -3528,12 +3541,13 @@
   {
     "id": "H-119",
     "created": "2026-04-10",
-    "description": "AMZN put-call ratio extreme collapse below 0.4 during explosive stock momentum above 235 creates systematic momentum continuation signal",
+    "description": "LONG AMZN options positioning / momentum shadow test: AMZN put-call ratio is low versus its own recent history while the stock is already above short-term trend. Tests whether bullish options repositioning plus confirmed stock momentum leads to continuation, without using fixed AMZN price levels or weekend freeze assumptions.",
     "conditions": {
-      "amzn_pc_ratio": "< 0.4",
-      "amzn_stock": "> 235"
+      "amzn_pc_ratio_percentile_30d": "< 20",
+      "amzn_stock_pct_vs_24h_sma": "> 0",
+      "amzn_stock_change_pct_24h": "> 0"
     },
-    "prediction": "AMZN continues momentum above 240 within 3-5 days as options repositioning completes",
+    "prediction": "Long AMZN spot should outperform over 1-5 trading days when low relative P/C confirms positive stock momentum. A negative stock trend despite low P/C invalidates the momentum setup.",
     "timeframeDays": 5,
     "confidence": 0.75,
     "tests": [
@@ -3591,14 +3605,15 @@
   {
     "id": "H-121",
     "created": "2026-04-10",
-    "description": "BTC momentum acceleration above 72.5k with HYPE correlation restoration above 42 creates sustained breakout continuation when both assets move with positive correlation during funding normalization",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 72500",
-      "hype_spot": "> 42.0",
-      "hype_hl_funding_ann": "> -0.1"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC continues above 73k within 3-5 days with HYPE following above 42.5",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.75,
     "tests": [
       {
@@ -4754,14 +4769,15 @@
   {
     "id": "H-162",
     "created": "2026-04-12",
-    "description": "BTC-HYPE momentum divergence when BTC holds above 71k while HYPE drops below 41 with OI stabilizing above 810M creates correlation restoration setup",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 71000",
-      "hype_spot": "< 41",
-      "hype_hl_oi": "> 810000000"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC-HYPE correlation restoration with both assets moving together within 3-5 days",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.6,
     "tests": [
       {
@@ -4882,14 +4898,15 @@
   {
     "id": "H-166",
     "created": "2026-04-13",
-    "description": "HYPE momentum restoration signal - when HYPE OI stabilizes above 830M after institutional distribution while spot recovers above 41.5 and funding normalizes above 5%, correlation with BTC restores",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "hype_hl_oi": "> 830000000",
-      "hype_spot": "> 41.5",
-      "hype_hl_funding_ann": "> 5"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "HYPE-BTC correlation restores when HYPE shows stabilization signals above key levels",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
       {
@@ -4938,12 +4955,14 @@
   {
     "id": "H-168",
     "created": "2026-04-13",
-    "description": "HYPE momentum restoration acceleration when recovers above 41.5 with OI stabilizing above 830M after institutional distribution creates correlation restoration with BTC",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "hype_spot": "> 41.5",
-      "hype_hl_oi": "> 830000000"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "HYPE-BTC correlation turns positive and both assets move together for 7-10 days",
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
     "timeframeDays": 7,
     "confidence": 0.65,
     "tests": [
@@ -4993,13 +5012,15 @@
   {
     "id": "H-170",
     "created": "2026-04-13",
-    "description": "BTC options forward curve expansion creates momentum resumption signal when 90d forward expands above 3200pts vs spot during consolidation phases above 70k",
+    "description": "LONG BTC momentum / volatility-confirmed breakout shadow test: BTC is gaining versus its short-term trend near recent highs while options volatility or forward-curve behavior confirms demand for upside exposure. Tests continuation using relative momentum and vol confirmation, not fixed BTC thresholds.",
     "conditions": {
-      "btc_spot": "> 70000",
-      "btc_opt_fwd_90d": "> 74000"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "btc_spot_change_pct_24h": "> 0.75",
+      "btc_opt_iv_30d_change_pct_24h": "> 0"
     },
-    "prediction": "BTC momentum resumption within 5 days when forward curve expands indicating institutional positioning for higher strikes",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when spot momentum is confirmed by rising option-implied demand. Failure to hold above short-term trend invalidates the breakout thesis.",
+    "timeframeDays": 7,
     "confidence": 0.65,
     "tests": [
       {
@@ -5020,14 +5041,15 @@
   {
     "id": "H-171",
     "created": "2026-04-13",
-    "description": "HYPE funding normalization completion below 0% with spot recovery above 41.4 and OI stabilization above 828M creates correlation restoration with BTC",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "hype_spot": "> 41.4",
-      "hype_hl_oi": "> 828000000",
-      "hype_hl_funding_ann": "< 0"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "HYPE-BTC correlation restoration within 3 days as funding normalizes and institutional positioning stabilizes",
-    "timeframeDays": 3,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
       {
@@ -5135,13 +5157,14 @@
   {
     "id": "H-175",
     "created": "2026-04-13",
-    "description": "BTC momentum resumption confirmation above 71.5k with HYPE OI stabilization above 855M after institutional accumulation",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 71500",
-      "hype_hl_oi": "> 855000000",
-      "hype_spot": "> 42"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC-HYPE correlation restoration drives momentum continuation for 5-7 days",
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
     "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
@@ -5192,13 +5215,14 @@
   {
     "id": "H-177",
     "created": "2026-04-13",
-    "description": "BTC momentum breakout above 73k confirmed with HYPE OI expansion and IV compression creates sustained trend",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 73000",
-      "hype_hl_oi": "> 880000000",
-      "btc_opt_iv_30d": "< 44"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC continues above 73.5k for 5-7 days with HYPE correlation",
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
     "timeframeDays": 7,
     "confidence": 0.75,
     "tests": [
@@ -5220,12 +5244,13 @@
   {
     "id": "H-178",
     "created": "2026-04-13",
-    "description": "AMZN P/C ratio collapse to 0.381 during explosive momentum to 237.9 creates systematic options repositioning signal",
+    "description": "LONG AMZN options positioning / momentum shadow test: AMZN put-call ratio is low versus its own recent history while the stock is already above short-term trend. Tests whether bullish options repositioning plus confirmed stock momentum leads to continuation, without using fixed AMZN price levels or weekend freeze assumptions.",
     "conditions": {
-      "amzn_pc_ratio": "< 0.4",
-      "amzn_stock": "> 237"
+      "amzn_pc_ratio_percentile_30d": "< 20",
+      "amzn_stock_pct_vs_24h_sma": "> 0",
+      "amzn_stock_change_pct_24h": "> 0"
     },
-    "prediction": "AMZN momentum continues above 240 within 3-5 days",
+    "prediction": "Long AMZN spot should outperform over 1-5 trading days when low relative P/C confirms positive stock momentum. A negative stock trend despite low P/C invalidates the momentum setup.",
     "timeframeDays": 5,
     "confidence": 0.7,
     "tests": [
@@ -5425,14 +5450,15 @@
   {
     "id": "H-185",
     "created": "2026-04-14",
-    "description": "HYPE momentum restoration with OI stabilization above 930M while funding normalizes above 5% creates correlation restoration with BTC",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "hype_hl_oi": "> 930000000",
-      "hype_hl_funding_ann": "> 5",
-      "hype_spot": "> 44.5"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "HYPE-BTC positive correlation restoration within 3-5 days as institutional positioning stabilizes",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.65,
     "tests": [
       {
@@ -5572,14 +5598,14 @@
   {
     "id": "H-190",
     "created": "2026-04-14",
-    "description": "HYPE funding crash below -25% while OI stabilizes above 900M and spot holds above 43 creates oversold bounce setup",
+    "description": "LONG HYPE funding/OI long bounce shadow test: HYPE funding is in a low/negative regime after stress while open interest has stopped contracting and spot is lifting from a recent low. Tests whether forced selling is exhausted and funding normalization supports a bounce, not a liquidation short.",
     "conditions": {
-      "hype_hl_funding_ann": "< -25",
-      "hype_hl_oi": "> 900000000",
-      "hype_spot": "> 43"
+      "hype_hl_funding_ann_percentile_30d": "< 15",
+      "hype_hl_oi_change_pct_24h": "> -2",
+      "hype_spot_pct_from_3d_low": "> 1"
     },
-    "prediction": "HYPE recovers 5-8% within 7 days as funding normalizes",
-    "timeframeDays": 7,
+    "prediction": "Long HYPE spot/perp should outperform over 3-5 days as funding normalizes from a stressed low and OI stabilizes. Renewed OI contraction or a break back toward recent lows invalidates the bounce setup.",
+    "timeframeDays": 5,
     "confidence": 0.65,
     "tests": [
       {
@@ -5594,8 +5620,8 @@
     "promotedToSignal": false,
     "postMortem": "Confirmed - HYPE funding crashed to -12.35% while OI declined to 907M and spot weakened to 43.1, showing distribution completion as outlined. Pattern working as expected. | HYPE funding crash below -25% with OI above 900M: Current HYPE OI is 821M (below 900M threshold) and funding is +10.95% (not crashed). Conditions not met. HYPE is in a different regime \u2014 distribution phase with declining OI, not the oversold bounce setup.",
     "source": "llm",
-    "setupId": "hype_funding_oi_normalization",
-    "setupLabel": "HYPE funding/OI normalization"
+    "setupId": "hype_funding_oi_long_bounce",
+    "setupLabel": "HYPE funding/OI long bounce"
   },
   {
     "id": "H-191",
@@ -5799,14 +5825,15 @@
   {
     "id": "H-198",
     "created": "2026-04-15",
-    "description": "HYPE funding normalization completion from extreme negative to neutral territory while OI stabilizes above 910M creates momentum restoration setup",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "hype_hl_funding_ann": "> -5",
-      "hype_hl_oi": "> 910000000",
-      "hype_spot": "> 43"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "HYPE momentum restoration and correlation with BTC resumes within 3-5 days",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
       {
@@ -5969,14 +5996,15 @@
   {
     "id": "H-204",
     "created": "2026-04-15",
-    "description": "HYPE funding positive territory confirmation with OI stabilization above 915M creates correlation restoration with BTC",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "hype_hl_funding_ann": "> 10",
-      "hype_hl_oi": "> 915000000",
-      "hype_spot": "> 43.5"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "HYPE-BTC correlation restores to positive territory within 3-5 days as funding normalization completes",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
       {
@@ -6111,13 +6139,14 @@
   {
     "id": "H-209",
     "created": "2026-04-15",
-    "description": "HYPE funding normalization completion to positive territory with OI record stabilization creates correlation restoration with BTC",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "hype_hl_funding_ann": "> 5",
-      "hype_hl_oi": "> 930000000",
-      "btc_spot": "> 74000"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "HYPE-BTC positive correlation restoration with HYPE outperformance within 5-7 days",
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
     "timeframeDays": 7,
     "confidence": 0.65,
     "tests": [
@@ -6139,14 +6168,14 @@
   {
     "id": "H-210",
     "created": "2026-04-15",
-    "description": "BTC PM IV extreme compression below 37% while spot consolidates above 74k with HYPE OI stabilization above 940M creates volatility expansion setup",
+    "description": "LONG HYPE funding/OI long bounce shadow test: HYPE funding is in a low/negative regime after stress while open interest has stopped contracting and spot is lifting from a recent low. Tests whether forced selling is exhausted and funding normalization supports a bounce, not a liquidation short.",
     "conditions": {
-      "btc_pm_iv": "< 37",
-      "btc_spot": "> 74000",
-      "hype_hl_oi": "> 940000000"
+      "hype_hl_funding_ann_percentile_30d": "< 15",
+      "hype_hl_oi_change_pct_24h": "> -2",
+      "hype_spot_pct_from_3d_low": "> 1"
     },
-    "prediction": "BTC volatility expansion with PM IV recovery above 42% within 7 days",
-    "timeframeDays": 7,
+    "prediction": "Long HYPE spot/perp should outperform over 3-5 days as funding normalizes from a stressed low and OI stabilizes. Renewed OI contraction or a break back toward recent lows invalidates the bounce setup.",
+    "timeframeDays": 5,
     "confidence": 0.75,
     "tests": [
       {
@@ -6161,8 +6190,8 @@
     "promotedToSignal": false,
     "postMortem": "BTC PM IV collapsed to historic 36.6 (-5.1\u03c3) confirming extreme compression setup - waiting for volatility expansion | BTC PM IV hitting -3.9\u03c3 compression validates extreme volatility mispricing hypothesis - most extreme statistical deviation observed | BTC PM IV compression to 36.7% (-3.7\u03c3) while consolidating above 74k confirms pattern - extreme statistical deviations create highest probability mean reversion setups | BTC PM IV extreme compression below 37% while spot consolidates above 74k creates volatility expansion setup - PM IV at 37.3% approaching extreme levels, monitoring for expansion signal. | BTC PM IV extreme compression below 37% creating volatility expansion - IV recovering from 36.7% to 37.5% as consolidation above 74k holds, early validation of volatility mean reversion | BTC PM IV extreme compression below 37% while HYPE OI stabilizes above 940M \u2014 conditions partially met. BTC PM IV is at 37.0% (borderline), HYPE OI at 971M (above threshold). The vol expansion setup remains active. No clean resolution yet within the current 14-snapshot window. | HYPE funding/OI normalization: HYPE OI is now at record highs (1.057B), far above the 845M mean. Funding at T20 is -25% annualized (3.0\u03c3 below mean per statistical observations). This is the opposite of the normalization pattern - OI is expanding, not declining. The hypothesis about OI decline triggering normalization is not applicable here; the current regime is breakout/accumulation, not distribution exhaustion. | HYPE funding/OI normalization (H-210) \u2014 HYPE OI surged from ~943M to 1.06B (+12.5%) in a single session, the opposite of the normalization thesis. Funding oscillated between -25% and +11% during the session. The breakout momentum (H-521) is dominating over the normalization pattern. This suggests H-210 conditions are not met in the current regime.",
     "source": "llm",
-    "setupId": "hype_funding_oi_normalization",
-    "setupLabel": "HYPE funding/OI normalization"
+    "setupId": "hype_funding_oi_long_bounce",
+    "setupLabel": "HYPE funding/OI long bounce"
   },
   {
     "id": "H-211",
@@ -6392,13 +6421,14 @@
   {
     "id": "H-218",
     "created": "2026-04-16",
-    "description": "BTC median minimum expansion above 53k during consolidation phases creates momentum continuation confirmation",
+    "description": "LONG BTC momentum / volatility-confirmed breakout shadow test: BTC is gaining versus its short-term trend near recent highs while options volatility or forward-curve behavior confirms demand for upside exposure. Tests continuation using relative momentum and vol confirmation, not fixed BTC thresholds.",
     "conditions": {
-      "btc_med_min": "> 53000",
-      "btc_spot": "> 74000",
-      "btc_pm_iv": "< 40"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "btc_spot_change_pct_24h": "> 0.75",
+      "btc_opt_iv_30d_change_pct_24h": "> 0"
     },
-    "prediction": "BTC spot will move above 76k within 7 days when median minimum expands during consolidation",
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when spot momentum is confirmed by rising option-implied demand. Failure to hold above short-term trend invalidates the breakout thesis.",
     "timeframeDays": 7,
     "confidence": 0.6,
     "tests": [
@@ -6447,12 +6477,13 @@
   {
     "id": "H-220",
     "created": "2026-04-16",
-    "description": "HYPE OI record stabilization above 940M with funding crash below -35% creates oversold bounce setup",
+    "description": "LONG HYPE funding/OI long bounce shadow test: HYPE funding is in a low/negative regime after stress while open interest has stopped contracting and spot is lifting from a recent low. Tests whether forced selling is exhausted and funding normalization supports a bounce, not a liquidation short.",
     "conditions": {
-      "hype_hl_oi": "> 940000000",
-      "hype_hl_funding_ann": "< -35"
+      "hype_hl_funding_ann_percentile_30d": "< 15",
+      "hype_hl_oi_change_pct_24h": "> -2",
+      "hype_spot_pct_from_3d_low": "> 1"
     },
-    "prediction": "HYPE spot recovers above 46.5 within 3-5 days",
+    "prediction": "Long HYPE spot/perp should outperform over 3-5 days as funding normalizes from a stressed low and OI stabilizes. Renewed OI contraction or a break back toward recent lows invalidates the bounce setup.",
     "timeframeDays": 5,
     "confidence": 0.7,
     "tests": [
@@ -6468,8 +6499,8 @@
     "promotedToSignal": false,
     "postMortem": "HYPE OI at 931M with funding -11.6% shows institutional distribution moderating. OI stabilization pattern emerging as predicted. | HYPE OI at 938M with funding crash to -27.6% then recovery to +10.95% confirms oversold bounce pattern - funding extremes below -25% do create reliable reversals",
     "source": "llm",
-    "setupId": "hype_funding_oi_normalization",
-    "setupLabel": "HYPE funding/OI normalization"
+    "setupId": "hype_funding_oi_long_bounce",
+    "setupLabel": "HYPE funding/OI long bounce"
   },
   {
     "id": "H-221",
@@ -6765,13 +6796,14 @@
   {
     "id": "H-231",
     "created": "2026-04-17",
-    "description": "BTC consolidation above 74k with HYPE OI stabilization above 930M and IV compression below 45% creates breakout continuation setup when both assets show correlation restoration",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 74000",
-      "hype_hl_oi": "> 930000000",
-      "btc_opt_iv_30d": "< 45"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC momentum resumption above 75k within one week as consolidation completes",
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
     "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
@@ -6939,14 +6971,15 @@
   {
     "id": "H-237",
     "created": "2026-04-17",
-    "description": "BTC momentum breakout above 75k with HYPE OI stabilization above 943M and PM IV compression below 38% creates sustained trend continuation when both assets show positive correlation",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 75000",
-      "hype_hl_oi": "> 943000000",
-      "btc_pm_iv": "< 38"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC continues above 76k with HYPE following above 44.5 within 5 days",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.75,
     "tests": [
       {
@@ -7078,15 +7111,15 @@
   {
     "id": "H-242",
     "created": "2026-04-17",
-    "description": "BTC momentum acceleration above 77k with HYPE correlation restoration creates sustained breakout continuation when both assets move with positive correlation during IV normalization",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 77000",
-      "hype_spot": "> 44.5",
-      "btc_pm_iv": "< 40",
-      "hype_hl_oi": "> 950000000"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC continues to 78k+ within 3-5 days with HYPE following above 45",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.75,
     "tests": [
       {
@@ -7357,13 +7390,15 @@
   {
     "id": "H-252",
     "created": "2026-04-18",
-    "description": "HYPE funding normalization to positive territory with OI stabilization above 938M creates correlation restoration with BTC",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "hype_hl_funding_ann": "> 5.0",
-      "hype_hl_oi": "> 938000000"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "HYPE-BTC correlation restoration above 0.5 within 5 days",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
       {
@@ -7658,14 +7693,15 @@
   {
     "id": "H-263",
     "created": "2026-04-18",
-    "description": "HYPE institutional accumulation completion confirmation - OI stabilization above 919M with funding positive territory and spot above 44.2 after record surge creates correlation restoration with BTC",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "hype_hl_oi": "> 919000000",
-      "hype_hl_funding_ann": "> 0",
-      "hype_spot": "> 44.2"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "HYPE-BTC positive correlation restoration with synchronized moves above HYPE 45.5 and BTC 76k within 3-5 days",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
       {
@@ -9407,14 +9443,14 @@
   {
     "id": "H-325",
     "created": "2026-04-22",
-    "description": "BTC momentum acceleration above 77.9k with HYPE correlation restoration and IV compression creates sustained breakout continuation",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 77900",
-      "hype_spot": "> 40.4",
-      "btc_opt_iv_30d": "< 44",
-      "hype_hl_oi": "> 810000000"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC continues momentum toward 79-80k range within 5-7 days as correlation with HYPE restores during funding normalization",
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
     "timeframeDays": 7,
     "confidence": 0.75,
     "tests": [
@@ -9576,14 +9612,15 @@
   {
     "id": "H-331",
     "created": "2026-04-22",
-    "description": "BTC momentum breakout above 79k with HYPE OI surge above 835M and IBIT P/C collapse below 0.45 creates sustained institutional positioning continuation",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 79000",
-      "hype_hl_oi": "> 835000000",
-      "btc_ibit_pc_ratio": "< 0.45"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC continues above 79.5k within 3 days with HYPE correlation maintaining above 0.3",
-    "timeframeDays": 3,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.75,
     "tests": [
       {
@@ -9948,14 +9985,15 @@
   {
     "id": "H-344",
     "created": "2026-04-23",
-    "description": "BTC consolidation completion above 78k with HYPE OI stabilization above 810M and IV compression below 44% creates breakout continuation setup when both assets show correlation restoration",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 78000",
-      "hype_hl_oi": "> 810000000",
-      "btc_opt_iv_30d": "< 44"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC momentum resumption above 79k within 5 days",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
       {
@@ -10033,14 +10071,15 @@
   {
     "id": "H-347",
     "created": "2026-04-23",
-    "description": "BTC consolidation completion above 77k with HYPE OI stabilization above 808M and funding normalization creates momentum resumption setup when both assets show correlation restoration",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 77000",
-      "hype_hl_oi": "> 808000000",
-      "hype_hl_funding_ann": "> 0.05"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC spot rises above 79k within 5 days",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
       {
@@ -10720,15 +10759,15 @@
   {
     "id": "H-371",
     "created": "2026-04-24",
-    "description": "BTC momentum acceleration above 77.9k with HYPE correlation restoration and IV compression creates sustained breakout continuation when both assets move with positive correlation",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 77900",
-      "hype_spot": "> 41",
-      "btc_opt_iv_30d": "< 44",
-      "hype_hl_oi": "> 800000000"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC breakout toward 79-80k range within 5 days with HYPE correlation restoration above 41.5",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
       {
@@ -11313,14 +11352,15 @@
   {
     "id": "H-392",
     "created": "2026-04-25",
-    "description": "BTC momentum acceleration above 77.9k with HYPE correlation restoration and IV compression creates sustained breakout continuation",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 77900",
-      "hype_spot": "> 41.5",
-      "btc_opt_iv_30d": "< 42"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC-HYPE momentum continuation above 78k-42 levels for 3-5 days when both assets move with positive correlation",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
       {
@@ -11482,13 +11522,14 @@
   {
     "id": "H-398",
     "created": "2026-04-25",
-    "description": "BTC-HYPE correlation restoration momentum - when BTC holds above 77k with HYPE OI stabilizing above 818M after institutional distribution and both assets showing positive correlation restoration",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 77000",
-      "hype_hl_oi": "> 818000000",
-      "hype_spot": "> 41"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "Breakout continuation above 78k within 5-7 days as correlation restores",
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
     "timeframeDays": 7,
     "confidence": 0.75,
     "tests": [
@@ -11630,15 +11671,15 @@
   {
     "id": "H-403",
     "created": "2026-04-26",
-    "description": "BTC momentum acceleration above 77.9k with HYPE correlation restoration creates sustained breakout continuation",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 77900",
-      "hype_spot": "> 41.2",
-      "hype_hl_funding_ann": "< 5",
-      "btc_hl_funding_ann": "> 0"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC sustains above 78.5k within 5 days as HYPE correlation restores and funding normalizes",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
       {
@@ -11715,13 +11756,14 @@
   {
     "id": "H-406",
     "created": "2026-04-26",
-    "description": "HYPE institutional distribution exhaustion reversal - massive 16% OI decline from 957M peak combined with extreme funding crash below -1% indicates smart money positioning cycle completion",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "hype_hl_oi": "< 815000000",
-      "hype_hl_funding_ann": "< -0.01",
-      "hype_spot": "> 40.5"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "HYPE oversold bounce within 5-7 days as institutional distribution completes and correlation with BTC restores",
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
     "timeframeDays": 7,
     "confidence": 0.75,
     "tests": [
@@ -11743,13 +11785,14 @@
   {
     "id": "H-407",
     "created": "2026-04-26",
-    "description": "BTC momentum continuation above 77.9k with HYPE OI stabilization - when BTC holds above breakout level while HYPE shows distribution exhaustion, correlation restoration follows",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 77900",
-      "hype_hl_oi": "< 820000000",
-      "btc_opt_iv_30d": "< 42"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC momentum acceleration above 78.5k within 5-7 days as HYPE correlation restores and IV compression resolves",
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
     "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
@@ -11969,14 +12012,15 @@
   {
     "id": "H-415",
     "created": "2026-04-26",
-    "description": "BTC breakout above 78k with HYPE OI surge and funding normalization creates sustained momentum continuation",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 78000",
-      "hype_hl_oi": "> 825000000",
-      "hype_hl_funding_ann": "> -0.1"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC continues above 78.5k within 5 days with HYPE correlation restoration",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.75,
     "tests": [
       {
@@ -12055,14 +12099,15 @@
   {
     "id": "H-418",
     "created": "2026-04-27",
-    "description": "BTC momentum breakout above 79k with HYPE institutional FOMO creates sustained trend continuation",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 79000",
-      "hype_hl_oi": "> 850000000",
-      "hype_hl_funding_ann": "> 0.05"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC continues above 80k within 5 days with HYPE correlation maintained",
-    "timeframeDays": 5,
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
+    "timeframeDays": 7,
     "confidence": 0.8,
     "tests": [
       {
@@ -12601,13 +12646,14 @@
   {
     "id": "H-437",
     "created": "2026-04-28",
-    "description": "BTC consolidation completion above 76.5k with HYPE institutional distribution exhaustion reversal creates correlation restoration setup",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "btc_spot": "> 76500",
-      "hype_hl_oi": "< 810000000",
-      "hype_hl_funding_ann": "> 8"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "BTC-HYPE correlation restoration with both assets moving higher within 5-7 days as institutional distribution completes",
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
     "timeframeDays": 7,
     "confidence": 0.7,
     "tests": [
@@ -13373,13 +13419,14 @@
   {
     "id": "H-464",
     "created": "2026-04-28",
-    "description": "HYPE institutional distribution final exhaustion reversal - 16% OI decline from record peaks with funding crash to negative territory indicates smart money exit completion",
+    "description": "LONG BTC momentum / correlation breakout shadow test: BTC is above short-term trend and near its recent high while HYPE confirms crypto risk appetite through trend support and non-contracting OI. Tests BTC continuation from relative momentum plus cross-asset confirmation, never a hard-coded BTC or HYPE level.",
     "conditions": {
-      "hype_hl_oi": "< 790000000",
-      "hype_hl_funding_ann": "< -0.05",
-      "hype_spot": "> 39.5"
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "hype_spot_pct_vs_24h_sma": "> 0",
+      "hype_hl_oi_change_pct_24h": "> -2"
     },
-    "prediction": "HYPE oversold bounce toward 42-44 range within 5-7 days as institutional distribution exhaustion completes and correlation with BTC restores",
+    "prediction": "Long BTC spot/perp should outperform over 3-7 days when BTC trend strength is confirmed by HYPE risk-on participation. HYPE is confirming evidence, not the primary trade direction.",
     "timeframeDays": 7,
     "confidence": 0.75,
     "tests": [
@@ -15123,11 +15170,11 @@
     "setupId": "pm_odds_underlying_payoff_cap",
     "setupLabel": "PM odds / underlying payoff cap",
     "created": "2026-05-04",
-    "description": "Prediction-market upside hit contracts priced near or above the spot/strike underlying payoff cap signal extreme bullish sentiment and potential YES overpricing versus simply holding the underlying asset.",
+    "description": "SHORT/NO Polymarket cap-rich upside shadow test: avoid YES or buy NO when the richest upside hit contract is cap-adjacent versus spot/strike payoff. Tests whether PM prices bullish one-touch odds too richly after normalizing by underlying payoff cap, not by an absolute strike level.",
     "conditions": {
       "btc_pm_underlying_cap_ratio_max": "> 0.85"
     },
-    "prediction": "When the richest BTC upside hit contract trades at more than 85% of the underlying payoff cap, buying NO or avoiding YES should outperform over the next 7-14 days as cap-adjacent optimism mean reverts.",
+    "prediction": "Cap-rich upside YES should underperform over 7-14 days, favoring buy-NO/avoid-YES, unless underlying momentum expands enough to raise the cap itself.",
     "timeframeDays": 14,
     "confidence": 0.7,
     "tests": [],
@@ -15142,11 +15189,11 @@
     "setupId": "pm_odds_underlying_payoff_cap",
     "setupLabel": "PM odds / underlying payoff cap",
     "created": "2026-05-04",
-    "description": "Actionable over-cap payoff arbitrage test: buy NO on upside hit contracts only when PM YES is meaningfully above the spot/strike payoff cap with tight spread and sufficient liquidity.",
+    "description": "SHORT/NO Polymarket upside one-touch over-cap shadow test: buy NO only when a tight, liquid upside hit contract trades above its spot/strike payoff cap. Tests whether PM overpays for lottery upside after cap normalization, independent of the absolute BTC price.",
     "conditions": {
       "btc_pm_underlying_cap_ratio_max_tight": "> 1.03"
     },
-    "prediction": "Buying NO should outperform over 7-14 days when BTC upside hit contracts price YES more than 3% above the underlying payoff cap; BTC or YES odds should decline as cap-rich optimism normalizes.",
+    "prediction": "Buy NO or avoid YES should outperform over 7-14 days when PM YES is more than 3% above the underlying payoff cap on a tight/liquid market. This is the over-cap short side.",
     "timeframeDays": 14,
     "confidence": 0.75,
     "tests": [],
@@ -15161,11 +15208,11 @@
     "setupId": "pm_odds_underlying_payoff_cap",
     "setupLabel": "PM odds / underlying payoff cap",
     "created": "2026-05-04",
-    "description": "Actionable cheap-vs-cap upside test: buy YES on upside hit contracts only when PM YES trades below 35% of the spot/strike payoff cap with tight spread and sufficient liquidity.",
+    "description": "LONG Polymarket upside one-touch cap-ratio shadow test: buy YES only when a tight, liquid upside hit contract is cheap versus the underlying payoff cap. Tests whether PM underprices upside optionality after normalizing by spot/strike distance rather than by a hard-coded asset price.",
     "conditions": {
       "btc_pm_underlying_cap_ratio_min_tight": "< 0.35"
     },
-    "prediction": "Buying YES should outperform over 7-14 days when BTC upside hit contracts are deeply discounted versus the underlying payoff cap and market quality is tradable; BTC should rally >2% or YES odds should reprice higher.",
+    "prediction": "Buy YES should outperform over 7-14 days when cap-adjusted PM pricing is deeply discounted and market quality is acceptable. This is the cheap-vs-cap long side, not a rich-contract NO trade.",
     "timeframeDays": 14,
     "confidence": 0.74,
     "tests": [
@@ -15276,14 +15323,14 @@
   {
     "id": "H-531",
     "created": "2026-05-18",
-    "description": "BTC dealer hedge stress pullback - when front-month options IV is bid materially above back-month IV (term-spread inversion) while spot sits near its 7d high and HL perp positioning is crowded long (top-quartile funding + fresh OI), dealer short-gamma hedging flows accelerate the pullback off the high.",
+    "description": "SHORT BTC dealer hedge stress / pullback shadow test: BTC is trading near its recent high while front-month options/term-structure stress and elevated funding/OI indicate crowded long positioning. Tests whether dealer hedging pressure turns a stretched rally into a pullback, not whether BTC is merely at an absolute price level.",
     "conditions": {
       "btc_opt_iv_term_spread_percentile_30d": "> 85",
-      "btc_spot_pct_from_7d_high": "> -2",
+      "btc_spot_pct_from_7d_high": "> -3",
       "btc_hl_funding_ann_percentile_7d": "> 75",
-      "btc_hl_oi_change_pct_24h": "> 5"
+      "btc_hl_oi_change_pct_24h": "> 3"
     },
-    "prediction": "BTC declines 2-3% over 3-5 days as dealer hedging flows accelerate the pullback off recent highs and the IV term-structure inversion normalizes.",
+    "prediction": "Short BTC spot/perp should outperform over 3-5 days, with BTC falling 2-3%, when hedge stress and crowded positioning appear near a local high. A continued breakout with funding/OI cooling invalidates the setup.",
     "timeframeDays": 5,
     "confidence": 0.65,
     "tests": [],
