@@ -11191,3 +11191,47 @@ Key observations this session:
 
 ---
 
+### 2026-05-18 02:30 UTC
+
+**Portfolio:** $99.75 total | Cash $95.75 | 4 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_90d = 24.8 is -5.1 std devs from mean (41.84 ± 3.35)
+- [anomaly] hype_hl_oi = 1031138394 is 2.6 std devs from mean (848283815.25 ± 70682710.92)
+- [anomaly] gold_med_min = 4215 is -2.2 std devs from mean (4370.72 ± 71.26)
+- [correlation_flip] BTC-OIL correlation shifted from 0.35 to -0.47. Rolling correlation: 24h=-0.79, 7d=-0.40, 30d=0.56. Current 24h corr is at 28th pct of last 18 daily 24h-rolling values (range -0.91 to 0.50).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.11 to 0.43. Rolling correlation: 24h=0.54, 7d=0.55, 30d=-0.35. Current 24h corr is at 61th pct of last 18 daily 24h-rolling values (range -0.69 to 0.90).
+
+**Blocked signal learning:**
+- Open blocked shadows: 61
+- Resolved blocked shadows: 77 (30 wins / 47 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-0.21%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.61%)
+
+**LLM analysis:**
+Key observations this cycle:
+
+1. BTC TERM STRUCTURE INVERSION: The 90d IV has collapsed to 24.8 (-5.1σ from mean of 41.84), while 30d IV has risen to 37.9%. This is an unusual inversion — normally 90d > 30d. This likely reflects a specific options expiry dynamic or a structural repricing of longer-dated vol. The BTC PM IV at 35.8% remains compressed vs options IV, consistent with H-523 conditions. No new trade opened due to hypothesis backlog constraints.
+
+2. OIL POSITION (T-1779049817841-htfg): The OIL NO position on 'settle over $56' is down -44.74% with WTI at $103.26. The thesis was that WTI would stay below $56 — this is a one-touch NO on a very deep OTM strike ($56 vs $103 spot), so the PM price should be near zero. The current price of 0.021 (2.1 cents) vs entry at 0.038 represents the market pricing in essentially zero probability of settling below $56 by June end. The position is mechanically held per policy — the thesis (spot stays above $56) remains intact as WTI is at $103. The -44.74% PnL reflects the PM price moving from 0.038 to 0.021, which is actually favorable direction (NO price falling = YES price rising toward certainty). Wait — re-reading: bought NO at 0.038, current price 0.021. If NO price fell, that means YES price rose, meaning market now thinks it's MORE likely to settle over $56. But WTI at $103 makes settling over $56 near-certain, so YES should be near 1.0 and NO near 0. The current NO price of 0.021 is actually near fair value. The -44.74% loss reflects buying NO at 0.038 when it should have been priced near 0 given WTI at $102. This was likely a data quality issue at entry — the contract was already deeply in-the-money for YES. The mechanical scanner owns this exit.
+
+3. GOLD LONG (T-1778916565173-2wqk): Gold spot recovered from 4,505 back to 4,540, near entry at 4,536. The funding has normalized from -44.78% to +5.48%, which is thesis completion (crowded shorts have unwound). The position is near breakeven (+0.09%) with 125h remaining. The breakeven arm hasn't triggered (needs peak ≥ +1.5%). Gold is at 7d percentile 31 — not showing strong momentum. The funding normalization is the key thesis metric and it has completed, but price hasn't moved enough to hit the 4% target. Holding per mechanical rules.
+
+4. AMZN LONG (T-1778916565173-vz22): AMZN stock frozen at 262.64 (likely weekend/holiday), perp at 261.55 (-0.41% basis). Funding normalized from -29.81% to +5.48%. The basis is still negative, suggesting perp hasn't fully caught up to stock. With 125h remaining and stock likely to resume trading, the convergence trade still has time. At -0.18% PnL, within normal noise.
+
+5. BTC NO POSITION (T-1778718867328-fb7r): BTC has fallen from 79,548 (baseline) to 77,022 (-3.18%), which is ADVERSE for this position (spot moving toward $55k is adverse). The position is at -1.89% PnL. BTC funding has risen to +8.57% (bullish lean), and PM IV is compressed. The $55k strike is still very far away (spot at 77k vs strike at 55k), so the NO thesis remains intact. No close warranted.
+
+6. HYPOTHESIS BACKLOG: 12 setup families need more tests with 9 pending. Per policy, no new hypotheses proposed this cycle. Focus remains on completing the shadow test backlog for existing families.
+
+7. RELATIVE VALUE HEATMAP: The BTC $90k May hit (YES at 2.6 cents, model prob 38.5%) and $95k May hit (YES at 1.05 cents, model prob 34.2%) show strong long-tail edges per the heatmap. However, these are eligible_for_shadow only — not actionable as live trades without a promoted hypothesis covering this setup. The OIL $115 June hit (YES at 58.8 cents, model prob 77.9%) and $130 June hit (YES at 31 cents, model prob 48.4%) show significant long-tail edges with extreme perp funding context. These are flagged but not traded due to OIL LLM_HYPOTHESIS being disabled and the one-touch family being mechanically managed.
+
+---
+
