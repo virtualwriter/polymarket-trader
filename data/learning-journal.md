@@ -11096,3 +11096,54 @@ Key observations from this session:
 
 ---
 
+### 2026-05-18 00:30 UTC
+
+**Portfolio:** $99.75 total | Cash $95.75 | 4 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Closed 2 trades:**
+- ❌ BTC long via spot/spot [BTC spot] (PROMOTED_HYPOTHESIS) → stop: $-0.0157 (-1.6%, market -0.0157, funding 0.0000)
+- ❌ HYPE long via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS) → stop: $-0.0283 (-2.8%, market -0.0283, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved wider by 18.0pp (was -9.3, now 8.7)
+- [anomaly] btc_opt_iv_90d = 25.6 is -5.1 std devs from mean (41.91 ± 3.17)
+- [anomaly] hype_hl_oi = 1031413985 is 2.6 std devs from mean (847424346.64 ± 69670569.71)
+- [anomaly] gold_med_min = 4210 is -2.3 std devs from mean (4371.42 ± 70.64)
+- [anomaly] hype_pm_ev = 47.87 is 2.1 std devs from mean (44.13 ± 1.80)
+
+**Blocked signal learning:**
+- Open blocked shadows: 60
+- Resolved blocked shadows: 76 (30 wins / 46 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-1.63%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-0.21%)
+
+**LLM analysis:**
+Key observations this cycle:
+
+1. BTC PM IV SPIKE: The most notable event is the sudden BTC PM IV expansion from ~37% to 45.7% at the 2026-05-18T00 snapshot. This coincides with a BTC spot drop to 77,157 (near 7d lows) and a sharp options term structure inversion (30d IV 37% >> 90d IV 25.6%, a -5.1σ anomaly on 90d IV). The PM IV spike likely reflects a vol event or options repricing. The existing BTC PM NO position (T-1778718867328-fb7r) is at -7.55% PnL — the spot decline is adverse for this trade (moving toward $55k strike). However, the mechanical scanner owns exits and the position is still well above the $55k touch level with 240h remaining. No LLM close warranted.
+
+2. OPEN POSITIONS STATUS:
+   - BTC NO ($55k dip, polymarket): -7.55% PnL. BTC spot at 77,157 is still 27% above the $55k touch level. The PM IV spike to 45.7% is notable but the thesis (spot stays above $55k) remains intact. No close.
+   - GOLD long (HL perp): -0.37% PnL. Gold funding has normalized from -44.8% to +5.9%, which is thesis completion (crowded shorts covering). However, spot has drifted slightly lower to 4,519. The funding normalization is actually thesis confirmation, not invalidation. No close.
+   - AMZN long (HL perp): -0.02% PnL. AMZN stock frozen at 262.64, perp at 261.97. Funding normalized from -29.8% to +5.48%. Near breakeven, thesis partially played out. No close.
+   - OIL NO ($56 settle, polymarket): -44.74% PnL, only 4h old. WTI at $102.13 is well above $56. The -44.74% loss on a NO contract bought at 0.038 means the YES price has moved to ~0.021 (from 0.038 at entry). Wait — the current price shows 0.969 for YES on $56 settle over, meaning NO is worth ~0.031. Entry was at 0.038, current ~0.031, that's about -18% not -44%. The mechanical scanner will handle this. No LLM close.
+
+3. HEATMAP HIGHLIGHTS: The BTC $90k May (edge 36.85 pts, eligible_for_shadow) and BTC $95k May (edge 32.71 pts, eligible_for_shadow) contracts show the strongest long-tail YES edges in the heatmap. These are shadow-eligible and should be tracked. The OIL $130 June (edge 12.35 pts) and OIL $140 June (edge 11.86 pts) also show strong long-tail YES edges with extreme_perp_funding flags — the negative OIL HL funding (-17%) is consistent with crowded shorts in oil perps, which could support upside oil moves.
+
+4. HYPOTHESIS BACKLOG: 12/19 setup families need more tests with 9 pending. Not proposing new hypotheses per policy. The H-521 (HYPE breakout/OI surge) and H-523 (BTC IV compression) promoted hypotheses are being monitored. The BTC PM IV spike at the final snapshot is consistent with H-523's prediction of vol expansion following compression — the compression phase appears to have resolved.
+
+5. CORRELATION FLIP: BTC-OIL correlation flipped from +0.34 to -0.46, and BTC-GOLD flipped from -0.10 to +0.42. These regime shifts are worth monitoring as they may affect cross-asset positioning logic.
+
+6. NO NEW TRADES: With 4 open positions and $95.75 cash, the portfolio is reasonably deployed. The heatmap shows interesting edges but the shadow-eligible BTC May contracts are being tracked by the system. Waiting for mechanical exits on existing positions before adding new exposure.
+
+---
+

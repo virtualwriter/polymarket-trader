@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-17T23:30:22.507Z",
+  "generatedAt": "2026-05-18T00:30:29.208Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,44 +7,15 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 1,
-      "confidence": 0.6,
-      "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-069] BTC P/C ratio spike above 1.0 during consolidation above 68500 creates oversold bounce setup as options positioning becomes too bearish",
-      "hypothesisId": "H-069",
-      "entryPrice": 77859,
-      "targetPct": 4,
-      "stopPct": 1.5,
-      "expiryDays": 3
-    },
-    {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 0.6377142857142857,
-      "confidence": 0.29900352733365165,
-      "thesis": "AMZN HL funding -37.3% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 262.57,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
-    },
-    {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5294267956666666,
-      "confidence": 0.2309624396095833,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.9pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6380891576666666,
+      "confidence": 0.2783663950320833,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.1pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77859,
+      "entryPrice": 77157,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -54,28 +25,32 @@
         "forceMarketId": "1339767",
         "allowDirectionFallback": false
       }
-    }
-  ],
-  "rejectedLlmActions": [
+    },
     {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778923758531-nlyu",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_spot"
-        ],
-        "thesis": "BTC spot has drifted to 77,859, down -0.20% from entry at 78,018 with only 34h remaining before expiry. The position is approaching the -1.5% stop. More critically, the BTC 30d options IV has spiked from 38.6 to 46.6 in the last two snapshots while 90d IV collapsed from 40.3 to 29.3 — this term structure inversion (near-term vol >> long-term vol) suggests the market is pricing a near-term event risk rather than the clean vol-compression-reversion setup that H-523 requires. The promoted hypothesis H-523 expected PM IV compression to resolve upward with spot following; instead we are seeing near-term options IV spike without spot participation, which is inconsistent with the thesis. With limited time remaining and the stop close, closing to preserve capital."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.631078872,
+      "confidence": 0.27530815790999996,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.9pt edge on BTC; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 77157,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "701501",
+        "allowDirectionFallback": false
+      }
     }
   ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

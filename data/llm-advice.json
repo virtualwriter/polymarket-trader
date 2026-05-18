@@ -1,22 +1,6 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1778923758531-nlyu",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_spot"
-        ],
-        "thesis": "BTC spot has drifted to 77,859, down -0.20% from entry at 78,018 with only 34h remaining before expiry. The position is approaching the -1.5% stop. More critically, the BTC 30d options IV has spiked from 38.6 to 46.6 in the last two snapshots while 90d IV collapsed from 40.3 to 29.3 — this term structure inversion (near-term vol >> long-term vol) suggests the market is pricing a near-term event risk rather than the clean vol-compression-reversion setup that H-523 requires. The promoted hypothesis H-523 expected PM IV compression to resolve upward with spot following; instead we are seeing near-term options IV spike without spot participation, which is inconsistent with the thesis. With limited time remaining and the stop close, closing to preserve capital."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedCloses": [],
   "skippedTrades": [],
   "parameterUpdates": {
     "macroMomentum24hThresholdPts": 4,

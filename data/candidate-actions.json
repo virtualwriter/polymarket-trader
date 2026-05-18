@@ -1,47 +1,18 @@
 {
-  "generatedAt": "2026-05-17T23:29:15.675Z",
+  "generatedAt": "2026-05-18T00:29:16.182Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
-    {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 1,
-      "confidence": 0.6,
-      "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-069] BTC P/C ratio spike above 1.0 during consolidation above 68500 creates oversold bounce setup as options positioning becomes too bearish",
-      "hypothesisId": "H-069",
-      "entryPrice": 77859,
-      "targetPct": 4,
-      "stopPct": 1.5,
-      "expiryDays": 3
-    },
-    {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 0.6377142857142857,
-      "confidence": 0.29900352733365165,
-      "thesis": "AMZN HL funding -37.3% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 262.57,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
-    },
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5294267956666666,
-      "confidence": 0.2309624396095833,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.9pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6380891576666666,
+      "confidence": 0.2783663950320833,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.1pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77859,
+      "entryPrice": 77157,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -49,6 +20,26 @@
         "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
         "forceInstrumentType": "pm_no",
         "forceMarketId": "1339767",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.631078872,
+      "confidence": 0.27530815790999996,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.9pt edge on BTC; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 77157,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "701501",
         "allowDirectionFallback": false
       }
     }
@@ -109,44 +100,6 @@
         "amzn_hl_funding_ann"
       ],
       "reason": "Rule-based signal exits require approved category and signal-family evidence."
-    },
-    {
-      "positionId": "T-1778923758531-nlyu",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk",
-        "risk_stale",
-        "profit_taking"
-      ],
-      "evidenceColumns": [
-        "btc_spot"
-      ],
-      "reason": "LLM may advise exits for LLM-owned or promoted setups."
-    },
-    {
-      "positionId": "T-1779046229359-gbig",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk",
-        "risk_stale",
-        "profit_taking"
-      ],
-      "evidenceColumns": [
-        "hype_spot"
-      ],
-      "reason": "LLM may advise exits for LLM-owned or promoted setups."
     },
     {
       "positionId": "T-1779049817841-htfg",
