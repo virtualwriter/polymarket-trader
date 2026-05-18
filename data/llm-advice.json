@@ -12,7 +12,7 @@
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "The BTC put-call exhaustion / reversal thesis (H-069 promoted) required a P/C ratio spike above 1.0 during consolidation as the trigger. The btc_ibit_pc_ratio has since normalized from the spike (0.74 at entry context) back to 0.701, and BTC spot has drifted -0.48% from entry at $76,989 to $76,618. The spot is now at the 13th percentile of its 24h range and 2nd percentile of its 7d range — the consolidation is not holding above entry. With only 62h remaining before expiry and the position at -0.48% against a -1.5% stop, the thesis of a P/C-driven bounce has not materialized. The btc_spot trajectory shows a consistent drift lower over the last 12 snapshots (77,010 → 76,618) with no reversal signal. Closing to preserve capital before the stop is hit."
+        "thesis": "BTC spot has declined from entry at 76,989 to 76,128 (-1.12%), approaching the -1.5% stop. The P/C ratio spike that triggered the entry (0.74 at T+14h) has normalized back to 0.726 without producing the expected reversal bounce. BTC is now at the 4th percentile of its 24h range and 1st percentile of its 7d range, indicating continued downward pressure rather than the reversal the thesis required. The btc_put_call_exhaustion_reversal setup family has 0/4 clean live trade wins, and the current price action is not confirming the hypothesis. Closing to preserve capital before the mechanical stop triggers."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
