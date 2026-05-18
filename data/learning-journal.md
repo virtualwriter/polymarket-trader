@@ -11881,3 +11881,55 @@ Key observations from this session:
 
 ---
 
+### 2026-05-18 16:30 UTC
+
+**Portfolio:** $99.75 total | Cash $93.75 | 6 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_pm_iv = 74.1 is 2.1 std devs from mean (63.48 ± 5.15)
+- [anomaly] hype_med_max = 64.7 is 2.0 std devs from mean (57.92 ± 3.37)
+- [correlation_flip] BTC-OIL correlation shifted from 0.37 to -0.47. Rolling correlation: 24h=-0.38, 7d=-0.46, 30d=0.56. Current 24h corr is at 58th pct of last 19 daily 24h-rolling values (range -0.89 to 0.58).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.13 to 0.48. Rolling correlation: 24h=-0.15, 7d=0.57, 30d=-0.34. Current 24h corr is at 32th pct of last 19 daily 24h-rolling values (range -0.60 to 0.88).
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 83 (36 wins / 47 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 3/3 shadows would have won, avg P&L 81.96%.
+- YES exploratory one-touch high-edge shadow is validating: 3/3 14d shadows won, avg P&L 47.14%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated (near-money repriced) (+20.59%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated (near-money repriced) (+20.83%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have closed with thesis validated (near-money repriced) (+100.00%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have hit stop (-3.61%)
+
+**LLM analysis:**
+Key observations from this session:
+
+1. BTC TERM STRUCTURE INVERSION (T16): The btc_opt_iv_term_spread flipped to -2.51 (90d IV 41.4% > 30d IV 38.9%) — the first negative reading in the dataset. This is a significant regime signal. Normally 30d IV > 90d IV (positive spread of 10-16pts). An inversion suggests the market is pricing near-term uncertainty higher than medium-term, which is bearish for the IV compression thesis and potentially bullish for near-term vol. This contributed to closing the BTC PROMOTED_HYPOTHESIS long.
+
+2. HYPE FUNDING VOLATILITY: HYPE funding swung from +10.95% → -95.59% (T14) → -55.94% (T15) → +10.95% (T16). This extreme oscillation within 2 hours is unusual and suggests forced liquidations followed by rapid normalization. OI declined from 1.034B to 966M (-6.6%) during this period. The HYPE spot declined from $46.21 to $44.80 (-3.1%). This pattern is more consistent with the liquidation-short family than the long-bounce family.
+
+3. CORRELATION REGIME SHIFT: BTC-OIL correlation flipped from +0.37 to -0.47 (24h), and BTC-GOLD correlation flipped from -0.13 to +0.48 (24h). This suggests BTC is decoupling from risk assets (oil) and re-correlating with safe havens (gold). This is a macro regime shift that could affect cross-asset positioning.
+
+4. OIL PC_RATIO TRADE PERFORMING: The OIL long (T-1779114618102-igou) opened at $101.30 is up +1.95% with oil at $103.28. The P/C ratio remains elevated (1.455) but has partially normalized from the 1.495 extreme. The trade is on track toward the +4% target.
+
+5. GOLD FUNDING NORMALIZATION: Gold HL funding went from -44.78% at entry to +14.18% currently — a massive swing. The GOLD long (T-1778916565173-2wqk) is only up +0.16% despite this funding normalization, suggesting the spot price hasn't moved much. The breakeven arm is not yet armed (needs +1.5% peak). Gold spot has been range-bound $4,534-$4,578.
+
+6. AMZN LONG PERFORMING: AMZN (T-1778916565173-vz22) is up +1.10% with the breakeven arm armed. Stock moved from $262.64 to $265.62 (+1.13%). Funding normalized from -29.81% to +23.50%. The thesis is working but the position is now paying positive funding carry.
+
+7. HYPOTHESIS BACKLOG: 9 setup families still need more shadow tests. No new hypotheses proposed this session per policy — focusing on existing backlog completion.
+
+8. OIL ONE-TOUCH NO POSITION: The OIL $56 NO position (T-1779049817841-htfg) is down -47.37% with oil at $103.28 — well above the $56 strike. This is a long-dated position (316h remaining) with no mechanical stop until 100% loss. The thesis is that oil stays above $56 through June expiry, which remains highly likely given current spot levels. The position is mechanically owned and cannot be LLM-closed.
+
+**LLM close rejections today (2026-05-18, token-burn signal):**
+- Total rejected close instructions: 7
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (7)
+- Repeat-offender positions (≥3 rejections today): T-1779089415632-pbo3 (7) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+

@@ -12,7 +12,7 @@
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has declined from entry at 76,989 to 76,200 (-1.02%), approaching the -1.5% mechanical stop. More critically, the thesis was a put-call exhaustion reversal triggered by btc_ibit_pc_ratio spiking to 0.74 — that ratio has since normalized to 0.60, meaning the put-buying exhaustion signal has resolved without the expected upside follow-through. The btc_spot trajectory shows 12 consecutive snapshots of weakness with spot now at the 7d percentile-1 (76,200 = 7d low). The signal has been invalidated: P/C normalized, spot continued lower, and the reversal thesis has not materialized within the 8-hour hold window. Closing to avoid mechanical stop and preserve capital."
+        "thesis": "BTC spot has declined from entry $76,989 to $76,297 (-0.90%), approaching the -1.5% mechanical stop. The BTC term structure inverted at T16 (90d IV 41.4% > 30d IV 38.9%, spread -2.51) — a new bearish vol signal not present at entry that suggests the IV compression thesis may be reversing rather than continuing. BTC is at the 8th percentile of its 24h range and 1st percentile of its 7d range, indicating persistent weakness. The promoted H-069 put-call exhaustion reversal thesis required IBIT P/C to spike above 1.0 as a contrarian signal, but BTC has continued lower despite the P/C normalization. Closing to preserve capital ahead of mechanical stop."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

@@ -1,18 +1,32 @@
 {
-  "generatedAt": "2026-05-18T15:29:13.613Z",
+  "generatedAt": "2026-05-18T16:29:26.057Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.31875000000000014,
+      "confidence": 0.23919146617482695,
+      "thesis": "OIL P/C ratio 1.46 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 103.28,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 5
+    },
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.517119402,
-      "confidence": 0.21761030835412498,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.5pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5318817499999999,
+      "confidence": 0.22382248892187495,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.0pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76200,
+      "entryPrice": 76319,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -24,33 +38,24 @@
       }
     },
     {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.23375000000000007,
-      "confidence": 0.17540707519487306,
-      "thesis": "OIL P/C ratio 1.39 — heavy put buying → contrarian long.",
-      "hypothesisId": null,
-      "entryPrice": 102.78,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 5
-    },
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
+      "venue": "polymarket",
       "direction": "short",
-      "strength": 0.06485714285714285,
-      "confidence": 0.03973659724683405,
-      "thesis": "GOLD HL funding 17.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.516030551,
+      "confidence": 0.21715210624268746,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.5pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 4540,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
+      "entryPrice": 76319,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "701501",
+        "allowDirectionFallback": false
+      }
     }
   ],
   "llmCloseEligibility": [
