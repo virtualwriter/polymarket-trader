@@ -1792,11 +1792,11 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         if (!response.ok) throw new Error(result.error || `HTTP ${{response.status}}`);
         status.classList.remove("stale");
         status.textContent = result.status === "already_running"
-          ? "Live CLOB refresh is already running on the VPS. Polling for updated rows..."
-          : "Started live CLOB refresh on the VPS. Polling for updated rows...";
+          ? "Heatmap snapshot refresh is already running on the VPS. Polling for updated rows..."
+          : "Started heatmap snapshot refresh on the VPS. Polling for updated rows...";
         pollLatestForLiveRefresh();
       }} catch (err) {{
-        status.textContent = `Could not start live CLOB refresh: ${{err.message || err}}. Showing latest hourly snapshot.`;
+        status.textContent = `Could not start heatmap snapshot refresh: ${{err.message || err}}. Showing latest hourly snapshot.`;
         status.classList.add("stale");
       }}
     }}

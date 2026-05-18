@@ -156,15 +156,11 @@ def refresh_heatmap_live() -> None:
             }
         )
         command = [
-            "python3",
-            "scripts/cross_venue_relative_value_report.py",
-            "--live-quotes",
-            "--live-hyperliquid",
-            "--latest-json",
-            str(HEATMAP_LIVE_PATH),
-            "--skip-csv",
-            "--skip-html",
-            "--no-archive",
+            "sh",
+            "-c",
+            "npx tsx scripts/market-scanner.ts --snapshot && "
+            "python3 scripts/cross_venue_relative_value_report.py "
+            f"--latest-json {HEATMAP_LIVE_PATH} --skip-csv --skip-html --no-archive",
         ]
         timeout_seconds = int(os.environ.get("HEATMAP_LIVE_REFRESH_TIMEOUT_SECONDS", "180"))
         try:
