@@ -11015,6 +11015,51 @@ Key observations from this session:
 
 ---
 
+### 2026-05-17 22:07 UTC — Operator-directed shadow cleanup + STALE_LOTTERY_TICKET_NO
+
+This is an out-of-band update from the operator (not an autonomous engine cycle). Three things happened:
+
+**1. Closed four ONE_TOUCH_HIGH_EDGE_YES_SHADOW trades as strike-IV-skew artifacts (closeReason=`data_quality_artifact`, `learningExcluded=true`).** These shadows are excluded from one-touch hit-rate stats so they do not bias the signal weights. The LLM independently flagged the BTC May $90k/$95k contracts as artifacts earlier today; this cleanup formalizes that across the same family:
+
+- `OT-1779049754796-e2vg` — BTC May $90k YES — spot ~$78.3k, +15% OTM, 14d DTE, option_iv 1.05 vs pm_iv 0.37 (2.8×).
+- `OT-1779049754797-l8xi` — BTC May $95k YES — spot ~$78.3k, +21% OTM, 14d DTE, option_iv 1.23 vs pm_iv 0.37 (3.3×).
+- `OT-1779049754797-nzhs` — OIL CL $175 YES (Jun) — spot ~$101.9, +72% OTM, 44d DTE, option_iv 1.21 vs pm_iv 0.59 (2.05×).
+- `OT-1778736486249-i4ef` — OIL CL $140 YES (Jun) — spot ~$101.9, +37% OTM, 44d DTE, option_iv 0.83 vs pm_iv 0.59 (1.40×).
+
+Pattern: `buy_yes` upside-touch shadows where the model uses strike-specific option IV that is materially elevated by tail-hedging skew vs the PM-implied IV the same market is using. The "edge" is the model paying for skew that PM is not pricing. A new guard `isStrikeIvSkewArtifact` (DTE ≤ 60, |strike-spot|/spot ≥ 15%, option_iv/pm_iv ≥ 1.3) now blocks promotion of equivalent setups in `strictOneTouchHighEdgeEligible`. Long-dated (>60 DTE) and near-money (<15% OTM) buy_yes touches are unaffected.
+
+**2. Closed six "near-money fully repriced" winners as `thesis_validated` (counted as wins, not excluded).** Each entered at a clear IV-touch / one-touch edge that has since converged into the PM price. Continuing to hold compensates only the residual time-decay / tail-risk premium, which was no longer the original setup's edge:
+
+- `MANUAL-IVTOUCH-OIL-NO-2132637-1778084458` — WTI LOW $85 NO May — 0.35 → 0.80 (+128.6% PnL).
+- `MANUAL-IVTOUCH-OIL-NO-2230536-1778604114` — WTI LOW $90 NO May — 0.40 → 0.61 (+52.5%).
+- `OT-1778722092794-wm5s` — WTI HIGH $105 YES May (shadow) — 0.68 → 0.82 (+20.6%).
+- `OT-1778790497075-rxq1` — WTI HIGH $110 YES May (shadow) — 0.48 → 0.58 (+20.8%).
+- `MANUAL-IVTOUCH-GOLD-YES-2074210-1778604174` — XAUUSD LOW $4,200 YES May — 0.039 → 0.112 (+187.2%, ~2.9× return on entry).
+- `OT-1778808496999-theh` — XAUUSD LOW $4,500 YES May (shadow) — 0.37 → 0.74 (+100%).
+
+Interpretation: model "breaking" at near-money fully repriced is not a model failure but the expected end-state of a successful trade — edge captured. Resolving them keeps stats honest and frees the watchlist for fresh setups.
+
+**3. Added a new shadow signal type: `STALE_LOTTERY_TICKET_NO`.** This is the opposite-end-of-the-distribution complement to the artifacts above. It fires on the *NO* side of far-OTM short-DTE YES contracts where the model has correctly identified that touch probability is near zero but PM is sluggishly leaving residual lottery premium in the YES price. Eligibility (see `staleLotteryTicketNoEligible`):
+
+- bestExpression = `sell_yes_or_buy_no`
+- 0.05 ≤ pm_yes ≤ 0.30 (residual premium exists, not a contested market)
+- model touch prob ≤ 5%
+- |strike-spot|/spot ≥ 20%
+- DTE ≤ 30 days
+- sell_yes edge ≥ 5pts
+- no `wide_pm_spread`, `low_pm_liquidity`, `missing_options_iv`, or `no_listed_options_mapping` flags
+- hold window = min(30d, DTE), since the thesis is "expire worthless"
+
+These are recorded as `stale_lottery_ticket_shadow` shadows only — no live promotion until the hit rate is established. The setup is materially different from `ONE_TOUCH_HIGH_EDGE_NO` (which targets bigger edges on closer-to-money strikes); this one is explicitly far-OTM short-DTE NO-side decay collection.
+
+**Net effect on stats:**
+- Open shadow count drops from 60 → 50.
+- One-touch high-edge YES exploratory bucket loses 4 phantom positions from its denominator.
+- Resolved-win count gains 6 thesis-validated winners.
+- Going forward, the same strike-IV-skew artifacts will be auto-blocked at promotion and will not need manual cleanup.
+
+---
+
 ### 2026-05-17 22:30 UTC
 
 **Portfolio:** $99.80 total | Cash $93.80 | 6 open | P&L $0.7972 | 52% win rate (136 trades)
@@ -11046,6 +11091,37 @@ Key session observations: (1) HYPE breakout is the dominant story — OI surged 
 **LLM close rejections today (2026-05-17, token-burn signal):**
 - Total rejected close instructions: 3
 - Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (2); PROMOTED_HYPOTHESIS / HYPE (1)
+
+---
+
+### 2026-05-17 22:36 UTC — Live ONE_TOUCH_HIGH_EDGE_NO artifact close + guard extension
+
+Follow-up to the earlier shadow cleanup. A **live** (not shadow) one-touch NO trade had entered production at 20:30 UTC, before the guard was added, and matched the same strike-IV-skew artifact pattern but on the **downside / put-skew** side. The engine's own LLM analysis at 21:30 UTC independently flagged it as "essentially a lottery ticket" (see the prior journal entry's point 3); this entry formalises that observation and extends the guard so it cannot recur.
+
+- `T-1779049817841-htfg` — OIL Polymarket short, `cl-over-under-jun-2026` "Will CL settle over $56 on June 30, 2026?" NO contract. Entered 2026-05-17 20:30 UTC at NO 0.038 with reported 19.1pt edge; closed 2026-05-17 22:35 UTC at NO 0.021 (conservative bid mark) for **-$0.4474 (-44.74%)**. closeReason=`data_quality_artifact`, excluded from setup-family learning via `isContaminatedTrade`.
+
+Heatmap row at close:
+- spot $101.93, strike $56 (**45% below spot**)
+- DTE 43.9d (short)
+- option_iv 1.385 (CME CL $56-strike put — deep OTM put skew)
+- pm_iv 0.594 (sensible market-implied IV)
+- **option_iv / pm_iv = 2.33×** — identical signature to the four YES artifacts cleaned up earlier.
+
+With realistic IV (pm_iv), model NO fair value computes to ~0.2% (P(CL drops 45% in 44 days)); the 138%-IV input inflated it to ~16%, generating the phantom 19pt edge. The model was paying for CME's deep-OTM put crash skew that PM is rationally ignoring.
+
+**Guard fix.** `isStrikeIvSkewArtifact` previously short-circuited on `bestExpression !== "buy_yes"`. That early-return is removed; the guard now applies symmetrically to both `buy_yes` (upside call skew) and `sell_yes_or_buy_no` (downside put skew). The arithmetic test is unchanged (DTE ≤ 60, |strike-spot|/spot ≥ 15%, option_iv/pm_iv ≥ 1.3) and rejects both the original YES artifacts and this NO artifact. Constants renamed `ONE_TOUCH_BUY_YES_SKEW_GUARD_*` → `ONE_TOUCH_SKEW_GUARD_*` to reflect the broader scope.
+
+Verified on the current heatmap:
+- BLOCKS the CL $56 NO row (now caught) and the BTC/OIL artifact YES rows (still caught).
+- KEEPS long-dated NO setups: 3 BTC Dec dip-to-$45k/$50k/$55k contracts (DTE 228d — outside short-DTE window, lower skew concentration).
+- KEEPS near-money buy_yes setups (e.g. OIL CL $110 Jun at 7.9% OTM).
+
+**Net effect on live stats:**
+- Live trade count: 7 → 6 open. `totalTrades` 136 → 137 (this close), `lossCount` 65 → 66, `totalRealizedPnl` $0.7972 → $0.3498, cash $93.80 → $94.35.
+- Loss is excluded from setup-family learning stats (`isContaminatedTrade` recognises `closeReason === "data_quality_artifact"`), so the `ONE_TOUCH_HIGH_EDGE_NO` win-rate is not penalised by what was a data-pipeline issue rather than a thesis failure.
+- The CL $56 NO market currently shows sell_yes edge 11.84pt in the heatmap, below the 15pt floor, so it would not re-enter even without the guard. The guard ensures it stays blocked if the edge re-inflates as IV moves.
+
+Operationally noteworthy: the LLM correctly identified the artifact at 21:30 UTC but did not have authority to close it (the trade is `ONE_TOUCH_HIGH_EDGE_NO`, a mechanical-owned signal that does not accept LLM close instructions). The guard fix is the structural answer; until then, operator review is the backstop for any artifact that enters between heatmap snapshots.
 
 ---
 

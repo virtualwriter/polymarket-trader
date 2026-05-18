@@ -515,6 +515,9 @@ function reportSignalType(trade: ClosedTrade): string {
   if (trade.signalType === "PC_RATIO_EXTREME_LOW" && trade.closeReason.includes("DATA_CORRECTION_ARTIFACT")) {
     return "PC_RATIO_EXTREME_LOW_DATA_CORRECTION_ARTIFACT";
   }
+  if (trade.closeReason === "data_quality_artifact") {
+    return `${trade.signalType}_DATA_QUALITY_ARTIFACT`;
+  }
   return trade.signalType;
 }
 
@@ -959,7 +962,9 @@ function main() {
   for (const trade of trades) addStats(allTradeStats, trade.pnl, trade.pnlPct);
   const operationallyTaintedTrades = trades.filter((trade) => OPERATIONALLY_TAINTED_TRADES[trade.id]);
 
-  const resolvedShadows = shadows.filter((shadow) => shadow.status === "resolved" && shadow.hypotheticalResult);
+  const resolvedShadows = shadows.filter((shadow) =>
+    shadow.status === "resolved" && shadow.hypotheticalResult && !shadow.learningExcluded
+  );
   const allShadowStats = emptyStats();
   for (const shadow of resolvedShadows) {
     const result = shadow.hypotheticalResult!;

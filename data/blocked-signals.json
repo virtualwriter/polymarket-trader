@@ -11382,7 +11382,7 @@
   },
   {
     "id": "MANUAL-IVTOUCH-OIL-NO-2132637-1778084458",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-06T16:20:58Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -11390,7 +11390,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 65.5% vs IV touch model 56.9%; edge -8.1 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 65.5% vs IV touch model 56.9%; edge -8.1 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-17: thesis_validated \u2014 Near-money fully repriced: NO went 0.35 \u2192 0.80 as WTI held above $85. Edge thesis (PM was overstating downside touch prob) has played out; remaining 0.20 to settlement is mostly time decay and tail-risk premium.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -11568,6 +11568,16 @@
       },
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
+    },
+    "resolvedAt": "2026-05-17T22:07:12.084Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.8,
+      "pnl": 1.2857,
+      "pnlPct": 128.57,
+      "marketPnl": 1.2857,
+      "fundingPnl": 0.0,
+      "outcome": "win"
     }
   },
   {
@@ -11823,7 +11833,7 @@
   },
   {
     "id": "MANUAL-IVTOUCH-OIL-NO-2230536-1778604114",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-12T16:41:54Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -11831,7 +11841,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 62.0% vs IV touch model 48.0%; edge -13.0 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 62.0% vs IV touch model 48.0%; edge -13.0 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-17: thesis_validated \u2014 Near-money fully repriced: NO went 0.40 \u2192 0.61. Same family as the $85 NO; original edge captured.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -12012,11 +12022,21 @@
       },
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
+    },
+    "resolvedAt": "2026-05-17T22:07:12.084Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.61,
+      "pnl": 0.525,
+      "pnlPct": 52.5,
+      "marketPnl": 0.525,
+      "fundingPnl": 0.0,
+      "outcome": "win"
     }
   },
   {
     "id": "MANUAL-IVTOUCH-GOLD-YES-2074210-1778604174",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-12T16:42:54Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -12024,7 +12044,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 3.1% vs IV touch model 10.9%; edge +7.0 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 3.1% vs IV touch model 10.9%; edge +7.0 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-17: thesis_validated \u2014 Near-money fully repriced: YES went 0.039 \u2192 0.112 (~2.9x) as gold drifted toward strike. Manual IV-touch thesis (PM underpricing downside touch) validated.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -12202,6 +12222,16 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    },
+    "resolvedAt": "2026-05-17T22:07:12.084Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.112,
+      "pnl": 1.8718,
+      "pnlPct": 187.18,
+      "marketPnl": 1.8718,
+      "fundingPnl": 0.0,
+      "outcome": "win"
     }
   },
   {
@@ -15514,7 +15544,7 @@
   },
   {
     "id": "OT-1778722092794-wm5s",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-14T01:28:12.794Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -15522,7 +15552,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 17.1pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 17.1pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-17: thesis_validated \u2014 Near-money fully repriced: YES went 0.68 \u2192 0.82 as WTI approached strike. Touch is now mostly in the price; further edge is small relative to tail risk into expiry.]",
     "marketQuality": {
       "yesBid": 0.67,
       "yesAsk": 0.68,
@@ -15625,6 +15655,16 @@
       "entryUnderlyingPrice": 96.88,
       "currentUnderlyingPrice": 103.26,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-17T22:07:12.084Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.82,
+      "pnl": 0.2059,
+      "pnlPct": 20.59,
+      "marketPnl": 0.2059,
+      "fundingPnl": 0.0,
+      "outcome": "win"
     }
   },
   {
@@ -15926,7 +15966,7 @@
   },
   {
     "id": "OT-1778736486249-i4ef",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-14T05:28:06.249Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -15934,7 +15974,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.6pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.6pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-17: data_quality_artifact \u2014 Strike-IV-skew artifact: spot ~$101.9, strike $140 (+37% OTM), 44d DTE, option_iv 0.83 vs pm_iv 0.59 (1.40x). Same family as $175 \u2014 buy_yes edge driven by strike-specific skew rather than market consensus on touch likelihood.]",
     "marketQuality": {
       "yesBid": 0.17,
       "yesAsk": 0.18,
@@ -16037,6 +16077,20 @@
       "entryUnderlyingPrice": 97.25,
       "currentUnderlyingPrice": 103.26,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-17T22:07:12.084Z",
+    "hypotheticalResult": {
+      "closeReason": "data_quality_artifact",
+      "exitPrice": 0.18,
+      "pnl": 0.0,
+      "pnlPct": 0.0,
+      "marketPnl": 0.0,
+      "fundingPnl": 0.0,
+      "outcome": "win"
+    },
+    "learningExcluded": {
+      "reason": "data_quality_artifact",
+      "note": "Strike-IV-skew artifact: spot ~$101.9, strike $140 (+37% OTM), 44d DTE, option_iv 0.83 vs pm_iv 0.59 (1.40x). Same family as $175 \u2014 buy_yes edge driven by strike-specific skew rather than market consensus on touch likelihood."
     }
   },
   {
@@ -17509,7 +17563,7 @@
   },
   {
     "id": "OT-1778790497075-rxq1",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-14T20:28:17.075Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -17517,7 +17571,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 18.3pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 18.3pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-17: thesis_validated \u2014 Near-money fully repriced: YES went 0.48 \u2192 0.58. Same family as the $105 YES; the touch-probability edge that the model identified has converged.]",
     "marketQuality": {
       "yesBid": 0.47,
       "yesAsk": 0.48,
@@ -17620,6 +17674,16 @@
       "entryUnderlyingPrice": 97.68,
       "currentUnderlyingPrice": 103.26,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-17T22:07:12.084Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.58,
+      "pnl": 0.2083,
+      "pnlPct": 20.83,
+      "marketPnl": 0.2083,
+      "fundingPnl": 0.0,
+      "outcome": "win"
     }
   },
   {
@@ -17873,7 +17937,7 @@
   },
   {
     "id": "OT-1778808496999-theh",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-15T01:28:16.999Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -17881,7 +17945,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 19.4pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 19.4pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-17: thesis_validated \u2014 Near-money fully repriced: YES went 0.37 \u2192 0.74 as XAUUSD pulled back toward strike. Touch probability is now embedded in price.]",
     "marketQuality": {
       "yesBid": 0.36,
       "yesAsk": 0.37,
@@ -17984,6 +18048,16 @@
       "entryUnderlyingPrice": 4618,
       "currentUnderlyingPrice": 4540.4,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-17T22:07:12.084Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.74,
+      "pnl": 1.0,
+      "pnlPct": 100.0,
+      "marketPnl": 1.0,
+      "fundingPnl": 0.0,
+      "outcome": "win"
     }
   },
   {
@@ -19975,7 +20049,7 @@
   },
   {
     "id": "OT-1779049754796-e2vg",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-17T20:29:14.796Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -19983,7 +20057,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.7,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 51.0pt edge on BTC; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 51.0pt edge on BTC; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration. [CLOSED 2026-05-17: data_quality_artifact \u2014 Strike-IV-skew artifact: spot ~$78.3k, strike $90k (+15% OTM), 14d DTE, option_iv 1.05 vs pm_iv 0.37 (2.8x). The 51pt model edge was driven by short-DTE tail skew in CME BTC options, not real touch probability.]",
     "marketQuality": {
       "yesBid": 0.034,
       "yesAsk": 0.035,
@@ -20082,15 +20156,29 @@
       "expiryDate": "2026-05-31T20:29:14.796Z",
       "instrumentType": "pm_yes",
       "instrumentId": "what-price-will-bitcoin-hit-in-may-2026::2132775",
-      "instrumentLabel": "what-price-will-bitcoin-hit-in-may-2026 — YES — Will Bitcoin reach $90,000 in May?",
+      "instrumentLabel": "what-price-will-bitcoin-hit-in-may-2026 \u2014 YES \u2014 Will Bitcoin reach $90,000 in May?",
       "entryUnderlyingPrice": 78254,
       "currentUnderlyingPrice": 77022,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-17T22:07:12.084Z",
+    "hypotheticalResult": {
+      "closeReason": "data_quality_artifact",
+      "exitPrice": 0.035,
+      "pnl": 0.0,
+      "pnlPct": 0.0,
+      "marketPnl": 0.0,
+      "fundingPnl": 0.0,
+      "outcome": "win"
+    },
+    "learningExcluded": {
+      "reason": "data_quality_artifact",
+      "note": "Strike-IV-skew artifact: spot ~$78.3k, strike $90k (+15% OTM), 14d DTE, option_iv 1.05 vs pm_iv 0.37 (2.8x). The 51pt model edge was driven by short-DTE tail skew in CME BTC options, not real touch probability."
     }
   },
   {
     "id": "OT-1779049754797-l8xi",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-17T20:29:14.797Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -20098,7 +20186,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.7,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 45.0pt edge on BTC; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 45.0pt edge on BTC; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration. [CLOSED 2026-05-17: data_quality_artifact \u2014 Strike-IV-skew artifact: spot ~$78.3k, strike $95k (+21% OTM), 14d DTE, option_iv 1.23 vs pm_iv 0.37 (3.3x). 45pt edge was the model paying for skew that PM is not pricing.]",
     "marketQuality": {
       "yesBid": 0.011,
       "yesAsk": 0.012,
@@ -20197,10 +20285,24 @@
       "expiryDate": "2026-05-31T20:29:14.797Z",
       "instrumentType": "pm_yes",
       "instrumentId": "what-price-will-bitcoin-hit-in-may-2026::2132774",
-      "instrumentLabel": "what-price-will-bitcoin-hit-in-may-2026 — YES — Will Bitcoin reach $95,000 in May?",
+      "instrumentLabel": "what-price-will-bitcoin-hit-in-may-2026 \u2014 YES \u2014 Will Bitcoin reach $95,000 in May?",
       "entryUnderlyingPrice": 78254,
       "currentUnderlyingPrice": 77022,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-17T22:07:12.084Z",
+    "hypotheticalResult": {
+      "closeReason": "data_quality_artifact",
+      "exitPrice": 0.012,
+      "pnl": 0.0,
+      "pnlPct": 0.0,
+      "marketPnl": 0.0,
+      "fundingPnl": 0.0,
+      "outcome": "win"
+    },
+    "learningExcluded": {
+      "reason": "data_quality_artifact",
+      "note": "Strike-IV-skew artifact: spot ~$78.3k, strike $95k (+21% OTM), 14d DTE, option_iv 1.23 vs pm_iv 0.37 (3.3x). 45pt edge was the model paying for skew that PM is not pricing."
     }
   },
   {
@@ -20312,7 +20414,7 @@
       "expiryDate": "2026-05-31T20:29:14.797Z",
       "instrumentType": "pm_yes",
       "instrumentId": "spx-hit-dec-2026::1125385",
-      "instrumentLabel": "spx-hit-dec-2026 — YES — Will S&P 500 (SPX) hit $9,300 (HIGH) in December?",
+      "instrumentLabel": "spx-hit-dec-2026 \u2014 YES \u2014 Will S&P 500 (SPX) hit $9,300 (HIGH) in December?",
       "entryUnderlyingPrice": 7391.7,
       "currentUnderlyingPrice": 7391.7,
       "fundingPnlAccrued": 0
@@ -20320,7 +20422,7 @@
   },
   {
     "id": "OT-1779049754797-nzhs",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-17T20:29:14.797Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -20328,7 +20430,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.7,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 21.5pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 21.5pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration. [CLOSED 2026-05-17: data_quality_artifact \u2014 Strike-IV-skew artifact: spot ~$101.9, strike $175 (+72% OTM), 44d DTE, option_iv 1.21 vs pm_iv 0.59 (2.05x). Far-OTM CL tail skew inflated touch prob; the implied scenario requires WTI to nearly double in six weeks.]",
     "marketQuality": {
       "yesBid": 0.04,
       "yesAsk": 0.05,
@@ -20427,10 +20529,24 @@
       "expiryDate": "2026-05-31T20:29:14.797Z",
       "instrumentType": "pm_yes",
       "instrumentId": "cl-hit-jun-2026::1652691",
-      "instrumentLabel": "cl-hit-jun-2026 — YES — Will Crude Oil (CL) hit (HIGH) $175 by end of June?",
+      "instrumentLabel": "cl-hit-jun-2026 \u2014 YES \u2014 Will Crude Oil (CL) hit (HIGH) $175 by end of June?",
       "entryUnderlyingPrice": 101.9,
       "currentUnderlyingPrice": 103.26,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-17T22:07:12.084Z",
+    "hypotheticalResult": {
+      "closeReason": "data_quality_artifact",
+      "exitPrice": 0.05,
+      "pnl": 0.0,
+      "pnlPct": 0.0,
+      "marketPnl": 0.0,
+      "fundingPnl": 0.0,
+      "outcome": "win"
+    },
+    "learningExcluded": {
+      "reason": "data_quality_artifact",
+      "note": "Strike-IV-skew artifact: spot ~$101.9, strike $175 (+72% OTM), 44d DTE, option_iv 1.21 vs pm_iv 0.59 (2.05x). Far-OTM CL tail skew inflated touch prob; the implied scenario requires WTI to nearly double in six weeks."
     }
   },
   {

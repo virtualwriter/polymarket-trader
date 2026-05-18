@@ -67,6 +67,33 @@ const ONE_TOUCH_BUY_YES_BAD_FLAGS = new Set([
   ...ONE_TOUCH_STRICT_BAD_FLAGS,
   "extreme_perp_funding",
 ]);
+// Strike-IV-skew artifact guard: for far-OTM short-DTE touch/settlement setups,
+// the model touch/terminal probability is driven by strike-specific option IV
+// which can be lifted substantially by tail-hedging skew (call skew above spot,
+// put skew below spot) vs the PM-implied IV. When option_iv runs materially
+// above pm_iv on a short-dated far-OTM strike, the resulting "edge" is the
+// model paying for skew the market is not actually pricing. Applies symmetrically
+// to buy_yes (upside call skew) and sell_yes_or_buy_no (downside put skew).
+const ONE_TOUCH_SKEW_GUARD_MAX_DTE = 60;
+const ONE_TOUCH_SKEW_GUARD_MIN_DIST_PCT = 0.15;
+const ONE_TOUCH_SKEW_GUARD_IV_RATIO = 1.3;
+// STALE_LOTTERY_TICKET_NO: short-DTE far-OTM YES contracts where the touch model
+// has decayed near zero but the PM market is slow to reprice the residual lottery
+// premium. Shadow-only NO side; pays off if YES expires worthless.
+const STALE_LOTTERY_TICKET_NO_SIGNAL = "STALE_LOTTERY_TICKET_NO";
+const STALE_LOTTERY_TICKET_NO_MAX_YES_PRICE = 0.30;
+const STALE_LOTTERY_TICKET_NO_MIN_YES_PRICE = 0.05;
+const STALE_LOTTERY_TICKET_NO_MAX_MODEL_PROB = 0.05;
+const STALE_LOTTERY_TICKET_NO_MIN_DIST_PCT = 0.20;
+const STALE_LOTTERY_TICKET_NO_MAX_DTE = 30;
+const STALE_LOTTERY_TICKET_NO_MIN_EDGE_PTS = 5;
+const STALE_LOTTERY_TICKET_NO_HOLD_DAYS = 30;
+const STALE_LOTTERY_TICKET_NO_BAD_FLAGS = new Set([
+  "wide_pm_spread",
+  "low_pm_liquidity",
+  "missing_options_iv",
+  "no_listed_options_mapping",
+]);
 const HYPOTHESIS_SHADOW_TESTS_REQUIRED = 20;
 const HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT = 25;
 const PROMOTE_THRESHOLD = 0.65;
@@ -189,7 +216,7 @@ interface ClosedTrade {
   signalType: string;
   hypothesisId: string | null;
   thesis: string;
-  closeReason: "target" | "stop" | "breakeven_stop" | "expiry" | "llm_decision" | "signal_killed";
+  closeReason: "target" | "stop" | "breakeven_stop" | "expiry" | "llm_decision" | "signal_killed" | "thesis_validated" | "data_quality_artifact";
   instrumentType?: string;
   instrumentId?: string;
   instrumentLabel?: string;
@@ -327,7 +354,7 @@ interface BlockedSignalShadow {
   status: "open" | "resolved" | "cancelled";
   blockedAt: string;
   resolvedAt?: string;
-  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short" | "relative_value_heatmap" | "monotonic_arb_shadow" | "one_touch_high_edge_shadow";
+  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short" | "relative_value_heatmap" | "monotonic_arb_shadow" | "one_touch_high_edge_shadow" | "stale_lottery_ticket_shadow";
   signalType: string;
   asset: string;
   venue: Signal["venue"];
@@ -2528,6 +2555,26 @@ function relativeValueFlagSet(row: RelativeValueObservation): Set<string> {
   return new Set(row.flags.split(";").map((flag) => flag.trim()).filter(Boolean));
 }
 
+function isStrikeIvSkewArtifact(row: RelativeValueObservation): boolean {
+  // Applies symmetrically to both directions of one-touch / settlement edge:
+  //   - buy_yes (upside): strike far above spot, option IV inflated by call skew
+  //   - sell_yes_or_buy_no (downside): strike far below spot, option IV
+  //     inflated by put skew. Same arithmetic test; the "side" is implicit in
+  //     bestExpression and the distance metric is absolute.
+  if (row.bestExpression !== "buy_yes" && row.bestExpression !== "sell_yes_or_buy_no") return false;
+  const dteDays = Number(row.rawRow.dte_days);
+  const spot = Number(row.rawRow.spot);
+  const strike = row.strike;
+  const optIv = row.optionIv;
+  const pmIv = row.pmIv;
+  if (!Number.isFinite(dteDays) || dteDays > ONE_TOUCH_SKEW_GUARD_MAX_DTE) return false;
+  if (!Number.isFinite(spot) || spot <= 0) return false;
+  if (optIv === null || pmIv === null || pmIv <= 0) return false;
+  const distPct = Math.abs(strike - spot) / spot;
+  if (distPct < ONE_TOUCH_SKEW_GUARD_MIN_DIST_PCT) return false;
+  return (optIv / pmIv) >= ONE_TOUCH_SKEW_GUARD_IV_RATIO;
+}
+
 function strictOneTouchHighEdgeEligible(row: RelativeValueObservation): boolean {
   if (row.modelVersion !== ONE_TOUCH_MODEL_VERSION) return false;
   if (!row.marketId || !row.eventSlug) return false;
@@ -2535,7 +2582,31 @@ function strictOneTouchHighEdgeEligible(row: RelativeValueObservation): boolean 
   if (row.bestExpression !== "sell_yes_or_buy_no" && row.bestExpression !== "buy_yes") return false;
   const flags = relativeValueFlagSet(row);
   const badFlags = row.bestExpression === "buy_yes" ? ONE_TOUCH_BUY_YES_BAD_FLAGS : ONE_TOUCH_STRICT_BAD_FLAGS;
-  return !Array.from(badFlags).some((flag) => flags.has(flag));
+  if (Array.from(badFlags).some((flag) => flags.has(flag))) return false;
+  if (isStrikeIvSkewArtifact(row)) return false;
+  return true;
+}
+
+function staleLotteryTicketNoEligible(row: RelativeValueObservation): boolean {
+  if (row.modelVersion !== ONE_TOUCH_MODEL_VERSION) return false;
+  if (!row.marketId || !row.eventSlug) return false;
+  if (row.bestExpression !== "sell_yes_or_buy_no") return false;
+  const yesPrice = row.pmYes;
+  if (yesPrice === null) return false;
+  if (yesPrice < STALE_LOTTERY_TICKET_NO_MIN_YES_PRICE || yesPrice > STALE_LOTTERY_TICKET_NO_MAX_YES_PRICE) return false;
+  const modelProb = row.modelProb;
+  if (modelProb === null || modelProb > STALE_LOTTERY_TICKET_NO_MAX_MODEL_PROB) return false;
+  const dte = Number(row.rawRow.dte_days);
+  if (!Number.isFinite(dte) || dte > STALE_LOTTERY_TICKET_NO_MAX_DTE) return false;
+  const spot = Number(row.rawRow.spot);
+  if (!Number.isFinite(spot) || spot <= 0) return false;
+  const distPct = Math.abs(row.strike - spot) / spot;
+  if (distPct < STALE_LOTTERY_TICKET_NO_MIN_DIST_PCT) return false;
+  const edge = row.edgePts;
+  if (edge === null || edge < STALE_LOTTERY_TICKET_NO_MIN_EDGE_PTS) return false;
+  const flags = relativeValueFlagSet(row);
+  if (Array.from(STALE_LOTTERY_TICKET_NO_BAD_FLAGS).some((flag) => flags.has(flag))) return false;
+  return true;
 }
 
 function buildOneTouchHighEdgeShadowPosition(
@@ -2643,6 +2714,119 @@ function recordOneTouchHighEdgeShadows(
         source: "cross_venue_relative_value_heatmap",
         row: row.rawRow,
         selectedSide,
+        selectedSignalType: position.signalType,
+      },
+    });
+    recorded++;
+  }
+
+  return recorded;
+}
+
+function buildStaleLotteryTicketNoShadowPosition(
+  row: RelativeValueObservation,
+  latestRow: SnapshotRow,
+  latestSnapshot: InstrumentSnapshotFile,
+): Position | null {
+  const event = latestSnapshot.polymarket.find((candidate) => candidate.slug === row.eventSlug);
+  const contract = event?.contracts.find((candidate) => candidate.marketId === row.marketId);
+  if (!event || !contract) return null;
+
+  const entryPrice = polymarketEntryPrice(contract, "pm_no");
+  if (entryPrice <= 0 || entryPrice >= 1) return null;
+
+  const openedAt = new Date().toISOString();
+  const expiryDate = new Date(openedAt);
+  const dteDays = Number(row.rawRow.dte_days);
+  const holdDays = Number.isFinite(dteDays) && dteDays > 0
+    ? Math.min(STALE_LOTTERY_TICKET_NO_HOLD_DAYS, Math.ceil(dteDays))
+    : STALE_LOTTERY_TICKET_NO_HOLD_DAYS;
+  expiryDate.setDate(expiryDate.getDate() + holdDays);
+
+  const underlyingPrice = getAssetPrice(latestRow, row.asset) ?? latestSnapshot.spots[row.asset] ?? row.strike;
+  const spot = Number(row.rawRow.spot);
+  const distPct = Number.isFinite(spot) && spot > 0 ? (Math.abs(row.strike - spot) / spot) * 100 : null;
+  const modelProbPct = row.modelProb !== null ? row.modelProb * 100 : null;
+  const yesPricePct = row.pmYes !== null ? row.pmYes * 100 : null;
+
+  return {
+    id: `SL-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    openedAt,
+    asset: row.asset,
+    venue: "polymarket",
+    direction: "short",
+    entryPrice,
+    currentPrice: entryPrice,
+    size: TRADE_SIZE,
+    leverage: 1,
+    signalType: STALE_LOTTERY_TICKET_NO_SIGNAL,
+    hypothesisId: null,
+    thesis: `[STALE LOTTERY TICKET NO SHADOW] Far-OTM YES (${distPct !== null ? distPct.toFixed(1) + "%" : "?"} from spot) with model touch prob ${modelProbPct !== null ? modelProbPct.toFixed(1) + "%" : "?"} but PM still pricing YES at ${yesPricePct !== null ? yesPricePct.toFixed(1) + "%" : "?"}. Sell residual lottery premium by buying NO; hold ${holdDays}d (capped at expiry) to test market repricing of unreachable strikes.`,
+    targetPct: null,
+    stopPct: 100,
+    expiryDate: expiryDate.toISOString(),
+    instrumentType: "pm_no",
+    instrumentId: `${event.slug}::${contract.marketId}`,
+    instrumentLabel: `${event.slug} — NO — ${contract.question}`,
+    entryUnderlyingPrice: underlyingPrice,
+    currentUnderlyingPrice: underlyingPrice,
+    fundingPnlAccrued: 0,
+  };
+}
+
+function recordStaleLotteryTicketNoShadows(
+  relativeValueRows: RelativeValueObservation[],
+  latestRow: SnapshotRow,
+  latestSnapshot: InstrumentSnapshotFile | null,
+  learningParams: LearningParams,
+  blockedSignals: BlockedSignalShadow[],
+): number {
+  if (!latestSnapshot) return 0;
+  const today = new Date().toISOString().slice(0, 10);
+  const candidates = relativeValueRows
+    .filter(staleLotteryTicketNoEligible)
+    .sort((a, b) => Math.abs(b.edgePts ?? 0) - Math.abs(a.edgePts ?? 0));
+  const seenThisRun = new Set<string>();
+  let recorded = 0;
+
+  for (const row of candidates) {
+    const position = buildStaleLotteryTicketNoShadowPosition(row, latestRow, latestSnapshot);
+    if (!position || !position.instrumentId) continue;
+    const dedupKey = `${position.signalType}|${position.instrumentId}`;
+    if (seenThisRun.has(dedupKey)) continue;
+    seenThisRun.add(dedupKey);
+    if (blockedSignals.some((shadow) =>
+      shadow.signalType === position.signalType &&
+      shadow.position.instrumentId === position.instrumentId &&
+      (shadow.status === "open" || shadow.blockedAt.slice(0, 10) === today)
+    )) continue;
+
+    blockedSignals.push({
+      id: position.id,
+      status: "open",
+      blockedAt: position.openedAt,
+      blockedReason: "stale_lottery_ticket_shadow",
+      signalType: position.signalType,
+      asset: row.asset,
+      venue: "polymarket",
+      direction: position.direction,
+      confidence: Math.min(1, (row.edgePts ?? 0) / 20),
+      thesis: position.thesis,
+      marketQuality: polymarketMarketQuality(position, latestSnapshot),
+      learningParamsSnapshot: {
+        macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+        contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
+        positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
+        llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
+        momentumLongExpiryDays: learningParams.momentumLongExpiryDays,
+        signalRisk: learningParams.signalRisk,
+      },
+      position,
+      heatmapRowSnapshot: {
+        schemaVersion: 1,
+        source: "cross_venue_relative_value_heatmap",
+        row: row.rawRow,
+        selectedSide: "no",
         selectedSignalType: position.signalType,
       },
     });
@@ -2778,7 +2962,9 @@ function resolveBlockedSignalShadows(
     const mark = markPosition(shadow.position, latestRow, snapshots, true);
     if (!mark) continue;
 
-    const expiryOnlyShadow = shadow.blockedReason === "manual_shadow_trade" || shadow.blockedReason === "one_touch_high_edge_shadow";
+    const expiryOnlyShadow = shadow.blockedReason === "manual_shadow_trade"
+      || shadow.blockedReason === "one_touch_high_edge_shadow"
+      || shadow.blockedReason === "stale_lottery_ticket_shadow";
     let closeReason: ClosedTrade["closeReason"] | null = null;
     if (!expiryOnlyShadow && shadow.position.targetPct !== null && mark.pnlPct >= shadow.position.targetPct) closeReason = "target";
     else if (!expiryOnlyShadow && mark.pnlPct <= -shadow.position.stopPct) closeReason = "stop";
@@ -2951,6 +3137,14 @@ function blockedSignalObservations(summary: BlockedSignalLearningSummary): strin
         notes.push(`MONOTONIC_ARB setup category has execution/model breaks: ${row.wouldHaveLost}/${row.resolved} shadow packages lost money despite locked-edge screening, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
       } else {
         notes.push(`MONOTONIC_ARB setup category is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadow packages, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
+      }
+    } else if (row.signalType === STALE_LOTTERY_TICKET_NO_SIGNAL) {
+      if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
+        notes.push(`STALE_LOTTERY_TICKET_NO shadow is validating: ${row.wouldHaveWon}/${row.resolved} far-OTM NO shadows would have won, avg P&L ${row.avgPnlPct.toFixed(2)}%. The market is repricing stale lottery premium and the shadow is collecting it.`);
+      } else if (row.wouldHaveLost >= row.wouldHaveWon + 2) {
+        notes.push(`STALE_LOTTERY_TICKET_NO shadow is weak: ${row.wouldHaveLost}/${row.resolved} far-OTM NO shadows would have lost, avg P&L ${row.avgPnlPct.toFixed(2)}%. Either model touch prob is biased low or PM is pricing tails efficiently.`);
+      } else {
+        notes.push(`STALE_LOTTERY_TICKET_NO shadow is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
       }
     } else if (row.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO || row.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_YES) {
       const side = row.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO ? "NO-priority" : "YES exploratory";
@@ -4440,6 +4634,7 @@ function buildEngineState(
 function setupIdForSignalType(signalType: string): { setupId: string; setupLabel: string } {
   if (signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO) return { setupId: "one_touch_high_edge_no", setupLabel: "One-touch high-edge NO" };
   if (signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_YES) return { setupId: "one_touch_high_edge_yes_exploratory", setupLabel: "One-touch high-edge YES exploratory" };
+  if (signalType === STALE_LOTTERY_TICKET_NO_SIGNAL) return { setupId: "stale_lottery_ticket_no", setupLabel: "Stale lottery ticket NO" };
   if (signalType.includes("USER_PM_IV_TOUCH_CHEAP_YES")) return { setupId: "manual_iv_touch_cheap_yes", setupLabel: "Manual IV-touch cheap YES" };
   if (signalType.includes("USER_PM_IV_TOUCH_RICH_NO")) return { setupId: "manual_iv_touch_rich_no", setupLabel: "Manual IV-touch rich NO" };
   if (signalType === "MONOTONIC_ARB") return { setupId: "monotonic_arb", setupLabel: "Monotonic arb" };
@@ -4463,15 +4658,31 @@ function setupIdForTrade(trade: ClosedTrade, hypothesesById: Map<string, Hypothe
 
 function setupIdForShadow(shadow: BlockedSignalShadow): { setupId: string; setupLabel: string } {
   if (shadow.blockedReason === "one_touch_high_edge_shadow") return setupIdForSignalType(shadow.signalType);
+  if (shadow.blockedReason === "stale_lottery_ticket_shadow") return setupIdForSignalType(shadow.signalType);
   if (shadow.blockedReason === "manual_shadow_trade") return setupIdForSignalType(shadow.signalType);
   if (shadow.blockedReason === "monotonic_arb_shadow") return setupIdForSignalType("MONOTONIC_ARB");
   if (shadow.signalType.endsWith("_PM_PROXY_SHORT") || shadow.signalType.endsWith("_DOWNSIDE")) return setupIdForSignalType(shadow.signalType);
   return setupIdForSignalType(shadow.signalType);
 }
 
+function humanCloseReason(reason: ClosedTrade["closeReason"]): string {
+  switch (reason) {
+    case "target": return "hit target";
+    case "stop": return "hit stop";
+    case "breakeven_stop": return "stopped at breakeven";
+    case "expiry": return "expired";
+    case "llm_decision": return "closed by LLM";
+    case "signal_killed": return "closed because signal was killed";
+    case "thesis_validated": return "closed with thesis validated (near-money repriced)";
+    case "data_quality_artifact": return "closed as data-quality artifact (excluded from learning)";
+    default: return reason;
+  }
+}
+
 function isContaminatedTrade(trade: ClosedTrade, setupId: string): boolean {
   if (OPERATIONALLY_TAINTED_TRADE_IDS.has(trade.id)) return true;
   if (trade.closeReason.includes("DATA_CORRECTION_ARTIFACT")) return true;
+  if (trade.closeReason === "data_quality_artifact") return true;
   if (!DATA_CONTAMINATED_SETUP_IDS.has(setupId)) return false;
   const opened = String(trade.openedAt ?? "");
   const oilOrGoldPc = (trade.asset === "OIL" || trade.asset === "GOLD") && trade.signalType.includes("PC_RATIO");
@@ -5429,8 +5640,9 @@ function writeJournalEntry(
         : shadow.blockedReason === "polymarket_proxy_short" ? "PM proxy short"
         : shadow.blockedReason === "relative_value_heatmap" ? "Relative-value heatmap"
         : shadow.blockedReason === "one_touch_high_edge_shadow" ? "One-touch high-edge"
+        : shadow.blockedReason === "stale_lottery_ticket_shadow" ? "Stale lottery NO"
         : shadow.blockedReason === "manual_shadow_trade" ? "Manual shadow" : "Blocked";
-      lines.push(`- ${emoji} ${label}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${shadow.closeReason} (${shadow.pnlPct >= 0 ? "+" : ""}${shadow.pnlPct.toFixed(2)}%)`);
+      lines.push(`- ${emoji} ${label}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${humanCloseReason(shadow.closeReason)} (${shadow.pnlPct >= 0 ? "+" : ""}${shadow.pnlPct.toFixed(2)}%)`);
     }
     lines.push("");
   }
@@ -5701,9 +5913,10 @@ async function main() {
         : shadow.blockedReason === "polymarket_proxy_short" ? "PM proxy short"
         : shadow.blockedReason === "relative_value_heatmap" ? "Relative-value heatmap"
         : shadow.blockedReason === "one_touch_high_edge_shadow" ? "One-touch high-edge"
+        : shadow.blockedReason === "stale_lottery_ticket_shadow" ? "Stale lottery NO"
         : shadow.blockedReason === "monotonic_arb_shadow" ? "Monotonic arb"
         : shadow.blockedReason === "manual_shadow_trade" ? "Manual shadow" : "Blocked";
-      console.log(`    ${emoji} ${shadowLabel}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${result.closeReason}: ${result.pnlPct >= 0 ? "+" : ""}${result.pnlPct.toFixed(2)}%`);
+      console.log(`    ${emoji} ${shadowLabel}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${humanCloseReason(result.closeReason)}: ${result.pnlPct >= 0 ? "+" : ""}${result.pnlPct.toFixed(2)}%`);
     }
   }
   const newMonotonicArbShadows = recordMonotonicArbShadows(latestRow, latestSnapshot, learningParams, blockedSignals);
@@ -5718,6 +5931,10 @@ async function main() {
   const newOneTouchHighEdgeShadows = recordOneTouchHighEdgeShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals, oneTouchHighEdgeLiveCoveredKeys);
   if (newOneTouchHighEdgeShadows > 0) {
     console.log(`\n  Opened ${newOneTouchHighEdgeShadows} one-touch high-edge shadow trades.`);
+  }
+  const newStaleLotteryTicketNoShadows = recordStaleLotteryTicketNoShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals);
+  if (newStaleLotteryTicketNoShadows > 0) {
+    console.log(`\n  Opened ${newStaleLotteryTicketNoShadows} stale-lottery-ticket NO shadow trades.`);
   }
   let proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   let blockedSummary = summarizeBlockedSignals(blockedSignals);
