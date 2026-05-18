@@ -441,10 +441,10 @@ def build_report(window: ReportWindow) -> str:
         f"- Current open real positions: {len(open_positions)} | unrealized P&L {money(open_unrealized)}",
         f"- Shadow trades opened: {len(opened_shadows)}",
         f"- Shadow trades resolved: {len(resolved_shadows)} | shadow P&L {money(shadow_realized)}",
-        f"- Realized P&L source of truth: {money(portfolio_realized)} "
-        f"({portfolio_trades} trades, {portfolio_wins}W/{portfolio_losses}L)",
-        f"- Deduped closed-trade ledger audit: {money(cumulative_counted_realized)} "
+        f"- Realized P&L source of truth (de-duped counted ledger): {money(cumulative_counted_realized)} "
         f"({len(cumulative_counted_trades)} counted, {cumulative_wins}W/{cumulative_losses}L)",
+        f"- Portfolio audit/reference: {money(portfolio_realized)} "
+        f"({portfolio_trades} trades, {portfolio_wins}W/{portfolio_losses}L)",
         f"- Hypotheses: {dict(hypothesis_status)} | pending tests {pending_tests}",
         "",
         "## Hourly Closed P&L",

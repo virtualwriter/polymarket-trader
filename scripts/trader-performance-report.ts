@@ -222,6 +222,32 @@ function readClosedTrades(): ClosedTrade[] {
   }).filter((trade) => trade.id && trade.closedAt);
 }
 
+function tradeClosedAtMs(trade: ClosedTrade): number {
+  const parsed = new Date(trade.closedAt).getTime();
+  return Number.isFinite(parsed) ? parsed : Number.MAX_SAFE_INTEGER;
+}
+
+function dedupeClosedTrades(trades: ClosedTrade[]): ClosedTrade[] {
+  const byId = new Map<string, ClosedTrade>();
+  for (const trade of trades) {
+    const existing = byId.get(trade.id);
+    if (!existing || tradeClosedAtMs(trade) < tradeClosedAtMs(existing)) {
+      byId.set(trade.id, trade);
+    }
+  }
+  return [...byId.values()].sort((a, b) =>
+    new Date(a.openedAt).getTime() - new Date(b.openedAt).getTime() ||
+    tradeClosedAtMs(a) - tradeClosedAtMs(b) ||
+    a.id.localeCompare(b.id)
+  );
+}
+
+function isCountedRealTrade(trade: ClosedTrade): boolean {
+  return !OPERATIONALLY_TAINTED_TRADES[trade.id] &&
+    !trade.closeReason.includes("DATA_CORRECTION_ARTIFACT") &&
+    !trade.thesis.includes("NON_LEARNING_CLOSE");
+}
+
 function emptyStats(): Stats {
   return { trades: 0, wins: 0, losses: 0, pnl: 0, pnlPctSum: 0 };
 }
@@ -727,9 +753,11 @@ function buildCsvReport(args: {
   generatedAt: string;
   portfolio: Portfolio;
   allTradeStats: Stats;
+  rawTradeStats: Stats;
   allShadowStats: Stats;
   duplicateTradeIds: Set<string>;
   operationallyTaintedTrades: ClosedTrade[];
+  rawTrades: ClosedTrade[];
   resolvedTrades: ClosedTrade[];
   resolvedShadows: BlockedSignalShadow[];
   tradeSetupRows: Array<[string, Stats]>;
@@ -748,8 +776,9 @@ function buildCsvReport(args: {
   const relativeValueHistoryRows = readRelativeValueHistoryRows();
 
   rows.push(["summary", "generated_at", "", "", "", "", "", "", "", "", "", "", args.generatedAt, "", "", "", "", "", "", "", "", ""]);
-  rows.push(["summary", "portfolio_realized_pnl", String(args.portfolio.totalTrades), String(args.portfolio.winCount), String(args.portfolio.lossCount), args.portfolio.totalTrades > 0 ? ((args.portfolio.winCount / args.portfolio.totalTrades) * 100).toFixed(1) : "", args.portfolio.totalRealizedPnl.toFixed(6), "", "", "", "", "", `source=portfolio.json; cash=${args.portfolio.cash.toFixed(6)}; last_updated=${args.portfolio.lastUpdated}`, "", args.portfolio.totalRealizedPnl.toFixed(6), "", "", "", "", "", "", ""]);
-  rows.push(detailCsvRow("summary", "detailed_trade_ledger_rollup", args.allTradeStats, "", "", "", `source=trades-detailed.csv; duplicate_trade_ids=${args.duplicateTradeIds.size}`));
+  rows.push(detailCsvRow("summary", "deduped_counted_ledger", args.allTradeStats, "", "", "", `canonical=true; source=trades-detailed.csv; dedupe=earliest_closed_at_per_trade_id; excludes=operationally_tainted,DATA_CORRECTION_ARTIFACT,NON_LEARNING_CLOSE; raw_rows=${args.rawTrades.length}; duplicate_trade_ids=${args.duplicateTradeIds.size}`));
+  rows.push(["summary", "portfolio_audit", String(args.portfolio.totalTrades), String(args.portfolio.winCount), String(args.portfolio.lossCount), args.portfolio.totalTrades > 0 ? ((args.portfolio.winCount / args.portfolio.totalTrades) * 100).toFixed(1) : "", args.portfolio.totalRealizedPnl.toFixed(6), "", "", "", "", "", `reference_only=true; source=portfolio.json; cash=${args.portfolio.cash.toFixed(6)}; last_updated=${args.portfolio.lastUpdated}`, "", args.portfolio.totalRealizedPnl.toFixed(6), "", "", "", "", "", "", ""]);
+  rows.push(detailCsvRow("summary", "raw_detailed_trade_ledger_audit", args.rawTradeStats, "", "", "", `reference_only=true; source=trades-detailed.csv; duplicate_trade_ids=${args.duplicateTradeIds.size}`));
   rows.push(detailCsvRow("summary", "resolved_shadow_rollup", args.allShadowStats, "", "", "", `source=blocked-signals.json; resolved_shadows=${args.resolvedShadows.length}`));
   rows.push(["summary", "open_positions", String(args.portfolio.positions.length), "", "", "", "", "", "", "", "", "", "Current live/open positions from portfolio.json", "", args.portfolio.totalRealizedPnl.toFixed(6), "", "", "", "", "", "", ""]);
   rows.push(["summary", "duplicate_trade_ids", String(args.duplicateTradeIds.size), "", "", "", "", "", "", "", "", "", [...args.duplicateTradeIds].join("; "), "", "", "", "", "", "", "", "", ""]);
@@ -862,6 +891,7 @@ function buildMarkdownReport(args: {
   generatedAt: string;
   portfolio: Portfolio;
   allTradeStats: Stats;
+  rawTradeStats: Stats;
   allShadowStats: Stats;
   duplicateTradeIds: Set<string>;
   operationallyTaintedTrades: ClosedTrade[];
@@ -884,10 +914,11 @@ function buildMarkdownReport(args: {
   lines.push("");
   lines.push("## Summary");
   lines.push("");
-  lines.push(`- Realized P&L, portfolio source of truth: ${fmtUsd(args.portfolio.totalRealizedPnl)} (${args.portfolio.totalTrades} total trades, ${args.portfolio.winCount}W/${args.portfolio.lossCount}L)`);
-  lines.push(`- Detailed trade ledger rollup: ${fmtUsd(args.allTradeStats.pnl)} (${args.allTradeStats.trades} closed trade rows, ${args.allTradeStats.wins}W/${args.allTradeStats.losses}L, ${winRate(args.allTradeStats)} win rate)`);
+  lines.push(`- Realized P&L, de-duped counted ledger: ${fmtUsd(args.allTradeStats.pnl)} (${args.allTradeStats.trades} counted trades, ${args.allTradeStats.wins}W/${args.allTradeStats.losses}L, ${winRate(args.allTradeStats)} win rate)`);
+  lines.push(`- Portfolio audit/reference: ${fmtUsd(args.portfolio.totalRealizedPnl)} (${args.portfolio.totalTrades} total trades, ${args.portfolio.winCount}W/${args.portfolio.lossCount}L)`);
+  lines.push(`- Raw detailed trade ledger audit: ${fmtUsd(args.rawTradeStats.pnl)} (${args.rawTradeStats.trades} closed trade rows, ${args.rawTradeStats.wins}W/${args.rawTradeStats.losses}L, ${winRate(args.rawTradeStats)} win rate)`);
   if (args.duplicateTradeIds.size > 0) {
-    lines.push(`- Ledger note: ${args.duplicateTradeIds.size} duplicate trade IDs found in trades-detailed.csv; grouped tables below use ledger rows so they tie to the visible detailed history, while total P&L above uses portfolio.json as canonical.`);
+    lines.push(`- Ledger note: ${args.duplicateTradeIds.size} duplicate trade IDs found in trades-detailed.csv; grouped tables below use the de-duped counted ledger.`);
   }
   if (args.operationallyTaintedTrades.length > 0) {
     lines.push(`- Operationally tainted trades labeled separately: ${args.operationallyTaintedTrades.map((trade) => `${trade.id} (${OPERATIONALLY_TAINTED_TRADES[trade.id]})`).join("; ")}`);
@@ -950,6 +981,8 @@ function main() {
   const hypotheses = readJson<Hypothesis[]>(join(DATA_DIR, "hypotheses.json"), []);
   const shadows = readJson<BlockedSignalShadow[]>(join(DATA_DIR, "blocked-signals.json"), []);
   const hypothesesById = hypothesisMap(hypotheses);
+  const dedupedTrades = dedupeClosedTrades(trades);
+  const countedTrades = dedupedTrades.filter(isCountedRealTrade);
 
   const duplicateTradeIds = new Set<string>();
   const seenTradeIds = new Set<string>();
@@ -959,7 +992,9 @@ function main() {
   }
 
   const allTradeStats = emptyStats();
-  for (const trade of trades) addStats(allTradeStats, trade.pnl, trade.pnlPct);
+  for (const trade of countedTrades) addStats(allTradeStats, trade.pnl, trade.pnlPct);
+  const rawTradeStats = emptyStats();
+  for (const trade of trades) addStats(rawTradeStats, trade.pnl, trade.pnlPct);
   const operationallyTaintedTrades = trades.filter((trade) => OPERATIONALLY_TAINTED_TRADES[trade.id]);
 
   const resolvedShadows = shadows.filter((shadow) =>
@@ -976,15 +1011,17 @@ function main() {
     generatedAt,
     portfolio,
     allTradeStats,
+    rawTradeStats,
     allShadowStats,
     duplicateTradeIds,
     operationallyTaintedTrades,
-    resolvedTrades: trades,
+    rawTrades: trades,
+    resolvedTrades: countedTrades,
     resolvedShadows,
-    tradeSetupRows: grouped(trades, (trade) => tradeSetupKey(trade, hypothesesById), (stats, trade) => addStats(stats, trade.pnl, trade.pnlPct)),
-    assetRows: grouped(trades, (trade) => trade.asset, (stats, trade) => addStats(stats, trade.pnl, trade.pnlPct)),
-    tradeTypeAssetRows: grouped(trades, (trade) => `${reportSignalType(trade)} / ${trade.asset}`, (stats, trade) => addStats(stats, trade.pnl, trade.pnlPct)),
-    venueAssetRows: grouped(trades, (trade) => `${trade.venue} / ${trade.asset}`, (stats, trade) => addStats(stats, trade.pnl, trade.pnlPct)),
+    tradeSetupRows: grouped(countedTrades, (trade) => tradeSetupKey(trade, hypothesesById), (stats, trade) => addStats(stats, trade.pnl, trade.pnlPct)),
+    assetRows: grouped(countedTrades, (trade) => trade.asset, (stats, trade) => addStats(stats, trade.pnl, trade.pnlPct)),
+    tradeTypeAssetRows: grouped(countedTrades, (trade) => `${reportSignalType(trade)} / ${trade.asset}`, (stats, trade) => addStats(stats, trade.pnl, trade.pnlPct)),
+    venueAssetRows: grouped(countedTrades, (trade) => `${trade.venue} / ${trade.asset}`, (stats, trade) => addStats(stats, trade.pnl, trade.pnlPct)),
     shadowTypeRows: grouped(resolvedShadows, shadowKey, (stats, shadow) => {
       const result = shadow.hypotheticalResult!;
       addStats(stats, result.pnl, result.pnlPct, result.outcome);
