@@ -21979,7 +21979,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 10.5% vs IV touch model 3.8%; edge -6.2 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 10.5% vs IV touch model 3.8%; edge -6.2 pts. Exclude from official live-trader performance until validated. [SETUP: BTC Dec 2026 two-sided NO range \u2014 paired buy-NO package on BTC $140k upside tail and BTC $55k downside tail. Tests short-tail/range thesis that PM overprices both tails versus options; manage as package with 60% edge-compression exit, +15-25% package profit target, or 30% package drawdown stop.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -22165,7 +22165,35 @@
       },
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
-    }
+    },
+    "pairedSetup": {
+      "id": "BTC_DEC_2026_TWO_SIDED_NO_RANGE_701492_701501",
+      "label": "BTC Dec 2026 two-sided NO range",
+      "family": "two_sided_no_range",
+      "asset": "BTC",
+      "contractMonth": "December 2026",
+      "legs": [
+        {
+          "id": "MANUAL-IVTOUCH-BTC-NO-701492-1779136300",
+          "role": "upside_tail_no",
+          "marketId": "701492",
+          "strike": 140000
+        },
+        {
+          "id": "MANUAL-IVTOUCH-BTC-NO-701501-1779136316",
+          "role": "downside_tail_no",
+          "marketId": "701501",
+          "strike": 55000
+        }
+      ],
+      "thesis": "Polymarket is overpricing both BTC December tails versus the CBOE-backed options model; buy NO on the upside and downside touch contracts as a range/no-touch package.",
+      "exitPolicy": "Track as a paired setup; exit on 60% edge compression for the package, +15-25% package P&L, or a 30% package drawdown stop."
+    },
+    "setupFamily": "two_sided_no_range",
+    "setupLabel": "BTC Dec 2026 two-sided NO range",
+    "pairedShadowIds": [
+      "MANUAL-IVTOUCH-BTC-NO-701501-1779136316"
+    ]
   },
   {
     "id": "MANUAL-IVTOUCH-BTC-NO-701501-1779136316",
@@ -22177,7 +22205,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 48.5% vs IV touch model 31.0%; edge -17.0 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 48.5% vs IV touch model 31.0%; edge -17.0 pts. Exclude from official live-trader performance until validated. [SETUP: BTC Dec 2026 two-sided NO range \u2014 paired buy-NO package on BTC $140k upside tail and BTC $55k downside tail. Tests short-tail/range thesis that PM overprices both tails versus options; manage as package with 60% edge-compression exit, +15-25% package profit target, or 30% package drawdown stop.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -22360,6 +22388,232 @@
         "perp_basis_pct": "0.00000000",
         "flags": "extreme_perp_funding;pm_quote_from_snapshot",
         "notes": "Options model uses IBIT CBOE delayed; target month-end expiry 2026-12-31, IV expiry 2026-12-18, closest-strike IV sample. Hit/reach market uses tested one-touch probability model; incomplete rows fall back to 2x terminal probability. Strike scaled from underlying options proxy."
+      },
+      "selectedSide": "no",
+      "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
+    },
+    "pairedSetup": {
+      "id": "BTC_DEC_2026_TWO_SIDED_NO_RANGE_701492_701501",
+      "label": "BTC Dec 2026 two-sided NO range",
+      "family": "two_sided_no_range",
+      "asset": "BTC",
+      "contractMonth": "December 2026",
+      "legs": [
+        {
+          "id": "MANUAL-IVTOUCH-BTC-NO-701492-1779136300",
+          "role": "upside_tail_no",
+          "marketId": "701492",
+          "strike": 140000
+        },
+        {
+          "id": "MANUAL-IVTOUCH-BTC-NO-701501-1779136316",
+          "role": "downside_tail_no",
+          "marketId": "701501",
+          "strike": 55000
+        }
+      ],
+      "thesis": "Polymarket is overpricing both BTC December tails versus the CBOE-backed options model; buy NO on the upside and downside touch contracts as a range/no-touch package.",
+      "exitPolicy": "Track as a paired setup; exit on 60% edge compression for the package, +15-25% package P&L, or a 30% package drawdown stop."
+    },
+    "setupFamily": "two_sided_no_range",
+    "setupLabel": "BTC Dec 2026 two-sided NO range",
+    "pairedShadowIds": [
+      "MANUAL-IVTOUCH-BTC-NO-701492-1779136300"
+    ]
+  },
+  {
+    "id": "MANUAL-IVTOUCH-BTC-NO-2132776-1779136572",
+    "status": "open",
+    "blockedAt": "2026-05-18T20:36:12Z",
+    "blockedReason": "manual_shadow_trade",
+    "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+    "asset": "BTC",
+    "venue": "polymarket",
+    "direction": "short",
+    "confidence": 1,
+    "thesis": "Manual user IV-touch shadow signal: PM YES 11.5% vs IV touch model 5.1%; edge -5.9 pts. Exclude from official live-trader performance until validated.",
+    "learningParamsSnapshot": {
+      "macroMomentum24hThresholdPts": 4,
+      "contrarianTrendMarginPct": 0.5,
+      "positiveMomentum24hPct": 1.5,
+      "llmTradeExpiryDays": 14,
+      "momentumLongExpiryDays": 21,
+      "signalRisk": {
+        "PM_IV_GT_OPT_IV": {
+          "targetPct": null,
+          "stopPct": 5
+        },
+        "OPT_IV_GT_PM_IV": {
+          "targetPct": 5,
+          "stopPct": 3.5
+        },
+        "FUNDING_EXTREME_LONG": {
+          "targetPct": 5,
+          "stopPct": 2.5
+        },
+        "FUNDING_EXTREME_SHORT": {
+          "targetPct": 4,
+          "stopPct": 2
+        },
+        "PM_EV_ABOVE_SPOT": {
+          "targetPct": 4,
+          "stopPct": 4
+        },
+        "PM_EV_BELOW_SPOT": {
+          "targetPct": 3,
+          "stopPct": 3.5
+        },
+        "PC_RATIO_EXTREME_HIGH": {
+          "targetPct": 4,
+          "stopPct": 2
+        },
+        "PC_RATIO_EXTREME_LOW": {
+          "targetPct": 5,
+          "stopPct": 2
+        },
+        "BASIS_PREMIUM": {
+          "targetPct": 1.5,
+          "stopPct": 1.5
+        },
+        "BASIS_DISCOUNT": {
+          "targetPct": 1.5,
+          "stopPct": 1.5
+        },
+        "MACRO_MOMENTUM_UP": {
+          "targetPct": 3,
+          "stopPct": 3
+        },
+        "MACRO_MOMENTUM_DOWN": {
+          "targetPct": 4,
+          "stopPct": 3
+        },
+        "LLM_HYPOTHESIS": {
+          "targetPct": 3.5,
+          "stopPct": 2.5
+        },
+        "MOMENTUM_LONG": {
+          "targetPct": 6,
+          "stopPct": 3.5
+        },
+        "PROMOTED_HYPOTHESIS": {
+          "targetPct": 3,
+          "stopPct": 1.5
+        },
+        "ONE_TOUCH_HIGH_EDGE_NO": {
+          "targetPct": null,
+          "stopPct": 100
+        }
+      }
+    },
+    "position": {
+      "id": "MANUAL-IVTOUCH-BTC-NO-2132776-1779136572",
+      "openedAt": "2026-05-18T20:36:12Z",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "entryPrice": 0.88,
+      "currentPrice": 0.88,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+      "hypothesisId": null,
+      "thesis": "Manual user IV-touch shadow signal: PM YES 11.5% vs IV touch model 5.1%; edge -5.9 pts. Exclude from official live-trader performance until validated.",
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDate": "2026-06-01T04:00:00Z",
+      "instrumentType": "pm_no",
+      "instrumentId": "what-price-will-bitcoin-hit-in-may-2026::2132776",
+      "instrumentLabel": "what-price-will-bitcoin-hit-in-may-2026 \u2014 NO \u2014 Will Bitcoin reach $85,000 in May?",
+      "entryUnderlyingPrice": 77137,
+      "currentUnderlyingPrice": 77137
+    },
+    "marketQuality": {
+      "quoteSource": "live_clob",
+      "quotedAt": "2026-05-18T20:36:12Z",
+      "gammaUpdatedAt": "2026-05-18T20:33:55.162274Z",
+      "clobTimestamp": "1779136570385",
+      "yesBid": 0.12,
+      "yesAsk": 0.13,
+      "yesSpread": 0.01,
+      "yesBidSize": 25359.78,
+      "yesAskSize": 450.37,
+      "noBid": 0.87,
+      "noAsk": 0.88,
+      "noSpread": 0.01,
+      "noBidSize": 450.37,
+      "noAskSize": 25359.78,
+      "liquidity": 133452.46,
+      "flags": []
+    },
+    "liveQuoteSnapshot": {
+      "quoteSource": "live_clob",
+      "yesBid": 0.12,
+      "yesAsk": 0.13,
+      "noBid": 0.87,
+      "noAsk": 0.88,
+      "entrySide": "no",
+      "entryPrice": 0.88,
+      "lastTradePrice": 0.12,
+      "gammaUpdatedAt": "2026-05-18T20:33:55.162274Z",
+      "clobTimestamp": "1779136570385",
+      "yesTokenId": "27263818818572382308786837280052567231404272927433091805576135922512093801450",
+      "noTokenId": "20970486708225968446432942645112973151689471027935743232114605753310238562505"
+    },
+    "heatmapRowSnapshot": {
+      "schemaVersion": 1,
+      "source": "cross_venue_relative_value_heatmap",
+      "row": {
+        "timestamp": "2026-05-18T20",
+        "model_version": "relative_value_heatmap_v2_one_touch",
+        "asset": "BTC",
+        "event_slug": "what-price-will-bitcoin-hit-in-may-2026",
+        "market_id": "2132776",
+        "contract_question": "Will Bitcoin reach $85,000 in May?",
+        "contract_month": "May 2026",
+        "direction": "above",
+        "strike": "85000.00000000",
+        "expiry": "2026-06-01T04:00:00Z",
+        "dte_days": "13.33333333",
+        "spot": "77137.00000000",
+        "option_symbol": "IBIT",
+        "option_underlying": "43.60870000",
+        "option_source": "CBOE delayed",
+        "iv_resolution": "cboe_snapshot",
+        "option_iv": "0.36340000",
+        "pm_iv": "0.35200000",
+        "options_terminal_prob": "0.05146618",
+        "options_touch_adjusted_prob": "0.05146618",
+        "pm_yes_price": "0.11500000",
+        "pm_best_bid": "0.11000000",
+        "pm_best_ask": "0.12000000",
+        "pm_spread": "0.01000000",
+        "pm_quote_source": "snapshot",
+        "liquidity": "143362.51980000",
+        "volume": "1708864.72106600",
+        "underlying_cap_yes_price": "0.90749412",
+        "pm_to_underlying_cap_ratio": "0.12672258",
+        "underlying_cap_signal": "cheap_vs_underlying_cap_bearish",
+        "settlement_yes_sum": "",
+        "settlement_overround": "",
+        "settlement_tail_yes": "",
+        "settlement_skew_yes": "",
+        "buy_yes_edge_pts": "-6.85338211",
+        "sell_yes_edge_pts": "5.85338211",
+        "best_expression": "sell_yes_or_buy_no",
+        "edge_score": "-5.85338211",
+        "edge_pts_per_dte": "-0.43900366",
+        "edge_pts_per_dte_7d_change": "",
+        "eligible_displayable": "true",
+        "eligible_for_shadow": "false",
+        "eligible_for_backtest": "false",
+        "edge_bucket": "mild-short-rich-tail",
+        "perp_mark": "77137.00000000",
+        "perp_source": "snapshot",
+        "perp_funding_ann": "0.10950000",
+        "perp_oi_usd": "2151315004.21000004",
+        "perp_basis_pct": "0.00000000",
+        "flags": "extreme_perp_funding;cheap_vs_underlying_cap_bearish;pm_quote_from_snapshot",
+        "notes": "Options model uses IBIT CBOE delayed; target month-end expiry 2026-05-29, IV expiry 2026-05-29, closest-strike IV sample. Hit/reach market uses tested one-touch probability model; incomplete rows fall back to 2x terminal probability. Strike scaled from underlying options proxy. Underlying upside cap YES price is 90.7%; PM trades at 13% of cap."
       },
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
