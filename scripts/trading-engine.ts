@@ -231,7 +231,17 @@ interface ClosedTrade {
   signalType: string;
   hypothesisId: string | null;
   thesis: string;
-  closeReason: "target" | "stop" | "breakeven_stop" | "expiry" | "llm_decision" | "signal_killed" | "thesis_validated" | "data_quality_artifact";
+  closeReason:
+    | "target"
+    | "stop"
+    | "breakeven_stop"
+    | "expiry"
+    | "llm_decision"
+    | "signal_killed"
+    | "thesis_validated"
+    | "thesis_validated_profitable"
+    | "thesis_compressed_loss"
+    | "data_quality_artifact";
   instrumentType?: string;
   instrumentId?: string;
   instrumentLabel?: string;
@@ -4716,6 +4726,8 @@ function humanCloseReason(reason: ClosedTrade["closeReason"]): string {
     case "llm_decision": return "closed by LLM";
     case "signal_killed": return "closed because signal was killed";
     case "thesis_validated": return "closed with thesis validated (near-money repriced)";
+    case "thesis_validated_profitable": return "closed with thesis validated profitably";
+    case "thesis_compressed_loss": return "edge compressed but trade lost money";
     case "data_quality_artifact": return "closed as data-quality artifact (excluded from learning)";
     default: return reason;
   }

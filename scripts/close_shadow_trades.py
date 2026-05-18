@@ -10,9 +10,9 @@ Two cohorts are addressed:
    isStrikeIvSkewArtifact prevents promoting equivalents going forward.
 
 2. Near-money fully repriced winners (manual IV-touch + one-touch shadows).
-   These are closed with closeReason="thesis_validated" — the original edge
-   thesis has played out and the residual edge no longer compensates for
-   carrying tail/expiry risk.
+   These are closed with closeReason="thesis_validated_profitable" when P&L
+   is positive. If a compressed edge loses money, use "thesis_compressed_loss"
+   so compression is not mistaken for a profitable thesis validation.
 
 The script is idempotent: shadows that are already resolved or already carry
 the target closeReason are left alone.
@@ -120,6 +120,8 @@ def close_shadow(shadow: dict[str, Any], close_reason: str, note: str, learning_
     if shadow.get("status") == "resolved":
         return False
     exit_price, pnl, pnl_pct = mark_exit(shadow)
+    if close_reason == "thesis_validated":
+        close_reason = "thesis_validated_profitable" if pnl >= 0 else "thesis_compressed_loss"
     timestamp = now_iso()
     shadow["status"] = "resolved"
     shadow["resolvedAt"] = timestamp
@@ -176,7 +178,7 @@ def main() -> None:
     if not closed_artifacts:
         print("  (none — already resolved)")
 
-    print("\nThesis-validated winner closes (counted as wins):")
+    print("\nThesis compression closes:")
     for sid in closed_winners:
         print(f"  ✓ {sid}")
     if not closed_winners:
