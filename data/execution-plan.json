@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T11:30:25.966Z",
+  "generatedAt": "2026-05-18T12:30:18.057Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,11 +11,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6172837373333333,
-      "confidence": 0.2597607127165833,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.5pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6494058573333333,
+      "confidence": 0.27327810233908334,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.5pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76815,
+      "entryPrice": 77274,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -31,11 +31,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5382799173333334,
-      "confidence": 0.22651491771283333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.1pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5793255326666666,
+      "confidence": 0.24378742571529163,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.4pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76815,
+      "entryPrice": 77274,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,6 +45,21 @@
         "forceMarketId": "701501",
         "allowDirectionFallback": false
       }
+    },
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.1288571428571429,
+      "confidence": 0.07894804122608884,
+      "thesis": "GOLD HL funding 19.5% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4557,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [
@@ -55,11 +70,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
+        "closeReasonCategory": "profit_taking",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "The promoted H-069 BTC P/C exhaustion reversal thesis required a bounce after the P/C spike above 1.0. Instead, the IBIT P/C ratio has collapsed from 0.713 to 0.600 (a -15.8% drop) — this is a continuation of call-side unwinding rather than a reversal signal, and BTC spot has drifted -0.23% since entry with no bounce materializing in 4 hours. The P/C normalization/collapse invalidates the oversold bounce setup. The position is approaching the -1.5% stop and the thesis is no longer supported by the evidence column (btc_spot trending lower, now at 7d percentile 2). Closing to preserve capital rather than waiting for mechanical stop."
+        "thesis": "BTC spot has moved from 76,989 to 77,274 (+0.37%), approaching the midpoint of the 3% target. The P/C ratio signal that triggered this trade (spike to 0.713 then drop to 0.600) has largely played out — the ratio normalization is complete. BTC is at the 50th percentile of the 24h range (76,703-78,355) and 7th percentile of the 7d range, suggesting limited near-term upside momentum. With the mechanical stop at -1.5% and target at +3%, taking partial signal validation here is reasonable given the P/C exhaustion thesis has resolved. However, since the mechanical scanner owns exits and profit_taking is an allowed category for PROMOTED_HYPOTHESIS, I am flagging this for consideration — the thesis has been validated at a modest level and the signal family evidence (btc_spot trajectory showing consolidation, not acceleration) suggests the bounce may be complete."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
