@@ -11719,3 +11719,35 @@ Key observations this cycle:
 
 ---
 
+### 2026-05-18 13:30 UTC
+
+**Portfolio:** $99.75 total | Cash $94.75 | 5 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 6.0pp (was -7.1, now -1.1)
+- [divergence] GOLD PM-Options IV gap moved narrower by 5.4pp (was 1.2, now -4.2)
+- [anomaly] btc_opt_iv_90d = 26.3 is -3.6 std devs from mean (41.46 ± 4.15)
+- [anomaly] hype_hl_oi = 1034133748 is 2.4 std devs from mean (852108639.24 ± 74422197.45)
+- [anomaly] hype_pm_ev = 48.3 is 2.2 std devs from mean (44.22 ± 1.86)
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 83 (36 wins / 47 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 3/3 shadows would have won, avg P&L 81.96%.
+- YES exploratory one-touch high-edge shadow is validating: 3/3 14d shadows won, avg P&L 47.14%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated (near-money repriced) (+20.59%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated (near-money repriced) (+20.83%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have closed with thesis validated (near-money repriced) (+100.00%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have hit stop (-3.61%)
+
+**LLM analysis:**
+Key observations this session: (1) HYPE funding flip is the most notable event - sustained +10.95% annualized funding for many hours suddenly flipped to -2.91% as HYPE spot surged to 46.2 (2σ above mean). This is a classic positioning exhaustion signal. The OI at 1.034B is 2.4σ above mean. The HYPE breakout/OI surge family (H-521) should be monitored carefully - the funding flip may signal the momentum leg is ending rather than continuing. (2) BTC PM IV compression remains extreme at 35.7% (bottom 2% of 7d range). The existing BTC long (T-1779089415632-pbo3) is working as expected with +0.43% gain. The IBIT P/C ratio normalization from 0.713 to 0.600 is consistent with the reversal thesis. No close warranted - let mechanical target handle exit. (3) Gold HL funding spiked to 16.9% annualized (extreme_perp_funding flag in heatmap). The existing GOLD long (T-1778916565173-2wqk) is up 0.92% and approaching the breakeven arm threshold. The funding reversal from -44.8% at entry to +16.9% now is a strong thesis confirmation - the crowded short has been fully unwound and longs are now paying. This is approaching thesis completion territory. (4) Oil dropped sharply to 99.5 WTI with Brent-WTI spread widening to 4.1 (highest in the window). The OIL NO position (T-1779049817841-htfg) on 'settle over $56' is down 47% but the underlying thesis remains sound - WTI at 99.5 is nowhere near $56. The PM market moved from 0.97 to 0.97 (essentially unchanged) which is correct given spot is far above the strike. The position loss is purely from PM repricing dynamics, not from the underlying thesis failing. (5) The relative-value heatmap shows strong buy-YES edges on BTC $90k May (36.3pt edge) and BTC $95k May (35.2pt edge) - these are the strongest signals in the heatmap. However, with 5 open positions and limited cash ($94.75), adding new positions would require closing existing ones. The hypothesis backlog (12/19 families need more tests) takes priority over new entries. (6) AMZN stock broke to 264.14 (+0.57% from entry baseline) while HL perp is at 262.88 - basis is -0.48%, which is slightly negative but within normal range. The AMZN long (T-1778916565173-vz22) is up 0.32% with funding normalized to +5.64%. No action needed. (7) The BTC-OIL correlation flip (-0.47 from +0.37) is notable - oil's sharp decline while BTC held suggests decoupling. This is consistent with the Iran peace signal (oil bearish) and BTC's own dynamics. No new hypothesis proposed given backlog constraints.
+
+---
+

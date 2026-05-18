@@ -1,22 +1,6 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779089415632-pbo3",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "profit_taking",
-        "evidenceColumns": [
-          "btc_spot"
-        ],
-        "thesis": "BTC spot has moved from 76,989 to 77,274 (+0.37%), approaching the midpoint of the 3% target. The P/C ratio signal that triggered this trade (spike to 0.713 then drop to 0.600) has largely played out — the ratio normalization is complete. BTC is at the 50th percentile of the 24h range (76,703-78,355) and 7th percentile of the 7d range, suggesting limited near-term upside momentum. With the mechanical stop at -1.5% and target at +3%, taking partial signal validation here is reasonable given the P/C exhaustion thesis has resolved. However, since the mechanical scanner owns exits and profit_taking is an allowed category for PROMOTED_HYPOTHESIS, I am flagging this for consideration — the thesis has been validated at a modest level and the signal family evidence (btc_spot trajectory showing consolidation, not acceleration) suggests the bounce may be complete."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedCloses": [],
   "skippedTrades": [],
   "parameterUpdates": {
     "macroMomentum24hThresholdPts": 4,

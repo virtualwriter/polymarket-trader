@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-18T12:29:16.769Z",
+  "generatedAt": "2026-05-18T13:29:26.301Z",
   "dataFreshness": {
-    "valuationRows": 454,
-    "latestValuationAt": "2026-05-18T12",
-    "macroRows": 454,
+    "valuationRows": 455,
+    "latestValuationAt": "2026-05-18T13",
+    "macroRows": 455,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-18T12"
+    "latestInstrumentSnapshotAt": "2026-05-18T13"
   },
   "portfolio": {
     "cash": 94.7532,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.7532,
     "totalTrades": 138,
     "winRatePct": 51.4,
-    "unrealizedPnl": -0.2277
+    "unrealizedPnl": -0.2222
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -3.77,
       "currentPrice": 0.51,
-      "underlyingPrice": 77274,
+      "underlyingPrice": 77322,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.45,
-      "currentPrice": 4557,
-      "underlyingPrice": 4557,
+      "pnlPct": 0.92,
+      "currentPrice": 4578,
+      "underlyingPrice": 4578,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -57,9 +57,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.29,
-      "currentPrice": 262.8,
-      "underlyingPrice": 262.71,
+      "pnlPct": 0.32,
+      "currentPrice": 262.88,
+      "underlyingPrice": 264.14,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -77,7 +77,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -47.37,
       "currentPrice": 0.02,
-      "underlyingPrice": 101.08,
+      "underlyingPrice": 99.516,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -95,9 +95,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 0.37,
-      "currentPrice": 77274,
-      "underlyingPrice": 77274,
+      "pnlPct": 0.43,
+      "currentPrice": 77322,
+      "underlyingPrice": 77322,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -243,7 +243,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 52,
+    "openCount": 53,
     "resolvedCount": 83,
     "wouldHaveWon": 36,
     "wouldHaveLost": 47,
@@ -266,7 +266,7 @@
       },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-        "blocked": 5,
+        "blocked": 7,
         "resolved": 3,
         "wouldHaveWon": 3,
         "wouldHaveLost": 0,
@@ -274,7 +274,7 @@
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
-        "blocked": 33,
+        "blocked": 32,
         "resolved": 3,
         "wouldHaveWon": 3,
         "wouldHaveLost": 0,
@@ -509,6 +509,22 @@
         "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
         "asset": "SPY",
         "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "spx-hit-dec-2026 — YES — Will S&P 500 (SPX) hit $8,200 (HIGH) in December?",
+        "marketQuality": {
+          "yesBid": 0.21,
+          "yesAsk": 0.23,
+          "yesSpread": 0.02,
+          "liquidity": 2551.09,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 20.9pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+        "asset": "SPY",
+        "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "spx-hit-jun-2026 — YES — Will S&P 500 (SPX) hit $7,700 (HIGH) in June?",
         "marketQuality": {
           "yesBid": 0.293,
@@ -616,22 +632,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 17.5pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
-        "asset": "GOLD",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — YES — Will Gold (GC) hit (HIGH) $6,000 by end of December?",
-        "marketQuality": {
-          "yesBid": 0.28,
-          "yesAsk": 0.3,
-          "yesSpread": 0.02,
-          "liquidity": 12105.87,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 17.3pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
       }
     ]
   },

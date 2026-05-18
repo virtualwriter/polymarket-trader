@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T12:30:18.057Z",
+  "generatedAt": "2026-05-18T13:30:29.909Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,11 +11,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6494058573333333,
-      "confidence": 0.27327810233908334,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.5pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6139782023333333,
+      "confidence": 0.2583697022693958,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.4pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77274,
+      "entryPrice": 77322,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -31,11 +31,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5793255326666666,
-      "confidence": 0.24378742571529163,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.4pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5766577886666667,
+      "confidence": 0.24266480569329169,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77274,
+      "entryPrice": 77322,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -51,37 +51,21 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.1288571428571429,
-      "confidence": 0.07894804122608884,
-      "thesis": "GOLD HL funding 19.5% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.054571428571428576,
+      "confidence": 0.0334347580358824,
+      "thesis": "GOLD HL funding 16.9% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4557,
+      "entryPrice": 4578,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
       "leverage": 1
     }
   ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779089415632-pbo3",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "profit_taking",
-        "evidenceColumns": [
-          "btc_spot"
-        ],
-        "thesis": "BTC spot has moved from 76,989 to 77,274 (+0.37%), approaching the midpoint of the 3% target. The P/C ratio signal that triggered this trade (spike to 0.713 then drop to 0.600) has largely played out — the ratio normalization is complete. BTC is at the 50th percentile of the 24h range (76,703-78,355) and 7th percentile of the 7d range, suggesting limited near-term upside momentum. With the mechanical stop at -1.5% and target at +3%, taking partial signal validation here is reasonable given the P/C exhaustion thesis has resolved. However, since the mechanical scanner owns exits and profit_taking is an allowed category for PROMOTED_HYPOTHESIS, I am flagging this for consideration — the thesis has been validated at a modest level and the signal family evidence (btc_spot trajectory showing consolidation, not acceleration) suggests the bounce may be complete."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
