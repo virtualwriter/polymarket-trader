@@ -6,14 +6,16 @@
     "wins": 3,
     "avgPnlPct": 9.821006305931165,
     "lastTriggered": "2026-04-17T17:40:34.585Z",
-    "enabled": true,
+    "enabled": false,
     "perAsset": {
       "OIL": {
         "trades": 5,
         "wins": 3,
         "avgPnlPct": 9.821006305931165
       }
-    }
+    },
+    "disabledAt": "2026-05-18T15:15:00.000Z",
+    "disabledReason": "Disabled by 2026-05-18 production allowlist; only ONE_TOUCH_HIGH_EDGE_NO, PC_RATIO_EXTREME_HIGH, PC_RATIO_EXTREME_LOW, FUNDING_EXTREME_SHORT, FUNDING_EXTREME_LONG, and promoted hypotheses H-521/H-523 are live."
   },
   {
     "type": "OPT_IV_GT_PM_IV",
@@ -22,14 +24,16 @@
     "wins": 6,
     "avgPnlPct": -0.4089553651123679,
     "lastTriggered": "2026-05-13T16:32:05.068Z",
-    "enabled": true,
+    "enabled": false,
     "perAsset": {
       "GOLD": {
         "trades": 13,
         "wins": 6,
         "avgPnlPct": -0.4089553651123679
       }
-    }
+    },
+    "disabledAt": "2026-05-18T15:15:00.000Z",
+    "disabledReason": "Disabled by 2026-05-18 production allowlist; only ONE_TOUCH_HIGH_EDGE_NO, PC_RATIO_EXTREME_HIGH, PC_RATIO_EXTREME_LOW, FUNDING_EXTREME_SHORT, FUNDING_EXTREME_LONG, and promoted hypotheses H-521/H-523 are live."
   },
   {
     "type": "FUNDING_EXTREME_LONG",
@@ -53,10 +57,7 @@
       "AMZN": {
         "trades": 6,
         "wins": 2,
-        "avgPnlPct": -1.4673752111741232,
-        "disabled": true,
-        "disabledAt": "2026-05-05T13:33:48.485Z",
-        "disabledReason": "FUNDING_EXTREME_LONG on AMZN disabled after 2/6 wins (33% accuracy)."
+        "avgPnlPct": -1.4673752111741232
       }
     }
   },
@@ -77,10 +78,7 @@
       "OIL": {
         "trades": 14,
         "wins": 5,
-        "avgPnlPct": -0.16441287479630073,
-        "disabled": true,
-        "disabledAt": "2026-05-13T19:29:23.302Z",
-        "disabledReason": "FUNDING_EXTREME_SHORT on OIL disabled after 5/13 wins (38% accuracy)."
+        "avgPnlPct": -0.16441287479630073
       },
       "AMZN": {
         "trades": 2,
@@ -96,9 +94,11 @@
     "wins": 0,
     "avgPnlPct": 0,
     "lastTriggered": "2026-04-28T20:27:37.814Z",
-    "enabled": true,
+    "enabled": false,
     "perAsset": {},
-    "artifactNote": "2026-04-28: 1 OIL trade removed as DATA_CORRECTION_ARTIFACT (wrong price source — CBOE CL was Colgate-Palmolive, not WTI crude)"
+    "artifactNote": "2026-04-28: 1 OIL trade removed as DATA_CORRECTION_ARTIFACT (wrong price source \u2014 CBOE CL was Colgate-Palmolive, not WTI crude)",
+    "disabledAt": "2026-05-18T15:15:00.000Z",
+    "disabledReason": "Disabled by 2026-05-18 production allowlist; only ONE_TOUCH_HIGH_EDGE_NO, PC_RATIO_EXTREME_HIGH, PC_RATIO_EXTREME_LOW, FUNDING_EXTREME_SHORT, FUNDING_EXTREME_LONG, and promoted hypotheses H-521/H-523 are live."
   },
   {
     "type": "PM_EV_BELOW_SPOT",
@@ -107,14 +107,16 @@
     "wins": 1,
     "avgPnlPct": -1.8899653578618705,
     "lastTriggered": "2026-05-04T16:08:15.596Z",
-    "enabled": true,
+    "enabled": false,
     "perAsset": {
       "OIL": {
         "trades": 4,
         "wins": 1,
         "avgPnlPct": -1.8899653578618705
       }
-    }
+    },
+    "disabledAt": "2026-05-18T15:15:00.000Z",
+    "disabledReason": "Disabled by 2026-05-18 production allowlist; only ONE_TOUCH_HIGH_EDGE_NO, PC_RATIO_EXTREME_HIGH, PC_RATIO_EXTREME_LOW, FUNDING_EXTREME_SHORT, FUNDING_EXTREME_LONG, and promoted hypotheses H-521/H-523 are live."
   },
   {
     "type": "MACRO_MOMENTUM_UP",
@@ -123,14 +125,16 @@
     "wins": 1,
     "avgPnlPct": 3.2442023387065095,
     "lastTriggered": "2026-05-03T20:54:53.153716Z",
-    "enabled": true,
+    "enabled": false,
     "perAsset": {
       "BTC": {
         "trades": 1,
         "wins": 1,
         "avgPnlPct": 3.2442023387065095
       }
-    }
+    },
+    "disabledAt": "2026-05-18T15:15:00.000Z",
+    "disabledReason": "Disabled by 2026-05-18 production allowlist; only ONE_TOUCH_HIGH_EDGE_NO, PC_RATIO_EXTREME_HIGH, PC_RATIO_EXTREME_LOW, FUNDING_EXTREME_SHORT, FUNDING_EXTREME_LONG, and promoted hypotheses H-521/H-523 are live."
   },
   {
     "type": "MACRO_MOMENTUM_DOWN",
@@ -139,14 +143,16 @@
     "wins": 0,
     "avgPnlPct": -1.728083651990247,
     "lastTriggered": "2026-05-01T13:53:41.505Z",
-    "enabled": true,
+    "enabled": false,
     "perAsset": {
       "BTC": {
         "trades": 2,
         "wins": 0,
         "avgPnlPct": -1.728083651990247
       }
-    }
+    },
+    "disabledAt": "2026-05-18T15:15:00.000Z",
+    "disabledReason": "Disabled by 2026-05-18 production allowlist; only ONE_TOUCH_HIGH_EDGE_NO, PC_RATIO_EXTREME_HIGH, PC_RATIO_EXTREME_LOW, FUNDING_EXTREME_SHORT, FUNDING_EXTREME_LONG, and promoted hypotheses H-521/H-523 are live."
   },
   {
     "type": "BASIS_PREMIUM",
@@ -155,8 +161,10 @@
     "wins": 0,
     "avgPnlPct": 0,
     "lastTriggered": "",
-    "enabled": true,
-    "perAsset": {}
+    "enabled": false,
+    "perAsset": {},
+    "disabledAt": "2026-05-18T15:15:00.000Z",
+    "disabledReason": "Disabled by 2026-05-18 production allowlist; only ONE_TOUCH_HIGH_EDGE_NO, PC_RATIO_EXTREME_HIGH, PC_RATIO_EXTREME_LOW, FUNDING_EXTREME_SHORT, FUNDING_EXTREME_LONG, and promoted hypotheses H-521/H-523 are live."
   },
   {
     "type": "BASIS_DISCOUNT",
@@ -165,8 +173,10 @@
     "wins": 0,
     "avgPnlPct": 0,
     "lastTriggered": "",
-    "enabled": true,
-    "perAsset": {}
+    "enabled": false,
+    "perAsset": {},
+    "disabledAt": "2026-05-18T15:15:00.000Z",
+    "disabledReason": "Disabled by 2026-05-18 production allowlist; only ONE_TOUCH_HIGH_EDGE_NO, PC_RATIO_EXTREME_HIGH, PC_RATIO_EXTREME_LOW, FUNDING_EXTREME_SHORT, FUNDING_EXTREME_LONG, and promoted hypotheses H-521/H-523 are live."
   },
   {
     "type": "PC_RATIO_EXTREME_HIGH",
@@ -196,10 +206,7 @@
       "AMZN": {
         "trades": 5,
         "wins": 1,
-        "avgPnlPct": -2.170182795441986,
-        "disabled": true,
-        "disabledAt": "2026-04-26T17:31:34.962Z",
-        "disabledReason": "PC_RATIO_EXTREME_LOW on AMZN disabled after 1/5 wins (20% accuracy)."
+        "avgPnlPct": -2.170182795441986
       },
       "BTC": {
         "trades": 6,
@@ -231,7 +238,7 @@
         }
       }
     },
-    "artifactNote": "2026-04-28: 1 OIL trade removed as DATA_CORRECTION_ARTIFACT (wrong price source — CBOE CL was Colgate-Palmolive, not WTI crude) | 2026-04-30: reset Oil/GOLD PC_RATIO_EXTREME_LOW stats after bad zero P/C inputs; clean stats retain non-contaminated assets only."
+    "artifactNote": "2026-04-28: 1 OIL trade removed as DATA_CORRECTION_ARTIFACT (wrong price source \u2014 CBOE CL was Colgate-Palmolive, not WTI crude) | 2026-04-30: reset Oil/GOLD PC_RATIO_EXTREME_LOW stats after bad zero P/C inputs; clean stats retain non-contaminated assets only."
   },
   {
     "type": "LLM_HYPOTHESIS",
@@ -240,7 +247,9 @@
     "wins": 16,
     "avgPnlPct": -0.894517711663744,
     "lastTriggered": "2026-05-03T20:54:53.153716Z",
-    "enabled": true,
+    "enabled": false,
+    "disabledAt": "2026-05-18T15:15:00.000Z",
+    "disabledReason": "Disabled by 2026-05-18 production allowlist; only ONE_TOUCH_HIGH_EDGE_NO, PC_RATIO_EXTREME_HIGH, PC_RATIO_EXTREME_LOW, FUNDING_EXTREME_SHORT, FUNDING_EXTREME_LONG, and promoted hypotheses H-521/H-523 are live.",
     "perAsset": {
       "BTC": {
         "trades": 9,

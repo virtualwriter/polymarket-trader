@@ -108,6 +108,21 @@ const DATA_CONTAMINATED_SETUP_IDS = new Set([
   "gold_pm_premium_futures_spread_mean_reversion",
   "cross_asset_funding_positioning_exhaustion",
 ]);
+const RETIRED_LLM_SETUP_IDS = new Set([
+  "oil_iv_statistical_breakdown_arbitrage",
+  "cross_asset_funding_positioning_exhaustion",
+  "cross_asset_iv_compression_vol_expansion",
+  "other_mixed",
+  "oil_funding_volatility_mean_reversion",
+]);
+const LIVE_SIGNAL_ALLOWLIST = new Set([
+  "ONE_TOUCH_HIGH_EDGE_NO",
+  "PC_RATIO_EXTREME_HIGH",
+  "PC_RATIO_EXTREME_LOW",
+  "FUNDING_EXTREME_SHORT",
+  "FUNDING_EXTREME_LONG",
+]);
+const LIVE_PROMOTED_HYPOTHESIS_IDS = new Set(["H-521", "H-523"]);
 const OPERATIONALLY_TAINTED_TRADE_IDS = new Set([
   "T-1778707778058-9nsi", // Hourly LLM close had authority over a rule-owned funding trade.
   "T-1778718867328-1tjp", // One-touch NO inherited generic 2% Polymarket stop instead of 100%.
@@ -3226,7 +3241,9 @@ function generateSignals(
   if (rows.length === 0) return [];
   const latest = rows[rows.length - 1];
   const signals: Signal[] = [];
-  const weightMap = new Map(weights.filter((w) => w.enabled).map((w) => [w.type, w]));
+  const weightMap = new Map(weights
+    .filter((w) => w.enabled && LIVE_SIGNAL_ALLOWLIST.has(w.type))
+    .map((w) => [w.type, w]));
 
   const assets = [
     { key: "BTC", pmIv: "btc_pm_iv", optIv30: "btc_opt_iv_30d", optIv90: "btc_opt_iv_90d",
@@ -4378,10 +4395,19 @@ function generatePromotedHypothesisSignals(
   const signals: Signal[] = [];
   const risk = riskForSignal(learningParams, "PROMOTED_HYPOTHESIS");
   const promotedFamilies = hypothesisSetupFamilies(hypotheses)
-    .filter((family) => family.hypotheses.some((hypothesis) => hypothesis.status === "promoted" && hypothesis.promotedToSignal));
+    .filter((family) => !RETIRED_LLM_SETUP_IDS.has(family.setupId))
+    .filter((family) => family.hypotheses.some((hypothesis) =>
+      hypothesis.status === "promoted" &&
+      hypothesis.promotedToSignal &&
+      LIVE_PROMOTED_HYPOTHESIS_IDS.has(hypothesis.id)
+    ));
 
   for (const family of promotedFamilies) {
-    const promotedRepresentatives = family.hypotheses.filter((hypothesis) => hypothesis.status === "promoted" && hypothesis.promotedToSignal);
+    const promotedRepresentatives = family.hypotheses.filter((hypothesis) =>
+      hypothesis.status === "promoted" &&
+      hypothesis.promotedToSignal &&
+      LIVE_PROMOTED_HYPOTHESIS_IDS.has(hypothesis.id)
+    );
     for (const representative of promotedRepresentatives) {
       const promotedAsset = inferHypothesisAsset(representative);
       if (!promotedAsset) continue;
@@ -5301,6 +5327,8 @@ ${activeHypotheses.map((h) => `  ${h.id} (${h.setupId ?? "unclassified"}): ${h.d
 HYPOTHESIS SHADOW TEST BACKLOG:
 ${JSON.stringify(hypothesisBacklog, null, 1)}
 ${hypothesisBacklog.complete ? "Existing LLM setup-family backlog is complete; new hypotheses may be proposed." : `Do NOT propose unrelated new setup families right now. Existing LLM setup families still need condition-triggered repeat shadow tests (${hypothesisBacklog.needingTests}/${hypothesisBacklog.setupFamilies} setup families need more tests, ${hypothesisBacklog.pending} pending). Only the first ${HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT} setup families are active for retesting; others wait. You MAY propose regime-relative replacement variants for already-promoted setup families when existing variants use brittle absolute price levels. Otherwise return newHypotheses: [] and focus on reviewing/testing existing setup families.`}
+Retired LLM setup families are blocked from live trading and new hypothesis creation: ${Array.from(RETIRED_LLM_SETUP_IDS).join(", ")}. Do not recreate these broad families under a new name; propose only narrower replacement variants with distinct measurable inputs.
+Current live production signal allowlist: ${Array.from(LIVE_SIGNAL_ALLOWLIST).join(", ")} plus promoted hypothesis IDs ${Array.from(LIVE_PROMOTED_HYPOTHESIS_IDS).join(", ")}. Treat all other signal families as shadow/research only.
 
 RECENTLY KILLED HYPOTHESES:
 ${killedRecently.map((h) => `  ${h.id}: ${h.description} — ${h.postMortem}`).join("\n") || "  None"}
@@ -5337,6 +5365,7 @@ IMPORTANT RULES:
 - For promoted setup-family variants, describe the reusable setup in relative terms such as "within 3% of 7d high", "bottom 15th percentile P/C ratio", "PM IV z-score below -2", or "spot above 24h SMA" instead of "BTC above 78k".
 - Existing LLM hypotheses must receive ${HYPOTHESIS_SHADOW_TESTS_REQUIRED} condition-triggered shadow tests before promotion/kill/inconclusive demotion. Do not create new hypotheses while the backlog is incomplete.
 - Similar hypotheses are grouped into setup families. Promotion/kill decisions happen at the setup-family level, not per wording variant. Prefer reviewing whether the parent setup is working over proposing near-duplicate threshold variants.
+- Generic live LLM_HYPOTHESIS entries are retired. The LLM may propose hypotheses for shadow testing and may advise eligible closes, but live entries require a non-retired promoted setup family.
 - Focus on cross-venue divergences and patterns the rule-based system can't detect
 - Be honest about what's working and what isn't
 - If a pattern stopped working, explain WHY you think it changed
@@ -6036,6 +6065,10 @@ async function main() {
             source: nh.source ?? "llm",
           };
           ensureHypothesisSetupMetadata(hypothesis);
+          if (RETIRED_LLM_SETUP_IDS.has(hypothesis.setupId ?? "")) {
+            console.log(`    Skipping retired LLM setup hypothesis ${id}: ${hypothesis.setupLabel}`);
+            continue;
+          }
           hypotheses.push(hypothesis);
           console.log(`    New hypothesis ${id}: ${nh.description.slice(0, 80)}`);
         }
