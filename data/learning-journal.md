@@ -11147,3 +11147,47 @@ Key observations this cycle:
 
 ---
 
+### 2026-05-18 01:30 UTC
+
+**Portfolio:** $99.75 total | Cash $95.75 | 4 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved narrower by 10.7pp (was 8.7, now -2.0)
+- [anomaly] btc_opt_iv_90d = 25.9 is -4.9 std devs from mean (41.87 ± 3.26)
+- [anomaly] hype_hl_oi = 1046173830 is 2.8 std devs from mean (847871980.61 ± 70226935.87)
+- [anomaly] gold_med_min = 4215 is -2.2 std devs from mean (4371.07 ± 70.95)
+- [anomaly] hype_spot = 46.051 is 2.1 std devs from mean (41.46 ± 2.22)
+
+**Blocked signal learning:**
+- Open blocked shadows: 60
+- Resolved blocked shadows: 77 (30 wins / 47 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.85%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expiry (-0.21%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have stop (-3.61%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. BTC TERM STRUCTURE INVERSION: The 90d options IV has collapsed to 25.9 (-4.9σ from mean of 41.87), while 30d IV sits at 37.7%. This is an unusual inversion — normally 90d > 30d. This suggests the market is pricing near-term uncertainty (30d) higher than medium-term, possibly reflecting uncertainty around the current ~$77k level. The promoted H-523 (BTC PM IV compression) conditions are strongly met. No new trade opened because BTC spot is in a declining trajectory this session and we already have the BTC NO position open.
+
+2. OIL SURGE: WTI has jumped to $104.05 from ~$101.9 at session open — a 2%+ move. The Brent-WTI spread has compressed to 3.1 (from 4.2 earlier). The OIL NO position (T-1779049817841-htfg) is deeply underwater at -44.7% because the $56 strike is now much further from spot ($104), but the contract is a 'settle over $56 at June end' — spot at $104 is ADVERSE for the NO position (we need spot to stay below $56, but spot is at $104 which is far above $56). Wait — re-reading the decoder: 'bought NO at 0.04 on (HIGH) $56 touch — Spot stays BELOW $56 through expiry. Spot moving DOWN (away from $56) is FAVORABLE.' So spot at $104 is actually FAVORABLE for this NO position since spot is far above $56 and moving further away. The -44.7% PnL is puzzling given spot is at $104 vs $56 strike. This may reflect the PM market pricing in a higher probability of oil eventually touching $56 by June end given the macro 'DECLINING' signal and oil_pm_settle_ev at $88.8. The position has 331h remaining — mechanical scanner owns this.
+
+3. GOLD LONG (T-1778916565173-2wqk): Gold has dropped to $4,505 from entry at $4,536 (-0.68%). The funding signal that triggered this trade (extreme negative funding) has fully normalized to +5.48%. The thesis was crowded shorts unwinding — funding has normalized but price hasn't recovered. Gold is at 30d percentile 0 (all-time low in the 30d window). The stop is at -2% and we're at -0.68%, so still within range. The gold_pm_settle_ev has risen to $4,892 while spot is $4,505 — a large gap, but per rules I should not cite this as close evidence. Funding normalization is thesis completion, not thesis invalidation — the crowded shorts have unwound. The position may need to be held to expiry or stop.
+
+4. AMZN LONG (T-1778916565173-vz22): AMZN stock frozen at $262.64 (weekend/after-hours). Perp at $261.46, basis at -0.45%. Funding normalized to +5.48%. Similar to gold — the extreme negative funding that triggered the trade has normalized. Position at -0.22%, within stop range.
+
+5. BTC NO (T-1778718867328-fb7r): BTC has declined from ~$79,548 at open to $76,877 — moving TOWARD $55,000 (adverse). The position is at -1.89% PnL. BTC spot is at 24h percentile 4 and 7d percentile 1. The funding has turned positive (+7.59% annualized) which is slightly adverse (longs paying, suggesting some bullish positioning remains). The thesis (BTC stays above $55k through Dec 31) remains intact — $55k is still ~27% below current spot. No close warranted.
+
+6. HYPOTHESIS BACKLOG: 12 setup families need more tests, 9 pending. Per rules, no new hypotheses should be proposed while backlog is incomplete. Returning empty newHypotheses array.
+
+7. RELATIVE VALUE HEATMAP: The strongest signals are BTC $90k May (34pt edge, strong-long-tail) and BTC $95k May (31pt edge). However with BTC declining this session and 14 DTE, these are high-risk entries. The OIL $115 June (19.8pt edge, long-tail) and OIL $130 June (18pt edge, long-tail) are also notable but OIL is surging which makes upside touch contracts more expensive. No new trades initiated given portfolio concentration and declining BTC trend.
+
+---
+
