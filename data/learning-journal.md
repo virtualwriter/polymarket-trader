@@ -11587,3 +11587,38 @@ Key observations this session:
 
 ---
 
+### 2026-05-18 09:30 UTC
+
+**Portfolio:** $99.75 total | Cash $94.75 | 5 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_90d = 24.3 is -4.4 std devs from mean (41.57 ± 3.97)
+- [anomaly] hype_hl_oi = 1017843351 is 2.3 std devs from mean (850987017.89 ± 73375610.79)
+- [correlation_flip] BTC-OIL correlation shifted from 0.36 to -0.48. Rolling correlation: 24h=-0.78, 7d=-0.42, 30d=0.56. Current 24h corr is at 22th pct of last 18 daily 24h-rolling values (range -0.85 to 0.76).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.12 to 0.46. Rolling correlation: 24h=-0.09, 7d=0.55, 30d=-0.34. Current 24h corr is at 28th pct of last 18 daily 24h-rolling values (range -0.79 to 0.85).
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 83 (36 wins / 47 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 3/3 shadows would have won, avg P&L 81.96%.
+- YES exploratory one-touch high-edge shadow is validating: 3/3 14d shadows won, avg P&L 47.14%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated (near-money repriced) (+20.59%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated (near-money repriced) (+20.83%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have closed with thesis validated (near-money repriced) (+100.00%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have hit stop (-3.61%)
+
+**LLM analysis:**
+Key observations this session: (1) IBIT P/C ratio dropped sharply from 0.713 to 0.600 over the last 2 hours — this is a significant options market repositioning signal. The BTC put-call exhaustion reversal trade (T-1779089415632-pbo3) was predicated on a P/C spike indicating excessive bearish positioning; the rapid normalization/decline of P/C suggests the signal has resolved without the bounce, warranting closure. (2) BTC spot is at a 2nd percentile 7d low (76,703-76,899 range), suggesting continued downward drift rather than the anticipated reversal. The btc_opt_iv_90d at 24.3 remains a -4.4 sigma anomaly — this structural compression persists and may eventually trigger a vol expansion, but timing is unclear. (3) Oil remains structurally elevated (WTI ~102.5) with persistently negative HL funding (-6.5% to -20% range), which is adverse for the ONE_TOUCH_HIGH_EDGE_NO OIL position (T-1779049817841-htfg) — that position is down 47% but is mechanically managed and cannot be LLM-closed. The oil PM IV has risen from 59 to 64 during the window, suggesting options market is pricing more volatility, which is also adverse for the NO position on $56 strike. (4) Gold FUNDING_EXTREME_SHORT position (T-1778916565173-2wqk) is performing as expected — funding normalized from -44.8% to +6.6% and spot is up 0.26%. The breakeven arm has not yet triggered (needs peak ≥ +1.5%). (5) AMZN FUNDING_EXTREME_SHORT (T-1778916565173-vz22) is marginally positive at +0.10% — funding normalized from -29.8% to +5.48% as expected, but stock is essentially flat. (6) The BTC-OIL correlation flip to -0.78 (24h) is notable — oil strength is decoupling from crypto weakness, which is consistent with oil being driven by geopolitical/supply factors rather than risk-on sentiment. (7) Hypothesis backlog: 12 setup families still need more tests, 9 pending. No new hypotheses proposed per policy. The PROMOTED_HYPOTHESIS family has only 1 shadow (loss at -3.65%) and 0 clean live trades — the family is exploratory and the quick close of T-1779089415632-pbo3 is appropriate given the signal reversal.
+
+**LLM close rejections today (2026-05-18, token-burn signal):**
+- Total rejected close instructions: 2
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (2)
+
+---
+

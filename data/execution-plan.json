@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T08:30:25.834Z",
+  "generatedAt": "2026-05-18T09:30:16.318Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,29 +7,15 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 1,
-      "confidence": 0.6,
-      "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-069] BTC P/C ratio spike above 1.0 during consolidation above 68500 creates oversold bounce setup as options positioning becomes too bearish",
-      "hypothesisId": "H-069",
-      "entryPrice": 76987,
-      "targetPct": 4,
-      "stopPct": 1.5,
-      "expiryDays": 3
-    },
-    {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6239116189999999,
-      "confidence": 0.26254980817043744,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.7pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6198909130000001,
+      "confidence": 0.2608578448268125,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.6pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76987,
+      "entryPrice": 76899,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +31,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.547708754,
-      "confidence": 0.23048269004262498,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.4pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.542584061,
+      "confidence": 0.22832615516956248,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76987,
+      "entryPrice": 76899,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -73,7 +59,7 @@
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "The promoted H-069 BTC P/C exhaustion reversal long requires spot to be consolidating above 68,500 with P/C ratio spike above 1.0 creating an oversold bounce. However, BTC spot is at the 3rd percentile of the 7d range (76,987 vs 7d high of 82,646), meaning it is ~6.9% below the 7d high — the setup family (btc_put_call_exhaustion_reversal) has 0/4 clean live trade wins with avg -2.05% P&L. The btc_spot trajectory shows a consistent downtrend over the last 12 hours (78,355 → 76,987) with no bounce signal. The IBIT P/C ratio has been flat at 0.713 throughout, not showing the spike-and-normalize pattern the hypothesis requires. With the trade only 1h old and already at the stop boundary (-1.5% stop), the thesis conditions are not being confirmed by price action and the setup family has a poor live track record. Closing to preserve capital."
+        "thesis": "The PROMOTED_HYPOTHESIS long was entered on H-069 (BTC P/C ratio spike above 1.0 creating oversold bounce). The IBIT P/C ratio has since dropped sharply from 0.713 to 0.600 — a 15.8% decline — which represents the opposite of the spike condition that triggered the trade. Rather than a sustained P/C spike indicating excessive bearish options positioning, the ratio has normalized and moved toward bullish territory, suggesting the options exhaustion signal has resolved without the anticipated spot bounce materializing. BTC spot is at 76,899, down 0.12% from entry at 76,989, sitting at the 17th percentile of the 24h range and 2nd percentile of the 7d range — continued weakness with no bounce confirmation. The setup-family evidence (btc_spot declining, P/C ratio normalizing away from the trigger condition) indicates the thesis has not played out and the position should be closed to preserve capital for a cleaner re-entry."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
