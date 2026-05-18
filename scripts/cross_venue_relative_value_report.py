@@ -50,13 +50,14 @@ OPTION_STRIKE_LOG_WINDOW = 0.35
 
 
 ASSET_TO_OPTION_SYMBOLS = {
-    "BTC": ["CME_BTC", "IBIT"],
+    "BTC": ["IBIT", "CME_BTC"],
     "ETH": ["ETHA"],
-    "GOLD": ["CME_GC"],
-    "OIL": ["CME_CL"],
+    "GOLD": ["GLD", "CME_GC"],
+    "OIL": ["USO", "CME_CL"],
     "AMZN": ["AMZN"],
-    "SPY": ["CME_ES", "SPY"],
+    "SPY": ["SPY", "CME_ES"],
 }
+CBOE_PROXY_OPTION_SYMBOLS = {"IBIT", "ETHA", "GLD", "USO", "SPY"}
 
 
 @dataclass
@@ -368,7 +369,7 @@ def scaled_option_strike(
 ) -> Optional[float]:
     if not asset_spot or not option_underlying or asset_spot <= 0:
         return None
-    if option_symbol in {"IBIT", "ETHA", "CME_ES", "SPY"}:
+    if option_symbol in CBOE_PROXY_OPTION_SYMBOLS or option_symbol == "CME_ES":
         return pm_strike * (option_underlying / asset_spot)
     return pm_strike
 
@@ -654,6 +655,8 @@ def iv_resolution_for(option_snapshot: Optional[Dict[str, Any]], valuation_iv_ke
         source = str(option_snapshot.get("source", "")).lower()
         if "tradingview" in source or source == "tv":
             return "tv_chain"
+        if "cboe" in source:
+            return "cboe_snapshot"
         return "cme_snapshot"
     return ""
 
@@ -1051,7 +1054,7 @@ def build_rows(
                 notes.append("Hit/reach market uses tested one-touch probability model; incomplete rows fall back to 2x terminal probability.")
             if range_bounds:
                 notes.append(f"Settlement bucket modeled as probability between {range_bounds[0]:.0f} and {range_bounds[1]:.0f}.")
-            if option_symbol == "IBIT":
+            if option_symbol in CBOE_PROXY_OPTION_SYMBOLS:
                 notes.append("Strike scaled from underlying options proxy.")
             if quote_source == "live_clob":
                 notes.append("Polymarket quote refreshed from live CLOB during heatmap generation.")
