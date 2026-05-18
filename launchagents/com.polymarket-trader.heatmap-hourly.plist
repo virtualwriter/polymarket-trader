@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.polymarket-trader.heatmap-hourly</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>-lc</string>
+    <string>cd "/Users/johnskapwingpc/Downloads/polymarket-trader" &amp;&amp; /usr/bin/env npm run report:heatmap:hourly</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Minute</key>
+    <integer>10</integer>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>/Users/johnskapwingpc/Downloads/polymarket-trader/.runtime/heatmap-hourly.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/johnskapwingpc/Downloads/polymarket-trader/.runtime/heatmap-hourly.err.log</string>
+  <key>WorkingDirectory</key>
+  <string>/Users/johnskapwingpc/Downloads/polymarket-trader</string>
+</dict>
+</plist>
