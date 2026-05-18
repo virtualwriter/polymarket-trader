@@ -11360,3 +11360,49 @@ Key observations this cycle:
 
 ---
 
+### 2026-05-18 04:30 UTC
+
+**Portfolio:** $99.75 total | Cash $95.75 | 4 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_90d = 23.8 is -5.1 std devs from mean (41.76 ± 3.55)
+- [anomaly] hype_hl_oi = 1026757663 is 2.5 std devs from mean (849075976.32 ± 71507510.51)
+- [anomaly] gold_med_min = 4210 is -2.2 std devs from mean (4370.00 ± 71.89)
+- [correlation_flip] BTC-OIL correlation shifted from 0.35 to -0.47. Rolling correlation: 24h=-0.86, 7d=-0.42, 30d=0.56. Current 24h corr is at 17th pct of last 18 daily 24h-rolling values (range -0.90 to 0.74).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.11 to 0.45. Rolling correlation: 24h=0.37, 7d=0.55, 30d=-0.35. Current 24h corr is at 39th pct of last 18 daily 24h-rolling values (range -0.74 to 0.92).
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 83 (36 wins / 47 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 3/3 shadows would have won, avg P&L 81.96%.
+- YES exploratory one-touch high-edge shadow is validating: 3/3 14d shadows won, avg P&L 47.14%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated (near-money repriced) (+20.59%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated (near-money repriced) (+20.83%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have closed with thesis validated (near-money repriced) (+100.00%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have hit stop (-3.61%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. BTC TERM STRUCTURE INVERSION: The btc_opt_iv_90d has collapsed to 23.8 (-5.1σ anomaly) while 30d IV remains at 37.5%, creating an extreme inversion. This is the most notable statistical anomaly in the dataset. The promoted H-523 (BTC IV compression/vol reversion) conditions appear met. However, the 90d IV collapse may reflect a genuine structural shift in longer-dated vol pricing rather than a pure mean-reversion opportunity — worth monitoring but not acting on without more context.
+
+2. OIL HEATMAP EDGES: The relative-value heatmap shows very large buy-YES edges on CL $130 (16.3pt edge) and $140 (15.4pt edge) June contracts, and $115 (15.8pt edge). These are the strongest edges in the heatmap. However, OIL is disabled for LLM_HYPOTHESIS trades, and the ONE_TOUCH_HIGH_EDGE_NO signal family owns the OIL short position already open. The existing OIL NO position (T-1779049817841-htfg) is at -47% PnL with oil spot at 103.22 — the thesis requires spot to stay below $56 through June expiry, which remains very likely given current spot levels, but the PM market has repriced the NO from 0.038 to ~0.02 (YES went from 0.97 to 0.98). This is a near-certain outcome trade that is being marked against us due to PM spread dynamics, not fundamental risk.
+
+3. GOLD POSITION (T-1778916565173-2wqk): Gold spot at 4537 vs entry at 4536, essentially flat. Funding has normalized from -44.8% to +5.48%, which is thesis completion (crowded shorts have unwound). The position is at +0.03% PnL with target at +4%. The funding normalization is the thesis completion signal, but price hasn't moved yet. The breakeven arm hasn't triggered (needs peak ≥ +1.5%). Mechanical scanner owns this exit.
+
+4. AMZN POSITION (T-1778916565173-vz22): AMZN stock frozen at 262.64, HL perp at 261.37 (-0.48% basis). Funding normalized to +5.48%. The basis discount persists but hasn't closed. At -0.25% PnL with 123h remaining. The thesis (crowded shorts unwinding) has partially played out (funding normalized) but price convergence hasn't materialized. Mechanical scanner owns exit.
+
+5. BTC ONE-TOUCH NO (T-1778718867328-fb7r): BTC spot at 76,784, well above the $55,000 strike. The thesis is intact — spot needs to stay above $55k through Dec 31, 2026. At -1.89% PnL, the PM market has moved slightly against us but the fundamental thesis is very strong. BTC would need to fall ~27% from current levels to threaten this position. No close warranted.
+
+6. HYPOTHESIS BACKLOG: 12 setup families need more shadow tests with 9 pending. Not proposing new hypotheses per instructions. The promoted H-521 (HYPE breakout/OI surge) and H-523 (BTC IV compression) are the most actionable given current market conditions, but both require mechanical scanner confirmation before live trades.
+
+7. BLOCKED SIGNAL LEARNING: The ONE_TOUCH_HIGH_EDGE_YES_SHADOW signals for OIL ($120, $130 June) have 3/3 wins at 47% avg PnL. The heatmap confirms these edges persist (16-17pt buy-YES edges). The block on YES side is appropriate given the NO position already open, but the shadow learning strongly suggests the YES side of oil upside contracts is systematically underpriced by PM relative to options models.
+
+---
+
