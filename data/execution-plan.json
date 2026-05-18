@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T14:30:18.095Z",
+  "generatedAt": "2026-05-18T15:30:20.153Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,43 +7,15 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 1,
-      "confidence": 0.6,
-      "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-069] BTC P/C ratio spike above 1.0 during consolidation above 68500 creates oversold bounce setup as options positioning becomes too bearish",
-      "hypothesisId": "H-069",
-      "entryPrice": 76731,
-      "targetPct": 3,
-      "stopPct": 1.5,
-      "expiryDays": 3
-    },
-    {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.3687500000000002,
-      "confidence": 0.2767116961630351,
-      "thesis": "OIL P/C ratio 1.50 — heavy put buying → contrarian long.",
-      "hypothesisId": null,
-      "entryPrice": 101.3,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 5
-    },
-    {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6119112386666666,
-      "confidence": 0.25749989812141666,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.4pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.517119402,
+      "confidence": 0.21761030835412498,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.5pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76731,
+      "entryPrice": 76200,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -55,35 +27,29 @@
       }
     },
     {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.5320173156666667,
-      "confidence": 0.22387953664897914,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.0pt edge on BTC; hold 14d for repricing.",
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.23375000000000007,
+      "confidence": 0.17540707519487306,
+      "thesis": "OIL P/C ratio 1.39 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 76731,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "701501",
-        "allowDirectionFallback": false
-      }
+      "entryPrice": 102.78,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 5
     },
     {
       "type": "FUNDING_EXTREME_LONG",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.08457142857142859,
-      "confidence": 0.05181512240115808,
-      "thesis": "GOLD HL funding 18.0% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.06485714285714285,
+      "confidence": 0.03973659724683405,
+      "thesis": "GOLD HL funding 17.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4563,
+      "entryPrice": 4540,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
@@ -102,7 +68,7 @@
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "The BTC long was opened at 76,989 based on H-069 (P/C ratio spike above 1.0 creating oversold bounce). After 7 hours, BTC spot has declined to 76,731 (-0.34%) and is at the 8th percentile of its 24h range (76,703-78,355), indicating continued downward pressure rather than a bounce. The spot trajectory shows a failed recovery attempt: 77,274 at T12, 77,322 at T13, then reversal to 76,731 at T14. The P/C ratio has not re-spiked to reinforce the thesis. With the position at -0.34% and approaching the -1.5% stop, and with no evidence of the predicted bounce materializing, closing proactively preserves capital. The IBIT P/C ratio moved from 0.713 to 0.74 (slightly higher, not the normalization pattern that would confirm a bounce completion)."
+        "thesis": "BTC spot has declined from entry at 76,989 to 76,200 (-1.02%), approaching the -1.5% mechanical stop. More critically, the thesis was a put-call exhaustion reversal triggered by btc_ibit_pc_ratio spiking to 0.74 — that ratio has since normalized to 0.60, meaning the put-buying exhaustion signal has resolved without the expected upside follow-through. The btc_spot trajectory shows 12 consecutive snapshots of weakness with spot now at the 7d percentile-1 (76,200 = 7d low). The signal has been invalidated: P/C normalized, spot continued lower, and the reversal thesis has not materialized within the 8-hour hold window. Closing to avoid mechanical stop and preserve capital."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-18T14:29:18.653Z",
+  "generatedAt": "2026-05-18T15:29:13.592Z",
   "dataFreshness": {
-    "valuationRows": 456,
-    "latestValuationAt": "2026-05-18T14",
-    "macroRows": 456,
+    "valuationRows": 457,
+    "latestValuationAt": "2026-05-18T15",
+    "macroRows": 457,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-18T14"
+    "latestInstrumentSnapshotAt": "2026-05-18T15"
   },
   "portfolio": {
-    "cash": 94.7532,
-    "openPositions": 5,
+    "cash": 93.7532,
+    "openPositions": 6,
     "realizedPnl": 0.7532,
     "totalTrades": 138,
     "winRatePct": 51.4,
-    "unrealizedPnl": -0.2146
+    "unrealizedPnl": -0.2169
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -3.77,
       "currentPrice": 0.51,
-      "underlyingPrice": 76731,
+      "underlyingPrice": 76200,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.58,
-      "currentPrice": 4563,
-      "underlyingPrice": 4563,
+      "pnlPct": 0.07,
+      "currentPrice": 4540,
+      "underlyingPrice": 4540,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -57,9 +57,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 2.17,
-      "currentPrice": 267.73,
-      "underlyingPrice": 268.18,
+      "pnlPct": 1.68,
+      "currentPrice": 266.45,
+      "underlyingPrice": 267.34,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -77,7 +77,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -47.37,
       "currentPrice": 0.02,
-      "underlyingPrice": 101.3,
+      "underlyingPrice": 102.78,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -95,21 +95,38 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": -0.34,
-      "currentPrice": 76731,
-      "underlyingPrice": 76731,
+      "pnlPct": -1.02,
+      "currentPrice": 76200,
+      "underlyingPrice": 76200,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "btc_spot"
       ]
+    },
+    {
+      "positionId": "T-1779114618102-igou",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": 1.46,
+      "currentPrice": 102.78,
+      "underlyingPrice": 102.78,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
+      ]
     }
   ],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
-      "enabled": true,
+      "enabled": false,
       "weight": 0.6501,
       "trades": 5,
       "wins": 3,
@@ -118,7 +135,7 @@
     },
     {
       "type": "OPT_IV_GT_PM_IV",
-      "enabled": true,
+      "enabled": false,
       "weight": 0.5404,
       "trades": 13,
       "wins": 6,
@@ -149,7 +166,7 @@
     },
     {
       "type": "PM_EV_ABOVE_SPOT",
-      "enabled": true,
+      "enabled": false,
       "weight": 0.575,
       "trades": 0,
       "wins": 0,
@@ -158,7 +175,7 @@
     },
     {
       "type": "PM_EV_BELOW_SPOT",
-      "enabled": true,
+      "enabled": false,
       "weight": 0.4873,
       "trades": 4,
       "wins": 1,
@@ -167,7 +184,7 @@
     },
     {
       "type": "MACRO_MOMENTUM_UP",
-      "enabled": true,
+      "enabled": false,
       "weight": 0.575,
       "trades": 1,
       "wins": 1,
@@ -176,7 +193,7 @@
     },
     {
       "type": "MACRO_MOMENTUM_DOWN",
-      "enabled": true,
+      "enabled": false,
       "weight": 0.3612,
       "trades": 2,
       "wins": 0,
@@ -185,7 +202,7 @@
     },
     {
       "type": "BASIS_PREMIUM",
-      "enabled": true,
+      "enabled": false,
       "weight": 0.5,
       "trades": 0,
       "wins": 0,
@@ -194,7 +211,7 @@
     },
     {
       "type": "BASIS_DISCOUNT",
-      "enabled": true,
+      "enabled": false,
       "weight": 0.5,
       "trades": 0,
       "wins": 0,
@@ -223,7 +240,7 @@
     },
     {
       "type": "LLM_HYPOTHESIS",
-      "enabled": true,
+      "enabled": false,
       "weight": 0.6047,
       "trades": 29,
       "wins": 16,

@@ -12,7 +12,7 @@
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "The BTC long was opened at 76,989 based on H-069 (P/C ratio spike above 1.0 creating oversold bounce). After 7 hours, BTC spot has declined to 76,731 (-0.34%) and is at the 8th percentile of its 24h range (76,703-78,355), indicating continued downward pressure rather than a bounce. The spot trajectory shows a failed recovery attempt: 77,274 at T12, 77,322 at T13, then reversal to 76,731 at T14. The P/C ratio has not re-spiked to reinforce the thesis. With the position at -0.34% and approaching the -1.5% stop, and with no evidence of the predicted bounce materializing, closing proactively preserves capital. The IBIT P/C ratio moved from 0.713 to 0.74 (slightly higher, not the normalization pattern that would confirm a bounce completion)."
+        "thesis": "BTC spot has declined from entry at 76,989 to 76,200 (-1.02%), approaching the -1.5% mechanical stop. More critically, the thesis was a put-call exhaustion reversal triggered by btc_ibit_pc_ratio spiking to 0.74 — that ratio has since normalized to 0.60, meaning the put-buying exhaustion signal has resolved without the expected upside follow-through. The btc_spot trajectory shows 12 consecutive snapshots of weakness with spot now at the 7d percentile-1 (76,200 = 7d low). The signal has been invalidated: P/C normalized, spot continued lower, and the reversal thesis has not materialized within the 8-hour hold window. Closing to avoid mechanical stop and preserve capital."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
