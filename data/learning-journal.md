@@ -10196,7 +10196,8 @@ Key session observations: (1) FUNDING_EXTREME_SHORT positions in GOLD and AMZN b
 **Portfolio:** $99.10 total | Cash $93.10 | 6 open | P&L $0.0991 | 51% win rate (133 trades)
 
 **Closed 1 trades:**
-- ✅ OIL short via polymarket/pm_no [what-price-will-wti-hit-in-may-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $90 in May?] (ONE_TOUCH_HIGH_EDGE_NO) → target: +$0.6250 (62.5%, market 0.6250, funding 0.0000)
+- ✅ OIL short via polymarket/pm_no [what-price-will-wti-hit-in-may-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $90 in May?] (ONE_TOUCH_HIGH_EDGE_NO) → target
+: +$0.6250 (62.5%, market 0.6250, funding 0.0000)
 
 **Hypothesis lifecycle:**
 - 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
@@ -11803,6 +11804,27 @@ Key observations from this session:
 - Total rejected close instructions: 5
 - Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (5)
 - Repeat-offender positions (≥3 rejections today): T-1779089415632-pbo3 (5) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+
+## 2026-05-18 14:35 UTC — Operator: retire BTC put-call exhaustion family and stage replacement
+
+Retired the `btc_put_call_exhaustion_reversal` family because it reached for dealer-gamma / crowded-call-positioning exhaustion while using `btc_ibit_pc_ratio`, a retail IBIT options volume P/C proxy rather than BTC options OI, dealer gamma, IV skew, or other direct positioning data.
+
+Implementation notes:
+- Added `btc_opt_iv_term_spread = btc_opt_iv_30d - btc_opt_iv_90d` and `btc_hl_oi` to the valuation schema. Backfilled term spread from existing 30d/90d IV history; `btc_hl_oi` starts blank historically and will populate on future scanner writes.
+- Added `H-531` / `btc_dealer_hedge_stress_pullback` as an operator-staged replacement: term-spread inversion + BTC near 7d high + high funding percentile + fresh BTC perp OI. It remains `active`, `promotedToSignal=false`, and must accumulate evidence before promotion.
+- Fixed classifier/selection hazards: `classifyHypothesisSetup` now avoids matching "hype" inside "hyperliquid", and `selectSetupPrimary` no longer selects killed/archived hypotheses for promotion.
+
+## 2026-05-18 14:44 UTC — Operator: fully shut down old P/C route
+
+Operator confirmed the remaining wing should also be killed/blocked. Retired the remaining active bullish/neutral siblings: `H-069`, `H-085`, `H-130`, `H-136`, `H-159`, `H-167`, `H-329`, and `H-420`.
+
+Verification: `btc_put_call_exhaustion_reversal` now has 17 members, all killed, 0 active, 0 promoted. `H-531` remains the only replacement path and is still shadow/test-stage.
+
+## 2026-05-18 14:50 UTC — Operator: repair duplicate open/closed htfg state
+
+Reconciled `T-1779049817841-htfg`: the closed trade row already existed in `trades-detailed.csv` (`data_quality_artifact`, -$0.4474 / -44.74%), but `portfolio.json` still carried the same position as open. Removed the stale open position from `portfolio.json` and applied the already-recorded close economics once. This aligns the portfolio with the Telegram report interpretation that the trade was closed.
 
 ---
 

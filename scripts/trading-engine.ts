@@ -3987,6 +3987,9 @@ function slugifySetupId(label: string): string {
 
 function classifyHypothesisSetup(hypothesis: Hypothesis): { setupId: string; setupLabel: string } {
   const text = `${hypothesis.description} ${hypothesis.prediction} ${Object.keys(hypothesis.conditions ?? {}).join(" ")}`.toLowerCase();
+  // Use word-boundary matching for "hype" so substrings like "hyperliquid" (the
+  // venue, applies to all assets) don't get misclassified as the HYPE asset.
+  const mentionsHypeAsset = /\bhype\b/.test(text);
 
   let label = "Other / mixed";
   if (text.includes("settlement bucket") || text.includes("settle bucket") || (text.includes("settle") && (text.includes("tail") || text.includes("overround") || text.includes("volatility")))) {
@@ -3999,14 +4002,16 @@ function classifyHypothesisSetup(hypothesis: Hypothesis): { setupId: string; set
     label = "Cross-asset IV compression / vol expansion";
   } else if (text.includes("cross-asset") && (text.includes("p/c") || text.includes("put-call"))) {
     label = "Cross-asset options repositioning";
-  } else if (text.includes("btc") && text.includes("hype") && (text.includes("correlation") || text.includes("coordinated"))) {
+  } else if (text.includes("btc") && mentionsHypeAsset && (text.includes("correlation") || text.includes("coordinated"))) {
     label = "BTC momentum / correlation breakout";
-  } else if (text.includes("hype") && (text.includes("oi") || text.includes("open interest")) && (text.includes("distribution") || text.includes("exhaustion"))) {
+  } else if (mentionsHypeAsset && (text.includes("oi") || text.includes("open interest")) && (text.includes("distribution") || text.includes("exhaustion"))) {
     label = "HYPE OI distribution exhaustion / reversal";
-  } else if (text.includes("hype") && (text.includes("breakout") || text.includes("momentum") || text.includes("fomo") || text.includes("surge"))) {
+  } else if (mentionsHypeAsset && (text.includes("breakout") || text.includes("momentum") || text.includes("fomo") || text.includes("surge"))) {
     label = "HYPE breakout / OI surge momentum";
-  } else if (text.includes("hype") && (text.includes("funding") || text.includes("oi") || text.includes("open interest"))) {
+  } else if (mentionsHypeAsset && (text.includes("funding") || text.includes("oi") || text.includes("open interest"))) {
     label = "HYPE funding/OI normalization";
+  } else if (text.includes("btc") && (text.includes("dealer hedg") || text.includes("term spread") || text.includes("term structure") || text.includes("gamma stress") || text.includes("hedge stress"))) {
+    label = "BTC dealer hedge stress / pullback";
   } else if (text.includes("btc") && text.includes("funding")) {
     label = "BTC funding exhaustion / reversal";
   } else if (text.includes("btc") && (text.includes("iv compression") || text.includes("pm iv") || text.includes("vol"))) {
@@ -4054,7 +4059,14 @@ function pendingSetupTests(hypotheses: Hypothesis[]): HypothesisTest[] {
 }
 
 function selectSetupPrimary(hypotheses: Hypothesis[]): Hypothesis {
-  return [...hypotheses].sort((a, b) => {
+  // Killed/archived hypotheses are never eligible to represent a family — if
+  // we let them through, the promotion path at evaluateHypotheses() will set
+  // status="promoted" on a killed entry and resurrect it. Fall back to the
+  // full list only when every member is killed/archived (so the family record
+  // still has a representative for reporting).
+  const eligible = hypotheses.filter((h) => h.status !== "killed" && h.status !== "archived");
+  const pool = eligible.length > 0 ? eligible : hypotheses;
+  return [...pool].sort((a, b) => {
     if (a.status === "promoted" && b.status !== "promoted") return -1;
     if (b.status === "promoted" && a.status !== "promoted") return 1;
     if (b.winRate !== a.winRate) return b.winRate - a.winRate;

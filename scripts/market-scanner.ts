@@ -2038,7 +2038,8 @@ interface InstrumentSnapshotFile {
 const VALUATION_HEADERS = [
   "date",
   "btc_spot", "btc_opt_fwd_90d", "btc_pm_ev", "btc_opt_iv_30d", "btc_opt_iv_90d",
-  "btc_pm_iv", "btc_hl_funding_ann", "btc_med_max", "btc_med_min", "btc_ibit_pc_ratio",
+  "btc_opt_iv_term_spread",
+  "btc_pm_iv", "btc_hl_funding_ann", "btc_hl_oi", "btc_med_max", "btc_med_min", "btc_ibit_pc_ratio",
   "hype_spot", "hype_pm_ev", "hype_pm_iv", "hype_hl_funding_ann", "hype_hl_oi",
   "hype_med_max", "hype_med_min",
   "gold_gc_spot", "gold_gld_spot", "gold_opt_fwd_90d", "gold_pm_settle_ev",
@@ -2049,6 +2050,9 @@ const VALUATION_HEADERS = [
   "oil_wti_spot", "oil_brent_spot", "oil_brent_wti_spread", "oil_opt_fwd_90d",
   "oil_pm_settle_ev", "oil_opt_iv_30d", "oil_opt_iv_90d", "oil_pm_iv",
   "oil_hl_funding_ann", "oil_cl_pc_ratio",
+  // Vestigial trailing columns kept for on-disk schema alignment; no current
+  // writer populates them, no current reader consumes them.
+  "oil_cme_yf_spot", "gold_cme_yf_spot", "btc_cme_yf_spot",
 ];
 
 const MACRO_HEADERS = [
@@ -2196,8 +2200,13 @@ function writeSnapshot(
     btc_spot: r(btcSpot, 0), btc_opt_fwd_90d: r(btcFwd, 0), btc_pm_ev: r(btcPm?.ev, 0),
     btc_opt_iv_30d: r(btcIv30?.iv ? btcIv30.iv * 100 : null, 1),
     btc_opt_iv_90d: r(btcIv90?.iv ? btcIv90.iv * 100 : null, 1),
+    btc_opt_iv_term_spread: r(
+      btcIv30?.iv && btcIv90?.iv ? (btcIv30.iv * 100) - (btcIv90.iv * 100) : null,
+      2,
+    ),
     btc_pm_iv: r(btcPm?.impliedVol ? btcPm.impliedVol * 100 : null, 1),
     btc_hl_funding_ann: r(hl.BTC?.fundingAnnualized ? hl.BTC.fundingAnnualized * 100 : null, 2),
+    btc_hl_oi: r(hl.BTC?.openInterestUsd, 0),
     btc_med_max: r(btcPm?.medianMax, 0), btc_med_min: r(btcPm?.medianMin, 0),
     btc_ibit_pc_ratio: r(opts.IBIT ? pcRatioFromChains(opts.IBIT.chains) : null, 3),
     hype_spot: r(hypeSpot, 4), hype_pm_ev: r(hypePm?.ev, 2),

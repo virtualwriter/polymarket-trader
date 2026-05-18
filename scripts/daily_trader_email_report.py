@@ -28,6 +28,7 @@ from zoneinfo import ZoneInfo
 ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 REPORT_DIR = DATA_DIR / "daily-email-reports"
+EASTERN_TZ = ZoneInfo("America/New_York")
 OPERATIONALLY_TAINTED_TRADES = {
     "T-1778707778058-9nsi": "hourly LLM close had authority over rule-owned funding trade",
     "T-1778718867328-1tjp": "one-touch NO inherited generic 2% Polymarket stop instead of 100% hold-to-expiry stop",
@@ -131,6 +132,10 @@ def local_hour(ts: str | None, tz: ZoneInfo) -> str:
     return parsed.astimezone(tz).strftime("%Y-%m-%d %H:00 %Z")
 
 
+def eastern_hour(ts: str | None) -> str:
+    return local_hour(ts, EASTERN_TZ)
+
+
 def short_label(label: str | None, max_len: int = 120) -> str:
     if not label:
         return "n/a"
@@ -138,23 +143,37 @@ def short_label(label: str | None, max_len: int = 120) -> str:
     return question[:max_len]
 
 
-def trade_line(row: dict[str, Any], tz: ZoneInfo, closed: bool) -> str:
+def hypothesis_lookup(hypotheses: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    return {str(hypothesis.get("id")): hypothesis for hypothesis in hypotheses if hypothesis.get("id")}
+
+
+def setup_signal_label(signal_type: str | None, hypothesis_id: str | None, hypotheses_by_id: dict[str, dict[str, Any]]) -> str:
+    signal = signal_type or "unknown"
+    if signal not in {"PROMOTED_HYPOTHESIS", "LLM_HYPOTHESIS"}:
+        return signal
+    hypothesis = hypotheses_by_id.get(hypothesis_id or "")
+    setup = hypothesis.get("setupLabel") or hypothesis.get("setupId") if hypothesis else None
+    return f"{signal} / {setup}" if setup else signal
+
+
+def trade_line(row: dict[str, Any], closed: bool, hypotheses_by_id: dict[str, dict[str, Any]]) -> str:
+    signal = setup_signal_label(row.get("signal_type"), row.get("hypothesis_id"), hypotheses_by_id)
     if closed:
         taint_note = (
             f" | operationally tainted: {OPERATIONALLY_TAINTED_TRADES[row.get('id')]}"
             if row.get("id") in OPERATIONALLY_TAINTED_TRADES else ""
         )
         return (
-            f"- {local_hour(row.get('closed_at'), tz)} | CLOSED | {row.get('asset')} "
+            f"- {eastern_hour(row.get('closed_at'))} | CLOSED | {row.get('asset')} "
             f"{row.get('direction')} via {row.get('venue')}/{row.get('instrument_type') or 'legacy'} "
-            f"({row.get('signal_type')}) {row.get('close_reason')}: "
+            f"({signal}) {row.get('close_reason')}: "
             f"{money(num(row.get('pnl')))} / {pct(num(row.get('pnl_pct')))} "
             f"[{short_label(row.get('instrument_label'))}]{taint_note}"
         )
     return (
-        f"- {local_hour(row.get('opened_at'), tz)} | OPENED | {row.get('asset')} "
+        f"- {eastern_hour(row.get('opened_at'))} | OPENED | {row.get('asset')} "
         f"{row.get('direction')} via {row.get('venue')}/{row.get('instrument_type') or 'legacy'} "
-        f"({row.get('signal_type')}) @ {row.get('entry_price')} "
+        f"({signal}) @ {row.get('entry_price')} "
         f"[{short_label(row.get('instrument_label'))}]"
     )
 
@@ -174,12 +193,13 @@ def open_position_pnl(position: dict[str, Any]) -> tuple[float, float]:
     return pnl, (pnl / size) * 100 if size else 0.0
 
 
-def open_position_line(position: dict[str, Any], tz: ZoneInfo) -> str:
+def open_position_line(position: dict[str, Any], hypotheses_by_id: dict[str, dict[str, Any]]) -> str:
     pnl, pnl_pct = open_position_pnl(position)
+    signal = setup_signal_label(position.get("signalType"), position.get("hypothesisId"), hypotheses_by_id)
     return (
-        f"- {local_hour(position.get('openedAt'), tz)} | OPEN | {position.get('asset')} "
+        f"- {eastern_hour(position.get('openedAt'))} | OPEN | {position.get('asset')} "
         f"{position.get('direction')} via {position.get('venue')}/{position.get('instrumentType') or 'legacy'} "
-        f"({position.get('signalType')}) @ {position.get('entryPrice')} "
+        f"({signal}) @ {position.get('entryPrice')} "
         f"mark {position.get('currentPrice')} | {money(pnl)} / {pct(pnl_pct)} "
         f"[{short_label(position.get('instrumentLabel'))}]"
     )
@@ -191,14 +211,14 @@ def shadow_line(shadow: dict[str, Any], tz: ZoneInfo, resolved: bool) -> str:
         result = shadow.get("hypotheticalResult", {})
         learnable = "excluded" if shadow.get("learningExcluded") else "learnable"
         return (
-            f"- {local_hour(shadow.get('resolvedAt'), tz)} | RESOLVED | {shadow.get('asset')} "
+            f"- {eastern_hour(shadow.get('resolvedAt'))} | RESOLVED | {shadow.get('asset')} "
             f"{shadow.get('direction')} via {shadow.get('venue')}/{position.get('instrumentType') or 'legacy'} "
             f"{shadow.get('blockedReason')} ({shadow.get('signalType')}) "
             f"{result.get('closeReason')}: {money(num(result.get('pnl')))} / {pct(num(result.get('pnlPct')))} "
             f"[{short_label(position.get('instrumentLabel'))}] ({learnable})"
         )
     return (
-        f"- {local_hour(shadow.get('blockedAt'), tz)} | OPENED | {shadow.get('asset')} "
+        f"- {eastern_hour(shadow.get('blockedAt'))} | OPENED | {shadow.get('asset')} "
         f"{shadow.get('direction')} via {shadow.get('venue')}/{position.get('instrumentType') or 'legacy'} "
         f"{shadow.get('blockedReason')} ({shadow.get('signalType')}) @ {position.get('entryPrice')} "
         f"[{short_label(position.get('instrumentLabel'))}]"
@@ -386,6 +406,7 @@ def build_report(window: ReportWindow) -> str:
             "direction": p.get("direction"),
             "instrument_type": p.get("instrumentType"),
             "signal_type": p.get("signalType"),
+            "hypothesis_id": p.get("hypothesisId"),
             "entry_price": p.get("entryPrice"),
             "instrument_label": p.get("instrumentLabel"),
         }
@@ -411,15 +432,16 @@ def build_report(window: ReportWindow) -> str:
 
     by_hour: dict[str, dict[str, float]] = defaultdict(lambda: {"closed": 0, "closed_pnl": 0, "shadow": 0, "shadow_pnl": 0})
     for row in closed_trades:
-        key = local_hour(row.get("closed_at"), window.tz)
+        key = eastern_hour(row.get("closed_at"))
         by_hour[key]["closed"] += 1
         by_hour[key]["closed_pnl"] += num(row.get("pnl"))
     for shadow in resolved_shadows:
-        key = local_hour(shadow.get("resolvedAt"), window.tz)
+        key = eastern_hour(shadow.get("resolvedAt"))
         by_hour[key]["shadow"] += 1
         by_hour[key]["shadow_pnl"] += num((shadow.get("hypotheticalResult") or {}).get("pnl"))
 
     llm_sections = journal_sections_for_window(DATA_DIR / "learning-journal.md", window.start_utc, window.end_utc, window.tz)
+    hypotheses_by_id = hypothesis_lookup(hypotheses)
     hypothesis_status = defaultdict(int)
     pending_tests = 0
     for hypothesis in hypotheses:
@@ -460,13 +482,13 @@ def build_report(window: ReportWindow) -> str:
         lines.append("- No real or shadow closes.")
 
     lines.extend(["", "## Real Trades Opened"])
-    lines.extend(trade_line(row, window.tz, closed=False) for row in opened_real) if opened_real else lines.append("- None")
+    lines.extend(trade_line(row, closed=False, hypotheses_by_id=hypotheses_by_id) for row in opened_real) if opened_real else lines.append("- None")
 
     lines.extend(["", "## Real Trades Closed"])
-    lines.extend(trade_line(row, window.tz, closed=True) for row in closed_trades) if closed_trades else lines.append("- None")
+    lines.extend(trade_line(row, closed=True, hypotheses_by_id=hypotheses_by_id) for row in closed_trades) if closed_trades else lines.append("- None")
 
     lines.extend(["", "## Current Open Real Positions"])
-    lines.extend(open_position_line(position, window.tz) for position in open_positions) if open_positions else lines.append("- None")
+    lines.extend(open_position_line(position, hypotheses_by_id) for position in open_positions) if open_positions else lines.append("- None")
 
     lines.extend(["", "## Shadow Trades Opened"])
     lines.extend(shadow_line(shadow, window.tz, resolved=False) for shadow in opened_shadows) if opened_shadows else lines.append("- None")
