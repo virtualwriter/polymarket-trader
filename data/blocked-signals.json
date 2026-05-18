@@ -10053,7 +10053,7 @@
   },
   {
     "id": "MANUAL-IVTOUCH-GOLD-YES-2001188-1777994390",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-05T15:19:50Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -10061,7 +10061,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 36.0% vs IV touch model 55.8%; edge +17.8 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 36.0% vs IV touch model 55.8%; edge +17.8 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-18: data_quality_artifact \u2014 Latest heatmap row is not reliable for learning or shadow evaluation because quote-quality flags are present: wide_pm_spread. Closing as bad data artifact, not thesis validation. Current edge -2.9 pts; edge compression 83%.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -10138,7 +10138,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.38,
-      "currentPrice": 0.39,
+      "currentPrice": 0.445,
       "size": 1,
       "leverage": 1,
       "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -10215,11 +10215,25 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "data_quality_artifact",
+      "exitPrice": 0.445,
+      "pnl": 0.1711,
+      "pnlPct": 17.11,
+      "marketPnl": 0.1711,
+      "fundingPnl": 0,
+      "outcome": "win"
+    },
+    "learningExcluded": {
+      "reason": "data_quality_artifact",
+      "note": "Latest heatmap row is not reliable for learning or shadow evaluation because quote-quality flags are present: wide_pm_spread. Closing as bad data artifact, not thesis validation."
     }
   },
   {
     "id": "MANUAL-IVTOUCH-GOLD-YES-2074209-1777994800",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-05T15:26:40Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -10227,7 +10241,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 24.5% vs IV touch model 36.8%; edge +11.8 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 24.5% vs IV touch model 36.8%; edge +11.8 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-18: thesis_validated \u2014 GOLD May $4,300 low manual edge has mostly compressed. Current edge +2.3 pts; edge compression 81%.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -10304,7 +10318,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.25,
-      "currentPrice": 0.18,
+      "currentPrice": 0.185,
       "size": 1,
       "leverage": 1,
       "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -10379,6 +10393,16 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.185,
+      "pnl": -0.26,
+      "pnlPct": -26.0,
+      "marketPnl": -0.26,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
@@ -10805,7 +10829,7 @@
   },
   {
     "id": "MANUAL-IVTOUCH-GOLD-YES-1032278-1778084261",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-06T16:17:41Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -10813,7 +10837,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 16.5% vs IV touch model 28.1%; edge +10.1 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 16.5% vs IV touch model 28.1%; edge +10.1 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-18: thesis_validated \u2014 GOLD Jun $4,200 low edge has compressed enough to validate the repricing thesis. Current edge +3.5 pts; edge compression 65%.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -10890,7 +10914,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.18,
-      "currentPrice": 0.26,
+      "currentPrice": 0.285,
       "size": 1,
       "leverage": 1,
       "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -10991,11 +11015,21 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.285,
+      "pnl": 0.5833,
+      "pnlPct": 58.33,
+      "marketPnl": 0.5833,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
     "id": "MANUAL-IVTOUCH-GOLD-YES-2001179-1778084274",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-06T16:17:54Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -11003,7 +11037,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 38.5% vs IV touch model 50.0%; edge +10.0 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 38.5% vs IV touch model 50.0%; edge +10.0 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-18: data_quality_artifact \u2014 Latest heatmap row is not reliable for learning or shadow evaluation because quote-quality flags are present: wide_pm_spread. Closing as bad data artifact, not thesis validation. Current edge +3.0 pts; edge compression 70%.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -11080,7 +11114,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.42,
-      "currentPrice": 0.34,
+      "currentPrice": 0.465,
       "size": 1,
       "leverage": 1,
       "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -11184,11 +11218,25 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "data_quality_artifact",
+      "exitPrice": 0.465,
+      "pnl": 0.1071,
+      "pnlPct": 10.71,
+      "marketPnl": 0.1071,
+      "fundingPnl": 0,
+      "outcome": "win"
+    },
+    "learningExcluded": {
+      "reason": "data_quality_artifact",
+      "note": "Latest heatmap row is not reliable for learning or shadow evaluation because quote-quality flags are present: wide_pm_spread. Closing as bad data artifact, not thesis validation."
     }
   },
   {
     "id": "MANUAL-IVTOUCH-GOLD-NO-1032291-1778084282",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-06T16:18:02Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -11196,7 +11244,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 53.0% vs IV touch model 39.7%; edge -9.3 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 53.0% vs IV touch model 39.7%; edge -9.3 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-18: data_quality_artifact \u2014 Latest heatmap row is not reliable for learning or shadow evaluation because quote-quality flags are present: low_pm_liquidity, wide_pm_spread. Closing as bad data artifact, not thesis validation. Current edge -6.7 pts; edge compression 29%.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -11273,7 +11321,7 @@
       "venue": "polymarket",
       "direction": "short",
       "entryPrice": 0.49,
-      "currentPrice": 0.45999999999999996,
+      "currentPrice": 0.555,
       "size": 1,
       "leverage": 1,
       "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -11378,6 +11426,20 @@
       },
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "data_quality_artifact",
+      "exitPrice": 0.555,
+      "pnl": 0.1327,
+      "pnlPct": 13.27,
+      "marketPnl": 0.1327,
+      "fundingPnl": 0,
+      "outcome": "win"
+    },
+    "learningExcluded": {
+      "reason": "data_quality_artifact",
+      "note": "Latest heatmap row is not reliable for learning or shadow evaluation because quote-quality flags are present: low_pm_liquidity, wide_pm_spread. Closing as bad data artifact, not thesis validation."
     }
   },
   {
@@ -12236,7 +12298,7 @@
   },
   {
     "id": "MANUAL-IVTOUCH-GOLD-YES-2074203-1778625442",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-12T22:37:22Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -12244,7 +12306,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 37.5% vs IV touch model 45.6%; edge +7.6 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 37.5% vs IV touch model 45.6%; edge +7.6 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-18: thesis_validated \u2014 May GOLD upside edge compressed/inverted: $4,900 YES no longer supports the original cheap-YES thesis. Current edge -1.1 pts; edge compression 86%. Manual shadow close against latest CBOE-backed heatmap.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -12321,7 +12383,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.38,
-      "currentPrice": 0.05,
+      "currentPrice": 0.06,
       "size": 1,
       "leverage": 1,
       "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -12427,11 +12489,21 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    },
+    "resolvedAt": "2026-05-18T17:00:58.418Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.06,
+      "pnl": -0.8421,
+      "pnlPct": -84.21,
+      "marketPnl": -0.8421,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
     "id": "MANUAL-IVTOUCH-BTC-YES-2132769-1778625467",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-12T22:37:47Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -12439,7 +12511,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 0.2% vs IV touch model 7.9%; edge +7.6 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 0.2% vs IV touch model 7.9%; edge +7.6 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-18: thesis_validated \u2014 May BTC upside edge compressed/inverted: $120k YES is now near fair to slightly rich versus options. Current edge -0.1 pts; edge compression 99%. Manual shadow close against latest CBOE-backed heatmap.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -12516,7 +12588,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.003,
-      "currentPrice": 0.001,
+      "currentPrice": 0.0015,
       "size": 1,
       "leverage": 1,
       "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -12622,11 +12694,21 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    },
+    "resolvedAt": "2026-05-18T17:00:58.418Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.0015,
+      "pnl": -0.5,
+      "pnlPct": -50.0,
+      "marketPnl": -0.5,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
     "id": "MANUAL-IVTOUCH-BTC-YES-2132771-1778625471",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-12T22:37:51Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -12634,7 +12716,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 0.5% vs IV touch model 7.6%; edge +7.0 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 0.5% vs IV touch model 7.6%; edge +7.0 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-18: thesis_validated \u2014 May BTC upside edge compressed/inverted: $110k YES is now near fair to slightly rich versus options. Current edge -0.3 pts; edge compression 96%. Manual shadow close against latest CBOE-backed heatmap.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -12711,7 +12793,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.006,
-      "currentPrice": 0.003,
+      "currentPrice": 0.0035,
       "size": 1,
       "leverage": 1,
       "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -12817,6 +12899,16 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    },
+    "resolvedAt": "2026-05-18T17:00:58.418Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.0035,
+      "pnl": -0.4167,
+      "pnlPct": -41.67,
+      "marketPnl": -0.4167,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
@@ -13858,7 +13950,7 @@
   },
   {
     "id": "OT-1778686296433-9gjf",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-13T15:31:36.433Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -13866,7 +13958,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 10.1pt edge on BTC; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 10.1pt edge on BTC; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-18: thesis_validated \u2014 BTC Dec $140k upside edge inverted versus the original cheap-YES thesis. Current edge -6.3 pts; edge compression 37%.]",
     "marketQuality": {
       "yesBid": 0.1,
       "yesAsk": 0.11,
@@ -13954,7 +14046,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.11,
-      "currentPrice": 0.1,
+      "currentPrice": 0.105,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -13969,6 +14061,16 @@
       "entryUnderlyingPrice": 79201,
       "currentUnderlyingPrice": 76319,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.105,
+      "pnl": -0.0455,
+      "pnlPct": -4.55,
+      "marketPnl": -0.0455,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
@@ -14100,7 +14202,7 @@
   },
   {
     "id": "OT-1778693287956-1011",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-13T17:28:07.956Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -14108,7 +14210,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 11.3pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 11.3pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-18: thesis_validated \u2014 May GOLD upside edge compressed/inverted: $5,000 YES no longer supports the original cheap-YES thesis. Current edge -0.7 pts; edge compression 94%. Manual shadow close against latest CBOE-backed heatmap.]",
     "marketQuality": {
       "yesBid": 0.15,
       "yesAsk": 0.2,
@@ -14198,7 +14300,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.2,
-      "currentPrice": 0.031,
+      "currentPrice": 0.0345,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -14213,6 +14315,16 @@
       "entryUnderlyingPrice": 4701,
       "currentUnderlyingPrice": 4544.1,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-18T17:00:58.418Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.0345,
+      "pnl": -0.8275,
+      "pnlPct": -82.75,
+      "marketPnl": -0.8275,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
@@ -14950,7 +15062,7 @@
   },
   {
     "id": "OT-1778718814129-5s16",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-14T00:33:34.129Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -14958,7 +15070,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.7,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 20.9pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 20.9pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration. [CLOSED 2026-05-18: data_quality_artifact \u2014 Latest heatmap row is not reliable for learning or shadow evaluation because quote-quality flags are present: wide_pm_spread. Closing as bad data artifact, not thesis validation. Current edge +1.0 pts; edge compression 95%.]",
     "marketQuality": {
       "yesBid": 0.21,
       "yesAsk": 0.23,
@@ -15048,7 +15160,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.23,
-      "currentPrice": 0.29,
+      "currentPrice": 0.315,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -15063,11 +15175,25 @@
       "entryUnderlyingPrice": 7423.1,
       "currentUnderlyingPrice": 7368.3,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "data_quality_artifact",
+      "exitPrice": 0.315,
+      "pnl": 0.3696,
+      "pnlPct": 36.96,
+      "marketPnl": 0.3696,
+      "fundingPnl": 0,
+      "outcome": "win"
+    },
+    "learningExcluded": {
+      "reason": "data_quality_artifact",
+      "note": "Latest heatmap row is not reliable for learning or shadow evaluation because quote-quality flags are present: wide_pm_spread. Closing as bad data artifact, not thesis validation."
     }
   },
   {
     "id": "OT-1778718814130-8x0z",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-14T00:33:34.130Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -15075,7 +15201,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 18.8pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 18.8pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-18: data_quality_artifact \u2014 Latest heatmap row is not reliable for learning or shadow evaluation because quote-quality flags are present: wide_pm_spread. Closing as bad data artifact, not thesis validation. Current edge -1.3 pts; edge compression 93%.]",
     "marketQuality": {
       "yesBid": 0.293,
       "yesAsk": 0.376,
@@ -15165,7 +15291,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.376,
-      "currentPrice": 0.27,
+      "currentPrice": 0.2995,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -15180,6 +15306,20 @@
       "entryUnderlyingPrice": 7423.1,
       "currentUnderlyingPrice": 7368.3,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "data_quality_artifact",
+      "exitPrice": 0.2995,
+      "pnl": -0.2035,
+      "pnlPct": -20.35,
+      "marketPnl": -0.2035,
+      "fundingPnl": 0,
+      "outcome": "loss"
+    },
+    "learningExcluded": {
+      "reason": "data_quality_artifact",
+      "note": "Latest heatmap row is not reliable for learning or shadow evaluation because quote-quality flags are present: wide_pm_spread. Closing as bad data artifact, not thesis validation."
     }
   },
   {
@@ -15851,7 +15991,7 @@
   },
   {
     "id": "OT-1778722092794-yzzs",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-14T01:28:12.794Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -15859,7 +15999,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.1pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.1pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-18: thesis_validated \u2014 OIL May $115 high edge has mostly compressed; original cheap-YES thesis played out. Current edge +3.9 pts; edge compression 74%.]",
     "marketQuality": {
       "yesBid": 0.3,
       "yesAsk": 0.31,
@@ -15947,7 +16087,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.31,
-      "currentPrice": 0.38,
+      "currentPrice": 0.395,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -15962,6 +16102,16 @@
       "entryUnderlyingPrice": 96.88,
       "currentUnderlyingPrice": 103.22,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.395,
+      "pnl": 0.2742,
+      "pnlPct": 27.42,
+      "marketPnl": 0.2742,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
@@ -16095,7 +16245,7 @@
   },
   {
     "id": "OT-1778743690532-fsjf",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-14T07:28:10.532Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -16103,7 +16253,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.8pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.8pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-18: thesis_validated \u2014 OIL May $120 high edge has mostly compressed; original cheap-YES thesis played out. Current edge +3.6 pts; edge compression 77%.]",
     "marketQuality": {
       "yesBid": 0.18,
       "yesAsk": 0.19,
@@ -16191,7 +16341,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.19,
-      "currentPrice": 0.24,
+      "currentPrice": 0.245,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -16206,6 +16356,16 @@
       "entryUnderlyingPrice": 96.99,
       "currentUnderlyingPrice": 103.22,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.245,
+      "pnl": 0.2895,
+      "pnlPct": 28.95,
+      "marketPnl": 0.2895,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
@@ -16601,7 +16761,7 @@
   },
   {
     "id": "OT-1778772494439-ji8w",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-14T15:28:14.439Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -16609,7 +16769,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 17.9pt edge on ETH; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 17.9pt edge on ETH; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-18: thesis_validated \u2014 May ETH upside edge compressed to fair: $3,000 YES is no longer meaningfully cheap versus options. Current edge +0.1 pts; edge compression 100%. Manual shadow close against latest CBOE-backed heatmap.]",
     "marketQuality": {
       "yesBid": 0.017,
       "yesAsk": 0.018,
@@ -16697,7 +16857,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.018,
-      "currentPrice": 0.005,
+      "currentPrice": 0.006,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -16712,6 +16872,16 @@
       "entryUnderlyingPrice": 2287,
       "currentUnderlyingPrice": 2098.3,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-18T17:00:58.418Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.006,
+      "pnl": -0.6667,
+      "pnlPct": -66.67,
+      "marketPnl": -0.6667,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
@@ -16831,7 +17001,7 @@
   },
   {
     "id": "OT-1778772494440-uwcq",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-14T15:28:14.440Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -16839,7 +17009,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.6pt edge on ETH; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.6pt edge on ETH; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-18: thesis_validated \u2014 May ETH upside edge compressed to fair: $3,200 YES is no longer meaningfully cheap versus options. Current edge +0.2 pts; edge compression 99%. Manual shadow close against latest CBOE-backed heatmap.]",
     "marketQuality": {
       "yesBid": 0.009,
       "yesAsk": 0.011,
@@ -16927,7 +17097,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.011,
-      "currentPrice": 0.003,
+      "currentPrice": 0.0035,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -16942,6 +17112,16 @@
       "entryUnderlyingPrice": 2287,
       "currentUnderlyingPrice": 2098.3,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-18T17:00:58.418Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.0035,
+      "pnl": -0.6818,
+      "pnlPct": -68.18,
+      "marketPnl": -0.6818,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
@@ -17061,7 +17241,7 @@
   },
   {
     "id": "OT-1778772494440-gg2u",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-14T15:28:14.440Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -17069,7 +17249,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.2pt edge on ETH; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.2pt edge on ETH; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-18: thesis_validated \u2014 ETH May $2,600 upside edge is now near fair/inverted after full compression. Current edge -0.1 pts; edge compression 100%.]",
     "marketQuality": {
       "yesBid": 0.2,
       "yesAsk": 0.21,
@@ -17157,7 +17337,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.21,
-      "currentPrice": 0.03,
+      "currentPrice": 0.0305,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -17172,6 +17352,16 @@
       "entryUnderlyingPrice": 2287,
       "currentUnderlyingPrice": 2098.3,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.0305,
+      "pnl": -0.8548,
+      "pnlPct": -85.48,
+      "marketPnl": -0.8548,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
@@ -17688,7 +17878,7 @@
   },
   {
     "id": "OT-1778790497075-ym7p",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-14T20:28:17.075Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -17696,7 +17886,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.0pt edge on ETH; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.0pt edge on ETH; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-18: thesis_validated \u2014 May ETH upside edge compressed to fair: $2,800 YES is no longer meaningfully cheap versus options. Current edge +0.1 pts; edge compression 100%. Manual shadow close against latest CBOE-backed heatmap.]",
     "marketQuality": {
       "yesBid": 0.07,
       "yesAsk": 0.08,
@@ -17784,7 +17974,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.08,
-      "currentPrice": 0.011,
+      "currentPrice": 0.012,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -17799,6 +17989,16 @@
       "entryUnderlyingPrice": 2288,
       "currentUnderlyingPrice": 2098.3,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-18T17:00:58.418Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.012,
+      "pnl": -0.85,
+      "pnlPct": -85.0,
+      "marketPnl": -0.85,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
@@ -18062,7 +18262,7 @@
   },
   {
     "id": "OT-1778808496999-n5nw",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-15T01:28:16.999Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -18070,7 +18270,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 17.3pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 17.3pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-18: thesis_validated \u2014 May GOLD upside edge compressed/inverted: $4,850 YES no longer supports the original cheap-YES thesis. Current edge -2.9 pts; edge compression 84%. Manual shadow close against latest CBOE-backed heatmap.]",
     "marketQuality": {
       "yesBid": 0.15,
       "yesAsk": 0.16,
@@ -18158,7 +18358,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.16,
-      "currentPrice": 0.08,
+      "currentPrice": 0.1,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -18173,11 +18373,21 @@
       "entryUnderlyingPrice": 4618,
       "currentUnderlyingPrice": 4544.1,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-18T17:00:58.418Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.1,
+      "pnl": -0.375,
+      "pnlPct": -37.5,
+      "marketPnl": -0.375,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
     "id": "OT-1778822898498-5odi",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-15T05:28:18.498Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -18185,7 +18395,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 16.0pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 16.0pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-18: thesis_validated \u2014 GOLD May $4,400 low edge has mostly compressed; original cheap-YES thesis played out. Current edge +1.7 pts; edge compression 90%.]",
     "marketQuality": {
       "yesBid": 0.17,
       "yesAsk": 0.2,
@@ -18275,7 +18485,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.2,
-      "currentPrice": 0.38,
+      "currentPrice": 0.385,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -18290,6 +18500,16 @@
       "entryUnderlyingPrice": 4589,
       "currentUnderlyingPrice": 4544.1,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.385,
+      "pnl": 0.925,
+      "pnlPct": 92.5,
+      "marketPnl": 0.925,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
@@ -19042,7 +19262,7 @@
   },
   {
     "id": "MANUAL-IVTOUCH-BTC-NO-2132778-1778956377",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-16T18:32:57Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -19050,7 +19270,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 59.5% vs IV touch model 43.3%; edge -15.7 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 59.5% vs IV touch model 43.3%; edge -15.7 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-18: thesis_validated \u2014 BTC May $75k downside NO edge has mostly compressed; close the manual shadow thesis test. Current edge -4.0 pts; edge compression 74%.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -19131,7 +19351,7 @@
       "venue": "polymarket",
       "direction": "short",
       "entryPrice": 0.41,
-      "currentPrice": 0.22999999999999998,
+      "currentPrice": 0.215,
       "size": 1,
       "leverage": 1,
       "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -19237,6 +19457,16 @@
       },
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.215,
+      "pnl": -0.4756,
+      "pnlPct": -47.56,
+      "marketPnl": -0.4756,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
@@ -19565,7 +19795,7 @@
   },
   {
     "id": "OT-1778992157777-14qm",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-17T04:29:17.777Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -19573,7 +19803,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.7,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 23.0pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 23.0pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration. [CLOSED 2026-05-18: data_quality_artifact \u2014 Latest heatmap row is not reliable for learning or shadow evaluation because quote-quality flags are present: low_pm_liquidity. Closing as bad data artifact, not thesis validation. Current edge +6.6 pts; edge compression 71%.]",
     "marketQuality": {
       "yesBid": 0.46,
       "yesAsk": 0.47,
@@ -19661,7 +19891,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.47,
-      "currentPrice": 0.56,
+      "currentPrice": 0.575,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -19676,6 +19906,20 @@
       "entryUnderlyingPrice": 7391.7,
       "currentUnderlyingPrice": 7368.3,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "data_quality_artifact",
+      "exitPrice": 0.575,
+      "pnl": 0.2234,
+      "pnlPct": 22.34,
+      "marketPnl": 0.2234,
+      "fundingPnl": 0,
+      "outcome": "win"
+    },
+    "learningExcluded": {
+      "reason": "data_quality_artifact",
+      "note": "Latest heatmap row is not reliable for learning or shadow evaluation because quote-quality flags are present: low_pm_liquidity. Closing as bad data artifact, not thesis validation."
     }
   },
   {
@@ -19932,7 +20176,7 @@
   },
   {
     "id": "OT-1779035356710-qm3f",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-17T16:29:16.710Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -19940,7 +20184,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.7,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 79.6pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 79.6pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration. [CLOSED 2026-05-18: thesis_validated \u2014 SPY Jun $8,000 upside edge inverted after large compression. Current edge -5.5 pts; edge compression 93%.]",
     "marketQuality": {
       "yesBid": 0.079,
       "yesAsk": 0.12,
@@ -20030,7 +20274,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.12,
-      "currentPrice": 0.075,
+      "currentPrice": 0.0975,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -20045,6 +20289,16 @@
       "entryUnderlyingPrice": 7391.7,
       "currentUnderlyingPrice": 7368.3,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.0975,
+      "pnl": -0.1875,
+      "pnlPct": -18.75,
+      "marketPnl": -0.1875,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
@@ -20307,7 +20561,7 @@
   },
   {
     "id": "OT-1779049754797-x7bh",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-17T20:29:14.797Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -20315,7 +20569,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.7,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 21.9pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 21.9pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration. [CLOSED 2026-05-18: thesis_validated \u2014 SPY $9,300 Dec edge fully compressed and inverted; original cheap-YES thesis is no longer supported. Current edge -4.0 pts; edge compression 87%. Manual shadow close against latest CBOE-backed heatmap.]",
     "marketQuality": {
       "yesBid": 0.053,
       "yesAsk": 0.054,
@@ -20403,7 +20657,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.054,
-      "currentPrice": 0.053,
+      "currentPrice": 0.0535,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -20477,6 +20731,16 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW"
+    },
+    "resolvedAt": "2026-05-18T17:00:58.418Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.0535,
+      "pnl": -0.0093,
+      "pnlPct": -0.93,
+      "marketPnl": -0.0093,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
@@ -20610,7 +20874,7 @@
   },
   {
     "id": "OT-1779056955185-pr5f",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-17T22:29:15.185Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -20618,7 +20882,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.8pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.8pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-18: thesis_validated \u2014 GOLD Jun $3,400 low edge is essentially fair after compression. Current edge +0.3 pts; edge compression 98%.]",
     "marketQuality": {
       "yesBid": 0.018,
       "yesAsk": 0.019,
@@ -20706,7 +20970,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.019,
-      "currentPrice": 0.017,
+      "currentPrice": 0.0175,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -20780,11 +21044,21 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW"
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.0175,
+      "pnl": -0.0789,
+      "pnlPct": -7.89,
+      "marketPnl": -0.0789,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
     "id": "OT-1779067755346-9vsq",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-18T01:29:15.346Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -20792,7 +21066,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 17.5pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 17.5pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-18: thesis_validated \u2014 GOLD May $4,300 low shadow edge has mostly compressed. Current edge +2.3 pts; edge compression 87%.]",
     "marketQuality": {
       "yesBid": 0.18,
       "yesAsk": 0.2,
@@ -20882,7 +21156,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.2,
-      "currentPrice": 0.18,
+      "currentPrice": 0.185,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -20956,6 +21230,16 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW"
+    },
+    "resolvedAt": "2026-05-18T17:04:04.394Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated",
+      "exitPrice": 0.185,
+      "pnl": -0.075,
+      "pnlPct": -7.5,
+      "marketPnl": -0.075,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
