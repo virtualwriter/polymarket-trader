@@ -21434,7 +21434,7 @@
   },
   {
     "id": "MANUAL-STALE-LOTTERY-OIL-NO-2074235-1779073200",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-18T03:00:00Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -21442,7 +21442,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 1,
-    "thesis": "Manual user stale-lottery NO shadow: PM YES 12.5% on far-OTM HIGH $130 (~25.9% above spot $103.26, 14d DTE) but IV touch model only 5.4%; sell_yes_or_buy_no edge -6.6 pts. Model prob 5.4% sits just over the 5.0% stale-lottery ceiling, so it would not auto-generate; added manually to test residual lottery premium decay against the existing STALE_LOTTERY_TICKET_NO setup. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user stale-lottery NO shadow: PM YES 12.5% on far-OTM HIGH $130 (~25.9% above spot $103.26, 14d DTE) but IV touch model only 5.4%; sell_yes_or_buy_no edge -6.6 pts. Model prob 5.4% sits just over the 5.0% stale-lottery ceiling, so it would not auto-generate; added manually to test residual lottery premium decay against the existing STALE_LOTTERY_TICKET_NO setup. Exclude from official live-trader performance until validated. [CLOSED 2026-05-18: thesis_validated_profitable \u2014 Manual close: WTI $130 May NO edge compressed to -3.0 pts with PM YES 0.075 vs model 0.040; NO entry 0.880 -> exit 0.925. Original rich-upside-touch thesis repriced profitably, so close rather than carry near-expiry tail risk.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -21523,7 +21523,7 @@
       "venue": "polymarket",
       "direction": "short",
       "entryPrice": 0.88,
-      "currentPrice": 0.9299999999999999,
+      "currentPrice": 0.925,
       "size": 1,
       "leverage": 1,
       "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -21604,6 +21604,16 @@
       },
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
+    },
+    "resolvedAt": "2026-05-18T20:55:17.540Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated_profitable",
+      "exitPrice": 0.925,
+      "pnl": 0.0511,
+      "pnlPct": 5.11,
+      "marketPnl": 0.0511,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
