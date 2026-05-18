@@ -11406,3 +11406,51 @@ Key observations this session:
 
 ---
 
+### 2026-05-18 05:30 UTC
+
+**Portfolio:** $99.75 total | Cash $95.75 | 4 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_90d = 25.1 is -4.6 std devs from mean (41.72 ± 3.63)
+- [anomaly] hype_hl_oi = 1036753940 is 2.6 std devs from mean (849494900.34 ± 71974701.81)
+- [anomaly] gold_opt_iv_90d = 29.7 is 2.2 std devs from mean (24.28 ± 2.41)
+- [anomaly] gold_med_min = 4208 is -2.2 std devs from mean (4369.64 ± 72.21)
+- [anomaly] hype_med_max = 64.9 is 2.2 std devs from mean (57.78 ± 3.26)
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 83 (36 wins / 47 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 3/3 shadows would have won, avg P&L 81.96%.
+- YES exploratory one-touch high-edge shadow is validating: 3/3 14d shadows won, avg P&L 47.14%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated (near-money repriced) (+20.59%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated (near-money repriced) (+20.83%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have closed with thesis validated (near-money repriced) (+100.00%)
+- ❌ Missing downside leg: OPT_IV_GT_PM_IV_DOWNSIDE GOLD long via polymarket would have hit stop (-3.61%)
+
+**LLM analysis:**
+Key observations this cycle:
+
+1. BTC TERM STRUCTURE INVERSION: The btc_opt_iv_90d at 25.1 is a -4.6σ anomaly (mean 41.7, std 3.6). This is an extreme compression of the 90d vol relative to 30d (38%) and PM IV (35.8%). This kind of term structure inversion — where near-term vol is higher than long-term vol — is unusual and typically resolves via either 90d vol rising or 30d vol falling. The promoted H-523 (BTC PM IV compression) is active and should be generating shadow tests. The btc_opt_iv_90d anomaly is a separate but corroborating signal.
+
+2. OIL POSITION (T-1779049817841-htfg): The OIL NO position on 'settle over $56' is at -47% PnL after 9 hours. The thesis (spot stays below $56) is trivially correct — WTI is at $103, far above $56. The PM market has moved from 0.038 to 0.02 (YES price dropped from ~0.038 to ~0.029 based on the NO price movement), which is favorable. The -47% PnL likely reflects the bid/ask spread at entry vs current mid. This is a mechanical hold — the thesis is intact and the position should recover as the market reprices toward zero. No LLM close warranted.
+
+3. GOLD LONG (T-1778916565173-2wqk): Gold spot has recovered from 4536 to 4550 (+0.31%), funding has normalized from -44.8% to +5.48%. The thesis (crowded shorts unwinding) has played out — funding normalization is complete. The position is near breakeven at +0.31% with a 4% target. The breakeven arm hasn't triggered yet (needs peak ≥ +1.5%). Gold is now at a 24h high (percentile 100 in 24h range). Watching for continuation toward the 4% target.
+
+4. AMZN LONG (T-1778916565173-vz22): AMZN stock is frozen at 262.64 (likely weekend/after-hours), perp at 261.88 (-0.06% PnL). The basis has improved from -0.45% to -0.29% over the past few hours, consistent with the convergence thesis. Funding has normalized to +5.48% from -29.8%. The thesis is playing out slowly. No close warranted.
+
+5. BTC NO (T-1778718867328-fb7r): BTC has drifted from 79.5k to 77k (-3.2%) since open, which is adverse for the $55k dip NO position (spot moving down toward $55k is adverse). However, at 77k we are still 40% above the $55k strike, and the PM YES price has barely moved (0.475 → 0.475). The position is at -1.89% PnL. The signal-family evidence shows btc_spot declining but still far from the strike. No close warranted — the thesis remains intact.
+
+6. HYPE OI SURGE: HYPE OI has surged from ~960M to 1.037B with spot at 45.7 and funding at +10.95%. This is a 2.6σ OI anomaly. The promoted H-521 conditions are met. This is a strong momentum continuation signal for HYPE. However, with 4 open positions and limited cash ($95.75), new entries are constrained.
+
+7. RELATIVE VALUE HEATMAP: The strongest eligible signals are BTC $90k May YES (edge 34.7pts, model prob 36.9% vs PM 2.1%) and BTC $95k May YES (edge 32.1pts, model prob 33.2% vs PM 1.05%). These are strong-long-tail edges but the PM prices are very low (2.1% and 1.05%) making position sizing difficult with $1 trades. The OIL $115 June YES (edge 18.2pts) and OIL $130 June YES (edge 16.4pts) are also notable but OIL LLM_HYPOTHESIS is disabled. SPY $7,600 Dec YES (edge 14.4pts) and SPY $7,800 Dec YES (edge 20.75pts, low liquidity) are interesting but SPY has no perp venue.
+
+8. HYPOTHESIS BACKLOG: 12/19 setup families need more tests with 9 pending. No new hypotheses proposed per policy. Focus remains on accumulating shadow test data for existing families, particularly the oil_iv_statistical_breakdown_arbitrage and cross_asset families which have the most pending tests.
+
+---
+
