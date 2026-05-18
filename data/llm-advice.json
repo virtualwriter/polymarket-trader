@@ -1,6 +1,22 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [],
+  "rejectedCloses": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1779089415632-pbo3",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_spot"
+        ],
+        "thesis": "The promoted H-069 BTC put-call exhaustion/reversal thesis required BTC spot to be consolidating near recent highs with P/C ratio spike. BTC spot is now at $76,980, which is at the 8th percentile of the 7d range (range: $76,200-$82,646), approximately 6.9% below the 7d high. The position has been open 14h with essentially flat P&L (-0.01%) and peak of only +0.94% — well below the 3% target. The btc_spot trajectory shows continued range-bound weakness with no upward momentum. The setup family (btc_put_call_exhaustion_reversal) has 0/4 clean live trade wins with avg P&L of -2.05%, and this position is not showing the expected reversal. Closing to preserve capital before the stop at -1.5% is hit."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    }
+  ],
   "skippedTrades": [],
   "parameterUpdates": {
     "macroMomentum24hThresholdPts": 4,

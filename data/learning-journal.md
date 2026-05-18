@@ -12129,3 +12129,57 @@ Key observations this session:
 
 ---
 
+### 2026-05-18 21:30 UTC
+
+**Portfolio:** $99.75 total | Cash $91.75 | 8 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Opened 2 positions:**
+- HYPE long @ $47.03 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+- GOLD short @ $4570 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_90d = 23.7 is -3.9 std devs from mean (41.30 ± 4.47)
+- [anomaly] btc_opt_iv_term_spread = 13.52 is 3.9 std devs from mean (-1.87 ± 3.99)
+- [anomaly] hype_hl_oi = 1039555675 is 2.4 std devs from mean (854505716.42 ± 76019753.91)
+- [anomaly] hype_spot = 47.03 is 2.3 std devs from mean (41.62 ± 2.32)
+- [anomaly] hype_pm_ev = 48.57 is 2.3 std devs from mean (44.29 ± 1.90)
+
+**Blocked signal learning:**
+- Open blocked shadows: 30
+- Resolved blocked shadows: 105 (42 wins / 63 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 4/5 shadows would have won, avg P&L 40.69%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.89%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.50%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have closed with thesis validated profitably (+34.52%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+
+**LLM analysis:**
+Key observations from this session:
+
+1. BTC TERM STRUCTURE INVERSION: The btc_opt_iv_term_spread has been oscillating wildly — ranging from -2.77 (90d IV > 30d IV, inverted) to +16.79 (normal steep). This is a 3.9σ anomaly on the term spread. The inversion periods (snapshots at T16, T18, T19, T20) coincide with 90d IV spiking to 40-41%, which is anomalous. This may reflect a data artifact in the 90d IV feed or genuine near-term vol compression with longer-dated uncertainty. Worth monitoring as a potential signal for vol regime shifts.
+
+2. HYPE BREAKOUT CONFIRMED: HYPE has broken to $47+ with OI at 1.04B (2.4σ), PM EV at $48.57 (2.3σ), and funding at max cap. The H-521 promoted hypothesis conditions appear met. The Polymarket $50 YES contract at 0.80-0.825 and $54 YES at 0.755-0.77 are near the underlying cap, suggesting the market is pricing significant upside probability. The $46 strike is already closed/resolved YES.
+
+3. OIL STRUCTURAL SETUP: The oil_hl_funding_ann has been deeply negative (-22.57% at last reading), which is thesis-continuation for the PC_RATIO_EXTREME_HIGH long (T-1779114618102-igou). The P/C ratio normalized from 1.495 to 1.04, which is the expected mean reversion. The position is up +1.0% with peak +3.66% — approaching but not yet at the 4% target. The ONE_TOUCH_HIGH_EDGE_NO oil position (T-1779049817841-htfg) is deeply underwater at -47.37% because oil spot has stayed well above $56 (currently $102). This is a mechanical position that will run to expiry.
+
+4. GOLD FUNDING EXTREME: Gold HL funding has been running at 14-26% annualized (positive, longs paying shorts), which is the opposite of the entry condition for T-1778916565173-2wqk (which entered on -44.8% funding). The funding has completely reversed. However, the position is up +0.74% and the gold spot has moved from $4,536 to $4,570 (+0.75%). The breakeven arm is not yet triggered (needs peak ≥ 1.5%). The funding reversal is not a close signal per the evidence column rules (gold_hl_funding_ann is an evidence column but the thesis was crowded shorts → reversal, and the reversal has occurred — the position is now in the 'carry cost' phase with positive funding). Monitoring.
+
+5. AMZN POSITION: AMZN is up +1.09% with the breakeven arm armed (peak was +2.55%). The funding has normalized from -29.8% to +5.48%, confirming the thesis played out. The breakeven stop is now protecting the position at +0.25%.
+
+6. BTC PROMOTED HYPOTHESIS CLOSE: Closing T-1779089415632-pbo3 because the btc_put_call_exhaustion_reversal setup family has a 0/4 live trade win rate and the current position shows no momentum after 14 hours. The spot is 6.9% below the 7d high, which is outside the H-523 condition of 'within 5% of 7d high'. The position is essentially flat and the risk/reward no longer favors holding.
+
+7. RELATIVE VALUE HEATMAP NOTES: The heatmap shows several interesting edges — OIL $130 June YES at 0.27 vs model 0.42 (14pt edge), OIL $140 June YES at 0.185 vs model 0.305 (11.5pt edge), BTC $110k Dec YES at 0.235 vs model 0.392 (15pt edge), ETH $3,500 Dec YES at 0.255 vs model 0.460 (20pt edge). These are all in the 'long-tail' or 'mild-long-tail' buckets. However, the OIL signal family is disabled for LLM_HYPOTHESIS and the ETH/BTC December contracts have wide spreads and low liquidity at the relevant strikes. Not actionable under current rules but worth tracking for the manual_iv_touch_cheap_yes family.
+
+**LLM close rejections today (2026-05-18, token-burn signal):**
+- Total rejected close instructions: 11
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (11)
+- Repeat-offender positions (≥3 rejections today): T-1779089415632-pbo3 (11) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+
