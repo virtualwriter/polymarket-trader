@@ -1317,6 +1317,7 @@ def manual_shadow_payload(row: RelativeValueRow) -> Dict[str, Any]:
 def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     visible = rows
+    initial_rows_json = json.dumps([row_to_dict(row) for row in rows], separators=(",", ":"))
     generated = datetime.now(timezone.utc).replace(microsecond=0).isoformat()
     snapshot_display = fmt_eastern_time(snapshot_timestamp)
     generated_display = fmt_eastern_time(generated)
@@ -1395,6 +1396,33 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
     .copied {{ background: #1f7a1f; color: white; }}
     .live-refresh {{ color: #777; margin-top: 4px; }}
     .live-refresh.stale {{ color: #a50f15; font-weight: 700; }}
+    .filter-bar {{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 14px 0;
+      flex-wrap: wrap;
+    }}
+    .filter-bar input {{
+      font: inherit;
+      padding: 5px 7px;
+      min-width: 180px;
+    }}
+    .filter-bar button {{
+      padding: 5px 9px;
+    }}
+    .column-filters th {{
+      top: 31px;
+      cursor: default;
+      padding: 4px;
+    }}
+    .column-filters th::after {{ content: ""; }}
+    .column-filters input {{
+      width: 100%;
+      box-sizing: border-box;
+      font: inherit;
+      padding: 4px 5px;
+    }}
   </style>
 </head>
 <body>
@@ -1431,6 +1459,11 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
     <span class="neg2">-10 pts</span>
     <span class="neg3">-20 pts</span>
   </div>
+  <div class="filter-bar">
+    <label for="asset-filter">Asset filter</label>
+    <input id="asset-filter" type="search" placeholder="Type BTC, ETH, GOLD, OIL, SPY..." autocomplete="off">
+    <button type="button" id="clear-filters">Clear filters</button>
+  </div>
   <table id="relative-value-table">
     <thead>
       <tr>
@@ -1465,6 +1498,39 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         <th>Model</th>
         <th>IV Resolution</th>
         <th>Flags</th>
+      </tr>
+      <tr class="column-filters">
+        <th><input type="search" data-column-filter="asset" placeholder="Asset"></th>
+        <th><input type="search" data-column-filter="direction" placeholder="Dir"></th>
+        <th><input type="search" data-column-filter="strike" placeholder="Strike"></th>
+        <th><input type="search" data-column-filter="contract_question" placeholder="Contract"></th>
+        <th><input type="search" data-column-filter="contract_month" placeholder="Date"></th>
+        <th><input type="search" data-column-filter="pm_yes_price" placeholder="PM YES"></th>
+        <th><input type="search" data-column-filter="pm_quote_source" placeholder="Quote"></th>
+        <th><input type="search" data-column-filter="underlying_cap_yes_price" placeholder="Cap"></th>
+        <th><input type="search" data-column-filter="pm_to_underlying_cap_ratio" placeholder="PM/Cap"></th>
+        <th><input type="search" data-column-filter="settlement_yes_sum" placeholder="Settle"></th>
+        <th><input type="search" data-column-filter="settlement_tail_yes" placeholder="Tail"></th>
+        <th><input type="search" data-column-filter="settlement_skew_yes" placeholder="Skew"></th>
+        <th><input type="search" data-column-filter="options_touch_adjusted_prob" placeholder="Options"></th>
+        <th><input type="search" data-column-filter="edge_score" placeholder="Edge"></th>
+        <th><input type="search" data-column-filter="edge_pts_per_dte" placeholder="Edge/day"></th>
+        <th><input type="search" data-column-filter="edge_pts_per_dte_7d_change" placeholder="7d Δ"></th>
+        <th><input type="search" data-column-filter="best_expression" placeholder="Expression"></th>
+        <th><input type="search" data-column-filter="eligible_displayable" placeholder="Display"></th>
+        <th><input type="search" data-column-filter="eligible_for_shadow" placeholder="Shadow"></th>
+        <th><input type="search" data-column-filter="eligible_for_backtest" placeholder="Backtest"></th>
+        <th></th>
+        <th><input type="search" data-column-filter="pm_spread" placeholder="Spread"></th>
+        <th><input type="search" data-column-filter="liquidity" placeholder="Liquidity"></th>
+        <th><input type="search" data-column-filter="option_iv" placeholder="Opt IV"></th>
+        <th><input type="search" data-column-filter="pm_iv" placeholder="PM IV"></th>
+        <th><input type="search" data-column-filter="perp_source" placeholder="Perp"></th>
+        <th><input type="search" data-column-filter="perp_funding_ann" placeholder="Funding"></th>
+        <th><input type="search" data-column-filter="perp_basis_pct" placeholder="Basis"></th>
+        <th><input type="search" data-column-filter="model_version" placeholder="Model"></th>
+        <th><input type="search" data-column-filter="iv_resolution" placeholder="IV res"></th>
+        <th><input type="search" data-column-filter="flags" placeholder="Flags"></th>
       </tr>
     </thead>
     <tbody>
@@ -1505,6 +1571,9 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
       {{ key: "iv_resolution" }},
       {{ key: "flags" }},
     ];
+    let tableRows = {initial_rows_json};
+    let sortState = {{ index: null, direction: -1 }};
+    const filters = {{ asset: "", columns: {{}} }};
 
     function dateFromTimestamp(value) {{
       const raw = String(value || "");
@@ -1611,6 +1680,35 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
       return cell;
     }}
 
+    function cellText(row, column) {{
+      if (column.manualShadow) return "";
+      return column.format ? column.format(row) : String(row[column.key] || "");
+    }}
+
+    function rowMatchesFilters(row) {{
+      const assetNeedle = filters.asset.trim().toLowerCase();
+      if (assetNeedle && !String(row.asset || "").toLowerCase().includes(assetNeedle)) return false;
+      return Object.entries(filters.columns).every(([key, rawNeedle]) => {{
+        const needle = String(rawNeedle || "").trim().toLowerCase();
+        if (!needle) return true;
+        const column = columnDefs.find((candidate) => candidate.key === key);
+        if (!column) return true;
+        return cellText(row, column).toLowerCase().includes(needle);
+      }});
+    }}
+
+    function compareRows(a, b, sort) {{
+      if (sort.index === null) return 0;
+      const column = columnDefs[sort.index];
+      const direction = sort.direction || 1;
+      const aValue = sortableValue(cellText(a, column));
+      const bValue = sortableValue(cellText(b, column));
+      if (aValue.type === "missing" && bValue.type !== "missing") return 1;
+      if (bValue.type === "missing" && aValue.type !== "missing") return -1;
+      if (aValue.type === "number" && bValue.type === "number") return direction * (aValue.value - bValue.value);
+      return direction * String(aValue.value ?? "").localeCompare(String(bValue.value ?? ""), undefined, {{ numeric: true, sensitivity: "base" }});
+    }}
+
     function renderRows(rows) {{
       const tbody = document.querySelector("#relative-value-table tbody");
       const rendered = rows.map((row) => {{
@@ -1623,12 +1721,25 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
           const td = document.createElement("td");
           const className = typeof column.className === "function" ? column.className(row) : column.className;
           if (className) td.className = className;
-          td.textContent = column.format ? column.format(row) : String(row[column.key] || "");
+          td.textContent = cellText(row, column);
           tr.appendChild(td);
         }});
         return tr;
       }});
       tbody.replaceChildren(...rendered);
+    }}
+
+    function applyTableState() {{
+      const filtered = tableRows.filter(rowMatchesFilters);
+      if (sortState.index !== null) filtered.sort((a, b) => compareRows(a, b, sortState));
+      renderRows(filtered);
+      document.getElementById("row-count").textContent = `${{filtered.length}} of ${{tableRows.length}}`;
+      document.querySelectorAll("#relative-value-table thead tr:first-child th").forEach((header, index) => {{
+        header.removeAttribute("aria-sort");
+        if (sortState.index === index) {{
+          header.setAttribute("aria-sort", sortState.direction === 1 ? "ascending" : "descending");
+        }}
+      }});
     }}
 
     function updateFreshnessStatus(generatedAt) {{
@@ -1651,10 +1762,10 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         const payload = await response.json();
         if (!response.ok) throw new Error(payload.error || `HTTP ${{response.status}}`);
         if (!Array.isArray(payload.rows)) throw new Error("Latest payload has no rows");
-        renderRows(payload.rows);
+        tableRows = payload.rows;
+        applyTableState();
         document.getElementById("snapshot-timestamp").textContent = fmtEasternTime(payload.snapshotTimestamp);
         document.getElementById("generated-timestamp").textContent = fmtEasternTime(payload.generatedAt);
-        document.getElementById("row-count").textContent = `${{payload.rows.length}} of ${{payload.rowCount || payload.rows.length}}`;
         updateFreshnessStatus(payload.generatedAt);
       }} catch (err) {{
         status.textContent = `Could not load VPS latest data: ${{err.message || err}}. Showing static Vercel render.`;
@@ -1711,29 +1822,42 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
       return {{ type: "text", value: lower }};
     }}
 
-    function compareCells(aCell, bCell, direction) {{
-      const a = sortableValue(aCell ? aCell.textContent : "");
-      const b = sortableValue(bCell ? bCell.textContent : "");
-      if (a.type === "missing" && b.type !== "missing") return 1;
-      if (b.type === "missing" && a.type !== "missing") return -1;
-      if (a.type === "number" && b.type === "number") return direction * (a.value - b.value);
-      return direction * String(a.value ?? "").localeCompare(String(b.value ?? ""), undefined, {{ numeric: true, sensitivity: "base" }});
-    }}
-
-    document.querySelectorAll("#relative-value-table thead th").forEach((th, index) => {{
+    document.querySelectorAll("#relative-value-table thead tr:first-child th").forEach((th, index) => {{
       th.setAttribute("title", "Click to sort this column");
       th.addEventListener("click", () => {{
-        const table = th.closest("table");
-        const tbody = table.querySelector("tbody");
         const current = th.getAttribute("aria-sort");
         const next = current === "descending" ? "ascending" : "descending";
-        const direction = next === "ascending" ? 1 : -1;
-        table.querySelectorAll("thead th").forEach((header) => header.removeAttribute("aria-sort"));
-        th.setAttribute("aria-sort", next);
-        const rows = Array.from(tbody.querySelectorAll("tr"));
-        rows.sort((a, b) => compareCells(a.children[index], b.children[index], direction));
-        tbody.replaceChildren(...rows);
+        sortState = {{ index, direction: next === "ascending" ? 1 : -1 }};
+        applyTableState();
       }});
+    }});
+
+    document.querySelectorAll("[data-column-filter]").forEach((input) => {{
+      input.addEventListener("click", (event) => event.stopPropagation());
+      input.addEventListener("input", () => {{
+        filters.columns[input.dataset.columnFilter] = input.value;
+        applyTableState();
+      }});
+    }});
+
+    document.getElementById("asset-filter").addEventListener("input", (event) => {{
+      filters.asset = event.target.value;
+      const columnAssetFilter = document.querySelector('[data-column-filter="asset"]');
+      if (columnAssetFilter && columnAssetFilter.value !== event.target.value) {{
+        columnAssetFilter.value = event.target.value;
+        filters.columns.asset = event.target.value;
+      }}
+      applyTableState();
+    }});
+
+    document.getElementById("clear-filters").addEventListener("click", () => {{
+      filters.asset = "";
+      filters.columns = {{}};
+      document.getElementById("asset-filter").value = "";
+      document.querySelectorAll("[data-column-filter]").forEach((input) => {{
+        input.value = "";
+      }});
+      applyTableState();
     }});
 
     document.addEventListener("click", async (event) => {{
