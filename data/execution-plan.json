@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-18T07:30:15.624Z",
+  "generatedAt": "2026-05-18T08:30:25.834Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.6,
       "thesis": "[PROMOTED BTC put-call exhaustion / reversal via H-069] BTC P/C ratio spike above 1.0 during consolidation above 68500 creates oversold bounce setup as options positioning becomes too bearish",
       "hypothesisId": "H-069",
-      "entryPrice": 76989,
+      "entryPrice": 76987,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 3
@@ -25,11 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.619903235,
-      "confidence": 0.2608630300784375,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.6pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6239116189999999,
+      "confidence": 0.26254980817043744,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.7pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76989,
+      "entryPrice": 76987,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5427693786666666,
-      "confidence": 0.22840413916016664,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.3pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.547708754,
+      "confidence": 0.23048269004262498,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.4pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76989,
+      "entryPrice": 76987,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -61,10 +61,26 @@
       }
     }
   ],
-  "rejectedLlmActions": [],
+  "rejectedLlmActions": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1779089415632-pbo3",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_spot"
+        ],
+        "thesis": "The promoted H-069 BTC P/C exhaustion reversal long requires spot to be consolidating above 68,500 with P/C ratio spike above 1.0 creating an oversold bounce. However, BTC spot is at the 3rd percentile of the 7d range (76,987 vs 7d high of 82,646), meaning it is ~6.9% below the 7d high — the setup family (btc_put_call_exhaustion_reversal) has 0/4 clean live trade wins with avg -2.05% P&L. The btc_spot trajectory shows a consistent downtrend over the last 12 hours (78,355 → 76,987) with no bounce signal. The IBIT P/C ratio has been flat at 0.713 throughout, not showing the spike-and-normalize pattern the hypothesis requires. With the trade only 1h old and already at the stop boundary (-1.5% stop), the thesis conditions are not being confirmed by price action and the setup family has a poor live track record. Closing to preserve capital."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    }
+  ],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
   ]
 }
