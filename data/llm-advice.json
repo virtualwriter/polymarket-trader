@@ -1,6 +1,22 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [],
+  "rejectedCloses": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1779089415632-pbo3",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_spot"
+        ],
+        "thesis": "The BTC long was opened at 76,989 based on H-069 (P/C ratio spike above 1.0 creating oversold bounce). After 7 hours, BTC spot has declined to 76,731 (-0.34%) and is at the 8th percentile of its 24h range (76,703-78,355), indicating continued downward pressure rather than a bounce. The spot trajectory shows a failed recovery attempt: 77,274 at T12, 77,322 at T13, then reversal to 76,731 at T14. The P/C ratio has not re-spiked to reinforce the thesis. With the position at -0.34% and approaching the -1.5% stop, and with no evidence of the predicted bounce materializing, closing proactively preserves capital. The IBIT P/C ratio moved from 0.713 to 0.74 (slightly higher, not the normalization pattern that would confirm a bounce completion)."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    }
+  ],
   "skippedTrades": [],
   "parameterUpdates": {
     "macroMomentum24hThresholdPts": 4,
