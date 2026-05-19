@@ -12274,3 +12274,52 @@ Key observations this session:
 
 ---
 
+### 2026-05-19 01:30 UTC
+
+**Portfolio:** $99.75 total | Cash $91.75 | 8 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_90d = 23.1 is -3.9 std devs from mean (41.19 ± 4.66)
+- [anomaly] btc_opt_iv_term_spread = 13.82 is 3.8 std devs from mean (-1.78 ± 4.15)
+- [anomaly] hype_hl_oi = 1079984068 is 2.9 std devs from mean (855983537.78 ± 77973395.17)
+- [anomaly] hype_spot = 47.498 is 2.5 std devs from mean (41.66 ± 2.37)
+- [anomaly] hype_pm_ev = 48.82 is 2.3 std devs from mean (44.32 ± 1.93)
+
+**Blocked signal learning:**
+- Open blocked shadows: 31
+- Resolved blocked shadows: 105 (42 wins / 63 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 4/5 shadows would have won, avg P&L 40.69%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.89%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.50%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have closed with thesis validated profitably (+34.52%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+
+**LLM analysis:**
+Key observations this cycle:
+
+1. GOLD FUNDING NORMALIZATION (T-1779139821182-o43q): The FUNDING_EXTREME_LONG short on GOLD was triggered at 25.65% annualized funding. Within 4 hours, funding collapsed to 5.48% and has been flat there for 3+ snapshots. This is a clean thesis completion — the crowded-long signal has fully unwound. Closing at +0.22% is the right call; holding for the 5% target with neutral funding is speculative drift, not signal continuation. This is a pattern worth noting: GOLD HL funding oscillates violently (we've seen it go from -454% to +300% in the 30d range), so FUNDING_EXTREME_LONG entries on GOLD should have tighter exits when funding normalizes rapidly.
+
+2. GOLD LONG/SHORT CONFLICT (T-1778916565173-2wqk vs T-1779139821182-o43q): We briefly held both a FUNDING_EXTREME_SHORT long (entered at -44.8% funding) and a FUNDING_EXTREME_LONG short (entered at +25.65% funding) on GOLD simultaneously. The long is +0.52% and the short is +0.22% — both small. The net exposure is near-flat on GOLD, which is fine, but the conflict highlights that GOLD funding is so volatile that both signals can trigger within hours of each other. Consider adding a rule that blocks a new GOLD funding trade if an opposing GOLD funding trade is already open.
+
+3. HYPE MOMENTUM (T-1779139821182-qwpf): H-521 promoted hypothesis is performing well. HYPE at 47.5 with OI at 1.08B (+2.9σ) and spot at 99th percentile of 7d range. The position is +1.0% with 4h elapsed and 164h remaining. No action needed — let the mechanical target run.
+
+4. BTC PROMOTED HYPOTHESIS (T-1779089415632-pbo3): H-523 BTC IV compression trade is -0.35% after 18h. BTC spot is at 24h percentile 25 (range 76,200-77,322), below the 24h SMA. The IV compression condition (PM IV in bottom 20% of 30d range) is borderline — PM IV at 36.5% vs 30d range 33-47.3% puts it around the 20th percentile. The thesis is not invalidated but momentum is slightly adverse. The 1.5% stop gives room; holding.
+
+5. OIL CONFLICT (T-1779049817841-htfg vs T-1779114618102-igou): We hold both a ONE_TOUCH_HIGH_EDGE_NO short (betting WTI stays below $56 through June — currently -47% as the contract repriced) and a PC_RATIO_EXTREME_HIGH long spot (WTI at 102.72, +1.4%). These are not in direct conflict since the NO position is on a far-OTM June settle contract, but the oil complex is elevated. The NO position is mechanically managed and cannot be LLM-closed. The spot long is tracking well.
+
+6. HEATMAP OBSERVATIONS: The relative-value heatmap shows large model-vs-PM gaps on ETH May contracts (e.g., ETH $2,600 May YES at 3.3c vs model 16.7% touch probability = massive apparent edge). However, these ETH contracts use CBOE delayed ETHA IV which may be stale/unreliable for near-term touch probability. The 'extreme_perp_funding' flag on ETH (10.95% annualized) also suggests the options model may be underpricing downside risk. Not acting on these without cleaner IV data.
+
+7. HYPOTHESIS BACKLOG: 9/20 setup families still need more shadow tests. Not creating new hypotheses per policy. The GOLD PM settlement deviation hypothesis (H-449) should be reformulated to use bucket aggregate metrics rather than a spot/PM gap per system rules.
+
+**LLM close rejections today (2026-05-19, token-burn signal):**
+- Total rejected close instructions: 1
+- Top signal/asset pairs: FUNDING_EXTREME_LONG / GOLD (1)
+
+---
+
