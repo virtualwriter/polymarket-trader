@@ -12411,3 +12411,48 @@ Key observations this cycle:
 
 ---
 
+### 2026-05-19 04:30 UTC
+
+**Portfolio:** $99.75 total | Cash $91.75 | 8 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved wider by 11.6pp (was -0.5, now 11.1)
+- [anomaly] btc_opt_iv_90d = 22.3 is -3.8 std devs from mean (41.07 ± 4.88)
+- [anomaly] btc_opt_iv_term_spread = 12.85 is 3.4 std devs from mean (-1.68 ± 4.33)
+- [anomaly] hype_hl_oi = 1078164870 is 2.8 std devs from mean (857381295.26 ± 79652572.58)
+- [anomaly] hype_pm_ev = 49.27 is 2.5 std devs from mean (44.35 ± 1.97)
+
+**Blocked signal learning:**
+- Open blocked shadows: 37
+- Resolved blocked shadows: 105 (42 wins / 63 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 4/5 shadows would have won, avg P&L 40.69%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.89%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.50%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have closed with thesis validated profitably (+34.52%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. BTC PM IV spike to 46.2 is the most significant anomaly — it jumped from the ~35-36 range that held for 12+ hours to 46.2 in the latest snapshot. This is a +2.1σ event at the 98th percentile over 7d and 30d. This is the vol expansion that H-523 predicted, but it arrived while spot is at the 3rd percentile of its 7d range (~76,684 vs 7d high ~82,646). The IV expansion without spot follow-through is ambiguous — it could be dealer hedging stress (H-531 territory) or a genuine vol regime shift. The BTC long (T-1779089415632-pbo3) is at -0.40%, well within the -1.5% stop. No close warranted.
+
+2. HYPE momentum (H-521) is the cleanest live trade. Spot at 47.70 is at 99th/100th percentile of 7d/30d ranges, OI at 1.078B is 2.8σ above mean, funding normalized at +10.95%. The trade is +1.43% with 7h elapsed and 161h remaining. The setup continues to validate.
+
+3. OIL HL funding has deepened to -41.7% annualized (from -18.6% at the start of the window), which is thesis continuation for the OIL spot long (T-1779114618102-igou, +1.36%). The PC ratio has normalized from 1.495 to 1.04, which is the signal family evidence showing the put-buying exhaustion thesis is playing out. The OIL PM NO position (T-1779049817841-htfg) is at -47.37% — this is a ONE_TOUCH_HIGH_EDGE_NO on the $56 low strike, and WTI at $102+ is far from $56, so the thesis (spot stays above $56) is intact. The mark-to-market loss reflects the binary nature of the contract, not thesis failure.
+
+4. GOLD: Two opposing positions — long (T-1778916565173-2wqk, +0.12%) and short (T-1779139821182-o43q, +0.62%). The short is performing better as gold pulled back from 4,570 to 4,542. The long's original thesis was extreme negative funding (-44.8%) which has fully normalized to +10.95% — the carry benefit is gone, but the position is near breakeven. The short's thesis (crowded longs at +25.6% funding) is playing out with gold declining and funding normalizing. Both are mechanically managed.
+
+5. AMZN long (T-1778916565173-vz22, +0.50%) with breakeven stop armed. Stock at 264.84, perp at 263.36 (basis -0.56%). Funding normalized from -29.8% to +8.98%. The basis remains negative which is mild thesis continuation pressure, but the breakeven stop is armed so downside is protected.
+
+6. BTC PM NO (T-1778718867328-fb7r, -9.43%) — the $55,000 dip NO contract. BTC at 76,684 is well above $55,000, so the thesis is intact. The -9.43% mark reflects PM repricing, not spot approaching the strike. The btc_pm_iv spike to 46.2 is worth noting as context — higher vol generally increases option prices including downside puts, which could explain some of the NO price compression. This is not a close signal.
+
+7. No new hypotheses proposed — the backlog has 9 setup families needing more tests and 6 pending. Focusing on reviewing existing families rather than adding new ones. The btc_pm_iv spike is interesting but H-523 already covers this territory and H-531 covers the dealer stress angle. No new setup family is warranted.
+
+---
+
