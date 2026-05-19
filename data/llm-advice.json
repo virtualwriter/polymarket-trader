@@ -4,15 +4,15 @@
     {
       "instruction": {
         "action": "close",
-        "positionId": "T-1779139821182-qwpf",
-        "asset": "HYPE",
+        "positionId": "T-1779089415632-pbo3",
+        "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "profit_taking",
+        "closeReasonCategory": "risk_stale",
         "evidenceColumns": [
-          "hype_spot"
+          "btc_spot"
         ],
-        "thesis": "HYPE spot at 48.07 is +2.21% from entry (47.03), peak was +3.40%, and we are approaching the +4% target. The short-squeeze dynamic has largely played out: funding snapped from -44.7% back to +10.95% (normalization complete), OI is at record highs but momentum is decelerating (trajectory shows 47.50→47.29→47.40→47.70→47.34→47.55→48.33→47.60→47.82→47.99→48.07 — choppy near the high). The PM $50 YES contract at 0.855 (underlying cap 0.961) signals the market sees ~89% chance of touching $50 by year-end, but near-term the spot is stalling below $50. Taking profit near the peak rather than waiting for the mechanical +4% target given the deceleration signal."
+        "thesis": "BTC spot is at the 2nd percentile of its 7d range (76,588 vs 7d range 76,200-82,646), showing persistent weakness rather than the reversal the put-call exhaustion thesis predicted. The position has been open 30h with peak PnL of only +0.94% and is now -0.52%. The promoted H-523 IV compression thesis is stale — PM IV has normalized from the 46+ spike back to 36.9%, removing the compression signal. BTC spot is below its 24h SMA (17th percentile of 24h range) with no momentum catalyst. The setup family btc_put_call_exhaustion_reversal has 0/4 clean live trade wins. Closing to preserve capital given stale thesis and weak spot momentum."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

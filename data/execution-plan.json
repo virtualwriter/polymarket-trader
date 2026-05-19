@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T11:30:08.129Z",
+  "generatedAt": "2026-05-19T13:29:58.847Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,29 +7,30 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE breakout / OI surge momentum via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 48.068,
-      "targetPct": 6,
-      "stopPct": 1.5,
-      "expiryDays": 21
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.40314285714285714,
+      "confidence": 0.24699708685146632,
+      "thesis": "GOLD HL funding 29.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4508,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     },
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6222485873333333,
-      "confidence": 0.2618499836572083,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.7pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.575701417,
+      "confidence": 0.24226235254131248,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76845,
+      "entryPrice": 76588,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +46,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5891538323333333,
-      "confidence": 0.2479232970687708,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.7pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5751076860000001,
+      "confidence": 0.24201250311487502,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76845,
+      "entryPrice": 76588,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -59,36 +60,21 @@
         "forceMarketId": "701501",
         "allowDirectionFallback": false
       }
-    },
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.22457142857142856,
-      "confidence": 0.13759015610577782,
-      "thesis": "GOLD HL funding 22.9% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4542,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
     }
   ],
   "rejectedLlmActions": [
     {
       "instruction": {
         "action": "close",
-        "positionId": "T-1779139821182-qwpf",
-        "asset": "HYPE",
+        "positionId": "T-1779089415632-pbo3",
+        "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "profit_taking",
+        "closeReasonCategory": "risk_stale",
         "evidenceColumns": [
-          "hype_spot"
+          "btc_spot"
         ],
-        "thesis": "HYPE spot at 48.07 is +2.21% from entry (47.03), peak was +3.40%, and we are approaching the +4% target. The short-squeeze dynamic has largely played out: funding snapped from -44.7% back to +10.95% (normalization complete), OI is at record highs but momentum is decelerating (trajectory shows 47.50→47.29→47.40→47.70→47.34→47.55→48.33→47.60→47.82→47.99→48.07 — choppy near the high). The PM $50 YES contract at 0.855 (underlying cap 0.961) signals the market sees ~89% chance of touching $50 by year-end, but near-term the spot is stalling below $50. Taking profit near the peak rather than waiting for the mechanical +4% target given the deceleration signal."
+        "thesis": "BTC spot is at the 2nd percentile of its 7d range (76,588 vs 7d range 76,200-82,646), showing persistent weakness rather than the reversal the put-call exhaustion thesis predicted. The position has been open 30h with peak PnL of only +0.94% and is now -0.52%. The promoted H-523 IV compression thesis is stale — PM IV has normalized from the 46+ spike back to 36.9%, removing the compression signal. BTC spot is below its 24h SMA (17th percentile of 24h range) with no momentum catalyst. The setup family btc_put_call_exhaustion_reversal has 0/4 clean live trade wins. Closing to preserve capital given stale thesis and weak spot momentum."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
