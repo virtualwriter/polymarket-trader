@@ -352,6 +352,21 @@ function modelDteDays(row: Record<string, string>): number | null {
   return safeNumber(row.dte_days);
 }
 
+// Mirror of Python `scaled_option_strike` in scripts/cross_venue_relative_value_report.py.
+// Python scales the asset-basis strike to the option-proxy basis for CBOE_PROXY_OPTION_SYMBOLS
+// ({IBIT, ETHA, GLD, USO, SPY}) and CME_ES. Without scaling, recomputing the model from a CSV
+// row mixes bases (asset-spot strike vs proxy-basis option_underlying) and can short-circuit
+// to "already touched" for proxies whose underlying nominal sits above the asset strike
+// (notably USO ~$80-150 vs CL strike $80-130).
+const PROXY_OPTION_SYMBOLS_REQUIRING_STRIKE_SCALING = new Set([
+  "IBIT",
+  "ETHA",
+  "GLD",
+  "USO",
+  "SPY",
+  "CME_ES",
+]);
+
 function optionModelStrike(row: Record<string, string>): number | null {
   const strike = safeNumber(row.strike);
   if (strike === null) return null;
@@ -360,7 +375,7 @@ function optionModelStrike(row: Record<string, string>): number | null {
   const optionUnderlying = safeNumber(row.option_underlying);
   if (
     optionSymbol &&
-    ["IBIT", "ETHA", "CME_ES", "SPY"].includes(optionSymbol) &&
+    PROXY_OPTION_SYMBOLS_REQUIRING_STRIKE_SCALING.has(optionSymbol) &&
     spot !== null &&
     optionUnderlying !== null &&
     spot > 0
@@ -501,8 +516,12 @@ function nearestRelativeValueEntryRow(
   return best && bestDistance <= maxDistanceMs ? best.row : undefined;
 }
 
+// Prefer the canonical model probability stored in the row by the Python heatmap pipeline
+// (`options_touch_adjusted_prob`). That column is the value the user actually saw at entry,
+// computed against the scaled option proxy strike that we do not write back to the CSV.
+// Fall back to a local recompute only when the column is missing (legacy rows).
 function entryOneTouchModel(row: Record<string, string> | undefined): number | null {
-  return recomputedOneTouchProbability(row) ?? safeNumber(row?.options_touch_adjusted_prob);
+  return safeNumber(row?.options_touch_adjusted_prob) ?? recomputedOneTouchProbability(row);
 }
 
 function currentBidAsk(row: Record<string, string> | undefined, instrumentType: string | undefined): { bid: number | null; ask: number | null } {
