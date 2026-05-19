@@ -8,11 +8,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
+        "closeReasonCategory": "risk_stale",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "H-523 promoted hypothesis requires BTC spot to consolidate within 5% of its 7d high. BTC spot at 76,902 is now approximately 7.5% below its 7d high of ~82,646, which is outside the regime-relative condition that defines the setup. The spot trajectory over the last 12 hours shows a consistent drift lower (77,122 → 76,902) with no recovery, and BTC is at the 15th percentile of its 7d range. The IV compression thesis requires near-high consolidation — that condition is no longer met. With 35h remaining and the position at -0.11% (stop at -1.5%), closing now preserves capital before the stop is hit. The peak was +0.94% but the setup has structurally deteriorated."
+        "thesis": "BTC spot has been range-bound between $76,402 and $77,227 for the past 24 hours, sitting at the 17th percentile of its 7-day range. The position has been open 38 hours with peak P&L of only +0.94% and is currently -0.04%. The original thesis was BTC put-call exhaustion reversal (IBIT P/C spike above 0.919 normalizing), and that normalization has already occurred — P/C has declined from 0.919 to 0.615. The signal has played out but spot has not followed through to the +3% target. With only 34 hours remaining before expiry and spot showing no upward momentum (trajectory: 76,942 → 76,710 → 76,783 → 76,845 → 76,588 → 76,402 → 76,416 → 76,538 → 76,795 → 76,823 → 76,902 → 76,961), the risk/reward is stale. The signal catalyst has resolved without the expected price follow-through, making continued holding a risk_stale situation."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
