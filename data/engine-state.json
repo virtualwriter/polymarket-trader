@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-19T19:29:08.772Z",
+  "generatedAt": "2026-05-19T20:29:15.298Z",
   "dataFreshness": {
-    "valuationRows": 482,
-    "latestValuationAt": "2026-05-19T19",
-    "macroRows": 482,
+    "valuationRows": 483,
+    "latestValuationAt": "2026-05-19T20",
+    "macroRows": 483,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-19T19"
+    "latestInstrumentSnapshotAt": "2026-05-19T20"
   },
   "portfolio": {
     "cash": 93.3081,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.3081,
     "totalTrades": 139,
     "winRatePct": 51.8,
-    "unrealizedPnl": 0.017
+    "unrealizedPnl": 0.0136
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -5.66,
       "currentPrice": 0.5,
-      "underlyingPrice": 76823,
+      "underlyingPrice": 76902,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -1.01,
-      "currentPrice": 4491,
-      "underlyingPrice": 4491,
+      "pnlPct": -1.08,
+      "currentPrice": 4488,
+      "underlyingPrice": 4488,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -57,9 +57,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": -0.22,
-      "currentPrice": 76823,
-      "underlyingPrice": 76823,
+      "pnlPct": -0.11,
+      "currentPrice": 76902,
+      "underlyingPrice": 76902,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -73,9 +73,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 3.15,
-      "currentPrice": 104.49,
-      "underlyingPrice": 104.49,
+      "pnlPct": 2.9,
+      "currentPrice": 104.24,
+      "underlyingPrice": 104.24,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -90,9 +90,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 2.74,
-      "currentPrice": 48.32,
-      "underlyingPrice": 48.32,
+      "pnlPct": 2.55,
+      "currentPrice": 48.228,
+      "underlyingPrice": 48.228,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -106,9 +106,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 1.75,
-      "currentPrice": 4491,
-      "underlyingPrice": 4491,
+      "pnlPct": 1.81,
+      "currentPrice": 4488,
+      "underlyingPrice": 4488,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -255,10 +255,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 39,
-    "resolvedCount": 105,
-    "wouldHaveWon": 42,
-    "wouldHaveLost": 63,
+    "openCount": 42,
+    "resolvedCount": 107,
+    "wouldHaveWon": 43,
+    "wouldHaveLost": 64,
     "bySignal": [
       {
         "signalType": "USER_PM_APR_XAU_TAIL_NO",
@@ -278,7 +278,7 @@
       },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-        "blocked": 12,
+        "blocked": 16,
         "resolved": 5,
         "wouldHaveWon": 4,
         "wouldHaveLost": 1,
@@ -326,44 +326,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "long",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -85.48,
-        "resolvedAt": "2026-05-18T17:04:04.394Z",
-        "marketQuality": {
-          "yesBid": 0.2,
-          "yesAsk": 0.21,
-          "yesSpread": 0.01,
-          "liquidity": 40534.5,
-          "flags": []
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "long",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 92.5,
-        "resolvedAt": "2026-05-18T17:04:04.394Z",
-        "marketQuality": {
-          "yesBid": 0.17,
-          "yesAsk": 0.2,
-          "yesSpread": 0.03,
-          "liquidity": 9390.81,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
         "asset": "BTC",
@@ -497,6 +459,53 @@
           "liquidity": 80965.72,
           "flags": []
         }
+      },
+      {
+        "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
+        "asset": "ETH",
+        "venue": "polymarket",
+        "direction": "long",
+        "blockedReason": "manual_shadow_trade",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -30.56,
+        "resolvedAt": "2026-05-19T19:46:10.095Z",
+        "marketQuality": {
+          "quoteSource": "live_clob",
+          "quotedAt": "2026-05-18T16:37:29Z",
+          "gammaUpdatedAt": "2026-05-18T16:31:31.709474Z",
+          "clobTimestamp": "1779122192305",
+          "yesBid": 0.034,
+          "yesAsk": 0.036,
+          "yesSpread": 0.002,
+          "yesBidSize": 82.6,
+          "yesAskSize": 47,
+          "noBid": 0.964,
+          "noAsk": 0.966,
+          "noSpread": 0.002,
+          "noBidSize": 47,
+          "noAskSize": 82.6,
+          "liquidity": 49930.83,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "polymarket_proxy_short",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 1.34,
+        "resolvedAt": "2026-05-19T19:46:10.096Z",
+        "marketQuality": {
+          "yesBid": 0.028,
+          "yesAsk": 0.037,
+          "yesSpread": 0.009,
+          "liquidity": 4714.46,
+          "flags": []
+        }
       }
     ],
     "openQualityWarnings": [
@@ -607,6 +616,33 @@
           ]
         },
         "thesis": "Manual user IV-touch shadow signal: PM YES 40.0% vs IV touch model 23.4%; edge -14.6 pts. Exclude from official live-trader performance until validated."
+      },
+      {
+        "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
+        "asset": "GOLD",
+        "blockedReason": "manual_shadow_trade",
+        "instrumentLabel": "gc-hit-jun-2026 — YES — Will Gold (GC) hit (LOW) $4,200 by end of June?",
+        "marketQuality": {
+          "quoteSource": "live_clob",
+          "quotedAt": "2026-05-19T19:33:56Z",
+          "gammaUpdatedAt": "2026-05-19T19:26:58.619804Z",
+          "clobTimestamp": "1779219235977",
+          "yesBid": 0.27,
+          "yesAsk": 0.3,
+          "yesSpread": 0.03,
+          "yesBidSize": 951.54,
+          "yesAskSize": 629.09,
+          "noBid": 0.7,
+          "noAsk": 0.73,
+          "noSpread": 0.03,
+          "noBidSize": 629.09,
+          "noAskSize": 951.54,
+          "liquidity": 6680.93,
+          "flags": [
+            "wide_pm_no_spread"
+          ]
+        },
+        "thesis": "Manual user IV-touch shadow signal: PM YES 28.5% vs IV touch model 40.3%; edge +10.3 pts. Exclude from official live-trader performance until validated."
       }
     ]
   },
