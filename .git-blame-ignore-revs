@@ -1,0 +1,24 @@
+# Commits in this file are skipped by `git blame` when computing line
+# authorship. GitHub honors this file automatically on its blame UI; for
+# local blame, run once:
+#
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+#
+# Only add commits here for COSMETIC reasons (e.g. wrong author email,
+# whitespace-only reformats, mass renames). Logical / behavioral changes
+# should NEVER be hidden from blame.
+
+# 2026-05-19 session: seven commits authored by "John's Kapwing PC
+# <johnskapwingpc@MacBookPro.lan>" because the local repo had no
+# user.name / user.email set; the fallback identity (USER@HOSTNAME) did
+# not match the virtualwriter GitHub account and blocked the Vercel
+# deployment. Local repo config has since been set to virtualwriter to
+# prevent recurrence; these commits remain in history with correct
+# content but are skipped in blame so line ownership attributes cleanly.
+5614eb2ae96d6c63b9e66fa09d6269861a5d2179
+af944096e647d95fdea015582031749758d88e84
+0e329295e9ae87a50bb0ac751f4e073b0243cdf7
+bc702339a4b50a06a1cc40bdb879d2e86eb9d2aa
+65ea91d254c8ce35fd158176c8d3bab387b949ba
+4c959fa640b488846fb21a3de71f93085f7dcaec
+1aa2c096d07d829054eb97d76a2e20faf69dad1d
