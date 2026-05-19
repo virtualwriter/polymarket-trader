@@ -24681,5 +24681,205 @@
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
     }
+  },
+  {
+    "id": "MANUAL-IVTOUCH-GOLD-YES-1032278-1779219236",
+    "status": "open",
+    "blockedAt": "2026-05-19T19:33:56Z",
+    "blockedReason": "manual_shadow_trade",
+    "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
+    "asset": "GOLD",
+    "venue": "polymarket",
+    "direction": "long",
+    "confidence": 1,
+    "thesis": "Manual user IV-touch shadow signal: PM YES 28.5% vs IV touch model 40.3%; edge +10.3 pts. Exclude from official live-trader performance until validated.",
+    "learningParamsSnapshot": {
+      "macroMomentum24hThresholdPts": 4,
+      "contrarianTrendMarginPct": 0.5,
+      "positiveMomentum24hPct": 1.5,
+      "llmTradeExpiryDays": 14,
+      "momentumLongExpiryDays": 21,
+      "signalRisk": {
+        "PM_IV_GT_OPT_IV": {
+          "targetPct": null,
+          "stopPct": 5
+        },
+        "OPT_IV_GT_PM_IV": {
+          "targetPct": 5,
+          "stopPct": 3.5
+        },
+        "FUNDING_EXTREME_LONG": {
+          "targetPct": 5,
+          "stopPct": 2.5
+        },
+        "FUNDING_EXTREME_SHORT": {
+          "targetPct": 4,
+          "stopPct": 2
+        },
+        "PM_EV_ABOVE_SPOT": {
+          "targetPct": 4,
+          "stopPct": 4
+        },
+        "PM_EV_BELOW_SPOT": {
+          "targetPct": 3,
+          "stopPct": 3.5
+        },
+        "PC_RATIO_EXTREME_HIGH": {
+          "targetPct": 4,
+          "stopPct": 2
+        },
+        "PC_RATIO_EXTREME_LOW": {
+          "targetPct": 5,
+          "stopPct": 2
+        },
+        "BASIS_PREMIUM": {
+          "targetPct": 1.5,
+          "stopPct": 1.5
+        },
+        "BASIS_DISCOUNT": {
+          "targetPct": 1.5,
+          "stopPct": 1.5
+        },
+        "MACRO_MOMENTUM_UP": {
+          "targetPct": 3,
+          "stopPct": 3
+        },
+        "MACRO_MOMENTUM_DOWN": {
+          "targetPct": 4,
+          "stopPct": 3
+        },
+        "LLM_HYPOTHESIS": {
+          "targetPct": 3.5,
+          "stopPct": 2.5
+        },
+        "MOMENTUM_LONG": {
+          "targetPct": 6,
+          "stopPct": 3.5
+        },
+        "PROMOTED_HYPOTHESIS": {
+          "targetPct": 3,
+          "stopPct": 1.5
+        },
+        "ONE_TOUCH_HIGH_EDGE_NO": {
+          "targetPct": null,
+          "stopPct": 100
+        }
+      }
+    },
+    "position": {
+      "id": "MANUAL-IVTOUCH-GOLD-YES-1032278-1779219236",
+      "openedAt": "2026-05-19T19:33:56Z",
+      "asset": "GOLD",
+      "venue": "polymarket",
+      "direction": "long",
+      "entryPrice": 0.3,
+      "currentPrice": 0.3,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
+      "hypothesisId": null,
+      "thesis": "Manual user IV-touch shadow signal: PM YES 28.5% vs IV touch model 40.3%; edge +10.3 pts. Exclude from official live-trader performance until validated.",
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDate": "2026-06-30T17:30:00Z",
+      "instrumentType": "pm_yes",
+      "instrumentId": "gc-hit-jun-2026::1032278",
+      "instrumentLabel": "gc-hit-jun-2026 \u2014 YES \u2014 Will Gold (GC) hit (LOW) $4,200 by end of June?",
+      "entryUnderlyingPrice": 4490.7,
+      "currentUnderlyingPrice": 4490.7
+    },
+    "marketQuality": {
+      "quoteSource": "live_clob",
+      "quotedAt": "2026-05-19T19:33:56Z",
+      "gammaUpdatedAt": "2026-05-19T19:26:58.619804Z",
+      "clobTimestamp": "1779219235977",
+      "yesBid": 0.27,
+      "yesAsk": 0.3,
+      "yesSpread": 0.03,
+      "yesBidSize": 951.54,
+      "yesAskSize": 629.09,
+      "noBid": 0.7,
+      "noAsk": 0.73,
+      "noSpread": 0.03,
+      "noBidSize": 629.09,
+      "noAskSize": 951.54,
+      "liquidity": 6680.93,
+      "flags": [
+        "wide_pm_no_spread"
+      ]
+    },
+    "liveQuoteSnapshot": {
+      "quoteSource": "live_clob",
+      "yesBid": 0.27,
+      "yesAsk": 0.3,
+      "noBid": 0.7,
+      "noAsk": 0.73,
+      "entrySide": "yes",
+      "entryPrice": 0.3,
+      "lastTradePrice": 0.27,
+      "gammaUpdatedAt": "2026-05-19T19:26:58.619804Z",
+      "clobTimestamp": "1779219235977",
+      "yesTokenId": "23197305814277427064501888159895891452447341669180380921324548395094714682763",
+      "noTokenId": "107903187097064440993665243047237103234187359771702998268137476819081108572677"
+    },
+    "heatmapRowSnapshot": {
+      "schemaVersion": 1,
+      "source": "cross_venue_relative_value_heatmap",
+      "row": {
+        "timestamp": "2026-05-19T19",
+        "model_version": "relative_value_heatmap_v2_one_touch",
+        "asset": "GOLD",
+        "event_slug": "gc-hit-jun-2026",
+        "market_id": "1032278",
+        "contract_question": "Will Gold (GC) hit (LOW) $4,200 by end of June?",
+        "contract_month": "June 2026",
+        "direction": "below",
+        "strike": "4200.00000000",
+        "expiry": "2026-06-30T17:30:00Z",
+        "dte_days": "41.93750000",
+        "spot": "4489.50000000",
+        "option_symbol": "GLD",
+        "option_underlying": "412.74000000",
+        "option_source": "CBOE delayed",
+        "iv_resolution": "cboe_snapshot",
+        "option_iv": "0.24950000",
+        "pm_iv": "0.17600000",
+        "options_terminal_prob": "0.22566650",
+        "options_touch_adjusted_prob": "0.40257689",
+        "pm_yes_price": "0.28500000",
+        "pm_best_bid": "0.27000000",
+        "pm_best_ask": "0.30000000",
+        "pm_spread": "0.03000000",
+        "pm_quote_source": "live_clob",
+        "liquidity": "9573.81850000",
+        "volume": "306025.97232800",
+        "underlying_cap_yes_price": "",
+        "pm_to_underlying_cap_ratio": "",
+        "underlying_cap_signal": "",
+        "settlement_yes_sum": "",
+        "settlement_overround": "",
+        "settlement_tail_yes": "",
+        "settlement_skew_yes": "",
+        "buy_yes_edge_pts": "10.25768856",
+        "sell_yes_edge_pts": "-13.25768856",
+        "best_expression": "buy_yes",
+        "edge_score": "10.25768856",
+        "edge_pts_per_dte": "0.24459466",
+        "edge_pts_per_dte_7d_change": "",
+        "eligible_displayable": "true",
+        "eligible_for_shadow": "false",
+        "eligible_for_backtest": "false",
+        "edge_bucket": "long-tail",
+        "perp_mark": "4489.50000000",
+        "perp_source": "snapshot",
+        "perp_funding_ann": "0.14748400",
+        "perp_oi_usd": "111331635.63000000",
+        "perp_basis_pct": "0.00000000",
+        "flags": "extreme_perp_funding",
+        "notes": "Options model uses GLD CBOE delayed; target month-end expiry 2026-06-30, IV expiry 2026-06-30, closest-strike IV sample. Hit/reach market uses tested one-touch probability model; incomplete rows fall back to 2x terminal probability. Strike scaled from underlying options proxy. Polymarket quote refreshed from live CLOB during heatmap generation."
+      },
+      "selectedSide": "yes",
+      "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    }
   }
 ]
