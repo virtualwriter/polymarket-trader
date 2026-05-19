@@ -8,11 +8,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
+        "closeReasonCategory": "risk_stale",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "The BTC put-call exhaustion / reversal thesis (H-069 promoted) predicted a bullish reversal after P/C spike. BTC spot has declined from entry $76,989 to $76,695 (-0.38%) and is now at the 25th percentile of the 24h range and only the 4th percentile of the 7d range — deeply weak positioning. More critically, BTC PM IV has spiked from ~35% to 46.8% in the last 2 snapshots, which represents the vol expansion arriving as downside hedging rather than upside call demand. The thesis was that P/C exhaustion would lead to a bounce; instead, spot has drifted lower while vol expanded on the put side. With the position at -0.38% and approaching the -1.5% stop, and with the vol signal now pointing to continued downside risk rather than reversal, the thesis is invalidated. Closing to preserve capital before the mechanical stop triggers."
+        "thesis": "BTC spot long opened 23h ago at 76,989 is essentially flat (+0.01%) with spot at 76,994. The promoted hypothesis (H-523 BTC IV compression/vol reversion) has partially triggered — PM IV expanded from ~35 to 46.1 — but spot has not followed through with any directional move. BTC spot is at 13th percentile of its 7d range (76,200-82,646), meaning it is near the bottom of recent range rather than breaking out. The position has 49h remaining before expiry but with only 1.5% stop room and spot showing no momentum, the risk/reward has deteriorated. The btc_put_call_exhaustion_reversal setup family has 0/4 clean live wins. Closing to preserve capital for better setups."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

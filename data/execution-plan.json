@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T05:30:17.059Z",
+  "generatedAt": "2026-05-19T06:29:59.861Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -8,14 +8,34 @@
   "entrySignals": [
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.6613949316666666,
+      "confidence": 0.27832325468197916,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.8pt edge on BTC; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 76994,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "701501",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "OIL",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6425880943333334,
-      "confidence": 0.27040910244664584,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.3pt edge on OIL; hold 14d for repricing.",
+      "strength": 0.6551578216666667,
+      "confidence": 0.27569860083010417,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.7pt edge on OIL; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 103.04,
+      "entryPrice": 103.18,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -31,31 +51,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6131147969999999,
-      "confidence": 0.2580063705125625,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.4pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6240331203333334,
+      "confidence": 0.26260093745027085,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.7pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76695,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "701501",
-        "allowDirectionFallback": false
-      }
-    },
-    {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.5791293183333334,
-      "confidence": 0.24370485627114583,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.4pt edge on BTC; hold 14d for repricing.",
-      "hypothesisId": null,
-      "entryPrice": 76695,
+      "entryPrice": 76994,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -75,11 +75,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
+        "closeReasonCategory": "risk_stale",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "The BTC put-call exhaustion / reversal thesis (H-069 promoted) predicted a bullish reversal after P/C spike. BTC spot has declined from entry $76,989 to $76,695 (-0.38%) and is now at the 25th percentile of the 24h range and only the 4th percentile of the 7d range — deeply weak positioning. More critically, BTC PM IV has spiked from ~35% to 46.8% in the last 2 snapshots, which represents the vol expansion arriving as downside hedging rather than upside call demand. The thesis was that P/C exhaustion would lead to a bounce; instead, spot has drifted lower while vol expanded on the put side. With the position at -0.38% and approaching the -1.5% stop, and with the vol signal now pointing to continued downside risk rather than reversal, the thesis is invalidated. Closing to preserve capital before the mechanical stop triggers."
+        "thesis": "BTC spot long opened 23h ago at 76,989 is essentially flat (+0.01%) with spot at 76,994. The promoted hypothesis (H-523 BTC IV compression/vol reversion) has partially triggered — PM IV expanded from ~35 to 46.1 — but spot has not followed through with any directional move. BTC spot is at 13th percentile of its 7d range (76,200-82,646), meaning it is near the bottom of recent range rather than breaking out. The position has 49h remaining before expiry but with only 1.5% stop room and spot showing no momentum, the risk/reward has deteriorated. The btc_put_call_exhaustion_reversal setup family has 0/4 clean live wins. Closing to preserve capital for better setups."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
