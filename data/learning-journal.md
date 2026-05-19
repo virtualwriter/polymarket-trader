@@ -12366,3 +12366,48 @@ Key observations this cycle:
 
 ---
 
+### 2026-05-19 03:29 UTC
+
+**Portfolio:** $99.75 total | Cash $91.75 | 8 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_90d = 22.1 is -4.0 std devs from mean (41.11 ± 4.81)
+- [anomaly] btc_opt_iv_term_spread = 14.78 is 3.9 std devs from mean (-1.71 ± 4.28)
+- [anomaly] hype_hl_oi = 1076109293 is 2.8 std devs from mean (856909535.49 ± 79080399.88)
+- [anomaly] hype_pm_ev = 49.13 is 2.5 std devs from mean (44.33 ± 1.95)
+- [anomaly] hype_spot = 47.399 is 2.4 std devs from mean (41.69 ± 2.39)
+
+**Blocked signal learning:**
+- Open blocked shadows: 37
+- Resolved blocked shadows: 105 (42 wins / 63 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 4/5 shadows would have won, avg P&L 40.69%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.89%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.50%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have closed with thesis validated profitably (+34.52%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+
+**LLM analysis:**
+Key observations this cycle:
+
+1. HYPE momentum (H-521) is performing well — spot at all-time dataset highs (47.4, +2.4σ), OI at 1.076B (+2.8σ), funding normalized at 10.95%. The T-1779139821182-qwpf long is +0.78% with peak at +3.03%, approaching the 4% target. No close action needed; mechanical scanner will handle the target.
+
+2. BTC IV term structure anomaly is extreme: btc_opt_iv_90d at 22.1 is -4.0σ below its mean while btc_opt_iv_30d is at 36.9. This creates a term spread of 14.78 (3.9σ above mean). This is the most statistically significant anomaly in the current dataset. The BTC spot long (T-1779089415632-pbo3) via H-523/promoted hypothesis is the active expression, currently -0.33% with 52h remaining.
+
+3. GOLD funding normalization is largely complete: the FUNDING_EXTREME_LONG short (T-1779139821182-o43q) entered at 25.65% funding, which has now normalized to 5.48%. The thesis has largely played out — gold spot moved from 4,570 to 4,551 (-0.42%). The mechanical scanner owns the exit; the breakeven arm has not yet triggered (needs peak ≥ +1.5%).
+
+4. OIL complex: The PC_RATIO_EXTREME_HIGH long (T-1779114618102-igou) is performing well at +1.41% with peak at +3.66%, approaching the 4% target. The ONE_TOUCH_HIGH_EDGE_NO OIL position (T-1779049817841-htfg) is deeply underwater at -47.37% — this is a structural issue with the $56 strike being far below current WTI at $102.73. The position has 305h remaining and the mechanical scanner owns it.
+
+5. Hypothesis backlog: 9 setup families need more shadow tests and 6 are pending. No new hypotheses proposed this cycle per the backlog constraint. The most productive area for new shadow tests would be the btc_iv_compression_vol_reversion family given the current extreme 90d IV anomaly, but existing variants (H-442, H-523) already cover this regime.
+
+6. Relative-value heatmap: The ETH May contracts show interesting patterns — ETH $2,600 in May has a model probability of 16.9% vs PM YES at 3.25% (edge_score 13.4), and ETH $2,800 in May shows model prob 4.35% vs PM YES at 1.25% (edge_score 3.05). However, these are all flagged with extreme_perp_funding which inflates the options model probability. Not acting on these given the ETH perp funding contamination flag.
+
+7. No parameter changes warranted this cycle. The current risk parameters are appropriate given the mixed performance across signal families.
+
+---
+
