@@ -8,11 +8,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
+        "closeReasonCategory": "risk_stale",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has drifted to -0.59% from entry at 76,989, sitting at the 4th percentile of its 7-day range (76,200-82,646). The PROMOTED_HYPOTHESIS thesis was a put-call exhaustion reversal, but the IBIT P/C ratio has now dropped sharply from 0.919 (the spike that triggered the signal) to 0.580 — this normalization means the put-buying exhaustion signal has fully resolved without the expected upside follow-through. BTC spot trajectory over the last 12 hours shows no momentum: 76,684 → 76,695 → 76,994 → 77,122 → 76,942 → 76,710 → 76,783 → 76,845 → 76,588 → 76,402 → 76,416 → 76,538. The thesis has not materialized within 33 hours and the P/C normalization removes the primary signal. Closing to preserve capital with 39h remaining before expiry."
+        "thesis": "BTC spot has been range-bound between 76,400 and 77,100 for the entire 35h hold period, currently at 76,795 (-0.25% from entry of 76,989). The position expires in 37h and has only reached a peak of +0.94% — well short of the +3% target. With BTC at the 11th percentile of its 7d range and no directional catalyst visible, the IV compression thesis has not triggered a move. The risk/reward of holding to expiry is poor: limited upside to target, meaningful downside to the -1.5% stop. Closing to preserve capital for better setups."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

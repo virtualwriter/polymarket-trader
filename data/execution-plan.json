@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T16:30:00.830Z",
+  "generatedAt": "2026-05-19T18:30:05.961Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,15 +7,29 @@
   "llmCloses": [],
   "entrySignals": [
     {
+      "type": "PROMOTED_HYPOTHESIS",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.6666666666666666,
+      "confidence": 0.5466666666666666,
+      "thesis": "[PROMOTED HYPE breakout / OI surge momentum via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
+      "hypothesisId": "H-521",
+      "entryPrice": 48.379,
+      "targetPct": 6,
+      "stopPct": 1.5,
+      "expiryDays": 21
+    },
+    {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.3975000000000001,
-      "confidence": 0.2982858284062547,
-      "thesis": "OIL P/C ratio 1.52 — heavy put buying → contrarian long.",
+      "strength": 0.34875000000000017,
+      "confidence": 0.26170360416775185,
+      "thesis": "OIL P/C ratio 1.48 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 103.73,
+      "entryPrice": 103.7,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
@@ -25,11 +39,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5766862180000001,
-      "confidence": 0.24267676911212502,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.3pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.587761792,
+      "confidence": 0.247337509096,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.6pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76538,
+      "entryPrice": 76795,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +59,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5744574503333334,
-      "confidence": 0.24173887581839584,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.2pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.578272872,
+      "confidence": 0.2433444529485,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76538,
+      "entryPrice": 76795,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -69,11 +83,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
+        "closeReasonCategory": "risk_stale",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has drifted to -0.59% from entry at 76,989, sitting at the 4th percentile of its 7-day range (76,200-82,646). The PROMOTED_HYPOTHESIS thesis was a put-call exhaustion reversal, but the IBIT P/C ratio has now dropped sharply from 0.919 (the spike that triggered the signal) to 0.580 — this normalization means the put-buying exhaustion signal has fully resolved without the expected upside follow-through. BTC spot trajectory over the last 12 hours shows no momentum: 76,684 → 76,695 → 76,994 → 77,122 → 76,942 → 76,710 → 76,783 → 76,845 → 76,588 → 76,402 → 76,416 → 76,538. The thesis has not materialized within 33 hours and the P/C normalization removes the primary signal. Closing to preserve capital with 39h remaining before expiry."
+        "thesis": "BTC spot has been range-bound between 76,400 and 77,100 for the entire 35h hold period, currently at 76,795 (-0.25% from entry of 76,989). The position expires in 37h and has only reached a peak of +0.94% — well short of the +3% target. With BTC at the 11th percentile of its 7d range and no directional catalyst visible, the IV compression thesis has not triggered a move. The risk/reward of holding to expiry is poor: limited upside to target, meaningful downside to the -1.5% stop. Closing to preserve capital for better setups."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
