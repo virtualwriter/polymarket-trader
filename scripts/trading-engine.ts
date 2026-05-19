@@ -5379,7 +5379,17 @@ async function callLLM(
 
   const recentValuations = sanitizeValuationsForLlm(valuationRows.slice(-14));
   const recentMacro = macroRows.slice(-14);
-  const recentInstruments = instrumentSnapshots.slice(-4).map(compactInstrumentSnapshotForLlm);
+  // Only the latest instrument snapshot is sent to the LLM. Per-asset hourly
+  // trajectory (spot / IV / funding / OI / PC ratio) is already provided in
+  // the denser MARKET DATA section above (14 hourly rows), so historical
+  // instrument snapshots add no unique information and previously bloated
+  // the prompt by ~390 KB / cycle (~$0.33/call) by duplicating the full
+  // Polymarket contract list 4 times. The latest snapshot is retained
+  // because the decoder (formatOneTouchDirectionalLine) and signal-family
+  // gates need access to current per-contract structure via
+  // latestInstrumentSnapshot(), and the latest option chain summary is the
+  // only source of options OI / volume / chain breadth in the prompt.
+  const recentInstruments = instrumentSnapshots.slice(-1).map(compactInstrumentSnapshotForLlm);
   const activeHypotheses = hypotheses.filter((h) => h.status === "active" || h.status === "promoted");
   const killedRecently = hypotheses.filter((h) => h.status === "killed").slice(-5);
   const activeWeights = weights.filter((w) => w.trades > 0);
@@ -5398,7 +5408,7 @@ ${JSON.stringify(recentValuations, null, 1)}
 MACRO DATA (last ${recentMacro.length} snapshots):
 ${JSON.stringify(recentMacro, null, 1)}
 
-INSTRUMENT SNAPSHOTS (last ${recentInstruments.length} runs):
+INSTRUMENT SNAPSHOTS (latest run only — per-asset hourly trajectory is in MARKET DATA above):
 ${JSON.stringify(recentInstruments, null, 1)}
 
 PORTFOLIO:
