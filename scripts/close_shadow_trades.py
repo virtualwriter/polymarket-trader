@@ -84,6 +84,16 @@ VALIDATED_CLOSES: list[dict[str, str]] = [
         "label": "XAUUSD LOW $4,500 YES (May touch shadow)",
         "note": "Near-money fully repriced: YES went 0.37 → 0.74 as XAUUSD pulled back toward strike. Touch probability is now embedded in price.",
     },
+    {
+        "id": "MANUAL-IVTOUCH-ETH-YES-2132801-1779122249",
+        "label": "ETH LOW $1,600 YES (May touch)",
+        "note": "Edge compressed from +11.7 pts at entry to near-fair (+0.4 pts) while the shadow is down roughly 30%; original cheap-touch thesis is no longer present.",
+    },
+    {
+        "id": "PS-1779139821187-lkqw",
+        "label": "GC settle over $6,200 NO (June proxy short shadow)",
+        "note": "Edge compressed to near-fair while the NO shadow is slightly profitable; PM proxy-short thesis has played out enough to close rather than hold tail risk.",
+    },
 ]
 
 
