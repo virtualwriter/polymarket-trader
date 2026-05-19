@@ -12228,3 +12228,49 @@ Key observations from 2026-05-18 end-of-day analysis:
 
 ---
 
+### 2026-05-19 00:30 UTC
+
+**Portfolio:** $99.75 total | Cash $91.75 | 8 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved wider by 6.4pp (was -6.7, now -0.3)
+- [anomaly] btc_opt_iv_term_spread = 12.65 is 3.5 std devs from mean (-1.81 ± 4.09)
+- [anomaly] btc_opt_iv_90d = 25.2 is -3.5 std devs from mean (41.23 ± 4.59)
+- [anomaly] hype_hl_oi = 1100902605 is 3.2 std devs from mean (855501816.21 ± 77361407.42)
+- [anomaly] hype_spot = 48.333 is 2.8 std devs from mean (41.65 ± 2.35)
+
+**Blocked signal learning:**
+- Open blocked shadows: 31
+- Resolved blocked shadows: 105 (42 wins / 63 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 4/5 shadows would have won, avg P&L 40.69%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.89%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.50%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have closed with thesis validated profitably (+34.52%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. HYPE BREAKOUT CONFIRMING (H-521): The promoted HYPE breakout / OI surge momentum hypothesis is performing well. HYPE moved from 47.03 to 48.33 (+2.77%) in 3 hours with OI expanding 5.7% to 1.10B — both at 100th percentile of 7d range. The live trade T-1779139821182-qwpf is near its 4% target. This is the cleanest signal family performing right now.
+
+2. GOLD FUNDING NORMALIZATION — CONFLICTING POSITIONS: We have two opposing GOLD HL perp positions: T-1778916565173-2wqk (long, FUNDING_EXTREME_SHORT, opened at -44.8% funding) and T-1779139821182-o43q (short, FUNDING_EXTREME_LONG, opened at +25.6% funding). Both were triggered by extreme funding readings. Gold HL funding has now normalized to +5.48%, which is near-neutral. The long position is at +0.83% (approaching breakeven arm at +1.5% peak) and the short is at -0.09%. The funding signal has largely resolved for both — the mechanical stops/targets will handle exits. No LLM close warranted as neither position has a thesis_invalidated condition from the signal-family evidence columns (gold_gc_spot and gold_hl_funding_ann).
+
+3. OIL ONE-TOUCH NO POSITION (T-1779049817841-htfg): The OIL $56 NO position is at -47.37% after 28 hours. WTI spot is at 102.52, well above $56, which is FAVORABLE for the NO thesis (spot staying above $56). The price movement of the PM contract from 0.038 to ~0.057 reflects time decay and market repricing, not spot approaching the strike. This is a mechanical position with 308h remaining — the thesis (WTI stays above $56 through June) remains intact given spot at 102.52. No close warranted.
+
+4. BTC TERM STRUCTURE ANOMALY: btc_opt_iv_term_spread at 12.65 is 3.5σ above mean, and btc_opt_iv_90d at 25.2 is -3.5σ below mean. This extreme term structure inversion (30d IV ~37% vs 90d IV ~25%) is unusual and suggests near-term uncertainty premium. This is consistent with the BTC consolidation pattern but doesn't trigger any current signal family.
+
+5. HEATMAP OBSERVATIONS: The relative-value heatmap shows several ETH May contracts (e.g., $2,800 reach at 0.0125 vs model 4.0%) and OIL June contracts (e.g., $140 hit at 0.185 vs model 29.4%) with large apparent edges. However, these are all flagged as not eligible for shadow trading, likely due to the ETHA/USO options model reliability concerns. The OIL $115 June contract (0.602 PM vs 0.732 model) and $120 June (0.49 PM vs 0.613 model) show persistent buy-YES edges — these are tracked in the ONE_TOUCH_HIGH_EDGE_YES_SHADOW backlog.
+
+6. HYPOTHESIS BACKLOG: 9 setup families need more shadow tests and 6 are pending. Per policy, no new hypotheses are proposed this session. Focus remains on letting existing promoted families (H-521, H-523) accumulate clean evidence.
+
+7. MACRO CONTEXT STABLE: Fed score ticked up to 11 (VERY HAWKISH), Iran peace probability rising to 66% (from 56.5% at session start), oil macro declining signal. These are slow-moving and don't change any current position thesis.
+
+---
+
