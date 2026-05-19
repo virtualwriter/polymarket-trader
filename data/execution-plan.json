@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T14:30:12.039Z",
+  "generatedAt": "2026-05-19T15:30:21.395Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,29 +7,15 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE breakout / OI surge momentum via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 47.853,
-      "targetPct": 6,
-      "stopPct": 1.5,
-      "expiryDays": 21
-    },
-    {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.47500000000000014,
-      "confidence": 0.35644218488797735,
-      "thesis": "OIL P/C ratio 1.58 — heavy put buying → contrarian long.",
+      "strength": 0.43374999999999997,
+      "confidence": 0.3254879951477055,
+      "thesis": "OIL P/C ratio 1.55 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 103.34,
+      "entryPrice": 103.48,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
@@ -39,11 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6005828023333333,
-      "confidence": 0.2527327505068958,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.0pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5719719896666666,
+      "confidence": 0.24069296290160413,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.2pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76402,
+      "entryPrice": 76416,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -59,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5680981883333334,
-      "confidence": 0.23906281887802083,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.0pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5707650639999999,
+      "confidence": 0.24018507349449997,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.1pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76402,
+      "entryPrice": 76416,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -87,7 +73,7 @@
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has declined to 76,402, now at the 2nd percentile of its 7d range and 13th percentile of its 24h range. The position is -0.76% from entry at 76,989, approaching the -1.5% stop. The promoted hypothesis H-069 (btc_put_call_exhaustion_reversal) has a 0/4 live trade record (-2.05% avg), and the current P/C spike to 0.919 may reflect continued bearish hedging rather than exhaustion. BTC spot trajectory over the last 12 hours shows persistent weakness (76,875 → 76,402) with no bounce. The thesis that P/C exhaustion would drive a reversal is not playing out within the expected timeframe, and the risk/reward is unfavorable given the stop proximity and weak setup-family track record. Closing to preserve capital."
+        "thesis": "The BTC put-call exhaustion/reversal thesis (H-069 promoted via H-523) predicted a spot bounce following the P/C spike. The IBIT P/C ratio peaked at 0.919 at T14 and has since normalized to 0.735 — the exhaustion signal has resolved without a meaningful spot bounce. BTC spot has drifted from entry $76,989 to $76,416 (-0.74%), sitting at the 21st percentile of its 24h range with no upward momentum. The vol expansion (PM IV 47.1%) has occurred but is not driving spot higher. With 40h remaining on a 72h expiry window and the signal having resolved without the predicted directional move, the thesis is invalidated. The stop is at -1.5% ($75,901) and current price is approaching that level; closing now to preserve capital rather than risk a stop-out."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

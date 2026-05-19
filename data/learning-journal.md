@@ -12912,3 +12912,55 @@ Key observations this session:
 
 ---
 
+### 2026-05-19 15:30 UTC
+
+**Portfolio:** $99.76 total | Cash $92.76 | 7 open | P&L $0.7555 | 52% win rate (139 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = 16.11 is 3.6 std devs from mean (-1.35 ± 4.84)
+- [anomaly] btc_opt_iv_90d = 21 is -3.6 std devs from mean (40.69 ± 5.49)
+- [anomaly] hype_hl_oi = 1091832166 is 2.7 std devs from mean (862176456.84 ± 85395606.04)
+- [anomaly] hype_pm_ev = 49.48 is 2.4 std devs from mean (44.45 ± 2.07)
+- [anomaly] btc_pm_iv = 47.1 is 2.3 std devs from mean (39.41 ± 3.39)
+
+**Blocked signal learning:**
+- Open blocked shadows: 39
+- Resolved blocked shadows: 105 (42 wins / 63 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 4/5 shadows would have won, avg P&L 40.69%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.89%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.50%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have closed with thesis validated profitably (+34.52%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. BTC PM IV SPIKE: BTC PM IV has expanded from ~36-37% to 47.1% (+2.3σ), the highest in the 30-day dataset. This is the vol expansion predicted by H-523, but spot has not followed. The term spread (30d IV 37.2% vs 90d IV 21%) is at 3.6σ — an extreme inversion suggesting near-term uncertainty is priced very richly relative to longer-dated vol. This is consistent with the market pricing a near-term event risk or liquidation cascade rather than a sustained directional move.
+
+2. BTC LONG CLOSE: Closing T-1779089415632-pbo3 (BTC long, PROMOTED_HYPOTHESIS). The P/C exhaustion signal has resolved — IBIT P/C normalized from 0.919 back to 0.735 — without the predicted spot bounce. BTC has drifted lower to $76,416. The vol expansion happened (PM IV 47.1%) but is not translating to upside price action. With 40h remaining and the signal resolved, holding further risks a stop-out at -1.5%. This is the 4th consecutive loss on the btc_put_call_exhaustion_reversal setup family (0/4 clean live trades), reinforcing that this setup is not working in the current regime.
+
+3. GOLD BREAKDOWN: Gold has broken sharply lower from ~$4,560 to $4,499, now at the 0th percentile of its 30-day range. The FUNDING_EXTREME_SHORT long (T-1778916565173-2wqk) is at -0.84% with the funding signal having fully normalized (from -44.8% to +9.35%). The thesis was crowded shorts reversing — funding has normalized but price has continued lower. This is a concerning pattern for the FUNDING_EXTREME_SHORT family on GOLD. The FUNDING_EXTREME_LONG short (T-1779139821182-o43q) is working well at +1.57% with breakeven armed. The simultaneous long and short on GOLD HL perp is an unusual position — the short is winning, the long is losing, which is the correct directional outcome given gold's decline.
+
+4. OIL DYNAMICS: The OIL PC_RATIO_EXTREME_HIGH long (T-1779114618102-igou) is performing well at +2.15%, approaching its 4% target. Oil has moved from $101.3 to $103.48. The ONE_TOUCH_HIGH_EDGE_NO OIL short (T-1779049817841-htfg) is deeply underwater at -39.47% — this is a binary PM position where oil needs to stay below $56 through June expiry. With WTI at $103.48, this is a very comfortable position fundamentally, but the PM market has repriced the NO from 0.038 to 0.023 (the YES has moved from 0.962 to 0.977), suggesting the market is pricing near-certainty that oil will stay above $56. The position is mechanically held to expiry.
+
+5. HYPE MOMENTUM: The HYPE long (T-1779139821182-qwpf) is +0.92% with peak +3.40%. HYPE funding has normalized from +10.95% to -1.38%, which is a mild negative for the momentum thesis but not a reversal. OI remains elevated at 1.09B. The position is within its 150h expiry window and approaching the 4% target.
+
+6. RELATIVE VALUE HEATMAP: The heatmap shows significant buy-YES edges on OIL upside contracts (CL $130 June: +13.1pts, CL $140 June: +11.2pts, CL $120 June: +8.7pts, CL $115 June: +8.8pts) and BTC/ETH year-end contracts (BTC $110k Dec: +15.2pts, ETH $3,500 Dec: +15.6pts, ETH $4,000 Dec: +12.0pts). These are large edges but the OIL ones are particularly notable given the current spot at $103.48 — the market appears to be significantly underpricing the probability of oil reaching $115-140 by June given current spot levels. However, these are all shadow/research only per current rules.
+
+7. HYPOTHESIS BACKLOG: 9/20 setup families still need more shadow tests. No new hypotheses proposed per the backlog constraint. The btc_put_call_exhaustion_reversal family (0/4 live trades) is approaching kill territory — if the next 1-2 tests also fail, recommend retiring this family.
+
+8. AMZN SELL-OFF: AMZN dropped from $264.84 to $257.37 over the session, with the HL perp at $256.11 (basis -0.49%). The AMZN funding spiked to 24.75% annualized — this is a FUNDING_EXTREME_LONG signal on AMZN but AMZN is disabled for that signal family. The P/C ratio jumped from 0.359 to 0.507 then 0.682 — a significant put-buying surge accompanying the sell-off. This is worth monitoring for a potential PC_RATIO_EXTREME_HIGH contrarian long setup if the P/C ratio continues to spike.
+
+**LLM close rejections today (2026-05-19, token-burn signal):**
+- Total rejected close instructions: 11
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (9); FUNDING_EXTREME_LONG / GOLD (1); PROMOTED_HYPOTHESIS / HYPE (1)
+- Repeat-offender positions (≥3 rejections today): T-1779089415632-pbo3 (9) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+
