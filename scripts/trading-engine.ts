@@ -2051,6 +2051,44 @@ function isRuleBasedSignal(signalType: string): boolean {
   return signalType !== "LLM_HYPOTHESIS" && signalType !== "PROMOTED_HYPOTHESIS";
 }
 
+// Polymarket binary contracts on price come in two flavors with very
+// different resolution semantics. Keep these definitions explicit so the
+// LLM decoder below stays in sync with the upstream signal/heatmap
+// classifiers (see also isNestedLadderEvent).
+//   - "touch":  path-dependent. Resolves YES as soon as spot prints
+//               at/through the strike at any point before expiry
+//               (slugs: hit / reach / dip / touch).
+//   - "settle": terminal-only. Resolves YES if spot is on the correct
+//               side of the strike AT EXPIRY only; path in between is
+//               irrelevant (slugs: settle / over-under / final trading
+//               day / end-of-month close).
+//   - "range":  also terminal-only but bucketed ($60-$70 at expiry).
+type PolymarketMarketKind = "touch" | "settle" | "range" | "unknown";
+
+function polymarketMarketKind(slug: string, title = ""): PolymarketMarketKind {
+  const haystack = `${slug} ${title}`.toLowerCase();
+  if (
+    haystack.includes("settle") ||
+    haystack.includes("final trading day") ||
+    haystack.includes("over-under") ||
+    haystack.includes("over/under")
+  ) {
+    return "settle";
+  }
+  if (haystack.includes("range") || /\$\d+(?:\.\d+)?\s*-\s*\$?\d+(?:\.\d+)?/.test(haystack)) {
+    return "range";
+  }
+  if (
+    haystack.includes("hit") ||
+    haystack.includes("reach") ||
+    haystack.includes("dip") ||
+    haystack.includes("touch")
+  ) {
+    return "touch";
+  }
+  return "unknown";
+}
+
 // For one-touch positions, the directional logic is non-trivial (buying NO on a
 // LOW-touch question wins when spot stays HIGH, etc.) and the LLM has been
 // observed flipping the sign on PnL/favorability multiple times within a
@@ -2058,6 +2096,13 @@ function isRuleBasedSignal(signalType: string): boolean {
 // instrument snapshot (authoritative; question text is freeform and varies
 // per asset — "(LOW) $90" vs "dip to $55,000") so the LLM never has to
 // derive direction.
+//
+// We also detect when ONE_TOUCH_HIGH_EDGE_* was emitted against a SETTLE /
+// RANGE market (a known data-artifact pattern: the upstream signal generator
+// mis-classifies over-under markets as touch). When that happens we surface
+// the mismatch and switch the language to terminal-price semantics so the
+// LLM does not reason about "stays below through expiry" as if a single
+// intraday print could lose the bet.
 function formatOneTouchDirectionalLine(
   p: Position,
   latestSnapshot: InstrumentSnapshotFile | null,
@@ -2071,30 +2116,62 @@ function formatOneTouchDirectionalLine(
   const contract = event?.contracts.find((candidate) => candidate.marketId === marketId);
   if (!contract) return null;
 
+  const kind = polymarketMarketKind(eventSlug, event?.title ?? "");
   const isLow = contract.direction === "below";
   const strikeStr = `$${contract.strike.toLocaleString("en-US")}`;
   const isNo = p.instrumentType === "pm_no";
+
   let winCondition: string;
   let favorable: string;
   let adverse: string;
-  if (isNo && isLow) {
-    winCondition = `Spot stays ABOVE ${strikeStr} through expiry`;
-    favorable = `Spot moving UP (away from ${strikeStr}) is FAVORABLE`;
-    adverse = `spot moving DOWN (toward ${strikeStr}) is ADVERSE`;
-  } else if (isNo && !isLow) {
-    winCondition = `Spot stays BELOW ${strikeStr} through expiry`;
-    favorable = `Spot moving DOWN (away from ${strikeStr}) is FAVORABLE`;
-    adverse = `spot moving UP (toward ${strikeStr}) is ADVERSE`;
-  } else if (!isNo && isLow) {
-    winCondition = `Spot touches ${strikeStr} (or below) before expiry`;
-    favorable = `Spot moving DOWN (toward ${strikeStr}) is FAVORABLE`;
-    adverse = `spot moving UP (away from ${strikeStr}) is ADVERSE`;
+  let kindLabel: string;
+  let mismatchWarning = "";
+
+  if (kind === "settle" || kind === "range") {
+    kindLabel = kind === "settle" ? "SETTLE-AT-EXPIRY" : "RANGE-AT-EXPIRY";
+    // Surface the artifact: signal family is touch-style but the market
+    // resolves on terminal price only. The thesis must be evaluated as a
+    // terminal-price bet, never as a path-touch bet.
+    mismatchWarning = ` [DATA-ARTIFACT WARNING: signal family ${p.signalType} is a TOUCH-style signal but this market resolves on TERMINAL PRICE AT EXPIRY only — path does NOT matter; do not close on intraday wicks]`;
+    if (isNo && isLow) {
+      winCondition = `Spot is AT OR ABOVE ${strikeStr} AT EXPIRY (intraday path is irrelevant — only the resolution print matters)`;
+      favorable = `Spot trending UP into expiry is FAVORABLE`;
+      adverse = `Spot dropping below ${strikeStr} as expiry approaches is ADVERSE`;
+    } else if (isNo && !isLow) {
+      winCondition = `Spot is AT OR BELOW ${strikeStr} AT EXPIRY (intraday path is irrelevant — only the resolution print matters)`;
+      favorable = `Spot trending DOWN into expiry is FAVORABLE`;
+      adverse = `Spot rising above ${strikeStr} as expiry approaches is ADVERSE`;
+    } else if (!isNo && isLow) {
+      winCondition = `Spot is BELOW ${strikeStr} AT EXPIRY (intraday path is irrelevant)`;
+      favorable = `Spot trending DOWN into expiry is FAVORABLE`;
+      adverse = `Spot rising above ${strikeStr} as expiry approaches is ADVERSE`;
+    } else {
+      winCondition = `Spot is AT OR ABOVE ${strikeStr} AT EXPIRY (intraday path is irrelevant)`;
+      favorable = `Spot trending UP into expiry is FAVORABLE`;
+      adverse = `Spot falling below ${strikeStr} as expiry approaches is ADVERSE`;
+    }
   } else {
-    winCondition = `Spot touches ${strikeStr} (or above) before expiry`;
-    favorable = `Spot moving UP (toward ${strikeStr}) is FAVORABLE`;
-    adverse = `spot moving DOWN (away from ${strikeStr}) is ADVERSE`;
+    kindLabel = kind === "touch" ? "TOUCH (path-dependent)" : "TOUCH (path-dependent, kind=unknown)";
+    if (isNo && isLow) {
+      winCondition = `Spot stays STRICTLY ABOVE ${strikeStr} at every point between now and expiry (a single print at/below ${strikeStr} loses)`;
+      favorable = `Spot moving UP (away from ${strikeStr}) is FAVORABLE`;
+      adverse = `Spot moving DOWN (toward ${strikeStr}) is ADVERSE`;
+    } else if (isNo && !isLow) {
+      winCondition = `Spot stays STRICTLY BELOW ${strikeStr} at every point between now and expiry (a single print at/above ${strikeStr} loses)`;
+      favorable = `Spot moving DOWN (away from ${strikeStr}) is FAVORABLE`;
+      adverse = `Spot moving UP (toward ${strikeStr}) is ADVERSE`;
+    } else if (!isNo && isLow) {
+      winCondition = `Spot prints at or below ${strikeStr} at any point before expiry (a single intraday touch wins)`;
+      favorable = `Spot moving DOWN (toward ${strikeStr}) is FAVORABLE`;
+      adverse = `Spot moving UP (away from ${strikeStr}) is ADVERSE`;
+    } else {
+      winCondition = `Spot prints at or above ${strikeStr} at any point before expiry (a single intraday touch wins)`;
+      favorable = `Spot moving UP (toward ${strikeStr}) is FAVORABLE`;
+      adverse = `Spot moving DOWN (away from ${strikeStr}) is ADVERSE`;
+    }
   }
-  return `One-touch decoder: bought ${isNo ? "NO" : "YES"} at ${p.entryPrice.toFixed(2)} on (${isLow ? "LOW" : "HIGH"}) ${strikeStr} touch — ${winCondition}. ${favorable}; ${adverse}.`;
+
+  return `One-touch decoder: bought ${isNo ? "NO" : "YES"} at ${p.entryPrice.toFixed(2)} on (${isLow ? "LOW" : "HIGH"}) ${strikeStr} ${kindLabel} market${mismatchWarning} — ${winCondition}. ${favorable}; ${adverse}.`;
 }
 
 function formatMechanicalContextLine(
