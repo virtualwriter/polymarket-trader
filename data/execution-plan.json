@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T21:30:31.445Z",
+  "generatedAt": "2026-05-19T23:30:12.677Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,11 +11,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5974762373333333,
-      "confidence": 0.2514254691228333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.9pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5926869796666666,
+      "confidence": 0.24941008963097913,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.8pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76961,
+      "entryPrice": 76861,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -31,11 +31,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.590925207,
-      "confidence": 0.24866871367068746,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.7pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5872781236666668,
+      "confidence": 0.24713397541547918,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.6pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76961,
+      "entryPrice": 76861,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -47,21 +47,6 @@
       }
     },
     {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.22257142857142856,
-      "confidence": 0.13636479848142613,
-      "thesis": "GOLD HL funding 22.8% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4487,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
-    },
-    {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
       "venue": "spot",
@@ -70,7 +55,7 @@
       "confidence": 0.02063612649351449,
       "thesis": "OIL P/C ratio 1.22 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 104.02,
+      "entryPrice": 103.97,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
@@ -88,7 +73,7 @@
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has been range-bound between $76,402 and $77,227 for the past 24 hours, sitting at the 17th percentile of its 7-day range. The position has been open 38 hours with peak P&L of only +0.94% and is currently -0.04%. The original thesis was BTC put-call exhaustion reversal (IBIT P/C spike above 0.919 normalizing), and that normalization has already occurred — P/C has declined from 0.919 to 0.615. The signal has played out but spot has not followed through to the +3% target. With only 34 hours remaining before expiry and spot showing no upward momentum (trajectory: 76,942 → 76,710 → 76,783 → 76,845 → 76,588 → 76,402 → 76,416 → 76,538 → 76,795 → 76,823 → 76,902 → 76,961), the risk/reward is stale. The signal catalyst has resolved without the expected price follow-through, making continued holding a risk_stale situation."
+        "thesis": "BTC spot has been range-bound between 76,402 and 77,227 for the entire 14-snapshot window, sitting at the 13th percentile of its 7d range. The position is -0.17% with 32h remaining before expiry and peak was only +0.94% — well below the +3% target. With only 32h left and BTC consolidating at 7d lows rather than near 7d highs, the probability of reaching +3% before expiry is low. The IV compression thesis (H-523) may still be valid but the timing window is closing. Closing to preserve capital and re-enter on a cleaner setup if IV compression persists."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
