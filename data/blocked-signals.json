@@ -23567,5 +23567,203 @@
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
     }
+  },
+  {
+    "id": "MANUAL-IVTOUCH-OIL-YES-1652685-1779157250",
+    "status": "open",
+    "blockedAt": "2026-05-19T02:20:50Z",
+    "blockedReason": "manual_shadow_trade",
+    "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
+    "asset": "OIL",
+    "venue": "polymarket",
+    "direction": "long",
+    "confidence": 1,
+    "thesis": "Manual user IV-touch shadow signal: PM YES 27.5% vs IV touch model 43.1%; edge +15.1 pts. Exclude from official live-trader performance until validated.",
+    "learningParamsSnapshot": {
+      "macroMomentum24hThresholdPts": 4,
+      "contrarianTrendMarginPct": 0.5,
+      "positiveMomentum24hPct": 1.5,
+      "llmTradeExpiryDays": 14,
+      "momentumLongExpiryDays": 21,
+      "signalRisk": {
+        "PM_IV_GT_OPT_IV": {
+          "targetPct": null,
+          "stopPct": 5
+        },
+        "OPT_IV_GT_PM_IV": {
+          "targetPct": 5,
+          "stopPct": 3.5
+        },
+        "FUNDING_EXTREME_LONG": {
+          "targetPct": 5,
+          "stopPct": 2.5
+        },
+        "FUNDING_EXTREME_SHORT": {
+          "targetPct": 4,
+          "stopPct": 2
+        },
+        "PM_EV_ABOVE_SPOT": {
+          "targetPct": 4,
+          "stopPct": 4
+        },
+        "PM_EV_BELOW_SPOT": {
+          "targetPct": 3,
+          "stopPct": 3.5
+        },
+        "PC_RATIO_EXTREME_HIGH": {
+          "targetPct": 4,
+          "stopPct": 2
+        },
+        "PC_RATIO_EXTREME_LOW": {
+          "targetPct": 5,
+          "stopPct": 2
+        },
+        "BASIS_PREMIUM": {
+          "targetPct": 1.5,
+          "stopPct": 1.5
+        },
+        "BASIS_DISCOUNT": {
+          "targetPct": 1.5,
+          "stopPct": 1.5
+        },
+        "MACRO_MOMENTUM_UP": {
+          "targetPct": 3,
+          "stopPct": 3
+        },
+        "MACRO_MOMENTUM_DOWN": {
+          "targetPct": 4,
+          "stopPct": 3
+        },
+        "LLM_HYPOTHESIS": {
+          "targetPct": 3.5,
+          "stopPct": 2.5
+        },
+        "MOMENTUM_LONG": {
+          "targetPct": 6,
+          "stopPct": 3.5
+        },
+        "PROMOTED_HYPOTHESIS": {
+          "targetPct": 3,
+          "stopPct": 1.5
+        },
+        "ONE_TOUCH_HIGH_EDGE_NO": {
+          "targetPct": null,
+          "stopPct": 100
+        }
+      }
+    },
+    "position": {
+      "id": "MANUAL-IVTOUCH-OIL-YES-1652685-1779157250",
+      "openedAt": "2026-05-19T02:20:50Z",
+      "asset": "OIL",
+      "venue": "polymarket",
+      "direction": "long",
+      "entryPrice": 0.3,
+      "currentPrice": 0.3,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
+      "hypothesisId": null,
+      "thesis": "Manual user IV-touch shadow signal: PM YES 27.5% vs IV touch model 43.1%; edge +15.1 pts. Exclude from official live-trader performance until validated.",
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDate": "2026-06-30T18:30:00Z",
+      "instrumentType": "pm_yes",
+      "instrumentId": "cl-hit-jun-2026::1652685",
+      "instrumentLabel": "cl-hit-jun-2026 \u2014 YES \u2014 Will Crude Oil (CL) hit (HIGH) $130 by end of June?",
+      "entryUnderlyingPrice": 102.6,
+      "currentUnderlyingPrice": 102.6
+    },
+    "marketQuality": {
+      "quoteSource": "live_clob",
+      "quotedAt": "2026-05-19T02:20:50Z",
+      "gammaUpdatedAt": "2026-05-19T02:18:19.343093Z",
+      "clobTimestamp": "1779157067976",
+      "yesBid": 0.29,
+      "yesAsk": 0.3,
+      "yesSpread": 0.01,
+      "yesBidSize": 25.35,
+      "yesAskSize": 35.6,
+      "noBid": 0.7,
+      "noAsk": 0.71,
+      "noSpread": 0.01,
+      "noBidSize": 35.6,
+      "noAskSize": 25.35,
+      "liquidity": 35209.53,
+      "flags": []
+    },
+    "liveQuoteSnapshot": {
+      "quoteSource": "live_clob",
+      "yesBid": 0.29,
+      "yesAsk": 0.3,
+      "noBid": 0.7,
+      "noAsk": 0.71,
+      "entrySide": "yes",
+      "entryPrice": 0.3,
+      "lastTradePrice": 0.3,
+      "gammaUpdatedAt": "2026-05-19T02:18:19.343093Z",
+      "clobTimestamp": "1779157067976",
+      "yesTokenId": "78281482819929665703823767430434570468894574265353093704750754561102109007780",
+      "noTokenId": "93293951791297295915516324120649497443763013674315025514024524625808762170146"
+    },
+    "heatmapRowSnapshot": {
+      "schemaVersion": 1,
+      "source": "cross_venue_relative_value_heatmap",
+      "row": {
+        "timestamp": "2026-05-19T02",
+        "model_version": "relative_value_heatmap_v2_one_touch",
+        "asset": "OIL",
+        "event_slug": "cl-hit-jun-2026",
+        "market_id": "1652685",
+        "contract_question": "Will Crude Oil (CL) hit (HIGH) $130 by end of June?",
+        "contract_month": "June 2026",
+        "direction": "above",
+        "strike": "130.00000000",
+        "expiry": "2026-06-30T18:30:00Z",
+        "dte_days": "42.68750000",
+        "spot": "102.60000000",
+        "option_symbol": "USO",
+        "option_underlying": "149.29000000",
+        "option_source": "CBOE delayed",
+        "iv_resolution": "cboe_snapshot",
+        "option_iv": "0.76212500",
+        "pm_iv": "0.62700000",
+        "options_terminal_prob": "0.14787155",
+        "options_touch_adjusted_prob": "0.43108506",
+        "pm_yes_price": "0.27500000",
+        "pm_best_bid": "0.27000000",
+        "pm_best_ask": "0.28000000",
+        "pm_spread": "0.01000000",
+        "pm_quote_source": "snapshot",
+        "liquidity": "28413.56420000",
+        "volume": "545992.89857200",
+        "underlying_cap_yes_price": "0.78923077",
+        "pm_to_underlying_cap_ratio": "0.34844055",
+        "underlying_cap_signal": "cheap_vs_underlying_cap_bearish",
+        "settlement_yes_sum": "",
+        "settlement_overround": "",
+        "settlement_tail_yes": "",
+        "settlement_skew_yes": "",
+        "buy_yes_edge_pts": "15.10850633",
+        "sell_yes_edge_pts": "-16.10850633",
+        "best_expression": "buy_yes",
+        "edge_score": "15.10850633",
+        "edge_pts_per_dte": "0.35393280",
+        "edge_pts_per_dte_7d_change": "",
+        "eligible_displayable": "true",
+        "eligible_for_shadow": "false",
+        "eligible_for_backtest": "false",
+        "edge_bucket": "long-tail",
+        "perp_mark": "102.60000000",
+        "perp_source": "snapshot",
+        "perp_funding_ann": "-0.12311900",
+        "perp_oi_usd": "171977626.49000001",
+        "perp_basis_pct": "0.00000000",
+        "flags": "extreme_perp_funding;oil_snapshot_uses_brent;cheap_vs_underlying_cap_bearish;pm_quote_from_snapshot",
+        "notes": "Options model uses USO CBOE delayed; target month-end expiry 2026-06-30, IV expiry 2026-06-26, closest-strike IV sample. Hit/reach market uses tested one-touch probability model; incomplete rows fall back to 2x terminal probability. Strike scaled from underlying options proxy. Underlying upside cap YES price is 78.9%; PM trades at 35% of cap."
+      },
+      "selectedSide": "yes",
+      "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    }
   }
 ]
