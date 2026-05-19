@@ -12456,3 +12456,54 @@ Key observations this session:
 
 ---
 
+### 2026-05-19 05:30 UTC
+
+**Portfolio:** $99.75 total | Cash $91.75 | 8 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_funding_ann = -33.05 is -3.3 std devs from mean (5.87 ± 11.82)
+- [anomaly] btc_opt_iv_term_spread = 12.63 is 3.3 std devs from mean (-1.65 ± 4.37)
+- [anomaly] btc_opt_iv_90d = 25.3 is -3.2 std devs from mean (41.03 ± 4.93)
+- [anomaly] hype_hl_oi = 1069070909 is 2.6 std devs from mean (857831698.70 ± 80163434.18)
+- [anomaly] hype_spot = 47.338 is 2.3 std devs from mean (41.71 ± 2.42)
+
+**Blocked signal learning:**
+- Open blocked shadows: 37
+- Resolved blocked shadows: 105 (42 wins / 63 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 4/5 shadows would have won, avg P&L 40.69%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.89%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.50%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have closed with thesis validated profitably (+34.52%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. BTC PM IV SPIKE: The most notable event is BTC PM IV jumping from ~35-36% to 46.8% in 2 snapshots — a +2.3σ anomaly. This is the vol expansion that H-523 predicted, but it arrived with spot declining, not rallying. This is a critical lesson: vol expansion from extreme compression can be directionally ambiguous. The compression-to-expansion thesis should not be treated as inherently bullish — it depends on whether the vol expansion is driven by call demand (bullish) or put demand (bearish). The current spike looks like put-side hedging given the spot weakness.
+
+2. HYPE FUNDING FLIP: HYPE funding crashed from +10.95% to -33.05% in a single snapshot — a -3.3σ anomaly. This is the most extreme reading in the dataset window. The H-521 promoted long (T-1779139821182-qwpf) is exposed to this. Negative funding at this extreme means crowded longs are being flushed. However, spot has held above entry and the mechanical scanner owns the exit. The HYPE OI at 2.6σ above mean combined with extreme negative funding is a classic 'distribution' signal — worth monitoring closely.
+
+3. OIL LONG (PC_RATIO_EXTREME_HIGH): T-1779114618102-igou is performing well at +1.72% with oil spot at $103.04. The P/C ratio has normalized from 1.50 to 1.04, which is thesis completion (crowded put buyers have been squeezed). The mechanical scanner will handle the exit at +4% target. No action needed.
+
+4. GOLD POSITIONS: The GOLD long (FUNDING_EXTREME_SHORT, T-1778916565173-2wqk) is slightly underwater at -0.10% with gold spot declining from 4,536 to 4,532. The funding has normalized from -44.8% to +5.48%, which is thesis completion for the funding signal — but spot hasn't followed through. The GOLD short (FUNDING_EXTREME_LONG, T-1779139821182-o43q) is performing at +0.84% with gold declining from 4,570 to 4,532. Both positions are mechanically managed.
+
+5. BTC ONE-TOUCH NO (T-1778718867328-fb7r): Down -7.55% with BTC spot at $76,695. The thesis requires BTC to stay above $55,000 through December 2026 — this is a very wide margin and the position is mechanically managed with no stop. The PM IV spike to 46.8% is context-only for this position (not in evidence columns). No LLM close warranted.
+
+6. OIL ONE-TOUCH NO (T-1779049817841-htfg): Down -47.37% with oil at $103.04. This is a NO on 'Will CL settle over $56 at June end' — oil is at $103, far above $56, so the position is deeply adverse. However, this is a mechanically managed position with no stop (100% stop only). The thesis is that oil settles below $56 by June end — with oil at $103 and 42 DTE, this requires a ~46% decline. The position is essentially a lottery ticket at this point.
+
+7. HYPOTHESIS BACKLOG: 9 setup families need more shadow tests and 6 are pending. No new hypotheses proposed per policy. Focus should be on completing existing shadow test cycles for HYPE breakout/OI surge, BTC IV compression, AMZN perp/spot convergence, and cross-asset IV compression families which have the most active hypothesis variants.
+
+8. RELATIVE VALUE HEATMAP: The heatmap shows several interesting signals — OIL $150 June (buy_yes, edge 9.0pts), OIL $140 June (buy_yes, 11.2pts), OIL $130 June (buy_yes, 11.0pts), OIL $120 June (buy_yes, 10.6pts), OIL $115 June (buy_yes, 10.7pts) all showing strong buy-yes edges. These are all flagged with extreme_perp_funding and wide spreads, making them unsuitable for live trading. The BTC $130k December (buy_yes, 7.3pts) and BTC $110k December (buy_yes, 14.6pts) also show positive edges but are in the long-tail bucket. These are research observations only given the LLM_HYPOTHESIS disabled status.
+
+**LLM close rejections today (2026-05-19, token-burn signal):**
+- Total rejected close instructions: 2
+- Top signal/asset pairs: FUNDING_EXTREME_LONG / GOLD (1); PROMOTED_HYPOTHESIS / BTC (1)
+
+---
+

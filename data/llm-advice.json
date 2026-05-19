@@ -1,6 +1,22 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [],
+  "rejectedCloses": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1779089415632-pbo3",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_spot"
+        ],
+        "thesis": "The BTC put-call exhaustion / reversal thesis (H-069 promoted) predicted a bullish reversal after P/C spike. BTC spot has declined from entry $76,989 to $76,695 (-0.38%) and is now at the 25th percentile of the 24h range and only the 4th percentile of the 7d range — deeply weak positioning. More critically, BTC PM IV has spiked from ~35% to 46.8% in the last 2 snapshots, which represents the vol expansion arriving as downside hedging rather than upside call demand. The thesis was that P/C exhaustion would lead to a bounce; instead, spot has drifted lower while vol expanded on the put side. With the position at -0.38% and approaching the -1.5% stop, and with the vol signal now pointing to continued downside risk rather than reversal, the thesis is invalidated. Closing to preserve capital before the mechanical stop triggers."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    }
+  ],
   "skippedTrades": [],
   "parameterUpdates": {
     "macroMomentum24hThresholdPts": 4,
