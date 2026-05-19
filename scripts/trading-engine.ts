@@ -135,6 +135,20 @@ const LLM_DRY_RUN = process.argv.includes("--llm-dry-run");
 const MUTATION_DISABLED = DRY_RUN || LLM_DRY_RUN;
 const ALLOW_HOURLY_LLM_CLOSES = process.env.ALLOW_HOURLY_LLM_CLOSES === "1" || process.env.ALLOW_HOURLY_LLM_CLOSES === "true";
 
+// LLM cadence gate. Skips the expensive Sonnet call on cycles where nothing
+// material has changed since the last call, saving ~50-75% of LLM spend
+// without losing decision quality. The cron / systemd timer still runs the
+// engine hourly; only the LLM half of the cycle is gated. Defaults are
+// tunable via env so we can dial back to hourly (LLM_FORCE_HOURLY=1) or
+// shrink the cadence window (LLM_CADENCE_HOURS=1|2|3) without redeploying.
+const LLM_CADENCE_HOURS = Number(process.env.LLM_CADENCE_HOURS ?? 4);
+const LLM_FORCE_HOURLY = process.env.LLM_FORCE_HOURLY === "1" || process.env.LLM_FORCE_HOURLY === "true";
+const LLM_NEAR_DECISION_PCT_TRIGGER = Number(process.env.LLM_NEAR_DECISION_PCT_TRIGGER ?? 5);
+const LLM_HARD_RISK_PNL_PCT_TRIGGER = Number(process.env.LLM_HARD_RISK_PNL_PCT_TRIGGER ?? -30);
+const LLM_BIG_MOVE_PCT_TRIGGER = Number(process.env.LLM_BIG_MOVE_PCT_TRIGGER ?? 5);
+const LLM_BACKLOG_RESTOCK_HOURS = Number(process.env.LLM_BACKLOG_RESTOCK_HOURS ?? 24);
+const LLM_STATE_FILE = "llm-state.json";
+
 const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
   PM_IV_GT_OPT_IV: { targetPct: null, stopPct: 5 },
   OPT_IV_GT_PM_IV: { targetPct: 4, stopPct: 4 },
@@ -1130,6 +1144,31 @@ function savePortfolio(p: Portfolio) {
   writeJsonPath(LIVE_PORTFOLIO_FILE, p);
 }
 
+// ─── LLM Cadence State ───────────────────────────────────────────────────────
+
+interface LlmState {
+  lastCallAt: string | null;
+  lastCallReasons: string[];
+  skipsSinceLastCall: number;
+  recentSkipReasons: string[];
+  updatedAt: string;
+}
+
+function loadLlmState(): LlmState {
+  return readJson<LlmState>(LLM_STATE_FILE, {
+    lastCallAt: null,
+    lastCallReasons: [],
+    skipsSinceLastCall: 0,
+    recentSkipReasons: [],
+    updatedAt: new Date().toISOString(),
+  });
+}
+
+function saveLlmState(state: LlmState) {
+  state.updatedAt = new Date().toISOString();
+  writeJson(LLM_STATE_FILE, state);
+}
+
 function normalizeSignalWeight(weight: SignalWeight): SignalWeight {
   const perAsset = weight.perAsset ?? {};
   for (const [asset, stats] of Object.entries(perAsset)) {
@@ -1701,6 +1740,128 @@ function reconcileClosedGhostPositions(portfolio: Portfolio): string[] {
   }
   portfolio.positions = survivors;
   return notes;
+}
+
+// LLM cadence gate: decides whether this hourly cycle should pay for a
+// Sonnet call or skip it. Returns the decision + a list of human-readable
+// reasons (each reason that fired is included so the audit trail explains
+// every call AND every skip; even on a "run", knowing which triggers fired
+// helps tune the thresholds).
+//
+// The intent is: run the LLM only when it can actually move the portfolio.
+// Today the LLM produces no-op analyses 83% of the time at hourly cadence;
+// this gate aims to skip those 83%, keeping the journal honest about why
+// each skip happened so we can verify the gate isn't dropping material
+// cycles.
+//
+// Triggers (any of these → run):
+//   1. LLM_FORCE_HOURLY=1 env  → kill switch, always run
+//   2. First run ever (no llm-state.json) → run "first-run"
+//   3. >= LLM_CADENCE_HOURS since last call → scheduled refresh (keeps
+//      journal continuity and gives the LLM regular regime check-ins)
+//   4. Any new rule-based signals generated this cycle → LLM must evaluate
+//      before mechanical entry decisions
+//   5. Any open LLM-owned position within LLM_NEAR_DECISION_PCT_TRIGGER pp
+//      of its target OR stop → close-decision latency matters here
+//   6. Any open position with pnlPct <= LLM_HARD_RISK_PNL_PCT_TRIGGER →
+//      hard risk breach, LLM should review immediately
+//   7. Any held asset's spot moved >= LLM_BIG_MOVE_PCT_TRIGGER % in last 1h
+//      → regime change, thesis may have shifted
+//   8. Hypothesis backlog complete AND no new hypothesis in last
+//      LLM_BACKLOG_RESTOCK_HOURS hours → time to ask the LLM for new ones
+//
+// Otherwise skip; the engine still runs all mechanical work (scan, marks,
+// rule-based closes, hypothesis lifecycle, etc.) — only the Sonnet call
+// itself is suppressed. The journal entry on a skipped cycle includes the
+// gate's reasoning so we can verify nothing material was missed.
+interface LlmCadenceDecision {
+  run: boolean;
+  reasons: string[];
+  hoursSinceLastCall: number | null;
+  nextScheduledAt: string;
+}
+
+function decideLlmCadence(
+  state: LlmState,
+  signals: Signal[],
+  portfolio: Portfolio,
+  hypotheses: Hypothesis[],
+  valRows: SnapshotRow[],
+  latestRow: SnapshotRow,
+  instrumentSnapshots: InstrumentSnapshotFile[],
+): LlmCadenceDecision {
+  const now = Date.now();
+  const nextScheduledAt = new Date(now + LLM_CADENCE_HOURS * 60 * 60 * 1000).toISOString();
+  if (LLM_FORCE_HOURLY) {
+    return { run: true, reasons: ["LLM_FORCE_HOURLY=1 — cadence gate disabled"], hoursSinceLastCall: null, nextScheduledAt };
+  }
+
+  const hoursSinceLastCall = state.lastCallAt
+    ? (now - Date.parse(state.lastCallAt)) / (1000 * 60 * 60)
+    : null;
+  const reasons: string[] = [];
+
+  if (hoursSinceLastCall === null) {
+    reasons.push("first-run (no prior llm-state.json)");
+  } else if (hoursSinceLastCall >= LLM_CADENCE_HOURS) {
+    reasons.push(`scheduled (${hoursSinceLastCall.toFixed(1)}h since last call ≥ LLM_CADENCE_HOURS=${LLM_CADENCE_HOURS})`);
+  }
+
+  if (signals.length > 0) {
+    const sigTypes = [...new Set(signals.map((s) => s.type))].slice(0, 4).join(",");
+    const more = signals.length > 4 ? ", …" : "";
+    reasons.push(`new-signals (${signals.length} signal${signals.length === 1 ? "" : "s"}: ${sigTypes}${more})`);
+  }
+
+  for (const p of portfolio.positions) {
+    const mark = markPosition(p, latestRow, instrumentSnapshots, true);
+    if (!mark) continue;
+    if (mark.pnlPct <= LLM_HARD_RISK_PNL_PCT_TRIGGER) {
+      reasons.push(`hard-risk (${p.id} ${p.asset} ${p.direction} pnl=${mark.pnlPct.toFixed(1)}% ≤ ${LLM_HARD_RISK_PNL_PCT_TRIGGER}%)`);
+      continue;
+    }
+    if (!isRuleBasedSignal(p.signalType)) {
+      const targetDistance = p.targetPct === null ? Infinity : Math.abs(mark.pnlPct - p.targetPct);
+      const stopDistance = Math.abs(mark.pnlPct - (-p.stopPct));
+      const trigger = Math.min(targetDistance, stopDistance);
+      if (trigger <= LLM_NEAR_DECISION_PCT_TRIGGER) {
+        const which = targetDistance <= stopDistance ? `target=+${p.targetPct}%` : `stop=-${p.stopPct}%`;
+        reasons.push(`near-decision (${p.id} ${p.asset} ${p.direction} pnl=${mark.pnlPct.toFixed(1)}%, within ${trigger.toFixed(1)}pp of ${which})`);
+      }
+    }
+  }
+
+  if (valRows.length >= 2) {
+    const prev = valRows[valRows.length - 2];
+    const heldAssets = new Set(portfolio.positions.map((p) => p.asset));
+    for (const asset of heldAssets) {
+      const col = `${asset.toLowerCase()}_spot`;
+      const prevVal = Number((prev as Record<string, unknown>)[col]);
+      const currVal = Number((latestRow as Record<string, unknown>)[col]);
+      if (Number.isFinite(prevVal) && Number.isFinite(currVal) && prevVal > 0 && currVal > 0) {
+        const pct = (currVal / prevVal - 1) * 100;
+        if (Math.abs(pct) >= LLM_BIG_MOVE_PCT_TRIGGER) {
+          reasons.push(`big-move (${asset} spot ${pct >= 0 ? "+" : ""}${pct.toFixed(2)}% in 1h ≥ ${LLM_BIG_MOVE_PCT_TRIGGER}%)`);
+        }
+      }
+    }
+  }
+
+  const backlog = llmHypothesisBacklog(hypotheses);
+  if (backlog.complete) {
+    const latestHypMs = hypotheses
+      .map((h) => Date.parse(h.created ?? ""))
+      .filter((t) => Number.isFinite(t))
+      .sort((a, b) => b - a)[0];
+    if (latestHypMs) {
+      const hoursSinceLatest = (now - latestHypMs) / (1000 * 60 * 60);
+      if (hoursSinceLatest >= LLM_BACKLOG_RESTOCK_HOURS) {
+        reasons.push(`restock-backlog (no new hypothesis in ${hoursSinceLatest.toFixed(0)}h ≥ ${LLM_BACKLOG_RESTOCK_HOURS}h)`);
+      }
+    }
+  }
+
+  return { run: reasons.length > 0, reasons, hoursSinceLastCall, nextScheduledAt };
 }
 
 function migrateLegacyPolymarketPositions(
@@ -6228,11 +6389,29 @@ async function main() {
   let executionPlan: ExecutionPlan | null = null;
   writeLeanArtifacts(engineState, truthState, candidateActions, null, null);
 
-  // Step 6: LLM reasoning
+  // Step 6: LLM reasoning (gated by cadence)
   let llmJournal: string | null = null;
   let rejectionJournalSection: string[] = [];
-  if (!NO_LLM) {
+  const llmState = loadLlmState();
+  const cadence = decideLlmCadence(llmState, signals, portfolio, hypotheses, valRows, latestRow, instrumentSnapshots);
+  const llmShouldRun = !NO_LLM && cadence.run;
+  if (!NO_LLM && !cadence.run) {
+    const sinceTxt = cadence.hoursSinceLastCall === null
+      ? "no prior call recorded"
+      : `${cadence.hoursSinceLastCall.toFixed(1)}h since last call`;
+    console.log(`\n  LLM call SKIPPED (${sinceTxt}, ${llmState.skipsSinceLastCall + 1} skip${llmState.skipsSinceLastCall + 1 === 1 ? "" : "s"} since last call). No trigger fired.`);
+    console.log(`  Next scheduled LLM call: ${cadence.nextScheduledAt}`);
+    llmState.skipsSinceLastCall += 1;
+    llmState.recentSkipReasons = [
+      ...llmState.recentSkipReasons,
+      `${new Date().toISOString()} no-trigger`,
+    ].slice(-12);
+    if (!MUTATION_DISABLED) saveLlmState(llmState);
+    llmJournal = `_LLM call skipped (cadence gate fired no triggers; ${sinceTxt}; next scheduled ${cadence.nextScheduledAt}). Mechanical cycle ran normally._`;
+  }
+  if (llmShouldRun) {
     console.log(`\n  Calling LLM for pattern discovery...`);
+    console.log(`    Triggers: ${cadence.reasons.join(" | ")}`);
     const journalTail = readJournalTail(40);
     const llmResult = await callLLM(valRows, macroRows, instrumentSnapshots, portfolio, learningParams, weights, hypotheses, statObs, closedTrades, blockedSummary, relativeValueRows, journalTail, engineState, truthState, candidateActions);
 
@@ -6297,6 +6476,11 @@ async function main() {
       blockedSummary = summarizeBlockedSignals(blockedSignals);
       blockedObs = [...blockedSignalObservations(blockedSummary), ...proxyComparisonObs];
     }
+    llmState.lastCallAt = new Date().toISOString();
+    llmState.lastCallReasons = cadence.reasons;
+    llmState.skipsSinceLastCall = 0;
+    llmState.recentSkipReasons = [];
+    if (!MUTATION_DISABLED) saveLlmState(llmState);
   }
 
   executionPlan = buildExecutionPlan(candidateActions, gatedAdvice, signals);
