@@ -8,11 +8,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "risk_stale",
+        "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has been range-bound between 76,400 and 77,100 for the entire 35h hold period, currently at 76,795 (-0.25% from entry of 76,989). The position expires in 37h and has only reached a peak of +0.94% — well short of the +3% target. With BTC at the 11th percentile of its 7d range and no directional catalyst visible, the IV compression thesis has not triggered a move. The risk/reward of holding to expiry is poor: limited upside to target, meaningful downside to the -1.5% stop. Closing to preserve capital for better setups."
+        "thesis": "BTC spot has drifted to the 12th percentile of its 7d range (76,823 vs 7d high of ~82,646), meaning spot is NOT consolidating near recent highs as required by the H-523 promoted hypothesis. The thesis requires BTC to be within 5% of its 7d high while PM IV is compressed — spot is now approximately 7% below the 7d high, outside the condition window. The position is -0.22% with 36h elapsed of a 72h expiry window. With spot trending lower and the key condition (near 7d high) no longer met, the thesis is invalidated. Closing to preserve capital rather than waiting for the mechanical stop at -1.5%."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

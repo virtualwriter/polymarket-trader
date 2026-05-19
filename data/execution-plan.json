@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T18:30:05.961Z",
+  "generatedAt": "2026-05-19T19:30:28.359Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,43 +7,15 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE breakout / OI surge momentum via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 48.379,
-      "targetPct": 6,
-      "stopPct": 1.5,
-      "expiryDays": 21
-    },
-    {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.34875000000000017,
-      "confidence": 0.26170360416775185,
-      "thesis": "OIL P/C ratio 1.48 — heavy put buying → contrarian long.",
-      "hypothesisId": null,
-      "entryPrice": 103.7,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 5
-    },
-    {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.587761792,
-      "confidence": 0.247337509096,
+      "strength": 0.587743814,
+      "confidence": 0.24732994372887498,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.6pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76795,
+      "entryPrice": 76823,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -59,11 +31,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.578272872,
-      "confidence": 0.2433444529485,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.3pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5839619396666667,
+      "confidence": 0.24573848373597915,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.5pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76795,
+      "entryPrice": 76823,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -73,6 +45,20 @@
         "forceMarketId": "1339767",
         "allowDirectionFallback": false
       }
+    },
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.24999999999999994,
+      "confidence": 0.1876011499410406,
+      "thesis": "OIL P/C ratio 1.40 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 104.49,
+      "targetPct": 6,
+      "stopPct": 2,
+      "expiryDays": 21
     }
   ],
   "rejectedLlmActions": [
@@ -83,11 +69,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "risk_stale",
+        "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has been range-bound between 76,400 and 77,100 for the entire 35h hold period, currently at 76,795 (-0.25% from entry of 76,989). The position expires in 37h and has only reached a peak of +0.94% — well short of the +3% target. With BTC at the 11th percentile of its 7d range and no directional catalyst visible, the IV compression thesis has not triggered a move. The risk/reward of holding to expiry is poor: limited upside to target, meaningful downside to the -1.5% stop. Closing to preserve capital for better setups."
+        "thesis": "BTC spot has drifted to the 12th percentile of its 7d range (76,823 vs 7d high of ~82,646), meaning spot is NOT consolidating near recent highs as required by the H-523 promoted hypothesis. The thesis requires BTC to be within 5% of its 7d high while PM IV is compressed — spot is now approximately 7% below the 7d high, outside the condition window. The position is -0.22% with 36h elapsed of a 72h expiry window. With spot trending lower and the key condition (near 7d high) no longer met, the thesis is invalidated. Closing to preserve capital rather than waiting for the mechanical stop at -1.5%."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

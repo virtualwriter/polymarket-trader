@@ -13060,3 +13060,55 @@ Key observations this session:
 
 ---
 
+### 2026-05-19 19:30 UTC
+
+**Portfolio:** $99.31 total | Cash $93.31 | 6 open | P&L $0.3081 | 52% win rate (139 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1119591115 is 2.9 std devs from mean (863741028.39 ± 87396883.22)
+- [anomaly] hype_pm_ev = 49.79 is 2.5 std devs from mean (44.48 ± 2.10)
+- [anomaly] hype_spot = 48.32 is 2.5 std devs from mean (41.87 ± 2.57)
+- [anomaly] gold_gld_pc_ratio = 0.94 is 2.1 std devs from mean (0.57 ± 0.18)
+- [correlation_flip] BTC-OIL correlation shifted from 0.41 to -0.51. Rolling correlation: 24h=-0.50, 7d=-0.82, 30d=0.54. Current 24h corr is at 45th pct of last 20 daily 24h-rolling values (range -0.89 to 0.58).
+
+**Blocked signal learning:**
+- Open blocked shadows: 39
+- Resolved blocked shadows: 105 (42 wins / 63 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 4/5 shadows would have won, avg P&L 40.69%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.89%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.50%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have closed with thesis validated profitably (+34.52%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. BTC H-523 PROMOTED HYPOTHESIS CLOSE: The BTC long (T-1779089415632-pbo3) was opened on the H-523 IV compression/vol reversion thesis, which requires spot to be within 5% of its 7d high while PM IV is compressed. BTC spot has now drifted to the 12th percentile of its 7d range (~7% below the 7d high of ~82,646), invalidating the core condition. Closing proactively at -0.22% rather than waiting for the -1.5% mechanical stop. This is the correct use of LLM close authority — the thesis condition is no longer met, not just price action weakness.
+
+2. HYPE H-521 MOMENTUM: The HYPE long is performing well at +2.74% with 22h elapsed and 146h remaining. HYPE is at 2.5σ above its 30d mean and OI is at 2.9σ above mean — both statistical anomalies that could mean either continued momentum or exhaustion. The position is approaching its +4% target. No action needed; mechanical scanner will handle the exit.
+
+3. GOLD DUAL POSITION TENSION: We have both a GOLD long (FUNDING_EXTREME_SHORT, -1.01%) and a GOLD short (FUNDING_EXTREME_LONG, +1.75%) open simultaneously. The short is working well with breakeven armed at +1.75%. The long is near its -2% stop with gold at 30d percentile 0. The funding signal that triggered the long (-44.78% at entry) has completely reversed to +14.64%, which is thesis normalization for the short but thesis failure for the long. The long's funding signal has been invalidated (funding is now positive, not extreme short), but per rules the mechanical scanner owns the exit. Noting in journal: the FUNDING_EXTREME_SHORT signal on GOLD may need a tighter stop given how quickly gold funding can reverse — the signal fired at -44.78% but normalized within 84 hours while spot declined 1%. Consider whether the FUNDING_EXTREME_SHORT stop should be tightened from 2% to 1.5% for GOLD specifically, but will wait for more data before proposing.
+
+4. OIL PC_RATIO_EXTREME_HIGH: The oil long is at +3.15% and approaching its +4% target. The P/C ratio has normalized from 1.58 to 1.40, consistent with the contrarian thesis playing out. This signal family has an 80% win rate (8/10) — the strongest in the portfolio. No action needed.
+
+5. BTC ONE-TOUCH NO: The $55k dip NO position (T-1778718867328-fb7r) is at -5.66% with BTC at 76,823. BTC is at the 12th percentile of its 7d range, which is adverse movement toward the $55k strike (though still 24% above it). The position has 197h remaining. The mechanical scanner owns this exit. No LLM close warranted — the thesis (BTC stays above $55k) is not invalidated by a move from $79.5k to $76.8k.
+
+6. RELATIVE VALUE HEATMAP: The heatmap shows several interesting edges but most are in the 'cheap_vs_underlying_cap_bearish' category for far-OTM upside contracts. The most notable executable edges are: BTC $110k Dec 2026 YES at 15.9pt edge, BTC $100k Dec 2026 YES at 15.7pt edge, ETH $3,500 Dec 2026 YES at 15.8pt edge. However, with 6 open positions and limited cash ($93), no new entries are warranted this session. The portfolio is at capacity.
+
+7. GOLD GLD P/C RATIO SPIKE: gold_gld_pc_ratio has spiked to 0.94 (2.1σ above mean), suggesting heavy put buying in GLD. This is consistent with the gold short thesis (crowded longs being unwound) and the gold long thesis being under pressure. The spike in put buying may indicate institutional hedging of gold exposure, which could accelerate the downside move.
+
+8. BTC-OIL CORRELATION FLIP: The correlation between BTC and OIL has shifted from +0.41 to -0.51 over 24h. This is notable — oil is rallying while BTC is declining, which is unusual. The 7d correlation is -0.82, suggesting this is a sustained regime shift. This may reflect different macro drivers: oil is being driven by geopolitical/supply factors (Iran peace probability declining slightly, oil macro score declining) while BTC is consolidating after its recent rally. No immediate trade implication but worth monitoring.
+
+**LLM close rejections today (2026-05-19, token-burn signal):**
+- Total rejected close instructions: 14
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (12); FUNDING_EXTREME_LONG / GOLD (1); PROMOTED_HYPOTHESIS / HYPE (1)
+- Repeat-offender positions (≥3 rejections today): T-1779089415632-pbo3 (12) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+
