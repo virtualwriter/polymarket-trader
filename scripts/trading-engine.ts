@@ -1643,6 +1643,66 @@ function nearestInstrumentSnapshot(
   return best;
 }
 
+// Defensive startup reconciliation. We have observed (and confirmed via the
+// 2026-05-19-18:30 cycle) that a closed position can be rehydrated into
+// portfolio.positions by an upstream state-restore path even after the
+// canonical close was recorded in trades-detailed.csv. The known sequence:
+//   1. Operator closes position X manually (writes trades-detailed.csv row,
+//      updates portfolio.json, pushes commit).
+//   2. VPS cycle pulls the commit, but its in-memory engine state (loaded
+//      from engine-state.json or a related artifact) still believes X is
+//      open, marks-to-market, and re-emits X in portfolio.positions on
+//      save.
+//   3. Every subsequent cycle keeps re-emitting X — the close never
+//      "sticks" because the operator's truth lives in the CSV ledger, not
+//      in the state files the engine writes back every hour.
+//
+// This guard runs at startup, before any per-position logic, and treats
+// trades-detailed.csv as the source of truth: any position whose id is
+// also present in the closed-trade ledger is reconciled by mimicking the
+// markToMarket close path (cash += position.size + pnl; realized += pnl;
+// remove from positions). The function is idempotent: once a ghost is
+// removed and savePortfolio runs at end-of-cycle, the same ghost can only
+// re-appear if some upstream restore path keeps reintroducing it — in
+// which case this guard fires again on the next cycle and cleans it up
+// before any other code can act on it. We intentionally do NOT increment
+// totalTrades / winCount / lossCount because we cannot tell whether the
+// original close already incremented them before the rehydration path
+// ran; under-counting is preferable to double-counting on every repeat
+// fire, and the report layer recomputes counts directly from the CSV.
+function reconcileClosedGhostPositions(portfolio: Portfolio): string[] {
+  const notes: string[] = [];
+  if (portfolio.positions.length === 0) return notes;
+
+  let closedById: Map<string, ClosedTrade>;
+  try {
+    closedById = new Map(readClosedTradeCsv().map((t) => [t.id, t]));
+  } catch (err) {
+    notes.push(
+      `Ghost reconciliation skipped: failed to read trades-detailed.csv (${(err as Error).message}).`,
+    );
+    return notes;
+  }
+  if (closedById.size === 0) return notes;
+
+  const survivors: Position[] = [];
+  for (const p of portfolio.positions) {
+    const ghost = closedById.get(p.id);
+    if (!ghost) {
+      survivors.push(p);
+      continue;
+    }
+    const exitProceeds = p.size + ghost.pnl;
+    portfolio.cash += exitProceeds;
+    portfolio.totalRealizedPnl += ghost.pnl;
+    notes.push(
+      `KILLED ghost ${p.id} (${p.asset} ${p.direction} via ${p.venue}/${p.instrumentType ?? "legacy"}, ${p.signalType}) — already closed in trades-detailed.csv at exit=${ghost.exitPrice} (pnl=${ghost.pnl >= 0 ? "+" : ""}$${ghost.pnl.toFixed(4)}, reason=${ghost.closeReason}, closed_at=${ghost.closedAt}); cash += $${exitProceeds.toFixed(4)}, realized += $${ghost.pnl.toFixed(4)}.`,
+    );
+  }
+  portfolio.positions = survivors;
+  return notes;
+}
+
 function migrateLegacyPolymarketPositions(
   portfolio: Portfolio,
   snapshots: InstrumentSnapshotFile[],
@@ -5998,6 +6058,12 @@ async function main() {
   const weights = loadWeights();
   let hypotheses = loadHypotheses();
   const blockedSignals = loadBlockedSignals();
+  // Run the ghost-killer reconciliation FIRST, before any other startup
+  // pass touches the portfolio. If a previously-closed position has been
+  // rehydrated by an upstream state-restore path, we want it removed
+  // before migrateLegacyPolymarketPositions / risk-shape passes /
+  // mark-to-market run, so none of them act on a phantom.
+  const ghostKillNotes = reconcileClosedGhostPositions(portfolio);
   const migrationNotes = migrateLegacyPolymarketPositions(portfolio, instrumentSnapshots);
   const fundingRiskShapeNotes = applyFundingRiskShapeToOpenPositions(portfolio, learningParams);
   const spotRiskShapeNotes = applySpotRiskToOpenPositions(portfolio);
@@ -6008,6 +6074,7 @@ async function main() {
   console.log(`  Portfolio: $${portfolio.cash.toFixed(2)} cash, ${portfolio.positions.length} open positions, $${portfolio.totalRealizedPnl.toFixed(4)} realized P&L`);
   console.log(`  Learnable params: macro24h>${learningParams.macroMomentum24hThresholdPts.toFixed(1)}, trend>${learningParams.contrarianTrendMarginPct.toFixed(2)}%, momentum>${learningParams.positiveMomentum24hPct.toFixed(2)}%, llm expiry=${learningParams.llmTradeExpiryDays}d, momentum expiry=${learningParams.momentumLongExpiryDays}d`);
   console.log(`  Risk params: HL funding ${formatTargetPct(learningParams.signalRisk.FUNDING_EXTREME_SHORT.targetPct)}/-${learningParams.signalRisk.FUNDING_EXTREME_SHORT.stopPct}, LLM ${formatTargetPct(learningParams.signalRisk.LLM_HYPOTHESIS.targetPct)}/-${learningParams.signalRisk.LLM_HYPOTHESIS.stopPct}, PM overvol ${formatTargetPct(learningParams.signalRisk.PM_IV_GT_OPT_IV.targetPct)}/-${learningParams.signalRisk.PM_IV_GT_OPT_IV.stopPct}`);
+  for (const note of ghostKillNotes) console.log(`  Ghost killer: ${note}`);
   for (const note of migrationNotes) console.log(`  ${note}`);
   for (const note of fundingRiskShapeNotes) console.log(`  Funding risk shape: ${note}`);
   for (const note of spotRiskShapeNotes) console.log(`  Spot risk shape: ${note}`);
