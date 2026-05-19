@@ -24881,5 +24881,203 @@
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
     }
+  },
+  {
+    "id": "MANUAL-IVTOUCH-SPY-NO-1125382-1779219288",
+    "status": "open",
+    "blockedAt": "2026-05-19T19:34:48Z",
+    "blockedReason": "manual_shadow_trade",
+    "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+    "asset": "SPY",
+    "venue": "polymarket",
+    "direction": "short",
+    "confidence": 1,
+    "thesis": "Manual user IV-touch shadow signal: PM YES 13.5% vs IV touch model 4.8%; edge -8.2 pts. Exclude from official live-trader performance until validated.",
+    "learningParamsSnapshot": {
+      "macroMomentum24hThresholdPts": 4,
+      "contrarianTrendMarginPct": 0.5,
+      "positiveMomentum24hPct": 1.5,
+      "llmTradeExpiryDays": 14,
+      "momentumLongExpiryDays": 21,
+      "signalRisk": {
+        "PM_IV_GT_OPT_IV": {
+          "targetPct": null,
+          "stopPct": 5
+        },
+        "OPT_IV_GT_PM_IV": {
+          "targetPct": 5,
+          "stopPct": 3.5
+        },
+        "FUNDING_EXTREME_LONG": {
+          "targetPct": 5,
+          "stopPct": 2.5
+        },
+        "FUNDING_EXTREME_SHORT": {
+          "targetPct": 4,
+          "stopPct": 2
+        },
+        "PM_EV_ABOVE_SPOT": {
+          "targetPct": 4,
+          "stopPct": 4
+        },
+        "PM_EV_BELOW_SPOT": {
+          "targetPct": 3,
+          "stopPct": 3.5
+        },
+        "PC_RATIO_EXTREME_HIGH": {
+          "targetPct": 4,
+          "stopPct": 2
+        },
+        "PC_RATIO_EXTREME_LOW": {
+          "targetPct": 5,
+          "stopPct": 2
+        },
+        "BASIS_PREMIUM": {
+          "targetPct": 1.5,
+          "stopPct": 1.5
+        },
+        "BASIS_DISCOUNT": {
+          "targetPct": 1.5,
+          "stopPct": 1.5
+        },
+        "MACRO_MOMENTUM_UP": {
+          "targetPct": 3,
+          "stopPct": 3
+        },
+        "MACRO_MOMENTUM_DOWN": {
+          "targetPct": 4,
+          "stopPct": 3
+        },
+        "LLM_HYPOTHESIS": {
+          "targetPct": 3.5,
+          "stopPct": 2.5
+        },
+        "MOMENTUM_LONG": {
+          "targetPct": 6,
+          "stopPct": 3.5
+        },
+        "PROMOTED_HYPOTHESIS": {
+          "targetPct": 3,
+          "stopPct": 1.5
+        },
+        "ONE_TOUCH_HIGH_EDGE_NO": {
+          "targetPct": null,
+          "stopPct": 100
+        }
+      }
+    },
+    "position": {
+      "id": "MANUAL-IVTOUCH-SPY-NO-1125382-1779219288",
+      "openedAt": "2026-05-19T19:34:48Z",
+      "asset": "SPY",
+      "venue": "polymarket",
+      "direction": "short",
+      "entryPrice": 0.87,
+      "currentPrice": 0.87,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+      "hypothesisId": null,
+      "thesis": "Manual user IV-touch shadow signal: PM YES 13.5% vs IV touch model 4.8%; edge -8.2 pts. Exclude from official live-trader performance until validated.",
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDate": "2026-06-30T20:00:00Z",
+      "instrumentType": "pm_no",
+      "instrumentId": "spx-hit-jun-2026::1125382",
+      "instrumentLabel": "spx-hit-jun-2026 \u2014 NO \u2014 Will S&P 500 (SPX) hit $6,300 (LOW) in June?",
+      "entryUnderlyingPrice": 7356,
+      "currentUnderlyingPrice": 7356
+    },
+    "marketQuality": {
+      "quoteSource": "live_clob",
+      "quotedAt": "2026-05-19T19:34:48Z",
+      "gammaUpdatedAt": "2026-05-19T19:28:12.900405Z",
+      "clobTimestamp": "1779219205128",
+      "yesBid": 0.13,
+      "yesAsk": 0.14,
+      "yesSpread": 0.01,
+      "yesBidSize": 8434.11,
+      "yesAskSize": 80.57,
+      "noBid": 0.86,
+      "noAsk": 0.87,
+      "noSpread": 0.01,
+      "noBidSize": 80.57,
+      "noAskSize": 8434.11,
+      "liquidity": 2560.37,
+      "flags": []
+    },
+    "liveQuoteSnapshot": {
+      "quoteSource": "live_clob",
+      "yesBid": 0.13,
+      "yesAsk": 0.14,
+      "noBid": 0.86,
+      "noAsk": 0.87,
+      "entrySide": "no",
+      "entryPrice": 0.87,
+      "lastTradePrice": 0.14,
+      "gammaUpdatedAt": "2026-05-19T19:28:12.900405Z",
+      "clobTimestamp": "1779219205128",
+      "yesTokenId": "88454310541782406775970340379582520328404158886238345476858484826034986632130",
+      "noTokenId": "74954675749654783736381000635638619746740021800143024801188088176288937421710"
+    },
+    "heatmapRowSnapshot": {
+      "schemaVersion": 1,
+      "source": "cross_venue_relative_value_heatmap",
+      "row": {
+        "timestamp": "2026-05-19T19",
+        "model_version": "relative_value_heatmap_v2_one_touch",
+        "asset": "SPY",
+        "event_slug": "spx-hit-jun-2026",
+        "market_id": "1125382",
+        "contract_question": "Will S&P 500 (SPX) hit $6,300 (LOW) in June?",
+        "contract_month": "June 2026",
+        "direction": "below",
+        "strike": "6300.00000000",
+        "expiry": "2026-06-30T20:00:00Z",
+        "dte_days": "42.04166667",
+        "spot": "7356.00000000",
+        "option_symbol": "SPY",
+        "option_underlying": "735.60000000",
+        "option_source": "CBOE delayed",
+        "iv_resolution": "cboe_snapshot",
+        "option_iv": "0.26935000",
+        "pm_iv": "",
+        "options_terminal_prob": "0.04775419",
+        "options_touch_adjusted_prob": "0.04775419",
+        "pm_yes_price": "0.13500000",
+        "pm_best_bid": "0.13000000",
+        "pm_best_ask": "0.14000000",
+        "pm_spread": "0.01000000",
+        "pm_quote_source": "live_clob",
+        "liquidity": "2560.37020000",
+        "volume": "70238.84639100",
+        "underlying_cap_yes_price": "",
+        "pm_to_underlying_cap_ratio": "",
+        "underlying_cap_signal": "",
+        "settlement_yes_sum": "",
+        "settlement_overround": "",
+        "settlement_tail_yes": "",
+        "settlement_skew_yes": "",
+        "buy_yes_edge_pts": "-9.22458078",
+        "sell_yes_edge_pts": "8.22458078",
+        "best_expression": "sell_yes_or_buy_no",
+        "edge_score": "-8.22458078",
+        "edge_pts_per_dte": "-0.19562928",
+        "edge_pts_per_dte_7d_change": "",
+        "eligible_displayable": "true",
+        "eligible_for_shadow": "false",
+        "eligible_for_backtest": "true",
+        "edge_bucket": "mild-short-rich-tail",
+        "perp_mark": "",
+        "perp_source": "snapshot",
+        "perp_funding_ann": "",
+        "perp_oi_usd": "",
+        "perp_basis_pct": "",
+        "flags": "",
+        "notes": "Options model uses SPY CBOE delayed; target month-end expiry 2026-06-30, IV expiry 2026-06-30, closest-strike IV sample. Hit/reach market uses tested one-touch probability model; incomplete rows fall back to 2x terminal probability. Strike scaled from underlying options proxy. Polymarket quote refreshed from live CLOB during heatmap generation."
+      },
+      "selectedSide": "no",
+      "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
+    }
   }
 ]
