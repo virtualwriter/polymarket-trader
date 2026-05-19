@@ -23369,5 +23369,203 @@
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
     }
+  },
+  {
+    "id": "MANUAL-IVTOUCH-BTC-NO-1339767-1779157090",
+    "status": "open",
+    "blockedAt": "2026-05-19T02:18:10Z",
+    "blockedReason": "manual_shadow_trade",
+    "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+    "asset": "BTC",
+    "venue": "polymarket",
+    "direction": "short",
+    "confidence": 1,
+    "thesis": "Manual user IV-touch shadow signal: PM YES 40.5% vs IV touch model 23.7%; edge -16.3 pts. Exclude from official live-trader performance until validated.",
+    "learningParamsSnapshot": {
+      "macroMomentum24hThresholdPts": 4,
+      "contrarianTrendMarginPct": 0.5,
+      "positiveMomentum24hPct": 1.5,
+      "llmTradeExpiryDays": 14,
+      "momentumLongExpiryDays": 21,
+      "signalRisk": {
+        "PM_IV_GT_OPT_IV": {
+          "targetPct": null,
+          "stopPct": 5
+        },
+        "OPT_IV_GT_PM_IV": {
+          "targetPct": 5,
+          "stopPct": 3.5
+        },
+        "FUNDING_EXTREME_LONG": {
+          "targetPct": 5,
+          "stopPct": 2.5
+        },
+        "FUNDING_EXTREME_SHORT": {
+          "targetPct": 4,
+          "stopPct": 2
+        },
+        "PM_EV_ABOVE_SPOT": {
+          "targetPct": 4,
+          "stopPct": 4
+        },
+        "PM_EV_BELOW_SPOT": {
+          "targetPct": 3,
+          "stopPct": 3.5
+        },
+        "PC_RATIO_EXTREME_HIGH": {
+          "targetPct": 4,
+          "stopPct": 2
+        },
+        "PC_RATIO_EXTREME_LOW": {
+          "targetPct": 5,
+          "stopPct": 2
+        },
+        "BASIS_PREMIUM": {
+          "targetPct": 1.5,
+          "stopPct": 1.5
+        },
+        "BASIS_DISCOUNT": {
+          "targetPct": 1.5,
+          "stopPct": 1.5
+        },
+        "MACRO_MOMENTUM_UP": {
+          "targetPct": 3,
+          "stopPct": 3
+        },
+        "MACRO_MOMENTUM_DOWN": {
+          "targetPct": 4,
+          "stopPct": 3
+        },
+        "LLM_HYPOTHESIS": {
+          "targetPct": 3.5,
+          "stopPct": 2.5
+        },
+        "MOMENTUM_LONG": {
+          "targetPct": 6,
+          "stopPct": 3.5
+        },
+        "PROMOTED_HYPOTHESIS": {
+          "targetPct": 3,
+          "stopPct": 1.5
+        },
+        "ONE_TOUCH_HIGH_EDGE_NO": {
+          "targetPct": null,
+          "stopPct": 100
+        }
+      }
+    },
+    "position": {
+      "id": "MANUAL-IVTOUCH-BTC-NO-1339767-1779157090",
+      "openedAt": "2026-05-19T02:18:10Z",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "entryPrice": 0.6,
+      "currentPrice": 0.6,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+      "hypothesisId": null,
+      "thesis": "Manual user IV-touch shadow signal: PM YES 40.5% vs IV touch model 23.7%; edge -16.3 pts. Exclude from official live-trader performance until validated.",
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDate": "2027-01-01T05:00:00Z",
+      "instrumentType": "pm_no",
+      "instrumentId": "what-price-will-bitcoin-hit-before-2027::1339767",
+      "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 \u2014 NO \u2014 Will Bitcoin dip to $50,000 by December 31, 2026?",
+      "entryUnderlyingPrice": 76603,
+      "currentUnderlyingPrice": 76603
+    },
+    "marketQuality": {
+      "quoteSource": "live_clob",
+      "quotedAt": "2026-05-19T02:18:10Z",
+      "gammaUpdatedAt": "2026-05-19T02:13:58.138828Z",
+      "clobTimestamp": "1779157083867",
+      "yesBid": 0.4,
+      "yesAsk": 0.41,
+      "yesSpread": 0.01,
+      "yesBidSize": 508.2,
+      "yesAskSize": 331.36,
+      "noBid": 0.59,
+      "noAsk": 0.6,
+      "noSpread": 0.01,
+      "noBidSize": 331.36,
+      "noAskSize": 508.2,
+      "liquidity": 73718.4,
+      "flags": []
+    },
+    "liveQuoteSnapshot": {
+      "quoteSource": "live_clob",
+      "yesBid": 0.4,
+      "yesAsk": 0.41,
+      "noBid": 0.59,
+      "noAsk": 0.6,
+      "entrySide": "no",
+      "entryPrice": 0.6,
+      "lastTradePrice": 0.4,
+      "gammaUpdatedAt": "2026-05-19T02:13:58.138828Z",
+      "clobTimestamp": "1779157083867",
+      "yesTokenId": "13887983551129862992605123088744175927084435631400400451585519366058907542147",
+      "noTokenId": "41832664285845832459030640969891483663884721696292020563915305291791682631668"
+    },
+    "heatmapRowSnapshot": {
+      "schemaVersion": 1,
+      "source": "cross_venue_relative_value_heatmap",
+      "row": {
+        "timestamp": "2026-05-19T02",
+        "model_version": "relative_value_heatmap_v2_one_touch",
+        "asset": "BTC",
+        "event_slug": "what-price-will-bitcoin-hit-before-2027",
+        "market_id": "1339767",
+        "contract_question": "Will Bitcoin dip to $50,000 by December 31, 2026?",
+        "contract_month": "December 2026",
+        "direction": "below",
+        "strike": "50000.00000000",
+        "expiry": "2027-01-01T05:00:00Z",
+        "dte_days": "227.12500000",
+        "spot": "76603.00000000",
+        "option_symbol": "IBIT",
+        "option_underlying": "43.60000000",
+        "option_source": "CBOE delayed",
+        "iv_resolution": "cboe_snapshot",
+        "option_iv": "0.56540000",
+        "pm_iv": "0.36500000",
+        "options_terminal_prob": "0.23066410",
+        "options_touch_adjusted_prob": "0.23741181",
+        "pm_yes_price": "0.40500000",
+        "pm_best_bid": "0.40000000",
+        "pm_best_ask": "0.41000000",
+        "pm_spread": "0.01000000",
+        "pm_quote_source": "snapshot",
+        "liquidity": "73718.43830000",
+        "volume": "1123231.72076700",
+        "underlying_cap_yes_price": "",
+        "pm_to_underlying_cap_ratio": "",
+        "underlying_cap_signal": "",
+        "settlement_yes_sum": "",
+        "settlement_overround": "",
+        "settlement_tail_yes": "",
+        "settlement_skew_yes": "",
+        "buy_yes_edge_pts": "-17.25881915",
+        "sell_yes_edge_pts": "16.25881915",
+        "best_expression": "sell_yes_or_buy_no",
+        "edge_score": "-16.25881915",
+        "edge_pts_per_dte": "-0.07158533",
+        "edge_pts_per_dte_7d_change": "",
+        "eligible_displayable": "true",
+        "eligible_for_shadow": "false",
+        "eligible_for_backtest": "false",
+        "edge_bucket": "short-rich-tail",
+        "perp_mark": "76603.00000000",
+        "perp_source": "snapshot",
+        "perp_funding_ann": "0.10950000",
+        "perp_oi_usd": "2138311629.58999991",
+        "perp_basis_pct": "0.00000000",
+        "flags": "extreme_perp_funding;pm_quote_from_snapshot",
+        "notes": "Options model uses IBIT CBOE delayed; target month-end expiry 2026-12-31, IV expiry 2026-12-18, closest-strike IV sample. Hit/reach market uses tested one-touch probability model; incomplete rows fall back to 2x terminal probability. Strike scaled from underlying options proxy."
+      },
+      "selectedSide": "no",
+      "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
+    }
   }
 ]
