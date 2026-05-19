@@ -41,6 +41,15 @@ CSV_PATH = HOSTED_DIR / "cross_venue_relative_value.csv"
 HTML_PATH = HOSTED_DIR / "index.html"
 LATEST_JSON_PATH = HOSTED_DIR / "latest.json"
 ONE_TOUCH_TERMINAL_ONLY_SIGMA = 1.5
+# Drop Polymarket contracts whose YES bid/ask spread exceeds this threshold
+# from the heatmap entirely (CSV, HTML, archive, and downstream LLM prompt).
+# Wide-spread markets are not actionable for the trader (the engine's
+# shadow-eligibility gate is already 0.01) and they bloat the LLM prompt
+# without giving the model any usable signal. Markets with no resolved
+# spread (no bid OR no ask) are kept so the heatmap still surfaces newly-
+# listed or one-sided contracts; only contracts with a real, wide spread
+# are dropped.
+HEATMAP_MAX_INCLUDED_PM_SPREAD = 0.03
 DEFAULT_ARCHIVE_DIR = Path(os.getenv("RELATIVE_VALUE_HISTORY_DIR", str(HOSTED_DIR / "history")))
 VALUATIONS_PATH = DATA_DIR / "daily-valuations.csv"
 MODEL_VERSION = "relative_value_heatmap_v2_one_touch"
@@ -988,6 +997,8 @@ def build_rows(
                 spread = safe_float(contract.get("spread"))
             if spread is None and bid is not None and ask is not None:
                 spread = ask - bid
+            if spread is not None and spread > HEATMAP_MAX_INCLUDED_PM_SPREAD:
+                continue
             cap_yes = underlying_cap_yes_price(spot, strike, direction, question)
             cap_ratio, cap_signal = underlying_cap_signal(pm_yes, cap_yes)
 

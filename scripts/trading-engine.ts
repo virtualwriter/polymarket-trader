@@ -778,6 +778,23 @@ function readCsvFile(path: string): Record<string, string>[] {
   });
 }
 
+// Compact JSON serializer for the LLM prompt's RELATIVE-VALUE HEATMAP section.
+//
+// Two shape changes vs JSON.stringify(rows, null, 1):
+//   1. rawRow is omitted. The 18 explicit fields on RelativeValueObservation
+//      already cover everything the LLM needs; rawRow is the full ~50-field
+//      raw CSV row attached for internal callers (strict_one_touch_high_edge
+//      gates, stale_lottery_ticket gates), and serializing it doubles every
+//      row's footprint with content the model cannot use.
+//   2. Indentation is stripped. The model does not need pretty-printed JSON
+//      to parse this section, and the indent character was ~25% of the
+//      section's total bytes at ~227 rows.
+// Combined, these reductions cut the heatmap section roughly in half on a
+// typical prompt without removing any field the LLM actually reasons about.
+function serializeRelativeValueRowsForLlm(rows: RelativeValueObservation[]): string {
+  return JSON.stringify(rows, (key, value) => (key === "rawRow" ? undefined : value));
+}
+
 function readRelativeValueObservations(limit = 30): RelativeValueObservation[] {
   return readCsvFile(RELATIVE_VALUE_CSV)
     .map((row): RelativeValueObservation | null => {
@@ -5447,7 +5464,7 @@ BLOCKED SIGNAL SHADOW LEARNING:
 ${JSON.stringify(blockedSummary, null, 1)}
 
 RELATIVE-VALUE HEATMAP OBSERVATIONS (ranked by absolute executable edge):
-${JSON.stringify(relativeValueRows, null, 1)}
+${serializeRelativeValueRowsForLlm(relativeValueRows)}
 
 AUDIT LOG TAIL${DRY_RUN ? " (dry-run debug only; not canonical truth)" : " (not canonical decision truth)"}:
 ${DRY_RUN ? (journalTail || "  No entries yet") : "  Omitted from decision context. Use CANONICAL CURRENT TRUTH BY SETUP FAMILY instead."}
