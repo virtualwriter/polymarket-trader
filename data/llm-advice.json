@@ -8,11 +8,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "risk_stale",
+        "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot is at the 2nd percentile of its 7d range (76,588 vs 7d range 76,200-82,646), showing persistent weakness rather than the reversal the put-call exhaustion thesis predicted. The position has been open 30h with peak PnL of only +0.94% and is now -0.52%. The promoted H-523 IV compression thesis is stale — PM IV has normalized from the 46+ spike back to 36.9%, removing the compression signal. BTC spot is below its 24h SMA (17th percentile of 24h range) with no momentum catalyst. The setup family btc_put_call_exhaustion_reversal has 0/4 clean live trade wins. Closing to preserve capital given stale thesis and weak spot momentum."
+        "thesis": "BTC spot has declined to 76,402, now at the 2nd percentile of its 7d range and 13th percentile of its 24h range. The position is -0.76% from entry at 76,989, approaching the -1.5% stop. The promoted hypothesis H-069 (btc_put_call_exhaustion_reversal) has a 0/4 live trade record (-2.05% avg), and the current P/C spike to 0.919 may reflect continued bearish hedging rather than exhaustion. BTC spot trajectory over the last 12 hours shows persistent weakness (76,875 → 76,402) with no bounce. The thesis that P/C exhaustion would drive a reversal is not playing out within the expected timeframe, and the risk/reward is unfavorable given the stop proximity and weak setup-family track record. Closing to preserve capital."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
