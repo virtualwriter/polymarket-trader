@@ -12323,3 +12323,46 @@ Key observations this cycle:
 
 ---
 
+### 2026-05-19 02:29 UTC
+
+**Portfolio:** $99.75 total | Cash $91.75 | 8 open | P&L $0.7532 | 51% win rate (138 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = 14.88 is 3.9 std devs from mean (-1.74 ± 4.22)
+- [anomaly] btc_opt_iv_90d = 23.1 is -3.8 std devs from mean (41.15 ± 4.73)
+- [anomaly] hype_hl_oi = 1069224709 is 2.7 std devs from mean (856440156.99 ± 78511100.60)
+- [anomaly] hype_spot = 47.291 is 2.4 std devs from mean (41.67 ± 2.38)
+- [anomaly] hype_pm_ev = 48.81 is 2.3 std devs from mean (44.32 ± 1.94)
+
+**Blocked signal learning:**
+- Open blocked shadows: 37
+- Resolved blocked shadows: 105 (42 wins / 63 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 4/5 shadows would have won, avg P&L 40.69%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.89%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW GOLD long via polymarket would have edge compressed but trade lost money (-7.50%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have closed with thesis validated profitably (+34.52%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+
+**LLM analysis:**
+Key observations this cycle:
+
+1. GOLD FUNDING PAIR CONFLICT: We have both a FUNDING_EXTREME_SHORT long (T-2wqk, opened at 4536, +0.52%) and a FUNDING_EXTREME_LONG short (T-o43q, opened at 4570, +0.22%) on GOLD simultaneously. This is a structural conflict — both positions are small and the net exposure is roughly flat, but the pair was entered at different times as funding oscillated. The FUNDING_EXTREME_SHORT long was entered when funding was -44.8%; funding has since normalized to +5.48%, which is thesis completion for that leg. The FUNDING_EXTREME_LONG short was entered when funding was +25.65%; funding has since dropped to +5.48%, which is also thesis completion for that leg. Both are mechanical exits — the scanner will handle them. No LLM close needed.
+
+2. OIL ONE-TOUCH NO POSITION (T-htfg): The 'settle over $56 by end of June' NO position is at -47.37% PnL. WTI spot at $102.48 is far above $56, so the NO thesis (spot stays below $56) is deeply in-the-money from a directional standpoint — the market should be pricing this NO very close to 1.0. The current price of 0.02 (NO) implies YES at 0.98, which is consistent with the market correctly pricing near-certainty that oil will settle above $56. The position is a mechanical hold — the NO should converge to near-zero (YES near 1.0) as expiry approaches, which means the NO position loses. This is a losing trade by design of the one-touch structure. The mechanical scanner owns the exit.
+
+3. BTC TERM STRUCTURE ANOMALY: The btc_opt_iv_term_spread at 14.88 is 3.9σ above its historical mean. This extreme inversion (30d IV >> 90d IV) suggests the market is pricing near-term uncertainty much higher than medium-term. This is consistent with the BTC IV compression thesis for the 90d leg but also suggests near-term event risk. The promoted H-523 family is watching for IV normalization.
+
+4. HYPE MOMENTUM (H-521): The T-1779139821182-qwpf long is performing well with peak +3.03%. HYPE at $47.29 is at 99th percentile of 30d range. OI at 1.069B is elevated. The setup is working as expected. The 4% target is within reach if momentum continues.
+
+5. RELATIVE VALUE HEATMAP: The heatmap shows several interesting signals. ETH May contracts (reach $2,600, $2,800, $3,000) show large positive edges (14x, 3.2x, 2.9x) — these are cases where PM prices are far below the options model probability. However, these are all 'extreme_perp_funding' flagged and the ETH perp funding at 10.95% annualized is elevated, which may be inflating the options model probability. The BTC $130k December contract shows a 7.5x edge (buy YES) — PM at 12.5% vs model at 20.5%. The OIL $130 June contract shows 11.8x edge (buy YES) — PM at 30% vs model at 42.8%. These are interesting but the heatmap family is still in 'validating' status with poor shadow performance (4/15 wins, -8.1% avg). Not acting on these.
+
+6. HYPOTHESIS BACKLOG: 9 setup families need more shadow tests. The system is correctly prioritizing existing family validation over new hypothesis creation. No new hypotheses proposed this cycle per the backlog constraint.
+
+---
+

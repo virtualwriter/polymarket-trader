@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T01:30:06.178Z",
+  "generatedAt": "2026-05-19T02:29:58.957Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE breakout / OI surge momentum via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 47.498,
+      "entryPrice": 47.291,
       "targetPct": 6,
       "stopPct": 1.5,
       "expiryDays": 21
@@ -25,11 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.580735091,
-      "confidence": 0.24438058548143748,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.4pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5884899640000001,
+      "confidence": 0.24764393297575002,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.7pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76721,
+      "entryPrice": 76875,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5131075433333333,
-      "confidence": 0.2159220680789583,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.4pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5524566933333334,
+      "confidence": 0.23248068226333332,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.6pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76721,
+      "entryPrice": 76875,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -61,27 +61,10 @@
       }
     }
   ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779139821182-o43q",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "gold_gc_spot",
-          "gold_hl_funding_ann"
-        ],
-        "thesis": "FUNDING_EXTREME_LONG short was entered when gold_hl_funding_ann was 25.65%. It has since collapsed to 5.48% and has been flat at 5.48% for the last 3 snapshots — the crowded-long funding signal that triggered the trade has fully normalized. The thesis was funding mean-reversion; with funding now at a neutral/low level, the carry advantage is gone and the position is only +0.22% with 4h elapsed. Closing before the breakeven arm arms to avoid a whipsaw if gold bounces."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

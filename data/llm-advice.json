@@ -1,23 +1,6 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779139821182-o43q",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "gold_gc_spot",
-          "gold_hl_funding_ann"
-        ],
-        "thesis": "FUNDING_EXTREME_LONG short was entered when gold_hl_funding_ann was 25.65%. It has since collapsed to 5.48% and has been flat at 5.48% for the last 3 snapshots — the crowded-long funding signal that triggered the trade has fully normalized. The thesis was funding mean-reversion; with funding now at a neutral/low level, the carry advantage is gone and the position is only +0.22% with 4h elapsed. Closing before the breakeven arm arms to avoid a whipsaw if gold bounces."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedCloses": [],
   "skippedTrades": [],
   "parameterUpdates": {
     "macroMomentum24hThresholdPts": 4,
