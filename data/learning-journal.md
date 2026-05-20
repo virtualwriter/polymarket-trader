@@ -13716,3 +13716,53 @@ Key observations this cycle:
 
 ---
 
+### 2026-05-20 09:30 UTC
+
+**Portfolio:** $99.31 total | Cash $93.31 | 6 open | P&L $0.3081 | 52% win rate (139 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1134360653 is 2.8 std devs from mean (870258679.90 ± 94954285.99)
+- [anomaly] hype_pm_ev = 50.23 is 2.5 std devs from mean (44.62 ± 2.25)
+- [anomaly] hype_spot = 48.777 is 2.5 std devs from mean (42.03 ± 2.73)
+- [anomaly] btc_opt_iv_90d = 25.9 is -2.3 std devs from mean (40.17 ± 6.16)
+- [anomaly] btc_opt_iv_term_spread = 10.43 is 2.1 std devs from mean (-0.92 ± 5.36)
+
+**Blocked signal learning:**
+- Open blocked shadows: 44
+- Resolved blocked shadows: 107 (43 wins / 64 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 4/5 shadows would have won, avg P&L 40.69%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have closed with thesis validated profitably (+34.52%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have edge compressed but trade lost money (-30.56%)
+- ✅ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have closed with thesis validated profitably (+1.34%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. HYPE LONG PROFIT TAKE: The H-521 promoted HYPE breakout trade reached +3.71% against a +4% target with 132h remaining. The critical new development is HYPE funding flipping to -17.9% annualized — this is a sharp reversal from the +10.95% that prevailed for most of the window. Under the HYPE breakout family, negative funding by itself is not a close signal (it can indicate healthy short-term crowding correction), but combined with spot at the 100th percentile of both 24h and 7d ranges (all-time high in dataset), the risk/reward of holding the final 0.3% to target is poor. Taking profit now locks in a clean win near target and avoids the crowded-long squeeze risk. The mechanical scanner would have caught this at +4% anyway; this is a discretionary early exit within the allowed profit_taking category.
+
+2. GOLD POSITIONS: The FUNDING_EXTREME_SHORT long (T-1778916565173-2wqk) entered at 4,536 is now at -1.25% with gold at 4,480. The original thesis was crowded shorts at -44.8% funding; funding has now normalized to +6.59%, which means the thesis signal has fully resolved. However, the price action has moved against the position (-1.25%). The mechanical stop at -2% is appropriate here — the funding normalization is thesis completion (the crowded shorts have been squeezed out), but the spot price didn't follow through to the upside. This is a marginal situation; the mechanical stop should handle it. The FUNDING_EXTREME_LONG short (T-1779139821182-o43q) is at +1.98% with breakeven stop armed — this is working well, gold has declined from 4,570 to 4,480 and the breakeven stop protects the gain.
+
+3. BTC TERM STRUCTURE ANOMALY: The btc_opt_iv_90d at 25.9 is -2.3σ below mean, creating an unusually wide term spread (30d IV ~36.5% vs 90d IV ~25.9%). This is the opposite of normal term structure (usually 90d > 30d). This suggests the options market is pricing near-term uncertainty much higher than medium-term — possibly reflecting event risk in the next 30 days. The H-523 promoted BTC IV compression trade is live and benefiting from this setup.
+
+4. OIL MACRO ALIGNMENT: Oil continues to drift lower (104.5 → 102.5 over the window) with macro signals firmly bearish (oil_macro_score 67-70, oil_p_settle_above_current ~33%, oil_signal DECLINING). The PC_RATIO_EXTREME_HIGH long (T-1779114618102-igou) is up +1.22% — the P/C ratio has normalized from 1.495 to 1.222, which is thesis completion for the contrarian signal. The position has 77h remaining and needs another ~2.8% to reach target. Given the bearish macro backdrop and declining spot, this may be a slow grind. The mechanical stop at -2% provides adequate protection.
+
+5. HYPE OI ANOMALY: HYPE OI at 1.134B is 2.8σ above the dataset mean of 870M. This is an extreme positioning level. Combined with the funding flip to -17.9%, this suggests a potential crowded-long unwind is beginning. The HYPE funding/OI liquidation short family (H-010, H-003) has historically poor win rates (22% over 9 tests for H-010), so I'm not initiating a short. But the OI anomaly warrants monitoring — if OI starts contracting materially from 1.134B while funding stays negative, the liquidation short conditions would be met.
+
+6. NO NEW HYPOTHESES: The backlog shows 9/20 setup families need more tests with 6 pending. Consistent with instructions, no new hypotheses are proposed. The existing promoted families (H-521, H-523) are the primary focus for live trading.
+
+7. RELATIVE VALUE HEATMAP: The heatmap shows several interesting edges — BTC $130,000 June (10.45 edge pts buy_yes), OIL $110 June (16.58 edge pts buy_yes), BTC $110,000 Dec (14.85 edge pts buy_yes), ETH $4,500 Dec (12.68 edge pts buy_yes). However, these are all in the ONE_TOUCH_HIGH_EDGE_YES exploratory family which has a poor shadow track record (-10.3% avg shadow PnL, 6/17 wins). The NO side of the BTC $55,000 Dec contract shows -17.6 edge pts (sell_yes/buy_no), which aligns with the existing T-1778718867328-fb7r position. No new heatmap trades initiated given the exploratory family's poor performance.
+
+**LLM close rejections today (2026-05-20, token-burn signal):**
+- Total rejected close instructions: 10
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (9); PROMOTED_HYPOTHESIS / HYPE (1)
+- Repeat-offender positions (≥3 rejections today): T-1779089415632-pbo3 (9) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+
