@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-19T23:30:12.677Z",
+  "generatedAt": "2026-05-20T00:30:27.546Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,11 +11,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5926869796666666,
-      "confidence": 0.24941008963097913,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.8pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5806170096666666,
+      "confidence": 0.24433089538035413,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.4pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76861,
+      "entryPrice": 76618,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -31,11 +31,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5872781236666668,
-      "confidence": 0.24713397541547918,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.6pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5779894466666666,
+      "confidence": 0.24322518402541665,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76861,
+      "entryPrice": 76618,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -55,10 +55,10 @@
       "confidence": 0.02063612649351449,
       "thesis": "OIL P/C ratio 1.22 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 103.97,
-      "targetPct": 6,
+      "entryPrice": 103.72,
+      "targetPct": 4,
       "stopPct": 2,
-      "expiryDays": 21
+      "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [
@@ -69,11 +69,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "risk_stale",
+        "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has been range-bound between 76,402 and 77,227 for the entire 14-snapshot window, sitting at the 13th percentile of its 7d range. The position is -0.17% with 32h remaining before expiry and peak was only +0.94% — well below the +3% target. With only 32h left and BTC consolidating at 7d lows rather than near 7d highs, the probability of reaching +3% before expiry is low. The IV compression thesis (H-523) may still be valid but the timing window is closing. Closing to preserve capital and re-enter on a cleaner setup if IV compression persists."
+        "thesis": "BTC spot has drifted from $76,989 at entry to $76,618 (-0.48%), sitting at the 5th percentile of its 7-day range and 21st percentile of its 24-hour range. The trajectory over the last 12 hourly readings shows a consistent drift lower from $76,845 to $76,618 with no recovery. The promoted hypothesis H-523 (BTC IV compression/vol reversion) requires either spot continuation or vol expansion to materialize within the hold window; with 31 hours remaining and spot trending lower rather than higher, the directional component of the thesis is not confirming. The position is approaching the -1.5% stop and the risk/reward of holding through the remaining window is unfavorable given the downward trajectory. Closing to preserve capital rather than waiting for mechanical stop execution."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
