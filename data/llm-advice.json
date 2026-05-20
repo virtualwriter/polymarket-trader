@@ -8,11 +8,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "profit_taking",
+        "closeReasonCategory": "risk_stale",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has moved from 76,989 entry to 77,454 (+0.60%) with only 20 hours remaining before expiry. The position is at +0.60% against a +3% target with insufficient time to reach target given the narrow 76,600-77,537 range over the past 14 hours. The 24h percentile of 96 suggests BTC is near the top of its recent range, and with 20h left and the position well below target, profit-taking now locks in a small gain rather than risking a reversal back through entry. The btc_spot trajectory shows consolidation rather than acceleration needed to reach +3% in the remaining window."
+        "thesis": "BTC spot long (H-523 promoted) has 19h remaining before expiry and is at +0.62% against a 3% target. The position has been grinding higher but the pace of appreciation has slowed — spot moved from 76,685 to 77,466 over 12h but the last 4 snapshots show consolidation between 77,228-77,537. With only 19h to expiry and the target at +3% (~79,348), the probability of reaching target in the remaining window is low given current momentum. However, the mechanical expiry will handle this cleanly — the position is not at risk of stop (-1.5% = ~75,834, well below current spot). Reconsidering: the position is profitable, not stale in a harmful sense, and the mechanical expiry at 19h is the appropriate exit. Withdrawing close recommendation — let mechanical expiry handle this."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
