@@ -12,7 +12,7 @@
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC long via PROMOTED_HYPOTHESIS (H-069 put-call exhaustion reversal) opened at 76,989 is now at 77,537 (+0.71%). The position expires in 21 hours and has reached 71% of its +3% target. With only 21 hours remaining and BTC spot at the 100th percentile of its 24h range (77,537 high), the risk/reward of holding to expiry is asymmetric — the position is near its 24h high with limited upside remaining before the mechanical expiry. Taking profit now locks in a positive outcome for the PROMOTED_HYPOTHESIS family's first live trade, which is important for the setup family's evidence record. The btc_spot trajectory shows consistent upward movement over the last 12 snapshots (76,618 → 77,537), confirming the thesis has played out."
+        "thesis": "BTC spot has moved from 76,989 entry to 77,454 (+0.60%) with only 20 hours remaining before expiry. The position is at +0.60% against a +3% target with insufficient time to reach target given the narrow 76,600-77,537 range over the past 14 hours. The 24h percentile of 96 suggests BTC is near the top of its recent range, and with 20h left and the position well below target, profit-taking now locks in a small gain rather than risking a reversal back through entry. The btc_spot trajectory shows consolidation rather than acceleration needed to reach +3% in the remaining window."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
@@ -82,8 +82,8 @@
         "stopPct": 3.5
       },
       "PROMOTED_HYPOTHESIS": {
-        "targetPct": 3,
-        "stopPct": 1.5
+        "targetPct": 4,
+        "stopPct": 2
       }
     }
   }

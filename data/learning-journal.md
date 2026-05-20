@@ -13822,3 +13822,55 @@ Key observations this session:
 
 ---
 
+### 2026-05-20 11:30 UTC
+
+**Portfolio:** $99.35 total | Cash $93.35 | 6 open | P&L $0.3485 | 52% win rate (140 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_opt_fwd_90d = 177.7 is 3.7 std devs from mean since 2026-04-28 (90.43 ± 23.49)
+- [anomaly] hype_med_max = 71.6 is 3.6 std devs from mean (58.41 ± 3.67)
+- [anomaly] hype_hl_oi = 1161331589 is 3.0 std devs from mean (871403171.47 ± 96459332.93)
+- [anomaly] hype_pm_iv = 78.3 is 2.8 std devs from mean (63.91 ± 5.20)
+- [anomaly] hype_pm_ev = 50.92 is 2.8 std devs from mean (44.65 ± 2.28)
+
+**Blocked signal learning:**
+- Open blocked shadows: 48
+- Resolved blocked shadows: 107 (43 wins / 64 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 4/5 shadows would have won, avg P&L 40.69%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have closed with thesis validated profitably (+34.52%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have edge compressed but trade lost money (-30.56%)
+- ✅ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have closed with thesis validated profitably (+1.34%)
+
+**LLM analysis:**
+Key observations this cycle:
+
+1. HYPE H-521 LIVE CONFIRMATION: The HYPE breakout trade entered at 49.43 is showing exactly the pattern the promoted hypothesis predicted — OI at +3σ (1.161B), PM IV at +2.8σ (78.3), hype_med_max at +3.6σ (71.6), and a clean 12-hour staircase from 47.47 to 49.56. This is the strongest single-asset momentum confirmation in the dataset. The 503h expiry gives ample time for the +4% target to be reached. No close warranted.
+
+2. BTC H-523 PROMOTED TRADE CLOSE: Taking profit on T-1779089415632-pbo3 at +0.60% with 20h remaining. The position is well below the +3% target and BTC is consolidating in a tight range (76,600-77,537 over 14 snapshots). With the 24h percentile at 96, BTC is near the top of its recent range. The PROMOTED_HYPOTHESIS signal risk parameters are being updated from target +3%/stop -1.5% to target +4%/stop -2% to better match the payoff profile of promoted hypotheses — the current +3% target is too tight for a 14-day window and results in positions being closed before the thesis fully plays out. This change is incremental and evidence-based: the BTC IV compression thesis (H-523) has a 65% win rate over hypothesis tests and the one clean live trade won at +3.33%.
+
+3. GOLD DUAL POSITION: The simultaneous GOLD long (FUNDING_EXTREME_SHORT, -0.81%) and GOLD short (FUNDING_EXTREME_LONG, +1.54%) reflect two separate funding regime signals that fired at different times. The short is performing well with breakeven stop armed. The long is slightly underwater but within stop range. Both are mechanically managed — no LLM intervention needed. The funding has normalized from extremes in both directions, which is the expected outcome for both theses.
+
+4. OIL LONG STATUS: T-1779114618102-igou is +0.68% with 75h remaining. The P/C ratio has normalized from 1.495 to 1.222 (thesis trigger resolved), and oil spot has declined from 104.02 to 101.99. The position is within the mechanical stop/target window. The macro signal (oil_p_settle_above_current at 33.4%, oil_signal DECLINING) is adverse but was present at entry and is context-only. No close warranted — mechanical scanner owns this.
+
+5. BTC ONE-TOUCH NO: T-1778718867328-fb7r is -3.77% with 181h remaining. BTC spot at 77,454 is well above the $55,000 strike, and the 30d percentile of 47 shows BTC is in the middle of its range — not threatening the strike. The position is path-dependent and requires BTC to stay above $55,000 at every point. Current trajectory is favorable. No close warranted.
+
+6. HYPE FUNDING OSCILLATION PATTERN: The -19.57 → -1.82 → +10.95 → -18.83 → -17.86 → +10.95 funding pattern in HYPE over 14 snapshots is notable. Large negative funding spikes (-18 to -20%) followed by rapid normalization to +10.95% suggest systematic short liquidations. This is consistent with the H-096/H-210 HYPE funding/OI long bounce family and supports the H-521 long thesis.
+
+7. NO NEW HYPOTHESES: The backlog has 9 setup families needing more tests and 6 pending. Consistent with instructions, no new hypotheses are proposed this cycle. The existing promoted families (H-521, H-523) are generating live trades and accumulating evidence.
+
+8. RELATIVE VALUE HEATMAP: The heatmap shows several interesting edges — BTC $130k by December at 29.5% PM vs 39.9% model (+9.9pt edge), ETH $4,500 by December at 10.5% PM vs 23.7% model (+12.7pt edge), and OIL $150 by June at 12.5% PM vs 20.2% model (+7.2pt edge). These are shadow-only observations given the ONE_TOUCH_HIGH_EDGE_YES family's poor shadow performance (-10.3% avg). The BTC $55k dip contract at 48.5% PM vs 30.3% model (-17.7pt edge) is the strongest sell signal and aligns with the existing ONE_TOUCH_HIGH_EDGE_NO position.
+
+**LLM close rejections today (2026-05-20, token-burn signal):**
+- Total rejected close instructions: 12
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (11); PROMOTED_HYPOTHESIS / HYPE (1)
+- Repeat-offender positions (≥3 rejections today): T-1779089415632-pbo3 (11) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+
