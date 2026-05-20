@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T02:30:27.986Z",
+  "generatedAt": "2026-05-20T03:30:25.004Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,31 +11,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5896607533333333,
-      "confidence": 0.24813661576208332,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.7pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.582133908,
+      "confidence": 0.24496922516024996,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.5pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76795,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "701501",
-        "allowDirectionFallback": false
-      }
-    },
-    {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.5850130256666667,
-      "confidence": 0.24618079386335417,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.6pt edge on BTC; hold 14d for repricing.",
-      "hypothesisId": null,
-      "entryPrice": 76795,
+      "entryPrice": 76718,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -47,6 +27,41 @@
       }
     },
     {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.552565119,
+      "confidence": 0.2325263091391875,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.6pt edge on BTC; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 76718,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "701501",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.0865714285714286,
+      "confidence": 0.0530404800255098,
+      "thesis": "GOLD HL funding 18.0% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4465,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
+    },
+    {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
       "venue": "spot",
@@ -55,7 +70,7 @@
       "confidence": 0.02063612649351449,
       "thesis": "OIL P/C ratio 1.22 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 103.81,
+      "entryPrice": 103.96,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
@@ -69,11 +84,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "risk_stale",
+        "closeReasonCategory": "thesis_invalidated",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has drifted to $76,795, now 7.2% below the 7-day high of $82,646 — outside the 'within 5% of 7d high' condition that underpins the H-523 promoted hypothesis. The position is -0.25% with only 29 hours remaining before mechanical expiry, peak was +0.94% but has not recovered. The spot-proximity leg of the thesis has weakened: BTC is at the 13th percentile of its 7-day range, not consolidating near highs. With 29 hours left and the core condition (spot near 7d high) no longer met, the risk/reward of holding to expiry is unfavorable versus closing now and preserving capital for a cleaner re-entry when conditions realign."
+        "thesis": "BTC spot has drifted to 76,718, now at the 9th percentile of its 7-day range (range 76,200-82,646) and below the 24h SMA. The promoted H-523 thesis requires BTC consolidating within 5% of its 7d high — spot is now approximately 7.1% below the 7d high of 82,646, outside the thesis window. The peak PnL of +0.94% was not sustained and the position is -0.35% with 28h remaining. The IV compression signal (PM IV at 36.6%) remains intact but the spot momentum component of the thesis has failed — BTC is not holding near highs and is trending lower. With the stop at -1.5% and spot continuing to drift, closing now to preserve capital rather than risk hitting the stop."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

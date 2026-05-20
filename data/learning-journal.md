@@ -13412,3 +13412,55 @@ Key observations this cycle:
 
 ---
 
+### 2026-05-20 03:30 UTC
+
+**Portfolio:** $99.31 total | Cash $93.31 | 6 open | P&L $0.3081 | 52% win rate (139 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_90d = 22.2 is -3.0 std devs from mean (40.35 ± 5.96)
+- [anomaly] btc_opt_iv_term_spread = 14.26 is 2.9 std devs from mean (-1.07 ± 5.22)
+- [anomaly] hype_hl_oi = 1101720746 is 2.6 std devs from mean (867205462.97 ± 91414489.00)
+- [anomaly] hype_pm_ev = 49.81 is 2.4 std devs from mean (44.56 ± 2.18)
+- [anomaly] hype_spot = 47.79 is 2.2 std devs from mean (41.95 ± 2.65)
+
+**Blocked signal learning:**
+- Open blocked shadows: 44
+- Resolved blocked shadows: 107 (43 wins / 64 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 4/5 shadows would have won, avg P&L 40.69%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have closed with thesis validated profitably (+34.52%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have edge compressed but trade lost money (-30.56%)
+- ✅ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have closed with thesis validated profitably (+1.34%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. BTC PROMOTED LONG (T-pbo3) CLOSED EARLY: The H-523 BTC IV compression thesis requires spot consolidating near its 7d high. BTC has drifted to the 9th percentile of its 7d range (~7.1% below the 7d high), invalidating the momentum component. The IV compression signal (PM IV at 36.6%, term spread at +2.9 sigma) remains statistically anomalous but without spot holding near highs, the vol expansion is more likely to express as downside volatility rather than upside continuation. Closing at -0.35% rather than risking the -1.5% stop.
+
+2. GOLD POSITIONS: The two opposing gold positions are performing well. The FUNDING_EXTREME_LONG short (T-o43q, entry 4570) is +2.31% with gold at 4465 — the crowded-long funding thesis is working. The FUNDING_EXTREME_SHORT long (T-2wqk, entry 4536) is -1.58% and approaching its -2% stop — this is the opposing side and is being squeezed by the same gold decline. The breakeven stop on T-o43q is armed (peak ≥ +1.5%), providing downside protection. The gold_hl_funding_ann has normalized from the extreme negative levels that triggered T-2wqk (-44.78% at open) to +18.03% now — the funding signal that triggered the long has fully reversed, which is thesis invalidation territory for T-2wqk. However, since T-2wqk is a mechanical signal (FUNDING_EXTREME_SHORT), LLM closes are restricted to thesis_invalidated/data_quality/hard_portfolio_risk categories. The funding normalization IS thesis invalidation for FUNDING_EXTREME_SHORT (the crowded-short condition no longer exists), but the mechanical scanner owns the stop. Noting this in the journal for the scanner to evaluate.
+
+3. OIL LONG (T-igou): At +2.63% with the P/C ratio declining from 1.58 to 1.222 — the contrarian thesis is working. Approaching the +4% target. The oil_hl_funding_ann is deeply negative (-23.21%), which is favorable carry for the long. No action needed.
+
+4. HYPE LONG (T-qwpf): At +1.62% with spot at 47.79, near 7d highs. OI at 1.10B remains elevated. The H-521 momentum thesis is intact. Peak was +3.82% — consolidating but not reversing. Monitoring for the +4% target.
+
+5. BTC ONE-TOUCH NO (T-fb7r): At -3.77% with spot at 76,718. The $55,000 touch barrier is ~$21,700 below current spot. BTC has declined from the 79,548 baseline but remains well above the barrier. The position is path-dependent and the current spot level is not threatening. The -3.77% PnL reflects PM repricing of the NO contract, not spot proximity to the barrier. Holding per mechanical rules.
+
+6. GOLD STATISTICAL ANOMALY: gold_gld_pc_ratio at 0.957 is +2.1 sigma — elevated put buying in GLD options. This is consistent with the gold spot decline to 4,465 (30-day low). The elevated P/C ratio could signal either continued bearish hedging or eventual exhaustion. Worth monitoring for a PC_RATIO_EXTREME_HIGH signal on GOLD if the ratio continues rising.
+
+7. HEATMAP OBSERVATIONS: The relative-value heatmap shows several interesting edges but most are in the 'cheap_vs_underlying_cap_bearish' category for far-OTM upside contracts — these are structurally cheap because the underlying cap ratio is very low, not because of genuine mispricing. The most actionable edges are in OIL upside (CL $110-$150 by June) and BTC $90k-$130k by December, but these are all shadow/research only given the LLM_HYPOTHESIS disabled status. No new live trades from the heatmap this session.
+
+8. HYPOTHESIS BACKLOG: 9 setup families need more tests with 6 pending. Not proposing new hypotheses per instructions. The existing promoted families (H-521 HYPE momentum, H-523 BTC IV compression) are being tested through live trades.
+
+**LLM close rejections today (2026-05-20, token-burn signal):**
+- Total rejected close instructions: 4
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (4)
+- Repeat-offender positions (≥3 rejections today): T-1779089415632-pbo3 (4) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+
