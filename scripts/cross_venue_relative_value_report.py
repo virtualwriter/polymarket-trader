@@ -1757,8 +1757,13 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
       }});
     }}
 
-    function updateFreshnessStatus(generatedAt) {{
+    function updateFreshnessStatus(generatedAt, payload) {{
       const status = document.getElementById("live-refresh-status");
+      if (payload && payload.servedFrom === "static_fallback") {{
+        status.textContent = `${{payload.fallbackReason || "VPS latest payload was incomplete."}} Showing deployed static heatmap until the VPS catches up.`;
+        status.classList.add("stale");
+        return;
+      }}
       const generatedMs = Date.parse(generatedAt || "");
       if (!Number.isFinite(generatedMs)) {{
         status.textContent = "Live data loaded, but freshness timestamp was missing.";
@@ -1781,7 +1786,7 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         applyTableState();
         document.getElementById("snapshot-timestamp").textContent = fmtEasternTime(payload.snapshotTimestamp);
         document.getElementById("generated-timestamp").textContent = fmtEasternTime(payload.generatedAt);
-        updateFreshnessStatus(payload.generatedAt);
+        updateFreshnessStatus(payload.generatedAt, payload);
       }} catch (err) {{
         status.textContent = `Could not load VPS latest data: ${{err.message || err}}. Showing static Vercel render.`;
         status.classList.add("stale");
