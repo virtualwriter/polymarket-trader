@@ -61,12 +61,13 @@ OPTION_STRIKE_LOG_WINDOW = 0.35
 ASSET_TO_OPTION_SYMBOLS = {
     "BTC": ["IBIT", "CME_BTC"],
     "ETH": ["ETHA"],
+    "HYPE": ["PURR"],
     "GOLD": ["GLD", "CME_GC"],
     "OIL": ["USO", "CME_CL"],
     "AMZN": ["AMZN"],
     "SPY": ["SPY", "CME_ES"],
 }
-CBOE_PROXY_OPTION_SYMBOLS = {"IBIT", "ETHA", "GLD", "USO", "SPY"}
+CBOE_PROXY_OPTION_SYMBOLS = {"IBIT", "ETHA", "GLD", "USO", "SPY", "PURR"}
 
 
 @dataclass

@@ -98,7 +98,7 @@ const HL_BUILDER_COINS: { dex: string; coin: string; label: string }[] = [
   { dex: "xyz", coin: "xyz:CL", label: "OIL (CL)" },
   { dex: "xyz", coin: "xyz:BRENTOIL", label: "BRENT OIL" },
 ];
-const OPTIONS_SYMBOLS = ["IBIT", "AMZN", "GLD", "USO", "ETHA", "SPY"];
+const OPTIONS_SYMBOLS = ["IBIT", "AMZN", "GLD", "USO", "ETHA", "SPY", "PURR"];
 const CME_GREEKS_API_BASE = process.env.CME_GREEKS_API_BASE ?? "https://markets.api.cmegroup.com/greeks/v1";
 const CME_TOKEN_URL = process.env.CME_TOKEN_URL ?? "https://auth.cmegroup.com/as/token.oauth2";
 const CME_OPTIONS_QUERY_PARAM = process.env.CME_OPTIONS_QUERY_PARAM ?? "undlyProductCodes";
