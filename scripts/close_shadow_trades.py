@@ -94,6 +94,11 @@ VALIDATED_CLOSES: list[dict[str, str]] = [
         "label": "GC settle over $6,200 NO (June proxy short shadow)",
         "note": "Edge compressed to near-fair while the NO shadow is slightly profitable; PM proxy-short thesis has played out enough to close rather than hold tail risk.",
     },
+    {
+        "id": "MANUAL-IVTOUCH-ETH-NO-2132799-1779136654",
+        "label": "ETH LOW $2,000 NO (May touch)",
+        "note": "Original rich-downside-touch NO thesis has played out: NO marked 0.52 -> 0.60 (~+15%) and the current heatmap flipped to buy-YES (+4.1 pts), so close profitable rather than hold reversed edge.",
+    },
 ]
 
 
