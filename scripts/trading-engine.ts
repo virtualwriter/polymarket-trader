@@ -135,15 +135,14 @@ const LLM_DRY_RUN = process.argv.includes("--llm-dry-run");
 const MUTATION_DISABLED = DRY_RUN || LLM_DRY_RUN;
 const ALLOW_HOURLY_LLM_CLOSES = process.env.ALLOW_HOURLY_LLM_CLOSES === "1" || process.env.ALLOW_HOURLY_LLM_CLOSES === "true";
 
-// LLM cadence gate. Skips the expensive Sonnet call on cycles where nothing
-// material has changed since the last call, saving ~50-75% of LLM spend
-// without losing decision quality. The cron / systemd timer still runs the
-// engine hourly; only the LLM half of the cycle is gated. Defaults are
-// tunable via env so we can dial back to hourly (LLM_FORCE_HOURLY=1) or
-// shrink the cadence window (LLM_CADENCE_HOURS=1|2|3) without redeploying.
-const LLM_CADENCE_HOURS = Number(process.env.LLM_CADENCE_HOURS ?? 4);
+// LLM cadence gate. The hourly engine/reporting loop still runs, but expensive
+// Sonnet calls are capped and deduped so trigger noise cannot blow through the
+// daily Anthropic budget.
+const LLM_CADENCE_HOURS = Number(process.env.LLM_CADENCE_HOURS ?? 6);
 const LLM_FORCE_HOURLY = process.env.LLM_FORCE_HOURLY === "1" || process.env.LLM_FORCE_HOURLY === "true";
-const LLM_NEAR_DECISION_PCT_TRIGGER = Number(process.env.LLM_NEAR_DECISION_PCT_TRIGGER ?? 5);
+const LLM_MAX_CALLS_PER_DAY = Number(process.env.LLM_MAX_CALLS_PER_DAY ?? 6);
+const LLM_NEW_SIGNAL_DEDUPE_HOURS = Number(process.env.LLM_NEW_SIGNAL_DEDUPE_HOURS ?? 12);
+const LLM_NEAR_DECISION_PCT_TRIGGER = Number(process.env.LLM_NEAR_DECISION_PCT_TRIGGER ?? 0.5);
 const LLM_HARD_RISK_PNL_PCT_TRIGGER = Number(process.env.LLM_HARD_RISK_PNL_PCT_TRIGGER ?? -30);
 const LLM_BIG_MOVE_PCT_TRIGGER = Number(process.env.LLM_BIG_MOVE_PCT_TRIGGER ?? 5);
 const LLM_BACKLOG_RESTOCK_HOURS = Number(process.env.LLM_BACKLOG_RESTOCK_HOURS ?? 24);
@@ -1151,17 +1150,57 @@ interface LlmState {
   lastCallReasons: string[];
   skipsSinceLastCall: number;
   recentSkipReasons: string[];
+  dailyCallCounts: Record<string, number>;
+  recentSignalKeys: Record<string, string>;
   updatedAt: string;
 }
 
+function utcDateKey(ms = Date.now()): string {
+  return new Date(ms).toISOString().slice(0, 10);
+}
+
+function llmSignalKey(signal: Signal): string {
+  const event = signal.contractHint?.preferredEventSlug ?? "";
+  const market = signal.contractHint?.forceMarketId ?? "";
+  return [signal.type, signal.asset, signal.venue, signal.direction, event, market].join(":");
+}
+
 function loadLlmState(): LlmState {
-  return readJson<LlmState>(LLM_STATE_FILE, {
+  const defaults: LlmState = {
     lastCallAt: null,
     lastCallReasons: [],
     skipsSinceLastCall: 0,
     recentSkipReasons: [],
+    dailyCallCounts: {},
+    recentSignalKeys: {},
     updatedAt: new Date().toISOString(),
-  });
+  };
+  const saved = readJson<Partial<LlmState>>(LLM_STATE_FILE, defaults);
+  return {
+    ...defaults,
+    ...saved,
+    lastCallReasons: saved.lastCallReasons ?? [],
+    recentSkipReasons: saved.recentSkipReasons ?? [],
+    dailyCallCounts: saved.dailyCallCounts ?? {},
+    recentSignalKeys: saved.recentSignalKeys ?? {},
+  };
+}
+
+function updateLlmCadenceAccounting(state: LlmState, signals: Signal[], didCall: boolean) {
+  const now = Date.now();
+  const today = utcDateKey(now);
+  const minSignalSeenAt = now - Math.max(LLM_NEW_SIGNAL_DEDUPE_HOURS * 4, 24) * 60 * 60 * 1000;
+  state.recentSignalKeys = Object.fromEntries(
+    Object.entries(state.recentSignalKeys ?? {}).filter(([, seenAt]) => {
+      const t = Date.parse(seenAt);
+      return Number.isFinite(t) && t >= minSignalSeenAt;
+    }),
+  );
+  for (const signal of signals) state.recentSignalKeys[llmSignalKey(signal)] = new Date(now).toISOString();
+  state.dailyCallCounts = Object.fromEntries(
+    Object.entries(state.dailyCallCounts ?? {}).filter(([date]) => date >= utcDateKey(now - 7 * 24 * 60 * 60 * 1000)),
+  );
+  if (didCall) state.dailyCallCounts[today] = (state.dailyCallCounts[today] ?? 0) + 1;
 }
 
 function saveLlmState(state: LlmState) {
@@ -1757,17 +1796,19 @@ function reconcileClosedGhostPositions(portfolio: Portfolio): string[] {
 // Triggers (any of these → run):
 //   1. LLM_FORCE_HOURLY=1 env  → kill switch, always run
 //   2. First run ever (no llm-state.json) → run "first-run"
-//   3. >= LLM_CADENCE_HOURS since last call → scheduled refresh (keeps
+//   3. Daily budget not exhausted (LLM_MAX_CALLS_PER_DAY hard cap; force-hourly
+//      is the only bypass)
+//   4. >= LLM_CADENCE_HOURS since last call → scheduled refresh (keeps
 //      journal continuity and gives the LLM regular regime check-ins)
-//   4. Any new rule-based signals generated this cycle → LLM must evaluate
-//      before mechanical entry decisions
-//   5. Any open LLM-owned position within LLM_NEAR_DECISION_PCT_TRIGGER pp
+//   5. Any rule-based signal key not seen in LLM_NEW_SIGNAL_DEDUPE_HOURS →
+//      LLM can evaluate genuinely novel mechanical entry context
+//   6. Any open LLM-owned position within LLM_NEAR_DECISION_PCT_TRIGGER pp
 //      of its target OR stop → close-decision latency matters here
-//   6. Any open position with pnlPct <= LLM_HARD_RISK_PNL_PCT_TRIGGER →
+//   7. Any open position with pnlPct <= LLM_HARD_RISK_PNL_PCT_TRIGGER →
 //      hard risk breach, LLM should review immediately
-//   7. Any held asset's spot moved >= LLM_BIG_MOVE_PCT_TRIGGER % in last 1h
+//   8. Any held asset's spot moved >= LLM_BIG_MOVE_PCT_TRIGGER % in last 1h
 //      → regime change, thesis may have shifted
-//   8. Hypothesis backlog complete AND no new hypothesis in last
+//   9. Hypothesis backlog complete AND no new hypothesis in last
 //      LLM_BACKLOG_RESTOCK_HOURS hours → time to ask the LLM for new ones
 //
 // Otherwise skip; the engine still runs all mechanical work (scan, marks,
@@ -1777,6 +1818,9 @@ function reconcileClosedGhostPositions(portfolio: Portfolio): string[] {
 interface LlmCadenceDecision {
   run: boolean;
   reasons: string[];
+  suppressedReasons: string[];
+  callsToday: number;
+  maxCallsPerDay: number;
   hoursSinceLastCall: number | null;
   nextScheduledAt: string;
 }
@@ -1792,14 +1836,24 @@ function decideLlmCadence(
 ): LlmCadenceDecision {
   const now = Date.now();
   const nextScheduledAt = new Date(now + LLM_CADENCE_HOURS * 60 * 60 * 1000).toISOString();
+  const callsToday = state.dailyCallCounts?.[utcDateKey(now)] ?? 0;
   if (LLM_FORCE_HOURLY) {
-    return { run: true, reasons: ["LLM_FORCE_HOURLY=1 — cadence gate disabled"], hoursSinceLastCall: null, nextScheduledAt };
+    return {
+      run: true,
+      reasons: ["LLM_FORCE_HOURLY=1 — cadence and budget gates disabled"],
+      suppressedReasons: [],
+      callsToday,
+      maxCallsPerDay: LLM_MAX_CALLS_PER_DAY,
+      hoursSinceLastCall: null,
+      nextScheduledAt,
+    };
   }
 
   const hoursSinceLastCall = state.lastCallAt
     ? (now - Date.parse(state.lastCallAt)) / (1000 * 60 * 60)
     : null;
   const reasons: string[] = [];
+  const suppressedReasons: string[] = [];
 
   if (hoursSinceLastCall === null) {
     reasons.push("first-run (no prior llm-state.json)");
@@ -1808,9 +1862,19 @@ function decideLlmCadence(
   }
 
   if (signals.length > 0) {
-    const sigTypes = [...new Set(signals.map((s) => s.type))].slice(0, 4).join(",");
-    const more = signals.length > 4 ? ", …" : "";
-    reasons.push(`new-signals (${signals.length} signal${signals.length === 1 ? "" : "s"}: ${sigTypes}${more})`);
+    const dedupeMs = LLM_NEW_SIGNAL_DEDUPE_HOURS * 60 * 60 * 1000;
+    const novelSignals = signals.filter((signal) => {
+      const seenAt = state.recentSignalKeys?.[llmSignalKey(signal)];
+      const seenAtMs = seenAt ? Date.parse(seenAt) : NaN;
+      return !Number.isFinite(seenAtMs) || now - seenAtMs >= dedupeMs;
+    });
+    if (novelSignals.length > 0) {
+      const sigTypes = [...new Set(novelSignals.map((s) => s.type))].slice(0, 4).join(",");
+      const more = novelSignals.length > 4 ? ", …" : "";
+      reasons.push(`new-signals (${novelSignals.length}/${signals.length} novel after ${LLM_NEW_SIGNAL_DEDUPE_HOURS}h dedupe: ${sigTypes}${more})`);
+    } else {
+      suppressedReasons.push(`duplicate-signals (${signals.length} recurring signal${signals.length === 1 ? "" : "s"} seen within ${LLM_NEW_SIGNAL_DEDUPE_HOURS}h)`);
+    }
   }
 
   for (const p of portfolio.positions) {
@@ -1861,7 +1925,12 @@ function decideLlmCadence(
     }
   }
 
-  return { run: reasons.length > 0, reasons, hoursSinceLastCall, nextScheduledAt };
+  if (reasons.length > 0 && LLM_MAX_CALLS_PER_DAY > 0 && callsToday >= LLM_MAX_CALLS_PER_DAY) {
+    suppressedReasons.push(`daily-budget-cap (${callsToday}/${LLM_MAX_CALLS_PER_DAY} LLM calls already used today)`);
+    return { run: false, reasons, suppressedReasons, callsToday, maxCallsPerDay: LLM_MAX_CALLS_PER_DAY, hoursSinceLastCall, nextScheduledAt };
+  }
+
+  return { run: reasons.length > 0, reasons, suppressedReasons, callsToday, maxCallsPerDay: LLM_MAX_CALLS_PER_DAY, hoursSinceLastCall, nextScheduledAt };
 }
 
 function migrateLegacyPolymarketPositions(
@@ -6399,19 +6468,26 @@ async function main() {
     const sinceTxt = cadence.hoursSinceLastCall === null
       ? "no prior call recorded"
       : `${cadence.hoursSinceLastCall.toFixed(1)}h since last call`;
-    console.log(`\n  LLM call SKIPPED (${sinceTxt}, ${llmState.skipsSinceLastCall + 1} skip${llmState.skipsSinceLastCall + 1 === 1 ? "" : "s"} since last call). No trigger fired.`);
+    const suppressTxt = cadence.suppressedReasons.length > 0
+      ? cadence.suppressedReasons.join(" | ")
+      : "no trigger fired";
+    console.log(`\n  LLM call SKIPPED (${sinceTxt}, ${llmState.skipsSinceLastCall + 1} skip${llmState.skipsSinceLastCall + 1 === 1 ? "" : "s"} since last call). ${suppressTxt}.`);
+    console.log(`  LLM daily budget: ${cadence.callsToday}/${cadence.maxCallsPerDay} calls used today.`);
+    if (cadence.reasons.length > 0) console.log(`  Suppressed triggers: ${cadence.reasons.join(" | ")}`);
     console.log(`  Next scheduled LLM call: ${cadence.nextScheduledAt}`);
     llmState.skipsSinceLastCall += 1;
     llmState.recentSkipReasons = [
       ...llmState.recentSkipReasons,
-      `${new Date().toISOString()} no-trigger`,
+      `${new Date().toISOString()} ${suppressTxt}`,
     ].slice(-12);
+    updateLlmCadenceAccounting(llmState, signals, false);
     if (!MUTATION_DISABLED) saveLlmState(llmState);
-    llmJournal = `_LLM call skipped (cadence gate fired no triggers; ${sinceTxt}; next scheduled ${cadence.nextScheduledAt}). Mechanical cycle ran normally._`;
+    llmJournal = `_LLM call skipped (${suppressTxt}; ${sinceTxt}; daily budget ${cadence.callsToday}/${cadence.maxCallsPerDay}; next scheduled ${cadence.nextScheduledAt}). Mechanical cycle ran normally._`;
   }
   if (llmShouldRun) {
     console.log(`\n  Calling LLM for pattern discovery...`);
     console.log(`    Triggers: ${cadence.reasons.join(" | ")}`);
+    console.log(`    LLM daily budget before call: ${cadence.callsToday}/${cadence.maxCallsPerDay}`);
     const journalTail = readJournalTail(40);
     const llmResult = await callLLM(valRows, macroRows, instrumentSnapshots, portfolio, learningParams, weights, hypotheses, statObs, closedTrades, blockedSummary, relativeValueRows, journalTail, engineState, truthState, candidateActions);
 
@@ -6480,6 +6556,7 @@ async function main() {
     llmState.lastCallReasons = cadence.reasons;
     llmState.skipsSinceLastCall = 0;
     llmState.recentSkipReasons = [];
+    updateLlmCadenceAccounting(llmState, signals, true);
     if (!MUTATION_DISABLED) saveLlmState(llmState);
   }
 
