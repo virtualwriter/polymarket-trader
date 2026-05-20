@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T14:29:22.195Z",
+  "generatedAt": "2026-05-20T15:29:18.641Z",
   "contaminationRules": [
     {
       "id": "oil_gold_pc_cl_source_cleanup",
@@ -72,7 +72,7 @@
           "note": "AMZN short stop via spot/spot"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "llm_hypothesis",
@@ -128,7 +128,7 @@
           "note": "OIL close_long stop via hyperliquid/hl_perp"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "funding_extreme_long",
@@ -182,7 +182,7 @@
           "note": "OIL short stop via hyperliquid/hl_perp"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "funding_extreme_short",
@@ -234,7 +234,7 @@
           "note": "HYPE long target via hyperliquid/hl_perp"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "one_touch_high_edge_yes_exploratory",
@@ -286,7 +286,7 @@
           "note": "one_touch_high_edge_shadow: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "opt_iv_gt_pm_iv_downside",
@@ -340,7 +340,7 @@
           "note": "iv_downside_leg_untracked: OPT_IV_GT_PM_IV_DOWNSIDE OIL long"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "relative_value_heatmap",
@@ -392,7 +392,7 @@
           "note": "relative_value_heatmap: RELATIVE_VALUE_HEATMAP BTC short"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "opt_iv_gt_pm_iv",
@@ -446,68 +446,17 @@
           "note": "GOLD long stop via polymarket/pm_yes"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
-    },
-    {
-      "setupId": "hype_breakout_oi_surge_momentum",
-      "setupLabel": "HYPE breakout / OI surge momentum",
-      "status": "validating",
-      "currentConclusion": "HYPE breakout / OI surge momentum is validating but still sample-size sensitive. Clean live trades: 7/11, avg P&L 2.02%; shadows: no resolved shadows.",
-      "evidenceSummary": {
-        "cleanTrades": 11,
-        "tradeWins": 7,
-        "avgTradePnlPct": 2.0207,
-        "resolvedShadows": 0,
-        "shadowWins": 0,
-        "avgShadowPnlPct": 0,
-        "hypothesisTests": 45,
-        "hypothesisWins": 30
-      },
-      "allowedEvidenceColumns": [
-        "hype_spot",
-        "hype_hl_funding_ann",
-        "hype_pm_iv"
-      ],
-      "knownInvalidAssumptions": [],
-      "representativeExamples": [
-        {
-          "id": "H-521",
-          "kind": "hypothesis",
-          "outcome": "win",
-          "note": "HYPE moved 2.16% (40.135 → 41.002)"
-        },
-        {
-          "id": "H-521",
-          "kind": "hypothesis",
-          "outcome": "loss",
-          "note": "BTC moved -0.90% (79002 → 78290)"
-        },
-        {
-          "id": "T-1777843727758-i8vo",
-          "kind": "trade",
-          "outcome": "win",
-          "pnlPct": 6.21,
-          "note": "HYPE long target via spot/spot"
-        },
-        {
-          "id": "T-1777980530153-zd1q",
-          "kind": "trade",
-          "outcome": "loss",
-          "pnlPct": -2.01,
-          "note": "HYPE long stop via spot/spot"
-        }
-      ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "pc_ratio_extreme_high",
       "setupLabel": "Pc Ratio Extreme High",
-      "status": "eligible_live",
-      "currentConclusion": "Pc Ratio Extreme High is eligible for live consideration based on grouped setup-family evidence. Clean live trades: 8/11, avg P&L 0.93%; shadows: no resolved shadows.",
+      "status": "validating",
+      "currentConclusion": "Pc Ratio Extreme High is validating but still sample-size sensitive. Clean live trades: 8/13, avg P&L 0.31%; shadows: no resolved shadows.",
       "evidenceSummary": {
-        "cleanTrades": 11,
+        "cleanTrades": 13,
         "tradeWins": 8,
-        "avgTradePnlPct": 0.93,
+        "avgTradePnlPct": 0.3073,
         "resolvedShadows": 0,
         "shadowWins": 0,
         "avgShadowPnlPct": 0,
@@ -549,7 +498,7 @@
           "note": "OIL long llm_decision via spot/spot"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "user_pm_apr_xau_tail_no",
@@ -605,7 +554,58 @@
           "note": "manual_shadow_trade: USER_PM_APR_XAU_TAIL_NO GOLD short"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
+    },
+    {
+      "setupId": "hype_breakout_oi_surge_momentum",
+      "setupLabel": "HYPE breakout / OI surge momentum",
+      "status": "validating",
+      "currentConclusion": "HYPE breakout / OI surge momentum is validating but still sample-size sensitive. Clean live trades: 6/10, avg P&L 1.81%; shadows: no resolved shadows.",
+      "evidenceSummary": {
+        "cleanTrades": 10,
+        "tradeWins": 6,
+        "avgTradePnlPct": 1.815,
+        "resolvedShadows": 0,
+        "shadowWins": 0,
+        "avgShadowPnlPct": 0,
+        "hypothesisTests": 45,
+        "hypothesisWins": 30
+      },
+      "allowedEvidenceColumns": [
+        "hype_spot",
+        "hype_hl_funding_ann",
+        "hype_pm_iv"
+      ],
+      "knownInvalidAssumptions": [],
+      "representativeExamples": [
+        {
+          "id": "H-521",
+          "kind": "hypothesis",
+          "outcome": "win",
+          "note": "HYPE moved 2.16% (40.135 → 41.002)"
+        },
+        {
+          "id": "H-521",
+          "kind": "hypothesis",
+          "outcome": "loss",
+          "note": "BTC moved -0.90% (79002 → 78290)"
+        },
+        {
+          "id": "T-1777843727758-i8vo",
+          "kind": "trade",
+          "outcome": "win",
+          "pnlPct": 6.21,
+          "note": "HYPE long target via spot/spot"
+        },
+        {
+          "id": "T-1777980530153-zd1q",
+          "kind": "trade",
+          "outcome": "loss",
+          "pnlPct": -2.01,
+          "note": "HYPE long stop via spot/spot"
+        }
+      ],
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "pm_ev_below_spot",
@@ -661,7 +661,7 @@
           "note": "OIL short stop via spot/spot"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "manual_iv_touch_cheap_yes",
@@ -715,7 +715,61 @@
           "note": "manual_shadow_trade: USER_PM_IV_TOUCH_CHEAP_YES GOLD long"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
+    },
+    {
+      "setupId": "manual_iv_touch_rich_no",
+      "setupLabel": "Manual IV-touch rich NO",
+      "status": "validating",
+      "currentConclusion": "Manual IV-touch rich NO is validating but still sample-size sensitive. Clean live trades: no clean live trades, avg P&L 0.00%; shadows: 5/6.",
+      "evidenceSummary": {
+        "cleanTrades": 0,
+        "tradeWins": 0,
+        "avgTradePnlPct": 0,
+        "resolvedShadows": 6,
+        "shadowWins": 5,
+        "avgShadowPnlPct": 36.4683,
+        "hypothesisTests": 0,
+        "hypothesisWins": 0
+      },
+      "allowedEvidenceColumns": [
+        "oil_wti_spot",
+        "oil_pm_iv",
+        "oil_opt_iv_30d",
+        "oil_opt_iv_90d"
+      ],
+      "knownInvalidAssumptions": [],
+      "representativeExamples": [
+        {
+          "id": "MANUAL-IVTOUCH-OIL-NO-2074237-1777996309",
+          "kind": "shadow",
+          "outcome": "win",
+          "pnlPct": 64.81,
+          "note": "manual_shadow_trade: USER_PM_IV_TOUCH_RICH_NO OIL short"
+        },
+        {
+          "id": "MANUAL-IVTOUCH-OIL-NO-2132637-1778084458",
+          "kind": "shadow",
+          "outcome": "win",
+          "pnlPct": 128.57,
+          "note": "manual_shadow_trade: USER_PM_IV_TOUCH_RICH_NO OIL short"
+        },
+        {
+          "id": "MANUAL-IVTOUCH-OIL-NO-2230536-1778604114",
+          "kind": "shadow",
+          "outcome": "win",
+          "pnlPct": 52.5,
+          "note": "manual_shadow_trade: USER_PM_IV_TOUCH_RICH_NO OIL short"
+        },
+        {
+          "id": "MANUAL-IVTOUCH-BTC-NO-2132778-1778956377",
+          "kind": "shadow",
+          "outcome": "loss",
+          "pnlPct": -47.56,
+          "note": "manual_shadow_trade: USER_PM_IV_TOUCH_RICH_NO BTC short"
+        }
+      ],
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "pm_iv_gt_opt_iv",
@@ -769,61 +823,7 @@
           "note": "OIL short target via polymarket/pm_no"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
-    },
-    {
-      "setupId": "manual_iv_touch_rich_no",
-      "setupLabel": "Manual IV-touch rich NO",
-      "status": "validating",
-      "currentConclusion": "Manual IV-touch rich NO is validating but still sample-size sensitive. Clean live trades: no clean live trades, avg P&L 0.00%; shadows: 4/5.",
-      "evidenceSummary": {
-        "cleanTrades": 0,
-        "tradeWins": 0,
-        "avgTradePnlPct": 0,
-        "resolvedShadows": 5,
-        "shadowWins": 4,
-        "avgShadowPnlPct": 40.686,
-        "hypothesisTests": 0,
-        "hypothesisWins": 0
-      },
-      "allowedEvidenceColumns": [
-        "oil_wti_spot",
-        "oil_pm_iv",
-        "oil_opt_iv_30d",
-        "oil_opt_iv_90d"
-      ],
-      "knownInvalidAssumptions": [],
-      "representativeExamples": [
-        {
-          "id": "MANUAL-IVTOUCH-OIL-NO-2074237-1777996309",
-          "kind": "shadow",
-          "outcome": "win",
-          "pnlPct": 64.81,
-          "note": "manual_shadow_trade: USER_PM_IV_TOUCH_RICH_NO OIL short"
-        },
-        {
-          "id": "MANUAL-IVTOUCH-OIL-NO-2132637-1778084458",
-          "kind": "shadow",
-          "outcome": "win",
-          "pnlPct": 128.57,
-          "note": "manual_shadow_trade: USER_PM_IV_TOUCH_RICH_NO OIL short"
-        },
-        {
-          "id": "MANUAL-IVTOUCH-OIL-NO-2230536-1778604114",
-          "kind": "shadow",
-          "outcome": "win",
-          "pnlPct": 52.5,
-          "note": "manual_shadow_trade: USER_PM_IV_TOUCH_RICH_NO OIL short"
-        },
-        {
-          "id": "MANUAL-IVTOUCH-BTC-NO-2132778-1778956377",
-          "kind": "shadow",
-          "outcome": "loss",
-          "pnlPct": -47.56,
-          "note": "manual_shadow_trade: USER_PM_IV_TOUCH_RICH_NO BTC short"
-        }
-      ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "btc_put_call_exhaustion_reversal",
@@ -873,7 +873,7 @@
           "note": "BTC long stop via spot/spot"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "macro_momentum_down",
@@ -922,7 +922,7 @@
           "note": "BTC short stop via spot/spot"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "pm_iv_gt_opt_iv_downside",
@@ -969,7 +969,7 @@
           "note": "iv_downside_leg_untracked: PM_IV_GT_OPT_IV_DOWNSIDE BTC short"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "pc_ratio_extreme_low_pm_proxy_short",
@@ -1016,7 +1016,7 @@
           "note": "polymarket_proxy_short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT GOLD short"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "funding_extreme_long_pm_proxy_short",
@@ -1061,7 +1061,7 @@
           "note": "polymarket_proxy_short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "btc_iv_compression_vol_reversion",
@@ -1104,7 +1104,7 @@
           "note": "BTC long target via spot/spot"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "macro_momentum_up",
@@ -1139,7 +1139,7 @@
           "note": "BTC long llm_decision via spot/spot"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "one_touch_high_edge_no",
@@ -1172,7 +1172,7 @@
           "note": "OIL short target\r via polymarket/pm_no"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "macro_momentum_down_pm_proxy_short",
@@ -1205,7 +1205,7 @@
           "note": "polymarket_proxy_short: MACRO_MOMENTUM_DOWN_PM_PROXY_SHORT BTC short"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "promoted_hypothesis",
@@ -1238,7 +1238,7 @@
           "note": "short_blocked_by_positive_trend: PROMOTED_HYPOTHESIS BTC short"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "promoted_hypothesis_pm_proxy_short",
@@ -1271,7 +1271,7 @@
           "note": "polymarket_proxy_short: PROMOTED_HYPOTHESIS_PM_PROXY_SHORT BTC short"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "oil_funding_volatility_mean_reversion",
@@ -1309,7 +1309,7 @@
           "note": "OIL moved -1.61% (106.85 → 105.13)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "hype_funding_oi_liquidation_short",
@@ -1345,7 +1345,7 @@
           "note": "HYPE moved 3.69% (44.366 → 46.004)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "amzn_perp_spot_funding_convergence",
@@ -1382,7 +1382,7 @@
           "note": "AMZN moved 1.26% (264.22 → 267.55)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "gold_pm_premium_futures_spread_mean_reversion",
@@ -1424,7 +1424,7 @@
           "note": "GOLD moved 3.34% (4516 → 4667)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "btc_funding_exhaustion_reversal",
@@ -1460,7 +1460,7 @@
           "note": "BTC moved -3.97% (79002 → 75863)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "oil_iv_statistical_breakdown_arbitrage",
@@ -1500,7 +1500,7 @@
           "note": "OIL moved -10.13% (106.85 → 96.03)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "cross_asset_iv_compression_vol_expansion",
@@ -1536,7 +1536,7 @@
           "note": "BTC moved 3.99% (76755 → 79815)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "other_mixed",
@@ -1574,7 +1574,7 @@
           "note": "GOLD moved -1.65% (4794 → 4715)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "cross_asset_funding_positioning_exhaustion",
@@ -1612,7 +1612,7 @@
           "note": "BTC moved 7.23% (75745 → 81225)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "amzn_options_positioning_momentum",
@@ -1650,7 +1650,7 @@
           "note": "AMZN moved 5.18% (238.4 → 250.74)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "oil_pm_spot_divergence_mean_reversion",
@@ -1690,7 +1690,7 @@
           "note": "OIL moved 2.67% (98.94 → 101.58)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "hype_funding_oi_long_bounce",
@@ -1726,7 +1726,7 @@
           "note": "HYPE moved -8.25% (44.98 → 41.271)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "pm_settlement_bucket_volatility",
@@ -1764,7 +1764,7 @@
           "note": "GOLD moved -2.76% (4667 → 4538)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "hype_oi_distribution_exhaustion_reversal",
@@ -1801,7 +1801,7 @@
           "note": "HYPE moved 1.03% (40.693 → 41.112)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "gold_iv_compression_vol_reversion",
@@ -1839,7 +1839,7 @@
           "note": "GOLD moved -0.69% (4667 → 4635)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "btc_momentum_correlation_breakout",
@@ -1871,7 +1871,7 @@
           "note": "BTC moved 2.81% (79002 → 81225)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "pm_odds_underlying_payoff_cap",
@@ -1903,7 +1903,7 @@
           "note": "BTC moved -1.45% (78290 → 77157)"
         }
       ],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "btc_dealer_hedge_stress_pullback",
@@ -1928,7 +1928,7 @@
       ],
       "knownInvalidAssumptions": [],
       "representativeExamples": [],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "pm_ev_above_spot",
@@ -1956,7 +1956,7 @@
         "At least one historical contaminated trade was excluded from this setup-family truth record."
       ],
       "representativeExamples": [],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "basis_premium",
@@ -1983,7 +1983,7 @@
         "Signal disabled by adaptive weight state."
       ],
       "representativeExamples": [],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     },
     {
       "setupId": "basis_discount",
@@ -2010,7 +2010,7 @@
         "Signal disabled by adaptive weight state."
       ],
       "representativeExamples": [],
-      "lastReviewedAt": "2026-05-20T14:29:22.195Z"
+      "lastReviewedAt": "2026-05-20T15:29:18.641Z"
     }
   ]
 }
