@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-20T09:29:12.650Z",
+  "generatedAt": "2026-05-20T10:29:13.602Z",
   "dataFreshness": {
-    "valuationRows": 495,
-    "latestValuationAt": "2026-05-20T09",
-    "macroRows": 495,
+    "valuationRows": 496,
+    "latestValuationAt": "2026-05-20T10",
+    "macroRows": 496,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-20T09"
+    "latestInstrumentSnapshotAt": "2026-05-20T10"
   },
   "portfolio": {
-    "cash": 93.3081,
-    "openPositions": 6,
-    "realizedPnl": 0.3081,
-    "totalTrades": 139,
-    "winRatePct": 51.8,
-    "unrealizedPnl": 0.0337
+    "cash": 94.3485,
+    "openPositions": 5,
+    "realizedPnl": 0.3485,
+    "totalTrades": 140,
+    "winRatePct": 52.1,
+    "unrealizedPnl": -0.005
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -3.77,
       "currentPrice": 0.51,
-      "underlyingPrice": 77397,
+      "underlyingPrice": 77537,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -1.25,
-      "currentPrice": 4480,
-      "underlyingPrice": 4480,
+      "pnlPct": -0.96,
+      "currentPrice": 4493,
+      "underlyingPrice": 4493,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -57,9 +57,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 0.53,
-      "currentPrice": 77397,
-      "underlyingPrice": 77397,
+      "pnlPct": 0.71,
+      "currentPrice": 77537,
+      "underlyingPrice": 77537,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -73,9 +73,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 1.22,
-      "currentPrice": 102.54,
-      "underlyingPrice": 102.54,
+      "pnlPct": 0.88,
+      "currentPrice": 102.19,
+      "underlyingPrice": 102.19,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -85,30 +85,14 @@
       ]
     },
     {
-      "positionId": "T-1779139821182-qwpf",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 3.71,
-      "currentPrice": 48.777,
-      "underlyingPrice": 48.777,
-      "targetPct": 4,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "hype_spot"
-      ]
-    },
-    {
       "positionId": "T-1779139821182-o43q",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 1.98,
-      "currentPrice": 4480,
-      "underlyingPrice": 4480,
+      "pnlPct": 1.7,
+      "currentPrice": 4493,
+      "underlyingPrice": 4493,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -255,7 +239,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 44,
+    "openCount": 47,
     "resolvedCount": 107,
     "wouldHaveWon": 43,
     "wouldHaveLost": 64,
@@ -318,7 +302,7 @@
       },
       {
         "signalType": "MONOTONIC_ARB",
-        "blocked": 7,
+        "blocked": 9,
         "resolved": 0,
         "wouldHaveWon": 0,
         "wouldHaveLost": 0,
@@ -643,6 +627,22 @@
           ]
         },
         "thesis": "Manual user IV-touch shadow signal: PM YES 28.5% vs IV touch model 40.3%; edge +10.3 pts. Exclude from official live-trader performance until validated."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "GOLD",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-xauusd-hit-in-may-2026 — NO — Will Gold (XAUUSD) hit (HIGH) $4,600 in May?",
+        "marketQuality": {
+          "yesBid": 0.63,
+          "yesAsk": 0.66,
+          "yesSpread": 0.03,
+          "liquidity": 1285.99,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch NO 16.7pt edge on GOLD; hold 14d to test high-edge repricing. NO prioritized by backtest."
       }
     ]
   },
