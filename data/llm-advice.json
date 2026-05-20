@@ -8,11 +8,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
+        "closeReasonCategory": "risk_stale",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has drifted to 76,718, now at the 9th percentile of its 7-day range (range 76,200-82,646) and below the 24h SMA. The promoted H-523 thesis requires BTC consolidating within 5% of its 7d high — spot is now approximately 7.1% below the 7d high of 82,646, outside the thesis window. The peak PnL of +0.94% was not sustained and the position is -0.35% with 28h remaining. The IV compression signal (PM IV at 36.6%) remains intact but the spot momentum component of the thesis has failed — BTC is not holding near highs and is trending lower. With the stop at -1.5% and spot continuing to drift, closing now to preserve capital rather than risk hitting the stop."
+        "thesis": "BTC spot has drifted from 76,989 entry to 76,755 (-0.30%) with only 27h remaining on a 72h expiry window. The H-523 IV compression thesis required vol expansion to drive spot higher, but btc_pm_iv has been locked at 36.6% for 10+ consecutive snapshots with no expansion signal. Spot is at 7d percentile 11, well below the recent high regime where the thesis was strongest. With peak P&L of only +0.94% and time decay accelerating, the risk/reward of holding to expiry is unfavorable — the stop at -1.5% is closer than any realistic target recovery. Closing to preserve capital rather than risk a stop-out in the final hours."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }

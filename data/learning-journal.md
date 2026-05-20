@@ -13464,3 +13464,55 @@ Key observations this session:
 
 ---
 
+### 2026-05-20 04:30 UTC
+
+**Portfolio:** $99.31 total | Cash $93.31 | 6 open | P&L $0.3081 | 52% win rate (139 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved wider by 7.6pp (was -5.3, now 2.3)
+- [anomaly] btc_opt_iv_term_spread = 15.06 is 3.1 std devs from mean (-1.04 ± 5.26)
+- [anomaly] btc_opt_iv_90d = 22.1 is -3.0 std devs from mean (40.32 ± 6.01)
+- [anomaly] hype_hl_oi = 1106749211 is 2.6 std devs from mean (867694327.77 ± 91958795.18)
+- [anomaly] hype_pm_ev = 49.77 is 2.4 std devs from mean (44.57 ± 2.19)
+
+**Blocked signal learning:**
+- Open blocked shadows: 44
+- Resolved blocked shadows: 107 (43 wins / 64 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 4/5 shadows would have won, avg P&L 40.69%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have closed with thesis validated profitably (+34.52%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have edge compressed but trade lost money (-30.56%)
+- ✅ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have closed with thesis validated profitably (+1.34%)
+
+**LLM analysis:**
+Key observations this cycle:
+
+1. BTC IV COMPRESSION STALL: The H-523 promoted thesis (BTC PM IV compression → vol expansion) has failed to trigger in 45h. PM IV locked at 36.6% for 10+ snapshots is unusual — normally compression resolves within 24-48h. This may indicate the market has repriced to a new lower-vol equilibrium rather than a temporary anomaly. Closing the BTC long (T-1779089415632-pbo3) as risk_stale with 27h left and no expansion signal. This is the second consecutive BTC put-call/IV-compression live trade to underperform (btc_put_call_exhaustion_reversal family: 0/4 live wins). The setup family needs scrutiny — the hypothesis tests show 13/20 wins but live trades are 0/4. This divergence between hypothesis tests and live trades is a red flag for overfitting in the hypothesis testing methodology.
+
+2. GOLD DUAL-POSITION DYNAMICS: We have both a FUNDING_EXTREME_SHORT long (T-1778916565173-2wqk, -1.56%) and a FUNDING_EXTREME_LONG short (T-1779139821182-o43q, +2.29%) open simultaneously on GOLD. The short is working because gold spot has fallen ~104 points from 4570 to 4466. The long is underwater for the same reason. The funding signal that triggered the long (-44.8% annualized) has completely reversed to +14.65% — this is thesis invalidation for the FUNDING_EXTREME_SHORT long, but LLM closes are not permitted on that position. The mechanical scanner should handle this via stop. Worth noting: the two positions partially hedge each other, which reduces net exposure but also reduces net P&L potential.
+
+3. OIL LONG APPROACHING TARGET: T-1779114618102-igou is at +2.18% with peak +3.66% and 82h remaining. The P/C ratio has normalized from 1.495 to 1.222 (thesis complete). The remaining upside requires continued spot strength. Oil macro score has improved from 67 to 69-70, and oil_p_settle_above_current has dropped from 32% to 31%, suggesting the market sees less downside risk. Holding to mechanical target.
+
+4. HYPE MOMENTUM STRONG: T-1779139821182-qwpf at +2.19% with 137h remaining. HYPE OI at 2.6σ above mean, spot at 2.3σ above mean, 7d percentile 95. The H-521 promoted setup conditions remain firmly met. Funding has normalized from 10.95% to 7.64% — mild positive carry, not a thesis threat. Holding.
+
+5. RELATIVE VALUE HEATMAP — NOTABLE EDGES: Several clean cheap-vs-cap YES opportunities exist but are in shadow-only families: BTC $90k Dec 2026 (12.3pt edge, tight spread, $49.6k liquidity), BTC $100k Dec 2026 (15.9pt edge, $99.8k liquidity), ETH $4,000 Dec 2026 (13.7pt edge). These are the highest-quality heatmap signals but require H-526 to accumulate more shadow tests before live consideration. The OIL $150 June 2026 YES (8.4pt edge, $75k liquidity) and OIL $140 June 2026 YES (11.0pt edge, $75k liquidity) are also notable but the one-touch YES family has a poor shadow record (-10.3% avg). Not acting.
+
+6. GOLD SPOT AT 30D PERCENTILE 0: Gold is at its lowest point in the 30d dataset. The FUNDING_EXTREME_LONG short is benefiting. The gold_gld_pc_ratio at 0.957 (2.1σ above mean) suggests elevated put demand — consistent with bearish positioning that has been correct. The gold_opt_iv_90d at 29.4 (2.0σ above mean) suggests options market is pricing more tail risk than usual.
+
+7. BTC-OIL CORRELATION FLIP: The 7d correlation between BTC and OIL has flipped to -0.88 (from +0.42 short-term). This is a significant regime shift — BTC consolidating while OIL rallied. This reduces the diversification benefit of holding both BTC long and OIL long simultaneously, but since the BTC long is being closed, this is less relevant going forward.
+
+8. NO NEW HYPOTHESES: The backlog has 9 setup families needing more tests and 6 pending. Consistent with instructions, no new hypotheses are proposed this cycle. Focus remains on accumulating shadow test data for existing families, particularly the PM odds/underlying payoff cap family (H-524, H-525, H-526) which has clean measurable conditions and is showing interesting heatmap signals.
+
+**LLM close rejections today (2026-05-20, token-burn signal):**
+- Total rejected close instructions: 5
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (5)
+- Repeat-offender positions (≥3 rejections today): T-1779089415632-pbo3 (5) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+
