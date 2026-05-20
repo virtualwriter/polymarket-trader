@@ -8,11 +8,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "risk_stale",
+        "closeReasonCategory": "profit_taking",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has moved from 76,989 to 77,348 (+0.47%) but the position expires in 24h with only 0.47% gain against a 3% target. The spot trajectory over the last 12 snapshots shows a slow grind from 76,618 to 77,348 with no acceleration — the +3% target is unlikely to be reached in the remaining 24h window. The position peaked at +0.94% and has not made new highs in the last 6 snapshots. With 24h to expiry and the trade stalling well below target, closing now to recycle capital is appropriate under risk_stale. The BTC IV compression thesis (H-523) has partially played out but the spot move has been insufficient."
+        "thesis": "BTC spot long (H-523 promoted) opened at 76,989, currently at 77,228 (+0.31%). Position expires in ~23h with only 23h remaining and +0.31% PnL against a +3% target — the target is unlikely to be reached in the remaining window given BTC's tight range (76,618-77,348 over 14 snapshots, ~1% range). Peak was +0.94% and the position has been decaying toward entry. With 23h left and the thesis (IV compression vol reversion) having partially played out in the initial move, taking profit now avoids the risk of a reversal into the stop (-1.5%) in the final hours. The BTC spot trajectory shows a slight pullback from 77,348 peak to 77,228, suggesting momentum is fading near-term."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
