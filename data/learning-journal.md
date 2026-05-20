@@ -13924,3 +13924,53 @@ Key observations this cycle:
 
 ---
 
+### 2026-05-20 13:30 UTC
+
+**Portfolio:** $99.35 total | Cash $93.35 | 6 open | P&L $0.3485 | 52% win rate (140 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_funding_ann = -42.29 is -3.8 std devs from mean (5.23 ± 12.64)
+- [anomaly] hype_hl_oi = 1223362870 is 3.6 std devs from mean (872721850.55 ± 98495390.06)
+- [anomaly] hype_med_max = 70.7 is 3.3 std devs from mean (58.46 ± 3.75)
+- [anomaly] hype_spot = 50.49 is 3.0 std devs from mean (42.09 ± 2.81)
+- [anomaly] hype_pm_ev = 51.46 is 2.9 std devs from mean (44.68 ± 2.31)
+
+**Blocked signal learning:**
+- Open blocked shadows: 49
+- Resolved blocked shadows: 107 (43 wins / 64 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 4/5 shadows would have won, avg P&L 40.69%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have closed with thesis validated profitably (+34.52%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have edge compressed but trade lost money (-30.56%)
+- ✅ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have closed with thesis validated profitably (+1.34%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. HYPE FUNDING ANOMALY: The most striking development is HYPE funding crashing to -42.3% annualized (-3.8σ) within hours of the H-521 breakout entry. This is the most extreme negative funding reading in the dataset. The OI is simultaneously at record highs (1.22B, +3.6σ). This combination — record OI + extreme negative funding + spot at all-time highs — is unusual. It suggests either: (a) a massive short position has been opened against the breakout, paying extreme negative funding to maintain the short, or (b) the exchange is incentivizing longs to hold via negative funding carry. The H-521 position is currently +2.1% and the mechanical stop is at -2%. The funding crash is not by itself a close reason per policy (negative funding benefits the long via carry), but it signals elevated risk of a sharp reversal if the shorts are right. Monitoring closely.
+
+2. BTC IV TERM STRUCTURE NORMALIZATION: The 90d IV has risen from 21.1 to 25.9 over the session while 30d IV has stayed ~36%. The term spread has compressed from 14pt to 10pt. This is consistent with the H-523 vol reversion thesis but the front-end IV has not expanded. The BTC spot long (pbo3) was closed early given 18h remaining and only +0.37% progress toward +3% target — the risk/reward of holding to expiry was poor.
+
+3. GOLD DUAL POSITION TENSION: We have both a FUNDING_EXTREME_SHORT long (2wqk, -0.96%) and a FUNDING_EXTREME_LONG short (o43q, +1.7%) open simultaneously on GOLD. The short is working well and has armed its breakeven stop. The long is near its -2% stop. Gold spot has drifted from 4,536 to 4,493 (-0.95%), which is adverse for the long and favorable for the short. The funding signal for the long (originally -44.8%) has completely normalized to +7.7%, which means the thesis trigger has resolved — the crowded shorts have been squeezed out. The long position is now being held on price momentum alone, which is not the original thesis. The mechanical stop at -2% will handle this.
+
+4. OIL PC RATIO POSITION: The oil long (igou) is +0.61% with 73h remaining. The P/C ratio has normalized from 1.495 to 1.222 (-18.3%), which is thesis resolution (the extreme put buying has unwound). The position is working but the thesis signal has largely played out. The mechanical target at +4% is the right exit mechanism.
+
+5. HYPE HYPOTHESIS BACKLOG: H-256 (HYPE funding normalization from extreme negative with OI stabilization) is directly relevant to current conditions and has 0 variant tests. This should be prioritized for shadow testing in the next session if HYPE funding remains deeply negative while OI holds at record levels.
+
+6. NO NEW HYPOTHESES: The backlog constraint (9/20 setup families need more tests) prevents new hypothesis creation. Existing families — particularly hype_breakout_oi_surge_momentum and hype_funding_oi_long_bounce — need more condition-triggered tests before any new families are warranted.
+
+7. RELATIVE VALUE HEATMAP: The heatmap shows several interesting edges but most require either wide spreads or are in the 'cheap vs underlying cap bearish' category with very small absolute edge. The BTC $130k by December contract shows +9.4pt edge (buy YES at 0.125 vs model 0.224) with reasonable liquidity — this is worth monitoring but the spread is 1c which is borderline. Not acting given portfolio concentration and the 6 open positions already consuming most of the risk budget.
+
+**LLM close rejections today (2026-05-20, token-burn signal):**
+- Total rejected close instructions: 14
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (13); PROMOTED_HYPOTHESIS / HYPE (1)
+- Repeat-offender positions (≥3 rejections today): T-1779089415632-pbo3 (13) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T12:30:44.755Z",
+  "generatedAt": "2026-05-20T13:30:23.786Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,11 +11,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5903918513333333,
-      "confidence": 0.2484442709392083,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.7pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.581103056,
+      "confidence": 0.244535429753,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.4pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77466,
+      "entryPrice": 77277,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -31,11 +31,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5781813233333334,
-      "confidence": 0.24330592812520835,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.3pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5710210433333334,
+      "confidence": 0.24029279279770835,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.1pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77466,
+      "entryPrice": 77277,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -55,7 +55,7 @@
       "confidence": 0.02063612649351449,
       "thesis": "OIL P/C ratio 1.22 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 101.51,
+      "entryPrice": 101.92,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
@@ -73,7 +73,7 @@
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot long (H-523 promoted) has 19h remaining before expiry and is at +0.62% against a 3% target. The position has been grinding higher but the pace of appreciation has slowed — spot moved from 76,685 to 77,466 over 12h but the last 4 snapshots show consolidation between 77,228-77,537. With only 19h to expiry and the target at +3% (~79,348), the probability of reaching target in the remaining window is low given current momentum. However, the mechanical expiry will handle this cleanly — the position is not at risk of stop (-1.5% = ~75,834, well below current spot). Reconsidering: the position is profitable, not stale in a harmful sense, and the mechanical expiry at 19h is the appropriate exit. Withdrawing close recommendation — let mechanical expiry handle this."
+        "thesis": "BTC spot is +0.37% from entry at 76,989 with only 18h remaining before expiry. The position has been open 54h and has not progressed toward the +3% target. BTC spot trajectory over the last 12h shows range-bound action (76,795–77,537) with no directional momentum. The IV compression thesis (H-523) is partially playing out via term structure normalization (90d IV rising from 21.1 to 25.9) but front-end IV has not expanded materially. With 18h to expiry and +0.37% vs +3% target, the probability of reaching target is low. Taking the small gain now rather than risking a reversal back through entry. This is a profit-taking/risk-stale close on an LLM-owned position."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
