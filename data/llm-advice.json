@@ -8,11 +8,11 @@
         "asset": "BTC",
         "venue": "spot",
         "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
+        "closeReasonCategory": "risk_stale",
         "evidenceColumns": [
           "btc_spot"
         ],
-        "thesis": "BTC spot has drifted from $76,989 at entry to $76,618 (-0.48%), sitting at the 5th percentile of its 7-day range and 21st percentile of its 24-hour range. The trajectory over the last 12 hourly readings shows a consistent drift lower from $76,845 to $76,618 with no recovery. The promoted hypothesis H-523 (BTC IV compression/vol reversion) requires either spot continuation or vol expansion to materialize within the hold window; with 31 hours remaining and spot trending lower rather than higher, the directional component of the thesis is not confirming. The position is approaching the -1.5% stop and the risk/reward of holding through the remaining window is unfavorable given the downward trajectory. Closing to preserve capital rather than waiting for mechanical stop execution."
+        "thesis": "BTC long (H-523 promoted) opened at $76,989, now at $76,685 (-0.39%) with only 30 hours to expiry. BTC spot is at the 7th percentile of its 7d range and 29th percentile of its 24h range — no upward momentum. The trajectory over the last 12 snapshots shows BTC ranging $76,402-$76,961 with no directional breakout. The IV compression thesis (PM IV ~36.7%) has not catalyzed a move in 42 hours. With the stop at -1.5% ($75,803) and target at +3% ($79,299), the risk/reward is deteriorating as time decays. Closing to preserve capital rather than risk hitting the stop in the final 30 hours with no momentum signal."
       },
       "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
