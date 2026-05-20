@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-20T18:29:14.802Z",
+  "generatedAt": "2026-05-20T19:29:05.864Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.4475000000000001,
-      "confidence": 0.328865331735454,
-      "thesis": "OIL P/C ratio 1.56 — heavy put buying → contrarian long.",
+      "strength": 0.47000000000000014,
+      "confidence": 0.3454004601467338,
+      "thesis": "OIL P/C ratio 1.58 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 98.45,
+      "entryPrice": 98.15,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
@@ -22,11 +22,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.62733658,
-      "confidence": 0.26399107457125,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.8pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6356220233333333,
+      "confidence": 0.2674776926939583,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 19.1pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77464,
+      "entryPrice": 77514,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -42,11 +42,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5491502706666667,
-      "confidence": 0.23108929827491664,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.5pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5569850156666667,
+      "confidence": 0.23438625690522916,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.7pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77464,
+      "entryPrice": 77514,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -62,11 +62,11 @@
       "asset": "GOLD",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.2766666666666667,
-      "confidence": 0.1395481391207751,
-      "thesis": "GOLD P/C ratio 0.42 — heavy call buying → contrarian short.",
+      "strength": 0.09333333333333342,
+      "confidence": 0.04707648066724947,
+      "thesis": "GOLD P/C ratio 0.47 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4534,
+      "entryPrice": 4545,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -165,6 +165,24 @@
         "hype_spot"
       ],
       "reason": "LLM may advise exits for LLM-owned or promoted setups."
+    },
+    {
+      "positionId": "T-1779301754814-oag9",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
+      ],
+      "reason": "Rule-based signal exits require approved category and signal-family evidence."
     }
   ]
 }

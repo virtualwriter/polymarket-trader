@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-20T18:29:14.777Z",
+  "generatedAt": "2026-05-20T19:29:05.825Z",
   "dataFreshness": {
-    "valuationRows": 504,
-    "latestValuationAt": "2026-05-20T18",
-    "macroRows": 504,
+    "valuationRows": 505,
+    "latestValuationAt": "2026-05-20T19",
+    "macroRows": 505,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-20T18"
+    "latestInstrumentSnapshotAt": "2026-05-20T19"
   },
   "portfolio": {
-    "cash": 94.3373,
-    "openPositions": 5,
+    "cash": 93.3373,
+    "openPositions": 6,
     "realizedPnl": 0.3373,
     "totalTrades": 143,
     "winRatePct": 51.7,
-    "unrealizedPnl": -0.0185
+    "unrealizedPnl": -0.0041
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -5.66,
       "currentPrice": 0.5,
-      "underlyingPrice": 77464,
+      "underlyingPrice": 77514,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -0.05,
-      "currentPrice": 4534,
-      "underlyingPrice": 4534,
+      "pnlPct": 0.2,
+      "currentPrice": 4545,
+      "underlyingPrice": 4545,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -57,9 +57,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 0.62,
-      "currentPrice": 77464,
-      "underlyingPrice": 77464,
+      "pnlPct": 0.68,
+      "currentPrice": 77514,
+      "underlyingPrice": 77514,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -73,9 +73,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 0.79,
-      "currentPrice": 4534,
-      "underlyingPrice": 4534,
+      "pnlPct": 0.55,
+      "currentPrice": 4545,
+      "underlyingPrice": 4545,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -90,14 +90,31 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 1.51,
-      "currentPrice": 51.72,
-      "underlyingPrice": 51.72,
+      "pnlPct": 3.19,
+      "currentPrice": 52.578,
+      "underlyingPrice": 52.578,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "hype_spot"
+      ]
+    },
+    {
+      "positionId": "T-1779301754814-oag9",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": -0.3,
+      "currentPrice": 98.15,
+      "underlyingPrice": 98.15,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
       ]
     }
   ],
