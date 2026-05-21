@@ -14934,3 +14934,48 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 12h); 6.0h
 
 ---
 
+### 2026-05-21 21:30 UTC
+
+**Portfolio:** $99.48 total | Cash $96.48 | 3 open | P&L $0.4812 | 53% win rate (152 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 9.5pp (was 0.4, now -9.1)
+- [anomaly] oil_cl_pc_ratio = 2.404 is 3.6 std devs from mean since 2026-04-28 (1.10 ± 0.36)
+- [anomaly] hype_med_max = 81 is 3.6 std devs from mean (59.56 ± 5.93)
+- [anomaly] hype_pm_ev = 58.1 is 3.6 std devs from mean (45.34 ± 3.58)
+- [anomaly] hype_spot = 57.621 is 3.4 std devs from mean (42.89 ± 4.30)
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 117 (51 wins / 66 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 8/10 shadows would have won, avg P&L 25.05%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated profitably (+2.27%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have edge compressed but trade lost money (-4.65%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO GOLD short via polymarket would have closed with thesis validated profitably (+7.32%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. OPEN POSITIONS STATUS: All three positions are mechanical-exit only. The GOLD FUNDING_EXTREME_SHORT (T-2wqk) has largely played out its thesis — funding normalized from -44.78% to +5.48%, which is the squeeze completion signal. PnL is +0.15% with 34h to expiry; the mechanical system will handle the exit. The OIL PC_RATIO_EXTREME_HIGH (T-mzu8) is early at +0.66% with oil_cl_pc_ratio still at 3.6σ extreme and HL funding at -235.7% annualized — thesis intact. The BTC ONE_TOUCH_HIGH_EDGE_NO (T-fb7r) is at -1.89% with BTC spot at $77,744 and 147h remaining; the $55k touch barrier is ~28% below current spot, which remains very safe.
+
+2. HYPE SPIKE AND REVERSAL: The HYPE funding spike to 121.5% at T15 followed by rapid normalization and a -6.7% spot decline from $61.74 to $57.62 is a textbook crowded-long squeeze and distribution pattern. OI declined 9% from the 1.41B peak. This is consistent with the HYPE OI distribution exhaustion family (H-201 cluster) but that family has only 8/42 hypothesis wins — very weak. The H-521 promoted breakout family requires OI in top 15% of 24h range; current OI at 1.283B is declining, so no re-entry signal yet.
+
+3. OIL EXTREME ANOMALIES: Three simultaneous oil anomalies — oil_cl_pc_ratio at 3.6σ, oil_hl_funding_ann at -2.8σ (-235.7%), and oil_opt_fwd_90d at -3.1σ (the $10 reading at T21 appears to be a data artifact). The -235.7% funding is extreme even by oil standards and supports the contrarian long thesis. The oil_opt_fwd_90d = 10 at T21 is almost certainly a data quality artifact (previous readings were 90-92) and should not be used for any thesis.
+
+4. BTC IV TERM STRUCTURE: The 30d/90d IV inversion peaked at 11.81pts at T14 and has compressed to 6.54pts at T21. This compression from extreme inversion toward normal is consistent with the BTC IV compression family (H-523 cluster) — the statistical anomaly is partially correcting. BTC PM IV at 36.4% remains in the bottom 20-25% of its 30d range.
+
+5. GOLD-OIL CORRELATION FLIP: The BTC-OIL correlation flipped from +0.47 to -0.43 (24h = -0.68), while BTC-GOLD flipped from -0.23 to +0.66 (24h = +0.75). This is a significant regime shift — BTC is now moving with gold (safe haven) and against oil (risk-off for commodities). This is consistent with the BEARISH macro label and very hawkish Fed.
+
+6. NO NEW TRADES: With 3 open positions and $96.48 cash, the portfolio is near capacity. No new signals meet the quality threshold — the relative-value heatmap shows many 'sell_yes_or_buy_no' signals but most have wide spreads or are in the 'cheap_vs_underlying_cap_bearish' bucket which requires the cap-ratio framework to be validated first. The ETH $3,000 May contract shows a 19.9pt edge (buy_yes) but ETH is not in the live production allowlist and the extreme_perp_funding flag adds uncertainty. Holding cash and monitoring for mechanical exits to free up capacity.
+
+7. HYPOTHESIS BACKLOG: 9 setup families need more shadow tests with 6 pending. No new hypotheses proposed per policy — the backlog must clear first. Focusing on reviewing existing promoted families (H-521, H-523) for regime-relative condition accuracy.
+
+---
+
