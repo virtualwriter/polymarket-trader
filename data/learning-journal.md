@@ -14832,3 +14832,40 @@ _LLM call skipped (duplicate-signals (4 recurring signals seen within 12h); 3.0h
 
 ---
 
+### 2026-05-21 18:29 UTC
+
+**Portfolio:** $99.50 total | Cash $95.50 | 4 open | P&L $0.5015 | 53% win rate (151 trades)
+
+**Closed 1 trades:**
+- ❌ OIL long via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH) → stop: $-0.0240 (-2.4%, market -0.0240, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL long @ $96.64 via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 15.7pp (was -3.6, now -19.3)
+- [anomaly] hype_med_max = 83.8 is 4.3 std devs from mean (59.43 ± 5.68)
+- [anomaly] hype_pm_ev = 59.02 is 4.0 std devs from mean (45.27 ± 3.46)
+- [anomaly] hype_spot = 59.173 is 3.9 std devs from mean (42.80 ± 4.16)
+- [anomaly] oil_cl_pc_ratio = 2.361 is 3.8 std devs from mean since 2026-04-28 (1.09 ± 0.34)
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 117 (51 wins / 66 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 8/10 shadows would have won, avg P&L 25.05%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated profitably (+2.27%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have edge compressed but trade lost money (-4.65%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO GOLD short via polymarket would have closed with thesis validated profitably (+7.32%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (3 recurring signals seen within 12h); 4.0h since last call; daily budget 3/6; next scheduled 2026-05-22T00:29:08.365Z). Mechanical cycle ran normally._
+
+---
+

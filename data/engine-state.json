@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-21T17:29:07.619Z",
+  "generatedAt": "2026-05-21T18:29:08.339Z",
   "dataFreshness": {
-    "valuationRows": 525,
-    "latestValuationAt": "2026-05-21T17",
-    "macroRows": 525,
+    "valuationRows": 526,
+    "latestValuationAt": "2026-05-21T18",
+    "macroRows": 526,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-21T17"
+    "latestInstrumentSnapshotAt": "2026-05-21T18"
   },
   "portfolio": {
-    "cash": 95.5255,
-    "openPositions": 4,
-    "realizedPnl": 0.5255,
-    "totalTrades": 150,
-    "winRatePct": 53.3,
-    "unrealizedPnl": 0.0059
+    "cash": 96.5015,
+    "openPositions": 3,
+    "realizedPnl": 0.5015,
+    "totalTrades": 151,
+    "winRatePct": 53,
+    "unrealizedPnl": 0.0013
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": 0,
       "currentPrice": 0.53,
-      "underlyingPrice": 77895,
+      "underlyingPrice": 77768,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.04,
-      "currentPrice": 4538,
-      "underlyingPrice": 4538,
+      "pnlPct": 0.28,
+      "currentPrice": 4549,
+      "underlyingPrice": 4549,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -52,31 +52,14 @@
       ]
     },
     {
-      "positionId": "T-1779312544292-h6fz",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.62,
-      "currentPrice": 98.3,
-      "underlyingPrice": 98.3,
-      "targetPct": 4,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_cl_pc_ratio"
-      ]
-    },
-    {
       "positionId": "T-1779380952633-5lsm",
       "asset": "HYPE",
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 0.23,
-      "currentPrice": 59.961,
-      "underlyingPrice": 59.961,
+      "pnlPct": -1.09,
+      "currentPrice": 59.173,
+      "underlyingPrice": 59.173,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -183,10 +166,10 @@
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "enabled": true,
-      "weight": 0.717,
-      "trades": 13,
+      "weight": 0.6951,
+      "trades": 14,
       "wins": 8,
-      "avgPnlPct": 0.5937,
+      "avgPnlPct": 0.3799,
       "disabledAssets": []
     },
     {
@@ -222,11 +205,19 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 53,
-    "resolvedCount": 116,
-    "wouldHaveWon": 50,
+    "openCount": 52,
+    "resolvedCount": 117,
+    "wouldHaveWon": 51,
     "wouldHaveLost": 66,
     "bySignal": [
+      {
+        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+        "blocked": 24,
+        "resolved": 10,
+        "wouldHaveWon": 8,
+        "wouldHaveLost": 2,
+        "avgPnlPct": 25.05
+      },
       {
         "signalType": "USER_PM_APR_XAU_TAIL_NO",
         "blocked": 11,
@@ -234,14 +225,6 @@
         "wouldHaveWon": 8,
         "wouldHaveLost": 3,
         "avgPnlPct": 0.7
-      },
-      {
-        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-        "blocked": 24,
-        "resolved": 9,
-        "wouldHaveWon": 7,
-        "wouldHaveLost": 2,
-        "avgPnlPct": 27.02
       },
       {
         "signalType": "FUNDING_EXTREME_LONG",
@@ -293,35 +276,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "long",
-        "blockedReason": "manual_shadow_trade",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -10.53,
-        "resolvedAt": "2026-05-21T15:24:12.331Z",
-        "marketQuality": {
-          "quoteSource": "live_clob",
-          "quotedAt": "2026-05-19T02:21:58Z",
-          "gammaUpdatedAt": "2026-05-19T02:18:02.850266Z",
-          "clobTimestamp": "1779157236061",
-          "yesBid": 0.18,
-          "yesAsk": 0.19,
-          "yesSpread": 0.01,
-          "yesBidSize": 13634.96,
-          "yesAskSize": 20,
-          "noBid": 0.81,
-          "noAsk": 0.82,
-          "noSpread": 0.01,
-          "noBidSize": 20,
-          "noAskSize": 13634.96,
-          "liquidity": 74208.51,
-          "flags": []
-        }
-      },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
         "asset": "GOLD",
@@ -502,6 +456,35 @@
           "noBidSize": 280.73,
           "noAskSize": 25069.22,
           "liquidity": 284644.51,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "manual_shadow_trade",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 7.32,
+        "resolvedAt": "2026-05-21T17:54:05.505Z",
+        "marketQuality": {
+          "quoteSource": "live_clob",
+          "quotedAt": "2026-05-20T19:57:28Z",
+          "gammaUpdatedAt": "2026-05-20T19:55:33.041976Z",
+          "clobTimestamp": "1779307023593",
+          "yesBid": 0.18,
+          "yesAsk": 0.2,
+          "yesSpread": 0.02,
+          "yesBidSize": 50,
+          "yesAskSize": 500,
+          "noBid": 0.8,
+          "noAsk": 0.82,
+          "noSpread": 0.02,
+          "noBidSize": 500,
+          "noAskSize": 50,
+          "liquidity": 8714.87,
           "flags": []
         }
       }
