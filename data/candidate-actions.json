@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-21T13:29:11.180Z",
+  "generatedAt": "2026-05-21T14:29:14.944Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,21 +12,35 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE breakout / OI surge momentum via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 59.033,
+      "entryPrice": 59.566,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
+    },
+    {
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "strength": 0.8233333333333334,
+      "confidence": 0.41528181160037886,
+      "thesis": "BTC P/C ratio 0.25 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 76952,
+      "targetPct": 5,
+      "stopPct": 2,
+      "expiryDays": 5
     },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.49375,
-      "confidence": 0.354002998859545,
-      "thesis": "OIL P/C ratio 1.59 — heavy put buying → contrarian long.",
+      "strength": 0.3587500000000002,
+      "confidence": 0.2572123055004797,
+      "thesis": "OIL P/C ratio 1.49 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 101.98,
+      "entryPrice": 100.49,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
@@ -36,11 +50,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5865695653333333,
-      "confidence": 0.2468358052118333,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.6pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.609928734,
+      "confidence": 0.256665635376375,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77220,
+      "entryPrice": 76952,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -56,11 +70,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5427411073333333,
-      "confidence": 0.22839224222970828,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.3pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5348417486666667,
+      "confidence": 0.22506809336079164,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.0pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77220,
+      "entryPrice": 76952,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -70,20 +84,6 @@
         "forceMarketId": "1339767",
         "allowDirectionFallback": false
       }
-    },
-    {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "short",
-      "strength": 0.006666666666666673,
-      "confidence": 0.003362605761946391,
-      "thesis": "GOLD P/C ratio 0.50 — heavy call buying → contrarian short.",
-      "hypothesisId": null,
-      "entryPrice": 4499,
-      "targetPct": 5,
-      "stopPct": 2,
-      "expiryDays": 5
     }
   ],
   "llmCloseEligibility": [
@@ -141,25 +141,6 @@
         "oil_cl_pc_ratio"
       ],
       "reason": "Rule-based signal exits require approved category and signal-family evidence."
-    },
-    {
-      "positionId": "T-1779359338722-5o6l",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk",
-        "risk_stale",
-        "profit_taking"
-      ],
-      "evidenceColumns": [
-        "hype_spot"
-      ],
-      "reason": "LLM may advise exits for LLM-owned or promoted setups."
     }
   ]
 }

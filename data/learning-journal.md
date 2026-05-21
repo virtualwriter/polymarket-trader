@@ -14713,3 +14713,54 @@ _LLM call skipped (duplicate-signals (5 recurring signals seen within 12h); 5.0h
 
 ---
 
+### 2026-05-21 14:30 UTC
+
+**Portfolio:** $99.48 total | Cash $95.48 | 4 open | P&L $0.4771 | 53% win rate (149 trades)
+
+**Closed 1 trades:**
+- ✅ HYPE long via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS) → target: +$0.0401 (4.0%, market 0.0401, funding 0.0000)
+
+**Opened 1 positions:**
+- HYPE long @ $59.566 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 86 is 4.9 std devs from mean (59.27 ± 5.41)
+- [anomaly] hype_pm_ev = 59.35 is 4.4 std devs from mean (45.16 ± 3.25)
+- [anomaly] hype_spot = 59.566 is 4.3 std devs from mean (42.67 ± 3.89)
+- [anomaly] hype_hl_oi = 1357163340 is 3.6 std devs from mean (891107370.54 ± 129290678.66)
+- [anomaly] hype_pm_iv = 85.2 is 3.4 std devs from mean (64.59 ± 6.10)
+
+**Blocked signal learning:**
+- Open blocked shadows: 60
+- Resolved blocked shadows: 108 (44 wins / 64 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 5/6 shadows would have won, avg P&L 36.47%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have edge compressed but trade lost money (-30.56%)
+- ✅ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have closed with thesis validated profitably (+1.34%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO ETH short via polymarket would have closed with thesis validated profitably (+15.38%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. GOLD LONG (T-1778916565173-2wqk) — FUNDING_EXTREME_SHORT thesis is structurally exhausted. The entry catalyst was gold_hl_funding_ann at -44.78%; it has fully normalized to +5.48% and has been there for the entire 14-snapshot window. Gold spot has drifted from 4536 to 4504 (-0.71%), sitting at the 14th percentile of the 7d range. The mechanical system owns the exit (41h remaining, -2% stop), but this is a case where the funding reversal thesis played out in funding normalization but NOT in spot appreciation. The crowded-short squeeze did not materialize as a price catalyst. Lesson: FUNDING_EXTREME_SHORT on GOLD may require a tighter stop or shorter expiry when the funding normalization happens quickly but spot doesn't follow — the carry benefit is small relative to the spot risk.
+
+2. OIL LONG (T-1779312544292-h6fz) — PC_RATIO_EXTREME_HIGH thesis is progressing well. WTI moved from 98.91 to 100.49 (+1.60%), and the P/C ratio finally normalized from 1.595 to 1.487 in the latest snapshot. The first P/C normalization is a positive thesis confirmation. The position is at +1.60% against a +4% target and -2% stop with 103h remaining. The oil_pm_iv spike from 60.2 to 70.5 (+17%) is a context-only metric but suggests the options market is pricing in continued volatility — consistent with a mean-reversion bounce continuing. Hold.
+
+3. BTC SHORT via PM NO (T-1778718867328-fb7r) — ONE_TOUCH_HIGH_EDGE_NO on $55k dip. BTC has declined from 79,548 to 76,952 (-3.26%) since open, which is FAVORABLE for this position (spot moving away from $55k). The PM NO price has moved from 0.53 to 0.50 (-5.66% PnL), which is counterintuitive given spot is moving favorably. This suggests the PM market is repricing the tail risk upward as BTC declines — the market is now pricing a higher probability of a $55k touch as BTC weakens. The IBIT P/C ratio collapsed dramatically from 0.621 to 0.253 in the latest snapshot, which is a significant structural shift toward call-heavy positioning. This is a bullish signal for BTC (institutions buying calls, not puts), which would be ADVERSE for the $55k dip thesis. However, this is a context-only metric per the position rules. The btc_hl_funding_ann remains at 10.95% (max of 24h range), which is thesis-neutral. The mechanical system owns exits; no LLM close warranted.
+
+4. IBIT P/C ratio collapse to 0.253 is a 3.0σ anomaly and the most significant structural signal in this snapshot. The drop from 0.621 to 0.253 in a single snapshot is extraordinary — this likely reflects a large institutional call purchase or put expiry/roll. This is bullish for BTC medium-term but the current spot trend is down. Watch for BTC stabilization and potential bounce setup if spot holds above 76k.
+
+5. HYPE statistical extremes (4.3σ spot, 3.6σ OI, 3.4σ PM IV) suggest the momentum regime is in its late stage. The PM IV spike to 85-96 is particularly notable — the market is pricing in significant volatility, which historically precedes either a sharp continuation or a sharp reversal. The hype_med_max expansion to 86-91 (4.9σ) suggests the market is pricing in a potential run to those levels. No new position warranted given the extreme readings and lack of a clean entry signal.
+
+6. Hypothesis backlog: 9/20 setup families need more tests with 6 pending. No new hypotheses proposed this session per the backlog constraint. The existing promoted families (H-521, H-523) are being monitored but current market conditions don't cleanly trigger H-523 (BTC not near 7d high). H-521 HYPE conditions are broadly met but the extreme statistical regime adds caution.
+
+7. Relative-value heatmap: The most interesting signals are ETH $4,500 by Dec 2026 (10.8pt edge, buy YES at 0.105 vs model 21.8%) and ETH $3,500 by Dec 2026 (16.9pt edge, buy YES at 0.235 vs model 40.9%). These are shadow-only observations given LLM_HYPOTHESIS is disabled for live trading. The BTC $90k by Dec 2026 (14.2pt edge) and BTC $100k by Dec 2026 (13.7pt edge) are also notable but require the promoted hypothesis framework to act on.
+
+---
+
