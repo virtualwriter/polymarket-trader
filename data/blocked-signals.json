@@ -22495,7 +22495,7 @@
   },
   {
     "id": "MANUAL-IVTOUCH-BTC-NO-2132776-1779136572",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-18T20:36:12Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -22503,7 +22503,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 11.5% vs IV touch model 5.1%; edge -5.9 pts. Exclude from official live-trader performance until validated. [SETUP: BTC May upside NO — Single-sided BTC May upside NO: PM overprices BTC $85k upside touch versus options. This is a bearish/anti-upside-tail expression, not part of the BTC Dec two-sided range package. Manage standalone with 60% edge-compression exit, +15-25% profit target, or 30% drawdown stop.]",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 11.5% vs IV touch model 5.1%; edge -5.9 pts. Exclude from official live-trader performance until validated. [SETUP: BTC May upside NO — Single-sided BTC May upside NO: PM overprices BTC $85k upside touch versus options. This is a bearish/anti-upside-tail expression, not part of the BTC Dec two-sided range package. Manage standalone with 60% edge-compression exit, +15-25% profit target, or 30% drawdown stop.] [CLOSED 2026-05-21: thesis_validated_profitable — Operator manual close: no remaining edge; closing at the current mark.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -22698,6 +22698,16 @@
       "label": "BTC May upside NO",
       "thesis": "Single-sided BTC May upside NO: PM overprices BTC $85k upside touch versus options. This is a bearish/anti-upside-tail expression, not part of the BTC Dec two-sided range package.",
       "exitPolicy": "Track standalone; prefer 60% edge-compression exit or +15-25% P&L, with 30% drawdown stop. Do not aggregate with the BTC Dec two-sided NO setup."
+    },
+    "resolvedAt": "2026-05-21T21:47:33.631Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated_profitable",
+      "exitPrice": 0.9299999999999999,
+      "pnl": 0.0568,
+      "pnlPct": 5.68,
+      "marketPnl": 0.0568,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
