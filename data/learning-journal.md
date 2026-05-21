@@ -14500,3 +14500,55 @@ _LLM call skipped (duplicate-signals (5 recurring signals seen within 12h); 6.0h
 
 ---
 
+### 2026-05-21 08:30 UTC
+
+**Portfolio:** $99.40 total | Cash $95.40 | 4 open | P&L $0.3965 | 52% win rate (147 trades)
+
+**Closed 1 trades:**
+- ✅ BTC long via spot/spot [BTC spot] (PROMOTED_HYPOTHESIS) → expiry: +$0.0081 (0.8%, market 0.0081, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 58.581 is 4.6 std devs from mean (42.49 ± 3.53)
+- [anomaly] hype_pm_ev = 58.16 is 4.5 std devs from mean (45.01 ± 2.92)
+- [anomaly] hype_hl_oi = 1353796793 is 3.9 std devs from mean (885792842.34 ± 120204838.41)
+- [anomaly] hype_med_max = 75.8 is 3.7 std devs from mean (58.96 ± 4.57)
+- [anomaly] amzn_hl_basis_pct = 0.84 is 2.2 std devs from mean (-0.00 ± 0.38)
+
+**Blocked signal learning:**
+- Open blocked shadows: 59
+- Resolved blocked shadows: 108 (44 wins / 64 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 5/6 shadows would have won, avg P&L 36.47%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have edge compressed but trade lost money (-30.56%)
+- ✅ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have closed with thesis validated profitably (+1.34%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO ETH short via polymarket would have closed with thesis validated profitably (+15.38%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. HYPE H-521 VALIDATION: The promoted HYPE breakout / OI surge momentum hypothesis (H-521) is performing cleanly. The trade opened at 56.466 and reached 58.581 (+3.75%) in 4 hours, with OI expanding to 1.35B (3.9σ anomaly) and funding normalizing from -63.73% to +4.61%. This is textbook H-521 behavior. Closing near target via profit_taking rather than waiting for mechanical exit — at 100th percentile of 7d range with funding now positive, the risk/reward has shifted. This is the second consecutive HYPE momentum trade to work well (after T-1777843727758-i8vo at +6.21%).
+
+2. BTC FUNDING NORMALIZATION: BTC HL funding dropped sharply from 10.95% to 5.63% annualized in the last two snapshots. This is a meaningful change (48.6% decline) but still positive, meaning longs are still paying. The BTC one-touch NO position on $55k dip (T-1778718867328-fb7r) remains well-supported — spot at 77,936 is ~42% above the $55k strike with 160 hours to expiry. The -1.89% PnL on the PM contract reflects normal time-value decay and bid/ask spread, not thesis deterioration.
+
+3. GOLD FUNDING THESIS COMPLETE: The GOLD FUNDING_EXTREME_SHORT trade (T-1778916565173-2wqk) entered when funding was -44.78%. Funding has now normalized to +4.86% — the crowded-short reversal thesis has fully played out on the funding side. However, spot has not followed (4536 entry vs 4530 now). This is a pattern we've seen before: funding normalization without spot follow-through. The mechanical stop at -2% is appropriate; no LLM close warranted as the signal family evidence (gold_gc_spot, gold_hl_funding_ann) doesn't show thesis invalidation, just thesis completion without payoff.
+
+4. OIL P/C RATIO TRADE: The OIL long (T-1779312544292-h6fz) based on extreme put-buying (P/C 1.595 at 96th percentile of 7d range) is flat at +0.06%. The P/C ratio has been locked at 1.595 for 10+ consecutive snapshots, which is unusual — this may indicate the ratio is stale/frozen rather than genuinely updating. The oil macro signal remains DECLINING with Iran peace probability at 60.5%. The contrarian bounce thesis is intact but the signal quality is questionable given the frozen P/C reading. Mechanical stop at -2% is the appropriate risk manager here.
+
+5. HEATMAP OBSERVATIONS: The relative-value heatmap shows several interesting edges but most require shadow testing before live consideration. The HYPE $100 YES contract (701726) shows a 65pt edge (model 99% vs PM 33.5%) — this is the same contract tracked in the ONE_TOUCH_HIGH_EDGE_YES_SHADOW for HYPE. With HYPE now at 58.58 and the $58 strike already resolved YES, the $62 contract (815% YES) and $66 contract (79% YES) are the next relevant levels. The shadow tracking of these is appropriate given the wide spreads.
+
+6. NO NEW HYPOTHESES: The backlog has 9 setup families needing more tests with 6 pending. Per policy, no new hypotheses are proposed this session. The existing HYPE breakout family (H-521) is being validated in real-time, which is the most important data point.
+
+7. PARAMETER STABILITY: No parameter changes warranted. The current risk parameters are working appropriately — the PROMOTED_HYPOTHESIS target/stop of 4%/2% is well-calibrated for the HYPE trade that just hit near-target.
+
+**LLM close rejections today (2026-05-21, token-burn signal):**
+- Total rejected close instructions: 2
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (1); PROMOTED_HYPOTHESIS / HYPE (1)
+
+---
+
