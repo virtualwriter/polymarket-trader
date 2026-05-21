@@ -14329,7 +14329,7 @@
   },
   {
     "id": "MANUAL-IVTOUCH-OIL-YES-2213806-1778705675",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-13T20:54:35Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -14337,7 +14337,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 54.5% vs IV touch model 84.6%; edge +29.6 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 54.5% vs IV touch model 84.6%; edge +29.6 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-21: thesis_validated_profitable — Operator manual close: no remaining heatmap/IV-touch edge; closing at the current mark rather than holding stale edge exposure.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -14524,11 +14524,21 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    },
+    "resolvedAt": "2026-05-21T15:30:55.391Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated_profitable",
+      "exitPrice": 0.57,
+      "pnl": 0.0364,
+      "pnlPct": 3.64,
+      "marketPnl": 0.0364,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
     "id": "MANUAL-IVTOUCH-OIL-YES-1652677-1778705685",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-13T20:54:45Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -14536,7 +14546,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 41.0% vs IV touch model 61.5%; edge +19.5 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 41.0% vs IV touch model 61.5%; edge +19.5 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-21: thesis_validated_profitable — Operator manual close: no remaining heatmap/IV-touch edge; closing at the current mark rather than holding stale edge exposure.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -14723,6 +14733,16 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    },
+    "resolvedAt": "2026-05-21T15:30:55.391Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated_profitable",
+      "exitPrice": 0.45,
+      "pnl": 0.0714,
+      "pnlPct": 7.14,
+      "marketPnl": 0.0714,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
@@ -15324,7 +15344,7 @@
   },
   {
     "id": "OT-1778722092794-gaf9",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-14T01:28:12.794Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -15332,7 +15352,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.7,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 27.9pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 27.9pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration. [CLOSED 2026-05-21: thesis_validated_profitable — Operator manual close: no remaining heatmap/IV-touch edge; closing at the current mark rather than holding stale edge exposure.]",
     "marketQuality": {
       "yesBid": 0.55,
       "yesAsk": 0.56,
@@ -15500,6 +15520,16 @@
         "ageHours": 4.56,
         "rationale": "Copied from nearest sibling blocked-signal on same instrument with non-fallback IV row; original one-touch shadow did not persist its own heatmap row."
       }
+    },
+    "resolvedAt": "2026-05-21T15:30:55.391Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated_profitable",
+      "exitPrice": 0.57,
+      "pnl": 0.0179,
+      "pnlPct": 1.79,
+      "marketPnl": 0.0179,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
@@ -15809,7 +15839,7 @@
   },
   {
     "id": "OT-1778722092794-tt51",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-14T01:28:12.794Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -15817,7 +15847,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 16.9pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 16.9pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [CLOSED 2026-05-21: thesis_validated_profitable — Operator manual close: no remaining heatmap/IV-touch edge; closing at the current mark rather than holding stale edge exposure.]",
     "marketQuality": {
       "yesBid": 0.41,
       "yesAsk": 0.44,
@@ -15987,6 +16017,16 @@
         "ageHours": 4.56,
         "rationale": "Copied from nearest sibling blocked-signal on same instrument with non-fallback IV row; original one-touch shadow did not persist its own heatmap row."
       }
+    },
+    "resolvedAt": "2026-05-21T15:30:55.391Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated_profitable",
+      "exitPrice": 0.45,
+      "pnl": 0.0227,
+      "pnlPct": 2.27,
+      "marketPnl": 0.0227,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
@@ -24011,7 +24051,7 @@
   },
   {
     "id": "MANUAL-IVTOUCH-OIL-YES-1652690-1779157318",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-19T02:21:58Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -24019,7 +24059,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 18.5% vs IV touch model 29.5%; edge +10.5 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 18.5% vs IV touch model 29.5%; edge +10.5 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-21: thesis_compressed_loss — Operator manual close: no remaining IV-touch edge; closing the shadow at the current mark rather than holding stale edge exposure.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -24206,6 +24246,16 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    },
+    "resolvedAt": "2026-05-21T15:24:12.331Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_compressed_loss",
+      "exitPrice": 0.17,
+      "pnl": -0.1053,
+      "pnlPct": -10.53,
+      "marketPnl": -0.1053,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
@@ -27326,7 +27376,7 @@
   },
   {
     "id": "MANUAL-IVTOUCH-OIL-NO-2074236-1779307065",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-20T19:57:45Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -27334,7 +27384,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 14.5% vs IV touch model 4.6%; edge -9.4 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 14.5% vs IV touch model 4.6%; edge -9.4 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-21: thesis_compressed_loss — Operator manual close: current heatmap shows the held NO edge compressed or inverted; closing at the current mark rather than holding stale edge exposure.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -27521,11 +27571,21 @@
       },
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
+    },
+    "resolvedAt": "2026-05-21T15:32:57.440Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_compressed_loss",
+      "exitPrice": 0.8200000000000001,
+      "pnl": -0.0465,
+      "pnlPct": -4.65,
+      "marketPnl": -0.0465,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
     "id": "MANUAL-IVTOUCH-GOLD-NO-2305701-1779307089",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-20T19:58:09Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -27533,7 +27593,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 39.0% vs IV touch model 31.2%; edge -6.8 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 39.0% vs IV touch model 31.2%; edge -6.8 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-21: thesis_validated_profitable — Operator manual close: no remaining IV-touch edge; closing the shadow at the current mark rather than holding stale edge exposure.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -27720,11 +27780,21 @@
       },
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
+    },
+    "resolvedAt": "2026-05-21T15:24:12.331Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated_profitable",
+      "exitPrice": 0.8,
+      "pnl": 0.2903,
+      "pnlPct": 29.03,
+      "marketPnl": 0.2903,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
     "id": "MANUAL-IVTOUCH-OIL-NO-2074235-1779307106",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-20T19:58:26Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -27732,7 +27802,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 6.5% vs IV touch model 0.7%; edge -5.3 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 6.5% vs IV touch model 0.7%; edge -5.3 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-21: thesis_validated_profitable — Operator manual close: current heatmap shows the held NO edge compressed or inverted; closing at the current mark rather than holding stale edge exposure.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -27919,6 +27989,16 @@
       },
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
+    },
+    "resolvedAt": "2026-05-21T15:32:57.440Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated_profitable",
+      "exitPrice": 0.94,
+      "pnl": 0,
+      "pnlPct": 0,
+      "marketPnl": 0,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
