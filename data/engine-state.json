@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-21T18:29:08.339Z",
+  "generatedAt": "2026-05-21T19:29:10.638Z",
   "dataFreshness": {
-    "valuationRows": 526,
-    "latestValuationAt": "2026-05-21T18",
-    "macroRows": 526,
+    "valuationRows": 527,
+    "latestValuationAt": "2026-05-21T19",
+    "macroRows": 527,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-21T18"
+    "latestInstrumentSnapshotAt": "2026-05-21T19"
   },
   "portfolio": {
-    "cash": 96.5015,
+    "cash": 96.4812,
     "openPositions": 3,
-    "realizedPnl": 0.5015,
-    "totalTrades": 151,
-    "winRatePct": 53,
-    "unrealizedPnl": 0.0013
+    "realizedPnl": 0.4812,
+    "totalTrades": 152,
+    "winRatePct": 52.6,
+    "unrealizedPnl": 0.0165
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": 0,
       "currentPrice": 0.53,
-      "underlyingPrice": 77768,
+      "underlyingPrice": 77531,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.28,
-      "currentPrice": 4549,
-      "underlyingPrice": 4549,
+      "pnlPct": 0.06,
+      "currentPrice": 4539,
+      "underlyingPrice": 4539,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -52,19 +52,20 @@
       ]
     },
     {
-      "positionId": "T-1779380952633-5lsm",
-      "asset": "HYPE",
+      "positionId": "T-1779388148375-mzu8",
+      "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": -1.09,
-      "currentPrice": 59.173,
-      "underlyingPrice": 59.173,
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": 0.65,
+      "currentPrice": 97.27,
+      "underlyingPrice": 97.27,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
-        "hype_spot"
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
       ]
     }
   ],

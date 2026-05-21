@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-21T18:29:08.363Z",
+  "generatedAt": "2026-05-21T19:29:10.662Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -10,9 +10,9 @@
       "direction": "long",
       "strength": 1,
       "confidence": 0.6951371698269202,
-      "thesis": "OIL P/C ratio 2.36 — heavy put buying → contrarian long.",
+      "thesis": "OIL P/C ratio 2.50 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 96.64,
+      "entryPrice": 97.27,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
@@ -22,11 +22,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.560372158,
-      "confidence": 0.23581160873837498,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.8pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5513022116666666,
+      "confidence": 0.23199486194697913,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.5pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77768,
+      "entryPrice": 77531,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -42,11 +42,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5420026736666668,
-      "confidence": 0.2280815001123542,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.3pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5377213150000001,
+      "confidence": 0.22627985086843752,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.1pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77768,
+      "entryPrice": 77531,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -97,23 +97,22 @@
       "reason": "Rule-based signal exits require approved category and signal-family evidence."
     },
     {
-      "positionId": "T-1779380952633-5lsm",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
+      "positionId": "T-1779388148375-mzu8",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
       "venue": "spot",
       "direction": "long",
       "allowed": true,
       "allowedCategories": [
         "thesis_invalidated",
         "data_quality_issue",
-        "hard_portfolio_risk",
-        "risk_stale",
-        "profit_taking"
+        "hard_portfolio_risk"
       ],
       "evidenceColumns": [
-        "hype_spot"
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
       ],
-      "reason": "LLM may advise exits for LLM-owned or promoted setups."
+      "reason": "Rule-based signal exits require approved category and signal-family evidence."
     }
   ]
 }
