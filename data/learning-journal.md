@@ -14764,3 +14764,40 @@ Key observations this session:
 
 ---
 
+### 2026-05-21 16:29 UTC
+
+**Portfolio:** $99.53 total | Cash $95.53 | 4 open | P&L $0.5255 | 53% win rate (150 trades)
+
+**Closed 1 trades:**
+- ✅ HYPE long via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS) → target: +$0.0484 (4.8%, market 0.0484, funding 0.0000)
+
+**Opened 1 positions:**
+- HYPE long @ $59.826 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_funding_ann = 89.47 is 5.6 std devs from mean (5.10 ± 15.07)
+- [anomaly] hype_spot = 59.826 is 4.2 std devs from mean (42.74 ± 4.04)
+- [anomaly] hype_pm_ev = 59.05 is 4.1 std devs from mean (45.22 ± 3.36)
+- [anomaly] hype_hl_oi = 1358527915 is 3.5 std devs from mean (892987028.40 ± 132577582.72)
+- [anomaly] hype_med_max = 78.4 is 3.4 std devs from mean (59.35 ± 5.53)
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 116 (50 wins / 66 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 7/9 shadows would have won, avg P&L 27.02%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated profitably (+1.79%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have closed with thesis validated profitably (+2.27%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have edge compressed but trade lost money (-4.65%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (4 recurring signals seen within 12h); 2.0h since last call; daily budget 3/6; next scheduled 2026-05-21T22:29:12.624Z). Mechanical cycle ran normally._
+
+---
+
