@@ -14438,3 +14438,34 @@ _LLM call skipped (duplicate-signals (4 recurring signals seen within 12h); 3.0h
 
 ---
 
+### 2026-05-21 06:29 UTC
+
+**Portfolio:** $99.39 total | Cash $94.39 | 5 open | P&L $0.3884 | 52% win rate (146 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 56.766 is 4.2 std devs from mean (42.43 ± 3.40)
+- [anomaly] hype_pm_ev = 56.8 is 4.2 std devs from mean (44.96 ± 2.81)
+- [anomaly] hype_hl_oi = 1308705072 is 3.6 std devs from mean (884006172.36 ± 116968104.48)
+- [anomaly] hype_med_max = 74.2 is 3.4 std devs from mean (58.90 ± 4.46)
+- [anomaly] hype_med_min = 22.3 is -2.1 std devs from mean (22.95 ± 0.30)
+
+**Blocked signal learning:**
+- Open blocked shadows: 58
+- Resolved blocked shadows: 108 (44 wins / 64 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 5/6 shadows would have won, avg P&L 36.47%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have edge compressed but trade lost money (-30.56%)
+- ✅ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have closed with thesis validated profitably (+1.34%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO ETH short via polymarket would have closed with thesis validated profitably (+15.38%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (5 recurring signals seen within 12h); 5.0h since last call; daily budget 1/6; next scheduled 2026-05-21T12:29:03.104Z). Mechanical cycle ran normally._
+
+---
+
