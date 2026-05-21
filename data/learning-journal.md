@@ -14404,3 +14404,37 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 12h); 2.0h
 
 ---
 
+### 2026-05-21 04:28 UTC
+
+**Portfolio:** $99.39 total | Cash $94.39 | 5 open | P&L $0.3884 | 52% win rate (146 trades)
+
+**Opened 1 positions:**
+- HYPE long @ $56.466 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 56.63 is 4.2 std devs from mean (44.93 ± 2.77)
+- [anomaly] hype_spot = 56.466 is 4.2 std devs from mean (42.40 ± 3.35)
+- [anomaly] hype_hl_oi = 1300297182 is 3.6 std devs from mean (883178299.26 ± 115567837.05)
+- [anomaly] hype_med_max = 74.2 is 3.5 std devs from mean (58.87 ± 4.41)
+- [anomaly] hype_med_min = 22.3 is -2.2 std devs from mean (22.95 ± 0.30)
+
+**Blocked signal learning:**
+- Open blocked shadows: 58
+- Resolved blocked shadows: 108 (44 wins / 64 losses)
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 5/6 shadows would have won, avg P&L 36.47%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+5.11%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES ETH long via polymarket would have edge compressed but trade lost money (-30.56%)
+- ✅ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have closed with thesis validated profitably (+1.34%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO ETH short via polymarket would have closed with thesis validated profitably (+15.38%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (4 recurring signals seen within 12h); 3.0h since last call; daily budget 1/6; next scheduled 2026-05-21T10:28:59.638Z). Mechanical cycle ran normally._
+
+---
+

@@ -1,8 +1,22 @@
 {
-  "generatedAt": "2026-05-21T03:29:06.100Z",
+  "generatedAt": "2026-05-21T04:28:59.635Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
+    {
+      "type": "PROMOTED_HYPOTHESIS",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.6666666666666666,
+      "confidence": 0.5466666666666666,
+      "thesis": "[PROMOTED HYPE breakout / OI surge momentum via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
+      "hypothesisId": "H-521",
+      "entryPrice": 56.466,
+      "targetPct": 6,
+      "stopPct": 2,
+      "expiryDays": 21
+    },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
@@ -12,7 +26,7 @@
       "confidence": 0.354002998859545,
       "thesis": "OIL P/C ratio 1.59 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 99.07,
+      "entryPrice": 99.14,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
@@ -22,11 +36,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.570895022,
-      "confidence": 0.24023976144537498,
+      "strength": 0.5703151483333334,
+      "confidence": 0.23999574335802085,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.1pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 78005,
+      "entryPrice": 78007,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -34,6 +48,26 @@
         "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
         "forceInstrumentType": "pm_no",
         "forceMarketId": "1339767",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.5396080596666667,
+      "confidence": 0.22707381660847917,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.2pt edge on BTC; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 78007,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "701501",
         "allowDirectionFallback": false
       }
     }
