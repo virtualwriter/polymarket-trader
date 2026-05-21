@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-21T16:29:12.598Z",
+  "generatedAt": "2026-05-21T17:29:07.619Z",
   "dataFreshness": {
-    "valuationRows": 524,
-    "latestValuationAt": "2026-05-21T16",
-    "macroRows": 524,
+    "valuationRows": 525,
+    "latestValuationAt": "2026-05-21T17",
+    "macroRows": 525,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-21T16"
+    "latestInstrumentSnapshotAt": "2026-05-21T17"
   },
   "portfolio": {
-    "cash": 96.5255,
-    "openPositions": 3,
+    "cash": 95.5255,
+    "openPositions": 4,
     "realizedPnl": 0.5255,
     "totalTrades": 150,
     "winRatePct": 53.3,
-    "unrealizedPnl": 0.0204
+    "unrealizedPnl": 0.0059
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": 0,
       "currentPrice": 0.53,
-      "underlyingPrice": 77149,
+      "underlyingPrice": 77895,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -0.43,
-      "currentPrice": 4517,
-      "underlyingPrice": 4517,
+      "pnlPct": 0.04,
+      "currentPrice": 4538,
+      "underlyingPrice": 4538,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -57,15 +57,31 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 1.53,
-      "currentPrice": 100.42,
-      "underlyingPrice": 100.42,
+      "pnlPct": -0.62,
+      "currentPrice": 98.3,
+      "underlyingPrice": 98.3,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "oil_wti_spot",
         "oil_cl_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1779380952633-5lsm",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "pnlPct": 0.23,
+      "currentPrice": 59.961,
+      "underlyingPrice": 59.961,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "hype_spot"
       ]
     }
   ],
@@ -206,7 +222,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 52,
+    "openCount": 53,
     "resolvedCount": 116,
     "wouldHaveWon": 50,
     "wouldHaveLost": 66,
@@ -269,7 +285,7 @@
       },
       {
         "signalType": "MONOTONIC_ARB",
-        "blocked": 12,
+        "blocked": 13,
         "resolved": 0,
         "wouldHaveWon": 0,
         "wouldHaveLost": 0,
