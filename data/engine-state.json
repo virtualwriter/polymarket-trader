@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-21T02:29:05.283Z",
+  "generatedAt": "2026-05-21T03:29:06.074Z",
   "dataFreshness": {
-    "valuationRows": 511,
-    "latestValuationAt": "2026-05-21T02",
-    "macroRows": 511,
+    "valuationRows": 512,
+    "latestValuationAt": "2026-05-21T03",
+    "macroRows": 512,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-21T02"
+    "latestInstrumentSnapshotAt": "2026-05-21T03"
   },
   "portfolio": {
     "cash": 95.3884,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.3884,
     "totalTrades": 146,
     "winRatePct": 52.1,
-    "unrealizedPnl": -0.015
+    "unrealizedPnl": 0.0525
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "polymarket",
       "direction": "short",
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-      "pnlPct": -3.77,
-      "currentPrice": 0.51,
-      "underlyingPrice": 78057,
+      "pnlPct": 1.89,
+      "currentPrice": 0.54,
+      "underlyingPrice": 78005,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.19,
-      "currentPrice": 4545,
-      "underlyingPrice": 4545,
+      "pnlPct": 0,
+      "currentPrice": 4536,
+      "underlyingPrice": 4536,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -57,9 +57,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 1.39,
-      "currentPrice": 78057,
-      "underlyingPrice": 78057,
+      "pnlPct": 1.32,
+      "currentPrice": 78005,
+      "underlyingPrice": 78005,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -73,9 +73,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.25,
-      "currentPrice": 98.66,
-      "underlyingPrice": 98.66,
+      "pnlPct": 0.16,
+      "currentPrice": 99.07,
+      "underlyingPrice": 99.07,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -222,7 +222,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 57,
+    "openCount": 58,
     "resolvedCount": 108,
     "wouldHaveWon": 44,
     "wouldHaveLost": 64,
@@ -237,7 +237,7 @@
       },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-        "blocked": 23,
+        "blocked": 24,
         "resolved": 6,
         "wouldHaveWon": 5,
         "wouldHaveLost": 1,
@@ -487,22 +487,6 @@
         "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
         "asset": "OIL",
         "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "cl-hit-jun-2026 — YES — Will Crude Oil (CL) hit (HIGH) $120 by end of June?",
-        "marketQuality": {
-          "yesBid": 0.41,
-          "yesAsk": 0.44,
-          "yesSpread": 0.03,
-          "liquidity": 20269.26,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 16.9pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
-        "asset": "OIL",
-        "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "cl-hit-jun-2026 — YES — Will Crude Oil (CL) hit (HIGH) $130 by end of June?",
         "marketQuality": {
           "yesBid": 0.26,
@@ -633,6 +617,34 @@
           ]
         },
         "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 69.0pt edge on HYPE; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration."
+      },
+      {
+        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+        "asset": "GOLD",
+        "blockedReason": "manual_shadow_trade",
+        "instrumentLabel": "what-price-will-xauusd-hit-in-may-2026 — NO — Will Gold (XAUUSD) hit (HIGH) $4,650 in May?",
+        "marketQuality": {
+          "quoteSource": "live_clob",
+          "quotedAt": "2026-05-21T02:35:04Z",
+          "gammaUpdatedAt": "2026-05-21T02:25:27.972353Z",
+          "clobTimestamp": "1779330878132",
+          "yesBid": 0.57,
+          "yesAsk": 0.61,
+          "yesSpread": 0.04,
+          "yesBidSize": 50,
+          "yesAskSize": 595.65,
+          "noBid": 0.39,
+          "noAsk": 0.43,
+          "noSpread": 0.04,
+          "noBidSize": 595.65,
+          "noAskSize": 50,
+          "liquidity": 1670.08,
+          "flags": [
+            "wide_pm_spread",
+            "wide_pm_no_spread"
+          ]
+        },
+        "thesis": "Manual user IV-touch shadow signal: PM YES 63.5% vs IV touch model 41.7%; edge -20.3 pts. Exclude from official live-trader performance until validated."
       }
     ]
   },
