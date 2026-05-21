@@ -27177,7 +27177,7 @@
   },
   {
     "id": "MANUAL-IVTOUCH-GOLD-NO-2074204-1779307048",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-20T19:57:28Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -27185,7 +27185,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 19.5% vs IV touch model 5.1%; edge -12.9 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 19.5% vs IV touch model 5.1%; edge -12.9 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-21: thesis_validated_profitable — Operator manual close: no remaining IV-touch edge; closing at the current mark rather than holding stale edge exposure.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -27372,6 +27372,16 @@
       },
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
+    },
+    "resolvedAt": "2026-05-21T17:54:05.505Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated_profitable",
+      "exitPrice": 0.88,
+      "pnl": 0.0732,
+      "pnlPct": 7.32,
+      "marketPnl": 0.0732,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
