@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-21T08:30:07.458Z",
+  "generatedAt": "2026-05-21T09:29:04.099Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.354002998859545,
       "thesis": "OIL P/C ratio 1.59 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 98.97,
+      "entryPrice": 98.16,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
@@ -25,31 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.568098364,
-      "confidence": 0.23906289280075,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.0pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5841876623333333,
+      "confidence": 0.2458334706556458,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.5pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77936,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "1339767",
-        "allowDirectionFallback": false
-      }
-    },
-    {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.536613637,
-      "confidence": 0.22581372612006248,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.1pt edge on BTC; hold 14d for repricing.",
-      "hypothesisId": null,
-      "entryPrice": 77936,
+      "entryPrice": 77880,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -61,40 +41,44 @@
       }
     },
     {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.5661459806666667,
+      "confidence": 0.23824130548929165,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.0pt edge on BTC; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 77880,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "1339767",
+        "allowDirectionFallback": false
+      }
+    },
+    {
       "type": "PC_RATIO_EXTREME_LOW",
       "asset": "GOLD",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.006666666666666673,
-      "confidence": 0.003362605761946391,
+      "strength": 0.0033333333333333366,
+      "confidence": 0.0016813028809731954,
       "thesis": "GOLD P/C ratio 0.50 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4530,
+      "entryPrice": 4536,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
     }
   ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779337739646-tmax",
-        "asset": "HYPE",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "profit_taking",
-        "evidenceColumns": [
-          "hype_spot"
-        ],
-        "thesis": "HYPE spot at 58.581 is +3.75% from entry (56.466), approaching the +4% mechanical target. hype_spot is at the 100th percentile of both 24h and 7d ranges — a statistical extreme (4.6σ from 30d mean). The H-521 breakout thesis has been validated: OI expanded from ~1.30B to 1.35B during the move, funding normalized from extreme negative to +4.61%, and spot is now above the $58 Polymarket strike (which resolved YES). At 100th percentile of 7d range with funding now positive (longs paying shorts), the asymmetry has shifted — further upside requires new buyers while the carry cost has flipped. Taking profit near target rather than waiting for mechanical exit to capture the gain cleanly."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
