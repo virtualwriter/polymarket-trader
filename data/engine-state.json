@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-21T01:29:01.615Z",
+  "generatedAt": "2026-05-21T02:29:05.283Z",
   "dataFreshness": {
-    "valuationRows": 510,
-    "latestValuationAt": "2026-05-21T01",
-    "macroRows": 510,
+    "valuationRows": 511,
+    "latestValuationAt": "2026-05-21T02",
+    "macroRows": 511,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-21T01"
+    "latestInstrumentSnapshotAt": "2026-05-21T02"
   },
   "portfolio": {
-    "cash": 95.41,
+    "cash": 95.3884,
     "openPositions": 4,
-    "realizedPnl": 0.41,
-    "totalTrades": 145,
-    "winRatePct": 52.4,
-    "unrealizedPnl": -0.0123
+    "realizedPnl": 0.3884,
+    "totalTrades": 146,
+    "winRatePct": 52.1,
+    "unrealizedPnl": -0.015
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -3.77,
       "currentPrice": 0.51,
-      "underlyingPrice": 77857,
+      "underlyingPrice": 78057,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.63,
-      "currentPrice": 4565,
-      "underlyingPrice": 4565,
+      "pnlPct": 0.19,
+      "currentPrice": 4545,
+      "underlyingPrice": 4545,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -57,9 +57,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 1.13,
-      "currentPrice": 77857,
-      "underlyingPrice": 77857,
+      "pnlPct": 1.39,
+      "currentPrice": 78057,
+      "underlyingPrice": 78057,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -73,9 +73,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.16,
-      "currentPrice": 98.75,
-      "underlyingPrice": 98.75,
+      "pnlPct": -0.25,
+      "currentPrice": 98.66,
+      "underlyingPrice": 98.66,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -222,7 +222,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 56,
+    "openCount": 57,
     "resolvedCount": 108,
     "wouldHaveWon": 44,
     "wouldHaveLost": 64,
@@ -485,22 +485,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
-        "asset": "BTC",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — YES — Will Bitcoin reach $90,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.65,
-          "yesAsk": 0.68,
-          "yesSpread": 0.03,
-          "liquidity": 41507.65,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 21.0pt edge on BTC; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
         "asset": "OIL",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "cl-hit-jun-2026 — YES — Will Crude Oil (CL) hit (HIGH) $120 by end of June?",
@@ -633,6 +617,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch NO 16.7pt edge on GOLD; hold 14d to test high-edge repricing. NO prioritized by backtest."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+        "asset": "HYPE",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-hyperliquid-hit-before-2027 — YES — Will Hyperliquid reach $100 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.27,
+          "yesAsk": 0.29,
+          "yesSpread": 0.02,
+          "liquidity": 8715.02,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 69.0pt edge on HYPE; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration."
       }
     ]
   },
