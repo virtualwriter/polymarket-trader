@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-20T23:29:06.673Z",
+  "generatedAt": "2026-05-21T01:29:01.615Z",
   "dataFreshness": {
-    "valuationRows": 509,
-    "latestValuationAt": "2026-05-20T23",
-    "macroRows": 509,
+    "valuationRows": 510,
+    "latestValuationAt": "2026-05-21T01",
+    "macroRows": 510,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-20T23"
+    "latestInstrumentSnapshotAt": "2026-05-21T01"
   },
   "portfolio": {
-    "cash": 94.3662,
-    "openPositions": 5,
-    "realizedPnl": 0.3662,
-    "totalTrades": 143,
-    "winRatePct": 51.7,
-    "unrealizedPnl": 0.0056
+    "cash": 95.41,
+    "openPositions": 4,
+    "realizedPnl": 0.41,
+    "totalTrades": 145,
+    "winRatePct": 52.4,
+    "unrealizedPnl": -0.0123
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "polymarket",
       "direction": "short",
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-      "pnlPct": -1.89,
-      "currentPrice": 0.52,
-      "underlyingPrice": 77417,
+      "pnlPct": -3.77,
+      "currentPrice": 0.51,
+      "underlyingPrice": 77857,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0,
-      "currentPrice": 4536,
-      "underlyingPrice": 4536,
+      "pnlPct": 0.63,
+      "currentPrice": 4565,
+      "underlyingPrice": 4565,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -57,9 +57,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 0.56,
-      "currentPrice": 77417,
-      "underlyingPrice": 77417,
+      "pnlPct": 1.13,
+      "currentPrice": 77857,
+      "underlyingPrice": 77857,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -68,31 +68,14 @@
       ]
     },
     {
-      "positionId": "T-1779139821182-o43q",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 0.75,
-      "currentPrice": 4536,
-      "underlyingPrice": 4536,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
-      ]
-    },
-    {
       "positionId": "T-1779312544292-h6fz",
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.2,
-      "currentPrice": 99.11,
-      "underlyingPrice": 99.11,
+      "pnlPct": -0.16,
+      "currentPrice": 98.75,
+      "underlyingPrice": 98.75,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -124,10 +107,10 @@
     {
       "type": "FUNDING_EXTREME_LONG",
       "enabled": true,
-      "weight": 0.6127,
-      "trades": 15,
-      "wins": 8,
-      "avgPnlPct": -0.2662,
+      "weight": 0.6052,
+      "trades": 16,
+      "wins": 9,
+      "avgPnlPct": -0.2345,
       "disabledAssets": [
         "AMZN"
       ]
@@ -239,7 +222,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 55,
+    "openCount": 56,
     "resolvedCount": 108,
     "wouldHaveWon": 44,
     "wouldHaveLost": 64,
@@ -294,7 +277,7 @@
       },
       {
         "signalType": "PC_RATIO_EXTREME_LOW",
-        "blocked": 10,
+        "blocked": 11,
         "resolved": 10,
         "wouldHaveWon": 5,
         "wouldHaveLost": 5,
@@ -460,6 +443,13 @@
           "yesSpread": 0.009,
           "liquidity": 4714.46,
           "flags": []
+        },
+        "sourceComparison": {
+          "sourceClosedAt": "2026-05-21T01:12:04.514Z",
+          "sourcePnl": 0.0024,
+          "sourcePnlPct": 0.24,
+          "proxyOutperformed": true,
+          "correlation": "same_direction"
         }
       },
       {

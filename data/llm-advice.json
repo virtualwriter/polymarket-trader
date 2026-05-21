@@ -1,5 +1,90 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [],
-  "skippedTrades": []
+  "rejectedCloses": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1779089415632-pbo3",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "profit_taking",
+        "evidenceColumns": [
+          "btc_spot"
+        ],
+        "thesis": "BTC long via PROMOTED_HYPOTHESIS (H-069/put-call exhaustion reversal) is at +1.13% PnL with only 6 hours remaining to expiry. The position has achieved meaningful positive PnL and is approaching its natural expiry. BTC spot trajectory over the last 12 hours shows consolidation in a tight range ($77,245–$77,857) with no breakout momentum — the 24h percentile is 100 (at the top of the 24h range) but the 7d percentile is only 42, indicating the move has been modest. With 6 hours to expiry and the position near its peak (+1.48% peak vs +1.13% current), taking profit now captures the gain before potential mean reversion in the final hours. The thesis (P/C ratio spike reversal) has played out with spot moving +1.13% from entry."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    }
+  ],
+  "skippedTrades": [],
+  "parameterUpdates": {
+    "macroMomentum24hThresholdPts": 4,
+    "contrarianTrendMarginPct": 0.5,
+    "positiveMomentum24hPct": 1.5,
+    "llmTradeExpiryDays": 14,
+    "momentumLongExpiryDays": 21,
+    "signalRisk": {
+      "PM_IV_GT_OPT_IV": {
+        "targetPct": null,
+        "stopPct": 5
+      },
+      "OPT_IV_GT_PM_IV": {
+        "targetPct": 5,
+        "stopPct": 3.5
+      },
+      "FUNDING_EXTREME_LONG": {
+        "targetPct": 5,
+        "stopPct": 2.5
+      },
+      "FUNDING_EXTREME_SHORT": {
+        "targetPct": 4,
+        "stopPct": 2
+      },
+      "PM_EV_ABOVE_SPOT": {
+        "targetPct": 4,
+        "stopPct": 4
+      },
+      "PM_EV_BELOW_SPOT": {
+        "targetPct": 3,
+        "stopPct": 3.5
+      },
+      "PC_RATIO_EXTREME_HIGH": {
+        "targetPct": 4,
+        "stopPct": 2
+      },
+      "PC_RATIO_EXTREME_LOW": {
+        "targetPct": 5,
+        "stopPct": 2
+      },
+      "BASIS_PREMIUM": {
+        "targetPct": 1.5,
+        "stopPct": 1.5
+      },
+      "BASIS_DISCOUNT": {
+        "targetPct": 1.5,
+        "stopPct": 1.5
+      },
+      "MACRO_MOMENTUM_UP": {
+        "targetPct": 3,
+        "stopPct": 3
+      },
+      "MACRO_MOMENTUM_DOWN": {
+        "targetPct": 4,
+        "stopPct": 3
+      },
+      "LLM_HYPOTHESIS": {
+        "targetPct": 3.5,
+        "stopPct": 2.5
+      },
+      "MOMENTUM_LONG": {
+        "targetPct": 6,
+        "stopPct": 3.5
+      },
+      "PROMOTED_HYPOTHESIS": {
+        "targetPct": 4,
+        "stopPct": 2
+      }
+    }
+  }
 }
