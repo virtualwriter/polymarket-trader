@@ -2478,7 +2478,10 @@ function formatOneTouchDirectionalLine(
     }
   }
 
-  return `One-touch decoder: bought ${isNo ? "NO" : "YES"} at ${p.entryPrice.toFixed(2)} on (${isLow ? "LOW" : "HIGH"}) ${strikeStr} ${kindLabel} market${mismatchWarning} — ${winCondition}. ${favorable}; ${adverse}.`;
+  const tokenWarning = isNo
+    ? ` IMPORTANT: instrumentType=pm_no means the position is LONG the NO token / short YES probability, not a directional short on ${p.asset}. Evaluate underlying moves only with the favorable/adverse rules here.`
+    : ` IMPORTANT: instrumentType=pm_yes means the position is LONG the YES token; evaluate underlying moves only with the favorable/adverse rules here.`;
+  return `One-touch decoder: bought ${isNo ? "NO" : "YES"} at ${p.entryPrice.toFixed(2)} on (${isLow ? "LOW" : "HIGH"}) ${strikeStr} ${kindLabel} market${mismatchWarning} — ${winCondition}. ${favorable}; ${adverse}.${tokenWarning}`;
 }
 
 function formatMechanicalContextLine(
