@@ -176,6 +176,7 @@ function commandHelp(): string {
     "/heatmap <asset> - top heatmap rows for an asset",
     "/noedge - open shadow trades whose current held-side edge is weak/inverted",
     "/shadows [open|resolved|all|<instrument_id>] [asset] - shadow trade history",
+    "/manual_touch_pnl - resolved manual IV-touch shadow P&L",
     "/why_no_trade <asset> - explain blockers from current artifacts, no LLM",
     "/ask <question> - explicit LLM answer using current trader artifacts",
     "/review <asset> - explicit LLM review for one asset",
@@ -351,6 +352,105 @@ function shadowsReport(args: string[]): string {
   ].join("\n");
 }
 
+function manualTouchPnlSummary(): JsonObject {
+  const shadows = readJson<JsonObject[]>(dataPath("blocked-signals.json"), [])
+    .filter((shadow) => str(shadow.status) === "resolved")
+    .filter((shadow) => str(shadow.blockedReason) === "manual_shadow_trade")
+    .filter((shadow) => str(shadow.signalType).startsWith("USER_PM_IV_TOUCH_"));
+  const bySignal: Record<string, JsonObject> = {};
+  const byAsset: Record<string, JsonObject> = {};
+  let wins = 0;
+  let pnl = 0;
+  let pnlPct = 0;
+
+  function addBucket(bucket: Record<string, JsonObject>, key: string, rowPnl: number, rowPnlPct: number): void {
+    const current = bucket[key] ?? { count: 0, wins: 0, pnl: 0, pnlPctSum: 0 };
+    current.count = (num(current.count) ?? 0) + 1;
+    current.wins = (num(current.wins) ?? 0) + (rowPnl >= 0 ? 1 : 0);
+    current.pnl = (num(current.pnl) ?? 0) + rowPnl;
+    current.pnlPctSum = (num(current.pnlPctSum) ?? 0) + rowPnlPct;
+    bucket[key] = current;
+  }
+
+  for (const shadow of shadows) {
+    const result = obj(shadow.hypotheticalResult);
+    const rowPnl = num(result.pnl) ?? 0;
+    const rowPnlPct = num(result.pnlPct) ?? 0;
+    wins += rowPnl >= 0 ? 1 : 0;
+    pnl += rowPnl;
+    pnlPct += rowPnlPct;
+    addBucket(bySignal, str(shadow.signalType, "unknown"), rowPnl, rowPnlPct);
+    addBucket(byAsset, str(shadow.asset, "unknown"), rowPnl, rowPnlPct);
+  }
+
+  function finalize(bucket: Record<string, JsonObject>): Record<string, JsonObject> {
+    return Object.fromEntries(Object.entries(bucket).map(([key, value]) => {
+      const count = num(value.count) ?? 0;
+      return [key, {
+        count,
+        wins: num(value.wins) ?? 0,
+        losses: count - (num(value.wins) ?? 0),
+        pnl: Number((num(value.pnl) ?? 0).toFixed(4)),
+        avgPnlPct: count > 0 ? Number(((num(value.pnlPctSum) ?? 0) / count).toFixed(2)) : 0,
+      }];
+    }));
+  }
+
+  return {
+    count: shadows.length,
+    wins,
+    losses: shadows.length - wins,
+    totalPnl: Number(pnl.toFixed(4)),
+    avgPnlPct: shadows.length > 0 ? Number((pnlPct / shadows.length).toFixed(2)) : 0,
+    bySignal: finalize(bySignal),
+    byAsset: finalize(byAsset),
+    latest: shadows
+      .slice()
+      .sort((a, b) => shadowSortTime(b) - shadowSortTime(a))
+      .slice(0, 12)
+      .map((shadow) => {
+        const position = obj(shadow.position);
+        const result = obj(shadow.hypotheticalResult);
+        return {
+          resolvedAt: shadow.resolvedAt,
+          asset: shadow.asset,
+          signalType: shadow.signalType,
+          instrumentId: position.instrumentId,
+          closeReason: result.closeReason,
+          pnl: result.pnl,
+          pnlPct: result.pnlPct,
+        };
+      }),
+  };
+}
+
+function manualTouchPnlReport(): string {
+  const summary = manualTouchPnlSummary();
+  const count = num(summary.count) ?? 0;
+  if (count === 0) return "No resolved manual IV-touch shadow trades found.";
+  const bySignal = obj(summary.bySignal);
+  const byAsset = obj(summary.byAsset);
+  const lines = [
+    "Manual IV-touch shadow P&L",
+    `Resolved: ${count}; wins=${fmtNum(summary.wins, 0)} losses=${fmtNum(summary.losses, 0)}`,
+    `Total P&L: $${fmtNum(summary.totalPnl, 4)}`,
+    `Avg P&L/trade: ${fmtPct(summary.avgPnlPct)}`,
+    "",
+    "By signal:",
+    ...Object.entries(bySignal).map(([key, value]) => {
+      const row = obj(value);
+      return `- ${key}: ${fmtNum(row.wins, 0)}/${fmtNum(row.count, 0)} wins, P&L $${fmtNum(row.pnl, 4)}, avg ${fmtPct(row.avgPnlPct)}`;
+    }),
+    "",
+    "By asset:",
+    ...Object.entries(byAsset).map(([key, value]) => {
+      const row = obj(value);
+      return `- ${key}: ${fmtNum(row.wins, 0)}/${fmtNum(row.count, 0)} wins, P&L $${fmtNum(row.pnl, 4)}, avg ${fmtPct(row.avgPnlPct)}`;
+    }),
+  ];
+  return lines.join("\n");
+}
+
 function whyNoTradeReport(assetArg: string | undefined): string {
   const asset = assetArg?.toUpperCase();
   if (!asset) return "Usage: /why_no_trade HYPE";
@@ -499,6 +599,7 @@ function traderContext(asset?: string): JsonObject {
       rows: compactHeatmapRows(assetUpper),
     },
     openShadows: compactOpenShadows(assetUpper),
+    manualIvTouchPnl: manualTouchPnlSummary(),
   };
 }
 
@@ -702,6 +803,8 @@ async function handleCommand(chatId: string, text: string): Promise<string> {
       return noEdgeReport();
     case "/shadows":
       return shadowsReport(args);
+    case "/manual_touch_pnl":
+      return manualTouchPnlReport();
     case "/why_no_trade":
       return whyNoTradeReport(args[0]);
     case "/ask":
