@@ -15565,3 +15565,34 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 12h); 4.0h
 
 ---
 
+### 2026-05-22 17:29 UTC
+
+**Portfolio:** $99.46 total | Cash $96.46 | 3 open | P&L $0.4621 | 53% win rate (154 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 84.6 is 3.5 std devs from mean (60.22 ± 6.89)
+- [anomaly] hype_pm_iv = 86 is 3.1 std devs from mean (65.22 ± 6.69)
+- [anomaly] hype_pm_ev = 58.17 is 3.0 std devs from mean (45.76 ± 4.20)
+- [anomaly] hype_spot = 57.714 is 2.8 std devs from mean (43.41 ± 5.08)
+- [anomaly] hype_hl_oi = 1307490134 is 2.6 std devs from mean (910677540.98 ± 154920991.43)
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 122 (55 wins / 67 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/12 shadows would have won, avg P&L 23.68%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW HYPE long via polymarket would have closed with thesis validated profitably (+6.90%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT HYPE short via polymarket would have edge compressed but trade lost money (-1.45%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO GOLD short via polymarket would have closed with thesis validated profitably (+27.91%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+19.57%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 12h); 5.0h since last call; daily budget 3/6; next scheduled 2026-05-22T23:29:14.278Z). Mechanical cycle ran normally._
+
+---
+
