@@ -15675,3 +15675,52 @@ Key observations this session:
 
 ---
 
+### 2026-05-22 20:30 UTC
+
+**Portfolio:** $99.46 total | Cash $94.46 | 5 open | P&L $0.4621 | 53% win rate (154 trades)
+
+**Opened 1 positions:**
+- GOLD short @ $4510 via spot/spot [GOLD spot] (PC_RATIO_EXTREME_LOW)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 6.1pp (was -15.2, now -9.1)
+- [anomaly] hype_pm_iv = 86.2 is 3.0 std devs from mean (65.33 ± 6.84)
+- [anomaly] hype_med_max = 81.5 is 3.0 std devs from mean (60.35 ± 7.06)
+- [anomaly] oil_opt_fwd_90d = 8.3 is -3.0 std devs from mean since 2026-04-28 (90.50 ± 27.77)
+- [anomaly] hype_pm_ev = 56.74 is 2.6 std devs from mean (45.83 ± 4.28)
+
+**Blocked signal learning:**
+- Open blocked shadows: 56
+- Resolved blocked shadows: 122 (55 wins / 67 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/12 shadows would have won, avg P&L 23.68%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW HYPE long via polymarket would have closed with thesis validated profitably (+6.90%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT HYPE short via polymarket would have edge compressed but trade lost money (-1.45%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO GOLD short via polymarket would have closed with thesis validated profitably (+27.91%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+19.57%)
+
+**LLM analysis:**
+Session summary 2026-05-22T20: Four open positions, all mechanical — no LLM closes warranted.
+
+BTC ONE-TOUCH NO ($55k, T-fb7r): BTC spot has fallen from 79,548 at open to 75,914, a -4.57% move that is adverse for this position (spot moving toward $55k is adverse). The position is at -3.77% PnL. However, spot is still ~38% above the $55k touch level with 124h remaining. PM IV has compressed (35.9→34.8), which is slightly favorable as lower IV reduces the probability of a large downside move. Funding remains positive (4.89%), not signaling a crowded short squeeze. The thesis is intact — $55k touch by year-end remains a low-probability event. No close warranted; mechanical scanner owns this.
+
+GOLD FUNDING LONG (T-2wqk): The original thesis was extreme negative funding (-44.8%) indicating crowded shorts. Funding normalized to +5.48% within the first few snapshots and has stayed there for 12 consecutive readings. The thesis has been fully validated in terms of funding normalization, but spot has drifted -0.57% from entry. Position expires in 11h at -0.58% PnL, well within the 2% stop. The breakeven arm requires peak ≥ +1.5% (peak was +1.17%, not reached). Mechanical expiry is the likely outcome. No LLM close warranted.
+
+OIL PC RATIO LONG (T-mzu8): The oil_cl_pc_ratio collapsed from 2.361 at entry to 1.241 now (-47.4%), which is the thesis playing out — crowded put positioning has unwound. However, spot has not bounced; it's at -0.43% from entry. The P/C ratio is now at the 17th percentile of its 24h range, no longer extreme. The original signal has normalized but spot hasn't followed. With 94h remaining and a 2% stop, the position has room. The PC_RATIO_EXTREME_HIGH family has 8/15 wins at +0.16% avg — modest positive expectancy. Hold.
+
+OIL ONE-TOUCH NO ($95 LOW, T-kc6x): This position shows -100% PnL and closeReasonIfMechanical='stop', meaning the mechanical scanner has already flagged it for stop closure. WTI spot at 96.22 is only $1.22 above the $95 touch level, and the position requires spot to stay STRICTLY ABOVE $95 for 335h. With oil_opt_iv_30d at 71.7% (84th percentile of 7d range) and spot trending down from 98.8 to 96.2 over the session, the probability of touching $95 is material. The mechanical stop at -100% is appropriate. No LLM action needed.
+
+Key observations:
+1. The HYPE PM IV anomaly (86.2, +3 sigma) combined with the -48.49% funding spike at T19 and subsequent OI contraction is a notable liquidation event. The HYPE funding/OI liquidation short family (H-010) has only 22% win rate over 9 tests — not strong enough for live trading, but worth continued shadow monitoring.
+2. BTC-GOLD correlation flipped from -0.26 to +0.68 (77th percentile of 22-day history). Both assets declining together suggests macro risk-off rather than asset-specific flows. This is consistent with the macro composite declining to BEARISH (44).
+3. The relative-value heatmap shows several interesting edges: BTC $110k by Dec 2026 at 20.5% PM vs 30.8% model (+9.8pt edge, buy_yes), BTC $90k by Dec 2026 at 55.5% PM vs 72.2% model (+16.2pt edge, buy_yes), and HYPE $16 dip by Dec 2026 at 8% PM vs 50.7% model (+41.7pt edge, buy_yes). The HYPE downside contracts are particularly notable given the current PM IV anomaly. However, the HYPE $16 contract has wide_pm_spread flag and the ONE_TOUCH_HIGH_EDGE_YES family has -8.2% avg shadow PnL — not ready for live trading.
+4. No new hypotheses proposed per backlog rules (9/20 setup families still need more tests, 7 pending). Existing shadow tests should be prioritized.
+5. The OIL $95 LOW touch position being immediately stopped is a useful data point: the ONE_TOUCH_HIGH_EDGE_NO signal on OIL with spot only ~1.7% above the touch level was too close to the barrier. Future OIL one-touch NO entries should require greater distance from the touch level relative to IV-implied daily move.
+
+---
+
