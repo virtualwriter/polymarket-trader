@@ -15328,3 +15328,34 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 12h); 1.0h
 
 ---
 
+### 2026-05-22 09:29 UTC
+
+**Portfolio:** $99.48 total | Cash $96.48 | 3 open | P&L $0.4834 | 53% win rate (153 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 59.943 is 3.5 std devs from mean (43.20 ± 4.78)
+- [anomaly] hype_pm_ev = 58.58 is 3.3 std devs from mean (45.60 ± 3.96)
+- [anomaly] oil_cl_pc_ratio = 2.404 is 3.0 std devs from mean since 2026-04-28 (1.14 ± 0.42)
+- [anomaly] hype_med_max = 78.6 is 2.9 std devs from mean (59.94 ± 6.44)
+- [anomaly] hype_hl_oi = 1331973431 is 2.9 std devs from mean (905232066.47 ± 148272444.64)
+
+**Blocked signal learning:**
+- Open blocked shadows: 55
+- Resolved blocked shadows: 118 (52 wins / 66 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/11 shadows would have won, avg P&L 23.29%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have edge compressed but trade lost money (-4.65%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO GOLD short via polymarket would have closed with thesis validated profitably (+7.32%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO BTC short via polymarket would have closed with thesis validated profitably (+5.68%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 12h); 2.0h since last call; daily budget 2/6; next scheduled 2026-05-22T15:29:09.274Z). Mechanical cycle ran normally._
+
+---
+
