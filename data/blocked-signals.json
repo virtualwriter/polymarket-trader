@@ -28134,7 +28134,7 @@
   },
   {
     "id": "OT-1779330545196-1sqi",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-21T02:29:05.196Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -28142,7 +28142,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.7,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 69.0pt edge on HYPE; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 69.0pt edge on HYPE; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration. [CLOSED 2026-05-22: thesis_validated_profitable — Operator manual close: no remaining edge; closing at the current mark.]",
     "marketQuality": {
       "yesBid": 0.27,
       "yesAsk": 0.29,
@@ -28306,11 +28306,21 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW"
+    },
+    "resolvedAt": "2026-05-22T15:54:34.171Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated_profitable",
+      "exitPrice": 0.31,
+      "pnl": 0.069,
+      "pnlPct": 6.9,
+      "marketPnl": 0.069,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
     "id": "MANUAL-IVTOUCH-GOLD-NO-2305702-1779330904",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-21T02:35:04Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -28318,7 +28328,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 1,
-    "thesis": "Manual user IV-touch shadow signal: PM YES 63.5% vs IV touch model 41.7%; edge -20.3 pts. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user IV-touch shadow signal: PM YES 63.5% vs IV touch model 41.7%; edge -20.3 pts. Exclude from official live-trader performance until validated. [CLOSED 2026-05-22: thesis_validated_profitable — Operator manual close: no remaining edge; closing at the current mark.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -28508,11 +28518,21 @@
       },
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
+    },
+    "resolvedAt": "2026-05-22T15:55:24.993Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated_profitable",
+      "exitPrice": 0.55,
+      "pnl": 0.2791,
+      "pnlPct": 27.91,
+      "marketPnl": 0.2791,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
     "id": "OT-1779348547074-tm2l",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-21T07:29:07.074Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
@@ -28520,7 +28540,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch NO 19.6pt edge on GOLD; hold 14d to test high-edge repricing. NO prioritized by backtest.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch NO 19.6pt edge on GOLD; hold 14d to test high-edge repricing. NO prioritized by backtest. [CLOSED 2026-05-22: thesis_validated_profitable — Operator manual close: no remaining edge; closing at the current mark.]",
     "marketQuality": {
       "yesBid": 0.54,
       "yesAsk": 0.55,
@@ -28682,6 +28702,16 @@
       },
       "selectedSide": "no",
       "selectedSignalType": "ONE_TOUCH_HIGH_EDGE_NO"
+    },
+    "resolvedAt": "2026-05-22T15:55:24.993Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_validated_profitable",
+      "exitPrice": 0.55,
+      "pnl": 0.1957,
+      "pnlPct": 19.57,
+      "marketPnl": 0.1957,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
@@ -28964,7 +28994,7 @@
   },
   {
     "id": "PS-1779409822832-ys71",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-22T00:30:22.832Z",
     "blockedReason": "polymarket_proxy_short",
     "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
@@ -28972,7 +29002,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 0.25,
-    "thesis": "[PM PROXY SHORT SHADOW] Real HYPE short via hyperliquid/hl_perp (FUNDING_EXTREME_LONG). Track buying NO on the comparable Polymarket upside contract.",
+    "thesis": "[PM PROXY SHORT SHADOW] Real HYPE short via hyperliquid/hl_perp (FUNDING_EXTREME_LONG). Track buying NO on the comparable Polymarket upside contract. [CLOSED 2026-05-22: thesis_compressed_loss — Operator manual close: no remaining edge; closing at the current mark.]",
     "sourcePositionId": "T-1779409822831-lmfr",
     "sourcePositionLabel": "HYPE short via hyperliquid/hl_perp (FUNDING_EXTREME_LONG)",
     "marketQuality": {
@@ -29077,6 +29107,16 @@
       "instrumentId": "what-price-will-hyperliquid-hit-before-2027::701726",
       "instrumentLabel": "what-price-will-hyperliquid-hit-before-2027 — NO — Will Hyperliquid reach $100 by December 31, 2026?",
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-22T15:54:34.171Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_compressed_loss",
+      "exitPrice": 0.6799999999999999,
+      "pnl": -0.0145,
+      "pnlPct": -1.45,
+      "marketPnl": -0.0145,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
