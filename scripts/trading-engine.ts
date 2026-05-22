@@ -40,7 +40,10 @@ const MAX_OPEN_POSITIONS = 15;
 const HEATMAP_SHADOW_MAX_SPREAD = 0.01;
 const HEATMAP_SHADOW_MIN_LIQUIDITY = 1000;
 const MONOTONIC_ARB_MAX_YES_SPREAD = 0.01;
-const MONOTONIC_ARB_MIN_GROSS_EDGE = 0.0001;
+const MONOTONIC_ARB_MIN_GROSS_EDGE = 0.001;
+const MONOTONIC_ARB_MIN_LEG_LIQUIDITY = 10_000;
+const MONOTONIC_ARB_MIN_TOP_OF_BOOK_SIZE = 5;
+const MONOTONIC_ARB_MAX_SNAPSHOT_AGE_MINUTES = 20;
 const MONOTONIC_ARB_ASSETS = new Set(["BTC", "ETH", "GOLD", "OIL", "AMZN", "HYPE", "SPY"]);
 const INVALID_MONOTONIC_SETTLEMENT_REASON = "invalid_monotonic_settlement_bucket";
 const UNDERLYING_CAP_ENTRY_MAX_SPREAD = 0.02;
@@ -198,6 +201,8 @@ interface PolymarketPackageLeg {
   direction: "above" | "below";
   yesBid: number;
   yesAsk: number;
+  yesBidSize?: number | null;
+  yesAskSize?: number | null;
 }
 
 interface Position {
@@ -410,6 +415,7 @@ interface BlockedSignalShadow {
     yesAsk: number;
     yesSpread: number;
     liquidity: number;
+    availableSize?: number | null;
     flags: string[];
   };
   learningParamsSnapshot: Omit<LearningParams, "updatedAt">;
@@ -528,12 +534,16 @@ interface RelativeValueObservation {
 interface InstrumentSnapshotContract {
   marketId: string;
   question: string;
+  description?: string;
+  resolutionSource?: string;
   strike: number;
   direction: "above" | "below";
   yesPrice: number;
   volume: number;
   bestBid?: number;
   bestAsk?: number;
+  bestBidSize?: number | null;
+  bestAskSize?: number | null;
   spread?: number;
   liquidity?: number;
   active?: boolean;
@@ -2819,6 +2829,37 @@ function recordPolymarketProxyShortShadow(
   });
 }
 
+function snapshotAgeMinutes(timestamp: string | undefined): number | null {
+  if (!timestamp) return null;
+  const parsed = Date.parse(timestamp);
+  if (!Number.isFinite(parsed)) return null;
+  return (Date.now() - parsed) / 60000;
+}
+
+function normalizedResolutionSource(contract: InstrumentSnapshotContract): string {
+  return (contract.resolutionSource ?? "").trim().toLowerCase();
+}
+
+function normalizedResolutionTemplate(contract: InstrumentSnapshotContract): string {
+  return (contract.description ?? "")
+    .toLowerCase()
+    .replace(/\$?\d[\d,]*(?:\.\d+)?/g, "<num>")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function monotonicResolutionMatches(broad: InstrumentSnapshotContract, narrow: InstrumentSnapshotContract): boolean {
+  const broadSource = normalizedResolutionSource(broad);
+  const narrowSource = normalizedResolutionSource(narrow);
+  if (broadSource && narrowSource && broadSource !== narrowSource) return false;
+
+  const broadTemplate = normalizedResolutionTemplate(broad);
+  const narrowTemplate = normalizedResolutionTemplate(narrow);
+  if (broadTemplate && narrowTemplate && broadTemplate !== narrowTemplate) return false;
+
+  return true;
+}
+
 function recordMonotonicArbShadows(
   latestRow: SnapshotRow,
   latestSnapshot: InstrumentSnapshotFile | null,
@@ -2826,6 +2867,8 @@ function recordMonotonicArbShadows(
   blockedSignals: BlockedSignalShadow[],
 ): number {
   if (!latestSnapshot) return 0;
+  const ageMinutes = snapshotAgeMinutes(latestSnapshot.timestamp);
+  if (ageMinutes !== null && ageMinutes > MONOTONIC_ARB_MAX_SNAPSHOT_AGE_MINUTES) return 0;
   let recorded = 0;
 
   for (const event of latestSnapshot.polymarket) {
@@ -2854,8 +2897,26 @@ function recordMonotonicArbShadows(
           const higher = directional[j];
           const broad = direction === "above" ? lower : higher;
           const narrow = direction === "above" ? higher : lower;
+          if (broad.endDate && narrow.endDate && broad.endDate !== narrow.endDate) continue;
+          if (!monotonicResolutionMatches(broad, narrow)) continue;
+
+          const maxSpread = Math.max(
+            broad.spread ?? Math.max(0, (broad.bestAsk ?? 0) - (broad.bestBid ?? 0)),
+            narrow.spread ?? Math.max(0, (narrow.bestAsk ?? 0) - (narrow.bestBid ?? 0)),
+          );
+          const minLiquidity = Math.min(broad.liquidity ?? 0, narrow.liquidity ?? 0);
+          if (maxSpread > MONOTONIC_ARB_MAX_YES_SPREAD) continue;
+          if (minLiquidity < MONOTONIC_ARB_MIN_LEG_LIQUIDITY) continue;
+
           const broadAsk = broad.bestAsk ?? 0;
           const narrowBid = narrow.bestBid ?? 0;
+          const broadAskSize = broad.bestAskSize ?? null;
+          const narrowNoAskSize = narrow.bestBidSize ?? null;
+          const packageAvailableSize = broadAskSize !== null && narrowNoAskSize !== null
+            ? Math.min(broadAskSize, narrowNoAskSize)
+            : null;
+          if (packageAvailableSize !== null && packageAvailableSize < MONOTONIC_ARB_MIN_TOP_OF_BOOK_SIZE) continue;
+
           const grossEdge = narrowBid - broadAsk;
           if (grossEdge < MONOTONIC_ARB_MIN_GROSS_EDGE) continue;
 
@@ -2900,6 +2961,8 @@ function recordMonotonicArbShadows(
                 direction: broad.direction,
                 yesBid: broad.bestBid ?? 0,
                 yesAsk: broadAsk,
+                yesBidSize: broad.bestBidSize ?? null,
+                yesAskSize: broadAskSize,
               },
               {
                 role: "narrow_no",
@@ -2911,19 +2974,18 @@ function recordMonotonicArbShadows(
                 direction: narrow.direction,
                 yesBid: narrowBid,
                 yesAsk: narrow.bestAsk ?? 0,
+                yesBidSize: narrowNoAskSize,
+                yesAskSize: narrow.bestAskSize ?? null,
               },
             ],
             entryUnderlyingPrice: getAssetPrice(latestRow, event.asset) ?? latestSnapshot.spots[event.asset] ?? undefined,
             currentUnderlyingPrice: getAssetPrice(latestRow, event.asset) ?? latestSnapshot.spots[event.asset] ?? undefined,
           };
 
-          const maxSpread = Math.max(
-            broad.spread ?? Math.max(0, (broad.bestAsk ?? 0) - (broad.bestBid ?? 0)),
-            narrow.spread ?? Math.max(0, (narrow.bestAsk ?? 0) - (narrow.bestBid ?? 0)),
-          );
-          const minLiquidity = Math.min(broad.liquidity ?? 0, narrow.liquidity ?? 0);
           const flags: string[] = [];
           if (maxSpread > MONOTONIC_ARB_MAX_YES_SPREAD) flags.push("wide_pm_spread");
+          if (minLiquidity < MONOTONIC_ARB_MIN_LEG_LIQUIDITY) flags.push("low_leg_liquidity");
+          if (packageAvailableSize !== null && packageAvailableSize < MONOTONIC_ARB_MIN_TOP_OF_BOOK_SIZE) flags.push("low_top_of_book_size");
           if (packageCost >= 1) flags.push("no_locked_edge");
 
           blockedSignals.push({
@@ -2942,6 +3004,7 @@ function recordMonotonicArbShadows(
               yesAsk: Number(broadAsk.toFixed(4)),
               yesSpread: Number(maxSpread.toFixed(4)),
               liquidity: Number(minLiquidity.toFixed(2)),
+              availableSize: packageAvailableSize === null ? null : Number(packageAvailableSize.toFixed(2)),
               flags,
             },
             learningParamsSnapshot: {

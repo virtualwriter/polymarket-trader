@@ -51,6 +51,8 @@ interface HLSpotToken {
 interface PolymarketMarket {
   id: string;
   question: string;
+  description?: string;
+  resolutionSource?: string;
   slug: string;
   outcomePrices: string;
   outcomes: string;
@@ -62,6 +64,8 @@ interface PolymarketMarket {
   active: boolean;
   bestBid: number;
   bestAsk: number;
+  bestBidSize?: number;
+  bestAskSize?: number;
   spread: number;
 }
 
@@ -373,12 +377,16 @@ async function fetchHyperliquid() {
 interface PriceStrike {
   marketId: string;
   question: string;
+  description?: string;
+  resolutionSource?: string;
   strike: number;
   direction: "above" | "below";
   yesPrice: number;
   volume: number;
   bestBid: number;
   bestAsk: number;
+  bestBidSize?: number;
+  bestAskSize?: number;
   spread: number;
   liquidity: number;
   active: boolean;
@@ -465,12 +473,16 @@ async function fetchPolymarket() {
           strikes.push({
             marketId: m.id || "",
             question: m.question,
+            description: m.description,
+            resolutionSource: m.resolutionSource,
             strike: parsed.strike,
             direction: parsed.direction,
             yesPrice: prices[0] ?? 0,
             volume: vol,
             bestBid: Number(m.bestBid ?? 0),
             bestAsk: Number(m.bestAsk ?? 0),
+            bestBidSize: Number(m.bestBidSize ?? 0) || undefined,
+            bestAskSize: Number(m.bestAskSize ?? 0) || undefined,
             spread: Number(m.spread ?? 0),
             liquidity: parseFloat(m.liquidity || "0"),
             active: !!m.active,
@@ -525,12 +537,16 @@ async function fetchPolymarket() {
           strikes.push({
             marketId: m.id || "",
             question: m.question,
+            description: m.description,
+            resolutionSource: m.resolutionSource,
             strike: parsed.strike,
             direction: parsed.direction,
             yesPrice: prices[0] ?? 0,
             volume: vol,
             bestBid: Number(m.bestBid ?? 0),
             bestAsk: Number(m.bestAsk ?? 0),
+            bestBidSize: Number(m.bestBidSize ?? 0) || undefined,
+            bestAskSize: Number(m.bestAskSize ?? 0) || undefined,
             spread: Number(m.spread ?? 0),
             liquidity: parseFloat(m.liquidity || "0"),
             active: !!m.active,
@@ -1999,12 +2015,16 @@ const INSTRUMENT_SNAPSHOTS_JSONL = "instrument-snapshots.jsonl";
 interface InstrumentSnapshotContract {
   marketId: string;
   question: string;
+  description?: string;
+  resolutionSource?: string;
   strike: number;
   direction: "above" | "below";
   yesPrice: number;
   volume: number;
   bestBid: number;
   bestAsk: number;
+  bestBidSize?: number;
+  bestAskSize?: number;
   spread: number;
   liquidity: number;
   active: boolean;
@@ -2343,7 +2363,7 @@ function writeSnapshot(
       },
     },
     polymarket: pm
-      .map((event) => {
+      .map((event): InstrumentSnapshotEvent | null => {
         const asset = polymarketAssetForSlug(event.slug);
         if (!asset) return null;
         return {
@@ -2354,12 +2374,16 @@ function writeSnapshot(
           contracts: event.strikes.map((s) => ({
             marketId: s.marketId,
             question: s.question,
+            description: s.description,
+            resolutionSource: s.resolutionSource,
             strike: s.strike,
             direction: s.direction,
             yesPrice: s.yesPrice,
             volume: s.volume,
             bestBid: s.bestBid,
             bestAsk: s.bestAsk,
+            bestBidSize: s.bestBidSize,
+            bestAskSize: s.bestAskSize,
             spread: s.spread,
             liquidity: s.liquidity,
             active: s.active,
