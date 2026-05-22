@@ -15758,3 +15758,34 @@ _LLM call skipped (duplicate-signals (4 recurring signals seen within 12h); 2.0h
 
 ---
 
+### 2026-05-22 23:29 UTC
+
+**Portfolio:** $98.46 total | Cash $94.46 | 4 open | P&L $-0.5379 | 52% win rate (155 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_opt_fwd_90d = 171.2 is 2.9 std devs from mean since 2026-04-28 (90.83 ± 28.19)
+- [anomaly] hype_med_max = 79.5 is 2.7 std devs from mean (60.45 ± 7.18)
+- [anomaly] hype_pm_iv = 83.3 is 2.6 std devs from mean (65.42 ± 6.93)
+- [anomaly] oil_hl_funding_ann = 172.42 is 2.5 std devs from mean since 2026-04-28 (-20.27 ± 75.74)
+- [anomaly] hype_pm_ev = 56.27 is 2.4 std devs from mean (45.89 ± 4.34)
+
+**Blocked signal learning:**
+- Open blocked shadows: 60
+- Resolved blocked shadows: 123 (55 wins / 68 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT HYPE short via polymarket would have edge compressed but trade lost money (-1.45%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO GOLD short via polymarket would have closed with thesis validated profitably (+27.91%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+19.57%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have edge compressed but trade lost money (-14.37%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (4 recurring signals seen within 12h); 3.0h since last call; daily budget 5/6; next scheduled 2026-05-23T05:29:07.919Z). Mechanical cycle ran normally._
+
+---
+
