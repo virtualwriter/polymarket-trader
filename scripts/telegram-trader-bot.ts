@@ -20,6 +20,7 @@ type TelegramMessage = {
 type TelegramUpdate = {
   update_id: number;
   message?: TelegramMessage;
+  channel_post?: TelegramMessage;
 };
 
 type PendingAction = {
@@ -684,12 +685,12 @@ async function runBot(): Promise<void> {
     const result = await telegramCall<{ ok: boolean; result: TelegramUpdate[] }>(token, "getUpdates", {
       offset: offset || undefined,
       timeout: 25,
-      allowed_updates: ["message"],
+      allowed_updates: ["message", "channel_post"],
     });
     for (const update of result.result ?? []) {
       offset = Math.max(offset, update.update_id + 1);
       saveOffset(offset);
-      const message = update.message;
+      const message = update.message ?? update.channel_post;
       const text = message?.text?.trim();
       const chatId = message ? String(message.chat.id) : "";
       if (!message || !text) continue;
