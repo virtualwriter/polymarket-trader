@@ -18804,7 +18804,7 @@
   },
   {
     "id": "OT-1778887700602-bhyx",
-    "status": "open",
+    "status": "cancelled",
     "blockedAt": "2026-05-15T23:28:20.602Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -18917,6 +18917,11 @@
       "entryUnderlyingPrice": 101.17,
       "currentUnderlyingPrice": 96.7,
       "fundingPnlAccrued": 0
+    },
+    "resolvedAt": "2026-05-22T20:23:35.532Z",
+    "learningExcluded": {
+      "reason": "duplicate_shadow_missing_entry_snapshot",
+      "note": "Cancelled: duplicate OIL $130 June YES shadow lacked the entry heatmap snapshot/original one-touch probability. Keep the later manual shadow for cl-hit-jun-2026::1652685 because it records both entry and current model data."
     }
   },
   {
@@ -21294,7 +21299,7 @@
   },
   {
     "id": "OT-1779071350053-1y63",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-18T02:29:10.053Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
@@ -21469,7 +21474,17 @@
     },
     "learningExcluded": {
       "reason": "stale_untradable_quote_artifact",
-      "note": "Excluded from LLM learning: GOLD $4,500 May NO shadow was opened at a 0.1c NO mark from a snapshot-priced market near YES=100%, then refreshed heatmap no longer returned a live row. Treat the -100% mark as a stale/near-resolved quote artifact, not a valid high-edge NO thesis result."
+      "note": "Excluded from LLM learning: GOLD $4,500 May NO shadow was opened at a 0.1c NO mark from a snapshot-priced market near YES=100%, then the market resolved YES and the NO leg marked to zero. Treat this as a stale/near-resolved quote artifact, not a valid high-edge NO thesis result."
+    },
+    "resolvedAt": "2026-05-22T20:06:14.474Z",
+    "hypotheticalResult": {
+      "closeReason": "data_quality_artifact",
+      "exitPrice": 0.0,
+      "pnl": -0.001,
+      "pnlPct": -100.0,
+      "marketPnl": -0.001,
+      "fundingPnl": 0.0,
+      "outcome": "loss"
     }
   },
   {
@@ -21658,7 +21673,7 @@
   },
   {
     "id": "MANUAL-STALE-LOTTERY-OIL-NO-2132637-1779073201",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-18T03:00:01Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -21666,7 +21681,7 @@
     "venue": "polymarket",
     "direction": "short",
     "confidence": 1,
-    "thesis": "Manual user stale-lottery NO shadow: PM YES 13.5% on far-OTM LOW $85 (~17.7% below spot $103.26, 14d DTE) but IV touch model only 7.0%; sell_yes_or_buy_no edge -6.0 pts. Model prob 7.0% above the 5.0% stale-lottery ceiling, so it would not auto-generate; added manually to test residual lottery premium decay against the existing STALE_LOTTERY_TICKET_NO setup. Exclude from official live-trader performance until validated.",
+    "thesis": "Manual user stale-lottery NO shadow: PM YES 13.5% on far-OTM LOW $85 (~17.7% below spot $103.26, 14d DTE) but IV touch model only 7.0%; sell_yes_or_buy_no edge -6.0 pts. Model prob 7.0% above the 5.0% stale-lottery ceiling, so it would not auto-generate; added manually to test residual lottery premium decay against the existing STALE_LOTTERY_TICKET_NO setup. Exclude from official live-trader performance until validated. [CLOSED 2026-05-22: thesis_compressed_loss — Operator close signal: live heatmap check showed the held NO edge collapsed/inverted. PM YES 25.5% vs IV touch model 27.2%; held NO edge about -2.2 pts, so close rather than keep stale rich-NO exposure.]",
     "learningParamsSnapshot": {
       "macroMomentum24hThresholdPts": 4,
       "contrarianTrendMarginPct": 0.5,
@@ -21747,12 +21762,12 @@
       "venue": "polymarket",
       "direction": "short",
       "entryPrice": 0.87,
-      "currentPrice": 0.74,
+      "currentPrice": 0.745,
       "size": 1,
       "leverage": 1,
       "signalType": "USER_PM_IV_TOUCH_RICH_NO",
       "hypothesisId": null,
-      "thesis": "Manual user stale-lottery NO shadow: PM YES 13.5% on far-OTM LOW $85 (~17.7% below spot $103.26, 14d DTE) but IV touch model only 7.0%; sell_yes_or_buy_no edge -6.0 pts. Model prob 7.0% above the 5.0% stale-lottery ceiling, so it would not auto-generate; added manually to test residual lottery premium decay against the existing STALE_LOTTERY_TICKET_NO setup. Exclude from official live-trader performance until validated.",
+      "thesis": "Manual user stale-lottery NO shadow: PM YES 13.5% on far-OTM LOW $85 (~17.7% below spot $103.26, 14d DTE) but IV touch model only 7.0%; sell_yes_or_buy_no edge -6.0 pts. Model prob 7.0% above the 5.0% stale-lottery ceiling, so it would not auto-generate; added manually to test residual lottery premium decay against the existing STALE_LOTTERY_TICKET_NO setup. Exclude from official live-trader performance until validated. [CLOSED 2026-05-22: thesis_compressed_loss — Operator close signal: live heatmap check showed the held NO edge collapsed/inverted. PM YES 25.5% vs IV touch model 27.2%; held NO edge about -2.2 pts, so close rather than keep stale rich-NO exposure.]",
       "targetPct": null,
       "stopPct": 100,
       "expiryDate": "2026-06-01T03:59:59.999Z",
@@ -21760,7 +21775,7 @@
       "instrumentId": "what-price-will-wti-hit-in-may-2026::2132637",
       "instrumentLabel": "what-price-will-wti-hit-in-may-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $85 in May?",
       "entryUnderlyingPrice": 103.26,
-      "currentUnderlyingPrice": 96.7,
+      "currentUnderlyingPrice": 96.72,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -21828,6 +21843,16 @@
       },
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
+    },
+    "resolvedAt": "2026-05-22T20:23:35.532Z",
+    "hypotheticalResult": {
+      "closeReason": "thesis_compressed_loss",
+      "exitPrice": 0.745,
+      "pnl": -0.125,
+      "pnlPct": -14.37,
+      "marketPnl": -0.125,
+      "fundingPnl": 0.0,
+      "outcome": "loss"
     }
   },
   {
