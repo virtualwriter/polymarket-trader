@@ -574,6 +574,7 @@ function traderContext(asset?: string): JsonObject {
   return {
     generatedAt: new Date().toISOString(),
     scopeAsset: assetUpper ?? null,
+    manualIvTouchPnl: manualTouchPnlSummary(),
     engineGeneratedAt: engine.generatedAt,
     dataFreshness: engine.dataFreshness,
     portfolio: engine.portfolio,
@@ -599,7 +600,6 @@ function traderContext(asset?: string): JsonObject {
       rows: compactHeatmapRows(assetUpper),
     },
     openShadows: compactOpenShadows(assetUpper),
-    manualIvTouchPnl: manualTouchPnlSummary(),
   };
 }
 
@@ -658,6 +658,9 @@ function truncateContext(text: string): string {
 
 async function askLlmReport(question: string): Promise<string> {
   if (!question.trim()) return "Usage: /ask <question>";
+  if (/\bmanual\b/i.test(question) && /\btouch\b/i.test(question) && /\b(p&l|pnl|profit|loss|performance)\b/i.test(question)) {
+    return manualTouchPnlReport();
+  }
   const context = truncateContext(JSON.stringify(traderContext(), null, 2));
   const prompt = `You are a cautious trading-operations assistant for a paper Polymarket trader.
 
