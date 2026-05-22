@@ -57,6 +57,9 @@ const ONE_TOUCH_HIGH_EDGE_SIGNAL_YES = "ONE_TOUCH_HIGH_EDGE_YES_SHADOW";
 const ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE = 15;
 const ONE_TOUCH_HIGH_EDGE_CONVICTION_EDGE = 20;
 const ONE_TOUCH_HIGH_EDGE_HOLD_DAYS = 14;
+const ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS = 1;
+const ONE_TOUCH_NO_SHADOW_MAX_SPREAD = 0.03;
+const ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY = 5_000;
 const ONE_TOUCH_MODEL_VERSION = "relative_value_heatmap_v2_one_touch";
 const ONE_TOUCH_STRICT_BAD_FLAGS = new Set([
   "wide_pm_spread",
@@ -3084,6 +3087,25 @@ function staleLotteryTicketNoEligible(row: RelativeValueObservation): boolean {
   return true;
 }
 
+function sellYesEdgePts(row: RelativeValueObservation): number | null {
+  const explicit = num(row.rawRow.sell_yes_edge_pts);
+  if (explicit !== null) return explicit;
+  return row.bestExpression === "sell_yes_or_buy_no" && row.edgePts !== null ? Math.abs(row.edgePts) : null;
+}
+
+function oneTouchNoShadowEligible(row: RelativeValueObservation): boolean {
+  if (row.modelVersion !== ONE_TOUCH_MODEL_VERSION) return false;
+  if (!row.marketId || !row.eventSlug) return false;
+  if (row.bestExpression !== "sell_yes_or_buy_no") return false;
+  const edge = sellYesEdgePts(row);
+  if (edge === null || edge < ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS) return false;
+  if (row.pmSpread === null || row.pmSpread > ONE_TOUCH_NO_SHADOW_MAX_SPREAD) return false;
+  if (row.liquidity === null || row.liquidity < ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY) return false;
+  const flags = relativeValueFlagSet(row);
+  if (Array.from(ONE_TOUCH_STRICT_BAD_FLAGS).some((flag) => flags.has(flag))) return false;
+  return true;
+}
+
 function buildOneTouchHighEdgeShadowPosition(
   row: RelativeValueObservation,
   latestRow: SnapshotRow,
@@ -3093,7 +3115,7 @@ function buildOneTouchHighEdgeShadowPosition(
   const contract = event?.contracts.find((candidate) => candidate.marketId === row.marketId);
   if (!event || !contract) return null;
 
-  const instrumentType: "pm_yes" | "pm_no" = row.bestExpression === "buy_yes" ? "pm_yes" : "pm_no";
+  const instrumentType: "pm_yes" | "pm_no" = "pm_no";
   const entryPrice = polymarketEntryPrice(contract, instrumentType);
   if (entryPrice <= 0 || entryPrice >= 1) return null;
 
@@ -3101,7 +3123,7 @@ function buildOneTouchHighEdgeShadowPosition(
   const expiryDate = new Date(openedAt);
   expiryDate.setDate(expiryDate.getDate() + ONE_TOUCH_HIGH_EDGE_HOLD_DAYS);
 
-  const highConviction = Math.abs(row.edgePts ?? 0) >= ONE_TOUCH_HIGH_EDGE_CONVICTION_EDGE;
+  const edge = sellYesEdgePts(row) ?? Math.abs(row.edgePts ?? 0);
   const sideLabel = instrumentType === "pm_no" ? "NO" : "YES";
   const signalType = instrumentType === "pm_no" ? ONE_TOUCH_HIGH_EDGE_SIGNAL_NO : ONE_TOUCH_HIGH_EDGE_SIGNAL_YES;
   const underlyingPrice = getAssetPrice(latestRow, row.asset) ?? latestSnapshot.spots[row.asset] ?? row.strike;
@@ -3117,7 +3139,7 @@ function buildOneTouchHighEdgeShadowPosition(
     leverage: 1,
     signalType,
     hypothesisId: null,
-    thesis: `[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch ${sideLabel} ${Math.abs(row.edgePts ?? 0).toFixed(1)}pt edge on ${row.asset}; hold ${ONE_TOUCH_HIGH_EDGE_HOLD_DAYS}d to test high-edge repricing. ${instrumentType === "pm_no" ? "NO prioritized by backtest." : "YES tracked separately as weaker exploratory side."}${highConviction ? " Edge >=20pt: higher-conviction bucket, monitor concentration." : ""}`,
+    thesis: `[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge ${edge.toFixed(1)}pt on ${row.asset}, spread ${((row.pmSpread ?? 0) * 100).toFixed(1)}c, liquidity ${Math.round(row.liquidity ?? 0)}. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier.`,
     targetPct: null,
     stopPct: 100,
     expiryDate: expiryDate.toISOString(),
@@ -3141,12 +3163,9 @@ function recordOneTouchHighEdgeShadows(
   if (!latestSnapshot) return 0;
   const today = new Date().toISOString().slice(0, 10);
   const candidates = relativeValueRows
-    .filter(strictOneTouchHighEdgeEligible)
+    .filter(oneTouchNoShadowEligible)
     .filter((row) => !liveCoveredKeys.has(`${row.asset}::${row.marketId}`))
-    .sort((a, b) => {
-      const sideRank = (row: RelativeValueObservation) => row.bestExpression === "sell_yes_or_buy_no" ? 1 : 0;
-      return sideRank(b) - sideRank(a) || Math.abs(b.edgePts ?? 0) - Math.abs(a.edgePts ?? 0);
-    });
+    .sort((a, b) => (sellYesEdgePts(b) ?? 0) - (sellYesEdgePts(a) ?? 0));
   const seenThisRun = new Set<string>();
   let recorded = 0;
 
@@ -3172,7 +3191,7 @@ function recordOneTouchHighEdgeShadows(
       asset: row.asset,
       venue: "polymarket",
       direction: position.direction,
-      confidence: Math.abs(row.edgePts ?? 0) >= ONE_TOUCH_HIGH_EDGE_CONVICTION_EDGE ? 0.7 : 0.5,
+      confidence: Math.min(0.7, 0.45 + ((sellYesEdgePts(row) ?? 0) / 100)),
       thesis: position.thesis,
       marketQuality: polymarketMarketQuality(position, latestSnapshot),
       learningParamsSnapshot: {
@@ -3424,10 +3443,25 @@ function cancelOpenRelativeValueHeatmapShadows(blockedSignals: BlockedSignalShad
   return notes;
 }
 
+function currentOneTouchNoEdgeRow(shadow: BlockedSignalShadow, relativeValueRows: RelativeValueObservation[]): RelativeValueObservation | null {
+  const [eventSlug, marketId] = shadow.position.instrumentId?.split("::") ?? [];
+  if (!eventSlug || !marketId) return null;
+  return relativeValueRows.find((row) => row.eventSlug === eventSlug && row.marketId === marketId) ?? null;
+}
+
+function oneTouchNoEdgeDisappeared(shadow: BlockedSignalShadow, relativeValueRows: RelativeValueObservation[]): boolean {
+  if (shadow.blockedReason !== "one_touch_high_edge_shadow") return false;
+  if (shadow.signalType !== ONE_TOUCH_HIGH_EDGE_SIGNAL_NO || shadow.position.instrumentType !== "pm_no") return false;
+  const row = currentOneTouchNoEdgeRow(shadow, relativeValueRows);
+  if (!row) return true;
+  return !oneTouchNoShadowEligible(row);
+}
+
 function resolveBlockedSignalShadows(
   blockedSignals: BlockedSignalShadow[],
   latestRow: SnapshotRow,
   snapshots: InstrumentSnapshotFile[],
+  relativeValueRows: RelativeValueObservation[] = [],
 ): BlockedSignalShadow[] {
   const resolved: BlockedSignalShadow[] = [];
   const now = new Date().toISOString();
@@ -3441,8 +3475,10 @@ function resolveBlockedSignalShadows(
       || shadow.blockedReason === "one_touch_high_edge_shadow"
       || shadow.blockedReason === "stale_lottery_ticket_shadow";
     let closeReason: ClosedTrade["closeReason"] | null = null;
+    const edgeDisappeared = oneTouchNoEdgeDisappeared(shadow, relativeValueRows);
     if (!expiryOnlyShadow && shadow.position.targetPct !== null && mark.pnlPct >= shadow.position.targetPct) closeReason = "target";
     else if (!expiryOnlyShadow && mark.pnlPct <= -shadow.position.stopPct) closeReason = "stop";
+    else if (edgeDisappeared) closeReason = mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
     else if (new Date(shadow.position.expiryDate) <= new Date()) closeReason = "expiry";
 
     shadow.position.currentPrice = mark.currentPrice;
@@ -3453,6 +3489,10 @@ function resolveBlockedSignalShadows(
 
     shadow.status = "resolved";
     shadow.resolvedAt = now;
+    if (edgeDisappeared) {
+      shadow.thesis = `${shadow.thesis} [CLOSED ${now}: edge_disappeared — Current heatmap no longer has valid NO edge under shadow-promotion gates: sell_yes_edge_pts >= ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}, spread <= ${(ONE_TOUCH_NO_SHADOW_MAX_SPREAD * 100).toFixed(0)}c, liquidity >= ${ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY}.]`;
+      shadow.position.thesis = shadow.thesis;
+    }
     shadow.hypotheticalResult = {
       closeReason,
       exitPrice: mark.currentPrice,
@@ -3622,13 +3662,13 @@ function blockedSignalObservations(summary: BlockedSignalLearningSummary): strin
         notes.push(`STALE_LOTTERY_TICKET_NO shadow is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
       }
     } else if (row.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO || row.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_YES) {
-      const side = row.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO ? "NO-priority" : "YES exploratory";
+      const side = row.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO ? "NO-only sell-YES-edge" : "YES exploratory";
       if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
-        notes.push(`${side} one-touch high-edge shadow is validating: ${row.wouldHaveWon}/${row.resolved} 14d shadows won, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
+        notes.push(`${side} one-touch shadow is validating: ${row.wouldHaveWon}/${row.resolved} shadows won, avg P&L ${row.avgPnlPct.toFixed(2)}%. For new touch-market shadows, keep NO-only, sell_yes_edge_pts >= ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}, spread <= ${(ONE_TOUCH_NO_SHADOW_MAX_SPREAD * 100).toFixed(0)}c, liquidity >= ${ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY}, and exit when edge disappears.`);
       } else if (row.wouldHaveLost >= row.wouldHaveWon + 2) {
-        notes.push(`${side} one-touch high-edge shadow is weak: ${row.wouldHaveLost}/${row.resolved} 14d shadows lost, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
+        notes.push(`${side} one-touch shadow is weak: ${row.wouldHaveLost}/${row.resolved} shadows lost, avg P&L ${row.avgPnlPct.toFixed(2)}%. Do not promote YES contracts or sell_yes_edge_pts < ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}; continue bucketing NO edge size before sizing from edge magnitude.`);
       } else {
-        notes.push(`${side} one-touch high-edge shadow is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
+        notes.push(`${side} one-touch shadow is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%). Use edge as a gate, not a sizing multiplier, until edge-size buckets have more data.`);
       }
     } else if (row.signalType.startsWith("USER_")) {
       if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
@@ -5134,7 +5174,7 @@ function buildEngineState(
 }
 
 function setupIdForSignalType(signalType: string): { setupId: string; setupLabel: string } {
-  if (signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO) return { setupId: "one_touch_high_edge_no", setupLabel: "One-touch high-edge NO" };
+  if (signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO) return { setupId: "one_touch_high_edge_no", setupLabel: "One-touch NO sell-YES edge" };
   if (signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_YES) return { setupId: "one_touch_high_edge_yes_exploratory", setupLabel: "One-touch high-edge YES exploratory" };
   if (signalType === STALE_LOTTERY_TICKET_NO_SIGNAL) return { setupId: "stale_lottery_ticket_no", setupLabel: "Stale lottery ticket NO" };
   if (signalType.includes("USER_PM_IV_TOUCH_CHEAP_YES")) return { setupId: "manual_iv_touch_cheap_yes", setupLabel: "Manual IV-touch cheap YES" };
@@ -5864,8 +5904,9 @@ IMPORTANT RULES:
 - If you suggest parameter changes, keep them incremental and evidence-based
 - Use BLOCKED SIGNAL SHADOW LEARNING to judge whether filters are too strict or appropriately defensive. If a blocked short loses money, the block was directionally correct.
 - Separately evaluate market quality. A blocked trade can be correctly blocked by trend AND still be a bad setup because the Polymarket bid/ask is too wide or liquidity is too thin.
-- Avoid suggesting Polymarket trades when yesSpread > ${(HEATMAP_SHADOW_MAX_SPREAD * 100).toFixed(0)}c, liquidity < ${HEATMAP_SHADOW_MIN_LIQUIDITY}, or marketQuality flags include wide_pm_spread / low_pm_liquidity / missing_bid_ask. Treat those as "avoid due to spread/liquidity", not as clean directional evidence.
+- Avoid suggesting generic Polymarket trades when yesSpread > ${(HEATMAP_SHADOW_MAX_SPREAD * 100).toFixed(0)}c, liquidity < ${HEATMAP_SHADOW_MIN_LIQUIDITY}, or marketQuality flags include wide_pm_spread / low_pm_liquidity / missing_bid_ask. Treat those as "avoid due to spread/liquidity", not as clean directional evidence. The touch-market shadow-promotion rule below has its own stricter liquidity and explicit 3c max-spread gate from the dedicated backtest.
 - Use RELATIVE-VALUE HEATMAP OBSERVATIONS to look for clean cross-venue edges. If you suggest a trade because of this section, say "relative-value heatmap" in the thesis so its performance can be reviewed.
+- Touch-market shadow-promotion guidance from May 14+ backtest: only promote NO-side touch trades. Hard avoid YES contracts and NO trades with sell_yes_edge_pts < ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}. Require spread <= ${(ONE_TOUCH_NO_SHADOW_MAX_SPREAD * 100).toFixed(0)}c and liquidity >= ${ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY}. Exit when sell_yes_edge_pts disappears or falls below the gate. Why: spread-filtered generic NO was weak (-2.92% avg, -76.50c total one-share P&L); positive sell-YES edge NO improved materially (-0.38% avg, +34.60c); adding edge-disappearance exits turned it positive (+2.44% avg, +81.55c), a +158.05c total-cent improvement versus generic NO. Treat edge size as a gate for now, but keep evaluating edge-size buckets because more data may show edge magnitude is predictive.
 - For upside "hit/reach" contracts, use underlyingCapYes and pmToUnderlyingCapRatio to interpret sentiment against the underlying payoff cap. A ratio above 1.0 means PM YES is richer than the spot/strike cap; 0.85-1.0 means very bullish cap-adjacent pricing; below ~0.35 means weak sentiment relative to the underlying upside payoff.
 - Supported hypothesis aggregate keys for this cap-ratio setup: btc_pm_underlying_cap_ratio_max/min/avg, hype_pm_underlying_cap_ratio_max/min/avg, gold_pm_underlying_cap_ratio_max/min/avg, oil_pm_underlying_cap_ratio_max/min/avg, and the matching *_edge_pts_max/min/avg keys. Add _tight before the comparison suffix to require spread <= ${(UNDERLYING_CAP_ENTRY_MAX_SPREAD * 100).toFixed(0)}c and liquidity >= ${UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY}, e.g. btc_pm_underlying_cap_ratio_max_tight > ${UNDERLYING_CAP_BUY_NO_RATIO.toFixed(2)} for buy-NO over-cap tests or btc_pm_underlying_cap_ratio_min_tight < ${UNDERLYING_CAP_BUY_YES_RATIO.toFixed(2)} for buy-YES cheap-vs-cap tests.
 - Treat GOLD/OIL settle-at bucket markets as drifting Polymarket bucket-forwards / volatility shape indicators, not fair-value anchors for spot. Columns named *_pm_settle_ev are probability-weighted settlement-bucket values from Polymarket; they have their own drift and may stay far from spot for long periods. Do NOT argue that spot should revert to *_pm_settle_ev, and do NOT cite a static PM/spot gap as new close evidence. Anti-pattern: "oil_pm_settle_ev is $87 while spot is $97, so spot should drift to $87" — wrong unless oil_pm_settle_ev itself moved materially since the trade opened and belongs to the signal family under review. Supported aggregate keys: gold_pm_settle_yes_sum_max/min/avg, gold_pm_settle_overround_max/min/avg, gold_pm_settle_tail_yes_max/min/avg, gold_pm_settle_skew_yes_max/min/avg, plus oil_* equivalents. yes_sum/overround measure bucket-price breadth, tail_yes measures total top+bottom tail demand, and skew_yes measures upside minus downside tail demand.
@@ -6434,7 +6475,7 @@ async function main() {
     closedTrades.push(...scannerClosedTrades);
   }
 
-  const resolvedBlockedSignals = resolveBlockedSignalShadows(blockedSignals, latestRow, instrumentSnapshots);
+  const resolvedBlockedSignals = resolveBlockedSignalShadows(blockedSignals, latestRow, instrumentSnapshots, relativeValueRows);
   if (resolvedBlockedSignals.length > 0) {
     console.log(`\n  Resolved ${resolvedBlockedSignals.length} blocked-signal shadows:`);
     for (const shadow of resolvedBlockedSignals.slice(-6)) {
@@ -6462,7 +6503,7 @@ async function main() {
   }
   const newOneTouchHighEdgeShadows = recordOneTouchHighEdgeShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals, oneTouchHighEdgeLiveCoveredKeys);
   if (newOneTouchHighEdgeShadows > 0) {
-    console.log(`\n  Opened ${newOneTouchHighEdgeShadows} one-touch high-edge shadow trades.`);
+    console.log(`\n  Opened ${newOneTouchHighEdgeShadows} one-touch NO edge shadow trades.`);
   }
   const newStaleLotteryTicketNoShadows = recordStaleLotteryTicketNoShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals);
   if (newStaleLotteryTicketNoShadows > 0) {
