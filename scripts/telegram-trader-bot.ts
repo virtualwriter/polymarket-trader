@@ -175,6 +175,7 @@ function commandHelp(): string {
     "/open - live open positions",
     "/heatmap <asset> - top heatmap rows for an asset",
     "/noedge - open shadow trades whose current held-side edge is weak/inverted",
+    "/shadows [open|resolved|all|<instrument_id>] [asset] - shadow trade history",
     "/why_no_trade <asset> - explain blockers from current artifacts, no LLM",
     "/ask <question> - explicit LLM answer using current trader artifacts",
     "/review <asset> - explicit LLM review for one asset",
@@ -274,6 +275,79 @@ function noEdgeReport(): string {
     ...rows.map(({ position, heldSide, heldEdge, pnlPct, row }) =>
       `- ${str(position.instrumentId)} ${str(row.asset)} ${heldSide} heldEdge=${heldEdge.toFixed(2)}pts P&L=${pnlPct >= 0 ? "+" : ""}${pnlPct.toFixed(1)}% best=${str(row.best_expression)}`
     ),
+  ].join("\n");
+}
+
+function shadowSortTime(shadow: JsonObject): number {
+  const candidates = [
+    str(shadow.resolvedAt),
+    str(obj(shadow.position).openedAt),
+    str(shadow.blockedAt),
+  ];
+  for (const candidate of candidates) {
+    const parsed = Date.parse(candidate);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  return 0;
+}
+
+function shadowLine(shadow: JsonObject): string {
+  const position = obj(shadow.position);
+  const result = obj(shadow.hypotheticalResult);
+  const mark = markShadowExit(shadow);
+  const status = str(shadow.status, "?");
+  const resultPnlPct = result.pnlPct !== undefined ? fmtPct(result.pnlPct) : `${mark.pnlPct >= 0 ? "+" : ""}${mark.pnlPct.toFixed(2)}% mark`;
+  const closeReason = str(result.closeReason);
+  const time = status === "resolved" ? str(shadow.resolvedAt, "n/a") : str(position.openedAt, str(shadow.blockedAt, "n/a"));
+  return [
+    `- ${time.slice(0, 16)}`,
+    status,
+    str(shadow.asset, "?"),
+    str(shadow.signalType, "?"),
+    str(shadow.blockedReason, "?"),
+    str(position.instrumentId, "n/a"),
+    `entry=${fmtNum(position.entryPrice, 4)}`,
+    `mark=${fmtNum(position.currentPrice, 4)}`,
+    `pnl=${resultPnlPct}`,
+    closeReason ? `reason=${closeReason}` : "",
+  ].filter(Boolean).join(" | ");
+}
+
+function shadowsReport(args: string[]): string {
+  const shadows = readJson<JsonObject[]>(dataPath("blocked-signals.json"), []);
+  const first = args[0]?.trim();
+  const second = args[1]?.trim();
+  const modes = new Set(["open", "resolved", "all"]);
+  const mode = first && modes.has(first.toLowerCase()) ? first.toLowerCase() : null;
+  const instrument = first && !mode ? first : null;
+  const asset = (mode ? second : second)?.toUpperCase();
+
+  if (first === "help") {
+    return [
+      "Usage:",
+      "/shadows open [asset]",
+      "/shadows resolved [asset]",
+      "/shadows all [asset]",
+      "/shadows <instrument_id>",
+    ].join("\n");
+  }
+
+  let rows = shadows;
+  if (mode && mode !== "all") rows = rows.filter((shadow) => str(shadow.status) === mode);
+  if (instrument) rows = rows.filter((shadow) => shadowInstrumentMatches(str(obj(shadow.position).instrumentId), instrument));
+  if (asset) rows = rows.filter((shadow) => str(shadow.asset).toUpperCase() === asset);
+
+  rows = rows.slice().sort((a, b) => shadowSortTime(b) - shadowSortTime(a));
+  const openCount = shadows.filter((shadow) => str(shadow.status) === "open").length;
+  const resolvedCount = shadows.filter((shadow) => str(shadow.status) === "resolved").length;
+  const scope = instrument ? instrument : [mode ?? "recent", asset].filter(Boolean).join(" ");
+  if (rows.length === 0) return `No shadow trades found for ${scope || "query"}. Open=${openCount}, resolved=${resolvedCount}.`;
+
+  const limit = instrument ? 20 : 15;
+  return [
+    `Shadow trades: ${scope || "recent"} (${rows.length} match${rows.length === 1 ? "" : "es"}; showing ${Math.min(limit, rows.length)})`,
+    `Totals: open=${openCount}, resolved=${resolvedCount}`,
+    ...rows.slice(0, limit).map(shadowLine),
   ].join("\n");
 }
 
@@ -626,6 +700,8 @@ async function handleCommand(chatId: string, text: string): Promise<string> {
       return heatmapReport(args[0]);
     case "/noedge":
       return noEdgeReport();
+    case "/shadows":
+      return shadowsReport(args);
     case "/why_no_trade":
       return whyNoTradeReport(args[0]);
     case "/ask":
