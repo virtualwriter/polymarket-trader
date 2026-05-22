@@ -359,6 +359,7 @@ function manualTouchPnlSummary(): JsonObject {
     .filter((shadow) => str(shadow.signalType).startsWith("USER_PM_IV_TOUCH_"));
   const bySignal: Record<string, JsonObject> = {};
   const byAsset: Record<string, JsonObject> = {};
+  const bySource: Record<string, JsonObject> = {};
   let wins = 0;
   let pnl = 0;
   let pnlPct = 0;
@@ -381,6 +382,7 @@ function manualTouchPnlSummary(): JsonObject {
     pnlPct += rowPnlPct;
     addBucket(bySignal, str(shadow.signalType, "unknown"), rowPnl, rowPnlPct);
     addBucket(byAsset, str(shadow.asset, "unknown"), rowPnl, rowPnlPct);
+    addBucket(bySource, str(shadow.entrySource, "legacy_unspecified"), rowPnl, rowPnlPct);
   }
 
   function finalize(bucket: Record<string, JsonObject>): Record<string, JsonObject> {
@@ -402,6 +404,7 @@ function manualTouchPnlSummary(): JsonObject {
     losses: shadows.length - wins,
     totalPnl: Number(pnl.toFixed(4)),
     avgPnlPct: shadows.length > 0 ? Number((pnlPct / shadows.length).toFixed(2)) : 0,
+    bySource: finalize(bySource),
     bySignal: finalize(bySignal),
     byAsset: finalize(byAsset),
     latest: shadows
@@ -430,11 +433,18 @@ function manualTouchPnlReport(): string {
   if (count === 0) return "No resolved manual IV-touch shadow trades found.";
   const bySignal = obj(summary.bySignal);
   const byAsset = obj(summary.byAsset);
+  const bySource = obj(summary.bySource);
   const lines = [
     "Manual IV-touch shadow P&L",
     `Resolved: ${count}; wins=${fmtNum(summary.wins, 0)} losses=${fmtNum(summary.losses, 0)}`,
     `Total P&L: $${fmtNum(summary.totalPnl, 4)}`,
     `Avg P&L/trade: ${fmtPct(summary.avgPnlPct)}`,
+    "",
+    "By source:",
+    ...Object.entries(bySource).map(([key, value]) => {
+      const row = obj(value);
+      return `- ${key}: ${fmtNum(row.wins, 0)}/${fmtNum(row.count, 0)} wins, P&L $${fmtNum(row.pnl, 4)}, avg ${fmtPct(row.avgPnlPct)}`;
+    }),
     "",
     "By signal:",
     ...Object.entries(bySignal).map(([key, value]) => {

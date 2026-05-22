@@ -81,6 +81,8 @@ def add_shadow(payload: Dict[str, Any]) -> Dict[str, Any]:
         payload["signalType"],
         "--reason",
         payload["reason"],
+        "--entry-source",
+        "heatmap_button",
     ]
     if payload.get("heatmapRowSnapshot"):
         command.extend(

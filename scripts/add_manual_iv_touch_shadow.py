@@ -239,6 +239,12 @@ def main() -> None:
     parser.add_argument("--signal-type", default="", help="Manual shadow signal type")
     parser.add_argument("--reason", default="", help="Human thesis/reason")
     parser.add_argument("--heatmap-row-json", default="", help="Full heatmap row snapshot JSON")
+    parser.add_argument(
+        "--entry-source",
+        choices=["heatmap_button", "manual_cli"],
+        default="manual_cli",
+        help="Origin of this manual shadow request",
+    )
     parser.add_argument("--data-dir", type=Path, default=DATA_DIR)
     parser.add_argument("--force", action="store_true", help="Allow duplicate open shadows on the same contract/side")
     parser.add_argument("--dry-run", action="store_true", help="Fetch and print the live quote without writing state")
@@ -289,6 +295,7 @@ def main() -> None:
         "status": "open",
         "blockedAt": now,
         "blockedReason": "manual_shadow_trade",
+        "entrySource": args.entry_source,
         "signalType": signal_type,
         "asset": asset,
         "venue": "polymarket",
