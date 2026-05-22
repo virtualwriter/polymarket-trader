@@ -15093,3 +15093,37 @@ The BTC-GOLD correlation flip (from -0.24 to +0.66 over 24h) is notable. Both as
 
 ---
 
+### 2026-05-22 02:29 UTC
+
+**Portfolio:** $99.48 total | Cash $96.48 | 3 open | P&L $0.4834 | 53% win rate (153 trades)
+
+**Closed 1 trades:**
+- ✅ HYPE short via hyperliquid/hl_perp [HL HYPE perp] (FUNDING_EXTREME_LONG) → breakeven_stop: +$0.0022 (0.2%, market 0.0022, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_cl_pc_ratio = 2.404 is 3.4 std devs from mean since 2026-04-28 (1.11 ± 0.38)
+- [anomaly] hype_spot = 57.847 is 3.3 std devs from mean (43.00 ± 4.49)
+- [anomaly] hype_pm_ev = 57.22 is 3.2 std devs from mean (45.44 ± 3.74)
+- [anomaly] hype_hl_oi = 1293789941 is 2.8 std devs from mean (900082692.50 ± 142211824.62)
+- [anomaly] hype_med_max = 74.3 is 2.4 std devs from mean (59.72 ± 6.20)
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 118 (52 wins / 66 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/11 shadows would have won, avg P&L 23.29%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have edge compressed but trade lost money (-4.65%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO GOLD short via polymarket would have closed with thesis validated profitably (+7.32%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO BTC short via polymarket would have closed with thesis validated profitably (+5.68%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (4 recurring signals seen within 12h); 2.0h since last call; daily budget 1/6; next scheduled 2026-05-22T08:29:11.192Z). Mechanical cycle ran normally._
+
+---
+
