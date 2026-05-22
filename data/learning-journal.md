@@ -15627,3 +15627,51 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 12h); 6.0h
 
 ---
 
+### 2026-05-22 19:30 UTC
+
+**Portfolio:** $99.46 total | Cash $95.46 | 4 open | P&L $0.4621 | 53% win rate (154 trades)
+
+**Opened 1 positions:**
+- OIL short @ $0.0010000000000000009 via polymarket/pm_no [what-price-will-wti-hit-in-may-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $95 in May?] (ONE_TOUCH_HIGH_EDGE_NO)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_funding_ann = -48.49 is -3.6 std devs from mean (5.29 ± 15.04)
+- [anomaly] hype_pm_iv = 87.6 is 3.3 std devs from mean (65.29 ± 6.79)
+- [anomaly] hype_med_max = 83.2 is 3.3 std devs from mean (60.31 ± 7.01)
+- [anomaly] hype_pm_ev = 57.2 is 2.7 std devs from mean (45.81 ± 4.26)
+- [anomaly] hype_spot = 55.4 is 2.3 std devs from mean (43.45 ± 5.13)
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 122 (55 wins / 67 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/12 shadows would have won, avg P&L 23.68%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW HYPE long via polymarket would have closed with thesis validated profitably (+6.90%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT HYPE short via polymarket would have edge compressed but trade lost money (-1.45%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO GOLD short via polymarket would have closed with thesis validated profitably (+27.91%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+19.57%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. HYPE EXTREME FUNDING EVENT: The most notable signal is HYPE funding crashing to -48.49% annualized (-3.6σ), coinciding with PM IV at 87.6 (3.3σ high) and spot declining to 55.4. This is a textbook forced-liquidation signature. The hype_funding_oi_long_bounce family (H-210, H-190, H-220) has shown 100% win rate over 2 prior tests in less extreme conditions. The current setup is the strongest trigger observed. However, I cannot open a live trade here because: (a) LLM_HYPOTHESIS is disabled for live trading, (b) the promoted H-521 requires spot within 6% of 7d high which is not met, and (c) FUNDING_EXTREME_SHORT is the closest eligible signal but OIL is disabled for that family. This is a missed opportunity that highlights the gap between shadow-validated setups and live-eligible signals. The HYPE bounce family needs more shadow tests to reach promotion threshold.
+
+2. BTC OI EXPANSION INTO WEAKNESS: BTC OI surged from ~2.15B to 2.30B while spot declined from 77,500 to 76,328. This is a bearish divergence — new leveraged positioning building into weakness. The existing BTC NO position (T-1778718867328-fb7r) is adversely affected by spot moving toward $75k, but the one-touch NO on $55k still has substantial buffer. The -5.66% PnL on the PM contract reflects the spot decline but the thesis (BTC stays above $55k through year-end) remains intact with spot at 76,328.
+
+3. GOLD POSITION EXPIRING: T-1778916565173-2wqk expires in 12 hours. Gold funding has normalized from -44.78% to +5.59% (thesis fully played out on the funding leg), but spot at 4,510 is -0.58% from entry at 4,536. The 4% target was not reached. The breakeven arm was not triggered (peak was only +1.17%, below the +1.5% arm threshold). This will likely expire at a small loss unless gold rallies in the next 12 hours. The funding reversal thesis worked (funding normalized completely) but spot didn't follow through — a pattern worth noting for FUNDING_EXTREME_SHORT calibration.
+
+4. OIL POSITION: T-1779388148375-mzu8 is at +0.06% with 95 hours remaining. The P/C ratio has normalized dramatically from 2.404 to 1.276 (thesis partially validated), but spot has pulled back from the 98.82 high to 96.70. The put-buying panic is unwinding as expected. The position needs spot to recover toward 100.50 for the 4% target. Oil macro score remains at 64 (DECLINING signal) which is a headwind, but the contrarian P/C setup was the entry thesis.
+
+5. RELATIVE VALUE HEATMAP: The heatmap shows several interesting edges but most are in the 'cheap vs underlying cap bearish' category for far-OTM upside contracts — these are structural artifacts of PM pricing far-OTM options cheaply relative to the underlying payoff cap, not actionable edges. The HYPE $66 YES (26pt edge, near_underlying_cap_bullish) and HYPE $100 YES (60pt edge) are notable but HYPE liquidity is thin and spreads are wide. The BTC $90k YES (15.3pt edge) and BTC $100k YES (13pt edge) are more liquid but these are long-dated year-end contracts where the model may be overestimating touch probability given current bearish momentum.
+
+6. MACRO SHIFT: The macro composite has dropped to 44 (BEARISH) from 46-47 earlier in the session. Fed cut probability has declined to 29.5% with median first cut pushed to December 2026. This is a headwind for risk assets. The BTC outperform metrics remain at 31.5% vs S&P500 and 34.5% vs gold — both below 50%, suggesting the market does not expect BTC to outperform traditional assets through year-end.
+
+7. NO NEW TRADES: With 3 open positions and $96.46 cash, the portfolio is near capacity. The GOLD position expires in 12 hours, which will free up capacity. The most compelling setup (HYPE bounce) is not eligible for live trading under current signal rules. Maintaining current positions and monitoring for GOLD expiry.
+
+---
+
