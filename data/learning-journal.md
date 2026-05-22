@@ -15534,3 +15534,34 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 12h); 3.0h
 
 ---
 
+### 2026-05-22 16:29 UTC
+
+**Portfolio:** $99.46 total | Cash $96.46 | 3 open | P&L $0.4621 | 53% win rate (154 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 84.3 is 3.5 std devs from mean (60.18 ± 6.81)
+- [anomaly] hype_pm_iv = 86.4 is 3.2 std devs from mean (65.18 ± 6.64)
+- [anomaly] hype_pm_ev = 57.81 is 2.9 std devs from mean (45.74 ± 4.17)
+- [anomaly] hype_spot = 57.127 is 2.7 std devs from mean (43.38 ± 5.05)
+- [anomaly] btc_opt_iv_90d = 20.4 is -2.6 std devs from mean (39.00 ± 7.08)
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 122 (55 wins / 67 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/12 shadows would have won, avg P&L 23.68%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW HYPE long via polymarket would have closed with thesis validated profitably (+6.90%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT HYPE short via polymarket would have edge compressed but trade lost money (-1.45%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO GOLD short via polymarket would have closed with thesis validated profitably (+27.91%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+19.57%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 12h); 4.0h since last call; daily budget 3/6; next scheduled 2026-05-22T22:29:13.521Z). Mechanical cycle ran normally._
+
+---
+
