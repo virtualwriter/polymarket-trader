@@ -15252,3 +15252,48 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 12h); 6.0h
 
 ---
 
+### 2026-05-22 07:30 UTC
+
+**Portfolio:** $99.48 total | Cash $96.48 | 3 open | P&L $0.4834 | 53% win rate (153 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_cl_pc_ratio = 2.404 is 3.1 std devs from mean since 2026-04-28 (1.13 ± 0.41)
+- [anomaly] hype_spot = 57.467 is 3.1 std devs from mean (43.14 ± 4.68)
+- [anomaly] hype_pm_ev = 57.19 is 3.0 std devs from mean (45.55 ± 3.89)
+- [anomaly] hype_med_max = 76.7 is 2.6 std devs from mean (59.87 ± 6.36)
+- [anomaly] hype_hl_oi = 1283172926 is 2.6 std devs from mean (903689738.38 ± 146368211.85)
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 118 (52 wins / 66 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/11 shadows would have won, avg P&L 23.29%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have edge compressed but trade lost money (-4.65%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO GOLD short via polymarket would have closed with thesis validated profitably (+7.32%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO BTC short via polymarket would have closed with thesis validated profitably (+5.68%)
+
+**LLM analysis:**
+Key observations this cycle:
+
+1. OPEN POSITIONS STATUS: All three positions are mechanical-exit owned and no LLM closes are warranted. The GOLD long (T-2wqk) expires in 24h at -0.23% — the funding thesis fully played out (funding normalized from -44.78% to +5.48%) but spot drifted slightly against us. The OIL long (T-mzu8) is performing well at +1.47% with the PC ratio anomaly intact at 2.404 (3.1σ). The BTC PM NO (T-fb7r) is at -1.89% with BTC spot having drifted down from 79,548 to 77,457 since entry — this is adverse for the one-touch NO on $55k dip, but spot remains well above the $55k strike with 137h remaining. The BTC funding flip to -3.45% is worth monitoring as a potential early sign of short-side pressure building.
+
+2. BTC-GOLD CORRELATION FLIP: The 24h correlation has shifted from -0.24 to +0.80, which is at the 77th percentile of recent daily values. This positive correlation regime suggests both assets are moving together on macro/risk-on flows rather than as safe-haven vs risk divergence. This is relevant for portfolio concentration — both the BTC PM NO and GOLD HL long are now positively correlated, meaning a macro shock could affect both simultaneously.
+
+3. HYPE POSITIONING: HYPE at 3.1σ above its mean with OI at 2.6σ above mean represents a crowded long setup. However, OI has been declining from ~1.37B peak to ~1.28B, which is the OI contraction pattern associated with H-003/H-010 (liquidation short) rather than H-521 (breakout continuation). The funding at 10.95% is elevated but not extreme. No clean entry signal in either direction given the mixed OI/funding picture.
+
+4. RELATIVE VALUE HEATMAP: The heatmap shows several interesting signals. ETH $3,000 May contract has a 17.9pt edge (buy YES at 0.25%) and ETH $2,800 May has a 19.5pt edge — these are extreme_perp_funding flagged and represent the model pricing ETH much higher than PM implies. However, ETH is not in the live production allowlist and these are shadow/research signals only. The HYPE $100 Dec contract shows a 66pt edge (buy YES at 30.5% vs model 97%) — this is the existing shadow position being tracked. The BTC $55k dip NO (existing position) shows a -17.3pt edge on YES, confirming the NO position is correctly held.
+
+5. OIL PC RATIO PERSISTENCE: The oil_cl_pc_ratio has been locked at 2.404 for 10+ consecutive snapshots. This stickiness is unusual and may indicate the ratio is a data artifact or that the put-heavy positioning is genuinely structural (hedging against downside given macro DECLINING signal and oil_p_settle_above_current at only 31.5%). The existing long is working (+1.47%) and the mechanical target at +4% should handle the exit.
+
+6. MACRO SHIFT: The macro_composite moved from 44 (BEARISH) to 46 (NEUTRAL) over the observation window, with oil_macro_score improving from 63 to 69. This is a mild positive shift but not enough to trigger MACRO_MOMENTUM_UP (which requires 4pt threshold). The fed_median_first_cut oscillated between September and December 2026 — this instability in rate expectations is consistent with the VERY HAWKISH fed_score of 9.
+
+7. NO NEW TRADES: With 3 open positions and $96.48 cash, the portfolio is appropriately positioned. The GOLD position expires in 24h, which will free up capacity. No clean new signals meet the production allowlist criteria (ONE_TOUCH_HIGH_EDGE_NO, PC_RATIO_EXTREME_HIGH/LOW, FUNDING_EXTREME_SHORT/LONG, H-521, H-523) with sufficient edge and market quality to warrant entry at this time. The BTC PM IV compression (H-523) is borderline but spot is near the lower bound of the 5% window from 7d high, reducing conviction.
+
+---
+
