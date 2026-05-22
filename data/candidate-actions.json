@@ -1,11 +1,6 @@
 {
-  "generatedAt": "2026-05-22T20:29:15.904Z",
-  "mechanicalExits": [
-    {
-      "positionId": "T-1779478230785-kc6x",
-      "reason": "stop"
-    }
-  ],
+  "generatedAt": "2026-05-22T22:29:19.360Z",
+  "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
     {
@@ -27,11 +22,31 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.528686437,
-      "confidence": 0.22247786127006247,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.9pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.522232812,
+      "confidence": 0.21976209519975,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.7pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 75914,
+      "entryPrice": 75754,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "1339767",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.5204626433333334,
+      "confidence": 0.21901718609770834,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.6pt edge on BTC; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 75754,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -51,7 +66,7 @@
       "confidence": 0.03562577995362979,
       "thesis": "OIL P/C ratio 1.24 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 96.22,
+      "entryPrice": 97.66,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
@@ -114,10 +129,10 @@
       "reason": "Rule-based signal exits require approved category and signal-family evidence."
     },
     {
-      "positionId": "T-1779478230785-kc6x",
-      "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "OIL",
-      "venue": "polymarket",
+      "positionId": "T-1779481832300-m49c",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "asset": "GOLD",
+      "venue": "spot",
       "direction": "short",
       "allowed": true,
       "allowedCategories": [
@@ -126,11 +141,8 @@
         "hard_portfolio_risk"
       ],
       "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_pm_iv",
-        "oil_opt_iv_30d",
-        "oil_opt_iv_90d",
-        "oil_hl_funding_ann"
+        "gold_gc_spot",
+        "gold_gld_pc_ratio"
       ],
       "reason": "Rule-based signal exits require approved category and signal-family evidence."
     }

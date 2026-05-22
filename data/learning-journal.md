@@ -15724,3 +15724,37 @@ Key observations:
 
 ---
 
+### 2026-05-22 22:29 UTC
+
+**Portfolio:** $98.46 total | Cash $94.46 | 4 open | P&L $-0.5379 | 52% win rate (155 trades)
+
+**Closed 1 trades:**
+- ❌ OIL short via polymarket/pm_no [what-price-will-wti-hit-in-may-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $95 in May?] (ONE_TOUCH_HIGH_EDGE_NO) → stop: $-1.0000 (-100.0%, market -1.0000, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 79.1 is 2.6 std devs from mean (60.42 ± 7.14)
+- [anomaly] hype_pm_ev = 56.64 is 2.5 std devs from mean (45.87 ± 4.32)
+- [anomaly] hype_pm_iv = 81.5 is 2.3 std devs from mean (65.39 ± 6.90)
+- [anomaly] hype_spot = 55.528 is 2.3 std devs from mean (43.52 ± 5.20)
+- [anomaly] btc_opt_iv_90d = 24.2 is -2.0 std devs from mean (38.85 ± 7.22)
+
+**Blocked signal learning:**
+- Open blocked shadows: 60
+- Resolved blocked shadows: 123 (55 wins / 68 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT HYPE short via polymarket would have edge compressed but trade lost money (-1.45%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO GOLD short via polymarket would have closed with thesis validated profitably (+27.91%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+19.57%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have edge compressed but trade lost money (-14.37%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (4 recurring signals seen within 12h); 2.0h since last call; daily budget 5/6; next scheduled 2026-05-23T04:29:19.421Z). Mechanical cycle ran normally._
+
+---
+
