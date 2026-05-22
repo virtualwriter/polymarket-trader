@@ -15221,3 +15221,34 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 12h); 5.0h
 
 ---
 
+### 2026-05-22 06:29 UTC
+
+**Portfolio:** $99.48 total | Cash $96.48 | 3 open | P&L $0.4834 | 53% win rate (153 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 2 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 58.011 is 3.2 std devs from mean (43.11 ± 4.65)
+- [anomaly] oil_cl_pc_ratio = 2.404 is 3.1 std devs from mean since 2026-04-28 (1.13 ± 0.41)
+- [anomaly] hype_pm_ev = 57.61 is 3.1 std devs from mean (45.53 ± 3.86)
+- [anomaly] oil_opt_fwd_90d = 172.2 is 3.0 std devs from mean since 2026-04-28 (91.19 ± 27.21)
+- [anomaly] hype_hl_oi = 1297821203 is 2.7 std devs from mean (902983065.77 ± 145584610.29)
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 118 (52 wins / 66 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/11 shadows would have won, avg P&L 23.29%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have edge compressed but trade lost money (-4.65%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO GOLD short via polymarket would have closed with thesis validated profitably (+7.32%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO BTC short via polymarket would have closed with thesis validated profitably (+5.68%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (3 recurring signals seen within 12h); 6.0h since last call; daily budget 1/6; next scheduled 2026-05-22T12:29:07.712Z). Mechanical cycle ran normally._
+
+---
+
