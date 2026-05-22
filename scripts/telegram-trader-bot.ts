@@ -1,0 +1,722 @@
+/**
+ * Telegram command bot for the paper trader.
+ *
+ * This is intentionally a narrow control layer around existing state files. It
+ * does not run the trader, call the LLM, or execute arbitrary shell commands.
+ */
+import { config } from "dotenv";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+import { dirname, join, resolve } from "path";
+import { fileURLToPath } from "url";
+
+type JsonObject = Record<string, unknown>;
+
+type TelegramMessage = {
+  message_id: number;
+  chat: { id: number | string };
+  text?: string;
+};
+
+type TelegramUpdate = {
+  update_id: number;
+  message?: TelegramMessage;
+};
+
+type PendingAction = {
+  id: string;
+  type: "close_shadow";
+  chatId: string;
+  instrumentId: string;
+  reason: string;
+  createdAt: string;
+  expiresAt: string;
+};
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const ROOT = resolve(__dirname, "..");
+const DATA_DIR = join(ROOT, "data");
+const RUNTIME_DIR = join(ROOT, ".runtime");
+const ACTIONS_FILE = join(RUNTIME_DIR, "telegram-actions.json");
+const OFFSET_FILE = join(RUNTIME_DIR, "telegram-offset.json");
+const TELEGRAM_API = "https://api.telegram.org";
+const MAX_TELEGRAM_MESSAGE = 3900;
+const TELEGRAM_LLM_MAX_CONTEXT_CHARS = Number(process.env.TELEGRAM_LLM_MAX_CONTEXT_CHARS ?? 24_000);
+const TELEGRAM_LLM_MAX_TOKENS = Number(process.env.TELEGRAM_LLM_MAX_TOKENS ?? 900);
+const ANTHROPIC_REQUEST_TIMEOUT_MS = Number(process.env.ANTHROPIC_REQUEST_TIMEOUT_MS ?? 120_000);
+
+config({ path: resolve(ROOT, ".env") });
+config({ path: resolve(ROOT, "config.env") });
+
+function readJson<T>(path: string, fallback: T): T {
+  if (!existsSync(path)) return fallback;
+  try {
+    return JSON.parse(readFileSync(path, "utf8")) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+function writeJson(path: string, data: unknown): void {
+  mkdirSync(dirname(path), { recursive: true });
+  writeFileSync(path, `${JSON.stringify(data, null, 2)}\n`);
+}
+
+function obj(value: unknown): JsonObject {
+  return value && typeof value === "object" && !Array.isArray(value) ? value as JsonObject : {};
+}
+
+function arr(value: unknown): JsonObject[] {
+  return Array.isArray(value) ? value.map(obj) : [];
+}
+
+function str(value: unknown, fallback = ""): string {
+  return typeof value === "string" ? value : fallback;
+}
+
+function num(value: unknown): number | null {
+  if (typeof value === "number" && Number.isFinite(value)) return value;
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) return parsed;
+  }
+  return null;
+}
+
+function fmtNum(value: unknown, digits = 2): string {
+  const parsed = num(value);
+  return parsed === null ? "n/a" : parsed.toFixed(digits);
+}
+
+function fmtPct(value: unknown): string {
+  const parsed = num(value);
+  return parsed === null ? "n/a" : `${parsed >= 0 ? "+" : ""}${parsed.toFixed(2)}%`;
+}
+
+function utcNow(): string {
+  return new Date().toISOString();
+}
+
+function loadActions(): PendingAction[] {
+  const actions = readJson<PendingAction[]>(ACTIONS_FILE, []);
+  const now = Date.now();
+  return actions.filter((action) => Date.parse(action.expiresAt) > now);
+}
+
+function saveActions(actions: PendingAction[]): void {
+  writeJson(ACTIONS_FILE, actions);
+}
+
+function loadOffset(): number {
+  return num(readJson<JsonObject>(OFFSET_FILE, {}).offset) ?? 0;
+}
+
+function saveOffset(offset: number): void {
+  writeJson(OFFSET_FILE, { offset, updatedAt: utcNow() });
+}
+
+function actionId(): string {
+  return `tg-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+}
+
+function dataPath(file: string): string {
+  return join(DATA_DIR, file);
+}
+
+function heatmapPath(): string {
+  const latest = join(ROOT, "relative-value", "latest.json");
+  const live = join(ROOT, "relative-value", "latest-live.json");
+  const latestGenerated = Date.parse(str(readJson<JsonObject>(latest, {}).generatedAt));
+  const liveGenerated = Date.parse(str(readJson<JsonObject>(live, {}).generatedAt));
+  if (existsSync(live) && Number.isFinite(liveGenerated) && (!Number.isFinite(latestGenerated) || liveGenerated >= latestGenerated)) {
+    return live;
+  }
+  return latest;
+}
+
+function findHeatmapRow(instrumentId: string): JsonObject | null {
+  const [eventSlug, marketId] = instrumentId.split("::");
+  if (!eventSlug || !marketId) return null;
+  const heatmap = readJson<JsonObject>(heatmapPath(), {});
+  return arr(heatmap.rows).find((row) =>
+    str(row.event_slug) === eventSlug && str(row.market_id) === marketId
+  ) ?? null;
+}
+
+function shadowInstrumentMatches(positionInstrumentId: string, target: string): boolean {
+  if (!target) return false;
+  if (target.includes("::")) return positionInstrumentId === target;
+  return positionInstrumentId.startsWith(`${target}::`);
+}
+
+function markShadowExit(shadow: JsonObject): { exitPrice: number; pnl: number; pnlPct: number } {
+  const position = obj(shadow.position);
+  const entry = num(position.entryPrice) ?? 0;
+  const current = num(position.currentPrice) ?? entry;
+  const size = num(position.size) ?? 0;
+  const shares = entry > 0 ? size / entry : 0;
+  const pnl = shares * (current - entry) + (num(position.fundingPnlAccrued) ?? 0);
+  const pnlPct = size > 0 ? (pnl / size) * 100 : 0;
+  return { exitPrice: current, pnl, pnlPct };
+}
+
+function humanPosition(position: JsonObject): string {
+  const asset = str(position.asset, "?");
+  const direction = str(position.direction, "?");
+  const venue = str(position.venue, "?");
+  const signalType = str(position.signalType, "?");
+  return `${asset} ${direction} ${venue}/${signalType}`;
+}
+
+function commandHelp(): string {
+  return [
+    "Trader bot commands:",
+    "/status - portfolio, freshness, candidates",
+    "/open - live open positions",
+    "/heatmap <asset> - top heatmap rows for an asset",
+    "/noedge - open shadow trades whose current held-side edge is weak/inverted",
+    "/why_no_trade <asset> - explain blockers from current artifacts, no LLM",
+    "/ask <question> - explicit LLM answer using current trader artifacts",
+    "/review <asset> - explicit LLM review for one asset",
+    "/llm_budget - latest local LLM state if present",
+    "/hourly_status - latest trader artifact freshness",
+    "/close_shadow <instrument_id> [reason] - preview a manual shadow close",
+    "/confirm <action_id> - execute a pending confirmed action",
+    "/cancel <action_id> - cancel a pending action",
+  ].join("\n");
+}
+
+function statusReport(): string {
+  const engine = readJson<JsonObject>(dataPath("engine-state.json"), {});
+  const candidates = readJson<JsonObject>(dataPath("candidate-actions.json"), {});
+  const portfolio = obj(engine.portfolio);
+  const freshness = obj(engine.dataFreshness);
+  const openPositions = arr(engine.openPositions);
+  const entryCandidates = arr(candidates.entryCandidates);
+
+  return [
+    "Trader status",
+    `Generated: ${str(engine.generatedAt, "n/a")}`,
+    `Latest valuation: ${str(freshness.latestValuationAt, "n/a")}`,
+    `Latest instrument snapshot: ${str(freshness.latestInstrumentSnapshotAt, "n/a")}`,
+    "",
+    `Cash: $${fmtNum(portfolio.cash)}`,
+    `Open positions: ${fmtNum(portfolio.openPositions, 0)}`,
+    `Unrealized P&L: $${fmtNum(portfolio.unrealizedPnl, 4)}`,
+    `Realized P&L: $${fmtNum(portfolio.realizedPnl, 4)}`,
+    `Win rate: ${fmtNum(portfolio.winRatePct, 1)}%`,
+    "",
+    `Entry candidates: ${entryCandidates.length}`,
+    ...entryCandidates.slice(0, 5).map((candidate) =>
+      `- ${str(candidate.asset)} ${str(candidate.direction)} ${str(candidate.type)} conf=${fmtNum(candidate.confidence, 3)}`
+    ),
+    "",
+    `Open live positions shown by engine: ${openPositions.length}`,
+  ].join("\n");
+}
+
+function openPositionsReport(): string {
+  const engine = readJson<JsonObject>(dataPath("engine-state.json"), {});
+  const positions = arr(engine.openPositions);
+  if (positions.length === 0) return "No open live positions in engine-state.json.";
+  return [
+    "Open live positions",
+    ...positions.map((position) =>
+      `- ${str(position.positionId)} ${str(position.asset)} ${str(position.direction)} ${str(position.venue)}/${str(position.signalType)} P&L ${fmtPct(position.pnlPct)} mark=${fmtNum(position.currentPrice, 4)} underlying=${fmtNum(position.underlyingPrice, 4)}`
+    ),
+  ].join("\n");
+}
+
+function heatmapReport(assetArg: string | undefined): string {
+  const asset = assetArg?.toUpperCase();
+  if (!asset) return "Usage: /heatmap HYPE";
+  const heatmap = readJson<JsonObject>(heatmapPath(), {});
+  const rows = arr(heatmap.rows)
+    .filter((row) => str(row.asset).toUpperCase() === asset)
+    .sort((a, b) => Math.abs(num(b.edge_score) ?? 0) - Math.abs(num(a.edge_score) ?? 0))
+    .slice(0, 12);
+  if (rows.length === 0) return `No heatmap rows found for ${asset}.`;
+  return [
+    `${asset} heatmap`,
+    `Snapshot: ${str(heatmap.snapshotTimestamp, "n/a")} generated ${str(heatmap.generatedAt, "n/a")}`,
+    ...rows.map((row) => {
+      const expr = str(row.best_expression, "n/a");
+      const q = str(row.contract_question).replace(/\s+/g, " ");
+      return `- ${str(row.direction)} ${fmtNum(row.strike, 2)} ${expr} edge=${fmtNum(row.edge_score, 2)}pts optTouch=${fmtNum(row.options_touch_adjusted_prob, 3)} pmYES=${fmtNum(row.pm_yes_price, 3)} spread=${fmtNum(row.pm_spread, 3)} ${q}`;
+    }),
+  ].join("\n");
+}
+
+function noEdgeReport(): string {
+  const shadows = readJson<JsonObject[]>(dataPath("blocked-signals.json"), []);
+  const rows = shadows
+    .filter((shadow) => str(shadow.status) === "open")
+    .map((shadow) => {
+      const position = obj(shadow.position);
+      const instrumentId = str(position.instrumentId);
+      const row = findHeatmapRow(instrumentId);
+      if (!row) return null;
+      const heldSide = str(position.instrumentType) === "pm_no" || str(position.direction) === "short" || str(position.instrumentLabel).includes(" NO ")
+        ? "NO"
+        : "YES";
+      const heldEdge = heldSide === "NO" ? num(row.sell_yes_edge_pts) : num(row.buy_yes_edge_pts);
+      if (heldEdge === null || heldEdge > 2) return null;
+      const mark = markShadowExit(shadow);
+      return { shadow, position, row, heldSide, heldEdge, pnlPct: mark.pnlPct };
+    })
+    .filter((item): item is NonNullable<typeof item> => item !== null)
+    .sort((a, b) => a.heldEdge - b.heldEdge)
+    .slice(0, 12);
+
+  if (rows.length === 0) return "No open non-package shadows currently show weak or inverted held-side edge in the heatmap.";
+  return [
+    "Open shadows with weak/inverted current edge",
+    ...rows.map(({ position, heldSide, heldEdge, pnlPct, row }) =>
+      `- ${str(position.instrumentId)} ${str(row.asset)} ${heldSide} heldEdge=${heldEdge.toFixed(2)}pts P&L=${pnlPct >= 0 ? "+" : ""}${pnlPct.toFixed(1)}% best=${str(row.best_expression)}`
+    ),
+  ].join("\n");
+}
+
+function whyNoTradeReport(assetArg: string | undefined): string {
+  const asset = assetArg?.toUpperCase();
+  if (!asset) return "Usage: /why_no_trade HYPE";
+  const engine = readJson<JsonObject>(dataPath("engine-state.json"), {});
+  const candidates = readJson<JsonObject>(dataPath("candidate-actions.json"), {});
+  const openPositions = arr(engine.openPositions).filter((position) => str(position.asset).toUpperCase() === asset);
+  const entryCandidates = arr(candidates.entryCandidates).filter((candidate) => str(candidate.asset).toUpperCase() === asset);
+  const health = arr(engine.signalHealth).filter((row) => {
+    const disabledAssets = Array.isArray(row.disabledAssets) ? row.disabledAssets.map(String) : [];
+    return disabledAssets.includes(asset);
+  });
+  const heatmap = readJson<JsonObject>(heatmapPath(), {});
+  const rows = arr(heatmap.rows).filter((row) => str(row.asset).toUpperCase() === asset);
+  const eligible = rows.filter((row) => str(row.eligible_for_shadow).toLowerCase() === "true" || row.eligible_for_shadow === true);
+
+  return [
+    `${asset} no-trade check (artifact-only, no LLM)`,
+    `Entry candidates: ${entryCandidates.length}`,
+    ...entryCandidates.slice(0, 5).map((candidate) => `- candidate ${str(candidate.type)} ${str(candidate.direction)} conf=${fmtNum(candidate.confidence, 3)} ${str(candidate.thesis).slice(0, 140)}`),
+    `Open live positions in same asset: ${openPositions.length}`,
+    ...openPositions.map((position) => `- ${str(position.positionId)} ${str(position.direction)} ${str(position.signalType)} P&L ${fmtPct(position.pnlPct)}`),
+    `Heatmap rows: ${rows.length}; eligible_for_shadow: ${eligible.length}`,
+    ...rows
+      .sort((a, b) => Math.abs(num(b.edge_score) ?? 0) - Math.abs(num(a.edge_score) ?? 0))
+      .slice(0, 5)
+      .map((row) => `- ${str(row.direction)} ${fmtNum(row.strike, 2)} best=${str(row.best_expression)} edge=${fmtNum(row.edge_score, 2)}pts flags=${str(row.flags) || "none"}`),
+    health.length ? `Disabled signal/asset notes: ${health.map((row) => str(row.type)).join(", ")}` : "No disabled signal-health entries explicitly list this asset.",
+  ].join("\n");
+}
+
+function llmBudgetReport(): string {
+  const llmState = readJson<JsonObject>(dataPath("llm-state.json"), {});
+  if (Object.keys(llmState).length === 0) {
+    return "No local data/llm-state.json found. The next trader dry/run will recreate it if LLM cadence state is enabled.";
+  }
+  return [
+    "LLM state",
+    `Last call: ${str(llmState.lastCallAt, "n/a")}`,
+    `Skips since last call: ${fmtNum(llmState.skipsSinceLastCall, 0)}`,
+    `Daily call counts: ${JSON.stringify(llmState.dailyCallCounts ?? {})}`,
+    `Recent skip reasons: ${Array.isArray(llmState.recentSkipReasons) ? llmState.recentSkipReasons.slice(0, 4).join(" | ") : "n/a"}`,
+  ].join("\n");
+}
+
+function hourlyStatusReport(): string {
+  const engine = readJson<JsonObject>(dataPath("engine-state.json"), {});
+  const candidates = readJson<JsonObject>(dataPath("candidate-actions.json"), {});
+  const execution = readJson<JsonObject>(dataPath("execution-plan.json"), {});
+  const freshness = obj(engine.dataFreshness);
+  return [
+    "Hourly artifact status",
+    `Engine generated: ${str(engine.generatedAt, "n/a")}`,
+    `Candidates generated: ${str(candidates.generatedAt, "n/a")}`,
+    `Execution plan generated: ${str(execution.generatedAt, "n/a")}`,
+    `Latest valuation: ${str(freshness.latestValuationAt, "n/a")}`,
+    `Latest instrument snapshot: ${str(freshness.latestInstrumentSnapshotAt, "n/a")}`,
+    `Entry candidates: ${arr(candidates.entryCandidates).length}`,
+    `Mechanical exits: ${arr(candidates.mechanicalExits).length}`,
+    `LLM close eligibility rows: ${arr(candidates.llmCloseEligibility).length}`,
+  ].join("\n");
+}
+
+function compactHeatmapRows(asset?: string): JsonObject[] {
+  const heatmap = readJson<JsonObject>(heatmapPath(), {});
+  return arr(heatmap.rows)
+    .filter((row) => !asset || str(row.asset).toUpperCase() === asset.toUpperCase())
+    .sort((a, b) => Math.abs(num(b.edge_score) ?? 0) - Math.abs(num(a.edge_score) ?? 0))
+    .slice(0, asset ? 16 : 24)
+    .map((row) => ({
+      asset: row.asset,
+      event_slug: row.event_slug,
+      market_id: row.market_id,
+      question: row.contract_question,
+      direction: row.direction,
+      strike: row.strike,
+      dte_days: row.dte_days,
+      spot: row.spot,
+      best_expression: row.best_expression,
+      edge_score: row.edge_score,
+      buy_yes_edge_pts: row.buy_yes_edge_pts,
+      sell_yes_edge_pts: row.sell_yes_edge_pts,
+      option_iv: row.option_iv,
+      options_touch_adjusted_prob: row.options_touch_adjusted_prob,
+      pm_yes_price: row.pm_yes_price,
+      pm_spread: row.pm_spread,
+      liquidity: row.liquidity,
+      eligible_for_shadow: row.eligible_for_shadow,
+      flags: row.flags,
+    }));
+}
+
+function compactOpenShadows(asset?: string): JsonObject[] {
+  return readJson<JsonObject[]>(dataPath("blocked-signals.json"), [])
+    .filter((shadow) => str(shadow.status) === "open")
+    .filter((shadow) => !asset || str(shadow.asset).toUpperCase() === asset.toUpperCase())
+    .slice(0, asset ? 20 : 35)
+    .map((shadow) => {
+      const position = obj(shadow.position);
+      const mark = markShadowExit(shadow);
+      return {
+        id: shadow.id,
+        blockedReason: shadow.blockedReason,
+        signalType: shadow.signalType,
+        asset: shadow.asset,
+        direction: shadow.direction,
+        instrumentId: position.instrumentId,
+        instrumentLabel: position.instrumentLabel,
+        entryPrice: position.entryPrice,
+        currentPrice: position.currentPrice,
+        pnlPct: Number(mark.pnlPct.toFixed(2)),
+      };
+    });
+}
+
+function traderContext(asset?: string): JsonObject {
+  const engine = readJson<JsonObject>(dataPath("engine-state.json"), {});
+  const candidates = readJson<JsonObject>(dataPath("candidate-actions.json"), {});
+  const execution = readJson<JsonObject>(dataPath("execution-plan.json"), {});
+  const heatmap = readJson<JsonObject>(heatmapPath(), {});
+  const assetUpper = asset?.toUpperCase();
+  return {
+    generatedAt: new Date().toISOString(),
+    scopeAsset: assetUpper ?? null,
+    engineGeneratedAt: engine.generatedAt,
+    dataFreshness: engine.dataFreshness,
+    portfolio: engine.portfolio,
+    openPositions: arr(engine.openPositions)
+      .filter((position) => !assetUpper || str(position.asset).toUpperCase() === assetUpper)
+      .slice(0, 20),
+    entryCandidates: arr(candidates.entryCandidates)
+      .filter((candidate) => !assetUpper || str(candidate.asset).toUpperCase() === assetUpper)
+      .slice(0, 12),
+    llmCloseEligibility: arr(candidates.llmCloseEligibility)
+      .filter((row) => !assetUpper || str(row.asset).toUpperCase() === assetUpper)
+      .slice(0, 20),
+    executionPlan: {
+      generatedAt: execution.generatedAt,
+      dryRun: execution.dryRun,
+      llmDryRun: execution.llmDryRun,
+      llmCloses: arr(execution.llmCloses).length,
+      entrySignals: arr(execution.entrySignals).length,
+    },
+    heatmap: {
+      snapshotTimestamp: heatmap.snapshotTimestamp,
+      generatedAt: heatmap.generatedAt,
+      rows: compactHeatmapRows(assetUpper),
+    },
+    openShadows: compactOpenShadows(assetUpper),
+  };
+}
+
+function anthropicText(data: JsonObject): string {
+  const content = Array.isArray(data.content) ? data.content : [];
+  return content
+    .map((part) => obj(part))
+    .filter((part) => part.type === "text")
+    .map((part) => str(part.text))
+    .join("\n")
+    .trim();
+}
+
+async function requestAnthropic(prompt: string): Promise<string> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    return "LLM not run: ANTHROPIC_API_KEY is not set. This command is explicit and token-spending, so it will only run when the key is configured.";
+  }
+  const model = process.env.TELEGRAM_LLM_MODEL || process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6";
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), ANTHROPIC_REQUEST_TIMEOUT_MS);
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      signal: controller.signal,
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      },
+      body: JSON.stringify({
+        model,
+        max_tokens: TELEGRAM_LLM_MAX_TOKENS,
+        temperature: 0.2,
+        messages: [{ role: "user", content: prompt }],
+      }),
+    });
+    if (!response.ok) {
+      throw new Error(`Anthropic API ${response.status}: ${await response.text()}`);
+    }
+    return anthropicText(await response.json() as JsonObject) || "LLM returned an empty response.";
+  } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      return `LLM request timed out after ${Math.round(ANTHROPIC_REQUEST_TIMEOUT_MS / 1000)}s.`;
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function truncateContext(text: string): string {
+  if (text.length <= TELEGRAM_LLM_MAX_CONTEXT_CHARS) return text;
+  return `${text.slice(0, TELEGRAM_LLM_MAX_CONTEXT_CHARS)}\n...[truncated]`;
+}
+
+async function askLlmReport(question: string): Promise<string> {
+  if (!question.trim()) return "Usage: /ask <question>";
+  const context = truncateContext(JSON.stringify(traderContext(), null, 2));
+  const prompt = `You are a cautious trading-operations assistant for a paper Polymarket trader.
+
+Answer the user's question using only the current artifacts below. Do not claim to have run live commands. Do not recommend live execution unless the user explicitly asks. If the artifacts are stale or insufficient, say so. Be concise and practical.
+
+User question:
+${question}
+
+Current trader artifacts:
+${context}`;
+  return await requestAnthropic(prompt);
+}
+
+async function reviewAssetReport(assetArg: string | undefined): Promise<string> {
+  const asset = assetArg?.toUpperCase();
+  if (!asset) return "Usage: /review HYPE";
+  const context = truncateContext(JSON.stringify(traderContext(asset), null, 2));
+  const prompt = `You are reviewing one asset in a paper Polymarket trader.
+
+Asset: ${asset}
+
+Use only the current artifacts below. Give:
+1. whether there is an actionable setup,
+2. the strongest current heatmap rows and caveats,
+3. why the trader may or may not be trading it,
+4. any open-position or shadow-trade risk.
+
+Do not place trades, do not ask to run the trader, and do not invent missing data. Keep it concise.
+
+Current ${asset} artifacts:
+${context}`;
+  return await requestAnthropic(prompt);
+}
+
+function closeShadowPreview(chatId: string, instrumentId: string | undefined, reasonArg: string | undefined): string {
+  if (!instrumentId) return "Usage: /close_shadow <instrument_id> [reason]";
+  const reason = reasonArg || "thesis_validated";
+  const shadows = readJson<JsonObject[]>(dataPath("blocked-signals.json"), []);
+  const matches = shadows.filter((shadow) =>
+    str(shadow.status) === "open" &&
+    shadowInstrumentMatches(str(obj(shadow.position).instrumentId), instrumentId)
+  );
+  if (matches.length === 0) return `No open shadows matched ${instrumentId}.`;
+  const action: PendingAction = {
+    id: actionId(),
+    type: "close_shadow",
+    chatId,
+    instrumentId,
+    reason,
+    createdAt: utcNow(),
+    expiresAt: new Date(Date.now() + 15 * 60_000).toISOString(),
+  };
+  const actions = [...loadActions().filter((pending) => pending.id !== action.id), action];
+  saveActions(actions);
+
+  return [
+    `Preview close_shadow ${instrumentId}`,
+    `Matches: ${matches.length}`,
+    `Reason: ${reason}`,
+    ...matches.slice(0, 8).map((shadow) => {
+      const position = obj(shadow.position);
+      const mark = markShadowExit(shadow);
+      return `- ${str(shadow.id)} ${humanPosition(position)} entry=${fmtNum(position.entryPrice, 4)} mark=${fmtNum(position.currentPrice, 4)} P&L=${mark.pnlPct >= 0 ? "+" : ""}${mark.pnlPct.toFixed(2)}%`;
+    }),
+    "",
+    `Confirm within 15 minutes with: /confirm ${action.id}`,
+  ].join("\n");
+}
+
+function resolvedReason(requestedReason: string, pnl: number): string {
+  if (requestedReason === "thesis_validated") {
+    return pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
+  }
+  return requestedReason;
+}
+
+function confirmAction(chatId: string, id: string | undefined): string {
+  if (!id) return "Usage: /confirm <action_id>";
+  const actions = loadActions();
+  const action = actions.find((pending) => pending.id === id && pending.chatId === chatId);
+  if (!action) return `No pending action found for ${id}.`;
+
+  if (action.type === "close_shadow") {
+    const shadows = readJson<JsonObject[]>(dataPath("blocked-signals.json"), []);
+    const now = utcNow();
+    let closed = 0;
+    for (const shadow of shadows) {
+      if (str(shadow.status) !== "open") continue;
+      const position = obj(shadow.position);
+      if (!shadowInstrumentMatches(str(position.instrumentId), action.instrumentId)) continue;
+      const mark = markShadowExit(shadow);
+      const closeReason = resolvedReason(action.reason, mark.pnl);
+      shadow.status = "resolved";
+      shadow.resolvedAt = now;
+      shadow.hypotheticalResult = {
+        closeReason,
+        exitPrice: Number(mark.exitPrice.toFixed(6)),
+        pnl: Number(mark.pnl.toFixed(4)),
+        pnlPct: Number(mark.pnlPct.toFixed(2)),
+        marketPnl: Number(mark.pnl.toFixed(4)),
+        fundingPnl: Number((num(position.fundingPnlAccrued) ?? 0).toFixed(4)),
+        outcome: mark.pnl >= 0 ? "win" : "loss",
+      };
+      shadow.thesis = `${str(shadow.thesis).trim()} [CLOSED ${now.slice(0, 10)} via Telegram: ${closeReason}]`;
+      closed += 1;
+    }
+    if (closed > 0) writeJson(dataPath("blocked-signals.json"), shadows);
+    saveActions(actions.filter((pending) => pending.id !== id));
+    return `Closed ${closed} open shadow(s) for ${action.instrumentId}. Review with: git diff -- data/blocked-signals.json`;
+  }
+
+  return `Unsupported action type for ${id}.`;
+}
+
+function cancelAction(chatId: string, id: string | undefined): string {
+  if (!id) return "Usage: /cancel <action_id>";
+  const actions = loadActions();
+  const before = actions.length;
+  const next = actions.filter((pending) => !(pending.id === id && pending.chatId === chatId));
+  saveActions(next);
+  return before === next.length ? `No pending action found for ${id}.` : `Cancelled ${id}.`;
+}
+
+function parseCommand(text: string): { command: string; args: string[] } {
+  const [first = "", ...args] = text.trim().split(/\s+/);
+  const command = first.split("@")[0].toLowerCase();
+  return { command, args };
+}
+
+async function handleCommand(chatId: string, text: string): Promise<string> {
+  const { command, args } = parseCommand(text);
+  switch (command) {
+    case "/start":
+    case "/help":
+      return commandHelp();
+    case "/status":
+      return statusReport();
+    case "/open":
+      return openPositionsReport();
+    case "/heatmap":
+      return heatmapReport(args[0]);
+    case "/noedge":
+      return noEdgeReport();
+    case "/why_no_trade":
+      return whyNoTradeReport(args[0]);
+    case "/ask":
+      return await askLlmReport(args.join(" "));
+    case "/review":
+      return await reviewAssetReport(args[0]);
+    case "/llm_budget":
+      return llmBudgetReport();
+    case "/hourly_status":
+      return hourlyStatusReport();
+    case "/close_shadow":
+      return closeShadowPreview(chatId, args[0], args[1]);
+    case "/confirm":
+      return confirmAction(chatId, args[0]);
+    case "/cancel":
+      return cancelAction(chatId, args[0]);
+    default:
+      return `Unknown command: ${command}\n\n${commandHelp()}`;
+  }
+}
+
+function allowedChatIds(): Set<string> {
+  const raw = process.env.TELEGRAM_ALLOWED_CHAT_IDS || process.env.TELEGRAM_CHAT_ID || "";
+  return new Set(raw.split(",").map((item) => item.trim()).filter(Boolean));
+}
+
+async function telegramCall<T>(token: string, method: string, payload: JsonObject): Promise<T> {
+  const response = await fetch(`${TELEGRAM_API}/bot${token}/${method}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!response.ok) throw new Error(`${method} failed: HTTP ${response.status} ${await response.text()}`);
+  return await response.json() as T;
+}
+
+async function sendTelegram(token: string, chatId: string, text: string): Promise<void> {
+  for (let i = 0; i < text.length || i === 0; i += MAX_TELEGRAM_MESSAGE) {
+    const chunk = text.slice(i, i + MAX_TELEGRAM_MESSAGE) || "(empty)";
+    await telegramCall(token, "sendMessage", {
+      chat_id: chatId,
+      text: chunk,
+      disable_web_page_preview: true,
+    });
+  }
+}
+
+async function runBot(): Promise<void> {
+  const token = process.env.TELEGRAM_BOT_TOKEN;
+  if (!token) throw new Error("Missing TELEGRAM_BOT_TOKEN");
+  const allowed = allowedChatIds();
+  if (allowed.size === 0) throw new Error("Set TELEGRAM_CHAT_ID or TELEGRAM_ALLOWED_CHAT_IDS");
+  let offset = Number(process.env.TELEGRAM_START_OFFSET ?? loadOffset());
+  console.log(`Telegram trader bot running for ${allowed.size} allowed chat(s).`);
+
+  while (true) {
+    const result = await telegramCall<{ ok: boolean; result: TelegramUpdate[] }>(token, "getUpdates", {
+      offset: offset || undefined,
+      timeout: 25,
+      allowed_updates: ["message"],
+    });
+    for (const update of result.result ?? []) {
+      offset = Math.max(offset, update.update_id + 1);
+      saveOffset(offset);
+      const message = update.message;
+      const text = message?.text?.trim();
+      const chatId = message ? String(message.chat.id) : "";
+      if (!message || !text) continue;
+      if (!allowed.has(chatId)) {
+        console.warn(`Ignoring message from unauthorized chat ${chatId}`);
+        continue;
+      }
+      try {
+        await sendTelegram(token, chatId, await handleCommand(chatId, text));
+      } catch (error) {
+        await sendTelegram(token, chatId, `Command failed: ${error instanceof Error ? error.message : String(error)}`);
+      }
+    }
+  }
+}
+
+async function main(): Promise<void> {
+  const onceIdx = process.argv.indexOf("--once");
+  if (onceIdx !== -1) {
+    const text = process.argv.slice(onceIdx + 1).join(" ");
+    console.log(await handleCommand("local", text || "/help"));
+    return;
+  }
+  await runBot();
+}
+
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : error);
+  process.exitCode = 1;
+});
