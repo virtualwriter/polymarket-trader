@@ -15041,3 +15041,55 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 12h); 2.0h
 
 ---
 
+### 2026-05-22 00:30 UTC
+
+**Portfolio:** $99.48 total | Cash $95.48 | 4 open | P&L $0.4812 | 53% win rate (152 trades)
+
+**Opened 1 positions:**
+- HYPE short @ $57.903 via hyperliquid/hl_perp [HL HYPE perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 83.2 is 3.8 std devs from mean (59.69 ± 6.17)
+- [anomaly] hype_pm_ev = 58.1 is 3.4 std devs from mean (45.42 ± 3.71)
+- [anomaly] oil_cl_pc_ratio = 2.404 is 3.4 std devs from mean since 2026-04-28 (1.11 ± 0.38)
+- [anomaly] hype_spot = 57.903 is 3.4 std devs from mean (42.98 ± 4.45)
+- [anomaly] hype_pm_iv = 83.6 is 2.9 std devs from mean (64.89 ± 6.43)
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 118 (52 wins / 66 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/11 shadows would have won, avg P&L 23.29%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have edge compressed but trade lost money (-4.65%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO GOLD short via polymarket would have closed with thesis validated profitably (+7.32%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO BTC short via polymarket would have closed with thesis validated profitably (+5.68%)
+
+**LLM analysis:**
+Session 2026-05-22T00 review:
+
+**Open Position Status:**
+
+1. BTC ONE_TOUCH_HIGH_EDGE_NO (T-1778718867328-fb7r): BTC spot at $77,491 is -2.6% from the $79,548 baseline, moving toward the $55,000 strike (adverse direction). However, at $77,491 we are still $22,491 above the $55,000 touch level with 144 hours remaining. The PM NO contract at 0.53 has not moved materially. BTC funding at max rate (10.95%) and IBIT P/C at 0.954 (elevated) suggest the market is hedged but not panicking. No thesis invalidation — the one-touch NO remains intact as long as spot stays above $55k. The 17.6pt edge at entry was the primary thesis and that structural mispricing hasn't reversed.
+
+2. GOLD FUNDING_EXTREME_SHORT (T-1778916565173-2wqk): Gold funding has fully normalized from -44.78% to +5.48% — the thesis trigger has resolved. Spot at $4,533 is essentially flat from entry at $4,536 (-0.07%). With only 31 hours to expiry and a 4% target requiring $181 upside, the trade is unlikely to hit target. The mechanical scanner will handle expiry. The gold_gld_pc_ratio has risen significantly from 0.681 to 0.875 since entry, suggesting put buying has increased — this is a mild adverse signal for the long but not a hard close trigger per evidence column rules.
+
+3. OIL PC_RATIO_EXTREME_HIGH (T-1779388148375-mzu8): Up +1.41% from entry. Oil P/C ratio remains elevated at 2.404 (3.4σ above mean), HL funding is persistently negative (-15.96%), and WTI spot has bounced from $96.64 to $98.00. The thesis is intact. The Brent-WTI spread has widened from 2.7 to 3.7, suggesting some structural oil market dynamics. No close warranted.
+
+**Hypothesis Backlog Assessment:**
+With 9/20 setup families needing more tests and 6 pending, the priority is running existing shadow tests rather than creating new hypotheses. The instruction to return newHypotheses: [] is followed. The promoted hypotheses H-521 and H-523 are being monitored — H-521 conditions appear met for HYPE, H-523 is approaching but not yet at the -1.25σ IV threshold.
+
+**Relative Value Heatmap Notes:**
+The heatmap shows several interesting signals: (1) ETH $3,500 Dec 2026 at 16pt edge buy_yes — but ETH is not in our live allowlist for polymarket trades; (2) BTC $130k Dec 2026 at 7.96pt edge buy_yes and BTC $110k Dec 2026 at 14.5pt edge buy_yes — these are mid-cap-ratio contracts that could be interesting but require the ONE_TOUCH_HIGH_EDGE_NO signal family review first; (3) HYPE $100 Dec 2026 at 65.7pt edge buy_yes — this is the existing shadow position being tracked. The heatmap's ETH contracts flagged as cheap_vs_cap are likely model artifacts given the extreme OTM distance with 10 days to expiry.
+
+**Key Observation:**
+The BTC-GOLD correlation flip (from -0.24 to +0.66 over 24h) is notable. Both assets are moving together in a risk-off/safe-haven convergence pattern. This is unusual and may reflect macro regime uncertainty (BEARISH composite at 44, VERY HAWKISH Fed). The oil-BTC correlation flip (from +0.47 to -0.42) suggests oil is decoupling from risk assets, possibly driven by the Iran peace probability dynamics (60% deal probability) and the macro oil_signal of DECLINING. These correlation shifts are worth monitoring for cross-asset positioning signals in future sessions.
+
+---
+
