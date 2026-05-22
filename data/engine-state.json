@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-22T17:29:14.253Z",
+  "generatedAt": "2026-05-22T18:29:19.825Z",
   "dataFreshness": {
-    "valuationRows": 547,
-    "latestValuationAt": "2026-05-22T17",
-    "macroRows": 547,
+    "valuationRows": 548,
+    "latestValuationAt": "2026-05-22T18",
+    "macroRows": 548,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-22T17"
+    "latestInstrumentSnapshotAt": "2026-05-22T18"
   },
   "portfolio": {
     "cash": 96.4621,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.4621,
     "totalTrades": 154,
     "winRatePct": 52.6,
-    "unrealizedPnl": -0.0309
+    "unrealizedPnl": -0.0365
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -3.77,
       "currentPrice": 0.51,
-      "underlyingPrice": 76810,
+      "underlyingPrice": 76840,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -0.36,
-      "currentPrice": 4520,
-      "underlyingPrice": 4520,
+      "pnlPct": -0.4,
+      "currentPrice": 4518,
+      "underlyingPrice": 4518,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -57,9 +57,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.1,
-      "currentPrice": 96.74,
-      "underlyingPrice": 96.74,
+      "pnlPct": -0.41,
+      "currentPrice": 96.24,
+      "underlyingPrice": 96.24,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -206,7 +206,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 52,
+    "openCount": 53,
     "resolvedCount": 122,
     "wouldHaveWon": 55,
     "wouldHaveLost": 67,
@@ -624,6 +624,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch NO 16.7pt edge on GOLD; hold 14d to test high-edge repricing. NO prioritized by backtest."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+        "asset": "OIL",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "cl-hit-jun-2026 — YES — Will Crude Oil (CL) hit (HIGH) $110 by end of June?",
+        "marketQuality": {
+          "yesBid": 0.49,
+          "yesAsk": 0.51,
+          "yesSpread": 0.02,
+          "liquidity": 11231.62,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.6pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
       }
     ]
   },
