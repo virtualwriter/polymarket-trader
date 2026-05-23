@@ -124,6 +124,7 @@ const ONE_TOUCH_TERMINAL_ONLY_SIGMA = 1.5;
 const OPERATIONALLY_TAINTED_TRADES: Record<string, string> = {
   "T-1778707778058-9nsi": "hourly LLM close had authority over rule-owned funding trade",
   "T-1778718867328-1tjp": "one-touch NO inherited generic 2% Polymarket stop instead of 100% hold-to-expiry stop",
+  "T-1779478230785-kc6x": "sub-cent one-sided Polymarket entry artifact outside the trader thesis",
 };
 const CSV_HEADER = [
   "section",
@@ -244,8 +245,8 @@ function dedupeClosedTrades(trades: ClosedTrade[]): ClosedTrade[] {
 
 function isCountedRealTrade(trade: ClosedTrade): boolean {
   return !OPERATIONALLY_TAINTED_TRADES[trade.id] &&
-    !trade.closeReason.includes("DATA_CORRECTION_ARTIFACT") &&
-    !trade.thesis.includes("NON_LEARNING_CLOSE");
+    !(trade.closeReason ?? "").includes("DATA_CORRECTION_ARTIFACT") &&
+    !(trade.thesis ?? "").includes("NON_LEARNING_CLOSE");
 }
 
 function emptyStats(): Stats {
@@ -557,10 +558,11 @@ function reportSignalType(trade: ClosedTrade): string {
   if (OPERATIONALLY_TAINTED_TRADES[trade.id]) {
     return `${trade.signalType}_OPERATIONALLY_TAINTED`;
   }
-  if (trade.signalType === "PC_RATIO_EXTREME_LOW" && trade.closeReason.includes("DATA_CORRECTION_ARTIFACT")) {
+  const closeReason = trade.closeReason ?? "";
+  if (trade.signalType === "PC_RATIO_EXTREME_LOW" && closeReason.includes("DATA_CORRECTION_ARTIFACT")) {
     return "PC_RATIO_EXTREME_LOW_DATA_CORRECTION_ARTIFACT";
   }
-  if (trade.closeReason === "data_quality_artifact") {
+  if (closeReason === "data_quality_artifact") {
     return `${trade.signalType}_DATA_QUALITY_ARTIFACT`;
   }
   return trade.signalType;

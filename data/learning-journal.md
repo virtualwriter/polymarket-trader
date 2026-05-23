@@ -15789,3 +15789,11 @@ _LLM call skipped (duplicate-signals (4 recurring signals seen within 12h); 3.0h
 
 ---
 
+
+---
+
+### DATA CORRECTION 2026-05-23 00:19 UTC
+
+- Excluded `T-1779478230785-kc6x` from canonical trader performance: Sub-cent one-sided Polymarket entry artifact: OIL $95 LOW NO entered at 0.001 via forced one-touch path. Excluded from canonical performance and LLM truth because it was effectively near-resolved and outside the trader thesis; future one-sided PM entries require >=1c plus quality gates.
+- Restored portfolio realized P&L/cash/counts as if the artifact was never opened. This is not evidence against the one-touch NO thesis.
+

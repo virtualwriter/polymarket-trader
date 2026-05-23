@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-22T23:29:07.898Z",
+  "generatedAt": "2026-05-23T00:19:28Z",
   "contaminationRules": [
     {
       "id": "oil_gold_pc_cl_source_cleanup",
@@ -978,13 +978,13 @@
     },
     {
       "setupId": "one_touch_high_edge_no",
-      "setupLabel": "One-touch high-edge NO",
+      "setupLabel": "One-touch NO sell-YES edge",
       "status": "contaminated_retest",
-      "currentConclusion": "One-touch high-edge NO is under clean retest: contaminated or superseded historical evidence is excluded. Clean live trades: 1/2, avg P&L -18.75%; shadows: 1/1.",
+      "currentConclusion": "One-touch NO sell-YES edge is under clean retest: contaminated or superseded historical evidence is excluded. Clean live trades: 1/1, avg P&L 62.50%; shadows: 1/1.",
       "evidenceSummary": {
-        "cleanTrades": 2,
+        "cleanTrades": 1,
         "tradeWins": 1,
-        "avgTradePnlPct": -18.75,
+        "avgTradePnlPct": 62.5,
         "resolvedShadows": 1,
         "shadowWins": 1,
         "avgShadowPnlPct": 19.57,
@@ -996,7 +996,8 @@
         "btc_pm_iv"
       ],
       "knownInvalidAssumptions": [
-        "At least one historical contaminated trade was excluded from this setup-family truth record."
+        "At least one historical contaminated trade was excluded from this setup-family truth record.",
+        "Sub-cent one-sided Polymarket entry artifact: OIL $95 LOW NO entered at 0.001 via forced one-touch path. Excluded from canonical performance and LLM truth because it was effectively near-resolved and outside the trader thesis; future one-sided PM entries require >=1c plus quality gates."
       ],
       "representativeExamples": [
         {
@@ -1005,13 +1006,6 @@
           "outcome": "win",
           "pnlPct": 62.5,
           "note": "OIL short target\r via polymarket/pm_no"
-        },
-        {
-          "id": "T-1779478230785-kc6x",
-          "kind": "trade",
-          "outcome": "loss",
-          "pnlPct": -100,
-          "note": "OIL short stop via polymarket/pm_no"
         },
         {
           "id": "OT-1779348547074-tm2l",

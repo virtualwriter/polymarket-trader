@@ -52,6 +52,7 @@ const UNDERLYING_CAP_BUY_NO_RATIO = 1.03;
 const UNDERLYING_CAP_BUY_YES_RATIO = 0.35;
 const MAX_PM_ENTRY_SPREAD = 0.03;
 const MIN_PM_ENTRY_LIQUIDITY = 1000;
+const MIN_ONE_SIDED_PM_ENTRY_PRICE = 0.01;
 const ONE_TOUCH_HIGH_EDGE_SIGNAL_NO = "ONE_TOUCH_HIGH_EDGE_NO";
 const ONE_TOUCH_HIGH_EDGE_SIGNAL_YES = "ONE_TOUCH_HIGH_EDGE_YES_SHADOW";
 const ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE = 15;
@@ -132,6 +133,7 @@ const LIVE_PROMOTED_HYPOTHESIS_IDS = new Set(["H-521", "H-523"]);
 const OPERATIONALLY_TAINTED_TRADE_IDS = new Set([
   "T-1778707778058-9nsi", // Hourly LLM close had authority over a rule-owned funding trade.
   "T-1778718867328-1tjp", // One-touch NO inherited generic 2% Polymarket stop instead of 100%.
+  "T-1779478230785-kc6x", // Sub-cent one-sided Polymarket entry; near-resolved artifact outside the thesis.
 ]);
 const LOOKBACK_HOURS = 24;
 const NO_LLM = process.argv.includes("--no-llm");
@@ -1547,6 +1549,10 @@ function polymarketEntryPrice(contract: InstrumentSnapshotContract, instrumentTy
   return contract.bestBid && contract.bestBid > 0 ? 1 - contract.bestBid : 1 - contract.yesPrice;
 }
 
+function passesOneSidedPolymarketEntryPrice(entryPrice: number): boolean {
+  return entryPrice >= MIN_ONE_SIDED_PM_ENTRY_PRICE && entryPrice < 1;
+}
+
 function passesPolymarketEntryQualityGate(contract: InstrumentSnapshotContract): boolean {
   const bid = contract.bestBid ?? 0;
   const ask = contract.bestAsk ?? 0;
@@ -1575,8 +1581,9 @@ function selectPolymarketContract(
       if (event.asset !== asset) continue;
       const contract = event.contracts.find((c) => c.marketId === hint.forceMarketId);
       if (!contract || !(contract.yesPrice > 0 && contract.yesPrice < 1)) continue;
+      if (!passesPolymarketEntryQualityGate(contract)) continue;
       const entryPrice = polymarketEntryPrice(contract, hint.forceInstrumentType);
-      if (entryPrice <= 0 || entryPrice >= 1) continue;
+      if (!passesOneSidedPolymarketEntryPrice(entryPrice)) continue;
       return { event, contract, instrumentType: hint.forceInstrumentType, entryPrice };
     }
     return null;
@@ -1610,7 +1617,7 @@ function selectPolymarketContract(
 
       const instrumentType = hint?.forceInstrumentType ?? instrumentTypeForPolymarketExposure(direction, contractDirection);
       const entryPrice = polymarketEntryPrice(contract, instrumentType);
-      if (entryPrice <= 0 || entryPrice >= 1) continue;
+      if (!passesOneSidedPolymarketEntryPrice(entryPrice)) continue;
 
       return { event, contract, instrumentType, entryPrice };
     }
@@ -1662,7 +1669,7 @@ function applyConservativePolymarketEntry(position: Position, latestSnapshot: In
   const contract = event?.contracts.find((candidate) => candidate.marketId === marketId);
   if (!contract) return;
   const entryPrice = polymarketEntryPrice(contract, position.instrumentType);
-  if (entryPrice <= 0 || entryPrice >= 1) return;
+  if (!passesOneSidedPolymarketEntryPrice(entryPrice)) return;
   position.entryPrice = entryPrice;
   position.currentPrice = entryPrice;
 }
@@ -3117,7 +3124,7 @@ function buildOneTouchHighEdgeShadowPosition(
 
   const instrumentType: "pm_yes" | "pm_no" = "pm_no";
   const entryPrice = polymarketEntryPrice(contract, instrumentType);
-  if (entryPrice <= 0 || entryPrice >= 1) return null;
+  if (!passesOneSidedPolymarketEntryPrice(entryPrice)) return null;
 
   const openedAt = new Date().toISOString();
   const expiryDate = new Date(openedAt);
@@ -3227,7 +3234,7 @@ function buildStaleLotteryTicketNoShadowPosition(
   if (!event || !contract) return null;
 
   const entryPrice = polymarketEntryPrice(contract, "pm_no");
-  if (entryPrice <= 0 || entryPrice >= 1) return null;
+  if (!passesOneSidedPolymarketEntryPrice(entryPrice)) return null;
 
   const openedAt = new Date().toISOString();
   const expiryDate = new Date(openedAt);
@@ -3357,8 +3364,9 @@ function generateOneTouchHighEdgeNoSignals(
     const event = latestSnapshot.polymarket.find((candidate) => candidate.slug === row.eventSlug);
     const contract = event?.contracts.find((candidate) => candidate.marketId === row.marketId);
     if (!event || !contract) continue;
+    if (!passesPolymarketEntryQualityGate(contract)) continue;
     const entryPrice = polymarketEntryPrice(contract, "pm_no");
-    if (entryPrice <= 0 || entryPrice >= 1) continue;
+    if (!passesOneSidedPolymarketEntryPrice(entryPrice)) continue;
     const underlyingPrice = latestSnapshot.spots[row.asset] ?? row.strike;
     const strength = Math.min(1, edgeMagnitude / 30);
     const highConviction = edgeMagnitude >= ONE_TOUCH_HIGH_EDGE_CONVICTION_EDGE;
@@ -5904,6 +5912,7 @@ IMPORTANT RULES:
 - If you suggest parameter changes, keep them incremental and evidence-based
 - Use BLOCKED SIGNAL SHADOW LEARNING to judge whether filters are too strict or appropriately defensive. If a blocked short loses money, the block was directionally correct.
 - Separately evaluate market quality. A blocked trade can be correctly blocked by trend AND still be a bad setup because the Polymarket bid/ask is too wide or liquidity is too thin.
+- Never treat one-sided Polymarket entries below ${(MIN_ONE_SIDED_PM_ENTRY_PRICE * 100).toFixed(0)}c as legitimate learning evidence or valid trades. Sub-cent entries are near-resolved artifacts, not the thesis the trader is testing; exclude them from performance conclusions and avoid reopening them.
 - Avoid suggesting generic Polymarket trades when yesSpread > ${(HEATMAP_SHADOW_MAX_SPREAD * 100).toFixed(0)}c, liquidity < ${HEATMAP_SHADOW_MIN_LIQUIDITY}, or marketQuality flags include wide_pm_spread / low_pm_liquidity / missing_bid_ask. Treat those as "avoid due to spread/liquidity", not as clean directional evidence. The touch-market shadow-promotion rule below has its own stricter liquidity and explicit 3c max-spread gate from the dedicated backtest.
 - Use RELATIVE-VALUE HEATMAP OBSERVATIONS to look for clean cross-venue edges. If you suggest a trade because of this section, say "relative-value heatmap" in the thesis so its performance can be reviewed.
 - Touch-market shadow-promotion guidance from May 14+ backtest: only promote NO-side touch trades. Hard avoid YES contracts and NO trades with sell_yes_edge_pts < ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}. Require spread <= ${(ONE_TOUCH_NO_SHADOW_MAX_SPREAD * 100).toFixed(0)}c and liquidity >= ${ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY}. Exit when sell_yes_edge_pts disappears or falls below the gate. Why: spread-filtered generic NO was weak (-2.92% avg, -76.50c total one-share P&L); positive sell-YES edge NO improved materially (-0.38% avg, +34.60c); adding edge-disappearance exits turned it positive (+2.44% avg, +81.55c), a +158.05c total-cent improvement versus generic NO. Treat edge size as a gate for now, but keep evaluating edge-size buckets because more data may show edge magnitude is predictive.
