@@ -16286,3 +16286,42 @@ _LLM call skipped (duplicate-signals (4 recurring signals seen within 12h); 2.0h
 
 ---
 
+### 2026-05-23 18:30 UTC
+
+**Portfolio:** $98.46 total | Cash $92.46 | 6 open | P&L $-0.5430 | 52% win rate (156 trades)
+
+**Opened 2 positions:**
+- HYPE long @ $58.266 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+- ETH short @ $0.47 via polymarket/pm_no [what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum dip to $1,500 by December 31, 2026?] (ONE_TOUCH_HIGH_EDGE_NO)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -434.05 is -5.2 std devs from mean since 2026-04-28 (-21.78 ± 79.27)
+- [anomaly] hype_spot = 58.266 is 2.6 std devs from mean (43.91 ± 5.55)
+- [anomaly] hype_pm_ev = 57.71 is 2.5 std devs from mean (46.21 ± 4.66)
+- [anomaly] hype_med_max = 77.9 is 2.2 std devs from mean (60.99 ± 7.71)
+- [anomaly] hype_hl_oi = 1271465718 is 2.1 std devs from mean (923350469.41 ± 163985519.52)
+
+**Blocked signal learning:**
+- Open blocked shadows: 109
+- Resolved blocked shadows: 147 (61 wins / 86 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-2.27%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+10.42%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.21%)
+
+**LLM analysis:**
+Closed OIL long (P/C ratio extreme high signal) as put/call ratio normalized sharply from 2.36 to 1.24, no longer extreme. Closed AMZN long (funding extreme short) as funding flipped from -37% to +5.5%, reversing the carry advantage and signaling short-squeeze completion. Holding BTC one-touch NO (spot still far above 55k, thesis intact), and Gold short (P/C extreme low unchanged). Reviewed relative-value heatmap; richest opportunities are sell-YES on cheap vs cap upside contracts, but no new entries due to spread/liquidity constraints and backlog. Maintaining focus on existing signal families.
+
+**LLM close rejections today (2026-05-23, token-burn signal):**
+- Total rejected close instructions: 2
+- Top signal/asset pairs: PC_RATIO_EXTREME_HIGH / OIL (1); FUNDING_EXTREME_SHORT / AMZN (1)
+
+---
+

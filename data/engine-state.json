@@ -1,21 +1,92 @@
 {
-  "generatedAt": "2026-05-23T17:52:15.842Z",
+  "generatedAt": "2026-05-23T18:29:18.778Z",
   "dataFreshness": {
-    "valuationRows": 569,
-    "latestValuationAt": "2026-05-23T17",
-    "macroRows": 569,
+    "valuationRows": 570,
+    "latestValuationAt": "2026-05-23T18",
+    "macroRows": 570,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-23T16"
+    "latestInstrumentSnapshotAt": "2026-05-23T18"
   },
   "portfolio": {
-    "cash": 100.1771,
-    "openPositions": 0,
-    "realizedPnl": 0.1771,
-    "totalTrades": 112,
-    "winRatePct": 53.6,
-    "unrealizedPnl": 0
+    "cash": 94.457,
+    "openPositions": 4,
+    "realizedPnl": -0.543,
+    "totalTrades": 156,
+    "winRatePct": 51.9,
+    "unrealizedPnl": -0.0782
   },
-  "openPositions": [],
+  "openPositions": [
+    {
+      "positionId": "T-1778718867328-fb7r",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+      "pnlPct": -7.55,
+      "currentPrice": 0.49,
+      "underlyingPrice": 75708,
+      "targetPct": null,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "btc_spot",
+        "btc_pm_iv",
+        "btc_hl_funding_ann"
+      ]
+    },
+    {
+      "positionId": "T-1779388148375-mzu8",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": -1.83,
+      "currentPrice": 94.87,
+      "underlyingPrice": 94.87,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1779481832300-m49c",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "short",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "pnlPct": -0.09,
+      "currentPrice": 4514,
+      "underlyingPrice": 4514,
+      "targetPct": 3,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_gld_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1779496230307-1zji",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "pnlPct": 0.71,
+      "currentPrice": 266.86,
+      "underlyingPrice": 265.4,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "amzn_stock",
+        "amzn_hl_perp",
+        "amzn_hl_funding_ann"
+      ]
+    }
+  ],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -153,9 +224,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 107,
-    "resolvedCount": 146,
-    "wouldHaveWon": 60,
+    "openCount": 109,
+    "resolvedCount": 147,
+    "wouldHaveWon": 61,
     "wouldHaveLost": 86,
     "bySignal": [
       {
@@ -224,24 +295,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -2.67,
-        "resolvedAt": "2026-05-23T11:29:12.024Z",
-        "marketQuality": {
-          "yesBid": 0.25,
-          "yesAsk": 0.26,
-          "yesSpread": 0.01,
-          "liquidity": 79862.96,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
@@ -375,25 +428,27 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 0.21,
+        "resolvedAt": "2026-05-23T18:29:18.594Z",
+        "marketQuality": {
+          "yesBid": 0.035,
+          "yesAsk": 0.036,
+          "yesSpread": 0.001,
+          "liquidity": 243076.58,
+          "flags": []
+        }
       }
     ],
     "openQualityWarnings": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $150,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.06,
-          "yesAsk": 0.08,
-          "yesSpread": 0.02,
-          "liquidity": 71854.12,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.8pt on BTC, spread 2.0c, liquidity 71854. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "SPY",
@@ -462,17 +517,33 @@
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
         "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "gc-hit-jun-2026 — NO — Will Gold (GC) hit (HIGH) $5,100 by end of June?",
+        "instrumentLabel": "gc-over-under-jun-2026 — NO — Will Gold (GC) settle over $7,000 on the final trading day of June 2026?",
         "marketQuality": {
-          "yesBid": 0.08,
-          "yesAsk": 0.11,
-          "yesSpread": 0.03,
-          "liquidity": 1820.47,
+          "yesBid": 0.024,
+          "yesAsk": 0.035,
+          "yesSpread": 0.011,
+          "liquidity": 6861.92,
           "flags": [
             "wide_pm_spread"
           ]
         },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.3pt on GOLD, spread 3.0c, liquidity 7131. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.2pt on GOLD, spread 0.1c, liquidity 6862. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "cl-settle-jun-2026 — NO — Will Crude Oil (CL) settle at >$84 in June?",
+        "marketQuality": {
+          "yesBid": 0.67,
+          "yesAsk": 0.69,
+          "yesSpread": 0.02,
+          "liquidity": 6261.02,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.8pt on OIL, spread 2.0c, liquidity 6261. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
@@ -483,12 +554,12 @@
           "yesBid": 0.017,
           "yesAsk": 0.03,
           "yesSpread": 0.013,
-          "liquidity": 2127.71,
+          "liquidity": 6052.93,
           "flags": [
             "wide_pm_spread"
           ]
         },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.3pt on GOLD, spread 1.3c, liquidity 6074. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.3pt on GOLD, spread 1.3c, liquidity 6053. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
@@ -497,14 +568,14 @@
         "instrumentLabel": "gc-over-under-jun-2026 — NO — Will Gold (GC) settle over $6,000 on the final trading day of June 2026?",
         "marketQuality": {
           "yesBid": 0.018,
-          "yesAsk": 0.032,
-          "yesSpread": 0.014,
-          "liquidity": 1660.54,
+          "yesAsk": 0.03,
+          "yesSpread": 0.012,
+          "liquidity": 5259.87,
           "flags": [
             "wide_pm_spread"
           ]
         },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.2pt on GOLD, spread 1.4c, liquidity 5023. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.1pt on GOLD, spread 1.2c, liquidity 5232. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
