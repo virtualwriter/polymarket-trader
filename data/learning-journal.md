@@ -15940,3 +15940,34 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 12h); 4.0h
 
 ---
 
+### 2026-05-23 05:29 UTC
+
+**Portfolio:** $98.46 total | Cash $93.46 | 5 open | P&L $-0.5379 | 52% win rate (155 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 79.4 is 2.6 std devs from mean (60.58 ± 7.33)
+- [anomaly] hype_pm_iv = 82.7 is 2.4 std devs from mean (65.54 ± 7.05)
+- [anomaly] hype_pm_ev = 56.35 is 2.4 std devs from mean (45.96 ± 4.41)
+- [anomaly] hype_spot = 55.161 is 2.2 std devs from mean (43.62 ± 5.29)
+- [anomaly] btc_opt_iv_90d = 24.2 is -2.0 std devs from mean (38.80 ± 7.23)
+
+**Blocked signal learning:**
+- Open blocked shadows: 110
+- Resolved blocked shadows: 131 (56 wins / 75 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-0.62%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.30%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.05%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (3 recurring signals seen within 12h); 5.0h since last call; daily budget 1/6; next scheduled 2026-05-23T11:29:16.298Z). Mechanical cycle ran normally._
+
+---
+
