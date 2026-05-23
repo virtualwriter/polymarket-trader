@@ -124,6 +124,7 @@ const ONE_TOUCH_TERMINAL_ONLY_SIGMA = 1.5;
 const OPERATIONALLY_TAINTED_TRADES: Record<string, string> = {
   "T-1778707778058-9nsi": "hourly LLM close had authority over rule-owned funding trade",
   "T-1778718867328-1tjp": "one-touch NO inherited generic 2% Polymarket stop instead of 100% hold-to-expiry stop",
+  "T-1779049817841-htfg": "strike-IV-skew data-quality artifact; excluded from live trader totals",
   "T-1779478230785-kc6x": "sub-cent one-sided Polymarket entry artifact outside the trader thesis",
 };
 const CSV_HEADER = [
@@ -245,6 +246,7 @@ function dedupeClosedTrades(trades: ClosedTrade[]): ClosedTrade[] {
 
 function isCountedRealTrade(trade: ClosedTrade): boolean {
   return !OPERATIONALLY_TAINTED_TRADES[trade.id] &&
+    trade.closeReason !== "data_quality_artifact" &&
     !(trade.closeReason ?? "").includes("DATA_CORRECTION_ARTIFACT") &&
     !(trade.thesis ?? "").includes("NON_LEARNING_CLOSE");
 }
@@ -798,10 +800,10 @@ function buildCsvReport(args: {
 
   rows.push(["summary", "generated_at", "", "", "", "", "", "", "", "", "", "", args.generatedAt, "", "", "", "", "", "", "", "", ""]);
   rows.push(detailCsvRow("summary", "deduped_counted_ledger", args.allTradeStats, "", "", "", `canonical=true; source=trades-detailed.csv; dedupe=earliest_closed_at_per_trade_id; excludes=operationally_tainted,DATA_CORRECTION_ARTIFACT,NON_LEARNING_CLOSE; raw_rows=${args.rawTrades.length}; duplicate_trade_ids=${args.duplicateTradeIds.size}`));
-  rows.push(["summary", "portfolio_audit", String(args.portfolio.totalTrades), String(args.portfolio.winCount), String(args.portfolio.lossCount), args.portfolio.totalTrades > 0 ? ((args.portfolio.winCount / args.portfolio.totalTrades) * 100).toFixed(1) : "", args.portfolio.totalRealizedPnl.toFixed(6), "", "", "", "", "", `reference_only=true; source=portfolio.json; cash=${args.portfolio.cash.toFixed(6)}; last_updated=${args.portfolio.lastUpdated}`, "", args.portfolio.totalRealizedPnl.toFixed(6), "", "", "", "", "", "", ""]);
+  rows.push(["summary", "portfolio_audit", String(args.portfolio.totalTrades), String(args.portfolio.winCount), String(args.portfolio.lossCount), args.portfolio.totalTrades > 0 ? ((args.portfolio.winCount / args.portfolio.totalTrades) * 100).toFixed(1) : "", args.allTradeStats.pnl.toFixed(6), "", "", "", "", "", `corrected_counted_total=true; raw_portfolio_total=${args.portfolio.totalRealizedPnl.toFixed(6)}; source=portfolio.json; cash=${args.portfolio.cash.toFixed(6)}; last_updated=${args.portfolio.lastUpdated}`, "", args.allTradeStats.pnl.toFixed(6), "", "", "", "", "", "", ""]);
   rows.push(detailCsvRow("summary", "raw_detailed_trade_ledger_audit", args.rawTradeStats, "", "", "", `reference_only=true; source=trades-detailed.csv; duplicate_trade_ids=${args.duplicateTradeIds.size}`));
   rows.push(detailCsvRow("summary", "resolved_shadow_rollup", args.allShadowStats, "", "", "", `source=blocked-signals.json; resolved_shadows=${args.resolvedShadows.length}`));
-  rows.push(["summary", "open_positions", String(args.portfolio.positions.length), "", "", "", "", "", "", "", "", "", "Current live/open positions from portfolio.json", "", args.portfolio.totalRealizedPnl.toFixed(6), "", "", "", "", "", "", ""]);
+  rows.push(["summary", "open_positions", String(args.portfolio.positions.length), "", "", "", "", "", "", "", "", "", "Current live/open positions from portfolio.json; realized_pnl uses corrected counted ledger", "", args.allTradeStats.pnl.toFixed(6), "", "", "", "", "", "", ""]);
   rows.push(["summary", "duplicate_trade_ids", String(args.duplicateTradeIds.size), "", "", "", "", "", "", "", "", "", [...args.duplicateTradeIds].join("; "), "", "", "", "", "", "", "", "", ""]);
   rows.push(["summary", "operationally_tainted_trade_ids", String(args.operationallyTaintedTrades.length), "", "", "", "", "", "", "", "", "", args.operationallyTaintedTrades.map((trade) => `${trade.id}: ${OPERATIONALLY_TAINTED_TRADES[trade.id]}`).join("; "), "", "", "", "", "", "", "", "", ""]);
 
@@ -887,7 +889,7 @@ function buildCsvReport(args: {
       position.asset,
       `${position.venue} ${position.direction}; ${marketDetail(position)}; ${position.thesis}`,
       positionUnrealizedPnlPct(position)?.toFixed(4) ?? "",
-      args.portfolio.totalRealizedPnl.toFixed(6),
+      args.allTradeStats.pnl.toFixed(6),
       positionUnrealizedPnl(position)?.toFixed(6) ?? "",
       position.entryPrice.toString(),
       position.currentPrice?.toString() ?? "",

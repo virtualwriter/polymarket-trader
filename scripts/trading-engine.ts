@@ -101,6 +101,18 @@ const STALE_LOTTERY_TICKET_NO_BAD_FLAGS = new Set([
   "missing_options_iv",
   "no_listed_options_mapping",
 ]);
+const WEEKEND_HL_FUNDING_SHADOW_SIGNAL = "WEEKEND_HL_FUNDING_REVERSION_LONG";
+const WEEKEND_HL_FUNDING_SHADOW_REASON = "weekend_hl_funding_shadow";
+const WEEKEND_HL_FUNDING_ENTRY_PCT = -0.30;
+const WEEKEND_HL_FUNDING_EXIT_PCT = 0.10;
+const WEEKEND_HL_FUNDING_LEVERAGE = 5;
+const LONG_DATED_POLYMARKET_HOLD_DAYS = 90;
+const HYPE_STOCK_BUILDER_ASSETS = new Set([
+  "AAPL", "AMD", "AMZN", "ARM", "BABA", "BIRD", "BX", "CBRS", "COIN",
+  "COST", "CRCL", "DKNG", "EBAY", "GME", "GOOGL", "HIMS", "HOOD", "INTC",
+  "LITE", "LLY", "META", "MRVL", "MSFT", "MSTR", "MU", "NFLX", "NVDA",
+  "ORCL", "PLTR", "RIVN", "RKLB", "SKHX", "SNDK", "TSLA", "TSM", "ZM",
+]);
 const HYPOTHESIS_SHADOW_TESTS_REQUIRED = 20;
 const HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT = 25;
 const PROMOTE_THRESHOLD = 0.65;
@@ -133,6 +145,7 @@ const LIVE_PROMOTED_HYPOTHESIS_IDS = new Set(["H-521", "H-523"]);
 const OPERATIONALLY_TAINTED_TRADE_IDS = new Set([
   "T-1778707778058-9nsi", // Hourly LLM close had authority over a rule-owned funding trade.
   "T-1778718867328-1tjp", // One-touch NO inherited generic 2% Polymarket stop instead of 100%.
+  "T-1779049817841-htfg", // Strike-IV-skew data-quality artifact; exclude permanently from totals.
   "T-1779478230785-kc6x", // Sub-cent one-sided Polymarket entry; near-resolved artifact outside the thesis.
 ]);
 const LOOKBACK_HOURS = 24;
@@ -402,7 +415,7 @@ interface BlockedSignalShadow {
   status: "open" | "resolved" | "cancelled";
   blockedAt: string;
   resolvedAt?: string;
-  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short" | "relative_value_heatmap" | "monotonic_arb_shadow" | "one_touch_high_edge_shadow" | "stale_lottery_ticket_shadow";
+  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short" | "relative_value_heatmap" | "monotonic_arb_shadow" | "one_touch_high_edge_shadow" | "stale_lottery_ticket_shadow" | "weekend_hl_funding_shadow";
   signalType: string;
   asset: string;
   venue: Signal["venue"];
@@ -1464,6 +1477,59 @@ function getHyperliquidPerpPrice(row: SnapshotRow, asset: string): number | null
   return typeof v === "number" && v > 0 ? v : null;
 }
 
+function getHyperliquidMarkPriceFromSnapshot(snapshot: InstrumentSnapshotFile | null | undefined, asset: string): number | null {
+  const mark = snapshot?.hyperliquid?.[asset]?.markPx;
+  return typeof mark === "number" && mark > 0 ? mark : null;
+}
+
+function getHyperliquidFundingFromSnapshot(snapshot: InstrumentSnapshotFile | null | undefined, asset: string): number | null {
+  const funding = snapshot?.hyperliquid?.[asset]?.fundingAnnualized;
+  return typeof funding === "number" && Number.isFinite(funding) ? funding : null;
+}
+
+function isUtcWeekend(date = new Date()): boolean {
+  const day = date.getUTCDay();
+  return day === 0 || day === 6;
+}
+
+function isLongDatedPolymarketPosition(position: Position): boolean {
+  if (position.venue !== "polymarket") return false;
+  const haystack = `${position.instrumentId ?? ""} ${position.instrumentLabel ?? ""} ${position.thesis ?? ""}`.toLowerCase();
+  return haystack.includes("before-2027")
+    || haystack.includes("december 31, 2026")
+    || haystack.includes("end of december");
+}
+
+function longDatedPolymarketExpiry(openedAtIso: string): string {
+  const opened = new Date(openedAtIso);
+  const expiry = new Date(opened);
+  expiry.setDate(expiry.getDate() + LONG_DATED_POLYMARKET_HOLD_DAYS);
+  return expiry.toISOString();
+}
+
+function extendLongDatedPolymarketTimelines(portfolio: Portfolio, blockedSignals: BlockedSignalShadow[]): string[] {
+  const notes: string[] = [];
+  const maybeExtend = (position: Position, label: string) => {
+    if (!isLongDatedPolymarketPosition(position)) return;
+    const desired = longDatedPolymarketExpiry(position.openedAt);
+    const currentMs = Date.parse(position.expiryDate);
+    const desiredMs = Date.parse(desired);
+    if (Number.isFinite(currentMs) && currentMs >= desiredMs) return;
+    const before = position.expiryDate;
+    position.expiryDate = desired;
+    notes.push(`${label} ${position.id} ${position.asset} ${position.instrumentLabel ?? position.instrumentId ?? ""}: expiry ${before} → ${desired}`);
+  };
+
+  for (const position of portfolio.positions) {
+    maybeExtend(position, "live");
+  }
+  for (const shadow of blockedSignals) {
+    if (shadow.status !== "open") continue;
+    maybeExtend(shadow.position, "shadow");
+  }
+  return notes;
+}
+
 function getHyperliquidFundingAnnualized(row: SnapshotRow, asset: string): number | null {
   const map: Record<string, string> = {
     BTC: "btc_hl_funding_ann",
@@ -1790,6 +1856,13 @@ function reconcileClosedGhostPositions(portfolio: Portfolio): string[] {
       survivors.push(p);
       continue;
     }
+    const tainted = OPERATIONALLY_TAINTED_TRADE_IDS.has(ghost.id) || ghost.closeReason === "data_quality_artifact";
+    if (tainted) {
+      notes.push(
+        `KILLED tainted ghost ${p.id} (${p.asset} ${p.direction} via ${p.venue}/${p.instrumentType ?? "legacy"}, ${p.signalType}) — already closed/excluded in trades-detailed.csv (reason=${ghost.closeReason}, pnl=${ghost.pnl >= 0 ? "+" : ""}$${ghost.pnl.toFixed(4)}); removed without re-adding cash or realized P&L.`,
+      );
+      continue;
+    }
     const exitProceeds = p.size + ghost.pnl;
     portfolio.cash += exitProceeds;
     portfolio.totalRealizedPnl += ghost.pnl;
@@ -2030,7 +2103,7 @@ function markPosition(
     const shares = position.size / position.entryPrice;
     marketPnl = shares * (currentPrice - position.entryPrice);
   } else if (position.instrumentType === "hl_perp") {
-    currentPrice = getHyperliquidPerpPrice(latestRow, position.asset);
+    currentPrice = getHyperliquidPerpPrice(latestRow, position.asset) ?? getHyperliquidMarkPriceFromSnapshot(latestSnapshot, position.asset);
     if (!currentPrice) return null;
     const rawReturn = position.direction === "long"
       ? (currentPrice - position.entryPrice) / position.entryPrice
@@ -3337,6 +3410,79 @@ function recordStaleLotteryTicketNoShadows(
   return recorded;
 }
 
+function recordWeekendHyperliquidFundingShadows(
+  latestSnapshot: InstrumentSnapshotFile | null,
+  learningParams: LearningParams,
+  blockedSignals: BlockedSignalShadow[],
+): number {
+  if (!latestSnapshot || !isUtcWeekend()) return 0;
+  const openedAt = new Date().toISOString();
+  let recorded = 0;
+
+  for (const asset of HYPE_STOCK_BUILDER_ASSETS) {
+    const quote = latestSnapshot.hyperliquid[asset];
+    const markPx = quote?.markPx;
+    const fundingAnnualized = quote?.fundingAnnualized;
+    if (!(typeof markPx === "number" && markPx > 0)) continue;
+    if (!(typeof fundingAnnualized === "number" && fundingAnnualized <= WEEKEND_HL_FUNDING_ENTRY_PCT)) continue;
+    if (blockedSignals.some((shadow) =>
+      shadow.status === "open" &&
+      shadow.blockedReason === WEEKEND_HL_FUNDING_SHADOW_REASON &&
+      shadow.asset === asset
+    )) continue;
+
+    const expiryDate = new Date("2099-12-31T00:00:00.000Z");
+    const position: Position = {
+      id: `WF-${Date.now()}-${asset}-${Math.random().toString(36).slice(2, 6)}`,
+      openedAt,
+      asset,
+      venue: "hyperliquid",
+      direction: "long",
+      entryPrice: markPx,
+      currentPrice: markPx,
+      currentUnderlyingPrice: markPx,
+      entryUnderlyingPrice: markPx,
+      size: TRADE_SIZE,
+      leverage: WEEKEND_HL_FUNDING_LEVERAGE,
+      signalType: WEEKEND_HL_FUNDING_SHADOW_SIGNAL,
+      hypothesisId: null,
+      thesis: `[WEEKEND HL FUNDING SHADOW] ${asset} Builder DEX stock perp funding ${(fundingAnnualized * 100).toFixed(1)}% annualized <= ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}% during weekend. Shadow long at ${WEEKEND_HL_FUNDING_LEVERAGE}x; exit only when funding >= ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}%. No time cap.`,
+      targetPct: null,
+      stopPct: 100,
+      expiryDate: expiryDate.toISOString(),
+      instrumentType: "hl_perp",
+      instrumentId: asset,
+      instrumentLabel: `HL ${asset} Builder DEX stock perp`,
+      fundingPnlAccrued: 0,
+    };
+
+    blockedSignals.push({
+      id: position.id,
+      status: "open",
+      blockedAt: openedAt,
+      blockedReason: WEEKEND_HL_FUNDING_SHADOW_REASON,
+      signalType: WEEKEND_HL_FUNDING_SHADOW_SIGNAL,
+      asset,
+      venue: "hyperliquid",
+      direction: "long",
+      confidence: 0.5,
+      thesis: position.thesis,
+      learningParamsSnapshot: {
+        macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+        contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
+        positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
+        llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
+        momentumLongExpiryDays: learningParams.momentumLongExpiryDays,
+        signalRisk: learningParams.signalRisk,
+      },
+      position,
+    });
+    recorded++;
+  }
+
+  return recorded;
+}
+
 const ONE_TOUCH_HIGH_EDGE_LIVE_ASSETS = new Set(["BTC", "ETH", "OIL", "SPY"]);
 
 function generateOneTouchHighEdgeNoSignals(
@@ -3481,10 +3627,14 @@ function resolveBlockedSignalShadows(
 
     const expiryOnlyShadow = shadow.blockedReason === "manual_shadow_trade"
       || shadow.blockedReason === "one_touch_high_edge_shadow"
-      || shadow.blockedReason === "stale_lottery_ticket_shadow";
+      || shadow.blockedReason === "stale_lottery_ticket_shadow"
+      || shadow.blockedReason === WEEKEND_HL_FUNDING_SHADOW_REASON;
     let closeReason: ClosedTrade["closeReason"] | null = null;
     const edgeDisappeared = oneTouchNoEdgeDisappeared(shadow, relativeValueRows);
-    if (!expiryOnlyShadow && shadow.position.targetPct !== null && mark.pnlPct >= shadow.position.targetPct) closeReason = "target";
+    const weekendFundingExit = shadow.blockedReason === WEEKEND_HL_FUNDING_SHADOW_REASON
+      && (getHyperliquidFundingFromSnapshot(latestInstrumentSnapshot(snapshots), shadow.asset) ?? Number.NEGATIVE_INFINITY) >= WEEKEND_HL_FUNDING_EXIT_PCT;
+    if (weekendFundingExit) closeReason = mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
+    else if (!expiryOnlyShadow && shadow.position.targetPct !== null && mark.pnlPct >= shadow.position.targetPct) closeReason = "target";
     else if (!expiryOnlyShadow && mark.pnlPct <= -shadow.position.stopPct) closeReason = "stop";
     else if (edgeDisappeared) closeReason = mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
     else if (new Date(shadow.position.expiryDate) <= new Date()) closeReason = "expiry";
@@ -4295,13 +4445,23 @@ function buildPositionFromSignal(
       riskAdjustedSignal.contractHint ?? { preferredDirection: inferPolymarketPreferredDirection(riskAdjustedSignal.direction, riskAdjustedSignal.type, riskAdjustedSignal.thesis) },
     );
     if (!selected) return null;
+    const instrumentLabel = `${selected.event.slug} — ${selected.instrumentType === "pm_yes" ? "YES" : "NO"} — ${selected.contract.question}`;
+    const longDatedCandidate = {
+      ...base,
+      venue: "polymarket" as const,
+      instrumentId: `${selected.event.slug}::${selected.contract.marketId}`,
+      instrumentLabel,
+    };
     return {
       ...base,
       entryPrice: selected.entryPrice,
       currentPrice: selected.entryPrice,
+      expiryDate: isLongDatedPolymarketPosition(longDatedCandidate)
+        ? longDatedPolymarketExpiry(base.openedAt)
+        : base.expiryDate,
       instrumentType: selected.instrumentType,
-      instrumentId: `${selected.event.slug}::${selected.contract.marketId}`,
-      instrumentLabel: `${selected.event.slug} — ${selected.instrumentType === "pm_yes" ? "YES" : "NO"} — ${selected.contract.question}`,
+      instrumentId: longDatedCandidate.instrumentId,
+      instrumentLabel,
     };
   }
 
@@ -6443,6 +6603,7 @@ async function main() {
   // mark-to-market run, so none of them act on a phantom.
   const ghostKillNotes = reconcileClosedGhostPositions(portfolio);
   const migrationNotes = migrateLegacyPolymarketPositions(portfolio, instrumentSnapshots);
+  const longDatedTimelineNotes = extendLongDatedPolymarketTimelines(portfolio, blockedSignals);
   const fundingRiskShapeNotes = applyFundingRiskShapeToOpenPositions(portfolio, learningParams);
   const spotRiskShapeNotes = applySpotRiskToOpenPositions(portfolio);
   const productionPolymarketRiskNotes = applyProductionPolymarketRiskToOpenPositions(portfolio);
@@ -6454,6 +6615,7 @@ async function main() {
   console.log(`  Risk params: HL funding ${formatTargetPct(learningParams.signalRisk.FUNDING_EXTREME_SHORT.targetPct)}/-${learningParams.signalRisk.FUNDING_EXTREME_SHORT.stopPct}, LLM ${formatTargetPct(learningParams.signalRisk.LLM_HYPOTHESIS.targetPct)}/-${learningParams.signalRisk.LLM_HYPOTHESIS.stopPct}, PM overvol ${formatTargetPct(learningParams.signalRisk.PM_IV_GT_OPT_IV.targetPct)}/-${learningParams.signalRisk.PM_IV_GT_OPT_IV.stopPct}`);
   for (const note of ghostKillNotes) console.log(`  Ghost killer: ${note}`);
   for (const note of migrationNotes) console.log(`  ${note}`);
+  for (const note of longDatedTimelineNotes) console.log(`  Long-dated PM timeline: ${note}`);
   for (const note of fundingRiskShapeNotes) console.log(`  Funding risk shape: ${note}`);
   for (const note of spotRiskShapeNotes) console.log(`  Spot risk shape: ${note}`);
   for (const note of productionPolymarketRiskNotes) console.log(`  Production PM risk shape: ${note}`);
@@ -6527,6 +6689,7 @@ async function main() {
         : shadow.blockedReason === "polymarket_proxy_short" ? "PM proxy short"
         : shadow.blockedReason === "relative_value_heatmap" ? "Relative-value heatmap"
         : shadow.blockedReason === "one_touch_high_edge_shadow" ? "One-touch high-edge"
+        : shadow.blockedReason === WEEKEND_HL_FUNDING_SHADOW_REASON ? "Weekend HL funding"
         : shadow.blockedReason === "stale_lottery_ticket_shadow" ? "Stale lottery NO"
         : shadow.blockedReason === "monotonic_arb_shadow" ? "Monotonic arb"
         : shadow.blockedReason === "manual_shadow_trade" ? "Manual shadow" : "Blocked";
@@ -6549,6 +6712,10 @@ async function main() {
   const newStaleLotteryTicketNoShadows = recordStaleLotteryTicketNoShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals);
   if (newStaleLotteryTicketNoShadows > 0) {
     console.log(`\n  Opened ${newStaleLotteryTicketNoShadows} stale-lottery-ticket NO shadow trades.`);
+  }
+  const newWeekendFundingShadows = recordWeekendHyperliquidFundingShadows(latestSnapshot, learningParams, blockedSignals);
+  if (newWeekendFundingShadows > 0) {
+    console.log(`\n  Opened ${newWeekendFundingShadows} weekend HL stock funding shadow trades (${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}% entry, ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}% exit, ${WEEKEND_HL_FUNDING_LEVERAGE}x).`);
   }
   let proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   let blockedSummary = summarizeBlockedSignals(blockedSignals);

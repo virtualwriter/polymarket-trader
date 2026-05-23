@@ -98,6 +98,41 @@ const GAMMA_API = "https://gamma-api.polymarket.com";
 const HL_PERP_COINS = ["BTC", "ETH", "HYPE"];
 const HL_BUILDER_COINS: { dex: string; coin: string; label: string }[] = [
   { dex: "xyz", coin: "xyz:AMZN", label: "AMZN" },
+  { dex: "xyz", coin: "xyz:AAPL", label: "AAPL" },
+  { dex: "xyz", coin: "xyz:AMD", label: "AMD" },
+  { dex: "xyz", coin: "xyz:ARM", label: "ARM" },
+  { dex: "xyz", coin: "xyz:BABA", label: "BABA" },
+  { dex: "xyz", coin: "xyz:BIRD", label: "BIRD" },
+  { dex: "xyz", coin: "xyz:BX", label: "BX" },
+  { dex: "xyz", coin: "xyz:CBRS", label: "CBRS" },
+  { dex: "xyz", coin: "xyz:COIN", label: "COIN" },
+  { dex: "xyz", coin: "xyz:COST", label: "COST" },
+  { dex: "xyz", coin: "xyz:CRCL", label: "CRCL" },
+  { dex: "xyz", coin: "xyz:DKNG", label: "DKNG" },
+  { dex: "xyz", coin: "xyz:EBAY", label: "EBAY" },
+  { dex: "xyz", coin: "xyz:GME", label: "GME" },
+  { dex: "xyz", coin: "xyz:GOOGL", label: "GOOGL" },
+  { dex: "xyz", coin: "xyz:HIMS", label: "HIMS" },
+  { dex: "xyz", coin: "xyz:HOOD", label: "HOOD" },
+  { dex: "xyz", coin: "xyz:INTC", label: "INTC" },
+  { dex: "xyz", coin: "xyz:LITE", label: "LITE" },
+  { dex: "xyz", coin: "xyz:LLY", label: "LLY" },
+  { dex: "xyz", coin: "xyz:META", label: "META" },
+  { dex: "xyz", coin: "xyz:MRVL", label: "MRVL" },
+  { dex: "xyz", coin: "xyz:MSFT", label: "MSFT" },
+  { dex: "xyz", coin: "xyz:MSTR", label: "MSTR" },
+  { dex: "xyz", coin: "xyz:MU", label: "MU" },
+  { dex: "xyz", coin: "xyz:NFLX", label: "NFLX" },
+  { dex: "xyz", coin: "xyz:NVDA", label: "NVDA" },
+  { dex: "xyz", coin: "xyz:ORCL", label: "ORCL" },
+  { dex: "xyz", coin: "xyz:PLTR", label: "PLTR" },
+  { dex: "xyz", coin: "xyz:RIVN", label: "RIVN" },
+  { dex: "xyz", coin: "xyz:RKLB", label: "RKLB" },
+  { dex: "xyz", coin: "xyz:SKHX", label: "SKHX" },
+  { dex: "xyz", coin: "xyz:SNDK", label: "SNDK" },
+  { dex: "xyz", coin: "xyz:TSLA", label: "TSLA" },
+  { dex: "xyz", coin: "xyz:TSM", label: "TSM" },
+  { dex: "xyz", coin: "xyz:ZM", label: "ZM" },
   { dex: "xyz", coin: "xyz:GOLD", label: "GOLD (GC)" },
   { dex: "xyz", coin: "xyz:CL", label: "OIL (CL)" },
   { dex: "xyz", coin: "xyz:BRENTOIL", label: "BRENT OIL" },
@@ -2301,6 +2336,42 @@ function writeSnapshot(
     gpu_h100_hit_300: findGpuP(gpu, "$3.00"),
   });
 
+  const hyperliquidSnapshot: Record<string, {
+    markPx: number | null;
+    fundingAnnualized: number | null;
+    openInterestUsd: number | null;
+    bestBid: number | null;
+    bestAsk: number | null;
+    spread: number | null;
+  }> = {};
+  for (const [asset, quote] of Object.entries(hl)) {
+    if (asset === "GOLD (GC)" || asset === "OIL (CL)" || asset === "BRENT OIL") continue;
+    hyperliquidSnapshot[asset] = {
+      markPx: r(quote?.markPx ?? null, 6),
+      fundingAnnualized: r(quote?.fundingAnnualized ?? null, 6),
+      openInterestUsd: r(quote?.openInterestUsd ?? null, 2),
+      bestBid: r(quote?.bestBid ?? null, 6),
+      bestAsk: r(quote?.bestAsk ?? null, 6),
+      spread: r(quote?.spread ?? null, 6),
+    };
+  }
+  hyperliquidSnapshot.GOLD = {
+    markPx: r(hl["GOLD (GC)"]?.markPx ?? null, 6),
+    fundingAnnualized: r(hl["GOLD (GC)"]?.fundingAnnualized ?? null, 6),
+    openInterestUsd: r(hl["GOLD (GC)"]?.openInterestUsd ?? null, 2),
+    bestBid: r(hl["GOLD (GC)"]?.bestBid ?? null, 6),
+    bestAsk: r(hl["GOLD (GC)"]?.bestAsk ?? null, 6),
+    spread: r(hl["GOLD (GC)"]?.spread ?? null, 6),
+  };
+  hyperliquidSnapshot.OIL = {
+    markPx: r(hl["OIL (CL)"]?.markPx ?? null, 6),
+    fundingAnnualized: r(hl["OIL (CL)"]?.fundingAnnualized ?? null, 6),
+    openInterestUsd: r(hl["OIL (CL)"]?.openInterestUsd ?? null, 2),
+    bestBid: r(hl["OIL (CL)"]?.bestBid ?? null, 6),
+    bestAsk: r(hl["OIL (CL)"]?.bestAsk ?? null, 6),
+    spread: r(hl["OIL (CL)"]?.spread ?? null, 6),
+  };
+
   appendInstrumentSnapshot({
     timestamp: today,
     spots: {
@@ -2312,56 +2383,7 @@ function writeSnapshot(
       SPY: r(spySpot, 6),
       OIL: r(oilWti, 6),
     },
-    hyperliquid: {
-      BTC: {
-        markPx: r(hl.BTC?.markPx ?? null, 6),
-        fundingAnnualized: r(hl.BTC?.fundingAnnualized ?? null, 6),
-        openInterestUsd: r(hl.BTC?.openInterestUsd ?? null, 2),
-        bestBid: r(hl.BTC?.bestBid ?? null, 6),
-        bestAsk: r(hl.BTC?.bestAsk ?? null, 6),
-        spread: r(hl.BTC?.spread ?? null, 6),
-      },
-      ETH: {
-        markPx: r(hl.ETH?.markPx ?? null, 6),
-        fundingAnnualized: r(hl.ETH?.fundingAnnualized ?? null, 6),
-        openInterestUsd: r(hl.ETH?.openInterestUsd ?? null, 2),
-        bestBid: r(hl.ETH?.bestBid ?? null, 6),
-        bestAsk: r(hl.ETH?.bestAsk ?? null, 6),
-        spread: r(hl.ETH?.spread ?? null, 6),
-      },
-      HYPE: {
-        markPx: r(hl.HYPE?.markPx ?? null, 6),
-        fundingAnnualized: r(hl.HYPE?.fundingAnnualized ?? null, 6),
-        openInterestUsd: r(hl.HYPE?.openInterestUsd ?? null, 2),
-        bestBid: r(hl.HYPE?.bestBid ?? null, 6),
-        bestAsk: r(hl.HYPE?.bestAsk ?? null, 6),
-        spread: r(hl.HYPE?.spread ?? null, 6),
-      },
-      GOLD: {
-        markPx: r(hl["GOLD (GC)"]?.markPx ?? null, 6),
-        fundingAnnualized: r(hl["GOLD (GC)"]?.fundingAnnualized ?? null, 6),
-        openInterestUsd: r(hl["GOLD (GC)"]?.openInterestUsd ?? null, 2),
-        bestBid: r(hl["GOLD (GC)"]?.bestBid ?? null, 6),
-        bestAsk: r(hl["GOLD (GC)"]?.bestAsk ?? null, 6),
-        spread: r(hl["GOLD (GC)"]?.spread ?? null, 6),
-      },
-      AMZN: {
-        markPx: r(hl["AMZN"]?.markPx ?? null, 6),
-        fundingAnnualized: r(hl["AMZN"]?.fundingAnnualized ?? null, 6),
-        openInterestUsd: r(hl["AMZN"]?.openInterestUsd ?? null, 2),
-        bestBid: r(hl["AMZN"]?.bestBid ?? null, 6),
-        bestAsk: r(hl["AMZN"]?.bestAsk ?? null, 6),
-        spread: r(hl["AMZN"]?.spread ?? null, 6),
-      },
-      OIL: {
-        markPx: r(hl["OIL (CL)"]?.markPx ?? null, 6),
-        fundingAnnualized: r(hl["OIL (CL)"]?.fundingAnnualized ?? null, 6),
-        openInterestUsd: r(hl["OIL (CL)"]?.openInterestUsd ?? null, 2),
-        bestBid: r(hl["OIL (CL)"]?.bestBid ?? null, 6),
-        bestAsk: r(hl["OIL (CL)"]?.bestAsk ?? null, 6),
-        spread: r(hl["OIL (CL)"]?.spread ?? null, 6),
-      },
-    },
+    hyperliquid: hyperliquidSnapshot,
     polymarket: pm
       .map((event): InstrumentSnapshotEvent | null => {
         const asset = polymarketAssetForSlug(event.slug);
