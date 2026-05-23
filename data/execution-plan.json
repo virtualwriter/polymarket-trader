@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-23T18:30:15.983Z",
+  "generatedAt": "2026-05-23T19:30:51.202Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE breakout / OI surge momentum via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 58.266,
+      "entryPrice": 58.337,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 7
@@ -29,7 +29,7 @@
       "confidence": 0.41864441736232527,
       "thesis": "GOLD P/C ratio 0.25 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4514,
+      "entryPrice": 4519,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -39,11 +39,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5864758493333333,
-      "confidence": 0.2467963683475833,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.6pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5748413113333334,
+      "confidence": 0.24190040932545834,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.2pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 75708,
+      "entryPrice": 75903,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -59,11 +59,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.522210016,
-      "confidence": 0.219752502358,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.7pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.530189794,
+      "confidence": 0.22311049268762498,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.9pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 75708,
+      "entryPrice": 75903,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -75,24 +75,19 @@
       }
     },
     {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "ETH",
-      "venue": "polymarket",
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.5109541943333333,
-      "confidence": 0.21501591190289582,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.3pt edge on ETH; hold 14d for repricing.",
+      "strength": 0.08714285714285716,
+      "confidence": 0.05251354805828124,
+      "thesis": "GOLD HL funding 18.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 2072.5,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-ethereum-hit-before-2027",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "701552",
-        "allowDirectionFallback": false
-      }
+      "entryPrice": 4519,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -100,50 +95,19 @@
       "venue": "spot",
       "direction": "long",
       "strength": 0.051250000000000184,
-      "confidence": 0.03562577995362979,
+      "confidence": 0.034381912960585334,
       "thesis": "OIL P/C ratio 1.24 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 94.87,
+      "entryPrice": 93.88,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
     }
   ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779388148375-mzu8",
-        "asset": "OIL",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "oil_cl_pc_ratio"
-        ],
-        "thesis": "Oil P/C ratio extreme high entry at 2.36 has normalized to 1.24, removing the put-buying contrarian signal. Close signal."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779496230307-1zji",
-        "asset": "AMZN",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "amzn_hl_funding_ann"
-        ],
-        "thesis": "AMZN funding extreme short entry at -37% funding has flipped to +5.48%, invalidating the crowded shorts / funding carry thesis. Close position."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 2 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

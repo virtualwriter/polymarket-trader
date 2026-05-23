@@ -1,37 +1,13 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779388148375-mzu8",
-        "asset": "OIL",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "oil_cl_pc_ratio"
-        ],
-        "thesis": "Oil P/C ratio extreme high entry at 2.36 has normalized to 1.24, removing the put-buying contrarian signal. Close signal."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779496230307-1zji",
-        "asset": "AMZN",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "amzn_hl_funding_ann"
-        ],
-        "thesis": "AMZN funding extreme short entry at -37% funding has flipped to +5.48%, invalidating the crowded shorts / funding carry thesis. Close position."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedCloses": [],
   "skippedTrades": [],
-  "parameterUpdates": {}
+  "parameterUpdates": {
+    "macroMomentum24hThresholdPts": 4,
+    "contrarianTrendMarginPct": 0.5,
+    "positiveMomentum24hPct": 1.5,
+    "llmTradeExpiryDays": 14,
+    "momentumLongExpiryDays": 21,
+    "signalRisk": {}
+  }
 }

@@ -16325,3 +16325,37 @@ Closed OIL long (P/C ratio extreme high signal) as put/call ratio normalized sha
 
 ---
 
+### 2026-05-23 19:30 UTC
+
+**Portfolio:** $98.44 total | Cash $93.44 | 5 open | P&L $-0.5646 | 52% win rate (157 trades)
+
+**Closed 1 trades:**
+- ❌ OIL long via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH) → stop: $-0.0216 (-2.2%, market -0.0216, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -337.94 is -3.9 std devs from mean since 2026-04-28 (-22.53 ± 80.65)
+- [anomaly] amzn_hl_basis_pct = 1.12 is 3.0 std devs from mean (0.00 ± 0.37)
+- [anomaly] hype_spot = 58.337 is 2.6 std devs from mean (43.93 ± 5.58)
+- [anomaly] hype_pm_ev = 57.99 is 2.5 std devs from mean (46.23 ± 4.68)
+- [anomaly] amzn_hl_funding_ann = 61.76 is 2.4 std devs from mean (12.47 ± 20.36)
+
+**Blocked signal learning:**
+- Open blocked shadows: 110
+- Resolved blocked shadows: 148 (62 wins / 86 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-2.27%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+10.42%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.21%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+5.00%)
+
+**LLM analysis:**
+Today saw a notable BTC options term structure flip from backwardation to contango, suggesting near-term calm. BTC PM IV expanded sharply, completing the compression-to-expansion pattern predicted by promoted H-523. HYPE continued its breakout, supporting H-521. AMZN perp diverged strongly to a premium, with extreme positive funding – the earlier FUNDING_EXTREME_SHORT trade is now in profit but the funding signal has reversed, though mechanical exits still hold. One-touch NO trades on BTC and ETH are underwater despite spot moving away from strikes; this reflects polymarket pricing inefficiency. The ETH NO edge trade was entered even with edge; we'll monitor. The gold P/C ratio extreme low trade has not moved. Overall, shadow-test backlog remains a priority; no new hypotheses needed until existing families progress.
+
+---
+
