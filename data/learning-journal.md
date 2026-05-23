@@ -15797,3 +15797,53 @@ _LLM call skipped (duplicate-signals (4 recurring signals seen within 12h); 3.0h
 - Excluded `T-1779478230785-kc6x` from canonical trader performance: Sub-cent one-sided Polymarket entry artifact: OIL $95 LOW NO entered at 0.001 via forced one-touch path. Excluded from canonical performance and LLM truth because it was effectively near-resolved and outside the trader thesis; future one-sided PM entries require >=1c plus quality gates.
 - Restored portfolio realized P&L/cash/counts as if the artifact was never opened. This is not evidence against the one-touch NO thesis.
 
+### 2026-05-23 00:30 UTC
+
+**Portfolio:** $98.46 total | Cash $93.46 | 5 open | P&L $-0.5379 | 52% win rate (155 trades)
+
+**Opened 1 positions:**
+- AMZN long @ $264.91 via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 78.8 is 2.6 std devs from mean (60.45 ± 7.18)
+- [anomaly] hype_pm_iv = 82.8 is 2.5 std devs from mean (65.42 ± 6.93)
+- [anomaly] amzn_hl_funding_ann = -37.32 is -2.5 std devs from mean (12.36 ± 20.05)
+- [anomaly] hype_pm_ev = 55.97 is 2.3 std devs from mean (45.89 ± 4.34)
+- [anomaly] hype_spot = 54.388 is 2.1 std devs from mean (43.54 ± 5.21)
+
+**Blocked signal learning:**
+- Open blocked shadows: 113
+- Resolved blocked shadows: 123 (55 wins / 68 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT HYPE short via polymarket would have edge compressed but trade lost money (-1.45%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO GOLD short via polymarket would have closed with thesis validated profitably (+27.91%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+19.57%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have edge compressed but trade lost money (-14.37%)
+
+**LLM analysis:**
+Key observations from this session:
+
+1. BTC TERM STRUCTURE INVERSION: The most notable structural change is the BTC options term structure inverting — btc_opt_iv_term_spread went from +10 to -4.56, meaning 90d IV (38.9 at peak, now 24.2) briefly exceeded 30d IV. This is a stress signal indicating near-term uncertainty is being priced more aggressively than medium-term. The inversion has since partially resolved (90d back to 24.2 vs 30d at 32.9), but the episode is worth tracking as a regime indicator.
+
+2. SIMULTANEOUS GOLD LONG AND SHORT: We have both T-1778916565173-2wqk (GOLD long, FUNDING_EXTREME_SHORT) and T-1779481832300-m49c (GOLD short, PC_RATIO_EXTREME_LOW) open simultaneously. The GOLD long is at -0.69% with 7h to expiry — it will likely close mechanically soon. The GOLD short is at +0.11% with 116h remaining. The net exposure is approximately flat on gold, which is appropriate given the conflicting signals. The GOLD long's original thesis (crowded shorts at -44.8% funding) has been substantially resolved — funding is now -3%, meaning the extreme short crowding has normalized. The mechanical stop/expiry will handle the exit.
+
+3. OIL LONG PERFORMING: T-1779388148375-mzu8 is at +1.92% with the P/C ratio normalizing from 2.36 to 1.24. The contrarian thesis is working. The mechanical target at +4% is the right exit mechanism.
+
+4. BTC ONE-TOUCH NO POSITION: T-1778718867328-fb7r is at -5.66% with BTC spot having declined from 79,548 to 75,404 (-5.2%). This is ADVERSE for the NO position on the $55,000 dip market — spot moving DOWN toward $55,000 is adverse. However, at 75,404, spot is still ~37% above the $55,000 strike, and the Polymarket YES price has moved from 0.53 to 0.50 (only -3 cents), suggesting the market doesn't view the $55k touch as significantly more likely despite the spot decline. The position has 120h remaining. The thesis remains intact — a single touch at $55k requires a further ~27% decline from current levels. No LLM close warranted.
+
+5. HYPE DISTRIBUTION PATTERN: HYPE has declined 9.3% with OI contracting 13% and PM IV elevated at 82.8 (2.5σ above mean). This is consistent with the liquidation-short family (H-003, H-010) but historical win rate on that family is only 22% over 9 tests. The elevated PM IV may be absorbing the downside risk. No new trade recommended given weak historical performance.
+
+6. HYPOTHESIS BACKLOG: 9 setup families need more shadow tests and 5 are pending. The instruction is to not create new hypotheses while the backlog is incomplete. Complying — newHypotheses is empty.
+
+7. MACRO DETERIORATION: Macro composite has declined from 46 (NEUTRAL) to 42 (BEARISH) over the window, with Iran deal probability declining from 57.5% to 53%. The Fed remains VERY HAWKISH with first cut not expected until December 2026. This macro backdrop is consistent with continued BTC pressure but does not trigger any enabled signals.
+
+8. RELATIVE VALUE HEATMAP: Several interesting edges visible — HYPE $66 YES at 71.5c vs model 99% (27pt edge, near_underlying_cap_bullish flag), ETH $3,500 YES at 23.5c vs model 35% (11pt edge), BTC $100k YES at 36.5c vs model 47.6% (10.6pt edge). However, these are all in shadow/research territory and the HYPE market has wide spread (2c) and low liquidity (2,423). The BTC $100k December market has better liquidity (102k) and a cleaner edge. These are noted for shadow tracking but not actioned given the current backlog and the need for more shadow test data on the pm_odds_underlying_payoff_cap family (H-524 through H-526).
+
+---
+
