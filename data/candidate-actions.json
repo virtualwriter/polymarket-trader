@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-23T16:29:19.095Z",
+  "generatedAt": "2026-05-23T17:52:15.875Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -22,9 +22,9 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5703367393333333,
-      "confidence": 0.2400048291207083,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.1pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5722983119999999,
+      "confidence": 0.24083028341849996,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.2pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
       "entryPrice": 75408,
       "targetPct": null,
@@ -42,8 +42,8 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5097450533333333,
-      "confidence": 0.2145070902558333,
+      "strength": 0.511279173,
+      "confidence": 0.2151526669880625,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
       "entryPrice": 75408,
@@ -66,86 +66,11 @@
       "confidence": 0.03562577995362979,
       "thesis": "OIL P/C ratio 1.24 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 96.34,
+      "entryPrice": 96.63,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
     }
   ],
-  "llmCloseEligibility": [
-    {
-      "positionId": "T-1778718867328-fb7r",
-      "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "short",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "btc_spot",
-        "btc_pm_iv",
-        "btc_hl_funding_ann"
-      ],
-      "reason": "Rule-based signal exits require approved category and signal-family evidence."
-    },
-    {
-      "positionId": "T-1779388148375-mzu8",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_cl_pc_ratio"
-      ],
-      "reason": "Rule-based signal exits require approved category and signal-family evidence."
-    },
-    {
-      "positionId": "T-1779481832300-m49c",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "short",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_gld_pc_ratio"
-      ],
-      "reason": "Rule-based signal exits require approved category and signal-family evidence."
-    },
-    {
-      "positionId": "T-1779496230307-1zji",
-      "signalType": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "amzn_stock",
-        "amzn_hl_perp",
-        "amzn_hl_funding_ann"
-      ],
-      "reason": "Rule-based signal exits require approved category and signal-family evidence."
-    }
-  ]
+  "llmCloseEligibility": []
 }
