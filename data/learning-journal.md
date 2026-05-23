@@ -16177,3 +16177,50 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 12h); 6.0h
 
 ---
 
+### 2026-05-23 14:30 UTC
+
+**Portfolio:** $98.46 total | Cash $94.46 | 4 open | P&L $-0.5430 | 52% win rate (156 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -373.19 is -4.6 std devs from mean since 2026-04-28 (-20.53 ± 76.64)
+- [anomaly] hype_pm_ev = 56.66 is 2.3 std devs from mean (46.09 ± 4.54)
+- [anomaly] hype_med_max = 77.8 is 2.3 std devs from mean (60.81 ± 7.55)
+- [anomaly] hype_spot = 55.81 is 2.2 std devs from mean (43.77 ± 5.41)
+- [correlation_flip] BTC-GOLD correlation shifted from -0.28 to 0.69. Rolling correlation: 24h=0.66, 7d=0.36, 30d=-0.27. Current 24h corr is at 61th pct of last 23 daily 24h-rolling values (range -0.60 to 0.90).
+
+**Blocked signal learning:**
+- Open blocked shadows: 105
+- Resolved blocked shadows: 144 (59 wins / 85 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-4.76%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-2.15%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.06%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. BTC PM IV SPIKE: The most notable development is BTC PM IV jumping from ~34% to 43-44% between snapshots T07 and T09, coinciding with BTC spot dropping from ~75,237 to ~74,650. This is a vol expansion event following a period of compression — consistent with H-523's prediction direction but the entry window for the compression trade has passed. The current elevated PM IV (43-44%) vs options IV (32.9% 30d) represents a PM_IV_GT_OPT_IV setup, but that signal is currently disabled by adaptive weight state.
+
+2. OPEN POSITION REVIEW:
+   - BTC NO ($55k dip, T-1778718867328-fb7r): Spot has moved adversely from 79,548 to 75,239 (-5.4%), approaching the $55k barrier from above. Current PnL -7.55%. The position is a NO on BTC dipping to $55k — spot is still ~37% above the barrier. The negative funding (-10.95%) and elevated PM IV are consistent with crowded short positioning, which could mean a bounce is more likely than further decline. No LLM close warranted; mechanical system owns this. The thesis (spot stays above $55k) remains intact despite the spot decline.
+   - OIL long (T-1779388148375-mzu8): Oil dropped sharply in the final snapshot to 96.94 from 98+ range. The P/C ratio has normalized from 2.36 to 1.241 — the original contrarian signal has fully normalized. The position is at +0.31% PnL with a 4% target and 2% stop. The thesis was P/C exhaustion reversal; the P/C has normalized but price hasn't moved to target yet. The sharp final-snapshot drop is concerning but within the stop range. Mechanical system owns exit.
+   - GOLD short (T-1779481832300-m49c): Gold spot essentially flat at 4510 vs 4507 entry. P/C ratio stable at 0.251. No thesis change. Mechanical system owns exit.
+   - AMZN long (T-1779496230307-1zji): AMZN funding has dramatically reversed from -37.32% (entry trigger) to +34.76% annualized. This is thesis completion — the crowded short has been squeezed and funding has normalized/overshot. The position is at +0.17% PnL, well below the 4% target. The breakeven arm has not triggered (requires peak ≥ +1.5%). The mechanical system owns the exit; the funding normalization is actually thesis completion, not invalidation, per the funding sign convention rules.
+
+3. AMZN FUNDING SPIKE: AMZN HL funding at +34.76% annualized is now at the 92nd percentile of the 24h range and 98th percentile of the 7d range. This is a potential FUNDING_EXTREME_LONG signal (crowded longs, short the perp), but AMZN is disabled for FUNDING_EXTREME_LONG. Worth monitoring.
+
+4. OIL FUNDING ANOMALY: oil_hl_funding_ann = -373.19 is a -4.6 std dev anomaly. This is an extreme reading but oil is disabled for FUNDING_EXTREME_SHORT. The oil P/C ratio at 1.241 is not extreme. The oil PM IV at 59.9% vs options IV at 68.8% (30d) shows options IV > PM IV, which is an OPT_IV_GT_PM_IV setup — but that signal is disabled.
+
+5. HYPOTHESIS BACKLOG: 9 setup families still need more shadow tests and 5 are pending. No new hypotheses proposed per instructions. The existing backlog of active hypotheses (particularly the HYPE, BTC IV compression, and AMZN convergence families) continues to accumulate evidence. The BTC IV compression family (H-523) had its compression condition resolve into expansion this session — this is a natural cycle and the family should continue testing for the next compression entry.
+
+6. ONE-TOUCH SHADOW PERFORMANCE: Recent shadow results show mixed performance — 2 wins and 6 losses in the most recent 8 resolved shadows. The BTC $55k dip NO shadow took a -100% loss (the market compressed to 0.90 YES, meaning the market moved strongly toward the barrier). This is a warning sign for the existing live BTC NO position. However, the live position has a different strike ($55k vs the shadow which may have been at a closer strike) and the mechanical system owns the exit.
+
+---
+
