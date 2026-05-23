@@ -15878,3 +15878,34 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 12h); 1.0h
 
 ---
 
+### 2026-05-23 03:29 UTC
+
+**Portfolio:** $98.46 total | Cash $93.46 | 5 open | P&L $-0.5379 | 52% win rate (155 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 10.7pp (was 1.8, now -8.9)
+- [anomaly] hype_med_max = 79.4 is 2.6 std devs from mean (60.52 ± 7.25)
+- [anomaly] hype_pm_ev = 56.57 is 2.4 std devs from mean (45.92 ± 4.37)
+- [anomaly] hype_pm_iv = 82.2 is 2.4 std devs from mean (65.48 ± 7.00)
+- [anomaly] hype_spot = 55.373 is 2.2 std devs from mean (43.58 ± 5.25)
+
+**Blocked signal learning:**
+- Open blocked shadows: 110
+- Resolved blocked shadows: 129 (56 wins / 73 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-2.53%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.15%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-0.62%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (3 recurring signals seen within 12h); 3.0h since last call; daily budget 1/6; next scheduled 2026-05-23T09:29:11.229Z). Mechanical cycle ran normally._
+
+---
+
