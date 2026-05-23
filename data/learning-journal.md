@@ -16359,3 +16359,34 @@ Today saw a notable BTC options term structure flip from backwardation to contan
 
 ---
 
+### 2026-05-23 20:29 UTC
+
+**Portfolio:** $98.44 total | Cash $93.44 | 5 open | P&L $-0.5646 | 52% win rate (157 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 24.4pp (was -10.0, now 14.4)
+- [anomaly] oil_hl_funding_ann = -435.35 is -5.0 std devs from mean since 2026-04-28 (-23.50 ± 83.00)
+- [anomaly] amzn_hl_basis_pct = 1.12 is 3.0 std devs from mean (0.00 ± 0.38)
+- [anomaly] hype_med_max = 81.8 is 2.7 std devs from mean (61.05 ± 7.78)
+- [anomaly] hype_pm_ev = 58.49 is 2.6 std devs from mean (46.25 ± 4.70)
+
+**Blocked signal learning:**
+- Open blocked shadows: 111
+- Resolved blocked shadows: 149 (63 wins / 86 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+10.42%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.21%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+5.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+1.56%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (5 recurring signals seen within 6h); 1.0h since last call; daily budget 5/12; next scheduled 2026-05-23T22:29:15.017Z). Mechanical cycle ran normally._
+
+---
+
