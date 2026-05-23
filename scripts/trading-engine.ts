@@ -146,10 +146,10 @@ const ALLOW_HOURLY_LLM_CLOSES = process.env.ALLOW_HOURLY_LLM_CLOSES === "1" || p
 // LLM cadence gate. The hourly engine/reporting loop still runs, but expensive
 // Sonnet calls are capped and deduped so trigger noise cannot blow through the
 // daily Anthropic budget.
-const LLM_CADENCE_HOURS = Number(process.env.LLM_CADENCE_HOURS ?? 6);
+const LLM_CADENCE_HOURS = Number(process.env.LLM_CADENCE_HOURS ?? 2);
 const LLM_FORCE_HOURLY = process.env.LLM_FORCE_HOURLY === "1" || process.env.LLM_FORCE_HOURLY === "true";
-const LLM_MAX_CALLS_PER_DAY = Number(process.env.LLM_MAX_CALLS_PER_DAY ?? 6);
-const LLM_NEW_SIGNAL_DEDUPE_HOURS = Number(process.env.LLM_NEW_SIGNAL_DEDUPE_HOURS ?? 12);
+const LLM_MAX_CALLS_PER_DAY = Number(process.env.LLM_MAX_CALLS_PER_DAY ?? 12);
+const LLM_NEW_SIGNAL_DEDUPE_HOURS = Number(process.env.LLM_NEW_SIGNAL_DEDUPE_HOURS ?? 6);
 const LLM_NEAR_DECISION_PCT_TRIGGER = Number(process.env.LLM_NEAR_DECISION_PCT_TRIGGER ?? 0.5);
 const LLM_HARD_RISK_PNL_PCT_TRIGGER = Number(process.env.LLM_HARD_RISK_PNL_PCT_TRIGGER ?? -30);
 const LLM_BIG_MOVE_PCT_TRIGGER = Number(process.env.LLM_BIG_MOVE_PCT_TRIGGER ?? 5);
@@ -5722,7 +5722,7 @@ function anthropicText(data: any): string {
 }
 
 const LLM_PROVIDER = process.env.LLM_PROVIDER ?? "anthropic";
-const LLM_REQUEST_TIMEOUT_MS = Number(process.env.LLM_REQUEST_TIMEOUT_MS ?? 180_000);
+const LLM_REQUEST_TIMEOUT_MS = Number(process.env.LLM_REQUEST_TIMEOUT_MS ?? 300_000);
 
 type LmMessage = { role: "user" | "assistant"; content: string };
 
@@ -5745,7 +5745,7 @@ async function requestLlmText(
         },
         body: JSON.stringify({
           model,
-          max_tokens: 8192,
+          max_tokens: 16384,
           temperature: 0.2,
           messages,
           stream: false,
@@ -5770,7 +5770,7 @@ async function requestLlmText(
       },
       body: JSON.stringify({
         model,
-        max_tokens: 8192,
+        max_tokens: 16384,
         temperature: 0.2,
         messages,
       }),
