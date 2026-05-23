@@ -16002,3 +16002,48 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 12h); 6.0h
 
 ---
 
+### 2026-05-23 07:30 UTC
+
+**Portfolio:** $98.46 total | Cash $93.46 | 5 open | P&L $-0.5379 | 52% win rate (155 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 78.5 is 2.4 std devs from mean (60.65 ± 7.40)
+- [anomaly] hype_pm_ev = 56.57 is 2.4 std devs from mean (46.00 ± 4.45)
+- [anomaly] hype_pm_iv = 81.2 is 2.2 std devs from mean (65.60 ± 7.11)
+- [anomaly] hype_spot = 55.201 is 2.2 std devs from mean (43.66 ± 5.32)
+- [anomaly] btc_opt_iv_90d = 24.2 is -2.0 std devs from mean (38.75 ± 7.27)
+
+**Blocked signal learning:**
+- Open blocked shadows: 107
+- Resolved blocked shadows: 136 (57 wins / 79 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-0.93%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-3.19%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.76%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.61%)
+
+**LLM analysis:**
+Key observations this session:
+
+1. BTC TERM STRUCTURE INVERSION WAS TRANSIENT: The sharp 90d IV spike to 38.9% (creating a -4.56pt inversion at T+4 to T+6) fully reversed back to normal contango (30d 32.9%, 90d 24.2%) within ~8 hours. This was likely a data artifact or a brief vol demand spike in the 90d tenor that self-corrected. The BTC PM IV at 34.6% remains compressed vs the 30d option IV at 32.9% — the spread is narrow but PM IV is still slightly above options IV, which is the opposite of the PM_IV_GT_OPT_IV signal direction.
+
+2. OIL POSITION PERFORMING WELL: The PC_RATIO_EXTREME_HIGH long on OIL is at +1.96% with the P/C ratio normalizing from 2.36 to 1.24. The extreme funding (113% annualized at peak) has also normalized. The thesis is playing out — put buyers were wrong and oil has rallied. The position is approaching its 4% target mechanically.
+
+3. GOLD CONFLICT: Having both a FUNDING_EXTREME_SHORT long and a PC_RATIO_EXTREME_LOW short on gold simultaneously is structurally awkward. The gold_gld_pc_ratio has been stuck at 0.251 for 10+ consecutive snapshots (likely a data freeze/weekend artifact), which means the PC_RATIO_EXTREME_LOW short signal evidence column is stale. The gold_gc_spot has barely moved (+6 from entry). Neither position has a strong thesis continuation signal right now — both are within their stop/target windows and mechanical exits will handle them.
+
+4. AMZN FUNDING TRADE: The FUNDING_EXTREME_SHORT long on AMZN entered at -37.3% funding has already seen funding normalize to +5% within 7 hours. The thesis (crowded shorts unwinding) has largely played out on the funding side, but spot hasn't moved meaningfully yet (265.4 flat). The basis is slightly negative (-0.17%), suggesting the perp is still slightly below spot. This is early in the hold window (7h of 168h expiry) — mechanical exits will manage.
+
+5. BTC ONE-TOUCH NO POSITION: The $55k dip NO position is at -5.66% PnL with spot at 75.2k. The YES price has moved from 0.47 to 0.50 (adverse). BTC spot has declined 2.1% since entry and is now at 75.2k — still 27% above the $55k strike. The funding turning negative (-6.2%) is adverse for the underlying but the strike is so far OTM that this is noise. The position has 113h remaining. No thesis invalidation — the one-touch NO thesis requires spot to stay above $55k at every point, and at 75.2k we have a 27% buffer. The adverse move is in the YES price repricing, not a structural breach.
+
+6. ONE-TOUCH SHADOW LOSSES: The recent shadow batch shows 7 losses and 1 win on ONE_TOUCH_HIGH_EDGE_NO shadows. The GOLD shadows are particularly weak — multiple losses on $4,800 May and $6,000/$7,000 December contracts. The OIL $80 LOW June shadow is also losing. The GOLD shadows may be suffering from the gold_gld_pc_ratio data freeze creating false signals. The OIL $80 LOW shadow is adverse because oil has been rallying (currently 98.5, moving away from $80). These shadow losses are informative: the edge on GOLD touch markets may be weaker than on OIL/BTC, and LOW-direction touches on rallying assets are particularly risky.
+
+7. NO NEW TRADES: With 5 open positions and $93 cash, the portfolio is near capacity. The hypothesis backlog has 9 setup families needing tests and 5 pending — no new setup families should be created. The relative-value heatmap shows many 'cheap vs underlying cap' signals but these are all in the shadow/research-only category. The HYPE $80 and $100 YES contracts show 51pt and 64pt edge respectively but HYPE is a shadow-only family. No actionable live trades meet the current signal allowlist criteria.
+
+---
+
