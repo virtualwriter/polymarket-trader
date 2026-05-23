@@ -16390,3 +16390,64 @@ _LLM call skipped (duplicate-signals (5 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-05-23 20:58 UTC
+
+**Portfolio:** $100.18 total | Cash $97.18 | 3 open | P&L $0.1771 | 54% win rate (112 trades)
+
+**Opened 3 positions:**
+- HYPE long @ $59.131 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+- GOLD short @ $4534 via spot/spot [GOLD spot] (PC_RATIO_EXTREME_LOW)
+- BTC short @ $0.5 via polymarket/pm_no [what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin dip to $55,000 by December 31, 2026?] (ONE_TOUCH_HIGH_EDGE_NO)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -505.72 is -5.7 std devs from mean since 2026-04-28 (-23.67 ± 83.89)
+- [anomaly] amzn_hl_basis_pct = 1.6 is 4.2 std devs from mean (0.00 ± 0.38)
+- [anomaly] oil_brent_spot = 95.41 is -2.9 std devs from mean since 2026-04-28 (105.96 ± 3.70)
+- [anomaly] oil_wti_spot = 90.33 is -2.8 std devs from mean since 2026-04-28 (100.88 ± 3.75)
+- [anomaly] hype_med_max = 82.6 is 2.8 std devs from mean (61.06 ± 7.78)
+
+**Blocked signal learning:**
+- Open blocked shadows: 111
+- Resolved blocked shadows: 149 (63 wins / 86 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+10.42%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.21%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+5.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+1.56%)
+
+---
+
+### 2026-05-23 21:00 UTC
+
+**Portfolio:** $100.18 total | Cash $97.18 | 3 open | P&L $0.1771 | 54% win rate (112 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -505.72 is -5.7 std devs from mean since 2026-04-28 (-23.67 ± 83.89)
+- [anomaly] amzn_hl_basis_pct = 1.6 is 4.2 std devs from mean (0.00 ± 0.38)
+- [anomaly] oil_brent_spot = 95.41 is -2.9 std devs from mean since 2026-04-28 (105.96 ± 3.70)
+- [anomaly] oil_wti_spot = 90.33 is -2.8 std devs from mean since 2026-04-28 (100.88 ± 3.75)
+- [anomaly] hype_med_max = 82.6 is 2.8 std devs from mean (61.06 ± 7.78)
+
+**Blocked signal learning:**
+- Open blocked shadows: 113
+- Resolved blocked shadows: 149 (63 wins / 86 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+10.42%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.21%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+5.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+1.56%)
+
+---
+
