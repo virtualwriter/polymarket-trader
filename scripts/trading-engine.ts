@@ -5721,17 +5721,45 @@ function anthropicText(data: any): string {
     .trim();
 }
 
-const ANTHROPIC_REQUEST_TIMEOUT_MS = Number(process.env.ANTHROPIC_REQUEST_TIMEOUT_MS ?? 180_000);
+const LLM_PROVIDER = process.env.LLM_PROVIDER ?? "anthropic";
+const LLM_REQUEST_TIMEOUT_MS = Number(process.env.LLM_REQUEST_TIMEOUT_MS ?? 180_000);
 
-async function requestAnthropicText(
+type LmMessage = { role: "user" | "assistant"; content: string };
+
+async function requestLlmText(
   apiKey: string,
   model: string,
-  messages: { role: "user" | "assistant"; content: string }[],
+  messages: LmMessage[],
 ): Promise<{ text: string; stopReason: string | null }> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), ANTHROPIC_REQUEST_TIMEOUT_MS);
+  const timeout = setTimeout(() => controller.abort(), LLM_REQUEST_TIMEOUT_MS);
 
   try {
+    if (LLM_PROVIDER === "deepseek") {
+      const res = await fetch("https://api.deepseek.com/chat/completions", {
+        method: "POST",
+        signal: controller.signal,
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          max_tokens: 8192,
+          temperature: 0.2,
+          messages,
+          stream: false,
+        }),
+      });
+      if (!res.ok) throw new Error(`DeepSeek API error: ${res.status} ${res.statusText}`);
+      const data = await res.json() as any;
+      const choice = data?.choices?.[0];
+      return {
+        text: choice?.message?.content?.trim() ?? "",
+        stopReason: choice?.finish_reason ?? null,
+      };
+    }
+
     const res = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       signal: controller.signal,
@@ -5748,12 +5776,12 @@ async function requestAnthropicText(
       }),
     });
 
-    if (!res.ok) throw new Error(`API error: ${res.status} ${res.statusText}`);
+    if (!res.ok) throw new Error(`Anthropic API error: ${res.status} ${res.statusText}`);
     const data = await res.json() as any;
     return { text: anthropicText(data), stopReason: data.stop_reason ?? null };
   } catch (e: any) {
     if (e?.name === "AbortError") {
-      throw new Error(`API timeout after ${Math.round(ANTHROPIC_REQUEST_TIMEOUT_MS / 1000)}s`);
+      throw new Error(`LLM request timeout after ${Math.round(LLM_REQUEST_TIMEOUT_MS / 1000)}s`);
     }
     throw e;
   } finally {
@@ -5779,7 +5807,7 @@ async function callLLM(
   candidateActions: CandidateActions,
 ): Promise<LlmAnalysisResult | null> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
-  const anthropicModel = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-6";
+  const llmModel = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-6";
 
   const recentValuations = sanitizeValuationsForLlm(valuationRows.slice(-14));
   const recentMacro = macroRows.slice(-14);
@@ -5977,12 +6005,16 @@ Respond with ONLY valid JSON in this exact format:
   }
 
   if (!apiKey) {
-    console.log("  [LLM] No ANTHROPIC_API_KEY set, skipping LLM reasoning.");
+    if (LLM_PROVIDER === "deepseek") {
+      console.log("  [LLM] DeepSeek provider active (no ANTHROPIC_API_KEY), skipping LLM reasoning.");
+    } else {
+      console.log("  [LLM] No ANTHROPIC_API_KEY set, skipping LLM reasoning.");
+    }
     return null;
   }
 
   try {
-    const first = await requestAnthropicText(apiKey, anthropicModel, [{ role: "user", content: prompt }]);
+    const first = await requestLlmText(apiKey, llmModel, [{ role: "user", content: prompt }]);
     const parsed = parseLlmJson(first.text);
     if (parsed.result) return parsed.result;
 
@@ -6003,7 +6035,7 @@ Required top-level keys and types:
 Previous response:
 ${first.text.slice(0, 12000)}`;
 
-    const repaired = await requestAnthropicText(apiKey, anthropicModel, [
+    const repaired = await requestLlmText(apiKey, llmModel, [
       { role: "user", content: prompt },
       { role: "assistant", content: first.text },
       { role: "user", content: repairPrompt },

@@ -43,7 +43,8 @@ const TELEGRAM_API = "https://api.telegram.org";
 const MAX_TELEGRAM_MESSAGE = 3900;
 const TELEGRAM_LLM_MAX_CONTEXT_CHARS = Number(process.env.TELEGRAM_LLM_MAX_CONTEXT_CHARS ?? 24_000);
 const TELEGRAM_LLM_MAX_TOKENS = Number(process.env.TELEGRAM_LLM_MAX_TOKENS ?? 900);
-const ANTHROPIC_REQUEST_TIMEOUT_MS = Number(process.env.ANTHROPIC_REQUEST_TIMEOUT_MS ?? 120_000);
+const LLM_PROVIDER = process.env.LLM_PROVIDER ?? "anthropic";
+const LLM_REQUEST_TIMEOUT_MS = Number(process.env.LLM_REQUEST_TIMEOUT_MS ?? 120_000);
 
 config({ path: resolve(ROOT, ".env") });
 config({ path: resolve(ROOT, "config.env") });
@@ -613,7 +614,12 @@ function traderContext(asset?: string): JsonObject {
   };
 }
 
-function anthropicText(data: JsonObject): string {
+function responseText(data: JsonObject, provider: string): string {
+  if (provider === "deepseek") {
+    const choices = data.choices as Array<Record<string, unknown>> | undefined;
+    const choice = choices?.[0];
+    return String((choice?.message as Record<string, unknown> | undefined)?.content ?? "");
+  }
   const content = Array.isArray(data.content) ? data.content : [];
   return content
     .map((part) => obj(part))
@@ -623,37 +629,61 @@ function anthropicText(data: JsonObject): string {
     .trim();
 }
 
-async function requestAnthropic(prompt: string): Promise<string> {
+async function requestLlm(prompt: string): Promise<string> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return "LLM not run: ANTHROPIC_API_KEY is not set. This command is explicit and token-spending, so it will only run when the key is configured.";
+    return `LLM not run: ANTHROPIC_API_KEY is not set. This command is explicit and token-spending, so it will only run when the key is configured.`;
   }
+  const provider = (process.env.LLM_PROVIDER ?? "anthropic") as string;
   const model = process.env.TELEGRAM_LLM_MODEL || process.env.ANTHROPIC_MODEL || "claude-sonnet-4-6";
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), ANTHROPIC_REQUEST_TIMEOUT_MS);
+  const timeout = setTimeout(() => controller.abort(), LLM_REQUEST_TIMEOUT_MS);
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      signal: controller.signal,
-      headers: {
-        "content-type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
+    let url: string;
+    let headers: Record<string, string>;
+    let body: unknown;
+
+    if (provider === "deepseek") {
+      url = "https://api.deepseek.com/chat/completions";
+      headers = {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+      };
+      body = {
         model,
         max_tokens: TELEGRAM_LLM_MAX_TOKENS,
         temperature: 0.2,
         messages: [{ role: "user", content: prompt }],
-      }),
+        stream: false,
+      };
+    } else {
+      url = "https://api.anthropic.com/v1/messages";
+      headers = {
+        "content-type": "application/json",
+        "x-api-key": apiKey,
+        "anthropic-version": "2023-06-01",
+      };
+      body = {
+        model,
+        max_tokens: TELEGRAM_LLM_MAX_TOKENS,
+        temperature: 0.2,
+        messages: [{ role: "user", content: prompt }],
+      };
+    }
+
+    const response = await fetch(url, {
+      method: "POST",
+      signal: controller.signal,
+      headers,
+      body: JSON.stringify(body),
     });
     if (!response.ok) {
-      throw new Error(`Anthropic API ${response.status}: ${await response.text()}`);
+      throw new Error(`${provider === "deepseek" ? "DeepSeek" : "Anthropic"} API ${response.status}: ${await response.text()}`);
     }
-    return anthropicText(await response.json() as JsonObject) || "LLM returned an empty response.";
+    return responseText(await response.json() as JsonObject, provider) || "LLM returned an empty response.";
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
-      return `LLM request timed out after ${Math.round(ANTHROPIC_REQUEST_TIMEOUT_MS / 1000)}s.`;
+      return `LLM request timed out after ${Math.round(LLM_REQUEST_TIMEOUT_MS / 1000)}s.`;
     }
     throw error;
   } finally {
@@ -681,7 +711,7 @@ ${question}
 
 Current trader artifacts:
 ${context}`;
-  return await requestAnthropic(prompt);
+  return await requestLlm(prompt);
 }
 
 async function reviewAssetReport(assetArg: string | undefined): Promise<string> {
@@ -702,7 +732,7 @@ Do not place trades, do not ask to run the trader, and do not invent missing dat
 
 Current ${asset} artifacts:
 ${context}`;
-  return await requestAnthropic(prompt);
+  return await requestLlm(prompt);
 }
 
 function closeShadowPreview(chatId: string, instrumentId: string | undefined, reasonArg: string | undefined): string {
