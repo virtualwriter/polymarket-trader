@@ -16524,3 +16524,34 @@ Today’s review confirms the ONE_TOUCH_NO and PC_RATIO_EXTREME_LOW positions ar
 
 ---
 
+### 2026-05-24 20:30 UTC
+
+**Portfolio:** $98.48 total | Cash $93.48 | 5 open | P&L $-0.5237 | 52% win rate (158 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved narrower by 10.1pp (was 11.3, now 1.2)
+- [anomaly] amzn_hl_basis_pct = 1.38 is 3.5 std devs from mean (0.01 ± 0.39)
+- [anomaly] hype_spot = 62.605 is 3.2 std devs from mean (44.06 ± 5.76)
+- [anomaly] hype_med_max = 86.3 is 3.2 std devs from mean (61.19 ± 7.97)
+- [anomaly] hype_pm_ev = 61.35 is 3.1 std devs from mean (46.33 ± 4.82)
+
+**Blocked signal learning:**
+- Open blocked shadows: 128
+- Resolved blocked shadows: 167 (67 wins / 100 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-32.43%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-3.51%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.42%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ARM long via hyperliquid would have closed with thesis validated profitably (+1.84%)
+
+**LLM analysis:**
+BTC IV crush to 35.1% is the most extreme compression in the dataset and aligns with H-523's promoted setup. HYPE experienced a quick rejection after its breakout surge, typical profit-taking in highly volatile names. The gold P/C ratio at 0.224 is historically extreme, but the existing PC_RATIO_EXTREME_LOW short is already capturing that thesis; no additional entry needed. AMZN funding has normalized from -12% to 5.48%, reducing the crowded-short edge, but the mechanical scanner will manage the exit. Oil funding continues to exhibit extreme swings (-55% now), but OIL remains disabled for this signal due to past contamination. Blocked shadows for IV-touch rich NO trades show strong potential (+20.75% avg), but those signals are currently shadow-only pending clean market quality gates.
+
+---
+

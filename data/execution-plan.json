@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-24T19:30:46.963Z",
+  "generatedAt": "2026-05-24T20:30:39.702Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE breakout / OI surge momentum via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 63.592,
+      "entryPrice": 62.605,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
@@ -29,7 +29,7 @@
       "confidence": 0.46403959514860155,
       "thesis": "GOLD P/C ratio 0.22 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4523,
+      "entryPrice": 4526,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -39,11 +39,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6141739076666667,
-      "confidence": 0.2584520575199792,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.4pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5789677643333333,
+      "confidence": 0.2436368723285208,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.4pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76632,
+      "entryPrice": 76593,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -59,11 +59,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.571978601,
-      "confidence": 0.24069574503331248,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.2pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.570557397,
+      "confidence": 0.24009768462506248,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.1pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76632,
+      "entryPrice": 76593,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -83,33 +83,16 @@
       "confidence": 0.07631107510764032,
       "thesis": "OIL P/C ratio 1.29 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 93.4,
-      "targetPct": 4,
+      "entryPrice": 93.1,
+      "targetPct": 6,
       "stopPct": 2,
-      "expiryDays": 5
+      "expiryDays": 21
     }
   ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779496230307-1zji",
-        "asset": "AMZN",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "amzn_hl_funding_ann",
-          "amzn_hl_perp"
-        ],
-        "thesis": "FUNDING_EXTREME_SHORT opened at -37.3% funding; funding has completely normalized and turned positive at +5.5%. The perp now trades at a 1.37% premium to spot, indicating the crowded shorts have covered and the mean-reversion opportunity is exhausted. Thesis conditions no longer hold."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
