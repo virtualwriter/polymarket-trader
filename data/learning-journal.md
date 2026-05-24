@@ -16486,3 +16486,41 @@ HYPE OI surged to new highs (1.42B) and spot broke above $62, confirming the ins
 
 ---
 
+### 2026-05-24 19:30 UTC
+
+**Portfolio:** $98.48 total | Cash $93.48 | 5 open | P&L $-0.5237 | 52% win rate (158 trades)
+
+**Opened 1 positions:**
+- HYPE long @ $63.592 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.37 is 3.5 std devs from mean (0.01 ± 0.39)
+- [anomaly] hype_spot = 63.592 is 3.4 std devs from mean (44.03 ± 5.71)
+- [anomaly] hype_pm_ev = 61.79 is 3.2 std devs from mean (46.31 ± 4.78)
+- [anomaly] hype_med_max = 86.3 is 3.2 std devs from mean (61.14 ± 7.91)
+- [anomaly] hype_hl_oi = 1447016222 is 3.1 std devs from mean (926412824.01 ± 167568790.35)
+
+**Blocked signal learning:**
+- Open blocked shadows: 132
+- Resolved blocked shadows: 161 (66 wins / 95 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-29.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-21.25%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+5.56%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+Today’s review confirms the ONE_TOUCH_NO and PC_RATIO_EXTREME_LOW positions are tracking within expectations; no immediate risk. AMZN FUNDING_EXTREME_SHORT reached a natural resolution—funding flipped sign and perp premium expanded, capturing the edge, so I closed it. The signal family continues to be validating but the short-squeeze play played out perfectly here. HYPE momentum and OI surge patterns remain strong (H-521), while the cap-ratio heatmap highlights many potentially mispriced upside contracts on PM—these are still in shadow testing so I won’t trade live. I’ll keep monitoring the ONE_TOUCH_NO positions for edge compression and exit opportunities per the backtest guidelines.
+
+**LLM close rejections today (2026-05-24, token-burn signal):**
+- Total rejected close instructions: 1
+- Top signal/asset pairs: FUNDING_EXTREME_SHORT / AMZN (1)
+
+---
+

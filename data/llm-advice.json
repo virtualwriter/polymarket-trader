@@ -1,17 +1,23 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [],
-  "skippedTrades": [
+  "rejectedCloses": [
     {
       "instruction": {
-        "action": "buy",
-        "asset": "HYPE",
-        "venue": "spot",
+        "action": "close",
+        "positionId": "T-1779496230307-1zji",
+        "asset": "AMZN",
+        "venue": "hyperliquid",
         "direction": "long",
-        "thesis": "H-521: HYPE breakout continuation – OI in top 15% of last 24h, spot within 6% of 7d high and above 24h SMA, funding 8.27% normalized. Momentum breakout with institutional accumulation, targeting a further leg up."
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "amzn_hl_funding_ann",
+          "amzn_hl_perp"
+        ],
+        "thesis": "FUNDING_EXTREME_SHORT opened at -37.3% funding; funding has completely normalized and turned positive at +5.5%. The perp now trades at a 1.37% premium to spot, indicating the crowded shorts have covered and the mean-reversion opportunity is exhausted. Thesis conditions no longer hold."
       },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
     }
   ],
+  "skippedTrades": [],
   "parameterUpdates": {}
 }
