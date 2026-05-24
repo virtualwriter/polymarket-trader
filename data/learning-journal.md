@@ -16451,3 +16451,38 @@ _LLM call skipped (duplicate-signals (5 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-05-24 18:30 UTC
+
+**Portfolio:** $98.48 total | Cash $94.48 | 4 open | P&L $-0.5237 | 52% win rate (158 trades)
+
+**Closed 1 trades:**
+- ✅ HYPE long via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS) → target: +$0.0409 (4.1%, market 0.0409, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.41 is 3.7 std devs from mean (0.01 ± 0.38)
+- [anomaly] hype_spot = 62.695 is 3.3 std devs from mean (43.99 ± 5.66)
+- [anomaly] hype_med_max = 86.3 is 3.2 std devs from mean (61.10 ± 7.85)
+- [anomaly] hype_pm_ev = 61.39 is 3.2 std devs from mean (46.28 ± 4.74)
+- [anomaly] hype_hl_oi = 1425014784 is 3.0 std devs from mean (925504266.59 ± 166296361.83)
+
+**Blocked signal learning:**
+- Open blocked shadows: 127
+- Resolved blocked shadows: 159 (64 wins / 95 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.11%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-3.03%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-29.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-21.25%)
+
+**LLM analysis:**
+HYPE OI surged to new highs (1.42B) and spot broke above $62, confirming the institutional accumulation thesis from H-521. The breakout continuation signal is strong and a new spot long is warranted. GOLD P/C ratio still extremely low (0.22) – the GOLD short remains flat but the contrarian call positioning argument is intact; patience required. OIL funding crash to -505% and spot collapse to $90s reflect panic but no clean entry yet. BTC’s one-touch NO trades are mixed: BTC -7.55% but ETH +8.51%, showing the edge gating works better for less volatile underlyings. Overall, disciplined rule-based signals are performing; we continue to rely on promoted hypothesis families for discretionary entries.
+
+---
+
