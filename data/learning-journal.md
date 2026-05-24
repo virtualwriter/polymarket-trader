@@ -16623,3 +16623,35 @@ Today's data shows crypto decoupling from oil and a positive BTC-Gold correlatio
 
 ---
 
+### 2026-05-24 23:29 UTC
+
+**Portfolio:** $98.46 total | Cash $93.46 | 5 open | P&L $-0.5441 | 52% win rate (159 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.32 is 3.3 std devs from mean (0.02 ± 0.40)
+- [anomaly] hype_spot = 63.244 is 3.2 std devs from mean (44.15 ± 5.90)
+- [anomaly] hype_pm_ev = 61.67 is 3.1 std devs from mean (46.41 ± 4.92)
+- [anomaly] hype_med_max = 86.4 is 3.1 std devs from mean (61.32 ± 8.15)
+- [anomaly] hype_hl_oi = 1419938872 is 2.9 std devs from mean (929776615.58 ± 171782362.70)
+
+**Blocked signal learning:**
+- Open blocked shadows: 129
+- Resolved blocked shadows: 185 (77 wins / 108 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 7/12 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG AMZN long via hyperliquid would have closed with thesis validated profitably (+0.73%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG HOOD long via hyperliquid would have closed with thesis validated profitably (+0.43%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG NVDA long via hyperliquid would have closed with thesis validated profitably (+0.76%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG SKHX long via hyperliquid would have closed with thesis validated profitably (+0.78%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (5 recurring signals seen within 6h); 1.0h since last call; daily budget 5/12; next scheduled 2026-05-25T01:29:19.258Z). Mechanical cycle ran normally._
+
+---
+
