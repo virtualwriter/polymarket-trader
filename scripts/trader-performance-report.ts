@@ -1,5 +1,5 @@
 #!/usr/bin/env tsx
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -39,6 +39,7 @@ interface Position {
   entryUnderlyingPrice?: number;
   currentUnderlyingPrice?: number;
   size: number;
+  leverage?: number;
   signalType: string;
   hypothesisId: string | null;
   thesis: string;
@@ -104,6 +105,14 @@ interface BlockedSignalShadow {
   };
 }
 
+interface InstrumentSnapshotFile {
+  timestamp: string;
+  hyperliquid?: Record<string, {
+    markPx?: number | null;
+    fundingAnnualized?: number | null;
+  }>;
+}
+
 interface Stats {
   trades: number;
   wins: number;
@@ -159,6 +168,39 @@ const CSV_HEADER = [
 function readJson<T>(path: string, fallback: T): T {
   if (!existsSync(path)) return fallback;
   return JSON.parse(readFileSync(path, "utf-8")) as T;
+}
+
+function readLatestInstrumentSnapshot(): InstrumentSnapshotFile | null {
+  const file = join(DATA_DIR, "instrument-snapshots.jsonl");
+  if (!existsSync(file)) return null;
+
+  const size = statSync(file).size;
+  if (size === 0) return null;
+
+  const fd = openSync(file, "r");
+  try {
+    const chunkSize = 1024 * 1024;
+    let offset = size;
+    let suffix = "";
+
+    while (offset > 0) {
+      const bytesToRead = Math.min(chunkSize, offset);
+      offset -= bytesToRead;
+      const buffer = Buffer.allocUnsafe(bytesToRead);
+      readSync(fd, buffer, 0, bytesToRead, offset);
+      suffix = buffer.toString("utf-8") + suffix;
+
+      const lines = suffix.split("\n").filter((line) => line.trim());
+      if (lines.length >= 2 || offset === 0) {
+        const latestLine = lines[lines.length - 1];
+        return latestLine ? JSON.parse(latestLine) as InstrumentSnapshotFile : null;
+      }
+    }
+  } finally {
+    closeSync(fd);
+  }
+
+  return null;
 }
 
 function parseCsvLine(line: string): string[] {
@@ -621,7 +663,11 @@ function positionUnrealizedPnl(position: Position): number | null {
   const rawMove = position.direction === "short" && !isOwnedPolymarketToken
     ? (position.entryPrice - currentPrice) / position.entryPrice
     : (currentPrice - position.entryPrice) / position.entryPrice;
-  return rawMove * (Number.isFinite(position.size) ? position.size : 1);
+  const size = Number.isFinite(position.size) ? position.size : 1;
+  const leverage = position.instrumentType === "hl_perp" && Number.isFinite(position.leverage)
+    ? (position.leverage as number)
+    : 1;
+  return rawMove * size * leverage;
 }
 
 function positionUnrealizedPnlPct(position: Position): number | null {
@@ -643,6 +689,32 @@ function marketDetail(position?: Position): string {
     Number.isFinite(position.currentUnderlyingPrice) ? `current_underlying=${position.currentUnderlyingPrice}` : "",
   ];
   return parts.filter(Boolean).join("; ");
+}
+
+function markHlPerpPositionsFromLatestSnapshot(
+  positions: Position[],
+  latestSnapshot: InstrumentSnapshotFile | null,
+): void {
+  if (!latestSnapshot?.hyperliquid) return;
+  for (const position of positions) {
+    if (position.instrumentType !== "hl_perp") continue;
+    const quote = latestSnapshot.hyperliquid[position.instrumentId ?? position.asset]
+      ?? latestSnapshot.hyperliquid[position.asset];
+    const markPx = quote?.markPx;
+    if (!(typeof markPx === "number" && markPx > 0)) continue;
+    position.currentPrice = markPx;
+    position.currentUnderlyingPrice = markPx;
+  }
+}
+
+function markOpenShadowPositionsFromLatestSnapshot(
+  shadows: BlockedSignalShadow[],
+  latestSnapshot: InstrumentSnapshotFile | null,
+): void {
+  const openShadowPositions = shadows
+    .filter((shadow) => shadow.status === "open" && shadow.position)
+    .map((shadow) => shadow.position as Position);
+  markHlPerpPositionsFromLatestSnapshot(openShadowPositions, latestSnapshot);
 }
 
 function statsCsvRow(section: string, group: string, stats: Stats): string[] {
@@ -1003,6 +1075,9 @@ function main() {
   const trades = readClosedTrades();
   const hypotheses = readJson<Hypothesis[]>(join(DATA_DIR, "hypotheses.json"), []);
   const shadows = readJson<BlockedSignalShadow[]>(join(DATA_DIR, "blocked-signals.json"), []);
+  const latestSnapshot = readLatestInstrumentSnapshot();
+  markHlPerpPositionsFromLatestSnapshot(portfolio.positions, latestSnapshot);
+  markOpenShadowPositionsFromLatestSnapshot(shadows, latestSnapshot);
   const hypothesesById = hypothesisMap(hypotheses);
   const dedupedTrades = dedupeClosedTrades(trades);
   const countedTrades = dedupedTrades.filter(isCountedRealTrade);
