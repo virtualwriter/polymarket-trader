@@ -16555,3 +16555,40 @@ BTC IV crush to 35.1% is the most extreme compression in the dataset and aligns 
 
 ---
 
+### 2026-05-24 21:31 UTC
+
+**Portfolio:** $98.46 total | Cash $93.46 | 5 open | P&L $-0.5441 | 52% win rate (159 trades)
+
+**Closed 1 trades:**
+- ❌ HYPE long via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS) → stop: $-0.0204 (-2.0%, market -0.0204, funding 0.0000)
+
+**Opened 1 positions:**
+- HYPE long @ $61.866 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_hl_funding_ann = 209.79 is 6.5 std devs from mean (6.38 ± 31.45)
+- [anomaly] amzn_hl_basis_pct = 1.35 is 3.4 std devs from mean (0.01 ± 0.39)
+- [anomaly] hype_med_max = 86.4 is 3.1 std devs from mean (61.23 ± 8.03)
+- [anomaly] hype_spot = 61.866 is 3.1 std devs from mean (44.09 ± 5.80)
+- [anomaly] hype_pm_ev = 61.02 is 3.0 std devs from mean (46.36 ± 4.85)
+
+**Blocked signal learning:**
+- Open blocked shadows: 126
+- Resolved blocked shadows: 171 (69 wins / 102 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG NFLX long via hyperliquid would have edge compressed but trade lost money (-0.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+16.67%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG SNDK long via hyperliquid would have closed with thesis validated profitably (+2.07%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-2.56%)
+
+**LLM analysis:**
+Key observations: Macro improved slightly but Fed stays hawkish. BTC-GOLD correlation flipped positive (0.95 24h), while BTC-OIL turned sharply negative (-0.88) as oil sold off. Gold hyperliquid funding at +209.79% (6.5σ anomaly) suggests extreme positioning, but existing gold funding oscillation hypotheses are already covering that. HYPE OI not at H-521 trigger levels. Opened BTC long per H-523 promoted hypothesis as IV compression extreme signals likely vol expansion. Existing ONE_TOUCH_NO positions remain mechanical, no closes warranted.
+
+---
+
