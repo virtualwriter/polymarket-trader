@@ -24434,7 +24434,8 @@
   },
   {
     "id": "OT-1779204547587-cih2",
-    "status": "open",
+    "status": "resolved",
+    "resolvedAt": "2026-05-24T20:07:00.000Z",
     "blockedAt": "2026-05-19T15:29:07.587Z",
     "blockedReason": "one_touch_high_edge_shadow",
     "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
@@ -24442,7 +24443,7 @@
     "venue": "polymarket",
     "direction": "long",
     "confidence": 0.5,
-    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.7pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+    "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.7pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [MANUAL CLOSE 2026-05-24T20:07:00.000Z: edge_collapsed — current model ~20.66% vs PM YES ~23%, edge -1.34 pts; record realized shadow loss for learning.]",
     "marketQuality": {
       "yesBid": 0.4,
       "yesAsk": 0.41,
@@ -24535,7 +24536,7 @@
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
       "hypothesisId": null,
-      "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.7pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side.",
+      "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.7pt edge on GOLD; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. [MANUAL CLOSE 2026-05-24T20:07:00.000Z: edge_collapsed — current model ~20.66% vs PM YES ~23%, edge -1.34 pts; record realized shadow loss for learning.]",
       "targetPct": null,
       "stopPct": 100,
       "expiryDate": "2026-06-02T15:29:07.587Z",
@@ -24604,6 +24605,15 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW"
+    },
+    "hypotheticalResult": {
+      "closeReason": "thesis_compressed_loss",
+      "exitPrice": 0.22,
+      "pnl": -0.4634,
+      "pnlPct": -46.34,
+      "marketPnl": -0.4634,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {

@@ -163,6 +163,8 @@ const CSV_HEADER = [
   "current_one_touch_model",
   "current_bid",
   "current_ask",
+  "strike_price",
+  "expiry_month",
 ] as const;
 
 function readJson<T>(path: string, fallback: T): T {
@@ -691,6 +693,68 @@ function marketDetail(position?: Position): string {
   return parts.filter(Boolean).join("; ");
 }
 
+const MONTH_NAMES: Record<string, string> = {
+  jan: "January",
+  january: "January",
+  feb: "February",
+  february: "February",
+  mar: "March",
+  march: "March",
+  apr: "April",
+  april: "April",
+  may: "May",
+  jun: "June",
+  june: "June",
+  jul: "July",
+  july: "July",
+  aug: "August",
+  august: "August",
+  sep: "September",
+  sept: "September",
+  september: "September",
+  oct: "October",
+  october: "October",
+  nov: "November",
+  november: "November",
+  dec: "December",
+  december: "December",
+};
+
+function formatStrike(value: string): string {
+  const normalized = value.replace(/,/g, "");
+  const numeric = Number(normalized);
+  if (!Number.isFinite(numeric)) return value;
+  return `$${numeric.toLocaleString("en-US", { maximumFractionDigits: 6 })}`;
+}
+
+function extractStrikePrice(position?: Position): string {
+  if (!position) return "";
+  const label = position.instrumentLabel ?? "";
+  const packageMatch = label.match(/monotonic arb package\s+—\s+YES\s+([\d,.]+)\s*\/\s*NO\s+([\d,.]+)/i);
+  if (packageMatch) return `${formatStrike(packageMatch[1])} / ${formatStrike(packageMatch[2])}`;
+
+  const dollarMatches = [...label.matchAll(/\$([\d,]+(?:\.\d+)?)/g)];
+  if (dollarMatches.length > 0) return formatStrike(dollarMatches[dollarMatches.length - 1][1]);
+
+  const id = position.instrumentId ?? "";
+  const packageIdMatch = id.match(/::YES-([\d,.]+)\+NO-([\d,.]+)/i);
+  if (packageIdMatch) return `${formatStrike(packageIdMatch[1])} / ${formatStrike(packageIdMatch[2])}`;
+
+  return "";
+}
+
+function extractExpiryMonth(position?: Position): string {
+  if (!position) return "";
+  const source = `${position.instrumentLabel ?? ""} ${position.instrumentId ?? ""}`;
+  const slugMonthMatch = source.match(/(?:^|[-\s])(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)(?:[-\s]|$)/i);
+  if (slugMonthMatch) return MONTH_NAMES[slugMonthMatch[1].toLowerCase()] ?? "";
+
+  const phraseMonthMatch = source.match(/\b(?:in|by end of|end of|by)\s+(January|February|March|April|May|June|July|August|September|October|November|December)\b/i);
+  if (phraseMonthMatch) return MONTH_NAMES[phraseMonthMatch[1].toLowerCase()] ?? "";
+
+  return "";
+}
+
 function markHlPerpPositionsFromLatestSnapshot(
   positions: Position[],
   latestSnapshot: InstrumentSnapshotFile | null,
@@ -934,6 +998,8 @@ function buildCsvReport(args: {
       fmtModelValue(safeNumber(currentRow?.options_touch_adjusted_prob)),
       fmtPriceValue(bidAsk.bid),
       fmtPriceValue(bidAsk.ask),
+      extractStrikePrice(shadow.position),
+      extractExpiryMonth(shadow.position),
     ]);
   }
 
@@ -973,6 +1039,8 @@ function buildCsvReport(args: {
       fmtModelValue(safeNumber(currentRow?.options_touch_adjusted_prob)),
       fmtPriceValue(bidAsk.bid),
       fmtPriceValue(bidAsk.ask),
+      extractStrikePrice(position),
+      extractExpiryMonth(position),
     ]);
   }
 
