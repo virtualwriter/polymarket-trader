@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-24T21:29:15.715Z",
+  "generatedAt": "2026-05-24T22:29:21.800Z",
   "dataFreshness": {
-    "valuationRows": 576,
-    "latestValuationAt": "2026-05-24T21",
-    "macroRows": 576,
+    "valuationRows": 577,
+    "latestValuationAt": "2026-05-24T22",
+    "macroRows": 577,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-24T21"
+    "latestInstrumentSnapshotAt": "2026-05-24T22"
   },
   "portfolio": {
-    "cash": 94.4559,
-    "openPositions": 4,
+    "cash": 93.4559,
+    "openPositions": 5,
     "realizedPnl": -0.5441,
     "totalTrades": 159,
     "winRatePct": 51.6,
-    "unrealizedPnl": 0.0683
+    "unrealizedPnl": 0.0613
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -5.66,
       "currentPrice": 0.5,
-      "underlyingPrice": 76609,
+      "underlyingPrice": 76859,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.44,
-      "currentPrice": 4530,
-      "underlyingPrice": 4530,
+      "pnlPct": -1,
+      "currentPrice": 4555,
+      "underlyingPrice": 4555,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -57,8 +57,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 1.35,
-      "currentPrice": 268.97,
+      "pnlPct": 1.18,
+      "currentPrice": 268.52,
       "underlyingPrice": 265.4,
       "targetPct": 4,
       "stopPct": 2,
@@ -77,7 +77,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": 8.51,
       "currentPrice": 0.51,
-      "underlyingPrice": 2094.5,
+      "underlyingPrice": 2096.2,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -86,6 +86,22 @@
         "eth_opt_iv_30d",
         "eth_opt_iv_90d",
         "eth_hl_funding_ann"
+      ]
+    },
+    {
+      "positionId": "T-1779658272318-spnq",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "pnlPct": 1.08,
+      "currentPrice": 62.537,
+      "underlyingPrice": 62.537,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "hype_spot"
       ]
     }
   ],
@@ -226,10 +242,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 126,
-    "resolvedCount": 171,
+    "openCount": 137,
+    "resolvedCount": 172,
     "wouldHaveWon": 69,
-    "wouldHaveLost": 102,
+    "wouldHaveLost": 103,
     "bySignal": [
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -297,26 +313,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -32.43,
-        "resolvedAt": "2026-05-24T20:29:21.031Z",
-        "marketQuality": {
-          "yesBid": 0.63,
-          "yesAsk": 0.65,
-          "yesSpread": 0.02,
-          "liquidity": 22892.85,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -425,9 +421,45 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -29.41,
+        "resolvedAt": "2026-05-24T22:29:21.650Z",
+        "marketQuality": {
+          "yesBid": 0.83,
+          "yesAsk": 0.85,
+          "yesSpread": 0.02,
+          "liquidity": 37274.05,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "GOLD",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "gc-over-under-jun-2026 — NO — Will Gold (GC) settle over $7,000 on the final trading day of June 2026?",
+        "marketQuality": {
+          "yesBid": 0.024,
+          "yesAsk": 0.035,
+          "yesSpread": 0.011,
+          "liquidity": 6861.92,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.2pt on GOLD, spread 0.1c, liquidity 6862. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
@@ -491,22 +523,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 10.6pt on OIL, spread 2.0c, liquidity 38088. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "cl-hit-jun-2026 — NO — Will Crude Oil (CL) hit (LOW) $90 by end of June?",
-        "marketQuality": {
-          "yesBid": 0.83,
-          "yesAsk": 0.85,
-          "yesSpread": 0.02,
-          "liquidity": 37274.05,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.9pt on OIL, spread 2.0c, liquidity 37274. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",

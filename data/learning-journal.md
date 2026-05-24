@@ -16592,3 +16592,34 @@ Key observations: Macro improved slightly but Fed stays hawkish. BTC-GOLD correl
 
 ---
 
+### 2026-05-24 22:31 UTC
+
+**Portfolio:** $98.46 total | Cash $93.46 | 5 open | P&L $-0.5441 | 52% win rate (159 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 62.537 is 3.1 std devs from mean (44.12 ± 5.85)
+- [anomaly] hype_med_max = 86.4 is 3.1 std devs from mean (61.27 ± 8.09)
+- [anomaly] hype_pm_ev = 61.34 is 3.1 std devs from mean (46.38 ± 4.89)
+- [anomaly] amzn_hl_funding_ann = -49.79 is -3.0 std devs from mean (12.38 ± 20.54)
+- [anomaly] amzn_hl_basis_pct = 1.18 is 2.9 std devs from mean (0.02 ± 0.40)
+
+**Blocked signal learning:**
+- Open blocked shadows: 137
+- Resolved blocked shadows: 172 (69 wins / 103 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+16.67%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG SNDK long via hyperliquid would have closed with thesis validated profitably (+2.07%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-2.56%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-29.41%)
+
+**LLM analysis:**
+Today's data shows crypto decoupling from oil and a positive BTC-Gold correlation shift, possibly driven by Iran peace premium and hawkish Fed. The one-touch NO edges on BTC and ETH remain attractive, and the mechanical scanner handles exits. The AMZN funding extreme short trade continues to benefit from negative funding carry despite flat stock; thesis intact. The new HYPE breakout live trade (H-521) is off to a positive start. Gold short (PC_RATIO_EXTREME_LOW) is approaching its 2% stop; however, LLM cannot intervene. Backlog shadow tests for PM odds/cap-ratio and AMZN momentum families are pending; no new hypotheses are warranted until that queue clears.
+
+---
+
