@@ -17313,3 +17313,35 @@ _LLM call skipped (duplicate-signals (4 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-05-25 23:30 UTC
+
+**Portfolio:** $98.46 total | Cash $92.46 | 6 open | P&L $-0.5441 | 52% win rate (159 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_funding_ann = -95.4 is -5.1 std devs from mean (11.99 ± 20.87)
+- [anomaly] amzn_hl_basis_pct = 1.64 is 3.0 std devs from mean (0.08 ± 0.52)
+- [anomaly] hype_spot = 61.613 is 2.5 std devs from mean (44.79 ± 6.69)
+- [anomaly] oil_brent_spot = 94.57 is -2.5 std devs from mean since 2026-04-28 (105.33 ± 4.39)
+- [anomaly] hype_pm_ev = 60.57 is 2.4 std devs from mean (46.94 ± 5.58)
+
+**Blocked signal learning:**
+- Open blocked shadows: 106
+- Resolved blocked shadows: 240 (108 wins / 132 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG COST long via hyperliquid would have edge compressed but trade lost money (-0.13%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-0.51%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+0.11%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-4.65%)
+
+**LLM analysis:**
+Current market shows mild risk-off with BTC and HYPE dipping. Both LLM-owned promoted hypothesis trades (HYPE long, BTC long) are within their risk parameters and thesis conditions are met. No new hypotheses needed as promoted families already use regime-relative conditions. Continuing to shadow-test existing families. No parameter adjustments warranted.
+
+---
+
