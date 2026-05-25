@@ -17108,3 +17108,35 @@ _LLM call skipped (duplicate-signals (4 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-05-25 16:30 UTC
+
+**Portfolio:** $98.46 total | Cash $93.46 | 5 open | P&L $-0.5441 | 52% win rate (159 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.87 is 3.7 std devs from mean (0.06 ± 0.48)
+- [anomaly] hype_med_max = 88.2 is 2.9 std devs from mean (61.98 ± 9.05)
+- [anomaly] hype_pm_ev = 61.62 is 2.7 std devs from mean (46.79 ± 5.41)
+- [anomaly] hype_spot = 62.321 is 2.7 std devs from mean (44.62 ± 6.50)
+- [anomaly] hype_hl_oi = 1403453395 is 2.5 std devs from mean (941683693.80 ± 185021450.25)
+
+**Blocked signal learning:**
+- Open blocked shadows: 107
+- Resolved blocked shadows: 235 (106 wins / 129 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/26 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG BX long via hyperliquid would have closed with thesis validated profitably (+2.39%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-16.67%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.10%)
+
+**LLM analysis:**
+Correlation flips dominate today's landscape: BTC-Gold shifted from -0.35 to 0.73 (24h rolling 0.80), BTC-Oil from 0.54 to -0.08, Gold-Oil from -0.82 to -0.41. This suggests a macro regime change worth monitoring for cross-asset hypotheses. The Gold short (PC_RATIO_EXTREME_LOW) is underwater -1.31% as gold defies the call-heavy signal; mechanical stop at -2% is close, so I won't intervene. AMZN long (FUNDING_EXTREME_SHORT) benefits from negative funding carry and basis expansion, now +2.05% with peak +2.18% and breakeven armed. HYPE long from promoted hypothesis remains in profit (+0.74%) but has retreated from +3.24% peak; funding turned negative (-13.25%), which may actually support the momentum thesis. No new hypotheses are proposed as the shadow-test backlog still needs work, and existing promoted families (H-521, H-523) use regime-relative conditions that do not require immediate replacement.
+
+---
+
