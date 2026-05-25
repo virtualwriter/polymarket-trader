@@ -16687,3 +16687,36 @@ _LLM call skipped (duplicate-signals (4 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-05-25 01:30 UTC
+
+**Portfolio:** $98.46 total | Cash $93.46 | 5 open | P&L $-0.5441 | 52% win rate (159 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.48 is 3.6 std devs from mean (0.02 ± 0.41)
+- [anomaly] hype_med_max = 86.4 is 3.0 std devs from mean (61.40 ± 8.27)
+- [anomaly] hype_spot = 61.782 is 2.9 std devs from mean (44.22 ± 5.98)
+- [anomaly] hype_pm_ev = 60.99 is 2.9 std devs from mean (46.46 ± 4.99)
+- [anomaly] hype_hl_oi = 1383958132 is 2.6 std devs from mean (931365521.28 ± 173600662.90)
+
+**Blocked signal learning:**
+- Open blocked shadows: 124
+- Resolved blocked shadows: 200 (89 wins / 111 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 15/22 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG META long via hyperliquid would have closed with thesis validated profitably (+1.34%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG MRVL long via hyperliquid would have closed with thesis validated profitably (+2.12%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+2.41%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+Cross-asset dynamics shifted dramatically: BTC-GOLD 24h correlation flipped to +0.84 from negative territory, while BTC-OIL dropped to -0.95, indicating a clear divergence where gold acts as a risk-on proxy alongside crypto. HYPE long thesis (H-521) faces funding headwind with negative rates appearing, but the pullback remains within normal range. BTC dealer hedge stress shadow test is under-satisfied; a new relative variant (H-532) is proposed to capture near-extreme conditions. No position exits are warranted. Current learning parameters are stable; no adjustments needed.
+
+---
+
