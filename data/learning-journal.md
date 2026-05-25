@@ -16816,3 +16816,35 @@ The GOLD short (T-1779481832300-m49c) is under pressure as the put/call ratio st
 
 ---
 
+### 2026-05-25 06:30 UTC
+
+**Portfolio:** $98.46 total | Cash $93.46 | 5 open | P&L $-0.5441 | 52% win rate (159 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.77 is 4.0 std devs from mean (0.04 ± 0.43)
+- [anomaly] hype_med_max = 87.7 is 3.1 std devs from mean (61.58 ± 8.51)
+- [anomaly] hype_spot = 62.261 is 2.9 std devs from mean (44.34 ± 6.13)
+- [anomaly] hype_pm_ev = 61.47 is 2.9 std devs from mean (46.56 ± 5.12)
+- [anomaly] oil_brent_spot = 95.22 is -2.6 std devs from mean since 2026-04-28 (105.69 ± 3.99)
+
+**Blocked signal learning:**
+- Open blocked shadows: 120
+- Resolved blocked shadows: 211 (94 wins / 117 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 16/24 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.14%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-0.10%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.10%)
+
+**LLM analysis:**
+Existing promoted hypotheses H-521 (HYPE breakout momentum) and H-523 (BTC vol compression) are performing well in shadow tests and merit live trading. The HYPE long position opened under H-521 is profitable and thesis-aligned. No new hypotheses needed while backlog for existing families clears. GOLD PC_RATIO_EXTREME_LOW short is underwater but thesis not invalidated; low put/call ratio persists, and gold spot remains in recent range. AMZN long (FUNDING_EXTREME_SHORT) benefits from positive perp basis and negative funding; will let mechanical targets manage exit. One-touch NO positions on BTC and ETH are far from strike levels, repricing on spot moves but not threatened. Relative-value heatmap shows several sell-YES opportunities on overcap BTC/ETH upside contracts, but spreads and liquidity concerns caution against entry. Overall market exhibits crowded positioning extremes that favour mean-reversion signals but require patience.
+
+---
+
