@@ -16912,3 +16912,39 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-05-25 09:30 UTC
+
+**Portfolio:** $98.46 total | Cash $93.46 | 5 open | P&L $-0.5441 | 52% win rate (159 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.82 is 4.0 std devs from mean (0.04 ± 0.45)
+- [anomaly] hype_spot = 63.721 is 3.1 std devs from mean (44.43 ± 6.26)
+- [anomaly] hype_med_max = 88.2 is 3.0 std devs from mean (61.72 ± 8.70)
+- [anomaly] hype_pm_ev = 62.23 is 3.0 std devs from mean (46.64 ± 5.22)
+- [anomaly] hype_hl_oi = 1424182500 is 2.7 std devs from mean (936881993.10 ± 179732717.35)
+
+**Blocked signal learning:**
+- Open blocked shadows: 114
+- Resolved blocked shadows: 221 (98 wins / 123 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 16/25 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-0.31%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-3.12%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-5.26%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.55%)
+
+**LLM analysis:**
+HYPE long reached +3.00% PnL, near the +4% target. Closed for profit. The heatmap continues to show many cheap-vs-cap 'buy_yes' signals, but the one-touch NO-only policy prohibits YES entries. No new hypotheses are added because the shadow-test backlog is large and existing promoted setups (H-521, H-523) are already regime-relative. The recent correlation flips (BTC-GOLD positive, BTC-OIL negative) are noteworthy but not yet linked to a testable hypothesis.
+
+**LLM close rejections today (2026-05-25, token-burn signal):**
+- Total rejected close instructions: 1
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / HYPE (1)
+
+---
+

@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-25T08:29:29.139Z",
+  "generatedAt": "2026-05-25T09:29:30.667Z",
   "dataFreshness": {
-    "valuationRows": 586,
-    "latestValuationAt": "2026-05-25T08",
-    "macroRows": 586,
+    "valuationRows": 587,
+    "latestValuationAt": "2026-05-25T09",
+    "macroRows": 587,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-25T08"
+    "latestInstrumentSnapshotAt": "2026-05-25T09"
   },
   "portfolio": {
     "cash": 93.4559,
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -5.66,
       "currentPrice": 0.5,
-      "underlyingPrice": 77261,
+      "underlyingPrice": 77465,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.98,
-      "currentPrice": 4554,
-      "underlyingPrice": 4554,
+      "pnlPct": -1.04,
+      "currentPrice": 4557,
+      "underlyingPrice": 4557,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -57,8 +57,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 2.01,
-      "currentPrice": 270.26,
+      "pnlPct": 2,
+      "currentPrice": 270.23,
       "underlyingPrice": 265.4,
       "targetPct": 4,
       "stopPct": 2,
@@ -77,7 +77,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": 8.51,
       "currentPrice": 0.51,
-      "underlyingPrice": 2110.8,
+      "underlyingPrice": 2117.6,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -94,9 +94,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 2.92,
-      "currentPrice": 63.675,
-      "underlyingPrice": 63.675,
+      "pnlPct": 3,
+      "currentPrice": 63.721,
+      "underlyingPrice": 63.721,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -242,10 +242,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 113,
-    "resolvedCount": 220,
+    "openCount": 114,
+    "resolvedCount": 221,
     "wouldHaveWon": 98,
-    "wouldHaveLost": 122,
+    "wouldHaveLost": 123,
     "bySignal": [
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -313,24 +313,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 1.72,
-        "resolvedAt": "2026-05-25T07:29:24.689Z",
-        "marketQuality": {
-          "yesBid": 0.42,
-          "yesAsk": 0.43,
-          "yesSpread": 0.01,
-          "liquidity": 28336.62,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "OIL",
@@ -449,9 +431,45 @@
           "liquidity": 5122.14,
           "flags": []
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.55,
+        "resolvedAt": "2026-05-25T09:29:30.524Z",
+        "marketQuality": {
+          "yesBid": 0.03,
+          "yesAsk": 0.045,
+          "yesSpread": 0.015,
+          "liquidity": 33384.3,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "GOLD",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "gc-over-under-jun-2026 — NO — Will Gold (GC) settle over $7,000 on the final trading day of June 2026?",
+        "marketQuality": {
+          "yesBid": 0.024,
+          "yesAsk": 0.035,
+          "yesSpread": 0.011,
+          "liquidity": 6861.92,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.2pt on GOLD, spread 0.1c, liquidity 6862. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
@@ -563,22 +581,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 10.1pt on OIL, spread 1.0c, liquidity 35844. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "cl-hit-jun-2026 — NO — Will Crude Oil (CL) hit (LOW) $55 by end of June?",
-        "marketQuality": {
-          "yesBid": 0.03,
-          "yesAsk": 0.045,
-          "yesSpread": 0.015,
-          "liquidity": 33384.3,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.0pt on OIL, spread 1.5c, liquidity 33384. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
