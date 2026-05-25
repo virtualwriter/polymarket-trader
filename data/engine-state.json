@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-25T17:29:27.052Z",
+  "generatedAt": "2026-05-25T18:29:31.043Z",
   "dataFreshness": {
-    "valuationRows": 594,
-    "latestValuationAt": "2026-05-25T17",
-    "macroRows": 594,
+    "valuationRows": 595,
+    "latestValuationAt": "2026-05-25T18",
+    "macroRows": 595,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-25T17"
+    "latestInstrumentSnapshotAt": "2026-05-25T18"
   },
   "portfolio": {
-    "cash": 93.4559,
-    "openPositions": 5,
+    "cash": 92.4559,
+    "openPositions": 6,
     "realizedPnl": -0.5441,
     "totalTrades": 159,
     "winRatePct": 51.6,
-    "unrealizedPnl": 0.0955
+    "unrealizedPnl": 0.0994
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -1.89,
       "currentPrice": 0.52,
-      "underlyingPrice": 77597,
+      "underlyingPrice": 77582,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -57,8 +57,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 2.03,
-      "currentPrice": 270.28,
+      "pnlPct": 2.16,
+      "currentPrice": 270.63,
       "underlyingPrice": 265.4,
       "targetPct": 4,
       "stopPct": 2,
@@ -77,7 +77,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": 8.51,
       "currentPrice": 0.51,
-      "underlyingPrice": 2133.3,
+      "underlyingPrice": 2130,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -94,14 +94,30 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 0.22,
-      "currentPrice": 62.003,
-      "underlyingPrice": 62.003,
+      "pnlPct": 0.5,
+      "currentPrice": 62.173,
+      "underlyingPrice": 62.173,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "hype_spot"
+      ]
+    },
+    {
+      "positionId": "T-1779730229574-8o7m",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "pnlPct": -0.02,
+      "currentPrice": 77582,
+      "underlyingPrice": 77582,
+      "targetPct": 3,
+      "stopPct": 1.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "btc_spot"
       ]
     }
   ],
@@ -242,7 +258,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 106,
+    "openCount": 107,
     "resolvedCount": 236,
     "wouldHaveWon": 107,
     "wouldHaveLost": 129,

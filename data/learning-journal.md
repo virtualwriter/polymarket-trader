@@ -17179,3 +17179,35 @@ Closed HYPE long (T-1779658272318-spnq) as momentum faded and profit compressed 
 
 ---
 
+### 2026-05-25 18:29 UTC
+
+**Portfolio:** $98.46 total | Cash $92.46 | 6 open | P&L $-0.5441 | 52% win rate (159 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.97 is 3.8 std devs from mean (0.07 ± 0.49)
+- [anomaly] hype_med_max = 88.4 is 2.9 std devs from mean (62.07 ± 9.16)
+- [anomaly] hype_pm_ev = 61.56 is 2.7 std devs from mean (46.84 ± 5.47)
+- [anomaly] oil_brent_spot = 93.96 is -2.7 std devs from mean since 2026-04-28 (105.43 ± 4.27)
+- [anomaly] hype_spot = 62.173 is 2.7 std devs from mean (44.68 ± 6.56)
+
+**Blocked signal learning:**
+- Open blocked shadows: 107
+- Resolved blocked shadows: 236 (107 wins / 129 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/26 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG BX long via hyperliquid would have closed with thesis validated profitably (+2.39%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-16.67%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.10%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (5 recurring signals seen within 6h); 1.0h since last call; daily budget 8/12; next scheduled 2026-05-25T20:29:31.071Z). Mechanical cycle ran normally._
+
+---
+
