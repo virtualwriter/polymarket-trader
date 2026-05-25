@@ -17243,3 +17243,41 @@ _LLM call skipped (duplicate-signals (4 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-05-25 20:31 UTC
+
+**Portfolio:** $98.46 total | Cash $92.46 | 6 open | P&L $-0.5441 | 52% win rate (159 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.98 is 3.8 std devs from mean (0.08 ± 0.51)
+- [anomaly] hype_med_max = 87.6 is 2.7 std devs from mean (62.16 ± 9.27)
+- [anomaly] oil_brent_spot = 93.84 is -2.7 std devs from mean since 2026-04-28 (105.38 ± 4.33)
+- [anomaly] hype_pm_ev = 61.09 is 2.6 std devs from mean (46.89 ± 5.53)
+- [anomaly] hype_spot = 61.591 is 2.5 std devs from mean (44.74 ± 6.63)
+
+**Blocked signal learning:**
+- Open blocked shadows: 107
+- Resolved blocked shadows: 236 (107 wins / 129 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/26 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG BX long via hyperliquid would have closed with thesis validated profitably (+2.39%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-16.67%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.10%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+Today’s review highlights the rapid decay of the HYPE breakout signal. H-521’s conditions (OI percentile, spot vs SMA) broke in under 24h, suggesting the signal may need a longer observation lag or a buffer zone before entry. The BTC IV compression setup (H-523) remains statistically sound; we will let it run. Gold’s P/C-ratio short is underwater but within its mechanical stop, while AMZN’s funding-extreme-short long is performing well. No new hypotheses are proposed as the shadow test backlog remains significant; we focus on reviewing existing families. The relative-value heatmap continues to flag many touch-market sell-YES opportunities, but we defer to the one-touch shadow rules that currently restrict live entries to NO-side with strict edge gates. Oil’s extreme funding (-89%) is noteworthy but does not trigger any active signal family without a clean shadow history.
+
+**LLM close rejections today (2026-05-25, token-burn signal):**
+- Total rejected close instructions: 3
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / HYPE (3)
+- Repeat-offender positions (≥3 rejections today): T-1779658272318-spnq (3) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+

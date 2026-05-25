@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-25T19:29:28.807Z",
+  "generatedAt": "2026-05-25T20:31:05.331Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.46403959514860155,
       "thesis": "GOLD P/C ratio 0.22 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4569,
+      "entryPrice": 4570,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -25,11 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5585114943333332,
-      "confidence": 0.23502861820914578,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.8pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5234720203333334,
+      "confidence": 0.22028356955652084,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.7pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77448,
+      "entryPrice": 77411,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.50786216,
-      "confidence": 0.21371474520499997,
+      "strength": 0.5065737496666667,
+      "confidence": 0.21317256603160417,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.2pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77448,
+      "entryPrice": 77411,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -69,16 +69,32 @@
       "confidence": 0.07631107510764032,
       "thesis": "OIL P/C ratio 1.29 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 90.39,
+      "entryPrice": 90.24,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
     }
   ],
-  "rejectedLlmActions": [],
+  "rejectedLlmActions": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1779658272318-spnq",
+        "asset": "HYPE",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "hype_spot"
+        ],
+        "thesis": "HYPE spot fell below its 24h average and OI dropped from 1.42B to 1.39B, breaching the entry conditions of H-521 (OI top 15% of 24h, spot above 24h SMA). The breakout continuation thesis is no longer valid."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    }
+  ],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
   ]
 }
