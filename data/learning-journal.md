@@ -17012,3 +17012,35 @@ _LLM call skipped (duplicate-signals (4 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-05-25 12:30 UTC
+
+**Portfolio:** $98.46 total | Cash $93.46 | 5 open | P&L $-0.5441 | 52% win rate (159 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.9 is 3.9 std devs from mean (0.05 ± 0.47)
+- [anomaly] hype_med_max = 88.2 is 3.0 std devs from mean (61.85 ± 8.88)
+- [anomaly] hype_spot = 63.073 is 2.9 std devs from mean (44.53 ± 6.38)
+- [anomaly] hype_pm_ev = 61.99 is 2.9 std devs from mean (46.72 ± 5.32)
+- [anomaly] oil_brent_spot = 94.51 is -2.7 std devs from mean since 2026-04-28 (105.55 ± 4.14)
+
+**Blocked signal learning:**
+- Open blocked shadows: 112
+- Resolved blocked shadows: 228 (102 wins / 126 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 16/25 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.19%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+1.65%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-2.64%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+Today’s scan confirms that the one-touch NO sell-YES edge is the most actionable cross-venue pattern—the heatmap and shadow backtests show a clear improvement when spread/liquidity filters and edge-disappearance exits are used. The GOLD PC_RATIO_EXTREME_LOW short (T-1779481832300-m49c) is inching against us but still within risk bounds; its thesis rests on excessive call buying, and the gold GLD put/call ratio remains at extreme lows. AMZN FUNDING_EXTREME_SHORT long (T-1779496230307-1zji) is performing well as the perp catches up to spot, and the breakeven arm is armed. HYPE’s funding flip from +10.95% to -19.71% is a warning sign for the momentum long, but the position is small and still up. No new hypotheses are proposed because the existing promoted families (H-521, H-523) are already regime-relative and need further shadow testing, not replacement. The large backlog of untested hypotheses should be the priority.
+
+---
+
