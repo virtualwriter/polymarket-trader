@@ -17044,3 +17044,35 @@ Today’s scan confirms that the one-touch NO sell-YES edge is the most actionab
 
 ---
 
+### 2026-05-25 13:31 UTC
+
+**Portfolio:** $98.46 total | Cash $93.46 | 5 open | P&L $-0.5441 | 52% win rate (159 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.84 is 3.8 std devs from mean (0.06 ± 0.47)
+- [anomaly] hype_med_max = 88.2 is 2.9 std devs from mean (61.89 ± 8.93)
+- [anomaly] hype_spot = 62.814 is 2.8 std devs from mean (44.56 ± 6.42)
+- [anomaly] hype_pm_ev = 61.79 is 2.8 std devs from mean (46.74 ± 5.35)
+- [anomaly] hype_hl_oi = 1415044371 is 2.6 std devs from mean (940099093.22 ± 183314328.72)
+
+**Blocked signal learning:**
+- Open blocked shadows: 111
+- Resolved blocked shadows: 230 (102 wins / 128 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 16/25 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-2.64%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-0.40%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-0.41%)
+
+**LLM analysis:**
+OIL upside one‑touch contracts display deeply cheap YES pricing relative to the underlying payoff cap (pmToUnderlyingCapRatio as low as 0.18 for CL June 130). Option IV remains elevated (58‑70%), suggesting the market is underestimating the likelihood of reaching those strikes given spot proximity to $91-96. This pattern aligns with the PM odds / payoff cap setup family, where such cap‑adjusted cheapness has shown promise in shadow testing. We propose a shadow variant to test buying the tightest, cheapest oil upside YES contract when oil_pm_underlying_cap_ratio_min_tight falls below 0.4 and 30d IV stays above 60. No open positions warrant an LLM‑guided close; mechanical scanners will handle rule‑based exits. The HYPE momentum trade continues to track well, and the GOLD short is approaching but not breaching its stop. BTC‑OIL correlation has flipped sharply negative in the last 24h, which may be further compressing oil upside options – a dynamic worth monitoring but not yet tradeable under active signal families.
+
+---
+
