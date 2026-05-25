@@ -16720,3 +16720,35 @@ Cross-asset dynamics shifted dramatically: BTC-GOLD 24h correlation flipped to +
 
 ---
 
+### 2026-05-25 02:29 UTC
+
+**Portfolio:** $98.46 total | Cash $93.46 | 5 open | P&L $-0.5441 | 52% win rate (159 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved wider by 10.3pp (was 0.7, now 11.0)
+- [divergence] OIL PM-Options IV gap moved wider by 8.2pp (was 1.4, now 9.6)
+- [anomaly] amzn_hl_basis_pct = 1.59 is 3.8 std devs from mean (0.03 ± 0.41)
+- [anomaly] hype_med_max = 86.8 is 3.0 std devs from mean (61.45 ± 8.33)
+- [anomaly] hype_pm_ev = 60.79 is 2.8 std devs from mean (46.49 ± 5.02)
+
+**Blocked signal learning:**
+- Open blocked shadows: 121
+- Resolved blocked shadows: 204 (91 wins / 113 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 16/23 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ZM long via hyperliquid would have closed with thesis validated profitably (+0.53%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-2.41%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-8.33%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (4 recurring signals seen within 6h); 1.0h since last call; daily budget 1/12; next scheduled 2026-05-25T04:29:14.088Z). Mechanical cycle ran normally._
+
+---
+
