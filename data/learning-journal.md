@@ -17140,3 +17140,42 @@ Correlation flips dominate today's landscape: BTC-Gold shifted from -0.35 to 0.7
 
 ---
 
+### 2026-05-25 17:30 UTC
+
+**Portfolio:** $98.46 total | Cash $92.46 | 6 open | P&L $-0.5441 | 52% win rate (159 trades)
+
+**Opened 1 positions:**
+- BTC long @ $77597 via spot/spot [BTC spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.84 is 3.6 std devs from mean (0.07 ± 0.49)
+- [anomaly] hype_med_max = 88.2 is 2.9 std devs from mean (62.03 ± 9.11)
+- [anomaly] oil_brent_spot = 93.71 is -2.8 std devs from mean since 2026-04-28 (105.45 ± 4.24)
+- [anomaly] hype_pm_ev = 61.51 is 2.7 std devs from mean (46.82 ± 5.44)
+- [anomaly] hype_spot = 62.003 is 2.7 std devs from mean (44.65 ± 6.53)
+
+**Blocked signal learning:**
+- Open blocked shadows: 106
+- Resolved blocked shadows: 236 (107 wins / 129 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/26 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG BX long via hyperliquid would have closed with thesis validated profitably (+2.39%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-16.67%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.10%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+Closed HYPE long (T-1779658272318-spnq) as momentum faded and profit compressed from peak. Market is range-bound; macro neutral, Fed hawkish, oil declining, and gold showing extreme put/call ratio. Open positions: GOLD short from P/C extreme low still under water but mechanical stops apply; AMZN long from funding extreme short performing well; BTC/ETH one-touch NO trades remain valid as spot stays far from touch levels. No new hypotheses due to backlog; existing families continue shadow testing. Signal performance: PC_RATIO_EXTREME_LOW average P&L -0.22% with 53% win rate—monitoring for possible stop adjustment, but no change now.
+
+**LLM close rejections today (2026-05-25, token-burn signal):**
+- Total rejected close instructions: 2
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / HYPE (2)
+
+---
+
