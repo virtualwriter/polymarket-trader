@@ -16784,3 +16784,35 @@ _LLM call skipped (duplicate-signals (4 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-05-25 05:31 UTC
+
+**Portfolio:** $98.46 total | Cash $93.46 | 5 open | P&L $-0.5441 | 52% win rate (159 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 4 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved narrower by 9.9pp (was 11.2, now 1.3)
+- [anomaly] amzn_hl_basis_pct = 1.94 is 4.5 std devs from mean (0.03 ± 0.43)
+- [anomaly] hype_spot = 62.483 is 3.0 std devs from mean (44.31 ± 6.09)
+- [anomaly] oil_opt_fwd_90d = 7.7 is -2.9 std devs from mean since 2026-04-28 (89.97 ± 27.97)
+- [anomaly] hype_med_max = 86.3 is 2.9 std devs from mean (61.53 ± 8.44)
+
+**Blocked signal learning:**
+- Open blocked shadows: 118
+- Resolved blocked shadows: 210 (93 wins / 117 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 16/24 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG LITE long via hyperliquid would have edge compressed but trade lost money (-1.28%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.14%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-0.10%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+The GOLD short (T-1779481832300-m49c) is under pressure as the put/call ratio stays extremely low and gold spot drifts higher. This reinforces the need to avoid trading against persistent low P/C ratios when gold momentum is positive. AMZN perp basis has reached 1.94% (4.5σ), and funding is now strongly positive; while the FUNDING_EXTREME_SHORT long is currently profitable, the extreme basis and funding may signal a pending correction if stock momentum stalls. HYPE breakout momentum (H-521) continues to play out as expected. Overall, the market shows mixed signals with BTC correlation to gold rising, reflecting a possible shift to defensive positioning despite crypto's recent strength.
+
+---
+
