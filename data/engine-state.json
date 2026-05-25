@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-25T09:29:30.667Z",
+  "generatedAt": "2026-05-25T10:29:30.161Z",
   "dataFreshness": {
-    "valuationRows": 587,
-    "latestValuationAt": "2026-05-25T09",
-    "macroRows": 587,
+    "valuationRows": 588,
+    "latestValuationAt": "2026-05-25T10",
+    "macroRows": 588,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-25T09"
+    "latestInstrumentSnapshotAt": "2026-05-25T10"
   },
   "portfolio": {
     "cash": 93.4559,
@@ -13,7 +13,7 @@
     "realizedPnl": -0.5441,
     "totalTrades": 159,
     "winRatePct": 51.6,
-    "unrealizedPnl": 0.0881
+    "unrealizedPnl": 0.0788
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -5.66,
       "currentPrice": 0.5,
-      "underlyingPrice": 77465,
+      "underlyingPrice": 77476,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -1.04,
-      "currentPrice": 4557,
-      "underlyingPrice": 4557,
+      "pnlPct": -1.33,
+      "currentPrice": 4570,
+      "underlyingPrice": 4570,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -57,8 +57,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 2,
-      "currentPrice": 270.23,
+      "pnlPct": 2.14,
+      "currentPrice": 270.61,
       "underlyingPrice": 265.4,
       "targetPct": 4,
       "stopPct": 2,
@@ -77,7 +77,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": 8.51,
       "currentPrice": 0.51,
-      "underlyingPrice": 2117.6,
+      "underlyingPrice": 2114.5,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -94,9 +94,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 3,
-      "currentPrice": 63.721,
-      "underlyingPrice": 63.721,
+      "pnlPct": 2.22,
+      "currentPrice": 63.238,
+      "underlyingPrice": 63.238,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -242,10 +242,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 114,
-    "resolvedCount": 221,
-    "wouldHaveWon": 98,
-    "wouldHaveLost": 123,
+    "openCount": 112,
+    "resolvedCount": 224,
+    "wouldHaveWon": 100,
+    "wouldHaveLost": 124,
     "bySignal": [
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -313,60 +313,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 5.91,
-        "resolvedAt": "2026-05-25T08:29:28.888Z",
-        "marketQuality": {
-          "yesBid": 0.07,
-          "yesAsk": 0.076,
-          "yesSpread": 0.006,
-          "liquidity": 109519.79,
-          "flags": []
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 1.12,
-        "resolvedAt": "2026-05-25T08:29:28.888Z",
-        "marketQuality": {
-          "yesBid": 0.02,
-          "yesAsk": 0.023,
-          "yesSpread": 0.003,
-          "liquidity": 19041.65,
-          "flags": []
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -0.1,
-        "resolvedAt": "2026-05-25T08:29:28.888Z",
-        "marketQuality": {
-          "yesBid": 0.018,
-          "yesAsk": 0.024,
-          "yesSpread": 0.006,
-          "liquidity": 28802.46,
-          "flags": []
-        }
-      },
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
         "asset": "LLY",
@@ -450,6 +396,62 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -5.41,
+        "resolvedAt": "2026-05-25T10:29:30.012Z",
+        "marketQuality": {
+          "yesBid": 0.26,
+          "yesAsk": 0.27,
+          "yesSpread": 0.01,
+          "liquidity": 51305.07,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "SPY",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 1.05,
+        "resolvedAt": "2026-05-25T10:29:30.012Z",
+        "marketQuality": {
+          "yesBid": 0.05,
+          "yesAsk": 0.07,
+          "yesSpread": 0.02,
+          "liquidity": 9205.56,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 0,
+        "resolvedAt": "2026-05-25T10:29:30.012Z",
+        "marketQuality": {
+          "yesBid": 0.013,
+          "yesAsk": 0.015,
+          "yesSpread": 0.002,
+          "liquidity": 109973.9,
+          "flags": []
         }
       }
     ],
