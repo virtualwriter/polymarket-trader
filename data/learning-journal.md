@@ -17866,3 +17866,35 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-05-26 17:29 UTC
+
+**Portfolio:** $98.40 total | Cash $94.40 | 4 open | P&L $-0.6029 | 51% win rate (163 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 10.8pp (was -18.6, now -7.8)
+- [anomaly] hype_spot = 61.531 is 2.3 std devs from mean (45.21 ± 7.09)
+- [anomaly] hype_med_max = 84.9 is 2.3 std devs from mean (62.77 ± 9.79)
+- [anomaly] hype_pm_ev = 60.58 is 2.3 std devs from mean (47.29 ± 5.90)
+- [anomaly] hype_hl_oi = 1366463150 is 2.1 std devs from mean (956819205.53 ± 198099305.13)
+
+**Blocked signal learning:**
+- Open blocked shadows: 105
+- Resolved blocked shadows: 287 (122 wins / 165 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.10%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+2.20%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-17.14%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-2.86%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h since last call; daily budget 10/12; next scheduled 2026-05-26T19:29:38.112Z). Mechanical cycle ran normally._
+
+---
+
