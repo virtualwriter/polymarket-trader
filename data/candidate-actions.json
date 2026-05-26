@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-25T23:29:29.418Z",
+  "generatedAt": "2026-05-26T00:29:39.333Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,36 +12,21 @@
       "confidence": 0.46403959514860155,
       "thesis": "GOLD P/C ratio 0.22 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4570,
+      "entryPrice": 4549,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
-    },
-    {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 1,
-      "confidence": 0.4547632899872156,
-      "thesis": "AMZN HL funding -95.4% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 269.76,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
     },
     {
       "type": "ONE_TOUCH_HIGH_EDGE_NO",
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.548634109,
-      "confidence": 0.23087209099356248,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.5pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.542631161,
+      "confidence": 0.22834597543831248,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77238,
+      "entryPrice": 77114,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -49,26 +34,6 @@
         "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
         "forceInstrumentType": "pm_no",
         "forceMarketId": "701501",
-        "allowDirectionFallback": false
-      }
-    },
-    {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.5003610336666667,
-      "confidence": 0.2105581774798542,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.0pt edge on BTC; hold 14d for repricing.",
-      "hypothesisId": null,
-      "entryPrice": 77238,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "1339767",
         "allowDirectionFallback": false
       }
     },
@@ -81,7 +46,7 @@
       "confidence": 0.07631107510764032,
       "thesis": "OIL P/C ratio 1.29 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 90.89,
+      "entryPrice": 91.29,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
@@ -163,25 +128,6 @@
         "eth_hl_funding_ann"
       ],
       "reason": "Rule-based signal exits require approved category and signal-family evidence."
-    },
-    {
-      "positionId": "T-1779658272318-spnq",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk",
-        "risk_stale",
-        "profit_taking"
-      ],
-      "evidenceColumns": [
-        "hype_spot"
-      ],
-      "reason": "LLM may advise exits for LLM-owned or promoted setups."
     },
     {
       "positionId": "T-1779730229574-8o7m",
