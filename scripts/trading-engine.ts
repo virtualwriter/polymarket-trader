@@ -106,6 +106,8 @@ const WEEKEND_HL_FUNDING_SHADOW_REASON = "weekend_hl_funding_shadow";
 const WEEKEND_HL_FUNDING_ENTRY_PCT = -0.30;
 const WEEKEND_HL_FUNDING_EXIT_PCT = 0.10;
 const WEEKEND_HL_FUNDING_LEVERAGE = 5;
+const WEEKEND_HL_FUNDING_TARGET_PCT = 3;
+const WEEKEND_HL_FUNDING_MAX_HOLD_HOURS = 24;
 const LONG_DATED_POLYMARKET_HOLD_DAYS = 90;
 const HYPE_STOCK_BUILDER_ASSETS = new Set([
   "AAPL", "AMD", "AMZN", "ARM", "BABA", "BIRD", "BX", "CBRS", "COIN",
@@ -3431,7 +3433,8 @@ function recordWeekendHyperliquidFundingShadows(
       shadow.asset === asset
     )) continue;
 
-    const expiryDate = new Date("2099-12-31T00:00:00.000Z");
+    const openedAtMs = Date.parse(openedAt);
+    const expiryDate = new Date(openedAtMs + WEEKEND_HL_FUNDING_MAX_HOLD_HOURS * 60 * 60 * 1000);
     const position: Position = {
       id: `WF-${Date.now()}-${asset}-${Math.random().toString(36).slice(2, 6)}`,
       openedAt,
@@ -3446,8 +3449,8 @@ function recordWeekendHyperliquidFundingShadows(
       leverage: WEEKEND_HL_FUNDING_LEVERAGE,
       signalType: WEEKEND_HL_FUNDING_SHADOW_SIGNAL,
       hypothesisId: null,
-      thesis: `[WEEKEND HL FUNDING SHADOW] ${asset} Builder DEX stock perp funding ${(fundingAnnualized * 100).toFixed(1)}% annualized <= ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}% during weekend. Shadow long at ${WEEKEND_HL_FUNDING_LEVERAGE}x; exit only when funding >= ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}%. No time cap.`,
-      targetPct: null,
+      thesis: `[WEEKEND HL FUNDING SHADOW] ${asset} Builder DEX stock perp funding ${(fundingAnnualized * 100).toFixed(1)}% annualized <= ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}% during weekend. Shadow long at ${WEEKEND_HL_FUNDING_LEVERAGE}x; exit when margin P&L >= ${WEEKEND_HL_FUNDING_TARGET_PCT}%, funding >= ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}%, or held ${WEEKEND_HL_FUNDING_MAX_HOLD_HOURS}h.`,
+      targetPct: WEEKEND_HL_FUNDING_TARGET_PCT,
       stopPct: 100,
       expiryDate: expiryDate.toISOString(),
       instrumentType: "hl_perp",
@@ -3627,8 +3630,7 @@ function resolveBlockedSignalShadows(
 
     const expiryOnlyShadow = shadow.blockedReason === "manual_shadow_trade"
       || shadow.blockedReason === "one_touch_high_edge_shadow"
-      || shadow.blockedReason === "stale_lottery_ticket_shadow"
-      || shadow.blockedReason === WEEKEND_HL_FUNDING_SHADOW_REASON;
+      || shadow.blockedReason === "stale_lottery_ticket_shadow";
     let closeReason: ClosedTrade["closeReason"] | null = null;
     const edgeDisappeared = oneTouchNoEdgeDisappeared(shadow, relativeValueRows);
     const weekendFundingExit = shadow.blockedReason === WEEKEND_HL_FUNDING_SHADOW_REASON
