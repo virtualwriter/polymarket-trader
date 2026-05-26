@@ -162,7 +162,12 @@ const DRY_RUN = process.argv.includes("--dry-run");
 const SHADOW_ARCHITECTURE = process.argv.includes("--shadow-architecture") || DRY_RUN;
 const LLM_DRY_RUN = process.argv.includes("--llm-dry-run");
 const MUTATION_DISABLED = DRY_RUN || LLM_DRY_RUN;
-const ALLOW_HOURLY_LLM_CLOSES = process.env.ALLOW_HOURLY_LLM_CLOSES === "1" || process.env.ALLOW_HOURLY_LLM_CLOSES === "true";
+const ALLOW_HOURLY_LLM_CLOSES = process.env.ALLOW_HOURLY_LLM_CLOSES !== "0" && process.env.ALLOW_HOURLY_LLM_CLOSES !== "false";
+const LLM_CLOSE_MIN_HOLD_HOURS = 12;
+const LLM_LONG_DATED_CLOSE_HOURS = 30 * 24;
+const LLM_LONG_DATED_CLOSE_MIN_PROGRESS = 0.10;
+const LLM_LONG_DATED_CLOSE_MAX_EXTRA_BUFFER_HOURS = 7 * 24;
+const LLM_PROFIT_TAKE_TARGET_FRACTION = 0.75;
 
 // LLM cadence gate. The hourly engine/reporting loop still runs, but expensive
 // Sonnet calls are capped and deduped so trigger noise cannot blow through the
@@ -722,6 +727,11 @@ interface CandidateActions {
     allowed: boolean;
     allowedCategories: NonNullable<LlmTradeInstruction["closeReasonCategory"]>[];
     evidenceColumns: string[];
+    hoursOpen: number | null;
+    hoursToExpiry: number | null;
+    plannedHoldHours: number | null;
+    elapsedHoldPct: number | null;
+    minHoldHours: number;
     reason: string;
   }>;
 }
@@ -2469,6 +2479,35 @@ function isRuleBasedSignal(signalType: string): boolean {
   return signalType !== "LLM_HYPOTHESIS" && signalType !== "PROMOTED_HYPOTHESIS";
 }
 
+function positionTimingContext(position: Position, nowMs = Date.now()): {
+  hoursOpen: number | null;
+  hoursToExpiry: number | null;
+  plannedHoldHours: number | null;
+  elapsedHoldPct: number | null;
+} {
+  const openedMs = Date.parse(position.openedAt);
+  const expiryMs = Date.parse(position.expiryDate);
+  const hoursOpen = Number.isFinite(openedMs) ? (nowMs - openedMs) / (60 * 60 * 1000) : null;
+  const hoursToExpiry = Number.isFinite(expiryMs) ? (expiryMs - nowMs) / (60 * 60 * 1000) : null;
+  const plannedHoldHours = Number.isFinite(openedMs) && Number.isFinite(expiryMs)
+    ? Math.max(0, (expiryMs - openedMs) / (60 * 60 * 1000))
+    : null;
+  const elapsedHoldPct = plannedHoldHours && plannedHoldHours > 0 && hoursOpen !== null
+    ? Math.max(0, Math.min(1, hoursOpen / plannedHoldHours))
+    : null;
+  return { hoursOpen, hoursToExpiry, plannedHoldHours, elapsedHoldPct };
+}
+
+function llmCloseMinHoldHours(position: Position, timing = positionTimingContext(position)): number {
+  const plannedHoldHours = timing.plannedHoldHours;
+  if (plannedHoldHours === null || plannedHoldHours < LLM_LONG_DATED_CLOSE_HOURS) return LLM_CLOSE_MIN_HOLD_HOURS;
+  const progressBuffer = plannedHoldHours * LLM_LONG_DATED_CLOSE_MIN_PROGRESS;
+  return Math.max(
+    LLM_CLOSE_MIN_HOLD_HOURS,
+    Math.min(LLM_LONG_DATED_CLOSE_MAX_EXTRA_BUFFER_HOURS, progressBuffer),
+  );
+}
+
 // Polymarket binary contracts on price come in two flavors with very
 // different resolution semantics. Keep these definitions explicit so the
 // LLM decoder below stays in sync with the upstream signal/heatmap
@@ -2599,10 +2638,8 @@ function formatMechanicalContextLine(
   position: Position,
   mark: { pnlPct: number } | null,
 ): string {
-  const openedMs = Date.parse(position.openedAt);
-  const hoursOpen = isNaN(openedMs) ? null : (Date.now() - openedMs) / (60 * 60 * 1000);
-  const expiryMs = Date.parse(position.expiryDate);
-  const hoursToExpiry = isNaN(expiryMs) ? null : (expiryMs - Date.now()) / (60 * 60 * 1000);
+  const { hoursOpen, hoursToExpiry, plannedHoldHours, elapsedHoldPct } = positionTimingContext(position);
+  const llmMinHold = llmCloseMinHoldHours(position, { hoursOpen, hoursToExpiry, plannedHoldHours, elapsedHoldPct });
 
   const parts: string[] = [];
   parts.push(`open ${hoursOpen === null ? "?" : hoursOpen.toFixed(1)}h`);
@@ -2614,6 +2651,10 @@ function formatMechanicalContextLine(
   if (hoursToExpiry !== null) {
     parts.push(hoursToExpiry >= 0 ? `expires in ${hoursToExpiry.toFixed(1)}h` : `expired ${Math.abs(hoursToExpiry).toFixed(1)}h ago`);
   }
+  if (plannedHoldHours !== null && elapsedHoldPct !== null) {
+    parts.push(`planned hold ${plannedHoldHours.toFixed(1)}h (${(elapsedHoldPct * 100).toFixed(1)}% elapsed)`);
+  }
+  parts.push(`LLM close min hold ${llmMinHold.toFixed(1)}h`);
 
   if (isFundingSignal(position.signalType)) {
     const armed = (position.peakPnlPct ?? mark?.pnlPct ?? 0) >= FUNDING_BREAKEVEN_ARM_PCT;
@@ -2642,7 +2683,7 @@ function openPositionContextForLlm(
     const mechanicalLine = `    ${formatMechanicalContextLine(p, mark)}`;
     const ownershipLine = isRuleBasedSignal(p.signalType)
       ? `    LLM closes are not permitted on this trade — mechanical scanner owns exits via target / stop / breakeven_stop / expiry. Do NOT emit a close instruction for this positionId in 'trades'; rule-based closes are policy-gated and will be rejected. Use 'journalEntry' if you have structural concerns about the signal family.`
-      : `    LLM closes are permitted for this LLM-owned setup. Allowed close categories: thesis_invalidated, data_quality_issue, hard_portfolio_risk, risk_stale, profit_taking. Use signal-family evidence metrics below as primary justification.`;
+      : `    LLM closes are policy-gated for this LLM-owned setup. Use ALLOWED ACTION SURFACE for whether this position is old enough and which close categories are currently allowed. Use signal-family evidence metrics below as primary justification.`;
     const decoderLine = formatOneTouchDirectionalLine(p, latestInstrumentSnapshot(instrumentSnapshots));
     const decoderBlock = decoderLine ? `\n    ${decoderLine}` : "";
     if (!entryRow) return `${header}\n${mechanicalLine}\n${ownershipLine}${decoderBlock}\n    Since-open baseline: unavailable (no valuation row at or before ${p.openedAt})`;
@@ -5730,6 +5771,61 @@ function buildLlmTruthState(hypotheses: Hypothesis[], weights: SignalWeight[], c
   };
 }
 
+function llmCloseEligibilityForPosition(
+  position: Position,
+  latestRow: SnapshotRow,
+  snapshots: InstrumentSnapshotFile[],
+): CandidateActions["llmCloseEligibility"][number] {
+  const signalOwned = position.signalType === "LLM_HYPOTHESIS" || position.signalType === "PROMOTED_HYPOTHESIS";
+  const timing = positionTimingContext(position);
+  const minHoldHours = llmCloseMinHoldHours(position, timing);
+  const mark = markPosition(position, latestRow, snapshots, true);
+  const baseCategories: NonNullable<LlmTradeInstruction["closeReasonCategory"]>[] = signalOwned
+    ? ["thesis_invalidated", "data_quality_issue", "hard_portfolio_risk", "risk_stale", "profit_taking"]
+    : [];
+  const conservativeCategories: NonNullable<LlmTradeInstruction["closeReasonCategory"]>[] = ["data_quality_issue", "hard_portfolio_risk"];
+  const profitableEnoughForEarlyTake =
+    signalOwned
+    && mark !== null
+    && position.targetPct !== null
+    && mark.pnlPct >= position.targetPct * LLM_PROFIT_TAKE_TARGET_FRACTION;
+  if (profitableEnoughForEarlyTake) conservativeCategories.push("profit_taking");
+
+  let allowed = signalOwned;
+  let allowedCategories = baseCategories;
+  let reason = signalOwned
+    ? `LLM-owned/promoted setup may be closed after ${LLM_CLOSE_MIN_HOLD_HOURS}h if signal-family evidence supports it.`
+    : "Rule-based signal exits remain mechanical; LLM closes are not allowed.";
+
+  if (signalOwned && (timing.hoursOpen === null || timing.hoursOpen < LLM_CLOSE_MIN_HOLD_HOURS)) {
+    allowed = false;
+    allowedCategories = [];
+    const observed = timing.hoursOpen === null ? "unknown" : `${timing.hoursOpen.toFixed(1)}h`;
+    reason = `Too new for discretionary LLM close: open ${observed}, requires at least ${LLM_CLOSE_MIN_HOLD_HOURS}h.`;
+  } else if (signalOwned && timing.hoursOpen !== null && timing.hoursOpen < minHoldHours) {
+    allowed = true;
+    allowedCategories = conservativeCategories;
+    reason = `Long-dated trade is only ${(timing.elapsedHoldPct === null ? 0 : timing.elapsedHoldPct * 100).toFixed(1)}% through planned hold; early LLM closes limited to hard risk/data quality${profitableEnoughForEarlyTake ? "/profit-taking near target" : ""} until ${minHoldHours.toFixed(1)}h.`;
+  }
+
+  return {
+    positionId: position.id,
+    signalType: position.signalType,
+    asset: position.asset,
+    venue: position.venue,
+    direction: position.direction,
+    allowed,
+    allowedCategories,
+    evidenceColumns: signalFamilyEvidenceColumns(position),
+    hoursOpen: timing.hoursOpen === null ? null : Number(timing.hoursOpen.toFixed(2)),
+    hoursToExpiry: timing.hoursToExpiry === null ? null : Number(timing.hoursToExpiry.toFixed(2)),
+    plannedHoldHours: timing.plannedHoldHours === null ? null : Number(timing.plannedHoldHours.toFixed(2)),
+    elapsedHoldPct: timing.elapsedHoldPct === null ? null : Number(timing.elapsedHoldPct.toFixed(4)),
+    minHoldHours: Number(minHoldHours.toFixed(2)),
+    reason,
+  };
+}
+
 function buildCandidateActions(portfolio: Portfolio, weights: SignalWeight[], signals: Signal[], latestRow: SnapshotRow, snapshots: InstrumentSnapshotFile[]): CandidateActions {
   const mechanicalExits = portfolio.positions
     .map((position) => {
@@ -5744,25 +5840,7 @@ function buildCandidateActions(portfolio: Portfolio, weights: SignalWeight[], si
       return !!weight && (!weight.enabled || perAsset?.disabled === true);
     })
     .map((position) => ({ positionId: position.id, signalType: position.signalType, asset: position.asset }));
-  const llmCloseEligibility = portfolio.positions.map((position) => {
-    const signalOwned = position.signalType === "LLM_HYPOTHESIS" || position.signalType === "PROMOTED_HYPOTHESIS";
-    const categories: NonNullable<LlmTradeInstruction["closeReasonCategory"]>[] = signalOwned
-      ? ["thesis_invalidated", "data_quality_issue", "hard_portfolio_risk", "risk_stale", "profit_taking"]
-      : ["thesis_invalidated", "data_quality_issue", "hard_portfolio_risk"];
-    return {
-      positionId: position.id,
-      signalType: position.signalType,
-      asset: position.asset,
-      venue: position.venue,
-      direction: position.direction,
-      allowed: true,
-      allowedCategories: categories,
-      evidenceColumns: signalFamilyEvidenceColumns(position),
-      reason: signalOwned
-        ? "LLM may advise exits for LLM-owned or promoted setups."
-        : "Rule-based signal exits require approved category and signal-family evidence.",
-    };
-  });
+  const llmCloseEligibility = portfolio.positions.map((position) => llmCloseEligibilityForPosition(position, latestRow, snapshots));
   return {
     generatedAt: new Date().toISOString(),
     mechanicalExits,
@@ -6258,7 +6336,9 @@ IMPORTANT RULES:
 - Supported hypothesis aggregate keys for this cap-ratio setup: btc_pm_underlying_cap_ratio_max/min/avg, hype_pm_underlying_cap_ratio_max/min/avg, gold_pm_underlying_cap_ratio_max/min/avg, oil_pm_underlying_cap_ratio_max/min/avg, and the matching *_edge_pts_max/min/avg keys. Add _tight before the comparison suffix to require spread <= ${(UNDERLYING_CAP_ENTRY_MAX_SPREAD * 100).toFixed(0)}c and liquidity >= ${UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY}, e.g. btc_pm_underlying_cap_ratio_max_tight > ${UNDERLYING_CAP_BUY_NO_RATIO.toFixed(2)} for buy-NO over-cap tests or btc_pm_underlying_cap_ratio_min_tight < ${UNDERLYING_CAP_BUY_YES_RATIO.toFixed(2)} for buy-YES cheap-vs-cap tests.
 - Treat GOLD/OIL settle-at bucket markets as drifting Polymarket bucket-forwards / volatility shape indicators, not fair-value anchors for spot. Columns named *_pm_settle_ev are probability-weighted settlement-bucket values from Polymarket; they have their own drift and may stay far from spot for long periods. Do NOT argue that spot should revert to *_pm_settle_ev, and do NOT cite a static PM/spot gap as new close evidence. Anti-pattern: "oil_pm_settle_ev is $87 while spot is $97, so spot should drift to $87" — wrong unless oil_pm_settle_ev itself moved materially since the trade opened and belongs to the signal family under review. Supported aggregate keys: gold_pm_settle_yes_sum_max/min/avg, gold_pm_settle_overround_max/min/avg, gold_pm_settle_tail_yes_max/min/avg, gold_pm_settle_skew_yes_max/min/avg, plus oil_* equivalents. yes_sum/overround measure bucket-price breadth, tail_yes measures total top+bottom tail demand, and skew_yes measures upside minus downside tail demand.
 - Settlement-bucket volatility hypotheses must be replicable across changing ladders: use aggregate bucket metrics from the current active market prices, not hard-coded strikes or price levels. "Top tail" means the highest active settle-at bucket; "bottom tail" means the lowest active settle-at bucket.
-- You may return \"action: close\" to exit an existing open position; use that only when the thesis has clearly weakened or a target/stop is likely stale
+- You may return \"action: close\" to exit an existing open position only when ALLOWED ACTION SURFACE says allowed=true for that exact positionId and the requested category is listed in allowedCategories.
+- LLM-owned/promoted trades need at least ${LLM_CLOSE_MIN_HOLD_HOURS}h before discretionary closes. Long-dated trades may have a higher minHoldHours; if they are still early in their planned hold, do not make drastic thesis calls from short-term noise unless the allowed category is hard_portfolio_risk, data_quality_issue, or explicitly allowed profit_taking near target.
+- If a position is below minHoldHours or allowed=false, discuss concerns in journalEntry/hypothesisReviews only; do not emit a close instruction.
 - Every close instruction MUST include the exact positionId from OPEN POSITIONS and ALLOWED ACTION SURFACE.
 - Every close instruction SHOULD include closeReasonCategory and evidenceColumns. Allowed categories are thesis_invalidated, data_quality_issue, hard_portfolio_risk, risk_stale, profit_taking.
 - Rule-based signal closes are policy-gated. Profit-taking on rule-based signals is rejected; mechanical targets handle routine profit-taking.
