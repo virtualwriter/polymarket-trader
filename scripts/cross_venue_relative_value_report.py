@@ -40,6 +40,7 @@ HOSTED_DIR = ROOT / "relative-value"
 CSV_PATH = HOSTED_DIR / "cross_venue_relative_value.csv"
 HTML_PATH = HOSTED_DIR / "index.html"
 LATEST_JSON_PATH = HOSTED_DIR / "latest.json"
+CALIBRATION_JSONL_PATH = HOSTED_DIR / "calibration" / "no_bias_candidates.jsonl"
 ONE_TOUCH_TERMINAL_ONLY_SIGMA = 1.5
 # Drop Polymarket contracts whose YES bid/ask spread exceeds this threshold
 # from the heatmap entirely (CSV, HTML, archive, and downstream LLM prompt).
@@ -74,6 +75,17 @@ CME_OPTION_SYMBOL_BY_ASSET = {
     "OIL": "CME_CL",
     "SPY": "CME_ES",
 }
+NO_BIAS_ASSET_THRESHOLDS_PTS = {
+    "BTC": 8.0,
+    "GOLD": 8.0,
+    "OIL": 12.0,
+    "ETH": 12.0,
+    "SPY": 12.0,
+    "HYPE": 999.0,  # collect calibration data, but keep HYPE shadow-only for now.
+}
+NO_BIAS_MIN_LIQUIDITY = 5_000.0
+NO_BIAS_MAX_SPREAD = 0.02
+NO_BIAS_MIN_DTE_DAYS = 3.0
 
 
 @dataclass
@@ -1301,6 +1313,237 @@ def row_to_dict(row: RelativeValueRow) -> Dict[str, Any]:
     return data
 
 
+def dte_bucket(dte_days: Optional[float]) -> str:
+    if dte_days is None:
+        return "unknown"
+    if dte_days <= 7:
+        return "0-7d"
+    if dte_days <= 30:
+        return "8-30d"
+    if dte_days <= 90:
+        return "31-90d"
+    return "90d+"
+
+
+def moneyness_pct(row: RelativeValueRow) -> Optional[float]:
+    if not row.spot or not row.strike or row.spot <= 0 or row.strike <= 0:
+        return None
+    return abs(row.strike / row.spot - 1.0) * 100
+
+
+def moneyness_bucket(distance_pct: Optional[float]) -> str:
+    if distance_pct is None:
+        return "unknown"
+    if distance_pct < 5:
+        return "<5%"
+    if distance_pct < 15:
+        return "5-15%"
+    if distance_pct < 30:
+        return "15-30%"
+    return ">30%"
+
+
+def no_gap_pts(pm_yes: Optional[float], model_yes_prob: Optional[float]) -> Optional[float]:
+    if pm_yes is None or model_yes_prob is None:
+        return None
+    # Positive means model-implied NO is richer than PM NO, so NO is cheap on PM.
+    return (pm_yes - model_yes_prob) * 100
+
+
+def source_agreement_bucket(cboe_gap: Optional[float], cme_gap: Optional[float], cme_expected: bool) -> str:
+    if cboe_gap is None:
+        return "missing_cboe"
+    if cme_gap is None:
+        return "cme_missing" if cme_expected else "no_cme_mapping"
+    if cboe_gap > 0 and cme_gap > 0:
+        if cme_gap >= 0.5 * cboe_gap:
+            return "both_positive"
+        return "both_positive_cme_weaker"
+    if cboe_gap > 0 and cme_gap <= 0:
+        return "cboe_only"
+    if cboe_gap <= 0 and cme_gap > 0:
+        return "cme_only"
+    return "both_negative_or_fair"
+
+
+def snapshot_age_minutes(snapshot_timestamp: str) -> Optional[float]:
+    ts = parse_time(snapshot_timestamp)
+    if not ts:
+        return None
+    return max(0.0, (datetime.now(timezone.utc) - ts.astimezone(timezone.utc)).total_seconds() / 60)
+
+
+def proxy_penalty_pts(option_symbol: str) -> float:
+    return {
+        "CME_BTC": 0.0,
+        "CME_GC": 0.0,
+        "CME_CL": 0.0,
+        "CME_ES": 0.0,
+        "IBIT": 1.5,
+        "GLD": 1.5,
+        "ETHA": 3.0,
+        "SPY": 3.0,
+        "USO": 6.0,
+        "PURR": 8.0,
+    }.get(option_symbol, 2.0 if option_symbol else 4.0)
+
+
+def spread_penalty_pts(pm_spread: Optional[float]) -> float:
+    if pm_spread is None or pm_spread <= 0:
+        return 1.0
+    return max(1.0, pm_spread * 50.0)
+
+
+def stale_data_penalty_pts(age_minutes: Optional[float], cme_expected: bool, cme_gap: Optional[float]) -> float:
+    penalty = 0.0
+    if age_minutes is None:
+        penalty += 2.0
+    elif age_minutes > 60:
+        penalty += 2.5
+    elif age_minutes > 30:
+        penalty += 1.0
+    if cme_expected and cme_gap is None:
+        penalty += 2.0
+    return penalty
+
+
+def cme_disagreement_penalty_pts(cboe_gap: Optional[float], cme_gap: Optional[float]) -> float:
+    if cboe_gap is None or cboe_gap <= 0:
+        return 0.0
+    if cme_gap is None:
+        return 0.0
+    if cme_gap <= 0:
+        return 6.0
+    if cme_gap < 0.5 * cboe_gap:
+        return 3.0
+    return 0.0
+
+
+def asset_penalty_pts(asset: str) -> float:
+    return {
+        "BTC": 0.0,
+        "GOLD": 0.0,
+        "OIL": 3.0,
+        "ETH": 3.0,
+        "SPY": 3.0,
+        "HYPE": 6.0,
+    }.get(asset, 3.0)
+
+
+def adjusted_no_gap_pts(row: RelativeValueRow, cboe_gap: Optional[float], cme_gap: Optional[float], age_minutes: Optional[float]) -> Tuple[Optional[float], Dict[str, float]]:
+    if cboe_gap is None:
+        return None, {}
+    cme_expected = row.asset in CME_OPTION_SYMBOL_BY_ASSET
+    penalties = {
+        "proxy_penalty_pts": proxy_penalty_pts(row.option_symbol),
+        "spread_penalty_pts": spread_penalty_pts(row.pm_spread),
+        "stale_data_penalty_pts": stale_data_penalty_pts(age_minutes, cme_expected, cme_gap),
+        "cme_disagreement_penalty_pts": cme_disagreement_penalty_pts(cboe_gap, cme_gap),
+        "asset_penalty_pts": asset_penalty_pts(row.asset),
+    }
+    return cboe_gap - sum(penalties.values()), penalties
+
+
+def calibration_record(row: RelativeValueRow, snapshot_timestamp: str) -> Optional[Dict[str, Any]]:
+    if row.pm_yes_price is None or row.options_touch_adjusted_prob is None:
+        return None
+    distance_pct = moneyness_pct(row)
+    cboe_gap = no_gap_pts(row.pm_yes_price, row.options_touch_adjusted_prob)
+    cme_gap = row.cme_no_gap_pts if row.cme_no_gap_pts is not None else no_gap_pts(row.pm_yes_price, row.cme_options_touch_adjusted_prob)
+    age_minutes = snapshot_age_minutes(snapshot_timestamp)
+    adjusted_gap, penalties = adjusted_no_gap_pts(row, cboe_gap, cme_gap, age_minutes)
+    cme_expected = row.asset in CME_OPTION_SYMBOL_BY_ASSET
+    threshold = NO_BIAS_ASSET_THRESHOLDS_PTS.get(row.asset, 12.0)
+    candidate_passed = (
+        adjusted_gap is not None
+        and adjusted_gap >= threshold
+        and row.pm_spread is not None and row.pm_spread <= NO_BIAS_MAX_SPREAD
+        and row.liquidity is not None and row.liquidity >= NO_BIAS_MIN_LIQUIDITY
+        and row.dte_days is not None and row.dte_days >= NO_BIAS_MIN_DTE_DAYS
+    )
+    return {
+        "schema_version": 1,
+        "timestamp": snapshot_timestamp,
+        "market_id": row.market_id,
+        "event_slug": row.event_slug,
+        "contract_question": row.contract_question,
+        "asset": row.asset,
+        "contract_type": "touch" if is_one_touch_question(row.contract_question) else "settlement",
+        "direction": row.direction,
+        "strike": row.strike,
+        "expiry": row.expiry,
+        "dte_days": row.dte_days,
+        "dte_bucket": dte_bucket(row.dte_days),
+        "spot": row.spot,
+        "moneyness_pct": distance_pct,
+        "moneyness_bucket": moneyness_bucket(distance_pct),
+        "pm_yes_price": row.pm_yes_price,
+        "pm_no_price": 1.0 - row.pm_yes_price if row.pm_yes_price is not None else None,
+        "pm_best_bid": row.pm_best_bid,
+        "pm_best_ask": row.pm_best_ask,
+        "pm_spread": row.pm_spread,
+        "liquidity": row.liquidity,
+        "option_symbol": row.option_symbol,
+        "option_source": row.option_source,
+        "iv_resolution": row.iv_resolution,
+        "option_iv": row.option_iv,
+        "cboe_model_prob": row.options_touch_adjusted_prob,
+        "cboe_no_gap_pts": cboe_gap,
+        "cme_option_symbol": row.cme_option_symbol,
+        "cme_option_source": row.cme_option_source,
+        "cme_iv_resolution": row.cme_iv_resolution,
+        "cme_option_iv": row.cme_option_iv,
+        "cme_model_prob": row.cme_options_touch_adjusted_prob,
+        "cme_no_gap_pts": cme_gap,
+        "source_agreement_bucket": source_agreement_bucket(cboe_gap, cme_gap, cme_expected),
+        "snapshot_age_minutes": age_minutes,
+        "adjusted_no_gap_pts": adjusted_gap,
+        "adjusted_gap_threshold_pts": threshold,
+        "candidate_passed": candidate_passed,
+        "penalties": penalties,
+        "forward_marks": {},
+        "resolved_outcome": None,
+    }
+
+
+def existing_calibration_keys(path: Path) -> set[Tuple[str, str]]:
+    if not path.exists():
+        return set()
+    keys = set()
+    with path.open(encoding="utf-8") as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            timestamp = str(row.get("timestamp", ""))
+            market_id = str(row.get("market_id", ""))
+            if timestamp and market_id:
+                keys.add((timestamp, market_id))
+    return keys
+
+
+def append_calibration_jsonl(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str) -> int:
+    records = [record for row in rows if (record := calibration_record(row, snapshot_timestamp)) is not None]
+    if not records:
+        return 0
+    path.parent.mkdir(parents=True, exist_ok=True)
+    seen = existing_calibration_keys(path)
+    written = 0
+    with path.open("a", encoding="utf-8") as fh:
+        for record in records:
+            key = (str(record["timestamp"]), str(record["market_id"]))
+            if key in seen:
+                continue
+            fh.write(json.dumps(record, separators=(",", ":"), sort_keys=True) + "\n")
+            seen.add(key)
+            written += 1
+    return written
+
+
 def write_csv(rows: List[RelativeValueRow], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fieldnames = list(RelativeValueRow.__dataclass_fields__.keys())
@@ -2048,8 +2291,10 @@ def main() -> None:
     parser.add_argument("--edge-history", action="store_true", help="Compute 7d edge-per-DTE changes by reading historical snapshots. Disabled by default for fast hourly runs.")
     parser.add_argument("--archive-dir", type=Path, default=DEFAULT_ARCHIVE_DIR, help="Directory for dated heatmap CSV archives")
     parser.add_argument("--latest-json", type=Path, default=LATEST_JSON_PATH, help="Output compact JSON for live heatmap refresh")
+    parser.add_argument("--calibration-jsonl", type=Path, default=CALIBRATION_JSONL_PATH, help="Append-only NO-bias calibration candidate log")
     parser.add_argument("--skip-csv", action="store_true", help="Skip writing the CSV artifact")
     parser.add_argument("--skip-html", action="store_true", help="Skip writing the HTML artifact")
+    parser.add_argument("--skip-calibration", action="store_true", help="Skip appending NO-bias calibration rows")
     parser.add_argument("--no-archive", action="store_true", help="Skip dated heatmap CSV archive")
     args = parser.parse_args()
 
@@ -2081,6 +2326,9 @@ def main() -> None:
     archived_path = None
     if not args.skip_csv and not args.no_archive:
         archived_path = archive_csv(rows, args.archive_dir, args.csv, snapshot_timestamp)
+    calibration_written = 0
+    if not args.skip_calibration:
+        calibration_written = append_calibration_jsonl(rows, args.calibration_jsonl, snapshot_timestamp)
     if not args.skip_html:
         write_html(rows, args.html, snapshot_timestamp)
     print_summary(rows)
@@ -2091,6 +2339,10 @@ def main() -> None:
     print(f"Wrote JSON: {args.latest_json}")
     if archived_path:
         print(f"Wrote archive CSV: {archived_path}")
+    if args.skip_calibration:
+        print("Skipped calibration log")
+    else:
+        print(f"Appended calibration rows: {calibration_written} -> {args.calibration_jsonl}")
     if not args.skip_html:
         print(f"Wrote HTML: {args.html}")
     else:
