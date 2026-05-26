@@ -17554,3 +17554,35 @@ AMZN funding reversal from -95% to +47% ended the crowded-short thesis and signa
 
 ---
 
+### 2026-05-26 07:30 UTC
+
+**Portfolio:** $98.43 total | Cash $93.43 | 5 open | P&L $-0.5674 | 51% win rate (160 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_pm_iv = 86.3 is 2.7 std devs from mean since 2026-04-28 (63.41 ± 8.61)
+- [anomaly] btc_opt_iv_90d = 18.5 is -2.4 std devs from mean (37.93 ± 7.93)
+- [anomaly] btc_opt_iv_term_spread = 14.99 is 2.3 std devs from mean (0.42 ± 6.29)
+- [anomaly] hype_pm_ev = 59.64 is 2.2 std devs from mean (47.09 ± 5.71)
+- [anomaly] hype_spot = 59.852 is 2.2 std devs from mean (44.97 ± 6.84)
+
+**Blocked signal learning:**
+- Open blocked shadows: 114
+- Resolved blocked shadows: 253 (112 wins / 141 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+3.08%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-0.51%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+0.20%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-28.57%)
+
+**LLM analysis:**
+The correlation flip between BTC and GOLD from -0.38 to +0.75 over the last 24h suggests that both assets are being driven by a macro risk-off move (possibly a dollar bid or rate fears). This undermines the BTC long thesis from IV compression because the catalyst for a vol expansion would need to overcome the macro headwinds. The H-170 BTC long is therefore more vulnerable than the pure vol signal suggests. I am leaving it to the mechanical stop rather than closing early, because the quantitative conditions (within 5% of 7d high, IV z‑score < -1.25) are still holding and the thesis has a 65% variant-test win rate. No new hypotheses should be proposed while the shadow-test backlog is incomplete and 9 families still need tests. The existing promoted hypotheses (H-523 and H-521) are the only ones allowed to run live, and I will continue to monitor them.
+
+---
+

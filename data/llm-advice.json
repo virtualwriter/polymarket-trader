@@ -1,37 +1,6 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779496230307-1zji",
-        "asset": "AMZN",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "amzn_hl_funding_ann"
-        ],
-        "thesis": "AMZN long entered on extreme negative funding (crowded shorts). Funding has flipped to +47%, indicating the short squeeze has played out and long-side positioning is now extreme. The signal-family evidence (funding sign reversal) invalidates the entry thesis."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779730229574-8o7m",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_spot"
-        ],
-        "thesis": "BTC long entered on momentum/vol confirmation (H-170). Spot has declined from 77.6k to 76.8k, below the short-term trend and entry level, with funding turning negative. The momentum condition is no longer met; thesis invalidated."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedCloses": [],
   "skippedTrades": [],
   "parameterUpdates": {}
 }
