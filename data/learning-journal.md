@@ -17751,3 +17751,39 @@ Low-volatility consolidation continues. Promoted BTC long (H-170) is -1.06%, app
 
 ---
 
+### 2026-05-26 14:30 UTC
+
+**Portfolio:** $98.43 total | Cash $91.43 | 7 open | P&L $-0.5674 | 51% win rate (160 trades)
+
+**Opened 2 positions:**
+- HYPE long @ $64.344 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+- OIL short @ $0.76 via polymarket/pm_no [what-price-will-wti-hit-in-may-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $85 in May?] (ONE_TOUCH_HIGH_EDGE_NO)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 20.6pp (was 10.4, now -10.2)
+- [anomaly] hype_spot = 64.344 is 2.7 std devs from mean (45.13 ± 7.01)
+- [anomaly] oil_opt_fwd_90d = 10.2 is -2.7 std devs from mean since 2026-04-28 (90.49 ± 29.43)
+- [anomaly] hype_hl_oi = 1459297171 is 2.6 std devs from mean (954653428.72 ± 196139819.91)
+- [anomaly] hype_pm_ev = 61.91 is 2.5 std devs from mean (47.22 ± 5.83)
+
+**Blocked signal learning:**
+- Open blocked shadows: 113
+- Resolved blocked shadows: 268 (118 wins / 150 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.02%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.61%)
+
+**LLM analysis:**
+Markets show HYPE momentum extreme and BTC IV compression; promoted hypotheses H-521 and H-523 appear active. No LLM-eligible closes warranted. No new trades proposed as no new promoted setup family entry triggered. Continue monitoring.
+
+---
+
