@@ -18000,3 +18000,35 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 11/12; n
 
 ---
 
+### 2026-05-26 21:31 UTC
+
+**Portfolio:** $98.51 total | Cash $97.51 | 1 open | P&L $-0.4912 | 51% win rate (163 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 30.0pp (was -5.4, now 24.6)
+- [divergence] GOLD PM-Options IV gap moved narrower by 9.5pp (was -0.7, now -10.2)
+- [anomaly] oil_opt_fwd_90d = 8.2 is -2.6 std devs from mean since 2026-04-28 (89.28 ± 30.64)
+- [anomaly] oil_pm_iv = 85.7 is 2.5 std devs from mean since 2026-04-28 (63.35 ± 8.80)
+- [anomaly] hype_med_max = 83.2 is 2.0 std devs from mean (62.91 ± 9.91)
+
+**Blocked signal learning:**
+- Open blocked shadows: 102
+- Resolved blocked shadows: 292 (124 wins / 168 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+0.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.32%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.02%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-3.17%)
+
+**LLM analysis:**
+Gold P/C ratio surged from 0.224 to 0.863 in a single day, flipping from extreme call buying to extreme put buying. Spot barely moved, signaling heightened uncertainty. The open GOLD short (PC_RATIO_EXTREME_LOW) entered on a low P/C signal; the extreme reversal might invalidate the thesis, but the mechanical stop/target remain in control. Oil PM IV anomaly (85.7 vs 61.1 opt IV) is noteworthy but no viable signal family due to disabled PM_IV_GT_OPT_IV and OIL exclusion from FUNDING_EXTREME_SHORT. Backlog of shadow tests for one-touch NO edges is promising; recommend promoting if clean live sample grows. No new hypotheses due to full backlog.
+
+---
+
