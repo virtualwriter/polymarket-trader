@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-26T05:29:29.274Z",
+  "generatedAt": "2026-05-26T06:31:05.140Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.46403959514860155,
       "thesis": "GOLD P/C ratio 0.22 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4530,
+      "entryPrice": 4534,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -25,11 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.59541499,
-      "confidence": 0.25055807047937495,
+      "strength": 0.5955555113333334,
+      "confidence": 0.25061720361295836,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.9pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76825,
+      "entryPrice": 76826,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5185348653333334,
-      "confidence": 0.21820595301808335,
+      "strength": 0.5186663363333334,
+      "confidence": 0.21826127765827083,
       "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.6pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76825,
+      "entryPrice": 76826,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -69,16 +69,47 @@
       "confidence": 0.07631107510764032,
       "thesis": "OIL P/C ratio 1.29 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 92.01,
+      "entryPrice": 91.65,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
     }
   ],
-  "rejectedLlmActions": [],
+  "rejectedLlmActions": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1779496230307-1zji",
+        "asset": "AMZN",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "amzn_hl_funding_ann"
+        ],
+        "thesis": "AMZN long entered on extreme negative funding (crowded shorts). Funding has flipped to +47%, indicating the short squeeze has played out and long-side positioning is now extreme. The signal-family evidence (funding sign reversal) invalidates the entry thesis."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    },
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1779730229574-8o7m",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_spot"
+        ],
+        "thesis": "BTC long entered on momentum/vol confirmation (H-170). Spot has declined from 77.6k to 76.8k, below the short-term trend and entry level, with funding turning negative. The momentum condition is no longer met; thesis invalidated."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    }
+  ],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 2 rejected; 0 non-close instructions skipped."
   ]
 }

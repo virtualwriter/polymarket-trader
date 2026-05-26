@@ -17517,3 +17517,40 @@ _LLM call skipped (duplicate-signals (4 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-05-26 06:31 UTC
+
+**Portfolio:** $98.43 total | Cash $93.43 | 5 open | P&L $-0.5674 | 51% win rate (160 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_pm_iv = 87.1 is 2.8 std devs from mean since 2026-04-28 (63.36 ± 8.55)
+- [anomaly] hype_spot = 60.594 is 2.3 std devs from mean (44.94 ± 6.82)
+- [anomaly] hype_pm_ev = 60.01 is 2.3 std devs from mean (47.07 ± 5.69)
+- [anomaly] amzn_hl_basis_pct = 1.28 is 2.3 std devs from mean (0.09 ± 0.53)
+- [anomaly] oil_brent_spot = 95.22 is -2.2 std devs from mean since 2026-04-28 (105.20 ± 4.50)
+
+**Blocked signal learning:**
+- Open blocked shadows: 115
+- Resolved blocked shadows: 251 (111 wins / 140 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.15%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-0.72%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+3.08%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-0.51%)
+
+**LLM analysis:**
+AMZN funding reversal from -95% to +47% ended the crowded-short thesis and signaled a completed squeeze; closing the long. BTC promoted momentum trade failed as price broke below entry and trend, suggesting the IV-compression setup requires stronger momentum confirmation. Monitoring GOLD extreme low P/C and elevated oil PM IV for potential entries, though ONE_TOUCH_NO shadows remain challenging.
+
+**LLM close rejections today (2026-05-26, token-burn signal):**
+- Total rejected close instructions: 4
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (3); FUNDING_EXTREME_SHORT / AMZN (1)
+- Repeat-offender positions (≥3 rejections today): T-1779730229574-8o7m (3) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+
