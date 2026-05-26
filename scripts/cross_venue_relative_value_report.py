@@ -68,6 +68,12 @@ ASSET_TO_OPTION_SYMBOLS = {
     "SPY": ["SPY", "CME_ES"],
 }
 CBOE_PROXY_OPTION_SYMBOLS = {"IBIT", "ETHA", "GLD", "USO", "SPY", "PURR"}
+CME_OPTION_SYMBOL_BY_ASSET = {
+    "BTC": "CME_BTC",
+    "GOLD": "CME_GC",
+    "OIL": "CME_CL",
+    "SPY": "CME_ES",
+}
 
 
 @dataclass
@@ -92,6 +98,14 @@ class RelativeValueRow:
     pm_iv: Optional[float]
     options_terminal_prob: Optional[float]
     options_touch_adjusted_prob: Optional[float]
+    cme_option_symbol: str
+    cme_option_underlying: Optional[float]
+    cme_option_source: str
+    cme_iv_resolution: str
+    cme_option_iv: Optional[float]
+    cme_options_terminal_prob: Optional[float]
+    cme_options_touch_adjusted_prob: Optional[float]
+    cme_no_gap_pts: Optional[float]
     pm_yes_price: Optional[float]
     pm_best_bid: Optional[float]
     pm_best_ask: Optional[float]
@@ -368,6 +382,13 @@ def option_chain_for_asset(snapshot: Dict[str, Any], asset: str) -> Tuple[str, O
         if isinstance(chain, dict):
             return symbol, chain
     return "", None
+
+
+def option_chain_for_symbol(snapshot: Dict[str, Any], symbol: str) -> Optional[Dict[str, Any]]:
+    if not symbol:
+        return None
+    chain = snapshot.get("options", {}).get(symbol)
+    return chain if isinstance(chain, dict) else None
 
 
 def scaled_option_strike(
@@ -897,6 +918,8 @@ def build_rows(
     events = snapshot.get("polymarket", [])
     relevant_targets_by_asset: Dict[str, List[Tuple[Optional[datetime], Optional[float]]]] = {}
     seen_targets_by_asset: Dict[str, set] = {}
+    cme_targets_by_asset: Dict[str, List[Tuple[Optional[datetime], Optional[float]]]] = {}
+    seen_cme_targets_by_asset: Dict[str, set] = {}
 
     for event in events:
         asset = str(event.get("asset", ""))
@@ -912,12 +935,27 @@ def build_rows(
             seen_targets.add(key)
             asset_targets.append((expiry, strike))
 
+        cme_option_symbol = CME_OPTION_SYMBOL_BY_ASSET.get(asset, "")
+        cme_option_snapshot = option_chain_for_symbol(snapshot, cme_option_symbol)
+        cme_targets = relevant_option_targets_for_event(event, asset, cme_option_symbol, cme_option_snapshot, spot)
+        cme_asset_targets = cme_targets_by_asset.setdefault(asset, [])
+        seen_cme_targets = seen_cme_targets_by_asset.setdefault(asset, set())
+        for expiry, strike in cme_targets:
+            key = (expiry.date().isoformat() if expiry else "", round(strike or 0.0, 2))
+            if key in seen_cme_targets:
+                continue
+            seen_cme_targets.add(key)
+            cme_asset_targets.append((expiry, strike))
+
     for event in events:
         asset = str(event.get("asset", ""))
         option_symbol, option_snapshot = option_chain_for_asset(snapshot, asset)
         spot = safe_float(spots.get(asset))
         live_markets = live_gamma_markets(str(event.get("slug", ""))) if refresh_live_quotes else {}
         relevant_option_targets = relevant_targets_by_asset.get(asset, [])
+        cme_option_symbol = CME_OPTION_SYMBOL_BY_ASSET.get(asset, "")
+        cme_option_snapshot = option_chain_for_symbol(snapshot, cme_option_symbol)
+        cme_relevant_option_targets = cme_targets_by_asset.get(asset, [])
         pm_iv = pm_iv_for_asset(latest_valuations, asset)
         hl = hyperliquid_overrides.get(asset)
         perp_source = "snapshot"
@@ -980,6 +1018,25 @@ def build_rows(
                 terminal_prob = lognormal_terminal_probability(option_underlying, option_strike, option_iv, model_dte_days, direction)
                 model_prob = touch_adjusted_probability(terminal_prob, direction, question, option_underlying, option_strike, option_iv, model_dte_days)
 
+            cme_option_underlying = safe_float(cme_option_snapshot.get("underlyingPrice")) if cme_option_snapshot else None
+            cme_option_strike = scaled_option_strike(asset, cme_option_symbol, strike or 0.0, spot, cme_option_underlying)
+            cme_option_iv, cme_iv_expiry = choose_iv_for_expiry(
+                cme_option_snapshot,
+                model_expiry_dt,
+                cme_option_strike,
+                snap_dt,
+                cme_relevant_option_targets,
+            ) if cme_option_snapshot else (None, "")
+            cme_iv_resolution = iv_resolution_for(cme_option_snapshot, "", cme_option_iv)
+            if range_bounds and spot and cme_option_underlying:
+                cme_scaled_low = scaled_option_strike(asset, cme_option_symbol, range_bounds[0], spot, cme_option_underlying)
+                cme_scaled_high = scaled_option_strike(asset, cme_option_symbol, range_bounds[1], spot, cme_option_underlying)
+                cme_terminal_prob = lognormal_range_probability(cme_option_underlying, cme_scaled_low, cme_scaled_high, cme_option_iv, model_dte_days)
+                cme_model_prob = cme_terminal_prob
+            else:
+                cme_terminal_prob = lognormal_terminal_probability(cme_option_underlying, cme_option_strike, cme_option_iv, model_dte_days, direction)
+                cme_model_prob = touch_adjusted_probability(cme_terminal_prob, direction, question, cme_option_underlying, cme_option_strike, cme_option_iv, model_dte_days)
+
             live_quote = live_clob_quote_for_market(live_markets.get(str(contract.get("marketId", "")), {})) if refresh_live_quotes else {}
             quote_source = live_quote.get("quoteSource", "snapshot")
             pm_yes = safe_float(live_quote.get("yesPrice")) if live_quote else None
@@ -1000,6 +1057,10 @@ def build_rows(
                 spread = ask - bid
             if spread is not None and spread > HEATMAP_MAX_INCLUDED_PM_SPREAD:
                 continue
+            cme_no_gap_pts = None
+            if cme_model_prob is not None and pm_yes is not None:
+                # Positive means CME-implied NO is richer than PM NO, so NO is cheap on PM.
+                cme_no_gap_pts = (pm_yes - cme_model_prob) * 100
             cap_yes = underlying_cap_yes_price(spot, strike, direction, question)
             cap_ratio, cap_signal = underlying_cap_signal(pm_yes, cap_yes)
 
@@ -1068,6 +1129,8 @@ def build_rows(
                 notes.append(f"Settlement bucket modeled as probability between {range_bounds[0]:.0f} and {range_bounds[1]:.0f}.")
             if option_symbol in CBOE_PROXY_OPTION_SYMBOLS:
                 notes.append("Strike scaled from underlying options proxy.")
+            if cme_option_symbol and cme_option_snapshot and cme_option_iv is not None:
+                notes.append(f"CME sidecar uses {cme_option_symbol} {cme_option_snapshot.get('source', '')}; IV expiry {cme_iv_expiry or 'n/a'}, closest-strike IV sample.")
             if quote_source == "live_clob":
                 notes.append("Polymarket quote refreshed from live CLOB during heatmap generation.")
             else:
@@ -1097,6 +1160,14 @@ def build_rows(
                     pm_iv=pm_iv,
                     options_terminal_prob=terminal_prob,
                     options_touch_adjusted_prob=model_prob,
+                    cme_option_symbol=cme_option_symbol if cme_option_snapshot else "",
+                    cme_option_underlying=cme_option_underlying,
+                    cme_option_source=str(cme_option_snapshot.get("source", "")) if cme_option_snapshot else "",
+                    cme_iv_resolution=cme_iv_resolution,
+                    cme_option_iv=cme_option_iv,
+                    cme_options_terminal_prob=cme_terminal_prob,
+                    cme_options_touch_adjusted_prob=cme_model_prob,
+                    cme_no_gap_pts=cme_no_gap_pts,
                     pm_yes_price=pm_yes,
                     pm_best_bid=bid,
                     pm_best_ask=ask,
@@ -1357,6 +1428,10 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
             f"<td>{html.escape(fmt_num(row.settlement_tail_yes, 2))}</td>"
             f"<td>{html.escape(fmt_num(row.settlement_skew_yes, 2))}</td>"
             f"<td>{html.escape(fmt_pct(row.options_touch_adjusted_prob))}</td>"
+            f"<td>{html.escape(fmt_pct(row.cme_options_touch_adjusted_prob))}</td>"
+            f"<td>{html.escape(fmt_pts(row.cme_no_gap_pts))}</td>"
+            f"<td>{html.escape(fmt_pct(row.cme_option_iv))}</td>"
+            f"<td>{html.escape(row.cme_iv_resolution)}</td>"
             f"<td class='{cls}'>{html.escape(fmt_pts(row.edge_score))}</td>"
             f"<td>{html.escape(fmt_pts(row.edge_pts_per_dte, 3))}</td>"
             f"<td>{html.escape(fmt_pts(row.edge_pts_per_dte_7d_change, 3))}</td>"
@@ -1495,6 +1570,10 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         <th>Tail Sum</th>
         <th>Tail Skew</th>
         <th>Options Prob</th>
+        <th>CME Prob</th>
+        <th>CME NO Gap</th>
+        <th>CME IV</th>
+        <th>CME IV Res</th>
         <th>Edge Pts</th>
         <th>Edge/Day</th>
         <th>7d Δ Edge/Day</th>
@@ -1528,6 +1607,10 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         <th><input type="search" data-column-filter="settlement_tail_yes" placeholder="Tail"></th>
         <th><input type="search" data-column-filter="settlement_skew_yes" placeholder="Skew"></th>
         <th><input type="search" data-column-filter="options_touch_adjusted_prob" placeholder="Options"></th>
+        <th><input type="search" data-column-filter="cme_options_touch_adjusted_prob" placeholder="CME prob"></th>
+        <th><input type="search" data-column-filter="cme_no_gap_pts" placeholder="CME NO"></th>
+        <th><input type="search" data-column-filter="cme_option_iv" placeholder="CME IV"></th>
+        <th><input type="search" data-column-filter="cme_iv_resolution" placeholder="CME res"></th>
         <th><input type="search" data-column-filter="edge_score" placeholder="Edge"></th>
         <th><input type="search" data-column-filter="edge_pts_per_dte" placeholder="Edge/day"></th>
         <th><input type="search" data-column-filter="edge_pts_per_dte_7d_change" placeholder="7d Δ"></th>
@@ -1567,6 +1650,10 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
       {{ key: "settlement_tail_yes", format: (row) => fmtNum(row.settlement_tail_yes, 2) }},
       {{ key: "settlement_skew_yes", format: (row) => fmtNum(row.settlement_skew_yes, 2) }},
       {{ key: "options_touch_adjusted_prob", format: (row) => fmtPct(row.options_touch_adjusted_prob) }},
+      {{ key: "cme_options_touch_adjusted_prob", format: (row) => fmtPct(row.cme_options_touch_adjusted_prob) }},
+      {{ key: "cme_no_gap_pts", format: (row) => fmtPts(row.cme_no_gap_pts) }},
+      {{ key: "cme_option_iv", format: (row) => fmtPct(row.cme_option_iv) }},
+      {{ key: "cme_iv_resolution" }},
       {{ key: "edge_score", format: (row) => fmtPts(row.edge_score), className: (row) => htmlClassFromEdge(row.edge_score) }},
       {{ key: "edge_pts_per_dte", format: (row) => fmtPts(row.edge_pts_per_dte, 3) }},
       {{ key: "edge_pts_per_dte_7d_change", format: (row) => fmtPts(row.edge_pts_per_dte_7d_change, 3) }},

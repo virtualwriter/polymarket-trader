@@ -114,6 +114,65 @@ class OneTouchProbabilityTest(unittest.TestCase):
         self.assertIsNotNone(row.options_touch_adjusted_prob)
         self.assertIn("Strike scaled from underlying options proxy.", row.notes)
 
+    def test_cme_sidecar_does_not_replace_primary_cboe_proxy(self) -> None:
+        snapshot = {
+            "timestamp": "2026-05-01T00:00:00+00:00",
+            "spots": {"BTC": 100.0},
+            "hyperliquid": {"BTC": {"markPx": 100.0, "fundingAnnualized": 0.02, "openInterestUsd": 1000000}},
+            "options": {
+                "IBIT": {
+                    "underlyingPrice": 10.0,
+                    "source": "CBOE delayed",
+                    "chains": [
+                        {"expiration": "2026-05-29T00:00:00+00:00", "strike": 12.0, "impliedVolatility": 0.50, "bid": 0.1, "ask": 0.2},
+                    ],
+                },
+                "CME_BTC": {
+                    "underlyingPrice": 100.0,
+                    "source": "CME BTC futures options - CME Options Analytics",
+                    "chains": [
+                        {"expiration": "2026-05-29T00:00:00+00:00", "strike": 120.0, "impliedVolatility": 0.80, "bid": 1, "ask": 2},
+                    ],
+                },
+            },
+            "polymarket": [
+                {
+                    "asset": "BTC",
+                    "slug": "what-price-will-bitcoin-hit-in-may-2026",
+                    "contracts": [
+                        {
+                            "marketId": "btc-120",
+                            "question": "Will Bitcoin hit $120 in May 2026?",
+                            "strike": 120.0,
+                            "direction": "above",
+                            "yesPrice": 0.2,
+                            "bestBid": 0.19,
+                            "bestAsk": 0.2,
+                            "spread": 0.01,
+                            "liquidity": 10000,
+                            "volume": 1000,
+                            "active": True,
+                            "closed": False,
+                            "endDate": "2026-06-01T03:59:59.999Z",
+                        }
+                    ],
+                }
+            ],
+        }
+
+        rows = report.build_rows(snapshot)
+
+        self.assertEqual(len(rows), 1)
+        row = rows[0]
+        self.assertEqual(row.option_symbol, "IBIT")
+        self.assertEqual(row.iv_resolution, "cboe_snapshot")
+        self.assertAlmostEqual(row.option_iv, 0.50)
+        self.assertEqual(row.cme_option_symbol, "CME_BTC")
+        self.assertEqual(row.cme_iv_resolution, "cme_snapshot")
+        self.assertAlmostEqual(row.cme_option_iv, 0.80)
+        self.assertIsNotNone(row.cme_options_touch_adjusted_prob)
+        self.assertIsNotNone(row.cme_no_gap_pts)
+
     def test_iv_selection_matches_expiry_then_nearest_strike(self) -> None:
         snapshot = {
             "underlyingPrice": 100.0,
