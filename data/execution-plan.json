@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-26T08:30:54.230Z",
+  "generatedAt": "2026-05-26T10:29:33.025Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.46403959514860155,
       "thesis": "GOLD P/C ratio 0.22 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4525,
+      "entryPrice": 4533,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -25,11 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5912834526666667,
-      "confidence": 0.24881946792529167,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 17.7pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.61247436,
+      "confidence": 0.2577368666175,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.4pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76737,
+      "entryPrice": 77160,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -37,6 +37,26 @@
         "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
         "forceInstrumentType": "pm_no",
         "forceMarketId": "701501",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.520861138,
+      "confidence": 0.219184877634625,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.6pt edge on BTC; hold 14d for repricing.",
+      "hypothesisId": null,
+      "entryPrice": 77160,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 14,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-bitcoin-hit-before-2027",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "1339767",
         "allowDirectionFallback": false
       }
     },
@@ -49,25 +69,10 @@
       "confidence": 0.07631107510764032,
       "thesis": "OIL P/C ratio 1.29 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 92.75,
+      "entryPrice": 92.13,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
-    },
-    {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "BTC",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 0.07914285714285713,
-      "confidence": 0.03599126609327391,
-      "thesis": "BTC HL funding -17.8% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 76737,
-      "targetPct": 4,
-      "stopPct": 2.5,
-      "expiryDays": 7,
-      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
