@@ -17485,3 +17485,35 @@ Markets turned risk-off with BTC slide and negative funding, while gold remained
 
 ---
 
+### 2026-05-26 05:29 UTC
+
+**Portfolio:** $98.43 total | Cash $93.43 | 5 open | P&L $-0.5674 | 51% win rate (160 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 12.4pp (was 6.3, now 18.7)
+- [anomaly] oil_pm_iv = 86.7 is 2.8 std devs from mean since 2026-04-28 (63.31 ± 8.49)
+- [anomaly] hype_spot = 60.343 is 2.3 std devs from mean (44.92 ± 6.80)
+- [anomaly] hype_pm_ev = 59.88 is 2.3 std devs from mean (47.04 ± 5.67)
+- [anomaly] amzn_hl_basis_pct = 1.24 is 2.2 std devs from mean (0.09 ± 0.53)
+
+**Blocked signal learning:**
+- Open blocked shadows: 115
+- Resolved blocked shadows: 249 (110 wins / 139 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.93%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-4.55%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.15%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-0.72%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (4 recurring signals seen within 6h); 2.0h since last call; daily budget 3/12; next scheduled 2026-05-26T07:29:29.267Z). Mechanical cycle ran normally._
+
+---
+
