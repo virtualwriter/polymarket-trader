@@ -29,6 +29,7 @@ import urllib.request
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from types import SimpleNamespace
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 from zoneinfo import ZoneInfo
 
@@ -118,6 +119,15 @@ class RelativeValueRow:
     cme_options_terminal_prob: Optional[float]
     cme_options_touch_adjusted_prob: Optional[float]
     cme_no_gap_pts: Optional[float]
+    cboe_no_gap_pts: Optional[float]
+    adjusted_no_gap_pts: Optional[float]
+    source_agreement_bucket: str
+    no_bias_candidate_passed: bool
+    proxy_penalty_pts: Optional[float]
+    spread_penalty_pts: Optional[float]
+    stale_data_penalty_pts: Optional[float]
+    cme_disagreement_penalty_pts: Optional[float]
+    asset_penalty_pts: Optional[float]
     pm_yes_price: Optional[float]
     pm_best_bid: Optional[float]
     pm_best_ask: Optional[float]
@@ -1073,6 +1083,25 @@ def build_rows(
             if cme_model_prob is not None and pm_yes is not None:
                 # Positive means CME-implied NO is richer than PM NO, so NO is cheap on PM.
                 cme_no_gap_pts = (pm_yes - cme_model_prob) * 100
+            cboe_no_gap_pts = no_gap_pts(pm_yes, model_prob)
+            snapshot_age = snapshot_age_minutes(ts)
+            adjusted_gap, no_bias_penalties = None, {}
+            if cboe_no_gap_pts is not None:
+                adjusted_gap, no_bias_penalties = adjusted_no_gap_pts(
+                    SimpleNamespace(asset=asset, option_symbol=option_symbol, pm_spread=spread),
+                    cboe_no_gap_pts,
+                    cme_no_gap_pts,
+                    snapshot_age,
+                )
+            source_agreement = source_agreement_bucket(cboe_no_gap_pts, cme_no_gap_pts, asset in CME_OPTION_SYMBOL_BY_ASSET)
+            no_bias_threshold = NO_BIAS_ASSET_THRESHOLDS_PTS.get(asset, 12.0)
+            no_bias_candidate_passed = (
+                adjusted_gap is not None
+                and adjusted_gap >= no_bias_threshold
+                and spread is not None and spread <= NO_BIAS_MAX_SPREAD
+                and liquidity is not None and liquidity >= NO_BIAS_MIN_LIQUIDITY
+                and dte_days is not None and dte_days >= NO_BIAS_MIN_DTE_DAYS
+            )
             cap_yes = underlying_cap_yes_price(spot, strike, direction, question)
             cap_ratio, cap_signal = underlying_cap_signal(pm_yes, cap_yes)
 
@@ -1180,6 +1209,15 @@ def build_rows(
                     cme_options_terminal_prob=cme_terminal_prob,
                     cme_options_touch_adjusted_prob=cme_model_prob,
                     cme_no_gap_pts=cme_no_gap_pts,
+                    cboe_no_gap_pts=cboe_no_gap_pts,
+                    adjusted_no_gap_pts=adjusted_gap,
+                    source_agreement_bucket=source_agreement,
+                    no_bias_candidate_passed=no_bias_candidate_passed,
+                    proxy_penalty_pts=no_bias_penalties.get("proxy_penalty_pts"),
+                    spread_penalty_pts=no_bias_penalties.get("spread_penalty_pts"),
+                    stale_data_penalty_pts=no_bias_penalties.get("stale_data_penalty_pts"),
+                    cme_disagreement_penalty_pts=no_bias_penalties.get("cme_disagreement_penalty_pts"),
+                    asset_penalty_pts=no_bias_penalties.get("asset_penalty_pts"),
                     pm_yes_price=pm_yes,
                     pm_best_bid=bid,
                     pm_best_ask=ask,
@@ -1675,6 +1713,10 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
             f"<td>{html.escape(fmt_pts(row.cme_no_gap_pts))}</td>"
             f"<td>{html.escape(fmt_pct(row.cme_option_iv))}</td>"
             f"<td>{html.escape(row.cme_iv_resolution)}</td>"
+            f"<td>{html.escape(fmt_pts(row.cboe_no_gap_pts))}</td>"
+            f"<td>{html.escape(fmt_pts(row.adjusted_no_gap_pts))}</td>"
+            f"<td>{html.escape(row.source_agreement_bucket)}</td>"
+            f"<td>{'yes' if row.no_bias_candidate_passed else 'no'}</td>"
             f"<td class='{cls}'>{html.escape(fmt_pts(row.edge_score))}</td>"
             f"<td>{html.escape(fmt_pts(row.edge_pts_per_dte, 3))}</td>"
             f"<td>{html.escape(fmt_pts(row.edge_pts_per_dte_7d_change, 3))}</td>"
@@ -1817,6 +1859,10 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         <th>CME NO Gap</th>
         <th>CME IV</th>
         <th>CME IV Res</th>
+        <th>CBOE NO Gap</th>
+        <th>Adj NO Gap</th>
+        <th>Source Agree</th>
+        <th>NO Bias Candidate</th>
         <th>Edge Pts</th>
         <th>Edge/Day</th>
         <th>7d Δ Edge/Day</th>
@@ -1854,6 +1900,10 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
         <th><input type="search" data-column-filter="cme_no_gap_pts" placeholder="CME NO"></th>
         <th><input type="search" data-column-filter="cme_option_iv" placeholder="CME IV"></th>
         <th><input type="search" data-column-filter="cme_iv_resolution" placeholder="CME res"></th>
+        <th><input type="search" data-column-filter="cboe_no_gap_pts" placeholder="CBOE NO"></th>
+        <th><input type="search" data-column-filter="adjusted_no_gap_pts" placeholder="Adj NO"></th>
+        <th><input type="search" data-column-filter="source_agreement_bucket" placeholder="Agree"></th>
+        <th><input type="search" data-column-filter="no_bias_candidate_passed" placeholder="NO bias"></th>
         <th><input type="search" data-column-filter="edge_score" placeholder="Edge"></th>
         <th><input type="search" data-column-filter="edge_pts_per_dte" placeholder="Edge/day"></th>
         <th><input type="search" data-column-filter="edge_pts_per_dte_7d_change" placeholder="7d Δ"></th>
@@ -1897,6 +1947,10 @@ def write_html(rows: List[RelativeValueRow], path: Path, snapshot_timestamp: str
       {{ key: "cme_no_gap_pts", format: (row) => fmtPts(row.cme_no_gap_pts) }},
       {{ key: "cme_option_iv", format: (row) => fmtPct(row.cme_option_iv) }},
       {{ key: "cme_iv_resolution" }},
+      {{ key: "cboe_no_gap_pts", format: (row) => fmtPts(row.cboe_no_gap_pts) }},
+      {{ key: "adjusted_no_gap_pts", format: (row) => fmtPts(row.adjusted_no_gap_pts) }},
+      {{ key: "source_agreement_bucket" }},
+      {{ key: "no_bias_candidate_passed", format: (row) => yesNo(row.no_bias_candidate_passed) }},
       {{ key: "edge_score", format: (row) => fmtPts(row.edge_score), className: (row) => htmlClassFromEdge(row.edge_score) }},
       {{ key: "edge_pts_per_dte", format: (row) => fmtPts(row.edge_pts_per_dte, 3) }},
       {{ key: "edge_pts_per_dte_7d_change", format: (row) => fmtPts(row.edge_pts_per_dte_7d_change, 3) }},

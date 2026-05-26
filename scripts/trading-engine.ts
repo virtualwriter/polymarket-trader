@@ -108,6 +108,11 @@ const WEEKEND_HL_FUNDING_EXIT_PCT = 0.10;
 const WEEKEND_HL_FUNDING_LEVERAGE = 5;
 const WEEKEND_HL_FUNDING_TARGET_PCT = 3;
 const WEEKEND_HL_FUNDING_MAX_HOLD_HOURS = 24;
+const NO_BIAS_ADJUSTED_GAP_SIGNAL = "NO_BIAS_ADJUSTED_GAP_SHADOW";
+const NO_BIAS_ADJUSTED_GAP_REASON = "no_bias_adjusted_gap_shadow";
+const NO_BIAS_ADJUSTED_GAP_HOLD_DAYS = 7;
+const NO_BIAS_ADJUSTED_GAP_MAX_SPREAD = 0.02;
+const NO_BIAS_ADJUSTED_GAP_MIN_LIQUIDITY = 5_000;
 const LONG_DATED_POLYMARKET_HOLD_DAYS = 90;
 const HYPE_STOCK_BUILDER_ASSETS = new Set([
   "AAPL", "AMD", "AMZN", "ARM", "BABA", "BIRD", "BX", "CBRS", "COIN",
@@ -417,7 +422,7 @@ interface BlockedSignalShadow {
   status: "open" | "resolved" | "cancelled";
   blockedAt: string;
   resolvedAt?: string;
-  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short" | "relative_value_heatmap" | "monotonic_arb_shadow" | "one_touch_high_edge_shadow" | "stale_lottery_ticket_shadow" | "weekend_hl_funding_shadow";
+  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short" | "relative_value_heatmap" | "monotonic_arb_shadow" | "one_touch_high_edge_shadow" | "stale_lottery_ticket_shadow" | "weekend_hl_funding_shadow" | "no_bias_adjusted_gap_shadow";
   signalType: string;
   asset: string;
   venue: Signal["venue"];
@@ -546,6 +551,11 @@ interface RelativeValueObservation {
   bestExpression: string;
   optionIv: number | null;
   pmIv: number | null;
+  cboeNoGapPts: number | null;
+  cmeNoGapPts: number | null;
+  adjustedNoGapPts: number | null;
+  sourceAgreementBucket: string;
+  noBiasCandidatePassed: boolean;
   liquidity: number | null;
   flags: string;
   rawRow: Record<string, string>;
@@ -874,6 +884,11 @@ function readRelativeValueObservations(limit = 30): RelativeValueObservation[] {
         bestExpression: row.best_expression ?? "",
         optionIv: num(row.option_iv),
         pmIv: num(row.pm_iv),
+        cboeNoGapPts: num(row.cboe_no_gap_pts),
+        cmeNoGapPts: num(row.cme_no_gap_pts),
+        adjustedNoGapPts: num(row.adjusted_no_gap_pts),
+        sourceAgreementBucket: row.source_agreement_bucket ?? "",
+        noBiasCandidatePassed: String(row.no_bias_candidate_passed ?? "").toLowerCase() === "true",
         liquidity: num(row.liquidity),
         flags: row.flags ?? "",
         rawRow: row,
@@ -3299,6 +3314,124 @@ function recordOneTouchHighEdgeShadows(
   return recorded;
 }
 
+function noBiasAdjustedGapEligible(row: RelativeValueObservation): boolean {
+  if (!row.marketId || !row.eventSlug) return false;
+  if (!row.noBiasCandidatePassed) return false;
+  if (row.adjustedNoGapPts === null || row.adjustedNoGapPts <= 0) return false;
+  if (row.pmSpread === null || row.pmSpread > NO_BIAS_ADJUSTED_GAP_MAX_SPREAD) return false;
+  if (row.liquidity === null || row.liquidity < NO_BIAS_ADJUSTED_GAP_MIN_LIQUIDITY) return false;
+  return true;
+}
+
+function buildNoBiasAdjustedGapShadowPosition(
+  row: RelativeValueObservation,
+  latestRow: SnapshotRow,
+  latestSnapshot: InstrumentSnapshotFile,
+): Position | null {
+  const event = latestSnapshot.polymarket.find((candidate) => candidate.slug === row.eventSlug);
+  const contract = event?.contracts.find((candidate) => candidate.marketId === row.marketId);
+  if (!event || !contract) return null;
+
+  const entryPrice = polymarketEntryPrice(contract, "pm_no");
+  if (!passesOneSidedPolymarketEntryPrice(entryPrice)) return null;
+
+  const openedAt = new Date().toISOString();
+  const expiryDate = new Date(openedAt);
+  const dteDays = Number(row.rawRow.dte_days);
+  const holdDays = Number.isFinite(dteDays) && dteDays > 0
+    ? Math.min(NO_BIAS_ADJUSTED_GAP_HOLD_DAYS, Math.ceil(dteDays))
+    : NO_BIAS_ADJUSTED_GAP_HOLD_DAYS;
+  expiryDate.setDate(expiryDate.getDate() + holdDays);
+
+  const underlyingPrice = getAssetPrice(latestRow, row.asset) ?? latestSnapshot.spots[row.asset] ?? row.strike;
+  const cmeGap = row.cmeNoGapPts === null ? "n/a" : `${row.cmeNoGapPts.toFixed(1)}pt`;
+  return {
+    id: `NB-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    openedAt,
+    asset: row.asset,
+    venue: "polymarket",
+    direction: "short",
+    entryPrice,
+    currentPrice: entryPrice,
+    size: TRADE_SIZE,
+    leverage: 1,
+    signalType: NO_BIAS_ADJUSTED_GAP_SIGNAL,
+    hypothesisId: null,
+    thesis: `[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is ${row.adjustedNoGapPts?.toFixed(1)}pt after haircuts. CBOE gap ${row.cboeNoGapPts?.toFixed(1) ?? "n/a"}pt, CME gap ${cmeGap}, source agreement ${row.sourceAgreementBucket}, spread ${((row.pmSpread ?? 0) * 100).toFixed(1)}c, liquidity ${Math.round(row.liquidity ?? 0)}. Shadow-only calibration trade; hold ${holdDays}d or exit if adjusted gap disappears.`,
+    targetPct: null,
+    stopPct: 100,
+    expiryDate: expiryDate.toISOString(),
+    instrumentType: "pm_no",
+    instrumentId: `${event.slug}::${contract.marketId}`,
+    instrumentLabel: `${event.slug} — NO — ${contract.question}`,
+    entryUnderlyingPrice: underlyingPrice,
+    currentUnderlyingPrice: underlyingPrice,
+    fundingPnlAccrued: 0,
+  };
+}
+
+function recordNoBiasAdjustedGapShadows(
+  relativeValueRows: RelativeValueObservation[],
+  latestRow: SnapshotRow,
+  latestSnapshot: InstrumentSnapshotFile | null,
+  learningParams: LearningParams,
+  blockedSignals: BlockedSignalShadow[],
+): number {
+  if (!latestSnapshot) return 0;
+  const today = new Date().toISOString().slice(0, 10);
+  const candidates = relativeValueRows
+    .filter(noBiasAdjustedGapEligible)
+    .sort((a, b) => (b.adjustedNoGapPts ?? 0) - (a.adjustedNoGapPts ?? 0));
+  const seenThisRun = new Set<string>();
+  let recorded = 0;
+
+  for (const row of candidates) {
+    const position = buildNoBiasAdjustedGapShadowPosition(row, latestRow, latestSnapshot);
+    if (!position || !position.instrumentId) continue;
+    const dedupKey = `${position.signalType}|${position.instrumentId}`;
+    if (seenThisRun.has(dedupKey)) continue;
+    seenThisRun.add(dedupKey);
+    if (blockedSignals.some((shadow) =>
+      shadow.signalType === position.signalType &&
+      shadow.position.instrumentId === position.instrumentId &&
+      (shadow.status === "open" || shadow.blockedAt.slice(0, 10) === today)
+    )) continue;
+
+    blockedSignals.push({
+      id: position.id,
+      status: "open",
+      blockedAt: position.openedAt,
+      blockedReason: NO_BIAS_ADJUSTED_GAP_REASON,
+      signalType: position.signalType,
+      asset: row.asset,
+      venue: "polymarket",
+      direction: position.direction,
+      confidence: Math.min(0.7, 0.45 + ((row.adjustedNoGapPts ?? 0) / 100)),
+      thesis: position.thesis,
+      marketQuality: polymarketMarketQuality(position, latestSnapshot),
+      learningParamsSnapshot: {
+        macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+        contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
+        positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
+        llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
+        momentumLongExpiryDays: learningParams.momentumLongExpiryDays,
+        signalRisk: learningParams.signalRisk,
+      },
+      position,
+      heatmapRowSnapshot: {
+        schemaVersion: 1,
+        source: "cross_venue_relative_value_heatmap",
+        row: row.rawRow,
+        selectedSide: "no",
+        selectedSignalType: position.signalType,
+      },
+    });
+    recorded++;
+  }
+
+  return recorded;
+}
+
 function buildStaleLotteryTicketNoShadowPosition(
   row: RelativeValueObservation,
   latestRow: SnapshotRow,
@@ -3614,6 +3747,14 @@ function oneTouchNoEdgeDisappeared(shadow: BlockedSignalShadow, relativeValueRow
   return !oneTouchNoShadowEligible(row);
 }
 
+function noBiasAdjustedGapDisappeared(shadow: BlockedSignalShadow, relativeValueRows: RelativeValueObservation[]): boolean {
+  if (shadow.blockedReason !== NO_BIAS_ADJUSTED_GAP_REASON) return false;
+  if (shadow.signalType !== NO_BIAS_ADJUSTED_GAP_SIGNAL || shadow.position.instrumentType !== "pm_no") return false;
+  const row = currentOneTouchNoEdgeRow(shadow, relativeValueRows);
+  if (!row) return true;
+  return !noBiasAdjustedGapEligible(row);
+}
+
 function resolveBlockedSignalShadows(
   blockedSignals: BlockedSignalShadow[],
   latestRow: SnapshotRow,
@@ -3633,12 +3774,14 @@ function resolveBlockedSignalShadows(
       || shadow.blockedReason === "stale_lottery_ticket_shadow";
     let closeReason: ClosedTrade["closeReason"] | null = null;
     const edgeDisappeared = oneTouchNoEdgeDisappeared(shadow, relativeValueRows);
+    const noBiasGapDisappeared = noBiasAdjustedGapDisappeared(shadow, relativeValueRows);
     const weekendFundingExit = shadow.blockedReason === WEEKEND_HL_FUNDING_SHADOW_REASON
       && (getHyperliquidFundingFromSnapshot(latestInstrumentSnapshot(snapshots), shadow.asset) ?? Number.NEGATIVE_INFINITY) >= WEEKEND_HL_FUNDING_EXIT_PCT;
     if (weekendFundingExit) closeReason = mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
     else if (!expiryOnlyShadow && shadow.position.targetPct !== null && mark.pnlPct >= shadow.position.targetPct) closeReason = "target";
     else if (!expiryOnlyShadow && mark.pnlPct <= -shadow.position.stopPct) closeReason = "stop";
     else if (edgeDisappeared) closeReason = mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
+    else if (noBiasGapDisappeared) closeReason = mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
     else if (new Date(shadow.position.expiryDate) <= new Date()) closeReason = "expiry";
 
     shadow.position.currentPrice = mark.currentPrice;
@@ -3651,6 +3794,10 @@ function resolveBlockedSignalShadows(
     shadow.resolvedAt = now;
     if (edgeDisappeared) {
       shadow.thesis = `${shadow.thesis} [CLOSED ${now}: edge_disappeared — Current heatmap no longer has valid NO edge under shadow-promotion gates: sell_yes_edge_pts >= ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}, spread <= ${(ONE_TOUCH_NO_SHADOW_MAX_SPREAD * 100).toFixed(0)}c, liquidity >= ${ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY}.]`;
+      shadow.position.thesis = shadow.thesis;
+    }
+    if (noBiasGapDisappeared) {
+      shadow.thesis = `${shadow.thesis} [CLOSED ${now}: adjusted_no_gap_disappeared — Current heatmap no longer passes adjusted NO-bias gates: adjusted gap threshold, spread <= ${(NO_BIAS_ADJUSTED_GAP_MAX_SPREAD * 100).toFixed(0)}c, liquidity >= ${NO_BIAS_ADJUSTED_GAP_MIN_LIQUIDITY}.]`;
       shadow.position.thesis = shadow.thesis;
     }
     shadow.hypotheticalResult = {
@@ -6710,6 +6857,10 @@ async function main() {
   const newOneTouchHighEdgeShadows = recordOneTouchHighEdgeShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals, oneTouchHighEdgeLiveCoveredKeys);
   if (newOneTouchHighEdgeShadows > 0) {
     console.log(`\n  Opened ${newOneTouchHighEdgeShadows} one-touch NO edge shadow trades.`);
+  }
+  const newNoBiasAdjustedGapShadows = recordNoBiasAdjustedGapShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals);
+  if (newNoBiasAdjustedGapShadows > 0) {
+    console.log(`\n  Opened ${newNoBiasAdjustedGapShadows} adjusted NO-bias shadow trades.`);
   }
   const newStaleLotteryTicketNoShadows = recordStaleLotteryTicketNoShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals);
   if (newStaleLotteryTicketNoShadows > 0) {
