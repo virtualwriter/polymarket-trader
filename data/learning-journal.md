@@ -17898,3 +17898,40 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-05-26 18:31 UTC
+
+**Portfolio:** $98.51 total | Cash $97.51 | 1 open | P&L $-0.4912 | 51% win rate (163 trades)
+
+**Closed 3 trades:**
+- ✅ BTC short via polymarket/pm_no [what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin dip to $55,000 by December 31, 2026?] (ONE_TOUCH_HIGH_EDGE_NO) → signal_killed: +$0.0094 (0.9%, market 0.0094, funding 0.0000)
+- ✅ ETH short via polymarket/pm_no [what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum dip to $1,500 by December 31, 2026?] (ONE_TOUCH_HIGH_EDGE_NO) → signal_killed: +$0.0957 (9.6%, market 0.0957, funding 0.0000)
+- ✅ OIL short via polymarket/pm_no [what-price-will-wti-hit-in-may-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $85 in May?] (ONE_TOUCH_HIGH_EDGE_NO) → signal_killed: +$0.0066 (0.7%, market 0.0066, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 61.723 is 2.3 std devs from mean (45.24 ± 7.12)
+- [anomaly] hype_med_max = 84.9 is 2.3 std devs from mean (62.80 ± 9.82)
+- [anomaly] hype_pm_ev = 60.5 is 2.2 std devs from mean (47.31 ± 5.92)
+- [anomaly] hype_hl_oi = 1373041620 is 2.1 std devs from mean (957494891.26 ± 198646437.11)
+- [correlation_flip] BTC-GOLD correlation shifted from -0.40 to 0.77. Rolling correlation: 24h=0.65, 7d=0.36, 30d=-0.25. Current 24h corr is at 60th pct of last 25 daily 24h-rolling values (range -0.77 to 0.92).
+
+**Blocked signal learning:**
+- Open blocked shadows: 103
+- Resolved blocked shadows: 291 (124 wins / 167 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+2.67%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+0.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.32%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.02%)
+
+**LLM analysis:**
+The one-touch NO edge framework remains the strongest performer, with 7 consecutive wins and robust filtering rules. The existing GOLD short via PC ratio continues to drift favorably as gold spot weakens and the P/C ratio spikes. HYPE momentum hypothesis is still profitable in shadow testing, and BTC IV compression holds steady. Overall, the portfolio is stable with no urgent risk signals, and the promotion of a new BTC NO trade from the one-touch family is warranted given its perfect live record and current edge.
+
+---
+

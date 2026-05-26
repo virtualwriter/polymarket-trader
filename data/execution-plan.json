@@ -1,36 +1,26 @@
 {
-  "generatedAt": "2026-05-26T17:29:38.118Z",
+  "generatedAt": "2026-05-26T18:31:39.293Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [
+  "entrySignals": [],
+  "rejectedLlmActions": [],
+  "skippedLlmActions": [
     {
-      "type": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.5110100783333333,
-      "confidence": 0.21503942858864583,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.3pt edge on OIL; hold 14d for repricing.",
-      "hypothesisId": null,
-      "entryPrice": 93.948,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 14,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-wti-hit-in-may-2026",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "2132637",
-        "allowDirectionFallback": false
-      }
+      "instruction": {
+        "action": "sell",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "One-touch NO edge: BTC unlikely to hit $150k by Dec 2026; PM contracts overprice YES. Buy NO on 'Will Bitcoin reach $150,000 by December 31, 2026?' (marketId 701491) with sell-YES edge 3.8pt, spread 2.0c, liquidity 71854."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
     }
   ],
-  "rejectedLlmActions": [],
-  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }
