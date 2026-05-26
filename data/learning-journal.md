@@ -17453,3 +17453,35 @@ Closed the promoted BTC long as momentum broke down. The market shifted to risk-
 
 ---
 
+### 2026-05-26 03:30 UTC
+
+**Portfolio:** $98.43 total | Cash $93.43 | 5 open | P&L $-0.5674 | 51% win rate (160 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.36 is 2.4 std devs from mean (0.09 ± 0.52)
+- [anomaly] oil_brent_spot = 95.05 is -2.3 std devs from mean since 2026-04-28 (105.24 ± 4.47)
+- [anomaly] hype_pm_ev = 59.31 is 2.2 std devs from mean (47.02 ± 5.65)
+- [anomaly] hype_med_max = 82.3 is 2.1 std devs from mean (62.37 ± 9.46)
+- [anomaly] hype_spot = 58.999 is 2.1 std devs from mean (44.89 ± 6.78)
+
+**Blocked signal learning:**
+- Open blocked shadows: 116
+- Resolved blocked shadows: 245 (110 wins / 135 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expired (+0.46%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-2.11%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.30%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-5.48%)
+
+**LLM analysis:**
+Markets turned risk-off with BTC slide and negative funding, while gold remained firm. The promoted H-523 long is under pressure but still within consolidation bounds; stop is near. No new hypothesis variants needed as existing promoted families are sufficiently regime-relative. Backlog of shadow tests remains high; will focus on completing condition-triggered repeats for under-tested families.
+
+---
+

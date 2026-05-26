@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-26T02:30:29.737Z",
+  "generatedAt": "2026-05-26T03:30:35.756Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.46403959514860155,
       "thesis": "GOLD P/C ratio 0.22 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4537,
+      "entryPrice": 4541,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -25,11 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5542453266666667,
-      "confidence": 0.23323336152791668,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.6pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5442367823333334,
+      "confidence": 0.22902164096564584,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 16.3pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76674,
+      "entryPrice": 76474,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.5124312403333333,
-      "confidence": 0.2156374713227708,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.4pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.504744252,
+      "confidence": 0.21240269054474997,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.1pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 76674,
+      "entryPrice": 76474,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -69,32 +69,16 @@
       "confidence": 0.07631107510764032,
       "thesis": "OIL P/C ratio 1.29 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 91.74,
+      "entryPrice": 91.46,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
     }
   ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779730229574-8o7m",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_spot"
-        ],
-        "thesis": "BTC momentum / volatility-confirmed breakout failed: spot declined from 77597 to 76674, breaking below the 24h low and losing upward momentum. The thesis that BTC would continue from relative strength and vol compression is invalidated."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

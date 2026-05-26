@@ -1,22 +1,26 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1779730229574-8o7m",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_spot"
-        ],
-        "thesis": "BTC momentum / volatility-confirmed breakout failed: spot declined from 77597 to 76674, breaking below the 24h low and losing upward momentum. The thesis that BTC would continue from relative strength and vol compression is invalidated."
-      },
-      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
-    }
-  ],
+  "rejectedCloses": [],
   "skippedTrades": [],
-  "parameterUpdates": {}
+  "parameterUpdates": {
+    "macroMomentum24hThresholdPts": 4,
+    "contrarianTrendMarginPct": 0.5,
+    "positiveMomentum24hPct": 1.5,
+    "llmTradeExpiryDays": 14,
+    "momentumLongExpiryDays": 21,
+    "signalRisk": {
+      "PM_IV_GT_OPT_IV": {
+        "targetPct": null,
+        "stopPct": 5
+      },
+      "FUNDING_EXTREME_SHORT": {
+        "targetPct": 2.5,
+        "stopPct": 2.5
+      },
+      "LLM_HYPOTHESIS": {
+        "targetPct": 3.5,
+        "stopPct": 2.5
+      }
+    }
+  }
 }
