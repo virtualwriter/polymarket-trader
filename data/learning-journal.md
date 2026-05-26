@@ -17787,3 +17787,47 @@ Markets show HYPE momentum extreme and BTC IV compression; promoted hypotheses H
 
 ---
 
+### 2026-05-26 15:30 UTC
+
+**Portfolio:** $98.41 total | Cash $93.41 | 5 open | P&L $-0.5874 | 51% win rate (162 trades)
+
+**Closed 2 trades:**
+- ✅ AMZN long via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT) → breakeven_stop: +$0.0005 (0.0%, market 0.0009, funding -0.0005)
+- ❌ HYPE long via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS) → stop: $-0.0204 (-2.0%, market -0.0204, funding 0.0000)
+
+**Signal weight changes:**
+- ⚠ FUNDING_EXTREME_SHORT accuracy dropped to 43% over 23 trades. Weight reduced to 0.45.
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_opt_fwd_90d = 9.3 is -2.7 std devs from mean since 2026-04-28 (90.19 ± 29.79)
+- [anomaly] hype_spot = 63.07 is 2.5 std devs from mean (45.16 ± 7.04)
+- [anomaly] hype_pm_ev = 61.49 is 2.4 std devs from mean (47.24 ± 5.86)
+- [anomaly] hype_hl_oi = 1430044843 is 2.4 std devs from mean (955428944.90 ± 196916588.87)
+- [anomaly] hype_med_max = 84.9 is 2.3 std devs from mean (62.70 ± 9.72)
+
+**Blocked signal learning:**
+- Open blocked shadows: 113
+- Resolved blocked shadows: 275 (121 wins / 154 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO HYPE short via polymarket would have edge compressed but trade lost money (-0.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.61%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.20%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.20%)
+
+**LLM analysis:**
+Exited the BTC IV compression long (H‑170 / promoted hypothesis) due to near‑stop risk. The statistical compression setup was sound, but short‑term price action turned against it quickly. For future test‑retests, a slightly wider stop (2‑2.5%) might allow more room for the volatility expansion to occur without sacrificing too much downside. No other closes are permitted by LLM rules, and no new setups are added while the shadow‑testing backlog is still being worked through.
+
+**LLM close rejections today (2026-05-26, token-burn signal):**
+- Total rejected close instructions: 6
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (4); FUNDING_EXTREME_SHORT / AMZN (2)
+- Repeat-offender positions (≥3 rejections today): T-1779730229574-8o7m (4) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+
