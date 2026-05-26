@@ -141,6 +141,66 @@ const RETIRED_LLM_SETUP_IDS = new Set([
   "cross_asset_iv_compression_vol_expansion",
   "other_mixed",
   "oil_funding_volatility_mean_reversion",
+  "retired_btc_pm_iv_hardcoded_variants",
+  "retired_btc_listed_iv_hardcoded_variants",
+  "retired_btc_pm_iv_leftover_hardcoded_variants",
+  "retired_hype_spot_pm_divergence_variants",
+  "retired_amzn_hardcoded_variants",
+  "retired_pm_settlement_bucket_hardcoded_variants",
+  "retired_hype_adjacent_momentum_variants",
+  "retired_btc_hype_confirmation_variants",
+  "hype_adjacent_momentum_variants",
+  "btc_hype_confirmation_shadow",
+]);
+const GOLD_SETTLEMENT_TAIL_HYPOTHESIS_IDS = new Set(["H-527"]);
+const OIL_SETTLEMENT_TAIL_HYPOTHESIS_IDS = new Set(["H-528"]);
+const GOLD_SETTLEMENT_SKEW_HYPOTHESIS_IDS = new Set(["H-529"]);
+const OIL_SETTLEMENT_SKEW_HYPOTHESIS_IDS = new Set(["H-530"]);
+const RETIRED_PM_SETTLEMENT_BUCKET_HARDCODED_HYPOTHESIS_IDS = new Set([
+  "H-101", "H-105", "H-110", "H-114", "H-117", "H-120", "H-123", "H-174",
+  "H-297", "H-327", "H-339", "H-372", "H-429",
+]);
+const RETIRED_BTC_PM_IV_HARDCODED_HYPOTHESIS_IDS = new Set([
+  "H-213", "H-216", "H-219", "H-224", "H-227", "H-234", "H-239", "H-245",
+  "H-248", "H-251", "H-255", "H-258", "H-268", "H-270", "H-289", "H-301",
+  "H-305", "H-307", "H-350", "H-410", "H-413", "H-442",
+]);
+const BTC_LISTED_IV_MOMENTUM_HYPOTHESIS_IDS = new Set([
+  "H-012", "H-170", "H-218",
+]);
+const RETIRED_BTC_LISTED_IV_HARDCODED_HYPOTHESIS_IDS = new Set([
+  "H-054", "H-065", "H-073", "H-115", "H-152", "H-186",
+]);
+const BTC_OPTIONS_POSITIONING_MACRO_HYPOTHESIS_IDS = new Set(["H-300"]);
+const BTC_PM_IV_EXPANSION_REVERSION_HYPOTHESIS_IDS = new Set(["H-001"]);
+const BTC_MEDIAN_RANGE_HYPOTHESIS_IDS = new Set(["H-014", "H-017", "H-021"]);
+const RETIRED_BTC_PM_IV_LEFTOVER_HARDCODED_HYPOTHESIS_IDS = new Set([
+  "H-046", "H-221", "H-261", "H-273", "H-284", "H-285", "H-291", "H-336", "H-424",
+]);
+const HYPE_RELATIVE_OI_BREAKOUT_HYPOTHESIS_IDS = new Set([
+  "H-521", "H-116", "H-181", "H-211", "H-122", "H-143", "H-225", "H-134",
+  "H-128", "H-217", "H-333", "H-235",
+]);
+const HYPE_ADJACENT_MOMENTUM_HYPOTHESIS_IDS = new Set([
+  "H-020", "H-214", "H-079", "H-081", "H-256", "H-118", "H-087", "H-089",
+  "H-187", "H-067", "H-102", "H-131", "H-126", "H-140", "H-084", "H-137",
+]);
+const BTC_HYPE_CONFIRMATION_SHADOW_HYPOTHESIS_IDS = new Set([
+  "H-180", "H-195", "H-038", "H-077", "H-208", "H-183", "H-041", "H-205",
+  "H-059", "H-064", "H-426", "H-075", "H-098", "H-056",
+]);
+const RETIRED_HYPE_SPOT_PM_DIVERGENCE_HYPOTHESIS_IDS = new Set(["H-018", "H-040"]);
+const AMZN_PERP_SPOT_FUNDING_CLEAN_HYPOTHESIS_IDS = new Set([
+  "H-005", "H-037", "H-043", "H-045", "H-058", "H-060", "H-099", "H-100",
+  "H-147", "H-150", "H-154", "H-254", "H-257", "H-259", "H-265", "H-328", "H-408",
+]);
+const AMZN_OPTIONS_POSITIONING_CLEAN_HYPOTHESIS_IDS = new Set([
+  "H-023", "H-052", "H-055", "H-106", "H-119", "H-178",
+]);
+const RETIRED_AMZN_HARDCODED_HYPOTHESIS_IDS = new Set([
+  "H-047", "H-062", "H-173", "H-191", "H-222", "H-238", "H-241", "H-244",
+  "H-280", "H-294", "H-295", "H-299", "H-303", "H-306", "H-312", "H-354",
+  "H-360", "H-374", "H-378", "H-381", "H-405", "H-425", "H-428", "H-433",
 ]);
 const LIVE_SIGNAL_ALLOWLIST = new Set([
   "ONE_TOUCH_HIGH_EDGE_NO",
@@ -4862,6 +4922,127 @@ function slugifySetupId(label: string): string {
 }
 
 function classifyHypothesisSetup(hypothesis: Hypothesis): { setupId: string; setupLabel: string } {
+  if (hypothesis.id === "H-523") {
+    return {
+      setupId: "btc_pm_iv_regime_relative_compression",
+      setupLabel: "BTC PM IV regime-relative compression",
+    };
+  }
+  if (RETIRED_BTC_PM_IV_HARDCODED_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "retired_btc_pm_iv_hardcoded_variants",
+      setupLabel: "Retired BTC PM-IV hard-coded variants",
+    };
+  }
+  if (BTC_LISTED_IV_MOMENTUM_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "btc_listed_iv_momentum_confirmation",
+      setupLabel: "BTC listed-IV momentum confirmation",
+    };
+  }
+  if (RETIRED_BTC_LISTED_IV_HARDCODED_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "retired_btc_listed_iv_hardcoded_variants",
+      setupLabel: "Retired BTC listed-IV hard-coded variants",
+    };
+  }
+  if (BTC_OPTIONS_POSITIONING_MACRO_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "btc_options_positioning_macro",
+      setupLabel: "BTC options positioning / macro",
+    };
+  }
+  if (BTC_PM_IV_EXPANSION_REVERSION_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "btc_pm_iv_expansion_reversion",
+      setupLabel: "BTC PM-IV expansion / reversion",
+    };
+  }
+  if (BTC_MEDIAN_RANGE_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "btc_median_range_strike_distribution",
+      setupLabel: "BTC median range / strike distribution",
+    };
+  }
+  if (RETIRED_BTC_PM_IV_LEFTOVER_HARDCODED_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "retired_btc_pm_iv_leftover_hardcoded_variants",
+      setupLabel: "Retired BTC PM-IV leftover hard-coded variants",
+    };
+  }
+  if (HYPE_RELATIVE_OI_BREAKOUT_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "hype_relative_oi_breakout_continuation",
+      setupLabel: "HYPE relative OI breakout continuation",
+    };
+  }
+  if (HYPE_ADJACENT_MOMENTUM_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "retired_hype_adjacent_momentum_variants",
+      setupLabel: "Retired HYPE adjacent momentum hard-coded variants",
+    };
+  }
+  if (BTC_HYPE_CONFIRMATION_SHADOW_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "retired_btc_hype_confirmation_variants",
+      setupLabel: "Retired BTC-HYPE confirmation hard-coded variants",
+    };
+  }
+  if (RETIRED_HYPE_SPOT_PM_DIVERGENCE_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "retired_hype_spot_pm_divergence_variants",
+      setupLabel: "Retired HYPE spot-PM divergence variants",
+    };
+  }
+  if (AMZN_PERP_SPOT_FUNDING_CLEAN_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "amzn_perp_spot_funding_convergence",
+      setupLabel: "AMZN perp/spot funding convergence",
+    };
+  }
+  if (AMZN_OPTIONS_POSITIONING_CLEAN_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "amzn_options_positioning_momentum",
+      setupLabel: "AMZN options positioning / momentum",
+    };
+  }
+  if (RETIRED_AMZN_HARDCODED_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "retired_amzn_hardcoded_variants",
+      setupLabel: "Retired AMZN hard-coded variants",
+    };
+  }
+  if (GOLD_SETTLEMENT_TAIL_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "gold_settlement_bucket_tail_volatility",
+      setupLabel: "Gold settlement bucket tail volatility",
+    };
+  }
+  if (OIL_SETTLEMENT_TAIL_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "oil_settlement_bucket_tail_volatility",
+      setupLabel: "Oil settlement bucket tail volatility",
+    };
+  }
+  if (GOLD_SETTLEMENT_SKEW_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "gold_settlement_bucket_skew",
+      setupLabel: "Gold settlement bucket upside skew",
+    };
+  }
+  if (OIL_SETTLEMENT_SKEW_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "oil_settlement_bucket_skew",
+      setupLabel: "Oil settlement bucket upside skew",
+    };
+  }
+  if (RETIRED_PM_SETTLEMENT_BUCKET_HARDCODED_HYPOTHESIS_IDS.has(hypothesis.id)) {
+    return {
+      setupId: "retired_pm_settlement_bucket_hardcoded_variants",
+      setupLabel: "Retired PM settlement bucket hard-coded variants",
+    };
+  }
+
   const text = `${hypothesis.description} ${hypothesis.prediction} ${Object.keys(hypothesis.conditions ?? {}).join(" ")}`.toLowerCase();
   // Use word-boundary matching for "hype" so substrings like "hyperliquid" (the
   // venue, applies to all assets) don't get misclassified as the HYPE asset.
@@ -5362,6 +5543,7 @@ function evaluateHypotheses(
 
     const activeFamilyHypotheses = family.hypotheses.filter((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived");
     if (activeFamilyHypotheses.length === 0) continue;
+    if (RETIRED_LLM_SETUP_IDS.has(family.setupId)) continue;
     if (isDataContaminatedSetup(family.setupId)) continue;
 
     if (family.winRate >= PROMOTE_THRESHOLD) {
