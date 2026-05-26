@@ -101,6 +101,7 @@ const STALE_LOTTERY_TICKET_NO_BAD_FLAGS = new Set([
   "missing_options_iv",
   "no_listed_options_mapping",
 ]);
+const ENABLE_ONE_TOUCH_HIGH_EDGE_NO_OPENING = false;
 const WEEKEND_HL_FUNDING_SHADOW_SIGNAL = "WEEKEND_HL_FUNDING_REVERSION_LONG";
 const WEEKEND_HL_FUNDING_SHADOW_REASON = "weekend_hl_funding_shadow";
 const WEEKEND_HL_FUNDING_ENTRY_PCT = -0.30;
@@ -6849,14 +6850,20 @@ async function main() {
   if (newMonotonicArbShadows > 0) {
     console.log(`\n  Opened ${newMonotonicArbShadows} monotonic-arb shadow package trades.`);
   }
-  const oneTouchHighEdgeNoLiveSignals = generateOneTouchHighEdgeNoSignals(relativeValueRows, weights, learningParams, latestSnapshot);
+  const oneTouchHighEdgeNoLiveSignals = ENABLE_ONE_TOUCH_HIGH_EDGE_NO_OPENING
+    ? generateOneTouchHighEdgeNoSignals(relativeValueRows, weights, learningParams, latestSnapshot)
+    : [];
   const oneTouchHighEdgeLiveCoveredKeys = liveOneTouchHighEdgeNoKeys(oneTouchHighEdgeNoLiveSignals);
-  if (oneTouchHighEdgeNoLiveSignals.length > 0) {
-    console.log(`\n  Generated ${oneTouchHighEdgeNoLiveSignals.length} one-touch high-edge NO live signals (${Array.from(ONE_TOUCH_HIGH_EDGE_LIVE_ASSETS).join("/")}, |edge|>=${ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE}, strict).`);
-  }
-  const newOneTouchHighEdgeShadows = recordOneTouchHighEdgeShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals, oneTouchHighEdgeLiveCoveredKeys);
-  if (newOneTouchHighEdgeShadows > 0) {
-    console.log(`\n  Opened ${newOneTouchHighEdgeShadows} one-touch NO edge shadow trades.`);
+  if (ENABLE_ONE_TOUCH_HIGH_EDGE_NO_OPENING) {
+    if (oneTouchHighEdgeNoLiveSignals.length > 0) {
+      console.log(`\n  Generated ${oneTouchHighEdgeNoLiveSignals.length} one-touch high-edge NO live signals (${Array.from(ONE_TOUCH_HIGH_EDGE_LIVE_ASSETS).join("/")}, |edge|>=${ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE}, strict).`);
+    }
+    const newOneTouchHighEdgeShadows = recordOneTouchHighEdgeShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals, oneTouchHighEdgeLiveCoveredKeys);
+    if (newOneTouchHighEdgeShadows > 0) {
+      console.log(`\n  Opened ${newOneTouchHighEdgeShadows} one-touch NO edge shadow trades.`);
+    }
+  } else {
+    console.log("\n  One-touch high-edge NO live/shadow opening is disabled; existing shadows still resolve normally.");
   }
   const newNoBiasAdjustedGapShadows = recordNoBiasAdjustedGapShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals);
   if (newNoBiasAdjustedGapShadows > 0) {
