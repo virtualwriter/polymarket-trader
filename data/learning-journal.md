@@ -17719,3 +17719,35 @@ _LLM call skipped (duplicate-signals (4 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-05-26 13:31 UTC
+
+**Portfolio:** $98.43 total | Cash $93.43 | 5 open | P&L $-0.5674 | 51% win rate (160 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 61.914 is 2.4 std devs from mean (45.10 ± 6.97)
+- [anomaly] hype_pm_ev = 60.53 is 2.3 std devs from mean (47.19 ± 5.81)
+- [anomaly] hype_hl_oi = 1385581785 is 2.2 std devs from mean (953827497.88 ± 195233986.99)
+- [anomaly] btc_opt_iv_90d = 20.8 is -2.1 std devs from mean (37.78 ± 8.05)
+- [anomaly] hype_med_max = 82.8 is 2.1 std devs from mean (62.62 ± 9.66)
+
+**Blocked signal learning:**
+- Open blocked shadows: 112
+- Resolved blocked shadows: 262 (115 wins / 147 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.16%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-2.13%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-2.60%)
+
+**LLM analysis:**
+Low-volatility consolidation continues. Promoted BTC long (H-170) is -1.06%, approaching -1.5% stop; if momentum doesn't improve, mechanical stop will exit. One-touch NO trades on BTC ($55k) and ETH ($1500) performing well (+8.5% on ETH). Gold short via PC ratio low flat, breakeven arm on AMZN long active after funding normalization. No new hypotheses created; backlog needs retesting. Correlation flip BTC-GOLD to 0.76 notable but not actionable without a testable pattern.
+
+---
+
