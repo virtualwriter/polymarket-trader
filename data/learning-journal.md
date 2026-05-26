@@ -17381,3 +17381,39 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-05-26 01:30 UTC
+
+**Portfolio:** $98.43 total | Cash $93.43 | 5 open | P&L $-0.5674 | 51% win rate (160 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 3 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 83.6 is 2.3 std devs from mean (62.30 ± 9.40)
+- [anomaly] hype_pm_ev = 59.66 is 2.3 std devs from mean (46.98 ± 5.62)
+- [anomaly] oil_brent_spot = 95.58 is -2.2 std devs from mean since 2026-04-28 (105.28 ± 4.43)
+- [anomaly] amzn_hl_basis_pct = 1.22 is 2.2 std devs from mean (0.09 ± 0.52)
+- [anomaly] hype_spot = 59.508 is 2.2 std devs from mean (44.84 ± 6.74)
+
+**Blocked signal learning:**
+- Open blocked shadows: 114
+- Resolved blocked shadows: 244 (110 wins / 134 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.45%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expired (+0.46%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-2.11%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.30%)
+
+**LLM analysis:**
+Closed BTC long from PROMOTED_HYPOTHESIS (T-1779730229574-8o7m) at -1.11% as PM IV expansion and spot decline broke the IV‑compression breakout narrative. The setup family H‑523 needs more shadow tests before live reliance. No new hypotheses created due to shadow backlog; focused on managing existing positions. Remaining positions are all mechanical and should be left to their own rules.
+
+**LLM close rejections today (2026-05-26, token-burn signal):**
+- Total rejected close instructions: 1
+- Top signal/asset pairs: PROMOTED_HYPOTHESIS / BTC (1)
+
+---
+
