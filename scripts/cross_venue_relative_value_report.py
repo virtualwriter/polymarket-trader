@@ -62,7 +62,7 @@ OPTION_STRIKE_LOG_WINDOW = 0.35
 
 ASSET_TO_OPTION_SYMBOLS = {
     "BTC": ["IBIT", "CME_BTC"],
-    "ETH": ["ETHA"],
+    "ETH": ["ETHA", "CME_ETH"],
     "HYPE": ["PURR"],
     "GOLD": ["GLD", "CME_GC"],
     "OIL": ["USO", "CME_CL"],
@@ -75,6 +75,7 @@ CME_OPTION_SYMBOL_BY_ASSET = {
     "GOLD": "CME_GC",
     "OIL": "CME_CL",
     "SPY": "CME_ES",
+    "ETH": "CME_ETH",
 }
 NO_BIAS_ASSET_THRESHOLDS_PTS = {
     "BTC": 8.0,

@@ -146,6 +146,7 @@ const CME_OPTIONS_CONFIG = [
   { snapshotKey: "CME_GC", undlyProductCode: process.env.CME_GOLD_UNDLY_PRODUCT_CODE ?? "GC", label: "CME GC futures options" },
   { snapshotKey: "CME_CL", undlyProductCode: process.env.CME_OIL_UNDLY_PRODUCT_CODE ?? "CL", label: "CME CL futures options" },
   { snapshotKey: "CME_ES", undlyProductCode: process.env.CME_ES_UNDLY_PRODUCT_CODE ?? "ES", label: "CME E-mini S&P 500 futures options" },
+  { snapshotKey: "CME_ETH", undlyProductCode: process.env.CME_ETH_UNDLY_PRODUCT_CODE ?? "ETH", label: "CME ETH futures options" },
 ];
 const TRADINGVIEW_OPTIONS_ENABLED = process.env.TRADINGVIEW_OPTIONS_ENABLED === "1" || process.env.TRADINGVIEW_OPTIONS_ENABLED === "true";
 

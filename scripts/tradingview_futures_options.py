@@ -30,6 +30,7 @@ DEFAULT_ASSETS = {
     "CME_GC": {"tv_symbol": "COMEX:GC1!", "label": "TradingView COMEX GC1! options"},
     "CME_BTC": {"tv_symbol": "CME:BTC1!", "label": "TradingView CME BTC1! options"},
     "CME_ES": {"tv_symbol": "CME_MINI:ES1!", "label": "TradingView CME E-mini S&P 500 options"},
+    "CME_ETH": {"tv_symbol": "CME:ETH1!", "label": "TradingView CME ETH1! options"},
 }
 
 FUTURES_MONTH_CODES = {
