@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-26T10:29:33.025Z",
+  "generatedAt": "2026-05-26T11:30:50.343Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.46403959514860155,
       "thesis": "GOLD P/C ratio 0.22 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4533,
+      "entryPrice": 4524,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -25,11 +25,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.61247436,
-      "confidence": 0.2577368666175,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.4pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.6045997553333333,
+      "confidence": 0.2544231345412083,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 18.1pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77160,
+      "entryPrice": 77217,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -45,11 +45,11 @@
       "asset": "BTC",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.520861138,
-      "confidence": 0.219184877634625,
-      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.6pt edge on BTC; hold 14d for repricing.",
+      "strength": 0.5231123496666666,
+      "confidence": 0.22013221564410415,
+      "thesis": "[ONE-TOUCH HIGH-EDGE NO LIVE] Strict one-touch NO 15.7pt edge on BTC; hold 14d for repricing.",
       "hypothesisId": null,
-      "entryPrice": 77160,
+      "entryPrice": 77217,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 14,
@@ -69,16 +69,32 @@
       "confidence": 0.07631107510764032,
       "thesis": "OIL P/C ratio 1.29 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 92.13,
+      "entryPrice": 92.38,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
     }
   ],
-  "rejectedLlmActions": [],
+  "rejectedLlmActions": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1779496230307-1zji",
+        "asset": "AMZN",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "amzn_hl_funding_ann"
+        ],
+        "thesis": "FUNDING_EXTREME_SHORT long entered on deeply negative funding; funding has now flipped to highly positive (42.64% annualized), directly contradicting the basis for the trade."
+      },
+      "reason": "LLM close rejected: hourly discretionary closes are disabled; minute scanner handles mechanical exits."
+    }
+  ],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
   ]
 }
