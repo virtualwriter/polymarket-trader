@@ -17935,3 +17935,36 @@ The one-touch NO edge framework remains the strongest performer, with 7 consecut
 
 ---
 
+### 2026-05-26 19:29 UTC
+
+**Portfolio:** $98.51 total | Cash $97.51 | 1 open | P&L $-0.4912 | 51% win rate (163 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_opt_fwd_90d = 8.4 is -2.7 std devs from mean since 2026-04-28 (89.58 ± 30.36)
+- [anomaly] hype_med_max = 85.8 is 2.3 std devs from mean (62.84 ± 9.86)
+- [anomaly] hype_pm_ev = 59.93 is 2.1 std devs from mean (47.33 ± 5.93)
+- [anomaly] hype_pm_iv = 84.5 is 2.1 std devs from mean (67.08 ± 8.23)
+- [anomaly] hype_spot = 60.33 is 2.1 std devs from mean (45.27 ± 7.14)
+
+**Blocked signal learning:**
+- Open blocked shadows: 103
+- Resolved blocked shadows: 291 (124 wins / 167 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+2.67%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+0.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.32%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.02%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 11/12; next scheduled 2026-05-26T21:29:37.071Z). Mechanical cycle ran normally._
+
+---
+

@@ -3047,7 +3047,7 @@
     "postMortem": "Gold IV compression below 23% while PM premium stays elevated above 800pts vs futures - extreme compression setup validating with PM showing persistent premium during volatility squeeze | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data. | Gold IV compression below 30% while PM premium stays above 400pts vs futures: Gold 30d IV at 23.4-24.9% is well below 30%. Gold PM settle EV at 4923-4954 vs gold_opt_fwd_90d at ~4708-4748 gives a premium of ~215-246pts — above 200pts but below the 400pt threshold. Conditions partially met. Gold PM IV at 21.7-21.9% vs options IV at 23.4-24.9% shows modest compression but not the extreme divergence the hypothesis requires. | Retired 2026-05-26 by operator: fixed gold/oil IV/EV/spot thresholds replaced by dynamic settle-overround/tail/skew variants (H-527..H-530).",
     "source": "llm",
     "setupId": "retired_pm_settlement_bucket_hardcoded_variants",
-    "setupLabel": "Retired settlement bucket hard-coded variants"
+    "setupLabel": "Retired PM settlement bucket hard-coded variants"
   },
   {
     "id": "H-102",
@@ -3161,7 +3161,7 @@
     "postMortem": "Active - Gold IV at 27.2 extreme compression while PM premium at 400pts+ above futures, setup forming for volatility expansion | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data. | Retired 2026-05-26 by operator: fixed gold/oil IV/EV/spot thresholds replaced by dynamic settle-overround/tail/skew variants (H-527..H-530).",
     "source": "llm",
     "setupId": "retired_pm_settlement_bucket_hardcoded_variants",
-    "setupLabel": "Retired settlement bucket hard-coded variants"
+    "setupLabel": "Retired PM settlement bucket hard-coded variants"
   },
   {
     "id": "H-106",
@@ -3323,7 +3323,7 @@
     "postMortem": "Covered by promoted setup family btc_iv_compression_vol_reversion via primary H-234. | Archived/excluded 2026-05-04: variant depended on gold_pm_settle_ev, which came from settlement bucket markets and is not a valid directional EV input. | Retired 2026-05-26 by operator: fixed gold/oil IV/EV/spot thresholds replaced by dynamic settle-overround/tail/skew variants (H-527..H-530).",
     "source": "llm",
     "setupId": "retired_pm_settlement_bucket_hardcoded_variants",
-    "setupLabel": "Retired settlement bucket hard-coded variants"
+    "setupLabel": "Retired PM settlement bucket hard-coded variants"
   },
   {
     "id": "H-111",
@@ -3440,7 +3440,7 @@
     "postMortem": "Covered by promoted setup family btc_iv_compression_vol_reversion via primary H-234. | Archived/excluded 2026-05-04: variant depended on gold_pm_settle_ev, which came from settlement bucket markets and is not a valid directional EV input. | Retired 2026-05-26 by operator: fixed gold/oil IV/EV/spot thresholds replaced by dynamic settle-overround/tail/skew variants (H-527..H-530).",
     "source": "llm",
     "setupId": "retired_pm_settlement_bucket_hardcoded_variants",
-    "setupLabel": "Retired settlement bucket hard-coded variants"
+    "setupLabel": "Retired PM settlement bucket hard-coded variants"
   },
   {
     "id": "H-115",
@@ -3532,7 +3532,7 @@
     "postMortem": "Setting up perfectly - Gold IV compressed to 26.3% (30d) and 25.9% (90d) while PM premium stays 362pts above futures. Volatility expansion setup forming during crypto momentum phase. | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data. | Retired 2026-05-26 by operator: fixed gold/oil IV/EV/spot thresholds replaced by dynamic settle-overround/tail/skew variants (H-527..H-530).",
     "source": "llm",
     "setupId": "retired_pm_settlement_bucket_hardcoded_variants",
-    "setupLabel": "Retired settlement bucket hard-coded variants"
+    "setupLabel": "Retired PM settlement bucket hard-coded variants"
   },
   {
     "id": "H-118",
@@ -3624,7 +3624,7 @@
     "postMortem": "Covered by promoted setup family btc_iv_compression_vol_reversion via primary H-234. | Archived/excluded 2026-05-04: variant depended on gold_pm_settle_ev, which came from settlement bucket markets and is not a valid directional EV input. | Retired 2026-05-26 by operator: fixed gold/oil IV/EV/spot thresholds replaced by dynamic settle-overround/tail/skew variants (H-527..H-530).",
     "source": "llm",
     "setupId": "retired_pm_settlement_bucket_hardcoded_variants",
-    "setupLabel": "Retired settlement bucket hard-coded variants"
+    "setupLabel": "Retired PM settlement bucket hard-coded variants"
   },
   {
     "id": "H-121",
@@ -3711,7 +3711,7 @@
     "postMortem": "Covered by promoted setup family btc_iv_compression_vol_reversion via primary H-234. | Archived/excluded 2026-05-04: variant depended on gold_pm_settle_ev, which came from settlement bucket markets and is not a valid directional EV input. | Retired 2026-05-26 by operator: fixed gold/oil IV/EV/spot thresholds replaced by dynamic settle-overround/tail/skew variants (H-527..H-530).",
     "source": "llm",
     "setupId": "retired_pm_settlement_bucket_hardcoded_variants",
-    "setupLabel": "Retired settlement bucket hard-coded variants"
+    "setupLabel": "Retired PM settlement bucket hard-coded variants"
   },
   {
     "id": "H-124",
@@ -4012,6 +4012,12 @@
         "triggered": true,
         "outcome": "win",
         "actualMove": "HYPE moved 8.47% (41.841 → 45.386)"
+      },
+      {
+        "date": "2026-05-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup hype_relative_oi_breakout_continuation shadow test 12/20 opened via H-134 after current row satisfied variant conditions."
       }
     ],
     "winRate": 1,
@@ -5176,7 +5182,7 @@
     "postMortem": "Active - GOLD IV compressed to 22.3% 30d while PM premium persists above 560pts during crypto positioning exhaustion. Cross-asset IV compression setup strengthening. | Covered by promoted setup family btc_iv_compression_vol_reversion via primary H-234. | Archived/excluded 2026-05-04: variant depended on gold_pm_settle_ev, which came from settlement bucket markets and is not a valid directional EV input. | Retired 2026-05-26 by operator: fixed gold/oil IV/EV/spot thresholds replaced by dynamic settle-overround/tail/skew variants (H-527..H-530).",
     "source": "llm",
     "setupId": "retired_pm_settlement_bucket_hardcoded_variants",
-    "setupLabel": "Retired settlement bucket hard-coded variants"
+    "setupLabel": "Retired PM settlement bucket hard-coded variants"
   },
   {
     "id": "H-175",
@@ -8719,7 +8725,7 @@
     "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data. | Retired 2026-05-26 by operator: fixed gold/oil IV/EV/spot thresholds replaced by dynamic settle-overround/tail/skew variants (H-527..H-530).",
     "source": "llm",
     "setupId": "retired_pm_settlement_bucket_hardcoded_variants",
-    "setupLabel": "Retired settlement bucket hard-coded variants"
+    "setupLabel": "Retired PM settlement bucket hard-coded variants"
   },
   {
     "id": "H-298",
@@ -9561,7 +9567,7 @@
     "postMortem": "Gold PM IV compression to 10.3% while spot holds above 4719 validates extreme compression setup. Statistical anomaly requiring volatility expansion correction. | Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data. | Retired 2026-05-26 by operator: fixed gold/oil IV/EV/spot thresholds replaced by dynamic settle-overround/tail/skew variants (H-527..H-530).",
     "source": "llm",
     "setupId": "retired_pm_settlement_bucket_hardcoded_variants",
-    "setupLabel": "Retired settlement bucket hard-coded variants"
+    "setupLabel": "Retired PM settlement bucket hard-coded variants"
   },
   {
     "id": "H-328",
@@ -9903,7 +9909,7 @@
     "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data. | Gold extreme funding oscillation exhaustion between -20% and +56%: Gold funding at 5.15-7.21% is in the positive range but not oscillating between the extremes required. The 100% win rate over 1 test is promising but needs more data. Conditions not currently met. | Gold extreme funding oscillation exhaustion: Gold funding at 18.22% (up from 5-6% range) while PM premium persists. The gold_gld_pc_ratio spiked to 0.611 — highest in dataset — suggesting significant put buying in gold ETF options. This is a new development that could indicate gold is approaching a near-term top, or alternatively that the put buying is protective hedging during a continued rally. The PM settle EV at 5,061 vs spot 4,692 represents a 369pt premium — elevated but not extreme. Monitoring. | Gold extreme funding oscillation exhaustion: gold_hl_funding_ann oscillated between 5.15-17.88% across snapshots, not reaching the extreme negative territory required. PM premium persists at ~400pts above futures. The setup requires more extreme funding swings to trigger. | Gold extreme funding oscillation exhaustion between -20% and +56% while PM premium stays elevated creates volatility expansion setup. Gold funding went from 67.52% (extreme) at T-1778794152516-60c7 open to 12.73% now — an 81% normalization. Gold spot has fallen from 4,661 to 4,635 (-0.56%), confirming the FUNDING_EXTREME_LONG short thesis. The funding normalization is the primary evidence column and it has moved strongly in our favor. | Gold extreme funding oscillation exhaustion between -20% and +56% while PM premium stays elevated - gold funding has now settled near zero (+0.29%), completing the oscillation cycle. The PM premium (gold_pm_settle_ev ~4839 vs spot 4535) remains elevated but this is a contaminated metric per rules. Hypothesis conditions partially met historically. | Retired 2026-05-26 by operator: fixed gold/oil IV/EV/spot thresholds replaced by dynamic settle-overround/tail/skew variants (H-527..H-530).",
     "source": "llm",
     "setupId": "retired_pm_settlement_bucket_hardcoded_variants",
-    "setupLabel": "Retired settlement bucket hard-coded variants"
+    "setupLabel": "Retired PM settlement bucket hard-coded variants"
   },
   {
     "id": "H-340",
@@ -10849,7 +10855,7 @@
     "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data. | Retired 2026-05-26 by operator: fixed gold/oil IV/EV/spot thresholds replaced by dynamic settle-overround/tail/skew variants (H-527..H-530).",
     "source": "llm",
     "setupId": "retired_pm_settlement_bucket_hardcoded_variants",
-    "setupLabel": "Retired settlement bucket hard-coded variants"
+    "setupLabel": "Retired PM settlement bucket hard-coded variants"
   },
   {
     "id": "H-373",
@@ -11864,6 +11870,12 @@
         "triggered": true,
         "outcome": "win",
         "actualMove": "Funding moved 15.3% → 5.5%"
+      },
+      {
+        "date": "2026-05-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup amzn_perp_spot_funding_convergence shadow test 20/20 opened via H-408 after current row satisfied variant conditions."
       }
     ],
     "winRate": 1,
@@ -12470,7 +12482,7 @@
     "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data. | Retired 2026-05-26 by operator: fixed gold/oil IV/EV/spot thresholds replaced by dynamic settle-overround/tail/skew variants (H-527..H-530).",
     "source": "llm",
     "setupId": "retired_pm_settlement_bucket_hardcoded_variants",
-    "setupLabel": "Retired settlement bucket hard-coded variants"
+    "setupLabel": "Retired PM settlement bucket hard-coded variants"
   },
   {
     "id": "H-430",
