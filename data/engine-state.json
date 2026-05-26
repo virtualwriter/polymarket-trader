@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-26T11:29:33.162Z",
+  "generatedAt": "2026-05-26T12:29:30.979Z",
   "dataFreshness": {
-    "valuationRows": 609,
-    "latestValuationAt": "2026-05-26T11",
-    "macroRows": 609,
+    "valuationRows": 610,
+    "latestValuationAt": "2026-05-26T12",
+    "macroRows": 610,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-26T11"
+    "latestInstrumentSnapshotAt": "2026-05-26T12"
   },
   "portfolio": {
     "cash": 93.4326,
@@ -13,7 +13,7 @@
     "realizedPnl": -0.5674,
     "totalTrades": 160,
     "winRatePct": 51.2,
-    "unrealizedPnl": 0.0806
+    "unrealizedPnl": 0.0787
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": -3.77,
       "currentPrice": 0.51,
-      "underlyingPrice": 77217,
+      "underlyingPrice": 76923,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -40,9 +40,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.31,
-      "currentPrice": 4524,
-      "underlyingPrice": 4524,
+      "pnlPct": 0,
+      "currentPrice": 4510,
+      "underlyingPrice": 4510,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -57,9 +57,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 1.05,
-      "currentPrice": 267.78,
-      "underlyingPrice": 267.44,
+      "pnlPct": 0.93,
+      "currentPrice": 267.47,
+      "underlyingPrice": 267.22,
       "targetPct": 4,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -77,7 +77,7 @@
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "pnlPct": 8.51,
       "currentPrice": 0.51,
-      "underlyingPrice": 2119.9,
+      "underlyingPrice": 2113.5,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -94,9 +94,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": -0.49,
-      "currentPrice": 77217,
-      "underlyingPrice": 77217,
+      "pnlPct": -0.87,
+      "currentPrice": 76923,
+      "underlyingPrice": 76923,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -242,9 +242,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 114,
-    "resolvedCount": 257,
-    "wouldHaveWon": 113,
+    "openCount": 116,
+    "resolvedCount": 258,
+    "wouldHaveWon": 114,
     "wouldHaveLost": 144,
     "bySignal": [
       {
@@ -313,24 +313,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 3.08,
-        "resolvedAt": "2026-05-26T06:29:35.155Z",
-        "marketQuality": {
-          "yesBid": 0.35,
-          "yesAsk": 0.36,
-          "yesSpread": 0.01,
-          "liquidity": 50282.86,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
@@ -460,41 +442,27 @@
           "liquidity": 5969.11,
           "flags": []
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 2.61,
+        "resolvedAt": "2026-05-26T12:29:30.832Z",
+        "marketQuality": {
+          "yesBid": 0.041,
+          "yesAsk": 0.05,
+          "yesSpread": 0.009,
+          "liquidity": 13838.74,
+          "flags": []
+        }
       }
     ],
     "openQualityWarnings": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "gc-over-under-jun-2026 — NO — Will Gold (GC) settle over $7,000 on the final trading day of June 2026?",
-        "marketQuality": {
-          "yesBid": 0.024,
-          "yesAsk": 0.035,
-          "yesSpread": 0.011,
-          "liquidity": 6861.92,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.2pt on GOLD, spread 0.1c, liquidity 6862. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "gc-over-under-jun-2026 — NO — Will Gold (GC) settle over $6,500 on the final trading day of June 2026?",
-        "marketQuality": {
-          "yesBid": 0.017,
-          "yesAsk": 0.03,
-          "yesSpread": 0.013,
-          "liquidity": 6052.93,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.3pt on GOLD, spread 1.3c, liquidity 6053. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -590,6 +558,38 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.7pt on OIL, spread 2.0c, liquidity 29680. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "GOLD",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-xauusd-hit-in-may-2026 — NO — Will Gold (XAUUSD) hit (HIGH) $4,750 in May?",
+        "marketQuality": {
+          "yesBid": 0.06,
+          "yesAsk": 0.1,
+          "yesSpread": 0.04,
+          "liquidity": 6398.11,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 5.9pt on GOLD, spread 3.0c, liquidity 6398. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "GOLD",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "gc-settle-jun-2026 — NO — Will Gold (GC) settle at $5,000-$5,400 in June?",
+        "marketQuality": {
+          "yesBid": 0.077,
+          "yesAsk": 0.101,
+          "yesSpread": 0.024,
+          "liquidity": 7917.3,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.0pt on GOLD, spread 2.4c, liquidity 7917. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
