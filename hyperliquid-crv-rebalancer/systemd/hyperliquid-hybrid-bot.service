@@ -1,0 +1,26 @@
+[Unit]
+Description=Hyperliquid multi-coin hybrid trend bot (long-running)
+Documentation=https://github.com/virtualwriter/polymarket-trader
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/polymarket-trader/hyperliquid-crv-rebalancer
+EnvironmentFile=/etc/polymarket-trader.env
+Environment=POLYMARKET_TRADER_STATE_DIR=/var/lib/polymarket-trader
+Environment=PYTHONUNBUFFERED=1
+ExecStart=/usr/bin/python3 /opt/polymarket-trader/hyperliquid-crv-rebalancer/multi_coin_hybrid_bot.py
+Restart=always
+RestartSec=30
+# 5 minutes of repeated crashes -> stop trying so we don't burn the API.
+StartLimitIntervalSec=300
+StartLimitBurst=5
+StandardOutput=journal
+StandardError=journal
+KillSignal=SIGINT
+TimeoutStopSec=30
+
+[Install]
+WantedBy=multi-user.target

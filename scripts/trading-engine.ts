@@ -22,6 +22,12 @@ const LIVE_STATE_DIR = process.env.POLYMARKET_TRADER_STATE_DIR ?? DEFAULT_LIVE_S
 const LIVE_PORTFOLIO_FILE = process.env.POLYMARKET_TRADER_LIVE_PORTFOLIO ?? join(LIVE_STATE_DIR, "portfolio-live.json");
 const PENDING_CLOSED_TRADES_FILE = process.env.POLYMARKET_TRADER_PENDING_CLOSED_TRADES ?? join(LIVE_STATE_DIR, "pending-closed-trades.jsonl");
 const RELATIVE_VALUE_CSV = join(import.meta.dirname ?? ".", "..", "relative-value", "cross_venue_relative_value.csv");
+const HYBRID_BOT_TRADES_FILE = process.env.HYPERLIQUID_HYBRID_TRADES_FILE
+  ?? join(LIVE_STATE_DIR, "hyperliquid-hybrid-trades.jsonl");
+const HYBRID_BOT_STATE_FILE = process.env.HYPERLIQUID_HYBRID_STATE_FILE
+  ?? join(LIVE_STATE_DIR, "hyperliquid-hybrid-state.json");
+const HYBRID_STRATEGY_DOC = join(import.meta.dirname ?? ".", "..", "docs", "hybrid-strategy-context.md");
+const HYBRID_BOT_RECENT_TRADE_LIMIT = Number(process.env.HYPERLIQUID_HYBRID_TRADE_LIMIT ?? 20);
 const INSTRUMENT_SNAPSHOTS_JSONL = "instrument-snapshots.jsonl";
 const INSTRUMENT_SNAPSHOT_LOOKBACK = Number(process.env.INSTRUMENT_SNAPSHOT_LOOKBACK ?? 12);
 const OIL_CRUDE_HISTORY_START = process.env.OIL_CRUDE_HISTORY_START ?? "2026-04-28";
@@ -4529,6 +4535,150 @@ function sanitizeValuationsForLlm(rows: SnapshotRow[]): SnapshotRow[] {
   });
 }
 
+// ─── Hyperliquid hybrid bot context ──────────────────────────────────────────
+//
+// The hyperliquid-crv-rebalancer multi-coin hybrid bot runs as its own systemd
+// service on the same VPS. Every real (non-dry-run) open/close it makes is
+// appended to a JSONL feed. We expose the recent tail + currently-open
+// positions + bot's persisted regime so the polymarket-trader LLM can reason
+// about what real capital is doing on Hyperliquid alts. See
+// docs/hybrid-strategy-context.md for the strategy explanation that is also
+// injected into the LLM prompt.
+//
+// The LLM does NOT trade these markets; this is read-only situational context.
+
+type HybridShadowTrade = {
+  ts: string;
+  coin: string;
+  action: "open" | "close";
+  side: "long" | "short";
+  price?: number;
+  entry_price?: number | null;
+  exit_price?: number;
+  size_usd?: number;
+  pnl_pct?: number;
+  regime?: "bull" | "bear";
+  reason?: string;
+  ema_diff_pct?: number;
+};
+
+type HybridBotContext = {
+  available: boolean;
+  recentTrades: HybridShadowTrade[];
+  openPositions: Array<{
+    coin: string;
+    side: "long" | "short";
+    entry_price: number;
+    entry_time: string;
+    mode: string;
+  }>;
+  totals: { trades: number; wins: number; winRatePct: number | null };
+  lastEventTs: string | null;
+};
+
+function loadHybridBotContext(limit = HYBRID_BOT_RECENT_TRADE_LIMIT): HybridBotContext {
+  const ctx: HybridBotContext = {
+    available: false,
+    recentTrades: [],
+    openPositions: [],
+    totals: { trades: 0, wins: 0, winRatePct: null },
+    lastEventTs: null,
+  };
+
+  if (existsSync(HYBRID_BOT_TRADES_FILE)) {
+    try {
+      const raw = readFileSync(HYBRID_BOT_TRADES_FILE, "utf8");
+      const lines = raw.split("\n").filter((l) => l.trim().length > 0);
+      const tail = lines.slice(-limit);
+      for (const line of tail) {
+        try {
+          const parsed = JSON.parse(line) as HybridShadowTrade;
+          ctx.recentTrades.push(parsed);
+        } catch {
+          // Skip malformed lines silently; the bot writes JSON per line.
+        }
+      }
+      ctx.available = true;
+      if (ctx.recentTrades.length > 0) {
+        ctx.lastEventTs = ctx.recentTrades[ctx.recentTrades.length - 1].ts ?? null;
+      }
+    } catch (err) {
+      console.log(`  [hybrid-bot] failed to read trade feed: ${(err as Error).message}`);
+    }
+  }
+
+  if (existsSync(HYBRID_BOT_STATE_FILE)) {
+    try {
+      const state = JSON.parse(readFileSync(HYBRID_BOT_STATE_FILE, "utf8"));
+      ctx.available = true;
+      const positions = state.positions ?? {};
+      for (const [coin, p] of Object.entries(positions) as Array<[string, any]>) {
+        if (p && p.in_position) {
+          ctx.openPositions.push({
+            coin,
+            side: p.is_long ? "long" : "short",
+            entry_price: Number(p.entry_price),
+            entry_time: String(p.entry_time ?? ""),
+            mode: String(p.mode ?? ""),
+          });
+        }
+      }
+      const totalTrades = Number(state.total_trades ?? 0);
+      const totalWins = Number(state.total_wins ?? 0);
+      ctx.totals = {
+        trades: totalTrades,
+        wins: totalWins,
+        winRatePct: totalTrades > 0 ? (totalWins / totalTrades) * 100 : null,
+      };
+    } catch (err) {
+      console.log(`  [hybrid-bot] failed to read state file: ${(err as Error).message}`);
+    }
+  }
+
+  return ctx;
+}
+
+function loadHybridStrategyDoc(): string {
+  if (!existsSync(HYBRID_STRATEGY_DOC)) return "";
+  try {
+    return readFileSync(HYBRID_STRATEGY_DOC, "utf8");
+  } catch {
+    return "";
+  }
+}
+
+function formatHybridBotSection(ctx: HybridBotContext): string {
+  if (!ctx.available) {
+    return "  (no hybrid-bot data on this host)";
+  }
+  const lines: string[] = [];
+  lines.push(`  totals: ${ctx.totals.trades} trades, ${ctx.totals.wins} wins`
+    + (ctx.totals.winRatePct !== null ? ` (${ctx.totals.winRatePct.toFixed(0)}% WR)` : "")
+    + (ctx.lastEventTs ? ` | last event: ${ctx.lastEventTs}` : ""));
+  if (ctx.openPositions.length === 0) {
+    lines.push("  open positions: none");
+  } else {
+    lines.push(`  open positions (${ctx.openPositions.length}):`);
+    for (const p of ctx.openPositions) {
+      lines.push(`    - ${p.coin} ${p.side.toUpperCase()} @ ${p.entry_price} (entered ${p.entry_time}, mode=${p.mode})`);
+    }
+  }
+  if (ctx.recentTrades.length === 0) {
+    lines.push("  recent trade events: none");
+  } else {
+    lines.push(`  recent trade events (last ${ctx.recentTrades.length}, newest last):`);
+    for (const t of ctx.recentTrades) {
+      if (t.action === "open") {
+        lines.push(`    ${t.ts} OPEN  ${t.coin} ${t.side} @ ${t.price ?? "?"} regime=${t.regime ?? "?"} reason=${t.reason ?? "?"}`);
+      } else {
+        const pnl = typeof t.pnl_pct === "number" ? `${t.pnl_pct >= 0 ? "+" : ""}${t.pnl_pct.toFixed(2)}%` : "?";
+        lines.push(`    ${t.ts} CLOSE ${t.coin} ${t.side} entry=${t.entry_price ?? "?"} exit=${t.exit_price ?? "?"} pnl=${pnl} regime=${t.regime ?? "?"}`);
+      }
+    }
+  }
+  return lines.join("\n");
+}
+
 function pearson(x: number[], y: number[]): number {
   const n = Math.min(x.length, y.length);
   if (n < 2) return 0;
@@ -6397,6 +6547,8 @@ async function callLLM(
   const activeWeights = weights.filter((w) => w.trades > 0);
   const hypothesisBacklog = llmHypothesisBacklog(hypotheses);
   const openPositionContext = openPositionContextForLlm(portfolio.positions, valuationRows, instrumentSnapshots);
+  const hybridBotCtx = loadHybridBotContext();
+  const hybridStrategyDoc = loadHybridStrategyDoc();
 
   const prompt = `You are a quantitative paper trading system analyzing cross-venue market data. Your job is to:
 1. Assess the current market state
@@ -6469,6 +6621,10 @@ ${statObs.map((o) => `  [${o.type}] ${o.description}`).join("\n") || "  None"}
 RECENT CLOSED TRADES:
 ${closedTrades.slice(-10).map((t) => `  ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (market=${(t.marketPnl ?? t.pnl).toFixed(4)}, funding=${(t.fundingPnl ?? 0).toFixed(4)}) [${t.instrumentLabel ?? "n/a"}]`).join("\n") || "  None"}
 
+HYPERLIQUID HYBRID BOT — RECENT ACTIVITY (read-only context; not your trades):
+${formatHybridBotSection(hybridBotCtx)}
+${hybridStrategyDoc ? `\nHYPERLIQUID HYBRID BOT — STRATEGY CONTEXT:\n${hybridStrategyDoc}` : ""}
+
 CURRENT LEARNABLE PARAMETERS:
 ${JSON.stringify(learningParams, null, 2)}
 
@@ -6513,6 +6669,7 @@ IMPORTANT RULES:
 - Never treat one-sided Polymarket entries below ${(MIN_ONE_SIDED_PM_ENTRY_PRICE * 100).toFixed(0)}c as legitimate learning evidence or valid trades. Sub-cent entries are near-resolved artifacts, not the thesis the trader is testing; exclude them from performance conclusions and avoid reopening them.
 - Avoid suggesting generic Polymarket trades when yesSpread > ${(HEATMAP_SHADOW_MAX_SPREAD * 100).toFixed(0)}c, liquidity < ${HEATMAP_SHADOW_MIN_LIQUIDITY}, or marketQuality flags include wide_pm_spread / low_pm_liquidity / missing_bid_ask. Treat those as "avoid due to spread/liquidity", not as clean directional evidence. The touch-market shadow-promotion rule below has its own stricter liquidity and explicit 3c max-spread gate from the dedicated backtest.
 - Use RELATIVE-VALUE HEATMAP OBSERVATIONS to look for clean cross-venue edges. If you suggest a trade because of this section, say "relative-value heatmap" in the thesis so its performance can be reviewed.
+- HYPERLIQUID HYBRID BOT activity is informational only. Do NOT emit trades, closes, or hypotheses targeting the alt coins in that bot's universe (ADA/APT/ARB/AVAX/BCH/CRV/DOT/FARTCOIN/INJ/LIDO/OP/TRUMP). Use its current regime (bull/bear) and recent closed-trade tape as a cross-check on broad crypto-alt risk appetite. A sustained bull regime with positive recent closes ≈ alt breadth healthy; a flip back to bear with losing shorts ≈ breakouts dominating ranges. Do not over-weight a sample of < ~30 closed trades.
 - Touch-market shadow-promotion guidance from May 14+ backtest: only promote NO-side touch trades. Hard avoid YES contracts and NO trades with sell_yes_edge_pts < ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}. Require spread <= ${(ONE_TOUCH_NO_SHADOW_MAX_SPREAD * 100).toFixed(0)}c and liquidity >= ${ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY}. Exit when sell_yes_edge_pts disappears or falls below the gate. Why: spread-filtered generic NO was weak (-2.92% avg, -76.50c total one-share P&L); positive sell-YES edge NO improved materially (-0.38% avg, +34.60c); adding edge-disappearance exits turned it positive (+2.44% avg, +81.55c), a +158.05c total-cent improvement versus generic NO. Treat edge size as a gate for now, but keep evaluating edge-size buckets because more data may show edge magnitude is predictive.
 - For upside "hit/reach" contracts, use underlyingCapYes and pmToUnderlyingCapRatio to interpret sentiment against the underlying payoff cap. A ratio above 1.0 means PM YES is richer than the spot/strike cap; 0.85-1.0 means very bullish cap-adjacent pricing; below ~0.35 means weak sentiment relative to the underlying upside payoff.
 - Supported hypothesis aggregate keys for this cap-ratio setup: btc_pm_underlying_cap_ratio_max/min/avg, hype_pm_underlying_cap_ratio_max/min/avg, gold_pm_underlying_cap_ratio_max/min/avg, oil_pm_underlying_cap_ratio_max/min/avg, and the matching *_edge_pts_max/min/avg keys. Add _tight before the comparison suffix to require spread <= ${(UNDERLYING_CAP_ENTRY_MAX_SPREAD * 100).toFixed(0)}c and liquidity >= ${UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY}, e.g. btc_pm_underlying_cap_ratio_max_tight > ${UNDERLYING_CAP_BUY_NO_RATIO.toFixed(2)} for buy-NO over-cap tests or btc_pm_underlying_cap_ratio_min_tight < ${UNDERLYING_CAP_BUY_YES_RATIO.toFixed(2)} for buy-YES cheap-vs-cap tests.
