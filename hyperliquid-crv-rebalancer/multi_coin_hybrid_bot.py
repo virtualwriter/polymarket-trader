@@ -463,24 +463,34 @@ class MultiCoinHybridBot:
         """Query userFillsByTime for the actual fee on a given oid. Used when
         market_open returns a fill status that doesn't include the fee field.
 
-        Best-effort: returns 0.0 if the lookup fails."""
+        Hyperliquid's fill-indexer has 100-1000ms of lag after order
+        acknowledgment so we retry a few times with backoff before giving
+        up. Returns 0.0 if the lookup fails after all retries.
+        """
         if oid is None or self.info is None:
             return 0.0
-        try:
-            end = int(time.time() * 1000)
-            start = end - 5 * 60 * 1000
-            fills = self.info.user_fills_by_time(self.address, start, end)
-            total = 0.0
-            for f in fills or []:
-                if f.get("oid") == oid:
-                    try:
-                        total += float(f.get("fee", 0) or 0)
-                    except (TypeError, ValueError):
-                        pass
-            return total
-        except Exception as e:
-            log(f"{coin}: fee lookup failed for oid={oid}: {e}")
-            return 0.0
+        for attempt in range(4):
+            try:
+                end = int(time.time() * 1000)
+                start = end - 5 * 60 * 1000
+                fills = self.info.user_fills_by_time(self.address, start, end)
+                total = 0.0
+                found = False
+                for f in fills or []:
+                    if f.get("oid") == oid:
+                        found = True
+                        try:
+                            total += float(f.get("fee", 0) or 0)
+                        except (TypeError, ValueError):
+                            pass
+                if found:
+                    return total
+            except Exception as e:
+                log(f"{coin}: fee lookup failed for oid={oid}: {e}")
+                return 0.0
+            time.sleep(0.5 + 0.5 * attempt)
+        log(f"{coin}: fee lookup for oid={oid} not yet indexed after retries; recording 0")
+        return 0.0
 
     def open_perp_position(self, coin: str, is_buy: bool, size: float, price: float) -> dict | None:
         """Open a perp market position.
