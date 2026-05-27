@@ -61,6 +61,12 @@ MNEMONIC_INDEX = int(os.getenv("HYPERLIQUID_MNEMONIC_INDEX", "0"))
 # routes orders + queries against the funded account.
 ACCOUNT_ADDRESS = os.getenv("HYPERLIQUID_ACCOUNT_ADDRESS")
 USE_MAINNET = os.getenv("HYPERLIQUID_MAINNET", "true").lower() == "true"
+# Backtest assumed 1x unlevered exposure. We force every coin to this
+# leverage at startup so live behavior matches backtested Sharpe and
+# drawdown expectations. Increase only with a re-run of the backtest at
+# the new leverage to confirm the strategy still has edge after liquidation
+# risk and funding drag.
+TARGET_LEVERAGE = int(os.getenv("HYPERLIQUID_LEVERAGE", "1"))
 
 
 def derive_private_key(mnemonic: str, index: int = 0) -> str:
@@ -275,6 +281,22 @@ class MultiCoinHybridBot:
             self.sz_decimals = {}
             for coin in coins:
                 self.sz_decimals[coin] = get_coin_sz_decimals(self.info, coin)
+
+            # Force 1x cross-margin leverage on every coin in the universe to
+            # match the backtest's unlevered assumption. Without this the bot
+            # inherits whatever leverage was last set per asset (often
+            # Hyperliquid's per-coin max default, e.g. 5-20x), which silently
+            # breaks the backtest's Sharpe / drawdown / liquidation math.
+            # update_leverage is idempotent and only affects FUTURE orders,
+            # so existing open positions keep their original margin mode.
+            for coin in coins:
+                try:
+                    r = self.exchange.update_leverage(TARGET_LEVERAGE, coin, True)
+                    if r.get("status") != "ok":
+                        log(f"{coin}: leverage init non-ok: {r}")
+                except Exception as e:
+                    log(f"{coin}: leverage init failed: {e}")
+            log(f"Leverage set to {TARGET_LEVERAGE}x cross for {len(coins)} coins")
         else:
             self.account = None
             self.address = "dry-run"
@@ -402,56 +424,136 @@ class MultiCoinHybridBot:
         return math.ceil(size * (10 ** sz_dec)) / (10 ** sz_dec)
 
     # ---- Order Execution ----
-    def open_perp_position(self, coin: str, is_buy: bool, size: float, price: float) -> bool:
-        """Open a perp market position."""
+    def _extract_fill(self, result: dict) -> dict | None:
+        """Pull fill details out of a market_open/market_close SDK response.
+
+        Returns a dict with fill_price, fill_size, fee (USDC), oid — or None
+        if the order didn't fill. The Hyperliquid SDK's filled status dict
+        contains totalSz, avgPx, oid, and (when available) fee. fee may be
+        absent on some response shapes; in that case we fall back to the
+        userFillsByTime endpoint when needed.
+        """
+        if not result or result.get("status") != "ok":
+            return None
+        statuses = result.get("response", {}).get("data", {}).get("statuses", [])
+        for s in statuses:
+            if isinstance(s, dict) and "filled" in s:
+                f = s["filled"]
+                try:
+                    fill_price = float(f.get("avgPx", 0) or 0)
+                    fill_size = float(f.get("totalSz", 0) or 0)
+                except (TypeError, ValueError):
+                    fill_price, fill_size = 0.0, 0.0
+                fee_raw = f.get("fee")
+                fee = 0.0
+                if fee_raw is not None:
+                    try:
+                        fee = float(fee_raw)
+                    except (TypeError, ValueError):
+                        fee = 0.0
+                return {
+                    "fill_price": fill_price,
+                    "fill_size": fill_size,
+                    "fee": fee,
+                    "oid": f.get("oid"),
+                }
+        return None
+
+    def _lookup_fee_for_oid(self, oid, coin: str) -> float:
+        """Query userFillsByTime for the actual fee on a given oid. Used when
+        market_open returns a fill status that doesn't include the fee field.
+
+        Best-effort: returns 0.0 if the lookup fails."""
+        if oid is None or self.info is None:
+            return 0.0
+        try:
+            end = int(time.time() * 1000)
+            start = end - 5 * 60 * 1000
+            fills = self.info.user_fills_by_time(self.address, start, end)
+            total = 0.0
+            for f in fills or []:
+                if f.get("oid") == oid:
+                    try:
+                        total += float(f.get("fee", 0) or 0)
+                    except (TypeError, ValueError):
+                        pass
+            return total
+        except Exception as e:
+            log(f"{coin}: fee lookup failed for oid={oid}: {e}")
+            return 0.0
+
+    def open_perp_position(self, coin: str, is_buy: bool, size: float, price: float) -> dict | None:
+        """Open a perp market position.
+
+        Returns a fill dict {fill_price, fill_size, fee, oid} on success,
+        None on failure. The fill dict is the source of truth for shadow-
+        trade logging downstream so the LLM context sees real execution
+        data (not the signal price).
+        """
         if self.dry_run:
             side = "LONG" if is_buy else "SHORT"
             log(f"[DRY] {coin}: OPEN {side} {size:.{self.sz_decimals.get(coin, 0)}f} @ ~${price:.4f}")
-            return True
+            return {"fill_price": price, "fill_size": size, "fee": 0.0, "oid": None}
 
         try:
             result = self.exchange.market_open(coin, is_buy, size, slippage=0.01)
             if result.get("status") == "ok":
                 statuses = result.get("response", {}).get("data", {}).get("statuses", [])
-                for s in statuses:
-                    if "filled" in s:
-                        filled = s["filled"]
-                        log(f"{coin}: Filled {filled['totalSz']} @ ${filled['avgPx']}")
-                        return True
-                # Surface the actual rejection reason. Without this, errors
-                # like "Insufficient margin" silently look identical to a
-                # benign no-fill and the operator cannot tell anything is
-                # wrong from the journal alone.
+                fill = self._extract_fill(result)
+                if fill is not None:
+                    if fill["fee"] == 0.0 and fill["oid"] is not None:
+                        # Some SDK paths omit fee in the immediate response.
+                        # Look it up so shadow trades reflect real cost.
+                        fill["fee"] = self._lookup_fee_for_oid(fill["oid"], coin)
+                    log(
+                        f"{coin}: Filled {fill['fill_size']} @ ${fill['fill_price']} "
+                        f"| fee ${fill['fee']:.6f}"
+                    )
+                    return fill
                 errors = [s.get("error") for s in statuses if isinstance(s, dict) and s.get("error")]
                 if errors:
                     log(f"{coin}: Order rejected: {'; '.join(errors)}")
                 else:
                     log(f"{coin}: Order placed but not filled (response={statuses})")
-                return False
+                return None
             else:
                 log(f"{coin}: Order failed: {result}")
-                return False
+                return None
         except Exception as e:
             log(f"{coin}: Error opening position: {e}")
-            return False
+            return None
 
-    def close_perp_position(self, coin: str) -> bool:
-        """Close the current perp position for a coin."""
+    def close_perp_position(self, coin: str) -> dict | None:
+        """Close the current perp position for a coin.
+
+        Returns a fill dict {fill_price, fill_size, fee, oid} on success,
+        None on failure. Same contract as open_perp_position so shadow-
+        trade emit code can use the actual exit price + fee.
+        """
         if self.dry_run:
             log(f"[DRY] {coin}: CLOSE position")
-            return True
+            return {"fill_price": 0.0, "fill_size": 0.0, "fee": 0.0, "oid": None}
 
         try:
             result = self.exchange.market_close(coin)
             if result.get("status") == "ok":
-                log(f"{coin}: Position closed")
-                return True
+                fill = self._extract_fill(result)
+                if fill is not None:
+                    if fill["fee"] == 0.0 and fill["oid"] is not None:
+                        fill["fee"] = self._lookup_fee_for_oid(fill["oid"], coin)
+                    log(
+                        f"{coin}: Closed {fill['fill_size']} @ ${fill['fill_price']} "
+                        f"| fee ${fill['fee']:.6f}"
+                    )
+                    return fill
+                log(f"{coin}: Position closed (no fill detail returned)")
+                return {"fill_price": 0.0, "fill_size": 0.0, "fee": 0.0, "oid": None}
             else:
                 log(f"{coin}: Close failed: {result}")
-                return False
+                return None
         except Exception as e:
             log(f"{coin}: Error closing: {e}")
-            return False
+            return None
 
     # ---- Main Trading Logic ----
     def run_cycle(self):
@@ -518,21 +620,35 @@ class MultiCoinHybridBot:
                     f"{price_str} vs EMA({SHORT_EMA if not is_bull else LONG_EMA}h)={ema_diff:+.2f}% | "
                     f"Size={size}")
 
-                success = self.open_perp_position(coin, is_buy, size, current_price)
-                if not success and not self.dry_run:
+                fill = self.open_perp_position(coin, is_buy, size, current_price)
+                if fill is None and not self.dry_run:
                     continue
+
+                # Use the actual fill price (and size in coin units) for state
+                # tracking so future exits compare against where the trade
+                # really executed, not the signal price.
+                fill = fill or {"fill_price": current_price, "fill_size": size, "fee": 0.0}
+                fill_price = fill.get("fill_price") or current_price
+                fill_size = fill.get("fill_size") or size
+                fee_usd = float(fill.get("fee") or 0.0)
+                # Notional in USD that the bot actually opened on Hyperliquid
+                # (real_size_usd), independent of the smaller shadow_size_usd
+                # the LLM is told about. Both are emitted so the LLM has the
+                # signal context but the operator can audit real fees.
+                real_size_usd = fill_price * fill_size
 
                 entry_time = datetime.now(timezone.utc).isoformat()
                 self.state["positions"][coin] = {
                     "in_position": True,
                     "is_long": is_bull,
-                    "entry_price": current_price,
+                    "entry_price": fill_price,
                     "entry_time": entry_time,
                     "mode": action_label.lower(),
                 }
                 self.state["total_trades"] = self.state.get("total_trades", 0) + 1
+                self.state["total_fees"] = self.state.get("total_fees", 0) + fee_usd
                 save_state(self.state)
-                log(f"{coin}: ENTERED {action_label} @ {price_str}")
+                log(f"{coin}: ENTERED {action_label} @ ${fill_price} | fee ${fee_usd:.6f}")
 
                 if not self.dry_run:
                     append_shadow_trade({
@@ -540,8 +656,12 @@ class MultiCoinHybridBot:
                         "coin": coin,
                         "action": "open",
                         "side": "long" if is_bull else "short",
-                        "price": current_price,
+                        "signal_price": current_price,
+                        "fill_price": fill_price,
+                        "fill_size": fill_size,
+                        "real_size_usd": real_size_usd,
                         "size_usd": self.shadow_size_usd,
+                        "fee_usd": fee_usd,
                         "regime": "bull" if is_bull else "bear",
                         "reason": f"ema{LONG_EMA if is_bull else SHORT_EMA}h_breakout",
                         "ema_diff_pct": ema_diff,
@@ -562,9 +682,22 @@ class MultiCoinHybridBot:
                 if gross_ret > 0:
                     self.state["total_wins"] = self.state.get("total_wins", 0) + 1
 
-                success = self.close_perp_position(coin)
-                if not success and not self.dry_run:
+                fill = self.close_perp_position(coin)
+                if fill is None and not self.dry_run:
                     continue
+
+                fill = fill or {"fill_price": current_price, "fill_size": 0.0, "fee": 0.0}
+                exit_price = fill.get("fill_price") or current_price
+                exit_size = fill.get("fill_size") or 0.0
+                close_fee_usd = float(fill.get("fee") or 0.0)
+                # Recompute gross return against the actual exit fill price
+                # rather than the cycle's signal price so logs/shadow events
+                # reflect realized P&L.
+                if entry_price:
+                    if pos_state.get("is_long"):
+                        gross_ret = (exit_price / entry_price - 1) * 100
+                    else:
+                        gross_ret = (entry_price / exit_price - 1) * 100
 
                 was_long = bool(pos_state.get("is_long"))
                 self.state["positions"][coin] = {
@@ -574,8 +707,9 @@ class MultiCoinHybridBot:
                     "entry_time": None,
                     "mode": action_label.lower(),
                 }
+                self.state["total_fees"] = self.state.get("total_fees", 0) + close_fee_usd
                 save_state(self.state)
-                log(f"{coin}: EXITED | Return: {gross_ret:+.2f}%")
+                log(f"{coin}: EXITED @ ${exit_price} | Return: {gross_ret:+.2f}% | fee ${close_fee_usd:.6f}")
 
                 if not self.dry_run:
                     append_shadow_trade({
@@ -584,8 +718,12 @@ class MultiCoinHybridBot:
                         "action": "close",
                         "side": "long" if was_long else "short",
                         "entry_price": entry_price,
-                        "exit_price": current_price,
+                        "exit_price": exit_price,
+                        "signal_price": current_price,
+                        "fill_size": exit_size,
+                        "real_size_usd": exit_price * exit_size,
                         "size_usd": self.shadow_size_usd,
+                        "fee_usd": close_fee_usd,
                         "pnl_pct": gross_ret,
                         "regime": "bull" if is_bull else "bear",
                         "reason": "ema_reversion",
