@@ -1,11 +1,27 @@
 {
-  "generatedAt": "2026-05-27T03:30:05.845Z",
+  "generatedAt": "2026-05-27T05:30:28.295Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [],
+  "entrySignals": [
+    {
+      "type": "FUNDING_EXTREME_SHORT",
+      "asset": "BTC",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "strength": 0.03314285714285715,
+      "confidence": 0.014972822224012519,
+      "thesis": "BTC HL funding -16.2% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 75657,
+      "targetPct": 4,
+      "stopPct": 2.5,
+      "expiryDays": 7,
+      "leverage": 1
+    }
+  ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
