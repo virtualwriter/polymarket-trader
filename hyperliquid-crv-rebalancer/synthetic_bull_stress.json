@@ -1,0 +1,106 @@
+{
+  "generated_at": "2026-05-27T18:40:05.696965+00:00",
+  "n_seeds": 20,
+  "n_hours": 8760,
+  "bull_dwell_hours": 720,
+  "fee_pct": 0.045,
+  "hybrid_params": {
+    "s_ema": 4,
+    "s_in": 0.3,
+    "s_out": 1.5,
+    "l_ema": 5,
+    "l_in": 1.0,
+    "l_out": 1.0
+  },
+  "signal_threshold": 10,
+  "bull_drift_add_per_hour": 0.0012,
+  "bear_drift_add_per_hour": -0.0004,
+  "scenarios": {
+    "bull_40pct": {
+      "target_bull_pct": 0.4,
+      "realized_bull_avg": 0.34001141552511416,
+      "realized_signal_avg": 0.3092294520547945,
+      "by_strategy": {
+        "hybrid_1x": {
+          "mean_ret": 664.3009533680371,
+          "p10_ret": 127.11984086447518,
+          "p90_ret": 1463.804370902348,
+          "mean_sharpe": 0.25145788097056326,
+          "mean_mdd": 51.26852561834331,
+          "mean_neg_coins": 7.5,
+          "total_liqs_across_seeds": 0
+        },
+        "hybrid_5x": {
+          "mean_ret": 12308379.172294503,
+          "p10_ret": -100.0,
+          "p90_ret": 64752259.043294504,
+          "mean_sharpe": -2.1247838933798064,
+          "mean_mdd": 89.38073670746743,
+          "mean_neg_coins": 11.35,
+          "total_liqs_across_seeds": 226
+        },
+        "short_only_1x": {
+          "mean_ret": 57.413825789259896,
+          "p10_ret": -96.93502427330824,
+          "p90_ret": 759.2967067223491,
+          "mean_sharpe": -0.4561086377507664,
+          "mean_mdd": 61.969548944658676,
+          "mean_neg_coins": 9.5,
+          "total_liqs_across_seeds": 0
+        },
+        "short_only_5x": {
+          "mean_ret": 126.59069760708145,
+          "p10_ret": -100.0,
+          "p90_ret": 1134.620805417408,
+          "mean_sharpe": -2.8294974137604894,
+          "mean_mdd": 91.1996858099957,
+          "mean_neg_coins": 11.9,
+          "total_liqs_across_seeds": 237
+        }
+      }
+    },
+    "bull_50pct": {
+      "target_bull_pct": 0.5,
+      "realized_bull_avg": 0.49925799086757994,
+      "realized_signal_avg": 0.4606278538812785,
+      "by_strategy": {
+        "hybrid_1x": {
+          "mean_ret": 862.6775004273622,
+          "p10_ret": 167.13364396468316,
+          "p90_ret": 2298.3184523511077,
+          "mean_sharpe": 0.04533746308142494,
+          "mean_mdd": 77.43613012710709,
+          "mean_neg_coins": 9.65,
+          "total_liqs_across_seeds": 0
+        },
+        "hybrid_5x": {
+          "mean_ret": 5247870.852759639,
+          "p10_ret": -100.0,
+          "p90_ret": 21202105.16399757,
+          "mean_sharpe": -3.240826209355465,
+          "mean_mdd": 98.80062622110223,
+          "mean_neg_coins": 12.7,
+          "total_liqs_across_seeds": 254
+        },
+        "short_only_1x": {
+          "mean_ret": -88.51158011041336,
+          "p10_ret": -99.53075058445424,
+          "p90_ret": -73.88634552729295,
+          "mean_sharpe": -1.1648085207928434,
+          "mean_mdd": 90.97306500888813,
+          "mean_neg_coins": 12.65,
+          "total_liqs_across_seeds": 0
+        },
+        "short_only_5x": {
+          "mean_ret": -99.47078952279782,
+          "p10_ret": -100.0,
+          "p90_ret": -100.0,
+          "mean_sharpe": -5.218710349852222,
+          "mean_mdd": 99.61538461538461,
+          "mean_neg_coins": 12.95,
+          "total_liqs_across_seeds": 259
+        }
+      }
+    }
+  }
+}
