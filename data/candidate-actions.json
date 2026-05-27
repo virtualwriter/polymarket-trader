@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-27T16:50:20.761Z",
+  "generatedAt": "2026-05-27T17:28:27.466Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "GOLD",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.8666666666666667,
-      "confidence": 0.4371387490530304,
-      "thesis": "GOLD P/C ratio 0.24 — heavy call buying → contrarian short.",
+      "strength": 0.8333333333333334,
+      "confidence": 0.42032572024329845,
+      "thesis": "GOLD P/C ratio 0.25 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4454,
+      "entryPrice": 4450,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -22,14 +22,29 @@
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.3075,
-      "confidence": 0.20629147776351128,
-      "thesis": "OIL P/C ratio 1.45 — heavy put buying → contrarian long.",
+      "strength": 0.285,
+      "confidence": 0.19119697939057143,
+      "thesis": "OIL P/C ratio 1.43 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 89.71,
+      "entryPrice": 89.57,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
+    },
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.05971428571428571,
+      "confidence": 0.03598469358747796,
+      "thesis": "GOLD HL funding 17.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4450,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "llmCloseEligibility": [
@@ -45,10 +60,10 @@
         "gold_gc_spot",
         "gold_gld_pc_ratio"
       ],
-      "hoursOpen": 116.33,
-      "hoursToExpiry": 3.67,
+      "hoursOpen": 116.97,
+      "hoursToExpiry": 3.03,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.9694,
+      "elapsedHoldPct": 0.9747,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -64,10 +79,10 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 2.33,
-      "hoursToExpiry": 117.67,
+      "hoursOpen": 2.96,
+      "hoursToExpiry": 117.04,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0194,
+      "elapsedHoldPct": 0.0247,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
