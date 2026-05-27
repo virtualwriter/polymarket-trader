@@ -50,6 +50,11 @@ load_dotenv()
 
 PRIVATE_KEY = os.getenv("HYPERLIQUID_PRIVATE_KEY")
 MNEMONIC = os.getenv("HYPERLIQUID_MNEMONIC")
+# HD wallet account index. A single mnemonic deterministically derives many
+# wallets via BIP-44 paths m/44'/60'/0'/0/N; this picks which N. Defaults to
+# 0 (matches MetaMask's first account); set to whatever index holds the funds
+# if the same seed phrase owns multiple wallets and the funded one isn't at 0.
+MNEMONIC_INDEX = int(os.getenv("HYPERLIQUID_MNEMONIC_INDEX", "0"))
 # When using an API agent wallet, the signing key (derived from PRIVATE_KEY or
 # MNEMONIC) belongs to the agent, but margin/positions live on the master
 # account. Set HYPERLIQUID_ACCOUNT_ADDRESS to the master wallet so the SDK
@@ -58,11 +63,13 @@ ACCOUNT_ADDRESS = os.getenv("HYPERLIQUID_ACCOUNT_ADDRESS")
 USE_MAINNET = os.getenv("HYPERLIQUID_MAINNET", "true").lower() == "true"
 
 
-def derive_private_key(mnemonic: str) -> str:
-    """Derive an Ethereum private key from a BIP-39 mnemonic phrase."""
+def derive_private_key(mnemonic: str, index: int = 0) -> str:
+    """Derive an Ethereum private key from a BIP-39 mnemonic phrase at the given
+    BIP-44 account index (m/44'/60'/0'/0/<index>)."""
     from eth_account import Account
     Account.enable_unaudited_hdwallet_features()
-    acct = Account.from_mnemonic(mnemonic)
+    path = f"m/44'/60'/0'/0/{index}"
+    acct = Account.from_mnemonic(mnemonic, account_path=path)
     return acct.key.hex()
 
 # Strategy params (from backtest optimization)
@@ -242,8 +249,8 @@ class MultiCoinHybridBot:
         if not dry_run:
             pk = PRIVATE_KEY
             if MNEMONIC:
-                log("Deriving private key from mnemonic...")
-                pk = derive_private_key(MNEMONIC)
+                log(f"Deriving private key from mnemonic (index={MNEMONIC_INDEX})...")
+                pk = derive_private_key(MNEMONIC, MNEMONIC_INDEX)
             if not pk:
                 log("FATAL: Neither HYPERLIQUID_PRIVATE_KEY nor HYPERLIQUID_MNEMONIC set")
                 sys.exit(1)
