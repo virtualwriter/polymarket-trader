@@ -134,10 +134,21 @@ const ONE_TOUCH_TERMINAL_ONLY_SIGMA = 1.5;
 const OPERATIONALLY_TAINTED_TRADES: Record<string, string> = loadOperationallyTaintedTrades();
 
 const LIVE_STATE_DIR = process.env.POLYMARKET_TRADER_STATE_DIR ?? "/var/lib/polymarket-trader";
-const HYBRID_BOT_TRADES_FILE = process.env.HYPERLIQUID_HYBRID_TRADES_FILE
-  ?? join(LIVE_STATE_DIR, "hyperliquid-hybrid-trades.jsonl");
-const HYBRID_BOT_STATE_FILE = process.env.HYPERLIQUID_HYBRID_STATE_FILE
-  ?? join(LIVE_STATE_DIR, "hyperliquid-hybrid-state.json");
+function resolveHybridBotFile(envValue: string | undefined, basename: string): string {
+  if (envValue) return envValue;
+  const primary = join(LIVE_STATE_DIR, basename);
+  if (existsSync(primary)) return primary;
+  const localFallback = join(DATA_DIR, basename);
+  return existsSync(localFallback) ? localFallback : primary;
+}
+const HYBRID_BOT_TRADES_FILE = resolveHybridBotFile(
+  process.env.HYPERLIQUID_HYBRID_TRADES_FILE,
+  "hyperliquid-hybrid-trades.jsonl",
+);
+const HYBRID_BOT_STATE_FILE = resolveHybridBotFile(
+  process.env.HYPERLIQUID_HYBRID_STATE_FILE,
+  "hyperliquid-hybrid-state.json",
+);
 
 interface HybridBotShadowEvent {
   ts?: string;
