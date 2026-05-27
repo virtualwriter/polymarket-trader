@@ -18516,3 +18516,35 @@ The macro composite flipped from NEUTRAL to BEARISH, aligning with a broad risk-
 
 ---
 
+### 2026-05-27 16:41 UTC
+
+**Portfolio:** $98.51 total | Cash $96.51 | 2 open | P&L $-0.4912 | 51% win rate (163 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_brent_spot = 93.2 is -2.3 std devs from mean since 2026-04-28 (104.63 ± 4.93)
+- [anomaly] oil_wti_spot = 89.7 is -2.2 std devs from mean since 2026-04-28 (99.74 ± 4.63)
+- [anomaly] hype_med_max = 85.5 is 2.2 std devs from mean (63.35 ± 10.21)
+- [anomaly] hype_pm_iv = 84.9 is 2.1 std devs from mean (67.40 ± 8.36)
+- [anomaly] gold_med_min = 4223 is -2.1 std devs from mean (4360.65 ± 66.35)
+
+**Blocked signal learning:**
+- Open blocked shadows: 98
+- Resolved blocked shadows: 302 (129 wins / 173 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-3.10%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-8.60%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+13.60%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+1.13%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 0.1h since last call; daily budget 8/12; next scheduled 2026-05-27T18:41:59.515Z). Mechanical cycle ran normally._
+
+---
+
