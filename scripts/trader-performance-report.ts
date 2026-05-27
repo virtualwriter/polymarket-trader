@@ -132,6 +132,153 @@ const RELATIVE_VALUE_HISTORY_DIRS = [
 ].filter((path): path is string => Boolean(path));
 const ONE_TOUCH_TERMINAL_ONLY_SIGMA = 1.5;
 const OPERATIONALLY_TAINTED_TRADES: Record<string, string> = loadOperationallyTaintedTrades();
+
+const LIVE_STATE_DIR = process.env.POLYMARKET_TRADER_STATE_DIR ?? "/var/lib/polymarket-trader";
+const HYBRID_BOT_TRADES_FILE = process.env.HYPERLIQUID_HYBRID_TRADES_FILE
+  ?? join(LIVE_STATE_DIR, "hyperliquid-hybrid-trades.jsonl");
+const HYBRID_BOT_STATE_FILE = process.env.HYPERLIQUID_HYBRID_STATE_FILE
+  ?? join(LIVE_STATE_DIR, "hyperliquid-hybrid-state.json");
+
+interface HybridBotShadowEvent {
+  ts?: string;
+  coin?: string;
+  action?: "open" | "close";
+  side?: "long" | "short";
+  entry_price?: number;
+  exit_price?: number;
+  signal_price?: number;
+  fill_price?: number;
+  fill_size?: number;
+  real_size_usd?: number;
+  size_usd?: number;
+  fee_usd?: number;
+  pnl_pct?: number;
+  regime?: "bull" | "bear";
+  reason?: string;
+  ema_diff_pct?: number;
+}
+
+interface HybridBotPosition {
+  in_position?: boolean;
+  is_long?: boolean;
+  entry_price?: number;
+  entry_time?: string | null;
+  mode?: "long" | "short";
+}
+
+interface HybridBotState {
+  positions?: Record<string, HybridBotPosition>;
+  total_trades?: number;
+  total_wins?: number;
+  total_fees?: number;
+}
+
+interface HybridBotCoinStats {
+  trades: number;
+  wins: number;
+  losses: number;
+  realizedPnlUsd: number;     // sum of (pnl_pct/100 * size_usd - fee_usd) on closes
+  realizedPnlPctSum: number;  // sum of close pnl_pct
+  feesUsd: number;            // open + close fees
+  opens: number;
+  closes: number;
+  lastEventTs: string | null;
+}
+
+interface HybridBotReport {
+  available: boolean;
+  stateLastModified: string | null;
+  feedLastModified: string | null;
+  positions: Map<string, HybridBotPosition>;
+  perCoinStats: Map<string, HybridBotCoinStats>;
+  totalsAcrossAllCoins: HybridBotCoinStats;
+}
+
+function readHybridBotReport(): HybridBotReport {
+  const empty: HybridBotCoinStats = {
+    trades: 0, wins: 0, losses: 0,
+    realizedPnlUsd: 0, realizedPnlPctSum: 0, feesUsd: 0,
+    opens: 0, closes: 0, lastEventTs: null,
+  };
+  const report: HybridBotReport = {
+    available: false,
+    stateLastModified: null,
+    feedLastModified: null,
+    positions: new Map(),
+    perCoinStats: new Map(),
+    totalsAcrossAllCoins: { ...empty },
+  };
+
+  if (existsSync(HYBRID_BOT_STATE_FILE)) {
+    try {
+      const state = JSON.parse(readFileSync(HYBRID_BOT_STATE_FILE, "utf-8")) as HybridBotState;
+      report.stateLastModified = statSync(HYBRID_BOT_STATE_FILE).mtime.toISOString();
+      report.available = true;
+      for (const [coin, pos] of Object.entries(state.positions ?? {})) {
+        if (pos && pos.in_position) report.positions.set(coin, pos);
+      }
+    } catch (err) {
+      // Surface to stderr so the operator notices, but don't crash the report.
+      console.error(`[hybrid-bot] failed to read state: ${(err as Error).message}`);
+    }
+  }
+
+  if (existsSync(HYBRID_BOT_TRADES_FILE)) {
+    try {
+      report.feedLastModified = statSync(HYBRID_BOT_TRADES_FILE).mtime.toISOString();
+      report.available = true;
+      const raw = readFileSync(HYBRID_BOT_TRADES_FILE, "utf-8");
+      for (const line of raw.split("\n")) {
+        if (!line.trim()) continue;
+        let event: HybridBotShadowEvent;
+        try { event = JSON.parse(line); } catch { continue; }
+        const coin = event.coin ?? "UNKNOWN";
+        const stats = report.perCoinStats.get(coin) ?? { ...empty };
+        const totals = report.totalsAcrossAllCoins;
+        const fee = Number(event.fee_usd ?? 0);
+        stats.feesUsd += fee;
+        totals.feesUsd += fee;
+        if (event.action === "open") {
+          stats.opens += 1;
+          totals.opens += 1;
+        } else if (event.action === "close") {
+          stats.closes += 1;
+          totals.closes += 1;
+          stats.trades += 1;
+          totals.trades += 1;
+          // Shadow $-P&L = (pnl_pct/100) * shadow size_usd - fee for this close.
+          // The open-side fee for this round-trip is already booked into feesUsd
+          // via the prior open event. realizedPnlUsd subtracts only the close
+          // fee so that opens-still-running don't contaminate the realized line.
+          const pct = Number(event.pnl_pct ?? 0);
+          const shadowSize = Number(event.size_usd ?? 1);
+          const pnlUsd = (pct / 100) * shadowSize - fee;
+          stats.realizedPnlUsd += pnlUsd;
+          stats.realizedPnlPctSum += pct;
+          totals.realizedPnlUsd += pnlUsd;
+          totals.realizedPnlPctSum += pct;
+          if (pct > 0) {
+            stats.wins += 1;
+            totals.wins += 1;
+          } else {
+            stats.losses += 1;
+            totals.losses += 1;
+          }
+        }
+        if (event.ts) {
+          stats.lastEventTs = event.ts;
+          totals.lastEventTs = event.ts;
+        }
+        report.perCoinStats.set(coin, stats);
+      }
+    } catch (err) {
+      console.error(`[hybrid-bot] failed to read shadow trades: ${(err as Error).message}`);
+    }
+  }
+
+  return report;
+}
+
 const CSV_HEADER = [
   "section",
   "group",
@@ -166,6 +313,54 @@ const CSV_HEADER = [
 function readJson<T>(path: string, fallback: T): T {
   if (!existsSync(path)) return fallback;
   return JSON.parse(readFileSync(path, "utf-8")) as T;
+}
+
+function extractHyperliquidMids(snapshot: InstrumentSnapshotFile | null): Map<string, number> {
+  const mids = new Map<string, number>();
+  if (!snapshot?.hyperliquid) return mids;
+  for (const [key, quote] of Object.entries(snapshot.hyperliquid)) {
+    const mark = quote?.markPx;
+    if (typeof mark === "number" && mark > 0) {
+      mids.set(key, mark);
+      mids.set(key.toUpperCase(), mark);
+    }
+  }
+  return mids;
+}
+
+/**
+ * Best-effort fetch of live Hyperliquid mids for any coins not in the saved
+ * instrument snapshot. The report runs offline-first; if the fetch fails or
+ * times out, we silently fall back to the snapshot-only map. Used to populate
+ * current_price for the hybrid bot's altcoin perps (ADA/APT/etc) which the
+ * LLM trader doesn't include in its own instrument snapshots.
+ */
+async function augmentMidsFromHyperliquid(
+  mids: Map<string, number>, missingCoins: string[],
+): Promise<void> {
+  if (missingCoins.length === 0) return;
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 4000);
+    const response = await fetch("https://api.hyperliquid.xyz/info", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "allMids" }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    if (!response.ok) return;
+    const allMids = await response.json() as Record<string, string>;
+    for (const coin of missingCoins) {
+      const val = Number(allMids[coin] ?? allMids[coin.toUpperCase()]);
+      if (Number.isFinite(val) && val > 0) {
+        mids.set(coin, val);
+        mids.set(coin.toUpperCase(), val);
+      }
+    }
+  } catch {
+    // Silent fallback: the report still works without live mids.
+  }
 }
 
 function readLatestInstrumentSnapshot(): InstrumentSnapshotFile | null {
@@ -925,6 +1120,8 @@ function buildCsvReport(args: {
   hypotheses: Hypothesis[];
   shadows: BlockedSignalShadow[];
   hypothesesById: Map<string, Hypothesis>;
+  hybridBot: HybridBotReport;
+  hyperliquidMids: Map<string, number>;
 }): string {
   const rows: string[][] = [CSV_HEADER.slice()];
   const relativeValueRows = readRelativeValueRows();
@@ -1040,6 +1237,70 @@ function buildCsvReport(args: {
     ]);
   }
 
+  if (args.hybridBot.available) {
+    const bot = args.hybridBot;
+    const totals = bot.totalsAcrossAllCoins;
+    const totalWinRate = totals.trades > 0 ? ((totals.wins / totals.trades) * 100).toFixed(1) : "";
+    rows.push([
+      "summary", "hyperliquid_hybrid_bot",
+      String(totals.trades), String(totals.wins), String(totals.losses), totalWinRate,
+      totals.realizedPnlUsd.toFixed(6), "", "", "", "", "",
+      `source=${HYBRID_BOT_TRADES_FILE}; state_mtime=${bot.stateLastModified ?? "n/a"}; `
+      + `feed_mtime=${bot.feedLastModified ?? "n/a"}; opens=${totals.opens}; closes=${totals.closes}; `
+      + `fees_usd=${totals.feesUsd.toFixed(6)}; open_positions=${bot.positions.size}; `
+      + `note=shadow trades from the separate Hyperliquid hybrid perp bot; `
+      + `LLM trader does not own these positions; size_usd is scaled shadow size (default $1)`,
+      "", totals.realizedPnlUsd.toFixed(6), "", "", "", "", "", bot.totalsAcrossAllCoins.lastEventTs ?? "", "", "", "", "", "", "",
+    ]);
+
+    const sortedCoinStats = [...bot.perCoinStats.entries()].sort(
+      ([, a], [, b]) => b.realizedPnlUsd - a.realizedPnlUsd,
+    );
+    for (const [coin, stats] of sortedCoinStats) {
+      const winRatePct = stats.trades > 0 ? ((stats.wins / stats.trades) * 100).toFixed(1) : "";
+      const avgPnl = stats.trades > 0 ? (stats.realizedPnlUsd / stats.trades).toFixed(6) : "";
+      const avgPnlPct = stats.trades > 0 ? (stats.realizedPnlPctSum / stats.trades).toFixed(4) : "";
+      rows.push([
+        "hyperliquid_hybrid_shadow_asset", coin,
+        String(stats.trades), String(stats.wins), String(stats.losses), winRatePct,
+        stats.realizedPnlUsd.toFixed(6), avgPnl, avgPnlPct, "", "", coin,
+        `opens=${stats.opens}; closes=${stats.closes}; fees_usd=${stats.feesUsd.toFixed(6)}; `
+        + `last_event=${stats.lastEventTs ?? "n/a"}`,
+        "", stats.realizedPnlUsd.toFixed(6), "", "", "", "", "", stats.lastEventTs ?? "", "", "", "", "", "", "",
+      ]);
+    }
+
+    for (const [coin, pos] of [...bot.positions.entries()].sort(([a], [b]) => a.localeCompare(b))) {
+      const entry = pos.entry_price ?? 0;
+      const mid = args.hyperliquidMids.get(coin) ?? args.hyperliquidMids.get(coin.toUpperCase());
+      const isLong = pos.is_long === true;
+      let unrealizedPct: number | null = null;
+      if (entry > 0 && mid && mid > 0) {
+        unrealizedPct = isLong ? (mid / entry - 1) * 100 : (entry / mid - 1) * 100;
+      }
+      rows.push([
+        "hyperliquid_hybrid_open_position",
+        `hybrid-bot ${isLong ? "long" : "short"} ${coin}`,
+        "1", "", "", "",
+        "", "", "",
+        `HL-HYBRID-${coin}`, "open", coin,
+        `hyperliquid perp ${isLong ? "long" : "short"}; opened ${pos.entry_time ?? "n/a"}; `
+        + `mode=${pos.mode ?? "n/a"}; source=hyperliquid-hybrid-state.json; `
+        + `note=hybrid bot owns this position, not the LLM trader`,
+        unrealizedPct !== null ? unrealizedPct.toFixed(4) : "",
+        "",
+        "",
+        entry ? entry.toString() : "",
+        mid ? mid.toString() : "",
+        "hl_perp",
+        coin,
+        `${coin} perp`,
+        pos.entry_time ?? "",
+        "", "", "", "", "", "",
+      ]);
+    }
+  }
+
   const columnCount = CSV_HEADER.length;
   return rows
     .map((row) => csvLine([...row.slice(0, columnCount), ...Array(Math.max(0, columnCount - row.length)).fill("")]))
@@ -1064,6 +1325,7 @@ function buildMarkdownReport(args: {
   hypotheses: Hypothesis[];
   shadows: BlockedSignalShadow[];
   hypothesesById: Map<string, Hypothesis>;
+  hybridBot: HybridBotReport;
 }): string {
   const lines: string[] = [];
   lines.push("# Trader Performance Since Inception");
@@ -1085,6 +1347,11 @@ function buildMarkdownReport(args: {
   lines.push(`- Current cash: $${args.portfolio.cash.toFixed(4)}`);
   lines.push(`- Open positions: ${args.portfolio.positions.length}`);
   lines.push(`- Resolved shadow P&L: ${fmtUsd(args.allShadowStats.pnl)} (${args.allShadowStats.trades} resolved shadows, ${args.allShadowStats.wins}W/${args.allShadowStats.losses}L, ${winRate(args.allShadowStats)} win rate)`);
+  if (args.hybridBot.available) {
+    const t = args.hybridBot.totalsAcrossAllCoins;
+    const wr = t.trades > 0 ? `${((t.wins / t.trades) * 100).toFixed(1)}%` : "n/a";
+    lines.push(`- Hyperliquid hybrid bot (separate; LLM does not own): ${fmtUsd(t.realizedPnlUsd)} shadow realized over ${t.trades} closed trades (${t.wins}W/${t.losses}L, ${wr} win rate), ${args.hybridBot.positions.size} open, fees ${fmtUsd(t.feesUsd)}`);
+  }
   lines.push("");
   lines.push(...table("Win/Loss By Trade Setup Type", args.tradeSetupRows, 60));
   lines.push(...table("Win/Loss By Asset", args.assetRows, 30));
@@ -1120,7 +1387,7 @@ function writeOutput(path: string, content: string) {
   writeFileSync(path, content + "\n");
 }
 
-function main() {
+async function main() {
   const args = process.argv.slice(2);
   const outArg = args.find((arg) => arg.startsWith("--out="));
   const outPath = outArg ? outArg.slice("--out=".length) : null;
@@ -1196,11 +1463,20 @@ function main() {
     hypotheses,
     shadows,
     hypothesesById,
+    hybridBot: readHybridBotReport(),
+    hyperliquidMids: extractHyperliquidMids(latestSnapshot),
   };
+
+  const missingHybridCoins = [...reportArgs.hybridBot.positions.keys()]
+    .filter((coin) => !reportArgs.hyperliquidMids.has(coin) && !reportArgs.hyperliquidMids.has(coin.toUpperCase()));
+  await augmentMidsFromHyperliquid(reportArgs.hyperliquidMids, missingHybridCoins);
 
   const report = format === "csv" ? buildCsvReport(reportArgs) : buildMarkdownReport(reportArgs);
   if (outPath) writeOutput(outPath, report);
   console.log(report);
 }
 
-main();
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
