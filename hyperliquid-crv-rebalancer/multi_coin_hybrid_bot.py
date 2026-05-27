@@ -75,8 +75,8 @@ SIGNAL_THRESHOLD = 10   # N coins above EMA to trigger bull signal
 
 # All tradeable coins (must exist on Hyperliquid perp)
 ALL_COINS = [
-    "ADA", "APT", "ARB", "AVAX", "BCH", "CRV",
-    "DOT", "FARTCOIN", "INJ", "LIDO", "OP", "TRUMP",
+    "ADA", "APT", "ARB", "ATOM", "AVAX", "BCH",
+    "CRV", "DOT", "FARTCOIN", "INJ", "OP", "TRUMP",
 ]
 
 # Trading constants
@@ -204,9 +204,22 @@ def get_coin_sz_decimals(info, coin: str) -> int:
 # Multi-Coin Hybrid Bot
 # ---------------------------------------------------------------------------
 class MultiCoinHybridBot:
-    def __init__(self, coins: list, trade_size_usd: float, dry_run: bool = False):
+    def __init__(
+        self,
+        coins: list,
+        trade_size_usd: float,
+        dry_run: bool = False,
+        shadow_size_usd: Optional[float] = None,
+    ):
         self.coins = coins
+        # Notional sent to Hyperliquid for real fills. Must be >= the venue
+        # minimum (~$10 on Hyperliquid perps) or orders will not fill.
         self.trade_size_usd = trade_size_usd
+        # Notional written to the shadow-trade JSONL feed read by the
+        # polymarket-trader LLM. Defaults to the real size; set lower (e.g. $1)
+        # to keep the LLM's mental model in "probe trade" mode while the
+        # bot actually trades a larger size on Hyperliquid.
+        self.shadow_size_usd = shadow_size_usd if shadow_size_usd is not None else trade_size_usd
         self.dry_run = dry_run
         self.state = load_state()
 
@@ -247,7 +260,8 @@ class MultiCoinHybridBot:
             self.exchange = None
             self.sz_decimals = {c: 0 for c in coins}
 
-        log(f"Bot initialized | {len(coins)} coins | ${trade_size_usd}/trade | "
+        log(f"Bot initialized | {len(coins)} coins | "
+            f"${trade_size_usd}/trade (shadow=${self.shadow_size_usd}) | "
             f"{'DRY RUN' if dry_run else 'LIVE'}")
         active = [c for c, p in self.state["positions"].items() if p.get("in_position")]
         if active:
@@ -489,7 +503,7 @@ class MultiCoinHybridBot:
                         "action": "open",
                         "side": "long" if is_bull else "short",
                         "price": current_price,
-                        "size_usd": self.trade_size_usd,
+                        "size_usd": self.shadow_size_usd,
                         "regime": "bull" if is_bull else "bear",
                         "reason": f"ema{LONG_EMA if is_bull else SHORT_EMA}h_breakout",
                         "ema_diff_pct": ema_diff,
@@ -533,7 +547,7 @@ class MultiCoinHybridBot:
                         "side": "long" if was_long else "short",
                         "entry_price": entry_price,
                         "exit_price": current_price,
-                        "size_usd": self.trade_size_usd,
+                        "size_usd": self.shadow_size_usd,
                         "pnl_pct": gross_ret,
                         "regime": "bull" if is_bull else "bear",
                         "reason": "ema_reversion",
@@ -614,7 +628,11 @@ def main():
     parser.add_argument("--coins", type=str, default=None,
                         help="Comma-separated coins (default: all 12)")
     parser.add_argument("--trade-size", type=float, default=1.0,
-                        help="USD per trade (default: $1)")
+                        help="USD per trade actually sent to Hyperliquid "
+                             "(default: $1; must be >=$10 to fill on HL perps)")
+    parser.add_argument("--shadow-size", type=float, default=None,
+                        help="USD logged to the polymarket-trader shadow feed "
+                             "(default: same as --trade-size)")
     parser.add_argument("--dry-run", action="store_true",
                         help="Simulate only, no trades")
     args = parser.parse_args()
@@ -629,6 +647,7 @@ def main():
     bot = MultiCoinHybridBot(
         coins=coins,
         trade_size_usd=args.trade_size,
+        shadow_size_usd=args.shadow_size,
         dry_run=args.dry_run,
     )
     bot.run()

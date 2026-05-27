@@ -14,7 +14,7 @@ WorkingDirectory=/opt/polymarket-trader/hyperliquid-crv-rebalancer
 EnvironmentFile=/etc/polymarket-trader.env
 Environment=POLYMARKET_TRADER_STATE_DIR=/var/lib/polymarket-trader
 Environment=PYTHONUNBUFFERED=1
-ExecStart=/usr/bin/python3 /opt/polymarket-trader/hyperliquid-crv-rebalancer/multi_coin_hybrid_bot.py
+ExecStart=/usr/bin/python3 /opt/polymarket-trader/hyperliquid-crv-rebalancer/multi_coin_hybrid_bot.py --trade-size 10 --shadow-size 1
 Restart=always
 RestartSec=30
 StandardOutput=journal

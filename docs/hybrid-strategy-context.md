@@ -10,11 +10,12 @@ awareness about what real capital is currently doing on Hyperliquid.
 
 A long-running Python daemon (`hyperliquid-crv-rebalancer/multi_coin_hybrid_bot.py`)
 that trades 12 perp markets on Hyperliquid using a regime-switching trend
-strategy. Trade size is **$1 notional per trade per coin** (intentionally small;
-this is the live-validation tier, not size).
+strategy. Real trades are $10 notional per coin per fill (Hyperliquid's perp
+minimum), but the shadow-trade feed you see logs $1 notional per trade.
+Treat this as a probe-sized live-validation tier, not a size book.
 
 Universe (12 coins):
-`ADA, APT, ARB, AVAX, BCH, CRV, DOT, FARTCOIN, INJ, LIDO, OP, TRUMP`
+`ADA, APT, ARB, ATOM, AVAX, BCH, CRV, DOT, FARTCOIN, INJ, OP, TRUMP`
 
 ## The strategy in one paragraph
 
@@ -34,7 +35,8 @@ overlay.
 | Signal EMA | 3h | 5h |
 | Entry threshold | price < EMA × (1 − 0.5%) | price > EMA × (1 + 1.0%) |
 | Exit threshold | price > EMA × (1 + 0.5%) | price < EMA × (1 − 1.0%) |
-| Trade size | $1 USD notional | $1 USD notional |
+| Trade size (real) | $10 USD notional | $10 USD notional |
+| Trade size (shadow log) | $1 USD notional | $1 USD notional |
 
 Regime switch:
 - **Bull on**: ≥ 10/12 coins have `price > 50h_EMA` for every one of the last 24 hourly bars.
