@@ -18708,3 +18708,41 @@ Gold short (PC_RATIO_EXTREME_LOW) at expiration brink with +1.15%; thesis based 
 
 ---
 
+### 2026-05-27 21:28 UTC
+
+**Portfolio:** $98.52 total | Cash $96.52 | 2 open | P&L $1.0049 | 53% win rate (156 trades)
+
+**Closed 1 trades:**
+- ✅ GOLD short via spot/spot [GOLD spot] (PC_RATIO_EXTREME_LOW) → expiry: +$0.0117 (1.2%, market 0.0117, funding 0.0000)
+
+**Opened 1 positions:**
+- GOLD short @ $4458 via spot/spot [GOLD spot] (PC_RATIO_EXTREME_LOW)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 21.1pp (was 5.8, now -15.3)
+- [anomaly] gold_opt_iv_30d = 42.3 is 5.9 std devs from mean (24.08 ± 3.10)
+- [anomaly] oil_opt_fwd_90d = 161.4 is 2.4 std devs from mean since 2026-04-28 (89.52 ± 30.32)
+- [anomaly] btc_ibit_pc_ratio = 1.007 is 2.3 std devs from mean (0.58 ± 0.19)
+- [anomaly] oil_brent_spot = 93.12 is -2.3 std devs from mean since 2026-04-28 (104.51 ± 5.04)
+
+**Blocked signal learning:**
+- Open blocked shadows: 96
+- Resolved blocked shadows: 304 (130 wins / 174 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+13.60%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+1.13%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+1.43%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT GOLD short via polymarket would have expired (-1.53%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h since last call; daily budget 10/12; next scheduled 2026-05-27T23:28:26.697Z). Mechanical cycle ran normally._
+
+---
+
