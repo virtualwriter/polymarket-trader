@@ -387,11 +387,19 @@ class MultiCoinHybridBot:
 
     # ---- Per-Coin Position Sizing ----
     def calc_position_size(self, coin: str, price: float) -> float:
-        """Calculate perp position size for a $X trade."""
+        """Calculate perp position size for a ~$trade_size_usd trade.
+
+        Uses ceil() so the post-rounding notional is always >= the requested
+        trade size (and therefore >= Hyperliquid's $10 minimum order value).
+        Flooring caused every order to land at e.g. $9.51-9.99 and be rejected
+        as "Order must have minimum value of $10". The overshoot from ceiling
+        is bounded by one size-decimal tick, well under 2% on every supported
+        coin at $10 notional.
+        """
         sz_dec = self.sz_decimals.get(coin, 0)
         notional = self.trade_size_usd
         size = notional / price
-        return math.floor(size * (10 ** sz_dec)) / (10 ** sz_dec)
+        return math.ceil(size * (10 ** sz_dec)) / (10 ** sz_dec)
 
     # ---- Order Execution ----
     def open_perp_position(self, coin: str, is_buy: bool, size: float, price: float) -> bool:
