@@ -3,6 +3,9 @@ Description=Hyperliquid multi-coin hybrid trend bot (long-running)
 Documentation=https://github.com/virtualwriter/polymarket-trader
 After=network-online.target
 Wants=network-online.target
+# 5 minutes of repeated crashes -> stop trying so we don't burn the API.
+StartLimitIntervalSec=300
+StartLimitBurst=5
 
 [Service]
 Type=simple
@@ -14,9 +17,6 @@ Environment=PYTHONUNBUFFERED=1
 ExecStart=/usr/bin/python3 /opt/polymarket-trader/hyperliquid-crv-rebalancer/multi_coin_hybrid_bot.py
 Restart=always
 RestartSec=30
-# 5 minutes of repeated crashes -> stop trying so we don't burn the API.
-StartLimitIntervalSec=300
-StartLimitBurst=5
 StandardOutput=journal
 StandardError=journal
 KillSignal=SIGINT
