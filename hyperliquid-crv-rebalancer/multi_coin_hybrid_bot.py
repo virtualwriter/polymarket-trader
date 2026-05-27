@@ -50,6 +50,11 @@ load_dotenv()
 
 PRIVATE_KEY = os.getenv("HYPERLIQUID_PRIVATE_KEY")
 MNEMONIC = os.getenv("HYPERLIQUID_MNEMONIC")
+# When using an API agent wallet, the signing key (derived from PRIVATE_KEY or
+# MNEMONIC) belongs to the agent, but margin/positions live on the master
+# account. Set HYPERLIQUID_ACCOUNT_ADDRESS to the master wallet so the SDK
+# routes orders + queries against the funded account.
+ACCOUNT_ADDRESS = os.getenv("HYPERLIQUID_ACCOUNT_ADDRESS")
 USE_MAINNET = os.getenv("HYPERLIQUID_MAINNET", "true").lower() == "true"
 
 
@@ -244,10 +249,20 @@ class MultiCoinHybridBot:
                 sys.exit(1)
 
             self.account = eth_account.Account.from_key(pk)
-            self.address = self.account.address
+            agent_address = self.account.address
+            # If HYPERLIQUID_ACCOUNT_ADDRESS is set we treat the signing key as
+            # an API agent wallet and route orders to the master account. If
+            # not set we fall back to the agent address (single-wallet setup).
+            self.address = ACCOUNT_ADDRESS if ACCOUNT_ADDRESS else agent_address
+            if ACCOUNT_ADDRESS and ACCOUNT_ADDRESS.lower() != agent_address.lower():
+                log(f"Using API agent {agent_address} signing for master {ACCOUNT_ADDRESS}")
             base_url = constants.MAINNET_API_URL if USE_MAINNET else constants.TESTNET_API_URL
             self.info = Info(base_url, skip_ws=True)
-            self.exchange = Exchange(self.account, base_url)
+            self.exchange = Exchange(
+                self.account,
+                base_url,
+                account_address=ACCOUNT_ADDRESS if ACCOUNT_ADDRESS else None,
+            )
 
             # Cache size decimals per coin
             self.sz_decimals = {}
@@ -388,7 +403,15 @@ class MultiCoinHybridBot:
                         filled = s["filled"]
                         log(f"{coin}: Filled {filled['totalSz']} @ ${filled['avgPx']}")
                         return True
-                log(f"{coin}: Order placed but not filled")
+                # Surface the actual rejection reason. Without this, errors
+                # like "Insufficient margin" silently look identical to a
+                # benign no-fill and the operator cannot tell anything is
+                # wrong from the journal alone.
+                errors = [s.get("error") for s in statuses if isinstance(s, dict) and s.get("error")]
+                if errors:
+                    log(f"{coin}: Order rejected: {'; '.join(errors)}")
+                else:
+                    log(f"{coin}: Order placed but not filled (response={statuses})")
                 return False
             else:
                 log(f"{coin}: Order failed: {result}")
