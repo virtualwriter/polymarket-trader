@@ -28,7 +28,9 @@ from collections import OrderedDict
 # ---------------------------------------------------------------------------
 BASE_DIR = Path(__file__).parent
 INITIAL_CAPITAL = 10_000.0
-TAKER_FEE = 0.035  # 3.5 bps
+TAKER_FEE = 0.045  # 4.5 bps — Hyperliquid standard taker (observed live).
+# Historical reference: backtests run before 2026-05-27 assumed 3.5 bps; flip
+# back with --fee 0.035 for apples-to-apples comparisons against older logs.
 
 # Short leg (normal mode)
 SHORT_EMA = 3
@@ -289,7 +291,13 @@ def main():
     parser.add_argument("--csv", action="store_true", help="Export CSV")
     parser.add_argument("--csv-file", type=str, default="hybrid_breakdown.csv",
                         help="CSV output filename")
+    parser.add_argument("--fee", type=float, default=None,
+                        help="Override taker fee in percent (e.g. 0.045 = 4.5 bps)")
     args = parser.parse_args()
+
+    global TAKER_FEE
+    if args.fee is not None:
+        TAKER_FEE = args.fee
 
     all_coins = discover_coins()
     coin_list = [args.coin] if args.coin else list(all_coins.keys())
