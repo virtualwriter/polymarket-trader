@@ -18644,3 +18644,35 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-05-27 19:28 UTC
+
+**Portfolio:** $98.51 total | Cash $96.51 | 2 open | P&L $1.0049 | 53% win rate (156 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_ibit_pc_ratio = 1.024 is 2.4 std devs from mean (0.58 ± 0.18)
+- [anomaly] oil_brent_spot = 92.94 is -2.3 std devs from mean since 2026-04-28 (104.56 ± 5.00)
+- [anomaly] oil_wti_spot = 89.34 is -2.2 std devs from mean since 2026-04-28 (99.68 ± 4.68)
+- [anomaly] hype_med_max = 86 is 2.2 std devs from mean (63.46 ± 10.30)
+- [anomaly] gold_opt_fwd_90d = 4514 is -2.2 std devs from mean (4722.23 ± 95.49)
+
+**Blocked signal learning:**
+- Open blocked shadows: 98
+- Resolved blocked shadows: 302 (129 wins / 173 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-3.10%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-8.60%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+13.60%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+1.13%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (3 recurring signals seen within 6h); 2.0h since last call; daily budget 9/12; next scheduled 2026-05-27T21:28:27.455Z). Mechanical cycle ran normally._
+
+---
+
