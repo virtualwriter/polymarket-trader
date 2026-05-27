@@ -18352,3 +18352,35 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 4/12; ne
 
 ---
 
+### 2026-05-27 10:32 UTC
+
+**Portfolio:** $98.51 total | Cash $97.51 | 1 open | P&L $-0.4912 | 51% win rate (163 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved wider by 8.3pp (was -1.5, now 6.8)
+- [anomaly] hype_hl_funding_ann = -39.98 is -3.2 std devs from mean (5.56 ± 14.34)
+- [anomaly] gold_med_min = 4205 is -2.4 std devs from mean (4361.49 ± 65.70)
+- [anomaly] hype_spot = 62.898 is 2.3 std devs from mean (45.58 ± 7.40)
+- [anomaly] oil_brent_spot = 93.82 is -2.3 std devs from mean since 2026-04-28 (104.72 ± 4.84)
+
+**Blocked signal learning:**
+- Open blocked shadows: 100
+- Resolved blocked shadows: 298 (127 wins / 171 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.82%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-3.57%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-5.33%)
+
+**LLM analysis:**
+HYPE is experiencing what looks like a powerful short‑squeeze: price up 5% in hours, OI at record highs, and funding heavily negative (shorts paying longs). This is consistent with momentum continuation and is being tracked by the promoted H‑521 family, but that family’s ‘funding normalized’ gate prevents it from entering while funding is this extreme. The existing GOLD short (T‑1779481832300‑m49c) is +0.67% and the original catalyst—extremely low P/C ratio (heavy call buying)—has faded sharply: GLD P/C ratio has jumped from 0.25 to 0.863, indicating that call‑buying frenzy may be exhausted. This suggests the contrarian short thesis is nearing its natural end, but the position is mechanical‑exit only, so no action can be taken. Oil’s slide is macro‑driven (Iran peace expectations) and the Brent‑WTI spread widening to 3.5 implies near‑term weakness; one‑touch NO shadows on oil remain attractive as long as the sell‑YES edge persists. Overall, crypto‑alt risk remains elevated as shown by HYPE, while gold and oil face macro headwinds.
+
+---
+
