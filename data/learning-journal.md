@@ -18416,3 +18416,35 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 5/12; ne
 
 ---
 
+### 2026-05-27 13:31 UTC
+
+**Portfolio:** $98.51 total | Cash $97.51 | 1 open | P&L $-0.4912 | 51% win rate (163 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_brent_spot = 93.42 is -2.3 std devs from mean since 2026-04-28 (104.67 ± 4.89)
+- [anomaly] oil_wti_spot = 89.64 is -2.2 std devs from mean since 2026-04-28 (99.78 ± 4.59)
+- [anomaly] gold_gc_spot = 4411 is -2.2 std devs from mean (4611.74 ± 92.63)
+- [anomaly] hype_spot = 61.687 is 2.2 std devs from mean (45.64 ± 7.45)
+- [anomaly] hype_med_max = 84.6 is 2.1 std devs from mean (63.28 ± 10.15)
+
+**Blocked signal learning:**
+- Open blocked shadows: 99
+- Resolved blocked shadows: 300 (127 wins / 173 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-3.57%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-5.33%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-3.10%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-8.60%)
+
+**LLM analysis:**
+Today’s most notable event was the gold crash of over $100 within hours, dragging spot to $4,411. The GOLD short position (PC_RATIO_EXTREME_LOW) has benefitted, now +2.2% and nearing its 3% target. The original signal was based on an extremely low GLD P/C ratio (0.25), which has since normalized to 0.86, indicating the contrarian setup played out. Mechanical exit rules remain in place and no LLM close is permitted. Oil continued its orderly decline, with spot now approaching the Polymarket settle EV of $85.6, and Brent‑WTI spread widening. BTC and HYPE remained relatively stable, with HYPE showing institutional accumulation (OI above 1.34B). The macro backdrop remains neutral/hawkish. The relative‑value heatmap continues to signal cheap upside hit contracts across BTC, ETH, and Gold, consistent with the one‑touch NO edge strategy. Gold’s flash crash tested the limits of the PC_RATIO_EXTREME_LOW signal family, which will be updated with this large‑move data point.
+
+---
+
