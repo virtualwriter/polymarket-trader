@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-27T10:30:17.624Z",
+  "generatedAt": "2026-05-27T12:29:34.357Z",
   "dataFreshness": {
-    "valuationRows": 630,
-    "latestValuationAt": "2026-05-27T10",
-    "macroRows": 630,
+    "valuationRows": 631,
+    "latestValuationAt": "2026-05-27T12",
+    "macroRows": 631,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-27T10"
+    "latestInstrumentSnapshotAt": "2026-05-27T12"
   },
   "portfolio": {
     "cash": 97.5088,
@@ -13,7 +13,7 @@
     "realizedPnl": -0.4912,
     "totalTrades": 163,
     "winRatePct": 50.9,
-    "unrealizedPnl": 0.0067
+    "unrealizedPnl": 0.0122
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 0.67,
-      "currentPrice": 4480,
-      "underlyingPrice": 4480,
+      "pnlPct": 1.22,
+      "currentPrice": 4455,
+      "underlyingPrice": 4455,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -171,7 +171,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 100,
+    "openCount": 101,
     "resolvedCount": 298,
     "wouldHaveWon": 127,
     "wouldHaveLost": 171,
@@ -393,22 +393,6 @@
     ],
     "openQualityWarnings": [
       {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
-        "asset": "HYPE",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-hyperliquid-hit-before-2027 — YES — Will Hyperliquid dip to $16 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.07,
-          "yesAsk": 0.09,
-          "yesSpread": 0.02,
-          "liquidity": 45693.34,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 41.7pt edge on HYPE; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration."
-      },
-      {
         "signalType": "PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT",
         "asset": "GOLD",
         "blockedReason": "polymarket_proxy_short",
@@ -519,6 +503,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.4pt on SPY, spread 1.7c, liquidity 7003. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "GOLD",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-price-will-xauusd-hit-in-may-2026 — NO — Will Gold (XAUUSD) hit (HIGH) $4,600 in May?",
+        "marketQuality": {
+          "yesBid": 0.07,
+          "yesAsk": 0.09,
+          "yesSpread": 0.02,
+          "liquidity": 8316.88,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 10.8pt after haircuts. CBOE gap 13.3pt, CME gap 12.9pt, source agreement both_positive, spread 2.0c, liquidity 8317. Shadow-only calibration trade; hold 5d or exit if adjusted gap disappears."
       }
     ]
   },

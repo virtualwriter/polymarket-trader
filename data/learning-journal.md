@@ -18384,3 +18384,35 @@ HYPE is experiencing what looks like a powerful short‑squeeze: price up 5% in 
 
 ---
 
+### 2026-05-27 12:29 UTC
+
+**Portfolio:** $98.51 total | Cash $97.51 | 1 open | P&L $-0.4912 | 51% win rate (163 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_brent_spot = 92.74 is -2.5 std devs from mean since 2026-04-28 (104.70 ± 4.87)
+- [anomaly] oil_wti_spot = 88.8 is -2.4 std devs from mean since 2026-04-28 (99.80 ± 4.57)
+- [anomaly] hype_spot = 62.847 is 2.3 std devs from mean (45.61 ± 7.43)
+- [anomaly] gold_med_min = 4217 is -2.2 std devs from mean (4361.26 ± 65.90)
+- [anomaly] hype_med_max = 84.6 is 2.1 std devs from mean (63.25 ± 10.12)
+
+**Blocked signal learning:**
+- Open blocked shadows: 101
+- Resolved blocked shadows: 298 (127 wins / 171 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.82%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-3.57%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-5.33%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 2.0h since last call; daily budget 5/12; next scheduled 2026-05-27T14:29:34.377Z). Mechanical cycle ran normally._
+
+---
+
