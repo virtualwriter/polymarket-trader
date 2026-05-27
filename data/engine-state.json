@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-27T02:29:34.740Z",
+  "generatedAt": "2026-05-27T03:29:31.337Z",
   "dataFreshness": {
-    "valuationRows": 624,
-    "latestValuationAt": "2026-05-27T02",
-    "macroRows": 624,
+    "valuationRows": 625,
+    "latestValuationAt": "2026-05-27T03",
+    "macroRows": 625,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-27T02"
+    "latestInstrumentSnapshotAt": "2026-05-27T03"
   },
   "portfolio": {
     "cash": 97.5088,
@@ -13,7 +13,7 @@
     "realizedPnl": -0.4912,
     "totalTrades": 163,
     "winRatePct": 50.9,
-    "unrealizedPnl": 0.0011
+    "unrealizedPnl": 0.0004
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 0.11,
-      "currentPrice": 4505,
-      "underlyingPrice": 4505,
+      "pnlPct": 0.04,
+      "currentPrice": 4508,
+      "underlyingPrice": 4508,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -171,7 +171,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 102,
+    "openCount": 103,
     "resolvedCount": 293,
     "wouldHaveWon": 125,
     "wouldHaveLost": 168,
@@ -397,22 +397,6 @@
     ],
     "openQualityWarnings": [
       {
-        "signalType": "PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT",
-        "asset": "GOLD",
-        "blockedReason": "polymarket_proxy_short",
-        "instrumentLabel": "gc-over-under-jun-2026 — NO — Will Gold (GC) settle over $6,000 on the final trading day of June 2026?",
-        "marketQuality": {
-          "yesBid": 0.019,
-          "yesAsk": 0.031,
-          "yesSpread": 0.012,
-          "liquidity": 1676.78,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[PM PROXY SHORT SHADOW] Real GOLD short via spot/spot (PC_RATIO_EXTREME_LOW). Track buying NO on the comparable Polymarket upside contract."
-      },
-      {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
         "blockedReason": "one_touch_high_edge_shadow",
@@ -523,6 +507,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.4pt on SPY, spread 1.7c, liquidity 7003. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "OIL",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-price-will-wti-hit-in-may-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $100 in May?",
+        "marketQuality": {
+          "yesBid": 0.24,
+          "yesAsk": 0.26,
+          "yesSpread": 0.02,
+          "liquidity": 12008.34,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 12.5pt after haircuts. CBOE gap 22.5pt, CME gap 19.7pt, source agreement both_positive, spread 1.0c, liquidity 12008. Shadow-only calibration trade; hold 6d or exit if adjusted gap disappears."
       }
     ]
   },
