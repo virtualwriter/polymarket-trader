@@ -18095,3 +18095,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 12/12; n
 
 ---
 
+### 2026-05-27 00:32 UTC
+
+**Portfolio:** $98.51 total | Cash $97.51 | 1 open | P&L $-0.4912 | 51% win rate (163 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 30.5pp (was -5.8, now 24.7)
+- [anomaly] oil_pm_iv = 85.4 is 2.5 std devs from mean since 2026-04-28 (63.43 ± 8.90)
+- [anomaly] hype_med_max = 83.6 is 2.1 std devs from mean (63.00 ± 9.98)
+- [anomaly] hype_spot = 60.114 is 2.0 std devs from mean (45.38 ± 7.22)
+- [correlation_flip] BTC-GOLD correlation shifted from -0.41 to 0.79. Rolling correlation: 24h=0.55, 7d=0.37, 30d=-0.24. Current 24h corr is at 52th pct of last 25 daily 24h-rolling values (range -0.77 to 0.92).
+
+**Blocked signal learning:**
+- Open blocked shadows: 101
+- Resolved blocked shadows: 293 (125 wins / 168 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.32%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.02%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-3.17%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+4.35%)
+
+**LLM analysis:**
+Today's most notable anomaly is the oil PM IV dislocation: PM IV at 85.4% vs 30-day option IV 60.7% (24.7pp gap, 2.5σ). This mirrors earlier manual IV-touch rich NO setups that performed well in shadows (10/13 wins, avg +20.75%) and suggests a potential one-touch NO edge, though the heatmap shows no qualifying sell-edge >1pt right now. The GOLD P/C ratio explosion from 0.22 to 0.86 is unprecedented in this dataset and warrants caution for any contrarian-short gold trades; the mechanical PC_RATIO_EXTREME_LOW exit will handle risk via its hard stop. HYPE remains vulnerable to long liquidations given high funding and falling spot, which aligns with the earlier H-521 momentum degradation. No actionable LLM entries or closes today; continue shadow testing the proposed oil IV anomaly variant.
+
+---
+
