@@ -1281,26 +1281,33 @@ function buildCsvReport(args: {
       ]);
     }
 
+    const HYBRID_SHADOW_SIZE_USD = 1.0;
     for (const [coin, pos] of [...bot.positions.entries()].sort(([a], [b]) => a.localeCompare(b))) {
       const entry = pos.entry_price ?? 0;
       const mid = args.hyperliquidMids.get(coin) ?? args.hyperliquidMids.get(coin.toUpperCase());
       const isLong = pos.is_long === true;
       let unrealizedPct: number | null = null;
+      let unrealizedUsd: number | null = null;
       if (entry > 0 && mid && mid > 0) {
         unrealizedPct = isLong ? (mid / entry - 1) * 100 : (entry / mid - 1) * 100;
+        unrealizedUsd = (unrealizedPct / 100) * HYBRID_SHADOW_SIZE_USD;
       }
+      const sideLabel = isLong ? "long" : "short";
+      const groupLabel = `hyperliquid_hybrid_shadow / HL_HYBRID_${sideLabel.toUpperCase()} / ${coin}`;
       rows.push([
-        "hyperliquid_hybrid_open_position",
-        `hybrid-bot ${isLong ? "long" : "short"} ${coin}`,
-        "1", "", "", "",
+        "currently_open_shadow_trade",
+        groupLabel,
+        "", "", "", "",
         "", "", "",
         `HL-HYBRID-${coin}`, "open", coin,
-        `hyperliquid perp ${isLong ? "long" : "short"}; opened ${pos.entry_time ?? "n/a"}; `
-        + `mode=${pos.mode ?? "n/a"}; source=hyperliquid-hybrid-state.json; `
-        + `note=hybrid bot owns this position, not the LLM trader`,
+        `hyperliquid perp ${sideLabel} shadow; opened ${pos.entry_time ?? "n/a"}; `
+        + `mode=${pos.mode ?? "n/a"}; instrument_type=hl_perp; instrument_id=${coin}; `
+        + `entry=${entry || "n/a"}; current=${mid ?? "n/a"}; shadow_size_usd=${HYBRID_SHADOW_SIZE_USD}; `
+        + `source=hyperliquid-hybrid-state.json; `
+        + `note=Hyperliquid hybrid bot shadow — LLM trader does not own this position`,
         unrealizedPct !== null ? unrealizedPct.toFixed(4) : "",
         "",
-        "",
+        unrealizedUsd !== null ? unrealizedUsd.toFixed(6) : "",
         entry ? entry.toString() : "",
         mid ? mid.toString() : "",
         "hl_perp",
