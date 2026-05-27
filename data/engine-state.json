@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-27T13:29:32.936Z",
+  "generatedAt": "2026-05-27T14:29:43.212Z",
   "dataFreshness": {
-    "valuationRows": 632,
-    "latestValuationAt": "2026-05-27T13",
-    "macroRows": 632,
+    "valuationRows": 633,
+    "latestValuationAt": "2026-05-27T14",
+    "macroRows": 633,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-27T13"
+    "latestInstrumentSnapshotAt": "2026-05-27T14"
   },
   "portfolio": {
     "cash": 97.5088,
@@ -13,7 +13,7 @@
     "realizedPnl": -0.4912,
     "totalTrades": 163,
     "winRatePct": 50.9,
-    "unrealizedPnl": 0.022
+    "unrealizedPnl": 0.0149
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 2.2,
-      "currentPrice": 4411,
-      "underlyingPrice": 4411,
+      "pnlPct": 1.49,
+      "currentPrice": 4443,
+      "underlyingPrice": 4443,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -171,9 +171,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 99,
-    "resolvedCount": 300,
-    "wouldHaveWon": 127,
+    "openCount": 98,
+    "resolvedCount": 302,
+    "wouldHaveWon": 129,
     "wouldHaveLost": 173,
     "bySignal": [
       {
@@ -242,42 +242,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 4.35,
-        "resolvedAt": "2026-05-26T22:29:32.916Z",
-        "marketQuality": {
-          "yesBid": 0.54,
-          "yesAsk": 0.55,
-          "yesSpread": 0.01,
-          "liquidity": 27310.78,
-          "flags": []
-        }
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -3.17,
-        "resolvedAt": "2026-05-27T05:29:33.152Z",
-        "marketQuality": {
-          "yesBid": 0.37,
-          "yesAsk": 0.38,
-          "yesSpread": 0.01,
-          "liquidity": 74042.42,
-          "flags": []
-        }
-      },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
         "asset": "OIL",
@@ -392,6 +356,42 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 13.6,
+        "resolvedAt": "2026-05-27T14:29:43.073Z",
+        "marketQuality": {
+          "yesBid": 0.14,
+          "yesAsk": 0.15,
+          "yesSpread": 0.01,
+          "liquidity": 30516.01,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 1.13,
+        "resolvedAt": "2026-05-27T14:29:43.073Z",
+        "marketQuality": {
+          "yesBid": 0.03,
+          "yesAsk": 0.032,
+          "yesSpread": 0.002,
+          "liquidity": 230036.88,
+          "flags": []
         }
       }
     ],

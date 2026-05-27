@@ -18448,3 +18448,39 @@ Today’s most notable event was the gold crash of over $100 within hours, dragg
 
 ---
 
+### 2026-05-27 14:30 UTC
+
+**Portfolio:** $98.51 total | Cash $96.51 | 2 open | P&L $-0.4912 | 51% win rate (163 trades)
+
+**Opened 1 positions:**
+- OIL long @ $89.9 via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_brent_spot = 93.61 is -2.2 std devs from mean since 2026-04-28 (104.65 ± 4.91)
+- [anomaly] gold_gld_pc_ratio = 0.098 is -2.1 std devs from mean (0.56 ± 0.21)
+- [anomaly] oil_wti_spot = 89.9 is -2.1 std devs from mean since 2026-04-28 (99.76 ± 4.61)
+- [anomaly] hype_med_max = 84.9 is 2.1 std devs from mean (63.32 ± 10.18)
+- [anomaly] amzn_pc_ratio = 0.185 is -2.0 std devs from mean (0.43 ± 0.12)
+
+**Blocked signal learning:**
+- Open blocked shadows: 98
+- Resolved blocked shadows: 302 (129 wins / 173 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-3.10%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-8.60%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+13.60%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+1.13%)
+
+**LLM analysis:**
+Gold P/C ratio dropped from 0.863 to 0.098 in a single snapshot—an extreme reading that, if genuine, reinforces the contrarian short thesis, though such a large single-observation move warrants caution. The open GOLD short is +1.49% and headed into its final 6h; the mechanical scanner will handle the exit. No new trades: one-touch NO edges on SPY and some OIL contracts exist but spreads are either wide or liquidity is below 5000, so they remain in the shadow tier. The hypothesis testing backlog is heavy (19 families need more tests, 9 pending), so I will defer new hypothesis creation until the active retest queue clears.
+
+---
+

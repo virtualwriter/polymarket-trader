@@ -1,11 +1,40 @@
 {
-  "generatedAt": "2026-05-27T13:31:02.245Z",
+  "generatedAt": "2026-05-27T14:30:37.562Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [],
+  "entrySignals": [
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.90375,
+      "confidence": 0.6062956846464174,
+      "thesis": "OIL P/C ratio 1.92 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 89.9,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 5
+    },
+    {
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "short",
+      "strength": 1,
+      "confidence": 0.5043908642919581,
+      "thesis": "GOLD P/C ratio 0.10 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 4443,
+      "targetPct": 5,
+      "stopPct": 2,
+      "expiryDays": 5
+    }
+  ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
