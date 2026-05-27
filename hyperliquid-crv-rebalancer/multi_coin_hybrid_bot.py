@@ -79,9 +79,14 @@ def derive_private_key(mnemonic: str, index: int = 0) -> str:
     return acct.key.hex()
 
 # Strategy params (from backtest optimization)
-SHORT_EMA = 3
-SHORT_ENTRY = 0.5      # %
-SHORT_EXIT = 0.5       # %
+# Short leg (default state in bear regime). Tuned via fee_aware_grid.py at
+# 4.5 bps real Hyperliquid taker: asymmetric tight-entry / wide-exit dominates
+# the prior 0.5%/0.5% setting by +110pt avg return with 66% fewer round-trips.
+# Source: fee_aware_grid.py output 2026-05-27. EMA=4h entry=0.30% exit=1.50%
+# was the global portfolio optimum (0/13 coins negative in backtest).
+SHORT_EMA = 4
+SHORT_ENTRY = 0.30     # %
+SHORT_EXIT = 1.50      # %
 
 LONG_EMA = 5
 LONG_ENTRY = 1.0       # %
