@@ -2,6 +2,7 @@
 import { closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadOperationallyTaintedTrades } from "./portfolio-ledger.js";
 
 type Outcome = "win" | "loss";
 
@@ -130,12 +131,7 @@ const RELATIVE_VALUE_HISTORY_DIRS = [
   join(ROOT, "relative-value", "backtest-history"),
 ].filter((path): path is string => Boolean(path));
 const ONE_TOUCH_TERMINAL_ONLY_SIGMA = 1.5;
-const OPERATIONALLY_TAINTED_TRADES: Record<string, string> = {
-  "T-1778707778058-9nsi": "hourly LLM close had authority over rule-owned funding trade",
-  "T-1778718867328-1tjp": "one-touch NO inherited generic 2% Polymarket stop instead of 100% hold-to-expiry stop",
-  "T-1779049817841-htfg": "strike-IV-skew data-quality artifact; excluded from live trader totals",
-  "T-1779478230785-kc6x": "sub-cent one-sided Polymarket entry artifact outside the trader thesis",
-};
+const OPERATIONALLY_TAINTED_TRADES: Record<string, string> = loadOperationallyTaintedTrades();
 const CSV_HEADER = [
   "section",
   "group",

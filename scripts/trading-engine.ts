@@ -13,6 +13,11 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statSync, openSync, readSync, closeSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
+import {
+  isContaminatedTrade as isLedgerContaminatedTrade,
+  operationallyTaintedTradeIds,
+  recomputePortfolioTotalsFromLedger,
+} from "./portfolio-ledger.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -216,12 +221,7 @@ const LIVE_SIGNAL_ALLOWLIST = new Set([
   "FUNDING_EXTREME_LONG",
 ]);
 const LIVE_PROMOTED_HYPOTHESIS_IDS = new Set(["H-521", "H-523"]);
-const OPERATIONALLY_TAINTED_TRADE_IDS = new Set([
-  "T-1778707778058-9nsi", // Hourly LLM close had authority over a rule-owned funding trade.
-  "T-1778718867328-1tjp", // One-touch NO inherited generic 2% Polymarket stop instead of 100%.
-  "T-1779049817841-htfg", // Strike-IV-skew data-quality artifact; exclude permanently from totals.
-  "T-1779478230785-kc6x", // Sub-cent one-sided Polymarket entry; near-resolved artifact outside the thesis.
-]);
+const OPERATIONALLY_TAINTED_TRADE_IDS = operationallyTaintedTradeIds();
 const LOOKBACK_HOURS = 24;
 const NO_LLM = process.argv.includes("--no-llm");
 const DRY_RUN = process.argv.includes("--dry-run");
@@ -1256,7 +1256,21 @@ function loadPortfolio(): Portfolio {
     lossCount: 0,
     lastUpdated: new Date().toISOString(),
   });
-  return readJsonPath<Portfolio>(LIVE_PORTFOLIO_FILE, trackedPortfolio);
+  const portfolio = readJsonPath<Portfolio>(LIVE_PORTFOLIO_FILE, trackedPortfolio);
+  // Counters are derived from the cleaned trades-detailed.csv on every load so
+  // that accumulator drift (duplicate fills, contaminated closes baked into
+  // totalRealizedPnl) self-heals next cycle. cash and positions still come
+  // from disk because they reflect open exposure, not closed-trade history.
+  try {
+    const totals = recomputePortfolioTotalsFromLedger();
+    portfolio.totalTrades = totals.totalTrades;
+    portfolio.winCount = totals.winCount;
+    portfolio.lossCount = totals.lossCount;
+    portfolio.totalRealizedPnl = totals.totalRealizedPnl;
+  } catch (err) {
+    console.error(`[portfolio] recompute from ledger failed; using on-disk counters: ${(err as Error).message}`);
+  }
+  return portfolio;
 }
 
 function savePortfolio(p: Portfolio) {
@@ -1950,7 +1964,7 @@ function reconcileClosedGhostPositions(portfolio: Portfolio): string[] {
       survivors.push(p);
       continue;
     }
-    const tainted = OPERATIONALLY_TAINTED_TRADE_IDS.has(ghost.id) || ghost.closeReason === "data_quality_artifact";
+    const tainted = isLedgerContaminatedTrade(ghost);
     if (tainted) {
       notes.push(
         `KILLED tainted ghost ${p.id} (${p.asset} ${p.direction} via ${p.venue}/${p.instrumentType ?? "legacy"}, ${p.signalType}) — already closed/excluded in trades-detailed.csv (reason=${ghost.closeReason}, pnl=${ghost.pnl >= 0 ? "+" : ""}$${ghost.pnl.toFixed(4)}); removed without re-adding cash or realized P&L.`,
@@ -2272,9 +2286,14 @@ function realizeClosedPosition(
   };
 
   portfolio.cash += position.size + mark.pnl;
-  portfolio.totalRealizedPnl += mark.pnl;
-  portfolio.totalTrades++;
-  if (mark.pnl >= 0) portfolio.winCount++; else portfolio.lossCount++;
+  // Skip contaminated trades from portfolio counters even within the cycle.
+  // Final source of truth is recomputePortfolioTotalsFromLedger() on next load;
+  // this guard prevents same-cycle drift in logs / live snapshot.
+  if (!isLedgerContaminatedTrade(trade)) {
+    portfolio.totalRealizedPnl += mark.pnl;
+    portfolio.totalTrades++;
+    if (mark.pnl >= 0) portfolio.winCount++; else portfolio.lossCount++;
+  }
   return trade;
 }
 
@@ -5914,10 +5933,8 @@ function humanCloseReason(reason: ClosedTrade["closeReason"]): string {
   }
 }
 
-function isContaminatedTrade(trade: ClosedTrade, setupId: string): boolean {
-  if (OPERATIONALLY_TAINTED_TRADE_IDS.has(trade.id)) return true;
-  if (trade.closeReason.includes("DATA_CORRECTION_ARTIFACT")) return true;
-  if (trade.closeReason === "data_quality_artifact") return true;
+function isLearningContaminatedTrade(trade: ClosedTrade, setupId: string): boolean {
+  if (isLedgerContaminatedTrade(trade)) return true;
   if (!DATA_CONTAMINATED_SETUP_IDS.has(setupId)) return false;
   const opened = String(trade.openedAt ?? "");
   const oilOrGoldPc = (trade.asset === "OIL" || trade.asset === "GOLD") && trade.signalType.includes("PC_RATIO");
@@ -6038,7 +6055,7 @@ function buildLlmTruthState(hypotheses: Hypothesis[], weights: SignalWeight[], c
 
   for (const trade of closedTrades) {
     const setup = setupIdForTrade(trade, hypothesesById);
-    if (isContaminatedTrade(trade, setup.setupId)) {
+    if (isLearningContaminatedTrade(trade, setup.setupId)) {
       const record = getRecord(setup.setupId, setup.setupLabel, trade.asset);
       if (!record.knownInvalidAssumptions.some((note) => note.includes("contaminated trade"))) {
         record.knownInvalidAssumptions.push("At least one historical contaminated trade was excluded from this setup-family truth record.");

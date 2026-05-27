@@ -9,6 +9,10 @@
 
 import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import {
+  isContaminatedTrade as isLedgerContaminatedTrade,
+  recomputePortfolioTotalsFromLedger,
+} from "./portfolio-ledger.js";
 
 const DATA_DIR = join(import.meta.dirname ?? ".", "..", "data");
 const DEFAULT_LIVE_STATE_DIR = join(import.meta.dirname ?? ".", "..", ".runtime");
@@ -117,8 +121,22 @@ function readJson<T>(name: string): T {
 }
 
 function loadPortfolio(): Portfolio {
-  if (existsSync(LIVE_PORTFOLIO_FILE)) return readJsonFile<Portfolio>(LIVE_PORTFOLIO_FILE);
-  return readJson<Portfolio>("portfolio.json");
+  const portfolio = existsSync(LIVE_PORTFOLIO_FILE)
+    ? readJsonFile<Portfolio>(LIVE_PORTFOLIO_FILE)
+    : readJson<Portfolio>("portfolio.json");
+  // Counters are derived from the cleaned trades-detailed.csv on every load so
+  // that accumulator drift self-heals next cycle. cash and positions still
+  // come from disk because they reflect open exposure.
+  try {
+    const totals = recomputePortfolioTotalsFromLedger();
+    portfolio.totalTrades = totals.totalTrades;
+    portfolio.winCount = totals.winCount;
+    portfolio.lossCount = totals.lossCount;
+    portfolio.totalRealizedPnl = totals.totalRealizedPnl;
+  } catch (err) {
+    console.error(`[scanner] recompute from ledger failed; using on-disk counters: ${(err as Error).message}`);
+  }
+  return portfolio;
 }
 
 function writeLiveJson(path: string, value: unknown) {
@@ -302,10 +320,14 @@ function realizeClosedPosition(portfolio: Portfolio, position: Position, mark: M
   };
 
   portfolio.cash += position.size + mark.pnl;
-  portfolio.totalRealizedPnl += mark.pnl;
-  portfolio.totalTrades++;
-  if (mark.pnl >= 0) portfolio.winCount++;
-  else portfolio.lossCount++;
+  // Skip contaminated trades from portfolio counters even within the cycle.
+  // Final source of truth is recomputePortfolioTotalsFromLedger() on next load.
+  if (!isLedgerContaminatedTrade(trade)) {
+    portfolio.totalRealizedPnl += mark.pnl;
+    portfolio.totalTrades++;
+    if (mark.pnl >= 0) portfolio.winCount++;
+    else portfolio.lossCount++;
+  }
 
   return trade;
 }

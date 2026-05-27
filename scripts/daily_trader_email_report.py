@@ -29,10 +29,27 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 REPORT_DIR = DATA_DIR / "daily-email-reports"
 EASTERN_TZ = ZoneInfo("America/New_York")
-OPERATIONALLY_TAINTED_TRADES = {
-    "T-1778707778058-9nsi": "hourly LLM close had authority over rule-owned funding trade",
-    "T-1778718867328-1tjp": "one-touch NO inherited generic 2% Polymarket stop instead of 100% hold-to-expiry stop",
-}
+
+
+def _load_operationally_tainted_trades() -> dict[str, str]:
+    """Load the canonical tainted-trade list from data/operationally-tainted-trades.json.
+
+    Shared with scripts/portfolio-ledger.ts and scripts/trader-performance-report.ts
+    so the engine, scanner, performance report, and this email report all agree on
+    which trade IDs to exclude from totals.
+    """
+    path = DATA_DIR / "operationally-tainted-trades.json"
+    if not path.exists():
+        return {}
+    try:
+        with path.open() as fh:
+            data = json.load(fh)
+        return data if isinstance(data, dict) else {}
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
+OPERATIONALLY_TAINTED_TRADES = _load_operationally_tainted_trades()
 
 
 def parse_ts(value: str | None) -> datetime | None:
