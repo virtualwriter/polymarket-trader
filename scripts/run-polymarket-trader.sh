@@ -73,8 +73,68 @@ move_generated_untracked_artifacts() {
     git ls-files --others --exclude-standard -z -- \
       relative-value/backtests \
       relative-value/backtest-history \
-      relative-value/history
+      relative-value/history \
+      hyperliquid-crv-rebalancer \
+      docs
   )
+}
+
+# Final safety net: if `git pull --rebase --autostash` still aborts because an
+# UNTRACKED file in some path we didn't pre-empt would be overwritten by the
+# incoming commit, parse the file list out of the error message, move those
+# specific files into a backup dir, and retry the pull. This makes the hourly
+# trader resilient to anyone (operator or agent) scp-ing a new file into the
+# repo that is later introduced as a tracked file via git push. Without this,
+# the historical failure mode is: every subsequent hourly run aborts with
+# `error: The following untracked working tree files would be overwritten by
+# merge: <path>` and `set -e` exits the wrapper with status 1.
+robust_git_pull_rebase() {
+  local pull_log
+  pull_log=$(mktemp)
+  if git pull --rebase --autostash origin main >"$pull_log" 2>&1; then
+    cat "$pull_log"
+    rm -f "$pull_log"
+    return 0
+  fi
+
+  cat "$pull_log"
+  if ! grep -q "would be overwritten by merge" "$pull_log"; then
+    rm -f "$pull_log"
+    return 1
+  fi
+
+  echo "WARNING: git pull aborted due to untracked files; auto-recovering."
+
+  local backup_dir="$STATE_DIR/generated-artifact-backups/$(date -u +%Y%m%dT%H%M%SZ)-recovery"
+  mkdir -p "$backup_dir"
+
+  # Lines between the "untracked working tree files would be overwritten by
+  # merge:" header and "Please move or remove them" footer are file paths
+  # (tab-indented). Move each one out of the way and retry.
+  local recovered=0
+  local path
+  while IFS= read -r path; do
+    [[ -z "$path" ]] && continue
+    if [[ -e "$path" ]]; then
+      local target="$backup_dir/$path"
+      mkdir -p "$(dirname "$target")"
+      mv "$path" "$target"
+      echo "Moved blocking untracked file: $path -> $target"
+      recovered=$((recovered + 1))
+    fi
+  done < <(
+    awk '/would be overwritten by merge:/{flag=1; next} /^Please move or remove/{flag=0} flag && /^\t/{sub(/^\t/, ""); print}' "$pull_log"
+  )
+
+  rm -f "$pull_log"
+
+  if [[ "$recovered" -eq 0 ]]; then
+    echo "ERROR: pull aborted on untracked-file conflict but no paths could be parsed/moved."
+    return 1
+  fi
+
+  echo "Retrying git pull --rebase --autostash after moving $recovered untracked file(s)."
+  git pull --rebase --autostash origin main
 }
 
 exec 9>"$LOCK_FILE"
@@ -118,7 +178,7 @@ if [[ -n "$dirty_tracked" ]]; then
   echo "$dirty_tracked" | sed 's/^/  - /'
 fi
 
-git pull --rebase --autostash origin main
+robust_git_pull_rebase
 npm ci
 
 npx tsx scripts/market-scanner.ts --snapshot
@@ -152,7 +212,7 @@ else
   git -c user.name="virtualwriter" \
       -c user.email="37585392+virtualwriter@users.noreply.github.com" \
       commit -m "scan+trade $(date -u +%Y-%m-%d-%H%M)"
-  git pull --rebase --autostash origin main
+  robust_git_pull_rebase
   git push origin HEAD:main
 fi
 
