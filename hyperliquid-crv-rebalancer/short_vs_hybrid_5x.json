@@ -1,0 +1,356 @@
+{
+  "generated_at": "2026-05-27T18:33:59.634742+00:00",
+  "fee_pct": 0.045,
+  "leverage": 5.0,
+  "n_coins": 13,
+  "n_bars": 7919,
+  "bull_stretches": [
+    {
+      "start": 226,
+      "end": 261,
+      "length_hours": 35
+    },
+    {
+      "start": 942,
+      "end": 998,
+      "length_hours": 56
+    },
+    {
+      "start": 1638,
+      "end": 1689,
+      "length_hours": 51
+    },
+    {
+      "start": 2960,
+      "end": 3004,
+      "length_hours": 44
+    },
+    {
+      "start": 4455,
+      "end": 4484,
+      "length_hours": 29
+    },
+    {
+      "start": 5182,
+      "end": 5266,
+      "length_hours": 84
+    },
+    {
+      "start": 6201,
+      "end": 6229,
+      "length_hours": 28
+    },
+    {
+      "start": 6933,
+      "end": 6961,
+      "length_hours": 28
+    }
+  ],
+  "results": {
+    "short_only_best_portfolio_5x": {
+      "config": {
+        "name": "short_only_best_portfolio_5x",
+        "type": "short_only",
+        "params": {
+          "s_ema": 8,
+          "s_in": 0.3,
+          "s_out": 0.75
+        },
+        "note": "fee_aware_grid.py portfolio-best at 5x"
+      },
+      "avg_ret_pct": 13572.79763405395,
+      "neg_coins": 7,
+      "total_coins": 13,
+      "avg_sharpe": 1.4907063210541844,
+      "avg_mdd_pct": 90.08218770408699,
+      "total_liquidations": 0,
+      "avg_trades": 304.53846153846155,
+      "per_coin_ret": {
+        "ada": 146.0235077671981,
+        "apt": 102.22298297562764,
+        "arb": -47.5677522898171,
+        "avax": 78.19064858378817,
+        "bch": -82.56641193513701,
+        "crv": -98.6905428175202,
+        "dot": 116.30603037737527,
+        "fartcoin": -96.14497403720654,
+        "inj": -93.52550188395577,
+        "lido": -88.44823829397141,
+        "op": 2539.6766572660977,
+        "purr": -74.41650839916399,
+        "trump": 174045.30934538806
+      },
+      "per_coin_liqs": {
+        "ada": 0,
+        "apt": 0,
+        "arb": 0,
+        "avax": 0,
+        "bch": 0,
+        "crv": 0,
+        "dot": 0,
+        "fartcoin": 0,
+        "inj": 0,
+        "lido": 0,
+        "op": 0,
+        "purr": 0,
+        "trump": 0
+      },
+      "bull_stretch_returns": [
+        {
+          "stretch_idx": 0,
+          "length_hours": 35,
+          "avg_coin_return_pct": -30.604232822038828,
+          "neg_coins_in_stretch": 13
+        },
+        {
+          "stretch_idx": 1,
+          "length_hours": 56,
+          "avg_coin_return_pct": -15.301770205739851,
+          "neg_coins_in_stretch": 13
+        },
+        {
+          "stretch_idx": 2,
+          "length_hours": 51,
+          "avg_coin_return_pct": -21.079463741400488,
+          "neg_coins_in_stretch": 13
+        },
+        {
+          "stretch_idx": 3,
+          "length_hours": 44,
+          "avg_coin_return_pct": -17.56137607050961,
+          "neg_coins_in_stretch": 13
+        },
+        {
+          "stretch_idx": 4,
+          "length_hours": 29,
+          "avg_coin_return_pct": -7.715637810464887,
+          "neg_coins_in_stretch": 9
+        },
+        {
+          "stretch_idx": 5,
+          "length_hours": 84,
+          "avg_coin_return_pct": -28.04700633832182,
+          "neg_coins_in_stretch": 13
+        },
+        {
+          "stretch_idx": 6,
+          "length_hours": 28,
+          "avg_coin_return_pct": -4.76732185619217,
+          "neg_coins_in_stretch": 5
+        },
+        {
+          "stretch_idx": 7,
+          "length_hours": 28,
+          "avg_coin_return_pct": -5.103306233036869,
+          "neg_coins_in_stretch": 5
+        }
+      ]
+    },
+    "hybrid_current_live_params": {
+      "config": {
+        "name": "hybrid_current_live_params",
+        "type": "hybrid",
+        "params": {
+          "s_ema": 4,
+          "s_in": 0.3,
+          "s_out": 1.5,
+          "l_ema": 5,
+          "l_in": 1.0,
+          "l_out": 1.0,
+          "thr": 10
+        },
+        "note": "what the live bot would do if leverage flipped to 5x"
+      },
+      "avg_ret_pct": 1576.4334229675837,
+      "neg_coins": 7,
+      "total_coins": 13,
+      "avg_sharpe": 1.6030231143238558,
+      "avg_mdd_pct": 95.55606895219049,
+      "total_liquidations": 0,
+      "avg_trades": 106.15384615384616,
+      "per_coin_ret": {
+        "ada": 2451.9701122888873,
+        "apt": 9494.451154447965,
+        "arb": -70.96066893054784,
+        "avax": 723.9970187092009,
+        "bch": -94.65551354755885,
+        "crv": -92.88630768996298,
+        "dot": 5280.160846036834,
+        "fartcoin": 61.290970332853774,
+        "inj": -58.27646896756673,
+        "lido": -97.27155463473427,
+        "op": -43.17875101580441,
+        "purr": -99.99908121482073,
+        "trump": 3038.9927427638445
+      },
+      "per_coin_liqs": {
+        "ada": 0,
+        "apt": 0,
+        "arb": 0,
+        "avax": 0,
+        "bch": 0,
+        "crv": 0,
+        "dot": 0,
+        "fartcoin": 0,
+        "inj": 0,
+        "lido": 0,
+        "op": 0,
+        "purr": 0,
+        "trump": 0
+      },
+      "bull_stretch_returns": [
+        {
+          "stretch_idx": 0,
+          "length_hours": 35,
+          "avg_coin_return_pct": -18.970626561623558,
+          "neg_coins_in_stretch": 8
+        },
+        {
+          "stretch_idx": 1,
+          "length_hours": 56,
+          "avg_coin_return_pct": 1.4380502947667428,
+          "neg_coins_in_stretch": 6
+        },
+        {
+          "stretch_idx": 2,
+          "length_hours": 51,
+          "avg_coin_return_pct": 0.9468768107274987,
+          "neg_coins_in_stretch": 3
+        },
+        {
+          "stretch_idx": 3,
+          "length_hours": 44,
+          "avg_coin_return_pct": -2.4608107196606537,
+          "neg_coins_in_stretch": 3
+        },
+        {
+          "stretch_idx": 4,
+          "length_hours": 29,
+          "avg_coin_return_pct": -2.698844655533155,
+          "neg_coins_in_stretch": 3
+        },
+        {
+          "stretch_idx": 5,
+          "length_hours": 84,
+          "avg_coin_return_pct": 1.9975103802127991,
+          "neg_coins_in_stretch": 4
+        },
+        {
+          "stretch_idx": 6,
+          "length_hours": 28,
+          "avg_coin_return_pct": -0.7695025517018086,
+          "neg_coins_in_stretch": 2
+        },
+        {
+          "stretch_idx": 7,
+          "length_hours": 28,
+          "avg_coin_return_pct": -5.577518804014469,
+          "neg_coins_in_stretch": 3
+        }
+      ]
+    },
+    "hybrid_best_portfolio_5x": {
+      "config": {
+        "name": "hybrid_best_portfolio_5x",
+        "type": "hybrid",
+        "params": {
+          "s_ema": 6,
+          "s_in": 0.3,
+          "s_out": 0.75,
+          "l_ema": 5,
+          "l_in": 0.5,
+          "l_out": 0.5,
+          "thr": 8
+        },
+        "note": "fee_aware_hybrid_grid.py portfolio-best at 5x"
+      },
+      "avg_ret_pct": 22774.43379690066,
+      "neg_coins": 10,
+      "total_coins": 13,
+      "avg_sharpe": 1.1678934883166228,
+      "avg_mdd_pct": 95.17838629389937,
+      "total_liquidations": 0,
+      "avg_trades": 329.0769230769231,
+      "per_coin_ret": {
+        "ada": 43.75039041813573,
+        "apt": -29.474672683049597,
+        "arb": -90.18322554157305,
+        "avax": -35.32473164312724,
+        "bch": -96.08274425887596,
+        "crv": -99.45770834722342,
+        "dot": -10.572137343755672,
+        "fartcoin": -96.98055299644932,
+        "inj": -93.32643711912222,
+        "lido": -99.3520417036514,
+        "op": 179.37310582725158,
+        "purr": -99.96211616835024,
+        "trump": 296595.23223126837
+      },
+      "per_coin_liqs": {
+        "ada": 0,
+        "apt": 0,
+        "arb": 0,
+        "avax": 0,
+        "bch": 0,
+        "crv": 0,
+        "dot": 0,
+        "fartcoin": 0,
+        "inj": 0,
+        "lido": 0,
+        "op": 0,
+        "purr": 0,
+        "trump": 0
+      },
+      "bull_stretch_returns": [
+        {
+          "stretch_idx": 0,
+          "length_hours": 35,
+          "avg_coin_return_pct": -26.711659409439385,
+          "neg_coins_in_stretch": 12
+        },
+        {
+          "stretch_idx": 1,
+          "length_hours": 56,
+          "avg_coin_return_pct": 26.60770653416154,
+          "neg_coins_in_stretch": 2
+        },
+        {
+          "stretch_idx": 2,
+          "length_hours": 51,
+          "avg_coin_return_pct": 8.88424091993984,
+          "neg_coins_in_stretch": 5
+        },
+        {
+          "stretch_idx": 3,
+          "length_hours": 44,
+          "avg_coin_return_pct": -9.938942703202072,
+          "neg_coins_in_stretch": 12
+        },
+        {
+          "stretch_idx": 4,
+          "length_hours": 29,
+          "avg_coin_return_pct": -6.745039514526602,
+          "neg_coins_in_stretch": 9
+        },
+        {
+          "stretch_idx": 5,
+          "length_hours": 84,
+          "avg_coin_return_pct": 16.132645531300064,
+          "neg_coins_in_stretch": 3
+        },
+        {
+          "stretch_idx": 6,
+          "length_hours": 28,
+          "avg_coin_return_pct": 6.210274445821303,
+          "neg_coins_in_stretch": 6
+        },
+        {
+          "stretch_idx": 7,
+          "length_hours": 28,
+          "avg_coin_return_pct": -7.557514753024187,
+          "neg_coins_in_stretch": 9
+        }
+      ]
+    }
+  }
+}
