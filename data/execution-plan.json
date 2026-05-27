@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-27T17:30:38.883Z",
+  "generatedAt": "2026-05-27T18:28:32.742Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,11 +11,11 @@
       "asset": "GOLD",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.8333333333333334,
-      "confidence": 0.42032572024329845,
-      "thesis": "GOLD P/C ratio 0.25 — heavy call buying → contrarian short.",
+      "strength": 0.7866666666666666,
+      "confidence": 0.3967874799096737,
+      "thesis": "GOLD P/C ratio 0.26 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4450,
+      "entryPrice": 4458,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -25,11 +25,11 @@
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.285,
-      "confidence": 0.19119697939057143,
-      "thesis": "OIL P/C ratio 1.43 — heavy put buying → contrarian long.",
+      "strength": 0.2175000000000002,
+      "confidence": 0.14591348427175202,
+      "thesis": "OIL P/C ratio 1.37 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 89.57,
+      "entryPrice": 88.62,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
@@ -39,11 +39,11 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.05971428571428571,
-      "confidence": 0.03598469358747796,
-      "thesis": "GOLD HL funding 17.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.12057142857142854,
+      "confidence": 0.07265808944457271,
+      "thesis": "GOLD HL funding 19.2% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4450,
+      "entryPrice": 4458,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
@@ -51,24 +51,9 @@
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "buy",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "evidenceColumns": [
-          "gold_gc_spot",
-          "gold_pm_iv"
-        ],
-        "thesis": "Relative-value heatmap: Gold May $4600 one-touch YES overpriced vs underlying model (edgePts -9.65). Spread 2c, liquidity 6.3k meets ONE_TOUCH_HIGH_EDGE_NO gate. Buying NO to capture mean reversion in PM mispricing."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
