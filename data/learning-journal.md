@@ -19365,3 +19365,35 @@ Open positions: The gold short (PC_RATIO_EXTREME_LOW) is -1.05% as spot rallies 
 
 ---
 
+### 2026-05-28 18:28 UTC
+
+**Portfolio:** $98.50 total | Cash $95.50 | 3 open | P&L $1.0006 | 53% win rate (158 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_brent_spot = 92.7 is -2.1 std devs from mean since 2026-04-28 (104.10 ± 5.34)
+- [anomaly] oil_wti_spot = 88.78 is -2.1 std devs from mean since 2026-04-28 (99.28 ± 4.96)
+- [anomaly] hype_med_max = 86.5 is 2.0 std devs from mean (64.21 ± 10.90)
+- [correlation_flip] BTC-GOLD correlation shifted from -0.40 to 0.83. Rolling correlation: 24h=0.33, 7d=0.78, 30d=-0.13. Current 24h corr is at 41th pct of last 27 daily 24h-rolling values (range -0.69 to 0.89).
+- [correlation_flip] GOLD-OIL correlation shifted from -0.83 to 0.11. Rolling correlation: 24h=-0.91, 7d=0.19, 30d=-0.56. Current 24h corr is at 11th pct of last 27 daily 24h-rolling values (range -0.95 to 0.84).
+
+**Blocked signal learning:**
+- Open blocked shadows: 97
+- Resolved blocked shadows: 316 (136 wins / 180 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-2.60%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW OIL short via polymarket would have closed with thesis validated profitably (+2.60%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+42.86%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.12%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 7/12; next scheduled 2026-05-28T20:28:34.435Z). Mechanical cycle ran normally._
+
+---
+
