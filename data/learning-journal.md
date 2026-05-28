@@ -19333,3 +19333,35 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-05-28 17:29 UTC
+
+**Portfolio:** $98.50 total | Cash $95.50 | 3 open | P&L $1.0006 | 53% win rate (158 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 7.7pp (was 5.0, now -2.7)
+- [anomaly] oil_opt_fwd_90d = 10.4 is -2.4 std devs from mean since 2026-04-28 (88.85 ± 32.32)
+- [anomaly] oil_brent_spot = 92.55 is -2.2 std devs from mean since 2026-04-28 (104.12 ± 5.32)
+- [anomaly] oil_wti_spot = 89.02 is -2.1 std devs from mean since 2026-04-28 (99.30 ± 4.94)
+- [anomaly] hype_pm_iv = 86.5 is 2.0 std devs from mean (68.14 ± 9.06)
+
+**Blocked signal learning:**
+- Open blocked shadows: 95
+- Resolved blocked shadows: 316 (136 wins / 180 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-2.60%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW OIL short via polymarket would have closed with thesis validated profitably (+2.60%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+42.86%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.12%)
+
+**LLM analysis:**
+Open positions: The gold short (PC_RATIO_EXTREME_LOW) is -1.05% as spot rallies sharply despite a low GLD P/C ratio that has been rapidly normalizing (0.32→0.52). This signal family relies on contrarian mean-reversion from extreme positioning, but the trend may be breaking the signal; no mechanical exit yet. Oil long (PC_RATIO_EXTREME_HIGH) is -0.98% as WTI grinds lower, with the P/C ratio collapsing from 1.92 to 1.32, reducing the original signal strength. BTC long (same family) is +0.44% after an initial bounce; IBIT P/C dropped quickly from 1.74 to 0.84, suggesting the put-buying pressure that triggered the entry is fading. The correlation flip between BTC and gold could signal macro-driven safe-haven demand reallocation, adding complexity to gold shorts. No LLM-allowed closes; watch for mechanical stop-losses on gold (2%) and oil (2%).
+
+---
+
