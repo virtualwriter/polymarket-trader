@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-28T05:28:28.678Z",
+  "generatedAt": "2026-05-28T06:29:41.588Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,25 +15,10 @@
       "confidence": 0.302733268442417,
       "thesis": "GOLD P/C ratio 0.32 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4382,
+      "entryPrice": 4386,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
-    },
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.4674285714285714,
-      "confidence": 0.28167922827327246,
-      "thesis": "GOLD HL funding 31.4% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4382,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
     },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -44,10 +29,25 @@
       "confidence": 0.2331261415376266,
       "thesis": "OIL P/C ratio 1.48 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 91.98,
+      "entryPrice": 91.28,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
+    },
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.29542857142857143,
+      "confidence": 0.1780295366959436,
+      "thesis": "GOLD HL funding 25.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4386,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],

@@ -18978,3 +18978,35 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-05-28 06:29 UTC
+
+**Portfolio:** $98.50 total | Cash $96.50 | 2 open | P&L $1.0006 | 53% win rate (158 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_pm_iv = 89.4 is 2.5 std devs from mean (67.80 ± 8.74)
+- [anomaly] gold_gc_spot = 4386 is -2.3 std devs from mean (4607.57 ± 95.59)
+- [anomaly] btc_ibit_pc_ratio = 1.007 is 2.2 std devs from mean (0.59 ± 0.19)
+- [anomaly] hype_med_max = 85.5 is 2.0 std devs from mean (63.81 ± 10.60)
+- [anomaly] btc_med_max = 90000 is -2.0 std devs from mean (94728.77 ± 2310.86)
+
+**Blocked signal learning:**
+- Open blocked shadows: 97
+- Resolved blocked shadows: 310 (132 wins / 178 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW OIL short via polymarket would have closed with thesis validated profitably (+22.22%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-33.33%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.41%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+15.19%)
+
+**LLM analysis:**
+The correlation structure shifted sharply: BTC·gold daily correlation flipped to +0.84, breaking the prior negative regime. Gold's persistent sell-off alongside BTC weakness and positive gold funding (25% ann) points to a correlated risk‑off event, possibly driven by the hawkish macro backdrop. Mechanical positions are performing well (OIL long +1.54%, GOLD short +1.62%). LLM hypothesis backlog remains; no new hypotheses are warranted until existing shadows clear. Promoted hypotheses H‑521 and H‑523 continue shadow testing.
+
+---
+
