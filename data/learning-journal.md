@@ -19074,3 +19074,35 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-05-28 09:29 UTC
+
+**Portfolio:** $98.50 total | Cash $96.50 | 2 open | P&L $1.0006 | 53% win rate (158 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_opt_fwd_90d = 4454 is -2.7 std devs from mean (4720.04 ± 98.15)
+- [anomaly] oil_opt_fwd_90d = 8.1 is -2.6 std devs from mean since 2026-04-28 (89.72 ± 31.04)
+- [anomaly] hype_pm_iv = 89 is 2.4 std devs from mean (67.89 ± 8.83)
+- [anomaly] gold_gc_spot = 4396 is -2.2 std devs from mean (4606.59 ± 96.45)
+- [anomaly] btc_ibit_pc_ratio = 1.007 is 2.2 std devs from mean (0.59 ± 0.19)
+
+**Blocked signal learning:**
+- Open blocked shadows: 96
+- Resolved blocked shadows: 313 (133 wins / 180 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+15.19%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+8.28%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-26.42%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-2.60%)
+
+**LLM analysis:**
+Correlation flip between BTC and Gold (24h corr 0.90 vs historical -0.16) suggests a macro-driven risk-off move; both assets sold off together. Oil forward curve anomaly (opt fwd 90d at 8.1) is likely a data artifact, but PM IV vs options IV gap (76.9 vs 56.4) remains large and may warrant a shadow test for oil IV convergence opportunities. The HYPE funding/OI complex shows elevated funding and stable OI, which supports the existing H-003 liquidation-short shadow test framework; conditions are approaching but not yet fully triggered. Blocked FUNDING_EXTREME_LONG shadows have a 5/7 win rate (avg 1.02%), suggesting the current filter may be too strict, but sample size is low — I will monitor for another 5 resolved shadows before recommending a parameter change. No LLM-close candidates exist for open positions, as they are rule-based and still within allowed hold windows.
+
+---
+
