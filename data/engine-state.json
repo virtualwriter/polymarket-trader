@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-28T07:28:25.167Z",
+  "generatedAt": "2026-05-28T08:28:31.469Z",
   "dataFreshness": {
-    "valuationRows": 648,
-    "latestValuationAt": "2026-05-28T07",
-    "macroRows": 648,
+    "valuationRows": 649,
+    "latestValuationAt": "2026-05-28T08",
+    "macroRows": 649,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-28T07"
+    "latestInstrumentSnapshotAt": "2026-05-28T08"
   },
   "portfolio": {
     "cash": 96.5045,
@@ -13,7 +13,7 @@
     "realizedPnl": 1.0006,
     "totalTrades": 158,
     "winRatePct": 52.5,
-    "unrealizedPnl": 0.0288
+    "unrealizedPnl": 0.0268
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 1.51,
-      "currentPrice": 91.26,
-      "underlyingPrice": 91.26,
+      "pnlPct": 1.2,
+      "currentPrice": 90.98,
+      "underlyingPrice": 90.98,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 1.37,
-      "currentPrice": 4397,
-      "underlyingPrice": 4397,
+      "pnlPct": 1.48,
+      "currentPrice": 4392,
+      "underlyingPrice": 4392,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -188,9 +188,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 99,
-    "resolvedCount": 310,
-    "wouldHaveWon": 132,
+    "openCount": 98,
+    "resolvedCount": 311,
+    "wouldHaveWon": 133,
     "wouldHaveLost": 178,
     "bySignal": [
       {
@@ -259,24 +259,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 1.43,
-        "resolvedAt": "2026-05-27T20:28:31.762Z",
-        "marketQuality": {
-          "yesBid": 0.3,
-          "yesAsk": 0.31,
-          "yesSpread": 0.01,
-          "liquidity": 60714.89,
-          "flags": []
-        }
-      },
       {
         "signalType": "PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT",
         "asset": "GOLD",
@@ -417,9 +399,45 @@
           "liquidity": 11166.45,
           "flags": []
         }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 8.28,
+        "resolvedAt": "2026-05-28T08:28:31.344Z",
+        "marketQuality": {
+          "yesBid": 0.155,
+          "yesAsk": 0.168,
+          "yesSpread": 0.013,
+          "liquidity": 5008.23,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+        "asset": "OIL",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "cl-hit-jun-2026 — YES — Will Crude Oil (CL) hit (HIGH) $110 by end of June?",
+        "marketQuality": {
+          "yesBid": 0.49,
+          "yesAsk": 0.51,
+          "yesSpread": 0.02,
+          "liquidity": 11231.62,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.6pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
+      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
         "asset": "HYPE",
@@ -515,22 +533,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.7pt on BTC, spread 3.0c, liquidity 28881. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "GOLD",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "instrumentLabel": "what-price-will-xauusd-hit-in-may-2026 — NO — Will Gold (XAUUSD) hit (LOW) $4,300 in May?",
-        "marketQuality": {
-          "yesBid": 0.155,
-          "yesAsk": 0.168,
-          "yesSpread": 0.013,
-          "liquidity": 5008.23,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 12.8pt after haircuts. CBOE gap 15.3pt, CME gap 15.4pt, source agreement both_positive, spread 1.3c, liquidity 5008. Shadow-only calibration trade; hold 4d or exit if adjusted gap disappears."
       },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
