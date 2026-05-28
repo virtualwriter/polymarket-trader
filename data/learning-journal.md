@@ -19170,3 +19170,35 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-05-28 12:29 UTC
+
+**Portfolio:** $98.50 total | Cash $96.50 | 2 open | P&L $1.0006 | 53% win rate (158 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_opt_fwd_90d = 8.4 is -2.6 std devs from mean since 2026-04-28 (89.17 ± 31.64)
+- [anomaly] hype_pm_iv = 90 is 2.5 std devs from mean (67.99 ± 8.93)
+- [anomaly] gold_gc_spot = 4387 is -2.2 std devs from mean (4605.61 ± 97.32)
+- [anomaly] btc_ibit_pc_ratio = 1.007 is 2.1 std devs from mean (0.59 ± 0.19)
+- [correlation_flip] BTC-GOLD correlation shifted from -0.41 to 0.85. Rolling correlation: 24h=0.89, 7d=0.80, 30d=-0.14. Current 24h corr is at 100th pct of last 27 daily 24h-rolling values (range -0.52 to 0.89).
+
+**Blocked signal learning:**
+- Open blocked shadows: 96
+- Resolved blocked shadows: 314 (134 wins / 180 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+8.28%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-26.42%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-2.60%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW OIL short via polymarket would have closed with thesis validated profitably (+2.60%)
+
+**LLM analysis:**
+Market remained risk-off under bearish macro, with BTC sliding from 74.4k to 73.3k and losing short-term momentum. BTC-GOLD correlation flipped positive (0.85), unusual historically; both fell in tandem, suggesting macro-driven selling across safe-haven and risk assets. Gold spot hit -2.2 std dev, yet P/C ratio remains extremely low (0.323), so the P/C_EXTREME_LOW short trade on gold (open at 4458, now 4387) continues to work. OIL P/C ratio dropped from 1.92 to 1.478, reducing the extreme signal; the OIL long trade is still +1.45% and approaching target. Both mechanical trades remain on track; no LLM close allowed. Gold funding spiked to 9.89% (context-only). Existing LLM hypotheses remain in shadow-test backlog; none triggered new variants. Dealer hedge stress (H-531) conditions are partially met – inverse BTC term structure, near 7d high, crowded OI – but the shadow test will activate only when mechanically triggered. No parameter updates required.
+
+---
+
