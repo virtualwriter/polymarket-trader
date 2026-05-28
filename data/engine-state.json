@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-28T20:28:26.897Z",
+  "generatedAt": "2026-05-28T21:28:31.113Z",
   "dataFreshness": {
-    "valuationRows": 661,
-    "latestValuationAt": "2026-05-28T20",
-    "macroRows": 661,
+    "valuationRows": 662,
+    "latestValuationAt": "2026-05-28T21",
+    "macroRows": 662,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-28T20"
+    "latestInstrumentSnapshotAt": "2026-05-28T21"
   },
   "portfolio": {
-    "cash": 95.5045,
-    "openPositions": 3,
+    "cash": 94.5045,
+    "openPositions": 4,
     "realizedPnl": 1.0006,
     "totalTrades": 158,
     "winRatePct": 52.5,
-    "unrealizedPnl": -0.011
+    "unrealizedPnl": -0.0001
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -1.01,
-      "currentPrice": 88.99,
-      "underlyingPrice": 88.99,
+      "pnlPct": -1.6,
+      "currentPrice": 88.46,
+      "underlyingPrice": 88.46,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.87,
-      "currentPrice": 4497,
-      "underlyingPrice": 4497,
+      "pnlPct": -0.85,
+      "currentPrice": 4496,
+      "underlyingPrice": 4496,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -56,15 +56,31 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.79,
-      "currentPrice": 73607,
-      "underlyingPrice": 73607,
+      "pnlPct": 0.96,
+      "currentPrice": 73732,
+      "underlyingPrice": 73732,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "btc_spot",
         "btc_ibit_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1780000184648-j05x",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "pnlPct": 1.48,
+      "currentPrice": 61.639,
+      "underlyingPrice": 61.639,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "hype_spot"
       ]
     }
   ],
@@ -206,9 +222,9 @@
   ],
   "blockedSummary": {
     "openCount": 96,
-    "resolvedCount": 318,
+    "resolvedCount": 319,
     "wouldHaveWon": 137,
-    "wouldHaveLost": 181,
+    "wouldHaveLost": 182,
     "bySignal": [
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -267,35 +283,15 @@
         "avgPnlPct": -0.22
       },
       {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "blocked": 19,
-        "resolved": 15,
-        "wouldHaveWon": 8,
-        "wouldHaveLost": 7,
-        "avgPnlPct": 2.7
+        "signalType": "PM_EV_BELOW_SPOT",
+        "blocked": 4,
+        "resolved": 4,
+        "wouldHaveWon": 2,
+        "wouldHaveLost": 2,
+        "avgPnlPct": 0.07
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 8.28,
-        "resolvedAt": "2026-05-28T08:28:31.344Z",
-        "marketQuality": {
-          "yesBid": 0.155,
-          "yesAsk": 0.168,
-          "yesSpread": 0.013,
-          "liquidity": 5008.23,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -426,6 +422,24 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -11.32,
+        "resolvedAt": "2026-05-28T21:28:30.996Z",
+        "marketQuality": {
+          "yesBid": 0.47,
+          "yesAsk": 0.48,
+          "yesSpread": 0.01,
+          "liquidity": 7855.72,
+          "flags": []
         }
       }
     ],
