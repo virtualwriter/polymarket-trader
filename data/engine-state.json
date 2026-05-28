@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-27T23:28:27.497Z",
+  "generatedAt": "2026-05-28T00:28:28.567Z",
   "dataFreshness": {
-    "valuationRows": 641,
-    "latestValuationAt": "2026-05-27T23",
-    "macroRows": 641,
+    "valuationRows": 642,
+    "latestValuationAt": "2026-05-28T00",
+    "macroRows": 642,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-27T23"
+    "latestInstrumentSnapshotAt": "2026-05-28T00"
   },
   "portfolio": {
     "cash": 96.5205,
@@ -13,7 +13,7 @@
     "realizedPnl": 1.0166,
     "totalTrades": 157,
     "winRatePct": 52.9,
-    "unrealizedPnl": 0.0039
+    "unrealizedPnl": 0.0079
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.23,
-      "currentPrice": 90.11,
-      "underlyingPrice": 90.11,
+      "pnlPct": 0.59,
+      "currentPrice": 90.43,
+      "underlyingPrice": 90.43,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 0.16,
-      "currentPrice": 4451,
-      "underlyingPrice": 4451,
+      "pnlPct": 0.2,
+      "currentPrice": 4449,
+      "underlyingPrice": 4449,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -188,7 +188,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 97,
+    "openCount": 100,
     "resolvedCount": 305,
     "wouldHaveWon": 130,
     "wouldHaveLost": 175,
@@ -421,49 +421,6 @@
     ],
     "openQualityWarnings": [
       {
-        "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
-        "asset": "GOLD",
-        "blockedReason": "manual_shadow_trade",
-        "instrumentLabel": "gc-hit-jun-2026 — YES — Will Gold (GC) hit (LOW) $4,200 by end of June?",
-        "marketQuality": {
-          "quoteSource": "live_clob",
-          "quotedAt": "2026-05-19T19:33:56Z",
-          "gammaUpdatedAt": "2026-05-19T19:26:58.619804Z",
-          "clobTimestamp": "1779219235977",
-          "yesBid": 0.27,
-          "yesAsk": 0.3,
-          "yesSpread": 0.03,
-          "yesBidSize": 951.54,
-          "yesAskSize": 629.09,
-          "noBid": 0.7,
-          "noAsk": 0.73,
-          "noSpread": 0.03,
-          "noBidSize": 629.09,
-          "noAskSize": 951.54,
-          "liquidity": 6680.93,
-          "flags": [
-            "wide_pm_no_spread"
-          ]
-        },
-        "thesis": "Manual user IV-touch shadow signal: PM YES 28.5% vs IV touch model 40.3%; edge +10.3 pts. Exclude from official live-trader performance until validated."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
-        "asset": "OIL",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "cl-hit-jun-2026 — YES — Will Crude Oil (CL) hit (HIGH) $110 by end of June?",
-        "marketQuality": {
-          "yesBid": 0.49,
-          "yesAsk": 0.51,
-          "yesSpread": 0.02,
-          "liquidity": 11231.62,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.6pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
-      },
-      {
         "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
         "asset": "HYPE",
         "blockedReason": "one_touch_high_edge_shadow",
@@ -558,6 +515,38 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.7pt on BTC, spread 3.0c, liquidity 28881. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-in-may-2026 — NO — Will Bitcoin dip to $72,500 in May?",
+        "marketQuality": {
+          "yesBid": 0.4,
+          "yesAsk": 0.42,
+          "yesSpread": 0.02,
+          "liquidity": 44130.01,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 10.0pt after haircuts. CBOE gap 18.5pt, CME gap -19.1pt, source agreement cboe_only, spread 2.0c, liquidity 44130. Shadow-only calibration trade; hold 5d or exit if adjusted gap disappears."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin dip to $45,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.29,
+          "yesAsk": 0.31,
+          "yesSpread": 0.02,
+          "liquidity": 61478.59,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 8.6pt after haircuts. CBOE gap 11.1pt, CME gap 10.1pt, source agreement both_positive, spread 2.0c, liquidity 61479. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
