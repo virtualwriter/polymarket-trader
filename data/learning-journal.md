@@ -18842,3 +18842,39 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-05-28 01:30 UTC
+
+**Portfolio:** $98.52 total | Cash $95.52 | 3 open | P&L $1.0166 | 53% win rate (157 trades)
+
+**Opened 1 positions:**
+- BTC long @ $74300 via spot/spot [BTC spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_pm_iv = 88.5 is 2.4 std devs from mean (67.66 ± 8.60)
+- [anomaly] btc_ibit_pc_ratio = 1.007 is 2.2 std devs from mean (0.58 ± 0.19)
+- [anomaly] hype_med_max = 86.3 is 2.2 std devs from mean (63.67 ± 10.49)
+- [anomaly] gold_med_min = 4218 is -2.1 std devs from mean (4358.63 ± 68.03)
+- [anomaly] oil_brent_spot = 93.91 is -2.1 std devs from mean since 2026-04-28 (104.42 ± 5.11)
+
+**Blocked signal learning:**
+- Open blocked shadows: 100
+- Resolved blocked shadows: 306 (130 wins / 176 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+1.43%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT GOLD short via polymarket would have expired (-1.53%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-2.74%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have expired (-57.80%)
+
+**LLM analysis:**
+No actionable edge beyond the current mechanical positions. HYPE funding extreme negative and high PM IV could eventually set up a long bounce, but OI contraction and spot weakness argue against an early entry. BTC PC ratio at 2.2σ is flagged but likely captured by the next scanner run. Continue monitoring the research backlog for shadow test opportunities.
+
+---
+
