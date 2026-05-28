@@ -19234,3 +19234,38 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-05-28 14:30 UTC
+
+**Portfolio:** $98.50 total | Cash $95.50 | 3 open | P&L $1.0006 | 53% win rate (158 trades)
+
+**Opened 1 positions:**
+- BTC long @ $73033 via spot/spot [BTC spot] (PC_RATIO_EXTREME_HIGH)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 8.0pp (was -10.7, now -2.7)
+- [anomaly] btc_ibit_pc_ratio = 1.736 is 5.7 std devs from mean (0.59 ± 0.20)
+- [anomaly] gold_gld_pc_ratio = 1.097 is 2.5 std devs from mean (0.55 ± 0.22)
+- [anomaly] hype_pm_iv = 88.3 is 2.3 std devs from mean (68.06 ± 8.99)
+- [anomaly] oil_brent_spot = 92.81 is -2.2 std devs from mean since 2026-04-28 (104.19 ± 5.26)
+
+**Blocked signal learning:**
+- Open blocked shadows: 97
+- Resolved blocked shadows: 314 (134 wins / 180 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+8.28%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-26.42%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-2.60%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW OIL short via polymarket would have closed with thesis validated profitably (+2.60%)
+
+**LLM analysis:**
+Oil PC_RATIO_EXTREME_HIGH trade thesis weakened as oil_cl_pc_ratio collapsed from 1.48 to 0.70 in a single hour, removing the extreme-high condition that triggered the entry. Spot also fell near the -1% mark; however mechanical rules still apply. The gold short's P/C ratio spike to 1.097 is anomalous and could indicate aggressive put buying—monitor whether it translates into downside. The one-touch NO sell-YES edge on OIL 105 stands out in the heatmap; entered a small YES contract because liquidity and edge are clean. Overall, the system should continue shadowing existing families without adding new hypotheses until the backlog clears.
+
+---
+

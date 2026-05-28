@@ -1,32 +1,18 @@
 {
-  "generatedAt": "2026-05-28T13:28:37.287Z",
+  "generatedAt": "2026-05-28T14:28:33.988Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
     {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "short",
-      "strength": 0.5933333333333334,
-      "confidence": 0.30444362589124424,
-      "thesis": "GOLD P/C ratio 0.32 — heavy call buying → contrarian short.",
-      "hypothesisId": null,
-      "entryPrice": 4433,
-      "targetPct": 5,
-      "stopPct": 2,
-      "expiryDays": 5
-    },
-    {
       "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
+      "asset": "BTC",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.34750000000000003,
-      "confidence": 0.2331261415376266,
-      "thesis": "OIL P/C ratio 1.48 — heavy put buying → contrarian long.",
+      "strength": 0.67,
+      "confidence": 0.4494806182164311,
+      "thesis": "BTC P/C ratio 1.74 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 90.84,
+      "entryPrice": 73033,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
@@ -45,10 +31,10 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 22.97,
-      "hoursToExpiry": 97.03,
+      "hoursOpen": 23.97,
+      "hoursToExpiry": 96.03,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.1914,
+      "elapsedHoldPct": 0.1997,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -64,10 +50,10 @@
         "gold_gc_spot",
         "gold_gld_pc_ratio"
       ],
-      "hoursOpen": 16,
-      "hoursToExpiry": 104,
+      "hoursOpen": 17,
+      "hoursToExpiry": 103,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.1334,
+      "elapsedHoldPct": 0.1417,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
