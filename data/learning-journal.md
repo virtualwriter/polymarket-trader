@@ -18910,3 +18910,39 @@ Today's session saw a notable regime shift in BTC: after spending hours around 7
 
 ---
 
+### 2026-05-28 04:28 UTC
+
+**Portfolio:** $98.50 total | Cash $96.50 | 2 open | P&L $1.0166 | 53% win rate (157 trades)
+
+**Closed 1 trades:**
+- ❌ BTC long via spot/spot [BTC spot] (PROMOTED_HYPOTHESIS) → stop: $-0.0160 (-1.6%, market -0.0160, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_pm_iv = 89.9 is 2.6 std devs from mean (67.73 ± 8.67)
+- [anomaly] gold_gc_spot = 4372 is -2.5 std devs from mean (4608.27 ± 94.92)
+- [anomaly] btc_ibit_pc_ratio = 1.007 is 2.2 std devs from mean (0.59 ± 0.19)
+- [anomaly] hype_med_max = 86 is 2.1 std devs from mean (63.74 ± 10.54)
+- [correlation_flip] BTC-GOLD correlation shifted from -0.42 to 0.84. Rolling correlation: 24h=0.84, 7d=0.68, 30d=-0.19. Current 24h corr is at 88th pct of last 26 daily 24h-rolling values (range -0.76 to 0.88).
+
+**Blocked signal learning:**
+- Open blocked shadows: 97
+- Resolved blocked shadows: 310 (132 wins / 178 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW OIL short via polymarket would have closed with thesis validated profitably (+22.22%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-33.33%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.41%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+15.19%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (3 recurring signals seen within 6h); 1.0h since last call; daily budget 2/12; next scheduled 2026-05-28T06:28:30.212Z). Mechanical cycle ran normally._
+
+---
+
