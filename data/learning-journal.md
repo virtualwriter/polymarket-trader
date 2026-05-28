@@ -19301,3 +19301,35 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-05-28 16:28 UTC
+
+**Portfolio:** $98.50 total | Cash $95.50 | 3 open | P&L $1.0006 | 53% win rate (158 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_brent_spot = 92.39 is -2.2 std devs from mean since 2026-04-28 (104.15 ± 5.30)
+- [anomaly] oil_wti_spot = 88.9 is -2.1 std devs from mean since 2026-04-28 (99.32 ± 4.92)
+- [anomaly] hype_pm_iv = 86.7 is 2.1 std devs from mean (68.11 ± 9.04)
+- [correlation_flip] BTC-GOLD correlation shifted from -0.40 to 0.84. Rolling correlation: 24h=0.48, 7d=0.79, 30d=-0.13. Current 24h corr is at 41th pct of last 27 daily 24h-rolling values (range -0.50 to 0.87).
+- [correlation_flip] GOLD-OIL correlation shifted from -0.83 to 0.10. Rolling correlation: 24h=-0.90, 7d=0.16, 30d=-0.56. Current 24h corr is at 11th pct of last 27 daily 24h-rolling values (range -0.95 to 0.79).
+
+**Blocked signal learning:**
+- Open blocked shadows: 96
+- Resolved blocked shadows: 315 (135 wins / 180 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-26.42%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-2.60%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW OIL short via polymarket would have closed with thesis validated profitably (+2.60%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+42.86%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h since last call; daily budget 6/12; next scheduled 2026-05-28T18:28:27.648Z). Mechanical cycle ran normally._
+
+---
+
