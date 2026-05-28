@@ -1,25 +1,11 @@
 {
-  "generatedAt": "2026-05-28T01:30:12.136Z",
+  "generatedAt": "2026-05-28T03:29:24.374Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
   "entrySignals": [
-    {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.6521739130434783,
-      "confidence": 0.5869565217391305,
-      "thesis": "[PROMOTED BTC PM IV regime-relative compression via H-523] BTC PM IV compression / vol reversion when PM IV is in the bottom 20% of its 30d range and at least 1.25 standard deviations below its 30d mean while BTC spot consolidates within 5% of its 7d high.",
-      "hypothesisId": "H-523",
-      "entryPrice": 74300,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7
-    },
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "asset": "GOLD",
@@ -29,7 +15,7 @@
       "confidence": 0.30444362589124424,
       "thesis": "GOLD P/C ratio 0.32 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4421,
+      "entryPrice": 4389,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -43,10 +29,25 @@
       "confidence": 0.2331261415376266,
       "thesis": "OIL P/C ratio 1.48 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 90.15,
+      "entryPrice": 91.51,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
+    },
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.10200000000000001,
+      "confidence": 0.061466677563299675,
+      "thesis": "GOLD HL funding 18.6% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4389,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],

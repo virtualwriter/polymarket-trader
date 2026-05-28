@@ -18878,3 +18878,35 @@ No actionable edge beyond the current mechanical positions. HYPE funding extreme
 
 ---
 
+### 2026-05-28 03:29 UTC
+
+**Portfolio:** $98.52 total | Cash $95.52 | 3 open | P&L $1.0166 | 53% win rate (157 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved wider by 10.9pp (was -1.7, now 9.2)
+- [anomaly] gold_opt_fwd_90d = 4450 is -2.8 std devs from mean (4721.12 ± 96.86)
+- [anomaly] hype_pm_iv = 88.2 is 2.4 std devs from mean (67.70 ± 8.64)
+- [anomaly] gold_gc_spot = 4389 is -2.3 std devs from mean (4608.63 ± 94.54)
+- [anomaly] btc_ibit_pc_ratio = 1.007 is 2.2 std devs from mean (0.59 ± 0.19)
+
+**Blocked signal learning:**
+- Open blocked shadows: 97
+- Resolved blocked shadows: 309 (131 wins / 178 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have expired (-57.80%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW OIL short via polymarket would have closed with thesis validated profitably (+22.22%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-33.33%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.41%)
+
+**LLM analysis:**
+Today's session saw a notable regime shift in BTC: after spending hours around 75k, spot broke lower and prediction market implied volatility surged, indicating fear. The promoted hypothesis H-523, which seeks to go long when PM IV is compressed, caught this compression entry but is currently losing as price fell. It's a reminder that low IV environments can precede significant directional moves, and directionality of the move may need additional filters. The explosive repricing in PM IV relative to options suggests the Polymarket volatility market may be faster to react to spot breakdowns, an edge worth investigating further. H-521 did not fire, and the portfolio's other signals (P/C extremes) are performing in line with expectations. No immediate trade adjustments warranted given all positions are within risk limits and not yet eligible for discretionary action.
+
+---
+
