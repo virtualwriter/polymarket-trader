@@ -451,6 +451,12 @@ interface Hypothesis {
   prediction: string;
   timeframeDays: number;
   confidence: number;
+  // Explicit spot direction the hypothesis predicts. "neutral" is for
+  // vol/IV/spread theses that do not carry a directional price view and
+  // therefore should not be auto-converted to a spot bet. Older
+  // hypotheses created before this field existed leave it undefined,
+  // which falls back to the keyword inferrer.
+  direction?: "long" | "short" | "neutral";
   tests: HypothesisTest[];
   winRate: number;
   status: "active" | "promoted" | "archived" | "killed";
@@ -5648,21 +5654,30 @@ function containsAny(text: string, keywords: readonly string[]): boolean {
 }
 
 function inferHypothesisDirection(hypothesis: Hypothesis): "long" | "short" | null {
+  // 1. Authoritative: the LLM now emits `direction` on every new hypothesis
+  //    (long/short/neutral). When present we trust it absolutely; "neutral"
+  //    means the thesis has no spot view (vol/IV/spread play) -> skip.
+  if (hypothesis.direction === "long") return "long";
+  if (hypothesis.direction === "short") return "short";
+  if (hypothesis.direction === "neutral") return null;
+
+  // Older hypotheses created before the `direction` field existed fall back
+  // to the keyword-based inferrer below.
   const raw = `${hypothesis.description} ${hypothesis.prediction}`;
   const text = raw.toLowerCase();
 
-  // 1. Authoritative explicit prefix the LLM uses on ~50+ recent hypotheses.
-  //    "LONG BTC ..." / "SHORT BTC ..." wins over any incidental keyword.
+  // 2. Explicit "LONG <ASSET>" / "SHORT <ASSET>" prefix the LLM used on
+  //    ~50 recent hypotheses. Authoritative over keyword scanning.
   const longHit = EXPLICIT_LONG_PREFIX.test(raw);
   const shortHit = EXPLICIT_SHORT_PREFIX.test(raw);
   if (longHit && !shortHit) return "long";
   if (shortHit && !longHit) return "short";
 
-  // 2. Vol/IV reversion themes have no spot direction; refuse to convert to a
+  // 3. Vol/IV reversion themes have no spot direction; refuse to convert to a
   //    directional spot bet (this is the H-523 fix).
   if (containsAny(text, VOL_ONLY_KEYWORDS)) return null;
 
-  // 3. Tight keyword scan; conflict -> skip rather than default to long.
+  // 4. Tight keyword scan; conflict -> skip rather than default to long.
   const bearish = containsAny(text, BEARISH_KEYWORDS);
   const bullish = containsAny(text, BULLISH_KEYWORDS);
   if (bearish && !bullish) return "short";
@@ -6463,6 +6478,7 @@ const llmNewHypothesisSchema = z.object({
   prediction: z.string().min(1),
   timeframeDays: z.number().int().min(1).max(30),
   confidence: z.number().min(0).max(1),
+  direction: z.enum(["long", "short", "neutral"]),
   source: z.literal("llm"),
 });
 
@@ -6748,6 +6764,7 @@ IMPORTANT RULES:
   - <column>_zscore_<N>h / <column>_zscore_<N>d, e.g. btc_pm_iv_zscore_30d < -2
   - <column>_change_pct_<N>h / <column>_change_pct_<N>d, e.g. btc_spot_change_pct_24h > 1.5
 - For promoted setup-family variants, describe the reusable setup in relative terms such as "within 3% of 7d high", "bottom 15th percentile P/C ratio", "PM IV z-score below -2", or "spot above 24h SMA" instead of "BTC above 78k".
+- Every newHypothesis MUST include a direction field: "long" if the spot/perp price is predicted to go up, "short" if predicted down, "neutral" for vol/IV/spread/basis theses that do NOT carry a directional spot view (e.g. "BTC IV expands as PM IV mean reverts" — the price could go either way). Direction is enforced as the authoritative signal when the hypothesis is later promoted; do NOT rely on the engine to infer direction from prose. If the thesis is contrarian, "long" still means buy spot (e.g. "P/C extreme high → contrarian long" is direction=long, not short).
 - Existing LLM hypotheses must receive ${HYPOTHESIS_SHADOW_TESTS_REQUIRED} condition-triggered shadow tests before promotion/kill/inconclusive demotion. Do not create new hypotheses while the backlog is incomplete.
 - Similar hypotheses are grouped into setup families. Promotion/kill decisions happen at the setup-family level, not per wording variant. Prefer reviewing whether the parent setup is working over proposing near-duplicate threshold variants.
 - Generic live LLM_HYPOTHESIS entries are retired. The LLM may propose hypotheses for shadow testing and may advise eligible closes, but live entries require a non-retired promoted setup family.
@@ -6805,6 +6822,7 @@ Respond with ONLY valid JSON in this exact format:
       "prediction": "specific testable prediction",
       "timeframeDays": 7,
       "confidence": 0.6,
+      "direction": "long",
       "source": "llm"
     }
   ],
@@ -6854,7 +6872,7 @@ Parse error: ${parsed.error}
 Return ONLY a corrected JSON object that follows the original schema exactly. Do not include markdown, comments, or explanation. Preserve the same analysis as much as possible.
 Required top-level keys and types:
 - marketAssessment: non-empty string
-- newHypotheses: array of objects with created, description, conditions, prediction, timeframeDays, confidence, source="llm"
+- newHypotheses: array of objects with created, description, conditions, prediction, timeframeDays, confidence, direction ("long"|"short"|"neutral"), source="llm"
 - hypothesisReviews: array of {id, observation}
 - trades: array of {action, positionId?, asset, venue, direction, closeReasonCategory?, evidenceColumns?, thesis}
 - parameterUpdates: optional object
@@ -7503,6 +7521,7 @@ async function main() {
             id, created: nh.created, description: nh.description,
             conditions: nh.conditions, prediction: nh.prediction,
             timeframeDays: nh.timeframeDays, confidence: nh.confidence,
+            direction: nh.direction,
             tests: [{ date: new Date().toISOString().slice(0, 10), triggered: true, outcome: "pending", actualMove: `Shadow test 1/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened for initial validation.` }],
             winRate: 0, status: "active", promotedToSignal: false, postMortem: null,
             source: nh.source ?? "llm",
