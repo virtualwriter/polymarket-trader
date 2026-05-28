@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-28T14:30:35.131Z",
+  "generatedAt": "2026-05-28T15:28:35.883Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -8,34 +8,23 @@
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "BTC",
+      "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.67,
-      "confidence": 0.4494806182164311,
-      "thesis": "BTC P/C ratio 1.74 — heavy put buying → contrarian long.",
+      "strength": 0.13624999999999998,
+      "confidence": 0.09140557348058019,
+      "thesis": "OIL P/C ratio 1.31 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 73033,
+      "entryPrice": 89.63,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "buy",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "long",
-        "thesis": "Relative-value heatmap shows PM YES on OIL CL hit $105 by end of June underpriced vs underlying payoff cap (edge +8.33pts, spread 2c, liquidity 38k). Buy YES to capture mispricing."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

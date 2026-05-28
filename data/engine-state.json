@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-28T14:28:33.967Z",
+  "generatedAt": "2026-05-28T15:28:35.837Z",
   "dataFreshness": {
-    "valuationRows": 655,
-    "latestValuationAt": "2026-05-28T14",
-    "macroRows": 655,
+    "valuationRows": 656,
+    "latestValuationAt": "2026-05-28T15",
+    "macroRows": 656,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-28T14"
+    "latestInstrumentSnapshotAt": "2026-05-28T15"
   },
   "portfolio": {
-    "cash": 96.5045,
-    "openPositions": 2,
+    "cash": 95.5045,
+    "openPositions": 3,
     "realizedPnl": 1.0006,
     "totalTrades": 158,
     "winRatePct": 52.5,
-    "unrealizedPnl": -0.011
+    "unrealizedPnl": -0.0095
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.97,
-      "currentPrice": 89.03,
-      "underlyingPrice": 89.03,
+      "pnlPct": -0.3,
+      "currentPrice": 89.63,
+      "underlyingPrice": 89.63,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,15 +39,32 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.13,
-      "currentPrice": 4464,
-      "underlyingPrice": 4464,
+      "pnlPct": -0.49,
+      "currentPrice": 4480,
+      "underlyingPrice": 4480,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "gold_gc_spot",
         "gold_gld_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1779978635134-iccb",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": -0.15,
+      "currentPrice": 72920,
+      "underlyingPrice": 72920,
+      "targetPct": 3,
+      "stopPct": 1.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "btc_spot",
+        "btc_ibit_pc_ratio"
       ]
     }
   ],
@@ -188,9 +205,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 97,
-    "resolvedCount": 314,
-    "wouldHaveWon": 134,
+    "openCount": 96,
+    "resolvedCount": 315,
+    "wouldHaveWon": 135,
     "wouldHaveLost": 180,
     "bySignal": [
       {
@@ -250,33 +267,15 @@
         "avgPnlPct": -0.22
       },
       {
-        "signalType": "PM_EV_BELOW_SPOT",
-        "blocked": 4,
-        "resolved": 4,
-        "wouldHaveWon": 2,
-        "wouldHaveLost": 2,
-        "avgPnlPct": 0.07
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "blocked": 16,
+        "resolved": 13,
+        "wouldHaveWon": 7,
+        "wouldHaveLost": 6,
+        "avgPnlPct": 3.1
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 22.22,
-        "resolvedAt": "2026-05-28T03:28:28.834Z",
-        "marketQuality": {
-          "yesBid": 0.37,
-          "yesAsk": 0.38,
-          "yesSpread": 0.01,
-          "liquidity": 34819.37,
-          "flags": []
-        }
-      },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
         "asset": "BTC",
@@ -410,6 +409,24 @@
           "yesAsk": 0.24,
           "yesSpread": 0.01,
           "liquidity": 51850.88,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 42.86,
+        "resolvedAt": "2026-05-28T15:28:35.692Z",
+        "marketQuality": {
+          "yesBid": 0.72,
+          "yesAsk": 0.73,
+          "yesSpread": 0.01,
+          "liquidity": 13940.11,
           "flags": []
         }
       }

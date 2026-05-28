@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-05-28T14:28:33.988Z",
+  "generatedAt": "2026-05-28T15:28:35.866Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "BTC",
+      "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.67,
-      "confidence": 0.4494806182164311,
-      "thesis": "BTC P/C ratio 1.74 — heavy put buying → contrarian long.",
+      "strength": 0.13624999999999998,
+      "confidence": 0.09140557348058019,
+      "thesis": "OIL P/C ratio 1.31 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 73033,
+      "entryPrice": 89.63,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
@@ -31,10 +31,10 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 23.97,
-      "hoursToExpiry": 96.03,
+      "hoursOpen": 24.97,
+      "hoursToExpiry": 95.03,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.1997,
+      "elapsedHoldPct": 0.2081,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -50,10 +50,29 @@
         "gold_gc_spot",
         "gold_gld_pc_ratio"
       ],
-      "hoursOpen": 17,
-      "hoursToExpiry": 103,
+      "hoursOpen": 18,
+      "hoursToExpiry": 102,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.1417,
+      "elapsedHoldPct": 0.15,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "T-1779978635134-iccb",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "btc_spot",
+        "btc_ibit_pc_ratio"
+      ],
+      "hoursOpen": 0.97,
+      "hoursToExpiry": 119.03,
+      "plannedHoldHours": 120,
+      "elapsedHoldPct": 0.0081,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
