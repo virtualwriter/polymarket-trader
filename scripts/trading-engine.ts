@@ -220,7 +220,12 @@ const LIVE_SIGNAL_ALLOWLIST = new Set([
   "FUNDING_EXTREME_SHORT",
   "FUNDING_EXTREME_LONG",
 ]);
-const LIVE_PROMOTED_HYPOTHESIS_IDS = new Set(["H-521", "H-523"]);
+// H-523 was a "BTC vol expands as PM IV mean reverts" thesis that the
+// engine was force-converting into a directional BTC spot long via a
+// keyword-scanner bug. Even with the bug fixed (vol-only theses are now
+// skipped explicitly), the hypothesis itself doesn't carry a spot view
+// and shouldn't be live. Re-promote only when there's a directional thesis.
+const LIVE_PROMOTED_HYPOTHESIS_IDS = new Set(["H-521"]);
 const OPERATIONALLY_TAINTED_TRADE_IDS = operationallyTaintedTradeIds();
 const LOOKBACK_HOURS = 24;
 const NO_LLM = process.argv.includes("--no-llm");
@@ -5589,11 +5594,80 @@ function hasRegimeRelativeConditions(hypothesis: Hypothesis): boolean {
   ));
 }
 
-function inferHypothesisDirection(hypothesis: Hypothesis): "long" | "short" {
-  const prediction = `${hypothesis.description} ${hypothesis.prediction}`.toLowerCase();
-  return prediction.includes("decline") || prediction.includes("drop") || prediction.includes("down") || prediction.includes("falls")
-    ? "short"
-    : "long";
+// Tight directional keywords. Each entry must carry unambiguous direction in
+// the context of a price-prediction sentence. Ambiguous words like "continues",
+// "expansion", "extends", "above", "below", "long-term", "short-term",
+// "momentum" are deliberately excluded — they fire false positives constantly.
+const BEARISH_KEYWORDS = [
+  "decline", "declining", "drops", "dropping",
+  "downside", "downturn", "downward",
+  "falls", "falling",
+  "pullback", "selloff", "sell-off",
+  "weakness", "weaken", "weakening",
+  "bearish",
+  "unwind", "liquidation",
+  "breakdown", "breaks down", "break down",
+  "reverses lower", "reverts lower",
+  "capitulat", "crash", "tumble", "slump",
+  "deteriorat", "rolls over",
+];
+
+const BULLISH_KEYWORDS = [
+  "rally", "rallies", "rallying",
+  "rises", "rising",
+  "rebound", "bounce", "bouncing",
+  "breakout", "breaks out", "break out",
+  "upside", "upturn", "up move",
+  "strengthen", "strengthening",
+  "bullish",
+  "outperform",
+  "reverses higher", "reverts higher",
+  "accumulat",
+];
+
+// Vol/IV reversion themes that don't carry a spot direction. Defaulting these
+// to long is the bug that produced the H-523 BTC stop-out: the thesis was
+// "BTC vol expands as PM IV mean reverts", which says nothing about whether
+// BTC spot goes up or down.
+const VOL_ONLY_KEYWORDS = [
+  "vol expansion", "vol expands", "volatility expansion", "volatility expands",
+  "iv expansion", "iv expands", "iv expand", "implied vol expand",
+  "vol compression", "vol compresses", "volatility compression",
+  "iv compression", "iv compresses",
+  "mean revert", "mean-revert", "mean reverts",
+  "vol reversion", "volatility reversion", "iv reversion",
+  "vol mean revert", "iv mean revert",
+];
+
+const EXPLICIT_LONG_PREFIX = /\blong\s+(btc|eth|hype|amzn|sol|sui|gold|oil|spy|nvda)\b/i;
+const EXPLICIT_SHORT_PREFIX = /\bshort\s+(btc|eth|hype|amzn|sol|sui|gold|oil|spy|nvda)\b/i;
+
+function containsAny(text: string, keywords: readonly string[]): boolean {
+  for (const k of keywords) if (text.includes(k)) return true;
+  return false;
+}
+
+function inferHypothesisDirection(hypothesis: Hypothesis): "long" | "short" | null {
+  const raw = `${hypothesis.description} ${hypothesis.prediction}`;
+  const text = raw.toLowerCase();
+
+  // 1. Authoritative explicit prefix the LLM uses on ~50+ recent hypotheses.
+  //    "LONG BTC ..." / "SHORT BTC ..." wins over any incidental keyword.
+  const longHit = EXPLICIT_LONG_PREFIX.test(raw);
+  const shortHit = EXPLICIT_SHORT_PREFIX.test(raw);
+  if (longHit && !shortHit) return "long";
+  if (shortHit && !longHit) return "short";
+
+  // 2. Vol/IV reversion themes have no spot direction; refuse to convert to a
+  //    directional spot bet (this is the H-523 fix).
+  if (containsAny(text, VOL_ONLY_KEYWORDS)) return null;
+
+  // 3. Tight keyword scan; conflict -> skip rather than default to long.
+  const bearish = containsAny(text, BEARISH_KEYWORDS);
+  const bullish = containsAny(text, BULLISH_KEYWORDS);
+  if (bearish && !bullish) return "short";
+  if (bullish && !bearish) return "long";
+  return null;
 }
 
 function generatePromotedHypothesisSignals(
@@ -5641,13 +5715,21 @@ function generatePromotedHypothesisSignals(
 
       const asset = inferHypothesisAsset(hypothesis);
       if (!asset) continue;
+      const direction = inferHypothesisDirection(hypothesis);
+      if (!direction) {
+        // Thesis is direction-ambiguous (e.g. pure vol/IV reversion) or
+        // contains mixed bullish+bearish language. Skip rather than
+        // defaulting to long — this used to fire BTC longs against
+        // explicitly bearish predictions like "BTC continues pullback".
+        continue;
+      }
       const entryPrice = getAssetPrice(latestRow, asset);
       if (!entryPrice) continue;
       const signal = finalizeSignal({
         type: "PROMOTED_HYPOTHESIS",
         asset,
         venue: "spot",
-        direction: inferHypothesisDirection(hypothesis),
+        direction,
         strength: Math.max(0.2, family.winRate, hypothesis.winRate),
         confidence: Math.min(0.9, Math.max(0.2, hypothesis.confidence * Math.max(family.winRate, hypothesis.winRate, 0.5))),
         thesis: `[PROMOTED ${family.setupLabel} via ${hypothesis.id}] ${hypothesis.description}`,
