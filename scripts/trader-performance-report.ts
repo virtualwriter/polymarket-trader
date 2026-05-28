@@ -268,7 +268,11 @@ function readHybridBotReport(): HybridBotReport {
           stats.realizedPnlPctSum += pct;
           totals.realizedPnlUsd += pnlUsd;
           totals.realizedPnlPctSum += pct;
-          if (pct > 0) {
+          // Classify wins/losses by net (after-fee) P&L so the win rate is
+          // consistent with the realized P&L column. Using gross pct caused
+          // small positive moves eaten by taker fees to count as wins
+          // while contributing a negative realized line.
+          if (pnlUsd > 0) {
             stats.wins += 1;
             totals.wins += 1;
           } else {
