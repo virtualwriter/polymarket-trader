@@ -18946,3 +18946,35 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-05-28 05:28 UTC
+
+**Portfolio:** $98.50 total | Cash $96.50 | 2 open | P&L $1.0006 | 53% win rate (158 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 32.0pp (was 17.3, now -14.7)
+- [anomaly] hype_pm_iv = 89.3 is 2.5 std devs from mean (67.76 ± 8.71)
+- [anomaly] oil_opt_fwd_90d = 164.6 is 2.4 std devs from mean since 2026-04-28 (89.99 ± 30.72)
+- [anomaly] gold_gc_spot = 4382 is -2.4 std devs from mean (4607.92 ± 95.26)
+- [anomaly] btc_ibit_pc_ratio = 1.007 is 2.2 std devs from mean (0.59 ± 0.19)
+
+**Blocked signal learning:**
+- Open blocked shadows: 97
+- Resolved blocked shadows: 310 (132 wins / 178 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW OIL short via polymarket would have closed with thesis validated profitably (+22.22%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-33.33%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.41%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+15.19%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (3 recurring signals seen within 6h); 2.0h since last call; daily budget 2/12; next scheduled 2026-05-28T07:28:28.671Z). Mechanical cycle ran normally._
+
+---
+
