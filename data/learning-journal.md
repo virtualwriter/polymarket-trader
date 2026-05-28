@@ -19528,3 +19528,35 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-05-28 23:29 UTC
+
+**Portfolio:** $98.50 total | Cash $94.50 | 4 open | P&L $1.0006 | 53% win rate (158 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_brent_spot = 92.48 is -2.1 std devs from mean since 2026-04-28 (103.99 ± 5.43)
+- [anomaly] oil_wti_spot = 88.52 is -2.1 std devs from mean since 2026-04-28 (99.18 ± 5.04)
+- [anomaly] hype_med_max = 86.5 is 2.0 std devs from mean (64.37 ± 11.02)
+- [correlation_flip] BTC-GOLD correlation shifted from -0.39 to 0.82. Rolling correlation: 24h=0.26, 7d=0.78, 30d=-0.12. Current 24h corr is at 33th pct of last 27 daily 24h-rolling values (range -0.77 to 0.92).
+- [correlation_flip] GOLD-OIL correlation shifted from -0.83 to 0.13. Rolling correlation: 24h=-0.93, 7d=0.25, 30d=-0.55. Current 24h corr is at 7th pct of last 27 daily 24h-rolling values (range -0.94 to 0.87).
+
+**Blocked signal learning:**
+- Open blocked shadows: 96
+- Resolved blocked shadows: 320 (138 wins / 182 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW ETH short via polymarket would have edge compressed but trade lost money (-2.33%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+2.50%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-11.32%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+16.91%)
+
+**LLM analysis:**
+Oil’s Polymarket IV premium reached 80% while 30d listed options IV is 55%, the widest gap in recent data. Historically such divergences have preceded a narrowing of PM IV, but the settlement-bucket markets are driving the premium and may not be directly arb-able. Gold’s P/C ratio climbed to 0.64 from 0.32, which weakens the original GOLD short thesis but the position is rule-based and cannot be closed. HYPE’s momentum is confirmed by the hybrid bot remaining in bear/short mode (alt coins weak) while HYPE itself rallies—this divergence supports the HYPE long thesis as a crypto-specific breakout. The macro environment is less hostile than earlier in the day, but Fed still very hawkish, so risk-on positioning should remain cautious.
+
+---
+
