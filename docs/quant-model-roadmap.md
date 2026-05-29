@@ -20,7 +20,7 @@ Minimal viable upgrade to "yes, this is a quant model" is **~2-3 weeks of focuse
 | 4. Calibration | 25 | Scaffolding exists (8,173-row JSONL with `resolved_outcome` field), per-bucket observer shipped (`oneTouchBucketObservations`). No closed loop. | Brier score by bucket, reliability diagrams, isotonic regression mapping model→empirical probabilities, recomputed weekly. |
 | 5. Signal / alpha generation | 55 | Multiple signal families (one-touch, weekend HL funding, monotonic arb, hybrid bot, LLM hypothesis). Promotion gate at 65% shadow win rate over 20 trades. | Same + per-signal EV calc, signal correlation matrix, signal-decay tracking. |
 | 6. Portfolio construction / sizing | 10 | `TRADE_SIZE = 1` — every position identically sized regardless of edge or confidence. Live HL bot uses fixed $10. | Sizing as a function of edge × confidence × inverse-variance × portfolio-correlation-penalty. Typical: fractional Kelly, risk-parity, or mean-variance with covariance shrinkage. |
-| 7. Risk management | 25 | Per-position stops, expiry-based hold limits, drawdown-mode flag (halves sizing below 35% recent win rate). | Portfolio-level VaR/CVaR, correlated-position caps, sector/asset exposure limits, dynamic vol-targeting on aggregate book. |
+| 7. Risk management | 30 | Per-position stops, expiry-based hold limits, drawdown-mode flag (halves sizing below 35% recent win rate), hybrid bot consecutive-loser cooldown (3 losses → 36h coin-specific short suppression, `0090238`). | Portfolio-level VaR/CVaR, correlated-position caps, sector/asset exposure limits, dynamic vol-targeting on aggregate book. |
 | 8. Execution | 70 | Real HL fills with measured slippage + fees logged, PM via CLOB client. Live and shadow accounting cleanly separated. | Same + pre-trade impact modeling, optimal execution scheduling for large orders. |
 | 9. Backtesting / validation | 30 | Ad-hoc Python scripts for individual strategies (funding sweep, hybrid grid, IV variant, synthetic bull stress). | Unified walk-forward framework, train/test/OOS splits enforced, regime-stratified holdouts, leakage prevention. |
 | 10. Live monitoring & adaptive learning | 45 | Hypothesis system with backtest-validated promotion, shadow-trading infrastructure, per-signal weight adaptation, drawdown mode, per-bucket observer, LLM journals + email. | Model-drift alerting, signal P&L attribution at factor level, regime detection feeding parameter selection, auto-recalibration schedule. |
@@ -121,6 +121,7 @@ Update this table as gaps close. When a step ships, move from `pending` to a com
 | E. Fitted probability model | pending (gated on A) | No ML imports in repo. |
 | Deferred: IV-variant data collection | partial | `scripts/iv_model_variant_backtest.py` writes comparison CSV but doesn't feed live model. |
 | Deferred: Relative-decay edge exit | pending | Current exit uses absolute 1pt floor; relative trigger not coded. |
+| Tactical: Hybrid bot consecutive-loser cooldown | shipped (`0090238`) | 3 back-to-back losing shorts (pnl ≤ −0.5%) on a coin → 36h short-suppression on that coin. INJ seeded with `loss_streak=3` to halt active bleed. Bumps Pillar 7 (Risk Management) from 25% → ~30%. |
 
 ## Cross-References
 
