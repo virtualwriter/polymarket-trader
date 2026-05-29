@@ -4123,6 +4123,104 @@ function summarizeBlockedSignals(blockedSignals: BlockedSignalShadow[]): Blocked
   };
 }
 
+// Per-bucket calibration observer for the new one-touch model. The
+// `summarizeBlockedSignals` aggregator above only buckets by signalType
+// (NO vs YES exploratory), so a 30% win rate hidden inside an otherwise
+// healthy population goes unnoticed. This observer slices the resolved
+// new-model shadows along the dimensions the model itself emits at entry
+// (heatmapRowSnapshot.row.edge_bucket and moneyness_bucket) so we can see
+// which slices are calibrated and which are not. Excluded:
+//   - learningExcluded shadows (legacy / artifact)
+//   - shadows missing heatmapRowSnapshot (legacy pre-decoder)
+//   - cancelled shadows
+// We require a per-bucket sample of MIN_BUCKET_N before emitting any
+// note so we don't flag noise. Thresholds are intentionally conservative.
+const ONE_TOUCH_OBSERVER_MIN_BUCKET_N = 30;
+const ONE_TOUCH_OBSERVER_NEGATIVE_WIN_RATE = 0.40;
+const ONE_TOUCH_OBSERVER_NEGATIVE_SUM_USD = -0.10;
+const ONE_TOUCH_OBSERVER_POSITIVE_WIN_RATE = 0.60;
+const ONE_TOUCH_OBSERVER_POSITIVE_SUM_USD = 0.10;
+
+function oneTouchBucketObservations(blockedSignals: BlockedSignalShadow[]): string[] {
+  type BucketStat = {
+    n: number;
+    wins: number;
+    losses: number;
+    flats: number;
+    sumPnlUsd: number;
+    sumPnlPct: number;
+  };
+  const byEdgeBucket = new Map<string, BucketStat>();
+  const byMoneyness = new Map<string, BucketStat>();
+  const byAbsEdgeBin = new Map<string, BucketStat>();
+
+  function bumpBucket(map: Map<string, BucketStat>, key: string, pnlUsd: number, pnlPct: number): void {
+    const stat = map.get(key) ?? { n: 0, wins: 0, losses: 0, flats: 0, sumPnlUsd: 0, sumPnlPct: 0 };
+    stat.n += 1;
+    stat.sumPnlUsd += pnlUsd;
+    stat.sumPnlPct += pnlPct;
+    if (pnlUsd > 0) stat.wins += 1;
+    else if (pnlUsd < 0) stat.losses += 1;
+    else stat.flats += 1;
+    map.set(key, stat);
+  }
+
+  function absEdgeBin(absEdge: number): string {
+    if (absEdge >= 50) return "abs_edge>=50";
+    if (absEdge >= 30) return "abs_edge_30_50";
+    if (absEdge >= 20) return "abs_edge_20_30";
+    if (absEdge >= 15) return "abs_edge_15_20";
+    return "abs_edge<15";
+  }
+
+  for (const shadow of blockedSignals) {
+    if (shadow.blockedReason !== "one_touch_high_edge_shadow") continue;
+    if (shadow.status !== "resolved") continue;
+    if (shadow.learningExcluded) continue;
+    if (!shadow.hypotheticalResult) continue;
+    const snap = shadow.heatmapRowSnapshot;
+    if (!snap) continue;
+    const row = snap.row ?? {};
+    const pnlUsd = shadow.hypotheticalResult.pnl;
+    const pnlPct = shadow.hypotheticalResult.pnlPct;
+    const edgeBucket = typeof row.edge_bucket === "string" && row.edge_bucket.length > 0 ? row.edge_bucket : null;
+    const moneyness = typeof row.moneyness_bucket === "string" && row.moneyness_bucket.length > 0 ? row.moneyness_bucket : null;
+    const side = snap.selectedSide ?? "no";
+    const edgeKey = side === "no" ? "sell_yes_edge_pts" : "buy_yes_edge_pts";
+    const edgeRaw = row[edgeKey];
+    const edgeNum = typeof edgeRaw === "string" && edgeRaw.length > 0 ? Number(edgeRaw) : null;
+
+    if (edgeBucket) bumpBucket(byEdgeBucket, edgeBucket, pnlUsd, pnlPct);
+    if (moneyness) bumpBucket(byMoneyness, moneyness, pnlUsd, pnlPct);
+    if (edgeNum !== null && Number.isFinite(edgeNum)) bumpBucket(byAbsEdgeBin, absEdgeBin(Math.abs(edgeNum)), pnlUsd, pnlPct);
+  }
+
+  function emitNotes(label: string, map: Map<string, BucketStat>): string[] {
+    const out: string[] = [];
+    const entries = Array.from(map.entries()).sort((a, b) => b[1].n - a[1].n);
+    for (const [bucket, stat] of entries) {
+      if (stat.n < ONE_TOUCH_OBSERVER_MIN_BUCKET_N) continue;
+      const decided = stat.wins + stat.losses;
+      const winRate = decided > 0 ? stat.wins / decided : 0;
+      const avgPnlPct = stat.sumPnlPct / stat.n;
+      const flatPart = stat.flats > 0 ? `/${stat.flats}flat` : "";
+      const header = `one-touch ${label}="${bucket}" n=${stat.n} (${stat.wins}W/${stat.losses}L${flatPart}, ${(winRate * 100).toFixed(1)}% win-rate, sum $${stat.sumPnlUsd.toFixed(4)}, avg ${avgPnlPct.toFixed(2)}%)`;
+      if (decided > 0 && winRate <= ONE_TOUCH_OBSERVER_NEGATIVE_WIN_RATE && stat.sumPnlUsd <= ONE_TOUCH_OBSERVER_NEGATIVE_SUM_USD) {
+        out.push(`${header} — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.`);
+      } else if (decided > 0 && winRate >= ONE_TOUCH_OBSERVER_POSITIVE_WIN_RATE && stat.sumPnlUsd >= ONE_TOUCH_OBSERVER_POSITIVE_SUM_USD) {
+        out.push(`${header} — calibration is profitable; this slice is a candidate for live promotion.`);
+      }
+    }
+    return out;
+  }
+
+  return [
+    ...emitNotes("edge_bucket", byEdgeBucket),
+    ...emitNotes("moneyness_bucket", byMoneyness),
+    ...emitNotes("abs_edge_bin", byAbsEdgeBin),
+  ];
+}
+
 function blockedSignalObservations(summary: BlockedSignalLearningSummary): string[] {
   const notes: string[] = [];
   for (const row of summary.bySignal) {
@@ -7475,7 +7573,8 @@ async function main() {
   }
   let proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   let blockedSummary = summarizeBlockedSignals(blockedSignals);
-  let blockedObs = [...blockedSignalObservations(blockedSummary), ...proxyComparisonObs];
+  let oneTouchBucketObs = oneTouchBucketObservations(blockedSignals);
+  let blockedObs = [...blockedSignalObservations(blockedSummary), ...proxyComparisonObs, ...oneTouchBucketObs];
   for (const note of blockedObs) console.log(`  Shadow learning: ${note}`);
 
   // Step 2: Update signal weights
@@ -7516,7 +7615,8 @@ async function main() {
   signals.push(...oneTouchHighEdgeNoLiveSignals);
   proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   blockedSummary = summarizeBlockedSignals(blockedSignals);
-  blockedObs = [...blockedSignalObservations(blockedSummary), ...proxyComparisonObs];
+  oneTouchBucketObs = oneTouchBucketObservations(blockedSignals);
+  blockedObs = [...blockedSignalObservations(blockedSummary), ...proxyComparisonObs, ...oneTouchBucketObs];
   console.log(`\n  Signals generated: ${signals.length}`);
   for (const s of signals.slice(0, 8)) {
     console.log(`    ${s.asset} ${s.direction} (${s.type}) confidence=${s.confidence.toFixed(3)} — ${s.thesis.slice(0, 70)}`);
@@ -7622,7 +7722,8 @@ async function main() {
       llmJournal = llmResult.journalEntry;
       proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
       blockedSummary = summarizeBlockedSignals(blockedSignals);
-      blockedObs = [...blockedSignalObservations(blockedSummary), ...proxyComparisonObs];
+      oneTouchBucketObs = oneTouchBucketObservations(blockedSignals);
+      blockedObs = [...blockedSignalObservations(blockedSummary), ...proxyComparisonObs, ...oneTouchBucketObs];
     }
     llmState.lastCallAt = new Date().toISOString();
     llmState.lastCallReasons = cadence.reasons;
