@@ -20181,3 +20181,35 @@ BTC put-call ratio collapsed from 1.74 to 0.53, signaling the heavy put buying t
 
 ---
 
+### 2026-05-29 21:20 UTC
+
+**Portfolio:** $98.48 total | Cash $95.48 | 3 open | P&L $0.9783 | 52% win rate (162 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 16.4pp (was -2.8, now -19.2)
+- [anomaly] gold_opt_iv_30d = 41.9 is 5.7 std devs from mean (23.94 ± 3.15)
+- [anomaly] hype_spot = 65.381 is 2.3 std devs from mean (46.75 ± 8.20)
+- [anomaly] hype_hl_oi = 1478431814 is 2.2 std devs from mean (993770247.35 ± 219643174.25)
+- [anomaly] hype_med_max = 90.3 is 2.2 std devs from mean (65.02 ± 11.53)
+
+**Blocked signal learning:**
+- Open blocked shadows: 99
+- Resolved blocked shadows: 326 (143 wins / 183 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+26.32%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+9.89%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+2.74%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 0.5h since last call; daily budget 8/12; next scheduled 2026-05-29T23:20:16.625Z). Mechanical cycle ran normally._
+
+---
+

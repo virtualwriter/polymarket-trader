@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-29T20:48:49.041Z",
+  "generatedAt": "2026-05-29T21:20:16.599Z",
   "dataFreshness": {
-    "valuationRows": 682,
-    "latestValuationAt": "2026-05-29T20",
-    "macroRows": 682,
+    "valuationRows": 683,
+    "latestValuationAt": "2026-05-29T21",
+    "macroRows": 683,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-29T20"
+    "latestInstrumentSnapshotAt": "2026-05-29T21"
   },
   "portfolio": {
     "cash": 95.4821,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.9783,
     "totalTrades": 162,
     "winRatePct": 51.9,
-    "unrealizedPnl": 0.0245
+    "unrealizedPnl": 0.0243
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.93,
-      "currentPrice": 73714,
-      "underlyingPrice": 73714,
+      "pnlPct": 0.9,
+      "currentPrice": 73691,
+      "underlyingPrice": 73691,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.78,
-      "currentPrice": 87.68,
-      "underlyingPrice": 87.68,
+      "pnlPct": 1.22,
+      "currentPrice": 88.06,
+      "underlyingPrice": 88.06,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -56,9 +56,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 0.73,
-      "currentPrice": 65.656,
-      "underlyingPrice": 65.656,
+      "pnlPct": 0.31,
+      "currentPrice": 65.381,
+      "underlyingPrice": 65.381,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -204,7 +204,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 108,
+    "openCount": 99,
     "resolvedCount": 326,
     "wouldHaveWon": 143,
     "wouldHaveLost": 183,
@@ -219,7 +219,7 @@
       },
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "blocked": 35,
+        "blocked": 36,
         "resolved": 27,
         "wouldHaveWon": 17,
         "wouldHaveLost": 10,
@@ -423,22 +423,6 @@
       }
     ],
     "openQualityWarnings": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
-        "asset": "SPY",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "spx-hit-dec-2026 — YES — Will S&P 500 (SPX) hit $7,600 (HIGH) in December?",
-        "marketQuality": {
-          "yesBid": 0.65,
-          "yesAsk": 0.68,
-          "yesSpread": 0.03,
-          "liquidity": 6560.53,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 19.4pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
-      },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
         "asset": "OIL",
