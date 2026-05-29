@@ -20345,3 +20345,37 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.6h s
 
 ---
 
+### 2026-05-29 23:30 UTC
+
+**Portfolio:** $98.48 total | Cash $95.48 | 3 open | P&L $0.9783 | 52% win rate (162 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 90 is 2.1 std devs from mean (65.10 ± 11.60)
+- [anomaly] oil_opt_fwd_90d = 18 is -2.1 std devs from mean since 2026-04-28 (88.39 ± 33.13)
+- [anomaly] hype_spot = 64.038 is 2.1 std devs from mean (46.80 ± 8.24)
+- [anomaly] oil_hl_funding_ann = 138.32 is 2.1 std devs from mean since 2026-04-28 (-18.20 ± 76.21)
+- [anomaly] hype_pm_ev = 62.14 is 2.0 std devs from mean (48.53 ± 6.72)
+
+**Blocked signal learning:**
+- Open blocked shadows: 103
+- Resolved blocked shadows: 316 (140 wins / 176 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 20/32 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=109 (29W/68L/12flat, 29.9% win-rate, sum $-2.6449, avg -2.43%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=150 (45W/89L/16flat, 33.6% win-rate, sum $-2.5393, avg -1.69%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ZM long via hyperliquid would have edge compressed but trade lost money (-0.19%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG CBRS long via hyperliquid would have hit target (+3.38%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG DKNG long via hyperliquid would have closed with thesis validated profitably (+0.97%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG BIRD long via hyperliquid would have edge compressed but trade lost money (-1.41%)
+
+**LLM analysis:**
+Oil funding extreme suggests a crowded-long squeeze risk; opening a short aligns with the FUNDING_EXTREME_LONG signal. The existing PC_RATIO_EXTREME_HIGH long on Oil is a separate contrarian position based on put/call ratio, but both can coexist given the different theses. No closes allowed today. HYPE promoted long is early; let mechanical targets manage it. The hybrid bot's bear regime across alts supports cautious near-term bias in crypto, but that's not a direct signal for our assets.
+
+---
+

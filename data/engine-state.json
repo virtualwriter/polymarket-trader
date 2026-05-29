@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-29T22:28:34.040Z",
+  "generatedAt": "2026-05-29T23:28:29.181Z",
   "dataFreshness": {
-    "valuationRows": 684,
-    "latestValuationAt": "2026-05-29T22",
-    "macroRows": 684,
+    "valuationRows": 685,
+    "latestValuationAt": "2026-05-29T23",
+    "macroRows": 685,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-29T22"
+    "latestInstrumentSnapshotAt": "2026-05-29T23"
   },
   "portfolio": {
     "cash": 95.4821,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.9783,
     "totalTrades": 162,
     "winRatePct": 51.9,
-    "unrealizedPnl": 0.0105
+    "unrealizedPnl": 0.0068
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.62,
-      "currentPrice": 73484,
-      "underlyingPrice": 73484,
+      "pnlPct": 0.43,
+      "currentPrice": 73349,
+      "underlyingPrice": 73349,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 1.41,
-      "currentPrice": 88.23,
-      "underlyingPrice": 88.23,
+      "pnlPct": 2,
+      "currentPrice": 88.74,
+      "underlyingPrice": 88.74,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -56,9 +56,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": -0.98,
-      "currentPrice": 64.538,
-      "underlyingPrice": 64.538,
+      "pnlPct": -1.75,
+      "currentPrice": 64.038,
+      "underlyingPrice": 64.038,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -205,10 +205,18 @@
   ],
   "blockedSummary": {
     "openCount": 103,
-    "resolvedCount": 313,
-    "wouldHaveWon": 138,
-    "wouldHaveLost": 175,
+    "resolvedCount": 316,
+    "wouldHaveWon": 140,
+    "wouldHaveLost": 176,
     "bySignal": [
+      {
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "blocked": 45,
+        "resolved": 32,
+        "wouldHaveWon": 20,
+        "wouldHaveLost": 12,
+        "avgPnlPct": 0.62
+      },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
         "blocked": 30,
@@ -216,14 +224,6 @@
         "wouldHaveWon": 10,
         "wouldHaveLost": 3,
         "avgPnlPct": 20.75
-      },
-      {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "blocked": 42,
-        "resolved": 29,
-        "wouldHaveWon": 18,
-        "wouldHaveLost": 11,
-        "avgPnlPct": 0.58
       },
       {
         "signalType": "USER_PM_APR_XAU_TAIL_NO",
@@ -275,60 +275,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 17.28,
-        "resolvedAt": "2026-05-29T00:28:29.052Z",
-        "marketQuality": {
-          "yesBid": 0.19,
-          "yesAsk": 0.2,
-          "yesSpread": 0.01,
-          "liquidity": 28281.83,
-          "flags": []
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 12.99,
-        "resolvedAt": "2026-05-29T00:28:29.052Z",
-        "marketQuality": {
-          "yesBid": 0.13,
-          "yesAsk": 0.14,
-          "yesSpread": 0.01,
-          "liquidity": 62306.4,
-          "flags": []
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 26.32,
-        "resolvedAt": "2026-05-29T00:28:29.052Z",
-        "marketQuality": {
-          "yesBid": 0.43,
-          "yesAsk": 0.44,
-          "yesSpread": 0.01,
-          "liquidity": 38424.43,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "OIL",
@@ -406,6 +352,39 @@
         "closeReason": "thesis_compressed_loss",
         "pnlPct": -0.19,
         "resolvedAt": "2026-05-29T22:28:33.883Z"
+      },
+      {
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "asset": "CBRS",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "blockedReason": "weekend_hl_funding_shadow",
+        "outcome": "win",
+        "closeReason": "target",
+        "pnlPct": 3.38,
+        "resolvedAt": "2026-05-29T23:28:29.011Z"
+      },
+      {
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "asset": "DKNG",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "blockedReason": "weekend_hl_funding_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 0.97,
+        "resolvedAt": "2026-05-29T23:28:29.011Z"
+      },
+      {
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "asset": "BIRD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "blockedReason": "weekend_hl_funding_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.41,
+        "resolvedAt": "2026-05-29T23:28:29.011Z"
       }
     ],
     "openQualityWarnings": [

@@ -1,5 +1,20 @@
 {
   "acceptedCloses": [],
   "rejectedCloses": [],
-  "skippedTrades": []
+  "skippedTrades": [
+    {
+      "instruction": {
+        "action": "sell",
+        "asset": "OIL",
+        "venue": "hyperliquid",
+        "direction": "short",
+        "evidenceColumns": [
+          "oil_hl_funding_ann"
+        ],
+        "thesis": "FUNDING_EXTREME_LONG: Oil perpetual funding is +138.32% annualized, extreme positive, triggering contrarian short. Benefit from funding decay as crowded longs unwind."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
+  "parameterUpdates": {}
 }

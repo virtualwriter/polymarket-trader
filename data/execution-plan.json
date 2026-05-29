@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-29T22:28:34.070Z",
+  "generatedAt": "2026-05-29T23:30:15.399Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,16 +15,30 @@
       "confidence": 0.2847106520444779,
       "thesis": "OIL P/C ratio 1.55 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 88.23,
+      "entryPrice": 88.74,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "sell",
+        "asset": "OIL",
+        "venue": "hyperliquid",
+        "direction": "short",
+        "evidenceColumns": [
+          "oil_hl_funding_ann"
+        ],
+        "thesis": "FUNDING_EXTREME_LONG: Oil perpetual funding is +138.32% annualized, extreme positive, triggering contrarian short. Benefit from funding decay as crowded longs unwind."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }
