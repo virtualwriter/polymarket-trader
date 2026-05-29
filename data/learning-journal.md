@@ -19560,3 +19560,39 @@ Oil’s Polymarket IV premium reached 80% while 30d listed options IV is 55%, th
 
 ---
 
+### 2026-05-29 00:28 UTC
+
+**Portfolio:** $98.48 total | Cash $95.48 | 3 open | P&L $1.0006 | 53% win rate (158 trades)
+
+**Closed 1 trades:**
+- ❌ OIL long via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH) → stop: $-0.0215 (-2.2%, market -0.0215, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🎯 Setup family amzn_perp_spot_funding_convergence PROMOTED via H-150 (65% over 20 tests across 17 variants): AMZN perp/spot funding convergence
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_wti_spot = 87.85 is -2.2 std devs from mean since 2026-04-28 (99.16 ± 5.06)
+- [anomaly] oil_brent_spot = 91.94 is -2.2 std devs from mean since 2026-04-28 (103.97 ± 5.45)
+- [anomaly] hype_spot = 62.319 is 2.1 std devs from mean (46.29 ± 7.81)
+- [correlation_flip] BTC-GOLD correlation shifted from -0.39 to 0.82. Rolling correlation: 24h=0.29, 7d=0.78, 30d=-0.12. Current 24h corr is at 33th pct of last 27 daily 24h-rolling values (range -0.80 to 0.92).
+- [correlation_flip] GOLD-OIL correlation shifted from -0.83 to 0.14. Rolling correlation: 24h=-0.93, 7d=0.26, 30d=-0.55. Current 24h corr is at 7th pct of last 27 daily 24h-rolling values (range -0.95 to 0.88).
+
+**Blocked signal learning:**
+- Open blocked shadows: 95
+- Resolved blocked shadows: 323 (141 wins / 182 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+16.91%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+17.28%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+12.99%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+26.32%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h since last call; daily budget 0/12; next scheduled 2026-05-29T02:28:29.206Z). Mechanical cycle ran normally._
+
+---
+

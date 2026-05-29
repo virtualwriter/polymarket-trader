@@ -1,47 +1,30 @@
 {
-  "generatedAt": "2026-05-28T23:28:31.855Z",
+  "generatedAt": "2026-05-29T00:28:29.186Z",
   "dataFreshness": {
-    "valuationRows": 664,
-    "latestValuationAt": "2026-05-28T23",
-    "macroRows": 664,
+    "valuationRows": 665,
+    "latestValuationAt": "2026-05-29T00",
+    "macroRows": 665,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-28T23"
+    "latestInstrumentSnapshotAt": "2026-05-29T00"
   },
   "portfolio": {
-    "cash": 94.5045,
-    "openPositions": 4,
+    "cash": 95.4829,
+    "openPositions": 3,
     "realizedPnl": 1.0006,
     "totalTrades": 158,
     "winRatePct": 52.5,
-    "unrealizedPnl": 0.0016
+    "unrealizedPnl": 0.0268
   },
   "openPositions": [
-    {
-      "positionId": "T-1779892237566-703l",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -1.54,
-      "currentPrice": 88.52,
-      "underlyingPrice": 88.52,
-      "targetPct": 4,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_cl_pc_ratio"
-      ]
-    },
     {
       "positionId": "T-1779917306706-5bxw",
       "asset": "GOLD",
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.81,
-      "currentPrice": 4494,
-      "underlyingPrice": 4494,
+      "pnlPct": -0.94,
+      "currentPrice": 4500,
+      "underlyingPrice": 4500,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -56,9 +39,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.76,
-      "currentPrice": 73588,
-      "underlyingPrice": 73588,
+      "pnlPct": 1.02,
+      "currentPrice": 73777,
+      "underlyingPrice": 73777,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -73,9 +56,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 1.74,
-      "currentPrice": 61.797,
-      "underlyingPrice": 61.797,
+      "pnlPct": 2.6,
+      "currentPrice": 62.319,
+      "underlyingPrice": 62.319,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -182,10 +165,10 @@
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "enabled": true,
-      "weight": 0.6709,
-      "trades": 15,
+      "weight": 0.6452,
+      "trades": 16,
       "wins": 8,
-      "avgPnlPct": 0.2105,
+      "avgPnlPct": 0.0628,
       "disabledAssets": []
     },
     {
@@ -221,9 +204,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 96,
-    "resolvedCount": 320,
-    "wouldHaveWon": 138,
+    "openCount": 95,
+    "resolvedCount": 323,
+    "wouldHaveWon": 141,
     "wouldHaveLost": 182,
     "bySignal": [
       {
@@ -284,7 +267,7 @@
       },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "blocked": 19,
+        "blocked": 20,
         "resolved": 17,
         "wouldHaveWon": 9,
         "wouldHaveLost": 8,
@@ -292,62 +275,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -2.6,
-        "resolvedAt": "2026-05-28T09:28:23.541Z",
-        "marketQuality": {
-          "yesBid": 0.23,
-          "yesAsk": 0.25,
-          "yesSpread": 0.02,
-          "liquidity": 45586.39,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 2.6,
-        "resolvedAt": "2026-05-28T11:28:37.263Z",
-        "marketQuality": {
-          "yesBid": 0.23,
-          "yesAsk": 0.24,
-          "yesSpread": 0.01,
-          "liquidity": 51850.88,
-          "flags": []
-        }
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 42.86,
-        "resolvedAt": "2026-05-28T15:28:35.692Z",
-        "marketQuality": {
-          "yesBid": 0.72,
-          "yesAsk": 0.73,
-          "yesSpread": 0.01,
-          "liquidity": 13940.11,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -437,6 +364,60 @@
           "yesAsk": 0.241,
           "yesSpread": 0.01,
           "liquidity": 42466.52,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 17.28,
+        "resolvedAt": "2026-05-29T00:28:29.052Z",
+        "marketQuality": {
+          "yesBid": 0.19,
+          "yesAsk": 0.2,
+          "yesSpread": 0.01,
+          "liquidity": 28281.83,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 12.99,
+        "resolvedAt": "2026-05-29T00:28:29.052Z",
+        "marketQuality": {
+          "yesBid": 0.13,
+          "yesAsk": 0.14,
+          "yesSpread": 0.01,
+          "liquidity": 62306.4,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 26.32,
+        "resolvedAt": "2026-05-29T00:28:29.052Z",
+        "marketQuality": {
+          "yesBid": 0.43,
+          "yesAsk": 0.44,
+          "yesSpread": 0.01,
+          "liquidity": 38424.43,
           "flags": []
         }
       }
