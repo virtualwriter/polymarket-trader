@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-29T16:28:35.309Z",
+  "generatedAt": "2026-05-29T17:28:34.779Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.7875000000000001,
-      "confidence": 0.5081238265949606,
-      "thesis": "OIL P/C ratio 1.83 — heavy put buying → contrarian long.",
+      "strength": 0.59125,
+      "confidence": 0.38149614282447036,
+      "thesis": "OIL P/C ratio 1.67 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 87.52,
+      "entryPrice": 87.29,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
@@ -22,11 +22,11 @@
       "asset": "GOLD",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.18666666666666665,
-      "confidence": 0.09623654397594013,
-      "thesis": "GOLD P/C ratio 0.44 — heavy call buying → contrarian short.",
+      "strength": 0.0633333333333334,
+      "confidence": 0.032651684563265435,
+      "thesis": "GOLD P/C ratio 0.48 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4562,
+      "entryPrice": 4563,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 5
@@ -45,10 +45,10 @@
         "btc_spot",
         "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 25.97,
-      "hoursToExpiry": 94.03,
+      "hoursOpen": 26.97,
+      "hoursToExpiry": 93.03,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.2164,
+      "elapsedHoldPct": 0.2247,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -64,10 +64,10 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 0.98,
-      "hoursToExpiry": 119.02,
+      "hoursOpen": 1.98,
+      "hoursToExpiry": 118.02,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0081,
+      "elapsedHoldPct": 0.0165,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -82,12 +82,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 0.98,
-      "hoursToExpiry": 503.02,
+      "hoursOpen": 1.98,
+      "hoursToExpiry": 502.02,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0019,
+      "elapsedHoldPct": 0.0039,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
     }
   ]
 }
