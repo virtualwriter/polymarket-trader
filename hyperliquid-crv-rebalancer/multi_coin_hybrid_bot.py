@@ -33,7 +33,7 @@ import time
 import math
 import signal
 import argparse
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import Optional
 
@@ -95,6 +95,16 @@ LONG_EXIT = 1.0        # %
 REGIME_EMA = 50         # hours, for bull signal detection
 SIGNAL_LOOKBACK = 24    # hours
 SIGNAL_THRESHOLD = 10   # N coins above EMA to trigger bull signal
+
+# Consecutive-loser cooldown (Option 3 in docs/quant-model-roadmap.md).
+# When a coin loses on COOLDOWN_LOSS_STREAK back-to-back short closes, it
+# is excluded from new short opens for COOLDOWN_HOURS. The cooldown is a
+# signal-agnostic guard against trending-asset whipsaw (the INJ failure
+# mode where the 4h-EMA mean-reversion logic keeps shorting into a strong
+# uptrend). One win resets the streak; the cooldown self-expires.
+COOLDOWN_LOSS_STREAK = 3       # N consecutive losing short closes triggers cooldown
+COOLDOWN_HOURS = 36            # how long to suppress new shorts on that coin
+COOLDOWN_LOSS_THRESHOLD_PCT = -0.5  # closes worse than this count as "losses" (fee-aware)
 
 # All tradeable coins (must exist on Hyperliquid perp)
 ALL_COINS = [
@@ -255,7 +265,14 @@ class MultiCoinHybridBot:
                     "entry_price": None,
                     "entry_time": None,
                     "mode": "short",  # current mode this coin is in
+                    "loss_streak": 0,
+                    "cooldown_until": None,
                 }
+            else:
+                # Backfill cooldown fields on existing state without clobbering
+                # in-flight position metadata.
+                self.state["positions"][coin].setdefault("loss_streak", 0)
+                self.state["positions"][coin].setdefault("cooldown_until", None)
 
         if not dry_run:
             pk = PRIVATE_KEY
@@ -620,6 +637,27 @@ class MultiCoinHybridBot:
                 should_exit = in_position and ema_diff > SHORT_EXIT
                 action_label = "SHORT"
 
+            # Consecutive-loser cooldown: suppress new SHORT opens while a
+            # coin is in cooldown after COOLDOWN_LOSS_STREAK back-to-back
+            # losing shorts. Longs (rare; only fire in global bull regime)
+            # are intentionally unaffected.
+            cooldown_until = pos_state.get("cooldown_until")
+            if should_enter and not is_bull and cooldown_until:
+                try:
+                    cu = datetime.fromisoformat(cooldown_until)
+                    if datetime.now(timezone.utc) < cu:
+                        remaining_h = (cu - datetime.now(timezone.utc)).total_seconds() / 3600
+                        streak = pos_state.get("loss_streak", 0)
+                        log(f"{coin}: COOLDOWN ACTIVE — suppressing short open ({streak} consecutive losses, {remaining_h:.1f}h remaining)")
+                        should_enter = False
+                    else:
+                        # Expired — clear it so we don't pay this parsing cost again.
+                        self.state["positions"][coin]["cooldown_until"] = None
+                        self.state["positions"][coin]["loss_streak"] = 0
+                        save_state(self.state)
+                except (ValueError, TypeError):
+                    self.state["positions"][coin]["cooldown_until"] = None
+
             pos_label = "LONG" if (in_position and pos_state.get("is_long")) else \
                         "SHORT" if in_position else "CASH"
 
@@ -715,15 +753,38 @@ class MultiCoinHybridBot:
                         gross_ret = (entry_price / exit_price - 1) * 100
 
                 was_long = bool(pos_state.get("is_long"))
+
+                # Consecutive-loser cooldown bookkeeping. Only short closes
+                # participate; a winning short resets the streak, a loss
+                # increments it, and N-in-a-row trips the cooldown.
+                prev_streak = pos_state.get("loss_streak", 0)
+                prev_cooldown = pos_state.get("cooldown_until")
+                new_streak = prev_streak
+                new_cooldown = prev_cooldown
+                cooldown_log = ""
+                if not was_long:
+                    if gross_ret <= COOLDOWN_LOSS_THRESHOLD_PCT:
+                        new_streak = prev_streak + 1
+                        if new_streak >= COOLDOWN_LOSS_STREAK and not prev_cooldown:
+                            new_cooldown = (datetime.now(timezone.utc) + timedelta(hours=COOLDOWN_HOURS)).isoformat()
+                            cooldown_log = f" | COOLDOWN TRIGGERED ({new_streak} consecutive losses, suppressing shorts for {COOLDOWN_HOURS}h)"
+                    elif gross_ret > 0:
+                        new_streak = 0
+                        new_cooldown = None
+
                 self.state["positions"][coin] = {
                     "in_position": False,
                     "is_long": False,
                     "entry_price": None,
                     "entry_time": None,
                     "mode": action_label.lower(),
+                    "loss_streak": new_streak,
+                    "cooldown_until": new_cooldown,
                 }
                 self.state["total_fees"] = self.state.get("total_fees", 0) + close_fee_usd
                 save_state(self.state)
+                if cooldown_log:
+                    log(f"{coin}:{cooldown_log}")
                 log(f"{coin}: EXITED @ ${exit_price} | Return: {gross_ret:+.2f}% | fee ${close_fee_usd:.6f}")
 
                 if not self.dry_run:
@@ -772,7 +833,17 @@ class MultiCoinHybridBot:
                 side = "LONG" if p.get("is_long") else "SHORT"
                 log(f"  {coin}: {side} @ ${p['entry_price']:.4f} ({p.get('entry_time', '?')})")
             else:
-                log(f"  {coin}: CASH")
+                cu = p.get("cooldown_until")
+                cooldown_note = ""
+                if cu:
+                    try:
+                        cu_dt = datetime.fromisoformat(cu)
+                        remaining_h = (cu_dt - datetime.now(timezone.utc)).total_seconds() / 3600
+                        if remaining_h > 0:
+                            cooldown_note = f" [COOLDOWN {remaining_h:.1f}h, streak={p.get('loss_streak', 0)}]"
+                    except (ValueError, TypeError):
+                        pass
+                log(f"  {coin}: CASH{cooldown_note}")
 
     # ---- Main Loop ----
     def run(self):
