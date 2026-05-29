@@ -3875,6 +3875,30 @@ function cancelOpenInvalidMonotonicArbShadows(blockedSignals: BlockedSignalShado
   return notes;
 }
 
+// One-touch shadows opened before the directional decoder / far-tail cap /
+// entry-time edge persistence shipped in mid-May 2026 lack the
+// `heatmapRowSnapshot` audit trail and were priced by the old
+// path-vs-settle-agnostic model. They're operationally tainted training data:
+// we still want their realized history to count, but the open book is a
+// runoff we'd rather close out cleanly and exclude from future learning so
+// the engine trains on the new improved one-touch model trades only.
+function cancelLegacyOneTouchShadows(blockedSignals: BlockedSignalShadow[]): string[] {
+  const now = new Date().toISOString();
+  const notes: string[] = [];
+  for (const shadow of blockedSignals) {
+    if (shadow.status !== "open" || shadow.blockedReason !== "one_touch_high_edge_shadow") continue;
+    if (shadow.heatmapRowSnapshot) continue;
+    shadow.status = "cancelled";
+    shadow.resolvedAt = now;
+    shadow.learningExcluded = {
+      reason: "legacy_one_touch_pre_directional_decoder_model",
+      note: "Cancelled: opened before the directional decoder + far-tail cap + entry-edge audit trail shipped. Marked as data artifact so it never enters the learning loop; new-model one-touch shadows (heatmapRowSnapshot present) continue tracking normally.",
+    };
+    notes.push(`${shadow.asset} ${shadow.position.instrumentLabel ?? shadow.position.instrumentId ?? shadow.id}`);
+  }
+  return notes;
+}
+
 function cancelOpenRelativeValueHeatmapShadows(blockedSignals: BlockedSignalShadow[]): string[] {
   const now = new Date().toISOString();
   const notes: string[] = [];
@@ -7315,6 +7339,7 @@ async function main() {
   const productionPolymarketRiskNotes = applyProductionPolymarketRiskToOpenPositions(portfolio);
   const cancelledHeatmapShadows = cancelOpenRelativeValueHeatmapShadows(blockedSignals);
   const cancelledInvalidMonotonicArbShadows = cancelOpenInvalidMonotonicArbShadows(blockedSignals);
+  const cancelledLegacyOneTouchShadows = cancelLegacyOneTouchShadows(blockedSignals);
 
   console.log(`  Portfolio: $${portfolio.cash.toFixed(2)} cash, ${portfolio.positions.length} open positions, $${portfolio.totalRealizedPnl.toFixed(4)} realized P&L`);
   console.log(`  Learnable params: macro24h>${learningParams.macroMomentum24hThresholdPts.toFixed(1)}, trend>${learningParams.contrarianTrendMarginPct.toFixed(2)}%, momentum>${learningParams.positiveMomentum24hPct.toFixed(2)}%, llm expiry=${learningParams.llmTradeExpiryDays}d, momentum expiry=${learningParams.momentumLongExpiryDays}d`);
@@ -7330,6 +7355,9 @@ async function main() {
   }
   if (cancelledInvalidMonotonicArbShadows.length > 0) {
     console.log(`  Cancelled ${cancelledInvalidMonotonicArbShadows.length} invalid monotonic-arb shadow packages; only nested hit/reach ladders are eligible.`);
+  }
+  if (cancelledLegacyOneTouchShadows.length > 0) {
+    console.log(`  Cancelled ${cancelledLegacyOneTouchShadows.length} legacy one-touch shadow trades (pre-directional-decoder model); excluded from learning so the engine trains on the new model only.`);
   }
 
   // Regime check
