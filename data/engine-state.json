@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-29T15:28:31.906Z",
+  "generatedAt": "2026-05-29T16:28:35.292Z",
   "dataFreshness": {
-    "valuationRows": 677,
-    "latestValuationAt": "2026-05-29T15",
-    "macroRows": 677,
+    "valuationRows": 678,
+    "latestValuationAt": "2026-05-29T16",
+    "macroRows": 678,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-29T15"
+    "latestInstrumentSnapshotAt": "2026-05-29T16"
   },
   "portfolio": {
-    "cash": 97.4821,
-    "openPositions": 1,
-    "realizedPnl": 0.9988,
-    "totalTrades": 161,
-    "winRatePct": 52.2,
-    "unrealizedPnl": 0.0072
+    "cash": 95.4821,
+    "openPositions": 3,
+    "realizedPnl": 0.9783,
+    "totalTrades": 162,
+    "winRatePct": 51.9,
+    "unrealizedPnl": 0.0231
   },
   "openPositions": [
     {
@@ -22,15 +22,48 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.72,
-      "currentPrice": 73557,
-      "underlyingPrice": 73557,
+      "pnlPct": 0.79,
+      "currentPrice": 73607,
+      "underlyingPrice": 73607,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "btc_spot",
         "btc_ibit_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1780068594760-y2qc",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": 0.6,
+      "currentPrice": 87.52,
+      "underlyingPrice": 87.52,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1780068594760-p5cg",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "pnlPct": 0.93,
+      "currentPrice": 65.785,
+      "underlyingPrice": 65.785,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "hype_spot"
       ]
     }
   ],

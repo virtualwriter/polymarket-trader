@@ -19989,3 +19989,35 @@ Reviewed latest data snapshot. The open PC_RATIO_EXTREME_HIGH BTC long is progre
 
 ---
 
+### 2026-05-29 16:29 UTC
+
+**Portfolio:** $98.48 total | Cash $95.48 | 3 open | P&L $0.9783 | 52% win rate (162 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 65.785 is 2.4 std devs from mean (46.60 ± 8.06)
+- [anomaly] hype_hl_oi = 1474625770 is 2.2 std devs from mean (990084104.71 ± 216198218.04)
+- [anomaly] oil_brent_spot = 91.17 is -2.2 std devs from mean since 2026-04-28 (103.66 ± 5.72)
+- [anomaly] hype_hl_funding_ann = -24.69 is -2.2 std devs from mean (5.68 ± 14.03)
+- [anomaly] oil_wti_spot = 87.52 is -2.1 std devs from mean since 2026-04-28 (98.88 ± 5.30)
+
+**Blocked signal learning:**
+- Open blocked shadows: 101
+- Resolved blocked shadows: 325 (142 wins / 183 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+12.99%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+26.32%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+9.89%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.13%)
+
+**LLM analysis:**
+HYPE momentum continues to validate the promoted hypothesis H-521, with spot making new highs and funding incentivizing longs. BTC's P/C ratio has moved from extreme high (contrarian long) to low, but the mechanical trade remains in play and no LLM close is allowed. Oil shows weakness with negative funding and declining spot, but the mechanical P/C-ratio long was just opened and the thesis still holds (extreme put buying often precedes a bounce). Overall, no new edges identified due to backlog; focus remains on monitoring existing hypothesis tests.
+
+---
+

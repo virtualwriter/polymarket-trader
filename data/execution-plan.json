@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-29T15:29:54.758Z",
+  "generatedAt": "2026-05-29T16:29:26.576Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,45 +11,34 @@
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 1,
-      "confidence": 0.6452366051999499,
-      "thesis": "OIL P/C ratio 2.22 — heavy put buying → contrarian long.",
+      "strength": 0.7875000000000001,
+      "confidence": 0.5081238265949606,
+      "thesis": "OIL P/C ratio 1.83 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 87,
+      "entryPrice": 87.52,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
     },
     {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "GOLD",
       "venue": "spot",
-      "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 65.179,
-      "targetPct": 6,
+      "direction": "short",
+      "strength": 0.18666666666666665,
+      "confidence": 0.09623654397594013,
+      "thesis": "GOLD P/C ratio 0.44 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 4562,
+      "targetPct": 5,
       "stopPct": 2,
-      "expiryDays": 21
+      "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "sell",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "thesis": "ONE_TOUCH_HIGH_EDGE_NO sell-YES edge on BTC dip to $55K Dec2026 contract (marketId 701501); sell_yes_edge_pts -19.45, noBiasCandidatePassed=true, spread 1c, liquidity 65691. PM overpays for downside touch vs model, betting against dip."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
