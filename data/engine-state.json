@@ -1,47 +1,30 @@
 {
-  "generatedAt": "2026-05-29T13:28:43.050Z",
+  "generatedAt": "2026-05-29T15:28:31.906Z",
   "dataFreshness": {
-    "valuationRows": 676,
-    "latestValuationAt": "2026-05-29T13",
-    "macroRows": 676,
+    "valuationRows": 677,
+    "latestValuationAt": "2026-05-29T15",
+    "macroRows": 677,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-29T13"
+    "latestInstrumentSnapshotAt": "2026-05-29T15"
   },
   "portfolio": {
-    "cash": 96.5026,
-    "openPositions": 2,
+    "cash": 97.4821,
+    "openPositions": 1,
     "realizedPnl": 0.9988,
     "totalTrades": 161,
     "winRatePct": 52.2,
-    "unrealizedPnl": -0.0161
+    "unrealizedPnl": 0.0072
   },
   "openPositions": [
-    {
-      "positionId": "T-1779917306706-5bxw",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "short",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -1.57,
-      "currentPrice": 4528,
-      "underlyingPrice": 4528,
-      "targetPct": 3,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_gld_pc_ratio"
-      ]
-    },
     {
       "positionId": "T-1779978635134-iccb",
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.04,
-      "currentPrice": 73001,
-      "underlyingPrice": 73001,
+      "pnlPct": 0.72,
+      "currentPrice": 73557,
+      "underlyingPrice": 73557,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -158,10 +141,10 @@
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "enabled": true,
-      "weight": 0.5131,
-      "trades": 16,
+      "weight": 0.5156,
+      "trades": 17,
       "wins": 9,
-      "avgPnlPct": -0.1367,
+      "avgPnlPct": -0.2491,
       "disabledAssets": [
         "AMZN"
       ]
@@ -188,10 +171,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 99,
-    "resolvedCount": 324,
+    "openCount": 101,
+    "resolvedCount": 325,
     "wouldHaveWon": 142,
-    "wouldHaveLost": 182,
+    "wouldHaveLost": 183,
     "bySignal": [
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -243,7 +226,7 @@
       },
       {
         "signalType": "PC_RATIO_EXTREME_LOW",
-        "blocked": 11,
+        "blocked": 12,
         "resolved": 11,
         "wouldHaveWon": 6,
         "wouldHaveLost": 5,
@@ -259,24 +242,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -2.33,
-        "resolvedAt": "2026-05-28T19:28:32.042Z",
-        "marketQuality": {
-          "yesBid": 0.57,
-          "yesAsk": 0.58,
-          "yesSpread": 0.01,
-          "liquidity": 52388.21,
-          "flags": []
-        }
-      },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
         "asset": "GOLD",
@@ -404,9 +369,45 @@
           "liquidity": 43529.01,
           "flags": []
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -2.13,
+        "resolvedAt": "2026-05-29T15:28:31.773Z",
+        "marketQuality": {
+          "yesBid": 0.06,
+          "yesAsk": 0.08,
+          "yesSpread": 0.02,
+          "liquidity": 71854.12,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+        "asset": "SPY",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "spx-hit-dec-2026 — YES — Will S&P 500 (SPX) hit $7,600 (HIGH) in December?",
+        "marketQuality": {
+          "yesBid": 0.65,
+          "yesAsk": 0.68,
+          "yesSpread": 0.03,
+          "liquidity": 6560.53,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 19.4pt edge on SPY; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
+      },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
         "asset": "OIL",
@@ -509,22 +510,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 6.7pt on GOLD, spread 2.0c, liquidity 17736. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $150,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.06,
-          "yesAsk": 0.08,
-          "yesSpread": 0.02,
-          "liquidity": 71854.12,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.8pt on BTC, spread 2.0c, liquidity 71854. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
