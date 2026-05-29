@@ -19660,3 +19660,35 @@ Today's data highlights the importance of regime-relative conditions vs absolute
 
 ---
 
+### 2026-05-29 04:28 UTC
+
+**Portfolio:** $98.48 total | Cash $95.48 | 3 open | P&L $0.9791 | 52% win rate (159 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_wti_spot = 87.64 is -2.2 std devs from mean since 2026-04-28 (99.09 ± 5.12)
+- [anomaly] oil_brent_spot = 91.72 is -2.2 std devs from mean since 2026-04-28 (103.90 ± 5.51)
+- [anomaly] hype_med_max = 86.8 is 2.0 std devs from mean (64.51 ± 11.12)
+- [correlation_flip] BTC-GOLD correlation shifted from -0.38 to 0.81. Rolling correlation: 24h=0.60, 7d=0.77, 30d=-0.11. Current 24h corr is at 52th pct of last 27 daily 24h-rolling values (range -0.79 to 0.85).
+- [correlation_flip] GOLD-OIL correlation shifted from -0.83 to 0.15. Rolling correlation: 24h=-0.93, 7d=0.27, 30d=-0.54. Current 24h corr is at 11th pct of last 27 daily 24h-rolling values (range -0.94 to 0.67).
+
+**Blocked signal learning:**
+- Open blocked shadows: 97
+- Resolved blocked shadows: 323 (141 wins / 182 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+16.91%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+17.28%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+12.99%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+26.32%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 1/12; next scheduled 2026-05-29T06:28:29.903Z). Mechanical cycle ran normally._
+
+---
+
