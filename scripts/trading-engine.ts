@@ -1606,9 +1606,28 @@ function getHyperliquidFundingFromSnapshot(snapshot: InstrumentSnapshotFile | nu
   return typeof funding === "number" && Number.isFinite(funding) ? funding : null;
 }
 
-function isUtcWeekend(date = new Date()): boolean {
-  const day = date.getUTCDay();
-  return day === 0 || day === 6;
+// The Builder DEX stock perps are tied to US equity hours. Funding only
+// dislocates while the underlying cash market is closed, so the weekend
+// funding-reversion window opens Friday 4:30pm ET (right after the 4pm close)
+// and stays open through the weekend until Monday 9:30am ET (cash open).
+// We evaluate the current wall-clock time in America/New_York so the gate
+// shifts correctly between EST and EDT without hardcoding offsets.
+function isStockPerpFundingWindowOpen(date = new Date()): boolean {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    weekday: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).formatToParts(date);
+  const weekday = parts.find((p) => p.type === "weekday")?.value ?? "";
+  const hour = Number(parts.find((p) => p.type === "hour")?.value ?? "0");
+  const minute = Number(parts.find((p) => p.type === "minute")?.value ?? "0");
+  const minutesOfDay = hour * 60 + minute;
+  if (weekday === "Sat" || weekday === "Sun") return true;
+  if (weekday === "Fri" && minutesOfDay >= 16 * 60 + 30) return true;
+  if (weekday === "Mon" && minutesOfDay < 9 * 60 + 30) return true;
+  return false;
 }
 
 function isLongDatedPolymarketPosition(position: Position): boolean {
@@ -3688,7 +3707,7 @@ function recordWeekendHyperliquidFundingShadows(
   learningParams: LearningParams,
   blockedSignals: BlockedSignalShadow[],
 ): number {
-  if (!latestSnapshot || !isUtcWeekend()) return 0;
+  if (!latestSnapshot || !isStockPerpFundingWindowOpen()) return 0;
   const openedAt = new Date().toISOString();
   let recorded = 0;
 
@@ -3720,7 +3739,7 @@ function recordWeekendHyperliquidFundingShadows(
       leverage: WEEKEND_HL_FUNDING_LEVERAGE,
       signalType: WEEKEND_HL_FUNDING_SHADOW_SIGNAL,
       hypothesisId: null,
-      thesis: `[WEEKEND HL FUNDING SHADOW] ${asset} Builder DEX stock perp funding ${(fundingAnnualized * 100).toFixed(1)}% annualized <= ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}% during weekend. Shadow long at ${WEEKEND_HL_FUNDING_LEVERAGE}x; exit when margin P&L >= ${WEEKEND_HL_FUNDING_TARGET_PCT}%, funding >= ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}%, or held ${WEEKEND_HL_FUNDING_MAX_HOLD_HOURS}h.`,
+      thesis: `[WEEKEND HL FUNDING SHADOW] ${asset} Builder DEX stock perp funding ${(fundingAnnualized * 100).toFixed(1)}% annualized <= ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}% during US-equity-closed window (Fri 4:30pm ET → Mon 9:30am ET). Shadow long at ${WEEKEND_HL_FUNDING_LEVERAGE}x; exit when margin P&L >= ${WEEKEND_HL_FUNDING_TARGET_PCT}%, funding >= ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}%, or held ${WEEKEND_HL_FUNDING_MAX_HOLD_HOURS}h.`,
       targetPct: WEEKEND_HL_FUNDING_TARGET_PCT,
       stopPct: 100,
       expiryDate: expiryDate.toISOString(),
