@@ -19628,3 +19628,35 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-05-29 03:29 UTC
+
+**Portfolio:** $98.48 total | Cash $95.48 | 3 open | P&L $0.9791 | 52% win rate (159 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 6.4pp (was 4.9, now -1.5)
+- [anomaly] oil_wti_spot = 87.67 is -2.2 std devs from mean since 2026-04-28 (99.11 ± 5.10)
+- [anomaly] oil_brent_spot = 91.79 is -2.2 std devs from mean since 2026-04-28 (103.92 ± 5.49)
+- [anomaly] hype_med_max = 86.8 is 2.0 std devs from mean (64.47 ± 11.10)
+- [correlation_flip] BTC-GOLD correlation shifted from -0.39 to 0.81. Rolling correlation: 24h=0.48, 7d=0.78, 30d=-0.11. Current 24h corr is at 37th pct of last 27 daily 24h-rolling values (range -0.81 to 0.89).
+
+**Blocked signal learning:**
+- Open blocked shadows: 97
+- Resolved blocked shadows: 323 (141 wins / 182 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+16.91%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+17.28%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+12.99%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+26.32%)
+
+**LLM analysis:**
+Today's data highlights the importance of regime-relative conditions vs absolute levels. HYPE's breakout continues with OI still in top percentile and funding normalized, supporting the promoted H-521 hypothesis. The gold P/C-ratio extreme low short is underperforming as the ratio reverted quickly; mechanical rules will manage exit. BTC's P/C ratio extreme high long is benefitting from unwinding put pressure. The Hyperliquid hybrid bot's bear regime and recent losses on shorts suggest alt-coins may be attempting to break out of recent ranges, which aligns with HYPE's strength. I'll maintain focus on existing hypothesis testing backlog rather than introducing new setups.
+
+---
+
