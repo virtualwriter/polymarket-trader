@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-05-29T08:28:34.174Z",
+  "generatedAt": "2026-05-29T09:28:29.154Z",
   "dataFreshness": {
-    "valuationRows": 671,
-    "latestValuationAt": "2026-05-29T08",
-    "macroRows": 671,
+    "valuationRows": 672,
+    "latestValuationAt": "2026-05-29T09",
+    "macroRows": 672,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-29T08"
+    "latestInstrumentSnapshotAt": "2026-05-29T09"
   },
   "portfolio": {
-    "cash": 96.5235,
-    "openPositions": 2,
-    "realizedPnl": 0.9791,
-    "totalTrades": 159,
-    "winRatePct": 52.2,
-    "unrealizedPnl": -0.0031
+    "cash": 95.5235,
+    "openPositions": 3,
+    "realizedPnl": 1.0197,
+    "totalTrades": 160,
+    "winRatePct": 52.5,
+    "unrealizedPnl": -0.0008
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -1.32,
-      "currentPrice": 4517,
-      "underlyingPrice": 4517,
+      "pnlPct": -1.5,
+      "currentPrice": 4525,
+      "underlyingPrice": 4525,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,15 +39,31 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 1.02,
-      "currentPrice": 73775,
-      "underlyingPrice": 73775,
+      "pnlPct": 1.07,
+      "currentPrice": 73817,
+      "underlyingPrice": 73817,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "btc_spot",
         "btc_ibit_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1780043314206-oayk",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "pnlPct": 0.35,
+      "currentPrice": 63.294,
+      "underlyingPrice": 63.294,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "hype_spot"
       ]
     }
   ],
@@ -188,7 +204,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 97,
+    "openCount": 99,
     "resolvedCount": 324,
     "wouldHaveWon": 142,
     "wouldHaveLost": 182,
