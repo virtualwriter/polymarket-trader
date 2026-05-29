@@ -20053,3 +20053,35 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-05-29 18:30 UTC
+
+**Portfolio:** $98.48 total | Cash $95.48 | 3 open | P&L $0.9783 | 52% win rate (162 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 66.137 is 2.4 std devs from mean (46.66 ± 8.12)
+- [anomaly] hype_hl_oi = 1501512811 is 2.3 std devs from mean (991606208.10 ± 217691749.28)
+- [anomaly] hype_med_max = 90.5 is 2.2 std devs from mean (64.91 ± 11.44)
+- [anomaly] hype_pm_ev = 63.18 is 2.2 std devs from mean (48.43 ± 6.64)
+- [anomaly] oil_wti_spot = 87.11 is -2.2 std devs from mean since 2026-04-28 (98.83 ± 5.34)
+
+**Blocked signal learning:**
+- Open blocked shadows: 100
+- Resolved blocked shadows: 326 (143 wins / 183 losses)
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 17/27 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+26.32%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+9.89%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+2.74%)
+
+**LLM analysis:**
+BTC-GOLD correlation flipping from -0.37 to +0.75 is the most notable macro signal today. Historically, when these two diverge in correlation sign, it marks a regime transition — often dollar-driven. Combined with the hybrid bot remaining in bear regime (short-only on alts), the read is that crypto strength is concentrated in BTC and HYPE, not broad-based. HYPE's funding flip to -13.6% while OI hits all-time highs is a powerful momentum signal — shorts are getting squeezed and paying for the privilege. On the Gold side, the P/C ratio crash to 0.444 (extreme low) alongside PM IV below options IV creates an interesting setup for the PC_RATIO_EXTREME_LOW family, though that family's track record is mixed (53% WR). Oil's P/C normalization from 2.22 to 1.60 supports the contrarian long thesis, but the position is only 3h old and needs time. No parameter changes warranted — signal risk calibrations are within reasonable bands given current win rates and avg PnL.
+
+---
+
