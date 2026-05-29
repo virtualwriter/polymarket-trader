@@ -3882,21 +3882,33 @@ function cancelOpenInvalidMonotonicArbShadows(blockedSignals: BlockedSignalShado
 // we still want their realized history to count, but the open book is a
 // runoff we'd rather close out cleanly and exclude from future learning so
 // the engine trains on the new improved one-touch model trades only.
-function cancelLegacyOneTouchShadows(blockedSignals: BlockedSignalShadow[]): string[] {
+function cancelLegacyOneTouchShadows(blockedSignals: BlockedSignalShadow[]): { cancelled: string[]; retroExcluded: number } {
   const now = new Date().toISOString();
-  const notes: string[] = [];
+  const cancelled: string[] = [];
+  let retroExcluded = 0;
   for (const shadow of blockedSignals) {
-    if (shadow.status !== "open" || shadow.blockedReason !== "one_touch_high_edge_shadow") continue;
+    if (shadow.blockedReason !== "one_touch_high_edge_shadow") continue;
     if (shadow.heatmapRowSnapshot) continue;
-    shadow.status = "cancelled";
-    shadow.resolvedAt = now;
-    shadow.learningExcluded = {
-      reason: "legacy_one_touch_pre_directional_decoder_model",
-      note: "Cancelled: opened before the directional decoder + far-tail cap + entry-edge audit trail shipped. Marked as data artifact so it never enters the learning loop; new-model one-touch shadows (heatmapRowSnapshot present) continue tracking normally.",
-    };
-    notes.push(`${shadow.asset} ${shadow.position.instrumentLabel ?? shadow.position.instrumentId ?? shadow.id}`);
+    if (shadow.status === "open") {
+      shadow.status = "cancelled";
+      shadow.resolvedAt = now;
+      shadow.learningExcluded = {
+        reason: "legacy_one_touch_pre_directional_decoder_model",
+        note: "Cancelled: opened before the directional decoder + far-tail cap + entry-edge audit trail shipped. Marked as data artifact so it never enters the learning loop; new-model one-touch shadows (heatmapRowSnapshot present) continue tracking normally.",
+      };
+      cancelled.push(`${shadow.asset} ${shadow.position.instrumentLabel ?? shadow.position.instrumentId ?? shadow.id}`);
+    } else if (shadow.status === "resolved" && !shadow.learningExcluded) {
+      // Resolved trades already booked their realized P&L; we leave the
+      // accounting intact and only flag them as data artifacts so the
+      // learning loop ignores them. Training will only see new-model data.
+      shadow.learningExcluded = {
+        reason: "legacy_one_touch_pre_directional_decoder_model",
+        note: "Resolved under the path-vs-settle-agnostic model. Excluded from learning so the engine trains exclusively on new-model one-touch trades (heatmapRowSnapshot present).",
+      };
+      retroExcluded += 1;
+    }
   }
-  return notes;
+  return { cancelled, retroExcluded };
 }
 
 function cancelOpenRelativeValueHeatmapShadows(blockedSignals: BlockedSignalShadow[]): string[] {
@@ -7339,7 +7351,7 @@ async function main() {
   const productionPolymarketRiskNotes = applyProductionPolymarketRiskToOpenPositions(portfolio);
   const cancelledHeatmapShadows = cancelOpenRelativeValueHeatmapShadows(blockedSignals);
   const cancelledInvalidMonotonicArbShadows = cancelOpenInvalidMonotonicArbShadows(blockedSignals);
-  const cancelledLegacyOneTouchShadows = cancelLegacyOneTouchShadows(blockedSignals);
+  const legacyOneTouchSweep = cancelLegacyOneTouchShadows(blockedSignals);
 
   console.log(`  Portfolio: $${portfolio.cash.toFixed(2)} cash, ${portfolio.positions.length} open positions, $${portfolio.totalRealizedPnl.toFixed(4)} realized P&L`);
   console.log(`  Learnable params: macro24h>${learningParams.macroMomentum24hThresholdPts.toFixed(1)}, trend>${learningParams.contrarianTrendMarginPct.toFixed(2)}%, momentum>${learningParams.positiveMomentum24hPct.toFixed(2)}%, llm expiry=${learningParams.llmTradeExpiryDays}d, momentum expiry=${learningParams.momentumLongExpiryDays}d`);
@@ -7356,8 +7368,8 @@ async function main() {
   if (cancelledInvalidMonotonicArbShadows.length > 0) {
     console.log(`  Cancelled ${cancelledInvalidMonotonicArbShadows.length} invalid monotonic-arb shadow packages; only nested hit/reach ladders are eligible.`);
   }
-  if (cancelledLegacyOneTouchShadows.length > 0) {
-    console.log(`  Cancelled ${cancelledLegacyOneTouchShadows.length} legacy one-touch shadow trades (pre-directional-decoder model); excluded from learning so the engine trains on the new model only.`);
+  if (legacyOneTouchSweep.cancelled.length > 0 || legacyOneTouchSweep.retroExcluded > 0) {
+    console.log(`  Legacy one-touch sweep: cancelled ${legacyOneTouchSweep.cancelled.length} open shadow trades, retro-excluded ${legacyOneTouchSweep.retroExcluded} resolved shadows from learning. Engine now trains on new-model one-touch trades only.`);
   }
 
   // Regime check
