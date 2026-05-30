@@ -1,47 +1,10 @@
 {
-  "generatedAt": "2026-05-30T19:29:29.634Z",
+  "generatedAt": "2026-05-30T20:28:31.794Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1779978635134-iccb",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "btc_ibit_pc_ratio"
-      ],
-      "thesis": "P/C ratio normalized from 1.736 to 0.533, extreme put buying reversed."
-    },
-    {
-      "action": "close",
-      "positionId": "T-1780068594760-y2qc",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "oil_cl_pc_ratio"
-      ],
-      "thesis": "P/C ratio normalized from 2.217 to 1.553."
-    },
-    {
-      "action": "close",
-      "positionId": "T-1780115376369-huby",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "gold_hl_funding_ann"
-      ],
-      "thesis": "Funding flipped from -28% to +5.48%, extreme short positioning abated."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -49,10 +12,10 @@
       "venue": "spot",
       "direction": "long",
       "strength": 0.44125,
-      "confidence": 0.2847106520444779,
+      "confidence": 0.2722586544354686,
       "thesis": "OIL P/C ratio 1.55 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 88.06,
+      "entryPrice": 88.04,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -62,6 +25,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "3 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

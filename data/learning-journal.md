@@ -20978,3 +20978,37 @@ Closed BTC long (P/C extreme high invalidated as ratio dropped from 1.74 to 0.53
 
 ---
 
+### 2026-05-30 20:28 UTC
+
+**Portfolio:** $98.54 total | Cash $95.54 | 3 open | P&L $1.0329 | 53% win rate (166 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved wider by 22.6pp (was -28.0, now -5.4)
+- [anomaly] hype_spot = 67.649 is 2.3 std devs from mean (47.30 ± 8.71)
+- [anomaly] hype_hl_oi = 1530478005 is 2.2 std devs from mean (1008237672.06 ± 232498825.13)
+- [anomaly] hype_pm_ev = 64.51 is 2.2 std devs from mean (48.92 ± 7.05)
+- [anomaly] hype_med_max = 92.1 is 2.2 std devs from mean (65.74 ± 12.12)
+
+**Blocked signal learning:**
+- Open blocked shadows: 97
+- Resolved blocked shadows: 363 (180 wins / 183 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 59/78 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG MSFT long via hyperliquid would have edge compressed but trade lost money (-1.50%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.31%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG HIMS long via hyperliquid would have closed with thesis validated profitably (+6.77%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG MRVL long via hyperliquid would have edge compressed but trade lost money (-3.63%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 7/12; next scheduled 2026-05-30T22:28:31.787Z). Mechanical cycle ran normally._
+
+---
+

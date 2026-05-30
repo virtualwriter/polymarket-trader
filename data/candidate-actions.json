@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-30T19:28:29.514Z",
+  "generatedAt": "2026-05-30T20:28:31.784Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -9,85 +9,16 @@
       "venue": "spot",
       "direction": "long",
       "strength": 0.44125,
-      "confidence": 0.2847106520444779,
+      "confidence": 0.2722586544354686,
       "thesis": "OIL P/C ratio 1.55 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 88.06,
+      "entryPrice": 88.04,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
   "llmCloseEligibility": [
-    {
-      "positionId": "T-1779978635134-iccb",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "btc_spot",
-        "btc_ibit_pc_ratio"
-      ],
-      "hoursOpen": 52.97,
-      "hoursToExpiry": 67.03,
-      "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.4414,
-      "minHoldHours": 12,
-      "reason": "Mechanical PC_RATIO_EXTREME_HIGH setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    },
-    {
-      "positionId": "T-1780068594760-y2qc",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_cl_pc_ratio"
-      ],
-      "hoursOpen": 27.98,
-      "hoursToExpiry": 92.02,
-      "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.2331,
-      "minHoldHours": 12,
-      "reason": "Mechanical PC_RATIO_EXTREME_HIGH setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    },
-    {
-      "positionId": "T-1780115376369-huby",
-      "signalType": "FUNDING_EXTREME_SHORT",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
-      ],
-      "hoursOpen": 14.98,
-      "hoursToExpiry": 153.02,
-      "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0892,
-      "minHoldHours": 12,
-      "reason": "Mechanical FUNDING_EXTREME_SHORT setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    },
     {
       "positionId": "T-1780140577804-b8ms",
       "signalType": "PROMOTED_HYPOTHESIS",
@@ -99,12 +30,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 7.98,
-      "hoursToExpiry": 496.02,
+      "hoursOpen": 8.98,
+      "hoursToExpiry": 495.02,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0158,
+      "elapsedHoldPct": 0.0178,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 8.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 9.0h, requires at least 12h."
     },
     {
       "positionId": "T-1780158583369-9rcq",
@@ -119,12 +50,31 @@
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ],
-      "hoursOpen": 2.98,
-      "hoursToExpiry": 165.02,
+      "hoursOpen": 3.98,
+      "hoursToExpiry": 164.02,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0177,
+      "elapsedHoldPct": 0.0237,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 4.0h, requires at least 12h."
+    },
+    {
+      "positionId": "T-1780169369640-cg1z",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
+      ],
+      "hoursOpen": 0.98,
+      "hoursToExpiry": 119.02,
+      "plannedHoldHours": 120,
+      "elapsedHoldPct": 0.0082,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     }
   ]
 }
