@@ -20936,3 +20936,45 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-05-30 19:29 UTC
+
+**Portfolio:** $98.54 total | Cash $95.54 | 3 open | P&L $1.0328 | 53% win rate (166 trades)
+
+**Closed 3 trades:**
+- ✅ BTC long via spot/spot [BTC spot] (PC_RATIO_EXTREME_HIGH) → llm_decision: +$0.0131 (1.3%, market 0.0131, funding 0.0000)
+- ✅ OIL long via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH) → llm_decision: +$0.0122 (1.2%, market 0.0122, funding 0.0000)
+- ✅ GOLD long via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_SHORT) → llm_decision: +$0.0002 (0.0%, market 0.0002, funding -0.0001)
+
+**Opened 1 positions:**
+- OIL long @ $88.06 via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 17.5pp (was -10.5, now -28.0)
+- [anomaly] gold_opt_iv_30d = 51.1 is 7.1 std devs from mean (24.25 ± 3.78)
+- [anomaly] hype_spot = 68.084 is 2.4 std devs from mean (47.27 ± 8.68)
+- [anomaly] hype_hl_oi = 1548152309 is 2.3 std devs from mean (1007493739.96 ± 231826748.52)
+- [anomaly] hype_pm_ev = 64.59 is 2.2 std devs from mean (48.90 ± 7.03)
+
+**Blocked signal learning:**
+- Open blocked shadows: 99
+- Resolved blocked shadows: 360 (178 wins / 182 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 58/76 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=109 (29W/68L/12flat, 29.9% win-rate, sum $-2.6449, avg -2.43%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=150 (45W/89L/16flat, 33.6% win-rate, sum $-2.5393, avg -1.69%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG CRCL long via hyperliquid would have edge compressed but trade lost money (-1.94%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ORCL long via hyperliquid would have edge compressed but trade lost money (-0.81%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG META long via hyperliquid would have closed with thesis validated profitably (+0.29%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG MSFT long via hyperliquid would have edge compressed but trade lost money (-1.50%)
+
+**LLM analysis:**
+Closed BTC long (P/C extreme high invalidated as ratio dropped from 1.74 to 0.53), OIL long (P/C ratio normalized from 2.22 to 1.55), and GOLD long (funding flipped to +5.48% from -28%). These trades were profitable early; exiting on thesis reversal frees capital. Keep HYPE and AMZN positions; they are too early for discretionary close and show positive price action. Gold options IV spike is anomalous but not yet actionable. The correlation shift from BTC-GOLD negative to positive may indicate risk-on gold bid; monitor.
+
+---
+

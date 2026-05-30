@@ -1,5 +1,43 @@
 {
-  "acceptedCloses": [],
+  "acceptedCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1779978635134-iccb",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "btc_ibit_pc_ratio"
+      ],
+      "thesis": "P/C ratio normalized from 1.736 to 0.533, extreme put buying reversed."
+    },
+    {
+      "action": "close",
+      "positionId": "T-1780068594760-y2qc",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "oil_cl_pc_ratio"
+      ],
+      "thesis": "P/C ratio normalized from 2.217 to 1.553."
+    },
+    {
+      "action": "close",
+      "positionId": "T-1780115376369-huby",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_hl_funding_ann"
+      ],
+      "thesis": "Funding flipped from -28% to +5.48%, extreme short positioning abated."
+    }
+  ],
   "rejectedCloses": [],
-  "skippedTrades": []
+  "skippedTrades": [],
+  "parameterUpdates": {}
 }
