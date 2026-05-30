@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-30T22:30:14.438Z",
+  "generatedAt": "2026-05-30T23:28:33.800Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,43 +15,16 @@
       "confidence": 0.2722586544354686,
       "thesis": "OIL P/C ratio 1.55 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 88.39,
+      "entryPrice": 88.31,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
-    },
-    {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 0.4568571428571428,
-      "confidence": 0.2068426468970028,
-      "thesis": "AMZN HL funding -31.0% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 271.47,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "buy",
-        "positionId": "T-new-btc-pm-55k",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "thesis": "ONE-TOUCH HIGH-EDGE NO signal: BTC dip-to-$55K YES trades at 54.5c vs model probability 33.9%, a 20.6pt sell-YES edge. Buy NO at 45.5c with 1c spread and 67k liquidity. Exit if edge disappears."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
