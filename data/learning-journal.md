@@ -20413,3 +20413,37 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-05-30 02:30 UTC
+
+**Portfolio:** $98.48 total | Cash $95.48 | 3 open | P&L $0.9783 | 52% win rate (162 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_opt_iv_30d = 40.1 is 5.0 std devs from mean (23.99 ± 3.20)
+- [anomaly] hype_spot = 65.592 is 2.3 std devs from mean (46.85 ± 8.29)
+- [anomaly] hype_hl_oi = 1478376063 is 2.2 std devs from mean (996471676.10 ± 221831260.17)
+- [anomaly] hype_med_max = 90 is 2.1 std devs from mean (65.17 ± 11.66)
+- [anomaly] hype_pm_ev = 62.8 is 2.1 std devs from mean (48.58 ± 6.75)
+
+**Blocked signal learning:**
+- Open blocked shadows: 96
+- Resolved blocked shadows: 326 (149 wins / 177 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 29/42 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=109 (29W/68L/12flat, 29.9% win-rate, sum $-2.6449, avg -2.43%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=150 (45W/89L/16flat, 33.6% win-rate, sum $-2.5393, avg -1.69%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG CBRS long via hyperliquid would have closed with thesis validated profitably (+2.13%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG COST long via hyperliquid would have closed with thesis validated profitably (+1.79%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG RIVN long via hyperliquid would have closed with thesis validated profitably (+1.15%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG AMD long via hyperliquid would have closed with thesis validated profitably (+2.13%)
+
+**LLM analysis:**
+Relative-value heatmap identified a clean one-touch NO edge on BTC dip to $55k. The signal family ONE_TOUCH_HIGH_EDGE_NO has excellent live performance (4/4 wins, avg +18.42%) and this candidate meets all criteria. No LLM closes are permitted for the three open positions (all below min hold or mechanical rule-gated). The LLM hypothesis backlog remains large, so I'm focusing on reviewing existing setups rather than adding new ones. Gold options IV spike to 5σ is notable but lacks a clean cross-venue trade expression; worth monitoring.
+
+---
+

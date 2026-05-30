@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-30T01:28:27.838Z",
+  "generatedAt": "2026-05-30T02:28:33.635Z",
   "dataFreshness": {
-    "valuationRows": 686,
-    "latestValuationAt": "2026-05-30T01",
-    "macroRows": 686,
+    "valuationRows": 687,
+    "latestValuationAt": "2026-05-30T02",
+    "macroRows": 687,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-30T01"
+    "latestInstrumentSnapshotAt": "2026-05-30T02"
   },
   "portfolio": {
     "cash": 95.4821,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.9783,
     "totalTrades": 162,
     "winRatePct": 51.9,
-    "unrealizedPnl": 0.0239
+    "unrealizedPnl": 0.0262
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.8,
-      "currentPrice": 73615,
-      "underlyingPrice": 73615,
+      "pnlPct": 0.74,
+      "currentPrice": 73577,
+      "underlyingPrice": 73577,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 1.28,
-      "currentPrice": 88.11,
-      "underlyingPrice": 88.11,
+      "pnlPct": 1.24,
+      "currentPrice": 88.08,
+      "underlyingPrice": 88.08,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -56,9 +56,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 0.31,
-      "currentPrice": 65.383,
-      "underlyingPrice": 65.383,
+      "pnlPct": 0.63,
+      "currentPrice": 65.592,
+      "underlyingPrice": 65.592,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -204,18 +204,18 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 98,
-    "resolvedCount": 324,
-    "wouldHaveWon": 147,
+    "openCount": 96,
+    "resolvedCount": 326,
+    "wouldHaveWon": 149,
     "wouldHaveLost": 177,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
         "blocked": 48,
-        "resolved": 40,
-        "wouldHaveWon": 27,
+        "resolved": 42,
+        "wouldHaveWon": 29,
         "wouldHaveLost": 13,
-        "avgPnlPct": 0.81
+        "avgPnlPct": 0.85
       },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -275,28 +275,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "MSTR",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 3.13,
-        "resolvedAt": "2026-05-30T01:28:27.667Z"
-      },
-      {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "MU",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 1.32,
-        "resolvedAt": "2026-05-30T01:28:27.667Z"
-      },
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
         "asset": "SNDK",
@@ -362,6 +340,28 @@
         "closeReason": "thesis_validated_profitable",
         "pnlPct": 1.79,
         "resolvedAt": "2026-05-30T01:28:27.667Z"
+      },
+      {
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "asset": "RIVN",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "blockedReason": "weekend_hl_funding_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 1.15,
+        "resolvedAt": "2026-05-30T02:28:33.501Z"
+      },
+      {
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "asset": "AMD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "blockedReason": "weekend_hl_funding_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 2.13,
+        "resolvedAt": "2026-05-30T02:28:33.501Z"
       }
     ],
     "openQualityWarnings": [

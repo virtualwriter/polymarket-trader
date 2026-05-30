@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-30T01:28:27.866Z",
+  "generatedAt": "2026-05-30T02:30:31.562Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,16 +15,28 @@
       "confidence": 0.2847106520444779,
       "thesis": "OIL P/C ratio 1.55 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 88.11,
+      "entryPrice": 88.08,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "evidenceColumns": [],
+        "thesis": "ONE_TOUCH_HIGH_EDGE_NO: PM YES 54.5% vs model 33.7%, rich YES pricing on BTC dip to $55k by Dec 2026; buy NO to fade overpriced downside tail. Spread 1c, liquidity 67k, no-bias candidate passed. Edge +20.26 pts, consistent with profitable NO-only touch-market shadow track record."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }
