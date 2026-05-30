@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-30T15:28:33.247Z",
+  "generatedAt": "2026-05-30T16:29:43.365Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,18 +7,19 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
+      "type": "FUNDING_EXTREME_SHORT",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
       "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 67.929,
-      "targetPct": 6,
+      "strength": 1,
+      "confidence": 0.4517661877934811,
+      "thesis": "AMZN HL funding -59.2% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 271.23,
+      "targetPct": 4,
       "stopPct": 2,
-      "expiryDays": 21
+      "expiryDays": 7,
+      "leverage": 1
     },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -29,7 +30,7 @@
       "confidence": 0.2847106520444779,
       "thesis": "OIL P/C ratio 1.55 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 88.15,
+      "entryPrice": 88.16,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
