@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-30T11:28:31.258Z",
+  "generatedAt": "2026-05-30T12:28:32.038Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 67.074,
+      "entryPrice": 67.416,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
@@ -26,7 +26,7 @@
       "confidence": 0.2847106520444779,
       "thesis": "OIL P/C ratio 1.55 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 88.03,
+      "entryPrice": 88.05,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -45,10 +45,10 @@
         "btc_spot",
         "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 44.97,
-      "hoursToExpiry": 75.03,
+      "hoursOpen": 45.97,
+      "hoursToExpiry": 74.03,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.3747,
+      "elapsedHoldPct": 0.383,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -64,36 +64,12 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 19.98,
-      "hoursToExpiry": 100.02,
+      "hoursOpen": 20.98,
+      "hoursToExpiry": 99.02,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.1665,
+      "elapsedHoldPct": 0.1748,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "T-1780068594760-p5cg",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk",
-        "risk_stale",
-        "profit_taking"
-      ],
-      "evidenceColumns": [
-        "hype_spot"
-      ],
-      "hoursOpen": 19.98,
-      "hoursToExpiry": 484.02,
-      "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0396,
-      "minHoldHours": 12,
-      "reason": "LLM-owned/promoted setup may be closed after 12h if signal-family evidence supports it."
     },
     {
       "positionId": "T-1780115376369-huby",
@@ -107,12 +83,30 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 6.98,
-      "hoursToExpiry": 161.02,
+      "hoursOpen": 7.98,
+      "hoursToExpiry": 160.02,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0416,
+      "elapsedHoldPct": 0.0475,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "T-1780140577804-b8ms",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "hype_spot"
+      ],
+      "hoursOpen": 0.98,
+      "hoursToExpiry": 503.02,
+      "plannedHoldHours": 504,
+      "elapsedHoldPct": 0.0019,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     }
   ]
 }
