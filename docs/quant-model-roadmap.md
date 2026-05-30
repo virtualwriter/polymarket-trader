@@ -122,6 +122,7 @@ Update this table as gaps close. When a step ships, move from `pending` to a com
 | Deferred: IV-variant data collection | partial | `scripts/iv_model_variant_backtest.py` writes comparison CSV but doesn't feed live model. |
 | Deferred: Relative-decay edge exit | pending | Current exit uses absolute 1pt floor; relative trigger not coded. |
 | Tactical: Hybrid bot consecutive-loser cooldown | shipped (`0090238`) | 3 back-to-back losing shorts (pnl ≤ −0.5%) on a coin → 36h short-suppression on that coin. INJ seeded with `loss_streak=3` to halt active bleed. Bumps Pillar 7 (Risk Management) from 25% → ~30%. |
+| Tactical: LLM thesis-invalidated close for mechanical signals | shipped | `PC_RATIO_EXTREME_*` and `FUNDING_EXTREME_*` positions now permit LLM discretionary close after the 12h min-hold when the signal's own input has reversed (e.g. P/C ratio normalizes back through entry threshold; funding flips back through entry threshold). Profit-taking remains mechanical; only `thesis_invalidated` / `data_quality_issue` / `hard_portfolio_risk` categories allowed for these families. Motivated by 5/29 GOLD short post-mortem: thesis broke (P/C 0.32 → 0.64) ~16h into the trade, LLM journaled it three times, but had no authority to close — trade bled the full 2% stop. |
 
 ## Cross-References
 

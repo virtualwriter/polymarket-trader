@@ -2595,6 +2595,30 @@ function isRuleBasedSignal(signalType: string): boolean {
   return signalType !== "LLM_HYPOTHESIS" && signalType !== "PROMOTED_HYPOTHESIS";
 }
 
+// Mechanical scanner signals that now permit LLM discretionary closes after the
+// 12h min-hold, restricted to thesis-invalidated / data-quality / hard-risk
+// categories. Profit-taking remains mechanical (the target governs).
+// Motivation: the PC_RATIO and FUNDING families enter on a single observable
+// (P/C ratio < threshold; funding < threshold). When that observable round-
+// trips into invalidation territory (e.g. P/C 0.32 → 0.64 in 24h), the trade
+// thesis is *gone* well before the mechanical stop fires. See the 5/29 GOLD
+// short post-mortem: thesis broke ~16h in, journaled multiple times, stopped
+// out at -2.05% anyway. Allowing a thesis_invalidated close in those cases
+// avoids paying the full stop when the signal's own input has already
+// reversed. One-touch / monotonic-arb / hybrid-shadow families are
+// deliberately excluded — they have non-obvious payoff dynamics that don't
+// map cleanly to single-input invalidation.
+const MECHANICAL_LLM_CLOSE_ELIGIBLE_SIGNALS = new Set<string>([
+  "PC_RATIO_EXTREME_HIGH",
+  "PC_RATIO_EXTREME_LOW",
+  "FUNDING_EXTREME_SHORT",
+  "FUNDING_EXTREME_LONG",
+]);
+
+function isMechanicalLlmCloseEligible(signalType: string): boolean {
+  return MECHANICAL_LLM_CLOSE_ELIGIBLE_SIGNALS.has(signalType);
+}
+
 function positionTimingContext(position: Position, nowMs = Date.now()): {
   hoursOpen: number | null;
   hoursToExpiry: number | null;
@@ -2797,9 +2821,11 @@ function openPositionContextForLlm(
     const header = `  positionId=${p.id}; ${p.asset} ${p.direction} via ${p.venue} / ${p.instrumentType ?? "legacy"} @ ${p.entryPrice} [${p.instrumentLabel ?? "n/a"}] (${p.signalType}) — ${p.thesis.slice(0, 100)}`;
     const mark = markPosition(p, latestRow, instrumentSnapshots, true);
     const mechanicalLine = `    ${formatMechanicalContextLine(p, mark)}`;
-    const ownershipLine = isRuleBasedSignal(p.signalType)
-      ? `    LLM closes are not permitted on this trade — mechanical scanner owns exits via target / stop / breakeven_stop / expiry. Do NOT emit a close instruction for this positionId in 'trades'; rule-based closes are policy-gated and will be rejected. Use 'journalEntry' if you have structural concerns about the signal family.`
-      : `    LLM closes are policy-gated for this LLM-owned setup. Use ALLOWED ACTION SURFACE for whether this position is old enough and which close categories are currently allowed. Use signal-family evidence metrics below as primary justification.`;
+    const ownershipLine = isMechanicalLlmCloseEligible(p.signalType)
+      ? `    Mechanical ${p.signalType} setup with LLM thesis-invalidated discretion after ${LLM_CLOSE_MIN_HOLD_HOURS}h. Profit-taking, target, stop, breakeven_stop, and expiry remain mechanical — do NOT emit close instructions for those. You MAY emit a close with closeReasonCategory='thesis_invalidated' only when the signal's own input has round-tripped past invalidation (e.g. P/C ratio has normalized back through the entry threshold and beyond, or funding has crossed back through the entry threshold); cite the signal-family evidence metric below. 'data_quality_issue' and 'hard_portfolio_risk' are also allowed.`
+      : isRuleBasedSignal(p.signalType)
+        ? `    LLM closes are not permitted on this trade — mechanical scanner owns exits via target / stop / breakeven_stop / expiry. Do NOT emit a close instruction for this positionId in 'trades'; rule-based closes are policy-gated and will be rejected. Use 'journalEntry' if you have structural concerns about the signal family.`
+        : `    LLM closes are policy-gated for this LLM-owned setup. Use ALLOWED ACTION SURFACE for whether this position is old enough and which close categories are currently allowed. Use signal-family evidence metrics below as primary justification.`;
     const decoderLine = formatOneTouchDirectionalLine(p, latestInstrumentSnapshot(instrumentSnapshots));
     const decoderBlock = decoderLine ? `\n    ${decoderLine}` : "";
     if (!entryRow) return `${header}\n${mechanicalLine}\n${ownershipLine}${decoderBlock}\n    Since-open baseline: unavailable (no valuation row at or before ${p.openedAt})`;
@@ -6377,12 +6403,16 @@ function llmCloseEligibilityForPosition(
   snapshots: InstrumentSnapshotFile[],
 ): CandidateActions["llmCloseEligibility"][number] {
   const signalOwned = position.signalType === "LLM_HYPOTHESIS" || position.signalType === "PROMOTED_HYPOTHESIS";
+  const mechanicalEligible = isMechanicalLlmCloseEligible(position.signalType);
+  const llmCloseEligible = signalOwned || mechanicalEligible;
   const timing = positionTimingContext(position);
   const minHoldHours = llmCloseMinHoldHours(position, timing);
   const mark = markPosition(position, latestRow, snapshots, true);
   const baseCategories: NonNullable<LlmTradeInstruction["closeReasonCategory"]>[] = signalOwned
     ? ["thesis_invalidated", "data_quality_issue", "hard_portfolio_risk", "risk_stale", "profit_taking"]
-    : [];
+    : mechanicalEligible
+      ? ["thesis_invalidated", "data_quality_issue", "hard_portfolio_risk"]
+      : [];
   const conservativeCategories: NonNullable<LlmTradeInstruction["closeReasonCategory"]>[] = ["data_quality_issue", "hard_portfolio_risk"];
   const profitableEnoughForEarlyTake =
     signalOwned
@@ -6391,13 +6421,15 @@ function llmCloseEligibilityForPosition(
     && mark.pnlPct >= position.targetPct * LLM_PROFIT_TAKE_TARGET_FRACTION;
   if (profitableEnoughForEarlyTake) conservativeCategories.push("profit_taking");
 
-  let allowed = signalOwned;
+  let allowed = llmCloseEligible;
   let allowedCategories = baseCategories;
   let reason = signalOwned
     ? `LLM-owned/promoted setup may be closed after ${LLM_CLOSE_MIN_HOLD_HOURS}h if signal-family evidence supports it.`
-    : "Rule-based signal exits remain mechanical; LLM closes are not allowed.";
+    : mechanicalEligible
+      ? `Mechanical ${position.signalType} setup may be closed after ${LLM_CLOSE_MIN_HOLD_HOURS}h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical.`
+      : "Rule-based signal exits remain mechanical; LLM closes are not allowed.";
 
-  if (signalOwned && (timing.hoursOpen === null || timing.hoursOpen < LLM_CLOSE_MIN_HOLD_HOURS)) {
+  if (llmCloseEligible && (timing.hoursOpen === null || timing.hoursOpen < LLM_CLOSE_MIN_HOLD_HOURS)) {
     allowed = false;
     allowedCategories = [];
     const observed = timing.hoursOpen === null ? "unknown" : `${timing.hoursOpen.toFixed(1)}h`;
