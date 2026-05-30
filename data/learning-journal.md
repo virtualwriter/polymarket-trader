@@ -20519,3 +20519,37 @@ Today's data shows BTC IV term spread flattening and PM IV divergence persisting
 
 ---
 
+### 2026-05-30 05:28 UTC
+
+**Portfolio:** $98.48 total | Cash $94.48 | 4 open | P&L $0.9783 | 52% win rate (162 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 5.4pp (was -0.7, now -6.1)
+- [anomaly] hype_spot = 65.56 is 2.2 std devs from mean (46.93 ± 8.35)
+- [anomaly] hype_hl_oi = 1481395535 is 2.2 std devs from mean (998522566.30 ± 223515132.77)
+- [anomaly] hype_med_max = 90.2 is 2.1 std devs from mean (65.28 ± 11.75)
+- [anomaly] hype_pm_ev = 62.83 is 2.1 std devs from mean (48.64 ± 6.80)
+
+**Blocked signal learning:**
+- Open blocked shadows: 95
+- Resolved blocked shadows: 335 (157 wins / 178 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 37/51 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=109 (29W/68L/12flat, 29.9% win-rate, sum $-2.6449, avg -2.43%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=150 (45W/89L/16flat, 33.6% win-rate, sum $-2.5393, avg -1.69%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG MRVL long via hyperliquid would have closed with thesis validated profitably (+2.01%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG MSTR long via hyperliquid would have closed with thesis validated profitably (+1.86%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ORCL long via hyperliquid would have closed with thesis validated profitably (+2.34%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG SKHX long via hyperliquid would have closed with thesis validated profitably (+0.91%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 2/12; next scheduled 2026-05-30T07:28:26.241Z). Mechanical cycle ran normally._
+
+---
+
