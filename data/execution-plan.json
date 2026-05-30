@@ -1,10 +1,23 @@
 {
-  "generatedAt": "2026-05-30T09:28:34.842Z",
+  "generatedAt": "2026-05-30T11:29:37.798Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1780068594760-p5cg",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "closeReasonCategory": "profit_taking",
+      "evidenceColumns": [
+        "hype_spot"
+      ],
+      "thesis": "HYPE spot at extreme percentiles (99th pct 7d, 100th pct 30d); taking profits at +2.9% to reduce mean-reversion risk."
+    }
+  ],
   "entrySignals": [
     {
       "type": "PROMOTED_HYPOTHESIS",
@@ -15,7 +28,7 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 66.5,
+      "entryPrice": 67.074,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
@@ -29,7 +42,7 @@
       "confidence": 0.2847106520444779,
       "thesis": "OIL P/C ratio 1.55 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 87.77,
+      "entryPrice": 88.03,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -39,6 +52,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
