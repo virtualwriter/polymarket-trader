@@ -20482,3 +20482,40 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-05-30 04:29 UTC
+
+**Portfolio:** $98.48 total | Cash $94.48 | 4 open | P&L $0.9783 | 52% win rate (162 trades)
+
+**Opened 1 positions:**
+- GOLD long @ $4534 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_SHORT)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved wider by 20.3pp (was -21.0, now -0.7)
+- [anomaly] hype_med_max = 90.2 is 2.1 std devs from mean (65.24 ± 11.72)
+- [anomaly] hype_spot = 64.365 is 2.1 std devs from mean (46.90 ± 8.33)
+- [anomaly] hype_hl_oi = 1451899988 is 2.0 std devs from mean (997821734.71 ± 222918416.10)
+- [correlation_flip] BTC-GOLD correlation shifted from -0.36 to 0.70. Rolling correlation: 24h=0.28, 7d=0.53, 30d=-0.08. Current 24h corr is at 32th pct of last 28 daily 24h-rolling values (range -0.80 to 0.92).
+
+**Blocked signal learning:**
+- Open blocked shadows: 102
+- Resolved blocked shadows: 328 (150 wins / 178 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 30/44 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=109 (29W/68L/12flat, 29.9% win-rate, sum $-2.6449, avg -2.43%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=150 (45W/89L/16flat, 33.6% win-rate, sum $-2.5393, avg -1.69%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG RIVN long via hyperliquid would have closed with thesis validated profitably (+1.15%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG AMD long via hyperliquid would have closed with thesis validated profitably (+2.13%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG AAPL long via hyperliquid would have closed with thesis validated profitably (+0.71%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ARM long via hyperliquid would have edge compressed but trade lost money (-0.26%)
+
+**LLM analysis:**
+Today's data shows BTC IV term spread flattening and PM IV divergence persisting. Correlation flipped to positive between BTC and Gold as both declined, suggesting short-term macro alignment rather than structural change. Existing BTC and OIL P/C-ratio longs are in profit, HYPE long still within its hypothesis window. Lowered stop-loss for PC_RATIO_EXTREME_HIGH and LOW signals to 1.5% given historically low average P&L per trade; tighter stops may reduce drawdowns without materially affecting win rate. No new hypotheses proposed as backlog remains and existing promoted variants are regime-relative.
+
+---
+
