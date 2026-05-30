@@ -20553,3 +20553,37 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-05-30 06:28 UTC
+
+**Portfolio:** $98.48 total | Cash $94.48 | 4 open | P&L $0.9783 | 52% win rate (162 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 20.7pp (was -6.1, now -26.8)
+- [anomaly] gold_opt_iv_30d = 45.6 is 6.4 std devs from mean (24.05 ± 3.36)
+- [anomaly] hype_spot = 65.409 is 2.2 std devs from mean (46.96 ± 8.38)
+- [anomaly] hype_hl_oi = 1479083210 is 2.1 std devs from mean (999218023.10 ± 224099175.58)
+- [anomaly] hype_med_max = 90.3 is 2.1 std devs from mean (65.31 ± 11.78)
+
+**Blocked signal learning:**
+- Open blocked shadows: 94
+- Resolved blocked shadows: 337 (159 wins / 178 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 39/53 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=109 (29W/68L/12flat, 29.9% win-rate, sum $-2.6449, avg -2.43%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=150 (45W/89L/16flat, 33.6% win-rate, sum $-2.5393, avg -1.69%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ORCL long via hyperliquid would have closed with thesis validated profitably (+2.34%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG SKHX long via hyperliquid would have closed with thesis validated profitably (+0.91%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG CBRS long via hyperliquid would have closed with thesis validated profitably (+1.27%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG LITE long via hyperliquid would have closed with thesis validated profitably (+1.22%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h since last call; daily budget 2/12; next scheduled 2026-05-30T08:28:35.723Z). Mechanical cycle ran normally._
+
+---
+
