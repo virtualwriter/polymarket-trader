@@ -1,15 +1,28 @@
 {
-  "generatedAt": "2026-05-31T08:28:28.714Z",
+  "generatedAt": "2026-05-31T09:29:12.305Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1780169369640-cg1z",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "any",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "oil_cl_pc_ratio"
+      ],
+      "thesis": "OIL P/C ratio collapsed from 1.55 to 1.18, reverting through the entry extreme threshold and signaling the put-buying panic has normalized; contrarian long thesis invalidated."
+    }
+  ],
   "entrySignals": [],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
