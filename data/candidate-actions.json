@@ -1,23 +1,8 @@
 {
-  "generatedAt": "2026-05-31T06:28:35.412Z",
+  "generatedAt": "2026-05-31T07:28:32.614Z",
   "mechanicalExits": [],
   "signalKillExits": [],
-  "entryCandidates": [
-    {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.44125,
-      "confidence": 0.2722586544354686,
-      "thesis": "OIL P/C ratio 1.55 — heavy put buying → contrarian long.",
-      "hypothesisId": null,
-      "entryPrice": 88.68,
-      "targetPct": 4,
-      "stopPct": 1.5,
-      "expiryDays": 5
-    }
-  ],
+  "entryCandidates": [],
   "llmCloseEligibility": [
     {
       "positionId": "T-1780158583369-9rcq",
@@ -36,10 +21,10 @@
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ],
-      "hoursOpen": 13.98,
-      "hoursToExpiry": 154.02,
+      "hoursOpen": 14.98,
+      "hoursToExpiry": 153.02,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0832,
+      "elapsedHoldPct": 0.0892,
       "minHoldHours": 12,
       "reason": "Mechanical FUNDING_EXTREME_SHORT setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
@@ -55,12 +40,12 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 10.98,
-      "hoursToExpiry": 109.02,
+      "hoursOpen": 11.98,
+      "hoursToExpiry": 108.02,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0915,
+      "elapsedHoldPct": 0.0999,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 11.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
     },
     {
       "positionId": "T-1780205309979-ghlx",
@@ -73,12 +58,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 1,
-      "hoursToExpiry": 503,
+      "hoursOpen": 2,
+      "hoursToExpiry": 502,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.002,
+      "elapsedHoldPct": 0.004,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
     }
   ]
 }

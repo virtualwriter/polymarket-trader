@@ -1,30 +1,28 @@
 {
-  "generatedAt": "2026-05-31T06:28:35.422Z",
+  "generatedAt": "2026-05-31T07:29:16.830Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
-  "entrySignals": [
+  "llmCloses": [
     {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
+      "action": "close",
+      "positionId": "T-1780158583369-9rcq",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
       "direction": "long",
-      "strength": 0.44125,
-      "confidence": 0.2722586544354686,
-      "thesis": "OIL P/C ratio 1.55 — heavy put buying → contrarian long.",
-      "hypothesisId": null,
-      "entryPrice": 88.68,
-      "targetPct": 4,
-      "stopPct": 1.5,
-      "expiryDays": 5
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "amzn_hl_funding_ann"
+      ],
+      "thesis": "AMZN funding flipped from extreme negative (-59%) to +12.9%, exceeding the entry threshold of < -15% and indicating crowded short covering. The extreme short funding carry has evaporated, invalidating the original FUNDING_EXTREME_SHORT long thesis."
     }
   ],
+  "entrySignals": [],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
