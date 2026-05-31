@@ -21612,3 +21612,43 @@ Today's snapshot shows crypto funding highly elevated across BTC, HYPE, Oil, ind
 
 ---
 
+### 2026-05-31 17:32 UTC
+
+**Portfolio:** $98.54 total | Cash $96.54 | 2 open | P&L $1.0602 | 54% win rate (170 trades)
+
+**Closed 1 trades:**
+- ❌ HYPE long via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS) → stop: $-0.0202 (-2.0%, market -0.0202, funding 0.0000)
+
+**Opened 1 positions:**
+- HYPE long @ $68.485 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 100 is 2.6 std devs from mean (66.45 ± 12.76)
+- [anomaly] hype_pm_iv = 92.4 is 2.3 std devs from mean (69.51 ± 9.74)
+- [anomaly] hype_pm_ev = 66.05 is 2.3 std devs from mean (49.33 ± 7.42)
+- [anomaly] hype_spot = 68.485 is 2.2 std devs from mean (47.84 ± 9.22)
+- [anomaly] hype_hl_oi = 1562045742 is 2.2 std devs from mean (1021550582.80 ± 244212171.31)
+
+**Blocked signal learning:**
+- Open blocked shadows: 109
+- Resolved blocked shadows: 408 (218 wins / 190 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 96/122 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ARM long via hyperliquid would have edge compressed but trade lost money (-0.77%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG INTC long via hyperliquid would have closed with thesis validated profitably (+1.86%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG CRCL long via hyperliquid would have closed with thesis validated profitably (+2.89%)
+- ✅ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT HYPE short via polymarket would have hit target (+5.00%)
+
+**LLM analysis:**
+Current HYPE short justified by record funding rates (34.2%), even higher than at entry. No evidence of thesis invalidation. Heatmap highlights several NO-biased opportunities; executing BTC $55k dip NO per ONE_TOUCH_HIGH_EDGE_NO. AMZN extreme negative funding (-26.1%) fires a FUNDING_EXTREME_SHORT long. H-521 not triggering due to non-normalized funding; H-531 conditions not met. No parameter changes warranted today.
+
+---
+

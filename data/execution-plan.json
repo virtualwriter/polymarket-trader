@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-31T16:30:19.650Z",
+  "generatedAt": "2026-05-31T17:32:06.195Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,25 +7,75 @@
   "llmCloses": [],
   "entrySignals": [
     {
+      "type": "PROMOTED_HYPOTHESIS",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.6666666666666666,
+      "confidence": 0.5466666666666666,
+      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
+      "hypothesisId": "H-521",
+      "entryPrice": 68.485,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 7
+    },
+    {
       "type": "FUNDING_EXTREME_LONG",
       "asset": "HYPE",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.3885714285714286,
-      "confidence": 0.23415877166971308,
-      "thesis": "HYPE HL funding 28.6% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.5482857142857143,
+      "confidence": 0.3304049138486613,
+      "thesis": "HYPE HL funding 34.2% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 68.205,
+      "entryPrice": 68.485,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
       "leverage": 1
+    },
+    {
+      "type": "FUNDING_EXTREME_SHORT",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "strength": 0.3177142857142857,
+      "confidence": 0.14514414017058247,
+      "thesis": "AMZN HL funding -26.1% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 272.77,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 7,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "AMZN",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "thesis": "AMZN HL funding -26.1% annualized is extreme negative (shorts pay longs). Mechanical FUNDING_EXTREME_SHORT entry: fade shorts, expect funding normalization and spot bounce."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    },
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "Relative-value heatmap: BTC $55k dip PM YES overpriced (54% vs model ~33.6%), sell-YES edge 19.4pts. Spread 2c, liquidity 63k, meets touch-market NO promotion rules. Buy NO (short YES) to capture edge decay."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 2 non-close instructions skipped."
   ]
 }
