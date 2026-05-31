@@ -21115,3 +21115,37 @@ Existing positions are progressing as expected. No new ONE_TOUCH_HIGH_EDGE_NO tr
 
 ---
 
+### 2026-05-31 02:28 UTC
+
+**Portfolio:** $98.54 total | Cash $95.54 | 3 open | P&L $1.0329 | 53% win rate (166 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_opt_iv_30d = 40.8 is 4.2 std devs from mean (24.34 ± 3.91)
+- [anomaly] hype_spot = 68.57 is 2.4 std devs from mean (47.42 ± 8.83)
+- [anomaly] hype_hl_oi = 1553486117 is 2.3 std devs from mean (1011247926.20 ± 235255042.78)
+- [anomaly] hype_pm_ev = 65.36 is 2.3 std devs from mean (49.01 ± 7.13)
+- [anomaly] hype_med_max = 93 is 2.2 std devs from mean (65.89 ± 12.24)
+
+**Blocked signal learning:**
+- Open blocked shadows: 99
+- Resolved blocked shadows: 375 (191 wins / 184 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 70/90 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG COIN long via hyperliquid would have closed with thesis validated profitably (+2.58%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG MSTR long via hyperliquid would have closed with thesis validated profitably (+2.09%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG HOOD long via hyperliquid would have closed with thesis validated profitably (+2.42%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG SKHX long via hyperliquid would have closed with thesis validated profitably (+1.15%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h since last call; daily budget 1/12; next scheduled 2026-05-31T04:28:32.866Z). Mechanical cycle ran normally._
+
+---
+
