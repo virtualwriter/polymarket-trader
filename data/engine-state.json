@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-05-31T02:28:32.846Z",
+  "generatedAt": "2026-05-31T03:28:30.426Z",
   "dataFreshness": {
-    "valuationRows": 707,
-    "latestValuationAt": "2026-05-31T02",
-    "macroRows": 707,
+    "valuationRows": 708,
+    "latestValuationAt": "2026-05-31T03",
+    "macroRows": 708,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-05-31T02"
+    "latestInstrumentSnapshotAt": "2026-05-31T03"
   },
   "portfolio": {
     "cash": 95.5366,
@@ -13,7 +13,7 @@
     "realizedPnl": 1.0329,
     "totalTrades": 166,
     "winRatePct": 53,
-    "unrealizedPnl": 0.027
+    "unrealizedPnl": 0.0288
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 2.23,
-      "currentPrice": 68.57,
-      "underlyingPrice": 68.57,
+      "pnlPct": 2.32,
+      "currentPrice": 68.627,
+      "underlyingPrice": 68.627,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -38,8 +38,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.15,
-      "currentPrice": 271.65,
+      "pnlPct": 0.22,
+      "currentPrice": 271.85,
       "underlyingPrice": 270.48,
       "targetPct": 4,
       "stopPct": 2,
@@ -56,9 +56,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.32,
-      "currentPrice": 88.34,
-      "underlyingPrice": 88.34,
+      "pnlPct": 0.34,
+      "currentPrice": 88.36,
+      "underlyingPrice": 88.36,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -206,17 +206,17 @@
   ],
   "blockedSummary": {
     "openCount": 99,
-    "resolvedCount": 375,
-    "wouldHaveWon": 191,
+    "resolvedCount": 378,
+    "wouldHaveWon": 194,
     "wouldHaveLost": 184,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "blocked": 99,
-        "resolved": 90,
-        "wouldHaveWon": 70,
+        "blocked": 102,
+        "resolved": 93,
+        "wouldHaveWon": 73,
         "wouldHaveLost": 20,
-        "avgPnlPct": 1.07
+        "avgPnlPct": 1.16
       },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -278,39 +278,6 @@
     "recentResolved": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "PLTR",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 2.67,
-        "resolvedAt": "2026-05-31T01:28:30.003Z"
-      },
-      {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "TSLA",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -0.8,
-        "resolvedAt": "2026-05-31T01:28:30.003Z"
-      },
-      {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "ARM",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 1.01,
-        "resolvedAt": "2026-05-31T01:28:30.003Z"
-      },
-      {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
         "asset": "BIRD",
         "venue": "hyperliquid",
         "direction": "long",
@@ -363,6 +330,39 @@
         "closeReason": "thesis_validated_profitable",
         "pnlPct": 1.15,
         "resolvedAt": "2026-05-31T02:28:32.693Z"
+      },
+      {
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "asset": "NFLX",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "blockedReason": "weekend_hl_funding_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 0.28,
+        "resolvedAt": "2026-05-31T03:28:30.273Z"
+      },
+      {
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "asset": "AMZN",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "blockedReason": "weekend_hl_funding_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 0.69,
+        "resolvedAt": "2026-05-31T03:28:30.273Z"
+      },
+      {
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "asset": "GME",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "blockedReason": "weekend_hl_funding_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 10.36,
+        "resolvedAt": "2026-05-31T03:28:30.273Z"
       }
     ],
     "openQualityWarnings": [
