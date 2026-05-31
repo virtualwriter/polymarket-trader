@@ -21470,3 +21470,37 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 5/12; ne
 
 ---
 
+### 2026-05-31 13:30 UTC
+
+**Portfolio:** $98.56 total | Cash $98.56 | 0 open | P&L $1.0602 | 54% win rate (170 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_opt_iv_30d = 36.4 is 2.8 std devs from mean (24.52 ± 4.18)
+- [anomaly] hype_spot = 68.232 is 2.2 std devs from mean (47.72 ± 9.12)
+- [anomaly] hype_med_max = 94.3 is 2.2 std devs from mean (66.28 ± 12.59)
+- [anomaly] hype_pm_ev = 65.39 is 2.2 std devs from mean (49.24 ± 7.34)
+- [anomaly] hype_hl_oi = 1519095814 is 2.1 std devs from mean (1018604218.36 ± 241673223.55)
+
+**Blocked signal learning:**
+- Open blocked shadows: 103
+- Resolved blocked shadows: 395 (209 wins / 186 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 88/110 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG MSTR long via hyperliquid would have edge compressed but trade lost money (-0.06%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG LITE long via hyperliquid would have closed with thesis validated profitably (+0.93%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG HIMS long via hyperliquid would have closed with thesis validated profitably (+1.96%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG HOOD long via hyperliquid would have closed with thesis validated profitably (+1.12%)
+
+**LLM analysis:**
+Statistical anomalies persist in gold IV and HYPE levels. Correlation flips suggest portfolio rebalancing — keep an eye on gold-oil positive co-movement as potential risk-on shift. Blocked shadow learning shows WEEKEND_HL_FUNDING_REVERSION_LONG continuing to win (88/110 shadows, avg +1.11%), supporting thesis for post-weekend mean reversion. ONE_TOUCH_HIGH_EDGE_NO remains the strongest live edge (4/4 clean trades, +18.4% avg). Proposed a new entry in Gold $7,000 NO contract based on high edge and tight spread. No parameter changes needed.
+
+---
+

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-31T12:28:34.886Z",
+  "generatedAt": "2026-05-31T13:30:46.004Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,9 +7,20 @@
   "llmCloses": [],
   "entrySignals": [],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "Relative-value heatmap ONE_TOUCH_HIGH_EDGE_NO: PM YES 9c vs model 2.3c NO probability, 6.7pt edge, spread 2c, liquidity 30k. Buy NO (short YES) to capture overpriced upside touch."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }
