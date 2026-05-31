@@ -1,32 +1,9 @@
 {
-  "generatedAt": "2026-05-31T09:28:34.189Z",
+  "generatedAt": "2026-05-31T10:28:36.012Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [],
   "llmCloseEligibility": [
-    {
-      "positionId": "T-1780169369640-cg1z",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_cl_pc_ratio"
-      ],
-      "hoursOpen": 13.98,
-      "hoursToExpiry": 106.02,
-      "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.1165,
-      "minHoldHours": 12,
-      "reason": "Mechanical PC_RATIO_EXTREME_HIGH setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    },
     {
       "positionId": "T-1780205309979-ghlx",
       "signalType": "PROMOTED_HYPOTHESIS",
@@ -38,12 +15,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 4,
-      "hoursToExpiry": 500,
+      "hoursOpen": 5,
+      "hoursToExpiry": 499,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0079,
+      "elapsedHoldPct": 0.0099,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 4.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
     }
   ]
 }

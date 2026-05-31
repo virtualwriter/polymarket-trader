@@ -21399,3 +21399,37 @@ OIL P/C extreme high thesis resolved with P/C collapsing to 1.18, neutralizing t
 
 ---
 
+### 2026-05-31 10:30 UTC
+
+**Portfolio:** $98.59 total | Cash $97.59 | 1 open | P&L $1.0816 | 54% win rate (169 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 6.3pp (was -15.4, now -21.7)
+- [anomaly] gold_opt_iv_30d = 44.3 is 4.8 std devs from mean (24.48 ± 4.12)
+- [anomaly] hype_med_max = 95.8 is 2.4 std devs from mean (66.20 ± 12.52)
+- [anomaly] hype_spot = 68.324 is 2.3 std devs from mean (47.66 ± 9.07)
+- [anomaly] hype_pm_ev = 65.66 is 2.3 std devs from mean (49.20 ± 7.30)
+
+**Blocked signal learning:**
+- Open blocked shadows: 105
+- Resolved blocked shadows: 390 (205 wins / 185 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 84/105 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG NFLX long via hyperliquid would have closed with thesis validated profitably (+2.55%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG BABA long via hyperliquid would have closed with thesis validated profitably (+0.68%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG COIN long via hyperliquid would have closed with thesis validated profitably (+1.00%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ARM long via hyperliquid would have closed with thesis validated profitably (+1.42%)
+
+**LLM analysis:**
+The portfolio's one open HYPE long is on thesis (H-521) but OI contraction is a yellow flag. Since the position is only 5h old and below the 12h min-hold, no close is permitted. The heatmap highlights several one-touch buy-YES edges in oil and gold, but none qualify under the strict sell-YES NO criteria for the ONE_TOUCH_HIGH_EDGE_NO allowlist, and no other live signal family fires. We continue to let shadow tests accumulate for LLM families. The 12-coin hybrid bot remains in bearish short-only mode, suggesting altcoin breadth has not flipped to risk-on yet.
+
+---
+
