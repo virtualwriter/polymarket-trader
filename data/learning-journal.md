@@ -21575,3 +21575,40 @@ Key observations: Macro remains bearish with hawkish Fed, but crypto-specific ri
 
 ---
 
+### 2026-05-31 16:30 UTC
+
+**Portfolio:** $98.56 total | Cash $96.56 | 2 open | P&L $1.0602 | 54% win rate (170 trades)
+
+**Opened 1 positions:**
+- HYPE short @ $68.205 via hyperliquid/hl_perp [HL HYPE perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 100 is 2.6 std devs from mean (66.40 ± 12.71)
+- [anomaly] hype_pm_iv = 92.7 is 2.4 std devs from mean (69.48 ± 9.71)
+- [anomaly] hype_pm_ev = 65.98 is 2.3 std devs from mean (49.31 ± 7.40)
+- [anomaly] hype_spot = 68.205 is 2.2 std devs from mean (47.81 ± 9.20)
+- [anomaly] hype_hl_oi = 1548681233 is 2.2 std devs from mean (1020799895.08 ± 243548990.48)
+
+**Blocked signal learning:**
+- Open blocked shadows: 108
+- Resolved blocked shadows: 405 (215 wins / 190 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 94/120 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG RKLB long via hyperliquid would have closed with thesis validated profitably (+2.29%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG DKNG long via hyperliquid would have closed with thesis validated profitably (+12.49%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ZM long via hyperliquid would have closed with thesis validated profitably (+2.46%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ARM long via hyperliquid would have edge compressed but trade lost money (-0.77%)
+
+**LLM analysis:**
+Today's snapshot shows crypto funding highly elevated across BTC, HYPE, Oil, indicating widespread overconfidence. Yet price action is deteriorating: BTC down 0.5%, HYPE down 1.4% in early Sunday trade. The open HYPE long (H-521) is already -1.4% after 1h, but min hold prevents any close. If the drift continues and funding stays extreme, the thesis could weaken quickly. Oil funding at 37% is a red flag for an unwind. No new trades, as no clean edge meets strict criteria; one-touch NO edge shadows are the only high-conviction plays but require explicit entry signals that aren't present. Will monitor HYPE closely for thesis validation or invalidation after 12h mark.
+
+---
+

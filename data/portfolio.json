@@ -1,5 +1,5 @@
 {
-  "cash": 97.56398274007296,
+  "cash": 96.56398274007296,
   "positions": [
     {
       "id": "T-1780241393879-clvc",
@@ -8,8 +8,8 @@
       "venue": "spot",
       "direction": "long",
       "entryPrice": 69.177,
-      "currentPrice": 69.177,
-      "currentUnderlyingPrice": 69.177,
+      "currentPrice": 68.205,
+      "currentUnderlyingPrice": 68.205,
       "entryUnderlyingPrice": 69.177,
       "size": 1,
       "leverage": 1,
@@ -20,12 +20,37 @@
       "stopPct": 2,
       "expiryDate": "2026-06-21T15:29:53.879Z",
       "instrumentType": "spot",
-      "instrumentLabel": "HYPE spot"
+      "instrumentLabel": "HYPE spot",
+      "peakPnlPct": -0.1857553811237875,
+      "fundingPnlAccrued": 0
+    },
+    {
+      "id": "T-1780245019652-fj3o",
+      "openedAt": "2026-05-31T16:30:19.652Z",
+      "asset": "HYPE",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "entryPrice": 68.205,
+      "currentPrice": 68.205,
+      "currentUnderlyingPrice": 68.205,
+      "entryUnderlyingPrice": 68.205,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "FUNDING_EXTREME_LONG",
+      "hypothesisId": null,
+      "thesis": "HYPE HL funding 28.6% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDate": "2026-06-03T16:30:19.652Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "HYPE",
+      "instrumentLabel": "HL HYPE perp",
+      "fundingPnlAccrued": 0
     }
   ],
   "totalRealizedPnl": 1.0601999999999994,
   "totalTrades": 170,
   "winCount": 91,
   "lossCount": 79,
-  "lastUpdated": "2026-05-31T15:29:53.881Z"
+  "lastUpdated": "2026-05-31T16:30:19.657Z"
 }

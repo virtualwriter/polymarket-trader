@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-31T15:29:53.877Z",
+  "generatedAt": "2026-05-31T16:30:19.650Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,35 +7,25 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PROMOTED_HYPOTHESIS",
+      "type": "FUNDING_EXTREME_LONG",
       "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 69.177,
-      "targetPct": 6,
-      "stopPct": 2,
-      "expiryDays": 21
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.3885714285714286,
+      "confidence": 0.23415877166971308,
+      "thesis": "HYPE HL funding 28.6% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 68.205,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "buy",
-        "asset": "HYPE",
-        "venue": "spot",
-        "direction": "long",
-        "thesis": "Promoted H-521: HYPE breakout continuation triggered by high OI percentile, spot holding near highs, and funding normalization. Long spot with $1 size."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
