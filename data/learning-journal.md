@@ -21720,3 +21720,40 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.9h s
 
 ---
 
+### 2026-05-31 20:30 UTC
+
+**Portfolio:** $98.54 total | Cash $95.54 | 3 open | P&L $1.0400 | 53% win rate (171 trades)
+
+**Opened 1 positions:**
+- AMZN long @ $272.61 via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_opt_iv_30d = 36.5 is 2.8 std devs from mean (24.61 ± 4.28)
+- [anomaly] hype_med_max = 100 is 2.6 std devs from mean (66.59 ± 12.91)
+- [anomaly] amzn_hl_funding_ann = -38.06 is -2.5 std devs from mean (12.38 ± 20.27)
+- [anomaly] hype_pm_ev = 66.92 is 2.3 std devs from mean (49.40 ± 7.49)
+- [anomaly] hype_hl_oi = 1592905169 is 2.3 std devs from mean (1023858687.70 ± 246319385.61)
+
+**Blocked signal learning:**
+- Open blocked shadows: 105
+- Resolved blocked shadows: 420 (226 wins / 194 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 104/134 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/7 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG HOOD long via hyperliquid would have closed with thesis validated profitably (+1.19%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG COIN long via hyperliquid would have edge compressed but trade lost money (-2.87%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG RKLB long via hyperliquid would have closed with thesis validated profitably (+3.24%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG TSM long via hyperliquid would have closed with thesis validated profitably (+0.97%)
+
+**LLM analysis:**
+Day is flat overall. HYPE positions both in early stage — FUNDING_EXTREME_LONG short is underwater by -1.7% as HYPE spot creeps higher, but funding hasn't cooled, and the trade is within mechanical risk limits; need to let it mature. The promoted HYPE long breakout is +1.3%, following the hypothesis. Added AMZN long perp on extreme negative funding anomaly to exploit carry and potential normalization.
+
+---
+

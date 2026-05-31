@@ -1,5 +1,5 @@
 {
-  "cash": 96.54379539456795,
+  "cash": 95.54379539456795,
   "positions": [
     {
       "id": "T-1780245019652-fj3o",
@@ -8,8 +8,8 @@
       "venue": "hyperliquid",
       "direction": "short",
       "entryPrice": 68.205,
-      "currentPrice": 68.764,
-      "currentUnderlyingPrice": 68.764,
+      "currentPrice": 69.364,
+      "currentUnderlyingPrice": 69.364,
       "entryUnderlyingPrice": 68.205,
       "size": 1,
       "leverage": 1,
@@ -22,7 +22,7 @@
       "instrumentType": "hl_perp",
       "instrumentId": "HYPE",
       "instrumentLabel": "HL HYPE perp",
-      "fundingPnlAccrued": 0.00005152545662100456,
+      "fundingPnlAccrued": 0.00006402545662100457,
       "peakPnlPct": 0.714756982625903
     },
     {
@@ -32,8 +32,8 @@
       "venue": "spot",
       "direction": "long",
       "entryPrice": 68.485,
-      "currentPrice": 68.764,
-      "currentUnderlyingPrice": 68.764,
+      "currentPrice": 69.364,
+      "currentUnderlyingPrice": 69.364,
       "entryUnderlyingPrice": 68.485,
       "size": 1,
       "leverage": 1,
@@ -45,7 +45,30 @@
       "expiryDate": "2026-06-07T17:32:06.201Z",
       "instrumentType": "spot",
       "instrumentLabel": "HYPE spot",
-      "peakPnlPct": 1.2404176096955628,
+      "peakPnlPct": 1.4630941081988689,
+      "fundingPnlAccrued": 0
+    },
+    {
+      "id": "T-1780259417163-x4q9",
+      "openedAt": "2026-05-31T20:30:17.163Z",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 272.61,
+      "currentPrice": 272.61,
+      "currentUnderlyingPrice": 270.48,
+      "entryUnderlyingPrice": 270.48,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "hypothesisId": null,
+      "thesis": "AMZN HL funding -38.1% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDate": "2026-06-07T20:30:17.163Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "AMZN",
+      "instrumentLabel": "HL AMZN perp",
       "fundingPnlAccrued": 0
     }
   ],
@@ -53,5 +76,5 @@
   "totalTrades": 171,
   "winCount": 91,
   "lossCount": 80,
-  "lastUpdated": "2026-05-31T19:28:35.772Z"
+  "lastUpdated": "2026-05-31T20:30:17.165Z"
 }
