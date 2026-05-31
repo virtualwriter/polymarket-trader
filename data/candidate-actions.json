@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-05-31T07:28:32.614Z",
+  "generatedAt": "2026-05-31T08:28:28.704Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [],
   "llmCloseEligibility": [
     {
-      "positionId": "T-1780158583369-9rcq",
-      "signalType": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
+      "positionId": "T-1780169369640-cg1z",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
       "direction": "long",
       "allowed": true,
       "allowedCategories": [
@@ -17,35 +17,15 @@
         "hard_portfolio_risk"
       ],
       "evidenceColumns": [
-        "amzn_stock",
-        "amzn_hl_perp",
-        "amzn_hl_funding_ann"
-      ],
-      "hoursOpen": 14.98,
-      "hoursToExpiry": 153.02,
-      "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0892,
-      "minHoldHours": 12,
-      "reason": "Mechanical FUNDING_EXTREME_SHORT setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    },
-    {
-      "positionId": "T-1780169369640-cg1z",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 11.98,
-      "hoursToExpiry": 108.02,
+      "hoursOpen": 12.98,
+      "hoursToExpiry": 107.02,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0999,
+      "elapsedHoldPct": 0.1082,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
+      "reason": "Mechanical PC_RATIO_EXTREME_HIGH setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
     {
       "positionId": "T-1780205309979-ghlx",
@@ -58,12 +38,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 2,
-      "hoursToExpiry": 502,
+      "hoursOpen": 3,
+      "hoursToExpiry": 501,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.004,
+      "elapsedHoldPct": 0.006,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
     }
   ]
 }
