@@ -1,8 +1,23 @@
 {
-  "generatedAt": "2026-06-01T17:28:32.881Z",
+  "generatedAt": "2026-06-01T18:28:30.133Z",
   "mechanicalExits": [],
   "signalKillExits": [],
-  "entryCandidates": [],
+  "entryCandidates": [
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.04500000000000004,
+      "confidence": 0.027508786594420992,
+      "thesis": "OIL P/C ratio 1.24 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 92.1,
+      "targetPct": 6,
+      "stopPct": 1.5,
+      "expiryDays": 21
+    }
+  ],
   "llmCloseEligibility": [
     {
       "positionId": "T-1780331318678-j4yo",
@@ -16,12 +31,12 @@
         "hype_spot",
         "hype_hl_funding_ann"
       ],
-      "hoursOpen": 1,
-      "hoursToExpiry": 71,
+      "hoursOpen": 2,
+      "hoursToExpiry": 70,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.0139,
+      "elapsedHoldPct": 0.0277,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
     }
   ]
 }
