@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-01T03:28:29.358Z",
+  "generatedAt": "2026-06-01T04:28:37.176Z",
   "dataFreshness": {
-    "valuationRows": 730,
-    "latestValuationAt": "2026-06-01T03",
-    "macroRows": 730,
+    "valuationRows": 731,
+    "latestValuationAt": "2026-06-01T04",
+    "macroRows": 731,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-01T03"
+    "latestInstrumentSnapshotAt": "2026-06-01T04"
   },
   "portfolio": {
     "cash": 96.5583,
@@ -13,7 +13,7 @@
     "realizedPnl": 1.0545,
     "totalTrades": 173,
     "winRatePct": 53.2,
-    "unrealizedPnl": -0.0067
+    "unrealizedPnl": -0.0042
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -0.78,
-      "currentPrice": 270.48,
+      "pnlPct": -0.84,
+      "currentPrice": 270.32,
       "underlyingPrice": 270.48,
       "targetPct": 4,
       "stopPct": 2,
@@ -40,9 +40,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 0.11,
-      "currentPrice": 72.627,
-      "underlyingPrice": 72.627,
+      "pnlPct": 0.42,
+      "currentPrice": 72.849,
+      "underlyingPrice": 72.849,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -188,14 +188,14 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 95,
-    "resolvedCount": 440,
-    "wouldHaveWon": 235,
+    "openCount": 87,
+    "resolvedCount": 449,
+    "wouldHaveWon": 244,
     "wouldHaveLost": 205,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "blocked": 157,
+        "blocked": 158,
         "resolved": 153,
         "wouldHaveWon": 113,
         "wouldHaveLost": 40,
@@ -204,10 +204,18 @@
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
         "blocked": 30,
-        "resolved": 13,
-        "wouldHaveWon": 10,
+        "resolved": 15,
+        "wouldHaveWon": 12,
         "wouldHaveLost": 3,
-        "avgPnlPct": 20.75
+        "avgPnlPct": 19
+      },
+      {
+        "signalType": "MONOTONIC_ARB",
+        "blocked": 31,
+        "resolved": 7,
+        "wouldHaveWon": 7,
+        "wouldHaveLost": 0,
+        "avgPnlPct": 0.15
       },
       {
         "signalType": "USER_PM_APR_XAU_TAIL_NO",
@@ -248,104 +256,179 @@
         "wouldHaveWon": 6,
         "wouldHaveLost": 5,
         "avgPnlPct": -0.22
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "blocked": 20,
-        "resolved": 17,
-        "wouldHaveWon": 9,
-        "wouldHaveLost": 8,
-        "avgPnlPct": 2.71
       }
     ],
     "recentResolved": [
       {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "MSFT",
-        "venue": "hyperliquid",
+        "signalType": "MONOTONIC_ARB",
+        "asset": "GOLD",
+        "venue": "polymarket",
         "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
+        "blockedReason": "monotonic_arb_shadow",
         "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 0.55,
-        "resolvedAt": "2026-06-01T00:28:34.999Z"
+        "closeReason": "expiry",
+        "pnlPct": 0.91,
+        "resolvedAt": "2026-06-01T04:28:36.998Z",
+        "marketQuality": {
+          "yesBid": 0.17,
+          "yesAsk": 0.16,
+          "yesSpread": 0.01,
+          "liquidity": 1024.69,
+          "flags": []
+        }
       },
       {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "ORCL",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
+        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "manual_shadow_trade",
         "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 4.78,
-        "resolvedAt": "2026-06-01T00:28:34.999Z"
+        "closeReason": "expiry",
+        "pnlPct": 11,
+        "resolvedAt": "2026-06-01T04:28:36.998Z",
+        "marketQuality": {
+          "quoteSource": "live_clob",
+          "quotedAt": "2026-05-22T21:28:41Z",
+          "gammaUpdatedAt": "2026-05-22T21:19:42.64701Z",
+          "clobTimestamp": "1779485313172",
+          "yesBid": 0.1,
+          "yesAsk": 0.12,
+          "yesSpread": 0.02,
+          "yesBidSize": 100,
+          "yesAskSize": 322.51,
+          "noBid": 0.88,
+          "noAsk": 0.9,
+          "noSpread": 0.02,
+          "noBidSize": 322.51,
+          "noAskSize": 100,
+          "liquidity": 8674.07,
+          "flags": []
+        }
       },
       {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "MRVL",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
+        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "manual_shadow_trade",
         "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 1.33,
-        "resolvedAt": "2026-06-01T00:28:34.999Z"
+        "closeReason": "expiry",
+        "pnlPct": 4.28,
+        "resolvedAt": "2026-06-01T04:28:36.998Z",
+        "marketQuality": {
+          "quoteSource": "live_clob",
+          "quotedAt": "2026-05-22T21:32:49Z",
+          "gammaUpdatedAt": "2026-05-22T21:19:36.491497Z",
+          "clobTimestamp": "1779485490335",
+          "yesBid": 0.042,
+          "yesAsk": 0.047,
+          "yesSpread": 0.005,
+          "yesBidSize": 15,
+          "yesAskSize": 50,
+          "noBid": 0.953,
+          "noAsk": 0.958,
+          "noSpread": 0.005,
+          "noBidSize": 50,
+          "noAskSize": 15,
+          "liquidity": 12958.17,
+          "flags": []
+        }
       },
       {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "LLY",
-        "venue": "hyperliquid",
+        "signalType": "MONOTONIC_ARB",
+        "asset": "BTC",
+        "venue": "polymarket",
         "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -7.82,
-        "resolvedAt": "2026-06-01T00:28:34.999Z"
-      },
-      {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "MU",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
+        "blockedReason": "monotonic_arb_shadow",
         "outcome": "win",
-        "closeReason": "target",
-        "pnlPct": 6.02,
-        "resolvedAt": "2026-06-01T01:28:30.261Z"
+        "closeReason": "expiry",
+        "pnlPct": 0.05,
+        "resolvedAt": "2026-06-01T04:28:36.998Z",
+        "marketQuality": {
+          "yesBid": 0.005,
+          "yesAsk": 0.004,
+          "yesSpread": 0.001,
+          "liquidity": 52736.96,
+          "availableSize": null,
+          "flags": []
+        }
       },
       {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "RKLB",
-        "venue": "hyperliquid",
+        "signalType": "MONOTONIC_ARB",
+        "asset": "GOLD",
+        "venue": "polymarket",
         "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -19.11,
-        "resolvedAt": "2026-06-01T01:28:30.261Z"
-      },
-      {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "SNDK",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
+        "blockedReason": "monotonic_arb_shadow",
         "outcome": "win",
-        "closeReason": "target",
-        "pnlPct": 5.9,
-        "resolvedAt": "2026-06-01T02:28:34.587Z"
+        "closeReason": "expiry",
+        "pnlPct": 0,
+        "resolvedAt": "2026-06-01T04:28:36.998Z",
+        "marketQuality": {
+          "yesBid": 0.004,
+          "yesAsk": 0.003,
+          "yesSpread": 0.007,
+          "liquidity": 11836.17,
+          "availableSize": null,
+          "flags": []
+        }
       },
       {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "BIRD",
-        "venue": "hyperliquid",
+        "signalType": "MONOTONIC_ARB",
+        "asset": "GOLD",
+        "venue": "polymarket",
         "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
+        "blockedReason": "monotonic_arb_shadow",
         "outcome": "win",
-        "closeReason": "target",
-        "pnlPct": 12.52,
-        "resolvedAt": "2026-06-01T02:28:34.587Z"
+        "closeReason": "expiry",
+        "pnlPct": 0,
+        "resolvedAt": "2026-06-01T04:28:36.998Z",
+        "marketQuality": {
+          "yesBid": 0.008,
+          "yesAsk": 0.007,
+          "yesSpread": 0.01,
+          "liquidity": 11904.09,
+          "availableSize": null,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "MONOTONIC_ARB",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "long",
+        "blockedReason": "monotonic_arb_shadow",
+        "outcome": "win",
+        "closeReason": "expiry",
+        "pnlPct": 0,
+        "resolvedAt": "2026-06-01T04:28:36.998Z",
+        "marketQuality": {
+          "yesBid": 0.012,
+          "yesAsk": 0.011,
+          "yesSpread": 0.008,
+          "liquidity": 12888.8,
+          "availableSize": null,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "MONOTONIC_ARB",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "long",
+        "blockedReason": "monotonic_arb_shadow",
+        "outcome": "win",
+        "closeReason": "expiry",
+        "pnlPct": 0.1,
+        "resolvedAt": "2026-06-01T04:28:36.998Z",
+        "marketQuality": {
+          "yesBid": 0.005,
+          "yesAsk": 0.003,
+          "yesSpread": 0.009,
+          "liquidity": 16204.39,
+          "availableSize": null,
+          "flags": []
+        }
       }
     ],
     "openQualityWarnings": [

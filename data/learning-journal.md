@@ -21969,3 +21969,38 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 1/12; ne
 
 ---
 
+### 2026-06-01 04:30 UTC
+
+**Portfolio:** $98.56 total | Cash $96.56 | 2 open | P&L $1.0545 | 53% win rate (173 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 72.849 is 2.6 std devs from mean (48.16 ± 9.57)
+- [anomaly] hype_pm_ev = 69.07 is 2.5 std devs from mean (49.59 ± 7.69)
+- [anomaly] hype_med_max = 100 is 2.5 std devs from mean (66.91 ± 13.26)
+- [anomaly] hype_hl_oi = 1645133392 is 2.4 std devs from mean (1029759681.60 ± 252377617.47)
+- [anomaly] oil_opt_fwd_90d = 155.4 is 2.1 std devs from mean since 2026-04-28 (87.76 ± 32.17)
+
+**Blocked signal learning:**
+- Open blocked shadows: 87
+- Resolved blocked shadows: 449 (244 wins / 205 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 113/153 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- MONOTONIC_ARB setup category is validating: 7/7 shadow packages settled profitably, avg P&L 0.15%. Review fee/slippage assumptions before live promotion.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/8 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: MONOTONIC_ARB GOLD long via polymarket would have expired (+0.00%)
+- ✅ Blocked: MONOTONIC_ARB GOLD long via polymarket would have expired (+0.00%)
+- ✅ Blocked: MONOTONIC_ARB GOLD long via polymarket would have expired (+0.00%)
+- ✅ Blocked: MONOTONIC_ARB GOLD long via polymarket would have expired (+0.10%)
+
+**LLM analysis:**
+No new trades as existing positions are within minimum hold and signals are not due for mechanical exits. Reviewed backtest: one-touch NO edges remain promising but need tighter entry filters to duplicate shadow win rate. The one-touch shadow NO wins continue to pile up (4/4 live, 12/15 shadows), supporting gradual promotion; however, current Polymarket spreads on available contracts are either too wide or edges below 1pt, so no new entry. I'll continue to let the funded one-touch NO algorithm run. For HYPE, I'll monitor OI and spot for exit signals per promoted H-521. AMZN funding extreme short long is a crowded short unwind play; given funding has already normalized, thesis weakened but still early.
+
+---
+
