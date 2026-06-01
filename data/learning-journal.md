@@ -22074,3 +22074,38 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-06-01 08:29 UTC
+
+**Portfolio:** $98.56 total | Cash $96.56 | 2 open | P&L $1.0545 | 53% win rate (173 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 72.633 is 2.5 std devs from mean (48.26 ± 9.68)
+- [anomaly] hype_pm_ev = 68.95 is 2.5 std devs from mean (49.67 ± 7.77)
+- [anomaly] hype_med_max = 100 is 2.5 std devs from mean (67.04 ± 13.40)
+- [anomaly] hype_hl_oi = 1627043177 is 2.3 std devs from mean (1032299475.47 ± 254964958.62)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.80 to 0.13. Rolling correlation: 24h=-0.85, 7d=-0.14, 30d=-0.44. Current 24h corr is at 23th pct of last 30 daily 24h-rolling values (range -0.94 to 0.86).
+
+**Blocked signal learning:**
+- Open blocked shadows: 89
+- Resolved blocked shadows: 450 (244 wins / 206 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 113/154 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- MONOTONIC_ARB setup category is validating: 7/7 shadow packages settled profitably, avg P&L 0.15%. Review fee/slippage assumptions before live promotion.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/8 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: MONOTONIC_ARB GOLD long via polymarket would have expired (+0.00%)
+- ✅ Blocked: MONOTONIC_ARB GOLD long via polymarket would have expired (+0.00%)
+- ✅ Blocked: MONOTONIC_ARB GOLD long via polymarket would have expired (+0.10%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG BIRD long via hyperliquid would have edge compressed but trade lost money (-11.93%)
+
+**LLM analysis:**
+The AMZN funding-extreme-short long (T-1780259417163-x4q9) is a concerning position. Entry funding was -38.1% (shorts paying longs). Funding has since surged to +7.23% — a complete normalization and even a sign flip. However, AMZN perp price has actually fallen from 272.61 to 270.0 (-0.97%) despite the favorable carry in the interim. This suggests the crowded-short thesis did not generate a bounce; the market may have been pricing in more than just funding stress. Until the min-hold expires, we cannot close, but this is a strong thesis-invalidation candidate. The position remains within stop-loss (-2%). HYPE continues its breakout with strong momentum and OI support, though the rapid funding normalization raises the question of whether retail leverage has already cycled. No new trades are allowed tonight due to min-hold constraints.
+
+---
+
