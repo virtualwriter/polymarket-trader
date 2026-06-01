@@ -22179,3 +22179,41 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-06-01 11:29 UTC
+
+**Portfolio:** $98.55 total | Cash $97.55 | 1 open | P&L $1.0421 | 53% win rate (174 trades)
+
+**Closed 1 trades:**
+- ❌ AMZN long via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT) → llm_decision: $-0.0124 (-1.2%, market -0.0123, funding -0.0002)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 73.445 is 2.6 std devs from mean (48.36 ± 9.79)
+- [anomaly] hype_pm_ev = 69.12 is 2.5 std devs from mean (49.75 ± 7.86)
+- [anomaly] hype_med_max = 100 is 2.4 std devs from mean (67.18 ± 13.53)
+- [anomaly] hype_hl_oi = 1635448142 is 2.3 std devs from mean (1034735243.31 ± 257282543.84)
+- [anomaly] oil_opt_fwd_90d = 15.5 is -2.2 std devs from mean since 2026-04-28 (87.74 ± 32.42)
+
+**Blocked signal learning:**
+- Open blocked shadows: 87
+- Resolved blocked shadows: 456 (247 wins / 209 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 116/159 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- MONOTONIC_ARB setup category is validating: 7/7 shadow packages settled profitably, avg P&L 0.15%. Review fee/slippage assumptions before live promotion.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/8 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.30%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG BIRD long via hyperliquid would have edge compressed but trade lost money (-11.42%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG LLY long via hyperliquid would have closed with thesis validated profitably (+0.38%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG GME long via hyperliquid would have closed with thesis validated profitably (+0.02%)
+
+**LLM analysis:**
+The AMZN funding extreme short setup reversed without follow-through. The funding flip from deeply negative to positive in under a day shows how quickly positioning can reset. The HYPE breakout hypothesis H-521 remains on track with spot near 7d highs and OI stable, maintaining the thesis. The one-touch NO edge signals continue to perform well in shadow, and we'll await further signals from those setups.
+
+---
+

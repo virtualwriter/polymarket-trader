@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-01T10:28:34.458Z",
+  "generatedAt": "2026-06-01T11:28:28.070Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.06530336912653077,
       "thesis": "BTC P/C ratio 0.46 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 72655,
+      "entryPrice": 72658,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -36,10 +36,10 @@
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ],
-      "hoursOpen": 13.97,
-      "hoursToExpiry": 154.03,
+      "hoursOpen": 14.97,
+      "hoursToExpiry": 153.03,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0832,
+      "elapsedHoldPct": 0.0891,
       "minHoldHours": 12,
       "reason": "Mechanical FUNDING_EXTREME_SHORT setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
@@ -49,17 +49,23 @@
       "asset": "HYPE",
       "venue": "spot",
       "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk",
+        "risk_stale",
+        "profit_taking"
+      ],
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 12,
-      "hoursToExpiry": 492,
+      "hoursOpen": 13,
+      "hoursToExpiry": 491,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0238,
+      "elapsedHoldPct": 0.0258,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
+      "reason": "LLM-owned/promoted setup may be closed after 12h if signal-family evidence supports it."
     }
   ]
 }
