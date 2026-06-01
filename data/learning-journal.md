@@ -21901,3 +21901,37 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-06-01 02:30 UTC
+
+**Portfolio:** $98.56 total | Cash $96.56 | 2 open | P&L $1.0545 | 53% win rate (173 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_funding_ann = 137.31 is 8.6 std devs from mean (6.26 ± 15.28)
+- [anomaly] hype_spot = 72.376 is 2.6 std devs from mean (48.09 ± 9.49)
+- [anomaly] hype_med_max = 100 is 2.5 std devs from mean (66.82 ± 13.16)
+- [anomaly] hype_pm_ev = 68.67 is 2.5 std devs from mean (49.54 ± 7.63)
+- [anomaly] hype_hl_oi = 1623158761 is 2.4 std devs from mean (1028086866.19 ± 250691716.44)
+
+**Blocked signal learning:**
+- Open blocked shadows: 95
+- Resolved blocked shadows: 440 (235 wins / 205 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 113/153 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/8 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG MU long via hyperliquid would have hit target (+6.02%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG RKLB long via hyperliquid would have edge compressed but trade lost money (-19.11%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG SNDK long via hyperliquid would have hit target (+5.90%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG BIRD long via hyperliquid would have hit target (+12.52%)
+
+**LLM analysis:**
+AMZN FUNDING_EXTREME_SHORT long has experienced a rapid funding flip from extreme negative to moderate positive, which is a strong thesis headwind but cannot be closed until the 12h minimum hold. We will evaluate for thesis_invalidated close at that point if funding stays positive and price fails to recover. HYPE long from promoted H-521 is early, but the extreme funding and 30d high percentile add risk; the setup relies on OI/spot momentum continuity, so we keep position but watch. No new trade candidates meet our strict one-touch NO filters. The hybrid bot remains short altcoins with recent losers, suggesting altcoin drift upward, but no regime switch yet.
+
+---
+
