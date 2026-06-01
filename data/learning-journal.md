@@ -22433,3 +22433,44 @@ HYPE funding extreme long signal remains open but funding has collapsed dramatic
 
 ---
 
+### 2026-06-01 19:30 UTC
+
+**Portfolio:** $98.50 total | Cash $97.50 | 1 open | P&L $1.0205 | 53% win rate (175 trades)
+
+**Closed 1 trades:**
+- ❌ HYPE short via hyperliquid/hl_perp [HL HYPE perp] (FUNDING_EXTREME_LONG) → stop: $-0.0265 (-2.7%, market -0.0266, funding 0.0001)
+
+**Opened 1 positions:**
+- HYPE long @ $73.667 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 73.667 is 2.5 std devs from mean (48.59 ± 10.02)
+- [anomaly] hype_pm_ev = 69.17 is 2.4 std devs from mean (49.93 ± 8.03)
+- [anomaly] hype_hl_oi = 1658254587 is 2.4 std devs from mean (1040354615.53 ± 262488704.43)
+- [anomaly] hype_med_max = 100 is 2.3 std devs from mean (67.49 ± 13.84)
+- [anomaly] oil_opt_fwd_90d = 163.3 is 2.3 std devs from mean since 2026-04-28 (87.95 ± 32.49)
+
+**Blocked signal learning:**
+- Open blocked shadows: 83
+- Resolved blocked shadows: 462 (249 wins / 213 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 118/163 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- MONOTONIC_ARB setup category is validating: 7/7 shadow packages settled profitably, avg P&L 0.15%. Review fee/slippage assumptions before live promotion.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/8 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG SKHX long via hyperliquid would have closed with thesis validated profitably (+3.70%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG AMD long via hyperliquid would have edge compressed but trade lost money (-9.61%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT HYPE short via polymarket would have hit stop (-4.76%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.23%)
+
+**LLM analysis:**
+BTC P/C ratio surge is the most notable signal today. HYPE continues to show strength with high OI and elevated funding, consistent with the H-521 promotion. The gold settlement bucket markets show upside skew but PM settle EV at ~4850 while spot 4490, but that gap is not actionable per anti-pattern rules. Hyperliquid hybrid bot's nine short positions on altcoins are under slight pressure as some shorts got stopped; this hints that the broader alt market may not be breaking down further, adding support for crypto longs. We are entering a small long position on HYPE based on the allowed H-521 signal.
+
+---
+
