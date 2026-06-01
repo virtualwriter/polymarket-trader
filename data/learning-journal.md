@@ -22550,3 +22550,40 @@ Market remains under macro pressure with hawkish Fed posture. BTC and gold movin
 
 ---
 
+### 2026-06-01 23:28 UTC
+
+**Portfolio:** $98.45 total | Cash $98.45 | 0 open | P&L $0.9722 | 52% win rate (177 trades)
+
+**Closed 1 trades:**
+- ❌ HYPE short via hyperliquid/hl_perp [HL HYPE perp] (FUNDING_EXTREME_LONG) → stop: $-0.0288 (-2.9%, market -0.0288, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_hl_funding_ann = 159.7 is 9.2 std devs from mean (6.92 ± 16.63)
+- [anomaly] hype_spot = 74.481 is 2.5 std devs from mean (48.69 ± 10.13)
+- [anomaly] btc_pm_ev = 76725 is -2.5 std devs from mean (83223.74 ± 2638.20)
+- [anomaly] hype_pm_ev = 69.78 is 2.4 std devs from mean (50.00 ± 8.11)
+- [anomaly] hype_med_max = 100 is 2.3 std devs from mean (67.62 ± 13.96)
+
+**Blocked signal learning:**
+- Open blocked shadows: 82
+- Resolved blocked shadows: 465 (249 wins / 216 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 118/164 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- MONOTONIC_ARB setup category is validating: 7/7 shadow packages settled profitably, avg P&L 0.15%. Review fee/slippage assumptions before live promotion.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.23%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG AAPL long via hyperliquid would have expired (-8.74%)
+- ❌ Blocked: FUNDING_EXTREME_LONG HYPE short via hyperliquid would have hit stop (-2.64%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT HYPE short via polymarket would have hit stop (-5.26%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 9/12; next scheduled 2026-06-02T01:28:29.353Z). Mechanical cycle ran normally._
+
+---
+
