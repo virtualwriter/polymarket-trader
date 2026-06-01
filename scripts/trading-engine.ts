@@ -115,7 +115,15 @@ const STALE_LOTTERY_TICKET_NO_BAD_FLAGS = new Set([
 const ENABLE_ONE_TOUCH_HIGH_EDGE_NO_OPENING = false;
 const WEEKEND_HL_FUNDING_SHADOW_SIGNAL = "WEEKEND_HL_FUNDING_REVERSION_LONG";
 const WEEKEND_HL_FUNDING_SHADOW_REASON = "weekend_hl_funding_shadow";
-const WEEKEND_HL_FUNDING_ENTRY_PCT = -0.30;
+// Entry band tightened 2026-06-01 from `funding <= -0.30` to the mid-tier
+// `-1.00 <= funding <= -0.50`. The shallow band (-0.30 to -0.50) was a
+// net-negative drag (197 trades, -0.085% avg, -16.8% cum) and the deep band
+// (<= -1.00) was flat (100 trades, -0.017% avg, -1.7% cum). The mid bucket
+// produced 91 trades at +1.07% avg, +97.1% cum, Sharpe 0.223 (~4.7x baseline)
+// with half the tail risk. See `.runtime/funding-analysis-bundle/Funding Rate
+// Analysis_Summary.md` section D for the full backtest.
+const WEEKEND_HL_FUNDING_ENTRY_PCT = -0.50;
+const WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT = -1.00;
 const WEEKEND_HL_FUNDING_EXIT_PCT = 0.10;
 const WEEKEND_HL_FUNDING_LEVERAGE = 5;
 const WEEKEND_HL_FUNDING_TARGET_PCT = 3;
@@ -3743,7 +3751,9 @@ function recordWeekendHyperliquidFundingShadows(
     const markPx = quote?.markPx;
     const fundingAnnualized = quote?.fundingAnnualized;
     if (!(typeof markPx === "number" && markPx > 0)) continue;
-    if (!(typeof fundingAnnualized === "number" && fundingAnnualized <= WEEKEND_HL_FUNDING_ENTRY_PCT)) continue;
+    if (!(typeof fundingAnnualized === "number"
+          && fundingAnnualized <= WEEKEND_HL_FUNDING_ENTRY_PCT
+          && fundingAnnualized >= WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT)) continue;
     if (blockedSignals.some((shadow) =>
       shadow.status === "open" &&
       shadow.blockedReason === WEEKEND_HL_FUNDING_SHADOW_REASON &&
@@ -3766,7 +3776,7 @@ function recordWeekendHyperliquidFundingShadows(
       leverage: WEEKEND_HL_FUNDING_LEVERAGE,
       signalType: WEEKEND_HL_FUNDING_SHADOW_SIGNAL,
       hypothesisId: null,
-      thesis: `[WEEKEND HL FUNDING SHADOW] ${asset} Builder DEX stock perp funding ${(fundingAnnualized * 100).toFixed(1)}% annualized <= ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}% during US-equity-closed window (Fri 4:00pm ET → Mon 9:30am ET). Shadow long at ${WEEKEND_HL_FUNDING_LEVERAGE}x; exit when margin P&L >= ${WEEKEND_HL_FUNDING_TARGET_PCT}%, funding >= ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}%, or held ${WEEKEND_HL_FUNDING_MAX_HOLD_HOURS}h.`,
+      thesis: `[WEEKEND HL FUNDING SHADOW] ${asset} Builder DEX stock perp funding ${(fundingAnnualized * 100).toFixed(1)}% annualized in mid band [${(WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT * 100).toFixed(0)}%, ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}%] during US-equity-closed window (Fri 4:00pm ET → Mon 9:30am ET). Shadow long at ${WEEKEND_HL_FUNDING_LEVERAGE}x; exit when margin P&L >= ${WEEKEND_HL_FUNDING_TARGET_PCT}%, funding >= ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}%, or held ${WEEKEND_HL_FUNDING_MAX_HOLD_HOURS}h.`,
       targetPct: WEEKEND_HL_FUNDING_TARGET_PCT,
       stopPct: 100,
       expiryDate: expiryDate.toISOString(),
@@ -7601,7 +7611,7 @@ async function main() {
   }
   const newWeekendFundingShadows = recordWeekendHyperliquidFundingShadows(latestSnapshot, learningParams, blockedSignals);
   if (newWeekendFundingShadows > 0) {
-    console.log(`\n  Opened ${newWeekendFundingShadows} weekend HL stock funding shadow trades (${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}% entry, ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}% exit, ${WEEKEND_HL_FUNDING_LEVERAGE}x).`);
+    console.log(`\n  Opened ${newWeekendFundingShadows} weekend HL stock funding shadow trades (mid-band entry [${(WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT * 100).toFixed(0)}%, ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}%], ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}% exit, ${WEEKEND_HL_FUNDING_LEVERAGE}x).`);
   }
   let proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   let blockedSummary = summarizeBlockedSignals(blockedSignals);
