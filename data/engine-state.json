@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-06-01T15:28:35.466Z",
+  "generatedAt": "2026-06-01T16:28:38.642Z",
   "dataFreshness": {
-    "valuationRows": 740,
-    "latestValuationAt": "2026-06-01T15",
-    "macroRows": 740,
+    "valuationRows": 741,
+    "latestValuationAt": "2026-06-01T16",
+    "macroRows": 741,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-01T15"
+    "latestInstrumentSnapshotAt": "2026-06-01T16"
   },
   "portfolio": {
     "cash": 98.5243,
     "openPositions": 0,
-    "realizedPnl": 1.0421,
-    "totalTrades": 174,
-    "winRatePct": 52.9,
+    "realizedPnl": 1.0205,
+    "totalTrades": 175,
+    "winRatePct": 52.6,
     "unrealizedPnl": 0
   },
   "openPositions": [],
@@ -153,18 +153,18 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 84,
-    "resolvedCount": 459,
+    "openCount": 83,
+    "resolvedCount": 460,
     "wouldHaveWon": 249,
-    "wouldHaveLost": 210,
+    "wouldHaveLost": 211,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
         "blocked": 164,
-        "resolved": 162,
+        "resolved": 163,
         "wouldHaveWon": 118,
-        "wouldHaveLost": 44,
-        "avgPnlPct": 0.83
+        "wouldHaveLost": 45,
+        "avgPnlPct": 0.77
       },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -224,17 +224,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "COST",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -0.7,
-        "resolvedAt": "2026-06-01T09:28:34.295Z"
-      },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
         "asset": "BTC",
@@ -318,6 +307,17 @@
         "closeReason": "thesis_validated_profitable",
         "pnlPct": 3.7,
         "resolvedAt": "2026-06-01T15:28:35.268Z"
+      },
+      {
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "asset": "AMD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "blockedReason": "weekend_hl_funding_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -9.61,
+        "resolvedAt": "2026-06-01T16:28:38.467Z"
       }
     ],
     "openQualityWarnings": [

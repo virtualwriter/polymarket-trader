@@ -22325,3 +22325,41 @@ No new hypotheses warranted; existing families need further shadow testing. The 
 
 ---
 
+### 2026-06-01 16:28 UTC
+
+**Portfolio:** $98.52 total | Cash $97.52 | 1 open | P&L $1.0205 | 53% win rate (175 trades)
+
+**Opened 1 positions:**
+- HYPE short @ $71.501 via hyperliquid/hl_perp [HL HYPE perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 12.8pp (was 4.2, now -8.6)
+- [anomaly] hype_hl_funding_ann = 72.06 is 4.2 std devs from mean (6.58 ± 15.61)
+- [anomaly] hype_med_max = 100 is 2.4 std devs from mean (67.35 ± 13.71)
+- [anomaly] hype_spot = 71.501 is 2.3 std devs from mean (48.49 ± 9.92)
+- [anomaly] hype_pm_ev = 68.01 is 2.3 std devs from mean (49.85 ± 7.96)
+
+**Blocked signal learning:**
+- Open blocked shadows: 83
+- Resolved blocked shadows: 460 (249 wins / 211 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 118/163 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- MONOTONIC_ARB setup category is validating: 7/7 shadow packages settled profitably, avg P&L 0.15%. Review fee/slippage assumptions before live promotion.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/8 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ZM long via hyperliquid would have edge compressed but trade lost money (-0.92%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG BIRD long via hyperliquid would have hit target (+14.11%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG SKHX long via hyperliquid would have closed with thesis validated profitably (+3.70%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG AMD long via hyperliquid would have edge compressed but trade lost money (-9.61%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 6/12; next scheduled 2026-06-01T18:28:38.665Z). Mechanical cycle ran normally._
+
+---
+
