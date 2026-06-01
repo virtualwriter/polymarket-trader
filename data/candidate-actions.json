@@ -1,26 +1,23 @@
 {
-  "generatedAt": "2026-06-01T20:28:32.934Z",
+  "generatedAt": "2026-06-01T22:28:36.984Z",
   "mechanicalExits": [],
   "signalKillExits": [],
-  "entryCandidates": [],
-  "llmCloseEligibility": [
+  "entryCandidates": [
     {
-      "positionId": "T-1780342241433-45sd",
-      "signalType": "PROMOTED_HYPOTHESIS",
+      "type": "FUNDING_EXTREME_LONG",
       "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "hype_spot"
-      ],
-      "hoursOpen": 0.96,
-      "hoursToExpiry": 503.04,
-      "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0019,
-      "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.25771428571428573,
+      "confidence": 0.15080658296589666,
+      "thesis": "HYPE HL funding 24.0% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 73.563,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
-  ]
+  ],
+  "llmCloseEligibility": []
 }
