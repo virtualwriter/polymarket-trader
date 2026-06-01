@@ -1,21 +1,38 @@
 {
-  "generatedAt": "2026-06-01T19:28:38.441Z",
+  "generatedAt": "2026-06-01T20:28:32.913Z",
   "dataFreshness": {
-    "valuationRows": 744,
-    "latestValuationAt": "2026-06-01T19",
-    "macroRows": 744,
+    "valuationRows": 745,
+    "latestValuationAt": "2026-06-01T20",
+    "macroRows": 745,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-01T19"
+    "latestInstrumentSnapshotAt": "2026-06-01T20"
   },
   "portfolio": {
-    "cash": 98.4978,
-    "openPositions": 0,
-    "realizedPnl": 1.0205,
-    "totalTrades": 175,
-    "winRatePct": 52.6,
-    "unrealizedPnl": 0
+    "cash": 97.4978,
+    "openPositions": 1,
+    "realizedPnl": 0.994,
+    "totalTrades": 176,
+    "winRatePct": 52.3,
+    "unrealizedPnl": -0.0087
   },
-  "openPositions": [],
+  "openPositions": [
+    {
+      "positionId": "T-1780342241433-45sd",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "pnlPct": -0.87,
+      "currentPrice": 73.029,
+      "underlyingPrice": 73.029,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "hype_spot"
+      ]
+    }
+  ],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",

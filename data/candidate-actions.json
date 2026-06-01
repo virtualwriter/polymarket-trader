@@ -1,22 +1,26 @@
 {
-  "generatedAt": "2026-06-01T19:28:38.462Z",
+  "generatedAt": "2026-06-01T20:28:32.934Z",
   "mechanicalExits": [],
   "signalKillExits": [],
-  "entryCandidates": [
+  "entryCandidates": [],
+  "llmCloseEligibility": [
     {
-      "type": "PROMOTED_HYPOTHESIS",
+      "positionId": "T-1780342241433-45sd",
+      "signalType": "PROMOTED_HYPOTHESIS",
       "asset": "HYPE",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 73.667,
-      "targetPct": 6,
-      "stopPct": 2,
-      "expiryDays": 21
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "hype_spot"
+      ],
+      "hoursOpen": 0.96,
+      "hoursToExpiry": 503.04,
+      "plannedHoldHours": 504,
+      "elapsedHoldPct": 0.0019,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     }
-  ],
-  "llmCloseEligibility": []
+  ]
 }

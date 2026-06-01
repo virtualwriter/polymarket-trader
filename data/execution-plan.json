@@ -1,41 +1,15 @@
 {
-  "generatedAt": "2026-06-01T19:30:41.430Z",
+  "generatedAt": "2026-06-01T20:28:32.949Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [
-    {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 73.667,
-      "targetPct": 6,
-      "stopPct": 2,
-      "expiryDays": 21
-    }
-  ],
+  "entrySignals": [],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "buy",
-        "asset": "HYPE",
-        "venue": "spot",
-        "direction": "long",
-        "thesis": "Promoted HYPE breakout continuation (H-521): OI top decile, spot near 7d high, funding elevated but within norm."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
