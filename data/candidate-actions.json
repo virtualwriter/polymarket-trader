@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-01T08:28:32.018Z",
+  "generatedAt": "2026-06-01T09:28:34.448Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.06530336912653077,
       "thesis": "BTC P/C ratio 0.46 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 72833,
+      "entryPrice": 73055,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -25,19 +25,23 @@
       "asset": "AMZN",
       "venue": "hyperliquid",
       "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
       "evidenceColumns": [
         "amzn_stock",
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ],
-      "hoursOpen": 11.97,
-      "hoursToExpiry": 156.03,
+      "hoursOpen": 12.97,
+      "hoursToExpiry": 155.03,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0713,
+      "elapsedHoldPct": 0.0772,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
+      "reason": "Mechanical FUNDING_EXTREME_SHORT setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
     {
       "positionId": "T-1780266518880-lrtm",
@@ -50,12 +54,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 10,
-      "hoursToExpiry": 494,
+      "hoursOpen": 11,
+      "hoursToExpiry": 493,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0198,
+      "elapsedHoldPct": 0.0218,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 10.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 11.0h, requires at least 12h."
     }
   ]
 }
