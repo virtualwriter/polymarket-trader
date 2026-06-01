@@ -22252,3 +22252,38 @@ HYPE long position from H-521 thesis held as conditions remain favorable. BTC we
 
 ---
 
+### 2026-06-01 13:28 UTC
+
+**Portfolio:** $98.55 total | Cash $97.55 | 1 open | P&L $1.0421 | 53% win rate (174 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 6.8pp (was -3.3, now -10.1)
+- [anomaly] hype_spot = 72.934 is 2.5 std devs from mean (48.43 ± 9.86)
+- [anomaly] hype_pm_ev = 68.98 is 2.4 std devs from mean (49.80 ± 7.91)
+- [anomaly] hype_med_max = 100 is 2.4 std devs from mean (67.27 ± 13.62)
+- [anomaly] hype_hl_oi = 1633650332 is 2.3 std devs from mean (1036385798.56 ± 258881060.94)
+
+**Blocked signal learning:**
+- Open blocked shadows: 86
+- Resolved blocked shadows: 457 (247 wins / 210 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 116/160 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- MONOTONIC_ARB setup category is validating: 7/7 shadow packages settled profitably, avg P&L 0.15%. Review fee/slippage assumptions before live promotion.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/8 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG BIRD long via hyperliquid would have edge compressed but trade lost money (-11.42%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG LLY long via hyperliquid would have closed with thesis validated profitably (+0.38%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG GME long via hyperliquid would have closed with thesis validated profitably (+0.02%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ZM long via hyperliquid would have edge compressed but trade lost money (-0.92%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 5/12; next scheduled 2026-06-01T15:28:31.978Z). Mechanical cycle ran normally._
+
+---
+
