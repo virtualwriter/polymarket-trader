@@ -1,47 +1,23 @@
 {
-  "generatedAt": "2026-06-01T13:28:31.975Z",
+  "generatedAt": "2026-06-01T15:28:35.489Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
     {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
-      "venue": "spot",
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "HYPE",
+      "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.1266666666666666,
-      "confidence": 0.06530336912653077,
-      "thesis": "BTC P/C ratio 0.46 — heavy call buying → contrarian short.",
+      "strength": 0.04971428571428567,
+      "confidence": 0.02960762356193841,
+      "thesis": "HYPE HL funding 16.7% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 71739,
+      "entryPrice": 71.944,
       "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 5
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
-  "llmCloseEligibility": [
-    {
-      "positionId": "T-1780266518880-lrtm",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk",
-        "risk_stale",
-        "profit_taking"
-      ],
-      "evidenceColumns": [
-        "hype_spot"
-      ],
-      "hoursOpen": 15,
-      "hoursToExpiry": 489,
-      "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0298,
-      "minHoldHours": 12,
-      "reason": "LLM-owned/promoted setup may be closed after 12h if signal-family evidence supports it."
-    }
-  ]
+  "llmCloseEligibility": []
 }

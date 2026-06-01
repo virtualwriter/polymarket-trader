@@ -1,5 +1,27 @@
 {
   "acceptedCloses": [],
   "rejectedCloses": [],
-  "skippedTrades": []
+  "skippedTrades": [
+    {
+      "instruction": {
+        "action": "sell",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "One-touch NO edge signal: PM YES overpriced vs model (sell_yes_edge 1.92 pts, spread 0.3c, liquidity 91k). Buy NO (sell YES) to capture edge mean-reversion within 14d hold; monitor for edge disappearance."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    },
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "HYPE",
+        "venue": "spot",
+        "direction": "long",
+        "thesis": "H-521 eligible: OI in top 15% 24h, spot within 6% of 7d high, above 24h SMA, funding normalized. Entry at spot 71.94, target 5% profit, stop 2%."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
+  "parameterUpdates": {}
 }

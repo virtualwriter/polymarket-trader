@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-01T13:28:31.989Z",
+  "generatedAt": "2026-06-01T15:30:44.348Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,24 +7,46 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
-      "venue": "spot",
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "HYPE",
+      "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.1266666666666666,
-      "confidence": 0.06530336912653077,
-      "thesis": "BTC P/C ratio 0.46 — heavy call buying → contrarian short.",
+      "strength": 0.04971428571428567,
+      "confidence": 0.02960762356193841,
+      "thesis": "HYPE HL funding 16.7% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 71739,
+      "entryPrice": 71.944,
       "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 5
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "sell",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "One-touch NO edge signal: PM YES overpriced vs model (sell_yes_edge 1.92 pts, spread 0.3c, liquidity 91k). Buy NO (sell YES) to capture edge mean-reversion within 14d hold; monitor for edge disappearance."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    },
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "HYPE",
+        "venue": "spot",
+        "direction": "long",
+        "thesis": "H-521 eligible: OI in top 15% 24h, spot within 6% of 7d high, above 24h SMA, funding normalized. Entry at spot 71.94, target 5% profit, stop 2%."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 2 non-close instructions skipped."
   ]
 }
