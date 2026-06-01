@@ -22039,3 +22039,38 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-06-01 06:28 UTC
+
+**Portfolio:** $98.56 total | Cash $96.56 | 2 open | P&L $1.0545 | 53% win rate (173 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 73.697 is 2.6 std devs from mean (48.23 ± 9.65)
+- [anomaly] hype_pm_ev = 69.36 is 2.5 std devs from mean (49.64 ± 7.75)
+- [anomaly] hype_hl_oi = 1666331475 is 2.5 std devs from mean (1031488092.52 ± 254190073.14)
+- [anomaly] hype_med_max = 100 is 2.5 std devs from mean (67.00 ± 13.35)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.80 to 0.13. Rolling correlation: 24h=-0.77, 7d=-0.14, 30d=-0.44. Current 24h corr is at 37th pct of last 30 daily 24h-rolling values (range -0.94 to 0.85).
+
+**Blocked signal learning:**
+- Open blocked shadows: 87
+- Resolved blocked shadows: 450 (244 wins / 206 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 113/154 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- MONOTONIC_ARB setup category is validating: 7/7 shadow packages settled profitably, avg P&L 0.15%. Review fee/slippage assumptions before live promotion.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/8 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: MONOTONIC_ARB GOLD long via polymarket would have expired (+0.00%)
+- ✅ Blocked: MONOTONIC_ARB GOLD long via polymarket would have expired (+0.00%)
+- ✅ Blocked: MONOTONIC_ARB GOLD long via polymarket would have expired (+0.10%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG BIRD long via hyperliquid would have edge compressed but trade lost money (-11.93%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h since last call; daily budget 2/12; next scheduled 2026-06-01T08:28:33.849Z). Mechanical cycle ran normally._
+
+---
+
