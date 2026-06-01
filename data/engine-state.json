@@ -1,48 +1,30 @@
 {
-  "generatedAt": "2026-06-01T11:28:28.051Z",
+  "generatedAt": "2026-06-01T12:28:34.450Z",
   "dataFreshness": {
-    "valuationRows": 737,
-    "latestValuationAt": "2026-06-01T11",
-    "macroRows": 737,
+    "valuationRows": 738,
+    "latestValuationAt": "2026-06-01T12",
+    "macroRows": 738,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-01T11"
+    "latestInstrumentSnapshotAt": "2026-06-01T12"
   },
   "portfolio": {
-    "cash": 96.5583,
-    "openPositions": 2,
-    "realizedPnl": 1.0545,
-    "totalTrades": 173,
-    "winRatePct": 53.2,
-    "unrealizedPnl": 0
+    "cash": 97.5459,
+    "openPositions": 1,
+    "realizedPnl": 1.0421,
+    "totalTrades": 174,
+    "winRatePct": 52.9,
+    "unrealizedPnl": 0.0202
   },
   "openPositions": [
-    {
-      "positionId": "T-1780259417163-x4q9",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -1.24,
-      "currentPrice": 269.27,
-      "underlyingPrice": 269.1,
-      "targetPct": 4,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "amzn_stock",
-        "amzn_hl_perp",
-        "amzn_hl_funding_ann"
-      ]
-    },
     {
       "positionId": "T-1780266518880-lrtm",
       "asset": "HYPE",
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 1.24,
-      "currentPrice": 73.445,
-      "underlyingPrice": 73.445,
+      "pnlPct": 2.02,
+      "currentPrice": 74.007,
+      "underlyingPrice": 74.007,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -84,10 +66,10 @@
     {
       "type": "FUNDING_EXTREME_SHORT",
       "enabled": true,
-      "weight": 0.4568,
-      "trades": 25,
+      "weight": 0.4575,
+      "trades": 26,
       "wins": 12,
-      "avgPnlPct": -0.2969,
+      "avgPnlPct": -0.3333,
       "disabledAssets": [
         "OIL"
       ]
@@ -188,18 +170,18 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 87,
-    "resolvedCount": 456,
+    "openCount": 86,
+    "resolvedCount": 457,
     "wouldHaveWon": 247,
-    "wouldHaveLost": 209,
+    "wouldHaveLost": 210,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
         "blocked": 164,
-        "resolved": 159,
+        "resolved": 160,
         "wouldHaveWon": 116,
-        "wouldHaveLost": 43,
-        "avgPnlPct": 0.74
+        "wouldHaveLost": 44,
+        "avgPnlPct": 0.73
       },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -259,25 +241,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "MONOTONIC_ARB",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "long",
-        "blockedReason": "monotonic_arb_shadow",
-        "outcome": "win",
-        "closeReason": "expiry",
-        "pnlPct": 0.1,
-        "resolvedAt": "2026-06-01T04:28:36.998Z",
-        "marketQuality": {
-          "yesBid": 0.005,
-          "yesAsk": 0.003,
-          "yesSpread": 0.009,
-          "liquidity": 16204.39,
-          "availableSize": null,
-          "flags": []
-        }
-      },
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
         "asset": "BIRD",
@@ -361,6 +324,17 @@
         "closeReason": "thesis_validated_profitable",
         "pnlPct": 0.02,
         "resolvedAt": "2026-06-01T11:28:27.918Z"
+      },
+      {
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "asset": "ZM",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "blockedReason": "weekend_hl_funding_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -0.92,
+        "resolvedAt": "2026-06-01T12:28:34.295Z"
       }
     ],
     "openQualityWarnings": [
