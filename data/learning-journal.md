@@ -21832,3 +21832,38 @@ Key observations: (1) AMZN funding extreme short signal normalised dramatically 
 
 ---
 
+### 2026-06-01 00:28 UTC
+
+**Portfolio:** $98.56 total | Cash $96.56 | 2 open | P&L $1.0545 | 53% win rate (173 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 72.738 is 2.6 std devs from mean (48.02 ± 9.42)
+- [anomaly] hype_pm_ev = 68.84 is 2.6 std devs from mean (49.48 ± 7.58)
+- [anomaly] hype_med_max = 100 is 2.5 std devs from mean (66.73 ± 13.06)
+- [anomaly] hype_hl_oi = 1644740990 is 2.5 std devs from mean (1026423837.48 ± 249019877.00)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.81 to 0.13. Rolling correlation: 24h=0.12, 7d=-0.14, 30d=-0.45. Current 24h corr is at 80th pct of last 30 daily 24h-rolling values (range -0.96 to 0.66).
+
+**Blocked signal learning:**
+- Open blocked shadows: 98
+- Resolved blocked shadows: 436 (232 wins / 204 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 110/149 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 10/13 shadows would have won, avg P&L 20.75%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 5/8 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG MSFT long via hyperliquid would have closed with thesis validated profitably (+0.55%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ORCL long via hyperliquid would have closed with thesis validated profitably (+4.78%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG MRVL long via hyperliquid would have closed with thesis validated profitably (+1.33%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG LLY long via hyperliquid would have edge compressed but trade lost money (-7.82%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 0/12; next scheduled 2026-06-01T02:28:35.201Z). Mechanical cycle ran normally._
+
+---
+
