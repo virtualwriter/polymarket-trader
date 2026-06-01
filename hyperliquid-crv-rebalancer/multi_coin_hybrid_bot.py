@@ -691,12 +691,19 @@ class MultiCoinHybridBot:
                 real_size_usd = fill_price * fill_size
 
                 entry_time = datetime.now(timezone.utc).isoformat()
+                # Preserve loss_streak / cooldown_until across the open. Without
+                # this carry-over the dict overwrite silently resets the
+                # consecutive-loss counter on every new short, which permanently
+                # disables the cooldown guard (the streak can never reach
+                # COOLDOWN_LOSS_STREAK because it goes 0 -> 1 -> 0 -> 1 ...).
                 self.state["positions"][coin] = {
                     "in_position": True,
                     "is_long": is_bull,
                     "entry_price": fill_price,
                     "entry_time": entry_time,
                     "mode": action_label.lower(),
+                    "loss_streak": pos_state.get("loss_streak", 0),
+                    "cooldown_until": pos_state.get("cooldown_until"),
                 }
                 self.state["total_trades"] = self.state.get("total_trades", 0) + 1
                 self.state["total_fees"] = self.state.get("total_fees", 0) + fee_usd
