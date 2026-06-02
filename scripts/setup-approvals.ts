@@ -5,9 +5,13 @@
  *   npx tsx scripts/setup-approvals.ts
  *
  * Requires:
- *   - PRIVATE_KEY in .env or config.env
+ *   - PRIVATE_KEY or HYPERLIQUID_MNEMONIC in .env or config.env
  *   - Small amount of POL (MATIC) for gas on Polygon
  *   - USDC balance in the wallet
+ *
+ * Optional safety controls:
+ *   - POLYMARKET_USDC_APPROVAL_USD=5 approves only $5 instead of unlimited
+ *   - POLYMARKET_SKIP_CTF_APPROVAL=1 skips CTF setApprovalForAll
  */
 
 import { config } from "dotenv";
@@ -49,7 +53,9 @@ const CTF_ABI = [
   "function isApprovedForAll(address account, address operator) view returns (bool)",
 ];
 
-const MAX_UINT = ethers.constants.MaxUint256;
+const APPROVAL_USD = process.env.POLYMARKET_USDC_APPROVAL_USD?.trim() || "10000";
+const APPROVE_MAX_USDC = APPROVAL_USD.toLowerCase() === "max";
+const SKIP_CTF_APPROVAL = process.env.POLYMARKET_SKIP_CTF_APPROVAL === "1";
 
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
@@ -75,11 +81,17 @@ async function main() {
     process.exit(1);
   }
 
+  const targetUsdcAllowance = APPROVE_MAX_USDC
+    ? ethers.constants.MaxUint256
+    : ethers.utils.parseUnits(APPROVAL_USD, usdcDecimals);
+
   // Check and set USDC approval
   const usdcAllowance = await usdc.allowance(address, EXCHANGE);
-  if (usdcAllowance.lt(ethers.utils.parseUnits("10000", usdcDecimals))) {
-    console.log(`\nApproving USDC for exchange...`);
-    const tx = await usdc.approve(EXCHANGE, MAX_UINT);
+  console.log(`USDC allowance: ${ethers.utils.formatUnits(usdcAllowance, usdcDecimals)} USDC`);
+  console.log(`Target USDC allowance: ${APPROVE_MAX_USDC ? "MAX_UINT" : `${APPROVAL_USD} USDC`}`);
+  if (usdcAllowance.lt(targetUsdcAllowance)) {
+    console.log(`\nApproving USDC for exchange (${APPROVE_MAX_USDC ? "MAX_UINT" : `${APPROVAL_USD} USDC`})...`);
+    const tx = await usdc.approve(EXCHANGE, targetUsdcAllowance);
     console.log(`  TX: ${tx.hash}`);
     await tx.wait();
     console.log(`  USDC approved.`);
@@ -90,7 +102,10 @@ async function main() {
   // Check and set CTF approval
   const ctf = new ethers.Contract(CTF, CTF_ABI, wallet);
   const ctfApproved = await ctf.isApprovedForAll(address, EXCHANGE);
-  if (!ctfApproved) {
+  console.log(`CTF approved for exchange: ${ctfApproved}`);
+  if (SKIP_CTF_APPROVAL) {
+    console.log(`Skipping CTF approval (POLYMARKET_SKIP_CTF_APPROVAL=1).`);
+  } else if (!ctfApproved) {
     console.log(`\nApproving CTF tokens for exchange...`);
     const tx = await ctf.setApprovalForAll(EXCHANGE, true);
     console.log(`  TX: ${tx.hash}`);
