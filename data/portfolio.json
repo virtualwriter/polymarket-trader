@@ -1,9 +1,83 @@
 {
-  "cash": 98.4471866028869,
-  "positions": [],
+  "cash": 96.4471866028869,
+  "positions": [
+    {
+      "id": "MA-1780370911047-6nrr",
+      "openedAt": "2026-06-02T03:28:31.047Z",
+      "asset": "SOL",
+      "venue": "polymarket",
+      "direction": "long",
+      "entryPrice": 0.99,
+      "currentPrice": 0.99,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "MONOTONIC_ARB",
+      "hypothesisId": null,
+      "thesis": "[MONOTONIC ARB LIVE] Buy YES on broader above strike 300 @ 0.0500 and buy NO on narrower above strike 320 @ 0.9400. Gross locked edge 1.00c per paired share before fees/slippage; min payout $1.00 >= cost $0.9900 (risk-free). Threads the strike gap for the ~$1 jackpot payout.",
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDate": "2027-01-01T05:00:00Z",
+      "instrumentType": "pm_package",
+      "instrumentId": "what-price-will-solana-hit-before-2027::YES-701566+NO-701565",
+      "instrumentLabel": "what-price-will-solana-hit-before-2027 — monotonic arb package (LIVE) — YES 300 / NO 320",
+      "packageLegs": [
+        {
+          "role": "broad_yes",
+          "instrumentType": "pm_yes",
+          "instrumentId": "what-price-will-solana-hit-before-2027::701566",
+          "instrumentLabel": "what-price-will-solana-hit-before-2027 — YES — Will Solana reach $300 by December 31, 2026?",
+          "entryPrice": 0.05,
+          "strike": 300,
+          "direction": "above",
+          "yesBid": 0.04,
+          "yesAsk": 0.05,
+          "yesBidSize": null,
+          "yesAskSize": null,
+          "startDate": "2025-11-24T19:37:55.539734Z"
+        },
+        {
+          "role": "narrow_no",
+          "instrumentType": "pm_no",
+          "instrumentId": "what-price-will-solana-hit-before-2027::701565",
+          "instrumentLabel": "what-price-will-solana-hit-before-2027 — NO — Will Solana reach $320 by December 31, 2026?",
+          "entryPrice": 0.94,
+          "strike": 320,
+          "direction": "above",
+          "yesBid": 0.06,
+          "yesAsk": 0.07,
+          "yesBidSize": null,
+          "yesAskSize": null,
+          "startDate": "2025-11-24T19:37:55.285085Z"
+        }
+      ],
+      "entryUnderlyingPrice": 80.837,
+      "currentUnderlyingPrice": 80.837
+    },
+    {
+      "id": "T-1780370992900-yr6r",
+      "openedAt": "2026-06-02T03:29:52.900Z",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "entryPrice": 75.451,
+      "currentPrice": 75.451,
+      "currentUnderlyingPrice": 75.451,
+      "entryUnderlyingPrice": 75.451,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "hypothesisId": "H-521",
+      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDate": "2026-06-23T03:29:52.900Z",
+      "instrumentType": "spot",
+      "instrumentLabel": "HYPE spot"
+    }
+  ],
   "totalRealizedPnl": 0.9433999999999992,
   "totalTrades": 178,
   "winCount": 92,
   "lossCount": 86,
-  "lastUpdated": "2026-06-02T01:29:49.600Z"
+  "lastUpdated": "2026-06-02T03:29:52.901Z"
 }
