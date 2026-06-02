@@ -22622,3 +22622,37 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 0/12; ne
 
 ---
 
+### 2026-06-02 01:29 UTC
+
+**Portfolio:** $98.45 total | Cash $98.45 | 0 open | P&L $0.9434 | 52% win rate (178 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_pm_ev = 76200 is -2.6 std devs from mean (83205.67 ± 2657.75)
+- [anomaly] hype_spot = 73.277 is 2.4 std devs from mean (48.76 ± 10.20)
+- [anomaly] hype_pm_ev = 69.25 is 2.4 std devs from mean (50.06 ± 8.16)
+- [anomaly] hype_med_max = 100 is 2.3 std devs from mean (67.70 ± 14.04)
+- [anomaly] hype_hl_oi = 1599656028 is 2.1 std devs from mean (1044239242.60 ± 265870017.32)
+
+**Blocked signal learning:**
+- Open blocked shadows: 76
+- Resolved blocked shadows: 471 (255 wins / 216 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 118/164 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=113 (33W/68L/12flat, 32.7% win-rate, sum $-2.5754, avg -2.28%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=154 (49W/89L/16flat, 35.5% win-rate, sum $-2.4698, avg -1.60%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: MONOTONIC_ARB OIL long via polymarket would have expired (+100.20%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.12%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.31%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.21%)
+
+**LLM analysis:**
+Market state remains bearish macro but risk assets showing resilience. The recent HYPE funding spikes and subsequent normalization provide a live test bed for H-521; shadow testing should continue to accumulate condition-triggered trials. The blocked FUNDING_EXTREME_LONG short on HYPE was correctly filtered by positive trend, validating the contrarian block. Oil options IV remains elevated, but no clean Polymarket edge with tight spreads. The ONE_TOUCH_HIGH_EDGE_NO signal continues to perform well in shadows, but no new triggers. Overall, the system is in a patient waiting phase for live signals while shadow tests accumulate for promoted and active LLM families.
+
+---
+
