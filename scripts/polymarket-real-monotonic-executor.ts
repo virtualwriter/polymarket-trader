@@ -577,8 +577,16 @@ function hasWalletSecret(): boolean {
 
 function parseClobUnits(value: unknown): number {
   const raw = String(value ?? "0");
-  if (/^\d+$/.test(raw) && raw.length > 8) return Number(raw) / 1_000_000;
+  if (/^\d+$/.test(raw)) return Number(raw) / 1_000_000;
   return parseNumber(raw);
+}
+
+function parseCollateralAllowance(collateral: any): number {
+  if (collateral?.allowance !== undefined) return parseClobUnits(collateral.allowance);
+  const allowances = collateral?.allowances;
+  if (!allowances || typeof allowances !== "object") return 0;
+  const parsed = Object.values(allowances).map(parseClobUnits).filter((value) => Number.isFinite(value));
+  return parsed.length ? Math.min(...parsed) : 0;
 }
 
 async function accountProbe(client: ClobClient, address: string) {
@@ -587,7 +595,7 @@ async function accountProbe(client: ClobClient, address: string) {
   return {
     walletAddress: address,
     collateralBalance: parseClobUnits((collateral as any).balance),
-    collateralAllowance: parseClobUnits((collateral as any).allowance),
+    collateralAllowance: parseCollateralAllowance(collateral),
     rawCollateral: collateral,
     openOrderCount: Array.isArray(openOrders) ? openOrders.length : 0,
   };

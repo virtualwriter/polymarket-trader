@@ -163,6 +163,7 @@ def backtest_short_with_cooldown(
         "return_pct": (capital / 10_000 - 1) * 100,
         "trades": trades,
         "wins": wins,
+        "wr_pct": (wins / trades * 100) if trades else 0.0,
         "suppressed": suppressed_opens,
         "sharpe": sharpe,
         "mdd_pct": mdd * 100,
