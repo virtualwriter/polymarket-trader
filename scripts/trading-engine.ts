@@ -2363,7 +2363,8 @@ function migrateLegacyPolymarketPositions(
 
   for (const position of portfolio.positions) {
     if (position.venue !== "polymarket") continue;
-    if (position.instrumentType === "pm_yes" || position.instrumentType === "pm_no") continue;
+    if (position.instrumentType && position.instrumentType !== "legacy_asset") continue;
+    if (position.signalType === "MONOTONIC_ARB") continue;
 
     const openedSnapshot = nearestInstrumentSnapshot(snapshots, position.openedAt) ?? latestInstrumentSnapshot(snapshots);
     if (!openedSnapshot) continue;
