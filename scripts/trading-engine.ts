@@ -45,6 +45,7 @@ const CANDIDATE_ACTIONS_FILE = "candidate-actions.json";
 const LLM_ADVICE_FILE = "llm-advice.json";
 const EXECUTION_PLAN_FILE = "execution-plan.json";
 const DRY_RUN_VERIFICATION_FILE = "dry-run-verification.json";
+const REAL_PM_PACKAGES_FILE = "polymarket-live-packages.json";
 const TRADE_SIZE = 1;
 const MAX_BANKROLL = 100;
 const MAX_OPEN_POSITIONS = 15;
@@ -350,6 +351,24 @@ interface Position {
   currentUnderlyingPrice?: number;
   fundingPnlAccrued?: number;
   peakPnlPct?: number;
+}
+
+interface RealPolymarketLivePackage {
+  id?: string;
+  packageId: string;
+  status: string;
+  createdAt: string;
+  dryRun?: boolean;
+  walletAddress?: string;
+  asset: string;
+  direction: "above" | "below";
+  broadStrike: number;
+  narrowStrike: number;
+  filledShares: number;
+  actualCost: number;
+  settlementWindow?: { startDate?: string | null; endDate?: string | null };
+  prices?: { packageCost?: number; broadYesAsk?: number; narrowNoAsk?: number };
+  packageLegs?: PolymarketPackageLeg[];
 }
 
 interface ClosedTrade {
@@ -1308,6 +1327,57 @@ function savePortfolio(p: Portfolio) {
   p.lastUpdated = new Date().toISOString();
   writeJson("portfolio.json", p);
   writeJsonPath(LIVE_PORTFOLIO_FILE, p);
+}
+
+function importCompletedRealPolymarketPackages(portfolio: Portfolio): string[] {
+  const packages = readJson<RealPolymarketLivePackage[]>(REAL_PM_PACKAGES_FILE, []);
+  if (!Array.isArray(packages) || packages.length === 0) return [];
+
+  const existingIds = new Set(portfolio.positions
+    .map((position) => position.instrumentId)
+    .filter((id): id is string => typeof id === "string" && id.length > 0));
+  const notes: string[] = [];
+
+  for (const pkg of packages) {
+    if (pkg.dryRun || pkg.status !== "package_complete") continue;
+    if (!pkg.packageId || existingIds.has(pkg.packageId)) continue;
+    if (!(pkg.filledShares > 0) || !(pkg.actualCost > 0)) continue;
+    if (!Array.isArray(pkg.packageLegs) || pkg.packageLegs.length < 2) continue;
+
+    const entryPrice = pkg.actualCost / pkg.filledShares;
+    const expiryDate = pkg.settlementWindow?.endDate ?? new Date(Date.now() + 30 * 86400000).toISOString();
+    const openedAt = pkg.createdAt ?? new Date().toISOString();
+    const instrumentLabel = `${pkg.packageId.split("::")[0]} - real PM monotonic arb package - YES ${pkg.broadStrike} / NO ${pkg.narrowStrike}`;
+    const position: Position = {
+      id: `RPM-${pkg.id ?? Date.now().toString(36)}`,
+      openedAt,
+      asset: pkg.asset,
+      venue: "polymarket",
+      direction: "long",
+      entryPrice,
+      currentPrice: entryPrice,
+      size: pkg.actualCost,
+      leverage: 1,
+      signalType: "MONOTONIC_ARB",
+      hypothesisId: null,
+      thesis: `[REAL PM MONOTONIC ARB MIRROR] Real Polymarket package filled first, then mirrored into tracker. Package cost $${pkg.actualCost.toFixed(4)} for ${pkg.filledShares.toFixed(4)} paired shares (entry ${entryPrice.toFixed(4)}); floor $${pkg.filledShares.toFixed(4)}, jackpot $${(pkg.filledShares * 2).toFixed(4)}.`,
+      targetPct: null,
+      stopPct: 100,
+      expiryDate,
+      instrumentType: "pm_package",
+      instrumentId: pkg.packageId,
+      instrumentLabel,
+      packageLegs: pkg.packageLegs,
+      fundingPnlAccrued: 0,
+    };
+
+    portfolio.cash -= pkg.actualCost;
+    portfolio.positions.push(position);
+    existingIds.add(pkg.packageId);
+    notes.push(`Mirrored real PM monotonic package ${pkg.asset} ${pkg.broadStrike}/${pkg.narrowStrike}: cost $${pkg.actualCost.toFixed(4)}, shares ${pkg.filledShares.toFixed(4)}.`);
+  }
+
+  return notes;
 }
 
 // ─── LLM Cadence State ───────────────────────────────────────────────────────
@@ -7655,6 +7725,7 @@ async function main() {
   const cancelledHeatmapShadows = cancelOpenRelativeValueHeatmapShadows(blockedSignals);
   const cancelledInvalidMonotonicArbShadows = cancelOpenInvalidMonotonicArbShadows(blockedSignals);
   const legacyOneTouchSweep = cancelLegacyOneTouchShadows(blockedSignals);
+  const realPmMirrorNotes = importCompletedRealPolymarketPackages(portfolio);
 
   console.log(`  Portfolio: $${portfolio.cash.toFixed(2)} cash, ${portfolio.positions.length} open positions, $${portfolio.totalRealizedPnl.toFixed(4)} realized P&L`);
   console.log(`  Learnable params: macro24h>${learningParams.macroMomentum24hThresholdPts.toFixed(1)}, trend>${learningParams.contrarianTrendMarginPct.toFixed(2)}%, momentum>${learningParams.positiveMomentum24hPct.toFixed(2)}%, llm expiry=${learningParams.llmTradeExpiryDays}d, momentum expiry=${learningParams.momentumLongExpiryDays}d`);
@@ -7665,6 +7736,7 @@ async function main() {
   for (const note of fundingRiskShapeNotes) console.log(`  Funding risk shape: ${note}`);
   for (const note of spotRiskShapeNotes) console.log(`  Spot risk shape: ${note}`);
   for (const note of productionPolymarketRiskNotes) console.log(`  Production PM risk shape: ${note}`);
+  for (const note of realPmMirrorNotes) console.log(`  Real PM mirror: ${note}`);
   if (cancelledHeatmapShadows.length > 0) {
     console.log(`  Cancelled ${cancelledHeatmapShadows.length} open relative-value heatmap shadow trades; heatmap is report-only until the horizon model is redesigned.`);
   }

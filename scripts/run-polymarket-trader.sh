@@ -46,6 +46,8 @@ DATA_FILES=(
   data/engine-state.json
   data/llm-truth-state.json
   data/candidate-actions.json
+  data/polymarket-live-packages.json
+  data/polymarket-live-orders.json
   data/llm-advice.json
   data/execution-plan.json
   relative-value/index.html
@@ -198,6 +200,9 @@ if [[ "${RELATIVE_VALUE_EDGE_HISTORY:-0}" == "1" ]]; then
 fi
 if ! timeout "${RELATIVE_VALUE_REPORT_TIMEOUT:-10m}" python3 scripts/cross_venue_relative_value_report.py "${relative_value_args[@]}"; then
   echo "WARNING: relative-value report timed out or failed; continuing trader run with the last available heatmap CSV."
+fi
+if [[ "${ENABLE_MONOTONIC_ARB_REAL_PM:-0}" == "1" ]]; then
+  MONOTONIC_ARB_REAL_PM_SOURCE="${MONOTONIC_ARB_REAL_PM_SOURCE:-scan}" npx tsx scripts/polymarket-real-monotonic-executor.ts
 fi
 npx tsx scripts/trading-engine.ts
 
