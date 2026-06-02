@@ -1,34 +1,19 @@
 {
-  "generatedAt": "2026-06-02T15:28:40.827Z",
+  "generatedAt": "2026-06-02T19:24:58.871Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
     {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "HYPE",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.754,
-      "confidence": 0.43158524011081045,
-      "thesis": "HYPE HL funding 41.4% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 70.909,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
-    },
-    {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "GOLD",
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "BTC",
       "venue": "spot",
-      "direction": "short",
-      "strength": 0.023333333333333355,
-      "confidence": 0.012029567996992528,
-      "thesis": "GOLD P/C ratio 0.49 — heavy call buying → contrarian short.",
+      "direction": "long",
+      "strength": 0.21999999999999992,
+      "confidence": 0.13448740112828023,
+      "thesis": "BTC P/C ratio 1.38 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4506,
-      "targetPct": 5,
+      "entryPrice": 67146,
+      "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     }
@@ -43,12 +28,31 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 3,
-      "hoursToExpiry": 5101.52,
+      "hoursOpen": 6.94,
+      "hoursToExpiry": 5097.58,
       "plannedHoldHours": 5104.52,
-      "elapsedHoldPct": 0.0006,
+      "elapsedHoldPct": 0.0014,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "T-1780414243241-5sr1",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "asset": "HYPE",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "hype_spot",
+        "hype_hl_funding_ann"
+      ],
+      "hoursOpen": 3.9,
+      "hoursToExpiry": 68.1,
+      "plannedHoldHours": 72,
+      "elapsedHoldPct": 0.0542,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 3.9h, requires at least 12h."
     }
   ]
 }

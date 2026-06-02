@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-02T15:30:43.235Z",
+  "generatedAt": "2026-06-02T19:26:20.876Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,39 +7,35 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "HYPE",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.754,
-      "confidence": 0.43158524011081045,
-      "thesis": "HYPE HL funding 41.4% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 70.909,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
-    },
-    {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "GOLD",
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "BTC",
       "venue": "spot",
-      "direction": "short",
-      "strength": 0.023333333333333355,
-      "confidence": 0.012029567996992528,
-      "thesis": "GOLD P/C ratio 0.49 — heavy call buying → contrarian short.",
+      "direction": "long",
+      "strength": 0.21999999999999992,
+      "confidence": 0.13448740112828023,
+      "thesis": "BTC P/C ratio 1.38 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4506,
-      "targetPct": 5,
+      "entryPrice": 67146,
+      "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "OIL",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "thesis": "OIL funding is -12.8% annual (extreme short, shorts pay longs), offering positive carry. This is a crowded-short environment where funding normalization often leads to spot upside. Entry via $1 notional long on Hyperliquid perp."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }

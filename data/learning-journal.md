@@ -23098,3 +23098,38 @@ Today's data shows a violent crypto flush with BTC breaking below 70k and spot d
 
 ---
 
+### 2026-06-02 19:26 UTC
+
+**Portfolio:** $98.43 total | Cash $96.43 | 2 open | P&L $0.9230 | 51% win rate (179 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved narrower by 11.2pp (was 16.0, now 4.8)
+- [anomaly] hype_hl_funding_ann = 120.43 is 6.7 std devs from mean (7.18 ± 17.02)
+- [anomaly] btc_ibit_pc_ratio = 1.376 is 3.8 std devs from mean (0.60 ± 0.20)
+- [anomaly] btc_pm_ev = 72495 is -3.7 std devs from mean (83060.90 ± 2857.62)
+- [anomaly] btc_spot = 67146 is -3.0 std devs from mean (76358.51 ± 3090.20)
+
+**Blocked signal learning:**
+- Open blocked shadows: 73
+- Resolved blocked shadows: 477 (258 wins / 219 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 118/164 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 6/10 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=115 (34W/68L/13flat, 33.3% win-rate, sum $-2.5743, avg -2.24%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=156 (50W/89L/17flat, 36.0% win-rate, sum $-2.4687, avg -1.58%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW ETH short via polymarket would have edge compressed but trade lost money (-5.00%)
+- ✅ Blocked: FUNDING_EXTREME_LONG HYPE short via hyperliquid would have hit target (+5.50%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT HYPE short via polymarket would have hit stop (-5.00%)
+
+**LLM analysis:**
+Today saw a sharp risk-off move across crypto and gold, while oil rallied despite negative funding. The HYPE short opened earlier is working (+0.7%) as funding surged further, confirming the thesis. OIL funding reached extreme negative levels, triggering our FUNDING_EXTREME_SHORT signal, so we added a small long. The extreme IBIT put/call ratio hints at a contrarian BTC long, but no entry yet due to market quality concerns. Continue monitoring for reversal patterns. No parameter changes needed.
+
+---
+
