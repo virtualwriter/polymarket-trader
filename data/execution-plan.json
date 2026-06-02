@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-02T19:26:20.876Z",
+  "generatedAt": "2026-06-02T19:31:38.348Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,31 +11,20 @@
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.21999999999999992,
-      "confidence": 0.13448740112828023,
+      "strength": 0.22625000000000006,
+      "confidence": 0.13830806593306103,
       "thesis": "BTC P/C ratio 1.38 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 67146,
+      "entryPrice": 66938,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "buy",
-        "asset": "OIL",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "thesis": "OIL funding is -12.8% annual (extreme short, shorts pay longs), offering positive carry. This is a crowded-short environment where funding normalization often leads to spot upside. Entry via $1 notional long on Hyperliquid perp."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
