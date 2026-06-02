@@ -1,9 +1,16 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { webcrypto } from "node:crypto";
 import { ClobClient, type ApiKeyCreds, AssetType, OrderType, Side, type TickSize } from "@polymarket/clob-client";
 import { config } from "dotenv";
 import { ethers } from "ethers";
+import { VpnGuard } from "../engine-src/live/VpnGuard.js";
+
+// @polymarket/clob-client signs L2 requests via globalThis.crypto.subtle.
+// Node < 19 (the VPS runs 18) does not expose globalThis.crypto by default,
+// so polyfill it from node:crypto before any CLOB call.
+if (!globalThis.crypto) (globalThis as { crypto?: Crypto }).crypto = webcrypto as unknown as Crypto;
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 config({ path: resolve(__dirname, "../.env") });
@@ -42,6 +49,8 @@ const MARKET_CONCURRENCY = Math.max(1, Number(process.env.MONOTONIC_ARB_REAL_PM_
 const EVENT_CONCURRENCY = Math.max(1, Number(process.env.MONOTONIC_ARB_REAL_PM_EVENT_CONCURRENCY ?? 2));
 const EPSILON = 1e-9;
 const CANDIDATE_SOURCE = process.env.MONOTONIC_ARB_REAL_PM_SOURCE ?? "portfolio";
+const SOCKS_PROXY = process.env.SOCKS_PROXY || process.env.ALL_PROXY || undefined;
+const SKIP_VPN = process.env.MONOTONIC_ARB_REAL_PM_SKIP_VPN === "1" || process.argv.includes("--skip-vpn");
 const ALLOWED_ASSETS = new Set((process.env.MONOTONIC_ARB_REAL_PM_ASSETS ?? "BTC,ETH,GOLD,SOL,SILVER,SPY")
   .split(",")
   .map((asset) => asset.trim().toUpperCase())
@@ -767,6 +776,41 @@ async function executeCandidate(client: ClobClient, walletAddress: string, candi
 }
 
 async function main() {
+  // Route every real Polymarket order through the VPN guard. activateProxy()
+  // patches the Node global agent, so the CLOB client's internal axios calls
+  // (API-key derivation, order posting, reconciliation) all exit via the
+  // SOCKS5 proxy. This lives entirely in the executor — the scanner and
+  // trading engine are untouched.
+  const vpnGuard = new VpnGuard({
+    socksProxy: SOCKS_PROXY,
+    skipChecks: DRY_RUN || SKIP_VPN,
+    onVpnDrop: (reason) => {
+      console.error(`\n[VPN] *** VPN DROPPED *** ${reason}`);
+      console.error(`[VPN] Halting real PM executor immediately — no further orders.`);
+      process.exit(1);
+    },
+  });
+  vpnGuard.activateProxy();
+  if (!DRY_RUN) {
+    try {
+      await vpnGuard.verifyLocation();
+    } catch (err: any) {
+      console.error(`\n[VPN] *** BLOCKED *** ${err.message}`);
+      console.error(`[VPN] Cannot place real Polymarket orders without VPN to an allowed country.`);
+      process.exit(1);
+    }
+    vpnGuard.startMonitoring();
+  }
+  console.log(`VPN: ${DRY_RUN || SKIP_VPN ? "SKIPPED" : SOCKS_PROXY ? "SOCKS5 proxy" : "system VPN"}`);
+
+  try {
+    await runExecutor();
+  } finally {
+    vpnGuard.stopMonitoring();
+  }
+}
+
+async function runExecutor() {
   const hasSignerSecret = hasWalletSecret();
   let signer: ethers.Wallet | null = null;
   let client: ClobClient | null = null;

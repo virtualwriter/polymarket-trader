@@ -19,11 +19,16 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 config({ path: resolve(__dirname, "../.env") });
 config({ path: resolve(__dirname, "../../config.env") });
 
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const RPC_URL = process.env.RPC_URL ?? "https://polygon-rpc.com";
 
-if (!PRIVATE_KEY) {
-  console.error("Missing PRIVATE_KEY");
+function signerFromEnv(): ethers.Wallet {
+  const privateKey = process.env.PRIVATE_KEY?.trim();
+  if (privateKey) return new ethers.Wallet(privateKey);
+
+  const mnemonic = process.env.HYPERLIQUID_MNEMONIC?.trim();
+  if (mnemonic) return ethers.Wallet.fromMnemonic(mnemonic);
+
+  console.error("Missing PRIVATE_KEY or HYPERLIQUID_MNEMONIC");
   process.exit(1);
 }
 
@@ -48,7 +53,7 @@ const MAX_UINT = ethers.constants.MaxUint256;
 
 async function main() {
   const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
-  const wallet = new ethers.Wallet(PRIVATE_KEY!, provider);
+  const wallet = signerFromEnv().connect(provider);
   const address = wallet.address;
 
   console.log(`\n=== Polymarket On-Chain Setup ===`);
