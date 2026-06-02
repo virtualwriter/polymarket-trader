@@ -546,12 +546,24 @@ async function scanCandidates(foundAt: string): Promise<{ candidates: Candidate[
 }
 
 async function clobClient(): Promise<{ signer: ethers.Wallet; client: ClobClient }> {
-  const pk = process.env.PRIVATE_KEY;
-  if (!pk) throw new Error("Missing PRIVATE_KEY");
-  const signer = new ethers.Wallet(pk);
+  const signer = signerFromEnv();
   const l1 = new ClobClient(HOST, CHAIN_ID, signer);
   const creds = await l1.deriveApiKey() as ApiKeyCreds;
   return { signer, client: new ClobClient(HOST, CHAIN_ID, signer, creds) };
+}
+
+function signerFromEnv(): ethers.Wallet {
+  const privateKey = process.env.PRIVATE_KEY?.trim();
+  if (privateKey) return new ethers.Wallet(privateKey);
+
+  const mnemonic = process.env.HYPERLIQUID_MNEMONIC?.trim();
+  if (mnemonic) return ethers.Wallet.fromMnemonic(mnemonic);
+
+  throw new Error("Missing PRIVATE_KEY or HYPERLIQUID_MNEMONIC");
+}
+
+function hasWalletSecret(): boolean {
+  return !!process.env.PRIVATE_KEY?.trim() || !!process.env.HYPERLIQUID_MNEMONIC?.trim();
 }
 
 function parseClobUnits(value: unknown): number {
@@ -755,11 +767,11 @@ async function executeCandidate(client: ClobClient, walletAddress: string, candi
 }
 
 async function main() {
-  const hasPrivateKey = !!process.env.PRIVATE_KEY;
+  const hasSignerSecret = hasWalletSecret();
   let signer: ethers.Wallet | null = null;
   let client: ClobClient | null = null;
   let probe: Awaited<ReturnType<typeof accountProbe>> | null = null;
-  if (hasPrivateKey) {
+  if (hasSignerSecret) {
     const created = await clobClient();
     signer = created.signer;
     client = created.client;
@@ -767,8 +779,8 @@ async function main() {
     console.log(`Wallet: ${probe.walletAddress}`);
     console.log(`Collateral balance=${probe.collateralBalance} allowance=${probe.collateralAllowance} openOrders=${probe.openOrderCount}`);
   } else {
-    if (!DRY_RUN || PROBE_ONLY) throw new Error("Missing PRIVATE_KEY");
-    console.log("Wallet: unavailable in local dry-run (PRIVATE_KEY not set)");
+    if (!DRY_RUN || PROBE_ONLY) throw new Error("Missing PRIVATE_KEY or HYPERLIQUID_MNEMONIC");
+    console.log("Wallet: unavailable in local dry-run (no PRIVATE_KEY or HYPERLIQUID_MNEMONIC set)");
   }
   console.log(`Mode: ${DRY_RUN ? "DRY_RUN" : "REAL"} enabled=${ENABLED} hardDisabled=${HARD_DISABLED}`);
 
