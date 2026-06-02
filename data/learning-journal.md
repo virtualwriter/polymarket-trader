@@ -23241,3 +23241,38 @@ The open MONOTONIC_ARB long on SOL (MA-1780403314728-llno) is only 10h old with 
 
 ---
 
+### 2026-06-02 23:28 UTC
+
+**Portfolio:** $98.43 total | Cash $97.43 | 1 open | P&L $0.9246 | 52% win rate (180 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved wider by 16.1pp (was 1.5, now 17.6)
+- [anomaly] btc_pm_iv = 55.1 is 4.1 std devs from mean (39.63 ± 3.77)
+- [anomaly] btc_pm_ev = 71919 is -3.8 std devs from mean (83018.64 ± 2930.50)
+- [anomaly] btc_ibit_pc_ratio = 1.282 is 3.3 std devs from mean (0.61 ± 0.20)
+- [anomaly] btc_spot = 66331 is -3.2 std devs from mean (76321.21 ± 3141.03)
+
+**Blocked signal learning:**
+- Open blocked shadows: 74
+- Resolved blocked shadows: 478 (258 wins / 220 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 118/164 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 6/10 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=115 (34W/68L/13flat, 33.3% win-rate, sum $-2.5743, avg -2.24%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=156 (50W/89L/17flat, 36.0% win-rate, sum $-2.4687, avg -1.58%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW ETH short via polymarket would have edge compressed but trade lost money (-5.00%)
+- ✅ Blocked: FUNDING_EXTREME_LONG HYPE short via hyperliquid would have hit target (+5.50%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT HYPE short via polymarket would have hit stop (-5.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-8.70%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 9/12; next scheduled 2026-06-03T01:28:29.693Z). Mechanical cycle ran normally._
+
+---
+
