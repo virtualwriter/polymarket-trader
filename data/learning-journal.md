@@ -22587,3 +22587,38 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 9/12; ne
 
 ---
 
+### 2026-06-02 00:28 UTC
+
+**Portfolio:** $98.45 total | Cash $98.45 | 0 open | P&L $0.9434 | 52% win rate (178 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_spot = 74.284 is 2.5 std devs from mean (48.73 ± 10.17)
+- [anomaly] btc_pm_ev = 76715 is -2.5 std devs from mean (83215.04 ± 2647.14)
+- [anomaly] hype_pm_ev = 69.78 is 2.4 std devs from mean (50.03 ± 8.14)
+- [anomaly] hype_med_max = 100 is 2.3 std devs from mean (67.66 ± 14.00)
+- [anomaly] hype_hl_oi = 1623141548 is 2.2 std devs from mean (1043496706.79 ± 265270426.27)
+
+**Blocked signal learning:**
+- Open blocked shadows: 79
+- Resolved blocked shadows: 468 (252 wins / 216 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 118/164 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=110 (30W/68L/12flat, 30.6% win-rate, sum $-2.6418, avg -2.40%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=151 (46W/89L/16flat, 34.1% win-rate, sum $-2.5362, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT HYPE short via polymarket would have hit stop (-5.26%)
+- ✅ Blocked: MONOTONIC_ARB OIL long via polymarket would have expired (+0.20%)
+- ✅ Blocked: MONOTONIC_ARB OIL long via polymarket would have expired (+0.10%)
+- ✅ Blocked: MONOTONIC_ARB OIL long via polymarket would have expired (+100.20%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 2.0h since last call; daily budget 0/12; next scheduled 2026-06-02T02:28:36.372Z). Mechanical cycle ran normally._
+
+---
+

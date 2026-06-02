@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-06-01T23:28:29.329Z",
+  "generatedAt": "2026-06-02T00:28:36.347Z",
   "dataFreshness": {
-    "valuationRows": 747,
-    "latestValuationAt": "2026-06-01T23",
-    "macroRows": 747,
+    "valuationRows": 748,
+    "latestValuationAt": "2026-06-02T00",
+    "macroRows": 748,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-01T23"
+    "latestInstrumentSnapshotAt": "2026-06-02T00"
   },
   "portfolio": {
     "cash": 98.4472,
     "openPositions": 0,
-    "realizedPnl": 0.9722,
-    "totalTrades": 177,
-    "winRatePct": 52,
+    "realizedPnl": 0.9434,
+    "totalTrades": 178,
+    "winRatePct": 51.7,
     "unrealizedPnl": 0
   },
   "openPositions": [],
@@ -153,9 +153,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 82,
-    "resolvedCount": 465,
-    "wouldHaveWon": 249,
+    "openCount": 79,
+    "resolvedCount": 468,
+    "wouldHaveWon": 252,
     "wouldHaveLost": 216,
     "bySignal": [
       {
@@ -167,20 +167,20 @@
         "avgPnlPct": 0.71
       },
       {
+        "signalType": "MONOTONIC_ARB",
+        "blocked": 31,
+        "resolved": 10,
+        "wouldHaveWon": 10,
+        "wouldHaveLost": 0,
+        "avgPnlPct": 20.32
+      },
+      {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
         "blocked": 30,
         "resolved": 15,
         "wouldHaveWon": 12,
         "wouldHaveLost": 3,
         "avgPnlPct": 19
-      },
-      {
-        "signalType": "MONOTONIC_ARB",
-        "blocked": 31,
-        "resolved": 7,
-        "wouldHaveWon": 7,
-        "wouldHaveLost": 0,
-        "avgPnlPct": 0.15
       },
       {
         "signalType": "USER_PM_APR_XAU_TAIL_NO",
@@ -224,39 +224,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "BIRD",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
-        "outcome": "win",
-        "closeReason": "target",
-        "pnlPct": 14.11,
-        "resolvedAt": "2026-06-01T15:28:35.268Z"
-      },
-      {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "SKHX",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 3.7,
-        "resolvedAt": "2026-06-01T15:28:35.268Z"
-      },
-      {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "AMD",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -9.61,
-        "resolvedAt": "2026-06-01T16:28:38.467Z"
-      },
       {
         "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
         "asset": "HYPE",
@@ -349,6 +316,61 @@
           "sourcePnlPct": -2.88,
           "proxyOutperformed": false,
           "correlation": "same_direction"
+        }
+      },
+      {
+        "signalType": "MONOTONIC_ARB",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "long",
+        "blockedReason": "monotonic_arb_shadow",
+        "outcome": "win",
+        "closeReason": "expiry",
+        "pnlPct": 0.2,
+        "resolvedAt": "2026-06-02T00:05:37.437348+00:00",
+        "marketQuality": {
+          "yesBid": 0.004,
+          "yesAsk": 0.002,
+          "yesSpread": 0.003,
+          "liquidity": 40674.9,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "MONOTONIC_ARB",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "long",
+        "blockedReason": "monotonic_arb_shadow",
+        "outcome": "win",
+        "closeReason": "expiry",
+        "pnlPct": 0.1,
+        "resolvedAt": "2026-06-02T00:05:37.437348+00:00",
+        "marketQuality": {
+          "yesBid": 0.005,
+          "yesAsk": 0.004,
+          "yesSpread": 0.008,
+          "liquidity": 22618.6,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "MONOTONIC_ARB",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "long",
+        "blockedReason": "monotonic_arb_shadow",
+        "outcome": "win",
+        "closeReason": "expiry",
+        "pnlPct": 100.2,
+        "resolvedAt": "2026-06-02T00:05:37.437348+00:00",
+        "marketQuality": {
+          "yesBid": 0.003,
+          "yesAsk": 0.002,
+          "yesSpread": 0.003,
+          "liquidity": 43593.79,
+          "availableSize": null,
+          "flags": []
         }
       }
     ],
