@@ -55,7 +55,7 @@ const MONOTONIC_ARB_MIN_GROSS_EDGE = 0.001;
 const MONOTONIC_ARB_MIN_LEG_LIQUIDITY = 10_000;
 const MONOTONIC_ARB_MIN_TOP_OF_BOOK_SIZE = 5;
 const MONOTONIC_ARB_MAX_SNAPSHOT_AGE_MINUTES = 20;
-const MONOTONIC_ARB_ASSETS = new Set(["BTC", "ETH", "GOLD", "OIL", "AMZN", "HYPE", "SPY"]);
+const MONOTONIC_ARB_ASSETS = new Set(["BTC", "ETH", "GOLD", "OIL", "AMZN", "HYPE", "SPY", "SILVER", "SOL"]);
 // Promoted to live 2026-06-01 after 10/10 May shadow packages settled
 // profitably (avg +20.3%, two +100% jackpots, zero losers). Monotonic arb is
 // structurally risk-free (minimum payout >= cost by the locked-edge gate), so
@@ -320,6 +320,10 @@ interface PolymarketPackageLeg {
   yesAsk: number;
   yesBidSize?: number | null;
   yesAskSize?: number | null;
+  // Market creation date — touch markets resolve over [startDate, expiry], not
+  // just the final calendar month, so the package settler needs this to award
+  // the jackpot (the between-strikes outcome) correctly.
+  startDate?: string | null;
 }
 
 interface Position {
@@ -676,6 +680,7 @@ interface InstrumentSnapshotContract {
   liquidity?: number;
   active?: boolean;
   closed?: boolean;
+  startDate?: string | null;
   endDate?: string | null;
 }
 
@@ -1591,7 +1596,7 @@ function formatTargetPct(targetPct: number | null): string {
 function getAssetPrice(row: SnapshotRow, asset: string): number | null {
   const map: Record<string, string> = {
     BTC: "btc_spot", ETH: "eth_spot", HYPE: "hype_spot", GOLD: "gold_gc_spot",
-    AMZN: "amzn_stock", SPY: "spy_spot", OIL: "oil_wti_spot",
+    AMZN: "amzn_stock", SPY: "spy_spot", SILVER: "silver_spot", SOL: "sol_spot", OIL: "oil_wti_spot",
   };
   const v = row[map[asset] ?? ""];
   return typeof v === "number" && v > 0 ? v : null;
@@ -1605,6 +1610,8 @@ function getHyperliquidPerpPrice(row: SnapshotRow, asset: string): number | null
     GOLD: "gold_gc_spot",
     AMZN: "amzn_hl_perp",
     SPY: "spy_spot",
+    SILVER: "silver_spot",
+    SOL: "sol_spot",
     OIL: "oil_wti_spot",
   };
   const v = row[map[asset] ?? ""];
@@ -1709,6 +1716,10 @@ function preferredPolymarketEventSlugs(asset: string): string[] {
       return ["gc-over-under-jun-2026", "gc-hit-jun-2026", "what-will-gold-gc-hit-by-end-of-december"];
     case "SPY":
       return ["spx-hit-jun-2026", "spx-hit-dec-2026"];
+    case "SILVER":
+      return ["si-hit-jun-2026"];
+    case "SOL":
+      return ["what-price-will-solana-hit-before-2027"];
     case "OIL":
       return ["cl-over-under-jun-2026", "cl-hit-jun-2026"];
     default:
@@ -1890,11 +1901,11 @@ function findPolymarketPackageMark(
 //   "below" → YES resolves $1 if min(spot during period) <= strike, else $0
 // NO leg payout is (1 - YES leg payout). Total package payout is the sum.
 //
-// Contract period is inferred from `expiryDate`: for "in <month> <year>" PM
-// markets, the expiry is just after midnight UTC on the 1st of the FOLLOWING
-// month, so the contract period is the full calendar month preceding the
-// expiry timestamp. The position's actual openedAt is NOT used because the
-// market resolves on the full-month print, not just the held window.
+// Contract period comes from the market's own start/end window. Monthly touch
+// markets effectively scan that month; long-window markets like "before 2027"
+// or "by end of December" scan from market start through expiry. The
+// position's actual openedAt is NOT used because PM resolves on the published
+// market window, not just our held window.
 //
 // Returns null if no valuation rows fall inside the contract period
 // (i.e. we don't have price data to settle against — leave it to the live
@@ -1907,17 +1918,45 @@ function settleMonotonicArbPackage(
   if (position.instrumentType !== "pm_package") return null;
   const expiryMs = new Date(position.expiryDate).getTime();
   if (!Number.isFinite(expiryMs) || expiryMs > Date.now()) return null;
-  // Contract period = full UTC calendar month immediately preceding the
-  // expiry timestamp. Step back 12 hours from expiry so we land firmly
-  // inside the resolution month regardless of EDT/EST offset (e.g. expiry
-  // 2026-06-01T03:59:59Z = 23:59:59 ET May 31 → month = May 2026).
-  const insideMonth = new Date(expiryMs - 12 * 60 * 60 * 1000);
-  const periodStartMs = Date.UTC(insideMonth.getUTCFullYear(), insideMonth.getUTCMonth(), 1);
+  // Touch markets resolve on the underlying's price path between market
+  // creation (startDate) and expiry — NOT just the final calendar month. A
+  // market like "SPX hit by end of December" is created in January and a touch
+  // anywhere Jan–Dec resolves it YES; restricting to December would miss most
+  // touches and silently drop the jackpot (the between-strikes $2 outcome,
+  // which is the whole upside of the strategy). Use the captured leg startDate;
+  // fall back for legacy legs that predate startDate capture: scan the full
+  // available history for multi-month / "before-YYYY" markets, and the single
+  // calendar month only for "...-in-<month>-<year>" markets created at month
+  // start.
   const periodEndMs = expiryMs;
+  let periodStartMs = NaN;
+  for (const leg of position.packageLegs) {
+    const sd = (leg as { startDate?: string | null }).startDate;
+    if (typeof sd === "string") {
+      const ms = Date.parse(sd);
+      if (Number.isFinite(ms)) periodStartMs = Number.isNaN(periodStartMs) ? ms : Math.min(periodStartMs, ms);
+    }
+  }
+  if (!Number.isFinite(periodStartMs)) {
+    const slug = (position.instrumentId ?? "").split("::")[0].toLowerCase();
+    const singleMonth = /-in-(january|february|march|april|may|june|july|august|september|october|november|december)-\d{4}/.test(slug);
+    if (singleMonth) {
+      const inside = new Date(expiryMs - 12 * 60 * 60 * 1000);
+      periodStartMs = Date.UTC(inside.getUTCFullYear(), inside.getUTCMonth(), 1);
+    } else {
+      periodStartMs = -Infinity;
+    }
+  }
   let highSeen = -Infinity;
   let lowSeen = Infinity;
   for (const row of valRows) {
-    const ts = typeof row.timestamp === "string" ? Date.parse(row.timestamp) : NaN;
+    // daily-valuations rows are keyed by `date` (e.g. "2026-06-02T00" or
+    // "2026-04-03"); instrument-snapshot-derived rows use `timestamp`. Accept
+    // either and normalize the hour-truncated form via snapshotTimeMs.
+    const tsRaw = typeof row.timestamp === "string" && row.timestamp
+      ? row.timestamp
+      : (typeof row.date === "string" ? row.date : "");
+    const ts = tsRaw ? snapshotTimeMs(tsRaw) : NaN;
     if (!Number.isFinite(ts) || ts < periodStartMs || ts >= periodEndMs) continue;
     const px = getAssetPrice(row, position.asset);
     if (px === null) continue;
@@ -3333,6 +3372,7 @@ function recordMonotonicArbShadows(
                 yesAsk: broadAsk,
                 yesBidSize: broad.bestBidSize ?? null,
                 yesAskSize: broadAskSize,
+                startDate: broad.startDate ?? null,
               },
               {
                 role: "narrow_no",
@@ -3346,6 +3386,7 @@ function recordMonotonicArbShadows(
                 yesAsk: narrow.bestAsk ?? 0,
                 yesBidSize: narrowNoAskSize,
                 yesAskSize: narrow.bestAskSize ?? null,
+                startDate: narrow.startDate ?? null,
               },
             ],
             entryUnderlyingPrice: getAssetPrice(latestRow, event.asset) ?? latestSnapshot.spots[event.asset] ?? undefined,

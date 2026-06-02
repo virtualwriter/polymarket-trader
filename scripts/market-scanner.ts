@@ -95,7 +95,7 @@ interface OptionsSnapshot {
 const HL_API = "https://api.hyperliquid.xyz/info";
 const GAMMA_API = "https://gamma-api.polymarket.com";
 
-const HL_PERP_COINS = ["BTC", "ETH", "HYPE"];
+const HL_PERP_COINS = ["BTC", "ETH", "HYPE", "SOL"];
 const HL_BUILDER_COINS: { dex: string; coin: string; label: string }[] = [
   { dex: "xyz", coin: "xyz:AMZN", label: "AMZN" },
   { dex: "xyz", coin: "xyz:AAPL", label: "AAPL" },
@@ -136,6 +136,7 @@ const HL_BUILDER_COINS: { dex: string; coin: string; label: string }[] = [
   { dex: "xyz", coin: "xyz:GOLD", label: "GOLD (GC)" },
   { dex: "xyz", coin: "xyz:CL", label: "OIL (CL)" },
   { dex: "xyz", coin: "xyz:BRENTOIL", label: "BRENT OIL" },
+  { dex: "xyz", coin: "xyz:SILVER", label: "SILVER" },
 ];
 const OPTIONS_SYMBOLS = ["IBIT", "AMZN", "GLD", "USO", "ETHA", "SPY", "PURR"];
 const CME_GREEKS_API_BASE = process.env.CME_GREEKS_API_BASE ?? "https://markets.api.cmegroup.com/greeks/v1";
@@ -166,6 +167,7 @@ function currentMonthTouchEventSlugs(now = new Date()): string[] {
     return [
       `what-price-will-bitcoin-hit-in-${month}-${year}`,
       `what-price-will-ethereum-hit-in-${month}-${year}`,
+      `what-price-will-solana-hit-in-${month}-${year}`,
       `what-price-will-xauusd-hit-in-${month}-${year}`,
       `what-price-will-amzn-hit-in-${month}-${year}`,
       `what-price-will-spx-hit-in-${month}-${year}`,
@@ -179,6 +181,7 @@ const POLYMARKET_EVENT_SLUGS = [
   "what-price-will-bitcoin-hit-before-2027",
   "what-price-will-bitcoin-hit-in-may-2026",
   "what-price-will-ethereum-hit-before-2027",
+  "what-price-will-solana-hit-before-2027",
   "what-price-will-hyperliquid-hit-before-2027",
   "what-will-gold-gc-hit-by-end-of-december",
   "what-price-will-xauusd-hit-in-may-2026",
@@ -189,6 +192,7 @@ const POLYMARKET_EVENT_SLUGS = [
   "gc-over-under-jun-2026",
   "spx-hit-jun-2026",
   "spx-hit-dec-2026",
+  "si-hit-jun-2026",
   "cl-hit-jun-2026",
   "cl-over-under-jun-2026",
   "cl-settle-jun-2026",
@@ -427,6 +431,7 @@ interface PriceStrike {
   liquidity: number;
   active: boolean;
   closed: boolean;
+  startDate: string | null;
   endDate: string | null;
 }
 
@@ -523,6 +528,7 @@ async function fetchPolymarket() {
             liquidity: parseFloat(m.liquidity || "0"),
             active: !!m.active,
             closed: !!m.closed,
+            startDate: m.startDate || m.createdAt || event.startDate || event.createdAt || null,
             endDate: m.endDate || null,
           });
         }
@@ -587,6 +593,7 @@ async function fetchPolymarket() {
             liquidity: parseFloat(m.liquidity || "0"),
             active: !!m.active,
             closed: !!m.closed,
+            startDate: m.startDate || m.createdAt || event.startDate || event.createdAt || null,
             endDate: m.endDate || null,
           });
         }
@@ -2065,6 +2072,7 @@ interface InstrumentSnapshotContract {
   liquidity: number;
   active: boolean;
   closed: boolean;
+  startDate: string | null;
   endDate: string | null;
 }
 
@@ -2109,6 +2117,9 @@ const VALUATION_HEADERS = [
   // Vestigial trailing columns kept for on-disk schema alignment; no current
   // writer populates them, no current reader consumes them.
   "oil_cme_yf_spot", "gold_cme_yf_spot", "btc_cme_yf_spot",
+  // SPX index level (SPY ETF x10), silver, ETH and SOL spot — used for
+  // monotonic-arb settlement (each MONOTONIC_ARB_ASSET needs a spot column).
+  "spy_spot", "silver_spot", "eth_spot", "sol_spot",
 ];
 
 const MACRO_HEADERS = [
@@ -2152,10 +2163,12 @@ function appendCsvRow(filename: string, headers: string[], row: Record<string, a
 function polymarketAssetForSlug(slug: string): string | null {
   if (slug.includes("bitcoin")) return "BTC";
   if (slug.includes("ethereum")) return "ETH";
+  if (slug.includes("solana")) return "SOL";
   if (slug.includes("hyperliquid")) return "HYPE";
   if (slug.startsWith("gc-") || slug.includes("gold-gc") || slug.includes("xauusd")) return "GOLD";
   if (slug.startsWith("spx-") || slug.includes("s-p-500") || slug.includes("sp-500")) return "SPY";
   if (slug.startsWith("cl-") || slug.includes("wti") || slug.includes("crude-oil")) return "OIL";
+  if (slug.startsWith("si-") || slug.includes("silver") || slug.includes("xagusd")) return "SILVER";
   if (slug.includes("amazon")) return "AMZN";
   return null;
 }
@@ -2233,6 +2246,8 @@ function writeSnapshot(
   const amznBasis = amznHlPerp && amznStock ? ((amznHlPerp / amznStock) - 1) * 100 : null;
   const ethSpot = hl.ETH?.markPx ?? null;
   const spySpot = opts.SPY?.underlyingPrice ? opts.SPY.underlyingPrice * 10 : null;
+  const silverSpot = hl["SILVER"]?.markPx ?? null;
+  const solSpot = hl["SOL"]?.markPx ?? null;
 
   // OIL must use a crude reference. CBOE symbol CL is Colgate-Palmolive stock, not crude.
   const oilWti = hl["OIL (CL)"]?.markPx ?? null;
@@ -2293,6 +2308,8 @@ function writeSnapshot(
     oil_pm_iv: r(oilPm?.impliedVol ? oilPm.impliedVol * 100 : null, 1),
     oil_hl_funding_ann: r(hl["OIL (CL)"]?.fundingAnnualized ? hl["OIL (CL)"].fundingAnnualized * 100 : null, 2),
     oil_cl_pc_ratio: r(oilPcOptions ? pcRatioFromChains(oilPcOptions.chains) : null, 3),
+    spy_spot: r(spySpot, 2), silver_spot: r(silverSpot, 4),
+    eth_spot: r(ethSpot, 2), sol_spot: r(solSpot, 4),
   });
 
   // ── Macro row ──
@@ -2382,6 +2399,8 @@ function writeSnapshot(
       GOLD: r(goldGcSpot, 6),
       AMZN: r(amznStock, 6),
       SPY: r(spySpot, 6),
+      SILVER: r(silverSpot, 6),
+      SOL: r(solSpot, 6),
       OIL: r(oilWti, 6),
     },
     hyperliquid: hyperliquidSnapshot,
@@ -2411,6 +2430,7 @@ function writeSnapshot(
             liquidity: s.liquidity,
             active: s.active,
             closed: s.closed,
+            startDate: s.startDate,
             endDate: s.endDate,
           })),
         } satisfies InstrumentSnapshotEvent;

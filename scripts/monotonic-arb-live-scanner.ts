@@ -30,6 +30,8 @@ type GammaMarket = {
   volume?: string | number;
   liquidity?: string | number;
   liquidityNum?: number;
+  startDate?: string | null;
+  createdAt?: string | null;
   endDate?: string | null;
   active?: boolean;
   closed?: boolean;
@@ -38,6 +40,8 @@ type GammaMarket = {
 type GammaEvent = {
   slug?: string;
   title?: string;
+  startDate?: string | null;
+  createdAt?: string | null;
   markets?: GammaMarket[];
 };
 
@@ -66,6 +70,7 @@ type MarketQuote = {
   resolutionSource: string;
   strike: number;
   direction: Direction;
+  startDate: string | null;
   endDate: string | null;
   liquidity: number;
   volume: number;
@@ -84,6 +89,8 @@ type Candidate = {
   direction: Direction;
   broadMarketId: string;
   narrowMarketId: string;
+  broadStartDate: string | null;
+  narrowStartDate: string | null;
   broadStrike: number;
   narrowStrike: number;
   broadYesAsk: number;
@@ -140,6 +147,7 @@ function currentMonthTouchEventSlugs(now = new Date()): string[] {
     return [
       `what-price-will-bitcoin-hit-in-${month}-${year}`,
       `what-price-will-ethereum-hit-in-${month}-${year}`,
+      `what-price-will-solana-hit-in-${month}-${year}`,
       `what-price-will-xauusd-hit-in-${month}-${year}`,
       `what-price-will-amzn-hit-in-${month}-${year}`,
       `what-price-will-spx-hit-in-${month}-${year}`,
@@ -152,11 +160,13 @@ function currentMonthTouchEventSlugs(now = new Date()): string[] {
 const DEFAULT_EVENT_SLUGS = [
   "what-price-will-bitcoin-hit-before-2027",
   "what-price-will-ethereum-hit-before-2027",
+  "what-price-will-solana-hit-before-2027",
   "what-price-will-hyperliquid-hit-before-2027",
   "what-will-gold-gc-hit-by-end-of-december",
   "gc-hit-jun-2026",
   "spx-hit-jun-2026",
   "spx-hit-dec-2026",
+  "si-hit-jun-2026",
   "cl-hit-jun-2026",
   ...currentMonthTouchEventSlugs(),
 ].filter((slug, index, slugs) => slugs.indexOf(slug) === index);
@@ -206,10 +216,12 @@ function parseStrike(question: string, groupItemTitle = ""): { strike: number; d
 function polymarketAssetForSlug(slug: string): string | null {
   if (slug.includes("bitcoin")) return "BTC";
   if (slug.includes("ethereum")) return "ETH";
+  if (slug.includes("solana")) return "SOL";
   if (slug.includes("hyperliquid")) return "HYPE";
   if (slug.startsWith("gc-") || slug.includes("gold-gc") || slug.includes("xauusd")) return "GOLD";
   if (slug.startsWith("spx-") || slug.includes("s-p-500") || slug.includes("sp-500")) return "SPY";
   if (slug.startsWith("cl-") || slug.includes("wti") || slug.includes("crude-oil")) return "OIL";
+  if (slug.startsWith("si-") || slug.includes("silver") || slug.includes("xagusd")) return "SILVER";
   if (slug.includes("amazon") || slug.includes("amzn")) return "AMZN";
   return null;
 }
@@ -304,6 +316,7 @@ async function marketQuote(event: GammaEvent, market: GammaMarket): Promise<Mark
     resolutionSource: market.resolutionSource ?? "",
     strike: parsed.strike,
     direction: parsed.direction,
+    startDate: market.startDate ?? market.createdAt ?? event.startDate ?? event.createdAt ?? null,
     endDate: market.endDate ?? null,
     liquidity: parseNumber(market.liquidityNum ?? market.liquidity),
     volume: parseNumber(market.volume),
@@ -338,6 +351,8 @@ function evaluatePair(asset: string, broad: MarketQuote, narrow: MarketQuote, fo
     direction: broad.direction,
     broadMarketId: broad.marketId,
     narrowMarketId: narrow.marketId,
+    broadStartDate: broad.startDate,
+    narrowStartDate: narrow.startDate,
     broadStrike: broad.strike,
     narrowStrike: narrow.strike,
     broadYesAsk: broad.yesBook.ask,
@@ -457,6 +472,7 @@ function candidateToShadow(candidate: Candidate): JsonObject {
           direction: candidate.direction,
           yesAsk: candidate.broadYesAsk,
           yesAskSize: candidate.broadYesAskSize,
+          startDate: candidate.broadStartDate,
         },
         {
           role: "narrow_no",
@@ -468,6 +484,7 @@ function candidateToShadow(candidate: Candidate): JsonObject {
           direction: candidate.direction,
           noAsk: candidate.narrowNoAsk,
           noAskSize: candidate.narrowNoAskSize,
+          startDate: candidate.narrowStartDate,
         },
       ],
     },
