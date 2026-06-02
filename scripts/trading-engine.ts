@@ -1875,6 +1875,71 @@ function findPolymarketPackageMark(
   return { price: packagePrice, underlyingPrice: snapshot.spots[position.asset] ?? null };
 }
 
+// Settle a monotonic-arb PM package at expiry by computing the actual leg
+// payouts from the asset's realized high/low during the contract period.
+//
+// Each leg has a direction:
+//   "above" → YES resolves $1 if max(spot during period) >= strike, else $0
+//   "below" → YES resolves $1 if min(spot during period) <= strike, else $0
+// NO leg payout is (1 - YES leg payout). Total package payout is the sum.
+//
+// Contract period is inferred from `expiryDate`: for "in <month> <year>" PM
+// markets, the expiry is just after midnight UTC on the 1st of the FOLLOWING
+// month, so the contract period is the full calendar month preceding the
+// expiry timestamp. The position's actual openedAt is NOT used because the
+// market resolves on the full-month print, not just the held window.
+//
+// Returns null if no valuation rows fall inside the contract period
+// (i.e. we don't have price data to settle against — leave it to the live
+// mark for now).
+function settleMonotonicArbPackage(
+  position: Position,
+  valRows: SnapshotRow[],
+): { price: number; underlyingPrice: number | null; marketPnl: number; pnl: number; pnlPct: number } | null {
+  if (!position.packageLegs || position.packageLegs.length < 2) return null;
+  if (position.instrumentType !== "pm_package") return null;
+  const expiryMs = new Date(position.expiryDate).getTime();
+  if (!Number.isFinite(expiryMs) || expiryMs > Date.now()) return null;
+  // Contract period = full UTC calendar month immediately preceding the
+  // expiry timestamp. Step back 12 hours from expiry so we land firmly
+  // inside the resolution month regardless of EDT/EST offset (e.g. expiry
+  // 2026-06-01T03:59:59Z = 23:59:59 ET May 31 → month = May 2026).
+  const insideMonth = new Date(expiryMs - 12 * 60 * 60 * 1000);
+  const periodStartMs = Date.UTC(insideMonth.getUTCFullYear(), insideMonth.getUTCMonth(), 1);
+  const periodEndMs = expiryMs;
+  let highSeen = -Infinity;
+  let lowSeen = Infinity;
+  for (const row of valRows) {
+    const ts = typeof row.timestamp === "string" ? Date.parse(row.timestamp) : NaN;
+    if (!Number.isFinite(ts) || ts < periodStartMs || ts >= periodEndMs) continue;
+    const px = getAssetPrice(row, position.asset);
+    if (px === null) continue;
+    if (px > highSeen) highSeen = px;
+    if (px < lowSeen) lowSeen = px;
+  }
+  if (!Number.isFinite(highSeen) || !Number.isFinite(lowSeen)) return null;
+  // Resolve each leg
+  let totalPayout = 0;
+  for (const leg of position.packageLegs) {
+    const dir = (leg as { direction?: string }).direction;
+    const strike = (leg as { strike?: number }).strike;
+    if (typeof strike !== "number" || (dir !== "above" && dir !== "below")) return null;
+    const yesResolves = dir === "above" ? highSeen >= strike : lowSeen <= strike;
+    const legPayout = leg.instrumentType === "pm_yes"
+      ? (yesResolves ? 1 : 0)
+      : (yesResolves ? 0 : 1);
+    totalPayout += legPayout;
+  }
+  // shares = position.size / entryPrice (paid `entryPrice` per share); at
+  // settlement each share pays `totalPayout`. So realized cash = shares *
+  // totalPayout and PnL = shares * (totalPayout - entryPrice).
+  const shares = position.size / position.entryPrice;
+  const marketPnl = shares * (totalPayout - position.entryPrice);
+  const pnlPct = (marketPnl / position.size) * 100;
+  const underlyingPrice = valRows.length > 0 ? (getAssetPrice(valRows[valRows.length - 1], position.asset) ?? null) : null;
+  return { price: totalPayout, underlyingPrice, marketPnl, pnl: marketPnl, pnlPct };
+}
+
 function applyConservativePolymarketEntry(position: Position, latestSnapshot: InstrumentSnapshotFile | null) {
   if (!latestSnapshot || (position.instrumentType !== "pm_yes" && position.instrumentType !== "pm_no")) return;
   const [eventSlug, marketId] = position.instrumentId?.split("::") ?? [];
@@ -3990,14 +4055,35 @@ function resolveBlockedSignalShadows(
   latestRow: SnapshotRow,
   snapshots: InstrumentSnapshotFile[],
   relativeValueRows: RelativeValueObservation[] = [],
+  valRows: SnapshotRow[] = [],
 ): BlockedSignalShadow[] {
   const resolved: BlockedSignalShadow[] = [];
   const now = new Date().toISOString();
 
   for (const shadow of blockedSignals) {
     if (shadow.status === "resolved") continue;
-    const mark = markPosition(shadow.position, latestRow, snapshots, true);
-    if (!mark) continue;
+    let mark = markPosition(shadow.position, latestRow, snapshots, true);
+    if (!mark) {
+      // PM package contracts may no longer be in the live snapshot once the
+      // market resolves. Fall back to terminal settlement so expired packages
+      // can still close out.
+      if (shadow.position.instrumentType === "pm_package" && new Date(shadow.position.expiryDate) <= new Date()) {
+        const settled = settleMonotonicArbPackage(shadow.position, valRows);
+        if (settled) {
+          mark = { currentPrice: settled.price, underlyingPrice: settled.underlyingPrice, marketPnl: settled.marketPnl, fundingPnl: 0, pnl: settled.pnl, pnlPct: settled.pnlPct };
+        }
+      }
+      if (!mark) continue;
+    }
+    // For pm_package shadows that have hit expiry, override the live mark
+    // with realized leg settlement — `findPolymarketPackageMark` uses live
+    // bid/ask which doesn't reflect actual market resolution.
+    if (shadow.position.instrumentType === "pm_package" && new Date(shadow.position.expiryDate) <= new Date()) {
+      const settled = settleMonotonicArbPackage(shadow.position, valRows);
+      if (settled) {
+        mark = { currentPrice: settled.price, underlyingPrice: settled.underlyingPrice ?? mark.underlyingPrice, marketPnl: settled.marketPnl, fundingPnl: 0, pnl: settled.pnl, pnlPct: settled.pnlPct };
+      }
+    }
 
     const expiryOnlyShadow = shadow.blockedReason === "manual_shadow_trade"
       || shadow.blockedReason === "one_touch_high_edge_shadow"
@@ -7564,7 +7650,7 @@ async function main() {
     closedTrades.push(...scannerClosedTrades);
   }
 
-  const resolvedBlockedSignals = resolveBlockedSignalShadows(blockedSignals, latestRow, instrumentSnapshots, relativeValueRows);
+  const resolvedBlockedSignals = resolveBlockedSignalShadows(blockedSignals, latestRow, instrumentSnapshots, relativeValueRows, valRows);
   if (resolvedBlockedSignals.length > 0) {
     console.log(`\n  Resolved ${resolvedBlockedSignals.length} blocked-signal shadows:`);
     for (const shadow of resolvedBlockedSignals.slice(-6)) {
