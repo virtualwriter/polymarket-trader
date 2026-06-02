@@ -56,6 +56,13 @@ const MONOTONIC_ARB_MIN_LEG_LIQUIDITY = 10_000;
 const MONOTONIC_ARB_MIN_TOP_OF_BOOK_SIZE = 5;
 const MONOTONIC_ARB_MAX_SNAPSHOT_AGE_MINUTES = 20;
 const MONOTONIC_ARB_ASSETS = new Set(["BTC", "ETH", "GOLD", "OIL", "AMZN", "HYPE", "SPY"]);
+// Promoted to live 2026-06-01 after 10/10 May shadow packages settled
+// profitably (avg +20.3%, two +100% jackpots, zero losers). Monotonic arb is
+// structurally risk-free (minimum payout >= cost by the locked-edge gate), so
+// it is exempt from the MAX_OPEN_POSITIONS cap and may run as many concurrent
+// packages as the bankroll allows (one dedup per unique package id). It still
+// draws TRADE_SIZE per package from cash like any other live position.
+const ENABLE_MONOTONIC_ARB_LIVE = true;
 const INVALID_MONOTONIC_SETTLEMENT_REASON = "invalid_monotonic_settlement_bucket";
 const UNDERLYING_CAP_ENTRY_MAX_SPREAD = 0.02;
 const UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY = 1000;
@@ -3222,10 +3229,12 @@ function recordMonotonicArbShadows(
   latestSnapshot: InstrumentSnapshotFile | null,
   learningParams: LearningParams,
   blockedSignals: BlockedSignalShadow[],
+  portfolio: Portfolio | null = null,
 ): number {
   if (!latestSnapshot) return 0;
   const ageMinutes = snapshotAgeMinutes(latestSnapshot.timestamp);
   if (ageMinutes !== null && ageMinutes > MONOTONIC_ARB_MAX_SNAPSHOT_AGE_MINUTES) return 0;
+  const liveMode = ENABLE_MONOTONIC_ARB_LIVE && portfolio !== null;
   let recorded = 0;
 
   for (const event of latestSnapshot.polymarket) {
@@ -3283,6 +3292,10 @@ function recordMonotonicArbShadows(
             shadow.signalType === "MONOTONIC_ARB" &&
             shadow.position.instrumentId === packageId
           )) continue;
+          // In live mode also dedup against open live positions (one package
+          // id at a time), and stop if the bankroll is exhausted.
+          if (liveMode && portfolio!.positions.some((p) => p.instrumentId === packageId)) continue;
+          if (liveMode && portfolio!.cash < TRADE_SIZE) continue;
 
           const now = new Date().toISOString();
           const narrowNoAsk = 1 - narrowBid;
@@ -3344,6 +3357,17 @@ function recordMonotonicArbShadows(
           if (minLiquidity < MONOTONIC_ARB_MIN_LEG_LIQUIDITY) flags.push("low_leg_liquidity");
           if (packageAvailableSize !== null && packageAvailableSize < MONOTONIC_ARB_MIN_TOP_OF_BOOK_SIZE) flags.push("low_top_of_book_size");
           if (packageCost >= 1) flags.push("no_locked_edge");
+
+          if (liveMode) {
+            // Open a real (tracked) position rather than a shadow. Exempt from
+            // MAX_OPEN_POSITIONS; only constrained by available cash.
+            position.thesis = `[MONOTONIC ARB LIVE] Buy YES on broader ${direction} strike ${broad.strike} @ ${broadAsk.toFixed(4)} and buy NO on narrower ${direction} strike ${narrow.strike} @ ${narrowNoAsk.toFixed(4)}. Gross locked edge ${(grossEdge * 100).toFixed(2)}c per paired share before fees/slippage; min payout $1.00 >= cost $${packageCost.toFixed(4)} (risk-free). Threads the strike gap for the ~$1 jackpot payout.`;
+            position.instrumentLabel = `${event.slug} — monotonic arb package (LIVE) — YES ${broad.strike} / NO ${narrow.strike}`;
+            portfolio!.cash -= TRADE_SIZE;
+            portfolio!.positions.push(position);
+            recorded++;
+            continue;
+          }
 
           blockedSignals.push({
             id: position.id,
@@ -5063,13 +5087,25 @@ function markToMarket(
   portfolio: Portfolio,
   latestRow: SnapshotRow,
   snapshots: InstrumentSnapshotFile[],
+  valRows: SnapshotRow[] = [],
 ): ClosedTrade[] {
   const closed: ClosedTrade[] = [];
   const now = new Date().toISOString();
   const remaining: Position[] = [];
 
   for (const pos of portfolio.positions) {
-    const mark = markPosition(pos, latestRow, snapshots);
+    const expiredPackage = pos.instrumentType === "pm_package" && new Date(pos.expiryDate) <= new Date();
+    let mark = markPosition(pos, latestRow, snapshots);
+    // Expired monotonic-arb packages must settle from realized underlying
+    // highs/lows, not live PM bid/ask (which is stale or gone post-resolution).
+    // This also rescues packages whose contracts have aged out of the live
+    // snapshot (markPosition returns null) so they don't get stuck open.
+    if (expiredPackage) {
+      const settled = settleMonotonicArbPackage(pos, valRows);
+      if (settled) {
+        mark = { currentPrice: settled.price, underlyingPrice: settled.underlyingPrice, marketPnl: settled.marketPnl, fundingPnl: 0, pnl: settled.pnl, pnlPct: settled.pnlPct };
+      }
+    }
     if (!mark) { remaining.push(pos); continue; }
     updatePeakPnl(pos, mark);
 
@@ -7608,7 +7644,7 @@ async function main() {
   const latestRow = valRows[valRows.length - 1];
   const latestSnapshot = latestInstrumentSnapshot(instrumentSnapshots);
   const relativeValueRows = readRelativeValueObservations(250);
-  const closedTrades = markToMarket(portfolio, latestRow, instrumentSnapshots);
+  const closedTrades = markToMarket(portfolio, latestRow, instrumentSnapshots, valRows);
   if (closedTrades.length > 0) {
     console.log(`\n  Closed ${closedTrades.length} positions:`);
     for (const t of closedTrades) {
@@ -7668,9 +7704,9 @@ async function main() {
       console.log(`    ${emoji} ${shadowLabel}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${humanCloseReason(result.closeReason)}: ${result.pnlPct >= 0 ? "+" : ""}${result.pnlPct.toFixed(2)}%`);
     }
   }
-  const newMonotonicArbShadows = recordMonotonicArbShadows(latestRow, latestSnapshot, learningParams, blockedSignals);
+  const newMonotonicArbShadows = recordMonotonicArbShadows(latestRow, latestSnapshot, learningParams, blockedSignals, portfolio);
   if (newMonotonicArbShadows > 0) {
-    console.log(`\n  Opened ${newMonotonicArbShadows} monotonic-arb shadow package trades.`);
+    console.log(`\n  Opened ${newMonotonicArbShadows} monotonic-arb ${ENABLE_MONOTONIC_ARB_LIVE ? "LIVE" : "shadow"} package trades.`);
   }
   const oneTouchHighEdgeNoLiveSignals = ENABLE_ONE_TOUCH_HIGH_EDGE_NO_OPENING
     ? generateOneTouchHighEdgeNoSignals(relativeValueRows, weights, learningParams, latestSnapshot)
