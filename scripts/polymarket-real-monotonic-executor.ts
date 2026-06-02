@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { webcrypto } from "node:crypto";
-import { ClobClient, type ApiKeyCreds, AssetType, OrderType, Side, type TickSize } from "@polymarket/clob-client";
+import { ClobClient, type ApiKeyCreds, AssetType, Chain, OrderType, Side, type TickSize } from "@polymarket/clob-client-v2";
 import { config } from "dotenv";
 import { ethers } from "ethers";
 import { VpnGuard } from "../engine-src/live/VpnGuard.js";
@@ -26,7 +26,7 @@ const ORDERS_PATH = join(DATA_DIR, "polymarket-live-orders.json");
 
 const HOST = process.env.POLYMARKET_CLOB_HOST ?? "https://clob.polymarket.com";
 const GAMMA_API = process.env.GAMMA_API ?? "https://gamma-api.polymarket.com";
-const CHAIN_ID = 137;
+const CHAIN_ID = Chain.POLYGON;
 const RPC_URL = process.env.RPC_URL ?? "https://polygon-rpc.com";
 const CTF_ADDRESS = "0x4D97DCd97eC945f40cF65F87097ACe5EA0476045";
 
@@ -556,9 +556,9 @@ async function scanCandidates(foundAt: string): Promise<{ candidates: Candidate[
 
 async function clobClient(): Promise<{ signer: ethers.Wallet; client: ClobClient }> {
   const signer = signerFromEnv();
-  const l1 = new ClobClient(HOST, CHAIN_ID, signer);
-  const creds = await l1.deriveApiKey() as ApiKeyCreds;
-  return { signer, client: new ClobClient(HOST, CHAIN_ID, signer, creds) };
+  const l1 = new ClobClient({ host: HOST, chain: CHAIN_ID, signer });
+  const creds = await l1.createOrDeriveApiKey() as ApiKeyCreds;
+  return { signer, client: new ClobClient({ host: HOST, chain: CHAIN_ID, signer, creds, throwOnError: true }) };
 }
 
 function signerFromEnv(): ethers.Wallet {
