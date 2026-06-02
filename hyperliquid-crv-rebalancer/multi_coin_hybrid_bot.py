@@ -191,6 +191,13 @@ def append_shadow_trade(event: dict):
         print(f"[shadow-trade] write failed: {e}", flush=True)
 
 
+def scale_fee_to_shadow(real_fee_usd: float, real_size_usd: float, shadow_size_usd: float) -> float:
+    """Scale actual exchange fees to the notional used in shadow reporting."""
+    if real_fee_usd <= 0 or real_size_usd <= 0:
+        return 0.0
+    return real_fee_usd * (shadow_size_usd / real_size_usd)
+
+
 def log(msg: str):
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
     print(f"[{ts}] {msg}")
@@ -587,6 +594,114 @@ class MultiCoinHybridBot:
             log(f"{coin}: Error closing: {e}")
             return None
 
+    def fetch_exchange_positions(self) -> dict:
+        """Return actual open Hyperliquid positions keyed by coin.
+
+        The bot's JSON state can drift when positions are closed manually.
+        This exchange snapshot is the source of truth for whether the bot is
+        actually carrying exposure before it decides to enter or exit.
+        """
+        if self.dry_run or self.info is None:
+            return {}
+        try:
+            user_state = self.info.user_state(self.address)
+            actual = {}
+            for row in user_state.get("assetPositions", []) or []:
+                pos = row.get("position", {}) if isinstance(row, dict) else {}
+                coin = pos.get("coin")
+                if coin not in self.coins:
+                    continue
+                try:
+                    szi = float(pos.get("szi", 0) or 0)
+                    entry_px = float(pos.get("entryPx", 0) or 0)
+                except (TypeError, ValueError):
+                    continue
+                if abs(szi) <= 1e-12:
+                    continue
+                actual[coin] = {
+                    "is_long": szi > 0,
+                    "entry_price": entry_px if entry_px > 0 else None,
+                    "size": abs(szi),
+                }
+            return actual
+        except Exception as e:
+            log(f"Exchange position reconciliation failed; using local state this cycle: {e}")
+            return {}
+
+    def reconcile_exchange_positions(self, current_prices: dict):
+        """Sync local open/flat flags to actual Hyperliquid exposure.
+
+        If a user manually closes the perps, the next cycle should mark the
+        coin flat before entry logic runs so it can reopen if the signal window
+        is still valid. Conversely, if actual exchange exposure exists while
+        local state is flat, adopt it to avoid accidental duplicate entries.
+        """
+        actual = self.fetch_exchange_positions()
+        if self.dry_run or self.info is None:
+            return
+
+        changed = False
+        now = datetime.now(timezone.utc).isoformat()
+        for coin in self.coins:
+            pos_state = self.state["positions"].get(coin, {})
+            local_open = bool(pos_state.get("in_position"))
+            actual_pos = actual.get(coin)
+
+            if local_open and actual_pos is None:
+                entry_price = pos_state.get("entry_price")
+                current_price = current_prices.get(coin)
+                was_long = bool(pos_state.get("is_long"))
+                pnl = None
+                if entry_price and current_price:
+                    pnl = (current_price / entry_price - 1) * 100 if was_long else (entry_price / current_price - 1) * 100
+                self.state["positions"][coin] = {
+                    "in_position": False,
+                    "is_long": False,
+                    "entry_price": None,
+                    "entry_time": None,
+                    "mode": pos_state.get("mode", "short"),
+                    "loss_streak": pos_state.get("loss_streak", 0),
+                    "cooldown_until": pos_state.get("cooldown_until"),
+                }
+                changed = True
+                pnl_str = "" if pnl is None else f" approx P&L {pnl:+.2f}%"
+                log(f"{coin}: RECONCILE — local state was open but Hyperliquid is flat; marking flat before signal scan.{pnl_str}")
+                append_shadow_trade({
+                    "ts": now,
+                    "coin": coin,
+                    "action": "close",
+                    "side": "long" if was_long else "short",
+                    "entry_price": entry_price,
+                    "exit_price": current_price,
+                    "signal_price": current_price,
+                    "fill_size": 0.0,
+                    "real_size_usd": 0.0,
+                    "size_usd": self.shadow_size_usd,
+                    "fee_usd": 0.0,
+                    "pnl_pct": pnl,
+                    "regime": "manual_reconcile",
+                    "reason": "manual_exchange_flat_reconcile",
+                    "ema_diff_pct": None,
+                })
+
+            elif not local_open and actual_pos is not None:
+                entry_price = actual_pos.get("entry_price") or current_prices.get(coin)
+                self.state["positions"][coin] = {
+                    "in_position": True,
+                    "is_long": bool(actual_pos.get("is_long")),
+                    "entry_price": entry_price,
+                    "entry_time": now,
+                    "mode": "long" if actual_pos.get("is_long") else "short",
+                    "loss_streak": pos_state.get("loss_streak", 0),
+                    "cooldown_until": pos_state.get("cooldown_until"),
+                }
+                changed = True
+                side = "LONG" if actual_pos.get("is_long") else "SHORT"
+                log(f"{coin}: RECONCILE — Hyperliquid has {side} exposure while local state is flat; adopting entry=${entry_price}.")
+
+        if changed:
+            save_state(self.state)
+
     # ---- Main Trading Logic ----
     def run_cycle(self):
         """One trading cycle for all coins."""
@@ -596,6 +711,11 @@ class MultiCoinHybridBot:
             log("Failed to fetch prices, skipping cycle")
             return
         log(f"Got prices for {len(self.price_cache)} coins")
+        self.reconcile_exchange_positions({
+            coin: prices[-1]
+            for coin, prices in self.price_cache.items()
+            if prices
+        })
 
         # 2. Check bull signal
         is_bull = self.check_bull_signal()
@@ -689,6 +809,7 @@ class MultiCoinHybridBot:
                 # the LLM is told about. Both are emitted so the LLM has the
                 # signal context but the operator can audit real fees.
                 real_size_usd = fill_price * fill_size
+                shadow_fee_usd = scale_fee_to_shadow(fee_usd, real_size_usd, self.shadow_size_usd)
 
                 entry_time = datetime.now(timezone.utc).isoformat()
                 # Preserve loss_streak / cooldown_until across the open. Without
@@ -721,7 +842,8 @@ class MultiCoinHybridBot:
                         "fill_size": fill_size,
                         "real_size_usd": real_size_usd,
                         "size_usd": self.shadow_size_usd,
-                        "fee_usd": fee_usd,
+                        "fee_usd": shadow_fee_usd,
+                        "real_fee_usd": fee_usd,
                         "regime": "bull" if is_bull else "bear",
                         "reason": f"ema{LONG_EMA if is_bull else SHORT_EMA}h_breakout",
                         "ema_diff_pct": ema_diff,
@@ -750,6 +872,8 @@ class MultiCoinHybridBot:
                 exit_price = fill.get("fill_price") or current_price
                 exit_size = fill.get("fill_size") or 0.0
                 close_fee_usd = float(fill.get("fee") or 0.0)
+                close_real_size_usd = exit_price * exit_size
+                close_shadow_fee_usd = scale_fee_to_shadow(close_fee_usd, close_real_size_usd, self.shadow_size_usd)
                 # Recompute gross return against the actual exit fill price
                 # rather than the cycle's signal price so logs/shadow events
                 # reflect realized P&L.
@@ -804,9 +928,10 @@ class MultiCoinHybridBot:
                         "exit_price": exit_price,
                         "signal_price": current_price,
                         "fill_size": exit_size,
-                        "real_size_usd": exit_price * exit_size,
+                        "real_size_usd": close_real_size_usd,
                         "size_usd": self.shadow_size_usd,
-                        "fee_usd": close_fee_usd,
+                        "fee_usd": close_shadow_fee_usd,
+                        "real_fee_usd": close_fee_usd,
                         "pnl_pct": gross_ret,
                         "regime": "bull" if is_bull else "bear",
                         "reason": "ema_reversion",

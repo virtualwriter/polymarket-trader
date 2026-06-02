@@ -163,6 +163,7 @@ interface HybridBotShadowEvent {
   real_size_usd?: number;
   size_usd?: number;
   fee_usd?: number;
+  real_fee_usd?: number;
   pnl_pct?: number;
   regime?: "bull" | "bear";
   reason?: string;
@@ -246,7 +247,15 @@ function readHybridBotReport(): HybridBotReport {
         const coin = event.coin ?? "UNKNOWN";
         const stats = report.perCoinStats.get(coin) ?? { ...empty };
         const totals = report.totalsAcrossAllCoins;
-        const fee = Number(event.fee_usd ?? 0);
+        const rawFee = Number(event.fee_usd ?? 0);
+        const realSize = Number(event.real_size_usd ?? 0);
+        const shadowSizeForFee = Number(event.size_usd ?? 1);
+        // New hybrid bot events write fee_usd at shadow scale and preserve the
+        // actual exchange fee in real_fee_usd. Older events wrote real fees into
+        // fee_usd while size_usd was shadow-scaled, so back-scale them here.
+        const fee = event.real_fee_usd == null && realSize > 0 && shadowSizeForFee > 0
+          ? rawFee * (shadowSizeForFee / realSize)
+          : rawFee;
         stats.feesUsd += fee;
         totals.feesUsd += fee;
         if (event.action === "open") {
