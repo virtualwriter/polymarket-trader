@@ -23060,3 +23060,41 @@ BTC sell-off combined with a flat term-structure inversion suggests that options
 
 ---
 
+### 2026-06-02 15:30 UTC
+
+**Portfolio:** $98.43 total | Cash $96.43 | 2 open | P&L $0.9230 | 51% win rate (179 trades)
+
+**Opened 1 positions:**
+- HYPE short @ $70.909 via hyperliquid/hl_perp [HL HYPE perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved wider by 8.8pp (was 7.2, now 16.0)
+- [anomaly] btc_pm_iv = 53.5 is 3.7 std devs from mean (39.60 ± 3.73)
+- [anomaly] btc_pm_ev = 73170 is -3.5 std devs from mean (83074.79 ± 2833.69)
+- [anomaly] btc_spot = 67458 is -2.9 std devs from mean (76370.62 ± 3074.12)
+- [anomaly] btc_opt_fwd_90d = 68285 is -2.8 std devs from mean (77298.68 ± 3164.60)
+
+**Blocked signal learning:**
+- Open blocked shadows: 74
+- Resolved blocked shadows: 475 (257 wins / 218 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 118/164 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=115 (34W/68L/13flat, 33.3% win-rate, sum $-2.5743, avg -2.24%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=156 (50W/89L/17flat, 36.0% win-rate, sum $-2.4687, avg -1.58%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.11%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-5.26%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW ETH short via polymarket would have edge compressed but trade lost money (-5.00%)
+
+**LLM analysis:**
+Today's data shows a violent crypto flush with BTC breaking below 70k and spot dropping to 67,458. The Polymarket IV surged to 53.5 while 90d option IV cratered to 25.7, creating a historic term-structure inversion. This dislocation, combined with a put/call spike to 1.12, suggests market is pricing extreme downside fear potentially overdone. However, the LLM-promoted hypotheses (H-521, H-150, H-523) all remain conditionally inactive under current regime. The monotonic arb position on SOL (MA-1780403314728-llno) opened 3h ago and is -2.02%; its exit is mechanical, no LLM close allowed. The relative-value heatmap highlights several buy-YES opportunities (e.g., GOLD $4,900 in June, BTC $80k in June) but these are exploratory ONE_TOUCH_HIGH_EDGE_NO territory, not actionable under the NO-only promotion rules. Continue monitoring for mean reversion setups as panic extremes historically revert.
+
+---
+
