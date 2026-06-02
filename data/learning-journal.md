@@ -22693,3 +22693,40 @@ Today's snapshot shows crypto remaining bid but with stretched funding. The lack
 
 ---
 
+### 2026-06-02 04:29 UTC
+
+**Portfolio:** $98.34 total | Cash $96.34 | 2 open | P&L $0.8323 | 51% win rate (179 trades)
+
+**Closed 1 trades:**
+- ❌ SOL long via polymarket/pm_yes [what-price-will-solana-hit-before-2027 — YES — Will Solana reach $160 by December 31, 2026?] (MONOTONIC_ARB) → stop: $-0.1111 (-11.1%, market -0.1111, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved wider by 5.2pp (was 3.2, now 8.4)
+- [anomaly] btc_pm_ev = 75883 is -2.7 std devs from mean (83186.02 ± 2681.31)
+- [anomaly] hype_spot = 74.469 is 2.5 std devs from mean (48.83 ± 10.27)
+- [anomaly] hype_pm_ev = 69.86 is 2.4 std devs from mean (50.11 ± 8.21)
+- [anomaly] hype_med_max = 100 is 2.3 std devs from mean (67.79 ± 14.12)
+
+**Blocked signal learning:**
+- Open blocked shadows: 76
+- Resolved blocked shadows: 471 (255 wins / 216 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 118/164 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=113 (33W/68L/12flat, 32.7% win-rate, sum $-2.5754, avg -2.28%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=154 (49W/89L/16flat, 35.5% win-rate, sum $-2.4698, avg -1.60%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: MONOTONIC_ARB OIL long via polymarket would have expired (+100.20%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.12%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.31%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.21%)
+
+**LLM analysis:**
+HYPE long trade proceeds as planned; thesis conditions still met and price action remains within risk tolerances. The BTC dealer hedge pullback shadow (H-531) is worth monitoring given elevated P/C and positive funding. No new edge is clear enough to deploy new capital given the backlog of shadow tests, and no closures are allowed this cycle.
+
+---
+
