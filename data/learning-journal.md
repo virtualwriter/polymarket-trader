@@ -22843,3 +22843,40 @@ Market conditions remain choppy with no actionable LLM entry signals. The SOL mo
 
 ---
 
+### 2026-06-02 08:28 UTC
+
+**Portfolio:** $97.95 total | Cash $96.95 | 1 open | P&L $0.4483 | 50% win rate (184 trades)
+
+**Closed 1 trades:**
+- ❌ SOL long via polymarket/pm_yes [what-price-will-solana-hit-before-2027 — YES — Will Solana reach $180 by December 31, 2026?] (MONOTONIC_ARB) → stop: $-0.0909 (-9.1%, market -0.0909, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_pm_ev = 75069 is -3.0 std devs from mean (83144.18 ± 2735.02)
+- [anomaly] hype_med_max = 100 is 2.2 std devs from mean (67.96 ± 14.28)
+- [anomaly] hype_pm_ev = 68.46 is 2.2 std devs from mean (50.21 ± 8.30)
+- [anomaly] hype_spot = 71.575 is 2.2 std devs from mean (48.95 ± 10.39)
+- [anomaly] btc_spot = 70052 is -2.1 std devs from mean (76428.83 ± 3015.19)
+
+**Blocked signal learning:**
+- Open blocked shadows: 75
+- Resolved blocked shadows: 473 (256 wins / 217 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 118/164 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=114 (34W/68L/12flat, 33.3% win-rate, sum $-2.5743, avg -2.26%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=155 (50W/89L/16flat, 36.0% win-rate, sum $-2.4687, avg -1.59%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.31%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.21%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.11%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-5.26%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 4/12; next scheduled 2026-06-02T10:28:31.208Z). Mechanical cycle ran normally._
+
+---
+
