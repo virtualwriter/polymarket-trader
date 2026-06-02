@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-02T19:31:38.311Z",
+  "generatedAt": "2026-06-02T20:28:43.441Z",
   "dataFreshness": {
-    "valuationRows": 762,
-    "latestValuationAt": "2026-06-02T19",
-    "macroRows": 762,
+    "valuationRows": 763,
+    "latestValuationAt": "2026-06-02T20",
+    "macroRows": 763,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-02T19"
+    "latestInstrumentSnapshotAt": "2026-06-02T20"
   },
   "portfolio": {
-    "cash": 96.4266,
-    "openPositions": 2,
+    "cash": 97.4282,
+    "openPositions": 1,
     "realizedPnl": 0.923,
     "totalTrades": 179,
     "winRatePct": 51.4,
-    "unrealizedPnl": 0.0015
+    "unrealizedPnl": -0.0202
   },
   "openPositions": [
     {
@@ -24,28 +24,11 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": -2.02,
       "currentPrice": 0.97,
-      "underlyingPrice": 75.511,
+      "underlyingPrice": 74.972,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
       "evidenceColumns": []
-    },
-    {
-      "positionId": "T-1780414243241-5sr1",
-      "asset": "HYPE",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 2.17,
-      "currentPrice": 69.373,
-      "underlyingPrice": 69.373,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "hype_spot",
-        "hype_hl_funding_ann"
-      ]
     }
   ],
   "signalHealth": [
@@ -70,10 +53,10 @@
     {
       "type": "FUNDING_EXTREME_LONG",
       "enabled": true,
-      "weight": 0.5724,
-      "trades": 20,
-      "wins": 10,
-      "avgPnlPct": -0.5807,
+      "weight": 0.5651,
+      "trades": 21,
+      "wins": 11,
+      "avgPnlPct": -0.5456,
       "disabledAssets": [
         "AMZN"
       ]
@@ -185,7 +168,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 72,
+    "openCount": 73,
     "resolvedCount": 478,
     "wouldHaveWon": 258,
     "wouldHaveLost": 220,
@@ -381,6 +364,13 @@
           "flags": [
             "wide_pm_spread"
           ]
+        },
+        "sourceComparison": {
+          "sourceClosedAt": "2026-06-02T19:56:56.071Z",
+          "sourcePnl": 0.0016,
+          "sourcePnlPct": 0.16,
+          "proxyOutperformed": false,
+          "correlation": "opposite_direction"
         }
       },
       {

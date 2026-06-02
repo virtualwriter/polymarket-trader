@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-02T19:31:38.333Z",
+  "generatedAt": "2026-06-02T20:28:43.464Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.22625000000000006,
-      "confidence": 0.13830806593306103,
-      "thesis": "BTC P/C ratio 1.38 — heavy put buying → contrarian long.",
+      "strength": 0.10250000000000009,
+      "confidence": 0.06265890279840337,
+      "thesis": "BTC P/C ratio 1.28 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 66938,
+      "entryPrice": 67002,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -28,31 +28,12 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 7.05,
-      "hoursToExpiry": 5097.47,
+      "hoursOpen": 8,
+      "hoursToExpiry": 5096.52,
       "plannedHoldHours": 5104.52,
-      "elapsedHoldPct": 0.0014,
+      "elapsedHoldPct": 0.0016,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "T-1780414243241-5sr1",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "HYPE",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "hype_spot",
-        "hype_hl_funding_ann"
-      ],
-      "hoursOpen": 4.02,
-      "hoursToExpiry": 67.98,
-      "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.0558,
-      "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 4.0h, requires at least 12h."
     }
   ]
 }
