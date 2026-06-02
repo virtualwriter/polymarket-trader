@@ -1,6 +1,11 @@
 {
-  "generatedAt": "2026-06-02T10:28:33.127Z",
-  "mechanicalExits": [],
+  "generatedAt": "2026-06-02T11:28:35.339Z",
+  "mechanicalExits": [
+    {
+      "positionId": "MA-1780396112962-p4un",
+      "reason": "stop"
+    }
+  ],
   "signalKillExits": [],
   "entryCandidates": [],
   "llmCloseEligibility": [
@@ -13,9 +18,25 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 0,
-      "hoursToExpiry": 5106.52,
+      "hoursOpen": 1,
+      "hoursToExpiry": 5105.52,
       "plannedHoldHours": 5106.52,
+      "elapsedHoldPct": 0.0002,
+      "minHoldHours": 168,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "MA-1780399715181-hk50",
+      "signalType": "MONOTONIC_ARB",
+      "asset": "SOL",
+      "venue": "polymarket",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 0,
+      "hoursToExpiry": 5105.52,
+      "plannedHoldHours": 5105.52,
       "elapsedHoldPct": 0,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
