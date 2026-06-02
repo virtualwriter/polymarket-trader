@@ -1,32 +1,31 @@
 {
-  "generatedAt": "2026-06-02T11:28:35.339Z",
-  "mechanicalExits": [
-    {
-      "positionId": "MA-1780396112962-p4un",
-      "reason": "stop"
-    }
-  ],
+  "generatedAt": "2026-06-02T12:18:02.907Z",
+  "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [],
   "llmCloseEligibility": [
     {
-      "positionId": "MA-1780396112962-p4un",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "SOL",
+      "positionId": "T-1779569932574-aejv",
+      "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+      "asset": "BTC",
       "venue": "polymarket",
-      "direction": "long",
+      "direction": "short",
       "allowed": false,
       "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 1,
-      "hoursToExpiry": 5105.52,
-      "plannedHoldHours": 5106.52,
-      "elapsedHoldPct": 0.0002,
+      "evidenceColumns": [
+        "btc_spot",
+        "btc_pm_iv",
+        "btc_hl_funding_ann"
+      ],
+      "hoursOpen": 231.32,
+      "hoursToExpiry": 1928.68,
+      "plannedHoldHours": 2160,
+      "elapsedHoldPct": 0.1071,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
-      "positionId": "MA-1780399715181-hk50",
+      "positionId": "MA-1780402682753-p8zs",
       "signalType": "MONOTONIC_ARB",
       "asset": "SOL",
       "venue": "polymarket",
@@ -35,8 +34,8 @@
       "allowedCategories": [],
       "evidenceColumns": [],
       "hoursOpen": 0,
-      "hoursToExpiry": 5105.52,
-      "plannedHoldHours": 5105.52,
+      "hoursToExpiry": 5104.7,
+      "plannedHoldHours": 5104.7,
       "elapsedHoldPct": 0,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
