@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-02T12:28:34.902Z",
+  "generatedAt": "2026-06-02T12:36:34.125Z",
   "dataFreshness": {
     "valuationRows": 759,
     "latestValuationAt": "2026-06-02T12",
@@ -8,16 +8,34 @@
     "latestInstrumentSnapshotAt": "2026-06-02T12"
   },
   "portfolio": {
-    "cash": 96.5959,
-    "openPositions": 1,
-    "realizedPnl": 0.1832,
-    "totalTrades": 187,
-    "winRatePct": 49.2,
-    "unrealizedPnl": 0
+    "cash": 98.4272,
+    "openPositions": 2,
+    "realizedPnl": 1.1731,
+    "totalTrades": 182,
+    "winRatePct": 52.2,
+    "unrealizedPnl": -0.19
   },
   "openPositions": [
     {
-      "positionId": "MA-1780403314728-llno",
+      "positionId": "T-1779569932574-aejv",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "short",
+      "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+      "pnlPct": -20,
+      "currentPrice": 0.4,
+      "underlyingPrice": 69333,
+      "targetPct": null,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "btc_spot",
+        "btc_pm_iv",
+        "btc_hl_funding_ann"
+      ]
+    },
+    {
+      "positionId": "MA-1780403793991-g6aq",
       "asset": "SOL",
       "venue": "polymarket",
       "direction": "long",
@@ -129,19 +147,19 @@
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "enabled": true,
-      "weight": 0.6113,
-      "trades": 19,
-      "wins": 11,
-      "avgPnlPct": 0.2175,
+      "weight": 0.6096,
+      "trades": 20,
+      "wins": 12,
+      "avgPnlPct": 0.2859,
       "disabledAssets": []
     },
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "enabled": true,
-      "weight": 0.5156,
-      "trades": 17,
-      "wins": 9,
-      "avgPnlPct": -0.2491,
+      "weight": 0.5216,
+      "trades": 18,
+      "wins": 10,
+      "avgPnlPct": -0.2316,
       "disabledAssets": [
         "AMZN"
       ]
