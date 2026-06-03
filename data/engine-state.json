@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-03T11:28:36.115Z",
+  "generatedAt": "2026-06-03T12:29:37.488Z",
   "dataFreshness": {
-    "valuationRows": 776,
-    "latestValuationAt": "2026-06-03T11",
-    "macroRows": 776,
+    "valuationRows": 777,
+    "latestValuationAt": "2026-06-03T12",
+    "macroRows": 777,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-03T11"
+    "latestInstrumentSnapshotAt": "2026-06-03T12"
   },
   "portfolio": {
-    "cash": 96.4282,
-    "openPositions": 2,
+    "cash": 95.4282,
+    "openPositions": 3,
     "realizedPnl": 0.9246,
     "totalTrades": 180,
     "winRatePct": 51.7,
-    "unrealizedPnl": -0.0326
+    "unrealizedPnl": -0.0324
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": -1.01,
       "currentPrice": 0.98,
-      "underlyingPrice": 75.547,
+      "underlyingPrice": 75.01,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -36,15 +36,31 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -2.25,
-      "currentPrice": 73.44,
-      "underlyingPrice": 73.44,
+      "pnlPct": -1.46,
+      "currentPrice": 72.873,
+      "underlyingPrice": 72.873,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "hype_spot",
         "hype_hl_funding_ann"
+      ]
+    },
+    {
+      "positionId": "T-1780486212450-7g6b",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "pnlPct": -0.77,
+      "currentPrice": 72.873,
+      "underlyingPrice": 72.873,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "hype_spot"
       ]
     }
   ],
