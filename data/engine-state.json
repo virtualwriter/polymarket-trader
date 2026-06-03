@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-02T23:28:29.665Z",
+  "generatedAt": "2026-06-03T00:28:33.663Z",
   "dataFreshness": {
-    "valuationRows": 765,
-    "latestValuationAt": "2026-06-02T23",
-    "macroRows": 765,
+    "valuationRows": 766,
+    "latestValuationAt": "2026-06-03T00",
+    "macroRows": 766,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-02T23"
+    "latestInstrumentSnapshotAt": "2026-06-03T00"
   },
   "portfolio": {
     "cash": 97.4282,
@@ -24,7 +24,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": -1.01,
       "currentPrice": 0.98,
-      "underlyingPrice": 72.912,
+      "underlyingPrice": 74.745,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -168,9 +168,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 74,
-    "resolvedCount": 478,
-    "wouldHaveWon": 258,
+    "openCount": 73,
+    "resolvedCount": 479,
+    "wouldHaveWon": 259,
     "wouldHaveLost": 220,
     "bySignal": [
       {
@@ -239,24 +239,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 2.21,
-        "resolvedAt": "2026-06-02T01:28:29.116Z",
-        "marketQuality": {
-          "yesBid": 0.048,
-          "yesAsk": 0.053,
-          "yesSpread": 0.005,
-          "liquidity": 69602.46,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -388,6 +370,24 @@
           "yesAsk": 0.32,
           "yesSpread": 0.01,
           "liquidity": 52626.33,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 6.9,
+        "resolvedAt": "2026-06-03T00:28:33.506Z",
+        "marketQuality": {
+          "yesBid": 0.42,
+          "yesAsk": 0.43,
+          "yesSpread": 0.01,
+          "liquidity": 27874.25,
           "flags": []
         }
       }
