@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-03T14:31:23.000Z",
+  "generatedAt": "2026-06-03T16:28:35.133Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,15 +7,29 @@
   "llmCloses": [],
   "entrySignals": [
     {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.06874999999999992,
+      "confidence": 0.04202731285258754,
+      "thesis": "BTC P/C ratio 1.25 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 65549,
+      "targetPct": 4,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    },
+    {
       "type": "PC_RATIO_EXTREME_LOW",
       "asset": "GOLD",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.10666666666666658,
-      "confidence": 0.054992310843394315,
-      "thesis": "GOLD P/C ratio 0.47 — heavy call buying → contrarian short.",
+      "strength": 0.05666666666666672,
+      "confidence": 0.02921466513555328,
+      "thesis": "GOLD P/C ratio 0.48 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4449,
+      "entryPrice": 4436,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5

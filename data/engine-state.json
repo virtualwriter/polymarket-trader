@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-06-03T14:29:34.218Z",
+  "generatedAt": "2026-06-03T16:28:35.099Z",
   "dataFreshness": {
-    "valuationRows": 779,
-    "latestValuationAt": "2026-06-03T14",
-    "macroRows": 779,
+    "valuationRows": 780,
+    "latestValuationAt": "2026-06-03T16",
+    "macroRows": 780,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-03T14"
+    "latestInstrumentSnapshotAt": "2026-06-03T16"
   },
   "portfolio": {
     "cash": 97.3794,
     "openPositions": 1,
-    "realizedPnl": 0.8977,
-    "totalTrades": 181,
-    "winRatePct": 51.4,
+    "realizedPnl": 0.8758,
+    "totalTrades": 182,
+    "winRatePct": 51.1,
     "unrealizedPnl": -0.0101
   },
   "openPositions": [
@@ -24,7 +24,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": -1.01,
       "currentPrice": 0.98,
-      "underlyingPrice": 73.866,
+      "underlyingPrice": 72.035,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -169,10 +169,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 73,
-    "resolvedCount": 485,
-    "wouldHaveWon": 262,
-    "wouldHaveLost": 223,
+    "openCount": 71,
+    "resolvedCount": 487,
+    "wouldHaveWon": 263,
+    "wouldHaveLost": 224,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -207,6 +207,14 @@
         "avgPnlPct": 0.7
       },
       {
+        "signalType": "PC_RATIO_EXTREME_LOW",
+        "blocked": 12,
+        "resolved": 12,
+        "wouldHaveWon": 7,
+        "wouldHaveLost": 5,
+        "avgPnlPct": 0.06
+      },
+      {
         "signalType": "FUNDING_EXTREME_LONG",
         "blocked": 10,
         "resolved": 10,
@@ -229,53 +237,9 @@
         "wouldHaveWon": 1,
         "wouldHaveLost": 0,
         "avgPnlPct": 6.73
-      },
-      {
-        "signalType": "PC_RATIO_EXTREME_LOW",
-        "blocked": 12,
-        "resolved": 11,
-        "wouldHaveWon": 6,
-        "wouldHaveLost": 5,
-        "avgPnlPct": -0.22
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -8.7,
-        "resolvedAt": "2026-06-02T19:31:38.114Z",
-        "marketQuality": {
-          "yesBid": 0.31,
-          "yesAsk": 0.32,
-          "yesSpread": 0.01,
-          "liquidity": 52626.33,
-          "flags": []
-        }
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 6.9,
-        "resolvedAt": "2026-06-03T00:28:33.506Z",
-        "marketQuality": {
-          "yesBid": 0.42,
-          "yesAsk": 0.43,
-          "yesSpread": 0.01,
-          "liquidity": 27874.25,
-          "flags": []
-        }
-      },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
         "asset": "BTC",
@@ -395,6 +359,39 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "PC_RATIO_EXTREME_LOW",
+        "asset": "GOLD",
+        "venue": "spot",
+        "direction": "short",
+        "blockedReason": "short_blocked_by_positive_trend",
+        "outcome": "win",
+        "closeReason": "target",
+        "pnlPct": 3.17,
+        "resolvedAt": "2026-06-03T16:28:34.879Z",
+        "trendMetrics": {
+          "aboveTrendPct": 1.53,
+          "momentumPct": 2.25
+        }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -3.13,
+        "resolvedAt": "2026-06-03T16:28:34.879Z",
+        "marketQuality": {
+          "yesBid": 0.36,
+          "yesAsk": 0.37,
+          "yesSpread": 0.01,
+          "liquidity": 85547.98,
+          "flags": []
         }
       }
     ],
