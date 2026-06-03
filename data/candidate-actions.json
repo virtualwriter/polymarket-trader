@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-03T18:28:36.582Z",
+  "generatedAt": "2026-06-03T19:28:34.439Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 73.229,
+      "entryPrice": 73.408,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
@@ -28,10 +28,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 30,
-      "hoursToExpiry": 5074.52,
+      "hoursOpen": 31,
+      "hoursToExpiry": 5073.52,
       "plannedHoldHours": 5104.52,
-      "elapsedHoldPct": 0.0059,
+      "elapsedHoldPct": 0.0061,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -44,10 +44,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 0,
-      "hoursToExpiry": 657.52,
+      "hoursOpen": 1,
+      "hoursToExpiry": 656.52,
       "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0,
+      "elapsedHoldPct": 0.0015,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -60,12 +60,30 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 0,
-      "hoursToExpiry": 657.52,
+      "hoursOpen": 1,
+      "hoursToExpiry": 656.52,
       "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0,
+      "elapsedHoldPct": 0.0015,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "T-1780511316596-aimi",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "hype_spot"
+      ],
+      "hoursOpen": 1,
+      "hoursToExpiry": 503,
+      "plannedHoldHours": 504,
+      "elapsedHoldPct": 0.002,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     }
   ]
 }

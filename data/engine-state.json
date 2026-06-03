@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-03T18:28:36.554Z",
+  "generatedAt": "2026-06-03T19:28:34.418Z",
   "dataFreshness": {
-    "valuationRows": 782,
-    "latestValuationAt": "2026-06-03T18",
-    "macroRows": 782,
+    "valuationRows": 783,
+    "latestValuationAt": "2026-06-03T19",
+    "macroRows": 783,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-03T18"
+    "latestInstrumentSnapshotAt": "2026-06-03T19"
   },
   "portfolio": {
-    "cash": 95.3794,
-    "openPositions": 3,
+    "cash": 94.3794,
+    "openPositions": 4,
     "realizedPnl": 0.8758,
     "totalTrades": 182,
     "winRatePct": 51.1,
-    "unrealizedPnl": -0.0101
+    "unrealizedPnl": 0.0024
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": -1.01,
       "currentPrice": 0.98,
-      "underlyingPrice": 72.839,
+      "underlyingPrice": 72.049,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -36,9 +36,9 @@
       "venue": "polymarket",
       "direction": "long",
       "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.6,
-      "currentPrice": 0.989,
-      "underlyingPrice": 72.839,
+      "pnlPct": 0.5,
+      "currentPrice": 1,
+      "underlyingPrice": 72.049,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -50,13 +50,29 @@
       "venue": "polymarket",
       "direction": "long",
       "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.6,
-      "currentPrice": 0.989,
-      "underlyingPrice": 72.839,
+      "pnlPct": 0.5,
+      "currentPrice": 1,
+      "underlyingPrice": 72.049,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
       "evidenceColumns": []
+    },
+    {
+      "positionId": "T-1780511316596-aimi",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "pnlPct": 0.24,
+      "currentPrice": 73.408,
+      "underlyingPrice": 73.408,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "hype_spot"
+      ]
     }
   ],
   "signalHealth": [
