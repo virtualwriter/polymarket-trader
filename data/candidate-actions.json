@@ -1,8 +1,22 @@
 {
-  "generatedAt": "2026-06-03T12:29:37.524Z",
+  "generatedAt": "2026-06-03T13:29:26.374Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
+    {
+      "type": "PROMOTED_HYPOTHESIS",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.6666666666666666,
+      "confidence": 0.5466666666666666,
+      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
+      "hypothesisId": "H-521",
+      "entryPrice": 73.011,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 7
+    },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "BTC",
@@ -12,7 +26,7 @@
       "confidence": 0.06265890279840337,
       "thesis": "BTC P/C ratio 1.28 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 67013,
+      "entryPrice": 66857,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -28,31 +42,12 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 24.02,
-      "hoursToExpiry": 5080.51,
+      "hoursOpen": 25.01,
+      "hoursToExpiry": 5079.51,
       "plannedHoldHours": 5104.52,
-      "elapsedHoldPct": 0.0047,
+      "elapsedHoldPct": 0.0049,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "T-1780461015990-86nd",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "HYPE",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "hype_spot",
-        "hype_hl_funding_ann"
-      ],
-      "hoursOpen": 7.99,
-      "hoursToExpiry": 64.01,
-      "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.111,
-      "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 8.0h, requires at least 12h."
     },
     {
       "positionId": "T-1780486212450-7g6b",
@@ -65,12 +60,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 0.99,
-      "hoursToExpiry": 167.01,
+      "hoursOpen": 1.99,
+      "hoursToExpiry": 166.01,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0059,
+      "elapsedHoldPct": 0.0118,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
     }
   ]
 }
