@@ -1,35 +1,5 @@
 {
   "acceptedCloses": [],
   "rejectedCloses": [],
-  "skippedTrades": [
-    {
-      "instruction": {
-        "action": "buy",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "evidenceColumns": [
-          "btc_ibit_pc_ratio",
-          "btc_spot"
-        ],
-        "thesis": "PC_RATIO_EXTREME_HIGH signal: IBIT put/call ratio at 1.282, 3.2σ above 30d mean, indicating extreme bearish positioning. Contrarian mean reversion favors a BTC bounce over the next 1-2 weeks."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    },
-    {
-      "instruction": {
-        "action": "sell",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "evidenceColumns": [
-          "btc_spot",
-          "btc_pm_iv"
-        ],
-        "thesis": "ONE_TOUCH_HIGH_EDGE_NO: Polymarket YES on 'BTC dip to $55,000 by Dec 2026' (market 701501) is priced at 64.5c vs model 47.8c, giving a 16.7pt edge to sell YES / buy NO. Spread 1c, liquidity $73k, all filters passed. Buy NO at ~35.5c for a probabilistically favorable short on that downside outcome."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
-  "parameterUpdates": {}
+  "skippedTrades": []
 }
