@@ -1,33 +1,19 @@
 {
-  "generatedAt": "2026-06-03T13:29:26.374Z",
+  "generatedAt": "2026-06-03T14:29:34.260Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
     {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "GOLD",
       "venue": "spot",
-      "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 73.011,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7
-    },
-    {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.10250000000000009,
-      "confidence": 0.06265890279840337,
-      "thesis": "BTC P/C ratio 1.28 — heavy put buying → contrarian long.",
+      "direction": "short",
+      "strength": 0.10666666666666658,
+      "confidence": 0.054992310843394315,
+      "thesis": "GOLD P/C ratio 0.47 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 66857,
-      "targetPct": 4,
+      "entryPrice": 4449,
+      "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
     }
@@ -42,30 +28,12 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 25.01,
-      "hoursToExpiry": 5079.51,
+      "hoursOpen": 26.02,
+      "hoursToExpiry": 5078.51,
       "plannedHoldHours": 5104.52,
-      "elapsedHoldPct": 0.0049,
+      "elapsedHoldPct": 0.0051,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "T-1780486212450-7g6b",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "hype_spot"
-      ],
-      "hoursOpen": 1.99,
-      "hoursToExpiry": 166.01,
-      "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0118,
-      "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
     }
   ]
 }
