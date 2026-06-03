@@ -1,11 +1,26 @@
 {
-  "generatedAt": "2026-06-03T03:28:37.653Z",
+  "generatedAt": "2026-06-03T04:30:15.981Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
   "entrySignals": [
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "HYPE",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.4897142857142857,
+      "confidence": 0.2767407326488431,
+      "thesis": "HYPE HL funding 32.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 71.814,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
+    },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "BTC",
@@ -15,7 +30,7 @@
       "confidence": 0.06265890279840337,
       "thesis": "BTC P/C ratio 1.28 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 66222,
+      "entryPrice": 66555,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
