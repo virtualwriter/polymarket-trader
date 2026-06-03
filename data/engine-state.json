@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-03T06:28:33.221Z",
+  "generatedAt": "2026-06-03T07:28:36.428Z",
   "dataFreshness": {
-    "valuationRows": 771,
-    "latestValuationAt": "2026-06-03T06",
-    "macroRows": 771,
+    "valuationRows": 772,
+    "latestValuationAt": "2026-06-03T07",
+    "macroRows": 772,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-03T06"
+    "latestInstrumentSnapshotAt": "2026-06-03T07"
   },
   "portfolio": {
     "cash": 96.4282,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.9246,
     "totalTrades": 180,
     "winRatePct": 51.7,
-    "unrealizedPnl": -0.0195
+    "unrealizedPnl": -0.0157
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": -1.01,
       "currentPrice": 0.98,
-      "underlyingPrice": 74.987,
+      "underlyingPrice": 75.127,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -36,9 +36,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -0.94,
-      "currentPrice": 72.495,
-      "underlyingPrice": 72.495,
+      "pnlPct": -0.56,
+      "currentPrice": 72.222,
+      "underlyingPrice": 72.222,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -185,10 +185,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 74,
-    "resolvedCount": 481,
+    "openCount": 75,
+    "resolvedCount": 482,
     "wouldHaveWon": 259,
-    "wouldHaveLost": 222,
+    "wouldHaveLost": 223,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -256,26 +256,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 0,
-        "resolvedAt": "2026-06-02T15:28:40.562Z",
-        "marketQuality": {
-          "yesBid": 0.15,
-          "yesAsk": 0.18,
-          "yesSpread": 0.03,
-          "liquidity": 29181.39,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
         "asset": "ETH",
@@ -408,6 +388,24 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -20,
+        "resolvedAt": "2026-06-03T07:28:36.275Z",
+        "marketQuality": {
+          "yesBid": 0.4,
+          "yesAsk": 0.41,
+          "yesSpread": 0.01,
+          "liquidity": 69104.49,
+          "flags": []
         }
       }
     ],
@@ -546,6 +544,22 @@
           ]
         },
         "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 13.2pt after haircuts. CBOE gap 20.2pt, CME gap 14.3pt, source agreement both_positive, spread 2.0c, liquidity 41332. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "OIL",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-price-will-wti-hit-in-june-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $85 in June?",
+        "marketQuality": {
+          "yesBid": 0.6,
+          "yesAsk": 0.62,
+          "yesSpread": 0.02,
+          "liquidity": 8046.06,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 14.8pt after haircuts. CBOE gap 24.8pt, CME gap 26.2pt, source agreement both_positive, spread 2.0c, liquidity 8046. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
