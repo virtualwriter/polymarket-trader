@@ -23454,3 +23454,38 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-06-03 06:28 UTC
+
+**Portfolio:** $98.43 total | Cash $96.43 | 2 open | P&L $0.9246 | 52% win rate (180 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_pm_iv = 53.8 is 3.6 std devs from mean (39.72 ± 3.89)
+- [anomaly] btc_pm_ev = 72463 is -3.4 std devs from mean (82934.50 ± 3069.86)
+- [anomaly] btc_ibit_pc_ratio = 1.282 is 3.2 std devs from mean (0.61 ± 0.21)
+- [anomaly] btc_spot = 67303 is -2.8 std devs from mean (76247.25 ± 3238.46)
+- [anomaly] btc_opt_fwd_90d = 68053 is -2.7 std devs from mean (77172.96 ± 3330.06)
+
+**Blocked signal learning:**
+- Open blocked shadows: 74
+- Resolved blocked shadows: 481 (259 wins / 222 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 118/164 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 6/10 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=115 (34W/68L/13flat, 33.3% win-rate, sum $-2.5743, avg -2.24%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=156 (50W/89L/17flat, 36.0% win-rate, sum $-2.4687, avg -1.58%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-8.70%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW OIL short via polymarket would have closed with thesis validated profitably (+6.90%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.39%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT HYPE short via polymarket would have hit stop (-6.67%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h since last call; daily budget 2/12; next scheduled 2026-06-03T08:28:33.243Z). Mechanical cycle ran normally._
+
+---
+
