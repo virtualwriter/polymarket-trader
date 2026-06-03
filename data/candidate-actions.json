@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-03T19:28:34.439Z",
+  "generatedAt": "2026-06-03T21:28:33.527Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,10 +12,25 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 73.408,
+      "entryPrice": 74.436,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
+    },
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.4605714285714286,
+      "confidence": 0.2557739842580525,
+      "thesis": "GOLD HL funding 31.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4442,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "llmCloseEligibility": [
@@ -28,10 +43,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 31,
-      "hoursToExpiry": 5073.52,
+      "hoursOpen": 33,
+      "hoursToExpiry": 5071.52,
       "plannedHoldHours": 5104.52,
-      "elapsedHoldPct": 0.0061,
+      "elapsedHoldPct": 0.0065,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -44,10 +59,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 1,
-      "hoursToExpiry": 656.52,
+      "hoursOpen": 3,
+      "hoursToExpiry": 654.52,
       "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0.0015,
+      "elapsedHoldPct": 0.0046,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -60,10 +75,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 1,
-      "hoursToExpiry": 656.52,
+      "hoursOpen": 3,
+      "hoursToExpiry": 654.52,
       "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0.0015,
+      "elapsedHoldPct": 0.0046,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -78,12 +93,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 1,
-      "hoursToExpiry": 503,
+      "hoursOpen": 3,
+      "hoursToExpiry": 501,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.002,
+      "elapsedHoldPct": 0.006,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
     }
   ]
 }
