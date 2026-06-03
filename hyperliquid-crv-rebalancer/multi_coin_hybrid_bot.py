@@ -7,7 +7,7 @@ across multiple coins simultaneously on Hyperliquid perp.
 
 Strategy (from backtest):
   - Base: short each coin using 3h EMA with 0.5% entry/exit thresholds
-  - When >10 out of 12 coins have price above 50h EMA for 24 consecutive hours:
+  - When at least 10 out of 12 coins have price above 50h EMA for 24 consecutive hours:
     → switch all open positions to long (5h EMA, 1%/1% thresholds)
   - When signal clears: switch back to short
   - $1 per trade per coin (fixed size)
@@ -108,8 +108,9 @@ COOLDOWN_LOSS_THRESHOLD_PCT = -0.5  # closes worse than this count as "losses" (
 
 # All tradeable coins (must exist on Hyperliquid perp)
 ALL_COINS = [
-    "ADA", "APT", "ARB", "ATOM", "AVAX", "BCH",
-    "CRV", "DOT", "FARTCOIN", "INJ", "OP", "TRUMP",
+    "ADA", "APT", "ARB", "ATOM", "AVAX", "BCH", "BTC",
+    "CRV", "DOT", "FARTCOIN", "OP", "TRUMP",
+    # "INJ",  # paused 2026-06-03: persistent whipsaw losses; excluded from universe
 ]
 
 # Trading constants

@@ -16,7 +16,8 @@ def ema(p, prd):
     return e
 
 COINS = ["ADA", "APT", "ARB", "ATOM", "AVAX", "BCH",
-         "CRV", "DOT", "FARTCOIN", "INJ", "OP", "TRUMP"]
+         "BTC", "CRV", "DOT", "FARTCOIN", "OP", "TRUMP"]
+# "INJ",  # paused - excluded from hybrid bot universe
 now = int(time.time() * 1000)
 start = now - 200 * 3600 * 1000
 mids = post("https://api.hyperliquid.xyz/info", {"type": "allMids"})

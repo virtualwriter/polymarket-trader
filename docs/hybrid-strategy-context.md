@@ -9,20 +9,20 @@ awareness about what real capital is currently doing on Hyperliquid.
 ## What it is
 
 A long-running Python daemon (`hyperliquid-crv-rebalancer/multi_coin_hybrid_bot.py`)
-that trades 12 perp markets on Hyperliquid using a regime-switching trend
+that trades 13 perp markets on Hyperliquid using a regime-switching trend
 strategy. Real trades are $10 notional per coin per fill (Hyperliquid's perp
 minimum), but the shadow-trade feed you see logs $1 notional per trade.
 Treat this as a probe-sized live-validation tier, not a size book.
 
-Universe (12 coins):
-`ADA, APT, ARB, ATOM, AVAX, BCH, CRV, DOT, FARTCOIN, INJ, OP, TRUMP`
+Universe (13 coins):
+`ADA, APT, ARB, ATOM, AVAX, BCH, BTC, CRV, DOT, FARTCOIN, INJ, OP, TRUMP`
 
 ## The strategy in one paragraph
 
 It is short most of the time and long when broad crypto is clearly trending up.
 The base mode is a short-only EMA mean-reversion on the 4-hour EMA with an
 asymmetric tight-entry / wide-exit pair (short any coin trading 0.30% below its
-4h EMA, cover when it bounces 1.50% above). When 10 of 12 coins close above
+4h EMA, cover when it bounces 1.50% above). When 10 of 13 coins close above
 their 50-hour EMA for 24 consecutive hours, the bot flips to long-only mode
 using the 5-hour EMA with 1%/1% thresholds, until the breadth signal clears.
 A consecutive-loser cooldown (3 back-to-back losing shorts ≤ −0.5% suppresses
@@ -41,8 +41,8 @@ to mute single-coin whipsaw failure modes (e.g. INJ).
 | Trade size (shadow log) | $1 USD notional | $1 USD notional |
 
 Regime switch:
-- **Bull on**: ≥ 10/12 coins have `price > 50h_EMA` for every one of the last 24 hourly bars.
-- **Bull off**: any hour in that window drops below 10/12.
+- **Bull on**: ≥ 10/13 coins have `price > 50h_EMA` for every one of the last 24 hourly bars.
+- **Bull off**: any hour in that window drops below 10/13.
 
 Cooldown (originally a post-hoc patch; now validated against the same backtest
 the live config was tuned on — see "Cooldown threshold validation" below):
@@ -62,7 +62,7 @@ code is stale and unused — real fees come from fill responses).
 
 ## Provenance of the current live config
 
-The short-leg parameters (`4h / 0.30% / 1.50%`) and the universe of 12 coins
+The short-leg parameters (`4h / 0.30% / 1.50%`) and the universe of 13 coins
 came from chat `a416c31e` on 2026-05-27, in two stages:
 
 1. **Fee-aware short-leg re-tune (commit `93bae6a`).** The original backtest

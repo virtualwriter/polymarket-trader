@@ -8,11 +8,11 @@ plus backtesting infrastructure and live trading bots.
 ## Multi-Coin Hybrid Bot (Live Trading)
 
 Runs the hybrid strategy (Short 3h 0.5% normally → Long 5h 1% on bull signal)
-across up to 12 coins simultaneously on Hyperliquid perp. $1 per trade by default.
+across up to 13 coins simultaneously on Hyperliquid perp. $1 per trade by default.
 
 **Strategy (from backtest):**
 - Base: short each coin using 3h EMA with 0.5% entry/exit thresholds
-- When >10 out of 12 coins have price above 50h EMA for 24 consecutive hours:
+- When at least 10 out of 13 coins have price above 50h EMA for 24 consecutive hours:
   switch all open positions to long (5h EMA, 1%/1% thresholds)
 - When signal clears: switch back to short
 
