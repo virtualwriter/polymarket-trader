@@ -15,6 +15,7 @@
 import { writeFileSync, readFileSync, existsSync, appendFileSync, mkdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
+import { enrichStrikesFromClob } from "./polymarket-clob-book.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -630,6 +631,7 @@ async function fetchPolymarket() {
     }
   }
 
+  await Promise.all(events.map((event) => enrichStrikesFromClob(event.strikes)));
   return events;
 }
 

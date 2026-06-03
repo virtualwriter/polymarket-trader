@@ -18,6 +18,12 @@ import {
   operationallyTaintedTradeIds,
   recomputePortfolioTotalsFromLedger,
 } from "./portfolio-ledger.js";
+import {
+  applyEntryBookToPackageLegs,
+  fetchMarketYesNoBooks,
+  legSnapshotFromYesBook,
+  type EntryBookSnapshot,
+} from "./polymarket-clob-book.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -52,9 +58,12 @@ const MAX_OPEN_POSITIONS = 15;
 const HEATMAP_SHADOW_MAX_SPREAD = 0.01;
 const HEATMAP_SHADOW_MIN_LIQUIDITY = 1000;
 const MONOTONIC_ARB_MAX_YES_SPREAD = 0.01;
+// Gross locked edge only needs to be positive; hair (0.1–0.4¢) is intentional —
+// sub-$1 packages are floor-risk-free with strike-gap jackpot convexity.
 const MONOTONIC_ARB_MIN_GROSS_EDGE = 0.001;
 const MONOTONIC_ARB_MIN_LEG_LIQUIDITY = 10_000;
-const MONOTONIC_ARB_MIN_TOP_OF_BOOK_SIZE = 5;
+// Min paired shares fillable at broad YES ask + narrow NO ask (lotto sizing).
+const MONOTONIC_ARB_MIN_TOP_OF_BOOK_SIZE = 10;
 const MONOTONIC_ARB_MAX_SNAPSHOT_AGE_MINUTES = 20;
 const MONOTONIC_ARB_ASSETS = new Set(["BTC", "ETH", "GOLD", "OIL", "AMZN", "HYPE", "SPY", "SILVER", "SOL"]);
 // Promoted to live 2026-06-01 after 10/10 May shadow packages settled
@@ -347,6 +356,8 @@ interface Position {
   instrumentId?: string;
   instrumentLabel?: string;
   packageLegs?: PolymarketPackageLeg[];
+  /** Frozen CLOB top-of-book at open (sizes, bids/asks per leg). */
+  entryBookSnapshot?: EntryBookSnapshot;
   entryUnderlyingPrice?: number;
   currentUnderlyingPrice?: number;
   fundingPnlAccrued?: number;
@@ -3334,13 +3345,63 @@ function monotonicResolutionMatches(broad: InstrumentSnapshotContract, narrow: I
   return true;
 }
 
-function recordMonotonicArbShadows(
+async function attachMonotonicPackageEntryBook(position: Position): Promise<string | null> {
+  if (!position.packageLegs || position.packageLegs.length < 2) return "missing package legs";
+  const snapshot = await applyEntryBookToPackageLegs(position.packageLegs);
+  if (!snapshot) return "clob entry book fetch failed";
+  position.entryBookSnapshot = snapshot;
+  const broad = position.packageLegs.find((leg) => leg.role === "broad_yes");
+  const narrow = position.packageLegs.find((leg) => leg.role === "narrow_no");
+  if (broad && narrow) {
+    const packageCost = broad.yesAsk + (1 - narrow.yesBid);
+    position.entryPrice = packageCost;
+    position.currentPrice = packageCost;
+    broad.entryPrice = broad.yesAsk;
+    narrow.entryPrice = 1 - narrow.yesBid;
+  }
+  if (
+    snapshot.packageAvailableSize !== null
+    && snapshot.packageAvailableSize < MONOTONIC_ARB_MIN_TOP_OF_BOOK_SIZE
+  ) {
+    return `package top-of-book size ${snapshot.packageAvailableSize.toFixed(2)} < min ${MONOTONIC_ARB_MIN_TOP_OF_BOOK_SIZE}`;
+  }
+  return null;
+}
+
+async function attachPolymarketEntryBook(position: Position): Promise<void> {
+  if (position.instrumentType === "pm_package" && position.packageLegs) {
+    await attachMonotonicPackageEntryBook(position);
+    return;
+  }
+  if (
+    (position.instrumentType === "pm_yes" || position.instrumentType === "pm_no")
+    && position.instrumentId
+  ) {
+    const marketId = position.instrumentId.split("::")[1];
+    if (!marketId) return;
+    const books = await fetchMarketYesNoBooks(marketId);
+    if (!books) return;
+    const leg = legSnapshotFromYesBook(
+      position.instrumentType === "pm_yes" ? "pm_yes" : "pm_no",
+      marketId,
+      books.yes,
+      books.liquidity,
+    );
+    position.entryBookSnapshot = {
+      capturedAt: new Date().toISOString(),
+      source: "clob_live",
+      legs: [leg],
+    };
+  }
+}
+
+async function recordMonotonicArbShadows(
   latestRow: SnapshotRow,
   latestSnapshot: InstrumentSnapshotFile | null,
   learningParams: LearningParams,
   blockedSignals: BlockedSignalShadow[],
   portfolio: Portfolio | null = null,
-): number {
+): Promise<number> {
   if (!latestSnapshot) return 0;
   const ageMinutes = snapshotAgeMinutes(latestSnapshot.timestamp);
   if (ageMinutes !== null && ageMinutes > MONOTONIC_ARB_MAX_SNAPSHOT_AGE_MINUTES) return 0;
@@ -3475,11 +3536,16 @@ function recordMonotonicArbShadows(
             // MAX_OPEN_POSITIONS; only constrained by available cash.
             position.thesis = `[MONOTONIC ARB LIVE] Buy YES on broader ${direction} strike ${broad.strike} @ ${broadAsk.toFixed(4)} and buy NO on narrower ${direction} strike ${narrow.strike} @ ${narrowNoAsk.toFixed(4)}. Gross locked edge ${(grossEdge * 100).toFixed(2)}c per paired share before fees/slippage; min payout $1.00 >= cost $${packageCost.toFixed(4)} (risk-free). Threads the strike gap for the ~$1 jackpot payout.`;
             position.instrumentLabel = `${event.slug} — monotonic arb package (LIVE) — YES ${broad.strike} / NO ${narrow.strike}`;
+            const entryBlock = await attachMonotonicPackageEntryBook(position);
+            if (entryBlock) continue;
             portfolio!.cash -= TRADE_SIZE;
             portfolio!.positions.push(position);
             recorded++;
             continue;
           }
+
+          const entryBlock = await attachMonotonicPackageEntryBook(position);
+          if (entryBlock) continue;
 
           blockedSignals.push({
             id: position.id,
@@ -5323,14 +5389,14 @@ function buildPositionFromSignal(
   return { ...base, instrumentType: "legacy_asset" };
 }
 
-function openPositions(
+async function openPositions(
   portfolio: Portfolio,
   signals: Signal[],
   latestRow: SnapshotRow,
   snapshots: InstrumentSnapshotFile[],
   learningParams: LearningParams,
   blockedSignals: BlockedSignalShadow[],
-): Position[] {
+): Promise<Position[]> {
   const opened: Position[] = [];
   const latestSnapshot = latestInstrumentSnapshot(snapshots);
   for (const sig of signals) {
@@ -5345,6 +5411,9 @@ function openPositions(
     const pos = buildPositionFromSignal(sig, latestRow, latestSnapshot);
     if (!pos) continue;
     applyProductionPolymarketRisk(pos);
+    if (pos.venue === "polymarket") {
+      await attachPolymarketEntryBook(pos);
+    }
 
     portfolio.cash -= TRADE_SIZE;
     portfolio.positions.push(pos);
@@ -6803,17 +6872,17 @@ function buildExecutionPlan(candidateActions: CandidateActions, gatedAdvice: Gat
   };
 }
 
-function executeApprovedPlan(
+async function executeApprovedPlan(
   plan: ExecutionPlan,
   portfolio: Portfolio,
   latestRow: SnapshotRow,
   snapshots: InstrumentSnapshotFile[],
   learningParams: LearningParams,
   blockedSignals: BlockedSignalShadow[],
-): { llmClosedTrades: ClosedTrade[]; openedPositions: Position[] } {
+): Promise<{ llmClosedTrades: ClosedTrade[]; openedPositions: Position[] }> {
   if (plan.dryRun || plan.llmDryRun) return { llmClosedTrades: [], openedPositions: [] };
   const llmClosedTrades = closePositionsFromLlm(portfolio, plan.llmCloses, latestRow, snapshots);
-  const openedPositions = openPositions(portfolio, plan.entrySignals, latestRow, snapshots, learningParams, blockedSignals);
+  const openedPositions = await openPositions(portfolio, plan.entrySignals, latestRow, snapshots, learningParams, blockedSignals);
   return { llmClosedTrades, openedPositions };
 }
 
@@ -7818,7 +7887,7 @@ async function main() {
       console.log(`    ${emoji} ${shadowLabel}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${humanCloseReason(result.closeReason)}: ${result.pnlPct >= 0 ? "+" : ""}${result.pnlPct.toFixed(2)}%`);
     }
   }
-  const newMonotonicArbShadows = recordMonotonicArbShadows(latestRow, latestSnapshot, learningParams, blockedSignals, portfolio);
+  const newMonotonicArbShadows = await recordMonotonicArbShadows(latestRow, latestSnapshot, learningParams, blockedSignals, portfolio);
   if (newMonotonicArbShadows > 0) {
     console.log(`\n  Opened ${newMonotonicArbShadows} monotonic-arb ${ENABLE_MONOTONIC_ARB_LIVE ? "LIVE" : "shadow"} package trades.`);
   }
@@ -8017,7 +8086,7 @@ async function main() {
 
   // Step 7: Open new positions
   if (!MUTATION_DISABLED) {
-    const { llmClosedTrades, openedPositions: opened } = executeApprovedPlan(executionPlan, portfolio, latestRow, instrumentSnapshots, learningParams, blockedSignals);
+    const { llmClosedTrades, openedPositions: opened } = await executeApprovedPlan(executionPlan, portfolio, latestRow, instrumentSnapshots, learningParams, blockedSignals);
     if (llmClosedTrades.length > 0) {
       console.log(`\n  LLM closed ${llmClosedTrades.length} positions:`);
       for (const t of llmClosedTrades) {
