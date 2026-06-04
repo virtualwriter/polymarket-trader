@@ -3359,11 +3359,12 @@ async function attachMonotonicPackageEntryBook(position: Position): Promise<stri
     broad.entryPrice = broad.yesAsk;
     narrow.entryPrice = 1 - narrow.yesBid;
   }
+  const packageAvailableSize = snapshot.packageAvailableSize ?? null;
   if (
-    snapshot.packageAvailableSize !== null
-    && snapshot.packageAvailableSize < MONOTONIC_ARB_MIN_TOP_OF_BOOK_SIZE
+    packageAvailableSize !== null
+    && packageAvailableSize < MONOTONIC_ARB_MIN_TOP_OF_BOOK_SIZE
   ) {
-    return `package top-of-book size ${snapshot.packageAvailableSize.toFixed(2)} < min ${MONOTONIC_ARB_MIN_TOP_OF_BOOK_SIZE}`;
+    return `package top-of-book size ${packageAvailableSize.toFixed(2)} < min ${MONOTONIC_ARB_MIN_TOP_OF_BOOK_SIZE}`;
   }
   return null;
 }
