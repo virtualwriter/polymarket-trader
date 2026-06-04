@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { webcrypto } from "node:crypto";
-import { ClobClient, type ApiKeyCreds, AssetType, Chain, OrderType, Side, SignatureTypeV2, type TickSize } from "@polymarket/clob-client-v2";
+import { ClobClient, type ApiKeyCreds, AssetType, Chain, OrderType, Side, SignatureTypeV2, type TickSize, isV2Order, orderToJsonV2 } from "@polymarket/clob-client-v2";
 import { config } from "dotenv";
 import { ethers } from "ethers";
 import { VpnGuard } from "../engine-src/live/VpnGuard.js";
@@ -30,20 +30,25 @@ const RELAYER_URL = process.env.POLYMARKET_RELAYER_URL ?? "https://relayer-v2.po
 const CHAIN_ID = Chain.POLYGON;
 const RPC_URL = process.env.RPC_URL ?? "https://polygon-rpc.com";
 const CTF_ADDRESS = "0x4D97DCd97eC945f40cF65F87097ACe5EA0476045";
-const POLYMARKET_FUNDER_ADDRESS = process.env.POLYMARKET_FUNDER_ADDRESS?.trim() || undefined;
-const POLYMARKET_SIGNATURE_TYPE = Number(process.env.POLYMARKET_SIGNATURE_TYPE ?? SignatureTypeV2.EOA) as SignatureTypeV2;
 const RELAYER_API_KEY = process.env.RELAYER_API_KEY?.trim();
 const RELAYER_API_KEY_ADDRESS = process.env.RELAYER_API_KEY_ADDRESS?.trim();
+const RELAYER_TX_TYPE = (process.env.POLYMARKET_RELAYER_TX_TYPE ?? "PROXY").trim().toUpperCase();
+const PROXY_WALLET_ADDRESS = process.env.POLYMARKET_PROXY_WALLET_ADDRESS?.trim();
+const DEFAULT_SIGNATURE_TYPE = PROXY_WALLET_ADDRESS ? SignatureTypeV2.POLY_PROXY : SignatureTypeV2.EOA;
+const POLYMARKET_SIGNATURE_TYPE = Number(process.env.POLYMARKET_SIGNATURE_TYPE ?? DEFAULT_SIGNATURE_TYPE) as SignatureTypeV2;
+const POLYMARKET_FUNDER_ADDRESS = process.env.POLYMARKET_FUNDER_ADDRESS?.trim()
+  || (POLYMARKET_SIGNATURE_TYPE === SignatureTypeV2.POLY_PROXY ? PROXY_WALLET_ADDRESS : undefined);
 const POLY_BUILDER_API_KEY = process.env.POLY_BUILDER_API_KEY?.trim();
 const POLY_BUILDER_PASSPHRASE = process.env.POLY_BUILDER_PASSPHRASE?.trim();
 const POLY_BUILDER_SECRET = process.env.POLY_BUILDER_SECRET?.trim();
-const RELAYER_TX_TYPE = (process.env.POLYMARKET_RELAYER_TX_TYPE ?? "PROXY").trim().toUpperCase();
-const PROXY_WALLET_ADDRESS = process.env.POLYMARKET_PROXY_WALLET_ADDRESS?.trim();
+const POLY_BUILDER_CODE = process.env.POLY_BUILDER_CODE?.trim();
+const CLOB_API_OWNER = process.env.POLYMARKET_CLOB_API_KEY?.trim() || "BUILD_ONLY_NO_CLOB_API_KEY";
 
 const ENABLED = process.env.ENABLE_MONOTONIC_ARB_REAL_PM === "1";
 const HARD_DISABLED = process.env.DISABLE_REAL_PM_TRADING === "1";
 const DRY_RUN = process.argv.includes("--dry-run") || process.env.MONOTONIC_ARB_REAL_PM_DRY_RUN === "1" || !ENABLED || HARD_DISABLED;
 const PROBE_ONLY = process.argv.includes("--probe-only");
+const BUILD_ONLY = process.argv.includes("--build-only") || process.env.MONOTONIC_ARB_REAL_PM_BUILD_ONLY === "1";
 const MAX_PACKAGE_USD = Number(process.env.MONOTONIC_ARB_REAL_PM_MAX_PACKAGE_USD ?? 1);
 const MAX_DAILY_USD = Number(process.env.MONOTONIC_ARB_REAL_PM_MAX_DAILY_USD ?? 5);
 const MAX_OPEN_PACKAGES = Number(process.env.MONOTONIC_ARB_REAL_PM_MAX_OPEN_PACKAGES ?? 20);
@@ -718,10 +723,84 @@ function assertOrderResponse(response: any, role: string) {
 async function postFokBuy(client: ClobClient, tokenId: string, price: number, usdAmount: number): Promise<any> {
   const tickSize = await client.getTickSize(tokenId) as TickSize;
   return client.createAndPostMarketOrder(
-    { tokenID: tokenId, price, amount: Number(usdAmount.toFixed(6)), side: Side.BUY, orderType: OrderType.FOK },
+    { tokenID: tokenId, price, amount: Number(usdAmount.toFixed(6)), side: Side.BUY, orderType: OrderType.FOK, ...(POLY_BUILDER_CODE ? { builderCode: POLY_BUILDER_CODE } : {}) },
     { tickSize, negRisk: false },
     OrderType.FOK,
   );
+}
+
+function redactedOrderPayload(payload: any): any {
+  if (!payload?.order) return payload;
+  return {
+    ...payload,
+    owner: payload.owner ? "<clob-api-key-redacted>" : payload.owner,
+    order: {
+      ...payload.order,
+      signature: payload.order.signature ? "<signature-redacted>" : payload.order.signature,
+    },
+  };
+}
+
+async function buildFokBuyPayload(
+  client: ClobClient,
+  role: "broad_yes" | "narrow_no",
+  tokenId: string,
+  price: number,
+  usdAmount: number,
+): Promise<any> {
+  const tickSize = await client.getTickSize(tokenId) as TickSize;
+  const signedOrder = await client.createMarketOrder(
+    { tokenID: tokenId, price, amount: Number(usdAmount.toFixed(6)), side: Side.BUY, orderType: OrderType.FOK, ...(POLY_BUILDER_CODE ? { builderCode: POLY_BUILDER_CODE } : {}) },
+    { tickSize, negRisk: false },
+  );
+  if (!isV2Order(signedOrder)) {
+    throw new Error(`${role} build-only expected CLOB V2 signed order`);
+  }
+  return {
+    role,
+    tickSize,
+    tokenId,
+    price,
+    usdAmount: Number(usdAmount.toFixed(6)),
+    payload: redactedOrderPayload(orderToJsonV2(signedOrder, CLOB_API_OWNER, OrderType.FOK)),
+  };
+}
+
+async function buildOnlyCandidate(
+  client: ClobClient | null,
+  signer: ethers.Wallet | null,
+  candidate: Candidate,
+  shares: number,
+): Promise<void> {
+  const leg1Usd = shares * candidate.broad.yesBook.ask;
+  const leg2Usd = shares * candidate.narrow.noBook.ask;
+  console.log(`Build-only: ${candidate.asset} ${candidate.eventSlug} ${candidate.direction} YES ${candidate.broad.strike} + NO ${candidate.narrow.strike}`);
+  console.log(`  entry=${candidate.packageCost.toFixed(4)} edge=${(candidate.lockedEdge * 100).toFixed(2)}c shares=${shares.toFixed(2)} cost=$${(leg1Usd + leg2Usd).toFixed(4)}`);
+  console.log(`  clobSignatureType=${POLYMARKET_SIGNATURE_TYPE} funder=${POLYMARKET_FUNDER_ADDRESS ?? "unset"} builderCode=${POLY_BUILDER_CODE ? "set" : "unset"}`);
+
+  if (!client || !signer) {
+    console.log("  unsignedPlanOnly=true reason=missing PRIVATE_KEY/HYPERLIQUID_MNEMONIC; CLOB PROXY order signing still requires the owner signer.");
+    console.log(JSON.stringify({
+      relayerTxType: RELAYER_TX_TYPE,
+      signerAddress: RELAYER_API_KEY_ADDRESS ?? null,
+      proxyWallet: PROXY_WALLET_ADDRESS ?? null,
+      clobSignatureType: POLYMARKET_SIGNATURE_TYPE,
+      funderAddress: POLYMARKET_FUNDER_ADDRESS ?? null,
+      orderType: "FOK",
+      orders: [
+        { role: "broad_yes", tokenId: candidate.broad.yesTokenId, side: "BUY", price: candidate.broad.yesBook.ask, usdAmount: Number(leg1Usd.toFixed(6)) },
+        { role: "narrow_no", tokenId: candidate.narrow.noTokenId, side: "BUY", price: candidate.narrow.noBook.ask, usdAmount: Number(leg2Usd.toFixed(6)) },
+      ],
+    }, null, 2));
+    return;
+  }
+
+  const [broadYes, narrowNo] = await Promise.all([
+    buildFokBuyPayload(client, "broad_yes", candidate.broad.yesTokenId, candidate.broad.yesBook.ask, leg1Usd),
+    buildFokBuyPayload(client, "narrow_no", candidate.narrow.noTokenId, candidate.narrow.noBook.ask, leg2Usd),
+  ]);
+  console.log("  signedPayloadsBuilt=true submit=false");
+  console.log(JSON.stringify({ orders: [broadYes, narrowNo] }, null, 2));
 }
 
 async function reconcileTokenBalance(address: string, tokenId: string): Promise<number> {
@@ -913,7 +992,7 @@ async function runExecutor() {
   }
   console.log(`Mode: ${DRY_RUN ? "DRY_RUN" : "REAL"} enabled=${ENABLED} hardDisabled=${HARD_DISABLED}`);
   console.log(`Real PM gates: maxPackage=$${MAX_PACKAGE_USD} maxDaily=$${MAX_DAILY_USD} maxPerRun=${MAX_PACKAGES_PER_RUN} minEdge=${(MIN_EDGE * 100).toFixed(2)}c minTouchShares=${MIN_AVAILABLE_SHARES}`);
-  console.log(`Auth: wallet=${hasSignerSecret ? "set" : "missing"} relayer=${relayerConfigured ? "set" : "missing"} builder=${builderConfigured ? "set" : "missing"}`);
+  console.log(`Auth: wallet=${hasSignerSecret ? "set" : "missing"} relayer=${relayerConfigured ? "set" : "missing"} builder=${builderConfigured ? "set" : "missing"} builderCode=${POLY_BUILDER_CODE ? "set" : "missing"}`);
 
   if (relayerConfigured) {
     const relayer = await relayerProbe();
@@ -921,6 +1000,10 @@ async function runExecutor() {
   }
 
   if (PROBE_ONLY) return;
+
+  if (BUILD_ONLY) {
+    console.log("Build-only mode: constructing CLOB order plans/payloads only; no CLOB postOrder and no relayer /submit.");
+  }
 
   if (!DRY_RUN && relayerConfigured) {
     throw new Error("Relayer real order submission is intentionally blocked until transaction payload generation is implemented and reviewed.");
@@ -962,6 +1045,10 @@ async function runExecutor() {
     const sized = sizeForCandidate(candidate, packageRows);
     if (sized.reason) {
       console.log(`Skip ${candidate.packageId}: ${sized.reason} shares=${sized.shares.toFixed(2)} cost=$${sized.cost.toFixed(4)}`);
+      continue;
+    }
+    if (BUILD_ONLY) {
+      await buildOnlyCandidate(client, signer, candidate, sized.shares);
       continue;
     }
     const result = await executeCandidate(client!, signer?.address ?? "DRY_RUN_NO_WALLET", candidate, sized.shares, packageRows);
