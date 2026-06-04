@@ -747,13 +747,13 @@ function assertOrderResponse(response: any, role: string) {
   }
 }
 
-async function postFokBuy(client: ClobClient, tokenId: string, price: number, usdAmount: number): Promise<any> {
+async function postFokBuy(client: ClobClient, tokenId: string, price: number, shares: number): Promise<any> {
   const tickSize = await client.getTickSize(tokenId) as TickSize;
-  return client.createAndPostMarketOrder(
-    { tokenID: tokenId, price, amount: Number(usdAmount.toFixed(6)), side: Side.BUY, orderType: OrderType.FOK, ...(POLY_BUILDER_CODE ? { builderCode: POLY_BUILDER_CODE } : {}) },
+  const signedOrder = await client.createOrder(
+    { tokenID: tokenId, price, size: Number(shares.toFixed(6)), side: Side.BUY, ...(POLY_BUILDER_CODE ? { builderCode: POLY_BUILDER_CODE } : {}) },
     { tickSize, negRisk: false },
-    OrderType.FOK,
   );
+  return client.postOrder(signedOrder, OrderType.FOK);
 }
 
 function redactedOrderPayload(payload: any): any {
@@ -773,22 +773,26 @@ async function buildFokBuyPayload(
   role: "broad_yes" | "narrow_no",
   tokenId: string,
   price: number,
-  usdAmount: number,
+  shares: number,
 ): Promise<any> {
   const tickSize = await client.getTickSize(tokenId) as TickSize;
-  const signedOrder = await client.createMarketOrder(
-    { tokenID: tokenId, price, amount: Number(usdAmount.toFixed(6)), side: Side.BUY, orderType: OrderType.FOK, ...(POLY_BUILDER_CODE ? { builderCode: POLY_BUILDER_CODE } : {}) },
+  const signedOrder = await client.createOrder(
+    { tokenID: tokenId, price, size: Number(shares.toFixed(6)), side: Side.BUY, ...(POLY_BUILDER_CODE ? { builderCode: POLY_BUILDER_CODE } : {}) },
     { tickSize, negRisk: false },
   );
   if (!isV2Order(signedOrder)) {
     throw new Error(`${role} build-only expected CLOB V2 signed order`);
+  }
+  if (Number(signedOrder.makerAmount) <= 0 || Number(signedOrder.takerAmount) <= 0) {
+    throw new Error(`${role} build-only produced zero-sized order: makerAmount=${signedOrder.makerAmount} takerAmount=${signedOrder.takerAmount}`);
   }
   return {
     role,
     tickSize,
     tokenId,
     price,
-    usdAmount: Number(usdAmount.toFixed(6)),
+    shares: Number(shares.toFixed(6)),
+    usdAmount: Number((shares * price).toFixed(6)),
     payload: redactedOrderPayload(orderToJsonV2(signedOrder, CLOB_API_OWNER, OrderType.FOK)),
   };
 }
@@ -823,8 +827,8 @@ async function buildOnlyCandidate(
   }
 
   const [broadYes, narrowNo] = await Promise.all([
-    buildFokBuyPayload(client, "broad_yes", candidate.broad.yesTokenId, candidate.broad.yesBook.ask, leg1Usd),
-    buildFokBuyPayload(client, "narrow_no", candidate.narrow.noTokenId, candidate.narrow.noBook.ask, leg2Usd),
+    buildFokBuyPayload(client, "broad_yes", candidate.broad.yesTokenId, candidate.broad.yesBook.ask, shares),
+    buildFokBuyPayload(client, "narrow_no", candidate.narrow.noTokenId, candidate.narrow.noBook.ask, shares),
   ]);
   console.log("  signedPayloadsBuilt=true submit=false");
   console.log(JSON.stringify({ orders: [broadYes, narrowNo] }, null, 2));
@@ -925,7 +929,7 @@ async function executeCandidate(client: ClobClient, walletAddress: string, candi
     record.updatedAt = new Date().toISOString();
     appendJsonArray(PACKAGES_PATH, [record]);
 
-    const leg1 = await postFokBuy(client, candidate.broad.yesTokenId, candidate.broad.yesBook.ask, leg1Usd);
+    const leg1 = await postFokBuy(client, candidate.broad.yesTokenId, candidate.broad.yesBook.ask, shares);
     assertOrderResponse(leg1, "broad_yes");
     record.legOrderIds.broadYes = orderId(leg1);
     orders.push({ packageId: record.packageId, createdAt: new Date().toISOString(), role: "broad_yes", tokenId: candidate.broad.yesTokenId, side: "BUY", price: candidate.broad.yesBook.ask, size: shares, orderType: "FOK", response: leg1 });
@@ -933,7 +937,7 @@ async function executeCandidate(client: ClobClient, walletAddress: string, candi
     record.updatedAt = new Date().toISOString();
 
     await new Promise((resolvePromise) => setTimeout(resolvePromise, FILL_WAIT_MS));
-    const leg2 = await postFokBuy(client, candidate.narrow.noTokenId, candidate.narrow.noBook.ask, leg2Usd);
+    const leg2 = await postFokBuy(client, candidate.narrow.noTokenId, candidate.narrow.noBook.ask, shares);
     assertOrderResponse(leg2, "narrow_no");
     record.legOrderIds.narrowNo = orderId(leg2);
     orders.push({ packageId: record.packageId, createdAt: new Date().toISOString(), role: "narrow_no", tokenId: candidate.narrow.noTokenId, side: "BUY", price: candidate.narrow.noBook.ask, size: shares, orderType: "FOK", response: leg2 });
