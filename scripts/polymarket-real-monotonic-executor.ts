@@ -37,6 +37,8 @@ const RELAYER_API_KEY_ADDRESS = process.env.RELAYER_API_KEY_ADDRESS?.trim();
 const POLY_BUILDER_API_KEY = process.env.POLY_BUILDER_API_KEY?.trim();
 const POLY_BUILDER_PASSPHRASE = process.env.POLY_BUILDER_PASSPHRASE?.trim();
 const POLY_BUILDER_SECRET = process.env.POLY_BUILDER_SECRET?.trim();
+const RELAYER_TX_TYPE = (process.env.POLYMARKET_RELAYER_TX_TYPE ?? "PROXY").trim().toUpperCase();
+const PROXY_WALLET_ADDRESS = process.env.POLYMARKET_PROXY_WALLET_ADDRESS?.trim();
 
 const ENABLED = process.env.ENABLE_MONOTONIC_ARB_REAL_PM === "1";
 const HARD_DISABLED = process.env.DISABLE_REAL_PM_TRADING === "1";
@@ -606,16 +608,34 @@ function assertAddress(value: string | undefined, label: string): string {
   return value;
 }
 
-async function relayerProbe(): Promise<{ address: string; recentTransactions: number }> {
+async function relayerNonce(address: string, txType: string): Promise<string> {
+  const url = `${RELAYER_URL.replace(/\/$/, "")}/nonce?${new URLSearchParams({ address, type: txType })}`;
+  const response = await fetch(url, { headers: { Accept: "application/json" } });
+  if (!response.ok) {
+    const text = await response.text().catch(() => "");
+    throw new Error(`Relayer nonce probe failed: HTTP ${response.status} ${text.slice(0, 200)}`);
+  }
+  const payload = await response.json();
+  return String(payload?.nonce ?? "");
+}
+
+async function relayerProbe(): Promise<{ address: string; proxyWallet: string; txType: string; nonce: string; recentTransactions: number }> {
   const address = assertAddress(RELAYER_API_KEY_ADDRESS, "RELAYER_API_KEY_ADDRESS");
+  const proxyWallet = assertAddress(PROXY_WALLET_ADDRESS, "POLYMARKET_PROXY_WALLET_ADDRESS");
+  if (RELAYER_TX_TYPE !== "PROXY" && RELAYER_TX_TYPE !== "SAFE") {
+    throw new Error(`POLYMARKET_RELAYER_TX_TYPE must be PROXY or SAFE, got ${RELAYER_TX_TYPE}`);
+  }
   if (!RELAYER_API_KEY) throw new Error("Missing RELAYER_API_KEY");
-  const response = await fetch(`${RELAYER_URL.replace(/\/$/, "")}/transactions`, {
+  const [nonce, response] = await Promise.all([
+    relayerNonce(address, RELAYER_TX_TYPE),
+    fetch(`${RELAYER_URL.replace(/\/$/, "")}/transactions`, {
     headers: {
       Accept: "application/json",
       RELAYER_API_KEY,
       RELAYER_API_KEY_ADDRESS: address,
     },
-  });
+    }),
+  ]);
   if (!response.ok) {
     const text = await response.text().catch(() => "");
     throw new Error(`Relayer probe failed: HTTP ${response.status} ${text.slice(0, 200)}`);
@@ -623,6 +643,9 @@ async function relayerProbe(): Promise<{ address: string; recentTransactions: nu
   const transactions = await response.json();
   return {
     address,
+    proxyWallet,
+    txType: RELAYER_TX_TYPE,
+    nonce,
     recentTransactions: Array.isArray(transactions) ? transactions.length : 0,
   };
 }
@@ -894,7 +917,7 @@ async function runExecutor() {
 
   if (relayerConfigured) {
     const relayer = await relayerProbe();
-    console.log(`Relayer probe: address=${relayer.address} recentTransactions=${relayer.recentTransactions}`);
+    console.log(`Relayer probe: type=${relayer.txType} signer=${relayer.address} proxyWallet=${relayer.proxyWallet} nonce=${relayer.nonce} recentTransactions=${relayer.recentTransactions}`);
   }
 
   if (PROBE_ONLY) return;
