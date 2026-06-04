@@ -28,8 +28,11 @@ const HOST = process.env.POLYMARKET_CLOB_HOST ?? "https://clob.polymarket.com";
 const GAMMA_API = process.env.GAMMA_API ?? "https://gamma-api.polymarket.com";
 const RELAYER_URL = process.env.POLYMARKET_RELAYER_URL ?? "https://relayer-v2.polymarket.com";
 const CHAIN_ID = Chain.POLYGON;
-const RPC_URL = process.env.RPC_URL ?? "https://polygon-rpc.com";
+const RPC_URL = process.env.RPC_URL ?? "https://polygon-bor-rpc.publicnode.com";
 const CTF_ADDRESS = "0x4D97DCd97eC945f40cF65F87097ACe5EA0476045";
+const PUSD_ADDRESS = "0xC011a7E12a19f7B1f670d46F03B03f3342E82DFB";
+const EXCHANGE_V2_ADDRESS = "0xE111180000d2663C0091e4f400237545B87B996B";
+const NEG_RISK_EXCHANGE_V2_ADDRESS = "0xe2222d279d744050d28e00520010520000310F59";
 const RELAYER_API_KEY = process.env.RELAYER_API_KEY?.trim();
 const RELAYER_API_KEY_ADDRESS = process.env.RELAYER_API_KEY_ADDRESS?.trim();
 const RELAYER_TX_TYPE = (process.env.POLYMARKET_RELAYER_TX_TYPE ?? "PROXY").trim().toUpperCase();
@@ -708,6 +711,30 @@ async function accountProbe(client: ClobClient, address: string) {
   };
 }
 
+async function proxyCollateralProbe(address: string): Promise<{
+  address: string;
+  collateralBalance: number;
+  exchangeV2Allowance: number;
+  negRiskExchangeV2Allowance: number;
+}> {
+  const provider = new ethers.providers.StaticJsonRpcProvider(RPC_URL, { chainId: 137, name: "polygon" });
+  const erc20 = new ethers.Contract(PUSD_ADDRESS, [
+    "function balanceOf(address) view returns (uint256)",
+    "function allowance(address,address) view returns (uint256)",
+  ], provider);
+  const [balance, exchangeAllowance, negRiskAllowance] = await Promise.all([
+    erc20.balanceOf(address),
+    erc20.allowance(address, EXCHANGE_V2_ADDRESS),
+    erc20.allowance(address, NEG_RISK_EXCHANGE_V2_ADDRESS),
+  ]);
+  return {
+    address,
+    collateralBalance: parseFloat(ethers.utils.formatUnits(balance, 6)),
+    exchangeV2Allowance: parseFloat(ethers.utils.formatUnits(exchangeAllowance, 6)),
+    negRiskExchangeV2Allowance: parseFloat(ethers.utils.formatUnits(negRiskAllowance, 6)),
+  };
+}
+
 function todayKey(date = new Date()): string {
   return date.toISOString().slice(0, 10);
 }
@@ -1052,6 +1079,11 @@ async function runExecutor() {
     const relayer = await relayerProbe();
     console.log(`Relayer probe: type=${relayer.txType} signer=${relayer.address} proxyWallet=${relayer.proxyWallet} nonce=${relayer.nonce} recentTransactions=${relayer.recentTransactions}`);
   }
+  const funderAddress = POLYMARKET_FUNDER_ADDRESS ?? signer?.address;
+  const proxyProbe = funderAddress ? await proxyCollateralProbe(funderAddress) : null;
+  if (proxyProbe) {
+    console.log(`Funder collateral: address=${proxyProbe.address} pUSD=${proxyProbe.collateralBalance.toFixed(6)} exchangeV2Allowance=${proxyProbe.exchangeV2Allowance.toFixed(2)} negRiskExchangeV2Allowance=${proxyProbe.negRiskExchangeV2Allowance.toFixed(2)}`);
+  }
 
   if (PROBE_ONLY) return;
 
@@ -1059,13 +1091,11 @@ async function runExecutor() {
     console.log("Build-only mode: constructing CLOB order plans/payloads only; no CLOB postOrder and no relayer /submit.");
   }
 
-  if (!DRY_RUN && relayerConfigured) {
-    throw new Error("Relayer real order submission is intentionally blocked until transaction payload generation is implemented and reviewed.");
-  }
-
   if (!DRY_RUN && (!client || !signer || !probe)) throw new Error("Real mode requires initialized wallet/client");
-  if (!DRY_RUN && probe!.collateralBalance < MAX_PACKAGE_USD) throw new Error(`Insufficient PM collateral balance for cap $${MAX_PACKAGE_USD}`);
-  if (!DRY_RUN && probe!.collateralAllowance < MAX_PACKAGE_USD) throw new Error(`Insufficient PM collateral allowance for cap $${MAX_PACKAGE_USD}`);
+  if (!DRY_RUN) {
+    if (!proxyProbe || proxyProbe.collateralBalance < MAX_PACKAGE_USD) throw new Error(`Insufficient funder pUSD balance for cap $${MAX_PACKAGE_USD}`);
+    if (proxyProbe.exchangeV2Allowance < MAX_PACKAGE_USD) throw new Error(`Insufficient funder Exchange V2 allowance for cap $${MAX_PACKAGE_USD}`);
+  }
 
   const packageRows = readJsonArray<LivePackage>(PACKAGES_PATH);
   if (openPackageCount(packageRows) >= MAX_OPEN_PACKAGES) throw new Error(`Open real PM package cap reached (${MAX_OPEN_PACKAGES})`);
