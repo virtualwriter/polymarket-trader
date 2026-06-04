@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-04T11:28:40.186Z",
+  "generatedAt": "2026-06-04T12:28:43.676Z",
   "dataFreshness": {
-    "valuationRows": 796,
-    "latestValuationAt": "2026-06-04T11",
-    "macroRows": 796,
+    "valuationRows": 797,
+    "latestValuationAt": "2026-06-04T12",
+    "macroRows": 797,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-04T11"
+    "latestInstrumentSnapshotAt": "2026-06-04T12"
   },
   "portfolio": {
     "cash": 95.3257,
@@ -24,7 +24,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0,
       "currentPrice": 0.99,
-      "underlyingPrice": 68.132,
+      "underlyingPrice": 69.068,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -38,7 +38,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0.6,
       "currentPrice": 1.001,
-      "underlyingPrice": 68.132,
+      "underlyingPrice": 69.068,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -52,7 +52,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0.5,
       "currentPrice": 1,
-      "underlyingPrice": 68.132,
+      "underlyingPrice": 69.068,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -197,7 +197,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 69,
+    "openCount": 70,
     "resolvedCount": 496,
     "wouldHaveWon": 266,
     "wouldHaveLost": 230,
@@ -542,6 +542,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.8pt on ETH, spread 2.0c, liquidity 37242. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin dip to $50,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.57,
+          "yesAsk": 0.58,
+          "yesSpread": 0.01,
+          "liquidity": 71921.29,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 10.2pt after haircuts. CBOE gap 12.7pt, CME gap 9.6pt, source agreement both_positive, spread 1.0c, liquidity 71921. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
