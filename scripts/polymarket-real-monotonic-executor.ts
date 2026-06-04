@@ -6,6 +6,19 @@ import { ClobClient, type ApiKeyCreds, AssetType, Chain, OrderType, Side, Signat
 import { config } from "dotenv";
 import { ethers } from "ethers";
 import { VpnGuard } from "../engine-src/live/VpnGuard.js";
+import { getPolygonProvider } from "./lib/polygon-rpc.js";
+import {
+  type ArbCoreConfig,
+  type Candidate,
+  type Direction,
+  defaultEventSlugs,
+  evaluatePair,
+  fetchEvent,
+  findCandidates,
+  marketQuote,
+  parseNumber,
+  polymarketAssetForSlug,
+} from "./lib/monotonic-arb-core.js";
 
 // @polymarket/clob-client signs L2 requests via globalThis.crypto.subtle.
 // Node < 19 (the VPS runs 18) does not expose globalThis.crypto by default,
@@ -28,7 +41,10 @@ const HOST = process.env.POLYMARKET_CLOB_HOST ?? "https://clob.polymarket.com";
 const GAMMA_API = process.env.GAMMA_API ?? "https://gamma-api.polymarket.com";
 const RELAYER_URL = process.env.POLYMARKET_RELAYER_URL ?? "https://relayer-v2.polymarket.com";
 const CHAIN_ID = Chain.POLYGON;
-const RPC_URL = process.env.RPC_URL ?? "https://polygon-bor-rpc.publicnode.com";
+// On-chain reads (pUSD balance/allowance, CTF token balances) go through the
+// multi-RPC failover provider in scripts/lib/polygon-rpc.ts (POLYGON_RPC_URLS /
+// RPC_URL env). This replaces the single flaky public endpoint that caused the
+// two hourly 504 / 120s-timeout failures on the Japan host.
 const CTF_ADDRESS = "0x4D97DCd97eC945f40cF65F87097ACe5EA0476045";
 const PUSD_ADDRESS = "0xC011a7E12a19f7B1f670d46F03B03f3342E82DFB";
 const EXCHANGE_V2_ADDRESS = "0xE111180000d2663C0091e4f400237545B87B996B";
@@ -53,6 +69,12 @@ const DRY_RUN = process.argv.includes("--dry-run") || process.env.MONOTONIC_ARB_
 const PROBE_ONLY = process.argv.includes("--probe-only");
 const BUILD_ONLY = process.argv.includes("--build-only") || process.env.MONOTONIC_ARB_REAL_PM_BUILD_ONLY === "1";
 const MAX_PACKAGE_USD = Number(process.env.MONOTONIC_ARB_REAL_PM_MAX_PACKAGE_USD ?? 1);
+// Polymarket enforces a per-market minimum order size (default 5 shares). A
+// 5-share arb at ~$1/share costs ~$5, which exceeds MAX_PACKAGE_USD ($1). This
+// ceiling lets the per-package budget auto-expand just enough to satisfy the
+// exchange minimum, while still hard-bounding spend. Defaults to whichever is
+// larger: the configured per-package cap, or $6 (covers ~5 shares near $1).
+const MAX_PACKAGE_USD_CEILING = Number(process.env.MONOTONIC_ARB_REAL_PM_MAX_PACKAGE_USD_CEILING ?? Math.max(MAX_PACKAGE_USD, 6));
 const MAX_DAILY_USD = Number(process.env.MONOTONIC_ARB_REAL_PM_MAX_DAILY_USD ?? 5);
 const MAX_OPEN_PACKAGES = Number(process.env.MONOTONIC_ARB_REAL_PM_MAX_OPEN_PACKAGES ?? 20);
 const MAX_PACKAGES_PER_RUN = Number(process.env.MONOTONIC_ARB_REAL_PM_MAX_PER_RUN ?? 1);
@@ -75,74 +97,6 @@ const ALLOWED_ASSETS = new Set((process.env.MONOTONIC_ARB_REAL_PM_ASSETS ?? "BTC
   .map((asset) => asset.trim().toUpperCase())
   .filter(Boolean));
 
-type Direction = "above" | "below";
-type BookLevel = { price?: string; size?: string };
-type GammaMarket = {
-  id?: string;
-  question?: string;
-  description?: string;
-  resolutionSource?: string;
-  groupItemTitle?: string;
-  outcomes?: string;
-  clobTokenIds?: string;
-  volume?: string | number;
-  liquidity?: string | number;
-  liquidityNum?: number;
-  startDate?: string | null;
-  createdAt?: string | null;
-  endDate?: string | null;
-  active?: boolean;
-  closed?: boolean;
-};
-type GammaEvent = {
-  slug?: string;
-  title?: string;
-  startDate?: string | null;
-  createdAt?: string | null;
-  markets?: GammaMarket[];
-};
-type Book = {
-  tokenId: string;
-  bid: number;
-  bidSize: number;
-  ask: number;
-  askSize: number;
-  spread: number;
-};
-type MarketQuote = {
-  eventSlug: string;
-  eventTitle: string;
-  marketId: string;
-  question: string;
-  description: string;
-  resolutionSource: string;
-  strike: number;
-  direction: Direction;
-  startDate: string | null;
-  endDate: string | null;
-  liquidity: number;
-  yesTokenId: string;
-  noTokenId: string;
-  yesBook: Book;
-  noBook: Book;
-};
-type Candidate = {
-  foundAt: string;
-  asset: string;
-  eventSlug: string;
-  eventTitle: string;
-  packageId: string;
-  direction: Direction;
-  broad: MarketQuote;
-  narrow: MarketQuote;
-  packageCost: number;
-  lockedEdge: number;
-  availableSize: number;
-  maxSpread: number;
-  minLiquidity: number;
-  eligible: boolean;
-  rejectionReasons: string[];
-};
 type LivePackage = {
   id: string;
   packageId: string;
@@ -186,9 +140,9 @@ type LivePackage = {
 type LiveOrder = {
   packageId: string;
   createdAt: string;
-  role: "broad_yes" | "narrow_no";
+  role: "broad_yes" | "narrow_no" | "completion" | "unwind";
   tokenId: string;
-  side: "BUY";
+  side: "BUY" | "SELL";
   price: number;
   size: number;
   orderType: string;
@@ -216,10 +170,20 @@ type Portfolio = {
   positions?: PortfolioPosition[];
 };
 
-function parseNumber(value: unknown): number {
-  const parsed = typeof value === "number" ? value : Number(String(value ?? "").replace(/,/g, ""));
-  return Number.isFinite(parsed) ? parsed : 0;
-}
+// Build the shared core config from this script's env-derived gates so the
+// hourly executor and the daemon evaluate candidates identically.
+const arbConfig: ArbCoreConfig = {
+  host: HOST,
+  gammaApi: GAMMA_API,
+  fetchTimeoutMs: FETCH_TIMEOUT_MS,
+  marketConcurrency: MARKET_CONCURRENCY,
+  eventConcurrency: EVENT_CONCURRENCY,
+  allowedAssets: ALLOWED_ASSETS,
+  minEdge: MIN_EDGE,
+  maxSpread: MAX_SPREAD,
+  minLiquidity: MIN_LIQUIDITY,
+  minAvailableShares: MIN_AVAILABLE_SHARES,
+};
 
 function readJsonArray<T>(path: string): T[] {
   if (!existsSync(path)) return [];
@@ -238,244 +202,10 @@ function appendJsonArray<T>(path: string, rows: T[]) {
   writeJsonArray(path, [...readJsonArray<T>(path), ...rows]);
 }
 
-async function fetchJson(url: string): Promise<any> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
-  try {
-    const res = await fetch(url, {
-      headers: { Accept: "application/json", "User-Agent": "polymarket-real-monotonic-executor/1.0" },
-      signal: controller.signal,
-    });
-    if (!res.ok) throw new Error(`${url} -> ${res.status} ${res.statusText}`);
-    return res.json();
-  } catch (error: any) {
-    if (error?.name === "AbortError") throw new Error(`${url} -> timed out after ${FETCH_TIMEOUT_MS}ms`);
-    throw error;
-  } finally {
-    clearTimeout(timeout);
-  }
-}
-
-async function mapLimit<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
-  const results: R[] = new Array(items.length);
-  let next = 0;
-  async function worker() {
-    while (next < items.length) {
-      const idx = next++;
-      results[idx] = await fn(items[idx]);
-    }
-  }
-  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
-  return results;
-}
-
-function parseJsonArray(value: unknown): unknown[] {
-  if (Array.isArray(value)) return value;
-  if (typeof value !== "string") return [];
-  try {
-    const parsed = JSON.parse(value);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
-}
-
-function parseStrike(question: string, groupItemTitle = ""): { strike: number; direction: Direction } | null {
-  const text = `${groupItemTitle} ${question}`;
-  const value = text.match(/\$?\s*([0-9][0-9,]*(?:\.\d+)?)/);
-  if (!value) return null;
-  const strike = parseNumber(value[1]);
-  if (!strike) return null;
-  const lower = text.toLowerCase();
-  const down = lower.includes("↓") || lower.includes(" low") || lower.includes("(low)") || lower.includes(" dip") || lower.includes("below");
-  const up = lower.includes("↑") || lower.includes(" high") || lower.includes("(high)") || lower.includes(" hit") || lower.includes("reach") || lower.includes("above");
-  if (down && !up) return { strike, direction: "below" };
-  if (groupItemTitle.includes("↓") || lower.includes("(low)") || lower.includes(" dip")) return { strike, direction: "below" };
-  return { strike, direction: "above" };
-}
-
-function polymarketAssetForSlug(slug: string): string | null {
-  if (slug.includes("bitcoin")) return "BTC";
-  if (slug.includes("ethereum")) return "ETH";
-  if (slug.includes("solana")) return "SOL";
-  if (slug.includes("hyperliquid")) return "HYPE";
-  if (slug.startsWith("gc-") || slug.includes("gold-gc") || slug.includes("xauusd")) return "GOLD";
-  if (slug.startsWith("spx-") || slug.includes("s-p-500") || slug.includes("sp-500")) return "SPY";
-  if (slug.startsWith("si-") || slug.includes("silver") || slug.includes("xagusd")) return "SILVER";
-  if (slug.startsWith("cl-") || slug.includes("wti") || slug.includes("crude-oil")) return "OIL";
-  if (slug.includes("amazon") || slug.includes("amzn")) return "AMZN";
-  return null;
-}
-
-function isNestedLadderEvent(slug: string, title = ""): boolean {
-  const haystack = `${slug} ${title}`.toLowerCase();
-  if (haystack.includes("settle") || haystack.includes("final trading day") || haystack.includes("over-under")) return false;
-  if (haystack.includes("range") || /\$\d+(?:\.\d+)?\s*-\s*\$?\d+(?:\.\d+)?/.test(haystack)) return false;
-  return haystack.includes("hit") || haystack.includes("reach") || haystack.includes("dip");
-}
-
-function resolutionTemplate(quote: MarketQuote): string {
-  return quote.description
-    .toLowerCase()
-    .replace(/\$?\d[\d,]*(?:\.\d+)?/g, "<num>")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-
-function resolutionMatches(a: MarketQuote, b: MarketQuote): boolean {
-  const aSource = a.resolutionSource.trim().toLowerCase();
-  const bSource = b.resolutionSource.trim().toLowerCase();
-  if (aSource && bSource && aSource !== bSource) return false;
-  const aTemplate = resolutionTemplate(a);
-  const bTemplate = resolutionTemplate(b);
-  return !aTemplate || !bTemplate || aTemplate === bTemplate;
-}
-
-function bestLevel(levels: BookLevel[] | undefined, side: "bid" | "ask"): { price: number; size: number } {
-  const parsed = (levels ?? [])
-    .map((level) => ({ price: parseNumber(level.price), size: parseNumber(level.size) }))
-    .filter((level) => level.price > 0 && level.size > 0);
-  if (parsed.length === 0) return { price: 0, size: 0 };
-  return parsed.reduce((best, level) => side === "bid"
-    ? (level.price > best.price ? level : best)
-    : (level.price < best.price ? level : best));
-}
-
-async function fetchBook(tokenId: string): Promise<Book> {
-  const book = await fetchJson(`${HOST}/book?${new URLSearchParams({ token_id: tokenId })}`);
-  const bid = bestLevel(book.bids, "bid");
-  const ask = bestLevel(book.asks, "ask");
-  return {
-    tokenId,
-    bid: bid.price,
-    bidSize: bid.size,
-    ask: ask.price,
-    askSize: ask.size,
-    spread: bid.price > 0 && ask.price > 0 ? Math.max(0, ask.price - bid.price) : 0,
-  };
-}
-
-function defaultEventSlugs(now = new Date()): string[] {
-  const month = now.toLocaleString("en-US", { month: "long", timeZone: "UTC" }).toLowerCase();
-  const year = now.getUTCFullYear();
-  return [
-    "what-price-will-bitcoin-hit-before-2027",
-    "what-price-will-ethereum-hit-before-2027",
-    "what-price-will-solana-hit-before-2027",
-    "what-price-will-hyperliquid-hit-before-2027",
-    "what-will-gold-gc-hit-by-end-of-december",
-    "gc-hit-jun-2026",
-    "spx-hit-jun-2026",
-    "spx-hit-dec-2026",
-    "si-hit-jun-2026",
-    `what-price-will-bitcoin-hit-in-${month}-${year}`,
-    `what-price-will-ethereum-hit-in-${month}-${year}`,
-    `what-price-will-solana-hit-in-${month}-${year}`,
-    `what-price-will-xauusd-hit-in-${month}-${year}`,
-  ].filter((slug, idx, arr) => arr.indexOf(slug) === idx);
-}
-
 function eventSlugs(): string[] {
   const override = process.env.MONOTONIC_ARB_REAL_PM_EVENT_SLUGS;
   if (!override) return defaultEventSlugs();
   return override.split(",").map((slug) => slug.trim()).filter(Boolean);
-}
-
-async function marketQuote(event: GammaEvent, market: GammaMarket): Promise<MarketQuote | null> {
-  const eventSlug = event.slug ?? "";
-  const marketId = String(market.id ?? "");
-  const question = market.question ?? "";
-  if (!eventSlug || !marketId || !question || market.closed || market.active === false) return null;
-  const parsed = parseStrike(question, market.groupItemTitle ?? "");
-  if (!parsed) return null;
-  const outcomes = parseJsonArray(market.outcomes).map(String);
-  const tokenIds = parseJsonArray(market.clobTokenIds).map(String);
-  const yesIndex = outcomes.findIndex((outcome) => outcome.toLowerCase() === "yes");
-  const noIndex = outcomes.findIndex((outcome) => outcome.toLowerCase() === "no");
-  if (yesIndex < 0 || noIndex < 0 || !tokenIds[yesIndex] || !tokenIds[noIndex]) return null;
-  const [yesBook, noBook] = await Promise.all([fetchBook(tokenIds[yesIndex]), fetchBook(tokenIds[noIndex])]);
-  if (yesBook.bid <= 0 || yesBook.ask <= 0 || noBook.bid <= 0 || noBook.ask <= 0) return null;
-  return {
-    eventSlug,
-    eventTitle: event.title ?? eventSlug,
-    marketId,
-    question,
-    description: market.description ?? "",
-    resolutionSource: market.resolutionSource ?? "",
-    strike: parsed.strike,
-    direction: parsed.direction,
-    startDate: market.startDate ?? market.createdAt ?? event.startDate ?? event.createdAt ?? null,
-    endDate: market.endDate ?? null,
-    liquidity: parseNumber(market.liquidityNum ?? market.liquidity),
-    yesTokenId: tokenIds[yesIndex],
-    noTokenId: tokenIds[noIndex],
-    yesBook,
-    noBook,
-  };
-}
-
-function evaluatePair(asset: string, broad: MarketQuote, narrow: MarketQuote, foundAt: string): Candidate {
-  const packageCost = broad.yesBook.ask + narrow.noBook.ask;
-  const lockedEdge = 1 - packageCost;
-  // Match the paper/live-sim monotonic arb gate: both underlying YES markets
-  // must be tight. The executed NO leg is the complement of the narrow YES,
-  // and its own CLOB bid/ask spread can look artificially wide even when the
-  // narrow YES bid that creates the NO ask is tight and deep.
-  const maxSpread = Math.max(broad.yesBook.spread, narrow.yesBook.spread);
-  const minLiquidity = Math.min(broad.liquidity, narrow.liquidity);
-  const availableSize = Math.min(broad.yesBook.askSize, narrow.noBook.askSize);
-  const rejectionReasons: string[] = [];
-  if (!ALLOWED_ASSETS.has(asset)) rejectionReasons.push("asset_not_allowlisted");
-  if (broad.endDate && narrow.endDate && broad.endDate !== narrow.endDate) rejectionReasons.push("expiry_mismatch");
-  if (!resolutionMatches(broad, narrow)) rejectionReasons.push("resolution_mismatch");
-  if (lockedEdge + EPSILON < MIN_EDGE) rejectionReasons.push("edge_below_threshold");
-  if (maxSpread - EPSILON > MAX_SPREAD) rejectionReasons.push("wide_spread");
-  if (minLiquidity + EPSILON < MIN_LIQUIDITY) rejectionReasons.push("low_liquidity");
-  if (availableSize + EPSILON < MIN_AVAILABLE_SHARES) rejectionReasons.push("insufficient_top_of_book_size");
-  return {
-    foundAt,
-    asset,
-    eventSlug: broad.eventSlug,
-    eventTitle: broad.eventTitle,
-    packageId: `${broad.eventSlug}::YES-${broad.marketId}+NO-${narrow.marketId}`,
-    direction: broad.direction,
-    broad,
-    narrow,
-    packageCost,
-    lockedEdge,
-    availableSize,
-    maxSpread,
-    minLiquidity,
-    eligible: rejectionReasons.length === 0,
-    rejectionReasons,
-  };
-}
-
-async function scanEvent(slug: string, foundAt: string): Promise<Candidate[]> {
-  const events = await fetchJson(`${GAMMA_API}/events?slug=${encodeURIComponent(slug)}`);
-  const event = Array.isArray(events) && events.length > 0 ? events[0] as GammaEvent : null;
-  if (!event?.slug) return [];
-  const asset = polymarketAssetForSlug(event.slug);
-  if (!asset || !isNestedLadderEvent(event.slug, event.title ?? "")) return [];
-  const quotes = (await mapLimit(event.markets ?? [], MARKET_CONCURRENCY, (market) => marketQuote(event, market)))
-    .filter((quote): quote is MarketQuote => quote !== null);
-  const candidates: Candidate[] = [];
-  for (const direction of ["above", "below"] as const) {
-    const directional = quotes
-      .filter((quote) => quote.direction === direction)
-      .sort((a, b) => a.strike - b.strike);
-    for (let i = 0; i < directional.length; i++) {
-      for (let j = i + 1; j < directional.length; j++) {
-        const lower = directional[i];
-        const higher = directional[j];
-        const broad = direction === "above" ? lower : higher;
-        const narrow = direction === "above" ? higher : lower;
-        const candidate = evaluatePair(asset, broad, narrow, foundAt);
-        if (candidate.lockedEdge > 0 || candidate.eligible) candidates.push(candidate);
-      }
-    }
-  }
-  return candidates;
 }
 
 function marketIdFromInstrumentId(instrumentId: string | undefined): string | null {
@@ -490,11 +220,6 @@ function slugFromInstrumentId(instrumentId: string | undefined): string | null {
   return parts[0] || null;
 }
 
-async function fetchEvent(slug: string): Promise<GammaEvent | null> {
-  const events = await fetchJson(`${GAMMA_API}/events?slug=${encodeURIComponent(slug)}`);
-  return Array.isArray(events) && events.length > 0 ? events[0] as GammaEvent : null;
-}
-
 async function candidateFromPortfolioPosition(position: PortfolioPosition, foundAt: string): Promise<Candidate | null> {
   if (position.signalType !== "MONOTONIC_ARB" || position.instrumentType !== "pm_package") return null;
   if (!position.instrumentId || !Array.isArray(position.packageLegs)) return null;
@@ -506,7 +231,7 @@ async function candidateFromPortfolioPosition(position: PortfolioPosition, found
   const narrowMarketId = marketIdFromInstrumentId(narrowLeg?.instrumentId);
   if (!broadMarketId || !narrowMarketId) return null;
 
-  const event = await fetchEvent(slug);
+  const event = await fetchEvent(arbConfig, slug);
   if (!event?.slug) return null;
   const asset = (position.asset ?? polymarketAssetForSlug(event.slug) ?? "").toUpperCase();
   if (!asset) return null;
@@ -515,15 +240,15 @@ async function candidateFromPortfolioPosition(position: PortfolioPosition, found
   const narrowMarket = markets.find((market) => String(market.id ?? "") === narrowMarketId);
   if (!broadMarket || !narrowMarket) return null;
   const [broad, narrow] = await Promise.all([
-    marketQuote(event, broadMarket),
-    marketQuote(event, narrowMarket),
+    marketQuote(arbConfig, event, broadMarket),
+    marketQuote(arbConfig, event, narrowMarket),
   ]);
   if (!broad || !narrow) return null;
   if (broad.direction !== narrow.direction) return null;
   const expectedBroadStrike = typeof broadLeg?.strike === "number" ? broadLeg.strike : broad.strike;
   const expectedNarrowStrike = typeof narrowLeg?.strike === "number" ? narrowLeg.strike : narrow.strike;
   if (Math.abs(broad.strike - expectedBroadStrike) > EPSILON || Math.abs(narrow.strike - expectedNarrowStrike) > EPSILON) return null;
-  return evaluatePair(asset, broad, narrow, foundAt);
+  return evaluatePair(arbConfig, asset, broad, narrow, foundAt);
 }
 
 function parsePackageId(packageId: string): { slug: string; broadMarketId: string; narrowMarketId: string } | null {
@@ -535,7 +260,7 @@ function parsePackageId(packageId: string): { slug: string; broadMarketId: strin
 async function candidateFromPackageId(packageId: string, foundAt: string): Promise<Candidate | null> {
   const parsed = parsePackageId(packageId);
   if (!parsed) throw new Error(`invalid package id format: ${packageId}`);
-  const event = await fetchEvent(parsed.slug);
+  const event = await fetchEvent(arbConfig, parsed.slug);
   if (!event?.slug) return null;
   const asset = (polymarketAssetForSlug(event.slug) ?? "").toUpperCase();
   if (!asset) return null;
@@ -544,12 +269,12 @@ async function candidateFromPackageId(packageId: string, foundAt: string): Promi
   const narrowMarket = markets.find((market) => String(market.id ?? "") === parsed.narrowMarketId);
   if (!broadMarket || !narrowMarket) return null;
   const [broad, narrow] = await Promise.all([
-    marketQuote(event, broadMarket),
-    marketQuote(event, narrowMarket),
+    marketQuote(arbConfig, event, broadMarket),
+    marketQuote(arbConfig, event, narrowMarket),
   ]);
   if (!broad || !narrow) return null;
   if (broad.direction !== narrow.direction) return null;
-  return evaluatePair(asset, broad, narrow, foundAt);
+  return evaluatePair(arbConfig, asset, broad, narrow, foundAt);
 }
 
 function readPortfolio(): Portfolio {
@@ -583,23 +308,10 @@ async function portfolioCandidates(foundAt: string, alreadyOpen: Set<string>): P
 }
 
 async function scanCandidates(foundAt: string): Promise<{ candidates: Candidate[]; errors: string[] }> {
-  const scans = await mapLimit(eventSlugs(), EVENT_CONCURRENCY, async (slug) => {
-    try {
-      return { slug, candidates: await scanEvent(slug, foundAt), error: null as string | null };
-    } catch (error: any) {
-      return { slug, candidates: [] as Candidate[], error: error?.message ?? String(error) };
-    }
-  });
-  const candidates: Candidate[] = [];
-  const errors: string[] = [];
-  for (const scan of scans) {
-    candidates.push(...scan.candidates);
-    if (scan.error) errors.push(`${scan.slug}: ${scan.error}`);
-  }
-  return { candidates, errors };
+  return findCandidates(arbConfig, eventSlugs(), foundAt);
 }
 
-async function clobClient(): Promise<{ signer: ethers.Wallet; client: ClobClient }> {
+async function clobClient(): Promise<{ signer: ethers.Wallet; client: ClobClient; creds: ApiKeyCreds }> {
   const signer = signerFromEnv();
   const clientOptions = {
     host: HOST,
@@ -611,7 +323,7 @@ async function clobClient(): Promise<{ signer: ethers.Wallet; client: ClobClient
   };
   const l1 = new ClobClient(clientOptions);
   const creds = await l1.createOrDeriveApiKey() as ApiKeyCreds;
-  return { signer, client: new ClobClient({ ...clientOptions, creds, throwOnError: true }) };
+  return { signer, client: new ClobClient({ ...clientOptions, creds, throwOnError: true }), creds };
 }
 
 function signerFromEnv(): ethers.Wallet {
@@ -717,7 +429,7 @@ async function proxyCollateralProbe(address: string): Promise<{
   exchangeV2Allowance: number;
   negRiskExchangeV2Allowance: number;
 }> {
-  const provider = new ethers.providers.StaticJsonRpcProvider(RPC_URL, { chainId: 137, name: "polygon" });
+  const provider = getPolygonProvider();
   const erc20 = new ethers.Contract(PUSD_ADDRESS, [
     "function balanceOf(address) view returns (uint256)",
     "function allowance(address,address) view returns (uint256)",
@@ -750,13 +462,38 @@ function openPackageCount(rows: LivePackage[]): number {
   return rows.filter((row) => ["quoted", "leg1_submitted", "leg1_filled", "leg2_submitted", "package_complete"].includes(row.status)).length;
 }
 
+// Each leg is a distinct order in its own market, so the package must buy at
+// least the larger of the two markets' minimum order sizes (Polymarket default
+// 5 shares), and never fewer than our own MIN_ORDER_SHARES floor.
+function requiredMinShares(candidate: Candidate): number {
+  return Math.max(MIN_ORDER_SHARES, candidate.broad.yesBook.minOrderSize, candidate.narrow.noBook.minOrderSize);
+}
+
 function sizeForCandidate(candidate: Candidate, packageRows: LivePackage[]): { shares: number; cost: number; reason?: string } {
   const remainingDailyUsd = Math.max(0, MAX_DAILY_USD - spentToday(packageRows));
-  const maxUsd = Math.min(MAX_PACKAGE_USD, remainingDailyUsd);
-  if (maxUsd <= 0) return { shares: 0, cost: 0, reason: "daily_cap_exhausted" };
-  const shares = Math.floor(Math.min(candidate.availableSize, maxUsd / candidate.packageCost) * 100) / 100;
+  if (remainingDailyUsd <= 0) return { shares: 0, cost: 0, reason: "daily_cap_exhausted" };
+
+  const minShares = requiredMinShares(candidate);
+  // The touch must have enough depth to fill the exchange-minimum order.
+  if (candidate.availableSize + EPSILON < minShares) {
+    return { shares: candidate.availableSize, cost: candidate.availableSize * candidate.packageCost, reason: `touch_below_exchange_min_${minShares}` };
+  }
+
+  // Auto-expand the per-package budget up to the ceiling so a 5-share arb fits,
+  // but never beyond the ceiling or the remaining daily budget.
+  const neededUsd = minShares * candidate.packageCost;
+  const perPackageUsd = Math.min(MAX_PACKAGE_USD_CEILING, Math.max(MAX_PACKAGE_USD, neededUsd));
+  const maxUsd = Math.min(perPackageUsd, remainingDailyUsd);
+  if (maxUsd + EPSILON < neededUsd) {
+    return { shares: 0, cost: 0, reason: `budget_below_exchange_min cap=$${maxUsd.toFixed(2)} needs=$${neededUsd.toFixed(2)}` };
+  }
+
+  let shares = Math.floor(Math.min(candidate.availableSize, maxUsd / candidate.packageCost) * 100) / 100;
+  // Guard against floating-point shaving the affordable size just under the min
+  // when the budget was sized exactly to cover it.
+  if (shares + 1e-6 >= minShares && shares < minShares) shares = minShares;
   const cost = shares * candidate.packageCost;
-  if (shares < MIN_ORDER_SHARES) return { shares, cost, reason: `shares_below_min_order_${MIN_ORDER_SHARES}` };
+  if (shares + EPSILON < minShares) return { shares, cost, reason: `shares_below_min_order_${minShares}` };
   return { shares, cost };
 }
 
@@ -782,6 +519,18 @@ async function postFakBuy(client: ClobClient, tokenId: string, price: number, sh
   const tickSize = await client.getTickSize(tokenId) as TickSize;
   const signedOrder = await client.createOrder(
     { tokenID: tokenId, price, size: Number(shares.toFixed(6)), side: Side.BUY, ...(POLY_BUILDER_CODE ? { builderCode: POLY_BUILDER_CODE } : {}) },
+    { tickSize, negRisk: false },
+  );
+  return client.postOrder(signedOrder, OrderType.FAK);
+}
+
+// FAK sell to flatten a position (used by the daemon to unwind a naked leg).
+// Crosses the spread at `price` (caller passes best bid) so the orphan exits
+// immediately rather than resting on the book.
+async function postFakSell(client: ClobClient, tokenId: string, price: number, shares: number): Promise<any> {
+  const tickSize = await client.getTickSize(tokenId) as TickSize;
+  const signedOrder = await client.createOrder(
+    { tokenID: tokenId, price, size: Number(shares.toFixed(6)), side: Side.SELL, ...(POLY_BUILDER_CODE ? { builderCode: POLY_BUILDER_CODE } : {}) },
     { tickSize, negRisk: false },
   );
   return client.postOrder(signedOrder, OrderType.FAK);
@@ -866,7 +615,7 @@ async function buildOnlyCandidate(
 }
 
 async function reconcileTokenBalance(address: string, tokenId: string): Promise<number> {
-  const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
+  const provider = getPolygonProvider();
   const ctf = new ethers.Contract(CTF_ADDRESS, ["function balanceOf(address,uint256) view returns (uint256)"], provider);
   const raw = await ctf.balanceOf(address, tokenId);
   return parseFloat(ethers.utils.formatUnits(raw, 6));
@@ -970,9 +719,13 @@ async function executeCandidate(client: ClobClient, walletAddress: string, candi
     orders.push({ packageId: record.packageId, createdAt: new Date().toISOString(), role: "broad_yes", tokenId: candidate.broad.yesTokenId, side: "BUY", price: candidate.broad.yesBook.ask, size: leg1Filled, orderType: "FAK", response: leg1 });
     record.status = "leg1_filled";
     record.updatedAt = new Date().toISOString();
-    if (leg1Filled < MIN_ORDER_SHARES) {
+    // leg2 buys leg1Filled shares; it must clear the narrow-NO market's minimum
+    // or the exchange will reject it. Bail (and flag for unwind) if leg1 filled
+    // too little to place a valid second leg.
+    const leg2Min = Math.max(MIN_ORDER_SHARES, candidate.narrow.noBook.minOrderSize);
+    if (leg1Filled < leg2Min) {
       record.status = "unwind_required";
-      record.failureReason = `leg1_fill_below_min broad_yes=${leg1Filled} intended=${shares}`;
+      record.failureReason = `leg1_fill_below_min broad_yes=${leg1Filled} leg2Min=${leg2Min} intended=${shares}`;
       const rows = packageRows.filter((row) => row.id !== record.id);
       writeJsonArray(PACKAGES_PATH, [...rows, record]);
       appendJsonArray(ORDERS_PATH, orders);
@@ -1150,7 +903,67 @@ async function runExecutor() {
   }
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+// Reusable surface for the always-on websocket daemon
+// (scripts/polymarket-arb-daemon.ts). The daemon imports these proven helpers
+// so order signing, sizing, ledgering, and on-chain reconciliation stay a single
+// source of truth shared with this hourly executor.
+export {
+  arbConfig,
+  clobClient,
+  signerFromEnv,
+  postFakBuy,
+  postFakSell,
+  sizeForCandidate,
+  reconcilePackage,
+  reconcileTokenBalance,
+  packageRecord,
+  accountProbe,
+  proxyCollateralProbe,
+  assertOrderResponse,
+  orderId,
+  roundShares,
+  readJsonArray,
+  writeJsonArray,
+  appendJsonArray,
+  spentToday,
+  openPackageCount,
+  eventSlugs,
+  scanCandidates,
+  PACKAGES_PATH,
+  ORDERS_PATH,
+  MAX_PACKAGE_USD,
+  MAX_DAILY_USD,
+  MAX_OPEN_PACKAGES,
+  MIN_EDGE,
+  MAX_SPREAD,
+  MIN_LIQUIDITY,
+  MIN_AVAILABLE_SHARES,
+  MIN_ORDER_SHARES,
+  FILL_WAIT_MS,
+  ENABLED,
+  HARD_DISABLED,
+  POLYMARKET_FUNDER_ADDRESS,
+  SOCKS_PROXY,
+  SKIP_VPN,
+};
+export type { LivePackage, LiveOrder };
+
+// Only auto-run the hourly executor when invoked directly (tsx
+// scripts/polymarket-real-monotonic-executor.ts). When imported by the daemon
+// this guard prevents main() from firing on module load.
+const invokedDirectly = (() => {
+  const entry = process.argv[1];
+  if (!entry) return false;
+  try {
+    return resolve(entry) === fileURLToPath(import.meta.url);
+  } catch {
+    return false;
+  }
+})();
+
+if (invokedDirectly) {
+  main().catch((error) => {
+    console.error(error);
+    process.exit(1);
+  });
+}
