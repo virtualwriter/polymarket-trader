@@ -47,6 +47,10 @@ interface Position {
   instrumentType?: string;
   instrumentId?: string;
   instrumentLabel?: string;
+  packageLegs?: Array<{
+    role?: string;
+    strike?: number;
+  }>;
   fundingPnlAccrued?: number;
 }
 
@@ -944,6 +948,14 @@ function formatStrike(value: string): string {
 
 function extractStrikePrice(position?: Position): string {
   if (!position) return "";
+  if (position.instrumentType === "pm_package" && Array.isArray(position.packageLegs)) {
+    const broad = position.packageLegs.find((leg) => leg.role === "broad_yes");
+    const narrow = position.packageLegs.find((leg) => leg.role === "narrow_no");
+    if (typeof broad?.strike === "number" && typeof narrow?.strike === "number") {
+      return `${formatStrike(String(broad.strike))} / ${formatStrike(String(narrow.strike))}`;
+    }
+  }
+
   const label = position.instrumentLabel ?? "";
   const packageMatch = label.match(/monotonic arb package\s+—\s+YES\s+([\d,.]+)\s*\/\s*NO\s+([\d,.]+)/i);
   if (packageMatch) return `${formatStrike(packageMatch[1])} / ${formatStrike(packageMatch[2])}`;
@@ -952,8 +964,6 @@ function extractStrikePrice(position?: Position): string {
   if (dollarMatches.length > 0) return formatStrike(dollarMatches[dollarMatches.length - 1][1]);
 
   const id = position.instrumentId ?? "";
-  const packageIdMatch = id.match(/::YES-([\d,.]+)\+NO-([\d,.]+)/i);
-  if (packageIdMatch) return `${formatStrike(packageIdMatch[1])} / ${formatStrike(packageIdMatch[2])}`;
 
   return "";
 }
