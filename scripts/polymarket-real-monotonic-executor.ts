@@ -64,6 +64,7 @@ const MARKET_CONCURRENCY = Math.max(1, Number(process.env.MONOTONIC_ARB_REAL_PM_
 const EVENT_CONCURRENCY = Math.max(1, Number(process.env.MONOTONIC_ARB_REAL_PM_EVENT_CONCURRENCY ?? 2));
 const EPSILON = 1e-9;
 const CANDIDATE_SOURCE = process.env.MONOTONIC_ARB_REAL_PM_SOURCE ?? "portfolio";
+const TARGET_PACKAGE_ID = process.env.MONOTONIC_ARB_REAL_PM_PACKAGE_ID?.trim();
 const SOCKS_PROXY = process.env.SOCKS_PROXY || process.env.ALL_PROXY || undefined;
 const SKIP_VPN = process.env.MONOTONIC_ARB_REAL_PM_SKIP_VPN === "1" || process.argv.includes("--skip-vpn");
 const ALLOWED_ASSETS = new Set((process.env.MONOTONIC_ARB_REAL_PM_ASSETS ?? "BTC,ETH,GOLD,SOL,SILVER,SPY")
@@ -519,6 +520,32 @@ async function candidateFromPortfolioPosition(position: PortfolioPosition, found
   const expectedBroadStrike = typeof broadLeg?.strike === "number" ? broadLeg.strike : broad.strike;
   const expectedNarrowStrike = typeof narrowLeg?.strike === "number" ? narrowLeg.strike : narrow.strike;
   if (Math.abs(broad.strike - expectedBroadStrike) > EPSILON || Math.abs(narrow.strike - expectedNarrowStrike) > EPSILON) return null;
+  return evaluatePair(asset, broad, narrow, foundAt);
+}
+
+function parsePackageId(packageId: string): { slug: string; broadMarketId: string; narrowMarketId: string } | null {
+  const match = packageId.match(/^(.+)::YES-([^+]+)\+NO-(.+)$/);
+  if (!match) return null;
+  return { slug: match[1], broadMarketId: match[2], narrowMarketId: match[3] };
+}
+
+async function candidateFromPackageId(packageId: string, foundAt: string): Promise<Candidate | null> {
+  const parsed = parsePackageId(packageId);
+  if (!parsed) throw new Error(`invalid package id format: ${packageId}`);
+  const event = await fetchEvent(parsed.slug);
+  if (!event?.slug) return null;
+  const asset = (polymarketAssetForSlug(event.slug) ?? "").toUpperCase();
+  if (!asset) return null;
+  const markets = event.markets ?? [];
+  const broadMarket = markets.find((market) => String(market.id ?? "") === parsed.broadMarketId);
+  const narrowMarket = markets.find((market) => String(market.id ?? "") === parsed.narrowMarketId);
+  if (!broadMarket || !narrowMarket) return null;
+  const [broad, narrow] = await Promise.all([
+    marketQuote(event, broadMarket),
+    marketQuote(event, narrowMarket),
+  ]);
+  if (!broad || !narrow) return null;
+  if (broad.direction !== narrow.direction) return null;
   return evaluatePair(asset, broad, narrow, foundAt);
 }
 
@@ -1025,14 +1052,21 @@ async function runExecutor() {
   for (const packageId of portfolioPackageIds) alreadyOpen.add(packageId);
 
   const foundAt = new Date().toISOString();
-  const { candidates, errors } = CANDIDATE_SOURCE === "scan"
-    ? await scanCandidates(foundAt)
-    : await portfolioCandidates(foundAt, alreadyOpen);
+  const { candidates, errors } = TARGET_PACKAGE_ID
+    ? {
+      candidates: [await candidateFromPackageId(TARGET_PACKAGE_ID, foundAt)].filter((candidate): candidate is Candidate => candidate !== null),
+      errors: [] as string[],
+    }
+    : CANDIDATE_SOURCE === "scan"
+      ? await scanCandidates(foundAt)
+      : await portfolioCandidates(foundAt, alreadyOpen);
   const eligible = candidates
-    .filter((candidate) => candidate.eligible && !alreadyOpen.has(candidate.packageId))
+    .filter((candidate) => (BUILD_ONLY && TARGET_PACKAGE_ID
+      ? true
+      : candidate.eligible && !alreadyOpen.has(candidate.packageId)))
     .sort((a, b) => b.lockedEdge - a.lockedEdge)
     .slice(0, MAX_PACKAGES_PER_RUN);
-  console.log(`Candidate source=${CANDIDATE_SOURCE}; candidates=${candidates.length}; eligibleNew=${eligible.length}`);
+  console.log(`Candidate source=${TARGET_PACKAGE_ID ? "package_id" : CANDIDATE_SOURCE}; candidates=${candidates.length}; eligibleNew=${eligible.length}`);
   for (const error of errors.slice(0, 5)) console.log(`Scan error: ${error}`);
   for (const candidate of candidates
     .filter((row) => row.lockedEdge > 0)
@@ -1048,6 +1082,9 @@ async function runExecutor() {
       continue;
     }
     if (BUILD_ONLY) {
+      if (!candidate.eligible) {
+        console.log(`Build-only target has rejection reasons: ${candidate.rejectionReasons.join(",") || "none"}`);
+      }
       await buildOnlyCandidate(client, signer, candidate, sized.shares);
       continue;
     }
