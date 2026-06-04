@@ -317,10 +317,14 @@ async function refreshWatchlist(): Promise<void> {
     return;
   }
 
-  // Keep candidates that have any positive edge or are eligible; they form the
-  // set of nested packages worth watching live (the dynamic gate is re-checked
-  // on every book delta).
-  const watch = candidates.filter((c) => c.lockedEdge > 0 || c.eligible);
+  // Keep structurally-valid ladder packages even when they do NOT have a live
+  // edge yet. The websocket daemon must subscribe before the arb appears; the
+  // dynamic gate (edge/spread/top-of-book size) is re-checked on every delta.
+  // Static deal-breakers (wrong asset, expiry/resolution mismatch, low market
+  // liquidity) stay filtered out.
+  const watch = candidates.filter((c) => !c.rejectionReasons.some((reason) =>
+    ["asset_not_allowlisted", "expiry_mismatch", "resolution_mismatch", "low_liquidity"].includes(reason)
+  ));
   const seen = new Set<string>();
   let added = 0;
   for (const base of watch) {

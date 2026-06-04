@@ -324,7 +324,11 @@ export async function scanEvent(config: ArbCoreConfig, slug: string, foundAt: st
         const broad = direction === "above" ? lower : higher;
         const narrow = direction === "above" ? higher : lower;
         const candidate = evaluatePair(config, asset, broad, narrow, foundAt);
-        if (candidate.lockedEdge > 0 || candidate.eligible) candidates.push(candidate);
+        // Return every structurally-valid ladder pair to callers. The always-on
+        // websocket daemon needs to subscribe before an edge exists, then apply
+        // the live arb gate on each book delta. Hourly callers can still filter
+        // to `candidate.eligible` at execution time.
+        candidates.push(candidate);
       }
     }
   }
