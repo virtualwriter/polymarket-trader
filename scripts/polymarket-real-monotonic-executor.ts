@@ -26,11 +26,17 @@ const ORDERS_PATH = join(DATA_DIR, "polymarket-live-orders.json");
 
 const HOST = process.env.POLYMARKET_CLOB_HOST ?? "https://clob.polymarket.com";
 const GAMMA_API = process.env.GAMMA_API ?? "https://gamma-api.polymarket.com";
+const RELAYER_URL = process.env.POLYMARKET_RELAYER_URL ?? "https://relayer-v2.polymarket.com";
 const CHAIN_ID = Chain.POLYGON;
 const RPC_URL = process.env.RPC_URL ?? "https://polygon-rpc.com";
 const CTF_ADDRESS = "0x4D97DCd97eC945f40cF65F87097ACe5EA0476045";
 const POLYMARKET_FUNDER_ADDRESS = process.env.POLYMARKET_FUNDER_ADDRESS?.trim() || undefined;
 const POLYMARKET_SIGNATURE_TYPE = Number(process.env.POLYMARKET_SIGNATURE_TYPE ?? SignatureTypeV2.EOA) as SignatureTypeV2;
+const RELAYER_API_KEY = process.env.RELAYER_API_KEY?.trim();
+const RELAYER_API_KEY_ADDRESS = process.env.RELAYER_API_KEY_ADDRESS?.trim();
+const POLY_BUILDER_API_KEY = process.env.POLY_BUILDER_API_KEY?.trim();
+const POLY_BUILDER_PASSPHRASE = process.env.POLY_BUILDER_PASSPHRASE?.trim();
+const POLY_BUILDER_SECRET = process.env.POLY_BUILDER_SECRET?.trim();
 
 const ENABLED = process.env.ENABLE_MONOTONIC_ARB_REAL_PM === "1";
 const HARD_DISABLED = process.env.DISABLE_REAL_PM_TRADING === "1";
@@ -43,7 +49,7 @@ const MAX_PACKAGES_PER_RUN = Number(process.env.MONOTONIC_ARB_REAL_PM_MAX_PER_RU
 const MIN_EDGE = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_EDGE ?? 0.001);
 const MIN_LIQUIDITY = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_LIQUIDITY ?? 10_000);
 const MAX_SPREAD = Number(process.env.MONOTONIC_ARB_REAL_PM_MAX_SPREAD ?? 0.01);
-const MIN_AVAILABLE_SHARES = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_AVAILABLE_SHARES ?? 5);
+const MIN_AVAILABLE_SHARES = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_AVAILABLE_SHARES ?? 10);
 const MIN_ORDER_SHARES = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_ORDER_SHARES ?? 1);
 const FILL_WAIT_MS = Number(process.env.MONOTONIC_ARB_REAL_PM_FILL_WAIT_MS ?? 3000);
 const FETCH_TIMEOUT_MS = Number(process.env.MONOTONIC_ARB_REAL_PM_FETCH_TIMEOUT_MS ?? 12_000);
@@ -585,6 +591,42 @@ function hasWalletSecret(): boolean {
   return !!process.env.PRIVATE_KEY?.trim() || !!process.env.HYPERLIQUID_MNEMONIC?.trim();
 }
 
+function hasRelayerApiKey(): boolean {
+  return !!RELAYER_API_KEY && !!RELAYER_API_KEY_ADDRESS;
+}
+
+function hasBuilderApiKey(): boolean {
+  return !!POLY_BUILDER_API_KEY && !!POLY_BUILDER_PASSPHRASE && !!POLY_BUILDER_SECRET;
+}
+
+function assertAddress(value: string | undefined, label: string): string {
+  if (!value || !/^0x[a-fA-F0-9]{40}$/.test(value)) {
+    throw new Error(`${label} must be a 0x-prefixed Ethereum address`);
+  }
+  return value;
+}
+
+async function relayerProbe(): Promise<{ address: string; recentTransactions: number }> {
+  const address = assertAddress(RELAYER_API_KEY_ADDRESS, "RELAYER_API_KEY_ADDRESS");
+  if (!RELAYER_API_KEY) throw new Error("Missing RELAYER_API_KEY");
+  const response = await fetch(`${RELAYER_URL.replace(/\/$/, "")}/transactions`, {
+    headers: {
+      Accept: "application/json",
+      RELAYER_API_KEY,
+      RELAYER_API_KEY_ADDRESS: address,
+    },
+  });
+  if (!response.ok) {
+    const text = await response.text().catch(() => "");
+    throw new Error(`Relayer probe failed: HTTP ${response.status} ${text.slice(0, 200)}`);
+  }
+  const transactions = await response.json();
+  return {
+    address,
+    recentTransactions: Array.isArray(transactions) ? transactions.length : 0,
+  };
+}
+
 function parseClobUnits(value: unknown): number {
   const raw = String(value ?? "0");
   if (/^\d+$/.test(raw)) return Number(raw) / 1_000_000;
@@ -830,6 +872,8 @@ async function main() {
 
 async function runExecutor() {
   const hasSignerSecret = hasWalletSecret();
+  const relayerConfigured = hasRelayerApiKey();
+  const builderConfigured = hasBuilderApiKey();
   let signer: ethers.Wallet | null = null;
   let client: ClobClient | null = null;
   let probe: Awaited<ReturnType<typeof accountProbe>> | null = null;
@@ -841,12 +885,23 @@ async function runExecutor() {
     console.log(`Wallet: ${probe.walletAddress}`);
     console.log(`Collateral balance=${probe.collateralBalance} allowance=${probe.collateralAllowance} openOrders=${probe.openOrderCount}`);
   } else {
-    if (!DRY_RUN || PROBE_ONLY) throw new Error("Missing PRIVATE_KEY or HYPERLIQUID_MNEMONIC");
-    console.log("Wallet: unavailable in local dry-run (no PRIVATE_KEY or HYPERLIQUID_MNEMONIC set)");
+    if (!DRY_RUN && !relayerConfigured) throw new Error("Missing PRIVATE_KEY/HYPERLIQUID_MNEMONIC or RELAYER_API_KEY/RELAYER_API_KEY_ADDRESS");
+    console.log(`Wallet: unavailable (${relayerConfigured ? "relayer credentials configured" : "no PRIVATE_KEY or HYPERLIQUID_MNEMONIC set"})`);
   }
   console.log(`Mode: ${DRY_RUN ? "DRY_RUN" : "REAL"} enabled=${ENABLED} hardDisabled=${HARD_DISABLED}`);
+  console.log(`Real PM gates: maxPackage=$${MAX_PACKAGE_USD} maxDaily=$${MAX_DAILY_USD} maxPerRun=${MAX_PACKAGES_PER_RUN} minEdge=${(MIN_EDGE * 100).toFixed(2)}c minTouchShares=${MIN_AVAILABLE_SHARES}`);
+  console.log(`Auth: wallet=${hasSignerSecret ? "set" : "missing"} relayer=${relayerConfigured ? "set" : "missing"} builder=${builderConfigured ? "set" : "missing"}`);
+
+  if (relayerConfigured) {
+    const relayer = await relayerProbe();
+    console.log(`Relayer probe: address=${relayer.address} recentTransactions=${relayer.recentTransactions}`);
+  }
 
   if (PROBE_ONLY) return;
+
+  if (!DRY_RUN && relayerConfigured) {
+    throw new Error("Relayer real order submission is intentionally blocked until transaction payload generation is implemented and reviewed.");
+  }
 
   if (!DRY_RUN && (!client || !signer || !probe)) throw new Error("Real mode requires initialized wallet/client");
   if (!DRY_RUN && probe!.collateralBalance < MAX_PACKAGE_USD) throw new Error(`Insufficient PM collateral balance for cap $${MAX_PACKAGE_USD}`);
