@@ -747,13 +747,17 @@ function assertOrderResponse(response: any, role: string) {
   }
 }
 
-async function postFokBuy(client: ClobClient, tokenId: string, price: number, shares: number): Promise<any> {
+function roundShares(value: number): number {
+  return Math.floor(Math.max(0, value) * 1_000_000) / 1_000_000;
+}
+
+async function postFakBuy(client: ClobClient, tokenId: string, price: number, shares: number): Promise<any> {
   const tickSize = await client.getTickSize(tokenId) as TickSize;
   const signedOrder = await client.createOrder(
     { tokenID: tokenId, price, size: Number(shares.toFixed(6)), side: Side.BUY, ...(POLY_BUILDER_CODE ? { builderCode: POLY_BUILDER_CODE } : {}) },
     { tickSize, negRisk: false },
   );
-  return client.postOrder(signedOrder, OrderType.FOK);
+  return client.postOrder(signedOrder, OrderType.FAK);
 }
 
 function redactedOrderPayload(payload: any): any {
@@ -768,7 +772,7 @@ function redactedOrderPayload(payload: any): any {
   };
 }
 
-async function buildFokBuyPayload(
+async function buildFakBuyPayload(
   client: ClobClient,
   role: "broad_yes" | "narrow_no",
   tokenId: string,
@@ -793,7 +797,7 @@ async function buildFokBuyPayload(
     price,
     shares: Number(shares.toFixed(6)),
     usdAmount: Number((shares * price).toFixed(6)),
-    payload: redactedOrderPayload(orderToJsonV2(signedOrder, CLOB_API_OWNER, OrderType.FOK)),
+    payload: redactedOrderPayload(orderToJsonV2(signedOrder, CLOB_API_OWNER, OrderType.FAK)),
   };
 }
 
@@ -817,7 +821,7 @@ async function buildOnlyCandidate(
       proxyWallet: PROXY_WALLET_ADDRESS ?? null,
       clobSignatureType: POLYMARKET_SIGNATURE_TYPE,
       funderAddress: POLYMARKET_FUNDER_ADDRESS ?? null,
-      orderType: "FOK",
+      orderType: "FAK",
       orders: [
         { role: "broad_yes", tokenId: candidate.broad.yesTokenId, side: "BUY", price: candidate.broad.yesBook.ask, usdAmount: Number(leg1Usd.toFixed(6)) },
         { role: "narrow_no", tokenId: candidate.narrow.noTokenId, side: "BUY", price: candidate.narrow.noBook.ask, usdAmount: Number(leg2Usd.toFixed(6)) },
@@ -827,8 +831,8 @@ async function buildOnlyCandidate(
   }
 
   const [broadYes, narrowNo] = await Promise.all([
-    buildFokBuyPayload(client, "broad_yes", candidate.broad.yesTokenId, candidate.broad.yesBook.ask, shares),
-    buildFokBuyPayload(client, "narrow_no", candidate.narrow.noTokenId, candidate.narrow.noBook.ask, shares),
+    buildFakBuyPayload(client, "broad_yes", candidate.broad.yesTokenId, candidate.broad.yesBook.ask, shares),
+    buildFakBuyPayload(client, "narrow_no", candidate.narrow.noTokenId, candidate.narrow.noBook.ask, shares),
   ]);
   console.log("  signedPayloadsBuilt=true submit=false");
   console.log(JSON.stringify({ orders: [broadYes, narrowNo] }, null, 2));
@@ -929,28 +933,47 @@ async function executeCandidate(client: ClobClient, walletAddress: string, candi
     record.updatedAt = new Date().toISOString();
     appendJsonArray(PACKAGES_PATH, [record]);
 
-    const leg1 = await postFokBuy(client, candidate.broad.yesTokenId, candidate.broad.yesBook.ask, shares);
+    const leg1Before = await reconcileTokenBalance(walletAddress, candidate.broad.yesTokenId);
+    const leg1 = await postFakBuy(client, candidate.broad.yesTokenId, candidate.broad.yesBook.ask, shares);
     assertOrderResponse(leg1, "broad_yes");
     record.legOrderIds.broadYes = orderId(leg1);
-    orders.push({ packageId: record.packageId, createdAt: new Date().toISOString(), role: "broad_yes", tokenId: candidate.broad.yesTokenId, side: "BUY", price: candidate.broad.yesBook.ask, size: shares, orderType: "FOK", response: leg1 });
+    await new Promise((resolvePromise) => setTimeout(resolvePromise, FILL_WAIT_MS));
+    const leg1After = await reconcileTokenBalance(walletAddress, candidate.broad.yesTokenId);
+    const leg1Filled = roundShares(leg1After - leg1Before);
+    orders.push({ packageId: record.packageId, createdAt: new Date().toISOString(), role: "broad_yes", tokenId: candidate.broad.yesTokenId, side: "BUY", price: candidate.broad.yesBook.ask, size: leg1Filled, orderType: "FAK", response: leg1 });
     record.status = "leg1_filled";
     record.updatedAt = new Date().toISOString();
+    if (leg1Filled < MIN_ORDER_SHARES) {
+      record.status = "unwind_required";
+      record.failureReason = `leg1_fill_below_min broad_yes=${leg1Filled} intended=${shares}`;
+      const rows = packageRows.filter((row) => row.id !== record.id);
+      writeJsonArray(PACKAGES_PATH, [...rows, record]);
+      appendJsonArray(ORDERS_PATH, orders);
+      return { record, orders };
+    }
 
-    await new Promise((resolvePromise) => setTimeout(resolvePromise, FILL_WAIT_MS));
-    const leg2 = await postFokBuy(client, candidate.narrow.noTokenId, candidate.narrow.noBook.ask, shares);
+    const leg2TargetShares = leg1Filled;
+    const leg2Before = await reconcileTokenBalance(walletAddress, candidate.narrow.noTokenId);
+    const leg2 = await postFakBuy(client, candidate.narrow.noTokenId, candidate.narrow.noBook.ask, leg2TargetShares);
     assertOrderResponse(leg2, "narrow_no");
     record.legOrderIds.narrowNo = orderId(leg2);
-    orders.push({ packageId: record.packageId, createdAt: new Date().toISOString(), role: "narrow_no", tokenId: candidate.narrow.noTokenId, side: "BUY", price: candidate.narrow.noBook.ask, size: shares, orderType: "FOK", response: leg2 });
+    await new Promise((resolvePromise) => setTimeout(resolvePromise, FILL_WAIT_MS));
+    const leg2After = await reconcileTokenBalance(walletAddress, candidate.narrow.noTokenId);
+    const leg2Filled = roundShares(leg2After - leg2Before);
+    orders.push({ packageId: record.packageId, createdAt: new Date().toISOString(), role: "narrow_no", tokenId: candidate.narrow.noTokenId, side: "BUY", price: candidate.narrow.noBook.ask, size: leg2Filled, orderType: "FAK", response: leg2 });
     record.status = "leg2_submitted";
     record.updatedAt = new Date().toISOString();
 
-    await new Promise((resolvePromise) => setTimeout(resolvePromise, FILL_WAIT_MS));
     const recon = await reconcilePackage(walletAddress, candidate);
-    record.filledShares = Math.floor(recon.matchedShares * 100) / 100;
-    record.actualCost = record.filledShares * candidate.packageCost;
-    record.status = record.filledShares >= shares * 0.99 ? "package_complete" : "unwind_required";
+    const matchedThisRun = roundShares(Math.min(leg1Filled, leg2Filled));
+    record.filledShares = matchedThisRun;
+    record.actualCost = (leg1Filled * candidate.broad.yesBook.ask) + (leg2Filled * candidate.narrow.noBook.ask);
+    record.guaranteedFloor = matchedThisRun;
+    record.lockedFloorProfit = matchedThisRun * candidate.lockedEdge;
+    record.jackpotPayout = matchedThisRun * 2;
+    record.status = matchedThisRun >= MIN_ORDER_SHARES && leg2Filled >= leg1Filled * 0.99 ? "package_complete" : "unwind_required";
     if (record.status === "unwind_required") {
-      record.failureReason = `reconcile_mismatch broad_yes=${recon.broadYesBalance} narrow_no=${recon.narrowNoBalance} intended=${shares}`;
+      record.failureReason = `partial_package_mismatch leg1=${leg1Filled} leg2=${leg2Filled} matched_this_run=${matchedThisRun} wallet_broad_yes=${recon.broadYesBalance} wallet_narrow_no=${recon.narrowNoBalance} intended=${shares}`;
     }
     record.updatedAt = new Date().toISOString();
     const rows = packageRows.filter((row) => row.id !== record.id);
