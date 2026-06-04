@@ -1,8 +1,23 @@
 {
-  "generatedAt": "2026-06-04T17:28:37.185Z",
+  "generatedAt": "2026-06-04T18:28:39.418Z",
   "mechanicalExits": [],
   "signalKillExits": [],
-  "entryCandidates": [],
+  "entryCandidates": [
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.05500000000000005,
+      "confidence": 0.033621850282070105,
+      "thesis": "BTC P/C ratio 1.24 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 63544,
+      "targetPct": 4,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    }
+  ],
   "llmCloseEligibility": [
     {
       "positionId": "MA-1780403314728-llno",
@@ -13,10 +28,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 53,
-      "hoursToExpiry": 5051.52,
+      "hoursOpen": 54,
+      "hoursToExpiry": 5050.52,
       "plannedHoldHours": 5104.52,
-      "elapsedHoldPct": 0.0104,
+      "elapsedHoldPct": 0.0106,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -29,10 +44,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 23,
-      "hoursToExpiry": 634.52,
+      "hoursOpen": 24,
+      "hoursToExpiry": 633.52,
       "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0.035,
+      "elapsedHoldPct": 0.0365,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -45,10 +60,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 23,
-      "hoursToExpiry": 634.52,
+      "hoursOpen": 24,
+      "hoursToExpiry": 633.52,
       "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0.035,
+      "elapsedHoldPct": 0.0365,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
