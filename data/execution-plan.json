@@ -1,15 +1,40 @@
 {
-  "generatedAt": "2026-06-04T09:28:45.102Z",
+  "generatedAt": "2026-06-04T10:31:18.686Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1780522234151-2ujl",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_hl_funding_ann",
+        "gold_gc_spot"
+      ],
+      "thesis": "Gold funding annualized dropped from 31.1% to 11.6%, below the entry threshold of 15%, while spot rose 0.63%. The extreme long crowding signal has faded without a price decline, invalidating the fade thesis."
+    }
+  ],
   "entrySignals": [],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "thesis": "BTC's IBIT put/call ratio is at 1.136 (2.2 std devs above mean), historically a contrarian bullish signal indicating excessive put hedging and potential short-term bounce after this selloff. Enter small exploratory long."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }
