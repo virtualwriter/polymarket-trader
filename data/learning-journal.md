@@ -24375,3 +24375,39 @@ Observed broad crypto risk-off with BTC and HYPE leading losses. Gold funding ex
 
 ---
 
+### 2026-06-04 11:30 UTC
+
+**Portfolio:** $98.33 total | Cash $95.33 | 3 open | P&L $0.8221 | 50% win rate (185 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_pm_ev = 69019 is -3.7 std devs from mean (82561.71 ± 3669.20)
+- [anomaly] btc_spot = 62536 is -3.6 std devs from mean (75895.77 ± 3748.84)
+- [anomaly] btc_opt_fwd_90d = 63265 is -3.5 std devs from mean (76816.32 ± 3840.26)
+- [anomaly] btc_pm_iv = 56.2 is 3.5 std devs from mean (40.14 ± 4.58)
+- [anomaly] hype_pm_iv = 95 is 2.2 std devs from mean (71.27 ± 10.79)
+
+**Blocked signal learning:**
+- Open blocked shadows: 69
+- Resolved blocked shadows: 496 (266 wins / 230 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 118/164 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 7/12 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 6/10 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=115 (34W/68L/13flat, 33.3% win-rate, sum $-2.5743, avg -2.24%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=157 (50W/90L/17flat, 35.7% win-rate, sum $-2.6202, avg -1.67%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-4.35%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW ETH short via polymarket would have closed with thesis validated profitably (+12.50%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+23.08%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW OIL short via polymarket would have edge compressed but trade lost money (-2.94%)
+
+**LLM analysis:**
+Today's data shows a clear risk-off rotation: BTC, HYPE, and SOL all dropped sharply, while gold rose, breaking the typical positive correlation. BTC funding turned negative, indicating short dominance, and PM IV reached multi-sigma levels. The relative-value heatmap highlights numerous one-touch NO edges and a few buy-YES opportunities on near-the-money strikes. The existing monotonic arb positions on SOL are performing in line, and no LLM-eligible closes are allowed. I'm not creating new hypotheses because the backlog of shadow tests remains large; instead, I'm focusing on ensuring H-524 and H-525 begin logging shadow tests to build evidence for the over-cap one-touch family. The live ONE_TOUCH_HIGH_EDGE_NO signal continues to excel, while funding and P/C signals remain mixed but within acceptable risk parameters. No parameter changes are needed now.
+
+---
+
