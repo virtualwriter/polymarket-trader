@@ -105,6 +105,7 @@ const GIT_PUSH = process.env.ARB_DAEMON_GIT_PUSH === "1";
 // still flows exclusively through the normal execution gate below.
 const NEAR_MISS_LOG_MS = Number(process.env.ARB_DAEMON_NEAR_MISS_LOG_MS ?? 60_000);
 const NEAR_MISS_TOP_N = Number(process.env.ARB_DAEMON_NEAR_MISS_TOP_N ?? 5);
+const MIN_MARKETABLE_BUY_USD = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_MARKETABLE_BUY_USD ?? 1);
 const NEAR_MISS_BUCKETS = [
   { label: "cost<=0.9995", cost: 0.9995 },
   { label: "cost<=1.0000", cost: 1.0000 },
@@ -441,7 +442,19 @@ function liveCandidate(base: Candidate, legs: LiveLegs): Candidate {
 }
 
 function requiredLiveMinShares(candidate: Candidate): number {
-  return Math.max(MIN_ORDER_SHARES, candidate.broad.yesBook.minOrderSize, candidate.narrow.noBook.minOrderSize);
+  const broadNotionalShares = candidate.broad.yesBook.ask > 0
+    ? Math.ceil((MIN_MARKETABLE_BUY_USD / candidate.broad.yesBook.ask) * 100) / 100
+    : Number.POSITIVE_INFINITY;
+  const narrowNotionalShares = candidate.narrow.noBook.ask > 0
+    ? Math.ceil((MIN_MARKETABLE_BUY_USD / candidate.narrow.noBook.ask) * 100) / 100
+    : Number.POSITIVE_INFINITY;
+  return Math.max(
+    MIN_ORDER_SHARES,
+    candidate.broad.yesBook.minOrderSize,
+    candidate.narrow.noBook.minOrderSize,
+    broadNotionalShares,
+    narrowNotionalShares,
+  );
 }
 
 function passesDynamicGate(legs: LiveLegs): boolean {

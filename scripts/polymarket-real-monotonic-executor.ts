@@ -83,6 +83,10 @@ const MIN_LIQUIDITY = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_LIQUIDITY ?? 
 const MAX_SPREAD = Number(process.env.MONOTONIC_ARB_REAL_PM_MAX_SPREAD ?? 0.01);
 const MIN_AVAILABLE_SHARES = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_AVAILABLE_SHARES ?? 10);
 const MIN_ORDER_SHARES = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_ORDER_SHARES ?? 1);
+// CLOB rejects marketable BUY orders below $1 notional, even if the share count
+// clears the per-market min_order_size. Because a monotonic package submits two
+// separate FAK BUY orders, each leg must independently clear this floor.
+const MIN_MARKETABLE_BUY_USD = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_MARKETABLE_BUY_USD ?? 1);
 const FILL_WAIT_MS = Number(process.env.MONOTONIC_ARB_REAL_PM_FILL_WAIT_MS ?? 3000);
 const FETCH_TIMEOUT_MS = Number(process.env.MONOTONIC_ARB_REAL_PM_FETCH_TIMEOUT_MS ?? 12_000);
 const MARKET_CONCURRENCY = Math.max(1, Number(process.env.MONOTONIC_ARB_REAL_PM_MARKET_CONCURRENCY ?? 4));
@@ -466,7 +470,19 @@ function openPackageCount(rows: LivePackage[]): number {
 // least the larger of the two markets' minimum order sizes (Polymarket default
 // 5 shares), and never fewer than our own MIN_ORDER_SHARES floor.
 function requiredMinShares(candidate: Candidate): number {
-  return Math.max(MIN_ORDER_SHARES, candidate.broad.yesBook.minOrderSize, candidate.narrow.noBook.minOrderSize);
+  const broadNotionalShares = candidate.broad.yesBook.ask > 0
+    ? Math.ceil((MIN_MARKETABLE_BUY_USD / candidate.broad.yesBook.ask) * 100) / 100
+    : Number.POSITIVE_INFINITY;
+  const narrowNotionalShares = candidate.narrow.noBook.ask > 0
+    ? Math.ceil((MIN_MARKETABLE_BUY_USD / candidate.narrow.noBook.ask) * 100) / 100
+    : Number.POSITIVE_INFINITY;
+  return Math.max(
+    MIN_ORDER_SHARES,
+    candidate.broad.yesBook.minOrderSize,
+    candidate.narrow.noBook.minOrderSize,
+    broadNotionalShares,
+    narrowNotionalShares,
+  );
 }
 
 function sizeForCandidate(candidate: Candidate, packageRows: LivePackage[]): { shares: number; cost: number; reason?: string } {
