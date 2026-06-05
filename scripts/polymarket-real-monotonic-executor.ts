@@ -507,7 +507,7 @@ function precisionSafeShares(candidate: Candidate, minShares: number, maxShares:
   return null;
 }
 
-function sizeForCandidate(candidate: Candidate, packageRows: LivePackage[]): { shares: number; cost: number; reason?: string } {
+function sizeForCandidate(candidate: Candidate, packageRows: LivePackage[], spendableUsd = Number.POSITIVE_INFINITY): { shares: number; cost: number; reason?: string } {
   const remainingDailyUsd = Math.max(0, MAX_DAILY_USD - spentToday(packageRows));
   if (remainingDailyUsd <= 0) return { shares: 0, cost: 0, reason: "daily_cap_exhausted" };
 
@@ -521,7 +521,7 @@ function sizeForCandidate(candidate: Candidate, packageRows: LivePackage[]): { s
   // but never beyond the ceiling or the remaining daily budget.
   const neededUsd = minShares * candidate.packageCost;
   const perPackageUsd = Math.min(MAX_PACKAGE_USD_CEILING, Math.max(MAX_PACKAGE_USD, neededUsd));
-  const maxUsd = Math.min(perPackageUsd, remainingDailyUsd);
+  const maxUsd = Math.min(perPackageUsd, remainingDailyUsd, spendableUsd);
   if (maxUsd + EPSILON < neededUsd) {
     return { shares: 0, cost: 0, reason: `budget_below_exchange_min cap=$${maxUsd.toFixed(2)} needs=$${neededUsd.toFixed(2)}` };
   }
@@ -979,6 +979,7 @@ export {
   MIN_LIQUIDITY,
   MIN_AVAILABLE_SHARES,
   MIN_ORDER_SHARES,
+  MIN_MARKETABLE_BUY_USD,
   FILL_WAIT_MS,
   ENABLED,
   HARD_DISABLED,

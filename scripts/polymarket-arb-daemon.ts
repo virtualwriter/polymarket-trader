@@ -534,7 +534,7 @@ function perMinuteCapReached(): boolean {
 
 function lowBalance(): boolean {
   if (!balanceKnown) return false;
-  return cachedFunderBalance < MAX_PACKAGE_USD || cachedFunderAllowance < MAX_PACKAGE_USD;
+  return cachedFunderBalance < MIN_MARKETABLE_BUY_USD || cachedFunderAllowance < MIN_MARKETABLE_BUY_USD;
 }
 
 // ─── Fill signalling (User websocket) ───
@@ -571,7 +571,7 @@ async function tryExecute(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
   if (perMinuteCapReached()) return;
   if (lowBalance()) {
     if (!pausedForLowBalanceLogged) {
-      log(`paused: cached funder balance=${cachedFunderBalance.toFixed(4)} allowance=${cachedFunderAllowance.toFixed(2)} < cap $${MAX_PACKAGE_USD}; skipping new entries until refresh`);
+      log(`paused: cached funder balance=${cachedFunderBalance.toFixed(4)} allowance=${cachedFunderAllowance.toFixed(2)} < min marketable buy $${MIN_MARKETABLE_BUY_USD}; skipping new entries until refresh`);
       pausedForLowBalanceLogged = true;
     }
     return;
@@ -581,7 +581,8 @@ async function tryExecute(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
   if (openPackageCount(packageRows) >= MAX_OPEN_PACKAGES) return;
 
   const c = liveCandidate(pkg.base, legs);
-  const sized = sizeForCandidate(c, packageRows);
+  const spendableUsd = balanceKnown ? Math.min(cachedFunderBalance, cachedFunderAllowance) : Number.POSITIVE_INFINITY;
+  const sized = sizeForCandidate(c, packageRows, spendableUsd);
   if (sized.reason) {
     const now = Date.now();
     const last = lastSkipLogAt.get(pkg.key) ?? 0;
@@ -1287,7 +1288,7 @@ async function main() {
     log(`wallet signer=${clob.signer.address} funder/reconcile=${reconcileAddress}`);
     await refreshBalance();
     if (lowBalance()) {
-      log(`WARNING: funder balance/allowance below cap at startup; entries paused until funded.`);
+      log(`WARNING: funder balance/allowance below min marketable buy at startup; entries paused until funded.`);
     }
   } else {
     log(`dry-run: skipping CLOB client + balance probe`);
