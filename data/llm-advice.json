@@ -1,5 +1,27 @@
 {
   "acceptedCloses": [],
   "rejectedCloses": [],
-  "skippedTrades": []
+  "skippedTrades": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "long",
+        "thesis": "Relative-value heatmap: WTI $120 HIGH Jun buy-YES edge +12.2 pts, spread 1c, liquidity 84,547. Options-derived model implies the contract is underpriced for a one-touch upside."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    },
+    {
+      "instruction": {
+        "action": "sell",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "Relative-value heatmap: WTI $80 LOW Jun buy-NO edge -18.3 pts (YES overpriced), spread 1c, liquidity 50,806. PM IV 61.1% vs 30d options IV 48.9% suggests the downside touch is overpriced."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
+  "parameterUpdates": {}
 }

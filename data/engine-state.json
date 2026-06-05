@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-04T23:28:39.531Z",
+  "generatedAt": "2026-06-05T00:28:37.092Z",
   "dataFreshness": {
-    "valuationRows": 807,
-    "latestValuationAt": "2026-06-04T23",
-    "macroRows": 807,
+    "valuationRows": 808,
+    "latestValuationAt": "2026-06-05T00",
+    "macroRows": 808,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-04T23"
+    "latestInstrumentSnapshotAt": "2026-06-05T00"
   },
   "portfolio": {
     "cash": 95.3257,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.8221,
     "totalTrades": 185,
     "winRatePct": 50.3,
-    "unrealizedPnl": 0.0111
+    "unrealizedPnl": 0.009
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0,
       "currentPrice": 0.99,
-      "underlyingPrice": 68.228,
+      "underlyingPrice": 68.715,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -36,9 +36,9 @@
       "venue": "polymarket",
       "direction": "long",
       "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.6,
-      "currentPrice": 1.001,
-      "underlyingPrice": 68.228,
+      "pnlPct": 0.5,
+      "currentPrice": 1,
+      "underlyingPrice": 68.715,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -50,9 +50,9 @@
       "venue": "polymarket",
       "direction": "long",
       "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.5,
-      "currentPrice": 1,
-      "underlyingPrice": 68.228,
+      "pnlPct": 0.4,
+      "currentPrice": 0.999,
+      "underlyingPrice": 68.715,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -197,7 +197,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 69,
+    "openCount": 71,
     "resolvedCount": 499,
     "wouldHaveWon": 269,
     "wouldHaveLost": 230,
@@ -548,6 +548,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.8pt on ETH, spread 2.0c, liquidity 37242. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin dip to $55,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.69,
+          "yesAsk": 0.7,
+          "yesSpread": 0.01,
+          "liquidity": 77883.5,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 10.6pt after haircuts. CBOE gap 13.1pt, CME gap 11.4pt, source agreement both_positive, spread 1.0c, liquidity 77884. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
