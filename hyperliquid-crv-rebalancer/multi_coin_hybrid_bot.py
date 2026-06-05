@@ -7,7 +7,7 @@ across multiple coins simultaneously on Hyperliquid perp.
 
 Strategy (from backtest):
   - Base: short each coin using 3h EMA with 0.5% entry/exit thresholds
-  - When at least 10 out of 11 coins have price above 50h EMA for 24 consecutive hours:
+  - When at least 7 out of 11 coins have price above 50h EMA for 24 consecutive hours:
     → switch all open positions to long (5h EMA, 1%/1% thresholds)
   - When signal clears: switch back to short
   - $1 per trade per coin (fixed size)
@@ -94,7 +94,7 @@ LONG_EXIT = 1.0        # %
 
 REGIME_EMA = 50         # hours, for bull signal detection
 SIGNAL_LOOKBACK = 24    # hours
-SIGNAL_THRESHOLD = 10   # N coins above EMA to trigger bull signal
+SIGNAL_THRESHOLD = 7    # N coins above EMA to trigger bull signal (7/11 = 64% post-CRV/INJ removal)
 
 # Consecutive-loser cooldown (Option 3 in docs/quant-model-roadmap.md).
 # When a coin loses on COOLDOWN_LOSS_STREAK back-to-back short closes, it
