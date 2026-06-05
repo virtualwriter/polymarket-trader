@@ -100,6 +100,19 @@ const RECONNECT_MAX_MS = Number(process.env.ARB_DAEMON_RECONNECT_MAX_MS ?? 30_00
 const BOOK_FETCH_TIMEOUT_MS = Number(process.env.ARB_DAEMON_BOOK_FETCH_TIMEOUT_MS ?? 8_000);
 const GIT_PUSH = process.env.ARB_DAEMON_GIT_PUSH === "1";
 
+// Near-miss telemetry: proves whether the daemon is barely missing executable
+// arbs or the ladder is simply not offering them. This is telemetry only; entry
+// still flows exclusively through the normal execution gate below.
+const NEAR_MISS_LOG_MS = Number(process.env.ARB_DAEMON_NEAR_MISS_LOG_MS ?? 60_000);
+const NEAR_MISS_TOP_N = Number(process.env.ARB_DAEMON_NEAR_MISS_TOP_N ?? 5);
+const NEAR_MISS_BUCKETS = [
+  { label: "cost<=0.9995", cost: 0.9995 },
+  { label: "cost<=1.0000", cost: 1.0000 },
+  { label: "cost<=1.0010", cost: 1.0010 },
+  { label: "cost<=1.0020", cost: 1.0020 },
+  { label: "cost<=1.0050", cost: 1.0050 },
+] as const;
+
 // ─── Orphan completion / unwind tunables ───
 // A naked leg (one FAK fills, the other is killed) is NOT held to a directional
 // resolution. We try to RE-PAIR it across the same event's live ladder into a
@@ -141,6 +154,23 @@ interface LiveLegs {
   narrowNoAsk: number;
   narrowNoAskSize: number;
   narrowSpread: number;
+}
+
+interface NearMissSample {
+  packageId: string;
+  eventSlug: string;
+  asset: string;
+  broadStrike: number;
+  narrowStrike: number;
+  cost: number;
+  edge: number;
+  availableSize: number;
+  maxSpread: number;
+  minShares: number;
+  edgeOk: boolean;
+  spreadOk: boolean;
+  sizeOk: boolean;
+  executableGate: boolean;
 }
 
 // A naked leg awaiting re-pair or unwind. `role` is which leg of the original
@@ -205,6 +235,13 @@ const orphanEventCache = new Map<string, { at: number; quotes: MarketQuote[] }>(
 // book delta.
 const lastSkipLogAt = new Map<string, number>();
 const SKIP_LOG_THROTTLE_MS = 60_000;
+
+// Per-interval near-miss state. The map stores the best (lowest-cost) observation
+// per package so logs answer "how many packages got close?" rather than "how
+// many websocket ticks fired?"
+let nearMissStartedAt = Date.now();
+let nearMissObservations = 0;
+const nearMissBestByPackage = new Map<string, NearMissSample>();
 
 let clob: Awaited<ReturnType<typeof clobClient>> | null = null;
 let reconcileAddress = "";
@@ -402,6 +439,10 @@ function liveCandidate(base: Candidate, legs: LiveLegs): Candidate {
   return c;
 }
 
+function requiredLiveMinShares(candidate: Candidate): number {
+  return Math.max(MIN_ORDER_SHARES, candidate.broad.yesBook.minOrderSize, candidate.narrow.noBook.minOrderSize);
+}
+
 function passesDynamicGate(legs: LiveLegs): boolean {
   const packageCost = legs.broadYesAsk + legs.narrowNoAsk;
   const lockedEdge = 1 - packageCost;
@@ -411,6 +452,62 @@ function passesDynamicGate(legs: LiveLegs): boolean {
   if (maxSpread - EPSILON > MAX_SPREAD) return false;
   if (availableSize + EPSILON < MIN_AVAILABLE_SHARES) return false;
   return true;
+}
+
+function recordNearMiss(candidate: Candidate) {
+  nearMissObservations += 1;
+  const minShares = requiredLiveMinShares(candidate);
+  const sample: NearMissSample = {
+    packageId: candidate.packageId,
+    eventSlug: candidate.eventSlug,
+    asset: candidate.asset,
+    broadStrike: candidate.broad.strike,
+    narrowStrike: candidate.narrow.strike,
+    cost: candidate.packageCost,
+    edge: candidate.lockedEdge,
+    availableSize: candidate.availableSize,
+    maxSpread: candidate.maxSpread,
+    minShares,
+    edgeOk: candidate.lockedEdge + EPSILON >= MIN_EDGE,
+    spreadOk: candidate.maxSpread - EPSILON <= MAX_SPREAD,
+    sizeOk: candidate.availableSize + EPSILON >= Math.max(MIN_AVAILABLE_SHARES, minShares),
+    executableGate: candidate.lockedEdge + EPSILON >= MIN_EDGE
+      && candidate.maxSpread - EPSILON <= MAX_SPREAD
+      && candidate.availableSize + EPSILON >= Math.max(MIN_AVAILABLE_SHARES, minShares),
+  };
+  const prev = nearMissBestByPackage.get(candidate.packageId);
+  if (!prev || sample.cost < prev.cost) nearMissBestByPackage.set(candidate.packageId, sample);
+}
+
+function flushNearMissTelemetry() {
+  const samples = [...nearMissBestByPackage.values()];
+  if (nearMissObservations === 0 && samples.length === 0) return;
+
+  const bucketParts = NEAR_MISS_BUCKETS.map((bucket) => {
+    const count = samples.filter((sample) => sample.cost <= bucket.cost + EPSILON).length;
+    return `${bucket.label}:${count}`;
+  });
+  const near = samples.filter((sample) => sample.cost <= NEAR_MISS_BUCKETS[NEAR_MISS_BUCKETS.length - 1].cost + EPSILON);
+  const executable = samples.filter((sample) => sample.executableGate).length;
+  const edgeOk = near.filter((sample) => sample.edgeOk).length;
+  const spreadOk = near.filter((sample) => sample.spreadOk).length;
+  const sizeOk = near.filter((sample) => sample.sizeOk).length;
+  const best = samples
+    .sort((a, b) => a.cost - b.cost)
+    .slice(0, Math.max(1, NEAR_MISS_TOP_N))
+    .map((sample) => {
+      const blockers = [
+        sample.edgeOk ? "" : "edge",
+        sample.spreadOk ? "" : "spread",
+        sample.sizeOk ? "" : "size",
+      ].filter(Boolean).join("+") || "none";
+      return `${sample.asset} ${sample.eventSlug} YES ${sample.broadStrike}/NO ${sample.narrowStrike} cost=${sample.cost.toFixed(4)} edge=${(sample.edge * 100).toFixed(3)}c size=${sample.availableSize.toFixed(2)}/${sample.minShares.toFixed(2)} spread=${sample.maxSpread.toFixed(4)} block=${blockers}`;
+    });
+
+  log(`near-miss telemetry intervalMs=${Date.now() - nearMissStartedAt} observations=${nearMissObservations} unique=${samples.length} near<=1.005=${near.length} executableGate=${executable} ${bucketParts.join(" ")} nearPass edge=${edgeOk}/${near.length} spread=${spreadOk}/${near.length} size=${sizeOk}/${near.length} best=[${best.join(" | ")}]`);
+  nearMissStartedAt = Date.now();
+  nearMissObservations = 0;
+  nearMissBestByPackage.clear();
 }
 
 // ─── Caps / safety ───
@@ -936,6 +1033,8 @@ function evaluateToken(tokenId: string) {
     if (!pkg) continue;
     const legs = liveLegs(pkg);
     if (!legs) continue;
+    const candidate = liveCandidate(pkg.base, legs);
+    recordNearMiss(candidate);
     if (!passesDynamicGate(legs)) continue;
     void tryExecute(pkg, legs);
   }
@@ -1186,6 +1285,7 @@ async function main() {
   setInterval(() => { void refreshBalance(); }, BALANCE_REFRESH_MS);
   setInterval(() => flushLedger(), LEDGER_FLUSH_MS);
   setInterval(() => orphanLoop(), ORPHAN_POLL_MS);
+  setInterval(() => flushNearMissTelemetry(), NEAR_MISS_LOG_MS);
 
   // Resubscribe the market WS to any newly discovered tokens after a watchlist
   // refresh by cycling the socket (cheap; books re-seed over REST on reconnect).
