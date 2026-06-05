@@ -16,7 +16,7 @@ def ema(p, prd):
     return e
 
 COINS = ["ADA", "APT", "ARB", "ATOM", "AVAX", "BCH",
-         "BTC", "CRV", "DOT", "FARTCOIN", "OP", "TRUMP"]
+         "BTC", "DOT", "FARTCOIN", "OP", "TRUMP"]  # CRV removed 2026-06-05; INJ paused
 # "INJ",  # paused - excluded from hybrid bot universe
 now = int(time.time() * 1000)
 start = now - 200 * 3600 * 1000
