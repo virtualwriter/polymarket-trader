@@ -248,6 +248,7 @@ let reconcileAddress = "";
 let marketWs: WebSocket | null = null;
 let userWs: WebSocket | null = null;
 let shuttingDown = false;
+let tradingPausedReason: string | null = null;
 
 function log(...args: unknown[]) {
   console.log(`[arb-daemon ${new Date().toISOString()}]`, ...args);
@@ -552,6 +553,7 @@ function waitForFill(tokenId: string, timeoutMs: number): Promise<void> {
 // ─── Execution ───
 
 async function tryExecute(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
+  if (tradingPausedReason) return;
   if (inFlight.has(pkg.key) || alreadyOpen.has(pkg.key)) return;
   if (perMinuteCapReached()) return;
   if (lowBalance()) {
@@ -677,6 +679,10 @@ async function executeLive(pkg: WatchPackage, c: Candidate): Promise<void> {
   const nakedRole: "broad_yes" | "narrow_no" | null =
     leg1Filled > leg2Filled ? "broad_yes" : leg2Filled > leg1Filled ? "narrow_no" : null;
   const errSuffix = legErrors.length ? ` errors=${legErrors.join("; ")}` : "";
+  if (legErrors.some((error) => error.toLowerCase().includes("maker address not allowed"))) {
+    tradingPausedReason = "wallet_flow_rejected: maker address not allowed; configure deposit-wallet maker/funder before resuming";
+    log(`PAUSED new entries: ${tradingPausedReason}`);
+  }
 
   if (matched > 0) {
     record.status = "package_complete";
