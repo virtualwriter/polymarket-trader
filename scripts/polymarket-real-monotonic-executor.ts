@@ -96,7 +96,7 @@ const CANDIDATE_SOURCE = process.env.MONOTONIC_ARB_REAL_PM_SOURCE ?? "portfolio"
 const TARGET_PACKAGE_ID = process.env.MONOTONIC_ARB_REAL_PM_PACKAGE_ID?.trim();
 const SOCKS_PROXY = process.env.SOCKS_PROXY || process.env.ALL_PROXY || undefined;
 const SKIP_VPN = process.env.MONOTONIC_ARB_REAL_PM_SKIP_VPN === "1" || process.argv.includes("--skip-vpn");
-const ALLOWED_ASSETS = new Set((process.env.MONOTONIC_ARB_REAL_PM_ASSETS ?? "BTC,ETH,GOLD,SOL,SILVER,SPY")
+const ALLOWED_ASSETS = new Set((process.env.MONOTONIC_ARB_REAL_PM_ASSETS ?? "BTC,ETH,GOLD,SOL,SILVER,SPY,NBA")
   .split(",")
   .map((asset) => asset.trim().toUpperCase())
   .filter(Boolean));
@@ -691,7 +691,7 @@ function packageRecord(candidate: Candidate, walletAddress: string, shares: numb
     actualCost: 0,
     guaranteedFloor: shares,
     lockedFloorProfit: shares * candidate.lockedEdge,
-    jackpotPayout: shares * 2,
+    jackpotPayout: shares * candidate.jackpotPayoutPerShare,
     settlementWindow: { startDate: candidate.broad.startDate ?? candidate.narrow.startDate, endDate: candidate.broad.endDate ?? candidate.narrow.endDate },
     legOrderIds: {},
     tokenIds: { broadYes: candidate.broad.yesTokenId, narrowNo: candidate.narrow.noTokenId },
@@ -790,7 +790,7 @@ async function executeCandidate(client: ClobClient, walletAddress: string, candi
     record.actualCost = (leg1Filled * candidate.broad.yesBook.ask) + (leg2Filled * candidate.narrow.noBook.ask);
     record.guaranteedFloor = matchedThisRun;
     record.lockedFloorProfit = matchedThisRun * candidate.lockedEdge;
-    record.jackpotPayout = matchedThisRun * 2;
+    record.jackpotPayout = matchedThisRun * candidate.jackpotPayoutPerShare;
     record.status = matchedThisRun >= MIN_ORDER_SHARES && leg2Filled >= leg1Filled * 0.99 ? "package_complete" : "unwind_required";
     if (record.status === "unwind_required") {
       record.failureReason = `partial_package_mismatch leg1=${leg1Filled} leg2=${leg2Filled} matched_this_run=${matchedThisRun} wallet_broad_yes=${recon.broadYesBalance} wallet_narrow_no=${recon.narrowNoBalance} intended=${shares}`;

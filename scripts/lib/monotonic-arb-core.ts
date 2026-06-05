@@ -51,6 +51,7 @@ export type MarketQuote = {
   eventSlug: string;
   eventTitle: string;
   marketId: string;
+  ladderKey: string;
   question: string;
   description: string;
   resolutionSource: string;
@@ -79,6 +80,7 @@ export type Candidate = {
   availableSize: number;
   maxSpread: number;
   minLiquidity: number;
+  jackpotPayoutPerShare: number;
   eligible: boolean;
   rejectionReasons: string[];
 };
@@ -129,6 +131,14 @@ export function parseJsonArray(value: unknown): unknown[] {
   }
 }
 
+type ParsedMarket = {
+  strike: number;
+  direction: Direction;
+  ladderKey: string;
+  yesIndex: number;
+  noIndex: number;
+};
+
 export function parseStrike(question: string, groupItemTitle = ""): { strike: number; direction: Direction } | null {
   const text = `${groupItemTitle} ${question}`;
   const value = text.match(/\$?\s*([0-9][0-9,]*(?:\.\d+)?)/);
@@ -143,7 +153,83 @@ export function parseStrike(question: string, groupItemTitle = ""): { strike: nu
   return { strike, direction: "above" };
 }
 
+function normalizedOutcomeIndexes(outcomes: string[]): { yesIndex: number; noIndex: number } | null {
+  const normalized = outcomes.map((outcome) => outcome.trim().toLowerCase());
+  const yesIndex = normalized.findIndex((outcome) => outcome === "yes" || outcome === "over");
+  const noIndex = normalized.findIndex((outcome) => outcome === "no" || outcome === "under");
+  return yesIndex >= 0 && noIndex >= 0 ? { yesIndex, noIndex } : null;
+}
+
+function parseSportsMarket(question: string, outcomes: string[]): ParsedMarket | null {
+  const outcomeIndexes = normalizedOutcomeIndexes(outcomes);
+  const fullGameTotal = question.match(/^Knicks vs\. Spurs:\s*O\/U\s+([0-9]+(?:\.5)?)$/i);
+  if (fullGameTotal && outcomeIndexes) {
+    return {
+      strike: parseNumber(fullGameTotal[1]),
+      direction: "above",
+      ladderKey: "sports:nba:nyk-sas:total:full-game",
+      ...outcomeIndexes,
+    };
+  }
+
+  const firstHalfTotal = question.match(/^Knicks vs\. Spurs:\s*1H O\/U\s+([0-9]+(?:\.5)?)$/i);
+  if (firstHalfTotal && outcomeIndexes) {
+    return {
+      strike: parseNumber(firstHalfTotal[1]),
+      direction: "above",
+      ladderKey: "sports:nba:nyk-sas:total:first-half",
+      ...outcomeIndexes,
+    };
+  }
+
+  const spread = question.match(/^(1H\s+)?Spread:\s+(Spurs|Knicks)\s+\(-?([0-9]+(?:\.5)?)\)$/i);
+  if (spread) {
+    const normalized = outcomes.map((outcome) => outcome.trim().toLowerCase());
+    const team = spread[2];
+    const yesIndex = normalized.findIndex((outcome) => outcome === team.toLowerCase());
+    const noIndex = normalized.findIndex((outcome, index) => index !== yesIndex && (outcome === "spurs" || outcome === "knicks"));
+    if (yesIndex >= 0 && noIndex >= 0) {
+      return {
+        strike: parseNumber(spread[3]),
+        direction: "above",
+        ladderKey: `sports:nba:nyk-sas:spread:${spread[1] ? "first-half" : "full-game"}:${team.toLowerCase()}`,
+        yesIndex,
+        noIndex,
+      };
+    }
+  }
+
+  const prop = question.match(/^(.+?):\s*(Points|Rebounds|Assists)\s+O\/U\s+([0-9]+(?:\.5)?)$/i);
+  if (prop && outcomeIndexes) {
+    const player = prop[1].trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const stat = prop[2].toLowerCase();
+    return {
+      strike: parseNumber(prop[3]),
+      direction: "above",
+      ladderKey: `sports:nba:nyk-sas:prop:${player}:${stat}`,
+      ...outcomeIndexes,
+    };
+  }
+
+  return null;
+}
+
+function parseMarket(eventSlug: string, question: string, groupItemTitle: string, outcomes: string[]): ParsedMarket | null {
+  const sports = eventSlug.startsWith("nba-") ? parseSportsMarket(question, outcomes) : null;
+  if (sports) return sports;
+
+  const parsed = parseStrike(question, groupItemTitle);
+  const indexes = normalizedOutcomeIndexes(outcomes);
+  if (!parsed || !indexes) return null;
+  return {
+    ...parsed,
+    ladderKey: `${eventSlug}:${parsed.direction}`,
+    ...indexes,
+  };
+}
+
 export function polymarketAssetForSlug(slug: string): string | null {
+  if (slug.startsWith("nba-")) return "NBA";
   if (slug.includes("bitcoin")) return "BTC";
   if (slug.includes("ethereum")) return "ETH";
   if (slug.includes("solana")) return "SOL";
@@ -157,6 +243,7 @@ export function polymarketAssetForSlug(slug: string): string | null {
 }
 
 export function isNestedLadderEvent(slug: string, title = ""): boolean {
+  if (slug.startsWith("nba-")) return true;
   const haystack = `${slug} ${title}`.toLowerCase();
   if (haystack.includes("settle") || haystack.includes("final trading day") || haystack.includes("over-under")) return false;
   if (haystack.includes("range") || /\$\d+(?:\.\d+)?\s*-\s*\$?\d+(?:\.\d+)?/.test(haystack)) return false;
@@ -235,12 +322,11 @@ export async function marketQuote(config: ArbCoreConfig, event: GammaEvent, mark
   const marketId = String(market.id ?? "");
   const question = market.question ?? "";
   if (!eventSlug || !marketId || !question || market.closed || market.active === false) return null;
-  const parsed = parseStrike(question, market.groupItemTitle ?? "");
-  if (!parsed) return null;
   const outcomes = parseJsonArray(market.outcomes).map(String);
   const tokenIds = parseJsonArray(market.clobTokenIds).map(String);
-  const yesIndex = outcomes.findIndex((outcome) => outcome.toLowerCase() === "yes");
-  const noIndex = outcomes.findIndex((outcome) => outcome.toLowerCase() === "no");
+  const parsed = parseMarket(eventSlug, question, market.groupItemTitle ?? "", outcomes);
+  if (!parsed) return null;
+  const { yesIndex, noIndex } = parsed;
   if (yesIndex < 0 || noIndex < 0 || !tokenIds[yesIndex] || !tokenIds[noIndex]) return null;
   const [yesBook, noBook] = await Promise.all([fetchBook(config, tokenIds[yesIndex]), fetchBook(config, tokenIds[noIndex])]);
   if (yesBook.bid <= 0 || yesBook.ask <= 0 || noBook.bid <= 0 || noBook.ask <= 0) return null;
@@ -248,6 +334,7 @@ export async function marketQuote(config: ArbCoreConfig, event: GammaEvent, mark
     eventSlug,
     eventTitle: event.title ?? eventSlug,
     marketId,
+    ladderKey: parsed.ladderKey,
     question,
     description: market.description ?? "",
     resolutionSource: market.resolutionSource ?? "",
@@ -275,6 +362,7 @@ export function evaluatePair(config: ArbCoreConfig, asset: string, broad: Market
   const availableSize = Math.min(broad.yesBook.askSize, narrow.noBook.askSize);
   const rejectionReasons: string[] = [];
   if (!config.allowedAssets.has(asset)) rejectionReasons.push("asset_not_allowlisted");
+  if (broad.ladderKey !== narrow.ladderKey) rejectionReasons.push("ladder_mismatch");
   if (broad.endDate && narrow.endDate && broad.endDate !== narrow.endDate) rejectionReasons.push("expiry_mismatch");
   if (!resolutionMatches(broad, narrow)) rejectionReasons.push("resolution_mismatch");
   if (lockedEdge + EPSILON < config.minEdge) rejectionReasons.push("edge_below_threshold");
@@ -295,6 +383,7 @@ export function evaluatePair(config: ArbCoreConfig, asset: string, broad: Market
     availableSize,
     maxSpread,
     minLiquidity,
+    jackpotPayoutPerShare: broad.marketId === narrow.marketId ? 1 : 2,
     eligible: rejectionReasons.length === 0,
     rejectionReasons,
   };
@@ -313,22 +402,31 @@ export async function scanEvent(config: ArbCoreConfig, slug: string, foundAt: st
   const quotes = (await mapLimit(event.markets ?? [], config.marketConcurrency, (market) => marketQuote(config, event, market)))
     .filter((quote): quote is MarketQuote => quote !== null);
   const candidates: Candidate[] = [];
+  if (asset === "NBA") {
+    for (const quote of quotes) {
+      const candidate = evaluatePair(config, asset, quote, quote, foundAt);
+      candidates.push(candidate);
+    }
+  }
   for (const direction of ["above", "below"] as const) {
-    const directional = quotes
-      .filter((quote) => quote.direction === direction)
-      .sort((a, b) => a.strike - b.strike);
-    for (let i = 0; i < directional.length; i++) {
-      for (let j = i + 1; j < directional.length; j++) {
-        const lower = directional[i];
-        const higher = directional[j];
-        const broad = direction === "above" ? lower : higher;
-        const narrow = direction === "above" ? higher : lower;
-        const candidate = evaluatePair(config, asset, broad, narrow, foundAt);
-        // Return every structurally-valid ladder pair to callers. The always-on
-        // websocket daemon needs to subscribe before an edge exists, then apply
-        // the live arb gate on each book delta. Hourly callers can still filter
-        // to `candidate.eligible` at execution time.
-        candidates.push(candidate);
+    const ladderKeys = [...new Set(quotes.filter((quote) => quote.direction === direction).map((quote) => quote.ladderKey))];
+    for (const ladderKey of ladderKeys) {
+      const directional = quotes
+        .filter((quote) => quote.direction === direction && quote.ladderKey === ladderKey)
+        .sort((a, b) => a.strike - b.strike);
+      for (let i = 0; i < directional.length; i++) {
+        for (let j = i + 1; j < directional.length; j++) {
+          const lower = directional[i];
+          const higher = directional[j];
+          const broad = direction === "above" ? lower : higher;
+          const narrow = direction === "above" ? higher : lower;
+          const candidate = evaluatePair(config, asset, broad, narrow, foundAt);
+          // Return every structurally-valid ladder pair to callers. The always-on
+          // websocket daemon needs to subscribe before an edge exists, then apply
+          // the live arb gate on each book delta. Hourly callers can still filter
+          // to `candidate.eligible` at execution time.
+          candidates.push(candidate);
+        }
       }
     }
   }
@@ -373,6 +471,7 @@ export function defaultEventSlugs(now = new Date()): string[] {
     "spx-hit-jun-2026",
     "spx-hit-dec-2026",
     "si-hit-jun-2026",
+    "nba-nyk-sas-2026-06-05",
     `what-price-will-bitcoin-hit-in-${month}-${year}`,
     `what-price-will-ethereum-hit-in-${month}-${year}`,
     `what-price-will-solana-hit-in-${month}-${year}`,
