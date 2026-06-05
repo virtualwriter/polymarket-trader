@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-05T18:28:36.394Z",
+  "generatedAt": "2026-06-05T19:28:42.369Z",
   "dataFreshness": {
-    "valuationRows": 825,
-    "latestValuationAt": "2026-06-05T18",
-    "macroRows": 825,
+    "valuationRows": 826,
+    "latestValuationAt": "2026-06-05T19",
+    "macroRows": 826,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-05T18"
+    "latestInstrumentSnapshotAt": "2026-06-05T19"
   },
   "portfolio": {
-    "cash": 92.3257,
-    "openPositions": 6,
+    "cash": 93.3064,
+    "openPositions": 5,
     "realizedPnl": 0.8221,
     "totalTrades": 185,
     "winRatePct": 50.3,
-    "unrealizedPnl": 0.0081
+    "unrealizedPnl": 0.0141
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0,
       "currentPrice": 0.99,
-      "underlyingPrice": 64.109,
+      "underlyingPrice": 62.546,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -38,7 +38,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0.7,
       "currentPrice": 1.002,
-      "underlyingPrice": 64.109,
+      "underlyingPrice": 62.546,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -50,9 +50,9 @@
       "venue": "polymarket",
       "direction": "long",
       "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.7,
-      "currentPrice": 1.002,
-      "underlyingPrice": 64.109,
+      "pnlPct": 0.6,
+      "currentPrice": 1.001,
+      "underlyingPrice": 62.546,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -64,9 +64,9 @@
       "venue": "polymarket",
       "direction": "long",
       "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.1,
-      "currentPrice": 0.998,
-      "underlyingPrice": 1568.7,
+      "pnlPct": 0.1,
+      "currentPrice": 1,
+      "underlyingPrice": 1557.4,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -82,29 +82,12 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0,
       "currentPrice": 0.998,
-      "underlyingPrice": 4325.9,
+      "underlyingPrice": 4322.8,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "gold_gc_spot"
-      ]
-    },
-    {
-      "positionId": "T-1780669767050-a1qw",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.49,
-      "currentPrice": 60171,
-      "underlyingPrice": 60171,
-      "targetPct": 3,
-      "stopPct": 1.5,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "btc_spot",
-        "btc_ibit_pc_ratio"
       ]
     }
   ],
@@ -207,10 +190,10 @@
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "enabled": true,
-      "weight": 0.6113,
-      "trades": 19,
+      "weight": 0.6021,
+      "trades": 20,
       "wins": 11,
-      "avgPnlPct": 0.2175,
+      "avgPnlPct": 0.11,
       "disabledAssets": []
     },
     {
@@ -246,10 +229,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 66,
-    "resolvedCount": 507,
+    "openCount": 65,
+    "resolvedCount": 508,
     "wouldHaveWon": 269,
-    "wouldHaveLost": 238,
+    "wouldHaveLost": 239,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -317,26 +300,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -3.23,
-        "resolvedAt": "2026-06-05T01:28:40.584Z",
-        "marketQuality": {
-          "yesBid": 0.69,
-          "yesAsk": 0.7,
-          "yesSpread": 0.01,
-          "liquidity": 77883.5,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -468,6 +431,26 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "long",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "expiry",
+        "pnlPct": -66.67,
+        "resolvedAt": "2026-06-05T19:28:42.201Z",
+        "marketQuality": {
+          "yesBid": 0.49,
+          "yesAsk": 0.51,
+          "yesSpread": 0.02,
+          "liquidity": 11231.62,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -525,22 +508,6 @@
           ]
         },
         "thesis": "Manual user IV-touch shadow signal: PM YES 28.5% vs IV touch model 40.3%; edge +10.3 pts. Exclude from official live-trader performance until validated."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
-        "asset": "OIL",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "cl-hit-jun-2026 — YES — Will Crude Oil (CL) hit (HIGH) $110 by end of June?",
-        "marketQuality": {
-          "yesBid": 0.49,
-          "yesAsk": 0.51,
-          "yesSpread": 0.02,
-          "liquidity": 11231.62,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 15.6pt edge on OIL; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
