@@ -24952,3 +24952,39 @@ Today’s data showcases a broad risk-off move in crypto, with BTC falling to it
 
 ---
 
+### 2026-06-05 04:28 UTC
+
+**Portfolio:** $98.33 total | Cash $95.33 | 3 open | P&L $0.8221 | 50% win rate (185 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_pm_ev = 69533 is -3.2 std devs from mean (82308.13 ± 4049.44)
+- [anomaly] btc_pm_iv = 55.9 is 3.1 std devs from mean (40.44 ± 5.02)
+- [anomaly] btc_opt_fwd_90d = 63773 is -3.1 std devs from mean (76566.46 ± 4191.16)
+- [anomaly] btc_spot = 63135 is -3.1 std devs from mean (75648.92 ± 4100.20)
+- [anomaly] btc_ibit_pc_ratio = 1.263 is 2.5 std devs from mean (0.64 ± 0.24)
+
+**Blocked signal learning:**
+- Open blocked shadows: 69
+- Resolved blocked shadows: 501 (269 wins / 232 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 118/164 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 7/12 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 6/10 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=116 (34W/69L/13flat, 33.0% win-rate, sum $-2.6384, avg -2.27%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=158 (50W/91L/17flat, 35.5% win-rate, sum $-2.6843, avg -1.70%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-3.23%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-6.41%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 2/12; next scheduled 2026-06-05T06:28:48.394Z). Mechanical cycle ran normally._
+
+---
+
