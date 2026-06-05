@@ -14,6 +14,18 @@ import https from "https";
 import http from "http";
 
 const ALLOWED_COUNTRIES = new Set(["CH", "DE", "AT", "PT", "SG", "JP", "KR", "HK", "AE"]);
+const COUNTRY_NAME_TO_CODE: Record<string, string> = {
+  Austria: "AT",
+  Germany: "DE",
+  Japan: "JP",
+  Portugal: "PT",
+  Singapore: "SG",
+  "South Korea": "KR",
+  Korea: "KR",
+  "Hong Kong": "HK",
+  "United Arab Emirates": "AE",
+  Switzerland: "CH",
+};
 const GEO_CHECK_URLS = [
   "https://ipinfo.io/json",
   "https://ifconfig.co/json",
@@ -144,8 +156,10 @@ export class VpnGuard {
       try {
         const result = await this.httpGet(url);
         const json = JSON.parse(result);
-        // ipinfo.io uses "country", ifconfig.co uses "country_iso"
-        const country = json.country ?? json.country_iso ?? json.country_code;
+        // ipinfo.io uses "country" as ISO, ifconfig.co may return either
+        // "country_iso" or a human-readable "country" such as "Japan".
+        const rawCountry = json.country_iso ?? json.country_code ?? json.country;
+        const country = this.normalizeCountry(rawCountry);
         const ip = json.ip;
         const city = json.city ?? json.region ?? "unknown";
         if (country && ip) return { ip, country, city };
@@ -154,6 +168,14 @@ export class VpnGuard {
       }
     }
     throw new Error("All geo-IP services failed");
+  }
+
+  private normalizeCountry(country: unknown): string {
+    const value = String(country ?? "").trim();
+    if (!value) return "";
+    const upper = value.toUpperCase();
+    if (upper.length === 2) return upper;
+    return COUNTRY_NAME_TO_CODE[value] ?? COUNTRY_NAME_TO_CODE[value.replace(/\s+/g, " ")] ?? value;
   }
 
   private httpGet(url: string): Promise<string> {
