@@ -485,6 +485,28 @@ function requiredMinShares(candidate: Candidate): number {
   );
 }
 
+function hasAtMostDecimals(value: number, decimals: number): boolean {
+  const scale = 10 ** decimals;
+  return Math.abs(value * scale - Math.round(value * scale)) < 1e-7;
+}
+
+function clobBuyAmountsValid(candidate: Candidate, shares: number): boolean {
+  // For marketable BUY orders the CLOB accepts USDC maker amounts only to cents.
+  // Both arb legs are separate FAK BUYs, so both leg notionals must be cent-exact.
+  return hasAtMostDecimals(shares * candidate.broad.yesBook.ask, 2)
+    && hasAtMostDecimals(shares * candidate.narrow.noBook.ask, 2);
+}
+
+function precisionSafeShares(candidate: Candidate, minShares: number, maxShares: number): number | null {
+  const start = Math.ceil((minShares - EPSILON) * 100) / 100;
+  const end = Math.floor((maxShares + EPSILON) * 100) / 100;
+  for (let units = Math.round(start * 100); units <= Math.round(end * 100); units += 1) {
+    const shares = units / 100;
+    if (clobBuyAmountsValid(candidate, shares)) return shares;
+  }
+  return null;
+}
+
 function sizeForCandidate(candidate: Candidate, packageRows: LivePackage[]): { shares: number; cost: number; reason?: string } {
   const remainingDailyUsd = Math.max(0, MAX_DAILY_USD - spentToday(packageRows));
   if (remainingDailyUsd <= 0) return { shares: 0, cost: 0, reason: "daily_cap_exhausted" };
@@ -504,12 +526,14 @@ function sizeForCandidate(candidate: Candidate, packageRows: LivePackage[]): { s
     return { shares: 0, cost: 0, reason: `budget_below_exchange_min cap=$${maxUsd.toFixed(2)} needs=$${neededUsd.toFixed(2)}` };
   }
 
-  let shares = Math.floor(Math.min(candidate.availableSize, maxUsd / candidate.packageCost) * 100) / 100;
+  const maxShares = Math.floor(Math.min(candidate.availableSize, maxUsd / candidate.packageCost) * 100) / 100;
+  let shares = precisionSafeShares(candidate, minShares, maxShares) ?? 0;
   // Guard against floating-point shaving the affordable size just under the min
   // when the budget was sized exactly to cover it.
   if (shares + 1e-6 >= minShares && shares < minShares) shares = minShares;
   const cost = shares * candidate.packageCost;
   if (shares + EPSILON < minShares) return { shares, cost, reason: `shares_below_min_order_${minShares}` };
+  if (!clobBuyAmountsValid(candidate, shares)) return { shares, cost, reason: "clob_amount_precision_unavailable" };
   return { shares, cost };
 }
 
