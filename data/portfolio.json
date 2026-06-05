@@ -1,5 +1,5 @@
 {
-  "cash": 95.32572142079313,
+  "cash": 94.32572142079313,
   "positions": [
     {
       "id": "MA-1780403314728-llno",
@@ -51,7 +51,7 @@
         }
       ],
       "entryUnderlyingPrice": 78.905,
-      "currentUnderlyingPrice": 64.495,
+      "currentUnderlyingPrice": 65.251,
       "peakPnlPct": 0,
       "fundingPnlAccrued": 0
     },
@@ -105,7 +105,7 @@
         }
       ],
       "entryUnderlyingPrice": 72.839,
-      "currentUnderlyingPrice": 64.495,
+      "currentUnderlyingPrice": 65.251,
       "peakPnlPct": 0.6030150753768737,
       "fundingPnlAccrued": 0
     },
@@ -159,14 +159,102 @@
         }
       ],
       "entryUnderlyingPrice": 72.839,
-      "currentUnderlyingPrice": 64.495,
+      "currentUnderlyingPrice": 65.251,
       "peakPnlPct": 0.5025125628140708,
       "fundingPnlAccrued": 0
+    },
+    {
+      "id": "MA-1780644515935-bomt",
+      "openedAt": "2026-06-05T07:28:35.935Z",
+      "asset": "ETH",
+      "venue": "polymarket",
+      "direction": "long",
+      "entryPrice": 0.999,
+      "currentPrice": 0.999,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "MONOTONIC_ARB",
+      "hypothesisId": null,
+      "thesis": "[MONOTONIC ARB LIVE] Buy YES on broader above strike 2700 @ 0.0090 and buy NO on narrower above strike 2800 @ 0.9900. Gross locked edge 0.10c per paired share before fees/slippage; min payout $1.00 >= cost $0.9990 (risk-free). Threads the strike gap for the ~$1 jackpot payout.",
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDate": "2026-07-01T04:00:00Z",
+      "instrumentType": "pm_package",
+      "instrumentId": "what-price-will-ethereum-hit-in-june-2026::YES-2410582+NO-2410581",
+      "instrumentLabel": "what-price-will-ethereum-hit-in-june-2026 — monotonic arb package (LIVE) — YES 2700 / NO 2800",
+      "packageLegs": [
+        {
+          "role": "broad_yes",
+          "instrumentType": "pm_yes",
+          "instrumentId": "what-price-will-ethereum-hit-in-june-2026::2410582",
+          "instrumentLabel": "what-price-will-ethereum-hit-in-june-2026 — YES — Will Ethereum reach $2,700 in June?",
+          "entryPrice": 0.009,
+          "strike": 2700,
+          "direction": "above",
+          "yesBid": 0.008,
+          "yesAsk": 0.009,
+          "yesBidSize": 64556.24,
+          "yesAskSize": 577.76,
+          "startDate": "2026-06-01T14:41:13.227314Z"
+        },
+        {
+          "role": "narrow_no",
+          "instrumentType": "pm_no",
+          "instrumentId": "what-price-will-ethereum-hit-in-june-2026::2410581",
+          "instrumentLabel": "what-price-will-ethereum-hit-in-june-2026 — NO — Will Ethereum reach $2,800 in June?",
+          "entryPrice": 0.99,
+          "strike": 2800,
+          "direction": "above",
+          "yesBid": 0.01,
+          "yesAsk": 0.011,
+          "yesBidSize": 450,
+          "yesAskSize": 2411.58,
+          "startDate": "2026-06-01T14:42:38.363011Z"
+        }
+      ],
+      "entryUnderlyingPrice": 1658,
+      "currentUnderlyingPrice": 1658,
+      "entryBookSnapshot": {
+        "capturedAt": "2026-06-05T07:28:36.353Z",
+        "source": "clob_live",
+        "packageCost": 0.999,
+        "lockedEdgeCents": 0.10000000000000009,
+        "minLegLiquidity": 36305.4559,
+        "packageAvailableSize": 450,
+        "legs": [
+          {
+            "role": "broad_yes",
+            "marketId": "2410582",
+            "yesBid": 0.008,
+            "yesAsk": 0.009,
+            "yesBidSize": 64556.24,
+            "yesAskSize": 577.76,
+            "noBid": 0.991,
+            "noAsk": 0.992,
+            "noBidSize": 577.76,
+            "noAskSize": 64556.24,
+            "liquidity": 45685.16791
+          },
+          {
+            "role": "narrow_no",
+            "marketId": "2410581",
+            "yesBid": 0.01,
+            "yesAsk": 0.011,
+            "yesBidSize": 450,
+            "yesAskSize": 2411.58,
+            "noBid": 0.989,
+            "noAsk": 0.99,
+            "noBidSize": 2411.58,
+            "noAskSize": 450,
+            "liquidity": 36305.4559
+          }
+        ]
+      }
     }
   ],
   "totalRealizedPnl": 0.8220999999999993,
   "totalTrades": 185,
   "winCount": 93,
   "lossCount": 92,
-  "lastUpdated": "2026-06-05T06:29:56.166Z"
+  "lastUpdated": "2026-06-05T07:28:36.507Z"
 }
