@@ -12,7 +12,8 @@ StartLimitBurst=5
 Type=simple
 User=root
 WorkingDirectory=/opt/polymarket-trader
-EnvironmentFile=/etc/polymarket-pm-executor.env
+EnvironmentFile=-/etc/polymarket-pm-executor.env
+EnvironmentFile=-/etc/polymarket-trader.env
 Environment=POLYMARKET_TRADER_STATE_DIR=/var/lib/polymarket-trader
 Environment=NODE_NO_WARNINGS=1
 ExecStart=/usr/local/bin/run-polymarket-arb-daemon

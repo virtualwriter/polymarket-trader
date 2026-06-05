@@ -9,8 +9,9 @@
 #
 # Behaviour:
 #   1. Acquires a non-blocking flock so two daemon instances cannot overlap.
-#   2. Loads the Japan executor env (/etc/polymarket-pm-executor.env), which must
-#      include POLYGON_RPC_URLS for the multi-RPC failover provider.
+#   2. Loads the Japan executor env (/etc/polymarket-pm-executor.env or the
+#      legacy /etc/polymarket-trader.env), which must include POLYGON_RPC_URLS
+#      for the multi-RPC failover provider.
 #   3. Optionally pulls latest code once on start (ARB_DAEMON_PULL_ON_START=1).
 #   4. Execs the long-running daemon (it manages its own websockets/timers).
 set -euo pipefail
@@ -22,12 +23,14 @@ export POLYMARKET_TRADER_STATE_DIR="$STATE_DIR"
 mkdir -p "$STATE_DIR"
 chmod 700 "$STATE_DIR" || true
 
-if [[ -f /etc/polymarket-pm-executor.env ]]; then
-  set -a
-  # shellcheck disable=SC1091
-  . /etc/polymarket-pm-executor.env
-  set +a
-fi
+for env_file in /etc/polymarket-pm-executor.env /etc/polymarket-trader.env; do
+  if [[ -f "$env_file" ]]; then
+    set -a
+    # shellcheck disable=SC1090
+    . "$env_file"
+    set +a
+  fi
+done
 
 exec 9>"$LOCK_FILE"
 if ! flock -n 9; then
