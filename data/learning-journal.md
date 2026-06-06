@@ -26367,3 +26367,39 @@ BTC PC_RATIO_EXTREME_HIGH trade (T-1780720116500-kjbx) unchanged: P/C ratio stil
 
 ---
 
+### 2026-06-06 23:28 UTC
+
+**Portfolio:** $98.31 total | Cash $89.31 | 9 open | P&L $0.8059 | 50% win rate (191 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_spot = 60647 is -2.9 std devs from mean (75000.01 ± 5008.88)
+- [anomaly] btc_opt_fwd_90d = 61343 is -2.9 std devs from mean (75909.34 ± 5102.71)
+- [anomaly] btc_ibit_pc_ratio = 1.469 is 2.7 std devs from mean (0.68 ± 0.29)
+- [anomaly] btc_pm_ev = 68763 is -2.6 std devs from mean (81690.68 ± 4881.47)
+- [anomaly] btc_pm_iv = 56.7 is 2.6 std devs from mean (41.15 ± 5.92)
+
+**Blocked signal learning:**
+- Open blocked shadows: 68
+- Resolved blocked shadows: 559 (309 wins / 250 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 154/207 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 7/12 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 6/10 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=116 (34W/69L/13flat, 33.0% win-rate, sum $-2.6384, avg -2.27%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=159 (50W/92L/17flat, 35.2% win-rate, sum $-2.7196, avg -1.71%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ARM long via hyperliquid would have closed with thesis validated profitably (+2.36%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG CRCL long via hyperliquid would have closed with thesis validated profitably (+3.47%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG HOOD long via hyperliquid would have closed with thesis validated profitably (+1.87%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ORCL long via hyperliquid would have closed with thesis validated profitably (+1.29%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 10/12; next scheduled 2026-06-07T01:28:32.208Z). Mechanical cycle ran normally._
+
+---
+
