@@ -137,6 +137,7 @@ const ORPHAN_STOP_CENTS = Number(process.env.ARB_DAEMON_ORPHAN_STOP_CENTS ?? 0.0
 // Completion is positive-EV (a real arb) only if fillPrice + complementAsk is
 // below 1 by at least this margin (survives slippage).
 const ORPHAN_COMPLETION_MARGIN = Number(process.env.ARB_DAEMON_ORPHAN_COMPLETION_MARGIN ?? 0.01);
+const NON_SPORTS_ORPHAN_COMPLETION_MARGIN = Number(process.env.ARB_DAEMON_NON_SPORTS_ORPHAN_COMPLETION_MARGIN ?? 0);
 // Force-unwind this long before the orphan market's own expiry (so we never
 // roll into a directional settlement). Default 10 min.
 const ORPHAN_EXPIRY_BUFFER_MS = Number(process.env.ARB_DAEMON_ORPHAN_EXPIRY_BUFFER_MS ?? 600_000);
@@ -890,6 +891,12 @@ function orphanBestBid(o: Orphan): number {
   return topOfBook(o.tokenId).bid;
 }
 
+function orphanCompletionMargin(o: Orphan): number {
+  return o.asset === "NBA" || o.eventSlug.startsWith("nba-")
+    ? ORPHAN_COMPLETION_MARGIN
+    : NON_SPORTS_ORPHAN_COMPLETION_MARGIN;
+}
+
 // Reactive tight stop, fired off the market-WS hot path: the moment a held
 // orphan's bid drops below fill - ORPHAN_STOP_CENTS, flatten it.
 function maybeOrphanStop(tokenId: string) {
@@ -963,7 +970,7 @@ function findCompletion(o: Orphan, quotes: MarketQuote[]): { pick: CompletionPic
     const complementAsk = compBook.ask;
     if (!(complementAsk > 0)) continue;
     const completionEdge = 1 - (o.fillPrice + complementAsk);
-    if (completionEdge <= ORPHAN_COMPLETION_MARGIN) continue;
+    if (completionEdge <= orphanCompletionMargin(o)) continue;
     if (compBook.askSize + EPSILON < o.shares) continue;          // not enough depth to cover the orphan
     if (o.shares + EPSILON < compBook.minOrderSize) continue;     // orphan smaller than complement's min order
     if (!best || completionEdge > best.completionEdge) {
@@ -1055,7 +1062,7 @@ async function doCompletion(o: Orphan, pick: CompletionPick) {
       record.actualCost = matched * o.fillPrice + filled * pick.complementAsk;
       record.guaranteedFloor = matched;
       record.lockedFloorProfit = matched * pick.completionEdge;
-      record.jackpotPayout = matched * 2;
+      record.jackpotPayout = matched * pick.candidate.jackpotPayoutPerShare;
       record.failureReason = `completed_from_orphan ${o.id} (re-paired naked ${o.role})`;
       record.updatedAt = new Date().toISOString();
       persist(record, [order]);
