@@ -564,6 +564,15 @@ async function postFakBuy(client: ClobClient, tokenId: string, price: number, sh
   return client.postOrder(signedOrder, OrderType.FAK);
 }
 
+async function postLimitBuy(client: ClobClient, tokenId: string, price: number, shares: number): Promise<any> {
+  const tickSize = await client.getTickSize(tokenId) as TickSize;
+  const signedOrder = await client.createOrder(
+    { tokenID: tokenId, price, size: Number(shares.toFixed(6)), side: Side.BUY, ...(POLY_BUILDER_CODE ? { builderCode: POLY_BUILDER_CODE } : {}) },
+    { tickSize, negRisk: false },
+  );
+  return client.postOrder(signedOrder, OrderType.GTC);
+}
+
 // FAK sell to flatten a position (used by the daemon to unwind a naked leg).
 // Crosses the spread at `price` (caller passes best bid) so the orphan exits
 // immediately rather than resting on the book.
@@ -952,6 +961,7 @@ export {
   clobClient,
   signerFromEnv,
   postFakBuy,
+  postLimitBuy,
   postFakSell,
   sizeForCandidate,
   reconcilePackage,

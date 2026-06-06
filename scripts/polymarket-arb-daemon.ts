@@ -61,6 +61,7 @@ import {
   orderId,
   packageRecord,
   postFakBuy,
+  postLimitBuy,
   postFakSell,
   proxyCollateralProbe,
   readJsonArray,
@@ -146,7 +147,7 @@ const ORPHAN_LADDER_REFRESH_MS = Number(process.env.ARB_DAEMON_ORPHAN_LADDER_REF
 // Smallest residual orphan we bother completing/holding; below this we just
 // unwind the dust.
 const ORPHAN_MIN_SHARES = Number(process.env.ARB_DAEMON_ORPHAN_MIN_SHARES ?? MIN_ORDER_SHARES);
-const DUST_EXIT_MIN_MARKETABLE_BUY_USD = Number(process.env.ARB_DAEMON_DUST_EXIT_MIN_MARKETABLE_BUY_USD ?? MIN_MARKETABLE_BUY_USD);
+const DUST_EXIT_LIMIT_WAIT_MS = Number(process.env.ARB_DAEMON_DUST_EXIT_LIMIT_WAIT_MS ?? 5_000);
 const ORPHANS_PATH = join(dirname(PACKAGES_PATH), "polymarket-live-orphans.json");
 
 type PriceLevels = { bids: Map<number, number>; asks: Map<number, number> };
@@ -1118,30 +1119,35 @@ async function maybeTopUpDustAndExit(o: Orphan, reason: string): Promise<boolean
   if (o.shares + EPSILON >= book.minOrderSize) return false;
   if (!(book.ask > 0) || !(book.bid > 0)) return false;
   const deficit = Math.max(0, book.minOrderSize - o.shares);
-  const buyMinByNotional = book.ask > 0
-    ? Math.ceil((DUST_EXIT_MIN_MARKETABLE_BUY_USD / book.ask) * 100_000) / 100_000
-    : Number.POSITIVE_INFINITY;
-  const minTopUp = Math.max(deficit, book.minOrderSize, buyMinByNotional);
-  const topUpShares = precisionSafeCompletionShares(book.ask, minTopUp, book.askSize);
-  if (!topUpShares) return false;
+  const topUpShares = Math.max(book.minOrderSize, Math.ceil((deficit - EPSILON) * 100_000) / 100_000);
+  const maxTopUpPrice = Math.floor(((book.bid * (o.shares + topUpShares)) - (o.shares * o.fillPrice) + EPSILON) / topUpShares * 1000) / 1000;
+  if (!(maxTopUpPrice > 0)) return false;
+  const topUpPrice = Math.min(book.ask, maxTopUpPrice);
+  if (!(topUpPrice > 0)) return false;
 
   const combinedShares = roundShares(o.shares + topUpShares);
-  const avgCost = ((o.shares * o.fillPrice) + (topUpShares * book.ask)) / combinedShares;
+  const avgCost = ((o.shares * o.fillPrice) + (topUpShares * topUpPrice)) / combinedShares;
   const noLossSellPrice = Math.ceil((avgCost - EPSILON) * 1000) / 1000;
   if (book.bid + EPSILON < noLossSellPrice || book.bidSize + EPSILON < combinedShares) return false;
 
   o.attempts += 1;
-  log(`orphan ${o.id} DUST_EXIT (${reason}): top-up ${topUpShares} @ ${book.ask.toFixed(4)} then sell ${combinedShares} @ ${noLossSellPrice.toFixed(4)} avg=${avgCost.toFixed(6)}`);
+  log(`orphan ${o.id} DUST_EXIT (${reason}): limit top-up ${topUpShares} @ ${topUpPrice.toFixed(4)} then sell ${combinedShares} @ ${noLossSellPrice.toFixed(4)} avg=${avgCost.toFixed(6)}`);
   const before = await reconcileTokenBalance(reconcileAddress, o.tokenId);
   let buyResp: unknown;
+  let topUpOrderId: string | undefined;
   try {
-    buyResp = await postFakBuy(client, o.tokenId, book.ask, topUpShares);
+    buyResp = await postLimitBuy(client, o.tokenId, topUpPrice, topUpShares);
     assertOrderResponse(buyResp, "dust_topup");
+    topUpOrderId = orderId(buyResp);
   } catch (err: any) {
     buyResp = { error: err?.message ?? String(err) };
     log(`orphan ${o.id} dust top-up error: ${err?.message ?? String(err)}`);
   }
-  await waitForFill(o.tokenId, FILL_WAIT_DAEMON_MS);
+  await waitForFill(o.tokenId, DUST_EXIT_LIMIT_WAIT_MS);
+  if (topUpOrderId) {
+    try { await client.cancelOrder({ orderID: topUpOrderId }); }
+    catch (err: any) { log(`orphan ${o.id} dust top-up cancel warning: ${err?.message ?? String(err)}`); }
+  }
   const afterBuy = await reconcileTokenBalance(reconcileAddress, o.tokenId);
   const bought = roundShares(afterBuy - before);
   const buyOrder: LiveOrder = {
@@ -1150,9 +1156,9 @@ async function maybeTopUpDustAndExit(o: Orphan, reason: string): Promise<boolean
     role: "completion",
     tokenId: o.tokenId,
     side: "BUY",
-    price: book.ask,
+    price: topUpPrice,
     size: bought,
-    orderType: "FAK",
+    orderType: "GTC",
     response: buyResp,
   };
   appendJsonArray(ORDERS_PATH, [buyOrder]);
@@ -1164,6 +1170,15 @@ async function maybeTopUpDustAndExit(o: Orphan, reason: string): Promise<boolean
   }
 
   const sellShares = roundShares(o.shares + bought);
+  const realizedIfSold = sellShares * noLossSellPrice - (o.shares * o.fillPrice) - (bought * topUpPrice);
+  if (realizedIfSold + EPSILON < 0) {
+    o.shares = sellShares;
+    o.note = `dust top-up bought=${bought}; no-loss sell no longer available`;
+    o.updatedAt = new Date().toISOString();
+    saveOrphans();
+    log(`orphan ${o.id} DUST_EXIT deferred after top-up: sell would lose ${realizedIfSold.toFixed(4)} residual=${o.shares}`);
+    return true;
+  }
   let sellResp: unknown;
   try {
     sellResp = await postFakSell(client, o.tokenId, noLossSellPrice, sellShares);
@@ -1188,7 +1203,7 @@ async function maybeTopUpDustAndExit(o: Orphan, reason: string): Promise<boolean
   };
   appendJsonArray(ORDERS_PATH, [sellOrder]);
 
-  const realized = sold * noLossSellPrice - Math.min(sold, o.shares) * o.fillPrice - Math.max(0, sold - o.shares) * book.ask;
+  const realized = sold * noLossSellPrice - Math.min(sold, o.shares) * o.fillPrice - Math.max(0, sold - o.shares) * topUpPrice;
   o.shares = roundShares(o.shares + bought - sold);
   o.note = `dust_exit bought=${bought} sold=${sold} realized=${realized.toFixed(4)} (${reason})`;
   if (o.shares + EPSILON < ORPHAN_MIN_SHARES) o.status = sold > 0 ? "unwound" : "stranded";
