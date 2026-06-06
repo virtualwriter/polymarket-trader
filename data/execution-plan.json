@@ -1,10 +1,23 @@
 {
-  "generatedAt": "2026-06-06T19:28:43.321Z",
+  "generatedAt": "2026-06-06T21:30:05.115Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1780727388429-g4cs",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_hl_funding_ann"
+      ],
+      "thesis": "GOLD funding extreme long (34.9% ann) faded quickly: funding normalized to 5.48% (below the 15% entry threshold), removing the crowded-long thesis. Position closed at small profit."
+    }
+  ],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -15,7 +28,7 @@
       "confidence": 0.1948588767632752,
       "thesis": "BTC P/C ratio 1.47 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 60587,
+      "entryPrice": 60863,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -25,6 +38,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

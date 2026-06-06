@@ -1,5 +1,5 @@
 {
-  "cash": 90.30637878520965,
+  "cash": 90.30940548830452,
   "positions": [
     {
       "id": "MA-1780403314728-llno",
@@ -51,7 +51,7 @@
         }
       ],
       "entryUnderlyingPrice": 78.905,
-      "currentUnderlyingPrice": 61.776,
+      "currentUnderlyingPrice": 62.067,
       "peakPnlPct": 0,
       "fundingPnlAccrued": 0
     },
@@ -105,7 +105,7 @@
         }
       ],
       "entryUnderlyingPrice": 72.839,
-      "currentUnderlyingPrice": 61.776,
+      "currentUnderlyingPrice": 62.067,
       "peakPnlPct": 0.9045226130653273,
       "fundingPnlAccrued": 0
     },
@@ -159,7 +159,7 @@
         }
       ],
       "entryUnderlyingPrice": 72.839,
-      "currentUnderlyingPrice": 61.776,
+      "currentUnderlyingPrice": 62.067,
       "peakPnlPct": 0.804020100502502,
       "fundingPnlAccrued": 0
     },
@@ -213,7 +213,7 @@
         }
       ],
       "entryUnderlyingPrice": 1658,
-      "currentUnderlyingPrice": 1555.4,
+      "currentUnderlyingPrice": 1561.6,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-05T07:28:36.353Z",
         "source": "clob_live",
@@ -260,7 +260,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.998,
-      "currentPrice": 0.998,
+      "currentPrice": 0.997,
       "size": 1,
       "leverage": 1,
       "signalType": "MONOTONIC_ARB",
@@ -303,7 +303,7 @@
         }
       ],
       "entryUnderlyingPrice": 4466,
-      "currentUnderlyingPrice": 4308.6,
+      "currentUnderlyingPrice": 4307.2,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-05T12:28:37.073Z",
         "source": "clob_live",
@@ -350,8 +350,8 @@
       "venue": "spot",
       "direction": "long",
       "entryPrice": 60008,
-      "currentPrice": 60587,
-      "currentUnderlyingPrice": 60587,
+      "currentPrice": 60863,
+      "currentUnderlyingPrice": 60863,
       "entryUnderlyingPrice": 60008,
       "size": 1,
       "leverage": 1,
@@ -365,30 +365,6 @@
       "instrumentLabel": "BTC spot",
       "peakPnlPct": 2.377183042261032,
       "fundingPnlAccrued": 0
-    },
-    {
-      "id": "T-1780727388429-g4cs",
-      "openedAt": "2026-06-06T06:29:48.429Z",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "entryPrice": 4320,
-      "currentPrice": 4309,
-      "currentUnderlyingPrice": 4309,
-      "entryUnderlyingPrice": 4320,
-      "size": 1,
-      "leverage": 1,
-      "signalType": "FUNDING_EXTREME_LONG",
-      "hypothesisId": null,
-      "thesis": "GOLD HL funding 34.9% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDate": "2026-06-09T06:29:48.429Z",
-      "instrumentType": "hl_perp",
-      "instrumentId": "GOLD",
-      "instrumentLabel": "HL GOLD perp",
-      "fundingPnlAccrued": 0.00001119383561643835,
-      "peakPnlPct": 0.3441517909690428
     },
     {
       "id": "MA-1780756122347-no4t",
@@ -440,7 +416,7 @@
         }
       ],
       "entryUnderlyingPrice": 60800,
-      "currentUnderlyingPrice": 60587,
+      "currentUnderlyingPrice": 60863,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-06T14:28:42.778Z",
         "source": "clob_live",
@@ -479,11 +455,99 @@
       },
       "peakPnlPct": 6101751.851851852,
       "fundingPnlAccrued": 0
+    },
+    {
+      "id": "MA-1780781316401-w1a7",
+      "openedAt": "2026-06-06T21:28:36.401Z",
+      "asset": "GOLD",
+      "venue": "polymarket",
+      "direction": "long",
+      "entryPrice": 0.999,
+      "currentPrice": 0.999,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "MONOTONIC_ARB",
+      "hypothesisId": null,
+      "thesis": "[MONOTONIC ARB LIVE] Buy YES on broader above strike 7000 @ 0.0030 and buy NO on narrower above strike 9000 @ 0.9960. Gross locked edge 0.10c per paired share before fees/slippage; min payout $1.00 >= cost $0.9990 (risk-free). Threads the strike gap for the ~$1 jackpot payout.",
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDate": "2026-06-30T17:30:00Z",
+      "instrumentType": "pm_package",
+      "instrumentId": "gc-hit-jun-2026::YES-1032268+NO-1295944",
+      "instrumentLabel": "gc-hit-jun-2026 — monotonic arb package (LIVE) — YES 7000 / NO 9000",
+      "packageLegs": [
+        {
+          "role": "broad_yes",
+          "instrumentType": "pm_yes",
+          "instrumentId": "gc-hit-jun-2026::1032268",
+          "instrumentLabel": "gc-hit-jun-2026 — YES — Will Gold (GC) hit (HIGH) $7,000 by end of June?",
+          "entryPrice": 0.003,
+          "strike": 7000,
+          "direction": "above",
+          "yesBid": 0.002,
+          "yesAsk": 0.003,
+          "yesBidSize": 691.9,
+          "yesAskSize": 4835.36,
+          "startDate": "2025-12-26T23:29:15.952Z"
+        },
+        {
+          "role": "narrow_no",
+          "instrumentType": "pm_no",
+          "instrumentId": "gc-hit-jun-2026::1295944",
+          "instrumentLabel": "gc-hit-jun-2026 — NO — Will Gold (GC) hit (HIGH) $9,000 by end of June?",
+          "entryPrice": 0.996,
+          "strike": 9000,
+          "direction": "above",
+          "yesBid": 0.004,
+          "yesAsk": 0.007,
+          "yesBidSize": 100.05,
+          "yesAskSize": 3477.44,
+          "startDate": "2026-01-29T20:51:47.532573Z"
+        }
+      ],
+      "entryUnderlyingPrice": 4307,
+      "currentUnderlyingPrice": 4307,
+      "entryBookSnapshot": {
+        "capturedAt": "2026-06-06T21:28:36.794Z",
+        "source": "clob_live",
+        "packageCost": 0.999,
+        "lockedEdgeCents": 0.10000000000000009,
+        "minLegLiquidity": 33853.29999,
+        "packageAvailableSize": 100.05,
+        "legs": [
+          {
+            "role": "broad_yes",
+            "marketId": "1032268",
+            "yesBid": 0.002,
+            "yesAsk": 0.003,
+            "yesBidSize": 691.9,
+            "yesAskSize": 4835.36,
+            "noBid": 0.997,
+            "noAsk": 0.998,
+            "noBidSize": 4835.36,
+            "noAskSize": 691.9,
+            "liquidity": 46505.81965
+          },
+          {
+            "role": "narrow_no",
+            "marketId": "1295944",
+            "yesBid": 0.004,
+            "yesAsk": 0.007,
+            "yesBidSize": 100.05,
+            "yesAskSize": 3477.44,
+            "noBid": 0.993,
+            "noAsk": 0.996,
+            "noBidSize": 3477.44,
+            "noAskSize": 100.05,
+            "liquidity": 33853.29999
+          }
+        ]
+      }
     }
   ],
-  "totalRealizedPnl": 0.8028999999999993,
-  "totalTrades": 190,
-  "winCount": 94,
+  "totalRealizedPnl": 0.805926703094875,
+  "totalTrades": 191,
+  "winCount": 95,
   "lossCount": 96,
-  "lastUpdated": "2026-06-06T19:28:43.325Z"
+  "lastUpdated": "2026-06-06T21:30:05.123Z"
 }
