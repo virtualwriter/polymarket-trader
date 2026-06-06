@@ -115,6 +115,7 @@ const SPORTS_MIN_EDGE = Number(process.env.ARB_DAEMON_SPORTS_MIN_EDGE ?? 0.05);
 const SPORTS_MIN_AVAILABLE_SHARES = Number(process.env.ARB_DAEMON_SPORTS_MIN_AVAILABLE_SHARES ?? 50);
 const SPORTS_MAX_SPREAD = Number(process.env.ARB_DAEMON_SPORTS_MAX_SPREAD ?? MAX_SPREAD);
 const SPORTS_PRICE_SLIPPAGE = Number(process.env.ARB_DAEMON_SPORTS_PRICE_SLIPPAGE ?? 0.01);
+const NON_SPORTS_EXCHANGE_MIN_BUFFER_SHARES = Number(process.env.ARB_DAEMON_NON_SPORTS_EXCHANGE_MIN_BUFFER_SHARES ?? 25);
 const NEAR_MISS_BUCKETS = [
   { label: "cost<=0.9995", cost: 0.9995 },
   { label: "cost<=1.0000", cost: 1.0000 },
@@ -466,6 +467,27 @@ function maxSpreadFor(candidate: Candidate): number {
   return isSportsCandidate(candidate) ? SPORTS_MAX_SPREAD : MAX_SPREAD;
 }
 
+function requiredDisplayedTouch(candidate: Candidate): number {
+  if (isSportsCandidate(candidate)) {
+    return Math.max(minAvailableSharesFor(candidate), requiredLiveMinShares(candidate));
+  }
+  return minAvailableSharesFor(candidate);
+}
+
+function executionSizingCandidate(candidate: Candidate): Candidate {
+  if (isSportsCandidate(candidate)) return candidate;
+  const minShares = requiredLiveMinShares(candidate);
+  if (candidate.availableSize + EPSILON >= minShares) return candidate;
+  if (candidate.availableSize + EPSILON < minAvailableSharesFor(candidate)) return candidate;
+
+  const c = structuredClone(candidate);
+  // CLOB may require a >=$1 maker amount even when the displayed touch is just
+  // under that share count. Send an exchange-min-sized FAK and let it partially
+  // fill the profitable top-of-book amount that actually exists.
+  c.availableSize = minShares + NON_SPORTS_EXCHANGE_MIN_BUFFER_SHARES;
+  return c;
+}
+
 function withSportsExecutionPrices(candidate: Candidate, broadAsk: number, narrowNoAsk: number): Candidate {
   const c = structuredClone(candidate);
   c.broad.yesBook.ask = Math.min(0.99, Math.ceil((broadAsk + SPORTS_PRICE_SLIPPAGE) * 1000) / 1000);
@@ -508,16 +530,15 @@ function requiredLiveMinShares(candidate: Candidate): number {
 }
 
 function passesDynamicGate(candidate: Candidate): boolean {
-  const minShares = Math.max(minAvailableSharesFor(candidate), requiredLiveMinShares(candidate));
   if (candidate.lockedEdge + EPSILON < minEdgeFor(candidate)) return false;
   if (candidate.maxSpread - EPSILON > maxSpreadFor(candidate)) return false;
-  if (candidate.availableSize + EPSILON < minShares) return false;
+  if (candidate.availableSize + EPSILON < requiredDisplayedTouch(candidate)) return false;
   return true;
 }
 
 function recordNearMiss(candidate: Candidate) {
   nearMissObservations += 1;
-  const minShares = Math.max(requiredLiveMinShares(candidate), minAvailableSharesFor(candidate));
+  const minShares = requiredDisplayedTouch(candidate);
   const sample: NearMissSample = {
     packageId: candidate.packageId,
     eventSlug: candidate.eventSlug,
@@ -531,10 +552,10 @@ function recordNearMiss(candidate: Candidate) {
     minShares,
     edgeOk: candidate.lockedEdge + EPSILON >= minEdgeFor(candidate),
     spreadOk: candidate.maxSpread - EPSILON <= maxSpreadFor(candidate),
-    sizeOk: candidate.availableSize + EPSILON >= Math.max(minAvailableSharesFor(candidate), minShares),
+    sizeOk: candidate.availableSize + EPSILON >= minShares,
     executableGate: candidate.lockedEdge + EPSILON >= minEdgeFor(candidate)
       && candidate.maxSpread - EPSILON <= maxSpreadFor(candidate)
-      && candidate.availableSize + EPSILON >= Math.max(minAvailableSharesFor(candidate), minShares),
+      && candidate.availableSize + EPSILON >= minShares,
   };
   const prev = nearMissBestByPackage.get(candidate.packageId);
   if (!prev || sample.cost < prev.cost) nearMissBestByPackage.set(candidate.packageId, sample);
@@ -650,8 +671,9 @@ async function tryExecute(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
       return;
     }
   }
+  const executionCandidate = executionSizingCandidate(c);
   const spendableUsd = balanceKnown ? Math.min(cachedFunderBalance, cachedFunderAllowance) : Number.POSITIVE_INFINITY;
-  const sized = sizeForCandidate(c, packageRows, spendableUsd);
+  const sized = sizeForCandidate(executionCandidate, packageRows, spendableUsd);
   if (sized.reason) {
     const now = Date.now();
     const last = lastSkipLogAt.get(pkg.key) ?? 0;
@@ -671,7 +693,7 @@ async function tryExecute(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
   inFlight.add(pkg.key);
   submitTimestamps.push(Date.now());
   try {
-    await executeLive(pkg, c);
+    await executeLive(pkg, executionCandidate);
   } catch (err: any) {
     log(`execute ${pkg.key} failed: ${err?.message ?? String(err)}`);
   } finally {
