@@ -25615,3 +25615,46 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-06-06 00:29 UTC
+
+**Portfolio:** $98.32 total | Cash $92.32 | 6 open | P&L $0.8350 | 50% win rate (187 trades)
+
+**Closed 1 trades:**
+- ❌ BTC long via spot/spot [BTC spot] (PC_RATIO_EXTREME_HIGH) → stop: $-0.0160 (-1.6%, market -0.0160, funding 0.0000)
+
+**Opened 1 positions:**
+- BTC long @ $61156 via spot/spot [BTC spot] (PC_RATIO_EXTREME_HIGH)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved wider by 26.8pp (was 4.6, now 31.4)
+- [anomaly] gold_med_min = 3800 is -8.4 std devs from mean (4353.55 ± 66.11)
+- [anomaly] gold_pm_iv = 55.5 is 8.2 std devs from mean (19.62 ± 4.39)
+- [anomaly] amzn_hl_funding_ann = 127.58 is 5.7 std devs from mean (13.22 ± 20.07)
+- [anomaly] btc_spot = 61156 is -3.1 std devs from mean (75343.95 ± 4545.81)
+
+**Blocked signal learning:**
+- Open blocked shadows: 69
+- Resolved blocked shadows: 510 (271 wins / 239 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 118/164 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 7/12 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 6/10 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=116 (34W/69L/13flat, 33.0% win-rate, sum $-2.6384, avg -2.27%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=159 (50W/92L/17flat, 35.2% win-rate, sum $-2.7196, avg -1.71%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-1.19%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW OIL long via polymarket would have expired (-66.67%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+4.84%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+Chaotic session with gold PM IV spiking to 55.5 despite options IV only ~24, likely reflecting settlement bucket uncertainty rather than pure vol demand. BTC-gold correlation flipped from -0.35 to +0.65 — a regime change that could destabilize the MONOTONIC_ARB gold legs if the PM EV/spot gap continues to widen. The open monotonics on ETH and GOLD are still very early, with minimal PnL impact; their edge is structural and not driven by short-term moves, so no intervention. HTL hybrid bot flipped to global bear with shorts across alts — confirms the risk-off tone. No new hypotheses or parameter changes warranted today.
+
+---
+

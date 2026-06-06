@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-05T22:28:44.133Z",
+  "generatedAt": "2026-06-06T00:28:34.847Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -9,10 +9,10 @@
       "venue": "spot",
       "direction": "long",
       "strength": 0.33625000000000016,
-      "confidence": 0.20091211111565646,
+      "confidence": 0.1982866580846716,
       "thesis": "BTC P/C ratio 1.47 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 61526,
+      "entryPrice": 61156,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -28,10 +28,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 82,
-      "hoursToExpiry": 5022.52,
+      "hoursOpen": 84,
+      "hoursToExpiry": 5020.52,
       "plannedHoldHours": 5104.52,
-      "elapsedHoldPct": 0.0161,
+      "elapsedHoldPct": 0.0165,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -44,10 +44,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 52,
-      "hoursToExpiry": 605.52,
+      "hoursOpen": 54,
+      "hoursToExpiry": 603.52,
       "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0.0791,
+      "elapsedHoldPct": 0.0821,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -60,10 +60,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 52,
-      "hoursToExpiry": 605.52,
+      "hoursOpen": 54,
+      "hoursToExpiry": 603.52,
       "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0.0791,
+      "elapsedHoldPct": 0.0821,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -78,10 +78,10 @@
       "evidenceColumns": [
         "eth_spot"
       ],
-      "hoursOpen": 15,
-      "hoursToExpiry": 605.52,
+      "hoursOpen": 17,
+      "hoursToExpiry": 603.52,
       "plannedHoldHours": 620.52,
-      "elapsedHoldPct": 0.0242,
+      "elapsedHoldPct": 0.0274,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -96,31 +96,12 @@
       "evidenceColumns": [
         "gold_gc_spot"
       ],
-      "hoursOpen": 10,
-      "hoursToExpiry": 595.02,
+      "hoursOpen": 12,
+      "hoursToExpiry": 593.02,
       "plannedHoldHours": 605.02,
-      "elapsedHoldPct": 0.0165,
+      "elapsedHoldPct": 0.0198,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "T-1780694915441-xnys",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "btc_spot",
-        "btc_ibit_pc_ratio"
-      ],
-      "hoursOpen": 1,
-      "hoursToExpiry": 119,
-      "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0084,
-      "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     }
   ]
 }
