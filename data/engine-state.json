@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-06T00:28:34.821Z",
+  "generatedAt": "2026-06-06T02:28:58.904Z",
   "dataFreshness": {
-    "valuationRows": 830,
-    "latestValuationAt": "2026-06-06T00",
-    "macroRows": 830,
+    "valuationRows": 831,
+    "latestValuationAt": "2026-06-06T02",
+    "macroRows": 831,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-06T00"
+    "latestInstrumentSnapshotAt": "2026-06-06T02"
   },
   "portfolio": {
-    "cash": 93.3226,
-    "openPositions": 5,
-    "realizedPnl": 0.835,
-    "totalTrades": 187,
-    "winRatePct": 50.3,
-    "unrealizedPnl": 0.0151
+    "cash": 92.3226,
+    "openPositions": 6,
+    "realizedPnl": 0.819,
+    "totalTrades": 188,
+    "winRatePct": 50,
+    "unrealizedPnl": 0.0102
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0,
       "currentPrice": 0.99,
-      "underlyingPrice": 64.249,
+      "underlyingPrice": 63.563,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -38,7 +38,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0.9,
       "currentPrice": 1.004,
-      "underlyingPrice": 64.249,
+      "underlyingPrice": 63.563,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -50,9 +50,9 @@
       "venue": "polymarket",
       "direction": "long",
       "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.6,
-      "currentPrice": 1.001,
-      "underlyingPrice": 64.249,
+      "pnlPct": 0.5,
+      "currentPrice": 1,
+      "underlyingPrice": 63.563,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -64,9 +64,9 @@
       "venue": "polymarket",
       "direction": "long",
       "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.1,
-      "currentPrice": 0.998,
-      "underlyingPrice": 1591.6,
+      "pnlPct": 0,
+      "currentPrice": 0.999,
+      "underlyingPrice": 1573.7,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -82,12 +82,29 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0.1,
       "currentPrice": 0.999,
-      "underlyingPrice": 4330.7,
+      "underlyingPrice": 4324.9,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "gold_gc_spot"
+      ]
+    },
+    {
+      "positionId": "T-1780705774857-tev4",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": -0.49,
+      "currentPrice": 60859,
+      "underlyingPrice": 60859,
+      "targetPct": 3,
+      "stopPct": 1.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "btc_spot",
+        "btc_ibit_pc_ratio"
       ]
     }
   ],
@@ -229,14 +246,14 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 69,
+    "openCount": 71,
     "resolvedCount": 510,
     "wouldHaveWon": 271,
     "wouldHaveLost": 239,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "blocked": 166,
+        "blocked": 168,
         "resolved": 164,
         "wouldHaveWon": 118,
         "wouldHaveLost": 46,
