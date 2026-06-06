@@ -941,7 +941,28 @@ interface CompletionPick {
   candidate: Candidate;
   complementToken: string;
   complementAsk: number;
+  completionShares: number;
   completionEdge: number;
+}
+
+function hasAtMostDecimals(value: number, decimals: number): boolean {
+  const scale = 10 ** decimals;
+  return Math.abs(value * scale - Math.round(value * scale)) < 1e-7;
+}
+
+function clobBuyAmountValid(price: number, shares: number): boolean {
+  return hasAtMostDecimals(price * shares, 2) && hasAtMostDecimals(shares, 5);
+}
+
+function precisionSafeCompletionShares(price: number, minShares: number, maxShares: number): number | null {
+  const maxCents = Math.floor((maxShares * price + EPSILON) * 100);
+  const minCents = Math.ceil((minShares * price - EPSILON) * 100);
+  for (let cents = maxCents; cents >= minCents; cents -= 1) {
+    const shares = Math.floor(((cents / 100) / price) * 100_000) / 100_000;
+    if (shares + EPSILON < minShares || shares - EPSILON > maxShares) continue;
+    if (clobBuyAmountValid(price, shares)) return shares;
+  }
+  return null;
 }
 
 // Build the structurally-valid complement set for an orphan over a live ladder
@@ -971,13 +992,18 @@ function findCompletion(o: Orphan, quotes: MarketQuote[]): { pick: CompletionPic
     if (!(complementAsk > 0)) continue;
     const completionEdge = 1 - (o.fillPrice + complementAsk);
     if (completionEdge <= orphanCompletionMargin(o)) continue;
-    if (compBook.askSize + EPSILON < o.shares) continue;          // not enough depth to cover the orphan
-    if (o.shares + EPSILON < compBook.minOrderSize) continue;     // orphan smaller than complement's min order
+    const completionShares = precisionSafeCompletionShares(
+      complementAsk,
+      compBook.minOrderSize,
+      Math.min(o.shares, compBook.askSize),
+    );
+    if (!completionShares) continue;
     if (!best || completionEdge > best.completionEdge) {
       best = {
         candidate: pair,
         complementToken: o.role === "broad_yes" ? narrow.noTokenId : broad.yesTokenId,
         complementAsk,
+        completionShares,
         completionEdge,
       };
     }
@@ -1028,11 +1054,11 @@ async function doCompletion(o: Orphan, pick: CompletionPick) {
   const client = clob.client;
   {
     o.attempts += 1;
-    log(`orphan ${o.id} COMPLETE attempt: buy complement ${pick.complementToken.slice(0, 10)}… ask=${pick.complementAsk.toFixed(4)} edge=${(pick.completionEdge * 100).toFixed(2)}c shares=${o.shares}`);
+    log(`orphan ${o.id} COMPLETE attempt: buy complement ${pick.complementToken.slice(0, 10)}… ask=${pick.complementAsk.toFixed(4)} edge=${(pick.completionEdge * 100).toFixed(2)}c shares=${pick.completionShares} orphanShares=${o.shares}`);
     const before = await reconcileTokenBalance(reconcileAddress, pick.complementToken);
     let resp: unknown;
     try {
-      resp = await postFakBuy(client, pick.complementToken, pick.complementAsk, o.shares);
+      resp = await postFakBuy(client, pick.complementToken, pick.complementAsk, pick.completionShares);
       assertOrderResponse(resp, "completion");
     } catch (err: any) {
       resp = { error: err?.message ?? String(err) };
