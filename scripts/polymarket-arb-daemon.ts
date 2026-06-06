@@ -29,6 +29,7 @@ import {
   type MarketQuote,
   EPSILON,
   evaluatePair,
+  fetchBook,
   fetchEvent,
   findCandidates,
   marketQuote,
@@ -106,6 +107,14 @@ const GIT_PUSH = process.env.ARB_DAEMON_GIT_PUSH === "1";
 const NEAR_MISS_LOG_MS = Number(process.env.ARB_DAEMON_NEAR_MISS_LOG_MS ?? 60_000);
 const NEAR_MISS_TOP_N = Number(process.env.ARB_DAEMON_NEAR_MISS_TOP_N ?? 5);
 const MIN_MARKETABLE_BUY_USD = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_MARKETABLE_BUY_USD ?? 1);
+// Live sports books move far faster than the macro/crypto ladders. Keep the
+// base monotonic arb behavior unchanged for non-sports, but require sports
+// packages to survive a fresh book pull, deeper displayed depth, and worse
+// limit prices before sending separate FAK legs.
+const SPORTS_MIN_EDGE = Number(process.env.ARB_DAEMON_SPORTS_MIN_EDGE ?? 0.05);
+const SPORTS_MIN_AVAILABLE_SHARES = Number(process.env.ARB_DAEMON_SPORTS_MIN_AVAILABLE_SHARES ?? 50);
+const SPORTS_MAX_SPREAD = Number(process.env.ARB_DAEMON_SPORTS_MAX_SPREAD ?? MAX_SPREAD);
+const SPORTS_PRICE_SLIPPAGE = Number(process.env.ARB_DAEMON_SPORTS_PRICE_SLIPPAGE ?? 0.01);
 const NEAR_MISS_BUCKETS = [
   { label: "cost<=0.9995", cost: 0.9995 },
   { label: "cost<=1.0000", cost: 1.0000 },
@@ -441,6 +450,47 @@ function liveCandidate(base: Candidate, legs: LiveLegs): Candidate {
   return c;
 }
 
+function isSportsCandidate(candidate: Candidate): boolean {
+  return candidate.asset === "NBA" || candidate.eventSlug.startsWith("nba-");
+}
+
+function minEdgeFor(candidate: Candidate): number {
+  return isSportsCandidate(candidate) ? SPORTS_MIN_EDGE : MIN_EDGE;
+}
+
+function minAvailableSharesFor(candidate: Candidate): number {
+  return isSportsCandidate(candidate) ? SPORTS_MIN_AVAILABLE_SHARES : MIN_AVAILABLE_SHARES;
+}
+
+function maxSpreadFor(candidate: Candidate): number {
+  return isSportsCandidate(candidate) ? SPORTS_MAX_SPREAD : MAX_SPREAD;
+}
+
+function withSportsExecutionPrices(candidate: Candidate, broadAsk: number, narrowNoAsk: number): Candidate {
+  const c = structuredClone(candidate);
+  c.broad.yesBook.ask = Math.min(0.99, Math.ceil((broadAsk + SPORTS_PRICE_SLIPPAGE) * 1000) / 1000);
+  c.narrow.noBook.ask = Math.min(0.99, Math.ceil((narrowNoAsk + SPORTS_PRICE_SLIPPAGE) * 1000) / 1000);
+  c.packageCost = c.broad.yesBook.ask + c.narrow.noBook.ask;
+  c.lockedEdge = 1 - c.packageCost;
+  c.availableSize = Math.min(c.broad.yesBook.askSize, c.narrow.noBook.askSize);
+  c.maxSpread = Math.max(c.broad.yesBook.spread, c.narrow.yesBook.spread);
+  c.foundAt = new Date().toISOString();
+  return c;
+}
+
+async function freshSportsCandidate(candidate: Candidate): Promise<Candidate> {
+  const [broadYes, narrowNo, narrowYes] = await Promise.all([
+    fetchBook(arbConfig, candidate.broad.yesTokenId),
+    fetchBook(arbConfig, candidate.narrow.noTokenId),
+    fetchBook(arbConfig, candidate.narrow.yesTokenId),
+  ]);
+  const c = structuredClone(candidate);
+  c.broad.yesBook = broadYes;
+  c.narrow.noBook = narrowNo;
+  c.narrow.yesBook = narrowYes;
+  return withSportsExecutionPrices(c, broadYes.ask, narrowNo.ask);
+}
+
 function requiredLiveMinShares(candidate: Candidate): number {
   const broadNotionalShares = candidate.broad.yesBook.ask > 0
     ? Math.ceil((MIN_MARKETABLE_BUY_USD / candidate.broad.yesBook.ask) * 100) / 100
@@ -457,20 +507,17 @@ function requiredLiveMinShares(candidate: Candidate): number {
   );
 }
 
-function passesDynamicGate(legs: LiveLegs): boolean {
-  const packageCost = legs.broadYesAsk + legs.narrowNoAsk;
-  const lockedEdge = 1 - packageCost;
-  const availableSize = Math.min(legs.broadYesAskSize, legs.narrowNoAskSize);
-  const maxSpread = Math.max(legs.broadSpread, legs.narrowSpread);
-  if (lockedEdge + EPSILON < MIN_EDGE) return false;
-  if (maxSpread - EPSILON > MAX_SPREAD) return false;
-  if (availableSize + EPSILON < MIN_AVAILABLE_SHARES) return false;
+function passesDynamicGate(candidate: Candidate): boolean {
+  const minShares = Math.max(minAvailableSharesFor(candidate), requiredLiveMinShares(candidate));
+  if (candidate.lockedEdge + EPSILON < minEdgeFor(candidate)) return false;
+  if (candidate.maxSpread - EPSILON > maxSpreadFor(candidate)) return false;
+  if (candidate.availableSize + EPSILON < minShares) return false;
   return true;
 }
 
 function recordNearMiss(candidate: Candidate) {
   nearMissObservations += 1;
-  const minShares = requiredLiveMinShares(candidate);
+  const minShares = Math.max(requiredLiveMinShares(candidate), minAvailableSharesFor(candidate));
   const sample: NearMissSample = {
     packageId: candidate.packageId,
     eventSlug: candidate.eventSlug,
@@ -482,12 +529,12 @@ function recordNearMiss(candidate: Candidate) {
     availableSize: candidate.availableSize,
     maxSpread: candidate.maxSpread,
     minShares,
-    edgeOk: candidate.lockedEdge + EPSILON >= MIN_EDGE,
-    spreadOk: candidate.maxSpread - EPSILON <= MAX_SPREAD,
-    sizeOk: candidate.availableSize + EPSILON >= Math.max(MIN_AVAILABLE_SHARES, minShares),
-    executableGate: candidate.lockedEdge + EPSILON >= MIN_EDGE
-      && candidate.maxSpread - EPSILON <= MAX_SPREAD
-      && candidate.availableSize + EPSILON >= Math.max(MIN_AVAILABLE_SHARES, minShares),
+    edgeOk: candidate.lockedEdge + EPSILON >= minEdgeFor(candidate),
+    spreadOk: candidate.maxSpread - EPSILON <= maxSpreadFor(candidate),
+    sizeOk: candidate.availableSize + EPSILON >= Math.max(minAvailableSharesFor(candidate), minShares),
+    executableGate: candidate.lockedEdge + EPSILON >= minEdgeFor(candidate)
+      && candidate.maxSpread - EPSILON <= maxSpreadFor(candidate)
+      && candidate.availableSize + EPSILON >= Math.max(minAvailableSharesFor(candidate), minShares),
   };
   const prev = nearMissBestByPackage.get(candidate.packageId);
   if (!prev || sample.cost < prev.cost) nearMissBestByPackage.set(candidate.packageId, sample);
@@ -580,7 +627,29 @@ async function tryExecute(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
   const packageRows = readJsonArray<LivePackage>(PACKAGES_PATH);
   if (openPackageCount(packageRows) >= MAX_OPEN_PACKAGES) return;
 
-  const c = liveCandidate(pkg.base, legs);
+  let c = liveCandidate(pkg.base, legs);
+  if (isSportsCandidate(c)) {
+    try {
+      c = await freshSportsCandidate(c);
+    } catch (err: any) {
+      const now = Date.now();
+      const last = lastSkipLogAt.get(pkg.key) ?? 0;
+      if (now - last >= SKIP_LOG_THROTTLE_MS) {
+        lastSkipLogAt.set(pkg.key, now);
+        log(`skip ${pkg.key}: sports_preflight_failed ${err?.message ?? String(err)}`);
+      }
+      return;
+    }
+    if (!passesDynamicGate(c)) {
+      const now = Date.now();
+      const last = lastSkipLogAt.get(pkg.key) ?? 0;
+      if (now - last >= SKIP_LOG_THROTTLE_MS) {
+        lastSkipLogAt.set(pkg.key, now);
+        log(`skip ${pkg.key}: sports_preflight_gate edge=${(c.lockedEdge * 100).toFixed(2)}c size=${c.availableSize.toFixed(2)} spread=${c.maxSpread.toFixed(4)} cost=${c.packageCost.toFixed(4)}`);
+      }
+      return;
+    }
+  }
   const spendableUsd = balanceKnown ? Math.min(cachedFunderBalance, cachedFunderAllowance) : Number.POSITIVE_INFINITY;
   const sized = sizeForCandidate(c, packageRows, spendableUsd);
   if (sized.reason) {
@@ -618,7 +687,7 @@ async function executeLive(pkg: WatchPackage, c: Candidate): Promise<void> {
   const record = packageRecord(c, reconcileAddress, shares, false);
   const orders: LiveOrder[] = [];
 
-  log(`ARB ${pkg.key} edge=${(c.lockedEdge * 100).toFixed(2)}c cost=${c.packageCost.toFixed(4)} shares=${shares.toFixed(2)} size=${c.availableSize.toFixed(2)}`);
+  log(`ARB ${pkg.key} edge=${(c.lockedEdge * 100).toFixed(2)}c cost=${c.packageCost.toFixed(4)} shares=${shares.toFixed(2)} size=${c.availableSize.toFixed(2)}${isSportsCandidate(c) ? " sports_preflight=1" : ""}`);
 
   record.status = "leg1_submitted";
   record.updatedAt = new Date().toISOString();
@@ -683,7 +752,7 @@ async function executeLive(pkg: WatchPackage, c: Candidate): Promise<void> {
   record.actualCost = (leg1Filled * c.broad.yesBook.ask) + (leg2Filled * c.narrow.noBook.ask);
   record.guaranteedFloor = matched;
   record.lockedFloorProfit = matched * c.lockedEdge;
-  record.jackpotPayout = matched * 2;
+  record.jackpotPayout = matched * c.jackpotPayoutPerShare;
 
   // The matched portion is a genuine risk-free package and is booked complete.
   // Any excess on the over-filled leg is a NAKED leg: instead of holding it to a
@@ -1055,7 +1124,7 @@ function evaluateToken(tokenId: string) {
     if (!legs) continue;
     const candidate = liveCandidate(pkg.base, legs);
     recordNearMiss(candidate);
-    if (!passesDynamicGate(legs)) continue;
+    if (!passesDynamicGate(candidate)) continue;
     void tryExecute(pkg, legs);
   }
 }
