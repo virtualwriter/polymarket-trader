@@ -1,5 +1,5 @@
 {
-  "cash": 90.30662102478335,
+  "cash": 89.30662102478335,
   "positions": [
     {
       "id": "MA-1780403314728-llno",
@@ -51,7 +51,7 @@
         }
       ],
       "entryUnderlyingPrice": 78.905,
-      "currentUnderlyingPrice": 62.245,
+      "currentUnderlyingPrice": 62.516,
       "peakPnlPct": 0,
       "fundingPnlAccrued": 0
     },
@@ -105,7 +105,7 @@
         }
       ],
       "entryUnderlyingPrice": 72.839,
-      "currentUnderlyingPrice": 62.245,
+      "currentUnderlyingPrice": 62.516,
       "peakPnlPct": 0.9045226130653273,
       "fundingPnlAccrued": 0
     },
@@ -159,7 +159,7 @@
         }
       ],
       "entryUnderlyingPrice": 72.839,
-      "currentUnderlyingPrice": 62.245,
+      "currentUnderlyingPrice": 62.516,
       "peakPnlPct": 0.804020100502502,
       "fundingPnlAccrued": 0
     },
@@ -213,7 +213,7 @@
         }
       ],
       "entryUnderlyingPrice": 1658,
-      "currentUnderlyingPrice": 1557.1,
+      "currentUnderlyingPrice": 1558.1,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-05T07:28:36.353Z",
         "source": "clob_live",
@@ -303,7 +303,7 @@
         }
       ],
       "entryUnderlyingPrice": 4466,
-      "currentUnderlyingPrice": 4308.3,
+      "currentUnderlyingPrice": 4310.8,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-05T12:28:37.073Z",
         "source": "clob_live",
@@ -350,7 +350,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 244.46,
-      "currentPrice": 244.6,
+      "currentPrice": 244.72,
       "currentUnderlyingPrice": 245.73,
       "entryUnderlyingPrice": 245.73,
       "size": 1,
@@ -364,8 +364,8 @@
       "instrumentType": "hl_perp",
       "instrumentId": "AMZN",
       "instrumentLabel": "HL AMZN perp",
-      "fundingPnlAccrued": -0.0000013333333333333364,
-      "peakPnlPct": 0.08105535187517861
+      "fundingPnlAccrued": -0.0001620011415525114,
+      "peakPnlPct": 0.2207617006190483
     },
     {
       "id": "T-1780720116500-kjbx",
@@ -374,8 +374,8 @@
       "venue": "spot",
       "direction": "long",
       "entryPrice": 60008,
-      "currentPrice": 60811,
-      "currentUnderlyingPrice": 60811,
+      "currentPrice": 60800,
+      "currentUnderlyingPrice": 60800,
       "entryUnderlyingPrice": 60008,
       "size": 1,
       "leverage": 1,
@@ -397,8 +397,8 @@
       "venue": "hyperliquid",
       "direction": "short",
       "entryPrice": 4320,
-      "currentPrice": 4308,
-      "currentUnderlyingPrice": 4308,
+      "currentPrice": 4311,
+      "currentUnderlyingPrice": 4311,
       "entryUnderlyingPrice": 4320,
       "size": 1,
       "leverage": 1,
@@ -411,13 +411,101 @@
       "instrumentType": "hl_perp",
       "instrumentId": "GOLD",
       "instrumentLabel": "HL GOLD perp",
-      "fundingPnlAccrued": -0.000014271917808219182,
+      "fundingPnlAccrued": -0.0000017719178082191826,
       "peakPnlPct": 0.33752314814814816
+    },
+    {
+      "id": "MA-1780756122347-no4t",
+      "openedAt": "2026-06-06T14:28:42.347Z",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "long",
+      "entryPrice": 0.999,
+      "currentPrice": 0.999,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "MONOTONIC_ARB",
+      "hypothesisId": null,
+      "thesis": "[MONOTONIC ARB LIVE] Buy YES on broader above strike 500000 @ 0.0160 and buy NO on narrower above strike 1000000 @ 0.9830. Gross locked edge 0.10c per paired share before fees/slippage; min payout $1.00 >= cost $0.9990 (risk-free). Threads the strike gap for the ~$1 jackpot payout.",
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDate": "2027-01-01T05:00:00Z",
+      "instrumentType": "pm_package",
+      "instrumentId": "what-price-will-bitcoin-hit-before-2027::YES-1393068+NO-1393070",
+      "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — monotonic arb package (LIVE) — YES 500000 / NO 1000000",
+      "packageLegs": [
+        {
+          "role": "broad_yes",
+          "instrumentType": "pm_yes",
+          "instrumentId": "what-price-will-bitcoin-hit-before-2027::1393068",
+          "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — YES — Will Bitcoin reach $500,000 by December 31, 2026?",
+          "entryPrice": 0.016,
+          "strike": 500000,
+          "direction": "above",
+          "yesBid": 0.015,
+          "yesAsk": 0.016,
+          "yesBidSize": 1841.35,
+          "yesAskSize": 63704.67,
+          "startDate": "2026-02-18T17:22:25.938869Z"
+        },
+        {
+          "role": "narrow_no",
+          "instrumentType": "pm_no",
+          "instrumentId": "what-price-will-bitcoin-hit-before-2027::1393070",
+          "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $1,000,000 by December 31, 2026?",
+          "entryPrice": 0.983,
+          "strike": 1000000,
+          "direction": "above",
+          "yesBid": 0.017,
+          "yesAsk": 0.019,
+          "yesBidSize": 3777.24,
+          "yesAskSize": 8.17,
+          "startDate": "2026-02-18T17:22:18.045847Z"
+        }
+      ],
+      "entryUnderlyingPrice": 60800,
+      "currentUnderlyingPrice": 60800,
+      "entryBookSnapshot": {
+        "capturedAt": "2026-06-06T14:28:42.778Z",
+        "source": "clob_live",
+        "packageCost": 0.999,
+        "lockedEdgeCents": 0.10000000000000009,
+        "minLegLiquidity": 114504.15732,
+        "packageAvailableSize": 3777.24,
+        "legs": [
+          {
+            "role": "broad_yes",
+            "marketId": "1393068",
+            "yesBid": 0.015,
+            "yesAsk": 0.016,
+            "yesBidSize": 1841.35,
+            "yesAskSize": 63704.67,
+            "noBid": 0.984,
+            "noAsk": 0.985,
+            "noBidSize": 63704.67,
+            "noAskSize": 1841.35,
+            "liquidity": 149691.25825
+          },
+          {
+            "role": "narrow_no",
+            "marketId": "1393070",
+            "yesBid": 0.017,
+            "yesAsk": 0.019,
+            "yesBidSize": 3777.24,
+            "yesAskSize": 8.17,
+            "noBid": 0.981,
+            "noAsk": 0.983,
+            "noBidSize": 8.17,
+            "noAskSize": 3777.24,
+            "liquidity": 114504.15732
+          }
+        ]
+      }
     }
   ],
   "totalRealizedPnl": 0.8030999999999993,
   "totalTrades": 189,
   "winCount": 94,
   "lossCount": 95,
-  "lastUpdated": "2026-06-06T12:29:28.545Z"
+  "lastUpdated": "2026-06-06T14:28:42.990Z"
 }
