@@ -148,6 +148,7 @@ const ORPHAN_LADDER_REFRESH_MS = Number(process.env.ARB_DAEMON_ORPHAN_LADDER_REF
 // unwind the dust.
 const ORPHAN_MIN_SHARES = Number(process.env.ARB_DAEMON_ORPHAN_MIN_SHARES ?? MIN_ORDER_SHARES);
 const DUST_EXIT_LIMIT_WAIT_MS = Number(process.env.ARB_DAEMON_DUST_EXIT_LIMIT_WAIT_MS ?? 5_000);
+const DUST_EXIT_RETRY_MS = Number(process.env.ARB_DAEMON_DUST_EXIT_RETRY_MS ?? 60_000);
 const ORPHANS_PATH = join(dirname(PACKAGES_PATH), "polymarket-live-orphans.json");
 
 type PriceLevels = { bids: Map<number, number>; asks: Map<number, number> };
@@ -240,6 +241,7 @@ const orphans = new Map<string, Orphan>();
 const orphanInFlight = new Set<string>();
 // orphan id -> last live-ladder refresh timestamp (throttles event re-fetch).
 const orphanLadderAt = new Map<string, number>();
+const dustExitAttemptAt = new Map<string, number>();
 // eventSlug -> cached freshly-fetched event ladder + quotes (shared across
 // orphans in the same event within ORPHAN_LADDER_REFRESH_MS).
 const orphanEventCache = new Map<string, { at: number; quotes: MarketQuote[] }>();
@@ -1114,6 +1116,8 @@ async function doCompletion(o: Orphan, pick: CompletionPick) {
 // better. Otherwise we leave the dust under the normal stop/completion watch.
 async function maybeTopUpDustAndExit(o: Orphan, reason: string): Promise<boolean> {
   if (!clob || DRY_RUN) return false;
+  const last = dustExitAttemptAt.get(o.id) ?? 0;
+  if (Date.now() - last < DUST_EXIT_RETRY_MS) return false;
   const client = clob.client;
   const book = await fetchBook(arbConfig, o.tokenId);
   if (o.shares + EPSILON >= book.minOrderSize) return false;
@@ -1131,6 +1135,7 @@ async function maybeTopUpDustAndExit(o: Orphan, reason: string): Promise<boolean
   if (book.bid + EPSILON < noLossSellPrice || book.bidSize + EPSILON < combinedShares) return false;
 
   o.attempts += 1;
+  dustExitAttemptAt.set(o.id, Date.now());
   log(`orphan ${o.id} DUST_EXIT (${reason}): limit top-up ${topUpShares} @ ${topUpPrice.toFixed(4)} then sell ${combinedShares} @ ${noLossSellPrice.toFixed(4)} avg=${avgCost.toFixed(6)}`);
   const before = await reconcileTokenBalance(reconcileAddress, o.tokenId);
   let buyResp: unknown;
