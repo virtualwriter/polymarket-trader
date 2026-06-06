@@ -146,6 +146,7 @@ const ORPHAN_LADDER_REFRESH_MS = Number(process.env.ARB_DAEMON_ORPHAN_LADDER_REF
 // Smallest residual orphan we bother completing/holding; below this we just
 // unwind the dust.
 const ORPHAN_MIN_SHARES = Number(process.env.ARB_DAEMON_ORPHAN_MIN_SHARES ?? MIN_ORDER_SHARES);
+const DUST_EXIT_MIN_MARKETABLE_BUY_USD = Number(process.env.ARB_DAEMON_DUST_EXIT_MIN_MARKETABLE_BUY_USD ?? MIN_MARKETABLE_BUY_USD);
 const ORPHANS_PATH = join(dirname(PACKAGES_PATH), "polymarket-live-orphans.json");
 
 type PriceLevels = { bids: Map<number, number>; asks: Map<number, number> };
@@ -1041,7 +1042,8 @@ async function processOrphan(o: Orphan) {
       return;
     }
     if (pick) await doCompletion(o, pick);
-    // else: complements exist but none positive-EV — keep holding (stop bounds risk).
+    else if (await maybeTopUpDustAndExit(o, "no_positive_completion")) return;
+    // else: complements exist but none positive-EV/no-loss dust exit — keep holding (stop bounds risk).
   } finally {
     orphanInFlight.delete(o.id);
   }
@@ -1103,6 +1105,97 @@ async function doCompletion(o: Orphan, pick: CompletionPick) {
     o.updatedAt = new Date().toISOString();
     saveOrphans();
   }
+}
+
+// If residual orphan dust is below the market's minimum SELL size, it cannot be
+// flattened directly. Top up the same token only when the top-up order is
+// CLOB-valid and the combined position can immediately sell at breakeven or
+// better. Otherwise we leave the dust under the normal stop/completion watch.
+async function maybeTopUpDustAndExit(o: Orphan, reason: string): Promise<boolean> {
+  if (!clob || DRY_RUN) return false;
+  const client = clob.client;
+  const book = await fetchBook(arbConfig, o.tokenId);
+  if (o.shares + EPSILON >= book.minOrderSize) return false;
+  if (!(book.ask > 0) || !(book.bid > 0)) return false;
+  const deficit = Math.max(0, book.minOrderSize - o.shares);
+  const buyMinByNotional = book.ask > 0
+    ? Math.ceil((DUST_EXIT_MIN_MARKETABLE_BUY_USD / book.ask) * 100_000) / 100_000
+    : Number.POSITIVE_INFINITY;
+  const minTopUp = Math.max(deficit, book.minOrderSize, buyMinByNotional);
+  const topUpShares = precisionSafeCompletionShares(book.ask, minTopUp, book.askSize);
+  if (!topUpShares) return false;
+
+  const combinedShares = roundShares(o.shares + topUpShares);
+  const avgCost = ((o.shares * o.fillPrice) + (topUpShares * book.ask)) / combinedShares;
+  const noLossSellPrice = Math.ceil((avgCost - EPSILON) * 1000) / 1000;
+  if (book.bid + EPSILON < noLossSellPrice || book.bidSize + EPSILON < combinedShares) return false;
+
+  o.attempts += 1;
+  log(`orphan ${o.id} DUST_EXIT (${reason}): top-up ${topUpShares} @ ${book.ask.toFixed(4)} then sell ${combinedShares} @ ${noLossSellPrice.toFixed(4)} avg=${avgCost.toFixed(6)}`);
+  const before = await reconcileTokenBalance(reconcileAddress, o.tokenId);
+  let buyResp: unknown;
+  try {
+    buyResp = await postFakBuy(client, o.tokenId, book.ask, topUpShares);
+    assertOrderResponse(buyResp, "dust_topup");
+  } catch (err: any) {
+    buyResp = { error: err?.message ?? String(err) };
+    log(`orphan ${o.id} dust top-up error: ${err?.message ?? String(err)}`);
+  }
+  await waitForFill(o.tokenId, FILL_WAIT_DAEMON_MS);
+  const afterBuy = await reconcileTokenBalance(reconcileAddress, o.tokenId);
+  const bought = roundShares(afterBuy - before);
+  const buyOrder: LiveOrder = {
+    packageId: o.packageId,
+    createdAt: new Date().toISOString(),
+    role: "completion",
+    tokenId: o.tokenId,
+    side: "BUY",
+    price: book.ask,
+    size: bought,
+    orderType: "FAK",
+    response: buyResp,
+  };
+  appendJsonArray(ORDERS_PATH, [buyOrder]);
+  if (bought <= 0) {
+    o.note = `dust top-up filled 0 (${reason})`;
+    o.updatedAt = new Date().toISOString();
+    saveOrphans();
+    return true;
+  }
+
+  const sellShares = roundShares(o.shares + bought);
+  let sellResp: unknown;
+  try {
+    sellResp = await postFakSell(client, o.tokenId, noLossSellPrice, sellShares);
+    assertOrderResponse(sellResp, "dust_exit");
+  } catch (err: any) {
+    sellResp = { error: err?.message ?? String(err) };
+    log(`orphan ${o.id} dust exit sell error: ${err?.message ?? String(err)}`);
+  }
+  await waitForFill(o.tokenId, FILL_WAIT_DAEMON_MS);
+  const afterSell = await reconcileTokenBalance(reconcileAddress, o.tokenId);
+  const sold = roundShares(afterBuy - afterSell);
+  const sellOrder: LiveOrder = {
+    packageId: o.packageId,
+    createdAt: new Date().toISOString(),
+    role: "unwind",
+    tokenId: o.tokenId,
+    side: "SELL",
+    price: noLossSellPrice,
+    size: sold,
+    orderType: "FAK",
+    response: sellResp,
+  };
+  appendJsonArray(ORDERS_PATH, [sellOrder]);
+
+  const realized = sold * noLossSellPrice - Math.min(sold, o.shares) * o.fillPrice - Math.max(0, sold - o.shares) * book.ask;
+  o.shares = roundShares(o.shares + bought - sold);
+  o.note = `dust_exit bought=${bought} sold=${sold} realized=${realized.toFixed(4)} (${reason})`;
+  if (o.shares + EPSILON < ORPHAN_MIN_SHARES) o.status = sold > 0 ? "unwound" : "stranded";
+  o.updatedAt = new Date().toISOString();
+  saveOrphans();
+  log(`orphan ${o.id} DUST_EXIT result bought=${bought} sold=${sold} realized=${realized.toFixed(4)} residual=${o.shares}`);
+  return true;
 }
 
 // FAK-sell the orphan to flatten it. Caller owns the orphanInFlight guard.
