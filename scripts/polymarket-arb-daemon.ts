@@ -58,7 +58,6 @@ import {
   POLYMARKET_FUNDER_ADDRESS,
   SKIP_VPN,
   SOCKS_PROXY,
-  openPackageCount,
   orderId,
   packageRecord,
   postFakBuy,
@@ -116,6 +115,7 @@ const SPORTS_MIN_AVAILABLE_SHARES = Number(process.env.ARB_DAEMON_SPORTS_MIN_AVA
 const SPORTS_MAX_SPREAD = Number(process.env.ARB_DAEMON_SPORTS_MAX_SPREAD ?? MAX_SPREAD);
 const SPORTS_PRICE_SLIPPAGE = Number(process.env.ARB_DAEMON_SPORTS_PRICE_SLIPPAGE ?? 0.01);
 const NON_SPORTS_EXCHANGE_MIN_BUFFER_SHARES = Number(process.env.ARB_DAEMON_NON_SPORTS_EXCHANGE_MIN_BUFFER_SHARES ?? 25);
+const STALE_SUBMITTED_MS = Number(process.env.ARB_DAEMON_STALE_SUBMITTED_MS ?? 600_000);
 const NEAR_MISS_BUCKETS = [
   { label: "cost<=0.9995", cost: 0.9995 },
   { label: "cost<=1.0000", cost: 1.0000 },
@@ -409,11 +409,27 @@ function refreshAlreadyOpen() {
   const rows = readJsonArray<LivePackage>(PACKAGES_PATH);
   const open = new Set<string>();
   for (const row of rows) {
-    if (["quoted", "leg1_submitted", "leg1_filled", "leg2_submitted", "package_complete"].includes(row.status)) {
+    if (isDaemonOpenPackage(row)) {
       open.add(row.packageId);
     }
   }
   alreadyOpen = open;
+}
+
+function isStaleSubmittedNoFill(row: LivePackage): boolean {
+  if (!["quoted", "leg1_submitted", "leg1_filled", "leg2_submitted"].includes(row.status)) return false;
+  if ((row.filledShares ?? 0) > 0 || (row.actualCost ?? 0) > 0) return false;
+  const updatedAt = Date.parse(row.updatedAt || row.createdAt);
+  return Number.isFinite(updatedAt) && Date.now() - updatedAt > STALE_SUBMITTED_MS;
+}
+
+function isDaemonOpenPackage(row: LivePackage): boolean {
+  if (isStaleSubmittedNoFill(row)) return false;
+  return ["quoted", "leg1_submitted", "leg1_filled", "leg2_submitted", "package_complete"].includes(row.status);
+}
+
+function daemonOpenPackageCount(rows: LivePackage[]): number {
+  return rows.filter(isDaemonOpenPackage).length;
 }
 
 // ─── Live candidate + evaluation ───
@@ -646,7 +662,7 @@ async function tryExecute(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
   }
 
   const packageRows = readJsonArray<LivePackage>(PACKAGES_PATH);
-  if (openPackageCount(packageRows) >= MAX_OPEN_PACKAGES) return;
+  if (daemonOpenPackageCount(packageRows) >= MAX_OPEN_PACKAGES) return;
 
   let c = liveCandidate(pkg.base, legs);
   if (isSportsCandidate(c)) {
