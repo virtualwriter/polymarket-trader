@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-06T03:28:39.261Z",
+  "generatedAt": "2026-06-06T04:28:36.498Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,33 +7,33 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 0.6268571428571428,
-      "confidence": 0.286814445187118,
-      "thesis": "AMZN HL funding -36.9% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 244.22,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
-    },
-    {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
       "strength": 0.33625000000000016,
-      "confidence": 0.1982866580846716,
+      "confidence": 0.1948588767632752,
       "thesis": "BTC P/C ratio 1.47 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 60719,
+      "entryPrice": 60008,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
+    },
+    {
+      "type": "FUNDING_EXTREME_SHORT",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "strength": 0.19971428571428568,
+      "confidence": 0.09137798413208545,
+      "thesis": "GOLD HL funding -22.0% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4318,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 7,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
