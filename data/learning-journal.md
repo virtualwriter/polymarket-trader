@@ -26217,3 +26217,39 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-06-06 18:29 UTC
+
+**Portfolio:** $98.31 total | Cash $90.31 | 8 open | P&L $0.8029 | 49% win rate (190 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_spot = 60629 is -2.9 std devs from mean (75067.95 ± 4922.04)
+- [anomaly] btc_opt_fwd_90d = 61478 is -2.9 std devs from mean (75977.90 ± 5016.17)
+- [anomaly] btc_ibit_pc_ratio = 1.469 is 2.7 std devs from mean (0.67 ± 0.29)
+- [anomaly] btc_pm_iv = 56.5 is 2.6 std devs from mean (41.08 ± 5.84)
+- [anomaly] btc_pm_ev = 69062 is -2.6 std devs from mean (81751.20 ± 4812.78)
+
+**Blocked signal learning:**
+- Open blocked shadows: 72
+- Resolved blocked shadows: 547 (299 wins / 248 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 145/196 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 7/12 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 6/10 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=116 (34W/69L/13flat, 33.0% win-rate, sum $-2.6384, avg -2.27%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=159 (50W/92L/17flat, 35.2% win-rate, sum $-2.7196, avg -1.71%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG HOOD long via hyperliquid would have closed with thesis validated profitably (+0.74%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG MU long via hyperliquid would have closed with thesis validated profitably (+1.09%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG NVDA long via hyperliquid would have closed with thesis validated profitably (+1.71%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG MRVL long via hyperliquid would have closed with thesis validated profitably (+1.69%)
+
+**LLM analysis:**
+Today's data continues to show a risk-averse market with BTC stuck near 60k and open interest flat. The PC_RATIO_EXTREME_HIGH position on BTC is mildly positive (+1.03%) and the P/C ratio remains extremely elevated, so no thesis invalidation yet. The GOLD FUNDING_EXTREME_LONG short is +0.23% despite gold spot barely moving, as funding has collapsed from 34.9% to 5.48%. The sharp funding normalization is a positive sign for the short but the position is still within the mechanical hold window; I’ll monitor for potential early thesis validation if funding stays low and spot drifts lower. The monotonic arb packages are tracking as expected with tiny P&L moves, consistent with the premium-neutral forward expectation. No new signals are compelling enough to override the backlog of existing hypothesis tests. The relative-value heatmap shows some cheap ETH upside contracts, but the one-touch NO guidelines restrict new entries to the most liquid, tight-spread securities. I’ll continue to let existing positions run and wait for clearer regime shifts.
+
+---
+
