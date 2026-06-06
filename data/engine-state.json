@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-06T11:28:42.252Z",
+  "generatedAt": "2026-06-06T12:28:42.084Z",
   "dataFreshness": {
-    "valuationRows": 840,
-    "latestValuationAt": "2026-06-06T11",
-    "macroRows": 840,
+    "valuationRows": 841,
+    "latestValuationAt": "2026-06-06T12",
+    "macroRows": 841,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-06T11"
+    "latestInstrumentSnapshotAt": "2026-06-06T12"
   },
   "portfolio": {
     "cash": 90.3066,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.8031,
     "totalTrades": 189,
     "winRatePct": 49.7,
-    "unrealizedPnl": 0.0261
+    "unrealizedPnl": 0.0298
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0,
       "currentPrice": 0.99,
-      "underlyingPrice": 62.054,
+      "underlyingPrice": 62.245,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -38,7 +38,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0.8,
       "currentPrice": 1.003,
-      "underlyingPrice": 62.054,
+      "underlyingPrice": 62.245,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -50,9 +50,9 @@
       "venue": "polymarket",
       "direction": "long",
       "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.7,
-      "currentPrice": 1.002,
-      "underlyingPrice": 62.054,
+      "pnlPct": 0.6,
+      "currentPrice": 1.001,
+      "underlyingPrice": 62.245,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -66,7 +66,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0.1,
       "currentPrice": 1,
-      "underlyingPrice": 1559.7,
+      "underlyingPrice": 1557.1,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -82,7 +82,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": -0.2,
       "currentPrice": 0.996,
-      "underlyingPrice": 4308,
+      "underlyingPrice": 4308.3,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -96,8 +96,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -0.2,
-      "currentPrice": 243.96,
+      "pnlPct": 0.06,
+      "currentPrice": 244.6,
       "underlyingPrice": 245.73,
       "targetPct": 4,
       "stopPct": 2,
@@ -114,9 +114,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 1.13,
-      "currentPrice": 60687,
-      "underlyingPrice": 60687,
+      "pnlPct": 1.34,
+      "currentPrice": 60811,
+      "underlyingPrice": 60811,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -282,17 +282,17 @@
   ],
   "blockedSummary": {
     "openCount": 69,
-    "resolvedCount": 539,
+    "resolvedCount": 540,
     "wouldHaveWon": 293,
-    "wouldHaveLost": 246,
+    "wouldHaveLost": 247,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "blocked": 192,
-        "resolved": 188,
+        "blocked": 193,
+        "resolved": 189,
         "wouldHaveWon": 139,
-        "wouldHaveLost": 49,
-        "avgPnlPct": 0.82
+        "wouldHaveLost": 50,
+        "avgPnlPct": 0.81
       },
       {
         "signalType": "MONOTONIC_ARB",
@@ -352,17 +352,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-        "asset": "LITE",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "blockedReason": "weekend_hl_funding_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 2.58,
-        "resolvedAt": "2026-06-06T10:28:40.064Z"
-      },
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
         "asset": "HIMS",
@@ -448,6 +437,17 @@
         "closeReason": "thesis_validated_profitable",
         "pnlPct": 1.27,
         "resolvedAt": "2026-06-06T11:28:42.071Z"
+      },
+      {
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "asset": "RIVN",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "blockedReason": "weekend_hl_funding_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.28,
+        "resolvedAt": "2026-06-06T12:28:41.934Z"
       }
     ],
     "openQualityWarnings": [
