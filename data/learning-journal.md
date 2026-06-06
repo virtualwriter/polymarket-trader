@@ -25812,3 +25812,42 @@ Current positions are in early stages. BTC P/C ratio extreme high long is +1.37%
 
 ---
 
+### 2026-06-06 06:29 UTC
+
+**Portfolio:** $98.31 total | Cash $90.31 | 8 open | P&L $0.8031 | 50% win rate (189 trades)
+
+**Opened 1 positions:**
+- GOLD short @ $4320 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_spot = 61013 is -3.0 std devs from mean (75256.18 ± 4671.21)
+- [anomaly] btc_opt_fwd_90d = 61790 is -3.0 std devs from mean (76168.92 ± 4763.11)
+- [anomaly] btc_pm_ev = 68393 is -2.9 std devs from mean (81924.24 ± 4600.35)
+- [anomaly] btc_ibit_pc_ratio = 1.469 is 2.9 std devs from mean (0.66 ± 0.28)
+- [anomaly] btc_pm_iv = 55.3 is 2.6 std devs from mean (40.88 ± 5.62)
+
+**Blocked signal learning:**
+- Open blocked shadows: 69
+- Resolved blocked shadows: 519 (276 wins / 243 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 123/171 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 7/12 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 6/10 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=116 (34W/69L/13flat, 33.0% win-rate, sum $-2.6384, avg -2.27%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=159 (50W/92L/17flat, 35.2% win-rate, sum $-2.7196, avg -1.71%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG LITE long via hyperliquid would have closed with thesis validated profitably (+7.68%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG NFLX long via hyperliquid would have closed with thesis validated profitably (+0.41%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG BABA long via hyperliquid would have closed with thesis validated profitably (+0.69%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG GOOGL long via hyperliquid would have closed with thesis validated profitably (+1.69%)
+
+**LLM analysis:**
+AMZN FUNDING_EXTREME_SHORT thesis faces a binary test: the funding normalized dramatically, yet the perp price barely budged. If the price doesn't follow within the hold window, the thesis may be invalid for this asset. Gold’s sharp drop and the PM settle EV collapse warn that the MONOTONIC_ARB gold package (MA-1780662516612-mf3w) may have risk if the bucket-ladder shifts further, though the arb structure is long-dated. BTC P/C ratio extreme long is performing as expected, with a quick +1.7% move. Overall, the market is showing increased stress in gold, but crypto is holding support.
+
+---
+
