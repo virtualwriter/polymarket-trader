@@ -1,5 +1,5 @@
 {
-  "cash": 90.34259775681069,
+  "cash": 88.34259775681069,
   "positions": [
     {
       "id": "MA-1780403314728-llno",
@@ -51,7 +51,7 @@
         }
       ],
       "entryUnderlyingPrice": 78.905,
-      "currentUnderlyingPrice": 65.377,
+      "currentUnderlyingPrice": 65.348,
       "peakPnlPct": 0,
       "fundingPnlAccrued": 0
     },
@@ -105,7 +105,7 @@
         }
       ],
       "entryUnderlyingPrice": 72.839,
-      "currentUnderlyingPrice": 65.377,
+      "currentUnderlyingPrice": 65.348,
       "peakPnlPct": 0.9045226130653273,
       "fundingPnlAccrued": 0
     },
@@ -159,7 +159,7 @@
         }
       ],
       "entryUnderlyingPrice": 72.839,
-      "currentUnderlyingPrice": 65.377,
+      "currentUnderlyingPrice": 65.348,
       "peakPnlPct": 0.804020100502502,
       "fundingPnlAccrued": 0
     },
@@ -170,7 +170,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.999,
-      "currentPrice": 1,
+      "currentPrice": 1.001,
       "size": 1,
       "leverage": 1,
       "signalType": "MONOTONIC_ARB",
@@ -213,7 +213,7 @@
         }
       ],
       "entryUnderlyingPrice": 1658,
-      "currentUnderlyingPrice": 1633.8,
+      "currentUnderlyingPrice": 1631,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-05T07:28:36.353Z",
         "source": "clob_live",
@@ -303,7 +303,7 @@
         }
       ],
       "entryUnderlyingPrice": 4466,
-      "currentUnderlyingPrice": 4323.4,
+      "currentUnderlyingPrice": 4325.2,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-05T12:28:37.073Z",
         "source": "clob_live",
@@ -350,7 +350,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.999,
-      "currentPrice": 1.001,
+      "currentPrice": 1,
       "size": 1,
       "leverage": 1,
       "signalType": "MONOTONIC_ARB",
@@ -393,7 +393,7 @@
         }
       ],
       "entryUnderlyingPrice": 60800,
-      "currentUnderlyingPrice": 62221,
+      "currentUnderlyingPrice": 62185,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-06T14:28:42.778Z",
         "source": "clob_live",
@@ -483,7 +483,7 @@
         }
       ],
       "entryUnderlyingPrice": 4307,
-      "currentUnderlyingPrice": 4323.4,
+      "currentUnderlyingPrice": 4325.2,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-06T21:28:36.794Z",
         "source": "clob_live",
@@ -530,8 +530,8 @@
       "venue": "hyperliquid",
       "direction": "short",
       "entryPrice": 4323,
-      "currentPrice": 4323,
-      "currentUnderlyingPrice": 4323,
+      "currentPrice": 4325,
+      "currentUnderlyingPrice": 4325,
       "entryUnderlyingPrice": 4323,
       "size": 1,
       "leverage": 1,
@@ -544,13 +544,124 @@
       "instrumentType": "hl_perp",
       "instrumentId": "GOLD",
       "instrumentLabel": "HL GOLD perp",
-      "fundingPnlAccrued": 0.000012499999999999999,
+      "fundingPnlAccrued": 0.00001875,
       "peakPnlPct": 0.09715475364329905
+    },
+    {
+      "id": "MA-1780856911587-wz2s",
+      "openedAt": "2026-06-07T18:28:31.587Z",
+      "asset": "ETH",
+      "venue": "polymarket",
+      "direction": "long",
+      "entryPrice": 0.999,
+      "currentPrice": 0.999,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "MONOTONIC_ARB",
+      "hypothesisId": null,
+      "thesis": "[MONOTONIC ARB LIVE] Buy YES on broader above strike 2800 @ 0.0050 and buy NO on narrower above strike 3000 @ 0.9940. Gross locked edge 0.10c per paired share before fees/slippage; min payout $1.00 >= cost $0.9990 (risk-free). Threads the strike gap for the ~$1 jackpot payout.",
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDate": "2026-07-01T04:00:00Z",
+      "instrumentType": "pm_package",
+      "instrumentId": "what-price-will-ethereum-hit-in-june-2026::YES-2410581+NO-2410580",
+      "instrumentLabel": "what-price-will-ethereum-hit-in-june-2026 — monotonic arb package (LIVE) — YES 2800 / NO 3000",
+      "packageLegs": [
+        {
+          "role": "broad_yes",
+          "instrumentType": "pm_yes",
+          "instrumentId": "what-price-will-ethereum-hit-in-june-2026::2410581",
+          "instrumentLabel": "what-price-will-ethereum-hit-in-june-2026 — YES — Will Ethereum reach $2,800 in June?",
+          "entryPrice": 0.005,
+          "strike": 2800,
+          "direction": "above",
+          "yesBid": 0.002,
+          "yesAsk": 0.005,
+          "yesBidSize": 9127.58,
+          "yesAskSize": 320,
+          "startDate": "2026-06-01T14:42:38.363011Z"
+        },
+        {
+          "role": "narrow_no",
+          "instrumentType": "pm_no",
+          "instrumentId": "what-price-will-ethereum-hit-in-june-2026::2410580",
+          "instrumentLabel": "what-price-will-ethereum-hit-in-june-2026 — NO — Will Ethereum reach $3,000 in June?",
+          "entryPrice": 0.994,
+          "strike": 3000,
+          "direction": "above",
+          "yesBid": 0.006,
+          "yesAsk": 0.009,
+          "yesBidSize": 119.99,
+          "yesAskSize": 130,
+          "startDate": "2026-06-01T14:41:18.915464Z"
+        }
+      ],
+      "entryUnderlyingPrice": 1631,
+      "currentUnderlyingPrice": 1631,
+      "entryBookSnapshot": {
+        "capturedAt": "2026-06-07T18:28:31.932Z",
+        "source": "clob_live",
+        "packageCost": 0.999,
+        "lockedEdgeCents": 0.10000000000000009,
+        "minLegLiquidity": 33245.79184,
+        "packageAvailableSize": 119.99,
+        "legs": [
+          {
+            "role": "broad_yes",
+            "marketId": "2410581",
+            "yesBid": 0.002,
+            "yesAsk": 0.005,
+            "yesBidSize": 9127.58,
+            "yesAskSize": 320,
+            "noBid": 0.995,
+            "noAsk": 0.998,
+            "noBidSize": 320,
+            "noAskSize": 9127.58,
+            "liquidity": 33245.79184
+          },
+          {
+            "role": "narrow_no",
+            "marketId": "2410580",
+            "yesBid": 0.006,
+            "yesAsk": 0.009,
+            "yesBidSize": 119.99,
+            "yesAskSize": 130,
+            "noBid": 0.991,
+            "noAsk": 0.994,
+            "noBidSize": 130,
+            "noAskSize": 119.99,
+            "liquidity": 58133.36789
+          }
+        ]
+      }
+    },
+    {
+      "id": "T-1780856912116-beqg",
+      "openedAt": "2026-06-07T18:28:32.116Z",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 245.45,
+      "currentPrice": 245.45,
+      "currentUnderlyingPrice": 245.73,
+      "entryUnderlyingPrice": 245.73,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "hypothesisId": null,
+      "thesis": "AMZN HL funding -56.2% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDate": "2026-06-14T18:28:32.116Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "AMZN",
+      "instrumentLabel": "HL AMZN perp",
+      "fundingPnlAccrued": 0
     }
   ],
-  "totalRealizedPnl": 0.8390713246320267,
+  "totalRealizedPnl": 0.8390999999999993,
   "totalTrades": 193,
   "winCount": 97,
   "lossCount": 96,
-  "lastUpdated": "2026-06-07T17:29:24.950Z"
+  "lastUpdated": "2026-06-07T18:28:32.118Z"
 }

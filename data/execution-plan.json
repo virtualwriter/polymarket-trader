@@ -1,24 +1,26 @@
 {
-  "generatedAt": "2026-06-07T17:29:24.939Z",
+  "generatedAt": "2026-06-07T18:28:32.114Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
+  "llmCloses": [],
+  "entrySignals": [
     {
-      "action": "close",
-      "positionId": "T-1780784945591-6bxo",
+      "type": "FUNDING_EXTREME_SHORT",
       "asset": "AMZN",
       "venue": "hyperliquid",
       "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "amzn_hl_funding_ann"
-      ],
-      "thesis": "AMZN funding has normalized from -47.9% (extreme) to +8.72%, well above the -15% entry threshold. The original crowded-short reversal signal is no longer present; closing to free capital."
-    }
-  ],
-  "entrySignals": [
+      "strength": 1,
+      "confidence": 0.4568847417980948,
+      "thesis": "AMZN HL funding -56.2% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 245.45,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 7,
+      "leverage": 1
+    },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "BTC",
@@ -28,7 +30,7 @@
       "confidence": 0.19295035774878394,
       "thesis": "BTC P/C ratio 1.47 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 62221,
+      "entryPrice": 62185,
       "targetPct": 6,
       "stopPct": 1.5,
       "expiryDays": 21
@@ -38,6 +40,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
