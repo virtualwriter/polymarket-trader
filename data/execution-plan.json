@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-07T10:30:17.208Z",
+  "generatedAt": "2026-06-07T12:28:41.828Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -13,9 +13,9 @@
       "direction": "long",
       "strength": 1,
       "confidence": 0.45557868782969135,
-      "thesis": "AMZN HL funding -111.2% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "thesis": "AMZN HL funding -92.5% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 245.85,
+      "entryPrice": 245.12,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 7,
@@ -30,27 +30,16 @@
       "confidence": 0.19295035774878394,
       "thesis": "BTC P/C ratio 1.47 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 62482,
+      "entryPrice": 61931,
       "targetPct": 6,
       "stopPct": 1.5,
       "expiryDays": 21
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "buy",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "thesis": "PC_RATIO_EXTREME_HIGH signal: BTC IBIT put/call ratio at 1.469 (2.6 std devs above mean), indicating extreme bearish positioning. Contrarian long entry per historically positive signal (13/24 wins, avg pnl +0.22%)."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
