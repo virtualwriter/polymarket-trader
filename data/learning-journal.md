@@ -26957,3 +26957,39 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-06-07 19:28 UTC
+
+**Portfolio:** $98.34 total | Cash $88.34 | 10 open | P&L $0.8391 | 50% win rate (193 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = 508.51 is 6.7 std devs from mean since 2026-04-28 (-19.94 ± 78.72)
+- [anomaly] amzn_hl_funding_ann = -107.59 is -5.3 std devs from mean (12.32 ± 22.79)
+- [anomaly] btc_opt_iv_30d = 56.1 is 3.8 std devs from mean (38.43 ± 4.67)
+- [anomaly] gold_hl_funding_ann = -71.14 is -2.9 std devs from mean (6.17 ± 26.22)
+- [anomaly] btc_spot = 61330 is -2.5 std devs from mean (74757.55 ± 5268.09)
+
+**Blocked signal learning:**
+- Open blocked shadows: 79
+- Resolved blocked shadows: 588 (333 wins / 255 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 174/230 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 7/12 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 6/10 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=116 (34W/69L/13flat, 33.0% win-rate, sum $-2.6384, avg -2.27%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=159 (50W/92L/17flat, 35.2% win-rate, sum $-2.7196, avg -1.71%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG TSLA long via hyperliquid would have closed with thesis validated profitably (+3.84%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG COIN long via hyperliquid would have closed with thesis validated profitably (+4.18%)
+- ✅ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG MU long via hyperliquid would have hit target (+3.07%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-3.16%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (3 recurring signals seen within 6h); 2.0h since last call; daily budget 7/12; next scheduled 2026-06-07T21:28:36.848Z). Mechanical cycle ran normally._
+
+---
+
