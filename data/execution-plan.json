@@ -1,11 +1,26 @@
 {
-  "generatedAt": "2026-06-07T09:30:22.694Z",
+  "generatedAt": "2026-06-07T10:30:17.208Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
   "entrySignals": [
+    {
+      "type": "FUNDING_EXTREME_SHORT",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "strength": 1,
+      "confidence": 0.45557868782969135,
+      "thesis": "AMZN HL funding -111.2% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 245.85,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 7,
+      "leverage": 1
+    },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "BTC",
@@ -15,25 +30,10 @@
       "confidence": 0.19295035774878394,
       "thesis": "BTC P/C ratio 1.47 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 62622,
+      "entryPrice": 62482,
       "targetPct": 6,
       "stopPct": 1.5,
       "expiryDays": 21
-    },
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.05714285714285714,
-      "confidence": 0.030697817058287457,
-      "thesis": "GOLD HL funding 17.0% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4329,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
@@ -41,10 +41,10 @@
     {
       "instruction": {
         "action": "buy",
-        "asset": "HYPE",
-        "venue": "hyperliquid",
+        "asset": "BTC",
+        "venue": "spot",
         "direction": "long",
-        "thesis": "H-521 conditions met: HYPE OI in top 15% of 24h, spot within 6% of 7d high, funding normalized, breakout continuation expected."
+        "thesis": "PC_RATIO_EXTREME_HIGH signal: BTC IBIT put/call ratio at 1.469 (2.6 std devs above mean), indicating extreme bearish positioning. Contrarian long entry per historically positive signal (13/24 wins, avg pnl +0.22%)."
       },
       "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
     }
