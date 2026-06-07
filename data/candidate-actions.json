@@ -1,8 +1,23 @@
 {
-  "generatedAt": "2026-06-07T13:28:33.880Z",
+  "generatedAt": "2026-06-07T14:28:32.943Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.47914285714285715,
+      "confidence": 0.25740119603374034,
+      "thesis": "GOLD HL funding 31.8% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4323,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
+    },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "BTC",
@@ -12,40 +27,10 @@
       "confidence": 0.19295035774878394,
       "thesis": "BTC P/C ratio 1.47 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 61763,
+      "entryPrice": 62117,
       "targetPct": 6,
       "stopPct": 1.5,
       "expiryDays": 21
-    },
-    {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 0.2671428571428572,
-      "confidence": 0.12170459232021756,
-      "thesis": "AMZN HL funding -24.4% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 244.94,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
-    },
-    {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 0.10914285714285715,
-      "confidence": 0.04972315964312632,
-      "thesis": "GOLD HL funding -18.8% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4314,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
     }
   ],
   "llmCloseEligibility": [
@@ -58,10 +43,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 121,
-      "hoursToExpiry": 4983.52,
+      "hoursOpen": 122,
+      "hoursToExpiry": 4982.52,
       "plannedHoldHours": 5104.52,
-      "elapsedHoldPct": 0.0237,
+      "elapsedHoldPct": 0.0239,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -74,10 +59,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 91,
-      "hoursToExpiry": 566.52,
+      "hoursOpen": 92,
+      "hoursToExpiry": 565.52,
       "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0.1384,
+      "elapsedHoldPct": 0.1399,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -90,10 +75,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 91,
-      "hoursToExpiry": 566.52,
+      "hoursOpen": 92,
+      "hoursToExpiry": 565.52,
       "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0.1384,
+      "elapsedHoldPct": 0.1399,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -108,10 +93,10 @@
       "evidenceColumns": [
         "eth_spot"
       ],
-      "hoursOpen": 54,
-      "hoursToExpiry": 566.52,
+      "hoursOpen": 55,
+      "hoursToExpiry": 565.52,
       "plannedHoldHours": 620.52,
-      "elapsedHoldPct": 0.087,
+      "elapsedHoldPct": 0.0886,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -126,10 +111,10 @@
       "evidenceColumns": [
         "gold_gc_spot"
       ],
-      "hoursOpen": 49,
-      "hoursToExpiry": 556.02,
+      "hoursOpen": 50,
+      "hoursToExpiry": 555.02,
       "plannedHoldHours": 605.02,
-      "elapsedHoldPct": 0.081,
+      "elapsedHoldPct": 0.0826,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -144,10 +129,10 @@
       "evidenceColumns": [
         "btc_spot"
       ],
-      "hoursOpen": 23,
-      "hoursToExpiry": 4983.52,
+      "hoursOpen": 24,
+      "hoursToExpiry": 4982.52,
       "plannedHoldHours": 5006.52,
-      "elapsedHoldPct": 0.0046,
+      "elapsedHoldPct": 0.0048,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -162,10 +147,10 @@
       "evidenceColumns": [
         "gold_gc_spot"
       ],
-      "hoursOpen": 16,
-      "hoursToExpiry": 556.02,
+      "hoursOpen": 17,
+      "hoursToExpiry": 555.02,
       "plannedHoldHours": 572.02,
-      "elapsedHoldPct": 0.028,
+      "elapsedHoldPct": 0.0297,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -186,10 +171,10 @@
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ],
-      "hoursOpen": 14.99,
-      "hoursToExpiry": 153.01,
+      "hoursOpen": 15.99,
+      "hoursToExpiry": 152.01,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0892,
+      "elapsedHoldPct": 0.0952,
       "minHoldHours": 12,
       "reason": "Mechanical FUNDING_EXTREME_SHORT setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     }

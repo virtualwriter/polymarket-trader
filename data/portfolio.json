@@ -1,5 +1,5 @@
 {
-  "cash": 90.33982643217867,
+  "cash": 89.33982643217867,
   "positions": [
     {
       "id": "MA-1780403314728-llno",
@@ -51,7 +51,7 @@
         }
       ],
       "entryUnderlyingPrice": 78.905,
-      "currentUnderlyingPrice": 64.195,
+      "currentUnderlyingPrice": 64.975,
       "peakPnlPct": 0,
       "fundingPnlAccrued": 0
     },
@@ -105,7 +105,7 @@
         }
       ],
       "entryUnderlyingPrice": 72.839,
-      "currentUnderlyingPrice": 64.195,
+      "currentUnderlyingPrice": 64.975,
       "peakPnlPct": 0.9045226130653273,
       "fundingPnlAccrued": 0
     },
@@ -159,7 +159,7 @@
         }
       ],
       "entryUnderlyingPrice": 72.839,
-      "currentUnderlyingPrice": 64.195,
+      "currentUnderlyingPrice": 64.975,
       "peakPnlPct": 0.804020100502502,
       "fundingPnlAccrued": 0
     },
@@ -170,7 +170,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.999,
-      "currentPrice": 0.999,
+      "currentPrice": 1,
       "size": 1,
       "leverage": 1,
       "signalType": "MONOTONIC_ARB",
@@ -213,7 +213,7 @@
         }
       ],
       "entryUnderlyingPrice": 1658,
-      "currentUnderlyingPrice": 1619.2,
+      "currentUnderlyingPrice": 1631.6,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-05T07:28:36.353Z",
         "source": "clob_live",
@@ -303,7 +303,7 @@
         }
       ],
       "entryUnderlyingPrice": 4466,
-      "currentUnderlyingPrice": 4313.5,
+      "currentUnderlyingPrice": 4323.2,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-05T12:28:37.073Z",
         "source": "clob_live",
@@ -393,7 +393,7 @@
         }
       ],
       "entryUnderlyingPrice": 60800,
-      "currentUnderlyingPrice": 61763,
+      "currentUnderlyingPrice": 62117,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-06T14:28:42.778Z",
         "source": "clob_live",
@@ -483,7 +483,7 @@
         }
       ],
       "entryUnderlyingPrice": 4307,
-      "currentUnderlyingPrice": 4313.5,
+      "currentUnderlyingPrice": 4323.2,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-06T21:28:36.794Z",
         "source": "clob_live",
@@ -530,7 +530,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 245.39,
-      "currentPrice": 244.94,
+      "currentPrice": 246,
       "currentUnderlyingPrice": 245.73,
       "entryUnderlyingPrice": 245.73,
       "size": 1,
@@ -544,13 +544,36 @@
       "instrumentType": "hl_perp",
       "instrumentId": "AMZN",
       "instrumentLabel": "HL AMZN perp",
-      "fundingPnlAccrued": 0.00015801210045662099,
+      "fundingPnlAccrued": 0.00022981997716894974,
       "peakPnlPct": 0.5877612278302343
+    },
+    {
+      "id": "T-1780842512960-ajyi",
+      "openedAt": "2026-06-07T14:28:32.960Z",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "entryPrice": 4323,
+      "currentPrice": 4323,
+      "currentUnderlyingPrice": 4323,
+      "entryUnderlyingPrice": 4323,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "FUNDING_EXTREME_LONG",
+      "hypothesisId": null,
+      "thesis": "GOLD HL funding 31.8% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDate": "2026-06-10T14:28:32.960Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "GOLD",
+      "instrumentLabel": "HL GOLD perp",
+      "fundingPnlAccrued": 0
     }
   ],
   "totalRealizedPnl": 0.8362999999999993,
   "totalTrades": 192,
   "winCount": 96,
   "lossCount": 96,
-  "lastUpdated": "2026-06-07T13:30:46.424Z"
+  "lastUpdated": "2026-06-07T14:28:32.963Z"
 }
