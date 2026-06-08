@@ -2479,7 +2479,10 @@ function fundingBreakevenStopHit(position: Position, mark: { pnlPct: number }): 
 
 function weekendHyperliquidFundingExitHit(position: Position, snapshots: InstrumentSnapshotFile[]): boolean {
   return position.signalType === WEEKEND_HL_FUNDING_LIVE_SIGNAL
-    && (getHyperliquidFundingFromSnapshot(latestInstrumentSnapshot(snapshots), position.asset) ?? Number.NEGATIVE_INFINITY) >= WEEKEND_HL_FUNDING_EXIT_PCT;
+    && (
+      !isStockPerpFundingWindowOpen()
+      || (getHyperliquidFundingFromSnapshot(latestInstrumentSnapshot(snapshots), position.asset) ?? Number.NEGATIVE_INFINITY) >= WEEKEND_HL_FUNDING_EXIT_PCT
+    );
 }
 
 function realizeClosedPosition(
@@ -4094,6 +4097,7 @@ function promoteOpenWeekendFundingShadowsToLive(
   blockedSignals: BlockedSignalShadow[],
 ): string[] {
   if (!ENABLE_WEEKEND_HL_FUNDING_LIVE) return [];
+  if (!isStockPerpFundingWindowOpen()) return [];
   const notes: string[] = [];
   const now = new Date().toISOString();
 
@@ -4396,8 +4400,13 @@ function resolveBlockedSignalShadows(
     const edgeDisappeared = oneTouchNoEdgeDisappeared(shadow, relativeValueRows);
     const noBiasGapDisappeared = noBiasAdjustedGapDisappeared(shadow, relativeValueRows);
     const weekendFundingExit = shadow.blockedReason === WEEKEND_HL_FUNDING_SHADOW_REASON
-      && (getHyperliquidFundingFromSnapshot(latestInstrumentSnapshot(snapshots), shadow.asset) ?? Number.NEGATIVE_INFINITY) >= WEEKEND_HL_FUNDING_EXIT_PCT;
-    if (weekendFundingExit) closeReason = mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
+      && (
+        !isStockPerpFundingWindowOpen()
+        || (getHyperliquidFundingFromSnapshot(latestInstrumentSnapshot(snapshots), shadow.asset) ?? Number.NEGATIVE_INFINITY) >= WEEKEND_HL_FUNDING_EXIT_PCT
+      );
+    if (weekendFundingExit) closeReason = !isStockPerpFundingWindowOpen()
+      ? "expiry"
+      : mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
     else if (!expiryOnlyShadow && shadow.position.targetPct !== null && mark.pnlPct >= shadow.position.targetPct) closeReason = "target";
     else if (!expiryOnlyShadow && mark.pnlPct <= -shadow.position.stopPct) closeReason = "stop";
     else if (edgeDisappeared) closeReason = mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
@@ -5390,7 +5399,9 @@ function markToMarket(
     updatePeakPnl(pos, mark);
 
     let closeReason: ClosedTrade["closeReason"] | null = null;
-    if (weekendHyperliquidFundingExitHit(pos, snapshots)) closeReason = mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
+    if (weekendHyperliquidFundingExitHit(pos, snapshots)) closeReason = !isStockPerpFundingWindowOpen()
+      ? "expiry"
+      : mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
     else if (pos.targetPct !== null && mark.pnlPct >= pos.targetPct) closeReason = "target";
     else if (fundingBreakevenStopHit(pos, mark)) closeReason = "breakeven_stop";
     else if (mark.pnlPct <= -pos.stopPct) closeReason = "stop";
