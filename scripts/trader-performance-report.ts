@@ -334,6 +334,12 @@ const CSV_HEADER = [
   "current_ask",
   "strike_price",
   "expiry_month",
+  "entry_model_source",
+  "entry_row_timestamp",
+  "entry_row_distance_hours",
+  "current_model_source",
+  "current_row_timestamp",
+  "current_row_age_hours",
 ] as const;
 
 function readJson<T>(path: string, fallback: T): T {
@@ -618,16 +624,46 @@ function readRelativeValueHistoryRows(): Map<string, Array<{ timestamp: Date; ro
   return byKey;
 }
 
-function nearestRelativeValueEntryRow(
+interface RelativeValueRowMatch {
+  row?: Record<string, string>;
+  source: "snapshot" | "history_exact" | "history_nearest" | "missing";
+  timestamp: Date | null;
+  distanceHours: number | null;
+}
+
+function rowTimestamp(row: Record<string, string> | undefined): Date | null {
+  return row ? parseHeatmapTimestamp(row.timestamp) : null;
+}
+
+function hoursBetween(a: Date | null, b: Date | null): number | null {
+  return a && b ? Math.abs(a.getTime() - b.getTime()) / 3_600_000 : null;
+}
+
+function fmtHours(value: number | null): string {
+  return value === null ? "" : value.toFixed(2);
+}
+
+function relativeValueEntryMatch(
   historyRows: Map<string, Array<{ timestamp: Date; row: Record<string, string> }>>,
   position: Position | undefined,
   openedAt: string | undefined,
-): Record<string, string> | undefined {
-  const key = relativeValueKey(position);
+  snapshotRow?: Record<string, string>,
+): RelativeValueRowMatch {
   const opened = parseTimestamp(openedAt);
-  if (!key || !opened) return undefined;
+  if (snapshotRow) {
+    const timestamp = rowTimestamp(snapshotRow);
+    return {
+      row: snapshotRow,
+      source: "snapshot",
+      timestamp,
+      distanceHours: hoursBetween(timestamp, opened),
+    };
+  }
+
+  const key = relativeValueKey(position);
+  if (!key || !opened) return { source: "missing", timestamp: null, distanceHours: null };
   const rows = historyRows.get(key);
-  if (!rows?.length) return undefined;
+  if (!rows?.length) return { source: "missing", timestamp: null, distanceHours: null };
   let best: { timestamp: Date; row: Record<string, string> } | undefined;
   let bestDistance = Number.POSITIVE_INFINITY;
   for (const candidate of rows) {
@@ -638,7 +674,13 @@ function nearestRelativeValueEntryRow(
     }
   }
   const maxDistanceMs = 36 * 60 * 60 * 1000;
-  return best && bestDistance <= maxDistanceMs ? best.row : undefined;
+  if (!best || bestDistance > maxDistanceMs) return { source: "missing", timestamp: null, distanceHours: null };
+  return {
+    row: best.row,
+    source: bestDistance === 0 ? "history_exact" : "history_nearest",
+    timestamp: best.timestamp,
+    distanceHours: bestDistance / 3_600_000,
+  };
 }
 
 // Prefer the canonical model probability stored in the row by the Python heatmap pipeline
@@ -655,6 +697,37 @@ function currentBidAsk(row: Record<string, string> | undefined, instrumentType: 
   if (yesBid === null || yesAsk === null) return { bid: null, ask: null };
   if (instrumentType === "pm_no") return { bid: 1 - yesAsk, ask: 1 - yesBid };
   return { bid: yesBid, ask: yesAsk };
+}
+
+function relativeValueContextNote(args: {
+  entryMatch: RelativeValueRowMatch;
+  currentRow: Record<string, string> | undefined;
+  generatedAt: string;
+  entryModel: number | null;
+  currentModel: number | null;
+  bidAsk: { bid: number | null; ask: number | null };
+  strike: string;
+  expiry: string;
+}): string {
+  const generated = parseTimestamp(args.generatedAt);
+  const currentTs = rowTimestamp(args.currentRow);
+  const currentAgeHours = currentTs && generated
+    ? Math.max(0, (generated.getTime() - currentTs.getTime()) / 3_600_000)
+    : null;
+  return [
+    `entry_model=${fmtModelValue(args.entryModel) || "n/a"}`,
+    `current_model=${fmtModelValue(args.currentModel) || "n/a"}`,
+    `current_bid=${fmtPriceValue(args.bidAsk.bid) || "n/a"}`,
+    `current_ask=${fmtPriceValue(args.bidAsk.ask) || "n/a"}`,
+    `strike=${args.strike || "n/a"}`,
+    `expiry=${args.expiry || "n/a"}`,
+    `entry_row_source=${args.entryMatch.source}`,
+    `entry_row_ts=${args.entryMatch.timestamp?.toISOString() ?? "n/a"}`,
+    `entry_row_distance_hours=${fmtHours(args.entryMatch.distanceHours) || "n/a"}`,
+    `current_row_source=${args.currentRow ? "current" : "missing"}`,
+    `current_row_ts=${currentTs?.toISOString() ?? "n/a"}`,
+    `current_row_age_hours=${fmtHours(currentAgeHours) || "n/a"}`,
+  ].join("; ");
 }
 
 function hypothesisMap(hypotheses: Hypothesis[]): Map<string, Hypothesis> {
@@ -933,8 +1006,25 @@ function buildCsvReport(args: {
   for (const shadow of args.shadows.filter((shadow) => shadow.status === "open")) {
     const currentRowKey = relativeValueKey(shadow.position);
     const currentRow = currentRowKey ? relativeValueRows.get(currentRowKey) : undefined;
-    const entryRow = shadow.heatmapRowSnapshot?.row ?? nearestRelativeValueEntryRow(relativeValueHistoryRows, shadow.position, shadow.blockedAt);
+    const entryMatch = relativeValueEntryMatch(relativeValueHistoryRows, shadow.position, shadow.blockedAt, shadow.heatmapRowSnapshot?.row);
+    const entryRow = entryMatch.row;
     const bidAsk = currentBidAsk(currentRow, shadow.position?.instrumentType);
+    const entryModel = entryOneTouchModel(entryRow);
+    const currentModel = safeNumber(currentRow?.options_touch_adjusted_prob);
+    const strike = extractStrikePrice(shadow.position);
+    const expiry = extractExpiryMonth(shadow.position);
+    const currentTs = rowTimestamp(currentRow);
+    const currentAgeHours = hoursBetween(currentTs, parseTimestamp(args.generatedAt));
+    const rvContext = relativeValueContextNote({
+      entryMatch,
+      currentRow,
+      generatedAt: args.generatedAt,
+      entryModel,
+      currentModel,
+      bidAsk,
+      strike,
+      expiry,
+    });
     rows.push([
       "currently_open_shadow_trade",
       shadowKey(shadow),
@@ -948,7 +1038,7 @@ function buildCsvReport(args: {
       shadow.id,
       shadow.status,
       shadow.asset,
-      `${shadow.venue} ${shadow.direction}; opened ${shadow.blockedAt}; ${marketDetail(shadow.position)}; ${shadow.thesis}`,
+      `${shadow.venue} ${shadow.direction}; opened ${shadow.blockedAt}; ${marketDetail(shadow.position)}; ${rvContext}; ${shadow.thesis}`,
       shadow.position ? (positionUnrealizedPnlPct(shadow.position)?.toFixed(4) ?? "") : "",
       "",
       shadow.position ? (positionUnrealizedPnl(shadow.position)?.toFixed(6) ?? "") : "",
@@ -958,12 +1048,18 @@ function buildCsvReport(args: {
       shadow.position?.instrumentId ?? "",
       shadow.position?.instrumentLabel ?? "",
       shadow.blockedAt,
-      fmtModelValue(entryOneTouchModel(entryRow)),
-      fmtModelValue(safeNumber(currentRow?.options_touch_adjusted_prob)),
+      fmtModelValue(entryModel),
+      fmtModelValue(currentModel),
       fmtPriceValue(bidAsk.bid),
       fmtPriceValue(bidAsk.ask),
-      extractStrikePrice(shadow.position),
-      extractExpiryMonth(shadow.position),
+      strike,
+      expiry,
+      entryMatch.source,
+      entryMatch.timestamp?.toISOString() ?? "",
+      fmtHours(entryMatch.distanceHours),
+      currentRow ? "current" : "missing",
+      currentTs?.toISOString() ?? "",
+      fmtHours(currentAgeHours),
     ]);
   }
 
@@ -974,8 +1070,25 @@ function buildCsvReport(args: {
       : position.signalType;
     const currentRowKey = relativeValueKey(position);
     const currentRow = currentRowKey ? relativeValueRows.get(currentRowKey) : undefined;
-    const entryRow = nearestRelativeValueEntryRow(relativeValueHistoryRows, position, position.openedAt);
+    const entryMatch = relativeValueEntryMatch(relativeValueHistoryRows, position, position.openedAt);
+    const entryRow = entryMatch.row;
     const bidAsk = currentBidAsk(currentRow, position.instrumentType);
+    const entryModel = entryOneTouchModel(entryRow);
+    const currentModel = safeNumber(currentRow?.options_touch_adjusted_prob);
+    const strike = extractStrikePrice(position);
+    const expiry = extractExpiryMonth(position);
+    const currentTs = rowTimestamp(currentRow);
+    const currentAgeHours = hoursBetween(currentTs, parseTimestamp(args.generatedAt));
+    const rvContext = relativeValueContextNote({
+      entryMatch,
+      currentRow,
+      generatedAt: args.generatedAt,
+      entryModel,
+      currentModel,
+      bidAsk,
+      strike,
+      expiry,
+    });
     rows.push([
       "open_position",
       signal,
@@ -989,7 +1102,7 @@ function buildCsvReport(args: {
       position.id,
       "open",
       position.asset,
-      `${position.venue} ${position.direction}; ${marketDetail(position)}; ${position.thesis}`,
+      `${position.venue} ${position.direction}; ${marketDetail(position)}; ${rvContext}; ${position.thesis}`,
       positionUnrealizedPnlPct(position)?.toFixed(4) ?? "",
       args.allTradeStats.pnl.toFixed(6),
       positionUnrealizedPnl(position)?.toFixed(6) ?? "",
@@ -999,12 +1112,18 @@ function buildCsvReport(args: {
       position.instrumentId ?? "",
       position.instrumentLabel ?? "",
       position.openedAt,
-      fmtModelValue(entryOneTouchModel(entryRow)),
-      fmtModelValue(safeNumber(currentRow?.options_touch_adjusted_prob)),
+      fmtModelValue(entryModel),
+      fmtModelValue(currentModel),
       fmtPriceValue(bidAsk.bid),
       fmtPriceValue(bidAsk.ask),
-      extractStrikePrice(position),
-      extractExpiryMonth(position),
+      strike,
+      expiry,
+      entryMatch.source,
+      entryMatch.timestamp?.toISOString() ?? "",
+      fmtHours(entryMatch.distanceHours),
+      currentRow ? "current" : "missing",
+      currentTs?.toISOString() ?? "",
+      fmtHours(currentAgeHours),
     ]);
   }
 
@@ -1142,18 +1261,34 @@ function buildMarkdownReport(args: {
   lines.push(...markdownOpenShadows(args.shadows));
   lines.push("## Open Positions");
   lines.push("");
-  lines.push("| Position | Signal | Asset | Venue | Direction | Unrealized P&L | Entry | Current | Opened | Thesis |");
-  lines.push("|---|---|---|---|---|---:|---:|---:|---|---|");
+  lines.push("| Position | Signal | Asset | Venue | Direction | Unrealized P&L | Entry | Current | Opened | Model Context | Thesis |");
+  lines.push("|---|---|---|---|---|---:|---:|---:|---|---|---|");
   if (args.portfolio.positions.length === 0) {
-    lines.push("| None | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | No open positions |");
+    lines.push("| None | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | No open positions |");
   } else {
+    const relativeValueRows = readRelativeValueRows();
+    const relativeValueHistoryRows = readRelativeValueHistoryRows();
     for (const position of args.portfolio.positions) {
       const hypothesis = position.hypothesisId ? args.hypothesesById.get(position.hypothesisId) : undefined;
       const signal = position.signalType === "LLM_HYPOTHESIS" || position.signalType === "PROMOTED_HYPOTHESIS"
         ? `${position.signalType} / ${setupLabel(hypothesis)}`
         : position.signalType;
       const pnl = positionUnrealizedPnl(position);
-      lines.push(`| ${position.id} | ${escapeMd(signal)} | ${position.asset} | ${position.venue} | ${position.direction} | ${pnl === null ? "n/a" : fmtUsd(pnl)} | ${position.entryPrice.toFixed(4)} | ${position.currentPrice?.toFixed(4) ?? "n/a"} | ${position.openedAt} | ${escapeMd(`${marketDetail(position)}; ${position.thesis}`.slice(0, 220))} |`);
+      const currentRowKey = relativeValueKey(position);
+      const currentRow = currentRowKey ? relativeValueRows.get(currentRowKey) : undefined;
+      const entryMatch = relativeValueEntryMatch(relativeValueHistoryRows, position, position.openedAt);
+      const bidAsk = currentBidAsk(currentRow, position.instrumentType);
+      const context = relativeValueContextNote({
+        entryMatch,
+        currentRow,
+        generatedAt: args.generatedAt,
+        entryModel: entryOneTouchModel(entryMatch.row),
+        currentModel: safeNumber(currentRow?.options_touch_adjusted_prob),
+        bidAsk,
+        strike: extractStrikePrice(position),
+        expiry: extractExpiryMonth(position),
+      });
+      lines.push(`| ${position.id} | ${escapeMd(signal)} | ${position.asset} | ${position.venue} | ${position.direction} | ${pnl === null ? "n/a" : fmtUsd(pnl)} | ${position.entryPrice.toFixed(4)} | ${position.currentPrice?.toFixed(4) ?? "n/a"} | ${position.openedAt} | ${escapeMd(context)} | ${escapeMd(`${marketDetail(position)}; ${position.thesis}`.slice(0, 220))} |`);
     }
   }
   lines.push("");
