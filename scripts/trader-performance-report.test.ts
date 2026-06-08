@@ -1,10 +1,18 @@
 import { describe, expect, it } from "vitest";
 import {
+  buildCsvReport,
+  buildMarkdownReport,
   currentBidAsk,
+  detailCsvRow,
+  markdownOpenShadows,
+  markdownPendingHypotheses,
   relativeValueContextNote,
   relativeValueEntryMatch,
+  statsCsvRow,
+  table,
   type Position,
 } from "./trader-performance-report.js";
+import type { Stats } from "./lib/reporting/stats.js";
 
 const position: Position = {
   id: "test-position",
@@ -20,6 +28,34 @@ const position: Position = {
   thesis: "test",
   instrumentType: "pm_yes",
   instrumentId: "btc-hit-jun-2026::123",
+};
+
+const stats = (overrides: Partial<Stats> = {}): Stats => ({
+  trades: 2,
+  wins: 1,
+  losses: 1,
+  pnl: 1.25,
+  pnlPctSum: 12.5,
+  ...overrides,
+});
+
+const emptyHybridBot = {
+  available: false,
+  stateLastModified: null,
+  feedLastModified: null,
+  positions: new Map(),
+  perCoinStats: new Map(),
+  totalsAcrossAllCoins: {
+    trades: 0,
+    wins: 0,
+    losses: 0,
+    realizedPnlUsd: 0,
+    realizedPnlPctSum: 0,
+    feesUsd: 0,
+    opens: 0,
+    closes: 0,
+    lastEventTs: null,
+  },
 };
 
 describe("trader report relative-value provenance", () => {
@@ -123,5 +159,134 @@ describe("trader report relative-value provenance", () => {
     expect(note).toContain("entry_row_distance_hours=0.50");
     expect(note).toContain("current_row_source=current");
     expect(note).toContain("current_row_age_hours=1.50");
+  });
+});
+
+describe("trader report row builders", () => {
+  it("builds summary CSV rows with stable field placement", () => {
+    const row = statsCsvRow("summary", "test_group", stats());
+
+    expect(row.slice(0, 9)).toEqual([
+      "summary",
+      "test_group",
+      "2",
+      "1",
+      "1",
+      "50.0",
+      "1.250000",
+      "0.625000",
+      "6.2500",
+    ]);
+    expect(row[9]).toBe("");
+    expect(row[12]).toBe("");
+  });
+
+  it("adds detail fields on top of summary CSV rows", () => {
+    const row = detailCsvRow("detail", "group", stats({ trades: 0, wins: 0, losses: 0, pnl: 0, pnlPctSum: 0 }), "id-1", "open", "BTC", "notes");
+
+    expect(row[0]).toBe("detail");
+    expect(row[9]).toBe("id-1");
+    expect(row[10]).toBe("open");
+    expect(row[11]).toBe("BTC");
+    expect(row[12]).toBe("notes");
+    expect(row[5]).toBe("");
+  });
+
+  it("builds Markdown stats tables with escaping, averages, limits, and empty states", () => {
+    expect(table("Empty", [])).toContain("| None | 0 | 0 | 0 | n/a | +$0.0000 | +$0.0000 | +0.00% |");
+
+    const lines = table("Stats", [
+      ["BTC | breakout", stats()],
+      ["ETH", stats({ trades: 1, wins: 1, losses: 0, pnl: 2, pnlPctSum: 10 })],
+    ], 1);
+
+    expect(lines[0]).toBe("## Stats");
+    expect(lines).toContain("| BTC \\| breakout | 2 | 1 | 1 | 50.0% | +$1.2500 | +$0.6250 | +6.25% |");
+    expect(lines).toContain("| ... 1 more |  |  |  |  |  |  |  |");
+  });
+
+  it("builds pending hypothesis rows sorted by pending tests", () => {
+    const lines = markdownPendingHypotheses([
+      {
+        id: "hyp-1",
+        setupLabel: "Breakout | test",
+        description: "Watch breakout continuation",
+        tests: [
+          { date: "2026-06-01", outcome: "pending" },
+          { date: "2026-06-02", outcome: "win" },
+        ],
+        winRate: 1,
+        status: "active",
+        promotedToSignal: false,
+        source: "llm",
+      },
+    ]);
+
+    expect(lines).toContain("| hyp-1 | Breakout \\| test | active | 1 | 1/0 | 100.0% | Watch breakout continuation |");
+  });
+
+  it("builds open shadow rows with escaped thesis and unrealized P&L", () => {
+    const lines = markdownOpenShadows([
+      {
+        id: "shadow-1",
+        status: "open",
+        blockedAt: "2026-06-01T00:00:00.000Z",
+        blockedReason: "manual",
+        signalType: "TEST",
+        asset: "BTC",
+        venue: "polymarket",
+        direction: "long",
+        thesis: "edge | note",
+        position,
+      },
+    ]);
+
+    const joined = lines.join("\n");
+    expect(joined).toContain("| shadow-1 | manual / TEST | BTC | polymarket | long | +$0.2500 | 2026-06-01T00:00:00.000Z |");
+    expect(joined).toContain("instrument_type=pm_yes; instrument_id=btc-hit-jun-2026::123; entry=0.4; current=0.5; edge \\| note");
+  });
+
+  it("keeps full CSV and Markdown report builder headers stable for empty reports", () => {
+    const baseArgs = {
+      generatedAt: "2026-06-08T18:00:00.000Z",
+      portfolio: {
+        cash: 10,
+        positions: [],
+        totalRealizedPnl: 0,
+        totalTrades: 0,
+        winCount: 0,
+        lossCount: 0,
+        lastUpdated: "2026-06-08T17:00:00.000Z",
+      },
+      allTradeStats: stats({ trades: 0, wins: 0, losses: 0, pnl: 0, pnlPctSum: 0 }),
+      rawTradeStats: stats({ trades: 0, wins: 0, losses: 0, pnl: 0, pnlPctSum: 0 }),
+      allShadowStats: stats({ trades: 0, wins: 0, losses: 0, pnl: 0, pnlPctSum: 0 }),
+      duplicateTradeIds: new Set<string>(),
+      operationallyTaintedTrades: [],
+      tradeSetupRows: [],
+      assetRows: [],
+      tradeTypeAssetRows: [],
+      venueAssetRows: [],
+      shadowTypeRows: [],
+      shadowTypeAssetRows: [],
+      setupRows: [],
+      hypotheses: [],
+      shadows: [],
+      hypothesesById: new Map(),
+      hybridBot: emptyHybridBot,
+    };
+    const csv = buildCsvReport({
+      ...baseArgs,
+      rawTrades: [],
+      resolvedTrades: [],
+      resolvedShadows: [],
+      hyperliquidMids: new Map(),
+    });
+    const markdown = buildMarkdownReport(baseArgs);
+
+    expect(csv.split("\n")[0]).toContain("entry_row_distance_hours,current_model_source,current_row_timestamp,current_row_age_hours");
+    expect(csv).toContain("summary,generated_at");
+    expect(markdown).toContain("| Position | Signal | Asset | Venue | Direction | Unrealized P&L | Entry | Current | Opened | Model Context | Thesis |");
+    expect(markdown).toContain("| None | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | No open positions |");
   });
 });

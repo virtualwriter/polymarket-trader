@@ -816,7 +816,7 @@ function markOpenShadowPositionsFromLatestSnapshot(
   markHlPerpPositionsFromLatestSnapshot(openShadowPositions, latestSnapshot);
 }
 
-function statsCsvRow(section: string, group: string, stats: Stats): string[] {
+export function statsCsvRow(section: string, group: string, stats: Stats): string[] {
   const avgPnl = stats.trades > 0 ? stats.pnl / stats.trades : 0;
   const avgPnlPct = stats.trades > 0 ? stats.pnlPctSum / stats.trades : 0;
   return [
@@ -845,7 +845,7 @@ function statsCsvRow(section: string, group: string, stats: Stats): string[] {
   ];
 }
 
-function detailCsvRow(section: string, group: string, stats: Stats, id: string, status: string, asset: string, notes: string): string[] {
+export function detailCsvRow(section: string, group: string, stats: Stats, id: string, status: string, asset: string, notes: string): string[] {
   const row = statsCsvRow(section, group, stats);
   row[9] = id;
   row[10] = status;
@@ -878,7 +878,7 @@ function llmHypothesisTradeBreakoutRows(trades: ClosedTrade[], hypothesesById: M
   );
 }
 
-function table(title: string, rows: Array<[string, Stats]>, limit = 30): string[] {
+export function table(title: string, rows: Array<[string, Stats]>, limit = 30): string[] {
   const out = [`## ${title}`, "", "| Group | Trades | Wins | Losses | Win Rate | P&L | Avg P&L | Avg P&L % |", "|---|---:|---:|---:|---:|---:|---:|---:|"];
   if (rows.length === 0) {
     out.push("| None | 0 | 0 | 0 | n/a | +$0.0000 | +$0.0000 | +0.00% |");
@@ -912,7 +912,7 @@ function pendingHypothesisRows(hypotheses: Hypothesis[]): Array<{ hypothesis: Hy
     );
 }
 
-function markdownPendingHypotheses(hypotheses: Hypothesis[]): string[] {
+export function markdownPendingHypotheses(hypotheses: Hypothesis[]): string[] {
   const out = ["## Currently Tested LLM Hypotheses", "", "| Hypothesis | Setup | Status | Pending Tests | Completed W/L | Win Rate | Description |", "|---|---|---|---:|---:|---:|---|"];
   const rows = pendingHypothesisRows(hypotheses);
   if (rows.length === 0) {
@@ -927,7 +927,7 @@ function markdownPendingHypotheses(hypotheses: Hypothesis[]): string[] {
   return out;
 }
 
-function markdownOpenShadows(shadows: BlockedSignalShadow[]): string[] {
+export function markdownOpenShadows(shadows: BlockedSignalShadow[]): string[] {
   const open = shadows.filter((shadow) => shadow.status === "open").sort((a, b) => a.blockedAt.localeCompare(b.blockedAt));
   const out = ["## Currently Open Shadow Trades", "", "| Shadow | Type | Asset | Venue | Direction | Unrealized P&L | Opened | Thesis |", "|---|---|---|---|---|---:|---|---|"];
   if (open.length === 0) {
@@ -943,7 +943,7 @@ function markdownOpenShadows(shadows: BlockedSignalShadow[]): string[] {
   return out;
 }
 
-function buildCsvReport(args: {
+export function buildCsvReport(args: {
   generatedAt: string;
   portfolio: Portfolio;
   allTradeStats: Stats;
@@ -1204,7 +1204,7 @@ function buildCsvReport(args: {
     .join("\n");
 }
 
-function buildMarkdownReport(args: {
+export function buildMarkdownReport(args: {
   generatedAt: string;
   portfolio: Portfolio;
   allTradeStats: Stats;
