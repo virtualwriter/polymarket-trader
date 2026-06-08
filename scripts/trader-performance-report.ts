@@ -6,6 +6,7 @@ import { csvLine, readCsvRecords } from "./lib/reporting/csv.js";
 import { escapeMd, fmtModelValue, fmtPct, fmtPriceValue, fmtUsd, winRate } from "./lib/reporting/format.js";
 import { normalCdf } from "./lib/reporting/math.js";
 import { safeNumber } from "./lib/reporting/number.js";
+import { extractExpiryMonth, extractStrikePrice, marketDetail, positionUnrealizedPnl, positionUnrealizedPnlPct } from "./lib/reporting/position.js";
 import { addStats, emptyStats, grouped, sortStatsRows, winRateValue } from "./lib/reporting/stats.js";
 import type { Outcome, Stats } from "./lib/reporting/stats.js";
 import { parseHeatmapTimestamp, parseTimestamp } from "./lib/reporting/time.js";
@@ -714,116 +715,6 @@ function setupFamilyRows(hypotheses: Hypothesis[]): Array<[string, Stats]> {
     map.set(key, stats);
   }
   return sortStatsRows([...map.entries()]);
-}
-
-function positionUnrealizedPnl(position: Position): number | null {
-  if (!Number.isFinite(position.entryPrice) || position.entryPrice === 0 || !Number.isFinite(position.currentPrice)) return null;
-  const currentPrice = position.currentPrice as number;
-
-  // Polymarket YES/NO rows represent owned shares. A short thesis can map to
-  // buying NO, so token P&L still rises when the NO token price rises.
-  const isOwnedPolymarketToken =
-    position.instrumentType === "pm_yes" ||
-    position.instrumentType === "pm_no" ||
-    position.instrumentType === "pm_package";
-
-  const rawMove = position.direction === "short" && !isOwnedPolymarketToken
-    ? (position.entryPrice - currentPrice) / position.entryPrice
-    : (currentPrice - position.entryPrice) / position.entryPrice;
-  const size = Number.isFinite(position.size) ? position.size : 1;
-  const leverage = position.instrumentType === "hl_perp" && Number.isFinite(position.leverage)
-    ? (position.leverage as number)
-    : 1;
-  return rawMove * size * leverage;
-}
-
-function positionUnrealizedPnlPct(position: Position): number | null {
-  const pnl = positionUnrealizedPnl(position);
-  if (pnl === null) return null;
-  const size = Number.isFinite(position.size) && position.size !== 0 ? position.size : 1;
-  return (pnl / size) * 100;
-}
-
-function marketDetail(position?: Position): string {
-  if (!position) return "";
-  const parts = [
-    position.instrumentLabel ? `market=${position.instrumentLabel}` : "",
-    position.instrumentType ? `instrument_type=${position.instrumentType}` : "",
-    position.instrumentId ? `instrument_id=${position.instrumentId}` : "",
-    Number.isFinite(position.entryPrice) ? `entry=${position.entryPrice}` : "",
-    Number.isFinite(position.currentPrice) ? `current=${position.currentPrice}` : "",
-    Number.isFinite(position.entryUnderlyingPrice) ? `entry_underlying=${position.entryUnderlyingPrice}` : "",
-    Number.isFinite(position.currentUnderlyingPrice) ? `current_underlying=${position.currentUnderlyingPrice}` : "",
-  ];
-  return parts.filter(Boolean).join("; ");
-}
-
-const MONTH_NAMES: Record<string, string> = {
-  jan: "January",
-  january: "January",
-  feb: "February",
-  february: "February",
-  mar: "March",
-  march: "March",
-  apr: "April",
-  april: "April",
-  may: "May",
-  jun: "June",
-  june: "June",
-  jul: "July",
-  july: "July",
-  aug: "August",
-  august: "August",
-  sep: "September",
-  sept: "September",
-  september: "September",
-  oct: "October",
-  october: "October",
-  nov: "November",
-  november: "November",
-  dec: "December",
-  december: "December",
-};
-
-function formatStrike(value: string): string {
-  const normalized = value.replace(/,/g, "");
-  const numeric = Number(normalized);
-  if (!Number.isFinite(numeric)) return value;
-  return `$${numeric.toLocaleString("en-US", { maximumFractionDigits: 6 })}`;
-}
-
-function extractStrikePrice(position?: Position): string {
-  if (!position) return "";
-  if (position.instrumentType === "pm_package" && Array.isArray(position.packageLegs)) {
-    const broad = position.packageLegs.find((leg) => leg.role === "broad_yes");
-    const narrow = position.packageLegs.find((leg) => leg.role === "narrow_no");
-    if (typeof broad?.strike === "number" && typeof narrow?.strike === "number") {
-      return `${formatStrike(String(broad.strike))} / ${formatStrike(String(narrow.strike))}`;
-    }
-  }
-
-  const label = position.instrumentLabel ?? "";
-  const packageMatch = label.match(/monotonic arb package\s+—\s+YES\s+([\d,.]+)\s*\/\s*NO\s+([\d,.]+)/i);
-  if (packageMatch) return `${formatStrike(packageMatch[1])} / ${formatStrike(packageMatch[2])}`;
-
-  const dollarMatches = [...label.matchAll(/\$([\d,]+(?:\.\d+)?)/g)];
-  if (dollarMatches.length > 0) return formatStrike(dollarMatches[dollarMatches.length - 1][1]);
-
-  const id = position.instrumentId ?? "";
-
-  return "";
-}
-
-function extractExpiryMonth(position?: Position): string {
-  if (!position) return "";
-  const source = `${position.instrumentLabel ?? ""} ${position.instrumentId ?? ""}`;
-  const slugMonthMatch = source.match(/(?:^|[-\s])(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)(?:[-\s]|$)/i);
-  if (slugMonthMatch) return MONTH_NAMES[slugMonthMatch[1].toLowerCase()] ?? "";
-
-  const phraseMonthMatch = source.match(/\b(?:in|by end of|end of|by)\s+(January|February|March|April|May|June|July|August|September|October|November|December)\b/i);
-  if (phraseMonthMatch) return MONTH_NAMES[phraseMonthMatch[1].toLowerCase()] ?? "";
-
-  return "";
 }
 
 function markHlPerpPositionsFromLatestSnapshot(
