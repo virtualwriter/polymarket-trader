@@ -4,6 +4,7 @@
 // Default mode is dry-run. Use --live only for a tiny, explicitly requested
 // live experiment.
 import { appendFileSync, mkdirSync } from "node:fs";
+import { createRequire } from "node:module";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { config } from "dotenv";
@@ -76,6 +77,7 @@ const PRICE_OVERRIDE = process.env.UPDOWN_MAKER_GUESS_PRICE ?? argValue("--price
 const TICK = Number(process.env.UPDOWN_MAKER_GUESS_TICK ?? 0.001);
 const IMPROVE_BY = Number(process.env.UPDOWN_MAKER_GUESS_IMPROVE_BY ?? TICK);
 const MAX_PAIR_COST = Number(process.env.UPDOWN_MAKER_GUESS_MAX_PAIR_COST ?? 0.999);
+const COMPLEMENT_SAFETY_BUFFER = Number(process.env.UPDOWN_MAKER_GUESS_COMPLEMENT_SAFETY_BUFFER ?? 0.005);
 const HOLD_MS = Number(process.env.UPDOWN_MAKER_GUESS_HOLD_MS ?? argValue("--hold-ms") ?? 5_000);
 const FILL_POLL_MS = Number(process.env.UPDOWN_MAKER_GUESS_FILL_POLL_MS ?? 250);
 const COMPLETION_WINDOW_MS = Number(process.env.UPDOWN_MAKER_GUESS_COMPLETION_WINDOW_MS ?? 3_000);
@@ -88,11 +90,20 @@ const USER_WS_READY_MS = Number(process.env.UPDOWN_MAKER_GUESS_USER_WS_READY_MS 
 const MARKET_WS_READY_MS = Number(process.env.UPDOWN_MAKER_GUESS_MARKET_WS_READY_MS ?? 2_000);
 const MARKET_WS_CACHE_MAX_AGE_MS = Number(process.env.UPDOWN_MAKER_GUESS_MARKET_WS_CACHE_MAX_AGE_MS ?? 50);
 const USE_MARKET_WS_CACHE = process.env.UPDOWN_MAKER_GUESS_USE_MARKET_WS_CACHE !== "0";
+const LOOP_LOW_PROB_ONLY = process.env.UPDOWN_MAKER_GUESS_LOOP_LOW_PROB_ONLY !== "0";
+const LOOP_ALWAYS_LOW_PROB_ONLY = process.env.UPDOWN_MAKER_GUESS_LOOP_ALWAYS_LOW_PROB_ONLY !== "0";
+const LOOP_HIGH_PROB_MAKER_MAX_PRICE = Number(process.env.UPDOWN_MAKER_GUESS_LOOP_HIGH_PROB_MAKER_MAX_PRICE ?? 0.6);
 const LOOP_REFRESH_MS = Number(process.env.UPDOWN_MAKER_GUESS_LOOP_REFRESH_MS ?? 200);
 const LOOP_MAX_MS = Number(process.env.UPDOWN_MAKER_GUESS_LOOP_MAX_MS ?? 5 * 60_000);
+const LOOP_REPEAT_COUNT = Number(process.env.UPDOWN_MAKER_GUESS_LOOP_REPEAT_COUNT ?? argValue("--loop-repeat") ?? 1);
+const LOOP_REPEAT_PAUSE_MS = Number(process.env.UPDOWN_MAKER_GUESS_LOOP_REPEAT_PAUSE_MS ?? 1_000);
 const LOOP_REPLACE_TICKS = Number(process.env.UPDOWN_MAKER_GUESS_LOOP_REPLACE_TICKS ?? 1);
 const LOOP_MIN_SECONDS_TO_END = Number(process.env.UPDOWN_MAKER_GUESS_LOOP_MIN_SECONDS_TO_END ?? 20);
 const LOOP_MAX_IDLE_MS = Number(process.env.UPDOWN_MAKER_GUESS_LOOP_MAX_IDLE_MS ?? 0);
+const LOOP_IMMEDIATE_FILL_WATCH_MS = Number(process.env.UPDOWN_MAKER_GUESS_LOOP_IMMEDIATE_FILL_WATCH_MS ?? 750);
+const LOOP_IMMEDIATE_FILL_BALANCE_POLL_MS = Number(process.env.UPDOWN_MAKER_GUESS_LOOP_IMMEDIATE_FILL_BALANCE_POLL_MS ?? 150);
+const USER_WS_AUDIT_LIMIT = Number(process.env.UPDOWN_MAKER_GUESS_USER_WS_AUDIT_LIMIT ?? 50);
+const LOOP_LOW_PROB_POST_MODE = (process.env.UPDOWN_MAKER_GUESS_LOOP_LOW_PROB_POST_MODE ?? "batch").toLowerCase();
 const POLY_BUILDER_CODE = process.env.POLY_BUILDER_CODE?.trim();
 const MIN_MARKETABLE_BUY_USD = Number(process.env.UPDOWN_MAKER_GUESS_MIN_MARKETABLE_BUY_USD ?? 1);
 const MAX_TEST_PAIR_NOTIONAL_USD = Number(process.env.UPDOWN_MAKER_GUESS_MAX_TEST_PAIR_NOTIONAL_USD ?? 20);
@@ -104,6 +115,7 @@ const TAGS = (process.env.UPDOWN_MAKER_GUESS_TAGS ?? "bitcoin,ethereum,solana,xr
   .filter(Boolean);
 const TARGET_SLUG = argValue("--slug") ?? process.env.UPDOWN_MAKER_GUESS_SLUG ?? "";
 const TARGET_CONTAINS = (argValue("--contains") ?? process.env.UPDOWN_MAKER_GUESS_CONTAINS ?? "bitcoin").toLowerCase();
+const require = createRequire(import.meta.url);
 
 function argValue(flag: string): string | null {
   const idx = process.argv.indexOf(flag);
@@ -113,6 +125,22 @@ function argValue(flag: string): string | null {
 
 function log(...args: unknown[]) {
   console.log(`[updown-maker-guess ${new Date().toISOString()}]`, ...args);
+}
+
+function installHttpKeepAlive() {
+  if (process.env.UPDOWN_MAKER_GUESS_HTTP_KEEP_ALIVE === "0") return;
+  try {
+    const undici = require("undici") as any;
+    if (typeof undici?.setGlobalDispatcher !== "function" || typeof undici?.Agent !== "function") return;
+    undici.setGlobalDispatcher(new undici.Agent({
+      connections: Number(process.env.UPDOWN_MAKER_GUESS_HTTP_CONNECTIONS ?? 16),
+      keepAliveTimeout: Number(process.env.UPDOWN_MAKER_GUESS_HTTP_KEEP_ALIVE_TIMEOUT_MS ?? 30_000),
+      keepAliveMaxTimeout: Number(process.env.UPDOWN_MAKER_GUESS_HTTP_KEEP_ALIVE_MAX_TIMEOUT_MS ?? 120_000),
+    }));
+    log("HTTP keep-alive dispatcher installed");
+  } catch (err: any) {
+    log(`HTTP keep-alive dispatcher unavailable: ${err?.message ?? String(err)}`);
+  }
 }
 
 function sleep(ms: number) {
@@ -137,6 +165,8 @@ const tickSizeCache = new Map<string, Promise<TickSize>>();
 const fillSignals: FillSignal[] = [];
 const fillWaiters = new Map<string, Set<() => void>>();
 const marketBookCache = new Map<string, PriceLevels>();
+const userWsAudit: any[] = [];
+let activeUserWsTokenIds = new Set<string>();
 
 async function tickSize(client: Clob, tokenId: string): Promise<TickSize> {
   let cached = tickSizeCache.get(tokenId);
@@ -173,18 +203,102 @@ async function postFakSellCached(client: Clob, tokenId: string, price: number, s
   return client.postOrder(await signedSell(client, tokenId, price, shares), OrderType.FAK);
 }
 
-async function postLimitBuyPair(client: Clob, legs: Array<{ tokenId: string; price: number; shares: number }>): Promise<any[]> {
+type PostLimitBuyPairResult = {
+  responses: any[];
+  latency: {
+    signOrdersMs: number;
+    postOrdersMs: number;
+    submitPairMs: number;
+    postMode: "batch" | "single" | "fallback_parallel";
+    fallbackReason?: string;
+  };
+};
+
+type PreparedLimitBuy = {
+  legs: Array<{ tokenId: string; price: number; shares: number }>;
+  signed: Array<{ order: Awaited<ReturnType<typeof signedBuy>>; orderType: OrderType }>;
+  signOrdersMs: number;
+  startedMs: number;
+};
+
+async function prepareLimitBuy(client: Clob, legs: Array<{ tokenId: string; price: number; shares: number }>): Promise<PreparedLimitBuy> {
+  const startedMs = Date.now();
+  const signStartedMs = Date.now();
   const signed = await Promise.all(legs.map(async (leg) => ({
     order: await signedBuy(client, leg.tokenId, leg.price, leg.shares),
     orderType: OrderType.GTC,
   })));
-  try {
-    const response = await client.postOrders(signed);
-    return Array.isArray(response) ? response : [response];
-  } catch (err: any) {
-    log(`batch GTC post failed; falling back to parallel postOrder: ${err?.message ?? String(err)}`);
-    return Promise.all(legs.map((leg) => postLimitBuyCached(client, leg.tokenId, leg.price, leg.shares)));
+  return {
+    legs,
+    signed,
+    signOrdersMs: Date.now() - signStartedMs,
+    startedMs,
+  };
+}
+
+async function postPreparedLimitBuy(client: Clob, prepared: PreparedLimitBuy, postMode: "batch" | "single" = "batch"): Promise<PostLimitBuyPairResult> {
+  const postStartedMs = Date.now();
+  if (postMode === "single" && prepared.signed.length === 1) {
+    const response = await client.postOrder(prepared.signed[0].order, prepared.signed[0].orderType);
+    return {
+      responses: [response],
+      latency: {
+        signOrdersMs: prepared.signOrdersMs,
+        postOrdersMs: Date.now() - postStartedMs,
+        submitPairMs: Date.now() - prepared.startedMs,
+        postMode: "single",
+      },
+    };
   }
+  try {
+    const response = await client.postOrders(prepared.signed);
+    return {
+      responses: Array.isArray(response) ? response : [response],
+      latency: {
+        signOrdersMs: prepared.signOrdersMs,
+        postOrdersMs: Date.now() - postStartedMs,
+        submitPairMs: Date.now() - prepared.startedMs,
+        postMode: "batch",
+      },
+    };
+  } catch (err: any) {
+    const fallbackReason = err?.message ?? String(err);
+    log(`batch GTC post failed; falling back to parallel postOrder: ${fallbackReason}`);
+    const fallbackStartedMs = Date.now();
+    const responses = await Promise.all(prepared.signed.map((signed) => client.postOrder(signed.order, signed.orderType)));
+    return {
+      responses,
+      latency: {
+        signOrdersMs: prepared.signOrdersMs,
+        postOrdersMs: Date.now() - fallbackStartedMs,
+        submitPairMs: Date.now() - prepared.startedMs,
+        postMode: "fallback_parallel",
+        fallbackReason,
+      },
+    };
+  }
+}
+
+async function postLimitBuyPair(client: Clob, legs: Array<{ tokenId: string; price: number; shares: number }>): Promise<PostLimitBuyPairResult> {
+  return postPreparedLimitBuy(client, await prepareLimitBuy(client, legs), "batch");
+}
+
+function responseStatus(response: unknown): string {
+  return String((response as any)?.status ?? "").toLowerCase();
+}
+
+function cancellableOrderEntries(orderIds: { up?: string; down?: string }, responses: { up?: unknown; down?: unknown }) {
+  return [
+    { side: "up", orderID: orderIds.up, status: responseStatus(responses.up) },
+    { side: "down", orderID: orderIds.down, status: responseStatus(responses.down) },
+  ].filter((row) => isString(row.orderID) && row.status === "live");
+}
+
+function skippedCancelEntries(orderIds: { up?: string; down?: string }, responses: { up?: unknown; down?: unknown }) {
+  return [
+    { side: "up", orderID: orderIds.up, status: responseStatus(responses.up) || "unknown" },
+    { side: "down", orderID: orderIds.down, status: responseStatus(responses.down) || "unknown" },
+  ].filter((row) => isString(row.orderID) && row.status !== "live");
 }
 
 function signalFill(tokenId: string, raw: any) {
@@ -194,6 +308,11 @@ function signalFill(tokenId: string, raw: any) {
   if (!waiters) return;
   for (const resolveFn of waiters) resolveFn();
   waiters.clear();
+}
+
+function pushUserWsAudit(row: any) {
+  userWsAudit.push({ receivedAt: new Date().toISOString(), ...row });
+  while (userWsAudit.length > USER_WS_AUDIT_LIMIT) userWsAudit.shift();
 }
 
 function waitForAnyFill(tokenIds: string[], timeoutMs: number): Promise<FillSignal | null> {
@@ -218,24 +337,88 @@ function waitForAnyFill(tokenIds: string[], timeoutMs: number): Promise<FillSign
   });
 }
 
-function signalOrderIds(signal: FillSignal): string[] {
-  const raw = signal.raw ?? {};
-  const ids = [
-    raw.order_id,
-    raw.orderID,
-    raw.taker_order_id,
-    raw.maker_order_id,
-    ...(Array.isArray(raw.maker_orders) ? raw.maker_orders.map((row: any) => row?.order_id ?? row?.orderID) : []),
-  ];
-  return ids.filter((id): id is string => typeof id === "string" && id.length > 0);
+function collectStringsForKeys(value: unknown, keyPattern: RegExp, out = new Set<string>(), depth = 0): Set<string> {
+  if (!value || depth > 5) return out;
+  if (Array.isArray(value)) {
+    for (const item of value) collectStringsForKeys(item, keyPattern, out, depth + 1);
+    return out;
+  }
+  if (typeof value !== "object") return out;
+  for (const [key, child] of Object.entries(value as Record<string, unknown>)) {
+    if (keyPattern.test(key)) {
+      if (typeof child === "string" && child.length > 0) out.add(child);
+      else if (typeof child === "number" && Number.isFinite(child)) out.add(String(child));
+    }
+    collectStringsForKeys(child, keyPattern, out, depth + 1);
+  }
+  return out;
 }
 
-function waitForOwnFill(tokenIds: string[], orderIds: string[], timeoutMs: number): Promise<FillSignal | null> {
+function signalOrderIds(signal: FillSignal): string[] {
+  return [...collectStringsForKeys(signal.raw, /(^|_)(order|orderid|order_id|maker_order|taker_order|id)$/i)]
+    .filter((id) => id.startsWith("0x") || id.length > 12);
+}
+
+function directString(raw: any, keys: string[]): string {
+  for (const key of keys) {
+    const value = raw?.[key];
+    if (typeof value === "string" && value.length > 0) return value;
+    if (typeof value === "number" && Number.isFinite(value)) return String(value);
+  }
+  return "";
+}
+
+function normalizedWsTokenId(raw: any): string {
+  const direct = directString(raw, ["asset_id", "assetId", "token_id", "tokenID", "tokenId"]);
+  if (direct) return direct;
+  const nested = collectStringsForKeys(raw, /(asset|token).*id/i);
+  return [...nested].find((value) => activeUserWsTokenIds.has(value)) ?? "";
+}
+
+function numberFromKeys(raw: any, keys: string[]): number {
+  for (const key of keys) {
+    const value = raw?.[key];
+    const num = Number(value);
+    if (Number.isFinite(num) && num > 0) return num;
+  }
+  return 0;
+}
+
+function signalPrice(signal: FillSignal): number {
+  return numberFromKeys(signal.raw, ["price", "match_price", "matched_price", "execution_price", "fill_price"]);
+}
+
+function signalShares(signal: FillSignal): number {
+  return numberFromKeys(signal.raw, ["size", "matched_size", "matchedSize", "shares", "amount", "takingAmount"]);
+}
+
+function fillLikeStatus(status: string): boolean {
+  const normalized = status.toUpperCase();
+  return !normalized
+    || normalized === "MATCHED"
+    || normalized === "CONFIRMED"
+    || normalized === "FILLED"
+    || normalized === "PARTIALLY_FILLED"
+    || normalized === "PARTIAL";
+}
+
+function fillLikeSignal(signal: FillSignal): boolean {
+  if (!fillLikeStatus(signal.status)) return false;
+  if (signal.status) return true;
+  const eventType = String(signal.raw?.event_type ?? signal.raw?.type ?? "");
+  return /trade|fill|match/i.test(eventType);
+}
+
+function ownFillMatches(signal: FillSignal, tokenIds: string[], orderIds: string[], postedAtMs?: number): boolean {
+  if (!tokenIds.includes(signal.tokenId)) return false;
+  if (postedAtMs && Date.parse(signal.receivedAt) + 1_000 < postedAtMs) return false;
   const orderIdSet = new Set(orderIds.filter(Boolean));
-  const matches = (signal: FillSignal) => (
-    tokenIds.includes(signal.tokenId)
-    && signalOrderIds(signal).some((id) => orderIdSet.has(id))
-  );
+  if (signalOrderIds(signal).some((id) => orderIdSet.has(id))) return true;
+  return fillLikeSignal(signal) && signalShares(signal) > 0 && signalPrice(signal) > 0;
+}
+
+function waitForOwnFill(tokenIds: string[], orderIds: string[], timeoutMs: number, postedAtMs?: number): Promise<FillSignal | null> {
+  const matches = (signal: FillSignal) => ownFillMatches(signal, tokenIds, orderIds, postedAtMs);
   const existing = fillSignals.find(matches);
   if (existing) return Promise.resolve(existing);
   return new Promise((resolveFn) => {
@@ -256,12 +439,8 @@ function waitForOwnFill(tokenIds: string[], orderIds: string[], timeoutMs: numbe
   });
 }
 
-function findOwnFill(tokenIds: string[], orderIds: string[]): FillSignal | null {
-  const orderIdSet = new Set(orderIds.filter(Boolean));
-  return fillSignals.find((signal) => (
-    tokenIds.includes(signal.tokenId)
-    && signalOrderIds(signal).some((id) => orderIdSet.has(id))
-  )) ?? null;
+function findOwnFill(tokenIds: string[], orderIds: string[], postedAtMs?: number): FillSignal | null {
+  return fillSignals.find((signal) => ownFillMatches(signal, tokenIds, orderIds, postedAtMs)) ?? null;
 }
 
 function handleUserMessage(raw: WebSocket.RawData) {
@@ -275,17 +454,33 @@ function handleUserMessage(raw: WebSocket.RawData) {
   for (const msg of messages) {
     if (!msg || typeof msg !== "object") continue;
     const eventType = msg.event_type ?? msg.type;
-    if (eventType !== "trade") continue;
-    const tokenId = msg.asset_id;
+    const tokenId = normalizedWsTokenId(msg);
     const status = String(msg.status ?? "").toUpperCase();
-    if (tokenId && (status === "MATCHED" || status === "CONFIRMED" || !status)) {
+    const orderIds = [...collectStringsForKeys(msg, /(^|_)(order|orderid|order_id|maker_order|taker_order|id)$/i)]
+      .filter((id) => id.startsWith("0x") || id.length > 12);
+    const eventLooksRelevant = !eventType
+      || /trade|order|fill|match/i.test(String(eventType))
+      || tokenId
+      || orderIds.length > 0;
+    if (!eventLooksRelevant) continue;
+    pushUserWsAudit({
+      eventType,
+      status,
+      tokenId,
+      orderIds,
+      price: numberFromKeys(msg, ["price", "match_price", "matched_price", "execution_price", "fill_price"]),
+      size: numberFromKeys(msg, ["size", "matched_size", "matchedSize", "shares", "amount", "takingAmount"]),
+      raw: msg,
+    });
+    if (tokenId && fillLikeSignal({ tokenId, status, receivedAt: new Date().toISOString(), raw: msg })) {
       signalFill(tokenId, msg);
     }
   }
 }
 
-async function connectUserWs(clob: ClobBundle, conditionId: string): Promise<WebSocket | null> {
+async function connectUserWs(clob: ClobBundle, conditionId: string, tokenIds: string[] = []): Promise<WebSocket | null> {
   if (!conditionId) return null;
+  activeUserWsTokenIds = new Set(tokenIds);
   const ws = new WebSocket(USER_WS_URL);
   return new Promise((resolveFn) => {
     let settled = false;
@@ -530,6 +725,11 @@ async function fetchEntryTop(tokenId: string): Promise<Top> {
   return fetchTop(tokenId);
 }
 
+async function fetchComplementTop(tokenId: string): Promise<Top> {
+  if (USE_MARKET_WS_CACHE) return fetchEntryTop(tokenId);
+  return fetchTop(tokenId);
+}
+
 function isUpDown5mSlug(slug: string): boolean {
   return /^[a-z0-9-]+-updown-5m-\d+$/.test(slug);
 }
@@ -620,6 +820,10 @@ function normalizePrice(value: number): number {
   return Number(floorToTick(value).toFixed(4));
 }
 
+function maxSafePairCost(): number {
+  return MAX_PAIR_COST - COMPLEMENT_SAFETY_BUFFER;
+}
+
 function dynamicBid(top: Top, label: string): number {
   if (PRICE_OVERRIDE) {
     const price = Number(PRICE_OVERRIDE);
@@ -671,6 +875,46 @@ type QuotePlan = {
   notional: { up: number; down: number; total: number };
   theoreticalPairEdge: number;
 };
+type LoopSide = "up" | "down";
+type LoopEntryLeg = { side: LoopSide; tokenId: string; price: number; shares: number };
+type LoopEntryPlan = {
+  mode: "pair" | "low_prob_only";
+  legs: LoopEntryLeg[];
+  skippedHighProbSide?: LoopSide;
+  highProbPrice?: number;
+  lowProbSide?: LoopSide;
+  lowProbPrice?: number;
+  threshold: number;
+  alwaysLowProbOnly: boolean;
+};
+
+function loopEntryPlan(market: TrackedMarket, quote: QuotePlan): LoopEntryPlan {
+  const upLeg: LoopEntryLeg = { side: "up", tokenId: market.upTokenId, price: quote.upPrice, shares: quote.shares };
+  const downLeg: LoopEntryLeg = { side: "down", tokenId: market.downTokenId, price: quote.downPrice, shares: quote.shares };
+  const upIsHigh = quote.upPrice >= quote.downPrice;
+  const highSide: LoopSide = upIsHigh ? "up" : "down";
+  const lowSide: LoopSide = upIsHigh ? "down" : "up";
+  const highPrice = upIsHigh ? quote.upPrice : quote.downPrice;
+  const lowPrice = upIsHigh ? quote.downPrice : quote.upPrice;
+  if (LOOP_LOW_PROB_ONLY && (LOOP_ALWAYS_LOW_PROB_ONLY || highPrice >= LOOP_HIGH_PROB_MAKER_MAX_PRICE)) {
+    return {
+      mode: "low_prob_only",
+      legs: [lowSide === "up" ? upLeg : downLeg],
+      skippedHighProbSide: highSide,
+      highProbPrice: highPrice,
+      lowProbSide: lowSide,
+      lowProbPrice: lowPrice,
+      threshold: LOOP_HIGH_PROB_MAKER_MAX_PRICE,
+      alwaysLowProbOnly: LOOP_ALWAYS_LOW_PROB_ONLY,
+    };
+  }
+  return {
+    mode: "pair",
+    legs: [upLeg, downLeg],
+    threshold: LOOP_HIGH_PROB_MAKER_MAX_PRICE,
+    alwaysLowProbOnly: LOOP_ALWAYS_LOW_PROB_ONLY,
+  };
+}
 
 async function quotePlanForMarket(market: TrackedMarket): Promise<QuotePlan> {
   const [upTop, downTop] = await Promise.all([
@@ -680,8 +924,9 @@ async function quotePlanForMarket(market: TrackedMarket): Promise<QuotePlan> {
   const upPrice = dynamicBid(upTop, "up_loop");
   const downPrice = dynamicBid(downTop, "down_loop");
   const pairCost = upPrice + downPrice;
-  if (pairCost >= MAX_PAIR_COST) {
-    throw new Error(`loop_edge_gone sum=${pairCost.toFixed(4)} >= ${MAX_PAIR_COST.toFixed(4)}`);
+  const maxPairCost = maxSafePairCost();
+  if (pairCost >= maxPairCost) {
+    throw new Error(`loop_edge_gone sum=${pairCost.toFixed(4)} >= ${maxPairCost.toFixed(4)} buffer=${COMPLEMENT_SAFETY_BUFFER.toFixed(4)}`);
   }
   const crossBlock = complementCrossBlock(upPrice, downPrice, upTop, downTop);
   if (crossBlock) throw new Error(`loop_cross_block ${crossBlock}`);
@@ -723,12 +968,67 @@ function averageBuyPrice(response: unknown, fallbackPrice: number): number {
   if (Number.isFinite(cost) && cost > 0 && Number.isFinite(shares) && shares > 0) {
     return cost / shares;
   }
+  const price = Number(row?.price);
+  if (Number.isFinite(price) && price > 0) return price;
   return fallbackPrice;
 }
 
 function responseBuyShares(response: unknown): number {
   const shares = Number((response as any)?.takingAmount);
   return Number.isFinite(shares) && shares > 0 ? shares : 0;
+}
+
+function matchedResponseFill(
+  market: TrackedMarket,
+  orderIds: { up?: string; down?: string },
+  responses: { up?: unknown; down?: unknown },
+): FillSignal | null {
+  const candidates: Array<{ side: "up" | "down"; tokenId: string; orderID?: string; response?: unknown }> = [
+    { side: "up", tokenId: market.upTokenId, orderID: orderIds.up, response: responses.up },
+    { side: "down", tokenId: market.downTokenId, orderID: orderIds.down, response: responses.down },
+  ];
+  for (const candidate of candidates) {
+    const shares = responseBuyShares(candidate.response);
+    if (responseStatus(candidate.response) !== "matched" || shares <= 0) continue;
+    const price = averageBuyPrice(candidate.response, 0);
+    return {
+      tokenId: candidate.tokenId,
+      status: "MATCHED_RESPONSE",
+      receivedAt: new Date().toISOString(),
+      raw: {
+        ...(candidate.response as any),
+        asset_id: candidate.tokenId,
+        order_id: candidate.orderID,
+        status: "MATCHED",
+        size: String(shares),
+        price: String(price || 0),
+      },
+    };
+  }
+  return null;
+}
+
+function responseFilled(responses: { up?: unknown; down?: unknown }) {
+  return {
+    up: responseStatus(responses.up) === "matched" ? responseBuyShares(responses.up) : 0,
+    down: responseStatus(responses.down) === "matched" ? responseBuyShares(responses.down) : 0,
+  };
+}
+
+function applyCompletionFill(
+  market: TrackedMarket,
+  completion: any,
+  filled: { up: number; down: number },
+) {
+  const bought = Number(completion?.bought);
+  if (!(Number.isFinite(bought) && bought > 0)) return filled;
+  if (completion?.complementSide === "up") {
+    return { ...filled, up: Math.max(filled.up, bought) };
+  }
+  if (completion?.complementSide === "down") {
+    return { ...filled, down: Math.max(filled.down, bought) };
+  }
+  return filled;
 }
 
 function fillSignalDetails(signal: FillSignal | null, market: TrackedMarket, orderIds?: { up?: string; down?: string }): null | {
@@ -751,8 +1051,8 @@ function fillSignalDetails(signal: FillSignal | null, market: TrackedMarket, ord
           ? "down"
           : null;
   if (!sideFilled) return null;
-  const fillPrice = Number(signal.raw?.price);
-  const shares = Number(signal.raw?.size);
+  const fillPrice = signalPrice(signal);
+  const shares = signalShares(signal);
   if (!(fillPrice > 0) || !(shares > 0)) return null;
   const complementSide = sideFilled === "up" ? "down" : "up";
   return {
@@ -854,14 +1154,28 @@ async function tryCompleteImbalance(
 ) {
   const complementSide = sideFilled === "up" ? "down" : "up";
   const complementToken = complementSide === "up" ? market.upTokenId : market.downTokenId;
-  const maxComplementPrice = MAX_PAIR_COST - fillPrice;
+  const maxComplementPrice = maxSafePairCost() - fillPrice;
   const attempts: any[] = [];
   const deadline = Date.now() + COMPLETION_WINDOW_MS;
   let totalBought = 0;
   let totalCost = 0;
 
   while (Date.now() < deadline && totalBought + IMBALANCE_DUST_SHARES < shares) {
-    const top = await fetchTop(complementToken);
+    let top: Top;
+    try {
+      top = await fetchComplementTop(complementToken);
+    } catch (err: any) {
+      attempts.push({
+        at: new Date().toISOString(),
+        complementSide,
+        maxComplementPrice,
+        remaining: roundShares(shares - totalBought),
+        action: "skip",
+        reason: err?.message ?? String(err),
+      });
+      await sleep(FILL_POLL_MS);
+      continue;
+    }
     const remaining = roundShares(shares - totalBought);
     const pick = aggressiveSafeComplementPrice(top, maxComplementPrice);
     const attempt: any = {
@@ -934,8 +1248,23 @@ async function tryReactiveCompletion(
   if (!details) {
     return { action: "skip", reason: "no_fill_signal_details", elapsedMs: 0 };
   }
-  const maxComplementPrice = MAX_PAIR_COST - details.fillPrice;
-  const top = await fetchTop(details.complementToken);
+  const maxComplementPrice = maxSafePairCost() - details.fillPrice;
+  let top: Top;
+  try {
+    top = await fetchComplementTop(details.complementToken);
+  } catch (err: any) {
+    return {
+      action: "skip",
+      startedAt: new Date(startedMs).toISOString(),
+      sideFilled: details.sideFilled,
+      complementSide: details.complementSide,
+      fillPrice: details.fillPrice,
+      shares: details.shares,
+      maxComplementPrice,
+      reason: err?.message ?? String(err),
+      elapsedMs: Date.now() - startedMs,
+    };
+  }
   const pick = aggressiveSafeComplementPrice(top, maxComplementPrice);
   const result: any = {
     action: "skip",
@@ -1084,28 +1413,91 @@ type LoopPair = {
   attempt: any;
 };
 
+function balanceFillSignal(pair: LoopPair, filled: { up: number; down: number }): FillSignal | null {
+  const side: "up" | "down" | null = filled.up > IMBALANCE_DUST_SHARES
+    ? "up"
+    : filled.down > IMBALANCE_DUST_SHARES
+      ? "down"
+      : null;
+  if (!side) return null;
+  const size = side === "up" ? filled.up : filled.down;
+  const price = side === "up" ? pair.quote.upPrice : pair.quote.downPrice;
+  return {
+    tokenId: side === "up" ? pair.market.upTokenId : pair.market.downTokenId,
+    status: "BALANCE_DELTA",
+    receivedAt: new Date().toISOString(),
+    raw: {
+      event_type: "balance_delta",
+      asset_id: side === "up" ? pair.market.upTokenId : pair.market.downTokenId,
+      order_id: side === "up" ? pair.orderIds.up : pair.orderIds.down,
+      status: "CONFIRMED",
+      side,
+      size: String(size),
+      price: String(price),
+    },
+  };
+}
+
+async function waitForImmediateLoopFill(address: string, pair: LoopPair) {
+  const tokenIds = [pair.market.upTokenId, pair.market.downTokenId];
+  const orderIds = [pair.orderIds.up, pair.orderIds.down].filter(isString);
+  const startedMs = Date.now();
+  const deadline = startedMs + LOOP_IMMEDIATE_FILL_WATCH_MS;
+  let balancePolls = 0;
+  let latestFilled: { up: number; down: number } | undefined;
+
+  while (Date.now() < deadline) {
+    const signal = findOwnFill(tokenIds, orderIds, pair.postedAtMs)
+      ?? matchedResponseFill(pair.market, pair.orderIds, pair.responses);
+    if (signal) {
+      return { signal, source: signal.status === "MATCHED_RESPONSE" ? "submit_response" : "user_ws", elapsedMs: Date.now() - startedMs, balancePolls };
+    }
+    await sleep(LOOP_IMMEDIATE_FILL_BALANCE_POLL_MS);
+    const latest = await currentFilled(address, pair.market, pair.before);
+    balancePolls += 1;
+    latestFilled = latest.filled;
+    const balanceSignal = balanceFillSignal(pair, latest.filled);
+    if (balanceSignal) {
+      return { signal: balanceSignal, source: "balance_delta", elapsedMs: Date.now() - startedMs, balancePolls, filled: latest.filled };
+    }
+  }
+
+  const signal = findOwnFill(tokenIds, orderIds, pair.postedAtMs)
+    ?? matchedResponseFill(pair.market, pair.orderIds, pair.responses);
+  return { signal, source: signal ? "late_signal" : "none", elapsedMs: Date.now() - startedMs, balancePolls, filled: latestFilled };
+}
+
 async function cancelLoopPair(client: Clob, pair: LoopPair): Promise<any[]> {
+  const cancellable = cancellableOrderEntries(pair.orderIds, pair.responses);
+  pair.attempt.skippedCancels = skippedCancelEntries(pair.orderIds, pair.responses);
   return Promise.all(
-    [pair.orderIds.up, pair.orderIds.down]
-      .filter(isString)
-      .map((id: string) => cancelOrderTimed(client, id)),
+    cancellable.map((row) => cancelOrderTimed(client, row.orderID!)),
   );
 }
 
-async function postLoopPair(client: Clob, address: string, market: TrackedMarket, quote: QuotePlan): Promise<LoopPair> {
-  const [beforeUp, beforeDown] = await Promise.all([
-    reconcileTokenBalance(address, market.upTokenId),
-    reconcileTokenBalance(address, market.downTokenId),
-  ]);
-  if (beforeUp >= IMBALANCE_DUST_SHARES || beforeDown >= IMBALANCE_DUST_SHARES) {
-    throw new Error(`pre_existing_5m_position up=${beforeUp} down=${beforeDown}`);
-  }
+function loopPreparedPostMode(entryPlan: LoopEntryPlan): "batch" | "single" {
+  if (entryPlan.mode === "low_prob_only" && entryPlan.legs.length === 1 && LOOP_LOW_PROB_POST_MODE === "single") return "single";
+  return "batch";
+}
+
+async function postLoopPair(
+  client: Clob,
+  market: TrackedMarket,
+  quote: QuotePlan,
+  before: { up: number; down: number },
+): Promise<LoopPair> {
   fillSignals.length = 0;
-  const submitStartedMs = Date.now();
-  const [upResp, downResp] = await postLimitBuyPair(client, [
-    { tokenId: market.upTokenId, price: quote.upPrice, shares: quote.shares },
-    { tokenId: market.downTokenId, price: quote.downPrice, shares: quote.shares },
-  ]);
+  userWsAudit.length = 0;
+  const entryPlan = loopEntryPlan(market, quote);
+  const prepared = await prepareLimitBuy(client, entryPlan.legs);
+  const preparedPostMode = loopPreparedPostMode(entryPlan);
+  const postResult = await postPreparedLimitBuy(client, prepared, preparedPostMode);
+  const upResp = entryPlan.legs.find((leg) => leg.side === "up")
+    ? postResult.responses[entryPlan.legs.findIndex((leg) => leg.side === "up")]
+    : undefined;
+  const downResp = entryPlan.legs.find((leg) => leg.side === "down")
+    ? postResult.responses[entryPlan.legs.findIndex((leg) => leg.side === "down")]
+    : undefined;
   const orderIds = { up: orderId(upResp), down: orderId(downResp) };
   const attempt: any = {
     id: `UPDOWN-MAKER-LOOP-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
@@ -1116,34 +1508,48 @@ async function postLoopPair(client: Clob, address: string, market: TrackedMarket
     prices: { up: quote.upPrice, down: quote.downPrice, pairCost: quote.pairCost },
     shares: quote.shares,
     notional: quote.notional,
+    postedNotional: {
+      up: entryPlan.legs.some((leg) => leg.side === "up") ? quote.notional.up : 0,
+      down: entryPlan.legs.some((leg) => leg.side === "down") ? quote.notional.down : 0,
+      total: Number(entryPlan.legs.reduce((sum, leg) => sum + leg.price * leg.shares, 0).toFixed(4)),
+    },
     theoreticalPairEdge: quote.theoreticalPairEdge,
+    entryPlan,
+    preparedPostMode,
     secondsToEnd: secondsToEnd(market.endDate),
     beforeBook: { up: quote.upTop, down: quote.downTop },
-    before: { up: beforeUp, down: beforeDown },
+    before,
     responses: { up: upResp, down: downResp },
     orderIds,
-    latency: { submitPairMs: Date.now() - submitStartedMs },
+    latency: {
+      preSubmitBalanceMs: 0,
+      balanceMode: "market_start_baseline",
+      ...postResult.latency,
+      totalSubmitPathMs: postResult.latency.submitPairMs,
+    },
   };
   try {
-    assertOrderResponse(upResp, "loop_maker_guess_up");
-    assertOrderResponse(downResp, "loop_maker_guess_down");
+    if (upResp) assertOrderResponse(upResp, "loop_maker_guess_up");
+    if (downResp) assertOrderResponse(downResp, "loop_maker_guess_down");
   } catch (err: any) {
     attempt.submitError = err?.message ?? String(err);
+    attempt.skippedSubmitCleanupCancels = skippedCancelEntries(orderIds, attempt.responses);
     attempt.submitCleanup = await Promise.all(
-      [orderIds.up, orderIds.down]
-        .filter(isString)
-        .map((id: string) => cancelOrderTimed(client, id)),
+      cancellableOrderEntries(orderIds, attempt.responses)
+        .map((row) => cancelOrderTimed(client, row.orderID!)),
     );
+    attempt.userWsAudit = userWsAudit.slice();
     appendJsonl(ATTEMPTS_PATH, attempt);
     throw err;
   }
-  log(`loop posted ${market.slug} up=${quote.upPrice.toFixed(4)} down=${quote.downPrice.toFixed(4)} sum=${quote.pairCost.toFixed(4)} shares=${quote.shares.toFixed(2)} ids=${orderIds.up ?? "?"}/${orderIds.down ?? "?"}`);
+  const postedSides = entryPlan.legs.map((leg) => `${leg.side}=${leg.price.toFixed(4)}`).join(" ");
+  log(`loop posted ${market.slug} mode=${entryPlan.mode} postMode=${preparedPostMode} ${postedSides} pairSum=${quote.pairCost.toFixed(4)} shares=${quote.shares.toFixed(2)} ids=${orderIds.up ?? "?"}/${orderIds.down ?? "?"}`);
   return {
     market,
     quote,
     orderIds,
     responses: { up: upResp, down: downResp },
-    before: { up: beforeUp, down: beforeDown },
+    before,
     postedAt: attempt.createdAt,
     postedAtMs: Date.now(),
     attempt,
@@ -1158,10 +1564,14 @@ async function finalizeLoopPair(
   userWs: WebSocket | null,
 ): Promise<"REAL_ARB_FILL" | "NUCLEAR_EXIT" | "NO_FILL" | "UNACCEPTABLE"> {
   const attempt = pair.attempt;
-  attempt.firstFillSignal = firstFill;
-  if (firstFill) {
+  attempt.userWsAudit = userWsAudit.slice();
+  const responseFill = responseFilled(pair.responses);
+  attempt.responseFilled = responseFill;
+  const effectiveFirstFill = firstFill ?? matchedResponseFill(pair.market, pair.orderIds, pair.responses);
+  attempt.firstFillSignal = effectiveFirstFill;
+  if (effectiveFirstFill) {
     const reactiveStartedMs = Date.now();
-    const reactiveCompletion: any = await tryReactiveCompletion(client, pair.market, firstFill, pair.orderIds);
+    const reactiveCompletion: any = await tryReactiveCompletion(client, pair.market, effectiveFirstFill, pair.orderIds);
     attempt.reactiveCompletion = reactiveCompletion;
     attempt.latency.reactiveCompletionMs = Date.now() - reactiveStartedMs;
     if (reactiveCompletion.action === "fak_buy") {
@@ -1174,9 +1584,9 @@ async function finalizeLoopPair(
   attempt.cancels = await cancelLoopPair(client, pair);
   attempt.latency.cancelAllMs = Date.now() - cancelStartedMs;
 
-  let latest = await waitForSettledFilled(address, pair.market, pair.before, firstFill ? 6_000 : 1_000);
-  let upFilled = latest.filled.up;
-  let downFilled = latest.filled.down;
+  let latest = await waitForSettledFilled(address, pair.market, pair.before, effectiveFirstFill ? 6_000 : 1_000);
+  let upFilled = Math.max(latest.filled.up, responseFill.up);
+  let downFilled = Math.max(latest.filled.down, responseFill.down);
   let imbalance = roundShares(Math.abs(upFilled - downFilled));
   const actualFillPrices = {
     up: upFilled > 0 ? averageBuyPrice(pair.responses.up, pair.quote.upPrice) : 0,
@@ -1206,9 +1616,17 @@ async function finalizeLoopPair(
     const completion = await tryCompleteImbalance(client, address, pair.market, side, fillPrice, imbalance);
     attempt.completion = completion;
     latest = await currentFilled(address, pair.market, pair.before);
-    upFilled = latest.filled.up;
-    downFilled = latest.filled.down;
+    const completionFilled = applyCompletionFill(pair.market, completion, {
+      up: Math.max(latest.filled.up, responseFill.up),
+      down: Math.max(latest.filled.down, responseFill.down),
+    });
+    upFilled = completionFilled.up;
+    downFilled = completionFilled.down;
     imbalance = roundShares(Math.abs(upFilled - downFilled));
+    if (completion?.bought > 0 && completion?.averagePrice > 0) {
+      if (completion.complementSide === "up") actualFillPrices.up = completion.averagePrice;
+      if (completion.complementSide === "down") actualFillPrices.down = completion.averagePrice;
+    }
     attempt.afterCompletion = latest.balances;
     attempt.filledAfterCompletion = {
       up: upFilled,
@@ -1217,6 +1635,14 @@ async function finalizeLoopPair(
       imbalance,
       imbalanceSide: upFilled > downFilled ? "up" : downFilled > upFilled ? "down" : null,
     };
+    const matchedAfterCompletion = Math.min(upFilled, downFilled);
+    if (matchedAfterCompletion > 0 && imbalance < IMBALANCE_DUST_SHARES) {
+      const actualPairCost = actualFillPrices.up + actualFillPrices.down;
+      attempt.actualMatchedPair = {
+        pairCost: actualPairCost,
+        lockedProfitEstimate: matchedAfterCompletion * (1 - actualPairCost),
+      };
+    }
   }
 
   if (imbalance >= IMBALANCE_DUST_SHARES) {
@@ -1251,19 +1677,20 @@ async function finalizeLoopPair(
     || o.asset_id === pair.market.upTokenId
     || o.asset_id === pair.market.downTokenId
   ));
+  attempt.userWsAudit = userWsAudit.slice();
   appendJsonl(ATTEMPTS_PATH, attempt);
   const finalMatched = Math.min(upFilled, downFilled);
   log(`loop result filled up=${upFilled} down=${downFilled} matched=${finalMatched} imbalance=${imbalance}`);
+  if (attempt.nuclearStop?.status === "sold") return "NUCLEAR_EXIT";
   if (finalMatched < IMBALANCE_DUST_SHARES && imbalance < IMBALANCE_DUST_SHARES) return "NO_FILL";
   if (finalMatched > 0 && imbalance < IMBALANCE_DUST_SHARES && (attempt.actualMatchedPair?.lockedProfitEstimate ?? 0) > 0) {
     return "REAL_ARB_FILL";
   }
-  if (attempt.nuclearStop?.status === "sold") return "NUCLEAR_EXIT";
   return "UNACCEPTABLE";
 }
 
-async function loopLiveMain() {
-  const clob = await clobClient();
+async function loopLiveMain(existingClob?: ClobBundle, installSignalHandlers = true, runLabel = "") {
+  const clob = existingClob ?? await clobClient();
   const client = clob.client;
   const address = POLYMARKET_FUNDER_ADDRESS ?? clob.signer.address;
   const startedMs = Date.now();
@@ -1272,6 +1699,7 @@ async function loopLiveMain() {
   let userWs: WebSocket | null = null;
   let marketWs: WebSocket | null = null;
   let activePair: LoopPair | null = null;
+  let marketBaseline: { up: number; down: number } | null = null;
 
   const shutdown = async () => {
     if (activePair) {
@@ -1281,10 +1709,12 @@ async function loopLiveMain() {
     userWs?.close();
     marketWs?.close();
   };
-  process.once("SIGINT", () => { shutdown().finally(() => process.exit(130)); });
-  process.once("SIGTERM", () => { shutdown().finally(() => process.exit(143)); });
+  if (installSignalHandlers) {
+    process.once("SIGINT", () => { shutdown().finally(() => process.exit(130)); });
+    process.once("SIGTERM", () => { shutdown().finally(() => process.exit(143)); });
+  }
 
-  log(`${LOOP_LIVE ? "loop-live" : "loop-dry-run"} starting BTC-only refreshMs=${LOOP_REFRESH_MS} maxMs=${LOOP_MAX_MS} maxNotional=$${MAX_TEST_PAIR_NOTIONAL_USD}`);
+  log(`${LOOP_LIVE ? "loop-live" : "loop-dry-run"}${runLabel ? ` ${runLabel}` : ""} starting BTC-only refreshMs=${LOOP_REFRESH_MS} maxMs=${LOOP_MAX_MS} maxNotional=$${MAX_TEST_PAIR_NOTIONAL_USD} maxPairCost=${maxSafePairCost().toFixed(4)} safetyBuffer=${COMPLEMENT_SAFETY_BUFFER.toFixed(4)}`);
 
   while (Date.now() - startedMs < LOOP_MAX_MS) {
     if (LOOP_MAX_IDLE_MS > 0 && Date.now() - idleStartedMs > LOOP_MAX_IDLE_MS) {
@@ -1300,19 +1730,30 @@ async function loopLiveMain() {
       userWs = null;
       marketWs?.close();
       marketWs = null;
+      marketBaseline = null;
       market = await discoverBtcMarket();
       if (!market) {
         await sleep(LOOP_REFRESH_MS);
         continue;
       }
       marketWs = await connectMarketWs(market);
-      userWs = await connectUserWs(clob, market.conditionId);
+      userWs = await connectUserWs(clob, market.conditionId, [market.upTokenId, market.downTokenId]);
       await Promise.all([tickSize(client, market.upTokenId), tickSize(client, market.downTokenId)]);
-      log(`loop tracking ${market.slug} secondsToEnd=${secondsToEnd(market.endDate)?.toFixed(1) ?? "?"} marketWs=${marketWs?.readyState === WebSocket.OPEN} cacheAges=${Math.round(cacheAgeMs(market.upTokenId))}/${Math.round(cacheAgeMs(market.downTokenId))}ms`);
+      const baselineStartedMs = Date.now();
+      const [baselineUp, baselineDown] = await Promise.all([
+        reconcileTokenBalance(address, market.upTokenId),
+        reconcileTokenBalance(address, market.downTokenId),
+      ]);
+      marketBaseline = { up: baselineUp, down: baselineDown };
+      if (baselineUp >= IMBALANCE_DUST_SHARES || baselineDown >= IMBALANCE_DUST_SHARES) {
+        throw new Error(`pre_existing_5m_position up=${baselineUp} down=${baselineDown}`);
+      }
+      log(`loop tracking ${market.slug} secondsToEnd=${secondsToEnd(market.endDate)?.toFixed(1) ?? "?"} marketWs=${marketWs?.readyState === WebSocket.OPEN} cacheAges=${Math.round(cacheAgeMs(market.upTokenId))}/${Math.round(cacheAgeMs(market.downTokenId))}ms baselineMs=${Date.now() - baselineStartedMs}`);
     }
 
     const firstFill = activePair
-      ? findOwnFill([market.upTokenId, market.downTokenId], [activePair.orderIds.up, activePair.orderIds.down].filter(isString))
+      ? findOwnFill([market.upTokenId, market.downTokenId], [activePair.orderIds.up, activePair.orderIds.down].filter(isString), activePair.postedAtMs)
+        ?? matchedResponseFill(market, activePair.orderIds, activePair.responses)
       : null;
     if (activePair && firstFill) {
       const classification = await finalizeLoopPair(client, address, activePair, firstFill, userWs);
@@ -1327,7 +1768,8 @@ async function loopLiveMain() {
       quote = await quotePlanForMarket(market);
     } catch (err: any) {
       if (activePair) {
-        const firstFill = findOwnFill([market.upTokenId, market.downTokenId], [activePair.orderIds.up, activePair.orderIds.down].filter(isString));
+        const firstFill = findOwnFill([market.upTokenId, market.downTokenId], [activePair.orderIds.up, activePair.orderIds.down].filter(isString), activePair.postedAtMs)
+          ?? matchedResponseFill(market, activePair.orderIds, activePair.responses);
         const classification = await finalizeLoopPair(client, address, activePair, firstFill, userWs);
         if (classification !== "NO_FILL") {
           log(`loop terminal classification=${classification}`);
@@ -1344,13 +1786,24 @@ async function loopLiveMain() {
 
     if (!activePair) {
       if (!LOOP_LIVE) {
-        log(`loop dry quote ${market.slug} up=${quote.upPrice.toFixed(4)} down=${quote.downPrice.toFixed(4)} sum=${quote.pairCost.toFixed(4)} shares=${quote.shares.toFixed(2)}`);
+        const plan = loopEntryPlan(market, quote);
+        const postedSides = plan.legs.map((leg) => `${leg.side}=${leg.price.toFixed(4)}`).join(" ");
+        log(`loop dry quote ${market.slug} mode=${plan.mode} ${postedSides} pairSum=${quote.pairCost.toFixed(4)} shares=${quote.shares.toFixed(2)}`);
         await sleep(LOOP_REFRESH_MS);
         continue;
       }
       try {
-        activePair = await postLoopPair(client, address, market, quote);
+        activePair = await postLoopPair(client, market, quote, marketBaseline ?? { up: 0, down: 0 });
         idleStartedMs = Date.now();
+        const immediate = await waitForImmediateLoopFill(address, activePair);
+        activePair.attempt.immediateFillWatch = immediate;
+        if (immediate.signal) {
+          const classification = await finalizeLoopPair(client, address, activePair, immediate.signal, userWs);
+          log(`loop terminal classification=${classification}`);
+          userWs?.close();
+          marketWs?.close();
+          return;
+        }
       } catch (err: any) {
         log(`loop post skipped: ${err?.message ?? String(err)}`);
         await sleep(LOOP_REFRESH_MS);
@@ -1359,7 +1812,8 @@ async function loopLiveMain() {
     }
 
     if (quoteChanged(activePair.quote, quote)) {
-      const firstFill = findOwnFill([market.upTokenId, market.downTokenId], [activePair.orderIds.up, activePair.orderIds.down].filter(isString));
+      const firstFill = findOwnFill([market.upTokenId, market.downTokenId], [activePair.orderIds.up, activePair.orderIds.down].filter(isString), activePair.postedAtMs)
+        ?? matchedResponseFill(market, activePair.orderIds, activePair.responses);
       const classification = await finalizeLoopPair(client, address, activePair, firstFill, userWs);
       if (classification !== "NO_FILL") {
         log(`loop terminal classification=${classification}`);
@@ -1373,8 +1827,17 @@ async function loopLiveMain() {
         continue;
       }
       try {
-        activePair = await postLoopPair(client, address, market, quote);
+        activePair = await postLoopPair(client, market, quote, marketBaseline ?? { up: 0, down: 0 });
         idleStartedMs = Date.now();
+        const immediate = await waitForImmediateLoopFill(address, activePair);
+        activePair.attempt.immediateFillWatch = immediate;
+        if (immediate.signal) {
+          const classification = await finalizeLoopPair(client, address, activePair, immediate.signal, userWs);
+          log(`loop terminal classification=${classification}`);
+          userWs?.close();
+          marketWs?.close();
+          return;
+        }
       } catch (err: any) {
         log(`loop replace skipped: ${err?.message ?? String(err)}`);
         await sleep(LOOP_REFRESH_MS);
@@ -1387,6 +1850,25 @@ async function loopLiveMain() {
 
   await shutdown();
   log("loop-live ended without terminal fill");
+}
+
+async function loopRepeatMain() {
+  const repeatCount = Math.max(1, Math.floor(LOOP_REPEAT_COUNT));
+  if (repeatCount <= 1) {
+    await loopLiveMain();
+    return;
+  }
+  const clob = await clobClient();
+  log(`loop hot runner starting repeatCount=${repeatCount} pauseMs=${LOOP_REPEAT_PAUSE_MS}`);
+  let stopping = false;
+  process.once("SIGINT", () => { stopping = true; });
+  process.once("SIGTERM", () => { stopping = true; });
+  for (let idx = 0; idx < repeatCount && !stopping; idx += 1) {
+    log(`loop hot runner attempt ${idx + 1}/${repeatCount}`);
+    await loopLiveMain(clob, false, `[${idx + 1}/${repeatCount}]`);
+    if (idx + 1 < repeatCount && !stopping) await sleep(LOOP_REPEAT_PAUSE_MS);
+  }
+  log("loop hot runner ended");
 }
 
 async function main() {
@@ -1409,8 +1891,9 @@ async function main() {
       const candidateUpPrice = dynamicBid(candidateUpTop, "up");
       const candidateDownPrice = dynamicBid(candidateDownTop, "down");
       const candidatePairCost = candidateUpPrice + candidateDownPrice;
-      if (candidatePairCost >= MAX_PAIR_COST) {
-        skips.push(`${candidateMarket.slug}: sum=${candidatePairCost.toFixed(4)} >= ${MAX_PAIR_COST.toFixed(4)}`);
+      const maxPairCost = maxSafePairCost();
+      if (candidatePairCost >= maxPairCost) {
+        skips.push(`${candidateMarket.slug}: sum=${candidatePairCost.toFixed(4)} >= ${maxPairCost.toFixed(4)} buffer=${COMPLEMENT_SAFETY_BUFFER.toFixed(4)}`);
         continue;
       }
       const crossBlock = complementCrossBlock(candidateUpPrice, candidateDownPrice, candidateUpTop, candidateDownTop);
@@ -1477,7 +1960,7 @@ async function main() {
   const clob = await clobClient();
   const address = POLYMARKET_FUNDER_ADDRESS ?? clob.signer.address;
   attempt.walletAddress = address;
-  const userWs = await connectUserWs(clob, market.conditionId);
+  const userWs = await connectUserWs(clob, market.conditionId, [market.upTokenId, market.downTokenId]);
   attempt.userWs = { connected: userWs?.readyState === WebSocket.OPEN, conditionId: market.conditionId };
   const tickWarmStartedMs = Date.now();
   await Promise.all([tickSize(clob.client, market.upTokenId), tickSize(clob.client, market.downTokenId)]);
@@ -1507,8 +1990,9 @@ async function main() {
   const preSubmitDownPrice = dynamicBid(preSubmitDownTop, "down_pre_submit");
   const preSubmitPairCost = preSubmitUpPrice + preSubmitDownPrice;
   const preSubmitCrossBlock = complementCrossBlock(preSubmitUpPrice, preSubmitDownPrice, preSubmitUpTop, preSubmitDownTop);
-  if (preSubmitPairCost >= MAX_PAIR_COST) {
-    throw new Error(`pre_submit_edge_gone sum=${preSubmitPairCost.toFixed(4)} >= ${MAX_PAIR_COST.toFixed(4)}`);
+  const preSubmitMaxPairCost = maxSafePairCost();
+  if (preSubmitPairCost >= preSubmitMaxPairCost) {
+    throw new Error(`pre_submit_edge_gone sum=${preSubmitPairCost.toFixed(4)} >= ${preSubmitMaxPairCost.toFixed(4)} buffer=${COMPLEMENT_SAFETY_BUFFER.toFixed(4)}`);
   }
   if (preSubmitCrossBlock) {
     throw new Error(`pre_submit_cross_block ${preSubmitCrossBlock}`);
@@ -1545,24 +2029,27 @@ async function main() {
   log(`pre-submit ${market.slug} bid up=${upPrice.toFixed(4)} down=${downPrice.toFixed(4)} sum=${pairCost.toFixed(4)} x ${shares.toFixed(2)} shares`);
 
   fillSignals.length = 0;
-  const submitStartedMs = Date.now();
-  const [upResp, downResp] = await postLimitBuyPair(clob.client, [
+  userWsAudit.length = 0;
+  const postResult = await postLimitBuyPair(clob.client, [
     { tokenId: market.upTokenId, price: upPrice, shares },
     { tokenId: market.downTokenId, price: downPrice, shares },
   ]);
-  attempt.latency = { submitPairMs: Date.now() - submitStartedMs };
+  const [upResp, downResp] = postResult.responses;
+  attempt.latency = postResult.latency;
   attempt.responses = { up: upResp, down: downResp };
   attempt.orderIds = { up: orderId(upResp), down: orderId(downResp) };
+  attempt.postedAtMs = Date.now();
   try {
     assertOrderResponse(upResp, "maker_guess_up");
     assertOrderResponse(downResp, "maker_guess_down");
   } catch (err: any) {
     attempt.submitError = err?.message ?? String(err);
+    attempt.skippedSubmitCleanupCancels = skippedCancelEntries(attempt.orderIds, attempt.responses);
     attempt.submitCleanup = await Promise.all(
-      [attempt.orderIds.up, attempt.orderIds.down]
-        .filter(Boolean)
-        .map((id: string) => cancelOrderTimed(clob.client, id)),
+      cancellableOrderEntries(attempt.orderIds, attempt.responses)
+        .map((row) => cancelOrderTimed(clob.client, row.orderID!)),
     );
+    attempt.userWsAudit = userWsAudit.slice();
     appendJsonl(ATTEMPTS_PATH, attempt);
     userWs?.close();
     throw err;
@@ -1574,6 +2061,7 @@ async function main() {
     [market.upTokenId, market.downTokenId],
     [attempt.orderIds.up, attempt.orderIds.down].filter(Boolean),
     HOLD_MS,
+    attempt.postedAtMs,
   );
   attempt.firstFillSignal = firstFill;
   attempt.latency.firstFillWaitMs = Date.now() - fillWaitStartedMs;
@@ -1604,10 +2092,10 @@ async function main() {
   }
 
   const cancelStartedMs = Date.now();
+  attempt.skippedCancels = skippedCancelEntries(attempt.orderIds, attempt.responses);
   const cancelResults = await Promise.all(
-    [attempt.orderIds.up, attempt.orderIds.down]
-      .filter(Boolean)
-      .map((id: string) => cancelOrderTimed(clob.client, id)),
+    cancellableOrderEntries(attempt.orderIds, attempt.responses)
+      .map((row) => cancelOrderTimed(clob.client, row.orderID!)),
   );
   attempt.cancels = cancelResults;
   attempt.latency.cancelAllMs = Date.now() - cancelStartedMs;
@@ -1692,6 +2180,7 @@ async function main() {
     };
   }
 
+  attempt.userWsAudit = userWsAudit.slice();
   appendJsonl(ATTEMPTS_PATH, attempt);
   const finalMatched = Math.min(upFilled, downFilled);
   log(`result filled up=${upFilled} down=${downFilled} matched=${finalMatched} imbalance=${imbalance}`);
@@ -1699,7 +2188,9 @@ async function main() {
   userWs?.close();
 }
 
-(LOOP_MODE ? loopLiveMain() : main()).catch((err) => {
+installHttpKeepAlive();
+
+(LOOP_MODE ? loopRepeatMain() : main()).catch((err) => {
   console.error(err);
   process.exit(1);
 });
