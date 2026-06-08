@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { parseCsvLine, readCsvRecords } from "./csv.js";
+import { csvCell, csvLine, parseCsvLine, readCsvRecords } from "./csv.js";
 
 let tempDirs: string[] = [];
 
@@ -37,5 +37,13 @@ describe("reporting csv helpers", () => {
   it("returns an empty array for missing or headerless files", () => {
     expect(readCsvRecords(join(tmpdir(), "missing-reporting-csv.csv"))).toEqual([]);
     expect(readCsvRecords(tempFile("\n\n"))).toEqual([]);
+  });
+
+  it("escapes output cells and lines", () => {
+    expect(csvCell("plain")).toBe("plain");
+    expect(csvCell(null)).toBe("");
+    expect(csvCell('hello, "world"')).toBe('"hello, ""world"""');
+    expect(csvCell("two\nlines")).toBe('"two\nlines"');
+    expect(csvLine(["id", 'hello, "world"', 1.23, undefined])).toBe('id,"hello, ""world""",1.23,');
   });
 });

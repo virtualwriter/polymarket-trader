@@ -2,7 +2,7 @@
 import { closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { readCsvRecords } from "./lib/reporting/csv.js";
+import { csvLine, readCsvRecords } from "./lib/reporting/csv.js";
 import { loadOperationallyTaintedTrades } from "./portfolio-ledger.js";
 
 type Outcome = "win" | "loss";
@@ -529,15 +529,6 @@ function fmtPct(value: number): string {
 
 function winRate(stats: Stats): string {
   return stats.trades > 0 ? `${((stats.wins / stats.trades) * 100).toFixed(1)}%` : "n/a";
-}
-
-function csvCell(value: string | number | null | undefined): string {
-  const text = value === null || value === undefined ? "" : String(value);
-  return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, "\"\"")}"` : text;
-}
-
-function csvLine(values: Array<string | number | null | undefined>): string {
-  return values.map(csvCell).join(",");
 }
 
 function safeNumber(value: unknown): number | null {

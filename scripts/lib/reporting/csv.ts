@@ -1,5 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 
+export type CsvCellValue = string | number | null | undefined;
+
 export function parseCsvLine(line: string): string[] {
   const cells: string[] = [];
   let cell = "";
@@ -41,4 +43,13 @@ export function readCsvRecords(file: string): Record<string, string>[] {
     const values = parseCsvLine(line);
     return Object.fromEntries(headers.map((header, idx) => [header, values[idx] ?? ""]));
   });
+}
+
+export function csvCell(value: CsvCellValue): string {
+  const text = value === null || value === undefined ? "" : String(value);
+  return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, "\"\"")}"` : text;
+}
+
+export function csvLine(values: CsvCellValue[]): string {
+  return values.map(csvCell).join(",");
 }
