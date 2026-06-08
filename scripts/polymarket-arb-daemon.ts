@@ -18,10 +18,12 @@
 import { webcrypto } from "node:crypto";
 import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { createRequire } from "node:module";
 import { config } from "dotenv";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import WebSocket from "ws";
+import { OrderType, Side, type TickSize } from "@polymarket/clob-client-v2";
 import { VpnGuard } from "../engine-src/live/VpnGuard.js";
 import {
   type Candidate,
@@ -63,7 +65,6 @@ import {
   orderId,
   packageRecord,
   postFakBuy,
-  postFakBuyBatch,
   postLimitBuy,
   postLimitSell,
   postFakSell,
@@ -82,6 +83,7 @@ if (!globalThis.crypto) (globalThis as { crypto?: Crypto }).crypto = webcrypto a
 const __dirname = dirname(fileURLToPath(import.meta.url));
 config({ path: resolve(__dirname, "../.env") });
 config({ path: resolve(__dirname, "../../config.env") });
+const require = createRequire(import.meta.url);
 
 const HOST = process.env.POLYMARKET_CLOB_HOST ?? "https://clob.polymarket.com";
 const GAMMA_API = process.env.GAMMA_API ?? "https://gamma-api.polymarket.com";
@@ -104,6 +106,9 @@ const RECONNECT_BASE_MS = Number(process.env.ARB_DAEMON_RECONNECT_BASE_MS ?? 1_0
 const RECONNECT_MAX_MS = Number(process.env.ARB_DAEMON_RECONNECT_MAX_MS ?? 30_000);
 const BOOK_FETCH_TIMEOUT_MS = Number(process.env.ARB_DAEMON_BOOK_FETCH_TIMEOUT_MS ?? 8_000);
 const GIT_PUSH = process.env.ARB_DAEMON_GIT_PUSH === "1";
+const HTTP_KEEP_ALIVE = process.env.ARB_DAEMON_HTTP_KEEP_ALIVE !== "0";
+const MONOTONIC_POST_MODE = (process.env.ARB_DAEMON_POST_MODE ?? "batch").toLowerCase();
+const RESPONSE_FILL_FIRST = process.env.ARB_DAEMON_RESPONSE_FILL_FIRST !== "0";
 // NBA live markets use a single CLOB batch request for the two FAK BUY legs.
 // This is the tightest API-supported coupling available; the exchange still
 // reports per-order fills, so orphan/no-loss handling remains the final guard.
@@ -124,10 +129,10 @@ const MIN_MARKETABLE_BUY_USD = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_MARK
 // base monotonic arb behavior unchanged for non-sports, but require sports
 // packages to survive a fresh book pull, deeper displayed depth, and worse
 // limit prices before sending separate FAK legs.
-const SPORTS_MIN_EDGE = Number(process.env.ARB_DAEMON_SPORTS_MIN_EDGE ?? 0.05);
+const SPORTS_MIN_EDGE = Number(process.env.ARB_DAEMON_SPORTS_MIN_EDGE ?? 0);
 const SPORTS_MIN_AVAILABLE_SHARES = Number(process.env.ARB_DAEMON_SPORTS_MIN_AVAILABLE_SHARES ?? 50);
-const SPORTS_MAX_SPREAD = Number(process.env.ARB_DAEMON_SPORTS_MAX_SPREAD ?? MAX_SPREAD);
-const SPORTS_PRICE_SLIPPAGE = Number(process.env.ARB_DAEMON_SPORTS_PRICE_SLIPPAGE ?? 0.01);
+const SPORTS_MAX_SPREAD = Number(process.env.ARB_DAEMON_SPORTS_MAX_SPREAD ?? 0.02);
+const SPORTS_PRICE_SLIPPAGE = Number(process.env.ARB_DAEMON_SPORTS_PRICE_SLIPPAGE ?? 0);
 // 0 means live sports are allowed after the scheduled start/endDate. Set a
 // positive value to block entries within that many ms before start.
 const SPORTS_ENTRY_CUTOFF_MS = Number(process.env.ARB_DAEMON_SPORTS_ENTRY_CUTOFF_MS ?? 0);
@@ -136,6 +141,11 @@ const SPORTS_ENTRY_CUTOFF_MS = Number(process.env.ARB_DAEMON_SPORTS_ENTRY_CUTOFF
 const SPORTS_DEPTH_RESERVE_MULTIPLIER = Number(process.env.ARB_DAEMON_SPORTS_DEPTH_RESERVE_MULTIPLIER ?? 3);
 const NON_SPORTS_EXCHANGE_MIN_BUFFER_SHARES = Number(process.env.ARB_DAEMON_NON_SPORTS_EXCHANGE_MIN_BUFFER_SHARES ?? 25);
 const STALE_SUBMITTED_MS = Number(process.env.ARB_DAEMON_STALE_SUBMITTED_MS ?? 600_000);
+const HL_API = process.env.HYPERLIQUID_INFO_API ?? "https://api.hyperliquid.xyz/info";
+const SPOT_REFRESH_MS = Number(process.env.ARB_DAEMON_SPOT_REFRESH_MS ?? 60_000);
+const JUNE_BREAKEVEN_EPSILON = Number(process.env.ARB_DAEMON_JUNE_BREAKEVEN_EPSILON ?? 0.00001);
+const JUNE_BREAKEVEN_COMMODITY_MAX_DISTANCE = Number(process.env.ARB_DAEMON_JUNE_BREAKEVEN_COMMODITY_MAX_DISTANCE ?? 0.10);
+const JUNE_BREAKEVEN_CRYPTO_MAX_DISTANCE = Number(process.env.ARB_DAEMON_JUNE_BREAKEVEN_CRYPTO_MAX_DISTANCE ?? 0.15);
 const NEAR_MISS_BUCKETS = [
   { label: "cost<=0.9995", cost: 0.9995 },
   { label: "cost<=1.0000", cost: 1.0000 },
@@ -210,6 +220,7 @@ interface NearMissSample {
   availableSize: number;
   maxSpread: number;
   minShares: number;
+  rangeBlock: string | null;
   edgeOk: boolean;
   spreadOk: boolean;
   sizeOk: boolean;
@@ -266,6 +277,8 @@ let alreadyOpen = new Set<string>();
 const submitTimestamps: number[] = [];
 const quarantinedPackages = new Set<string>();
 const quarantinedTokens = new Set<string>();
+const spotPrices = new Map<string, number>();
+let lastSpotRefreshAt = 0;
 
 // Cached on-chain state (refreshed off the hot path)
 let cachedFunderBalance = 0;
@@ -308,9 +321,86 @@ let marketWs: WebSocket | null = null;
 let userWs: WebSocket | null = null;
 let shuttingDown = false;
 let tradingPausedReason: string | null = null;
+const tickSizeCache = new Map<string, TickSize>();
 
 function log(...args: unknown[]) {
   console.log(`[arb-daemon ${new Date().toISOString()}]`, ...args);
+}
+
+function installHttpKeepAlive() {
+  if (!HTTP_KEEP_ALIVE) return;
+  try {
+    const undici = require("undici") as any;
+    if (typeof undici?.setGlobalDispatcher !== "function" || typeof undici?.Agent !== "function") return;
+    undici.setGlobalDispatcher(new undici.Agent({
+      connections: Number(process.env.ARB_DAEMON_HTTP_CONNECTIONS ?? 16),
+      keepAliveTimeout: Number(process.env.ARB_DAEMON_HTTP_KEEP_ALIVE_TIMEOUT_MS ?? 30_000),
+      keepAliveMaxTimeout: Number(process.env.ARB_DAEMON_HTTP_KEEP_ALIVE_MAX_TIMEOUT_MS ?? 120_000),
+    }));
+    log("HTTP keep-alive dispatcher installed");
+  } catch (err: any) {
+    log(`HTTP keep-alive dispatcher unavailable: ${err?.message ?? String(err)}`);
+  }
+}
+
+type Clob = Awaited<ReturnType<typeof clobClient>>["client"];
+type PreparedFakBuy = {
+  role: "broad_yes" | "narrow_no";
+  tokenId: string;
+  price: number;
+  shares: number;
+  order: Awaited<ReturnType<Clob["createOrder"]>>;
+  orderType: OrderType;
+};
+
+async function tickSize(client: Clob, tokenId: string): Promise<TickSize> {
+  const cached = tickSizeCache.get(tokenId);
+  if (cached) return cached;
+  const size = await client.getTickSize(tokenId) as TickSize;
+  tickSizeCache.set(tokenId, size);
+  return size;
+}
+
+async function prepareFakBuy(client: Clob, leg: { role: "broad_yes" | "narrow_no"; tokenId: string; price: number; shares: number }): Promise<PreparedFakBuy> {
+  const size = await tickSize(client, leg.tokenId);
+  const order = await client.createOrder(
+    { tokenID: leg.tokenId, price: leg.price, size: Number(leg.shares.toFixed(6)), side: Side.BUY, ...(process.env.POLY_BUILDER_CODE?.trim() ? { builderCode: process.env.POLY_BUILDER_CODE.trim() } : {}) },
+    { tickSize: size, negRisk: false },
+  );
+  return { ...leg, order, orderType: OrderType.FAK };
+}
+
+async function postPreparedFakBuys(client: Clob, prepared: PreparedFakBuy[], forceBatch: boolean) {
+  const postStartedMs = Date.now();
+  if (forceBatch || MONOTONIC_POST_MODE === "batch") {
+    const response = await client.postOrders(prepared.map((row) => ({ order: row.order, orderType: row.orderType })));
+    return {
+      responses: Array.isArray(response) ? response : [response],
+      postOrdersMs: Date.now() - postStartedMs,
+      postMode: "batch",
+    };
+  }
+  const responses = await Promise.all(prepared.map((row) => client.postOrder(row.order, row.orderType)));
+  return {
+    responses,
+    postOrdersMs: Date.now() - postStartedMs,
+    postMode: "parallel",
+  };
+}
+
+function responseBuyShares(response: unknown): number {
+  const shares = Number((response as any)?.takingAmount);
+  return Number.isFinite(shares) && shares > 0 ? shares : 0;
+}
+
+function averageBuyPrice(response: unknown, fallbackPrice: number): number {
+  const row = response as any;
+  const cost = Number(row?.makingAmount);
+  const shares = Number(row?.takingAmount);
+  if (Number.isFinite(cost) && cost > 0 && Number.isFinite(shares) && shares > 0) return cost / shares;
+  const price = Number(row?.price);
+  if (Number.isFinite(price) && price > 0) return price;
+  return fallbackPrice;
 }
 
 function emptyLevels(): PriceLevels {
@@ -364,6 +454,53 @@ function topOfBook(tokenId: string): TopOfBook {
   }
   const spread = bid > 0 && ask > 0 ? Math.max(0, ask - bid) : 0;
   return { ask, askSize, bid, bidSize, spread };
+}
+
+async function postHyperliquidInfo(payload: Record<string, unknown>): Promise<any> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), BOOK_FETCH_TIMEOUT_MS);
+  try {
+    const res = await fetch(HL_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json", "User-Agent": "polymarket-arb-daemon/1.0" },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+    if (!res.ok) throw new Error(`POST ${HL_API} ${JSON.stringify(payload)} -> ${res.status}`);
+    return await res.json();
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function setSpot(asset: string, raw: unknown) {
+  const value = Number(raw);
+  if (Number.isFinite(value) && value > 0) spotPrices.set(asset, value);
+}
+
+async function refreshSpotPrices() {
+  try {
+    const metaAndCtx = await postHyperliquidInfo({ type: "metaAndAssetCtxs" });
+    const universe: Array<{ name?: string }> = metaAndCtx?.[0]?.universe ?? [];
+    const ctxs: Array<{ markPx?: string; oraclePx?: string }> = metaAndCtx?.[1] ?? [];
+    for (const asset of ["BTC", "ETH", "SOL", "HYPE"]) {
+      const idx = universe.findIndex((row) => row.name === asset);
+      if (idx >= 0) setSpot(asset, ctxs[idx]?.markPx ?? ctxs[idx]?.oraclePx);
+    }
+
+    const dexMeta = await postHyperliquidInfo({ type: "metaAndAssetCtxs", dex: "xyz" });
+    const dexUniverse: Array<{ name?: string }> = dexMeta?.[0]?.universe ?? [];
+    const dexCtxs: Array<{ markPx?: string; oraclePx?: string }> = dexMeta?.[1] ?? [];
+    for (const [asset, coin] of [["GOLD", "xyz:GOLD"], ["SILVER", "xyz:SILVER"]] as const) {
+      const idx = dexUniverse.findIndex((row) => row.name === coin);
+      if (idx >= 0) setSpot(asset, dexCtxs[idx]?.markPx ?? dexCtxs[idx]?.oraclePx);
+    }
+
+    lastSpotRefreshAt = Date.now();
+    log(`spot refresh: ${["BTC", "ETH", "SOL", "HYPE", "GOLD", "SILVER"].map((asset) => `${asset}=${spotPrices.get(asset)?.toFixed(2) ?? "na"}`).join(" ")}`);
+  } catch (err: any) {
+    log(`spot refresh failed: ${err?.message ?? String(err)}`);
+  }
 }
 
 async function fetchRawBook(tokenId: string): Promise<{ bids: Array<{ price: number; size: number }>; asks: Array<{ price: number; size: number }> }> {
@@ -743,6 +880,31 @@ function isJuneExpiryCandidate(candidate: Candidate): boolean {
   return dates.some((date) => /^2026-06-/.test(date));
 }
 
+function juneBreakevenMaxDistance(asset: string): number | null {
+  if (["GOLD", "SILVER"].includes(asset)) return JUNE_BREAKEVEN_COMMODITY_MAX_DISTANCE;
+  if (["BTC", "ETH", "SOL", "HYPE"].includes(asset)) return JUNE_BREAKEVEN_CRYPTO_MAX_DISTANCE;
+  return null;
+}
+
+function isJuneBreakevenCandidate(candidate: Candidate): boolean {
+  return isJuneExpiryCandidate(candidate)
+    && candidate.lockedEdge <= JUNE_BREAKEVEN_EPSILON
+    && candidate.packageCost + EPSILON >= 1;
+}
+
+function juneBreakevenRangeBlock(candidate: Candidate): string | null {
+  if (!isJuneBreakevenCandidate(candidate)) return null;
+  const maxDistance = juneBreakevenMaxDistance(candidate.asset);
+  if (maxDistance === null) return null;
+  const spot = spotPrices.get(candidate.asset);
+  if (!(spot && spot > 0)) return `june_breakeven_spot_unavailable asset=${candidate.asset}`;
+  const broadDistance = Math.abs(candidate.broad.strike - spot) / spot;
+  const narrowDistance = Math.abs(candidate.narrow.strike - spot) / spot;
+  const worstDistance = Math.max(broadDistance, narrowDistance);
+  if (worstDistance <= maxDistance + EPSILON) return null;
+  return `june_breakeven_strike_too_far asset=${candidate.asset} spot=${spot.toFixed(2)} strikes=${candidate.broad.strike}/${candidate.narrow.strike} distance=${(worstDistance * 100).toFixed(1)}% max=${(maxDistance * 100).toFixed(1)}%`;
+}
+
 function minEdgeFor(candidate: Candidate): number {
   // June expiries are allowed at breakeven (cost <= 1.0000) to fish for middles.
   // Sizing/outlay rules remain exactly the normal daemon rules.
@@ -829,6 +991,7 @@ function passesDynamicGate(candidate: Candidate): boolean {
   if (candidate.lockedEdge + EPSILON < minEdgeFor(candidate)) return false;
   if (candidate.maxSpread - EPSILON > maxSpreadFor(candidate)) return false;
   if (candidate.availableSize + EPSILON < requiredDisplayedTouch(candidate)) return false;
+  if (juneBreakevenRangeBlock(candidate)) return false;
   return true;
 }
 
@@ -846,12 +1009,14 @@ function recordNearMiss(candidate: Candidate) {
     availableSize: candidate.availableSize,
     maxSpread: candidate.maxSpread,
     minShares,
+    rangeBlock: juneBreakevenRangeBlock(candidate),
     edgeOk: candidate.lockedEdge + EPSILON >= minEdgeFor(candidate),
     spreadOk: candidate.maxSpread - EPSILON <= maxSpreadFor(candidate),
     sizeOk: candidate.availableSize + EPSILON >= minShares,
     executableGate: candidate.lockedEdge + EPSILON >= minEdgeFor(candidate)
       && candidate.maxSpread - EPSILON <= maxSpreadFor(candidate)
-      && candidate.availableSize + EPSILON >= minShares,
+      && candidate.availableSize + EPSILON >= minShares
+      && !juneBreakevenRangeBlock(candidate),
   };
   const prev = nearMissBestByPackage.get(candidate.packageId);
   if (!prev || sample.cost < prev.cost) nearMissBestByPackage.set(candidate.packageId, sample);
@@ -878,6 +1043,7 @@ function flushNearMissTelemetry() {
         sample.edgeOk ? "" : "edge",
         sample.spreadOk ? "" : "spread",
         sample.sizeOk ? "" : "size",
+        sample.rangeBlock ? "june_range" : "",
       ].filter(Boolean).join("+") || "none";
       return `${sample.asset} ${sample.eventSlug} YES ${sample.broadStrike}/NO ${sample.narrowStrike} cost=${sample.cost.toFixed(4)} edge=${(sample.edge * 100).toFixed(3)}c size=${sample.availableSize.toFixed(2)}/${sample.minShares.toFixed(2)} spread=${sample.maxSpread.toFixed(4)} block=${blockers}`;
     });
@@ -1073,10 +1239,21 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
       const last = lastSkipLogAt.get(pkg.key) ?? 0;
       if (now - last >= SKIP_LOG_THROTTLE_MS) {
         lastSkipLogAt.set(pkg.key, now);
-        log(`skip ${pkg.key}: sports_preflight_gate edge=${(c.lockedEdge * 100).toFixed(2)}c size=${c.availableSize.toFixed(2)} spread=${c.maxSpread.toFixed(4)} cost=${c.packageCost.toFixed(4)}`);
+        const rangeBlock = juneBreakevenRangeBlock(c);
+        log(`skip ${pkg.key}: sports_preflight_gate edge=${(c.lockedEdge * 100).toFixed(2)}c size=${c.availableSize.toFixed(2)} spread=${c.maxSpread.toFixed(4)} cost=${c.packageCost.toFixed(4)}${rangeBlock ? ` ${rangeBlock}` : ""}`);
       }
       return;
     }
+  }
+  const rangeBlock = juneBreakevenRangeBlock(c);
+  if (rangeBlock) {
+    const now = Date.now();
+    const last = lastSkipLogAt.get(pkg.key) ?? 0;
+    if (now - last >= SKIP_LOG_THROTTLE_MS) {
+      lastSkipLogAt.set(pkg.key, now);
+      log(`skip ${pkg.key}: ${rangeBlock} edge=${(c.lockedEdge * 100).toFixed(2)}c cost=${c.packageCost.toFixed(4)}`);
+    }
+    return;
   }
   const executionCandidate = executionSizingCandidate(c);
   const spendableUsd = spendableUsdAfterReservations();
@@ -1149,40 +1326,53 @@ async function executeLive(pkg: WatchPackage, c: Candidate, shares: number): Pro
   record.updatedAt = new Date().toISOString();
   appendJsonArray(PACKAGES_PATH, [record]);
 
-  // Snapshot both balances before firing (parallel) so fills are measured
-  // against a clean baseline.
-  const [leg1Before, leg2Before] = await Promise.all([
-    reconcileTokenBalance(reconcileAddress, pkg.broadYesToken),
-    reconcileTokenBalance(reconcileAddress, pkg.narrowNoToken),
-  ]);
+  const submitStartedMs = Date.now();
+  let legacyBalanceBefore: { leg1: number; leg2: number } | null = null;
+  if (!RESPONSE_FILL_FIRST) {
+    const balanceStartedMs = Date.now();
+    const [leg1Before, leg2Before] = await Promise.all([
+      reconcileTokenBalance(reconcileAddress, pkg.broadYesToken),
+      reconcileTokenBalance(reconcileAddress, pkg.narrowNoToken),
+    ]);
+    legacyBalanceBefore = { leg1: leg1Before, leg2: leg2Before };
+    (record as any).latency = { preSubmitBalanceMs: Date.now() - balanceStartedMs, balanceMode: "pre_submit_balance" };
+  } else {
+    (record as any).latency = { preSubmitBalanceMs: 0, balanceMode: "submit_response_first" };
+  }
 
-  // Fire BOTH FAK legs concurrently. This is the whole point of parallel taker
-  // fills: both orders hit the book in the same burst, so neither ask can drift
-  // relative to the other (eliminates the sequential leg-price-move window).
-  // allSettled so a rejection on one leg does not abort submission of the other.
+  const signStartedMs = Date.now();
+  const prepared = await Promise.all([
+    prepareFakBuy(client, { role: "broad_yes", tokenId: pkg.broadYesToken, price: c.broad.yesBook.ask, shares }),
+    prepareFakBuy(client, { role: "narrow_no", tokenId: pkg.narrowNoToken, price: c.narrow.noBook.ask, shares }),
+  ]);
+  const signOrdersMs = Date.now() - signStartedMs;
+
+  // Fire BOTH FAK legs in the tightest configured form. Batch mode is the
+  // default because it is a single CLOB request; parallel mode remains available
+  // for A/B latency tests.
   const submittedAt = new Date().toISOString();
-  const [r1, r2] = isSportsCandidate(c)
-    ? await (async () => {
-        try {
-          const responses = await postFakBuyBatch(client, [
-            { tokenId: pkg.broadYesToken, price: c.broad.yesBook.ask, shares },
-            { tokenId: pkg.narrowNoToken, price: c.narrow.noBook.ask, shares },
-          ]);
-          return [
-            { status: "fulfilled", value: responses[0] } as PromiseFulfilledResult<unknown>,
-            { status: "fulfilled", value: responses[1] } as PromiseFulfilledResult<unknown>,
-          ];
-        } catch (err) {
-          return [
-            { status: "rejected", reason: err } as PromiseRejectedResult,
-            { status: "rejected", reason: err } as PromiseRejectedResult,
-          ];
-        }
-      })()
-    : await Promise.allSettled([
-        postFakBuy(client, pkg.broadYesToken, c.broad.yesBook.ask, shares),
-        postFakBuy(client, pkg.narrowNoToken, c.narrow.noBook.ask, shares),
-      ]);
+  const forceBatch = isSportsCandidate(c) && ENABLE_NBA_BATCH_EXECUTION;
+  let r1: PromiseSettledResult<unknown>;
+  let r2: PromiseSettledResult<unknown>;
+  let postMode = forceBatch || MONOTONIC_POST_MODE === "batch" ? "batch" : "parallel";
+  let postOrdersMs = 0;
+  try {
+    const posted = await postPreparedFakBuys(client, prepared, forceBatch);
+    postMode = posted.postMode;
+    postOrdersMs = posted.postOrdersMs;
+    r1 = { status: "fulfilled", value: posted.responses[0] };
+    r2 = { status: "fulfilled", value: posted.responses[1] };
+  } catch (err) {
+    postOrdersMs = Date.now() - (submitStartedMs + signOrdersMs);
+    r1 = { status: "rejected", reason: err };
+    r2 = { status: "rejected", reason: err };
+  }
+  Object.assign((record as any).latency, {
+    signOrdersMs,
+    postOrdersMs,
+    submitPairMs: Date.now() - submitStartedMs,
+    postMode,
+  });
 
   const legErrors: string[] = [];
   let leg1Resp: unknown;
@@ -1206,24 +1396,37 @@ async function executeLive(pkg: WatchPackage, c: Candidate, shares: number): Pro
   record.status = "leg2_submitted";
   record.updatedAt = new Date().toISOString();
 
-  // Wait for both fills (parallel), then reconcile both balances (parallel).
-  // The on-chain balance delta is the authority for what actually filled.
-  await Promise.all([
-    waitForFill(pkg.broadYesToken, FILL_WAIT_DAEMON_MS),
-    waitForFill(pkg.narrowNoToken, FILL_WAIT_DAEMON_MS),
-  ]);
-  const [leg1After, leg2After] = await Promise.all([
-    reconcileTokenBalance(reconcileAddress, pkg.broadYesToken),
-    reconcileTokenBalance(reconcileAddress, pkg.narrowNoToken),
-  ]);
-  const leg1Filled = roundShares(leg1After - leg1Before);
-  const leg2Filled = roundShares(leg2After - leg2Before);
+  let leg1Filled = roundShares(responseBuyShares(leg1Resp));
+  let leg2Filled = roundShares(responseBuyShares(leg2Resp));
+  let fillSource = "submit_response";
+  if (!RESPONSE_FILL_FIRST && legacyBalanceBefore) {
+    const fillWaitStartedMs = Date.now();
+    await Promise.all([
+      waitForFill(pkg.broadYesToken, FILL_WAIT_DAEMON_MS),
+      waitForFill(pkg.narrowNoToken, FILL_WAIT_DAEMON_MS),
+    ]);
+    const reconcileStartedMs = Date.now();
+    const [leg1After, leg2After] = await Promise.all([
+      reconcileTokenBalance(reconcileAddress, pkg.broadYesToken),
+      reconcileTokenBalance(reconcileAddress, pkg.narrowNoToken),
+    ]);
+    leg1Filled = roundShares(leg1After - legacyBalanceBefore.leg1);
+    leg2Filled = roundShares(leg2After - legacyBalanceBefore.leg2);
+    fillSource = "balance_delta";
+    Object.assign((record as any).latency, {
+      fillWaitMs: reconcileStartedMs - fillWaitStartedMs,
+      reconcileMs: Date.now() - reconcileStartedMs,
+    });
+  } else {
+    Object.assign((record as any).latency, { fillWaitMs: 0, reconcileMs: 0 });
+  }
+  (record as any).fillSource = fillSource;
   orders.push({ packageId: record.packageId, createdAt: submittedAt, role: "broad_yes", tokenId: pkg.broadYesToken, side: "BUY", price: c.broad.yesBook.ask, size: leg1Filled, orderType: "FAK", response: leg1Resp });
   orders.push({ packageId: record.packageId, createdAt: submittedAt, role: "narrow_no", tokenId: pkg.narrowNoToken, side: "BUY", price: c.narrow.noBook.ask, size: leg2Filled, orderType: "FAK", response: leg2Resp });
 
   const matched = roundShares(Math.min(leg1Filled, leg2Filled));
   record.filledShares = matched;
-  record.actualCost = (leg1Filled * c.broad.yesBook.ask) + (leg2Filled * c.narrow.noBook.ask);
+  record.actualCost = (leg1Filled * averageBuyPrice(leg1Resp, c.broad.yesBook.ask)) + (leg2Filled * averageBuyPrice(leg2Resp, c.narrow.noBook.ask));
   record.guaranteedFloor = matched;
   record.lockedFloorProfit = matched * c.lockedEdge;
   record.jackpotPayout = matched * c.jackpotPayoutPerShare;
@@ -2073,9 +2276,12 @@ function flushLedger() {
 // ─── Startup ───
 
 async function main() {
+  installHttpKeepAlive();
   log(`starting; mode=${DRY_RUN ? "DRY_RUN" : "REAL"} enabled=${ENABLED} hardDisabled=${HARD_DISABLED}`);
   log(`gates: maxPackage=$${MAX_PACKAGE_USD} maxDaily=$${MAX_DAILY_USD} maxOpen=${MAX_OPEN_PACKAGES} maxPerMin=${MAX_PER_MIN} minEdge=${(MIN_EDGE * 100).toFixed(2)}c minTouch=${MIN_AVAILABLE_SHARES} maxSpread=${MAX_SPREAD}`);
   log(`sports safety: NBA batch execution ${ENABLE_NBA_BATCH_EXECUTION ? "ENABLED (single postOrders request; orphan/no-loss fallback active)" : ALLOW_NBA_NON_ATOMIC_EXECUTION ? "ENABLED by non-atomic override" : "BLOCKED (batch disabled)"}`);
+  log(`submit hot path: postMode=${MONOTONIC_POST_MODE} responseFillFirst=${RESPONSE_FILL_FIRST ? "1" : "0"} httpKeepAlive=${HTTP_KEEP_ALIVE ? "1" : "0"}`);
+  log(`June breakeven filter: commodities<=${(JUNE_BREAKEVEN_COMMODITY_MAX_DISTANCE * 100).toFixed(1)}% crypto<=${(JUNE_BREAKEVEN_CRYPTO_MAX_DISTANCE * 100).toFixed(1)}% refreshMs=${SPOT_REFRESH_MS}`);
   log(`orphan policy: stop=${ORPHAN_STOP_CENTS} completionMargin=${ORPHAN_COMPLETION_MARGIN} expiryBufferMs=${ORPHAN_EXPIRY_BUFFER_MS} pollMs=${ORPHAN_POLL_MS} (re-pair naked legs across ladder, else unwind)`);
   log(`large-orphan quarantine: maxNakedShares=${MAX_NAKED_SHARES_BEFORE_PAUSE} quarantineFile=${QUARANTINE_PATH} globalPauseFile=${PAUSE_PATH}`);
 
@@ -2114,6 +2320,7 @@ async function main() {
   loadPersistentPause();
   loadQuarantine();
   loadOrphans();
+  await refreshSpotPrices();
   await reconcileOrphansAtStartup();
   archiveStaleNbaLedgers();
 
@@ -2123,6 +2330,7 @@ async function main() {
 
   setInterval(() => { void refreshWatchlist(); }, WATCHLIST_REFRESH_MS);
   setInterval(() => { void refreshBalance(); }, BALANCE_REFRESH_MS);
+  setInterval(() => { void refreshSpotPrices(); }, SPOT_REFRESH_MS);
   setInterval(() => archiveStaleNbaLedgers(), WATCHLIST_REFRESH_MS);
   setInterval(() => flushLedger(), LEDGER_FLUSH_MS);
   setInterval(() => orphanLoop(), ORPHAN_POLL_MS);
