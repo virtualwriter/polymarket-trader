@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { csvLine, readCsvRecords } from "./lib/reporting/csv.js";
 import { normalCdf } from "./lib/reporting/math.js";
 import { safeNumber } from "./lib/reporting/number.js";
+import { parseHeatmapTimestamp, parseTimestamp } from "./lib/reporting/time.js";
 import { loadOperationallyTaintedTrades } from "./portfolio-ledger.js";
 
 type Outcome = "win" | "loss";
@@ -531,19 +532,6 @@ function fmtPct(value: number): string {
 
 function winRate(stats: Stats): string {
   return stats.trades > 0 ? `${((stats.wins / stats.trades) * 100).toFixed(1)}%` : "n/a";
-}
-
-function parseHeatmapTimestamp(value: string | undefined): Date | null {
-  if (!value) return null;
-  const normalized = /^\d{4}-\d{2}-\d{2}T\d{2}$/.test(value) ? `${value}:00:00Z` : value;
-  const parsed = new Date(normalized);
-  return Number.isFinite(parsed.getTime()) ? parsed : null;
-}
-
-function parseTimestamp(value: string | undefined): Date | null {
-  if (!value) return null;
-  const parsed = new Date(value);
-  return Number.isFinite(parsed.getTime()) ? parsed : null;
 }
 
 function modelDteDays(row: Record<string, string>): number | null {
