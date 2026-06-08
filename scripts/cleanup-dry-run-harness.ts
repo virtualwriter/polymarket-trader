@@ -11,6 +11,8 @@ const dryRunArtifacts = [
   join(dataDir, "candidate-actions.json"),
   join(dataDir, "engine-state.json"),
   join(dataDir, "execution-plan.json"),
+  join(dataDir, "dry-run-verification.json"),
+  join(dataDir, "llm-advice.json"),
   join(dataDir, "llm-truth-state.json"),
 ];
 
@@ -79,7 +81,7 @@ function comparePath(): string | null {
 
 function comparable(value: any): any {
   if (!value || typeof value !== "object") return value;
-  const { repoHead: _repoHead, comparison: _comparison, ...rest } = value;
+  const { repoHead: _repoHead, comparison: _comparison, gitStatus: _gitStatus, ...rest } = value;
   return rest;
 }
 
@@ -101,7 +103,27 @@ function diffValues(before: any, after: any, path = "$"): string[] {
   return [`${path}: ${JSON.stringify(before)} -> ${JSON.stringify(after)}`];
 }
 
+function gitStatusLines(): string[] {
+  try {
+    return execFileSync("git", ["status", "--porcelain=v1"], {
+      cwd: repoRoot,
+      encoding: "utf8",
+    }).split("\n").filter(Boolean).sort();
+  } catch {
+    return [];
+  }
+}
+
+function statusPath(line: string): string {
+  return line.slice(2).trimStart().replace(/^"|"$/g, "");
+}
+
+function pathSet(lines: string[]): Set<string> {
+  return new Set(lines.map(statusPath));
+}
+
 const backups = backupArtifacts();
+const gitStatusBefore = gitStatusLines();
 let stdout = "";
 let stderr = "";
 let exitCode = 0;
@@ -182,6 +204,13 @@ const summary = {
 };
 
 restoreArtifacts(backups);
+const gitStatusAfter = gitStatusLines();
+const beforePaths = pathSet(gitStatusBefore);
+const afterPaths = pathSet(gitStatusAfter);
+const newDirtyPaths = [...afterPaths].filter((path) => !beforePaths.has(path)).sort();
+const clearedDirtyPaths = [...beforePaths].filter((path) => !afterPaths.has(path)).sort();
+const changedStatusLines = gitStatusAfter.filter((line) => !gitStatusBefore.includes(line)).sort();
+const restoredStatusLines = gitStatusBefore.filter((line) => !gitStatusAfter.includes(line)).sort();
 
 const baselinePath = comparePath();
 const comparison = baselinePath
@@ -204,12 +233,23 @@ const comparison = baselinePath
   : undefined;
 
 const result = comparison ? { ...summary, comparison } : summary;
+const resultWithStatus = {
+  ...result,
+  gitStatus: {
+    dirtyBefore: gitStatusBefore.length,
+    dirtyAfter: gitStatusAfter.length,
+    newDirtyPaths,
+    clearedDirtyPaths,
+    changedStatusLines,
+    restoredStatusLines,
+  },
+};
 
-const out = JSON.stringify(result, null, 2) + "\n";
+const out = JSON.stringify(resultWithStatus, null, 2) + "\n";
 const outPath = outputPath();
 if (outPath) {
   mkdirSync(dirname(outPath), { recursive: true });
   writeFileSync(outPath, out);
 }
 process.stdout.write(out);
-process.exit(exitCode || (comparison && comparison.status !== "match" ? 2 : 0));
+process.exit(exitCode || (comparison && comparison.status !== "match" ? 2 : 0) || (newDirtyPaths.length ? 3 : 0));

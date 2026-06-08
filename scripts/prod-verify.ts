@@ -52,6 +52,43 @@ function commandOutput(command: string, args: string[]): string {
   }
 }
 
+function commandLines(command: string, args: string[]): string[] {
+  try {
+    return execFileSync(command, args, { encoding: "utf8" })
+      .split("\n")
+      .filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+function statusPath(line: string): string {
+  return line.slice(2).trimStart().replace(/^"|"$/g, "");
+}
+
+function isUnmergedStatus(code: string): boolean {
+  return code.includes("U") || code === "AA" || code === "DD";
+}
+
+function isGeneratedOrStatePath(path: string): boolean {
+  return (
+    path.startsWith("data/") ||
+    path.startsWith("relative-value/") ||
+    path.startsWith("exports/") ||
+    path.startsWith(".runtime/")
+  );
+}
+
+function isFrozenCleanupPath(path: string): boolean {
+  return (
+    path === "scripts/updown-5m-book-collector.ts" ||
+    path.startsWith("scripts/lib/updown/") ||
+    path.startsWith("scripts/lib/monotonic") ||
+    path.startsWith("docs/japan-") ||
+    path.includes("monotonic-arb")
+  );
+}
+
 const stateDir = process.env.POLYMARKET_TRADER_STATE_DIR
   ? resolve(process.env.POLYMARKET_TRADER_STATE_DIR)
   : join(repoRoot, ".runtime");
@@ -96,8 +133,39 @@ fileExists("hyperliquid-crv-rebalancer/test_hl_agent_setup.py");
 const stateMount = existsSync(stateDir) ? stateDir : repoRoot;
 const df = commandOutput("df", ["-h", stateMount]);
 const gitRev = commandOutput("git", ["-C", repoRoot, "rev-parse", "--short", "HEAD"]);
+const gitStatus = commandLines("git", ["-C", repoRoot, "status", "--porcelain=v1"]);
+const unmerged = gitStatus.filter((line) => isUnmergedStatus(line.slice(0, 2))).map(statusPath);
+const generatedOrState = gitStatus.map(statusPath).filter(isGeneratedOrStatePath);
+const frozenCleanup = gitStatus.map(statusPath).filter(isFrozenCleanupPath);
+const staged = gitStatus
+  .filter((line) => line[0] !== " " && line[0] !== "?")
+  .map(statusPath);
 const nodeVersion = commandOutput("node", ["--version"]);
 const npmVersion = commandOutput("npm", ["--version"]);
+
+add(
+  "git unresolved conflicts",
+  unmerged.length === 0,
+  unmerged.length ? unmerged.join(", ") : "none",
+);
+add(
+  "git generated/state changes",
+  generatedOrState.length === 0,
+  generatedOrState.length ? generatedOrState.join(", ") : "none",
+  false,
+);
+add(
+  "git frozen Japan/monotonic cleanup paths",
+  frozenCleanup.length === 0,
+  frozenCleanup.length ? frozenCleanup.join(", ") : "none",
+  false,
+);
+add(
+  "git staged changes",
+  staged.length === 0,
+  staged.length ? staged.join(", ") : "none",
+  false,
+);
 
 console.log("Production verification (read-only)");
 console.log(`repo=${repoRoot}`);
