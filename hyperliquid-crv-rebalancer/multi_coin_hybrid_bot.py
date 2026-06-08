@@ -26,6 +26,8 @@ Usage:
     python multi_coin_hybrid_bot.py --trade-size 10
 """
 
+from __future__ import annotations
+
 import os
 import sys
 import json
@@ -596,6 +598,79 @@ class MultiCoinHybridBot:
             log(f"{coin}: Error closing: {e}")
             return None
 
+    def enter_signal_position(
+        self,
+        coin: str,
+        is_bull: bool,
+        action_label: str,
+        current_price: float,
+        price_str: str,
+        ema_diff: float,
+        pos_state: dict,
+        reason: str | None = None,
+    ) -> bool:
+        """Open the current regime's position and record live/shadow state."""
+        size = self.calc_position_size(coin, current_price)
+        if size <= 0:
+            log(f"{coin}: Position size too small ({size}), skipping")
+            return False
+
+        is_buy = is_bull  # buy in bull mode, sell in bear mode
+        log(f"{coin}: SIGNAL ENTER {action_label} | "
+            f"{price_str} vs EMA({SHORT_EMA if not is_bull else LONG_EMA}h)={ema_diff:+.2f}% | "
+            f"Size={size}")
+
+        fill = self.open_perp_position(coin, is_buy, size, current_price)
+        if fill is None and not self.dry_run:
+            return False
+
+        # Use the actual fill price (and size in coin units) for state tracking
+        # so future exits compare against where the trade really executed.
+        fill = fill or {"fill_price": current_price, "fill_size": size, "fee": 0.0}
+        fill_price = fill.get("fill_price") or current_price
+        fill_size = fill.get("fill_size") or size
+        fee_usd = float(fill.get("fee") or 0.0)
+        real_size_usd = fill_price * fill_size
+        shadow_fee_usd = scale_fee_to_shadow(fee_usd, real_size_usd, self.shadow_size_usd)
+
+        entry_time = datetime.now(timezone.utc).isoformat()
+        # Preserve loss_streak / cooldown_until across opens. Without this
+        # carry-over the dict overwrite silently resets the consecutive-loss
+        # counter on every new short.
+        self.state["positions"][coin] = {
+            "in_position": True,
+            "is_long": is_bull,
+            "entry_price": fill_price,
+            "entry_time": entry_time,
+            "mode": action_label.lower(),
+            "loss_streak": pos_state.get("loss_streak", 0),
+            "cooldown_until": pos_state.get("cooldown_until"),
+        }
+        self.state["total_trades"] = self.state.get("total_trades", 0) + 1
+        self.state["total_fees"] = self.state.get("total_fees", 0) + fee_usd
+        save_state(self.state)
+        log(f"{coin}: ENTERED {action_label} @ ${fill_price} | fee ${fee_usd:.6f}")
+
+        if not self.dry_run:
+            append_shadow_trade({
+                "ts": entry_time,
+                "coin": coin,
+                "action": "open",
+                "side": "long" if is_bull else "short",
+                "signal_price": current_price,
+                "fill_price": fill_price,
+                "fill_size": fill_size,
+                "real_size_usd": real_size_usd,
+                "size_usd": self.shadow_size_usd,
+                "fee_usd": shadow_fee_usd,
+                "real_fee_usd": fee_usd,
+                "regime": "bull" if is_bull else "bear",
+                "reason": reason or f"ema{LONG_EMA if is_bull else SHORT_EMA}h_breakout",
+                "ema_diff_pct": ema_diff,
+            })
+
+        return True
+
     def fetch_exchange_positions(self) -> dict:
         """Return actual open Hyperliquid positions keyed by coin.
 
@@ -759,6 +834,14 @@ class MultiCoinHybridBot:
                 should_exit = in_position and ema_diff > SHORT_EXIT
                 action_label = "SHORT"
 
+            # If global regime changes while a coin is already positioned, the
+            # old side must be flattened before evaluating the new regime. This
+            # implements the documented "switch all open positions" behavior.
+            regime_flip = in_position and bool(pos_state.get("is_long")) != is_bull
+            if regime_flip:
+                should_enter = False
+                should_exit = True
+
             # Consecutive-loser cooldown: suppress new SHORT opens while a
             # coin is in cooldown after COOLDOWN_LOSS_STREAK back-to-back
             # losing shorts. Longs (rare; only fire in global bull regime)
@@ -785,75 +868,24 @@ class MultiCoinHybridBot:
 
             # ---- ENTER ----
             if should_enter:
-                size = self.calc_position_size(coin, current_price)
-                if size <= 0:
-                    log(f"{coin}: Position size too small ({size}), skipping")
-                    continue
-
-                is_buy = is_bull  # buy in bull mode, sell in bear mode
-                log(f"{coin}: SIGNAL ENTER {action_label} | "
-                    f"{price_str} vs EMA({SHORT_EMA if not is_bull else LONG_EMA}h)={ema_diff:+.2f}% | "
-                    f"Size={size}")
-
-                fill = self.open_perp_position(coin, is_buy, size, current_price)
-                if fill is None and not self.dry_run:
-                    continue
-
-                # Use the actual fill price (and size in coin units) for state
-                # tracking so future exits compare against where the trade
-                # really executed, not the signal price.
-                fill = fill or {"fill_price": current_price, "fill_size": size, "fee": 0.0}
-                fill_price = fill.get("fill_price") or current_price
-                fill_size = fill.get("fill_size") or size
-                fee_usd = float(fill.get("fee") or 0.0)
-                # Notional in USD that the bot actually opened on Hyperliquid
-                # (real_size_usd), independent of the smaller shadow_size_usd
-                # the LLM is told about. Both are emitted so the LLM has the
-                # signal context but the operator can audit real fees.
-                real_size_usd = fill_price * fill_size
-                shadow_fee_usd = scale_fee_to_shadow(fee_usd, real_size_usd, self.shadow_size_usd)
-
-                entry_time = datetime.now(timezone.utc).isoformat()
-                # Preserve loss_streak / cooldown_until across the open. Without
-                # this carry-over the dict overwrite silently resets the
-                # consecutive-loss counter on every new short, which permanently
-                # disables the cooldown guard (the streak can never reach
-                # COOLDOWN_LOSS_STREAK because it goes 0 -> 1 -> 0 -> 1 ...).
-                self.state["positions"][coin] = {
-                    "in_position": True,
-                    "is_long": is_bull,
-                    "entry_price": fill_price,
-                    "entry_time": entry_time,
-                    "mode": action_label.lower(),
-                    "loss_streak": pos_state.get("loss_streak", 0),
-                    "cooldown_until": pos_state.get("cooldown_until"),
-                }
-                self.state["total_trades"] = self.state.get("total_trades", 0) + 1
-                self.state["total_fees"] = self.state.get("total_fees", 0) + fee_usd
-                save_state(self.state)
-                log(f"{coin}: ENTERED {action_label} @ ${fill_price} | fee ${fee_usd:.6f}")
-
-                if not self.dry_run:
-                    append_shadow_trade({
-                        "ts": entry_time,
-                        "coin": coin,
-                        "action": "open",
-                        "side": "long" if is_bull else "short",
-                        "signal_price": current_price,
-                        "fill_price": fill_price,
-                        "fill_size": fill_size,
-                        "real_size_usd": real_size_usd,
-                        "size_usd": self.shadow_size_usd,
-                        "fee_usd": shadow_fee_usd,
-                        "real_fee_usd": fee_usd,
-                        "regime": "bull" if is_bull else "bear",
-                        "reason": f"ema{LONG_EMA if is_bull else SHORT_EMA}h_breakout",
-                        "ema_diff_pct": ema_diff,
-                    })
+                self.enter_signal_position(
+                    coin=coin,
+                    is_bull=is_bull,
+                    action_label=action_label,
+                    current_price=current_price,
+                    price_str=price_str,
+                    ema_diff=ema_diff,
+                    pos_state=pos_state,
+                )
 
             # ---- EXIT ----
             elif should_exit:
-                log(f"{coin}: SIGNAL EXIT | {price_str} vs EMA diff={ema_diff:+.2f}%")
+                exit_reason = f"regime_flip_to_{action_label.lower()}" if regime_flip else "ema_reversion"
+                if regime_flip:
+                    held_side = "LONG" if pos_state.get("is_long") else "SHORT"
+                    log(f"{coin}: REGIME FLIP EXIT {held_side} → {action_label} | {price_str} vs EMA diff={ema_diff:+.2f}%")
+                else:
+                    log(f"{coin}: SIGNAL EXIT | {price_str} vs EMA diff={ema_diff:+.2f}%")
 
                 if entry_price:
                     if pos_state.get("is_long"):
@@ -936,9 +968,21 @@ class MultiCoinHybridBot:
                         "real_fee_usd": close_fee_usd,
                         "pnl_pct": gross_ret,
                         "regime": "bull" if is_bull else "bear",
-                        "reason": "ema_reversion",
+                        "reason": exit_reason,
                         "ema_diff_pct": ema_diff,
                     })
+
+                if regime_flip:
+                    self.enter_signal_position(
+                        coin=coin,
+                        is_bull=is_bull,
+                        action_label=action_label,
+                        current_price=current_price,
+                        price_str=price_str,
+                        ema_diff=ema_diff,
+                        pos_state=self.state["positions"].get(coin, {}),
+                        reason=f"regime_flip_enter_{action_label.lower()}",
+                    )
 
             # ---- HOLDING ----
             elif in_position and entry_price:
@@ -946,7 +990,8 @@ class MultiCoinHybridBot:
                     pnl = (current_price / entry_price - 1) * 100
                 else:
                     pnl = (entry_price / current_price - 1) * 100
-                log(f"{coin}: Holding {action_label} | "
+                holding_label = "LONG" if pos_state.get("is_long") else "SHORT"
+                log(f"{coin}: Holding {holding_label} | "
                     f"{price_str} | entry=${entry_price:.4f} | P&L: {pnl:+.2f}%")
 
     def print_summary(self):
