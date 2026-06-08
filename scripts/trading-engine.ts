@@ -130,8 +130,9 @@ const STALE_LOTTERY_TICKET_NO_BAD_FLAGS = new Set([
   "no_listed_options_mapping",
 ]);
 const ENABLE_ONE_TOUCH_HIGH_EDGE_NO_OPENING = false;
-const WEEKEND_HL_FUNDING_SHADOW_SIGNAL = "WEEKEND_HL_FUNDING_REVERSION_LONG";
+const WEEKEND_HL_FUNDING_LIVE_SIGNAL = "WEEKEND_HL_FUNDING_REVERSION_LONG";
 const WEEKEND_HL_FUNDING_SHADOW_REASON = "weekend_hl_funding_shadow";
+const ENABLE_WEEKEND_HL_FUNDING_LIVE = true;
 // Entry band tightened 2026-06-01 from `funding <= -0.30` to the mid-tier
 // `-1.00 <= funding <= -0.50`. The shallow band (-0.30 to -0.50) was a
 // net-negative drag (197 trades, -0.085% avg, -16.8% cum) and the deep band
@@ -1661,7 +1662,9 @@ function applyProductionPolymarketRiskToOpenPositions(portfolio: Portfolio): str
 }
 
 function isFundingSignal(signalType: string): boolean {
-  return signalType === "FUNDING_EXTREME_SHORT" || signalType === "FUNDING_EXTREME_LONG";
+  return signalType === "FUNDING_EXTREME_SHORT"
+    || signalType === "FUNDING_EXTREME_LONG"
+    || signalType === WEEKEND_HL_FUNDING_LIVE_SIGNAL;
 }
 
 function fundingSignalAllowed(signalType: string, asset: string): boolean {
@@ -2472,6 +2475,11 @@ function fundingBreakevenStopHit(position: Position, mark: { pnlPct: number }): 
   return isFundingSignal(position.signalType)
     && (position.peakPnlPct ?? mark.pnlPct) >= FUNDING_BREAKEVEN_ARM_PCT
     && mark.pnlPct <= FUNDING_BREAKEVEN_LOCK_PCT;
+}
+
+function weekendHyperliquidFundingExitHit(position: Position, snapshots: InstrumentSnapshotFile[]): boolean {
+  return position.signalType === WEEKEND_HL_FUNDING_LIVE_SIGNAL
+    && (getHyperliquidFundingFromSnapshot(latestInstrumentSnapshot(snapshots), position.asset) ?? Number.NEGATIVE_INFINITY) >= WEEKEND_HL_FUNDING_EXIT_PCT;
 }
 
 function realizeClosedPosition(
@@ -4005,14 +4013,12 @@ function recordStaleLotteryTicketNoShadows(
   return recorded;
 }
 
-function recordWeekendHyperliquidFundingShadows(
-  latestSnapshot: InstrumentSnapshotFile | null,
-  learningParams: LearningParams,
-  blockedSignals: BlockedSignalShadow[],
-): number {
-  if (!latestSnapshot || !isStockPerpFundingWindowOpen()) return 0;
+function weekendHyperliquidFundingCandidates(latestSnapshot: InstrumentSnapshotFile | null): Position[] {
+  if (!latestSnapshot || !isStockPerpFundingWindowOpen()) return [];
   const openedAt = new Date().toISOString();
-  let recorded = 0;
+  const openedAtMs = Date.parse(openedAt);
+  const expiryDate = new Date(openedAtMs + WEEKEND_HL_FUNDING_MAX_HOLD_HOURS * 60 * 60 * 1000);
+  const positions: Position[] = [];
 
   for (const asset of HYPE_STOCK_BUILDER_ASSETS) {
     const quote = latestSnapshot.hyperliquid[asset];
@@ -4022,15 +4028,8 @@ function recordWeekendHyperliquidFundingShadows(
     if (!(typeof fundingAnnualized === "number"
           && fundingAnnualized <= WEEKEND_HL_FUNDING_ENTRY_PCT
           && fundingAnnualized >= WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT)) continue;
-    if (blockedSignals.some((shadow) =>
-      shadow.status === "open" &&
-      shadow.blockedReason === WEEKEND_HL_FUNDING_SHADOW_REASON &&
-      shadow.asset === asset
-    )) continue;
 
-    const openedAtMs = Date.parse(openedAt);
-    const expiryDate = new Date(openedAtMs + WEEKEND_HL_FUNDING_MAX_HOLD_HOURS * 60 * 60 * 1000);
-    const position: Position = {
+    positions.push({
       id: `WF-${Date.now()}-${asset}-${Math.random().toString(36).slice(2, 6)}`,
       openedAt,
       asset,
@@ -4042,9 +4041,9 @@ function recordWeekendHyperliquidFundingShadows(
       entryUnderlyingPrice: markPx,
       size: TRADE_SIZE,
       leverage: WEEKEND_HL_FUNDING_LEVERAGE,
-      signalType: WEEKEND_HL_FUNDING_SHADOW_SIGNAL,
+      signalType: WEEKEND_HL_FUNDING_LIVE_SIGNAL,
       hypothesisId: null,
-      thesis: `[WEEKEND HL FUNDING SHADOW] ${asset} Builder DEX stock perp funding ${(fundingAnnualized * 100).toFixed(1)}% annualized in mid band [${(WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT * 100).toFixed(0)}%, ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}%] during US-equity-closed window (Fri 4:00pm ET → Mon 9:30am ET). Shadow long at ${WEEKEND_HL_FUNDING_LEVERAGE}x; exit when margin P&L >= ${WEEKEND_HL_FUNDING_TARGET_PCT}%, funding >= ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}%, or held ${WEEKEND_HL_FUNDING_MAX_HOLD_HOURS}h.`,
+      thesis: `[WEEKEND HL FUNDING LIVE] ${asset} Builder DEX stock perp funding ${(fundingAnnualized * 100).toFixed(1)}% annualized in mid band [${(WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT * 100).toFixed(0)}%, ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}%] during US-equity-closed window (Fri 4:00pm ET → Mon 9:30am ET). Live tracked long at ${WEEKEND_HL_FUNDING_LEVERAGE}x; exit when margin P&L >= ${WEEKEND_HL_FUNDING_TARGET_PCT}%, funding >= ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}%, or held ${WEEKEND_HL_FUNDING_MAX_HOLD_HOURS}h.`,
       targetPct: WEEKEND_HL_FUNDING_TARGET_PCT,
       stopPct: 100,
       expiryDate: expiryDate.toISOString(),
@@ -4052,15 +4051,117 @@ function recordWeekendHyperliquidFundingShadows(
       instrumentId: asset,
       instrumentLabel: `HL ${asset} Builder DEX stock perp`,
       fundingPnlAccrued: 0,
-    };
+    });
+  }
 
+  return positions;
+}
+
+function recordWeekendHyperliquidFundingLiveTrades(
+  latestSnapshot: InstrumentSnapshotFile | null,
+  portfolio: Portfolio,
+  blockedSignals: BlockedSignalShadow[],
+): number {
+  if (!ENABLE_WEEKEND_HL_FUNDING_LIVE) return 0;
+  let recorded = 0;
+
+  for (const position of weekendHyperliquidFundingCandidates(latestSnapshot)) {
+    if (portfolio.positions.length >= MAX_OPEN_POSITIONS) break;
+    if (portfolio.cash < TRADE_SIZE) break;
+    if (portfolio.positions.some((p) =>
+      p.signalType === WEEKEND_HL_FUNDING_LIVE_SIGNAL &&
+      p.asset === position.asset &&
+      p.venue === "hyperliquid" &&
+      p.direction === "long"
+    )) continue;
+    // If an old shadow is still open, don't double-count the same thesis as live.
+    if (blockedSignals.some((shadow) =>
+      shadow.status === "open" &&
+      shadow.blockedReason === WEEKEND_HL_FUNDING_SHADOW_REASON &&
+      shadow.asset === position.asset
+    )) continue;
+
+    portfolio.cash -= TRADE_SIZE;
+    portfolio.positions.push(position);
+    recorded++;
+  }
+
+  return recorded;
+}
+
+function promoteOpenWeekendFundingShadowsToLive(
+  portfolio: Portfolio,
+  blockedSignals: BlockedSignalShadow[],
+): string[] {
+  if (!ENABLE_WEEKEND_HL_FUNDING_LIVE) return [];
+  const notes: string[] = [];
+  const now = new Date().toISOString();
+
+  for (const shadow of blockedSignals) {
+    if (shadow.status !== "open" || shadow.blockedReason !== WEEKEND_HL_FUNDING_SHADOW_REASON) continue;
+    const position = {
+      ...shadow.position,
+      signalType: WEEKEND_HL_FUNDING_LIVE_SIGNAL,
+      thesis: shadow.position.thesis
+        .replace("[WEEKEND HL FUNDING SHADOW]", "[WEEKEND HL FUNDING LIVE]")
+        .replace("Shadow long", "Live tracked long"),
+    };
+    if (portfolio.positions.some((p) =>
+      p.signalType === WEEKEND_HL_FUNDING_LIVE_SIGNAL &&
+      p.asset === position.asset &&
+      p.venue === "hyperliquid" &&
+      p.direction === "long"
+    )) {
+      notes.push(`Skipped ${shadow.asset}: live weekend funding position already open.`);
+      continue;
+    }
+    if (portfolio.positions.length >= MAX_OPEN_POSITIONS) {
+      notes.push(`Skipped ${shadow.asset}: max open positions reached.`);
+      continue;
+    }
+    if (portfolio.cash < position.size) {
+      notes.push(`Skipped ${shadow.asset}: insufficient cash to promote shadow (${portfolio.cash.toFixed(2)} < ${position.size.toFixed(2)}).`);
+      continue;
+    }
+
+    portfolio.cash -= position.size;
+    portfolio.positions.push(position);
+    shadow.status = "cancelled";
+    shadow.resolvedAt = now;
+    shadow.learningExcluded = {
+      reason: "promoted_to_live",
+      note: "Weekend HL funding shadow was converted into a live tracked portfolio position.",
+    };
+    notes.push(`Promoted ${shadow.asset} weekend HL funding shadow to live tracked trade.`);
+  }
+
+  return notes;
+}
+
+function recordWeekendHyperliquidFundingShadows(
+  latestSnapshot: InstrumentSnapshotFile | null,
+  learningParams: LearningParams,
+  blockedSignals: BlockedSignalShadow[],
+): number {
+  if (ENABLE_WEEKEND_HL_FUNDING_LIVE) return 0;
+  let recorded = 0;
+
+  for (const position of weekendHyperliquidFundingCandidates(latestSnapshot)) {
+    if (blockedSignals.some((shadow) =>
+      shadow.status === "open" &&
+      shadow.blockedReason === WEEKEND_HL_FUNDING_SHADOW_REASON &&
+      shadow.asset === position.asset
+    )) continue;
+
+    position.thesis = position.thesis.replace("[WEEKEND HL FUNDING LIVE]", "[WEEKEND HL FUNDING SHADOW]")
+      .replace("Live tracked long", "Shadow long");
     blockedSignals.push({
       id: position.id,
       status: "open",
-      blockedAt: openedAt,
+      blockedAt: position.openedAt,
       blockedReason: WEEKEND_HL_FUNDING_SHADOW_REASON,
-      signalType: WEEKEND_HL_FUNDING_SHADOW_SIGNAL,
-      asset,
+      signalType: WEEKEND_HL_FUNDING_LIVE_SIGNAL,
+      asset: position.asset,
       venue: "hyperliquid",
       direction: "long",
       confidence: 0.5,
@@ -5289,7 +5390,8 @@ function markToMarket(
     updatePeakPnl(pos, mark);
 
     let closeReason: ClosedTrade["closeReason"] | null = null;
-    if (pos.targetPct !== null && mark.pnlPct >= pos.targetPct) closeReason = "target";
+    if (weekendHyperliquidFundingExitHit(pos, snapshots)) closeReason = mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
+    else if (pos.targetPct !== null && mark.pnlPct >= pos.targetPct) closeReason = "target";
     else if (fundingBreakevenStopHit(pos, mark)) closeReason = "breakeven_stop";
     else if (mark.pnlPct <= -pos.stopPct) closeReason = "stop";
     else if (new Date(pos.expiryDate) <= new Date()) closeReason = "expiry";
@@ -7793,6 +7895,7 @@ async function main() {
   const fundingRiskShapeNotes = applyFundingRiskShapeToOpenPositions(portfolio, learningParams);
   const spotRiskShapeNotes = applySpotRiskToOpenPositions(portfolio);
   const productionPolymarketRiskNotes = applyProductionPolymarketRiskToOpenPositions(portfolio);
+  const weekendFundingPromotionNotes = promoteOpenWeekendFundingShadowsToLive(portfolio, blockedSignals);
   const cancelledHeatmapShadows = cancelOpenRelativeValueHeatmapShadows(blockedSignals);
   const cancelledInvalidMonotonicArbShadows = cancelOpenInvalidMonotonicArbShadows(blockedSignals);
   const legacyOneTouchSweep = cancelLegacyOneTouchShadows(blockedSignals);
@@ -7807,6 +7910,7 @@ async function main() {
   for (const note of fundingRiskShapeNotes) console.log(`  Funding risk shape: ${note}`);
   for (const note of spotRiskShapeNotes) console.log(`  Spot risk shape: ${note}`);
   for (const note of productionPolymarketRiskNotes) console.log(`  Production PM risk shape: ${note}`);
+  for (const note of weekendFundingPromotionNotes) console.log(`  Weekend funding promotion: ${note}`);
   for (const note of realPmMirrorNotes) console.log(`  Real PM mirror: ${note}`);
   if (cancelledHeatmapShadows.length > 0) {
     console.log(`  Cancelled ${cancelledHeatmapShadows.length} open relative-value heatmap shadow trades; heatmap is report-only until the horizon model is redesigned.`);
@@ -7914,6 +8018,10 @@ async function main() {
   const newStaleLotteryTicketNoShadows = recordStaleLotteryTicketNoShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals);
   if (newStaleLotteryTicketNoShadows > 0) {
     console.log(`\n  Opened ${newStaleLotteryTicketNoShadows} stale-lottery-ticket NO shadow trades.`);
+  }
+  const newWeekendFundingLiveTrades = recordWeekendHyperliquidFundingLiveTrades(latestSnapshot, portfolio, blockedSignals);
+  if (newWeekendFundingLiveTrades > 0) {
+    console.log(`\n  Opened ${newWeekendFundingLiveTrades} weekend HL stock funding LIVE trades (mid-band entry [${(WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT * 100).toFixed(0)}%, ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}%], ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}% funding exit, ${WEEKEND_HL_FUNDING_LEVERAGE}x tracked).`);
   }
   const newWeekendFundingShadows = recordWeekendHyperliquidFundingShadows(latestSnapshot, learningParams, blockedSignals);
   if (newWeekendFundingShadows > 0) {
