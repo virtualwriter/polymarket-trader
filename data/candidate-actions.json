@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-08T02:28:32.790Z",
+  "generatedAt": "2026-06-08T03:28:34.624Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.19295035774878394,
       "thesis": "BTC P/C ratio 1.47 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 63158,
+      "entryPrice": 63182,
       "targetPct": 6,
       "stopPct": 1.5,
       "expiryDays": 21
@@ -28,10 +28,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 134,
-      "hoursToExpiry": 4970.52,
+      "hoursOpen": 135,
+      "hoursToExpiry": 4969.52,
       "plannedHoldHours": 5104.52,
-      "elapsedHoldPct": 0.0263,
+      "elapsedHoldPct": 0.0264,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -44,10 +44,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 104,
-      "hoursToExpiry": 553.52,
+      "hoursOpen": 105,
+      "hoursToExpiry": 552.52,
       "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0.1582,
+      "elapsedHoldPct": 0.1597,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -60,10 +60,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 104,
-      "hoursToExpiry": 553.52,
+      "hoursOpen": 105,
+      "hoursToExpiry": 552.52,
       "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0.1582,
+      "elapsedHoldPct": 0.1597,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -78,10 +78,10 @@
       "evidenceColumns": [
         "eth_spot"
       ],
-      "hoursOpen": 67,
-      "hoursToExpiry": 553.52,
+      "hoursOpen": 68,
+      "hoursToExpiry": 552.52,
       "plannedHoldHours": 620.52,
-      "elapsedHoldPct": 0.108,
+      "elapsedHoldPct": 0.1096,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -96,10 +96,10 @@
       "evidenceColumns": [
         "gold_gc_spot"
       ],
-      "hoursOpen": 62,
-      "hoursToExpiry": 543.02,
+      "hoursOpen": 63,
+      "hoursToExpiry": 542.02,
       "plannedHoldHours": 605.02,
-      "elapsedHoldPct": 0.1025,
+      "elapsedHoldPct": 0.1041,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -114,10 +114,10 @@
       "evidenceColumns": [
         "btc_spot"
       ],
-      "hoursOpen": 36,
-      "hoursToExpiry": 4970.52,
+      "hoursOpen": 37,
+      "hoursToExpiry": 4969.52,
       "plannedHoldHours": 5006.52,
-      "elapsedHoldPct": 0.0072,
+      "elapsedHoldPct": 0.0074,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -132,10 +132,10 @@
       "evidenceColumns": [
         "gold_gc_spot"
       ],
-      "hoursOpen": 29,
-      "hoursToExpiry": 543.02,
+      "hoursOpen": 30,
+      "hoursToExpiry": 542.02,
       "plannedHoldHours": 572.02,
-      "elapsedHoldPct": 0.0507,
+      "elapsedHoldPct": 0.0524,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -145,18 +145,22 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "allowed": false,
-      "allowedCategories": [],
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
       "evidenceColumns": [
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 12,
-      "hoursToExpiry": 60,
+      "hoursOpen": 13,
+      "hoursToExpiry": 59,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.1667,
+      "elapsedHoldPct": 0.1806,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
+      "reason": "Mechanical FUNDING_EXTREME_LONG setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
     {
       "positionId": "MA-1780856911587-wz2s",
@@ -169,10 +173,10 @@
       "evidenceColumns": [
         "eth_spot"
       ],
-      "hoursOpen": 8,
-      "hoursToExpiry": 553.52,
+      "hoursOpen": 9,
+      "hoursToExpiry": 552.52,
       "plannedHoldHours": 561.52,
-      "elapsedHoldPct": 0.0142,
+      "elapsedHoldPct": 0.016,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -189,12 +193,12 @@
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ],
-      "hoursOpen": 8,
-      "hoursToExpiry": 160,
+      "hoursOpen": 9,
+      "hoursToExpiry": 159,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0476,
+      "elapsedHoldPct": 0.0536,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 8.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 9.0h, requires at least 12h."
     },
     {
       "positionId": "MA-1780871312894-eb2e",
@@ -207,10 +211,10 @@
       "evidenceColumns": [
         "gold_gc_spot"
       ],
-      "hoursOpen": 4,
-      "hoursToExpiry": 543.02,
+      "hoursOpen": 5,
+      "hoursToExpiry": 542.02,
       "plannedHoldHours": 547.02,
-      "elapsedHoldPct": 0.0073,
+      "elapsedHoldPct": 0.0091,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
