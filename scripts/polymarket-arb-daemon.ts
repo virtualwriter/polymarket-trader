@@ -390,9 +390,31 @@ function isMlbGameSlug(slug: string): boolean {
   return /^mlb-[a-z0-9]+-[a-z0-9]+-\d{4}-\d{2}-\d{2}$/.test(slug);
 }
 
+function mlbGameDate(slug: string): string | null {
+  const match = slug.match(/-(\d{4}-\d{2}-\d{2})$/);
+  return match?.[1] ?? null;
+}
+
+function todayInNewYork(now = new Date()): string {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/New_York",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(now);
+  const part = (type: string) => parts.find((entry) => entry.type === type)?.value;
+  return `${part("year")}-${part("month")}-${part("day")}`;
+}
+
+function isCurrentOrFutureMlbGameSlug(slug: string, today = todayInNewYork()): boolean {
+  const gameDate = mlbGameDate(slug);
+  return !!gameDate && gameDate >= today;
+}
+
 async function discoverMlbGameSlugs(): Promise<string[]> {
   if (!DISCOVER_MLB_GAMES) return [];
   const out = new Set<string>();
+  const today = todayInNewYork();
   for (const tag of ["mlb", "baseball"]) {
     for (let offset = 0; offset < MLB_DISCOVERY_LIMIT; offset += 100) {
       const events = await fetchJson(`${GAMMA_API}/events?${new URLSearchParams({
@@ -406,6 +428,7 @@ async function discoverMlbGameSlugs(): Promise<string[]> {
       for (const event of events) {
         const slug = event.slug ?? "";
         if (!isMlbGameSlug(slug)) continue;
+        if (!isCurrentOrFutureMlbGameSlug(slug, today)) continue;
         const hasLadder = (event.markets ?? []).some((market) => {
           const question = market.question ?? "";
           return /(^|:\s*)(?:1H\s+)?O\/U\s+[0-9]/i.test(question) || /^Spread:/i.test(question);
