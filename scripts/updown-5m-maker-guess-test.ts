@@ -520,6 +520,16 @@ async function fetchTop(tokenId: string): Promise<Top> {
   return topFromBook(await fetchJson<BookResponse>(`${CLOB_HOST}/book?${new URLSearchParams({ token_id: tokenId })}`));
 }
 
+async function fetchEntryTop(tokenId: string): Promise<Top> {
+  if (USE_MARKET_WS_CACHE) {
+    const cached = topFromCachedBook(tokenId);
+    const age = cacheAgeMs(tokenId);
+    if (cached && age <= MARKET_WS_CACHE_MAX_AGE_MS) return cached;
+    throw new Error(`market_ws_cache_stale token=${tokenId.slice(0, 10)} ageMs=${Math.round(age)}`);
+  }
+  return fetchTop(tokenId);
+}
+
 function isUpDown5mSlug(slug: string): boolean {
   return /^[a-z0-9-]+-updown-5m-\d+$/.test(slug);
 }
@@ -664,8 +674,8 @@ type QuotePlan = {
 
 async function quotePlanForMarket(market: TrackedMarket): Promise<QuotePlan> {
   const [upTop, downTop] = await Promise.all([
-    fetchTop(market.upTokenId),
-    fetchTop(market.downTokenId),
+    fetchEntryTop(market.upTokenId),
+    fetchEntryTop(market.downTokenId),
   ]);
   const upPrice = dynamicBid(upTop, "up_loop");
   const downPrice = dynamicBid(downTop, "down_loop");
