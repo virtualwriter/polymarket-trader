@@ -96,7 +96,7 @@ const CANDIDATE_SOURCE = process.env.MONOTONIC_ARB_REAL_PM_SOURCE ?? "portfolio"
 const TARGET_PACKAGE_ID = process.env.MONOTONIC_ARB_REAL_PM_PACKAGE_ID?.trim();
 const SOCKS_PROXY = process.env.SOCKS_PROXY || process.env.ALL_PROXY || undefined;
 const SKIP_VPN = process.env.MONOTONIC_ARB_REAL_PM_SKIP_VPN === "1" || process.argv.includes("--skip-vpn");
-const ALLOWED_ASSETS = new Set((process.env.MONOTONIC_ARB_REAL_PM_ASSETS ?? "BTC,ETH,GOLD,SOL,SILVER,SPY,NBA")
+const ALLOWED_ASSETS = new Set((process.env.MONOTONIC_ARB_REAL_PM_ASSETS ?? "BTC,ETH,GOLD,SOL,SILVER,SPY,NBA,SOCCER,MLB")
   .split(",")
   .map((asset) => asset.trim().toUpperCase())
   .filter(Boolean));
@@ -208,8 +208,17 @@ function appendJsonArray<T>(path: string, rows: T[]) {
 
 function eventSlugs(): string[] {
   const override = process.env.MONOTONIC_ARB_REAL_PM_EVENT_SLUGS;
-  if (!override) return defaultEventSlugs();
-  return override.split(",").map((slug) => slug.trim()).filter(Boolean);
+  const base = override
+    ? override.split(",").map((slug) => slug.trim()).filter(Boolean)
+    : defaultEventSlugs();
+  const extra = [
+    process.env.MONOTONIC_ARB_REAL_PM_EXTRA_EVENT_SLUGS ?? "",
+    process.env.MONOTONIC_ARB_REAL_PM_SOCCER_EVENT_SLUGS ?? "",
+    process.env.MONOTONIC_ARB_REAL_PM_MLB_EVENT_SLUGS ?? "",
+  ].join(",").split(",")
+    .map((slug) => slug.trim())
+    .filter(Boolean);
+  return [...base, ...extra].filter((slug, idx, slugs) => slugs.indexOf(slug) === idx);
 }
 
 function marketIdFromInstrumentId(instrumentId: string | undefined): string | null {
@@ -542,12 +551,16 @@ function orderId(response: any): string | undefined {
 }
 
 function assertOrderResponse(response: any, role: string) {
-  if (response?.success === false) {
-    throw new Error(`${role} order rejected: ${response?.errorMsg ?? JSON.stringify(response).slice(0, 500)}`);
+  const errorMsg = String(response?.errorMsg ?? response?.error ?? "").trim();
+  if (response?.success === false || errorMsg) {
+    throw new Error(`${role} order rejected: ${errorMsg || JSON.stringify(response).slice(0, 500)}`);
   }
   const status = String(response?.status ?? "").toUpperCase();
   if (status && ["FAILED", "REJECTED", "CANCELLED", "CANCELED"].includes(status)) {
     throw new Error(`${role} order status ${status}: ${JSON.stringify(response).slice(0, 500)}`);
+  }
+  if (!orderId(response)) {
+    throw new Error(`${role} order missing order id: ${JSON.stringify(response).slice(0, 500)}`);
   }
 }
 
@@ -564,10 +577,35 @@ async function postFakBuy(client: ClobClient, tokenId: string, price: number, sh
   return client.postOrder(signedOrder, OrderType.FAK);
 }
 
+async function postFakBuyBatch(
+  client: ClobClient,
+  legs: Array<{ tokenId: string; price: number; shares: number }>,
+): Promise<any[]> {
+  const signed = await Promise.all(legs.map(async (leg) => {
+    const tickSize = await client.getTickSize(leg.tokenId) as TickSize;
+    const order = await client.createOrder(
+      { tokenID: leg.tokenId, price: leg.price, size: Number(leg.shares.toFixed(6)), side: Side.BUY, ...(POLY_BUILDER_CODE ? { builderCode: POLY_BUILDER_CODE } : {}) },
+      { tickSize, negRisk: false },
+    );
+    return { order, orderType: OrderType.FAK };
+  }));
+  const response = await client.postOrders(signed);
+  return Array.isArray(response) ? response : [response];
+}
+
 async function postLimitBuy(client: ClobClient, tokenId: string, price: number, shares: number): Promise<any> {
   const tickSize = await client.getTickSize(tokenId) as TickSize;
   const signedOrder = await client.createOrder(
     { tokenID: tokenId, price, size: Number(shares.toFixed(6)), side: Side.BUY, ...(POLY_BUILDER_CODE ? { builderCode: POLY_BUILDER_CODE } : {}) },
+    { tickSize, negRisk: false },
+  );
+  return client.postOrder(signedOrder, OrderType.GTC);
+}
+
+async function postLimitSell(client: ClobClient, tokenId: string, price: number, shares: number): Promise<any> {
+  const tickSize = await client.getTickSize(tokenId) as TickSize;
+  const signedOrder = await client.createOrder(
+    { tokenID: tokenId, price, size: Number(shares.toFixed(6)), side: Side.SELL, ...(POLY_BUILDER_CODE ? { builderCode: POLY_BUILDER_CODE } : {}) },
     { tickSize, negRisk: false },
   );
   return client.postOrder(signedOrder, OrderType.GTC);
@@ -961,7 +999,9 @@ export {
   clobClient,
   signerFromEnv,
   postFakBuy,
+  postFakBuyBatch,
   postLimitBuy,
+  postLimitSell,
   postFakSell,
   sizeForCandidate,
   reconcilePackage,

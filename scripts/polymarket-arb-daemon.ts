@@ -17,6 +17,7 @@
 
 import { webcrypto } from "node:crypto";
 import { spawn } from "node:child_process";
+import { mkdirSync } from "node:fs";
 import { config } from "dotenv";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -31,6 +32,7 @@ import {
   evaluatePair,
   fetchBook,
   fetchEvent,
+  fetchJson,
   findCandidates,
   marketQuote,
   polymarketAssetForSlug,
@@ -61,7 +63,9 @@ import {
   orderId,
   packageRecord,
   postFakBuy,
+  postFakBuyBatch,
   postLimitBuy,
+  postLimitSell,
   postFakSell,
   proxyCollateralProbe,
   readJsonArray,
@@ -100,6 +104,15 @@ const RECONNECT_BASE_MS = Number(process.env.ARB_DAEMON_RECONNECT_BASE_MS ?? 1_0
 const RECONNECT_MAX_MS = Number(process.env.ARB_DAEMON_RECONNECT_MAX_MS ?? 30_000);
 const BOOK_FETCH_TIMEOUT_MS = Number(process.env.ARB_DAEMON_BOOK_FETCH_TIMEOUT_MS ?? 8_000);
 const GIT_PUSH = process.env.ARB_DAEMON_GIT_PUSH === "1";
+// NBA live markets use a single CLOB batch request for the two FAK BUY legs.
+// This is the tightest API-supported coupling available; the exchange still
+// reports per-order fills, so orphan/no-loss handling remains the final guard.
+const ENABLE_NBA_BATCH_EXECUTION = process.env.ARB_DAEMON_ENABLE_NBA_BATCH_EXECUTION !== "0";
+const ALLOW_NBA_NON_ATOMIC_EXECUTION = process.env.ARB_DAEMON_ALLOW_NBA_NON_ATOMIC_EXECUTION === "1";
+const NBA_LEDGER_ARCHIVE_GRACE_MS = Number(process.env.ARB_DAEMON_NBA_LEDGER_ARCHIVE_GRACE_MS ?? 30 * 60_000);
+const DISCOVER_MLB_GAMES = process.env.ARB_DAEMON_DISCOVER_MLB_GAMES !== "0";
+const MLB_DISCOVERY_LIMIT = Number(process.env.ARB_DAEMON_MLB_DISCOVERY_LIMIT ?? 500);
+const LEDGER_ARCHIVE_DIR = join(dirname(PACKAGES_PATH), "archive");
 
 // Near-miss telemetry: proves whether the daemon is barely missing executable
 // arbs or the ladder is simply not offering them. This is telemetry only; entry
@@ -115,6 +128,12 @@ const SPORTS_MIN_EDGE = Number(process.env.ARB_DAEMON_SPORTS_MIN_EDGE ?? 0.05);
 const SPORTS_MIN_AVAILABLE_SHARES = Number(process.env.ARB_DAEMON_SPORTS_MIN_AVAILABLE_SHARES ?? 50);
 const SPORTS_MAX_SPREAD = Number(process.env.ARB_DAEMON_SPORTS_MAX_SPREAD ?? MAX_SPREAD);
 const SPORTS_PRICE_SLIPPAGE = Number(process.env.ARB_DAEMON_SPORTS_PRICE_SLIPPAGE ?? 0.01);
+// 0 means live sports are allowed after the scheduled start/endDate. Set a
+// positive value to block entries within that many ms before start.
+const SPORTS_ENTRY_CUTOFF_MS = Number(process.env.ARB_DAEMON_SPORTS_ENTRY_CUTOFF_MS ?? 0);
+// Do not consume the full displayed sports touch. We require reserve depth so
+// fast-moving live books are less likely to produce one-sided partial fills.
+const SPORTS_DEPTH_RESERVE_MULTIPLIER = Number(process.env.ARB_DAEMON_SPORTS_DEPTH_RESERVE_MULTIPLIER ?? 3);
 const NON_SPORTS_EXCHANGE_MIN_BUFFER_SHARES = Number(process.env.ARB_DAEMON_NON_SPORTS_EXCHANGE_MIN_BUFFER_SHARES ?? 25);
 const STALE_SUBMITTED_MS = Number(process.env.ARB_DAEMON_STALE_SUBMITTED_MS ?? 600_000);
 const NEAR_MISS_BUCKETS = [
@@ -135,6 +154,9 @@ const ORPHAN_POLL_MS = Number(process.env.ARB_DAEMON_ORPHAN_POLL_MS ?? 1_000);
 // Tight price stop: unwind the instant the orphan's best bid drops this many
 // cents below our fill (the dominant guard — bounds directional bleed hard).
 const ORPHAN_STOP_CENTS = Number(process.env.ARB_DAEMON_ORPHAN_STOP_CENTS ?? 0.01);
+// Default to zero tolerated orphan unwind loss. Set explicitly only if the
+// operator decides a small loss is better than carrying directional risk.
+const ORPHAN_MAX_UNWIND_LOSS_CENTS = Number(process.env.ARB_DAEMON_ORPHAN_MAX_UNWIND_LOSS_CENTS ?? 0);
 // Completion is positive-EV (a real arb) only if fillPrice + complementAsk is
 // below 1 by at least this margin (survives slippage).
 const ORPHAN_COMPLETION_MARGIN = Number(process.env.ARB_DAEMON_ORPHAN_COMPLETION_MARGIN ?? 0.01);
@@ -147,6 +169,9 @@ const ORPHAN_LADDER_REFRESH_MS = Number(process.env.ARB_DAEMON_ORPHAN_LADDER_REF
 // Smallest residual orphan we bother completing/holding; below this we just
 // unwind the dust.
 const ORPHAN_MIN_SHARES = Number(process.env.ARB_DAEMON_ORPHAN_MIN_SHARES ?? MIN_ORDER_SHARES);
+// Sports imbalances should be dust-only. Anything larger is flattened immediately
+// instead of entering the normal orphan completion loop.
+const SPORTS_ORPHAN_DUST_SHARES = Number(process.env.ARB_DAEMON_SPORTS_ORPHAN_DUST_SHARES ?? 0.01);
 const DUST_EXIT_LIMIT_WAIT_MS = Number(process.env.ARB_DAEMON_DUST_EXIT_LIMIT_WAIT_MS ?? 5_000);
 const DUST_EXIT_RETRY_MS = Number(process.env.ARB_DAEMON_DUST_EXIT_RETRY_MS ?? 60_000);
 const ORPHANS_PATH = join(dirname(PACKAGES_PATH), "polymarket-live-orphans.json");
@@ -222,6 +247,8 @@ const packages = new Map<string, WatchPackage>();
 
 // Idempotency / caps
 const inFlight = new Set<string>();
+const tokensInFlight = new Set<string>();
+const evaluatingPackages = new Set<string>();
 let alreadyOpen = new Set<string>();
 const submitTimestamps: number[] = [];
 
@@ -359,11 +386,50 @@ function registerToken(tokenId: string, key: string) {
   set.add(key);
 }
 
+function isMlbGameSlug(slug: string): boolean {
+  return /^mlb-[a-z0-9]+-[a-z0-9]+-\d{4}-\d{2}-\d{2}$/.test(slug);
+}
+
+async function discoverMlbGameSlugs(): Promise<string[]> {
+  if (!DISCOVER_MLB_GAMES) return [];
+  const out = new Set<string>();
+  for (const tag of ["mlb", "baseball"]) {
+    for (let offset = 0; offset < MLB_DISCOVERY_LIMIT; offset += 100) {
+      const events = await fetchJson(`${GAMMA_API}/events?${new URLSearchParams({
+        active: "true",
+        closed: "false",
+        limit: "100",
+        offset: String(offset),
+        tag_slug: tag,
+      })}`, BOOK_FETCH_TIMEOUT_MS) as GammaEvent[];
+      if (!Array.isArray(events) || events.length === 0) break;
+      for (const event of events) {
+        const slug = event.slug ?? "";
+        if (!isMlbGameSlug(slug)) continue;
+        const hasLadder = (event.markets ?? []).some((market) => {
+          const question = market.question ?? "";
+          return /(^|:\s*)(?:1H\s+)?O\/U\s+[0-9]/i.test(question) || /^Spread:/i.test(question);
+        });
+        if (hasLadder) out.add(slug);
+      }
+      if (events.length < 100) break;
+    }
+  }
+  return [...out].sort();
+}
+
+async function currentEventSlugs(): Promise<string[]> {
+  const configured = eventSlugs();
+  const discoveredMlb = await discoverMlbGameSlugs();
+  if (discoveredMlb.length) log(`mlb discovery: ${discoveredMlb.length} active game slugs`);
+  return [...configured, ...discoveredMlb].filter((slug, idx, slugs) => slugs.indexOf(slug) === idx);
+}
+
 async function refreshWatchlist(): Promise<void> {
   const foundAt = new Date().toISOString();
   let candidates: Candidate[];
   try {
-    const result = await findCandidates(arbConfig, eventSlugs(), foundAt);
+    const result = await findCandidates(arbConfig, await currentEventSlugs(), foundAt);
     candidates = result.candidates;
     if (result.errors.length) log(`watchlist scan errors=${result.errors.length} first=${result.errors[0]}`);
   } catch (err: any) {
@@ -473,10 +539,160 @@ function liveCandidate(base: Candidate, legs: LiveLegs): Candidate {
 }
 
 function isSportsCandidate(candidate: Candidate): boolean {
-  return candidate.asset === "NBA" || candidate.eventSlug.startsWith("nba-");
+  return candidate.asset === "NBA"
+    || candidate.asset === "SOCCER"
+    || candidate.asset === "MLB"
+    || candidate.eventSlug.startsWith("nba-")
+    || candidate.eventSlug.startsWith("mlb-")
+    || candidate.eventSlug.startsWith("fifwc-")
+    || candidate.eventSlug.startsWith("mls-")
+    || candidate.eventSlug.includes("soccer")
+    || candidate.eventSlug.includes("world-cup")
+    || candidate.eventSlug.includes("fifa")
+    || candidate.eventSlug.includes("uefa");
+}
+
+function sportsEntryBlocked(candidate: Candidate): string | null {
+  if (!isSportsCandidate(candidate)) return null;
+  if (SPORTS_ENTRY_CUTOFF_MS <= 0) return null;
+  const dates = [candidate.broad.endDate, candidate.narrow.endDate].filter(Boolean) as string[];
+  const endTimes = dates.map((date) => Date.parse(date)).filter((time) => Number.isFinite(time));
+  if (!endTimes.length) return "sports market missing endDate";
+  const cutoff = Math.min(...endTimes) - SPORTS_ENTRY_CUTOFF_MS;
+  if (Date.now() >= cutoff) {
+    return `sports market start cutoff endDate=${new Date(Math.min(...endTimes)).toISOString()} cutoffMs=${SPORTS_ENTRY_CUTOFF_MS}`;
+  }
+  return null;
+}
+
+function sportsExecutionBlocked(candidate: Candidate): string | null {
+  if (!isSportsCandidate(candidate)) return null;
+  const entryBlock = sportsEntryBlocked(candidate);
+  if (entryBlock) return entryBlock;
+  if (ENABLE_NBA_BATCH_EXECUTION) return null;
+  if (ALLOW_NBA_NON_ATOMIC_EXECUTION) return null;
+  return "NBA requires batched/tightly-coupled two-leg execution; separate FAK legs can leave naked inventory";
+}
+
+function packageSlug(packageId: string | undefined): string | null {
+  if (!packageId) return null;
+  const marker = packageId.indexOf("::");
+  return marker >= 0 ? packageId.slice(0, marker) : null;
+}
+
+function isNbaSlug(slug: string | null | undefined): boolean {
+  return !!slug && (slug.startsWith("nba-") || slug.includes("-nba-"));
+}
+
+function isSportsSlug(slug: string | null | undefined): boolean {
+  if (!slug) return false;
+  return isNbaSlug(slug)
+    || slug.startsWith("fifwc-")
+    || slug.startsWith("mls-")
+    || slug.startsWith("mlb-")
+    || slug.includes("soccer")
+    || slug.includes("world-cup")
+    || slug.includes("fifa")
+    || slug.includes("uefa");
+}
+
+function isSportsAsset(asset: string | undefined): boolean {
+  return ["NBA", "SOCCER", "MLB"].includes((asset ?? "").toUpperCase());
+}
+
+function packageEndMs(row: LivePackage): number | null {
+  const raw = row.settlementWindow?.endDate ?? null;
+  if (!raw) return null;
+  const t = Date.parse(raw);
+  return Number.isFinite(t) ? t : null;
+}
+
+function orphanEndMs(row: Orphan): number | null {
+  if (!row.endDate) return null;
+  const t = Date.parse(row.endDate);
+  return Number.isFinite(t) ? t : null;
+}
+
+function archiveFileForNow(now: Date): string {
+  return join(LEDGER_ARCHIVE_DIR, `polymarket-sports-${now.toISOString().slice(0, 10)}.json`);
+}
+
+function appendArchiveSnapshot(entry: unknown) {
+  mkdirSync(LEDGER_ARCHIVE_DIR, { recursive: true });
+  appendJsonArray(archiveFileForNow(new Date()), [entry]);
+}
+
+function archiveStaleNbaLedgers() {
+  const nowMs = Date.now();
+  const cutoffMs = nowMs - NBA_LEDGER_ARCHIVE_GRACE_MS;
+  const packagesRows = readJsonArray<LivePackage>(PACKAGES_PATH);
+  const ordersRows = readJsonArray<LiveOrder>(ORDERS_PATH);
+  const orphanRows = readJsonArray<Orphan>(ORPHANS_PATH);
+
+  const activeNbaOrphanSlugs = new Set<string>();
+  for (const row of orphanRows) {
+    if (row.status !== "completing") continue;
+    const slug = row.eventSlug || packageSlug(row.packageId);
+    if (slug && (isSportsAsset(row.asset) || isSportsSlug(slug))) activeNbaOrphanSlugs.add(slug);
+  }
+
+  const staleSlugs = new Set<string>();
+  for (const row of packagesRows) {
+    const slug = row.eventSlug || packageSlug(row.packageId);
+    if (!slug || activeNbaOrphanSlugs.has(slug)) continue;
+    if (!isSportsAsset(row.asset) && !isSportsSlug(slug)) continue;
+    const endMs = packageEndMs(row);
+    if (endMs !== null && endMs <= cutoffMs) staleSlugs.add(slug);
+  }
+  for (const row of orphanRows) {
+    const slug = row.eventSlug || packageSlug(row.packageId);
+    if (!slug || activeNbaOrphanSlugs.has(slug)) continue;
+    if (!isSportsAsset(row.asset) && !isSportsSlug(slug)) continue;
+    const endMs = orphanEndMs(row);
+    if (endMs !== null && endMs <= cutoffMs) staleSlugs.add(slug);
+  }
+  if (staleSlugs.size === 0) return;
+
+  const belongsToStaleSlug = (packageId: string | undefined, eventSlug?: string) => {
+    const slug = eventSlug || packageSlug(packageId);
+    return !!slug && staleSlugs.has(slug);
+  };
+  const archivedPackages = packagesRows.filter((row) => belongsToStaleSlug(row.packageId, row.eventSlug));
+  const archivedOrders = ordersRows.filter((row) => belongsToStaleSlug(row.packageId));
+  const archivedOrphans = orphanRows.filter((row) => belongsToStaleSlug(row.packageId, row.eventSlug));
+  if (!archivedPackages.length && !archivedOrders.length && !archivedOrphans.length) return;
+
+  appendArchiveSnapshot({
+    archivedAt: new Date(nowMs).toISOString(),
+    kind: "sports_resolved_event_live_ledger_archive",
+    eventSlugs: [...staleSlugs].sort(),
+    counts: {
+      packages: archivedPackages.length,
+      orders: archivedOrders.length,
+      orphans: archivedOrphans.length,
+    },
+    packages: archivedPackages,
+    orders: archivedOrders,
+    orphans: archivedOrphans,
+  });
+
+  writeJsonArray(PACKAGES_PATH, packagesRows.filter((row) => !belongsToStaleSlug(row.packageId, row.eventSlug)));
+  writeJsonArray(ORDERS_PATH, ordersRows.filter((row) => !belongsToStaleSlug(row.packageId)));
+  const remainingOrphans = orphanRows.filter((row) => !belongsToStaleSlug(row.packageId, row.eventSlug));
+  writeJsonArray(ORPHANS_PATH, remainingOrphans);
+  for (const row of archivedOrphans) orphans.delete(row.id);
+  log(`archived stale sports ledgers slugs=${[...staleSlugs].sort().join(",")} packages=${archivedPackages.length} orders=${archivedOrders.length} orphans=${archivedOrphans.length}`);
+}
+
+function isJuneExpiryCandidate(candidate: Candidate): boolean {
+  const dates = [candidate.broad.endDate, candidate.narrow.endDate].filter(Boolean) as string[];
+  return dates.some((date) => /^2026-06-/.test(date));
 }
 
 function minEdgeFor(candidate: Candidate): number {
+  // June expiries are allowed at breakeven (cost <= 1.0000) to fish for middles.
+  // Sizing/outlay rules remain exactly the normal daemon rules.
+  if (isJuneExpiryCandidate(candidate)) return Number(process.env.ARB_DAEMON_JUNE_EXPIRY_MIN_EDGE ?? 0);
   return isSportsCandidate(candidate) ? SPORTS_MIN_EDGE : MIN_EDGE;
 }
 
@@ -490,13 +706,18 @@ function maxSpreadFor(candidate: Candidate): number {
 
 function requiredDisplayedTouch(candidate: Candidate): number {
   if (isSportsCandidate(candidate)) {
-    return Math.max(minAvailableSharesFor(candidate), requiredLiveMinShares(candidate));
+    return Math.max(minAvailableSharesFor(candidate), requiredLiveMinShares(candidate) * SPORTS_DEPTH_RESERVE_MULTIPLIER);
   }
   return minAvailableSharesFor(candidate);
 }
 
 function executionSizingCandidate(candidate: Candidate): Candidate {
-  if (isSportsCandidate(candidate)) return candidate;
+  if (isSportsCandidate(candidate)) {
+    const c = structuredClone(candidate);
+    const reserveSize = Math.floor((candidate.availableSize / Math.max(1, SPORTS_DEPTH_RESERVE_MULTIPLIER)) * 100) / 100;
+    c.availableSize = Math.max(0, reserveSize);
+    return c;
+  }
   const minShares = requiredLiveMinShares(candidate);
   if (candidate.availableSize + EPSILON >= minShares) return candidate;
   if (candidate.availableSize + EPSILON < minAvailableSharesFor(candidate)) return candidate;
@@ -655,8 +876,38 @@ function waitForFill(tokenId: string, timeoutMs: number): Promise<void> {
 // ─── Execution ───
 
 async function tryExecute(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
+  if (evaluatingPackages.has(pkg.key)) return;
+  evaluatingPackages.add(pkg.key);
+  try {
+    await tryExecuteInner(pkg, legs);
+  } finally {
+    evaluatingPackages.delete(pkg.key);
+  }
+}
+
+async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
   if (tradingPausedReason) return;
   if (inFlight.has(pkg.key) || alreadyOpen.has(pkg.key)) return;
+  const executionTokens = [pkg.broadYesToken, pkg.narrowNoToken].filter(Boolean);
+  if (executionTokens.some((tokenId) => tokensInFlight.has(tokenId))) {
+    const now = Date.now();
+    const last = lastSkipLogAt.get(pkg.key) ?? 0;
+    if (now - last >= SKIP_LOG_THROTTLE_MS) {
+      lastSkipLogAt.set(pkg.key, now);
+      log(`skip ${pkg.key}: shared token already executing`);
+    }
+    return;
+  }
+  const sportsBlock = sportsExecutionBlocked(pkg.base);
+  if (sportsBlock) {
+    const now = Date.now();
+    const last = lastSkipLogAt.get(pkg.key) ?? 0;
+    if (now - last >= SKIP_LOG_THROTTLE_MS) {
+      lastSkipLogAt.set(pkg.key, now);
+      log(`skip ${pkg.key}: ${sportsBlock}`);
+    }
+    return;
+  }
   if (perMinuteCapReached()) return;
   if (lowBalance()) {
     if (!pausedForLowBalanceLogged) {
@@ -711,7 +962,13 @@ async function tryExecute(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
     return;
   }
 
+  if (alreadyOpen.has(pkg.key) || inFlight.has(pkg.key) || executionTokens.some((tokenId) => tokensInFlight.has(tokenId))) {
+    log(`skip ${pkg.key}: execution lock acquired by another tick after preflight`);
+    return;
+  }
+  alreadyOpen.add(pkg.key);
   inFlight.add(pkg.key);
+  for (const tokenId of executionTokens) tokensInFlight.add(tokenId);
   submitTimestamps.push(Date.now());
   try {
     await executeLive(pkg, executionCandidate);
@@ -719,18 +976,20 @@ async function tryExecute(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
     log(`execute ${pkg.key} failed: ${err?.message ?? String(err)}`);
   } finally {
     inFlight.delete(pkg.key);
-    alreadyOpen.add(pkg.key);
+    for (const tokenId of executionTokens) tokensInFlight.delete(tokenId);
   }
 }
 
 async function executeLive(pkg: WatchPackage, c: Candidate): Promise<void> {
   if (!clob) throw new Error("CLOB client not initialized");
+  const sportsBlock = sportsExecutionBlocked(c);
+  if (sportsBlock) throw new Error(`blocked_sports_non_atomic_execution: ${sportsBlock}`);
   const client = clob.client;
   const shares = sizeForCandidate(c, readJsonArray<LivePackage>(PACKAGES_PATH)).shares;
   const record = packageRecord(c, reconcileAddress, shares, false);
   const orders: LiveOrder[] = [];
 
-  log(`ARB ${pkg.key} edge=${(c.lockedEdge * 100).toFixed(2)}c cost=${c.packageCost.toFixed(4)} shares=${shares.toFixed(2)} size=${c.availableSize.toFixed(2)}${isSportsCandidate(c) ? " sports_preflight=1" : ""}`);
+  log(`ARB ${pkg.key} edge=${(c.lockedEdge * 100).toFixed(2)}c cost=${c.packageCost.toFixed(4)} shares=${shares.toFixed(2)} size=${c.availableSize.toFixed(2)}${isSportsCandidate(c) ? " sports_preflight=1 nba_batch=1" : ""}`);
 
   record.status = "leg1_submitted";
   record.updatedAt = new Date().toISOString();
@@ -748,10 +1007,28 @@ async function executeLive(pkg: WatchPackage, c: Candidate): Promise<void> {
   // relative to the other (eliminates the sequential leg-price-move window).
   // allSettled so a rejection on one leg does not abort submission of the other.
   const submittedAt = new Date().toISOString();
-  const [r1, r2] = await Promise.allSettled([
-    postFakBuy(client, pkg.broadYesToken, c.broad.yesBook.ask, shares),
-    postFakBuy(client, pkg.narrowNoToken, c.narrow.noBook.ask, shares),
-  ]);
+  const [r1, r2] = isSportsCandidate(c)
+    ? await (async () => {
+        try {
+          const responses = await postFakBuyBatch(client, [
+            { tokenId: pkg.broadYesToken, price: c.broad.yesBook.ask, shares },
+            { tokenId: pkg.narrowNoToken, price: c.narrow.noBook.ask, shares },
+          ]);
+          return [
+            { status: "fulfilled", value: responses[0] } as PromiseFulfilledResult<unknown>,
+            { status: "fulfilled", value: responses[1] } as PromiseFulfilledResult<unknown>,
+          ];
+        } catch (err) {
+          return [
+            { status: "rejected", reason: err } as PromiseRejectedResult,
+            { status: "rejected", reason: err } as PromiseRejectedResult,
+          ];
+        }
+      })()
+    : await Promise.allSettled([
+        postFakBuy(client, pkg.broadYesToken, c.broad.yesBook.ask, shares),
+        postFakBuy(client, pkg.narrowNoToken, c.narrow.noBook.ask, shares),
+      ]);
 
   const legErrors: string[] = [];
   let leg1Resp: unknown;
@@ -810,20 +1087,35 @@ async function executeLive(pkg: WatchPackage, c: Candidate): Promise<void> {
     log(`PAUSED new entries: ${tradingPausedReason}`);
   }
 
+  const sportsCandidate = isSportsCandidate(c);
   if (matched > 0) {
     record.status = "package_complete";
-    if (nakedRole) record.failureReason = `partial_fill matched=${matched} naked_${nakedRole}=${nakedShares} -> orphan${errSuffix}`;
+    if (nakedRole) {
+      record.failureReason = sportsCandidate
+        ? `partial_fill matched=${matched} naked_${nakedRole}=${nakedShares} -> sports_immediate_exit${errSuffix}`
+        : `partial_fill matched=${matched} naked_${nakedRole}=${nakedShares} -> orphan${errSuffix}`;
+    }
   } else {
     record.status = "unwind_required";
     record.failureReason = nakedRole
-      ? `naked_${nakedRole}=${nakedShares} -> orphan (no matched fill)${errSuffix}`
+      ? sportsCandidate
+        ? `naked_${nakedRole}=${nakedShares} -> sports_immediate_exit (no matched fill)${errSuffix}`
+        : `naked_${nakedRole}=${nakedShares} -> orphan (no matched fill)${errSuffix}`
       : `no_fill both FAK legs killed (arb gone); no position${errSuffix}`;
   }
   record.updatedAt = new Date().toISOString();
   persist(record, orders);
 
-  if (nakedRole && nakedShares >= 0.01) {
-    registerOrphanFromExecution(c, nakedRole, nakedShares, record.packageId);
+  if (nakedRole && nakedShares >= SPORTS_ORPHAN_DUST_SHARES) {
+    const orphan = registerOrphanFromExecution(c, nakedRole, nakedShares, record.packageId);
+    if (sportsCandidate) {
+      orphanInFlight.add(orphan.id);
+      try {
+        await doSportsImmediateUnwind(orphan, `sports_imbalance matched=${matched} intended=${shares}`);
+      } finally {
+        orphanInFlight.delete(orphan.id);
+      }
+    }
   }
   log(`package ${record.packageId} status=${record.status} leg1=${leg1Filled} leg2=${leg2Filled} matched=${matched.toFixed(2)} naked=${nakedShares.toFixed(2)}${nakedRole ? `(${nakedRole})` : ""} intended=${shares.toFixed(2)}`);
 }
@@ -861,7 +1153,7 @@ function activeOrphans(): Orphan[] {
   return [...orphans.values()].filter((o) => o.status === "completing");
 }
 
-function registerOrphanFromExecution(c: Candidate, role: "broad_yes" | "narrow_no", shares: number, fromPackageId: string) {
+function registerOrphanFromExecution(c: Candidate, role: "broad_yes" | "narrow_no", shares: number, fromPackageId: string): Orphan {
   const now = new Date().toISOString();
   const leg = role === "broad_yes" ? c.broad : c.narrow;
   const tokenId = role === "broad_yes" ? c.broad.yesTokenId : c.narrow.noTokenId;
@@ -889,6 +1181,7 @@ function registerOrphanFromExecution(c: Candidate, role: "broad_yes" | "narrow_n
   getBook(o.tokenId);
   saveOrphans();
   log(`orphan ${o.id} OPEN role=${role} token=${tokenId.slice(0, 10)}… strike=${o.strike} shares=${o.shares} fill=${o.fillPrice.toFixed(4)} (re-pair target: complement on ${o.eventSlug})`);
+  return o;
 }
 
 function orphanBestBid(o: Orphan): number {
@@ -899,6 +1192,59 @@ function orphanCompletionMargin(o: Orphan): number {
   return o.asset === "NBA" || o.eventSlug.startsWith("nba-")
     ? ORPHAN_COMPLETION_MARGIN
     : NON_SPORTS_ORPHAN_COMPLETION_MARGIN;
+}
+
+async function doSportsImmediateUnwind(o: Orphan, reason: string) {
+  if (!clob || DRY_RUN) return;
+  const client = clob.client;
+  let bid = orphanBestBid(o);
+  if (!(bid > 0)) {
+    try {
+      const raw = await fetchRawBook(o.tokenId);
+      bid = raw.bids.reduce((b, l) => (l.price > b ? l.price : b), 0);
+    } catch { /* keep 0 */ }
+  }
+  if (!(bid > 0)) {
+    o.status = "stranded";
+    o.note = `sports immediate exit failed: no bid (${reason})`;
+    o.updatedAt = new Date().toISOString();
+    saveOrphans();
+    log(`orphan ${o.id} SPORTS_EXIT failed (${reason}): no bid`);
+    return;
+  }
+
+  o.attempts += 1;
+  log(`orphan ${o.id} SPORTS_EXIT (${reason}): FAK-sell ${o.shares} @ bid=${bid.toFixed(4)} fill=${o.fillPrice.toFixed(4)}`);
+  const before = await reconcileTokenBalance(reconcileAddress, o.tokenId);
+  let resp: unknown;
+  try {
+    resp = await postFakSell(client, o.tokenId, bid, o.shares);
+    assertOrderResponse(resp, "sports_unwind");
+  } catch (err: any) {
+    resp = { error: err?.message ?? String(err) };
+    log(`orphan ${o.id} sports exit order error: ${err?.message ?? String(err)}`);
+  }
+  await waitForFill(o.tokenId, FILL_WAIT_DAEMON_MS);
+  const after = await reconcileTokenBalance(reconcileAddress, o.tokenId);
+  const sold = roundShares(before - after);
+  appendJsonArray(ORDERS_PATH, [{
+    packageId: o.packageId,
+    createdAt: new Date().toISOString(),
+    role: "unwind",
+    tokenId: o.tokenId,
+    side: "SELL",
+    price: bid,
+    size: sold,
+    orderType: "FAK",
+    response: resp,
+  }]);
+  o.shares = roundShares(o.shares - sold);
+  const realized = sold * (bid - o.fillPrice);
+  o.note = `sports_immediate_exit sold=${sold} @ ${bid.toFixed(4)} realized=${realized.toFixed(4)} (${reason})`;
+  o.status = o.shares + EPSILON < SPORTS_ORPHAN_DUST_SHARES ? "unwound" : "stranded";
+  o.updatedAt = new Date().toISOString();
+  saveOrphans();
+  log(`orphan ${o.id} SPORTS_EXIT result sold=${sold} realized=${realized.toFixed(4)} residual=${o.shares}`);
 }
 
 // Reactive tight stop, fired off the market-WS hot path: the moment a held
@@ -1046,7 +1392,8 @@ async function processOrphan(o: Orphan) {
     }
     if (pick) await doCompletion(o, pick);
     else if (await maybeTopUpDustAndExit(o, "no_positive_completion")) return;
-    // else: complements exist but none positive-EV/no-loss dust exit — keep holding (stop bounds risk).
+    else await maybePostNoLossExitLimit(o, "no_positive_completion");
+    // else: complements exist but none positive-EV/no-loss exit — keep holding. Lossy exits require an explicit env allowance.
   } finally {
     orphanInFlight.delete(o.id);
   }
@@ -1218,6 +1565,44 @@ async function maybeTopUpDustAndExit(o: Orphan, reason: string): Promise<boolean
   return true;
 }
 
+
+async function maybePostNoLossExitLimit(o: Orphan, reason: string): Promise<boolean> {
+  if (!clob || DRY_RUN) return false;
+  if ((o as any).noLossSellOrderId) return true;
+  const last = dustExitAttemptAt.get(`${o.id}:no_loss_exit`) ?? 0;
+  if (Date.now() - last < DUST_EXIT_RETRY_MS) return false;
+  const book = await fetchBook(arbConfig, o.tokenId);
+  if (o.shares + EPSILON < book.minOrderSize) return false;
+  const minExitPrice = Math.max(0.001, Math.ceil((o.fillPrice - ORPHAN_MAX_UNWIND_LOSS_CENTS - EPSILON) * 1000) / 1000);
+  dustExitAttemptAt.set(`${o.id}:no_loss_exit`, Date.now());
+  o.attempts += 1;
+  log(`orphan ${o.id} NO_LOSS_EXIT (${reason}): rest SELL ${o.shares} @ ${minExitPrice.toFixed(4)} fill=${o.fillPrice.toFixed(4)} maxLoss=${ORPHAN_MAX_UNWIND_LOSS_CENTS.toFixed(4)}`);
+  let resp: unknown;
+  try {
+    resp = await postLimitSell(clob.client, o.tokenId, minExitPrice, o.shares);
+    assertOrderResponse(resp, "no_loss_exit");
+    (o as any).noLossSellOrderId = orderId(resp);
+  } catch (err: any) {
+    resp = { error: err?.message ?? String(err) };
+    log(`orphan ${o.id} no-loss exit order error: ${err?.message ?? String(err)}`);
+  }
+  appendJsonArray(ORDERS_PATH, [{
+    packageId: o.packageId,
+    createdAt: new Date().toISOString(),
+    role: "unwind",
+    tokenId: o.tokenId,
+    side: "SELL",
+    price: minExitPrice,
+    size: 0,
+    orderType: "GTC",
+    response: resp,
+  }]);
+  o.note = `no_loss_exit resting @ ${minExitPrice.toFixed(4)} (${reason})`;
+  o.updatedAt = new Date().toISOString();
+  saveOrphans();
+  return true;
+}
+
 // FAK-sell the orphan to flatten it. Caller owns the orphanInFlight guard.
 async function doUnwind(o: Orphan, reason: string) {
   if (!clob || DRY_RUN) return;
@@ -1230,12 +1615,19 @@ async function doUnwind(o: Orphan, reason: string) {
         bid = raw.bids.reduce((b, l) => (l.price > b ? l.price : b), 0);
       } catch { /* keep 0 */ }
     }
+    const minExitPrice = Math.max(0.001, Math.ceil((o.fillPrice - ORPHAN_MAX_UNWIND_LOSS_CENTS - EPSILON) * 1000) / 1000);
     if (!(bid > 0)) {
       log(`orphan ${o.id} unwind deferred (${reason}): no bid to sell into`);
+      await maybePostNoLossExitLimit(o, reason);
       return; // stay "completing"; retry next sweep
     }
+    if (bid + EPSILON < minExitPrice) {
+      log(`orphan ${o.id} unwind blocked (${reason}): bid=${bid.toFixed(4)} minExit=${minExitPrice.toFixed(4)} fill=${o.fillPrice.toFixed(4)}`);
+      await maybePostNoLossExitLimit(o, reason);
+      return;
+    }
     o.attempts += 1;
-    log(`orphan ${o.id} UNWIND (${reason}): FAK-sell ${o.shares} @ bid=${bid.toFixed(4)} fill=${o.fillPrice.toFixed(4)}`);
+    log(`orphan ${o.id} UNWIND (${reason}): FAK-sell ${o.shares} @ bid=${bid.toFixed(4)} fill=${o.fillPrice.toFixed(4)} minExit=${minExitPrice.toFixed(4)}`);
     const before = await reconcileTokenBalance(reconcileAddress, o.tokenId);
     let resp: unknown;
     try {
@@ -1501,7 +1893,7 @@ async function refreshBalance() {
 
 function flushLedger() {
   if (!GIT_PUSH) return;
-  const child = spawn("bash", ["-lc", "git add data/polymarket-live-packages.json data/polymarket-live-orders.json data/polymarket-live-orphans.json 2>/dev/null && git diff --cached --quiet || git commit -m 'arb-daemon: ledger update' -q && git push -q"], {
+  const child = spawn("bash", ["-lc", "git add data/polymarket-live-packages.json data/polymarket-live-orders.json data/polymarket-live-orphans.json data/archive 2>/dev/null && git diff --cached --quiet || git commit -m 'arb-daemon: ledger update' -q && git push -q"], {
     stdio: "ignore",
     detached: false,
   });
@@ -1513,6 +1905,7 @@ function flushLedger() {
 async function main() {
   log(`starting; mode=${DRY_RUN ? "DRY_RUN" : "REAL"} enabled=${ENABLED} hardDisabled=${HARD_DISABLED}`);
   log(`gates: maxPackage=$${MAX_PACKAGE_USD} maxDaily=$${MAX_DAILY_USD} maxOpen=${MAX_OPEN_PACKAGES} maxPerMin=${MAX_PER_MIN} minEdge=${(MIN_EDGE * 100).toFixed(2)}c minTouch=${MIN_AVAILABLE_SHARES} maxSpread=${MAX_SPREAD}`);
+  log(`sports safety: NBA batch execution ${ENABLE_NBA_BATCH_EXECUTION ? "ENABLED (single postOrders request; orphan/no-loss fallback active)" : ALLOW_NBA_NON_ATOMIC_EXECUTION ? "ENABLED by non-atomic override" : "BLOCKED (batch disabled)"}`);
   log(`orphan policy: stop=${ORPHAN_STOP_CENTS} completionMargin=${ORPHAN_COMPLETION_MARGIN} expiryBufferMs=${ORPHAN_EXPIRY_BUFFER_MS} pollMs=${ORPHAN_POLL_MS} (re-pair naked legs across ladder, else unwind)`);
 
   const vpnGuard = new VpnGuard({
@@ -1549,6 +1942,7 @@ async function main() {
 
   loadOrphans();
   await reconcileOrphansAtStartup();
+  archiveStaleNbaLedgers();
 
   await refreshWatchlist();
   connectMarketWs(0);
@@ -1556,6 +1950,7 @@ async function main() {
 
   setInterval(() => { void refreshWatchlist(); }, WATCHLIST_REFRESH_MS);
   setInterval(() => { void refreshBalance(); }, BALANCE_REFRESH_MS);
+  setInterval(() => archiveStaleNbaLedgers(), WATCHLIST_REFRESH_MS);
   setInterval(() => flushLedger(), LEDGER_FLUSH_MS);
   setInterval(() => orphanLoop(), ORPHAN_POLL_MS);
   setInterval(() => flushNearMissTelemetry(), NEAR_MISS_LOG_MS);
