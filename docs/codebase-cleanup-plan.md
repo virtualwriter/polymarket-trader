@@ -2,10 +2,10 @@
 
 **Audience:** Another agent or operator analyzing this repo for performance and maintainability improvements.
 
-**Hard constraint (non-negotiable):** Zero operational change. The hourly trader, minute exit scanner, LLM calls, heatmap generation, monotonic arb paths, and Hyperliquid hybrid bot must continue working exactly as today. Trades must still be made; the LLM must still run.
+**Hard constraint (non-negotiable):** Zero operational change. The hourly trader, minute exit scanner, LLM calls, heatmap generation, and monotonic arb paths must continue working exactly as today. Trades must still be made; the LLM must still run. The Hyperliquid hybrid bot is out of scope for cleanup code changes; treat it as read-only unless the operator explicitly asks for a hybrid-bot fix.
 
 **Repo:** `polymarket-trader`  
-**Last reviewed:** 2026-06-03  
+**Last reviewed:** 2026-06-08  
 **Production VPS:** Documented in `docs/new-machine-live-handoff.md` and `docs/runtime-state.md`
 
 ---
@@ -153,7 +153,7 @@ Minute path (separate timer): `position-exit-scanner.ts` via VPS wrapper not in 
    - `scripts/trading-engine.ts` — 8,076 lines, ~100 functions
    - `scripts/market-scanner.ts` — 2,569 lines
    - `scripts/cross_venue_relative_value_report.py` — 2,408 lines
-   - `scripts/trader-performance-report.ts` — 1,513 lines
+   - `scripts/trader-performance-report.ts` — 1,397 lines after report-helper extraction; shared helpers now live in `scripts/lib/reporting/`
    - Effect: high-risk changes, slow review, hard to test in isolation
 
 2. **Dual portfolio paths**
@@ -331,7 +331,7 @@ No service restarts. No logic changes. No impact on hourly trader or LLM.
 | `scripts/trading-engine.ts` | 8,076 |
 | `scripts/market-scanner.ts` | 2,569 |
 | `scripts/cross_venue_relative_value_report.py` | 2,408 |
-| `scripts/trader-performance-report.ts` | 1,513 |
+| `scripts/trader-performance-report.ts` | 1,397 |
 | `hyperliquid-crv-rebalancer/multi_coin_hybrid_bot.py` | 1,052 |
 | `scripts/position-exit-scanner.ts` | 423 |
 
@@ -424,7 +424,149 @@ Any single change beyond the "safe-now execution slice" above requires explicit 
 
 ---
 
-## 12. Agent checklist before any change
+## 12. Third-pass update — hybrid exclusion and new monotonic/UpDown work (2026-06-08)
+
+This pass reviews the current non-committed code changes after the hybrid-bot regime fix was committed and pushed. **Do not include `hyperliquid-crv-rebalancer/multi_coin_hybrid_bot.py` or other hybrid-bot code in cleanup PRs.** Hybrid cleanup is documentation-only unless separately requested.
+
+### Current new code surface
+
+| Area | Path | Status | Cleanup classification |
+|------|------|--------|------------------------|
+| Up/Down collector | `scripts/updown-5m-book-collector.ts` | New untracked 988-line script | `EXP-UPDOWN-COLLECTOR` / Japan-only unless promoted |
+| Package script | `package.json` → `updown:collector` | New script entry | Keep if collector remains in repo |
+| Monotonic core | `scripts/lib/monotonic-arb-core.ts` | Adds SpaceX IPO finance ladder + broader `above` detection | `PROD-MONOTONIC-SHARED` if committed |
+| Monotonic daemon | `scripts/polymarket-arb-daemon.ts` | Adds orphan blocking, reserved spend, fresh preflight | `PROD-MONOTONIC-LIVE/JPN` |
+| Real executor | `scripts/polymarket-real-monotonic-executor.ts` | Adds `FINANCE` to default allowed assets | `PROD-MONOTONIC-LIVE/JPN` |
+| Generated output | `relative-value/calibration/no_bias_candidates.jsonl`, `exports/` | Generated artifacts | `GEN-*`; do not treat as cleanup source |
+
+### Efficiency review of new changes
+
+1. **Keep Japan-only monotonic work isolated from USA deploys.**
+   - The new monotonic/UpDown changes appear operationally tied to the Japan VPS. Do not bundle them with USA cleanup, hourly trader cleanup, or hybrid-bot changes.
+   - If they are committed to this repo, label the PR as Japan monotonic infrastructure and include an explicit "not deployed to USA" note.
+
+2. **Split the new Up/Down collector before promotion.**
+   - `scripts/updown-5m-book-collector.ts` is already near 1k lines and combines discovery, order-book cache, polling, live execution, emergency flattening, persistence, and process orchestration.
+   - Efficient target shape:
+     - `scripts/lib/updown/discovery.ts` for Gamma discovery and slug parsing.
+     - `scripts/lib/updown/orderbook-cache.ts` for CLOB REST + websocket book state.
+     - `scripts/lib/updown/persistence.ts` for JSONL/summary writes.
+     - `scripts/lib/updown/live-execution.ts` for submit/fill/flatten logic.
+     - Keep `scripts/updown-5m-book-collector.ts` as a thin orchestrator.
+
+3. **Move synchronous file writes out of the 1s hot path.**
+   - The collector uses `appendFileSync` / `writeFileSync` for observations, opportunities, summaries, and live attempts.
+   - For efficiency, batch observation writes or put them behind an async append queue. Keep synchronous writes only for rare fatal/live-attempt audit events where crash durability matters.
+   - Add a write throttle for summary JSON so it is not rewritten every tick when no state changed.
+
+4. **Avoid repeated JSON file reads inside live monotonic execution.**
+   - The daemon now does a fresh preflight, which is good for safety, but `readJsonArray(PACKAGES_PATH)` in the candidate path can become expensive as package history grows.
+   - Use one package snapshot per tick/preflight, or cache by file `mtimeMs` with explicit refresh after writes. This preserves safety while reducing disk I/O.
+
+5. **Centralize monotonic asset/slug classification.**
+   - `FINANCE`, SpaceX IPO, and the broader `"above"` nested-ladder rule are currently hardcoded special cases.
+   - Move asset mappings and ladder keywords into a small config table in `scripts/lib/monotonic-arb-core.ts` (or JSON config) with tests for false positives. This reduces future per-market code edits.
+
+6. **Share CLOB/Gamma environment and fetch helpers.**
+   - `polymarket-arb-daemon.ts`, `polymarket-real-monotonic-executor.ts`, and the Up/Down collector all need CLOB host, Gamma API, timeouts, order response parsing, and balance/reconcile helpers.
+   - Extract common clients/utilities only after a golden dry-run/log comparison exists; do not change execution semantics while extracting.
+
+7. **Clarify reservation semantics.**
+   - `reservedSpendUsd` protects one daemon process from overcommitting balance. It does not coordinate across separate daemon processes or VPS instances.
+   - If Japan runs multiple monotonic processes, introduce a state-file or lock-file reservation ledger. If there is only one process, document that invariant in the daemon header.
+
+8. **Keep generated outputs out of cleanup commits.**
+   - `relative-value/calibration/no_bias_candidates.jsonl` and `exports/hyperliquid-hybrid-trades-accountant-2026-06-08.csv` are output artifacts, not source cleanup.
+   - If they recur as untracked/dirty files during cleanup, either ignore them or commit them only in a dedicated data-output commit requested by the operator.
+
+### Updated do-not-touch list for cleanup agents
+
+- Do not edit `hyperliquid-crv-rebalancer/multi_coin_hybrid_bot.py` for cleanup.
+- Do not deploy monotonic/UpDown changes to the USA VPS unless explicitly requested.
+- Do not merge Japan monotonic cleanup with USA hourly trader cleanup in one PR.
+- Do not broaden live monotonic asset coverage (`FINANCE`, `above`, new slugs) without a test or dry-run proving package classification is correct.
+- Do not replace synchronous live audit writes with async writes until crash-recovery requirements are documented.
+
+### Safe next cleanup slice for the new code
+
+1. Add a header comment to `scripts/updown-5m-book-collector.ts` marking it experimental/Japan-only and documenting whether live mode is allowed.
+2. Add focused tests for `isNestedLadderEvent`, `polymarketAssetForSlug`, and SpaceX IPO ladder parsing before changing classification logic further.
+3. Extract a no-behavior-change `scripts/lib/updown/persistence.ts` from the collector and compare JSONL/summary output shapes before/after.
+4. Add a README note for Japan monotonic deployment: which script runs where, which env vars enable live trading, and why USA should not deploy it.
+
+---
+
+## 13. Implementation status — safe cleanup completed so far (2026-06-08)
+
+This section records what has actually been implemented, committed, and pushed during the safety rollout. It supersedes older "next slice" notes where they conflict.
+
+### Completed guardrails
+
+| Area | Files | Status |
+|------|-------|--------|
+| Production verifier | `scripts/prod-verify.ts`, `package.json` (`npm run prod:verify`) | Done. Read-only preflight for required production paths, state dir access, git conflicts, staged changes, generated/state changes, and frozen Japan/monotonic paths. |
+| Cleanup dry-run harness | `scripts/cleanup-dry-run-harness.ts`, `package.json` (`npm run cleanup:harness`) | Done. Runs `trading-engine.ts --dry-run --no-llm`, normalizes output, supports `--compare`, preserves dry-run artifacts, and detects dirty-file leakage. |
+| Harness docs | `docs/cleanup-dry-run-harness.md` | Done. Documents baseline capture, compare mode, expected warnings, and dirty-file detection. |
+| Generated/state hygiene | `.gitignore`, `docs/generated-state-hygiene.md` | Done. Documents tracked state categories and ignores known generated research/export artifacts. |
+| Japan/hybrid guardrails | This document | Done. Hybrid bot is excluded from cleanup code changes. Japan monotonic/UpDown cleanup remains frozen for USA cleanup work. |
+
+### Completed report cleanup slices
+
+| Slice | Files | Status |
+|-------|-------|--------|
+| CSV utilities | `scripts/lib/reporting/csv.ts`, `csv.test.ts`, `scripts/trader-performance-report.ts` | Done. Shared CSV parsing/writing helpers extracted and tested. |
+| Number parsing | `scripts/lib/reporting/number.ts`, `number.test.ts` | Done. `safeNumber` extracted and tested. |
+| Math helper | `scripts/lib/reporting/math.ts`, `math.test.ts` | Done. `normalCdf` extracted and tested. |
+| Timestamp parsing | `scripts/lib/reporting/time.ts`, `time.test.ts` | Done. Heatmap and ISO timestamp parsing extracted and tested. |
+| Formatting helpers | `scripts/lib/reporting/format.ts`, `format.test.ts` | Done. USD, percent, model/price, win-rate, and Markdown escaping helpers extracted and tested. |
+| Stats aggregation | `scripts/lib/reporting/stats.ts`, `stats.test.ts` | Done. Outcome/stats aggregation, sorting, grouping, and win-rate helpers extracted and tested. |
+| Position display helpers | `scripts/lib/reporting/position.ts`, `position.test.ts` | Done. Unrealized P&L, market detail, strike extraction, and expiry extraction extracted and tested. |
+| Open-position LLM clarity | `scripts/trader-performance-report.ts` | Done. CSV and Markdown open-position rows now expose entry model vs current model, current bid/ask, strike/expiry, row source (`snapshot`, `history_exact`, `history_nearest`, `missing`), timestamps, age, and distance. |
+| Provenance tests | `scripts/trader-performance-report.test.ts` | Done. Covers snapshot/nearest/exact/missing row provenance, row distance/age, `pm_no` bid/ask conversion, and model-context notes. |
+| Markdown/CSV row-builder tests | `scripts/trader-performance-report.test.ts` | Done. Covers CSV field placement, detail rows, Markdown escaping, limits, empty states, open shadow rows, pending hypotheses, and full report header shape. |
+
+### Current cleanup impact
+
+- `scripts/trader-performance-report.ts` is down to about 1,397 lines from the earlier 1,513-line reference.
+- Net repository source lines increased because focused tests and shared helpers were added. This is intentional: the immediate gain is safer future cleanup, not raw line deletion.
+- Runtime performance is expected to be effectively unchanged for the report path; the practical gain is improved testability, clearer LLM-facing report rows, and lower risk for the next extractions.
+- Trading behavior has not been changed. Each code slice was validated with reporting tests, report smoke output, `npm run cleanup:harness -- --compare ...`, `npm run prod:verify`, and TypeScript/lint checks.
+
+### Remaining work after this point
+
+1. **Commit this documentation update separately.**
+   - Include only `docs/codebase-cleanup-plan.md` unless the operator explicitly asks to include unrelated dirty files.
+
+2. **Continue report-only cleanup before touching production monoliths.**
+   - Next safe target: move report row-builder functions (`statsCsvRow`, `detailCsvRow`, `table`, `markdownPendingHypotheses`, `markdownOpenShadows`, `buildCsvReport`, `buildMarkdownReport`) into a dedicated reporting module.
+   - The row-builder tests now provide a safety net for that extraction.
+   - Keep output shape unchanged and rerun the same harness/report smoke gates.
+
+3. **Add a golden report fixture if report cleanup continues.**
+   - Capture a small synthetic portfolio/shadow/trade fixture and assert deterministic CSV/Markdown output.
+   - This would make later report refactors safer than relying only on live-state smoke reports.
+
+4. **Do not start `trading-engine.ts`, `market-scanner.ts`, or heatmap-report extraction yet.**
+   - Those are still higher-risk production monoliths.
+   - Before touching them, build a stronger golden harness around signal counts, candidate actions, portfolio output, LLM-disabled paths, and generated state diffs.
+
+5. **Data/git-weight cleanup remains open.**
+   - Snapshot retention/offload policy still needs an explicit operator decision.
+   - Do not untrack `relative-value/index.html`; Vercel serves `relative-value/` directly.
+   - Do not cap `learning-journal.md` until the LLM prompt-window behavior is mapped and tested.
+
+6. **Infra visibility remains open unless separately verified.**
+   - Copy/reference VPS exit-scanner and daily-report wrappers into repo if still missing.
+   - Snapshot systemd units into `docs/systemd/` as reference-only docs.
+   - Do not deploy wrapper changes without a separate approval and VPS dry run.
+
+7. **Japan monotonic/UpDown remains separate.**
+   - USA cleanup should not commit or deploy Japan-only monotonic/UpDown changes.
+   - If resumed later, use a separate Japan-labeled branch/PR and dedicated dry-run/log comparison.
+
+---
+
+## 14. Agent checklist before any change
 
 - [ ] Is the file labeled `PROD-*` or on the hourly pipeline path?
 - [ ] Will the change alter signal generation, LLM prompts, or order sizing?
@@ -432,5 +574,7 @@ Any single change beyond the "safe-now execution slice" above requires explicit 
 - [ ] Will the change alter paths read by systemd units?
 - [ ] Is there a `--dry-run` or diff test gate defined?
 - [ ] Can this be done as git move / comment-only first?
+- [ ] Does this touch the Hyperliquid hybrid bot? If yes, stop unless the operator specifically requested a hybrid-bot change.
+- [ ] Is this Japan-only monotonic/UpDown work? If yes, do not deploy or commit it as USA cleanup.
 
 If any answer is "yes" for prod path without a gate, **stop and escalate**.
