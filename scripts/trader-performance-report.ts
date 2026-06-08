@@ -2,6 +2,7 @@
 import { closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { readCsvRecords } from "./lib/reporting/csv.js";
 import { loadOperationallyTaintedTrades } from "./portfolio-ledger.js";
 
 type Outcome = "win" | "loss";
@@ -424,44 +425,9 @@ function readLatestInstrumentSnapshot(): InstrumentSnapshotFile | null {
   return null;
 }
 
-function parseCsvLine(line: string): string[] {
-  const cells: string[] = [];
-  let cell = "";
-  let inQuotes = false;
-
-  for (let i = 0; i < line.length; i++) {
-    const ch = line[i];
-    if (ch === "\"") {
-      if (inQuotes && line[i + 1] === "\"") {
-        cell += "\"";
-        i++;
-      } else {
-        inQuotes = !inQuotes;
-      }
-    } else if (ch === "," && !inQuotes) {
-      cells.push(cell);
-      cell = "";
-    } else {
-      cell += ch;
-    }
-  }
-
-  cells.push(cell);
-  return cells;
-}
-
 function readClosedTrades(): ClosedTrade[] {
   const file = join(DATA_DIR, "trades-detailed.csv");
-  if (!existsSync(file)) return [];
-
-  const lines = readFileSync(file, "utf-8").split("\n").filter((line) => line.trim());
-  const [headerLine, ...rows] = lines;
-  if (!headerLine) return [];
-
-  const headers = parseCsvLine(headerLine);
-  return rows.map((line) => {
-    const values = parseCsvLine(line);
-    const row = Object.fromEntries(headers.map((header, idx) => [header, values[idx] ?? ""]));
+  return readCsvRecords(file).map((row) => {
     return {
       id: row.id,
       openedAt: row.opened_at,
@@ -695,20 +661,8 @@ function readRelativeValueRows(): Map<string, Record<string, string>> {
 }
 
 function readRelativeValueCsv(file: string): Map<string, Record<string, string>> {
-  if (!existsSync(file)) return new Map();
-  let lines: string[];
-  try {
-    lines = readFileSync(file, "utf-8").split("\n").filter((line) => line.trim());
-  } catch {
-    return new Map();
-  }
-  const [headerLine, ...rows] = lines;
-  if (!headerLine) return new Map();
-  const headers = parseCsvLine(headerLine);
   const map = new Map<string, Record<string, string>>();
-  for (const line of rows) {
-    const values = parseCsvLine(line);
-    const row = Object.fromEntries(headers.map((header, idx) => [header, values[idx] ?? ""]));
+  for (const row of readCsvRecords(file)) {
     if (row.event_slug && row.market_id) map.set(`${row.event_slug}::${row.market_id}`, row);
   }
   return map;
