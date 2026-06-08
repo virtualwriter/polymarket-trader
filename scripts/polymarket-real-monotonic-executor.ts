@@ -509,7 +509,7 @@ function clobBuyAmountsValid(candidate: Candidate, shares: number): boolean {
 function precisionSafeShares(candidate: Candidate, minShares: number, maxShares: number): number | null {
   const start = Math.ceil((minShares - EPSILON) * 100) / 100;
   const end = Math.floor((maxShares + EPSILON) * 100) / 100;
-  for (let units = Math.round(start * 100); units <= Math.round(end * 100); units += 1) {
+  for (let units = Math.round(end * 100); units >= Math.round(start * 100); units -= 1) {
     const shares = units / 100;
     if (clobBuyAmountsValid(candidate, shares)) return shares;
   }

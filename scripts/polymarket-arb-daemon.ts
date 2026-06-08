@@ -538,11 +538,19 @@ function isStaleSubmittedNoFill(row: LivePackage): boolean {
 
 function isDaemonOpenPackage(row: LivePackage): boolean {
   if (isStaleSubmittedNoFill(row)) return false;
-  if (["quoted", "leg1_submitted", "leg1_filled", "leg2_submitted", "package_complete"].includes(row.status)) return true;
+  if (["quoted", "leg1_submitted", "leg1_filled", "leg2_submitted"].includes(row.status)) return true;
+  if (row.status === "package_complete") return !isCleanCompletedPackage(row);
   if (row.status !== "unwind_required") return false;
   return (row.actualCost ?? 0) > 0
     || (row.filledShares ?? 0) > 0
     || /orphan|sports_immediate_exit|naked_/i.test(row.failureReason ?? "");
+}
+
+function isCleanCompletedPackage(row: LivePackage): boolean {
+  return row.status === "package_complete"
+    && !row.failureReason
+    && (row.actualCost ?? 0) > 0
+    && (row.filledShares ?? 0) > 0;
 }
 
 function daemonOpenPackageCount(rows: LivePackage[]): number {
@@ -1123,6 +1131,7 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
     reservedSpendUsd = Math.max(0, reservedSpendUsd - freshSized.cost);
     inFlight.delete(pkg.key);
     for (const tokenId of executionTokens) tokensInFlight.delete(tokenId);
+    refreshAlreadyOpen();
   }
 }
 
