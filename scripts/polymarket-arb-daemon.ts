@@ -17,7 +17,7 @@
 
 import { webcrypto } from "node:crypto";
 import { spawn } from "node:child_process";
-import { mkdirSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { config } from "dotenv";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -172,9 +172,12 @@ const ORPHAN_MIN_SHARES = Number(process.env.ARB_DAEMON_ORPHAN_MIN_SHARES ?? MIN
 // Sports imbalances should be dust-only. Anything larger is flattened immediately
 // instead of entering the normal orphan completion loop.
 const SPORTS_ORPHAN_DUST_SHARES = Number(process.env.ARB_DAEMON_SPORTS_ORPHAN_DUST_SHARES ?? 0.01);
+const MAX_NAKED_SHARES_BEFORE_PAUSE = Number(process.env.ARB_DAEMON_MAX_NAKED_SHARES_BEFORE_PAUSE ?? SPORTS_ORPHAN_DUST_SHARES);
 const DUST_EXIT_LIMIT_WAIT_MS = Number(process.env.ARB_DAEMON_DUST_EXIT_LIMIT_WAIT_MS ?? 5_000);
 const DUST_EXIT_RETRY_MS = Number(process.env.ARB_DAEMON_DUST_EXIT_RETRY_MS ?? 60_000);
 const ORPHANS_PATH = join(dirname(PACKAGES_PATH), "polymarket-live-orphans.json");
+const PAUSE_PATH = join(dirname(PACKAGES_PATH), "polymarket-arb-daemon-paused.json");
+const QUARANTINE_PATH = join(dirname(PACKAGES_PATH), "polymarket-arb-daemon-quarantine.json");
 
 type PriceLevels = { bids: Map<number, number>; asks: Map<number, number> };
 type TopOfBook = { ask: number; askSize: number; bid: number; bidSize: number; spread: number };
@@ -239,6 +242,16 @@ interface Orphan {
   note?: string;
 }
 
+interface QuarantineEntry {
+  quarantinedAt: string;
+  reason: string;
+  packageId: string;
+  eventSlug: string;
+  asset: string;
+  tokenIds: string[];
+  details?: Record<string, unknown>;
+}
+
 // ─── In-memory order books, keyed by token id ───
 const books = new Map<string, PriceLevels>();
 // token id -> packages that reference it (for targeted re-evaluation)
@@ -251,12 +264,15 @@ const tokensInFlight = new Set<string>();
 const evaluatingPackages = new Set<string>();
 let alreadyOpen = new Set<string>();
 const submitTimestamps: number[] = [];
+const quarantinedPackages = new Set<string>();
+const quarantinedTokens = new Set<string>();
 
 // Cached on-chain state (refreshed off the hot path)
 let cachedFunderBalance = 0;
 let cachedFunderAllowance = 0;
 let balanceKnown = false;
 let pausedForLowBalanceLogged = false;
+let reservedSpendUsd = 0;
 
 // Fill-signal waiters keyed by token id (resolved by the User websocket)
 const fillWaiters = new Map<string, Set<() => void>>();
@@ -507,6 +523,9 @@ function refreshAlreadyOpen() {
       open.add(row.packageId);
     }
   }
+  for (const orphan of activeOrphans()) {
+    open.add(orphan.packageId);
+  }
   alreadyOpen = open;
 }
 
@@ -519,7 +538,11 @@ function isStaleSubmittedNoFill(row: LivePackage): boolean {
 
 function isDaemonOpenPackage(row: LivePackage): boolean {
   if (isStaleSubmittedNoFill(row)) return false;
-  return ["quoted", "leg1_submitted", "leg1_filled", "leg2_submitted", "package_complete"].includes(row.status);
+  if (["quoted", "leg1_submitted", "leg1_filled", "leg2_submitted", "package_complete"].includes(row.status)) return true;
+  if (row.status !== "unwind_required") return false;
+  return (row.actualCost ?? 0) > 0
+    || (row.filledShares ?? 0) > 0
+    || /orphan|sports_immediate_exit|naked_/i.test(row.failureReason ?? "");
 }
 
 function daemonOpenPackageCount(rows: LivePackage[]): number {
@@ -867,7 +890,79 @@ function perMinuteCapReached(): boolean {
 
 function lowBalance(): boolean {
   if (!balanceKnown) return false;
-  return cachedFunderBalance < MIN_MARKETABLE_BUY_USD || cachedFunderAllowance < MIN_MARKETABLE_BUY_USD;
+  return spendableUsdAfterReservations() < MIN_MARKETABLE_BUY_USD;
+}
+
+function spendableUsdAfterReservations(): number {
+  if (!balanceKnown) return Number.POSITIVE_INFINITY;
+  return Math.max(0, Math.min(cachedFunderBalance, cachedFunderAllowance) - reservedSpendUsd);
+}
+
+function pauseNewEntries(reason: string, details: Record<string, unknown> = {}) {
+  if (!tradingPausedReason) {
+    tradingPausedReason = reason;
+    writeFileSync(PAUSE_PATH, JSON.stringify({
+      pausedAt: new Date().toISOString(),
+      reason,
+      details,
+    }, null, 2) + "\n");
+    log(`PAUSED new entries: ${reason}`);
+    return;
+  }
+  log(`new entries already paused: ${tradingPausedReason}; additional reason=${reason}`);
+}
+
+function loadPersistentPause() {
+  if (!existsSync(PAUSE_PATH)) return;
+  try {
+    const row = JSON.parse(readFileSync(PAUSE_PATH, "utf8")) as { reason?: string };
+    tradingPausedReason = row.reason || "persistent_pause_file_present";
+    log(`persistent pause loaded: ${tradingPausedReason}`);
+  } catch (err: any) {
+    tradingPausedReason = "persistent_pause_file_unreadable";
+    log(`persistent pause loaded with unreadable file: ${err?.message ?? String(err)}`);
+  }
+}
+
+function loadQuarantine() {
+  if (!existsSync(QUARANTINE_PATH)) return;
+  try {
+    const entries = JSON.parse(readFileSync(QUARANTINE_PATH, "utf8")) as QuarantineEntry[];
+    for (const entry of Array.isArray(entries) ? entries : []) {
+      if (entry.packageId) quarantinedPackages.add(entry.packageId);
+      for (const tokenId of entry.tokenIds ?? []) quarantinedTokens.add(tokenId);
+    }
+    log(`quarantine loaded: packages=${quarantinedPackages.size} tokens=${quarantinedTokens.size}`);
+  } catch (err: any) {
+    log(`quarantine load failed; ignoring quarantine file: ${err?.message ?? String(err)}`);
+  }
+}
+
+function appendQuarantine(entry: QuarantineEntry) {
+  const existing = existsSync(QUARANTINE_PATH)
+    ? JSON.parse(readFileSync(QUARANTINE_PATH, "utf8")) as QuarantineEntry[]
+    : [];
+  const entries = Array.isArray(existing) ? existing : [];
+  const already = entries.some((row) => row.packageId === entry.packageId);
+  if (!already) {
+    entries.push(entry);
+    writeFileSync(QUARANTINE_PATH, JSON.stringify(entries, null, 2) + "\n");
+  }
+  quarantinedPackages.add(entry.packageId);
+  for (const tokenId of entry.tokenIds) quarantinedTokens.add(tokenId);
+  log(`QUARANTINED package=${entry.packageId} tokens=${entry.tokenIds.length} reason=${entry.reason}`);
+}
+
+function quarantinePackage(pkg: WatchPackage, c: Candidate, reason: string, details: Record<string, unknown> = {}) {
+  appendQuarantine({
+    quarantinedAt: new Date().toISOString(),
+    reason,
+    packageId: pkg.key,
+    eventSlug: c.eventSlug,
+    asset: c.asset,
+    tokenIds: [pkg.broadYesToken, pkg.narrowNoToken].filter(Boolean),
+    details,
+  });
 }
 
 // ─── Fill signalling (User websocket) ───
@@ -912,6 +1007,15 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
   if (tradingPausedReason) return;
   if (inFlight.has(pkg.key) || alreadyOpen.has(pkg.key)) return;
   const executionTokens = [pkg.broadYesToken, pkg.narrowNoToken].filter(Boolean);
+  if (quarantinedPackages.has(pkg.key) || executionTokens.some((tokenId) => quarantinedTokens.has(tokenId))) {
+    const now = Date.now();
+    const last = lastSkipLogAt.get(pkg.key) ?? 0;
+    if (now - last >= SKIP_LOG_THROTTLE_MS) {
+      lastSkipLogAt.set(pkg.key, now);
+      log(`skip ${pkg.key}: quarantined large-naked-leg market/package`);
+    }
+    return;
+  }
   if (executionTokens.some((tokenId) => tokensInFlight.has(tokenId))) {
     const now = Date.now();
     const last = lastSkipLogAt.get(pkg.key) ?? 0;
@@ -967,7 +1071,7 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
     }
   }
   const executionCandidate = executionSizingCandidate(c);
-  const spendableUsd = balanceKnown ? Math.min(cachedFunderBalance, cachedFunderAllowance) : Number.POSITIVE_INFINITY;
+  const spendableUsd = spendableUsdAfterReservations();
   const sized = sizeForCandidate(executionCandidate, packageRows, spendableUsd);
   if (sized.reason) {
     const now = Date.now();
@@ -989,26 +1093,44 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
     log(`skip ${pkg.key}: execution lock acquired by another tick after preflight`);
     return;
   }
+  await refreshBalance();
+  const freshPackageRows = readJsonArray<LivePackage>(PACKAGES_PATH);
+  refreshAlreadyOpen();
+  if (alreadyOpen.has(pkg.key) || inFlight.has(pkg.key) || executionTokens.some((tokenId) => tokensInFlight.has(tokenId))) {
+    log(`skip ${pkg.key}: blocked after fresh preflight (open package/orphan or shared token)`);
+    return;
+  }
+  const freshSized = sizeForCandidate(executionCandidate, freshPackageRows, spendableUsdAfterReservations());
+  if (freshSized.reason) {
+    const now = Date.now();
+    const last = lastSkipLogAt.get(pkg.key) ?? 0;
+    if (now - last >= SKIP_LOG_THROTTLE_MS) {
+      lastSkipLogAt.set(pkg.key, now);
+      log(`skip ${pkg.key}: fresh_${freshSized.reason} shares=${freshSized.shares.toFixed(2)} cost=$${freshSized.cost.toFixed(4)} reserved=$${reservedSpendUsd.toFixed(4)} spendable=$${spendableUsdAfterReservations().toFixed(4)}`);
+    }
+    return;
+  }
+  reservedSpendUsd += freshSized.cost;
   alreadyOpen.add(pkg.key);
   inFlight.add(pkg.key);
   for (const tokenId of executionTokens) tokensInFlight.add(tokenId);
   submitTimestamps.push(Date.now());
   try {
-    await executeLive(pkg, executionCandidate);
+    await executeLive(pkg, executionCandidate, freshSized.shares);
   } catch (err: any) {
     log(`execute ${pkg.key} failed: ${err?.message ?? String(err)}`);
   } finally {
+    reservedSpendUsd = Math.max(0, reservedSpendUsd - freshSized.cost);
     inFlight.delete(pkg.key);
     for (const tokenId of executionTokens) tokensInFlight.delete(tokenId);
   }
 }
 
-async function executeLive(pkg: WatchPackage, c: Candidate): Promise<void> {
+async function executeLive(pkg: WatchPackage, c: Candidate, shares: number): Promise<void> {
   if (!clob) throw new Error("CLOB client not initialized");
   const sportsBlock = sportsExecutionBlocked(c);
   if (sportsBlock) throw new Error(`blocked_sports_non_atomic_execution: ${sportsBlock}`);
   const client = clob.client;
-  const shares = sizeForCandidate(c, readJsonArray<LivePackage>(PACKAGES_PATH)).shares;
   const record = packageRecord(c, reconcileAddress, shares, false);
   const orders: LiveOrder[] = [];
 
@@ -1106,8 +1228,10 @@ async function executeLive(pkg: WatchPackage, c: Candidate): Promise<void> {
     leg1Filled > leg2Filled ? "broad_yes" : leg2Filled > leg1Filled ? "narrow_no" : null;
   const errSuffix = legErrors.length ? ` errors=${legErrors.join("; ")}` : "";
   if (legErrors.some((error) => error.toLowerCase().includes("maker address not allowed"))) {
-    tradingPausedReason = "wallet_flow_rejected: maker address not allowed; configure deposit-wallet maker/funder before resuming";
-    log(`PAUSED new entries: ${tradingPausedReason}`);
+    pauseNewEntries("wallet_flow_rejected: maker address not allowed; configure deposit-wallet maker/funder before resuming", {
+      packageId: record.packageId,
+      errors: legErrors,
+    });
   }
 
   const sportsCandidate = isSportsCandidate(c);
@@ -1131,6 +1255,20 @@ async function executeLive(pkg: WatchPackage, c: Candidate): Promise<void> {
 
   if (nakedRole && nakedShares >= SPORTS_ORPHAN_DUST_SHARES) {
     const orphan = registerOrphanFromExecution(c, nakedRole, nakedShares, record.packageId);
+    if (nakedShares > MAX_NAKED_SHARES_BEFORE_PAUSE) {
+      quarantinePackage(pkg, c, `large_naked_leg_detected: ${nakedRole}=${nakedShares} > dust=${MAX_NAKED_SHARES_BEFORE_PAUSE}`, {
+        packageId: record.packageId,
+        eventSlug: c.eventSlug,
+        asset: c.asset,
+        role: nakedRole,
+        nakedShares,
+        matched,
+        intendedShares: shares,
+        sports: sportsCandidate,
+        orphanId: orphan.id,
+        legErrors,
+      });
+    }
     if (sportsCandidate) {
       orphanInFlight.add(orphan.id);
       try {
@@ -1930,6 +2068,7 @@ async function main() {
   log(`gates: maxPackage=$${MAX_PACKAGE_USD} maxDaily=$${MAX_DAILY_USD} maxOpen=${MAX_OPEN_PACKAGES} maxPerMin=${MAX_PER_MIN} minEdge=${(MIN_EDGE * 100).toFixed(2)}c minTouch=${MIN_AVAILABLE_SHARES} maxSpread=${MAX_SPREAD}`);
   log(`sports safety: NBA batch execution ${ENABLE_NBA_BATCH_EXECUTION ? "ENABLED (single postOrders request; orphan/no-loss fallback active)" : ALLOW_NBA_NON_ATOMIC_EXECUTION ? "ENABLED by non-atomic override" : "BLOCKED (batch disabled)"}`);
   log(`orphan policy: stop=${ORPHAN_STOP_CENTS} completionMargin=${ORPHAN_COMPLETION_MARGIN} expiryBufferMs=${ORPHAN_EXPIRY_BUFFER_MS} pollMs=${ORPHAN_POLL_MS} (re-pair naked legs across ladder, else unwind)`);
+  log(`large-orphan quarantine: maxNakedShares=${MAX_NAKED_SHARES_BEFORE_PAUSE} quarantineFile=${QUARANTINE_PATH} globalPauseFile=${PAUSE_PATH}`);
 
   const vpnGuard = new VpnGuard({
     socksProxy: SOCKS_PROXY,
@@ -1963,6 +2102,8 @@ async function main() {
     log(`dry-run: skipping CLOB client + balance probe`);
   }
 
+  loadPersistentPause();
+  loadQuarantine();
   loadOrphans();
   await reconcileOrphansAtStartup();
   archiveStaleNbaLedgers();

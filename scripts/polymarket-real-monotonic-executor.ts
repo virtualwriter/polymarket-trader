@@ -96,7 +96,7 @@ const CANDIDATE_SOURCE = process.env.MONOTONIC_ARB_REAL_PM_SOURCE ?? "portfolio"
 const TARGET_PACKAGE_ID = process.env.MONOTONIC_ARB_REAL_PM_PACKAGE_ID?.trim();
 const SOCKS_PROXY = process.env.SOCKS_PROXY || process.env.ALL_PROXY || undefined;
 const SKIP_VPN = process.env.MONOTONIC_ARB_REAL_PM_SKIP_VPN === "1" || process.argv.includes("--skip-vpn");
-const ALLOWED_ASSETS = new Set((process.env.MONOTONIC_ARB_REAL_PM_ASSETS ?? "BTC,ETH,GOLD,SOL,SILVER,SPY,NBA,SOCCER,MLB")
+const ALLOWED_ASSETS = new Set((process.env.MONOTONIC_ARB_REAL_PM_ASSETS ?? "BTC,ETH,GOLD,SOL,SILVER,SPY,NBA,SOCCER,MLB,FINANCE")
   .split(",")
   .map((asset) => asset.trim().toUpperCase())
   .filter(Boolean));

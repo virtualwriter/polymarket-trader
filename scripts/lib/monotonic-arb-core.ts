@@ -230,6 +230,7 @@ function parseMarket(eventSlug: string, question: string, groupItemTitle: string
 
 export function polymarketAssetForSlug(slug: string): string | null {
   if (slug.startsWith("nba-")) return "NBA";
+  if (slug.includes("spacex-ipo-closing-market-cap-above")) return "FINANCE";
   if (slug.includes("bitcoin")) return "BTC";
   if (slug.includes("ethereum")) return "ETH";
   if (slug.includes("solana")) return "SOL";
@@ -247,7 +248,7 @@ export function isNestedLadderEvent(slug: string, title = ""): boolean {
   const haystack = `${slug} ${title}`.toLowerCase();
   if (haystack.includes("settle") || haystack.includes("final trading day") || haystack.includes("over-under")) return false;
   if (haystack.includes("range") || /\$\d+(?:\.\d+)?\s*-\s*\$?\d+(?:\.\d+)?/.test(haystack)) return false;
-  return haystack.includes("hit") || haystack.includes("reach") || haystack.includes("dip");
+  return haystack.includes("hit") || haystack.includes("reach") || haystack.includes("dip") || haystack.includes("above");
 }
 
 function resolutionTemplate(quote: MarketQuote): string {
@@ -471,6 +472,7 @@ export function defaultEventSlugs(now = new Date()): string[] {
     "spx-hit-jun-2026",
     "spx-hit-dec-2026",
     "si-hit-jun-2026",
+    "spacex-ipo-closing-market-cap-above",
     "nba-nyk-sas-2026-06-05",
     `what-price-will-bitcoin-hit-in-${month}-${year}`,
     `what-price-will-ethereum-hit-in-${month}-${year}`,
