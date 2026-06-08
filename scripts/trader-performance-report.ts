@@ -3,6 +3,7 @@ import { closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, rea
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { csvLine, readCsvRecords } from "./lib/reporting/csv.js";
+import { escapeMd, fmtModelValue, fmtPct, fmtPriceValue, fmtUsd, winRate } from "./lib/reporting/format.js";
 import { normalCdf } from "./lib/reporting/math.js";
 import { safeNumber } from "./lib/reporting/number.js";
 import { parseHeatmapTimestamp, parseTimestamp } from "./lib/reporting/time.js";
@@ -520,20 +521,6 @@ function grouped<T>(items: T[], keyFn: (item: T) => string, statFn: (stats: Stat
   return sortStatsRows([...map.entries()]);
 }
 
-function fmtUsd(value: number): string {
-  const sign = value >= 0 ? "+" : "-";
-  return `${sign}$${Math.abs(value).toFixed(4)}`;
-}
-
-function fmtPct(value: number): string {
-  const sign = value >= 0 ? "+" : "-";
-  return `${sign}${Math.abs(value).toFixed(2)}%`;
-}
-
-function winRate(stats: Stats): string {
-  return stats.trades > 0 ? `${((stats.wins / stats.trades) * 100).toFixed(1)}%` : "n/a";
-}
-
 function modelDteDays(row: Record<string, string>): number | null {
   const timestamp = parseHeatmapTimestamp(row.timestamp);
   const target = row.notes?.match(/target month-end expiry (\d{4}-\d{2}-\d{2})/i)?.[1];
@@ -712,18 +699,6 @@ function currentBidAsk(row: Record<string, string> | undefined, instrumentType: 
   if (yesBid === null || yesAsk === null) return { bid: null, ask: null };
   if (instrumentType === "pm_no") return { bid: 1 - yesAsk, ask: 1 - yesBid };
   return { bid: yesBid, ask: yesAsk };
-}
-
-function fmtModelValue(value: number | null): string {
-  return value === null ? "" : value.toFixed(6);
-}
-
-function fmtPriceValue(value: number | null): string {
-  return value === null ? "" : value.toFixed(4);
-}
-
-function escapeMd(value: string): string {
-  return value.replace(/\|/g, "\\|").replace(/\n/g, " ");
 }
 
 function hypothesisMap(hypotheses: Hypothesis[]): Map<string, Hypothesis> {
