@@ -1,5 +1,7 @@
 # Addendum: Missing Context for the Sports MM
 
+**Legacy note:** This directory is auction-simulation context from a separate project. It is not loaded by the USA production hourly trader, exit scanner, heatmap generation, or Hyperliquid hybrid bot.
+
 This folder contains code and results from the auction project that the main `sports MM` repo doesn't include. An AI agent reviewing only `engine-src/` and `scripts/` will miss that these defenses **already exist** — they just weren't ported into `RiskManager.ts`.
 
 ---

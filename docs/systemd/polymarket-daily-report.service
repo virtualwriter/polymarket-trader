@@ -1,0 +1,9 @@
+[Unit]
+Description=Polymarket trader daily email report
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/polymarket-trader
+ExecStart=/usr/local/bin/run-polymarket-daily-report

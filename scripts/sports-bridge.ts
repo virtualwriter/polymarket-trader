@@ -1,6 +1,9 @@
 /**
  * Sports Data Bridge — Streams live odds + scores into the MM server.
  *
+ * Legacy note: sports simulation support only. This script is not part of the
+ * USA production hourly trader, exit scanner, or heatmap generation path.
+ *
  * Supported sources:
  *   --source demo         Synthetic odds walk for testing
  *   --source espn         ESPN hidden API (free, ~15s delay)

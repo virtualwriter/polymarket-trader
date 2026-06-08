@@ -1,0 +1,11 @@
+[Unit]
+Description=Polymarket lightweight exit scanner
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/polymarket-trader
+EnvironmentFile=/etc/polymarket-trader.env
+ExecStart=/usr/local/bin/run-polymarket-exit-scanner
+TimeoutStartSec=45s

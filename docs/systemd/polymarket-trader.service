@@ -1,0 +1,11 @@
+[Unit]
+Description=Polymarket trader hourly scan and trade
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/polymarket-trader
+EnvironmentFile=/etc/polymarket-trader.env
+ExecStart=/usr/local/bin/run-polymarket-trader
+TimeoutStartSec=20m

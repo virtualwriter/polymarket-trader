@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Polymarket trader daily email report after morning trade run
+
+[Timer]
+OnCalendar=*-*-* 07:40:00 America/New_York
+Persistent=true
+Unit=polymarket-daily-report.service
+
+[Install]
+WantedBy=timers.target

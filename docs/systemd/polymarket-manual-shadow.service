@@ -1,0 +1,15 @@
+[Unit]
+Description=Polymarket manual shadow endpoint
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/polymarket-trader
+EnvironmentFile=/etc/polymarket-manual-shadow.env
+ExecStart=/usr/bin/python3 /opt/polymarket-trader/scripts/manual_shadow_endpoint.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

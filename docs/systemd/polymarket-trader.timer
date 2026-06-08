@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Polymarket trader hourly at minute 27
+
+[Timer]
+OnCalendar=*-*-* *:27:00
+Persistent=true
+Unit=polymarket-trader.service
+
+[Install]
+WantedBy=timers.target

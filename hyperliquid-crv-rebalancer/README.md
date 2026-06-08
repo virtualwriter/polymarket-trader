@@ -3,6 +3,8 @@
 Automated hedge management for yCRV/CRV positions using Hyperliquid perpetual futures,
 plus backtesting infrastructure and live trading bots.
 
+**Cleanup scope note:** `multi_coin_hybrid_bot.py` is the live always-on Hyperliquid hybrid bot and is excluded from codebase-cleanup edits unless specifically requested. Most other Python/CSV/JSON files in this directory are research, data-fetch, backtest, or operational helper artifacts.
+
 ---
 
 ## Multi-Coin Hybrid Bot (Live Trading)

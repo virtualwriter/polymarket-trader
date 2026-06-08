@@ -1,6 +1,9 @@
 /**
  * Sports Market Making Simulation Server — Engine-Backed CLOB
  *
+ * Legacy note: sports simulation support only. This script is not part of the
+ * USA production hourly trader, exit scanner, or heatmap generation path.
+ *
  * Uses the real MatchingEngine with CLOB order book, LMSR AMM, and
  * enhanced RiskManager with Tier 1 defenses (VPIN, toxicity, Bayesian).
  *
