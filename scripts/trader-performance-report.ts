@@ -3,6 +3,7 @@ import { closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, rea
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { csvLine, readCsvRecords } from "./lib/reporting/csv.js";
+import { safeNumber } from "./lib/reporting/number.js";
 import { loadOperationallyTaintedTrades } from "./portfolio-ledger.js";
 
 type Outcome = "win" | "loss";
@@ -529,11 +530,6 @@ function fmtPct(value: number): string {
 
 function winRate(stats: Stats): string {
   return stats.trades > 0 ? `${((stats.wins / stats.trades) * 100).toFixed(1)}%` : "n/a";
-}
-
-function safeNumber(value: unknown): number | null {
-  const parsed = typeof value === "number" ? value : Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
 }
 
 function normalCdf(x: number): number {
