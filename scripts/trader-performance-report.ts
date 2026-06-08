@@ -35,7 +35,7 @@ interface ClosedTrade {
   instrumentLabel?: string;
 }
 
-interface Position {
+export interface Position {
   id: string;
   openedAt: string;
   asset: string;
@@ -624,7 +624,7 @@ function readRelativeValueHistoryRows(): Map<string, Array<{ timestamp: Date; ro
   return byKey;
 }
 
-interface RelativeValueRowMatch {
+export interface RelativeValueRowMatch {
   row?: Record<string, string>;
   source: "snapshot" | "history_exact" | "history_nearest" | "missing";
   timestamp: Date | null;
@@ -643,7 +643,7 @@ function fmtHours(value: number | null): string {
   return value === null ? "" : value.toFixed(2);
 }
 
-function relativeValueEntryMatch(
+export function relativeValueEntryMatch(
   historyRows: Map<string, Array<{ timestamp: Date; row: Record<string, string> }>>,
   position: Position | undefined,
   openedAt: string | undefined,
@@ -691,7 +691,7 @@ function entryOneTouchModel(row: Record<string, string> | undefined): number | n
   return safeNumber(row?.options_touch_adjusted_prob) ?? recomputedOneTouchProbability(row);
 }
 
-function currentBidAsk(row: Record<string, string> | undefined, instrumentType: string | undefined): { bid: number | null; ask: number | null } {
+export function currentBidAsk(row: Record<string, string> | undefined, instrumentType: string | undefined): { bid: number | null; ask: number | null } {
   const yesBid = safeNumber(row?.pm_best_bid);
   const yesAsk = safeNumber(row?.pm_best_ask);
   if (yesBid === null || yesAsk === null) return { bid: null, ask: null };
@@ -699,7 +699,7 @@ function currentBidAsk(row: Record<string, string> | undefined, instrumentType: 
   return { bid: yesBid, ask: yesAsk };
 }
 
-function relativeValueContextNote(args: {
+export function relativeValueContextNote(args: {
   entryMatch: RelativeValueRowMatch;
   currentRow: Record<string, string> | undefined;
   generatedAt: string;
@@ -1389,7 +1389,9 @@ async function main() {
   console.log(report);
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
