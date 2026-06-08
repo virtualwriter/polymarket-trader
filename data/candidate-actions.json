@@ -1,86 +1,164 @@
 {
-  "generatedAt": "2026-06-08T16:10:24.062Z",
+  "generatedAt": "2026-06-08T16:28:31.584Z",
   "mechanicalExits": [],
   "signalKillExits": [],
-  "entryCandidates": [
-    {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.48375,
-      "confidence": 0.2765867478864775,
-      "thesis": "BTC P/C ratio 1.59 — heavy put buying → contrarian long.",
-      "hypothesisId": null,
-      "entryPrice": 62613,
-      "targetPct": 4,
-      "stopPct": 1.5,
-      "expiryDays": 5
-    }
-  ],
+  "entryCandidates": [],
   "llmCloseEligibility": [
     {
-      "positionId": "T-1779569932573-vi3j",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk",
-        "risk_stale",
-        "profit_taking"
-      ],
-      "evidenceColumns": [
-        "hype_spot"
-      ],
-      "hoursOpen": 379.19,
-      "hoursToExpiry": 124.81,
-      "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.7524,
-      "minHoldHours": 12,
-      "reason": "LLM-owned/promoted setup may be closed after 12h if signal-family evidence supports it."
-    },
-    {
-      "positionId": "T-1779569932574-aejv",
-      "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-      "asset": "BTC",
+      "positionId": "MA-1780403314728-llno",
+      "signalType": "MONOTONIC_ARB",
+      "asset": "SOL",
       "venue": "polymarket",
-      "direction": "short",
+      "direction": "long",
       "allowed": false,
       "allowedCategories": [],
-      "evidenceColumns": [
-        "btc_spot",
-        "btc_pm_iv",
-        "btc_hl_funding_ann"
-      ],
-      "hoursOpen": 379.19,
-      "hoursToExpiry": 1780.81,
-      "plannedHoldHours": 2160,
-      "elapsedHoldPct": 0.1756,
+      "evidenceColumns": [],
+      "hoursOpen": 148,
+      "hoursToExpiry": 4956.52,
+      "plannedHoldHours": 5104.52,
+      "elapsedHoldPct": 0.029,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
-      "positionId": "T-1780933278788-vumh",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "BTC",
-      "venue": "spot",
+      "positionId": "MA-1780511316427-4vq1",
+      "signalType": "MONOTONIC_ARB",
+      "asset": "SOL",
+      "venue": "polymarket",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 118,
+      "hoursToExpiry": 539.52,
+      "plannedHoldHours": 657.52,
+      "elapsedHoldPct": 0.1795,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "MA-1780511316427-qxg7",
+      "signalType": "MONOTONIC_ARB",
+      "asset": "SOL",
+      "venue": "polymarket",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 118,
+      "hoursToExpiry": 539.52,
+      "plannedHoldHours": 657.52,
+      "elapsedHoldPct": 0.1795,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "MA-1780644515935-bomt",
+      "signalType": "MONOTONIC_ARB",
+      "asset": "ETH",
+      "venue": "polymarket",
       "direction": "long",
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [
-        "btc_spot",
-        "btc_ibit_pc_ratio"
+        "eth_spot"
       ],
-      "hoursOpen": 0.48,
-      "hoursToExpiry": 119.52,
-      "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.004,
+      "hoursOpen": 81,
+      "hoursToExpiry": 539.52,
+      "plannedHoldHours": 620.52,
+      "elapsedHoldPct": 0.1305,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 0.5h, requires at least 12h."
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "MA-1780662516612-mf3w",
+      "signalType": "MONOTONIC_ARB",
+      "asset": "GOLD",
+      "venue": "polymarket",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "gold_gc_spot"
+      ],
+      "hoursOpen": 76,
+      "hoursToExpiry": 529.02,
+      "plannedHoldHours": 605.02,
+      "elapsedHoldPct": 0.1256,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "MA-1780756122347-no4t",
+      "signalType": "MONOTONIC_ARB",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "btc_spot"
+      ],
+      "hoursOpen": 50,
+      "hoursToExpiry": 4956.52,
+      "plannedHoldHours": 5006.52,
+      "elapsedHoldPct": 0.01,
+      "minHoldHours": 168,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "MA-1780781316401-w1a7",
+      "signalType": "MONOTONIC_ARB",
+      "asset": "GOLD",
+      "venue": "polymarket",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "gold_gc_spot"
+      ],
+      "hoursOpen": 43,
+      "hoursToExpiry": 529.02,
+      "plannedHoldHours": 572.02,
+      "elapsedHoldPct": 0.0752,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "MA-1780856911587-wz2s",
+      "signalType": "MONOTONIC_ARB",
+      "asset": "ETH",
+      "venue": "polymarket",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "eth_spot"
+      ],
+      "hoursOpen": 22,
+      "hoursToExpiry": 539.52,
+      "plannedHoldHours": 561.52,
+      "elapsedHoldPct": 0.0392,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "MA-1780871312894-eb2e",
+      "signalType": "MONOTONIC_ARB",
+      "asset": "GOLD",
+      "venue": "polymarket",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "gold_gc_spot"
+      ],
+      "hoursOpen": 18,
+      "hoursToExpiry": 529.02,
+      "plannedHoldHours": 547.02,
+      "elapsedHoldPct": 0.0329,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
   ]
 }

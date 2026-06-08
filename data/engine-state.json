@@ -1,70 +1,157 @@
 {
-  "generatedAt": "2026-06-08T16:10:24.040Z",
+  "generatedAt": "2026-06-08T16:28:31.559Z",
   "dataFreshness": {
-    "valuationRows": 890,
-    "latestValuationAt": "2026-06-08T05",
-    "macroRows": 888,
+    "valuationRows": 891,
+    "latestValuationAt": "2026-06-08T16",
+    "macroRows": 889,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-08T05"
+    "latestInstrumentSnapshotAt": "2026-06-08T16"
   },
   "portfolio": {
-    "cash": 97.2683,
-    "openPositions": 3,
+    "cash": 89.3467,
+    "openPositions": 9,
     "realizedPnl": 0.9326,
     "totalTrades": 197,
     "winRatePct": 51.3,
-    "unrealizedPnl": -0.3753
+    "unrealizedPnl": 0.0111
   },
   "openPositions": [
     {
-      "positionId": "T-1779569932573-vi3j",
-      "asset": "HYPE",
-      "venue": "spot",
+      "positionId": "MA-1780403314728-llno",
+      "asset": "SOL",
+      "venue": "polymarket",
       "direction": "long",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 3.47,
-      "currentPrice": 61.183,
-      "underlyingPrice": 61.183,
-      "targetPct": 4,
-      "stopPct": 2,
+      "signalType": "MONOTONIC_ARB",
+      "pnlPct": 0,
+      "currentPrice": 0.99,
+      "underlyingPrice": 67.579,
+      "targetPct": null,
+      "stopPct": 100,
       "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "hype_spot"
-      ]
+      "evidenceColumns": []
     },
     {
-      "positionId": "T-1779569932574-aejv",
-      "asset": "BTC",
+      "positionId": "MA-1780511316427-4vq1",
+      "asset": "SOL",
       "venue": "polymarket",
-      "direction": "short",
-      "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-      "pnlPct": -42,
-      "currentPrice": 0.29,
-      "underlyingPrice": 62613,
+      "direction": "long",
+      "signalType": "MONOTONIC_ARB",
+      "pnlPct": 0.7,
+      "currentPrice": 1.002,
+      "underlyingPrice": 67.579,
+      "targetPct": null,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "MA-1780511316427-qxg7",
+      "asset": "SOL",
+      "venue": "polymarket",
+      "direction": "long",
+      "signalType": "MONOTONIC_ARB",
+      "pnlPct": 0.4,
+      "currentPrice": 0.999,
+      "underlyingPrice": 67.579,
+      "targetPct": null,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "MA-1780644515935-bomt",
+      "asset": "ETH",
+      "venue": "polymarket",
+      "direction": "long",
+      "signalType": "MONOTONIC_ARB",
+      "pnlPct": -0.2,
+      "currentPrice": 0.997,
+      "underlyingPrice": 1699.5,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
-        "btc_spot",
-        "btc_pm_iv",
-        "btc_hl_funding_ann"
+        "eth_spot"
       ]
     },
     {
-      "positionId": "T-1780933278788-vumh",
-      "asset": "BTC",
-      "venue": "spot",
+      "positionId": "MA-1780662516612-mf3w",
+      "asset": "GOLD",
+      "venue": "polymarket",
       "direction": "long",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0,
-      "currentPrice": 62613,
-      "underlyingPrice": 62613,
-      "targetPct": 3,
-      "stopPct": 1.5,
+      "signalType": "MONOTONIC_ARB",
+      "pnlPct": -0.1,
+      "currentPrice": 0.997,
+      "underlyingPrice": 4341,
+      "targetPct": null,
+      "stopPct": 100,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
-        "btc_spot",
-        "btc_ibit_pc_ratio"
+        "gold_gc_spot"
+      ]
+    },
+    {
+      "positionId": "MA-1780756122347-no4t",
+      "asset": "BTC",
+      "venue": "polymarket",
+      "direction": "long",
+      "signalType": "MONOTONIC_ARB",
+      "pnlPct": 0.1,
+      "currentPrice": 1,
+      "underlyingPrice": 63929,
+      "targetPct": null,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "btc_spot"
+      ]
+    },
+    {
+      "positionId": "MA-1780781316401-w1a7",
+      "asset": "GOLD",
+      "venue": "polymarket",
+      "direction": "long",
+      "signalType": "MONOTONIC_ARB",
+      "pnlPct": 0,
+      "currentPrice": 0.999,
+      "underlyingPrice": 4341,
+      "targetPct": null,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot"
+      ]
+    },
+    {
+      "positionId": "MA-1780856911587-wz2s",
+      "asset": "ETH",
+      "venue": "polymarket",
+      "direction": "long",
+      "signalType": "MONOTONIC_ARB",
+      "pnlPct": 0.4,
+      "currentPrice": 1.003,
+      "underlyingPrice": 1699.5,
+      "targetPct": null,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "eth_spot"
+      ]
+    },
+    {
+      "positionId": "MA-1780871312894-eb2e",
+      "asset": "GOLD",
+      "venue": "polymarket",
+      "direction": "long",
+      "signalType": "MONOTONIC_ARB",
+      "pnlPct": -0.2,
+      "currentPrice": 0.997,
+      "underlyingPrice": 4341,
+      "targetPct": null,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot"
       ]
     }
   ],
@@ -102,10 +189,10 @@
     {
       "type": "FUNDING_EXTREME_SHORT",
       "enabled": true,
-      "weight": 0.4569,
-      "trades": 28,
-      "wins": 13,
-      "avgPnlPct": -0.3004,
+      "weight": 0.4608,
+      "trades": 29,
+      "wins": 14,
+      "avgPnlPct": -0.2837,
       "disabledAssets": [
         "OIL"
       ]
@@ -206,7 +293,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 64,
+    "openCount": 67,
     "resolvedCount": 614,
     "wouldHaveWon": 349,
     "wouldHaveLost": 265,
@@ -382,34 +469,6 @@
     ],
     "openQualityWarnings": [
       {
-        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-        "asset": "OIL",
-        "blockedReason": "manual_shadow_trade",
-        "instrumentLabel": "cl-hit-jun-2026 — NO — Will Crude Oil (CL) hit (LOW) $80 by end of June?",
-        "marketQuality": {
-          "quoteSource": "live_clob",
-          "quotedAt": "2026-05-19T02:21:11Z",
-          "gammaUpdatedAt": "2026-05-19T02:17:06.81318Z",
-          "clobTimestamp": "1779157248972",
-          "yesBid": 0.38,
-          "yesAsk": 0.42,
-          "yesSpread": 0.04,
-          "yesBidSize": 26.93,
-          "yesAskSize": 411.76,
-          "noBid": 0.58,
-          "noAsk": 0.62,
-          "noSpread": 0.04,
-          "noBidSize": 411.76,
-          "noAskSize": 26.93,
-          "liquidity": 49189.1,
-          "flags": [
-            "wide_pm_spread",
-            "wide_pm_no_spread"
-          ]
-        },
-        "thesis": "Manual user IV-touch shadow signal: PM YES 40.0% vs IV touch model 23.4%; edge -14.6 pts. Exclude from official live-trader performance until validated."
-      },
-      {
         "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
         "asset": "GOLD",
         "blockedReason": "manual_shadow_trade",
@@ -499,6 +558,54 @@
           ]
         },
         "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 13.2pt after haircuts. CBOE gap 15.7pt, CME gap 14.7pt, source agreement both_positive, spread 1.0c, liquidity 59412. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "ETH",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum dip to $1,500 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.822,
+          "yesAsk": 0.835,
+          "yesSpread": 0.013,
+          "liquidity": 39771.08,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 14.2pt after haircuts. CBOE gap 21.2pt, CME gap 23.5pt, source agreement both_positive, spread 1.3c, liquidity 39771. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "GOLD",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $6,000 by end of December?",
+        "marketQuality": {
+          "yesBid": 0.22,
+          "yesAsk": 0.23,
+          "yesSpread": 0.01,
+          "liquidity": 16399.19,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 9.4pt after haircuts. CBOE gap 17.9pt, CME gap -10.9pt, source agreement cboe_only, spread 1.0c, liquidity 16399. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin dip to $45,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.4,
+          "yesAsk": 0.42,
+          "yesSpread": 0.02,
+          "liquidity": 61934.69,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 8.8pt after haircuts. CBOE gap 11.3pt, CME gap 9.3pt, source agreement both_positive, spread 2.0c, liquidity 61935. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },

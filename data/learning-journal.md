@@ -27396,3 +27396,42 @@ Closed GOLD FUNDING_EXTREME_LONG short as funding normalized below 15%, mitigati
 
 ---
 
+### 2026-06-08 16:29 UTC
+
+**Portfolio:** $98.35 total | Cash $89.35 | 9 open | P&L $0.9326 | 51% win rate (197 trades)
+
+**Closed 1 trades:**
+- ✅ AMZN long via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT) → breakeven_stop: +$0.0018 (0.2%, market 0.0019, funding -0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 16.2pp (was -8.5, now 7.7)
+- [divergence] BTC PM-Options IV gap moved narrower by 9.6pp (was 11.2, now 1.6)
+- [divergence] GOLD PM-Options IV gap moved wider by 5.7pp (was 2.4, now 8.1)
+- [anomaly] btc_med_max = 81333 is -4.4 std devs from mean (93604.90 ± 2765.63)
+- [anomaly] gold_gld_pc_ratio = 1.126 is 2.8 std devs from mean (0.57 ± 0.20)
+
+**Blocked signal learning:**
+- Open blocked shadows: 67
+- Resolved blocked shadows: 614 (349 wins / 265 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 7/12 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 6/10 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=116 (34W/69L/13flat, 33.0% win-rate, sum $-2.6384, avg -2.27%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=160 (50W/93L/17flat, 35.0% win-rate, sum $-2.7562, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG EBAY long via hyperliquid would have edge compressed but trade lost money (-0.14%)
+- ❌ Blocked: WEEKEND_HL_FUNDING_REVERSION_LONG ZM long via hyperliquid would have edge compressed but trade lost money (-0.94%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-3.66%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+No LLM closes are permitted on the open positions, all of which are mechanical monotonic arbs. The gold-tracking arbs are slightly underwater as gold spot has dipped since entry, but the thesis is long-dated and gold is still in a wide range; no structural concern. Crypto-linked ETH arbs are performing well. The relative-value heatmap shows several buy_yes opportunities in GOLD settle-at bucket markets (e.g., $4,200-$4,600 settle-at, edge ~11 pts) and OIL hit contracts, but spread/liquidity filters keep them out of reach for capital deployment. Existing LLM hypothesis families continue to accumulate shadow tests; no new hypotheses are needed while the backlog is active. The promoted H-521 (HYPE breakout) and H-523 (BTC PM IV compression) variants are already regime-relative and do not require replacement. Monitored the hybrid bot tape: recent short losses and a bear regime persist, reflecting continued alt weakness despite BTC strength.
+
+---
+
