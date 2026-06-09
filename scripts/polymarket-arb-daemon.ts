@@ -188,6 +188,7 @@ const SPORTS_ORPHAN_DUST_SHARES = Number(process.env.ARB_DAEMON_SPORTS_ORPHAN_DU
 const MAX_NAKED_SHARES_BEFORE_PAUSE = Number(process.env.ARB_DAEMON_MAX_NAKED_SHARES_BEFORE_PAUSE ?? SPORTS_ORPHAN_DUST_SHARES);
 const DUST_EXIT_LIMIT_WAIT_MS = Number(process.env.ARB_DAEMON_DUST_EXIT_LIMIT_WAIT_MS ?? 5_000);
 const DUST_EXIT_RETRY_MS = Number(process.env.ARB_DAEMON_DUST_EXIT_RETRY_MS ?? 60_000);
+const ORPHAN_COMPLETION_SKIP_LOG_MS = Number(process.env.ARB_DAEMON_ORPHAN_COMPLETION_SKIP_LOG_MS ?? 60_000);
 const ORPHANS_PATH = join(dirname(PACKAGES_PATH), "polymarket-live-orphans.json");
 const PAUSE_PATH = join(dirname(PACKAGES_PATH), "polymarket-arb-daemon-paused.json");
 const QUARANTINE_PATH = join(dirname(PACKAGES_PATH), "polymarket-arb-daemon-quarantine.json");
@@ -301,6 +302,7 @@ const orphanInFlight = new Set<string>();
 // orphan id -> last live-ladder refresh timestamp (throttles event re-fetch).
 const orphanLadderAt = new Map<string, number>();
 const dustExitAttemptAt = new Map<string, number>();
+const completionSkipAttemptAt = new Map<string, number>();
 // eventSlug -> cached freshly-fetched event ladder + quotes (shared across
 // orphans in the same event within ORPHAN_LADDER_REFRESH_MS).
 const orphanEventCache = new Map<string, { at: number; quotes: MarketQuote[] }>();
@@ -1383,7 +1385,6 @@ async function executeLive(pkg: WatchPackage, c: Candidate, shares: number): Pro
 
   record.status = "leg1_submitted";
   record.updatedAt = new Date().toISOString();
-  appendJsonArray(PACKAGES_PATH, [record]);
 
   const submitStartedMs = Date.now();
   let legacyBalanceBefore: { leg1: number; leg2: number } | null = null;
@@ -1837,12 +1838,38 @@ async function doCompletion(o: Orphan, pick: CompletionPick) {
   if (!clob || DRY_RUN) return;
   const client = clob.client;
   {
+    const minNotionalShares = pick.complementAsk > 0
+      ? Math.ceil((MIN_MARKETABLE_BUY_USD / pick.complementAsk) * 100) / 100
+      : Number.POSITIVE_INFINITY;
+    const buyShares = Math.max(pick.completionShares, minNotionalShares);
+    const overfillShares = Math.max(0, buyShares - o.shares);
+    const completionCost = buyShares * pick.complementAsk;
+    const protectedShares = Math.min(o.shares, buyShares);
+    const protectedEdge = protectedShares * (1 - o.fillPrice - pick.complementAsk);
+    const extraComplementCost = overfillShares * pick.complementAsk;
+    if (
+      !Number.isFinite(buyShares)
+      || completionCost + EPSILON < MIN_MARKETABLE_BUY_USD
+      || protectedEdge + EPSILON < extraComplementCost
+    ) {
+      const now = Date.now();
+      const last = completionSkipAttemptAt.get(o.id) ?? 0;
+      if (now - last >= ORPHAN_COMPLETION_SKIP_LOG_MS) {
+        completionSkipAttemptAt.set(o.id, now);
+        o.attempts += 1;
+        o.note = `completion skipped: minNotional buyShares=${buyShares.toFixed(2)} cost=${completionCost.toFixed(4)} protectedEdge=${protectedEdge.toFixed(4)} extraCost=${extraComplementCost.toFixed(4)}`;
+        o.updatedAt = new Date().toISOString();
+        saveOrphans();
+        log(`orphan ${o.id} completion skipped: complement notional below min or overfill uneconomic ask=${pick.complementAsk.toFixed(4)} requested=${pick.completionShares} minShares=${minNotionalShares.toFixed(2)} orphanShares=${o.shares} protectedEdge=${protectedEdge.toFixed(4)} extraCost=${extraComplementCost.toFixed(4)}`);
+      }
+      return;
+    }
     o.attempts += 1;
-    log(`orphan ${o.id} COMPLETE attempt: buy complement ${pick.complementToken.slice(0, 10)}… ask=${pick.complementAsk.toFixed(4)} edge=${(pick.completionEdge * 100).toFixed(2)}c shares=${pick.completionShares} orphanShares=${o.shares}`);
+    log(`orphan ${o.id} COMPLETE attempt: buy complement ${pick.complementToken.slice(0, 10)}… ask=${pick.complementAsk.toFixed(4)} edge=${(pick.completionEdge * 100).toFixed(2)}c shares=${buyShares} orphanShares=${o.shares}${buyShares > pick.completionShares ? ` minNotionalTopUp=${(buyShares - pick.completionShares).toFixed(2)}` : ""}`);
     const before = await reconcileTokenBalance(reconcileAddress, pick.complementToken);
     let resp: unknown;
     try {
-      resp = await postFakBuy(client, pick.complementToken, pick.complementAsk, pick.completionShares);
+      resp = await postFakBuy(client, pick.complementToken, pick.complementAsk, buyShares);
       assertOrderResponse(resp, "completion");
     } catch (err: any) {
       resp = { error: err?.message ?? String(err) };
