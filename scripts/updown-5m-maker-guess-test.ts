@@ -1244,7 +1244,6 @@ async function tryCompleteImbalance(
       action: "skip",
     };
     if (pick.price > 0 && top.askSize >= Math.min(remaining, 1)) {
-      const before = await reconcileTokenBalance(address, complementToken);
       const startedMs = Date.now();
       let response: unknown;
       try {
@@ -1255,11 +1254,9 @@ async function tryCompleteImbalance(
         response = { error: err?.message ?? String(err) };
         attempt.action = "error";
       }
-      await sleep(250);
-      const after = await reconcileTokenBalance(address, complementToken);
-      const responseShares = responseBuyShares(response);
-      const balanceShares = roundShares(after - before);
-      const bought = responseShares > 0 ? responseShares : Math.min(remaining, balanceShares);
+      // FAK responses settle immediately and are authoritative; the balance
+      // feed lags and double-counted fills across retries.
+      const bought = responseBuyShares(response);
       const buyPrice = averageBuyPrice(response, pick.price);
       totalBought = roundShares(totalBought + bought);
       totalCost += bought * buyPrice;
@@ -1267,8 +1264,6 @@ async function tryCompleteImbalance(
         response,
         elapsedMs: Date.now() - startedMs,
         bought,
-        responseShares,
-        balanceShares,
         buyPrice,
         totalBought,
       });
@@ -1788,27 +1783,33 @@ async function finalizeLoopPair(
   attempt.cancels = await cancelLoopPair(client, pair);
   attempt.latency.cancelAllMs = Date.now() - cancelStartedMs;
 
-  // The reactive completion's buys are confirmed by order response but lag in
-  // the balance API; without this floor a fresh completion buy reads as a
-  // phantom imbalance and triggers a duplicate completion purchase.
+  // Authoritative reconcile. After the cancels above, each posted order's
+  // size_matched is final, and completion purchases are known exactly from
+  // their own order responses. The data-api balance feed lags trades by many
+  // seconds in BOTH directions and must never drive trade decisions: it has
+  // produced phantom imbalances that double-bought completions and nuked real
+  // legs out of matched pairs.
   const rcFill: any = attempt.reactiveCompletion;
-  const rcFloor = {
+  const rcBought = {
     up: rcFill?.complementSide === "up" && rcFill?.bought > 0 ? rcFill.bought : 0,
     down: rcFill?.complementSide === "down" && rcFill?.bought > 0 ? rcFill.bought : 0,
   };
-  // Same race on the posted side: the fill signal is authoritative before the
-  // balance API catches up; without this floor the freshly-filled entry leg
-  // reads as zero and the completion buy looks naked.
   const signalDetails = effectiveFirstFill ? fillSignalDetails(effectiveFirstFill, pair.market, pair.orderIds) : null;
+  const signalFloor = { up: 0, down: 0 };
   if (signalDetails) {
-    rcFloor[signalDetails.sideFilled] = Math.max(
-      rcFloor[signalDetails.sideFilled],
-      Math.min(signalDetails.shares, pair.quote.shares),
-    );
+    signalFloor[signalDetails.sideFilled] = Math.min(signalDetails.shares, pair.quote.shares);
   }
-  let latest = await waitForSettledFilled(address, pair.market, pair.before, effectiveFirstFill ? 6_000 : 1_000);
-  let upFilled = Math.max(latest.filled.up, responseFill.up, rcFloor.up);
-  let downFilled = Math.max(latest.filled.down, responseFill.down, rcFloor.down);
+  const [upOrderFill, downOrderFill] = await Promise.all([
+    pair.orderIds.up ? orderMatchedShares(client, pair.orderIds.up) : Promise.resolve(0),
+    pair.orderIds.down ? orderMatchedShares(client, pair.orderIds.down) : Promise.resolve(0),
+  ]);
+  const postedFill = {
+    up: Math.max(upOrderFill, responseFill.up, signalFloor.up),
+    down: Math.max(downOrderFill, responseFill.down, signalFloor.down),
+  };
+  attempt.orderReconcile = { upOrderFill, downOrderFill, responseFill, signalFloor, rcBought };
+  let upFilled = roundShares(postedFill.up + rcBought.up);
+  let downFilled = roundShares(postedFill.down + rcBought.down);
   let imbalance = roundShares(Math.abs(upFilled - downFilled));
   const actualFillPrices = {
     up: upFilled > 0 ? averageBuyPrice(pair.responses.up, pair.quote.upPrice) : 0,
@@ -1821,13 +1822,15 @@ async function finalizeLoopPair(
     const rc: any = attempt.reactiveCompletion;
     if (rc?.action === "fak_buy" && rc.bought > 0 && typeof rc.buyPrice === "number" && rc.buyPrice > 0) {
       const side = rc.complementSide as "up" | "down";
-      const postedShares = responseBuyShares(pair.responses[side]);
+      const postedShares = postedFill[side];
       const postedPrice = postedShares > 0 ? averageBuyPrice(pair.responses[side], pair.quote[side === "up" ? "upPrice" : "downPrice"]) : 0;
       const totalShares = postedShares + rc.bought;
       const blended = totalShares > 0 ? ((postedShares * postedPrice) + (rc.bought * rc.buyPrice)) / totalShares : rc.buyPrice;
       actualFillPrices[side] = blended;
     }
   }
+  // Balance snapshot kept for diagnostics only; never used for decisions.
+  let latest = await currentFilled(address, pair.market, pair.before);
   attempt.after = latest.balances;
   attempt.filled = {
     up: upFilled,
@@ -1855,12 +1858,11 @@ async function finalizeLoopPair(
     const completion = await tryCompleteImbalance(client, address, pair.market, side, fillPrice, imbalance);
     attempt.completion = completion;
     latest = await currentFilled(address, pair.market, pair.before);
-    const completionFilled = applyCompletionFill(pair.market, completion, {
-      up: Math.max(latest.filled.up, responseFill.up, rcFloor.up),
-      down: Math.max(latest.filled.down, responseFill.down, rcFloor.down),
-    });
-    upFilled = completionFilled.up;
-    downFilled = completionFilled.down;
+    // Completion buys are separate orders; add their confirmed fills instead of
+    // re-deriving the position from the lagging balance feed.
+    const completionBought = Number(completion?.bought) > 0 ? Number(completion.bought) : 0;
+    if (completion?.complementSide === "up") upFilled = roundShares(upFilled + completionBought);
+    if (completion?.complementSide === "down") downFilled = roundShares(downFilled + completionBought);
     imbalance = roundShares(Math.abs(upFilled - downFilled));
     if (completion?.bought > 0 && completion?.averagePrice > 0) {
       if (completion.complementSide === "up") actualFillPrices.up = completion.averagePrice;
