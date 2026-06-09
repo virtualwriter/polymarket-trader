@@ -528,6 +528,7 @@ This section records what has actually been implemented, committed, and pushed d
 | Golden report fixture | `scripts/lib/reporting/report-builders.golden.test.ts` | Done. Synthetic fixture asserts deterministic CSV/Markdown report output without reading live repo state. |
 | Relative-value context extraction | `scripts/lib/reporting/relative-value-context.ts`, `scripts/trader-performance-report.ts` | Done. Entry/current model provenance, bid/ask conversion, history-row matching, and context-note helpers moved out of the CLI wrapper with exports preserved for existing tests. |
 | Report input aggregation extraction | `scripts/lib/reporting/report-inputs.ts`, `scripts/trader-performance-report.ts` | Done. De-duping, counted/raw stats, grouped rows, setup-family stats, duplicate IDs, and resolved-shadow rollups moved out of the CLI wrapper. |
+| Hybrid-bot report loading extraction | `scripts/lib/reporting/hybrid-bot-report.ts`, `scripts/trader-performance-report.ts` | Done. Hybrid shadow state/trade loading and fee/P&L normalization moved out of the CLI wrapper. |
 
 ### Completed infra visibility / quarantine slices
 
@@ -535,6 +536,13 @@ This section records what has actually been implemented, committed, and pushed d
 |-------|-------|--------|
 | VPS wrapper references | `scripts/run-polymarket-exit-scanner.sh`, `scripts/run-polymarket-daily-report.sh`, `docs/systemd/*` | Done. Hashes verified against the USA VPS copies on 2026-06-09; these are reference files only and are not auto-installed. |
 | Legacy auction archive | `archive/addendum/`, `archive/README.md` | Done. Former top-level `addendum/` pre-auction sim moved under `archive/` with no production references found. |
+
+### Completed production monolith guardrail / first extraction
+
+| Slice | Files | Status |
+|-------|-------|--------|
+| Stronger dry-run harness shape | `scripts/cleanup-dry-run-harness.ts` | Done. Harness now records execution-plan counts, dry-run verification checks, truth-state counts, entry-by-asset, and LLM-close eligibility counts. |
+| Lean artifact entry helper | `scripts/lib/trading/artifacts.ts`, `scripts/trading-engine.ts` | Done. Extracted a pure helper that builds the lean artifact write list while leaving file names and write behavior in the engine. |
 
 ### Completed VPS disk cleanup
 
@@ -568,7 +576,7 @@ Follow-up implemented after this emergency cleanup:
 
 ### Current cleanup impact
 
-- `scripts/trader-performance-report.ts` is down to about 626 lines from the earlier 1,513-line reference after helper, report-builder, relative-value context, and input aggregation extraction.
+- `scripts/trader-performance-report.ts` is down to about 482 lines from the earlier 1,513-line reference after helper, report-builder, relative-value context, input aggregation, and hybrid report loading extraction.
 - Net repository source lines increased because focused tests and shared helpers were added. This is intentional: the immediate gain is safer future cleanup, not raw line deletion.
 - Runtime performance is expected to be effectively unchanged for the report path; the practical gain is improved testability, clearer LLM-facing report rows, and lower risk for the next extractions.
 - Trading behavior has not been changed. Each code slice was validated with reporting tests, report smoke output, `npm run cleanup:harness -- --compare ...`, `npm run prod:verify`, and TypeScript/lint checks.
@@ -576,7 +584,7 @@ Follow-up implemented after this emergency cleanup:
 ### Remaining work after this point
 
 1. **Continue report-only cleanup before touching production monoliths.**
-   - Next safe target: split hybrid-bot shadow report loading out of `scripts/trader-performance-report.ts`.
+   - Next safe target: split remaining CLI data loading/parsing helpers out of `scripts/trader-performance-report.ts`.
    - Keep output shape unchanged and rerun the same harness/report smoke gates.
 
 2. **Do not start `trading-engine.ts`, `market-scanner.ts`, or heatmap-report extraction yet.**

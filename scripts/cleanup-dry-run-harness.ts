@@ -142,6 +142,9 @@ try {
 
 const candidateActions = readJson<any>(join(dataDir, "candidate-actions.json"), {});
 const engineState = readJson<any>(join(dataDir, "engine-state.json"), {});
+const executionPlan = readJson<any>(join(dataDir, "execution-plan.json"), {});
+const dryRunVerification = readJson<any>(join(dataDir, "dry-run-verification.json"), {});
+const truthState = readJson<any>(join(dataDir, "llm-truth-state.json"), {});
 const blockedSignals = readJson<any[]>(join(dataDir, "blocked-signals.json"), []);
 const portfolio = readJson<any>(join(dataDir, "portfolio.json"), {});
 const openPositions: any[] = Array.isArray(portfolio.positions) ? portfolio.positions : [];
@@ -149,6 +152,11 @@ const entryCandidates: any[] = Array.isArray(candidateActions.entryCandidates) ?
 const mechanicalExits: any[] = Array.isArray(candidateActions.mechanicalExits) ? candidateActions.mechanicalExits : [];
 const signalKillExits: any[] = Array.isArray(candidateActions.signalKillExits) ? candidateActions.signalKillExits : [];
 const llmCloseEligibility: any[] = Array.isArray(candidateActions.llmCloseEligibility) ? candidateActions.llmCloseEligibility : [];
+const executionEntrySignals: any[] = Array.isArray(executionPlan.entrySignals) ? executionPlan.entrySignals : [];
+const executionMechanicalExits: any[] = Array.isArray(executionPlan.mechanicalExits) ? executionPlan.mechanicalExits : [];
+const executionSignalKillExits: any[] = Array.isArray(executionPlan.signalKillExits) ? executionPlan.signalKillExits : [];
+const executionLlmCloses: any[] = Array.isArray(executionPlan.llmCloses) ? executionPlan.llmCloses : [];
+const truthSetupFamilies: any[] = Array.isArray(truthState.setupFamilies) ? truthState.setupFamilies : [];
 const closedTradeRows = countCsvRows(join(dataDir, "trades-detailed.csv"));
 
 const summary = {
@@ -184,9 +192,11 @@ const summary = {
   candidateActions: {
     entryCandidates: entryCandidates.length,
     entryByType: countBy(entryCandidates, (row) => String(row.type ?? "unknown")),
+    entryByAsset: countBy(entryCandidates, (row) => String(row.asset ?? "unknown")),
     mechanicalExits: mechanicalExits.length,
     signalKillExits: signalKillExits.length,
     llmCloseEligibility: llmCloseEligibility.length,
+    llmCloseAllowed: llmCloseEligibility.filter((row) => row.allowed === true).length,
   },
   engineState: {
     valuationRows: engineState.dataFreshness?.valuationRows ?? null,
@@ -194,6 +204,25 @@ const summary = {
     instrumentSnapshots: engineState.dataFreshness?.instrumentSnapshots ?? null,
     openPositions: engineState.portfolio?.openPositions ?? null,
     signalFamilies: Array.isArray(engineState.signalFamilies) ? engineState.signalFamilies.length : null,
+  },
+  executionPlan: {
+    dryRun: executionPlan.dryRun ?? null,
+    llmDryRun: executionPlan.llmDryRun ?? null,
+    entrySignals: executionEntrySignals.length,
+    entrySignalsByType: countBy(executionEntrySignals, (row) => String(row.type ?? "unknown")),
+    mechanicalExits: executionMechanicalExits.length,
+    signalKillExits: executionSignalKillExits.length,
+    llmCloses: executionLlmCloses.length,
+  },
+  truthState: {
+    setupFamilies: truthSetupFamilies.length,
+    setupFamiliesByStatus: countBy(truthSetupFamilies, (row) => String(row.status ?? "unknown")),
+    contaminationRules: Array.isArray(truthState.contaminationRules) ? truthState.contaminationRules.length : null,
+  },
+  dryRunVerification: {
+    mutationDisabled: dryRunVerification.mutationDisabled ?? null,
+    shadowArchitecture: dryRunVerification.shadowArchitecture ?? null,
+    checks: dryRunVerification.checks ?? null,
   },
   blockedSignals: {
     total: blockedSignals.length,

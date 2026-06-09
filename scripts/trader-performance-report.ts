@@ -3,6 +3,7 @@ import { closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, sta
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readCsvRecords } from "./lib/reporting/csv.js";
+import { readHybridBotReport as readHybridBotReportFromFiles, resolveHybridBotFile } from "./lib/reporting/hybrid-bot-report.js";
 import {
   currentBidAsk,
   entryOneTouchModel,
@@ -156,173 +157,28 @@ const RELATIVE_VALUE_HISTORY_DIRS = [
 const OPERATIONALLY_TAINTED_TRADES: Record<string, string> = loadOperationallyTaintedTrades();
 
 const LIVE_STATE_DIR = process.env.POLYMARKET_TRADER_STATE_DIR ?? "/var/lib/polymarket-trader";
-function resolveHybridBotFile(envValue: string | undefined, basename: string): string {
-  if (envValue) return envValue;
-  const primary = join(LIVE_STATE_DIR, basename);
-  if (existsSync(primary)) return primary;
-  const localFallback = join(DATA_DIR, basename);
-  return existsSync(localFallback) ? localFallback : primary;
-}
 const HYBRID_BOT_TRADES_FILE = resolveHybridBotFile(
-  process.env.HYPERLIQUID_HYBRID_TRADES_FILE,
-  "hyperliquid-hybrid-trades.jsonl",
+  {
+    envValue: process.env.HYPERLIQUID_HYBRID_TRADES_FILE,
+    basename: "hyperliquid-hybrid-trades.jsonl",
+    liveStateDir: LIVE_STATE_DIR,
+    dataDir: DATA_DIR,
+  },
 );
 const HYBRID_BOT_STATE_FILE = resolveHybridBotFile(
-  process.env.HYPERLIQUID_HYBRID_STATE_FILE,
-  "hyperliquid-hybrid-state.json",
+  {
+    envValue: process.env.HYPERLIQUID_HYBRID_STATE_FILE,
+    basename: "hyperliquid-hybrid-state.json",
+    liveStateDir: LIVE_STATE_DIR,
+    dataDir: DATA_DIR,
+  },
 );
 
-interface HybridBotShadowEvent {
-  ts?: string;
-  coin?: string;
-  action?: "open" | "close";
-  side?: "long" | "short";
-  entry_price?: number;
-  exit_price?: number;
-  signal_price?: number;
-  fill_price?: number;
-  fill_size?: number;
-  real_size_usd?: number;
-  size_usd?: number;
-  fee_usd?: number;
-  real_fee_usd?: number;
-  pnl_pct?: number;
-  regime?: "bull" | "bear";
-  reason?: string;
-  ema_diff_pct?: number;
-}
-
-interface HybridBotPosition {
-  in_position?: boolean;
-  is_long?: boolean;
-  entry_price?: number;
-  entry_time?: string | null;
-  mode?: "long" | "short";
-}
-
-interface HybridBotState {
-  positions?: Record<string, HybridBotPosition>;
-  total_trades?: number;
-  total_wins?: number;
-  total_fees?: number;
-}
-
-interface HybridBotCoinStats {
-  trades: number;
-  wins: number;
-  losses: number;
-  realizedPnlUsd: number;     // sum of (pnl_pct/100 * size_usd - fee_usd) on closes
-  realizedPnlPctSum: number;  // sum of close pnl_pct
-  feesUsd: number;            // open + close fees
-  opens: number;
-  closes: number;
-  lastEventTs: string | null;
-}
-
-interface HybridBotReport {
-  available: boolean;
-  stateLastModified: string | null;
-  feedLastModified: string | null;
-  positions: Map<string, HybridBotPosition>;
-  perCoinStats: Map<string, HybridBotCoinStats>;
-  totalsAcrossAllCoins: HybridBotCoinStats;
-}
-
-function readHybridBotReport(): HybridBotReport {
-  const empty: HybridBotCoinStats = {
-    trades: 0, wins: 0, losses: 0,
-    realizedPnlUsd: 0, realizedPnlPctSum: 0, feesUsd: 0,
-    opens: 0, closes: 0, lastEventTs: null,
-  };
-  const report: HybridBotReport = {
-    available: false,
-    stateLastModified: null,
-    feedLastModified: null,
-    positions: new Map(),
-    perCoinStats: new Map(),
-    totalsAcrossAllCoins: { ...empty },
-  };
-
-  if (existsSync(HYBRID_BOT_STATE_FILE)) {
-    try {
-      const state = JSON.parse(readFileSync(HYBRID_BOT_STATE_FILE, "utf-8")) as HybridBotState;
-      report.stateLastModified = statSync(HYBRID_BOT_STATE_FILE).mtime.toISOString();
-      report.available = true;
-      for (const [coin, pos] of Object.entries(state.positions ?? {})) {
-        if (pos && pos.in_position) report.positions.set(coin, pos);
-      }
-    } catch (err) {
-      // Surface to stderr so the operator notices, but don't crash the report.
-      console.error(`[hybrid-bot] failed to read state: ${(err as Error).message}`);
-    }
-  }
-
-  if (existsSync(HYBRID_BOT_TRADES_FILE)) {
-    try {
-      report.feedLastModified = statSync(HYBRID_BOT_TRADES_FILE).mtime.toISOString();
-      report.available = true;
-      const raw = readFileSync(HYBRID_BOT_TRADES_FILE, "utf-8");
-      for (const line of raw.split("\n")) {
-        if (!line.trim()) continue;
-        let event: HybridBotShadowEvent;
-        try { event = JSON.parse(line); } catch { continue; }
-        const coin = event.coin ?? "UNKNOWN";
-        const stats = report.perCoinStats.get(coin) ?? { ...empty };
-        const totals = report.totalsAcrossAllCoins;
-        const rawFee = Number(event.fee_usd ?? 0);
-        const realSize = Number(event.real_size_usd ?? 0);
-        const shadowSizeForFee = Number(event.size_usd ?? 1);
-        // New hybrid bot events write fee_usd at shadow scale and preserve the
-        // actual exchange fee in real_fee_usd. Older events wrote real fees into
-        // fee_usd while size_usd was shadow-scaled, so back-scale them here.
-        const fee = event.real_fee_usd == null && realSize > 0 && shadowSizeForFee > 0
-          ? rawFee * (shadowSizeForFee / realSize)
-          : rawFee;
-        stats.feesUsd += fee;
-        totals.feesUsd += fee;
-        if (event.action === "open") {
-          stats.opens += 1;
-          totals.opens += 1;
-        } else if (event.action === "close") {
-          stats.closes += 1;
-          totals.closes += 1;
-          stats.trades += 1;
-          totals.trades += 1;
-          // Shadow $-P&L = (pnl_pct/100) * shadow size_usd - fee for this close.
-          // The open-side fee for this round-trip is already booked into feesUsd
-          // via the prior open event. realizedPnlUsd subtracts only the close
-          // fee so that opens-still-running don't contaminate the realized line.
-          const pct = Number(event.pnl_pct ?? 0);
-          const shadowSize = Number(event.size_usd ?? 1);
-          const pnlUsd = (pct / 100) * shadowSize - fee;
-          stats.realizedPnlUsd += pnlUsd;
-          stats.realizedPnlPctSum += pct;
-          totals.realizedPnlUsd += pnlUsd;
-          totals.realizedPnlPctSum += pct;
-          // Classify wins/losses by net (after-fee) P&L so the win rate is
-          // consistent with the realized P&L column. Using gross pct caused
-          // small positive moves eaten by taker fees to count as wins
-          // while contributing a negative realized line.
-          if (pnlUsd > 0) {
-            stats.wins += 1;
-            totals.wins += 1;
-          } else {
-            stats.losses += 1;
-            totals.losses += 1;
-          }
-        }
-        if (event.ts) {
-          stats.lastEventTs = event.ts;
-          totals.lastEventTs = event.ts;
-        }
-        report.perCoinStats.set(coin, stats);
-      }
-    } catch (err) {
-      console.error(`[hybrid-bot] failed to read shadow trades: ${(err as Error).message}`);
-    }
-  }
-
-  return report;
+function readHybridBotReport() {
+  return readHybridBotReportFromFiles({
+    stateFile: HYBRID_BOT_STATE_FILE,
+    tradesFile: HYBRID_BOT_TRADES_FILE,
+  });
 }
 
 const CSV_HEADER = [

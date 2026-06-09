@@ -24,6 +24,7 @@ import {
   legSnapshotFromYesBook,
   type EntryBookSnapshot,
 } from "./polymarket-clob-book.js";
+import { buildLeanArtifactEntries } from "./lib/trading/artifacts.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -7001,11 +7002,24 @@ async function executeApprovedPlan(
 }
 
 function writeLeanArtifacts(engineState: EngineState, truthState: LlmTruthState, candidateActions: CandidateActions, gatedAdvice: GatedLlmAdvice | null, executionPlan: ExecutionPlan | null) {
-  writeJson(ENGINE_STATE_FILE, engineState);
-  writeJson(LLM_TRUTH_STATE_FILE, truthState);
-  writeJson(CANDIDATE_ACTIONS_FILE, candidateActions);
-  if (gatedAdvice) writeJson(LLM_ADVICE_FILE, gatedAdvice);
-  if (executionPlan) writeJson(EXECUTION_PLAN_FILE, executionPlan);
+  for (const [filename, data] of buildLeanArtifactEntries(
+    {
+      engineState: ENGINE_STATE_FILE,
+      truthState: LLM_TRUTH_STATE_FILE,
+      candidateActions: CANDIDATE_ACTIONS_FILE,
+      llmAdvice: LLM_ADVICE_FILE,
+      executionPlan: EXECUTION_PLAN_FILE,
+    },
+    {
+      engineState,
+      truthState,
+      candidateActions,
+      gatedAdvice,
+      executionPlan,
+    },
+  )) {
+    writeJson(filename, data);
+  }
 }
 
 function writeDryRunVerification(engineState: EngineState, candidateActions: CandidateActions, executionPlan: ExecutionPlan | null) {
