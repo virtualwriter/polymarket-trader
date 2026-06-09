@@ -547,6 +547,13 @@ Remaining USA VPS disk risk:
 - `/var/lib/polymarket-trader/relative-value-history` still uses about 111 MB.
 - Root disk remains tight at about 98% used; longer-term fix is still retention/offload or disk expansion.
 
+Follow-up implemented after this emergency cleanup:
+
+- Added `scripts/prune_generated_state.py` and `npm run cleanup:disk`.
+- The pruner defaults to dry-run and requires `-- --apply` before deleting anything.
+- It refuses to delete Git-tracked files and targets only local-only generated snapshot archives, relative-value history directories, and generated backup directories.
+- Default retention policy: keep 14 days of gzipped instrument snapshot archives, 21 days of relative-value history, and 7 days of generated backup directories. Use `--snapshot-archive-days`, `--relative-value-history-days`, and `--backup-days` for explicit operator-approved overrides.
+
 ### Current cleanup impact
 
 - `scripts/trader-performance-report.ts` is down to about 1,397 lines from the earlier 1,513-line reference.
@@ -570,8 +577,8 @@ Remaining USA VPS disk risk:
    - Before touching them, build a stronger golden harness around signal counts, candidate actions, portfolio output, LLM-disabled paths, and generated state diffs.
 
 4. **Data/git-weight cleanup remains open.**
-   - Emergency 30-day snapshot archive pruning was performed on the USA VPS, but root disk is still tight.
-   - Snapshot retention/offload policy still needs an explicit operator decision for regular operation.
+   - Emergency 30-day snapshot archive pruning was performed on the USA VPS, and `npm run cleanup:disk` now provides a repeatable dry-run/apply path.
+   - Snapshot retention/offload policy still needs monitoring; root disk pressure may still require off-root storage or disk expansion.
    - Do not untrack `relative-value/index.html`; Vercel serves `relative-value/` directly.
    - Do not cap `learning-journal.md` until the LLM prompt-window behavior is mapped and tested.
 

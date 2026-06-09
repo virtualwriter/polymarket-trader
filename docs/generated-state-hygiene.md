@@ -57,6 +57,12 @@ These should not be included in USA cleanup commits unless the operator explicit
 
 New `relative-value/calibration/*.jsonl` files and `exports/` files are ignored going forward. Existing tracked generated files can still appear dirty because Git tracks them already.
 
+## VPS Disk Pruning
+
+Use `npm run cleanup:disk` to inspect local-only generated disk cleanup candidates on the production checkout. It defaults to dry-run and only deletes when passed `-- --apply`.
+
+The pruner refuses Git-tracked files and targets generated snapshot archives, relative-value history directories, and generated backup directories. Do not manually delete tracked audit, portfolio, trade, LLM, or published heatmap files for disk cleanup.
+
 ## Cleanup Commit Rule
 
 Before any cleanup commit:
