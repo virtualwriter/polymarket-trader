@@ -524,6 +524,28 @@ This section records what has actually been implemented, committed, and pushed d
 | Open-position LLM clarity | `scripts/trader-performance-report.ts` | Done. CSV and Markdown open-position rows now expose entry model vs current model, current bid/ask, strike/expiry, row source (`snapshot`, `history_exact`, `history_nearest`, `missing`), timestamps, age, and distance. |
 | Provenance tests | `scripts/trader-performance-report.test.ts` | Done. Covers snapshot/nearest/exact/missing row provenance, row distance/age, `pm_no` bid/ask conversion, and model-context notes. |
 | Markdown/CSV row-builder tests | `scripts/trader-performance-report.test.ts` | Done. Covers CSV field placement, detail rows, Markdown escaping, limits, empty states, open shadow rows, pending hypotheses, and full report header shape. |
+| Report builder extraction | `scripts/lib/reporting/report-builders.ts`, `scripts/trader-performance-report.ts` | Done. CSV/Markdown report row construction moved behind a reporting module while preserving existing exports and output shape. |
+
+### Completed VPS disk cleanup
+
+On 2026-06-09, the USA VPS root disk was at 100% after Japan-only work had briefly reached `main` and the hourly wrapper failed at `npm ci`. The USA live branch was restored to the last USA-safe cleanup tree, then the next hourly run completed and pushed `e588879`.
+
+Disk cleanup performed on the USA VPS was limited to local-only generated artifacts:
+
+- Deleted 157 gzipped `data/instrument-snapshot-archives/*.jsonl.gz` files older than 30 days, freeing about 146.6 MB.
+- Deleted stale May 14 generated backup directories:
+  - `/var/lib/polymarket-trader/generated-conflict-backup-20260514T003223Z`
+  - `/var/lib/polymarket-trader/pre-sync-backup-20260514T010329Z`
+- Total freed: about 302.9 MB. Root disk moved from about 205 MB free / 100% used to about 513 MB free / 98% used.
+
+Core trader history was not deleted. The following remained tracked and pushed in Git: portfolio, detailed trades, blocked signals, hypotheses, learning journal, engine state, candidate actions, LLM state, heatmap CSV/JSON/HTML. The current hot snapshot file and the most recent 30 days of snapshot archives were kept.
+
+Remaining USA VPS disk risk:
+
+- `data/instrument-snapshots.jsonl` still uses about 464 MB.
+- `data/instrument-snapshot-archives/` still uses about 847 MB after pruning.
+- `/var/lib/polymarket-trader/relative-value-history` still uses about 111 MB.
+- Root disk remains tight at about 98% used; longer-term fix is still retention/offload or disk expansion.
 
 ### Current cleanup impact
 
@@ -534,35 +556,34 @@ This section records what has actually been implemented, committed, and pushed d
 
 ### Remaining work after this point
 
-1. **Commit this documentation update separately.**
-   - Include only `docs/codebase-cleanup-plan.md` unless the operator explicitly asks to include unrelated dirty files.
-
-2. **Continue report-only cleanup before touching production monoliths.**
-   - Next safe target: move report row-builder functions (`statsCsvRow`, `detailCsvRow`, `table`, `markdownPendingHypotheses`, `markdownOpenShadows`, `buildCsvReport`, `buildMarkdownReport`) into a dedicated reporting module.
-   - The row-builder tests now provide a safety net for that extraction.
+1. **Continue report-only cleanup before touching production monoliths.**
+   - Next safe target: add a golden report fixture for deterministic CSV/Markdown output.
+   - A later safe target is moving relative-value context helpers out of `scripts/trader-performance-report.ts`.
    - Keep output shape unchanged and rerun the same harness/report smoke gates.
 
-3. **Add a golden report fixture if report cleanup continues.**
+2. **Add a golden report fixture if report cleanup continues.**
    - Capture a small synthetic portfolio/shadow/trade fixture and assert deterministic CSV/Markdown output.
    - This would make later report refactors safer than relying only on live-state smoke reports.
 
-4. **Do not start `trading-engine.ts`, `market-scanner.ts`, or heatmap-report extraction yet.**
+3. **Do not start `trading-engine.ts`, `market-scanner.ts`, or heatmap-report extraction yet.**
    - Those are still higher-risk production monoliths.
    - Before touching them, build a stronger golden harness around signal counts, candidate actions, portfolio output, LLM-disabled paths, and generated state diffs.
 
-5. **Data/git-weight cleanup remains open.**
-   - Snapshot retention/offload policy still needs an explicit operator decision.
+4. **Data/git-weight cleanup remains open.**
+   - Emergency 30-day snapshot archive pruning was performed on the USA VPS, but root disk is still tight.
+   - Snapshot retention/offload policy still needs an explicit operator decision for regular operation.
    - Do not untrack `relative-value/index.html`; Vercel serves `relative-value/` directly.
    - Do not cap `learning-journal.md` until the LLM prompt-window behavior is mapped and tested.
 
-6. **Infra visibility remains open unless separately verified.**
+5. **Infra visibility remains open unless separately verified.**
    - Copy/reference VPS exit-scanner and daily-report wrappers into repo if still missing.
    - Snapshot systemd units into `docs/systemd/` as reference-only docs.
    - Do not deploy wrapper changes without a separate approval and VPS dry run.
 
-7. **Japan monotonic/UpDown remains separate.**
+6. **Japan monotonic/UpDown remains separate.**
    - USA cleanup should not commit or deploy Japan-only monotonic/UpDown changes.
-   - If resumed later, use a separate Japan-labeled branch/PR and dedicated dry-run/log comparison.
+   - Use `main` for USA and the `japan` branch for Japan monotonic/UpDown deployment work.
+   - If shared files are touched, confirm the target branch/deployment before committing.
 
 ---
 
