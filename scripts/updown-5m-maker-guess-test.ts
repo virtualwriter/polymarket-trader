@@ -1607,6 +1607,20 @@ async function finalizeLoopPair(
     up: upFilled > 0 ? averageBuyPrice(pair.responses.up, pair.quote.upPrice) : 0,
     down: downFilled > 0 ? averageBuyPrice(pair.responses.down, pair.quote.downPrice) : 0,
   };
+  // A reactive-completion buy is the real fill for the complement side. Without
+  // this, the unposted leg falls back to the stale quote price and overstates
+  // the locked profit (e.g. reported pair 0.941 when it actually cost 1.01).
+  {
+    const rc: any = attempt.reactiveCompletion;
+    if (rc?.action === "fak_buy" && rc.bought > 0 && typeof rc.buyPrice === "number" && rc.buyPrice > 0) {
+      const side = rc.complementSide as "up" | "down";
+      const postedShares = responseBuyShares(pair.responses[side]);
+      const postedPrice = postedShares > 0 ? averageBuyPrice(pair.responses[side], pair.quote[side === "up" ? "upPrice" : "downPrice"]) : 0;
+      const totalShares = postedShares + rc.bought;
+      const blended = totalShares > 0 ? ((postedShares * postedPrice) + (rc.bought * rc.buyPrice)) / totalShares : rc.buyPrice;
+      actualFillPrices[side] = blended;
+    }
+  }
   attempt.after = latest.balances;
   attempt.filled = {
     up: upFilled,
