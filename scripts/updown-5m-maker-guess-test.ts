@@ -1335,6 +1335,43 @@ async function orderMatchedShares(
   }
 }
 
+// Last-resort fill source: executed trades. Unlike getOrder (archived once
+// fully matched) and cancelOrder (can return ok while a match lands
+// concurrently), the trades ledger records every execution. Sums shares per
+// posted order id, whether we were maker or taker.
+async function tradesFillSweep(
+  client: Awaited<ReturnType<typeof clobClient>>["client"],
+  market: TrackedMarket,
+  orderIds: { up?: string; down?: string },
+  sinceMs: number,
+): Promise<{ up: number; down: number }> {
+  const filled = { up: 0, down: 0 };
+  const ids = new Map<string, "up" | "down">();
+  if (orderIds.up) ids.set(orderIds.up, "up");
+  if (orderIds.down) ids.set(orderIds.down, "down");
+  if (!ids.size) return filled;
+  try {
+    const after = String(Math.max(0, Math.floor(sinceMs / 1000) - 10));
+    const trades: any[] = await client.getTrades({ market: market.conditionId, after }, true);
+    for (const trade of trades ?? []) {
+      const takerSide = ids.get(trade?.taker_order_id);
+      if (takerSide) {
+        const size = Number(trade?.size);
+        if (Number.isFinite(size) && size > 0) filled[takerSide] += size;
+      }
+      for (const makerOrder of trade?.maker_orders ?? []) {
+        const makerSide = ids.get(makerOrder?.order_id);
+        if (!makerSide) continue;
+        const matched = Number(makerOrder?.matched_amount);
+        if (Number.isFinite(matched) && matched > 0) filled[makerSide] += matched;
+      }
+    }
+  } catch (err: any) {
+    log(`loop trades sweep error: ${err?.message ?? String(err)}`);
+  }
+  return { up: roundShares(filled.up), down: roundShares(filled.down) };
+}
+
 async function tryReactiveCompletion(
   client: Awaited<ReturnType<typeof clobClient>>["client"],
   address: string,
@@ -1823,9 +1860,10 @@ async function finalizeLoopPair(
   upOrderFill = Math.max(upOrderFill, cancelMatchedFloor.up);
   downOrderFill = Math.max(downOrderFill, cancelMatchedFloor.down);
   // Cancel-race guard: a posted order can fill milliseconds before the cancel
-  // lands, and the order-status endpoint may not reflect size_matched yet on
-  // the first read. If everything looks like a no-fill, re-poll briefly before
-  // trusting it; a missed fill here strands a naked leg into expiry.
+  // lands, and both getOrder (archived once fully matched) and the cancel
+  // response (can ok while a match lands concurrently) have missed real fills.
+  // If everything looks like a no-fill, verify against the trades ledger
+  // before trusting it; a missed fill here strands a naked leg into expiry.
   if (
     upOrderFill <= 0 && downOrderFill <= 0
     && responseFill.up <= 0 && responseFill.down <= 0
@@ -1833,11 +1871,14 @@ async function finalizeLoopPair(
     && (pair.orderIds.up || pair.orderIds.down)
   ) {
     for (let poll = 0; poll < 3 && upOrderFill <= 0 && downOrderFill <= 0; poll += 1) {
-      await sleep(350);
-      [upOrderFill, downOrderFill] = await Promise.all([
+      if (poll > 0) await sleep(400);
+      const [upStatus, downStatus, swept] = await Promise.all([
         pair.orderIds.up ? orderMatchedShares(client, pair.orderIds.up) : Promise.resolve(0),
         pair.orderIds.down ? orderMatchedShares(client, pair.orderIds.down) : Promise.resolve(0),
+        tradesFillSweep(client, pair.market, pair.orderIds, pair.postedAtMs),
       ]);
+      upOrderFill = Math.max(upStatus, swept.up);
+      downOrderFill = Math.max(downStatus, swept.down);
     }
     if (upOrderFill > 0 || downOrderFill > 0) {
       log(`loop cancel-race fill detected up=${upOrderFill} down=${downOrderFill}`);
