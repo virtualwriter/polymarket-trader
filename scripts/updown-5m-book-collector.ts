@@ -1,11 +1,7 @@
-import { join } from "node:path";
+import { existsSync, mkdirSync, appendFileSync, writeFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { config } from "dotenv";
 import WebSocket from "ws";
-
-// Experimental Japan-only collector. Do not deploy this on the USA VPS hourly
-// trader path without explicit operator approval. Live mode remains opt-in via
-// UPDOWN_COLLECTOR_LIVE=1 and non-atomic execution requires
-// UPDOWN_COLLECTOR_ALLOW_NON_ATOMIC_LIVE=1.
 import {
   POLYMARKET_FUNDER_ADDRESS,
   assertOrderResponse,
@@ -16,7 +12,6 @@ import {
   reconcileTokenBalance,
   roundShares,
 } from "./polymarket-real-monotonic-executor.js";
-import { appendJsonl, writeJson } from "./lib/updown/persistence.js";
 
 config({ path: "config.env" });
 config({ path: ".env" });
@@ -140,6 +135,21 @@ const LIVE_EXECUTION_SUPPORTED = ALLOW_NON_ATOMIC_LIVE;
 
 function log(...args: unknown[]) {
   console.log(`[updown-collector ${new Date().toISOString()}]`, ...args);
+}
+
+function ensureParent(path: string) {
+  const dir = dirname(path);
+  if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+}
+
+function appendJsonl(path: string, row: unknown) {
+  ensureParent(path);
+  appendFileSync(path, JSON.stringify(row) + "\n");
+}
+
+function writeJson(path: string, value: unknown) {
+  ensureParent(path);
+  writeFileSync(path, JSON.stringify(value, null, 2) + "\n");
 }
 
 function sleep(ms: number) {

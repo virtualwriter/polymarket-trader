@@ -160,50 +160,39 @@ function normalizedOutcomeIndexes(outcomes: string[]): { yesIndex: number; noInd
   return yesIndex >= 0 && noIndex >= 0 ? { yesIndex, noIndex } : null;
 }
 
-function sportsSlugKind(eventSlug: string): "nba" | "mlb" | null {
-  if (eventSlug.startsWith("nba-")) return "nba";
-  if (eventSlug.startsWith("mlb-")) return "mlb";
-  return null;
-}
-
-function parseSportsMarket(eventSlug: string, question: string, outcomes: string[]): ParsedMarket | null {
-  const sport = sportsSlugKind(eventSlug);
-  if (!sport) return null;
+function parseSportsMarket(question: string, outcomes: string[]): ParsedMarket | null {
   const outcomeIndexes = normalizedOutcomeIndexes(outcomes);
-  const slugKey = `${sport}:${eventSlug}`;
-
-  const fullGameTotal = question.match(/^.+?\s+vs\.\s+.+?:\s*O\/U\s+([0-9]+(?:\.5)?)$/i);
+  const fullGameTotal = question.match(/^Knicks vs\. Spurs:\s*O\/U\s+([0-9]+(?:\.5)?)$/i);
   if (fullGameTotal && outcomeIndexes) {
     return {
       strike: parseNumber(fullGameTotal[1]),
       direction: "above",
-      ladderKey: `sports:${slugKey}:total:full-game`,
+      ladderKey: "sports:nba:nyk-sas:total:full-game",
       ...outcomeIndexes,
     };
   }
 
-  const firstHalfTotal = question.match(/^.+?\s+vs\.\s+.+?:\s*1H O\/U\s+([0-9]+(?:\.5)?)$/i);
+  const firstHalfTotal = question.match(/^Knicks vs\. Spurs:\s*1H O\/U\s+([0-9]+(?:\.5)?)$/i);
   if (firstHalfTotal && outcomeIndexes) {
     return {
       strike: parseNumber(firstHalfTotal[1]),
       direction: "above",
-      ladderKey: `sports:${slugKey}:total:first-half`,
+      ladderKey: "sports:nba:nyk-sas:total:first-half",
       ...outcomeIndexes,
     };
   }
 
-  const spread = question.match(/^(1H\s+)?Spread:\s+(.+?)\s+\(-?([0-9]+(?:\.5)?)\)$/i);
+  const spread = question.match(/^(1H\s+)?Spread:\s+(Spurs|Knicks)\s+\(-?([0-9]+(?:\.5)?)\)$/i);
   if (spread) {
     const normalized = outcomes.map((outcome) => outcome.trim().toLowerCase());
-    const team = spread[2].trim();
+    const team = spread[2];
     const yesIndex = normalized.findIndex((outcome) => outcome === team.toLowerCase());
-    const noIndex = normalized.findIndex((_, index) => index !== yesIndex);
+    const noIndex = normalized.findIndex((outcome, index) => index !== yesIndex && (outcome === "spurs" || outcome === "knicks"));
     if (yesIndex >= 0 && noIndex >= 0) {
-      const teamKey = team.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
       return {
         strike: parseNumber(spread[3]),
         direction: "above",
-        ladderKey: `sports:${slugKey}:spread:${spread[1] ? "first-half" : "full-game"}:${teamKey}`,
+        ladderKey: `sports:nba:nyk-sas:spread:${spread[1] ? "first-half" : "full-game"}:${team.toLowerCase()}`,
         yesIndex,
         noIndex,
       };
@@ -226,7 +215,7 @@ function parseSportsMarket(eventSlug: string, question: string, outcomes: string
 }
 
 function parseMarket(eventSlug: string, question: string, groupItemTitle: string, outcomes: string[]): ParsedMarket | null {
-  const sports = parseSportsMarket(eventSlug, question, outcomes);
+  const sports = eventSlug.startsWith("nba-") ? parseSportsMarket(question, outcomes) : null;
   if (sports) return sports;
 
   const parsed = parseStrike(question, groupItemTitle);
@@ -241,7 +230,6 @@ function parseMarket(eventSlug: string, question: string, groupItemTitle: string
 
 export function polymarketAssetForSlug(slug: string): string | null {
   if (slug.startsWith("nba-")) return "NBA";
-  if (slug.startsWith("mlb-")) return "MLB";
   if (slug.includes("spacex-ipo-closing-market-cap-above")) return "FINANCE";
   if (slug.includes("bitcoin")) return "BTC";
   if (slug.includes("ethereum")) return "ETH";
@@ -256,7 +244,7 @@ export function polymarketAssetForSlug(slug: string): string | null {
 }
 
 export function isNestedLadderEvent(slug: string, title = ""): boolean {
-  if (slug.startsWith("nba-") || slug.startsWith("mlb-")) return true;
+  if (slug.startsWith("nba-")) return true;
   const haystack = `${slug} ${title}`.toLowerCase();
   if (haystack.includes("settle") || haystack.includes("final trading day") || haystack.includes("over-under")) return false;
   if (haystack.includes("range") || /\$\d+(?:\.\d+)?\s*-\s*\$?\d+(?:\.\d+)?/.test(haystack)) return false;
