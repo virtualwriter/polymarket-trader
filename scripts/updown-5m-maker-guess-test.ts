@@ -1773,9 +1773,17 @@ async function finalizeLoopPair(
   attempt.cancels = await cancelLoopPair(client, pair);
   attempt.latency.cancelAllMs = Date.now() - cancelStartedMs;
 
+  // The reactive completion's buys are confirmed by order response but lag in
+  // the balance API; without this floor a fresh completion buy reads as a
+  // phantom imbalance and triggers a duplicate completion purchase.
+  const rcFill: any = attempt.reactiveCompletion;
+  const rcFloor = {
+    up: rcFill?.complementSide === "up" && rcFill?.bought > 0 ? rcFill.bought : 0,
+    down: rcFill?.complementSide === "down" && rcFill?.bought > 0 ? rcFill.bought : 0,
+  };
   let latest = await waitForSettledFilled(address, pair.market, pair.before, effectiveFirstFill ? 6_000 : 1_000);
-  let upFilled = Math.max(latest.filled.up, responseFill.up);
-  let downFilled = Math.max(latest.filled.down, responseFill.down);
+  let upFilled = Math.max(latest.filled.up, responseFill.up + rcFloor.up);
+  let downFilled = Math.max(latest.filled.down, responseFill.down + rcFloor.down);
   let imbalance = roundShares(Math.abs(upFilled - downFilled));
   const actualFillPrices = {
     up: upFilled > 0 ? averageBuyPrice(pair.responses.up, pair.quote.upPrice) : 0,
@@ -1823,8 +1831,8 @@ async function finalizeLoopPair(
     attempt.completion = completion;
     latest = await currentFilled(address, pair.market, pair.before);
     const completionFilled = applyCompletionFill(pair.market, completion, {
-      up: Math.max(latest.filled.up, responseFill.up),
-      down: Math.max(latest.filled.down, responseFill.down),
+      up: Math.max(latest.filled.up, responseFill.up + rcFloor.up),
+      down: Math.max(latest.filled.down, responseFill.down + rcFloor.down),
     });
     upFilled = completionFilled.up;
     downFilled = completionFilled.down;
