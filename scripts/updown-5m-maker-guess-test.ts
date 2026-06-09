@@ -89,6 +89,7 @@ const ENTRY_DEPTH = Number(process.env.UPDOWN_MAKER_GUESS_ENTRY_DEPTH ?? 0.02);
 // average nuclear exit of about -$0.94. Entry gating still uses MAX_PAIR_COST;
 // this only loosens the escape after a one-sided fill.
 const MAX_COMPLETION_PAIR_COST = Number(process.env.UPDOWN_MAKER_GUESS_MAX_COMPLETION_PAIR_COST ?? 1.01);
+const COMPLETION_MAKER_WAIT_MS = Number(process.env.UPDOWN_MAKER_GUESS_COMPLETION_MAKER_WAIT_MS ?? 2_000);
 const HOLD_MS = Number(process.env.UPDOWN_MAKER_GUESS_HOLD_MS ?? argValue("--hold-ms") ?? 5_000);
 const FILL_POLL_MS = Number(process.env.UPDOWN_MAKER_GUESS_FILL_POLL_MS ?? 250);
 const COMPLETION_WINDOW_MS = Number(process.env.UPDOWN_MAKER_GUESS_COMPLETION_WINDOW_MS ?? 3_000);
@@ -1254,6 +1255,7 @@ async function tryCompleteImbalance(
 
 async function tryReactiveCompletion(
   client: Awaited<ReturnType<typeof clobClient>>["client"],
+  address: string,
   market: TrackedMarket,
   signal: FillSignal | null,
   orderIds: { up?: string; down?: string },
@@ -1280,7 +1282,6 @@ async function tryReactiveCompletion(
       elapsedMs: Date.now() - startedMs,
     };
   }
-  const pick = aggressiveSafeComplementPrice(top, maxComplementPrice);
   const result: any = {
     action: "skip",
     startedAt: new Date(startedMs).toISOString(),
@@ -1291,26 +1292,111 @@ async function tryReactiveCompletion(
     maxComplementPrice,
     complementAsk: top.ask,
     complementAskSize: top.askSize,
-    topAskLevels: pick.levels,
-    pickedComplementPrice: pick.price,
-    pickReason: pick.reason,
   };
-  if (!(pick.price > 0) || top.askSize < Math.min(details.shares, 1)) {
+
+  // Maker-first completion: an immediate FAK pays the displayed spread and at
+  // best breaks even (observed pairs land at 1.00-1.01). If the displayed ask
+  // is not profitable, rest a maker bid at the profitable price briefly and
+  // only fall back to the capped taker buy if it does not fill.
+  let remainingShares = details.shares;
+  let makerBought = 0;
+  let makerPrice = 0;
+  const profitablePairCap = maxSafePairCost() - details.fillPrice;
+  const profitComplementPrice = normalizePrice(Math.min(profitablePairCap, top.ask - TICK));
+  if (COMPLETION_MAKER_WAIT_MS > 0 && profitComplementPrice >= TICK && top.ask - 1e-9 > profitablePairCap) {
+    makerPrice = profitComplementPrice;
+    const makerStartedMs = Date.now();
+    const makerStage: any = { price: makerPrice, waitMs: COMPLETION_MAKER_WAIT_MS };
+    result.makerStage = makerStage;
+    try {
+      const beforeBalance = await reconcileTokenBalance(address, details.complementToken);
+      const response = await postLimitBuyCached(client, details.complementToken, makerPrice, details.shares);
+      assertOrderResponse(response, "maker_guess_completion_maker_bid");
+      makerStage.response = response;
+      const orderID = String((response as any)?.orderID ?? "");
+      makerBought = responseBuyShares(response);
+      while (makerBought + 1e-9 < details.shares && Date.now() - makerStartedMs < COMPLETION_MAKER_WAIT_MS) {
+        await sleep(250);
+        const balance = await reconcileTokenBalance(address, details.complementToken);
+        makerBought = Math.max(makerBought, roundShares(balance - beforeBalance));
+      }
+      if (orderID && makerBought + 1e-9 < details.shares) {
+        makerStage.cancel = await cancelOrderTimed(client, orderID);
+        const balance = await reconcileTokenBalance(address, details.complementToken);
+        makerBought = Math.max(makerBought, roundShares(balance - beforeBalance));
+      }
+    } catch (err: any) {
+      makerStage.error = err?.message ?? String(err);
+    }
+    makerBought = Math.min(makerBought, details.shares);
+    makerStage.bought = makerBought;
+    makerStage.elapsedMs = Date.now() - makerStartedMs;
+    remainingShares = roundShares(Math.max(0, details.shares - makerBought));
+    if (remainingShares < IMBALANCE_DUST_SHARES) {
+      return {
+        ...result,
+        action: "fak_buy",
+        bought: makerBought,
+        buyPrice: makerPrice,
+        completionMode: "maker",
+        elapsedMs: Date.now() - startedMs,
+      };
+    }
+    try {
+      top = await fetchComplementTop(details.complementToken);
+      result.complementAsk = top.ask;
+      result.complementAskSize = top.askSize;
+    } catch {
+      // keep the pre-wait book if the refresh fails
+    }
+  }
+
+  const pick = aggressiveSafeComplementPrice(top, maxComplementPrice);
+  result.topAskLevels = pick.levels;
+  result.pickedComplementPrice = pick.price;
+  result.pickReason = pick.reason;
+  if (!(pick.price > 0) || top.askSize < Math.min(remainingShares, 1)) {
+    if (makerBought > 0) {
+      return {
+        ...result,
+        action: "fak_buy",
+        bought: makerBought,
+        buyPrice: makerPrice,
+        completionMode: "maker_partial",
+        reason: "unsafe_or_missing_complement_remainder",
+        elapsedMs: Date.now() - startedMs,
+      };
+    }
     return { ...result, reason: "unsafe_or_missing_complement", elapsedMs: Date.now() - startedMs };
   }
   try {
-    const response = await postFakBuyCached(client, details.complementToken, pick.price, details.shares);
+    const response = await postFakBuyCached(client, details.complementToken, pick.price, remainingShares);
     assertOrderResponse(response, "maker_guess_reactive_completion");
-    const bought = responseBuyShares(response);
+    const fakBought = responseBuyShares(response);
+    const fakPrice = averageBuyPrice(response, pick.price);
+    const bought = roundShares(makerBought + fakBought);
+    const buyPrice = bought > 0 ? ((makerBought * makerPrice) + (fakBought * fakPrice)) / bought : fakPrice;
     return {
       ...result,
       action: "fak_buy",
       response,
       bought,
-      buyPrice: averageBuyPrice(response, pick.price),
+      buyPrice,
+      completionMode: makerBought > 0 ? "maker_then_taker" : "taker",
       elapsedMs: Date.now() - startedMs,
     };
   } catch (err: any) {
+    if (makerBought > 0) {
+      return {
+        ...result,
+        action: "fak_buy",
+        bought: makerBought,
+        buyPrice: makerPrice,
+        completionMode: "maker_partial",
+        response: { error: err?.message ?? String(err) },
+        elapsedMs: Date.now() - startedMs,
+      };
+    }
     return {
       ...result,
       action: "error",
@@ -1586,7 +1672,7 @@ async function finalizeLoopPair(
   attempt.firstFillSignal = effectiveFirstFill;
   if (effectiveFirstFill) {
     const reactiveStartedMs = Date.now();
-    const reactiveCompletion: any = await tryReactiveCompletion(client, pair.market, effectiveFirstFill, pair.orderIds);
+    const reactiveCompletion: any = await tryReactiveCompletion(client, address, pair.market, effectiveFirstFill, pair.orderIds);
     attempt.reactiveCompletion = reactiveCompletion;
     attempt.latency.reactiveCompletionMs = Date.now() - reactiveStartedMs;
     if (reactiveCompletion.action === "fak_buy") {
@@ -2096,7 +2182,7 @@ async function main() {
   attempt.latency.firstFillWaitMs = Date.now() - fillWaitStartedMs;
   if (firstFill) {
     const reactiveStartedMs = Date.now();
-    const reactiveCompletion: any = await tryReactiveCompletion(clob.client, market, firstFill, attempt.orderIds);
+    const reactiveCompletion: any = await tryReactiveCompletion(clob.client, address, market, firstFill, attempt.orderIds);
     attempt.reactiveCompletion = reactiveCompletion;
     attempt.latency.reactiveCompletionMs = Date.now() - reactiveStartedMs;
     if (reactiveCompletion.action === "fak_buy") {
