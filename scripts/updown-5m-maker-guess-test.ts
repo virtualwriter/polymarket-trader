@@ -78,6 +78,17 @@ const TICK = Number(process.env.UPDOWN_MAKER_GUESS_TICK ?? 0.001);
 const IMPROVE_BY = Number(process.env.UPDOWN_MAKER_GUESS_IMPROVE_BY ?? TICK);
 const MAX_PAIR_COST = Number(process.env.UPDOWN_MAKER_GUESS_MAX_PAIR_COST ?? 0.999);
 const COMPLEMENT_SAFETY_BUFFER = Number(process.env.UPDOWN_MAKER_GUESS_COMPLEMENT_SAFETY_BUFFER ?? 0.005);
+// Post entries below the touch instead of improving the best bid. Session data
+// showed 14/19 one-sided fills were instant (the book moved through the bid in
+// the ~1s submit path), and the complement then sat a median 1.1c beyond reach.
+// Bidding deeper both filters adverse instant fills and leaves completion
+// headroom when a fill does happen.
+const ENTRY_DEPTH = Number(process.env.UPDOWN_MAKER_GUESS_ENTRY_DEPTH ?? 0.02);
+// Completion is a cheaper stop-loss than the nuclear dump: paying up to a 1c
+// premium to flatten (pair sum 1.01 = -$0.10 on 10 shares) beats the observed
+// average nuclear exit of about -$0.94. Entry gating still uses MAX_PAIR_COST;
+// this only loosens the escape after a one-sided fill.
+const MAX_COMPLETION_PAIR_COST = Number(process.env.UPDOWN_MAKER_GUESS_MAX_COMPLETION_PAIR_COST ?? 1.01);
 const HOLD_MS = Number(process.env.UPDOWN_MAKER_GUESS_HOLD_MS ?? argValue("--hold-ms") ?? 5_000);
 const FILL_POLL_MS = Number(process.env.UPDOWN_MAKER_GUESS_FILL_POLL_MS ?? 250);
 const COMPLETION_WINDOW_MS = Number(process.env.UPDOWN_MAKER_GUESS_COMPLETION_WINDOW_MS ?? 3_000);
@@ -824,6 +835,10 @@ function maxSafePairCost(): number {
   return MAX_PAIR_COST - COMPLEMENT_SAFETY_BUFFER;
 }
 
+function maxCompletionPairCost(): number {
+  return Math.max(maxSafePairCost(), MAX_COMPLETION_PAIR_COST);
+}
+
 function dynamicBid(top: Top, label: string): number {
   if (PRICE_OVERRIDE) {
     const price = Number(PRICE_OVERRIDE);
@@ -835,7 +850,7 @@ function dynamicBid(top: Top, label: string): number {
   }
   const improvedBid = top.bid + IMPROVE_BY;
   const makerCap = top.ask - TICK;
-  const bid = normalizePrice(Math.min(improvedBid, makerCap));
+  const bid = normalizePrice(Math.max(TICK, Math.min(improvedBid, makerCap) - ENTRY_DEPTH));
   if (!(bid > 0) || bid + 1e-12 >= top.ask) {
     throw new Error(`${label} no safe maker bid bid=${top.bid} ask=${top.ask} computed=${bid}`);
   }
@@ -1154,7 +1169,7 @@ async function tryCompleteImbalance(
 ) {
   const complementSide = sideFilled === "up" ? "down" : "up";
   const complementToken = complementSide === "up" ? market.upTokenId : market.downTokenId;
-  const maxComplementPrice = maxSafePairCost() - fillPrice;
+  const maxComplementPrice = maxCompletionPairCost() - fillPrice;
   const attempts: any[] = [];
   const deadline = Date.now() + COMPLETION_WINDOW_MS;
   let totalBought = 0;
@@ -1248,7 +1263,7 @@ async function tryReactiveCompletion(
   if (!details) {
     return { action: "skip", reason: "no_fill_signal_details", elapsedMs: 0 };
   }
-  const maxComplementPrice = maxSafePairCost() - details.fillPrice;
+  const maxComplementPrice = maxCompletionPairCost() - details.fillPrice;
   let top: Top;
   try {
     top = await fetchComplementTop(details.complementToken);
@@ -1714,7 +1729,7 @@ async function loopLiveMain(existingClob?: ClobBundle, installSignalHandlers = t
     process.once("SIGTERM", () => { shutdown().finally(() => process.exit(143)); });
   }
 
-  log(`${LOOP_LIVE ? "loop-live" : "loop-dry-run"}${runLabel ? ` ${runLabel}` : ""} starting BTC-only refreshMs=${LOOP_REFRESH_MS} maxMs=${LOOP_MAX_MS} maxNotional=$${MAX_TEST_PAIR_NOTIONAL_USD} maxPairCost=${maxSafePairCost().toFixed(4)} safetyBuffer=${COMPLEMENT_SAFETY_BUFFER.toFixed(4)}`);
+  log(`${LOOP_LIVE ? "loop-live" : "loop-dry-run"}${runLabel ? ` ${runLabel}` : ""} starting BTC-only refreshMs=${LOOP_REFRESH_MS} maxMs=${LOOP_MAX_MS} maxNotional=$${MAX_TEST_PAIR_NOTIONAL_USD} maxPairCost=${maxSafePairCost().toFixed(4)} safetyBuffer=${COMPLEMENT_SAFETY_BUFFER.toFixed(4)} entryDepth=${ENTRY_DEPTH.toFixed(3)} maxCompletionPairCost=${maxCompletionPairCost().toFixed(4)}`);
 
   while (Date.now() - startedMs < LOOP_MAX_MS) {
     if (LOOP_MAX_IDLE_MS > 0 && Date.now() - idleStartedMs > LOOP_MAX_IDLE_MS) {
