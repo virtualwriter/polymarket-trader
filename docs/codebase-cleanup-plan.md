@@ -43,7 +43,7 @@ Use these labels when triaging files. Prefix files or directories in future PRs 
 | `PROD-ORCHESTRATOR` | `scripts/run-polymarket-trader.sh` | Hourly VPS pipeline: git sync → scan → heatmap → engine → commit |
 | `PROD-SCANNER` | `scripts/market-scanner.ts` | HL + PM + options ingest → `daily-macro.csv`, `daily-valuations.csv`, `instrument-snapshots.jsonl` |
 | `PROD-HEATMAP` | `scripts/cross_venue_relative_value_report.py` | Relative-value heatmap → `relative-value/*` |
-| `PROD-ENGINE` | `scripts/trading-engine.ts` | Signals, LLM, portfolio, trade execution (**~8,076 lines, ~100 functions**) |
+| `PROD-ENGINE` | `scripts/trading-engine.ts` | Signals, LLM, portfolio, trade execution (**~8,258 lines, ~100 functions**) |
 | `PROD-EXIT-SCANNER` | `scripts/position-exit-scanner.ts` | Minute-level exit checks |
 | `PROD-DAILY-REPORT` | `scripts/daily_trader_email_report.py` | Daily digest email/Telegram |
 | `PROD-MONOTONIC-SHADOW` | `scripts/monotonic-arb-live-scanner.ts` | Paper/shadow monotonic arb |
@@ -150,10 +150,10 @@ Minute path (separate timer): `position-exit-scanner.ts` via VPS wrapper; refere
 ### Tier 1 — hurts ops/infra today
 
 1. **Monolith files**
-   - `scripts/trading-engine.ts` — 8,076 lines, ~100 functions
+   - `scripts/trading-engine.ts` — 8,258 lines, ~100 functions
    - `scripts/market-scanner.ts` — 2,569 lines
    - `scripts/cross_venue_relative_value_report.py` — 2,408 lines
-   - `scripts/trader-performance-report.ts` — 626 lines after report-helper extraction; shared helpers now live in `scripts/lib/reporting/`
+   - `scripts/trader-performance-report.ts` — 255 lines after report-helper extraction; shared helpers now live in `scripts/lib/reporting/`
    - Effect: high-risk changes, slow review, hard to test in isolation
 
 2. **Dual portfolio paths**
@@ -328,10 +328,10 @@ No service restarts. No logic changes. No impact on hourly trader or LLM.
 
 | File | Lines |
 |------|------:|
-| `scripts/trading-engine.ts` | 8,076 |
+| `scripts/trading-engine.ts` | 8,258 |
 | `scripts/market-scanner.ts` | 2,569 |
 | `scripts/cross_venue_relative_value_report.py` | 2,408 |
-| `scripts/trader-performance-report.ts` | 626 |
+| `scripts/trader-performance-report.ts` | 255 |
 | `hyperliquid-crv-rebalancer/multi_coin_hybrid_bot.py` | 1,052 |
 | `scripts/position-exit-scanner.ts` | 423 |
 
@@ -529,6 +529,7 @@ This section records what has actually been implemented, committed, and pushed d
 | Relative-value context extraction | `scripts/lib/reporting/relative-value-context.ts`, `scripts/trader-performance-report.ts` | Done. Entry/current model provenance, bid/ask conversion, history-row matching, and context-note helpers moved out of the CLI wrapper with exports preserved for existing tests. |
 | Report input aggregation extraction | `scripts/lib/reporting/report-inputs.ts`, `scripts/trader-performance-report.ts` | Done. De-duping, counted/raw stats, grouped rows, setup-family stats, duplicate IDs, and resolved-shadow rollups moved out of the CLI wrapper. |
 | Hybrid-bot report loading extraction | `scripts/lib/reporting/hybrid-bot-report.ts`, `scripts/trader-performance-report.ts` | Done. Hybrid shadow state/trade loading and fee/P&L normalization moved out of the CLI wrapper. |
+| Report data loading extraction | `scripts/lib/reporting/report-data.ts`, `scripts/trader-performance-report.ts` | Done. JSON/CSV file loading, latest instrument snapshot tail-read, Hyperliquid mids, trade de-duping, and snapshot marking moved out of the CLI wrapper. |
 
 ### Completed infra visibility / quarantine slices
 
@@ -543,6 +544,7 @@ This section records what has actually been implemented, committed, and pushed d
 |-------|-------|--------|
 | Stronger dry-run harness shape | `scripts/cleanup-dry-run-harness.ts` | Done. Harness now records execution-plan counts, dry-run verification checks, truth-state counts, entry-by-asset, and LLM-close eligibility counts. |
 | Lean artifact entry helper | `scripts/lib/trading/artifacts.ts`, `scripts/trading-engine.ts` | Done. Extracted a pure helper that builds the lean artifact write list while leaving file names and write behavior in the engine. |
+| Execution/dry-run artifact builders | `scripts/lib/trading/artifacts.ts`, `scripts/trading-engine.ts` | Done. Extracted pure helpers for execution-plan shape and dry-run verification payloads while leaving timestamps, flags, and writes orchestrated by the engine. |
 
 ### Completed VPS disk cleanup
 
@@ -576,20 +578,20 @@ Follow-up implemented after this emergency cleanup:
 
 ### Current cleanup impact
 
-- `scripts/trader-performance-report.ts` is down to about 482 lines from the earlier 1,513-line reference after helper, report-builder, relative-value context, input aggregation, and hybrid report loading extraction.
+- `scripts/trader-performance-report.ts` is down to about 255 lines from the earlier 1,513-line reference after helper, report-builder, relative-value context, input aggregation, hybrid report loading, and report-data extraction.
 - Net repository source lines increased because focused tests and shared helpers were added. This is intentional: the immediate gain is safer future cleanup, not raw line deletion.
 - Runtime performance is expected to be effectively unchanged for the report path; the practical gain is improved testability, clearer LLM-facing report rows, and lower risk for the next extractions.
 - Trading behavior has not been changed. Each code slice was validated with reporting tests, report smoke output, `npm run cleanup:harness -- --compare ...`, `npm run prod:verify`, and TypeScript/lint checks.
 
 ### Remaining work after this point
 
-1. **Continue report-only cleanup before touching production monoliths.**
-   - Next safe target: split remaining CLI data loading/parsing helpers out of `scripts/trader-performance-report.ts`.
+1. **Continue report-only cleanup before deeper production monolith work.**
+   - Next safe target: split CLI argument/output handling out of `scripts/trader-performance-report.ts`, or stop once the file is considered a sufficiently thin wrapper.
    - Keep output shape unchanged and rerun the same harness/report smoke gates.
 
-2. **Do not start `trading-engine.ts`, `market-scanner.ts`, or heatmap-report extraction yet.**
-   - Those are still higher-risk production monoliths.
-   - Before touching them, build a stronger golden harness around signal counts, candidate actions, portfolio output, LLM-disabled paths, and generated state diffs.
+2. **Keep production monolith extraction narrow and harness-gated.**
+   - `trading-engine.ts` can now accept small pure-helper extractions only when the strengthened harness compare passes.
+   - Avoid signal/LLM decision logic, portfolio mutation, scanner, or heatmap behavior until a deeper golden harness exists.
 
 3. **Data/git-weight cleanup remains open.**
    - Emergency 30-day snapshot archive pruning was performed on the USA VPS, and `npm run cleanup:disk` now provides a repeatable dry-run/apply path.

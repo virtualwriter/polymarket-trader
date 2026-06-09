@@ -1,9 +1,18 @@
 #!/usr/bin/env tsx
-import { closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, statSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { readCsvRecords } from "./lib/reporting/csv.js";
 import { readHybridBotReport as readHybridBotReportFromFiles, resolveHybridBotFile } from "./lib/reporting/hybrid-bot-report.js";
+import {
+  dedupeClosedTrades,
+  extractHyperliquidMids,
+  markHlPerpPositionsFromLatestSnapshot,
+  markOpenShadowPositionsFromLatestSnapshot,
+  readClosedTrades,
+  readJson,
+  readLatestInstrumentSnapshot,
+} from "./lib/reporting/report-data.js";
+import type { InstrumentSnapshotFile } from "./lib/reporting/report-data.js";
 import {
   currentBidAsk,
   entryOneTouchModel,
@@ -27,124 +36,13 @@ import {
   statsCsvRow,
   table,
 } from "./lib/reporting/report-builders.js";
-import type { BuildCsvReportArgs, BuildMarkdownReportArgs, ReportBuilderDeps } from "./lib/reporting/report-builders.js";
-import type { Outcome } from "./lib/reporting/stats.js";
+import type { BuildCsvReportArgs, BuildMarkdownReportArgs, ReportBuilderDeps, ReportBlockedSignalShadow, ReportClosedTrade, ReportHypothesis, ReportPortfolio, ReportPosition } from "./lib/reporting/report-builders.js";
 import { loadOperationallyTaintedTrades } from "./portfolio-ledger.js";
 
 export { currentBidAsk, detailCsvRow, markdownOpenShadows, markdownPendingHypotheses, relativeValueContextNote, relativeValueEntryMatch, statsCsvRow, table };
 export type { RelativeValueRowMatch };
 
-interface ClosedTrade {
-  id: string;
-  openedAt: string;
-  closedAt: string;
-  asset: string;
-  venue: string;
-  direction: string;
-  entryPrice: number;
-  exitPrice: number;
-  size: number;
-  pnl: number;
-  pnlPct: number;
-  marketPnl: number;
-  fundingPnl: number;
-  signalType: string;
-  hypothesisId: string | null;
-  thesis: string;
-  closeReason: string;
-  instrumentType?: string;
-  instrumentId?: string;
-  instrumentLabel?: string;
-}
-
-export interface Position {
-  id: string;
-  openedAt: string;
-  asset: string;
-  venue: string;
-  direction: string;
-  entryPrice: number;
-  currentPrice?: number;
-  entryUnderlyingPrice?: number;
-  currentUnderlyingPrice?: number;
-  size: number;
-  leverage?: number;
-  signalType: string;
-  hypothesisId: string | null;
-  thesis: string;
-  instrumentType?: string;
-  instrumentId?: string;
-  instrumentLabel?: string;
-  packageLegs?: Array<{
-    role?: string;
-    strike?: number;
-  }>;
-  fundingPnlAccrued?: number;
-}
-
-interface Portfolio {
-  cash: number;
-  positions: Position[];
-  totalRealizedPnl: number;
-  totalTrades: number;
-  winCount: number;
-  lossCount: number;
-  lastUpdated: string;
-}
-
-interface HypothesisTest {
-  date: string;
-  outcome: "win" | "loss" | "pending";
-  excludedFromSetupStats?: boolean;
-  exclusionReason?: string;
-}
-
-interface Hypothesis {
-  id: string;
-  setupId?: string;
-  setupLabel?: string;
-  description: string;
-  tests: HypothesisTest[];
-  winRate: number;
-  status: "active" | "promoted" | "archived" | "killed";
-  promotedToSignal: boolean;
-  source: "llm" | "statistical";
-}
-
-interface BlockedSignalShadow {
-  id: string;
-  status: "open" | "resolved" | "cancelled";
-  blockedAt: string;
-  resolvedAt?: string;
-  blockedReason: string;
-  signalType: string;
-  asset: string;
-  venue: string;
-  direction: string;
-  thesis: string;
-  position?: Position;
-  hypotheticalResult?: {
-    pnl: number;
-    pnlPct: number;
-    outcome: Outcome;
-    closeReason: string;
-  };
-  learningExcluded?: {
-    reason: string;
-    note: string;
-  };
-  heatmapRowSnapshot?: {
-    row?: Record<string, string>;
-  };
-}
-
-interface InstrumentSnapshotFile {
-  timestamp: string;
-  hyperliquid?: Record<string, {
-    markPx?: number | null;
-    fundingAnnualized?: number | null;
-  }>;
-}
+export type Position = ReportPosition;
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const DATA_DIR = join(ROOT, "data");
@@ -218,24 +116,6 @@ const CSV_HEADER = [
   "current_row_age_hours",
 ] as const;
 
-function readJson<T>(path: string, fallback: T): T {
-  if (!existsSync(path)) return fallback;
-  return JSON.parse(readFileSync(path, "utf-8")) as T;
-}
-
-function extractHyperliquidMids(snapshot: InstrumentSnapshotFile | null): Map<string, number> {
-  const mids = new Map<string, number>();
-  if (!snapshot?.hyperliquid) return mids;
-  for (const [key, quote] of Object.entries(snapshot.hyperliquid)) {
-    const mark = quote?.markPx;
-    if (typeof mark === "number" && mark > 0) {
-      mids.set(key, mark);
-      mids.set(key.toUpperCase(), mark);
-    }
-  }
-  return mids;
-}
-
 /**
  * Best-effort fetch of live Hyperliquid mids for any coins not in the saved
  * instrument snapshot. The report runs offline-first; if the fetch fails or
@@ -271,88 +151,7 @@ async function augmentMidsFromHyperliquid(
   }
 }
 
-function readLatestInstrumentSnapshot(): InstrumentSnapshotFile | null {
-  const file = join(DATA_DIR, "instrument-snapshots.jsonl");
-  if (!existsSync(file)) return null;
-
-  const size = statSync(file).size;
-  if (size === 0) return null;
-
-  const fd = openSync(file, "r");
-  try {
-    const chunkSize = 1024 * 1024;
-    let offset = size;
-    let suffix = "";
-
-    while (offset > 0) {
-      const bytesToRead = Math.min(chunkSize, offset);
-      offset -= bytesToRead;
-      const buffer = Buffer.allocUnsafe(bytesToRead);
-      readSync(fd, buffer, 0, bytesToRead, offset);
-      suffix = buffer.toString("utf-8") + suffix;
-
-      const lines = suffix.split("\n").filter((line) => line.trim());
-      if (lines.length >= 2 || offset === 0) {
-        const latestLine = lines[lines.length - 1];
-        return latestLine ? JSON.parse(latestLine) as InstrumentSnapshotFile : null;
-      }
-    }
-  } finally {
-    closeSync(fd);
-  }
-
-  return null;
-}
-
-function readClosedTrades(): ClosedTrade[] {
-  const file = join(DATA_DIR, "trades-detailed.csv");
-  return readCsvRecords(file).map((row) => {
-    return {
-      id: row.id,
-      openedAt: row.opened_at,
-      closedAt: row.closed_at,
-      asset: row.asset,
-      venue: row.venue,
-      direction: row.direction,
-      entryPrice: Number(row.entry_price),
-      exitPrice: Number(row.exit_price),
-      size: Number(row.size),
-      pnl: Number(row.pnl),
-      pnlPct: Number(row.pnl_pct),
-      marketPnl: Number(row.market_pnl),
-      fundingPnl: Number(row.funding_pnl),
-      signalType: row.signal_type,
-      hypothesisId: row.hypothesis_id || null,
-      thesis: row.thesis,
-      closeReason: row.close_reason,
-      instrumentType: row.instrument_type || undefined,
-      instrumentId: row.instrument_id || undefined,
-      instrumentLabel: row.instrument_label || undefined,
-    };
-  }).filter((trade) => trade.id && trade.closedAt);
-}
-
-function tradeClosedAtMs(trade: ClosedTrade): number {
-  const parsed = new Date(trade.closedAt).getTime();
-  return Number.isFinite(parsed) ? parsed : Number.MAX_SAFE_INTEGER;
-}
-
-function dedupeClosedTrades(trades: ClosedTrade[]): ClosedTrade[] {
-  const byId = new Map<string, ClosedTrade>();
-  for (const trade of trades) {
-    const existing = byId.get(trade.id);
-    if (!existing || tradeClosedAtMs(trade) < tradeClosedAtMs(existing)) {
-      byId.set(trade.id, trade);
-    }
-  }
-  return [...byId.values()].sort((a, b) =>
-    new Date(a.openedAt).getTime() - new Date(b.openedAt).getTime() ||
-    tradeClosedAtMs(a) - tradeClosedAtMs(b) ||
-    a.id.localeCompare(b.id)
-  );
-}
-
-function isCountedRealTrade(trade: ClosedTrade): boolean {
+function isCountedRealTrade(trade: ReportClosedTrade): boolean {
   return !OPERATIONALLY_TAINTED_TRADES[trade.id] &&
     trade.closeReason !== "data_quality_artifact" &&
     !(trade.closeReason ?? "").includes("DATA_CORRECTION_ARTIFACT") &&
@@ -368,32 +167,6 @@ function readRelativeValueHistoryRows(): Map<string, Array<{ timestamp: Date; ro
     RELATIVE_VALUE_HISTORY_DIRS,
     join(ROOT, "relative-value", "cross_venue_relative_value.csv"),
   );
-}
-
-function markHlPerpPositionsFromLatestSnapshot(
-  positions: Position[],
-  latestSnapshot: InstrumentSnapshotFile | null,
-): void {
-  if (!latestSnapshot?.hyperliquid) return;
-  for (const position of positions) {
-    if (position.instrumentType !== "hl_perp") continue;
-    const quote = latestSnapshot.hyperliquid[position.instrumentId ?? position.asset]
-      ?? latestSnapshot.hyperliquid[position.asset];
-    const markPx = quote?.markPx;
-    if (!(typeof markPx === "number" && markPx > 0)) continue;
-    position.currentPrice = markPx;
-    position.currentUnderlyingPrice = markPx;
-  }
-}
-
-function markOpenShadowPositionsFromLatestSnapshot(
-  shadows: BlockedSignalShadow[],
-  latestSnapshot: InstrumentSnapshotFile | null,
-): void {
-  const openShadowPositions = shadows
-    .filter((shadow) => shadow.status === "open" && shadow.position)
-    .map((shadow) => shadow.position as Position);
-  markHlPerpPositionsFromLatestSnapshot(openShadowPositions, latestSnapshot);
 }
 
 function reportBuilderDeps(): ReportBuilderDeps {
@@ -434,7 +207,7 @@ async function main() {
   const formatArg = args.find((arg) => arg.startsWith("--format="));
   const format = formatArg?.slice("--format=".length) ?? (outPath?.endsWith(".csv") ? "csv" : "markdown");
 
-  const portfolio = readJson<Portfolio>(join(DATA_DIR, "portfolio.json"), {
+  const portfolio = readJson<ReportPortfolio>(join(DATA_DIR, "portfolio.json"), {
     cash: 0,
     positions: [],
     totalRealizedPnl: 0,
@@ -443,10 +216,10 @@ async function main() {
     lossCount: 0,
     lastUpdated: "unknown",
   });
-  const trades = readClosedTrades();
-  const hypotheses = readJson<Hypothesis[]>(join(DATA_DIR, "hypotheses.json"), []);
-  const shadows = readJson<BlockedSignalShadow[]>(join(DATA_DIR, "blocked-signals.json"), []);
-  const latestSnapshot = readLatestInstrumentSnapshot();
+  const trades = readClosedTrades(join(DATA_DIR, "trades-detailed.csv"));
+  const hypotheses = readJson<ReportHypothesis[]>(join(DATA_DIR, "hypotheses.json"), []);
+  const shadows = readJson<ReportBlockedSignalShadow[]>(join(DATA_DIR, "blocked-signals.json"), []);
+  const latestSnapshot = readLatestInstrumentSnapshot(join(DATA_DIR, "instrument-snapshots.jsonl"));
   markHlPerpPositionsFromLatestSnapshot(portfolio.positions, latestSnapshot);
   markOpenShadowPositionsFromLatestSnapshot(shadows, latestSnapshot);
   const dedupedTrades = dedupeClosedTrades(trades);

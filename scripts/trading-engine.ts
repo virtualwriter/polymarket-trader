@@ -24,7 +24,7 @@ import {
   legSnapshotFromYesBook,
   type EntryBookSnapshot,
 } from "./polymarket-clob-book.js";
-import { buildLeanArtifactEntries } from "./lib/trading/artifacts.js";
+import { buildDryRunVerificationArtifact, buildExecutionPlanArtifact, buildLeanArtifactEntries } from "./lib/trading/artifacts.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -6970,21 +6970,14 @@ function gateLlmAdvice(llmResult: LlmAnalysisResult | null, portfolio: Portfolio
 }
 
 function buildExecutionPlan(candidateActions: CandidateActions, gatedAdvice: GatedLlmAdvice, signals: Signal[]): ExecutionPlan {
-  return {
-    generatedAt: new Date().toISOString(),
+  return buildExecutionPlanArtifact({
+    candidateActions,
+    gatedAdvice,
+    signals,
     dryRun: DRY_RUN,
     llmDryRun: LLM_DRY_RUN,
-    mechanicalExits: candidateActions.mechanicalExits,
-    signalKillExits: candidateActions.signalKillExits,
-    llmCloses: gatedAdvice.acceptedCloses,
-    entrySignals: signals.sort((a, b) => b.confidence - a.confidence),
-    rejectedLlmActions: gatedAdvice.rejectedCloses,
-    skippedLlmActions: gatedAdvice.skippedTrades,
-    notes: [
-      MUTATION_DISABLED ? "Executor mutations disabled for dry-run verification." : "Executor mutations enabled.",
-      `${gatedAdvice.acceptedCloses.length} LLM closes accepted; ${gatedAdvice.rejectedCloses.length} rejected; ${gatedAdvice.skippedTrades.length} non-close instructions skipped.`,
-    ],
-  };
+    mutationDisabled: MUTATION_DISABLED,
+  });
 }
 
 async function executeApprovedPlan(
@@ -7023,28 +7016,14 @@ function writeLeanArtifacts(engineState: EngineState, truthState: LlmTruthState,
 }
 
 function writeDryRunVerification(engineState: EngineState, candidateActions: CandidateActions, executionPlan: ExecutionPlan | null) {
-  if (!MUTATION_DISABLED && !SHADOW_ARCHITECTURE) return;
-  writeJson(DRY_RUN_VERIFICATION_FILE, {
-    generatedAt: new Date().toISOString(),
+  const verification = buildDryRunVerificationArtifact({
+    engineState,
+    candidateActions,
+    executionPlan,
     mutationDisabled: MUTATION_DISABLED,
-    checks: {
-      portfolioPositions: engineState.portfolio.openPositions,
-      mechanicalExitCandidates: candidateActions.mechanicalExits.length,
-      signalKillExitCandidates: candidateActions.signalKillExits.length,
-      entryCandidates: candidateActions.entryCandidates.length,
-      llmClosesAccepted: executionPlan?.llmCloses.length ?? 0,
-      llmClosesRejected: executionPlan?.rejectedLlmActions.length ?? 0,
-    },
-    protectedStateFiles: [
-      "portfolio.json",
-      "trades-detailed.csv",
-      "learning-journal.md",
-      "hypotheses.json",
-      "signal-weights.json",
-      "blocked-signals.json",
-      "learning-params.json",
-    ],
+    shadowArchitecture: SHADOW_ARCHITECTURE,
   });
+  if (verification) writeJson(DRY_RUN_VERIFICATION_FILE, verification);
 }
 
 // ─── LLM Integration ─────────────────────────────────────────────────────────
