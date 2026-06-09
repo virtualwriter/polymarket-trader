@@ -554,6 +554,7 @@ Follow-up implemented after this emergency cleanup:
 - It refuses to delete Git-tracked files and targets only local-only generated snapshot archives, relative-value history directories, and generated backup directories.
 - Default retention policy: keep 14 days of gzipped instrument snapshot archives, 21 days of relative-value history, and 7 days of generated backup directories. Use `--snapshot-archive-days`, `--relative-value-history-days`, and `--backup-days` for explicit operator-approved overrides.
 - Tightened `compact_instrument_snapshots.py` hot-file retention from 36 to 18 recent snapshots. The engine reads 12 by default, so this keeps a buffer while reducing root-disk pressure.
+- Applied the durable cleanup on the USA VPS: default prune removed 423.6 MB, explicit 7-day snapshot archive / 14-day relative-value history prune removed another 265.8 MB, hot snapshot compaction reduced `data/instrument-snapshots.jsonl` to about 232 MB, Git GC reduced `.git` to about 99 MB, and an old `/tmp/polymarket-trader-dryrun` scratch clone was removed. Final observed root disk: about 2.3 GB free / 90% used. Tracked trader history files remained present.
 
 ### Current cleanup impact
 
