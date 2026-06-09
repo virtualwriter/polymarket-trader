@@ -16,6 +16,7 @@ import {
   rowTimestamp,
 } from "./lib/reporting/relative-value-context.js";
 import type { RelativeValueRowMatch } from "./lib/reporting/relative-value-context.js";
+import { buildReportInputs } from "./lib/reporting/report-inputs.js";
 import {
   buildCsvReport as buildCsvReportWithDeps,
   buildMarkdownReport as buildMarkdownReportWithDeps,
@@ -26,8 +27,7 @@ import {
   table,
 } from "./lib/reporting/report-builders.js";
 import type { BuildCsvReportArgs, BuildMarkdownReportArgs, ReportBuilderDeps } from "./lib/reporting/report-builders.js";
-import { addStats, emptyStats, grouped, sortStatsRows } from "./lib/reporting/stats.js";
-import type { Outcome, Stats } from "./lib/reporting/stats.js";
+import type { Outcome } from "./lib/reporting/stats.js";
 import { loadOperationallyTaintedTrades } from "./portfolio-ledger.js";
 
 export { currentBidAsk, detailCsvRow, markdownOpenShadows, markdownPendingHypotheses, relativeValueContextNote, relativeValueEntryMatch, statsCsvRow, table };
@@ -514,66 +514,6 @@ function readRelativeValueHistoryRows(): Map<string, Array<{ timestamp: Date; ro
   );
 }
 
-function hypothesisMap(hypotheses: Hypothesis[]): Map<string, Hypothesis> {
-  return new Map(hypotheses.map((hypothesis) => [hypothesis.id, hypothesis]));
-}
-
-function setupLabel(hypothesis: Hypothesis | undefined): string {
-  if (!hypothesis) return "unassigned";
-  return hypothesis.setupLabel || hypothesis.setupId || "unclassified";
-}
-
-function reportSignalType(trade: ClosedTrade): string {
-  if (OPERATIONALLY_TAINTED_TRADES[trade.id]) {
-    return `${trade.signalType}_OPERATIONALLY_TAINTED`;
-  }
-  const closeReason = trade.closeReason ?? "";
-  if (trade.signalType === "PC_RATIO_EXTREME_LOW" && closeReason.includes("DATA_CORRECTION_ARTIFACT")) {
-    return "PC_RATIO_EXTREME_LOW_DATA_CORRECTION_ARTIFACT";
-  }
-  if (closeReason === "data_quality_artifact") {
-    return `${trade.signalType}_DATA_QUALITY_ARTIFACT`;
-  }
-  return trade.signalType;
-}
-
-function tradeSetupKey(trade: ClosedTrade, hypothesesById: Map<string, Hypothesis>): string {
-  if (trade.signalType === "LLM_HYPOTHESIS" || trade.signalType === "PROMOTED_HYPOTHESIS") {
-    const hypothesis = trade.hypothesisId ? hypothesesById.get(trade.hypothesisId) : undefined;
-    return `${trade.signalType} / ${setupLabel(hypothesis)}`;
-  }
-  return reportSignalType(trade);
-}
-
-function shadowKey(shadow: BlockedSignalShadow): string {
-  return `${shadow.blockedReason} / ${shadow.signalType}`;
-}
-
-function hypothesisStats(hypothesis: Hypothesis): Stats {
-  const stats = emptyStats();
-  for (const test of hypothesis.tests ?? []) {
-    if (test.excludedFromSetupStats || test.outcome === "pending") continue;
-    addStats(stats, test.outcome === "win" ? 1 : -1, test.outcome === "win" ? 100 : -100, test.outcome);
-  }
-  stats.pnl = 0;
-  stats.pnlPctSum = 0;
-  return stats;
-}
-
-function setupFamilyRows(hypotheses: Hypothesis[]): Array<[string, Stats]> {
-  const map = new Map<string, Stats>();
-  for (const hypothesis of hypotheses.filter((item) => item.source === "llm")) {
-    const key = `${setupLabel(hypothesis)} (${hypothesis.setupId ?? "unclassified"})`;
-    const stats = map.get(key) ?? emptyStats();
-    const hStats = hypothesisStats(hypothesis);
-    stats.trades += hStats.trades;
-    stats.wins += hStats.wins;
-    stats.losses += hStats.losses;
-    map.set(key, stats);
-  }
-  return sortStatsRows([...map.entries()]);
-}
-
 function markHlPerpPositionsFromLatestSnapshot(
   positions: Position[],
   latestSnapshot: InstrumentSnapshotFile | null,
@@ -653,63 +593,21 @@ async function main() {
   const latestSnapshot = readLatestInstrumentSnapshot();
   markHlPerpPositionsFromLatestSnapshot(portfolio.positions, latestSnapshot);
   markOpenShadowPositionsFromLatestSnapshot(shadows, latestSnapshot);
-  const hypothesesById = hypothesisMap(hypotheses);
   const dedupedTrades = dedupeClosedTrades(trades);
-  const countedTrades = dedupedTrades.filter(isCountedRealTrade);
-
-  const duplicateTradeIds = new Set<string>();
-  const seenTradeIds = new Set<string>();
-  for (const trade of trades) {
-    if (seenTradeIds.has(trade.id)) duplicateTradeIds.add(trade.id);
-    seenTradeIds.add(trade.id);
-  }
-
-  const allTradeStats = emptyStats();
-  for (const trade of countedTrades) addStats(allTradeStats, trade.pnl, trade.pnlPct);
-  const rawTradeStats = emptyStats();
-  for (const trade of trades) addStats(rawTradeStats, trade.pnl, trade.pnlPct);
-  const operationallyTaintedTrades = trades.filter((trade) => OPERATIONALLY_TAINTED_TRADES[trade.id]);
-
-  const resolvedShadows = shadows.filter((shadow) =>
-    shadow.status === "resolved" && shadow.hypotheticalResult && !shadow.learningExcluded
-  );
-  const allShadowStats = emptyStats();
-  for (const shadow of resolvedShadows) {
-    const result = shadow.hypotheticalResult!;
-    addStats(allShadowStats, result.pnl, result.pnlPct, result.outcome);
-  }
 
   const generatedAt = new Date().toISOString();
-  const reportArgs = {
+  const reportArgs = buildReportInputs({
     generatedAt,
     portfolio,
-    allTradeStats,
-    rawTradeStats,
-    allShadowStats,
-    duplicateTradeIds,
-    operationallyTaintedTrades,
-    rawTrades: trades,
-    resolvedTrades: countedTrades,
-    resolvedShadows,
-    tradeSetupRows: grouped(countedTrades, (trade) => tradeSetupKey(trade, hypothesesById), (stats, trade) => addStats(stats, trade.pnl, trade.pnlPct)),
-    assetRows: grouped(countedTrades, (trade) => trade.asset, (stats, trade) => addStats(stats, trade.pnl, trade.pnlPct)),
-    tradeTypeAssetRows: grouped(countedTrades, (trade) => `${reportSignalType(trade)} / ${trade.asset}`, (stats, trade) => addStats(stats, trade.pnl, trade.pnlPct)),
-    venueAssetRows: grouped(countedTrades, (trade) => `${trade.venue} / ${trade.asset}`, (stats, trade) => addStats(stats, trade.pnl, trade.pnlPct)),
-    shadowTypeRows: grouped(resolvedShadows, shadowKey, (stats, shadow) => {
-      const result = shadow.hypotheticalResult!;
-      addStats(stats, result.pnl, result.pnlPct, result.outcome);
-    }),
-    shadowTypeAssetRows: grouped(resolvedShadows, (shadow) => `${shadowKey(shadow)} / ${shadow.asset}`, (stats, shadow) => {
-      const result = shadow.hypotheticalResult!;
-      addStats(stats, result.pnl, result.pnlPct, result.outcome);
-    }),
-    setupRows: setupFamilyRows(hypotheses),
+    trades,
+    dedupedTrades,
     hypotheses,
     shadows,
-    hypothesesById,
     hybridBot: readHybridBotReport(),
     hyperliquidMids: extractHyperliquidMids(latestSnapshot),
-  };
+    operationallyTaintedTrades: OPERATIONALLY_TAINTED_TRADES,
+    isCountedRealTrade,
+  });
 
   const missingHybridCoins = [...reportArgs.hybridBot.positions.keys()]
     .filter((coin) => !reportArgs.hyperliquidMids.has(coin) && !reportArgs.hyperliquidMids.has(coin.toUpperCase()));

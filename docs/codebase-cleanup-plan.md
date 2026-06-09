@@ -25,7 +25,7 @@ Primary pain points:
 - ~2 GB generated data (`instrument-snapshots.jsonl`) on VPS disk.
 - Git-tracked generated blobs growing every hour (journal, hypotheses, heatmap HTML).
 - Dual portfolio paths (`portfolio.json` vs `portfolio-live.json`).
-- Production wrappers for exit-scanner and daily-report **not versioned in repo**.
+- Production wrappers and systemd snapshots are versioned as reference files; live VPS still runs `/usr/local/bin/*` and `/etc/systemd/system/*`.
 - ~45 HL Python scripts; only one is live.
 
 Recommended approach: **quarantine and label first**, then **extract shared libs**, never change trading logic in early phases.
@@ -52,11 +52,11 @@ Use these labels when triaging files. Prefix files or directories in future PRs 
 | `PROD-MANUAL-SHADOW` | `scripts/manual_shadow_endpoint.py`, `api/manual-shadow.js` | Manual IV-touch shadow HTTP API |
 | `PROD-EDGE` | `api/heatmap-latest.js`, `api/heatmap-refresh.js`, `vercel.json` | Static heatmap hosting + VPS proxy |
 
-**VPS systemd units (documented, not all in repo):**
+**VPS systemd units (reference snapshots in `docs/systemd/`; live units remain on VPS):**
 
 - `polymarket-trader.timer` → `/usr/local/bin/run-polymarket-trader`
-- `polymarket-exit-scanner.timer` → `/usr/local/bin/run-polymarket-exit-scanner` (**wrapper not in repo**)
-- `polymarket-daily-report.timer` → `/usr/local/bin/run-polymarket-daily-report` (**wrapper not in repo**)
+- `polymarket-exit-scanner.timer` → `/usr/local/bin/run-polymarket-exit-scanner` (`scripts/run-polymarket-exit-scanner.sh` is a reference copy)
+- `polymarket-daily-report.timer` → `/usr/local/bin/run-polymarket-daily-report` (`scripts/run-polymarket-daily-report.sh` is a reference copy)
 - `polymarket-manual-shadow.service`
 - `hyperliquid-hybrid-bot.service` → `hyperliquid-crv-rebalancer/systemd/hyperliquid-hybrid-bot.service`
 
@@ -105,7 +105,7 @@ See `docs/runtime-state.md` for full tracked vs ignored file list.
 | Label | Path | Role |
 |-------|------|------|
 | `LEG-SPORTS-MM` | `engine-src/`, `scripts/sports-sim-server.ts`, `scripts/live-trading-server*.ts`, `run-persistent.sh`, `run-sr-monitor.sh` | Sports CLOB market-maker stack |
-| `LEG-AUCTION` | `addendum/`, `engine-src/index.ts` | Pre-auction sim (different project context) |
+| `LEG-AUCTION` | `archive/addendum/`, `engine-src/index.ts` | Pre-auction sim (different project context) |
 | `LEG-HL-PURR` | `hyperliquid-crv-rebalancer/purr_trend_bot.py` | Old single-coin bot |
 | `LEG-CI` | `.github/workflows/daily-snapshot.yml` | Superseded by VPS systemd (manual-only) |
 | `LEG-EXPORT` | `scripts/export_paper_trader_csv.py` | GitHub API CSV pull (superseded locally) |
@@ -141,7 +141,7 @@ See `docs/runtime-state.md` for full tracked vs ignored file list.
      11. git commit + push state files
 ```
 
-Minute path (separate timer): `position-exit-scanner.ts` via VPS wrapper not in repo.
+Minute path (separate timer): `position-exit-scanner.ts` via VPS wrapper; reference copy is `scripts/run-polymarket-exit-scanner.sh`.
 
 ---
 
@@ -153,7 +153,7 @@ Minute path (separate timer): `position-exit-scanner.ts` via VPS wrapper not in 
    - `scripts/trading-engine.ts` — 8,076 lines, ~100 functions
    - `scripts/market-scanner.ts` — 2,569 lines
    - `scripts/cross_venue_relative_value_report.py` — 2,408 lines
-   - `scripts/trader-performance-report.ts` — 1,397 lines after report-helper extraction; shared helpers now live in `scripts/lib/reporting/`
+   - `scripts/trader-performance-report.ts` — 626 lines after report-helper extraction; shared helpers now live in `scripts/lib/reporting/`
    - Effect: high-risk changes, slow review, hard to test in isolation
 
 2. **Dual portfolio paths**
@@ -161,10 +161,10 @@ Minute path (separate timer): `position-exit-scanner.ts` via VPS wrapper not in 
    - Engine dual-writes; exit scanner reads live; reports sometimes read audit
    - Effect: reconciliation overhead, duplicate logic
 
-3. **Production wrappers not versioned**
+3. **Production wrapper drift risk**
    - `/usr/local/bin/run-polymarket-exit-scanner`
    - `/usr/local/bin/run-polymarket-daily-report`
-   - Effect: infra invisible in git; hard to reproduce
+   - Effect: mitigated by reference copies in `scripts/` and `docs/systemd/`; still verify against VPS before live changes.
 
 4. **Unbounded snapshot JSONL (~1.6 GB)**
    - Engine reads recent lines only; file grows forever
@@ -184,7 +184,7 @@ Minute path (separate timer): `position-exit-scanner.ts` via VPS wrapper not in 
 
 ### Tier 3 — dead weight (safe to quarantine)
 
-11. `addendum/` — auction sim, different project
+11. `archive/addendum/` — auction sim, different project
 12. `dist/` — unused in production (`tsx` runs source directly)
 13. `purr_trend_bot.py`, `espn-score-feeder.sh` — hardcoded/unused
 14. GitHub Actions hourly workflow — manual-only, duplicates VPS systemd
@@ -223,7 +223,7 @@ Each phase has a **verification gate**: run hourly pipeline with `--dry-run` whe
 
 | Action | How | Ops impact |
 |--------|-----|------------|
-| Move `addendum/` → `archive/addendum/` | Git move | None |
+| Move `addendum/` → `archive/addendum/` | Git move | Done; no production references |
 | Move sports stack → `archive/sports-mm/` | Git move; optional separate `package.json` | None — not in VPS path |
 | Move HL research → `hyperliquid-crv-rebalancer/research/` | Git move; keep live bot + systemd at top level | None — systemd path unchanged |
 | Move one-off trade CLIs → `scripts/manual/` | Git move | None |
@@ -316,8 +316,8 @@ Each phase has a **verification gate**: run hourly pipeline with `--dry-run` whe
 Start with **Phase 0 + Phase 1 only**:
 
 1. Add pointer from `README.md` or `docs/runtime-state.md` to this document
-2. SSH-copy VPS exit-scanner and daily-report wrappers into `scripts/`
-3. Move `addendum/` and sports stack to `archive/`
+2. SSH-copy VPS exit-scanner and daily-report wrappers into `scripts/` (done; verified against VPS)
+3. Move `archive/addendum/` and sports stack to `archive/` (`archive/addendum/` done; sports stack remains in place)
 4. Move HL research scripts to `hyperliquid-crv-rebalancer/research/`
 
 No service restarts. No logic changes. No impact on hourly trader or LLM.
@@ -331,7 +331,7 @@ No service restarts. No logic changes. No impact on hourly trader or LLM.
 | `scripts/trading-engine.ts` | 8,076 |
 | `scripts/market-scanner.ts` | 2,569 |
 | `scripts/cross_venue_relative_value_report.py` | 2,408 |
-| `scripts/trader-performance-report.ts` | 1,397 |
+| `scripts/trader-performance-report.ts` | 626 |
 | `hyperliquid-crv-rebalancer/multi_coin_hybrid_bot.py` | 1,052 |
 | `scripts/position-exit-scanner.ts` | 423 |
 
@@ -382,7 +382,7 @@ This replaces the original Phase 0 + Phase 1. Each item is **documentation, copy
 4. **Add per-directory README/header notes** for `LEG-*` paths in place. No moves:
    - `engine-src/README.md`: "Legacy sports MM engine; not in production trader path."
    - `scripts/sports-*.ts` header comment: same.
-   - `addendum/README.md`: "Auction sim from a separate project; not loaded by hourly trader."
+   - `archive/addendum/README.md`: "Auction sim from a separate project; not loaded by hourly trader."
    - `hyperliquid-crv-rebalancer/README.md` addendum: enumerate which `.py` files are research vs `multi_coin_hybrid_bot.py` (live).
 5. **Add `npm run prod:verify` (read-only checks):**
    - Required env vars present (`ANTHROPIC_API_KEY`, `POLYMARKET_TRADER_STATE_DIR` if set on VPS).
@@ -395,7 +395,7 @@ This replaces the original Phase 0 + Phase 1. Each item is **documentation, copy
 
 ### Explicit do-not-do in the first slice
 
-- **Do not move** `addendum/`, sports scripts, or HL research directories.
+- **Do not move** sports scripts or HL research directories without a dedicated import/package-script audit.
 - **Do not untrack** `relative-value/index.html` or any other Vercel-served file.
 - **Do not cap or rotate** `learning-journal.md` until the LLM prompt-window logic in `trading-engine.ts` has been mapped and a deterministic gate exists.
 - **Do not change** `npm ci` to conditional install. Keep the safe-but-slow install.
@@ -527,6 +527,14 @@ This section records what has actually been implemented, committed, and pushed d
 | Report builder extraction | `scripts/lib/reporting/report-builders.ts`, `scripts/trader-performance-report.ts` | Done. CSV/Markdown report row construction moved behind a reporting module while preserving existing exports and output shape. |
 | Golden report fixture | `scripts/lib/reporting/report-builders.golden.test.ts` | Done. Synthetic fixture asserts deterministic CSV/Markdown report output without reading live repo state. |
 | Relative-value context extraction | `scripts/lib/reporting/relative-value-context.ts`, `scripts/trader-performance-report.ts` | Done. Entry/current model provenance, bid/ask conversion, history-row matching, and context-note helpers moved out of the CLI wrapper with exports preserved for existing tests. |
+| Report input aggregation extraction | `scripts/lib/reporting/report-inputs.ts`, `scripts/trader-performance-report.ts` | Done. De-duping, counted/raw stats, grouped rows, setup-family stats, duplicate IDs, and resolved-shadow rollups moved out of the CLI wrapper. |
+
+### Completed infra visibility / quarantine slices
+
+| Slice | Files | Status |
+|-------|-------|--------|
+| VPS wrapper references | `scripts/run-polymarket-exit-scanner.sh`, `scripts/run-polymarket-daily-report.sh`, `docs/systemd/*` | Done. Hashes verified against the USA VPS copies on 2026-06-09; these are reference files only and are not auto-installed. |
+| Legacy auction archive | `archive/addendum/`, `archive/README.md` | Done. Former top-level `addendum/` pre-auction sim moved under `archive/` with no production references found. |
 
 ### Completed VPS disk cleanup
 
@@ -560,7 +568,7 @@ Follow-up implemented after this emergency cleanup:
 
 ### Current cleanup impact
 
-- `scripts/trader-performance-report.ts` is down to about 728 lines from the earlier 1,513-line reference after helper, report-builder, and relative-value context extraction.
+- `scripts/trader-performance-report.ts` is down to about 626 lines from the earlier 1,513-line reference after helper, report-builder, relative-value context, and input aggregation extraction.
 - Net repository source lines increased because focused tests and shared helpers were added. This is intentional: the immediate gain is safer future cleanup, not raw line deletion.
 - Runtime performance is expected to be effectively unchanged for the report path; the practical gain is improved testability, clearer LLM-facing report rows, and lower risk for the next extractions.
 - Trading behavior has not been changed. Each code slice was validated with reporting tests, report smoke output, `npm run cleanup:harness -- --compare ...`, `npm run prod:verify`, and TypeScript/lint checks.
@@ -568,7 +576,7 @@ Follow-up implemented after this emergency cleanup:
 ### Remaining work after this point
 
 1. **Continue report-only cleanup before touching production monoliths.**
-   - Next safe target: move report input assembly / aggregation glue out of `scripts/trader-performance-report.ts`.
+   - Next safe target: split hybrid-bot shadow report loading out of `scripts/trader-performance-report.ts`.
    - Keep output shape unchanged and rerun the same harness/report smoke gates.
 
 2. **Do not start `trading-engine.ts`, `market-scanner.ts`, or heatmap-report extraction yet.**
@@ -581,9 +589,9 @@ Follow-up implemented after this emergency cleanup:
    - Do not untrack `relative-value/index.html`; Vercel serves `relative-value/` directly.
    - Do not cap `learning-journal.md` until the LLM prompt-window behavior is mapped and tested.
 
-4. **Infra visibility remains open unless separately verified.**
-   - Copy/reference VPS exit-scanner and daily-report wrappers into repo if still missing.
-   - Snapshot systemd units into `docs/systemd/` as reference-only docs.
+4. **Infra drift monitoring remains open.**
+   - VPS exit-scanner and daily-report wrappers plus systemd units are now reference-snapshotted and hash-verified against the USA VPS.
+   - Re-check hashes before any live wrapper/unit deployment.
    - Do not deploy wrapper changes without a separate approval and VPS dry run.
 
 5. **Japan monotonic/UpDown remains separate.**
