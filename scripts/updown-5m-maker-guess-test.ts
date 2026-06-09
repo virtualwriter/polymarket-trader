@@ -90,6 +90,10 @@ const ENTRY_DEPTH = Number(process.env.UPDOWN_MAKER_GUESS_ENTRY_DEPTH ?? 0.02);
 // this only loosens the escape after a one-sided fill.
 const MAX_COMPLETION_PAIR_COST = Number(process.env.UPDOWN_MAKER_GUESS_MAX_COMPLETION_PAIR_COST ?? 1.01);
 const COMPLETION_MAKER_WAIT_MS = Number(process.env.UPDOWN_MAKER_GUESS_COMPLETION_MAKER_WAIT_MS ?? 2_000);
+const COMPLETION_LADDER_TICKS = Number(process.env.UPDOWN_MAKER_GUESS_COMPLETION_LADDER_TICKS ?? 12);
+const GAP_FAST_EXIT = Number(process.env.UPDOWN_MAKER_GUESS_GAP_FAST_EXIT ?? 0.03);
+const MOMENTUM_CANCEL_MOVE = Number(process.env.UPDOWN_MAKER_GUESS_MOMENTUM_CANCEL_MOVE ?? 0.03);
+const MOMENTUM_WINDOW_MS = Number(process.env.UPDOWN_MAKER_GUESS_MOMENTUM_WINDOW_MS ?? 500);
 const HOLD_MS = Number(process.env.UPDOWN_MAKER_GUESS_HOLD_MS ?? argValue("--hold-ms") ?? 5_000);
 const FILL_POLL_MS = Number(process.env.UPDOWN_MAKER_GUESS_FILL_POLL_MS ?? 250);
 const COMPLETION_WINDOW_MS = Number(process.env.UPDOWN_MAKER_GUESS_COMPLETION_WINDOW_MS ?? 3_000);
@@ -714,6 +718,39 @@ function cacheAgeMs(tokenId: string): number {
   return book?.updatedAtMs ? Date.now() - book.updatedAtMs : Number.POSITIVE_INFINITY;
 }
 
+const midSampleHistory = new Map<string, Array<{ ts: number; mid: number }>>();
+
+function sampleMid(tokenId: string) {
+  const top = topFromCachedBook(tokenId);
+  if (!top || !(top.bid > 0) || !(top.ask > 0)) return;
+  const rows = midSampleHistory.get(tokenId) ?? [];
+  rows.push({ ts: Date.now(), mid: (top.bid + top.ask) / 2 });
+  const cutoff = Date.now() - Math.max(MOMENTUM_WINDOW_MS * 4, 2_000);
+  while (rows.length && rows[0].ts < cutoff) rows.shift();
+  midSampleHistory.set(tokenId, rows);
+}
+
+function recentMids(tokenId: string): Array<{ ts: number; mid: number }> {
+  const cutoff = Date.now() - MOMENTUM_WINDOW_MS;
+  return (midSampleHistory.get(tokenId) ?? []).filter((row) => row.ts >= cutoff);
+}
+
+// How far the mid has fallen toward a resting bid within the momentum window.
+function midDropCents(tokenId: string): number {
+  const rows = recentMids(tokenId);
+  if (rows.length < 2) return 0;
+  const current = rows[rows.length - 1].mid;
+  return Math.max(0, Math.max(...rows.map((row) => row.mid)) - current);
+}
+
+// Total mid range within the window; used to hold off new posts in fast markets.
+function midRangeCents(tokenId: string): number {
+  const rows = recentMids(tokenId);
+  if (rows.length < 2) return 0;
+  const mids = rows.map((row) => row.mid);
+  return Math.max(...mids) - Math.min(...mids);
+}
+
 async function seedMarketBook(tokenId: string) {
   const raw = await fetchJson<BookResponse>(`${CLOB_HOST}/book?${new URLSearchParams({ token_id: tokenId })}`);
   applyMarketSnapshot(tokenId, rawLevels(raw.bids), rawLevels(raw.asks), parseNumber(raw.min_order_size) || 5);
@@ -1253,12 +1290,44 @@ async function tryCompleteImbalance(
   };
 }
 
+type ComplementLadder = {
+  tokenId: string;
+  shares: number;
+  ready: Array<{ price: number; order: any }>;
+};
+
+// Pre-sign complement FAK buys across a tick grid the moment the entry posts,
+// so a fill can be completed within one HTTP round trip instead of paying the
+// book-fetch + sign latency (~750ms) while profitable asks disappear.
+function buildComplementLadder(
+  client: Awaited<ReturnType<typeof clobClient>>["client"],
+  market: TrackedMarket,
+  entryPlan: LoopEntryPlan,
+  shares: number,
+): ComplementLadder | null {
+  if (entryPlan.mode !== "low_prob_only" || entryPlan.legs.length !== 1) return null;
+  const leg = entryPlan.legs[0];
+  const complementToken = leg.tokenId === market.upTokenId ? market.downTokenId : market.upTokenId;
+  const base = normalizePrice(maxSafePairCost() - leg.price);
+  const ladder: ComplementLadder = { tokenId: complementToken, shares, ready: [] };
+  for (let i = 0; i <= COMPLETION_LADDER_TICKS; i += 1) {
+    const price = normalizePrice(base + i * TICK);
+    if (!(price >= TICK) || price > 1 - TICK + 1e-9) continue;
+    void signedBuy(client, complementToken, price, shares)
+      .then((order) => { ladder.ready.push({ price, order }); })
+      .catch(() => {});
+  }
+  return ladder;
+}
+
 async function tryReactiveCompletion(
   client: Awaited<ReturnType<typeof clobClient>>["client"],
   address: string,
   market: TrackedMarket,
   signal: FillSignal | null,
   orderIds: { up?: string; down?: string },
+  postedPrices: { up: number; down: number } | null = null,
+  ladder: ComplementLadder | null = null,
 ) {
   const details = fillSignalDetails(signal, market, orderIds);
   const startedMs = Date.now();
@@ -1266,23 +1335,12 @@ async function tryReactiveCompletion(
     return { action: "skip", reason: "no_fill_signal_details", elapsedMs: 0 };
   }
   const maxComplementPrice = maxCompletionPairCost() - details.fillPrice;
-  let top: Top;
-  try {
-    top = await fetchComplementTop(details.complementToken);
-  } catch (err: any) {
-    return {
-      action: "skip",
-      startedAt: new Date(startedMs).toISOString(),
-      sideFilled: details.sideFilled,
-      complementSide: details.complementSide,
-      fillPrice: details.fillPrice,
-      shares: details.shares,
-      maxComplementPrice,
-      reason: err?.message ?? String(err),
-      elapsedMs: Date.now() - startedMs,
-    };
-  }
-  const result: any = {
+  const postedPrice = postedPrices ? (details.sideFilled === "up" ? postedPrices.up : postedPrices.down) : 0;
+  const gapThrough = postedPrice > 0 ? Math.max(0, postedPrice - details.fillPrice) : 0;
+  // A fill far through our posted price means a directional collapse: skip the
+  // patient maker stage and exit fast instead of bleeding on the naked leg.
+  const fastExit = GAP_FAST_EXIT > 0 && gapThrough >= GAP_FAST_EXIT - 1e-9;
+  const base: any = {
     action: "skip",
     startedAt: new Date(startedMs).toISOString(),
     sideFilled: details.sideFilled,
@@ -1290,37 +1348,93 @@ async function tryReactiveCompletion(
     fillPrice: details.fillPrice,
     shares: details.shares,
     maxComplementPrice,
-    complementAsk: top.ask,
-    complementAskSize: top.askSize,
+    postedPrice,
+    gapThrough: Number(gapThrough.toFixed(4)),
+    fastExit,
   };
-
-  // Maker-first completion: an immediate FAK pays the displayed spread and at
-  // best breaks even (observed pairs land at 1.00-1.01). If the displayed ask
-  // is not profitable, rest a maker bid at the profitable price briefly and
-  // only fall back to the capped taker buy if it does not fill.
+  let boughtShares = 0;
+  let boughtCost = 0;
+  const addBuy = (shares: number, price: number) => {
+    if (shares > 0 && price > 0) {
+      boughtShares += shares;
+      boughtCost += shares * price;
+    }
+  };
+  const done = (extra: any) => {
+    const bought = roundShares(boughtShares);
+    return {
+      ...base,
+      ...extra,
+      ...(bought > 0 ? { action: "fak_buy", bought, buyPrice: boughtCost / boughtShares } : {}),
+      elapsedMs: Date.now() - startedMs,
+    };
+  };
   let remainingShares = details.shares;
+
+  // Stage 1: instantly fire a pre-signed FAK at the best profitable price.
+  // No book fetch and no signing on this path; if a profitable ask is still
+  // displayed (round #5 had UP at 0.69 for a 0.97 pair), this captures it.
+  if (ladder && ladder.tokenId === details.complementToken
+    && details.shares + IMBALANCE_DUST_SHARES >= ladder.shares && ladder.ready.length) {
+    const profitCap = maxSafePairCost() - details.fillPrice;
+    const rung = ladder.ready
+      .filter((row) => row.price <= profitCap + 1e-9)
+      .sort((a, b) => b.price - a.price)[0];
+    if (rung) {
+      const presigned: any = { firedPrice: rung.price, profitCap: normalizePrice(profitCap), atMs: Date.now() - startedMs };
+      base.presigned = presigned;
+      try {
+        const response = await client.postOrder(rung.order, OrderType.FAK);
+        assertOrderResponse(response, "maker_guess_presigned_completion");
+        const bought = Math.min(responseBuyShares(response), remainingShares);
+        presigned.bought = bought;
+        presigned.buyPrice = averageBuyPrice(response, rung.price);
+        addBuy(bought, presigned.buyPrice);
+        remainingShares = roundShares(Math.max(0, remainingShares - bought));
+      } catch (err: any) {
+        presigned.error = err?.message ?? String(err);
+      }
+      presigned.elapsedMs = Date.now() - startedMs;
+      if (remainingShares < IMBALANCE_DUST_SHARES) {
+        return done({ completionMode: "presigned_taker" });
+      }
+    }
+  }
+
+  let top: Top;
+  try {
+    top = await fetchComplementTop(details.complementToken);
+  } catch (err: any) {
+    return done({ reason: err?.message ?? String(err) });
+  }
+  base.complementAsk = top.ask;
+  base.complementAskSize = top.askSize;
+
+  // Stage 2 (skipped on fast exit): an immediate FAK pays the displayed spread
+  // and at best breaks even (observed pairs land at 1.00-1.01). If the
+  // displayed ask is not profitable, rest a maker bid at the profitable price
+  // briefly and only fall back to the capped taker buy if it does not fill.
   let makerBought = 0;
-  let makerPrice = 0;
   const profitablePairCap = maxSafePairCost() - details.fillPrice;
   const profitComplementPrice = normalizePrice(Math.min(profitablePairCap, top.ask - TICK));
-  if (COMPLETION_MAKER_WAIT_MS > 0 && profitComplementPrice >= TICK && top.ask - 1e-9 > profitablePairCap) {
-    makerPrice = profitComplementPrice;
+  if (!fastExit && COMPLETION_MAKER_WAIT_MS > 0 && profitComplementPrice >= TICK && top.ask - 1e-9 > profitablePairCap) {
+    const makerPrice = profitComplementPrice;
     const makerStartedMs = Date.now();
     const makerStage: any = { price: makerPrice, waitMs: COMPLETION_MAKER_WAIT_MS };
-    result.makerStage = makerStage;
+    base.makerStage = makerStage;
     try {
       const beforeBalance = await reconcileTokenBalance(address, details.complementToken);
-      const response = await postLimitBuyCached(client, details.complementToken, makerPrice, details.shares);
+      const response = await postLimitBuyCached(client, details.complementToken, makerPrice, remainingShares);
       assertOrderResponse(response, "maker_guess_completion_maker_bid");
       makerStage.response = response;
       const orderID = String((response as any)?.orderID ?? "");
       makerBought = responseBuyShares(response);
-      while (makerBought + 1e-9 < details.shares && Date.now() - makerStartedMs < COMPLETION_MAKER_WAIT_MS) {
+      while (makerBought + 1e-9 < remainingShares && Date.now() - makerStartedMs < COMPLETION_MAKER_WAIT_MS) {
         await sleep(250);
         const balance = await reconcileTokenBalance(address, details.complementToken);
         makerBought = Math.max(makerBought, roundShares(balance - beforeBalance));
       }
-      if (orderID && makerBought + 1e-9 < details.shares) {
+      if (orderID && makerBought + 1e-9 < remainingShares) {
         makerStage.cancel = await cancelOrderTimed(client, orderID);
         const balance = await reconcileTokenBalance(address, details.complementToken);
         makerBought = Math.max(makerBought, roundShares(balance - beforeBalance));
@@ -1328,81 +1442,45 @@ async function tryReactiveCompletion(
     } catch (err: any) {
       makerStage.error = err?.message ?? String(err);
     }
-    makerBought = Math.min(makerBought, details.shares);
+    makerBought = Math.min(makerBought, remainingShares);
     makerStage.bought = makerBought;
     makerStage.elapsedMs = Date.now() - makerStartedMs;
-    remainingShares = roundShares(Math.max(0, details.shares - makerBought));
+    addBuy(makerBought, makerPrice);
+    remainingShares = roundShares(Math.max(0, remainingShares - makerBought));
     if (remainingShares < IMBALANCE_DUST_SHARES) {
-      return {
-        ...result,
-        action: "fak_buy",
-        bought: makerBought,
-        buyPrice: makerPrice,
-        completionMode: "maker",
-        elapsedMs: Date.now() - startedMs,
-      };
+      return done({ completionMode: "maker" });
     }
     try {
       top = await fetchComplementTop(details.complementToken);
-      result.complementAsk = top.ask;
-      result.complementAskSize = top.askSize;
+      base.complementAsk = top.ask;
+      base.complementAskSize = top.askSize;
     } catch {
       // keep the pre-wait book if the refresh fails
     }
   }
 
+  // Stage 3: capped taker fallback (bounded loss up to maxCompletionPairCost).
   const pick = aggressiveSafeComplementPrice(top, maxComplementPrice);
-  result.topAskLevels = pick.levels;
-  result.pickedComplementPrice = pick.price;
-  result.pickReason = pick.reason;
+  base.topAskLevels = pick.levels;
+  base.pickedComplementPrice = pick.price;
+  base.pickReason = pick.reason;
   if (!(pick.price > 0) || top.askSize < Math.min(remainingShares, 1)) {
-    if (makerBought > 0) {
-      return {
-        ...result,
-        action: "fak_buy",
-        bought: makerBought,
-        buyPrice: makerPrice,
-        completionMode: "maker_partial",
-        reason: "unsafe_or_missing_complement_remainder",
-        elapsedMs: Date.now() - startedMs,
-      };
-    }
-    return { ...result, reason: "unsafe_or_missing_complement", elapsedMs: Date.now() - startedMs };
+    return done({ reason: "unsafe_or_missing_complement", completionMode: boughtShares > 0 ? "partial" : undefined });
   }
   try {
     const response = await postFakBuyCached(client, details.complementToken, pick.price, remainingShares);
     assertOrderResponse(response, "maker_guess_reactive_completion");
-    const fakBought = responseBuyShares(response);
-    const fakPrice = averageBuyPrice(response, pick.price);
-    const bought = roundShares(makerBought + fakBought);
-    const buyPrice = bought > 0 ? ((makerBought * makerPrice) + (fakBought * fakPrice)) / bought : fakPrice;
-    return {
-      ...result,
-      action: "fak_buy",
+    addBuy(responseBuyShares(response), averageBuyPrice(response, pick.price));
+    return done({
       response,
-      bought,
-      buyPrice,
-      completionMode: makerBought > 0 ? "maker_then_taker" : "taker",
-      elapsedMs: Date.now() - startedMs,
-    };
+      completionMode: boughtShares > responseBuyShares(response) ? "mixed" : "taker",
+    });
   } catch (err: any) {
-    if (makerBought > 0) {
-      return {
-        ...result,
-        action: "fak_buy",
-        bought: makerBought,
-        buyPrice: makerPrice,
-        completionMode: "maker_partial",
-        response: { error: err?.message ?? String(err) },
-        elapsedMs: Date.now() - startedMs,
-      };
-    }
-    return {
-      ...result,
-      action: "error",
+    return done({
+      action: boughtShares > 0 ? undefined : "error",
       response: { error: err?.message ?? String(err) },
-      elapsedMs: Date.now() - startedMs,
-    };
+      completionMode: boughtShares > 0 ? "partial" : undefined,
+    });
   }
 }
 
@@ -1512,6 +1590,7 @@ type LoopPair = {
   postedAt: string;
   postedAtMs: number;
   attempt: any;
+  ladder: ComplementLadder | null;
 };
 
 function balanceFillSignal(pair: LoopPair, filled: { up: number; down: number }): FillSignal | null {
@@ -1654,6 +1733,7 @@ async function postLoopPair(
     postedAt: attempt.createdAt,
     postedAtMs: Date.now(),
     attempt,
+    ladder: buildComplementLadder(client, market, entryPlan, quote.shares),
   };
 }
 
@@ -1672,7 +1752,15 @@ async function finalizeLoopPair(
   attempt.firstFillSignal = effectiveFirstFill;
   if (effectiveFirstFill) {
     const reactiveStartedMs = Date.now();
-    const reactiveCompletion: any = await tryReactiveCompletion(client, address, pair.market, effectiveFirstFill, pair.orderIds);
+    const reactiveCompletion: any = await tryReactiveCompletion(
+      client,
+      address,
+      pair.market,
+      effectiveFirstFill,
+      pair.orderIds,
+      { up: pair.quote.upPrice, down: pair.quote.downPrice },
+      pair.ladder,
+    );
     attempt.reactiveCompletion = reactiveCompletion;
     attempt.latency.reactiveCompletionMs = Date.now() - reactiveStartedMs;
     if (reactiveCompletion.action === "fak_buy") {
@@ -1724,7 +1812,10 @@ async function finalizeLoopPair(
     };
   }
 
-  if (imbalance >= IMBALANCE_DUST_SHARES) {
+  if (imbalance >= IMBALANCE_DUST_SHARES && attempt.reactiveCompletion?.fastExit) {
+    log(`loop gap-through fast exit: skipping completion window, going straight to nuclear`);
+  }
+  if (imbalance >= IMBALANCE_DUST_SHARES && !attempt.reactiveCompletion?.fastExit) {
     const side = upFilled > downFilled ? "up" : "down";
     const tokenId = side === "up" ? pair.market.upTokenId : pair.market.downTokenId;
     const fillPrice = side === "up" ? (actualFillPrices.up || pair.quote.upPrice) : (actualFillPrices.down || pair.quote.downPrice);
@@ -1829,7 +1920,7 @@ async function loopLiveMain(existingClob?: ClobBundle, installSignalHandlers = t
     process.once("SIGTERM", () => { shutdown().finally(() => process.exit(143)); });
   }
 
-  log(`${LOOP_LIVE ? "loop-live" : "loop-dry-run"}${runLabel ? ` ${runLabel}` : ""} starting BTC-only refreshMs=${LOOP_REFRESH_MS} maxMs=${LOOP_MAX_MS} maxNotional=$${MAX_TEST_PAIR_NOTIONAL_USD} maxPairCost=${maxSafePairCost().toFixed(4)} safetyBuffer=${COMPLEMENT_SAFETY_BUFFER.toFixed(4)} entryDepth=${ENTRY_DEPTH.toFixed(3)} maxCompletionPairCost=${maxCompletionPairCost().toFixed(4)}`);
+  log(`${LOOP_LIVE ? "loop-live" : "loop-dry-run"}${runLabel ? ` ${runLabel}` : ""} starting BTC-only refreshMs=${LOOP_REFRESH_MS} maxMs=${LOOP_MAX_MS} maxNotional=$${MAX_TEST_PAIR_NOTIONAL_USD} maxPairCost=${maxSafePairCost().toFixed(4)} safetyBuffer=${COMPLEMENT_SAFETY_BUFFER.toFixed(4)} entryDepth=${ENTRY_DEPTH.toFixed(3)} maxCompletionPairCost=${maxCompletionPairCost().toFixed(4)} ladderTicks=${COMPLETION_LADDER_TICKS} gapFastExit=${GAP_FAST_EXIT.toFixed(3)} momentumCancel=${MOMENTUM_CANCEL_MOVE.toFixed(3)}@${MOMENTUM_WINDOW_MS}ms`);
 
   while (Date.now() - startedMs < LOOP_MAX_MS) {
     if (LOOP_MAX_IDLE_MS > 0 && Date.now() - idleStartedMs > LOOP_MAX_IDLE_MS) {
@@ -1866,6 +1957,9 @@ async function loopLiveMain(existingClob?: ClobBundle, installSignalHandlers = t
       log(`loop tracking ${market.slug} secondsToEnd=${secondsToEnd(market.endDate)?.toFixed(1) ?? "?"} marketWs=${marketWs?.readyState === WebSocket.OPEN} cacheAges=${Math.round(cacheAgeMs(market.upTokenId))}/${Math.round(cacheAgeMs(market.downTokenId))}ms baselineMs=${Date.now() - baselineStartedMs}`);
     }
 
+    sampleMid(market.upTokenId);
+    sampleMid(market.downTokenId);
+
     const firstFill = activePair
       ? findOwnFill([market.upTokenId, market.downTokenId], [activePair.orderIds.up, activePair.orderIds.down].filter(isString), activePair.postedAtMs)
         ?? matchedResponseFill(market, activePair.orderIds, activePair.responses)
@@ -1876,6 +1970,32 @@ async function loopLiveMain(existingClob?: ClobBundle, installSignalHandlers = t
       userWs?.close();
       marketWs?.close();
       return;
+    }
+
+    // Momentum kill-switch: if the mid is collapsing toward a resting bid,
+    // cancel before the sweep reaches us instead of waiting for quoteChanged.
+    if (activePair && MOMENTUM_CANCEL_MOVE > 0) {
+      const postedTokens = [
+        activePair.orderIds.up ? market.upTokenId : null,
+        activePair.orderIds.down ? market.downTokenId : null,
+      ].filter(isString);
+      const drop = postedTokens.length ? Math.max(...postedTokens.map((tokenId) => midDropCents(tokenId))) : 0;
+      if (drop >= MOMENTUM_CANCEL_MOVE - 1e-9) {
+        activePair.attempt.momentumCancel = { drop: Number(drop.toFixed(4)), at: new Date().toISOString() };
+        log(`loop momentum cancel drop=${drop.toFixed(3)} window=${MOMENTUM_WINDOW_MS}ms`);
+        const fillNow = findOwnFill([market.upTokenId, market.downTokenId], [activePair.orderIds.up, activePair.orderIds.down].filter(isString), activePair.postedAtMs)
+          ?? matchedResponseFill(market, activePair.orderIds, activePair.responses);
+        const classification = await finalizeLoopPair(client, address, activePair, fillNow, userWs);
+        if (classification !== "NO_FILL") {
+          log(`loop terminal classification=${classification}`);
+          userWs?.close();
+          marketWs?.close();
+          return;
+        }
+        activePair = null;
+        await sleep(LOOP_REFRESH_MS);
+        continue;
+      }
     }
 
     let quote: QuotePlan;
@@ -1904,6 +2024,11 @@ async function loopLiveMain(existingClob?: ClobBundle, installSignalHandlers = t
         const plan = loopEntryPlan(market, quote);
         const postedSides = plan.legs.map((leg) => `${leg.side}=${leg.price.toFixed(4)}`).join(" ");
         log(`loop dry quote ${market.slug} mode=${plan.mode} ${postedSides} pairSum=${quote.pairCost.toFixed(4)} shares=${quote.shares.toFixed(2)}`);
+        await sleep(LOOP_REFRESH_MS);
+        continue;
+      }
+      if (MOMENTUM_CANCEL_MOVE > 0 && midRangeCents(market.upTokenId) >= MOMENTUM_CANCEL_MOVE - 1e-9) {
+        // Market is moving too fast to rest a bid safely; wait for it to calm.
         await sleep(LOOP_REFRESH_MS);
         continue;
       }
@@ -1938,6 +2063,10 @@ async function loopLiveMain(existingClob?: ClobBundle, installSignalHandlers = t
       }
       activePair = null;
       if (!LOOP_LIVE) {
+        await sleep(LOOP_REFRESH_MS);
+        continue;
+      }
+      if (MOMENTUM_CANCEL_MOVE > 0 && midRangeCents(market.upTokenId) >= MOMENTUM_CANCEL_MOVE - 1e-9) {
         await sleep(LOOP_REFRESH_MS);
         continue;
       }
@@ -1980,7 +2109,19 @@ async function loopRepeatMain() {
   process.once("SIGTERM", () => { stopping = true; });
   for (let idx = 0; idx < repeatCount && !stopping; idx += 1) {
     log(`loop hot runner attempt ${idx + 1}/${repeatCount}`);
-    await loopLiveMain(clob, false, `[${idx + 1}/${repeatCount}]`);
+    try {
+      await loopLiveMain(clob, false, `[${idx + 1}/${repeatCount}]`);
+    } catch (err: any) {
+      const message = err?.message ?? String(err);
+      log(`loop hot runner attempt error: ${message}`);
+      // A matched pair from the previous run blocks the same market until it
+      // resolves; wait it out without consuming an attempt.
+      if (message.includes("pre_existing_5m_position") && !stopping) {
+        idx -= 1;
+        await sleep(15_000);
+        continue;
+      }
+    }
     if (idx + 1 < repeatCount && !stopping) await sleep(LOOP_REPEAT_PAUSE_MS);
   }
   log("loop hot runner ended");
@@ -2182,7 +2323,7 @@ async function main() {
   attempt.latency.firstFillWaitMs = Date.now() - fillWaitStartedMs;
   if (firstFill) {
     const reactiveStartedMs = Date.now();
-    const reactiveCompletion: any = await tryReactiveCompletion(clob.client, address, market, firstFill, attempt.orderIds);
+    const reactiveCompletion: any = await tryReactiveCompletion(clob.client, address, market, firstFill, attempt.orderIds, { up: upPrice, down: downPrice }, null);
     attempt.reactiveCompletion = reactiveCompletion;
     attempt.latency.reactiveCompletionMs = Date.now() - reactiveStartedMs;
     if (reactiveCompletion.action === "fak_buy") {
