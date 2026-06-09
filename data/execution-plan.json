@@ -1,11 +1,40 @@
 {
-  "generatedAt": "2026-06-09T13:29:38.987Z",
+  "generatedAt": "2026-06-09T14:29:34.049Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [],
+  "entrySignals": [
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.63,
+      "confidence": 0.36020599724750557,
+      "thesis": "BTC P/C ratio 1.70 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 61776,
+      "targetPct": 4,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    },
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.31,
+      "confidence": 0.1772442208678202,
+      "thesis": "OIL P/C ratio 1.45 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 86.73,
+      "targetPct": 4,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    }
+  ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
