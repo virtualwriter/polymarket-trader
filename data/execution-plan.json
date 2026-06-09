@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-09T21:28:18.593Z",
+  "generatedAt": "2026-06-09T22:29:50.952Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.16866788760002244,
       "thesis": "BTC P/C ratio 1.44 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 61802,
+      "entryPrice": 61763,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -29,16 +29,37 @@
       "confidence": 0.07218413833729773,
       "thesis": "GOLD P/C ratio 1.30 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4263,
+      "entryPrice": 4254,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "GOLD",
+        "venue": "spot",
+        "direction": "long",
+        "thesis": "Gold GLD put/call ratio at 1.301 (3.4σ) – extreme put buying suggests capitulation and a contrarian mean-reversion bounce. Spot at 4254 is at -2.6σ, adding to reversal odds."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    },
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "thesis": "BTC IBIT put/call ratio at 1.436 (2.2σ) – heavy put hedging during a pullback from 63.9k to 60.9k. Combined with slightly negative funding, this is a contrarian long opportunity."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 2 non-close instructions skipped."
   ]
 }
