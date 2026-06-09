@@ -1148,13 +1148,17 @@ async function cancelOrderTimed(client: Awaited<ReturnType<typeof clobClient>>["
   const startedMs = Date.now();
   let ok = false;
   let error = "";
+  let notCanceled: any = null;
   try {
-    await client.cancelOrder({ orderID });
+    const resp: any = await client.cancelOrder({ orderID });
     ok = true;
+    if (resp?.not_canceled && Object.keys(resp.not_canceled).length > 0) {
+      notCanceled = resp.not_canceled;
+    }
   } catch (err: any) {
     error = err?.message ?? String(err);
   }
-  return { orderID, ok, error, elapsedMs: Date.now() - startedMs };
+  return { orderID, ok, error, notCanceled, elapsedMs: Date.now() - startedMs };
 }
 
 async function currentFilled(address: string, market: TrackedMarket, before: { up: number; down: number }) {
@@ -1799,10 +1803,31 @@ async function finalizeLoopPair(
   if (signalDetails) {
     signalFloor[signalDetails.sideFilled] = Math.min(signalDetails.shares, pair.quote.shares);
   }
-  const [upOrderFill, downOrderFill] = await Promise.all([
+  let [upOrderFill, downOrderFill] = await Promise.all([
     pair.orderIds.up ? orderMatchedShares(client, pair.orderIds.up) : Promise.resolve(0),
     pair.orderIds.down ? orderMatchedShares(client, pair.orderIds.down) : Promise.resolve(0),
   ]);
+  // Cancel-race guard: a posted order can fill milliseconds before the cancel
+  // lands, and the order-status endpoint may not reflect size_matched yet on
+  // the first read. If everything looks like a no-fill, re-poll briefly before
+  // trusting it; a missed fill here strands a naked leg into expiry.
+  if (
+    upOrderFill <= 0 && downOrderFill <= 0
+    && responseFill.up <= 0 && responseFill.down <= 0
+    && signalFloor.up <= 0 && signalFloor.down <= 0
+    && (pair.orderIds.up || pair.orderIds.down)
+  ) {
+    for (let poll = 0; poll < 3 && upOrderFill <= 0 && downOrderFill <= 0; poll += 1) {
+      await sleep(350);
+      [upOrderFill, downOrderFill] = await Promise.all([
+        pair.orderIds.up ? orderMatchedShares(client, pair.orderIds.up) : Promise.resolve(0),
+        pair.orderIds.down ? orderMatchedShares(client, pair.orderIds.down) : Promise.resolve(0),
+      ]);
+    }
+    if (upOrderFill > 0 || downOrderFill > 0) {
+      log(`loop cancel-race fill detected up=${upOrderFill} down=${downOrderFill}`);
+    }
+  }
   const postedFill = {
     up: Math.max(upOrderFill, responseFill.up, signalFloor.up),
     down: Math.max(downOrderFill, responseFill.down, signalFloor.down),
