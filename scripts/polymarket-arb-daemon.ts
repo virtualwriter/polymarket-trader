@@ -115,8 +115,9 @@ const RESPONSE_FILL_FIRST = process.env.ARB_DAEMON_RESPONSE_FILL_FIRST !== "0";
 const ENABLE_NBA_BATCH_EXECUTION = process.env.ARB_DAEMON_ENABLE_NBA_BATCH_EXECUTION !== "0";
 const ALLOW_NBA_NON_ATOMIC_EXECUTION = process.env.ARB_DAEMON_ALLOW_NBA_NON_ATOMIC_EXECUTION === "1";
 const NBA_LEDGER_ARCHIVE_GRACE_MS = Number(process.env.ARB_DAEMON_NBA_LEDGER_ARCHIVE_GRACE_MS ?? 30 * 60_000);
+const DISCOVER_NBA_GAMES = process.env.ARB_DAEMON_DISCOVER_NBA_GAMES !== "0";
 const DISCOVER_MLB_GAMES = process.env.ARB_DAEMON_DISCOVER_MLB_GAMES !== "0";
-const MLB_DISCOVERY_LIMIT = Number(process.env.ARB_DAEMON_MLB_DISCOVERY_LIMIT ?? 500);
+const SPORTS_DISCOVERY_LIMIT = Number(process.env.ARB_DAEMON_SPORTS_DISCOVERY_LIMIT ?? process.env.ARB_DAEMON_MLB_DISCOVERY_LIMIT ?? 500);
 const LEDGER_ARCHIVE_DIR = join(dirname(PACKAGES_PATH), "archive");
 
 // Near-miss telemetry: proves whether the daemon is barely missing executable
@@ -133,6 +134,8 @@ const SPORTS_MIN_EDGE = Number(process.env.ARB_DAEMON_SPORTS_MIN_EDGE ?? 0);
 const SPORTS_MIN_AVAILABLE_SHARES = Number(process.env.ARB_DAEMON_SPORTS_MIN_AVAILABLE_SHARES ?? 50);
 const SPORTS_MAX_SPREAD = Number(process.env.ARB_DAEMON_SPORTS_MAX_SPREAD ?? 0.02);
 const SPORTS_PRICE_SLIPPAGE = Number(process.env.ARB_DAEMON_SPORTS_PRICE_SLIPPAGE ?? 0);
+const SPORTS_BALANCE_HEADROOM_USD = Number(process.env.ARB_DAEMON_SPORTS_BALANCE_HEADROOM_USD ?? 0.5);
+const SPORTS_BALANCE_HEADROOM_MULTIPLIER = Number(process.env.ARB_DAEMON_SPORTS_BALANCE_HEADROOM_MULTIPLIER ?? 1.03);
 // 0 means live sports are allowed after the scheduled start/endDate. Set a
 // positive value to block entries within that many ms before start.
 const SPORTS_ENTRY_CUTOFF_MS = Number(process.env.ARB_DAEMON_SPORTS_ENTRY_CUTOFF_MS ?? 0);
@@ -539,11 +542,11 @@ function registerToken(tokenId: string, key: string) {
   set.add(key);
 }
 
-function isMlbGameSlug(slug: string): boolean {
-  return /^mlb-[a-z0-9]+-[a-z0-9]+-\d{4}-\d{2}-\d{2}$/.test(slug);
+function isSportsGameSlug(slug: string): boolean {
+  return /^(?:nba|mlb)-[a-z0-9]+-[a-z0-9]+-\d{4}-\d{2}-\d{2}$/.test(slug);
 }
 
-function mlbGameDate(slug: string): string | null {
+function sportsGameDate(slug: string): string | null {
   const match = slug.match(/-(\d{4}-\d{2}-\d{2})$/);
   return match?.[1] ?? null;
 }
@@ -559,17 +562,45 @@ function todayInNewYork(now = new Date()): string {
   return `${part("year")}-${part("month")}-${part("day")}`;
 }
 
-function isCurrentOrFutureMlbGameSlug(slug: string, today = todayInNewYork()): boolean {
-  const gameDate = mlbGameDate(slug);
+function isCurrentOrFutureSportsGameSlug(slug: string, today = todayInNewYork()): boolean {
+  const gameDate = sportsGameDate(slug);
   return !!gameDate && gameDate >= today;
 }
 
-async function discoverMlbGameSlugs(): Promise<string[]> {
-  if (!DISCOVER_MLB_GAMES) return [];
+async function configuredEventSlugs(): Promise<string[]> {
+  const today = todayInNewYork();
+  const out: string[] = [];
+  for (const slug of eventSlugs()) {
+    if (!isSportsGameSlug(slug)) {
+      out.push(slug);
+      continue;
+    }
+    if (!isCurrentOrFutureSportsGameSlug(slug, today)) {
+      log(`sports lifecycle: dropping past configured slug ${slug}`);
+      continue;
+    }
+    try {
+      const event = await fetchEvent(arbConfig, slug);
+      if ((event as { closed?: boolean } | null)?.closed) {
+        log(`sports lifecycle: dropping resolved configured slug ${slug}`);
+        continue;
+      }
+    } catch (err: any) {
+      log(`sports lifecycle: keeping configured slug ${slug}; status check failed: ${err?.message ?? String(err)}`);
+    }
+    out.push(slug);
+  }
+  return out;
+}
+
+async function discoverSportsGameSlugs(kind: "nba" | "mlb"): Promise<string[]> {
+  if (kind === "nba" && !DISCOVER_NBA_GAMES) return [];
+  if (kind === "mlb" && !DISCOVER_MLB_GAMES) return [];
   const out = new Set<string>();
   const today = todayInNewYork();
-  for (const tag of ["mlb", "baseball"]) {
-    for (let offset = 0; offset < MLB_DISCOVERY_LIMIT; offset += 100) {
+  const tags = kind === "nba" ? ["nba", "basketball"] : ["mlb", "baseball"];
+  for (const tag of tags) {
+    for (let offset = 0; offset < SPORTS_DISCOVERY_LIMIT; offset += 100) {
       const events = await fetchJson(`${GAMMA_API}/events?${new URLSearchParams({
         active: "true",
         closed: "false",
@@ -580,8 +611,8 @@ async function discoverMlbGameSlugs(): Promise<string[]> {
       if (!Array.isArray(events) || events.length === 0) break;
       for (const event of events) {
         const slug = event.slug ?? "";
-        if (!isMlbGameSlug(slug)) continue;
-        if (!isCurrentOrFutureMlbGameSlug(slug, today)) continue;
+        if (!slug.startsWith(`${kind}-`) || !isSportsGameSlug(slug)) continue;
+        if (!isCurrentOrFutureSportsGameSlug(slug, today)) continue;
         const hasLadder = (event.markets ?? []).some((market) => {
           const question = market.question ?? "";
           return /(^|:\s*)(?:1H\s+)?O\/U\s+[0-9]/i.test(question) || /^Spread:/i.test(question);
@@ -595,10 +626,14 @@ async function discoverMlbGameSlugs(): Promise<string[]> {
 }
 
 async function currentEventSlugs(): Promise<string[]> {
-  const configured = eventSlugs();
-  const discoveredMlb = await discoverMlbGameSlugs();
+  const configured = await configuredEventSlugs();
+  const [discoveredNba, discoveredMlb] = await Promise.all([
+    discoverSportsGameSlugs("nba"),
+    discoverSportsGameSlugs("mlb"),
+  ]);
+  if (discoveredNba.length) log(`nba discovery: ${discoveredNba.length} active game slugs`);
   if (discoveredMlb.length) log(`mlb discovery: ${discoveredMlb.length} active game slugs`);
-  return [...configured, ...discoveredMlb].filter((slug, idx, slugs) => slugs.indexOf(slug) === idx);
+  return [...configured, ...discoveredNba, ...discoveredMlb].filter((slug, idx, slugs) => slugs.indexOf(slug) === idx);
 }
 
 async function refreshWatchlist(): Promise<void> {
@@ -676,7 +711,10 @@ function isStaleSubmittedNoFill(row: LivePackage): boolean {
 function isDaemonOpenPackage(row: LivePackage): boolean {
   if (isStaleSubmittedNoFill(row)) return false;
   if (["quoted", "leg1_submitted", "leg1_filled", "leg2_submitted"].includes(row.status)) return true;
-  if (row.status === "package_complete") return !isCleanCompletedPackage(row);
+  // A completed package is still live inventory until it is explicitly sold or
+  // settled. Treating clean completions as closed allowed duplicate same-package
+  // re-entry against shared tokens, which can strand one leg if balance is tight.
+  if (row.status === "package_complete") return true;
   if (row.status !== "unwind_required") return false;
   return (row.actualCost ?? 0) > 0
     || (row.filledShares ?? 0) > 0
@@ -1072,6 +1110,16 @@ function spendableUsdAfterReservations(): number {
   return Math.max(0, Math.min(cachedFunderBalance, cachedFunderAllowance) - reservedSpendUsd);
 }
 
+function sizingSpendableUsd(candidate: Candidate, spendableUsd: number): number {
+  if (!isSportsCandidate(candidate) || !Number.isFinite(spendableUsd)) return spendableUsd;
+  return Math.max(0, (spendableUsd - SPORTS_BALANCE_HEADROOM_USD) / Math.max(1, SPORTS_BALANCE_HEADROOM_MULTIPLIER));
+}
+
+function reservedUsdForSized(candidate: Candidate, nominalCost: number): number {
+  if (!isSportsCandidate(candidate)) return nominalCost;
+  return nominalCost * Math.max(1, SPORTS_BALANCE_HEADROOM_MULTIPLIER) + SPORTS_BALANCE_HEADROOM_USD;
+}
+
 function pauseNewEntries(reason: string, details: Record<string, unknown> = {}) {
   if (!tradingPausedReason) {
     tradingPausedReason = reason;
@@ -1257,7 +1305,7 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
   }
   const executionCandidate = executionSizingCandidate(c);
   const spendableUsd = spendableUsdAfterReservations();
-  const sized = sizeForCandidate(executionCandidate, packageRows, spendableUsd);
+  const sized = sizeForCandidate(executionCandidate, packageRows, sizingSpendableUsd(executionCandidate, spendableUsd));
   if (sized.reason) {
     const now = Date.now();
     const last = lastSkipLogAt.get(pkg.key) ?? 0;
@@ -1285,7 +1333,8 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
     log(`skip ${pkg.key}: blocked after fresh preflight (open package/orphan or shared token)`);
     return;
   }
-  const freshSized = sizeForCandidate(executionCandidate, freshPackageRows, spendableUsdAfterReservations());
+  const freshSpendableUsd = spendableUsdAfterReservations();
+  const freshSized = sizeForCandidate(executionCandidate, freshPackageRows, sizingSpendableUsd(executionCandidate, freshSpendableUsd));
   if (freshSized.reason) {
     const now = Date.now();
     const last = lastSkipLogAt.get(pkg.key) ?? 0;
@@ -1295,7 +1344,17 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
     }
     return;
   }
-  reservedSpendUsd += freshSized.cost;
+  const freshReservedUsd = reservedUsdForSized(executionCandidate, freshSized.cost);
+  if (Number.isFinite(freshSpendableUsd) && freshReservedUsd > freshSpendableUsd + EPSILON) {
+    const now = Date.now();
+    const last = lastSkipLogAt.get(pkg.key) ?? 0;
+    if (now - last >= SKIP_LOG_THROTTLE_MS) {
+      lastSkipLogAt.set(pkg.key, now);
+      log(`skip ${pkg.key}: sports_balance_headroom nominal=$${freshSized.cost.toFixed(4)} reserved=$${freshReservedUsd.toFixed(4)} spendable=$${freshSpendableUsd.toFixed(4)} shares=${freshSized.shares.toFixed(2)}`);
+    }
+    return;
+  }
+  reservedSpendUsd += freshReservedUsd;
   alreadyOpen.add(pkg.key);
   inFlight.add(pkg.key);
   for (const tokenId of executionTokens) tokensInFlight.add(tokenId);
@@ -1305,7 +1364,7 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
   } catch (err: any) {
     log(`execute ${pkg.key} failed: ${err?.message ?? String(err)}`);
   } finally {
-    reservedSpendUsd = Math.max(0, reservedSpendUsd - freshSized.cost);
+    reservedSpendUsd = Math.max(0, reservedSpendUsd - freshReservedUsd);
     inFlight.delete(pkg.key);
     for (const tokenId of executionTokens) tokensInFlight.delete(tokenId);
     refreshAlreadyOpen();

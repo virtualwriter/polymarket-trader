@@ -20,6 +20,11 @@ describe("polymarketAssetForSlug", () => {
     expect(polymarketAssetForSlug("amazon-market-cap-hit-2026")).toBe("AMZN");
   });
 
+  it("classifies sports game ladders", () => {
+    expect(polymarketAssetForSlug("nba-sas-nyk-2026-06-10")).toBe("NBA");
+    expect(polymarketAssetForSlug("mlb-sea-bal-2026-06-09")).toBe("MLB");
+  });
+
   it("leaves unknown slugs unclassified", () => {
     expect(polymarketAssetForSlug("random-election-market")).toBeNull();
   });
@@ -32,6 +37,7 @@ describe("isNestedLadderEvent", () => {
     expect(isNestedLadderEvent("ethereum-dip-below-in-june-2026")).toBe(true);
     expect(isNestedLadderEvent("spacex-ipo-closing-market-cap-above")).toBe(true);
     expect(isNestedLadderEvent("nba-nyk-sas-2026-06-05")).toBe(true);
+    expect(isNestedLadderEvent("mlb-sea-bal-2026-06-09")).toBe(true);
   });
 
   it("rejects settlement, final trading day, over-under, and range markets", () => {
