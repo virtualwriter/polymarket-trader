@@ -1781,9 +1781,19 @@ async function finalizeLoopPair(
     up: rcFill?.complementSide === "up" && rcFill?.bought > 0 ? rcFill.bought : 0,
     down: rcFill?.complementSide === "down" && rcFill?.bought > 0 ? rcFill.bought : 0,
   };
+  // Same race on the posted side: the fill signal is authoritative before the
+  // balance API catches up; without this floor the freshly-filled entry leg
+  // reads as zero and the completion buy looks naked.
+  const signalDetails = effectiveFirstFill ? fillSignalDetails(effectiveFirstFill, pair.market, pair.orderIds) : null;
+  if (signalDetails) {
+    rcFloor[signalDetails.sideFilled] = Math.max(
+      rcFloor[signalDetails.sideFilled],
+      Math.min(signalDetails.shares, pair.quote.shares),
+    );
+  }
   let latest = await waitForSettledFilled(address, pair.market, pair.before, effectiveFirstFill ? 6_000 : 1_000);
-  let upFilled = Math.max(latest.filled.up, responseFill.up + rcFloor.up);
-  let downFilled = Math.max(latest.filled.down, responseFill.down + rcFloor.down);
+  let upFilled = Math.max(latest.filled.up, responseFill.up, rcFloor.up);
+  let downFilled = Math.max(latest.filled.down, responseFill.down, rcFloor.down);
   let imbalance = roundShares(Math.abs(upFilled - downFilled));
   const actualFillPrices = {
     up: upFilled > 0 ? averageBuyPrice(pair.responses.up, pair.quote.upPrice) : 0,
@@ -1831,8 +1841,8 @@ async function finalizeLoopPair(
     attempt.completion = completion;
     latest = await currentFilled(address, pair.market, pair.before);
     const completionFilled = applyCompletionFill(pair.market, completion, {
-      up: Math.max(latest.filled.up, responseFill.up + rcFloor.up),
-      down: Math.max(latest.filled.down, responseFill.down + rcFloor.down),
+      up: Math.max(latest.filled.up, responseFill.up, rcFloor.up),
+      down: Math.max(latest.filled.down, responseFill.down, rcFloor.down),
     });
     upFilled = completionFilled.up;
     downFilled = completionFilled.down;
