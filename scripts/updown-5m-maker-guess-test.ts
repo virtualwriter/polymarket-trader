@@ -1320,6 +1320,22 @@ function buildComplementLadder(
   return ladder;
 }
 
+// Authoritative fill check straight from the CLOB; the data-api balance can
+// lag trades by many seconds and must not be used for fast-path decisions.
+async function orderMatchedShares(
+  client: Awaited<ReturnType<typeof clobClient>>["client"],
+  orderID: string,
+): Promise<number> {
+  if (!orderID) return 0;
+  try {
+    const order: any = await client.getOrder(orderID);
+    const matched = Number(order?.size_matched ?? order?.sizeMatched);
+    return Number.isFinite(matched) && matched > 0 ? matched : 0;
+  } catch {
+    return 0;
+  }
+}
+
 async function tryReactiveCompletion(
   client: Awaited<ReturnType<typeof clobClient>>["client"],
   address: string,
@@ -1423,7 +1439,6 @@ async function tryReactiveCompletion(
     const makerStage: any = { price: makerPrice, waitMs: COMPLETION_MAKER_WAIT_MS };
     base.makerStage = makerStage;
     try {
-      const beforeBalance = await reconcileTokenBalance(address, details.complementToken);
       const response = await postLimitBuyCached(client, details.complementToken, makerPrice, remainingShares);
       assertOrderResponse(response, "maker_guess_completion_maker_bid");
       makerStage.response = response;
@@ -1431,13 +1446,13 @@ async function tryReactiveCompletion(
       makerBought = responseBuyShares(response);
       while (makerBought + 1e-9 < remainingShares && Date.now() - makerStartedMs < COMPLETION_MAKER_WAIT_MS) {
         await sleep(250);
-        const balance = await reconcileTokenBalance(address, details.complementToken);
-        makerBought = Math.max(makerBought, roundShares(balance - beforeBalance));
+        makerBought = Math.max(makerBought, await orderMatchedShares(client, orderID));
       }
       if (orderID && makerBought + 1e-9 < remainingShares) {
         makerStage.cancel = await cancelOrderTimed(client, orderID);
-        const balance = await reconcileTokenBalance(address, details.complementToken);
-        makerBought = Math.max(makerBought, roundShares(balance - beforeBalance));
+        // Fills that landed during the cancel race still stand; re-read the
+        // order itself, never the lagging balance API.
+        makerBought = Math.max(makerBought, await orderMatchedShares(client, orderID));
       }
     } catch (err: any) {
       makerStage.error = err?.message ?? String(err);
