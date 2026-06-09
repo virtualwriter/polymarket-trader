@@ -1803,10 +1803,25 @@ async function finalizeLoopPair(
   if (signalDetails) {
     signalFloor[signalDetails.sideFilled] = Math.min(signalDetails.shares, pair.quote.shares);
   }
+  // A fully matched order is archived and getOrder can return nothing for it,
+  // so the cancel rejection ("matched orders can't be canceled") is the only
+  // reliable signal that the whole posted size filled. Floor with it.
+  const cancelMatchedFloor = { up: 0, down: 0 };
+  for (const cancelRow of (attempt.cancels ?? []) as any[]) {
+    const reason = cancelRow?.notCanceled ? Object.values(cancelRow.notCanceled).join(" ") : "";
+    if (!/matched/i.test(reason)) continue;
+    if (cancelRow.orderID && cancelRow.orderID === pair.orderIds.up) cancelMatchedFloor.up = pair.quote.shares;
+    if (cancelRow.orderID && cancelRow.orderID === pair.orderIds.down) cancelMatchedFloor.down = pair.quote.shares;
+  }
+  if (cancelMatchedFloor.up > 0 || cancelMatchedFloor.down > 0) {
+    log(`loop cancel rejected as matched: up=${cancelMatchedFloor.up} down=${cancelMatchedFloor.down}`);
+  }
   let [upOrderFill, downOrderFill] = await Promise.all([
     pair.orderIds.up ? orderMatchedShares(client, pair.orderIds.up) : Promise.resolve(0),
     pair.orderIds.down ? orderMatchedShares(client, pair.orderIds.down) : Promise.resolve(0),
   ]);
+  upOrderFill = Math.max(upOrderFill, cancelMatchedFloor.up);
+  downOrderFill = Math.max(downOrderFill, cancelMatchedFloor.down);
   // Cancel-race guard: a posted order can fill milliseconds before the cancel
   // lands, and the order-status endpoint may not reflect size_matched yet on
   // the first read. If everything looks like a no-fill, re-poll briefly before
