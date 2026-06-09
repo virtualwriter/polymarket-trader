@@ -134,15 +134,30 @@ const SPORTS_MIN_EDGE = Number(process.env.ARB_DAEMON_SPORTS_MIN_EDGE ?? 0);
 const SPORTS_MIN_AVAILABLE_SHARES = Number(process.env.ARB_DAEMON_SPORTS_MIN_AVAILABLE_SHARES ?? 50);
 const SPORTS_MAX_SPREAD = Number(process.env.ARB_DAEMON_SPORTS_MAX_SPREAD ?? 0.02);
 const SPORTS_PRICE_SLIPPAGE = Number(process.env.ARB_DAEMON_SPORTS_PRICE_SLIPPAGE ?? 0);
-const SPORTS_BALANCE_HEADROOM_USD = Number(process.env.ARB_DAEMON_SPORTS_BALANCE_HEADROOM_USD ?? 0.5);
-const SPORTS_BALANCE_HEADROOM_MULTIPLIER = Number(process.env.ARB_DAEMON_SPORTS_BALANCE_HEADROOM_MULTIPLIER ?? 1.03);
+// Balance headroom applies to every package: concurrent executions, just-matched
+// orders the exchange still counts against the balance, and fee dust all shave
+// real buying power below the cached on-chain number. The Jun 8 GOLD orphan was
+// a second-leg "not enough balance" rejection caused by a concurrent ETH fill.
+const BALANCE_HEADROOM_USD = Number(
+  process.env.ARB_DAEMON_BALANCE_HEADROOM_USD
+  ?? process.env.ARB_DAEMON_SPORTS_BALANCE_HEADROOM_USD
+  ?? 0.5,
+);
+const BALANCE_HEADROOM_MULTIPLIER = Number(
+  process.env.ARB_DAEMON_BALANCE_HEADROOM_MULTIPLIER
+  ?? process.env.ARB_DAEMON_SPORTS_BALANCE_HEADROOM_MULTIPLIER
+  ?? 1.03,
+);
 // 0 means live sports are allowed after the scheduled start/endDate. Set a
 // positive value to block entries within that many ms before start.
 const SPORTS_ENTRY_CUTOFF_MS = Number(process.env.ARB_DAEMON_SPORTS_ENTRY_CUTOFF_MS ?? 0);
-// Do not consume the full displayed sports touch. We require reserve depth so
-// fast-moving live books are less likely to produce one-sided partial fills.
+// Do not consume the full displayed touch. We require reserve depth so stale or
+// vanishing displayed liquidity is less likely to produce one-sided partial
+// fills (Jun 9 GOLD orphan fired 70 shares into a 70.46 displayed touch and got
+// uneven partial fills on both legs). Sports books move faster, so they keep a
+// deeper reserve than the macro/crypto ladders.
 const SPORTS_DEPTH_RESERVE_MULTIPLIER = Number(process.env.ARB_DAEMON_SPORTS_DEPTH_RESERVE_MULTIPLIER ?? 3);
-const NON_SPORTS_EXCHANGE_MIN_BUFFER_SHARES = Number(process.env.ARB_DAEMON_NON_SPORTS_EXCHANGE_MIN_BUFFER_SHARES ?? 25);
+const NON_SPORTS_DEPTH_RESERVE_MULTIPLIER = Number(process.env.ARB_DAEMON_NON_SPORTS_DEPTH_RESERVE_MULTIPLIER ?? 1.5);
 const STALE_SUBMITTED_MS = Number(process.env.ARB_DAEMON_STALE_SUBMITTED_MS ?? 600_000);
 const HL_API = process.env.HYPERLIQUID_INFO_API ?? "https://api.hyperliquid.xyz/info";
 const SPOT_REFRESH_MS = Number(process.env.ARB_DAEMON_SPOT_REFRESH_MS ?? 60_000);
@@ -960,29 +975,23 @@ function maxSpreadFor(candidate: Candidate): number {
   return isSportsCandidate(candidate) ? SPORTS_MAX_SPREAD : MAX_SPREAD;
 }
 
+function depthReserveMultiplierFor(candidate: Candidate): number {
+  const multiplier = isSportsCandidate(candidate) ? SPORTS_DEPTH_RESERVE_MULTIPLIER : NON_SPORTS_DEPTH_RESERVE_MULTIPLIER;
+  return Math.max(1, multiplier);
+}
+
 function requiredDisplayedTouch(candidate: Candidate): number {
-  if (isSportsCandidate(candidate)) {
-    return Math.max(minAvailableSharesFor(candidate), requiredLiveMinShares(candidate) * SPORTS_DEPTH_RESERVE_MULTIPLIER);
-  }
-  return minAvailableSharesFor(candidate);
+  // The reserve-shrunken execution size must still clear the exchange minimum,
+  // so the displayed touch has to be at least minShares * reserve multiplier.
+  // Touches that can only fit an exchange-min order with zero depth margin are
+  // exactly the ones that produced uneven partial-fill orphans.
+  return Math.max(minAvailableSharesFor(candidate), requiredLiveMinShares(candidate) * depthReserveMultiplierFor(candidate));
 }
 
 function executionSizingCandidate(candidate: Candidate): Candidate {
-  if (isSportsCandidate(candidate)) {
-    const c = structuredClone(candidate);
-    const reserveSize = Math.floor((candidate.availableSize / Math.max(1, SPORTS_DEPTH_RESERVE_MULTIPLIER)) * 100) / 100;
-    c.availableSize = Math.max(0, reserveSize);
-    return c;
-  }
-  const minShares = requiredLiveMinShares(candidate);
-  if (candidate.availableSize + EPSILON >= minShares) return candidate;
-  if (candidate.availableSize + EPSILON < minAvailableSharesFor(candidate)) return candidate;
-
   const c = structuredClone(candidate);
-  // CLOB may require a >=$1 maker amount even when the displayed touch is just
-  // under that share count. Send an exchange-min-sized FAK and let it partially
-  // fill the profitable top-of-book amount that actually exists.
-  c.availableSize = minShares + NON_SPORTS_EXCHANGE_MIN_BUFFER_SHARES;
+  const reserveSize = Math.floor((candidate.availableSize / depthReserveMultiplierFor(candidate)) * 100) / 100;
+  c.availableSize = Math.max(0, reserveSize);
   return c;
 }
 
@@ -1112,14 +1121,13 @@ function spendableUsdAfterReservations(): number {
   return Math.max(0, Math.min(cachedFunderBalance, cachedFunderAllowance) - reservedSpendUsd);
 }
 
-function sizingSpendableUsd(candidate: Candidate, spendableUsd: number): number {
-  if (!isSportsCandidate(candidate) || !Number.isFinite(spendableUsd)) return spendableUsd;
-  return Math.max(0, (spendableUsd - SPORTS_BALANCE_HEADROOM_USD) / Math.max(1, SPORTS_BALANCE_HEADROOM_MULTIPLIER));
+function sizingSpendableUsd(spendableUsd: number): number {
+  if (!Number.isFinite(spendableUsd)) return spendableUsd;
+  return Math.max(0, (spendableUsd - BALANCE_HEADROOM_USD) / Math.max(1, BALANCE_HEADROOM_MULTIPLIER));
 }
 
-function reservedUsdForSized(candidate: Candidate, nominalCost: number): number {
-  if (!isSportsCandidate(candidate)) return nominalCost;
-  return nominalCost * Math.max(1, SPORTS_BALANCE_HEADROOM_MULTIPLIER) + SPORTS_BALANCE_HEADROOM_USD;
+function reservedUsdForSized(nominalCost: number): number {
+  return nominalCost * Math.max(1, BALANCE_HEADROOM_MULTIPLIER) + BALANCE_HEADROOM_USD;
 }
 
 function pauseNewEntries(reason: string, details: Record<string, unknown> = {}) {
@@ -1307,7 +1315,7 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
   }
   const executionCandidate = executionSizingCandidate(c);
   const spendableUsd = spendableUsdAfterReservations();
-  const sized = sizeForCandidate(executionCandidate, packageRows, sizingSpendableUsd(executionCandidate, spendableUsd));
+  const sized = sizeForCandidate(executionCandidate, packageRows, sizingSpendableUsd(spendableUsd));
   if (sized.reason) {
     const now = Date.now();
     const last = lastSkipLogAt.get(pkg.key) ?? 0;
@@ -1336,7 +1344,7 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
     return;
   }
   const freshSpendableUsd = spendableUsdAfterReservations();
-  const freshSized = sizeForCandidate(executionCandidate, freshPackageRows, sizingSpendableUsd(executionCandidate, freshSpendableUsd));
+  const freshSized = sizeForCandidate(executionCandidate, freshPackageRows, sizingSpendableUsd(freshSpendableUsd));
   if (freshSized.reason) {
     const now = Date.now();
     const last = lastSkipLogAt.get(pkg.key) ?? 0;
@@ -1346,13 +1354,13 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
     }
     return;
   }
-  const freshReservedUsd = reservedUsdForSized(executionCandidate, freshSized.cost);
+  const freshReservedUsd = reservedUsdForSized(freshSized.cost);
   if (Number.isFinite(freshSpendableUsd) && freshReservedUsd > freshSpendableUsd + EPSILON) {
     const now = Date.now();
     const last = lastSkipLogAt.get(pkg.key) ?? 0;
     if (now - last >= SKIP_LOG_THROTTLE_MS) {
       lastSkipLogAt.set(pkg.key, now);
-      log(`skip ${pkg.key}: sports_balance_headroom nominal=$${freshSized.cost.toFixed(4)} reserved=$${freshReservedUsd.toFixed(4)} spendable=$${freshSpendableUsd.toFixed(4)} shares=${freshSized.shares.toFixed(2)}`);
+      log(`skip ${pkg.key}: balance_headroom nominal=$${freshSized.cost.toFixed(4)} reserved=$${freshReservedUsd.toFixed(4)} spendable=$${freshSpendableUsd.toFixed(4)} shares=${freshSized.shares.toFixed(2)}`);
     }
     return;
   }
