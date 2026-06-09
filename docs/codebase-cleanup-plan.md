@@ -525,6 +525,8 @@ This section records what has actually been implemented, committed, and pushed d
 | Provenance tests | `scripts/trader-performance-report.test.ts` | Done. Covers snapshot/nearest/exact/missing row provenance, row distance/age, `pm_no` bid/ask conversion, and model-context notes. |
 | Markdown/CSV row-builder tests | `scripts/trader-performance-report.test.ts` | Done. Covers CSV field placement, detail rows, Markdown escaping, limits, empty states, open shadow rows, pending hypotheses, and full report header shape. |
 | Report builder extraction | `scripts/lib/reporting/report-builders.ts`, `scripts/trader-performance-report.ts` | Done. CSV/Markdown report row construction moved behind a reporting module while preserving existing exports and output shape. |
+| Golden report fixture | `scripts/lib/reporting/report-builders.golden.test.ts` | Done. Synthetic fixture asserts deterministic CSV/Markdown report output without reading live repo state. |
+| Relative-value context extraction | `scripts/lib/reporting/relative-value-context.ts`, `scripts/trader-performance-report.ts` | Done. Entry/current model provenance, bid/ask conversion, history-row matching, and context-note helpers moved out of the CLI wrapper with exports preserved for existing tests. |
 
 ### Completed VPS disk cleanup
 
@@ -558,7 +560,7 @@ Follow-up implemented after this emergency cleanup:
 
 ### Current cleanup impact
 
-- `scripts/trader-performance-report.ts` is down to about 1,397 lines from the earlier 1,513-line reference.
+- `scripts/trader-performance-report.ts` is down to about 728 lines from the earlier 1,513-line reference after helper, report-builder, and relative-value context extraction.
 - Net repository source lines increased because focused tests and shared helpers were added. This is intentional: the immediate gain is safer future cleanup, not raw line deletion.
 - Runtime performance is expected to be effectively unchanged for the report path; the practical gain is improved testability, clearer LLM-facing report rows, and lower risk for the next extractions.
 - Trading behavior has not been changed. Each code slice was validated with reporting tests, report smoke output, `npm run cleanup:harness -- --compare ...`, `npm run prod:verify`, and TypeScript/lint checks.
@@ -566,30 +568,25 @@ Follow-up implemented after this emergency cleanup:
 ### Remaining work after this point
 
 1. **Continue report-only cleanup before touching production monoliths.**
-   - Next safe target: add a golden report fixture for deterministic CSV/Markdown output.
-   - A later safe target is moving relative-value context helpers out of `scripts/trader-performance-report.ts`.
+   - Next safe target: move report input assembly / aggregation glue out of `scripts/trader-performance-report.ts`.
    - Keep output shape unchanged and rerun the same harness/report smoke gates.
 
-2. **Add a golden report fixture if report cleanup continues.**
-   - Capture a small synthetic portfolio/shadow/trade fixture and assert deterministic CSV/Markdown output.
-   - This would make later report refactors safer than relying only on live-state smoke reports.
-
-3. **Do not start `trading-engine.ts`, `market-scanner.ts`, or heatmap-report extraction yet.**
+2. **Do not start `trading-engine.ts`, `market-scanner.ts`, or heatmap-report extraction yet.**
    - Those are still higher-risk production monoliths.
    - Before touching them, build a stronger golden harness around signal counts, candidate actions, portfolio output, LLM-disabled paths, and generated state diffs.
 
-4. **Data/git-weight cleanup remains open.**
+3. **Data/git-weight cleanup remains open.**
    - Emergency 30-day snapshot archive pruning was performed on the USA VPS, and `npm run cleanup:disk` now provides a repeatable dry-run/apply path.
    - Snapshot retention/offload policy still needs monitoring; root disk pressure may still require off-root storage or disk expansion.
    - Do not untrack `relative-value/index.html`; Vercel serves `relative-value/` directly.
    - Do not cap `learning-journal.md` until the LLM prompt-window behavior is mapped and tested.
 
-5. **Infra visibility remains open unless separately verified.**
+4. **Infra visibility remains open unless separately verified.**
    - Copy/reference VPS exit-scanner and daily-report wrappers into repo if still missing.
    - Snapshot systemd units into `docs/systemd/` as reference-only docs.
    - Do not deploy wrapper changes without a separate approval and VPS dry run.
 
-6. **Japan monotonic/UpDown remains separate.**
+5. **Japan monotonic/UpDown remains separate.**
    - USA cleanup should not commit or deploy Japan-only monotonic/UpDown changes.
    - Use `main` for USA and the `japan` branch for Japan monotonic/UpDown deployment work.
    - If shared files are touched, confirm the target branch/deployment before committing.

@@ -1,11 +1,21 @@
 #!/usr/bin/env tsx
-import { closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, readdirSync, statSync, writeFileSync } from "node:fs";
+import { closeSync, existsSync, mkdirSync, openSync, readFileSync, readSync, statSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readCsvRecords } from "./lib/reporting/csv.js";
-import { fmtModelValue, fmtPriceValue } from "./lib/reporting/format.js";
-import { normalCdf } from "./lib/reporting/math.js";
-import { safeNumber } from "./lib/reporting/number.js";
+import {
+  currentBidAsk,
+  entryOneTouchModel,
+  fmtHours,
+  hoursBetween,
+  readRelativeValueHistoryRowsFromDirs,
+  readRelativeValueRowsFromFile,
+  relativeValueContextNote,
+  relativeValueEntryMatch,
+  relativeValueKey,
+  rowTimestamp,
+} from "./lib/reporting/relative-value-context.js";
+import type { RelativeValueRowMatch } from "./lib/reporting/relative-value-context.js";
 import {
   buildCsvReport as buildCsvReportWithDeps,
   buildMarkdownReport as buildMarkdownReportWithDeps,
@@ -18,10 +28,10 @@ import {
 import type { BuildCsvReportArgs, BuildMarkdownReportArgs, ReportBuilderDeps } from "./lib/reporting/report-builders.js";
 import { addStats, emptyStats, grouped, sortStatsRows } from "./lib/reporting/stats.js";
 import type { Outcome, Stats } from "./lib/reporting/stats.js";
-import { parseHeatmapTimestamp, parseTimestamp } from "./lib/reporting/time.js";
 import { loadOperationallyTaintedTrades } from "./portfolio-ledger.js";
 
-export { detailCsvRow, markdownOpenShadows, markdownPendingHypotheses, statsCsvRow, table };
+export { currentBidAsk, detailCsvRow, markdownOpenShadows, markdownPendingHypotheses, relativeValueContextNote, relativeValueEntryMatch, statsCsvRow, table };
+export type { RelativeValueRowMatch };
 
 interface ClosedTrade {
   id: string;
@@ -143,7 +153,6 @@ const RELATIVE_VALUE_HISTORY_DIRS = [
   join(ROOT, "relative-value", "history"),
   join(ROOT, "relative-value", "backtest-history"),
 ].filter((path): path is string => Boolean(path));
-const ONE_TOUCH_TERMINAL_ONLY_SIGMA = 1.5;
 const OPERATIONALLY_TAINTED_TRADES: Record<string, string> = loadOperationallyTaintedTrades();
 
 const LIVE_STATE_DIR = process.env.POLYMARKET_TRADER_STATE_DIR ?? "/var/lib/polymarket-trader";
@@ -494,251 +503,15 @@ function isCountedRealTrade(trade: ClosedTrade): boolean {
     !(trade.thesis ?? "").includes("NON_LEARNING_CLOSE");
 }
 
-function modelDteDays(row: Record<string, string>): number | null {
-  const timestamp = parseHeatmapTimestamp(row.timestamp);
-  const target = row.notes?.match(/target month-end expiry (\d{4}-\d{2}-\d{2})/i)?.[1];
-  if (timestamp && target) {
-    const expiry = new Date(`${target}T04:00:00Z`);
-    if (Number.isFinite(expiry.getTime()) && expiry > timestamp) {
-      return (expiry.getTime() - timestamp.getTime()) / 86_400_000;
-    }
-  }
-  return safeNumber(row.dte_days);
-}
-
-// Mirror of Python `scaled_option_strike` in scripts/cross_venue_relative_value_report.py.
-// Python scales the asset-basis strike to the option-proxy basis for CBOE_PROXY_OPTION_SYMBOLS
-// ({IBIT, ETHA, GLD, USO, SPY}) and CME_ES. Without scaling, recomputing the model from a CSV
-// row mixes bases (asset-spot strike vs proxy-basis option_underlying) and can short-circuit
-// to "already touched" for proxies whose underlying nominal sits above the asset strike
-// (notably USO ~$80-150 vs CL strike $80-130).
-const PROXY_OPTION_SYMBOLS_REQUIRING_STRIKE_SCALING = new Set([
-  "IBIT",
-  "ETHA",
-  "GLD",
-  "USO",
-  "SPY",
-  "CME_ES",
-]);
-
-function optionModelStrike(row: Record<string, string>): number | null {
-  const strike = safeNumber(row.strike);
-  if (strike === null) return null;
-  const optionSymbol = row.option_symbol;
-  const spot = safeNumber(row.spot);
-  const optionUnderlying = safeNumber(row.option_underlying);
-  if (
-    optionSymbol &&
-    PROXY_OPTION_SYMBOLS_REQUIRING_STRIKE_SCALING.has(optionSymbol) &&
-    spot !== null &&
-    optionUnderlying !== null &&
-    spot > 0
-  ) {
-    return strike * (optionUnderlying / spot);
-  }
-  return strike;
-}
-
-function barrierSigmaDistance(spot: number, strike: number, iv: number, dteDays: number): number | null {
-  const sigmaT = iv * Math.sqrt(dteDays / 365);
-  return sigmaT > 0 ? Math.abs(Math.log(strike / spot)) / sigmaT : null;
-}
-
-function recomputedOneTouchProbability(row: Record<string, string> | undefined): number | null {
-  if (!row) return null;
-  const question = row.contract_question?.toLowerCase() ?? "";
-  if (!question.includes("hit") && !question.includes("reach") && !question.includes("dip")) return null;
-  const spot = safeNumber(row.option_underlying) ?? safeNumber(row.spot);
-  const strike = optionModelStrike(row);
-  const iv = safeNumber(row.option_iv);
-  const dteDays = modelDteDays(row);
-  const direction = row.direction;
-  if (!spot || !strike || !iv || !dteDays || spot <= 0 || strike <= 0 || iv <= 0 || dteDays <= 0) return null;
-  if (direction === "above" && spot >= strike) return 1;
-  if (direction === "below" && spot <= strike) return 1;
-
-  const t = dteDays / 365;
-  const sigmaT = iv * Math.sqrt(t);
-  if (sigmaT <= 0) return null;
-  const d2 = (Math.log(spot / strike) - 0.5 * iv * iv * t) / sigmaT;
-  const terminalProb = direction === "above"
-    ? normalCdf(d2)
-    : direction === "below"
-      ? normalCdf(-d2)
-      : null;
-  const sigmaDistance = barrierSigmaDistance(spot, strike, iv, dteDays);
-  if (terminalProb !== null && sigmaDistance !== null && sigmaDistance > ONE_TOUCH_TERMINAL_ONLY_SIGMA) {
-    return terminalProb;
-  }
-  const d1 = (Math.log(spot / strike) + 0.5 * iv * iv * t) / sigmaT;
-  if (direction === "above") return Math.min(0.99, Math.max(0, 2 * normalCdf(d1)));
-  if (direction === "below") return Math.min(0.99, Math.max(0, 2 * normalCdf(-d1)));
-  return null;
-}
-
 function readRelativeValueRows(): Map<string, Record<string, string>> {
-  const file = join(ROOT, "relative-value", "cross_venue_relative_value.csv");
-  if (!existsSync(file)) return new Map();
-  return readRelativeValueCsv(file);
-}
-
-function readRelativeValueCsv(file: string): Map<string, Record<string, string>> {
-  const map = new Map<string, Record<string, string>>();
-  for (const row of readCsvRecords(file)) {
-    if (row.event_slug && row.market_id) map.set(`${row.event_slug}::${row.market_id}`, row);
-  }
-  return map;
-}
-
-function relativeValueKey(position?: Position): string | null {
-  if (!position?.instrumentId) return null;
-  const [eventSlug, marketId] = position.instrumentId.split("::");
-  return eventSlug && marketId ? `${eventSlug}::${marketId}` : null;
-}
-
-function relativeValueHistoryFiles(): string[] {
-  const files = new Set<string>();
-  const visit = (dir: string) => {
-    if (!existsSync(dir)) return;
-    let entries: Array<{ name: string; isDirectory: () => boolean; isFile: () => boolean }>;
-    try {
-      entries = readdirSync(dir, { withFileTypes: true });
-    } catch {
-      return;
-    }
-    for (const entry of entries) {
-      const path = join(dir, entry.name);
-      if (entry.isDirectory()) visit(path);
-      else if (entry.isFile() && entry.name.endsWith("cross_venue_relative_value.csv")) files.add(path);
-    }
-  };
-  for (const dir of RELATIVE_VALUE_HISTORY_DIRS) visit(dir);
-  const current = join(ROOT, "relative-value", "cross_venue_relative_value.csv");
-  if (existsSync(current)) files.add(current);
-  return [...files].sort();
+  return readRelativeValueRowsFromFile(join(ROOT, "relative-value", "cross_venue_relative_value.csv"));
 }
 
 function readRelativeValueHistoryRows(): Map<string, Array<{ timestamp: Date; row: Record<string, string> }>> {
-  const byKey = new Map<string, Array<{ timestamp: Date; row: Record<string, string> }>>();
-  for (const file of relativeValueHistoryFiles()) {
-    for (const [key, row] of readRelativeValueCsv(file)) {
-      const timestamp = parseHeatmapTimestamp(row.timestamp);
-      if (!timestamp) continue;
-      const rows = byKey.get(key) ?? [];
-      rows.push({ timestamp, row });
-      byKey.set(key, rows);
-    }
-  }
-  for (const rows of byKey.values()) {
-    rows.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
-  }
-  return byKey;
-}
-
-export interface RelativeValueRowMatch {
-  row?: Record<string, string>;
-  source: "snapshot" | "history_exact" | "history_nearest" | "missing";
-  timestamp: Date | null;
-  distanceHours: number | null;
-}
-
-function rowTimestamp(row: Record<string, string> | undefined): Date | null {
-  return row ? parseHeatmapTimestamp(row.timestamp) : null;
-}
-
-function hoursBetween(a: Date | null, b: Date | null): number | null {
-  return a && b ? Math.abs(a.getTime() - b.getTime()) / 3_600_000 : null;
-}
-
-function fmtHours(value: number | null): string {
-  return value === null ? "" : value.toFixed(2);
-}
-
-export function relativeValueEntryMatch(
-  historyRows: Map<string, Array<{ timestamp: Date; row: Record<string, string> }>>,
-  position: Position | undefined,
-  openedAt: string | undefined,
-  snapshotRow?: Record<string, string>,
-): RelativeValueRowMatch {
-  const opened = parseTimestamp(openedAt);
-  if (snapshotRow) {
-    const timestamp = rowTimestamp(snapshotRow);
-    return {
-      row: snapshotRow,
-      source: "snapshot",
-      timestamp,
-      distanceHours: hoursBetween(timestamp, opened),
-    };
-  }
-
-  const key = relativeValueKey(position);
-  if (!key || !opened) return { source: "missing", timestamp: null, distanceHours: null };
-  const rows = historyRows.get(key);
-  if (!rows?.length) return { source: "missing", timestamp: null, distanceHours: null };
-  let best: { timestamp: Date; row: Record<string, string> } | undefined;
-  let bestDistance = Number.POSITIVE_INFINITY;
-  for (const candidate of rows) {
-    const distance = Math.abs(candidate.timestamp.getTime() - opened.getTime());
-    if (distance < bestDistance) {
-      best = candidate;
-      bestDistance = distance;
-    }
-  }
-  const maxDistanceMs = 36 * 60 * 60 * 1000;
-  if (!best || bestDistance > maxDistanceMs) return { source: "missing", timestamp: null, distanceHours: null };
-  return {
-    row: best.row,
-    source: bestDistance === 0 ? "history_exact" : "history_nearest",
-    timestamp: best.timestamp,
-    distanceHours: bestDistance / 3_600_000,
-  };
-}
-
-// Prefer the canonical model probability stored in the row by the Python heatmap pipeline
-// (`options_touch_adjusted_prob`). That column is the value the user actually saw at entry,
-// computed against the scaled option proxy strike that we do not write back to the CSV.
-// Fall back to a local recompute only when the column is missing (legacy rows).
-function entryOneTouchModel(row: Record<string, string> | undefined): number | null {
-  return safeNumber(row?.options_touch_adjusted_prob) ?? recomputedOneTouchProbability(row);
-}
-
-export function currentBidAsk(row: Record<string, string> | undefined, instrumentType: string | undefined): { bid: number | null; ask: number | null } {
-  const yesBid = safeNumber(row?.pm_best_bid);
-  const yesAsk = safeNumber(row?.pm_best_ask);
-  if (yesBid === null || yesAsk === null) return { bid: null, ask: null };
-  if (instrumentType === "pm_no") return { bid: 1 - yesAsk, ask: 1 - yesBid };
-  return { bid: yesBid, ask: yesAsk };
-}
-
-export function relativeValueContextNote(args: {
-  entryMatch: RelativeValueRowMatch;
-  currentRow: Record<string, string> | undefined;
-  generatedAt: string;
-  entryModel: number | null;
-  currentModel: number | null;
-  bidAsk: { bid: number | null; ask: number | null };
-  strike: string;
-  expiry: string;
-}): string {
-  const generated = parseTimestamp(args.generatedAt);
-  const currentTs = rowTimestamp(args.currentRow);
-  const currentAgeHours = currentTs && generated
-    ? Math.max(0, (generated.getTime() - currentTs.getTime()) / 3_600_000)
-    : null;
-  return [
-    `entry_model=${fmtModelValue(args.entryModel) || "n/a"}`,
-    `current_model=${fmtModelValue(args.currentModel) || "n/a"}`,
-    `current_bid=${fmtPriceValue(args.bidAsk.bid) || "n/a"}`,
-    `current_ask=${fmtPriceValue(args.bidAsk.ask) || "n/a"}`,
-    `strike=${args.strike || "n/a"}`,
-    `expiry=${args.expiry || "n/a"}`,
-    `entry_row_source=${args.entryMatch.source}`,
-    `entry_row_ts=${args.entryMatch.timestamp?.toISOString() ?? "n/a"}`,
-    `entry_row_distance_hours=${fmtHours(args.entryMatch.distanceHours) || "n/a"}`,
-    `current_row_source=${args.currentRow ? "current" : "missing"}`,
-    `current_row_ts=${currentTs?.toISOString() ?? "n/a"}`,
-    `current_row_age_hours=${fmtHours(currentAgeHours) || "n/a"}`,
-  ].join("; ");
+  return readRelativeValueHistoryRowsFromDirs(
+    RELATIVE_VALUE_HISTORY_DIRS,
+    join(ROOT, "relative-value", "cross_venue_relative_value.csv"),
+  );
 }
 
 function hypothesisMap(hypotheses: Hypothesis[]): Map<string, Hypothesis> {
