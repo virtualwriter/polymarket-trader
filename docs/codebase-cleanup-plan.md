@@ -553,6 +553,7 @@ Follow-up implemented after this emergency cleanup:
 - The pruner defaults to dry-run and requires `-- --apply` before deleting anything.
 - It refuses to delete Git-tracked files and targets only local-only generated snapshot archives, relative-value history directories, and generated backup directories.
 - Default retention policy: keep 14 days of gzipped instrument snapshot archives, 21 days of relative-value history, and 7 days of generated backup directories. Use `--snapshot-archive-days`, `--relative-value-history-days`, and `--backup-days` for explicit operator-approved overrides.
+- Tightened `compact_instrument_snapshots.py` hot-file retention from 36 to 18 recent snapshots. The engine reads 12 by default, so this keeps a buffer while reducing root-disk pressure.
 
 ### Current cleanup impact
 

@@ -21,7 +21,9 @@ DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 SNAPSHOT_FILE = DATA_DIR / "instrument-snapshots.jsonl"
 ARCHIVE_DIR = DATA_DIR / "instrument-snapshot-archives"
 MIN_BYTES = int(os.getenv("INSTRUMENT_SNAPSHOT_COMPACT_MIN_BYTES", str(200 * 1024 * 1024)))
-KEEP_LINES = int(os.getenv("INSTRUMENT_SNAPSHOT_COMPACT_KEEP_LINES", "36"))
+# The engine reads the most recent 12 snapshots by default. Keep a small buffer
+# above that while archiving older records off the hot JSONL file.
+KEEP_LINES = int(os.getenv("INSTRUMENT_SNAPSHOT_COMPACT_KEEP_LINES", "18"))
 CHUNK_SIZE = 1024 * 1024
 
 
