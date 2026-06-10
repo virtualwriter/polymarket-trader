@@ -881,9 +881,30 @@ const LOOP_ASSETS = (process.env.UPDOWN_MAKER_GUESS_LOOP_ASSETS ?? "btc")
   .toLowerCase().split(",").map((s) => s.trim()).filter(Boolean);
 let loopAssetRotation = 0;
 
+// Assets whose own 10m spot range is currently below the calm gate. Updated by
+// calmAssetsNow(); discovery only deploys into calm assets.
+const calmAssets = new Set<string>(LOOP_ASSETS);
+
+async function calmAssetsNow(): Promise<Map<string, number | null>> {
+  const ranges = new Map<string, number | null>();
+  await Promise.all(LOOP_ASSETS.map(async (asset) => {
+    ranges.set(asset, await assetRangePct(asset));
+  }));
+  calmAssets.clear();
+  for (const [asset, range] of ranges) {
+    if (range != null && range < CALM_RANGE_PCT) calmAssets.add(asset);
+  }
+  return ranges;
+}
+
 async function discoverLoopMarket(): Promise<TrackedMarket | null> {
   const markets = await discoverMarkets();
+  // Re-scan each asset's own range at every discovery so the runner deploys
+  // into whichever market is calm right now, not whichever was calm at the
+  // start of the session.
+  if (CALM_RANGE_PCT > 0) await calmAssetsNow();
   const candidates = LOOP_ASSETS
+    .filter((asset) => CALM_RANGE_PCT <= 0 || calmAssets.has(asset))
     .map((asset) => markets.find((market) => market.slug.startsWith(`${asset}-updown-${UPDOWN_INTERVAL}-`)))
     .filter((market): market is TrackedMarket => Boolean(market));
   if (!candidates.length) return null;
@@ -2251,7 +2272,9 @@ async function loopLiveMain(existingClob?: ClobBundle, installSignalHandlers = t
       marketBaseline = null;
       market = await discoverLoopMarket();
       if (!market) {
-        await sleep(LOOP_REFRESH_MS);
+        // With the calm gate active a null here usually means no asset is
+        // calm; recheck on the gate cadence instead of hammering discovery.
+        await sleep(CALM_RANGE_PCT > 0 ? Math.min(CALM_RECHECK_MS, 10_000) : LOOP_REFRESH_MS);
         continue;
       }
       marketWs = await connectMarketWs(market);
@@ -2500,9 +2523,10 @@ function trendVetoReason(side: "up" | "down"): string | null {
   return null;
 }
 
-async function btcRangePct(): Promise<number | null> {
+// 10-minute high/low range (%) for an asset's spot, from Coinbase 1m candles.
+async function assetRangePct(asset: string): Promise<number | null> {
   try {
-    const res = await fetch("https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=60", {
+    const res = await fetch(`https://api.exchange.coinbase.com/products/${asset.toUpperCase()}-USD/candles?granularity=60`, {
       headers: { "User-Agent": "updown-maker-guess/1.0" },
     });
     const rows = await res.json() as number[][];
@@ -2531,14 +2555,17 @@ async function loopRepeatMain() {
   process.once("SIGTERM", () => { stopping = true; });
   for (let idx = 0; idx < repeatCount && !stopping; idx += 1) {
     if (CALM_RANGE_PCT > 0) {
-      const range = await btcRangePct();
-      if (range == null || range >= CALM_RANGE_PCT) {
-        log(`loop calm gate: btc 10m range=${range == null ? "?" : range.toFixed(3)}% >= ${CALM_RANGE_PCT}%; waiting ${CALM_RECHECK_MS}ms`);
+      const ranges = await calmAssetsNow();
+      const summary = [...ranges.entries()]
+        .map(([asset, range]) => `${asset}=${range == null ? "?" : range.toFixed(3)}%`)
+        .join(" ");
+      if (calmAssets.size === 0) {
+        log(`loop calm gate: no asset below ${CALM_RANGE_PCT}% (${summary}); waiting ${CALM_RECHECK_MS}ms`);
         idx -= 1;
         await sleep(CALM_RECHECK_MS);
         continue;
       }
-      log(`loop calm gate ok: btc 10m range=${range.toFixed(3)}% < ${CALM_RANGE_PCT}%`);
+      log(`loop calm gate ok: ${[...calmAssets].join(",")} below ${CALM_RANGE_PCT}% (${summary})`);
     }
     log(`loop hot runner attempt ${idx + 1}/${repeatCount}`);
     try {
