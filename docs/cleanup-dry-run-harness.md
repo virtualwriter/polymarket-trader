@@ -50,6 +50,39 @@ The harness restores the dry-run artifact files it temporarily touches:
 - `data/llm-advice.json`
 - `data/llm-truth-state.json`
 
+## Fixture Replay
+
+Use fixture replay before larger `trading-engine.ts` extractions so the compare
+does not depend on live hourly data drift.
+
+```bash
+npm run cleanup:harness -- \
+  --record-fixture .runtime/cleanup-fixtures/engine-current \
+  --snapshot-lines 24 \
+  --out .runtime/cleanup-harness/fixture-record.json
+
+npm run cleanup:harness -- \
+  --fixture .runtime/cleanup-fixtures/engine-current \
+  --out .runtime/cleanup-harness/fixture-baseline.json
+
+npm run cleanup:harness -- \
+  --fixture .runtime/cleanup-fixtures/engine-current \
+  --compare .runtime/cleanup-harness/fixture-baseline.json \
+  --out .runtime/cleanup-harness/fixture-compare.json
+```
+
+`--record-fixture` copies the representative runtime inputs used by the engine:
+portfolio, trades, hypotheses, blocked signals, learning parameters, signal
+weights, macro/valuation CSVs, relative-value CSV/JSON, processed closed trades,
+operational taint metadata, and a trimmed tail of `data/instrument-snapshots.jsonl`.
+The snapshot tail defaults to 24 non-empty rows and can be changed with
+`--snapshot-lines`.
+
+`--fixture` temporarily overlays those inputs, runs the normal dry-run/no-LLM
+engine command, records the normalized summary, and restores both fixture inputs
+and dry-run artifacts before checking for new dirty paths. Keep fixtures under
+`.runtime/` unless an operator explicitly asks to version a compact fixture.
+
 ## Required Gate
 
 For cleanup work, run the harness at least three times:

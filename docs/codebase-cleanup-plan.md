@@ -500,14 +500,35 @@ This pass reviews the current non-committed code changes after the hybrid-bot re
 
 This section records what has actually been implemented, committed, and pushed during the safety rollout. It supersedes older "next slice" notes where they conflict.
 
+### Latest committed USA cleanup state
+
+Latest pushed USA cleanup commit: `0ba3575` (`Extract report data and engine artifact helpers`).
+
+That commit completed the second report-wrapper shrink and the next narrow `trading-engine.ts` pure-helper extraction:
+
+- `scripts/trader-performance-report.ts` is now a thin 255-line CLI wrapper. Data loading/parsing, relative-value context, report input aggregation, hybrid-bot shadow loading, row builders, formatting, stats, and golden report coverage now live under `scripts/lib/reporting/`.
+- `scripts/lib/reporting/report-data.ts` now owns JSON/CSV loading, latest instrument snapshot tail-read, Hyperliquid mid extraction, closed-trade de-duping, and snapshot price marking.
+- `scripts/lib/trading/artifacts.ts` now owns pure artifact-shape helpers for lean artifact entries, execution plans, and dry-run verification payloads. `scripts/trading-engine.ts` still owns flags, paths, timestamps at call sites, writes, and all trading behavior.
+- Validation for the latest pushed state: TypeScript passed, focused reporting tests passed (`76` tests), CSV/Markdown report smokes passed, cleanup harness baseline/compare matched, lints were clean, and `npm run prod:verify` passed with only expected local env warnings.
+
+### Latest in-progress cleanup state
+
+The next two high-leverage cleanup prerequisites have been implemented locally and are pending commit:
+
+- `npm run cleanup:disk:health` now provides a read-only generated-state disk health report. It shows filesystem used/free space, key generated-state sizes, and the default safe-prune estimate without deleting anything.
+- `npm run cleanup:harness` now supports fixture replay with `--record-fixture`, `--fixture`, and `--snapshot-lines`. This records representative engine inputs under `.runtime/`, trims the instrument snapshot JSONL tail, temporarily overlays the fixture for dry-run/no-LLM execution, then restores inputs and dry-run artifacts before checking git dirt.
+- The fixture replay path was validated with a record/baseline/compare cycle; comparison status was `match` and no new dirty paths were introduced.
+
 ### Completed guardrails
 
 | Area | Files | Status |
 |------|-------|--------|
 | Production verifier | `scripts/prod-verify.ts`, `package.json` (`npm run prod:verify`) | Done. Read-only preflight for required production paths, state dir access, git conflicts, staged changes, generated/state changes, and frozen Japan/monotonic paths. |
 | Cleanup dry-run harness | `scripts/cleanup-dry-run-harness.ts`, `package.json` (`npm run cleanup:harness`) | Done. Runs `trading-engine.ts --dry-run --no-llm`, normalizes output, supports `--compare`, preserves dry-run artifacts, and detects dirty-file leakage. |
+| Fixture replay harness | `scripts/cleanup-dry-run-harness.ts`, `docs/cleanup-dry-run-harness.md` | Done locally. Records/replays pinned engine inputs so larger engine cleanup can compare against stable fixtures instead of live hourly data drift. |
 | Harness docs | `docs/cleanup-dry-run-harness.md` | Done. Documents baseline capture, compare mode, expected warnings, and dirty-file detection. |
 | Generated/state hygiene | `.gitignore`, `docs/generated-state-hygiene.md` | Done. Documents tracked state categories and ignores known generated research/export artifacts. |
+| Generated-state disk health | `scripts/generated_state_health.py`, `package.json` (`npm run cleanup:disk:health`), `docs/generated-state-hygiene.md` | Done locally. Read-only monitor reports filesystem pressure, key generated-state sizes, and default prune estimate before/after maintenance. |
 | Japan/hybrid guardrails | This document | Done. Hybrid bot is excluded from cleanup code changes. Japan monotonic/UpDown cleanup remains frozen for USA cleanup work. |
 
 ### Completed report cleanup slices
@@ -583,28 +604,50 @@ Follow-up implemented after this emergency cleanup:
 - Runtime performance is expected to be effectively unchanged for the report path; the practical gain is improved testability, clearer LLM-facing report rows, and lower risk for the next extractions.
 - Trading behavior has not been changed. Each code slice was validated with reporting tests, report smoke output, `npm run cleanup:harness -- --compare ...`, `npm run prod:verify`, and TypeScript/lint checks.
 
-### Remaining work after this point
+### Next high-leverage cleanup targets
 
-1. **Continue report-only cleanup before deeper production monolith work.**
-   - Next safe target: split CLI argument/output handling out of `scripts/trader-performance-report.ts`, or stop once the file is considered a sufficiently thin wrapper.
-   - Keep output shape unchanged and rerun the same harness/report smoke gates.
+1. **Production state/data weight.**
+   - Highest operational leverage because disk pressure has already broken the hourly wrapper once.
+   - Disk health monitoring now exists locally via `npm run cleanup:disk:health`.
+   - Next safe slice: run the health check on the USA VPS before/after the next hourly sync, record observed root free space, and decide whether snapshot archives should move off root or to a larger volume.
+   - Keep trader history protected: do not delete tracked portfolio, trade ledger, hypotheses, blocked signals, learning journal, engine state, candidate actions, LLM state, or published heatmap artifacts.
 
-2. **Keep production monolith extraction narrow and harness-gated.**
-   - `trading-engine.ts` can now accept small pure-helper extractions only when the strengthened harness compare passes.
-   - Avoid signal/LLM decision logic, portfolio mutation, scanner, or heatmap behavior until a deeper golden harness exists.
+2. **Deeper golden harness for `trading-engine.ts`.**
+   - Highest leverage before larger monolith reduction.
+   - Fixture replay now exists locally for representative engine inputs and trimmed snapshot tails.
+   - Next safe slice: use the fixture gate before each new engine extraction and broaden the fixture set only when a refactor touches inputs the current fixture does not cover.
+   - Keep avoiding signal selection, LLM prompt assembly, portfolio mutation, or exit/open-position logic until fixture coverage is intentionally expanded.
 
-3. **Data/git-weight cleanup remains open.**
+3. **Narrow `trading-engine.ts` helper extraction.**
+   - After the deeper harness, continue with pure helpers only: config/env parsing, artifact summaries, grouping/counting helpers, and readonly state snapshot builders.
+   - Avoid changing signal generation, LLM prompts, close/open execution, sizing, or portfolio writes.
+
+4. **`market-scanner.ts` module split.**
+   - Big source-size win after engine harnessing. Likely targets: Hyperliquid fetch/parse helpers, Polymarket/Gamma fetch helpers, option valuation transforms, and CSV/snapshot writers.
+   - Needs a scanner golden fixture first: fixed API fixtures in, identical `daily-macro.csv`, `daily-valuations.csv`, and snapshot summary out.
+
+5. **Heatmap report split.**
+   - `scripts/cross_venue_relative_value_report.py` is still a large Python monolith.
+   - Good target once fixtures exist: split model math, CLOB quote loading, row construction, and HTML rendering while preserving the published `relative-value/` outputs.
+
+6. **Legacy/generated code quarantine.**
+   - Continue moving dormant one-off scripts and research-only outputs behind clear `archive/` labels after import/package-script audits.
+   - Do not move sports scripts, HL research directories, or Vercel-served `relative-value/` files without a dedicated reference audit.
+
+### Remaining constraints
+
+1. **Data/git-weight cleanup remains open.**
    - Emergency 30-day snapshot archive pruning was performed on the USA VPS, and `npm run cleanup:disk` now provides a repeatable dry-run/apply path.
    - Snapshot retention/offload policy still needs monitoring; root disk pressure may still require off-root storage or disk expansion.
    - Do not untrack `relative-value/index.html`; Vercel serves `relative-value/` directly.
    - Do not cap `learning-journal.md` until the LLM prompt-window behavior is mapped and tested.
 
-4. **Infra drift monitoring remains open.**
+2. **Infra drift monitoring remains open.**
    - VPS exit-scanner and daily-report wrappers plus systemd units are now reference-snapshotted and hash-verified against the USA VPS.
    - Re-check hashes before any live wrapper/unit deployment.
    - Do not deploy wrapper changes without a separate approval and VPS dry run.
 
-5. **Japan monotonic/UpDown remains separate.**
+3. **Japan monotonic/UpDown remains separate.**
    - USA cleanup should not commit or deploy Japan-only monotonic/UpDown changes.
    - Use `main` for USA and the `japan` branch for Japan monotonic/UpDown deployment work.
    - If shared files are touched, confirm the target branch/deployment before committing.

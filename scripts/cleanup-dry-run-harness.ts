@@ -1,4 +1,4 @@
-import { existsSync, readFileSync, writeFileSync, unlinkSync, mkdirSync } from "node:fs";
+import { closeSync, copyFileSync, existsSync, mkdirSync, openSync, readFileSync, readSync, rmSync, statSync, unlinkSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
@@ -15,8 +15,23 @@ const dryRunArtifacts = [
   join(dataDir, "llm-advice.json"),
   join(dataDir, "llm-truth-state.json"),
 ];
+const fixtureInputFiles = [
+  "data/portfolio.json",
+  "data/trades-detailed.csv",
+  "data/blocked-signals.json",
+  "data/hypotheses.json",
+  "data/learning-params.json",
+  "data/signal-weights.json",
+  "data/processed-closed-trades.json",
+  "data/operationally-tainted-trades.json",
+  "data/daily-macro.csv",
+  "data/daily-valuations.csv",
+  "data/instrument-snapshots.jsonl",
+  "relative-value/cross_venue_relative_value.csv",
+  "relative-value/latest.json",
+];
 
-type Backup = { path: string; existed: boolean; content?: string };
+type Backup = { path: string; existed: boolean; content?: string; backupPath?: string };
 
 function readJson<T>(path: string, fallback: T): T {
   try {
@@ -46,18 +61,32 @@ function countBy<T>(rows: T[], keyFn: (row: T) => string): Record<string, number
   return Object.fromEntries(Object.entries(out).sort(([a], [b]) => a.localeCompare(b)));
 }
 
-function backupArtifacts(): Backup[] {
-  return dryRunArtifacts.map((path) => ({
-    path,
-    existed: existsSync(path),
-    content: existsSync(path) ? readFileSync(path, "utf8") : undefined,
-  }));
+function backupPaths(paths: string[], backupRoot?: string): Backup[] {
+  return paths.map((path) => {
+    if (!existsSync(path)) return { path, existed: false };
+    if (backupRoot && statSync(path).size > 20 * 1024 * 1024) {
+      const rel = path.startsWith(repoRoot) ? path.slice(repoRoot.length + 1) : path.replaceAll("/", "_");
+      const backupPath = join(backupRoot, rel);
+      mkdirSync(dirname(backupPath), { recursive: true });
+      copyFileSync(path, backupPath);
+      return { path, existed: true, backupPath };
+    }
+    return {
+      path,
+      existed: true,
+      content: readFileSync(path, "utf8"),
+    };
+  });
 }
 
 function restoreArtifacts(backups: Backup[]) {
   for (const backup of backups) {
     if (backup.existed) {
-      writeFileSync(backup.path, backup.content ?? "");
+      if (backup.backupPath) {
+        copyFileSync(backup.backupPath, backup.path);
+      } else {
+        writeFileSync(backup.path, backup.content ?? "");
+      }
     } else if (existsSync(backup.path)) {
       unlinkSync(backup.path);
     }
@@ -81,7 +110,7 @@ function comparePath(): string | null {
 
 function comparable(value: any): any {
   if (!value || typeof value !== "object") return value;
-  const { repoHead: _repoHead, comparison: _comparison, gitStatus: _gitStatus, ...rest } = value;
+  const { repoHead: _repoHead, comparison: _comparison, fixture: _fixture, gitStatus: _gitStatus, ...rest } = value;
   return rest;
 }
 
@@ -122,13 +151,89 @@ function pathSet(lines: string[]): Set<string> {
   return new Set(lines.map(statusPath));
 }
 
-const backups = backupArtifacts();
+function argValue(name: string): string | null {
+  const idx = process.argv.indexOf(name);
+  return idx >= 0 && process.argv[idx + 1] ? resolve(process.argv[idx + 1]) : null;
+}
+
+function argRawValue(name: string): string | null {
+  const idx = process.argv.indexOf(name);
+  return idx >= 0 && process.argv[idx + 1] ? process.argv[idx + 1] : null;
+}
+
+function argNumber(name: string, fallback: number): number {
+  const raw = argRawValue(name);
+  if (!raw) return fallback;
+  const parsed = Number(raw);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+function tailNonemptyLines(path: string, maxLines: number): string {
+  const size = statSync(path).size;
+  if (size === 0) return "";
+  const fd = openSync(path, "r");
+  try {
+    const chunkSize = 1024 * 1024;
+    let offset = size;
+    let suffix = "";
+    while (offset > 0) {
+      const bytesToRead = Math.min(chunkSize, offset);
+      offset -= bytesToRead;
+      const buffer = Buffer.allocUnsafe(bytesToRead);
+      readSync(fd, buffer, 0, bytesToRead, offset);
+      suffix = buffer.toString("utf8") + suffix;
+      const lines = suffix.split("\n").filter((line) => line.trim());
+      if (lines.length >= maxLines || offset === 0) {
+        return lines.slice(-maxLines).join("\n") + "\n";
+      }
+    }
+  } finally {
+    closeSync(fd);
+  }
+  return "";
+}
+
+function copyFixtureInput(src: string, dest: string, maxSnapshotLines: number) {
+  if (!existsSync(src)) return;
+  mkdirSync(dirname(dest), { recursive: true });
+  if (src.endsWith("instrument-snapshots.jsonl")) {
+    writeFileSync(dest, tailNonemptyLines(src, maxSnapshotLines));
+  } else {
+    copyFileSync(src, dest);
+  }
+}
+
+function recordFixture(dir: string, maxSnapshotLines: number) {
+  for (const rel of fixtureInputFiles) {
+    copyFixtureInput(join(repoRoot, rel), join(dir, rel), maxSnapshotLines);
+  }
+}
+
+function applyFixture(dir: string) {
+  for (const rel of fixtureInputFiles) {
+    const src = join(dir, rel);
+    if (!existsSync(src)) continue;
+    const dest = join(repoRoot, rel);
+    mkdirSync(dirname(dest), { recursive: true });
+    copyFileSync(src, dest);
+  }
+}
+
+const fixtureDir = argValue("--fixture");
+const recordFixtureDir = argValue("--record-fixture");
+const maxSnapshotLines = argNumber("--snapshot-lines", 24);
+if (recordFixtureDir) recordFixture(recordFixtureDir, maxSnapshotLines);
+
+const fixtureBackupRoot = fixtureDir ? join(repoRoot, ".runtime", "cleanup-harness", `fixture-input-backup-${process.pid}`) : undefined;
+const inputBackups = fixtureDir ? backupPaths(fixtureInputFiles.map((rel) => join(repoRoot, rel)), fixtureBackupRoot) : [];
+const backups = backupPaths(dryRunArtifacts);
 const gitStatusBefore = gitStatusLines();
 let stdout = "";
 let stderr = "";
 let exitCode = 0;
 
 try {
+  if (fixtureDir) applyFixture(fixtureDir);
   stdout = execFileSync("npx", ["tsx", "scripts/trading-engine.ts", "--dry-run", "--no-llm"], {
     cwd: repoRoot,
     encoding: "utf8",
@@ -233,6 +338,8 @@ const summary = {
 };
 
 restoreArtifacts(backups);
+restoreArtifacts(inputBackups);
+if (fixtureBackupRoot && existsSync(fixtureBackupRoot)) rmSync(fixtureBackupRoot, { recursive: true, force: true });
 const gitStatusAfter = gitStatusLines();
 const beforePaths = pathSet(gitStatusBefore);
 const afterPaths = pathSet(gitStatusAfter);
@@ -264,6 +371,14 @@ const comparison = baselinePath
 const result = comparison ? { ...summary, comparison } : summary;
 const resultWithStatus = {
   ...result,
+  fixture: fixtureDir || recordFixtureDir
+    ? {
+        replayedFrom: fixtureDir,
+        recordedTo: recordFixtureDir,
+        files: fixtureInputFiles,
+        snapshotLines: maxSnapshotLines,
+      }
+    : undefined,
   gitStatus: {
     dirtyBefore: gitStatusBefore.length,
     dirtyAfter: gitStatusAfter.length,

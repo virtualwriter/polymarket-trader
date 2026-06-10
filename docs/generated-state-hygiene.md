@@ -63,6 +63,15 @@ Use `npm run cleanup:disk` to inspect local-only generated disk cleanup candidat
 
 The pruner refuses Git-tracked files and targets generated snapshot archives, relative-value history directories, and generated backup directories. Do not manually delete tracked audit, portfolio, trade, LLM, or published heatmap files for disk cleanup.
 
+Use `npm run cleanup:disk:health` as the read-only monitoring command before/after hourly-wrapper maintenance or before applying pruning. It reports filesystem used/free space, key generated-state sizes, and the default prune estimate. It exits non-zero only at the configured critical threshold (`--critical-used-pct`, default `95`) or free-space floor (`--min-free-gb`, default `1`).
+
+Suggested USA VPS cadence:
+
+1. Run `npm run cleanup:disk:health` before manual maintenance and after the next hourly sync.
+2. If reclaimable generated state is large, run `npm run cleanup:disk` and review the dry-run list.
+3. Apply only local-only generated cleanup with `npm run cleanup:disk -- --apply` after operator approval.
+4. Re-run `npm run cleanup:disk:health` and record the before/after free space in `docs/codebase-cleanup-plan.md` when cleanup materially changes disk risk.
+
 ## Cleanup Commit Rule
 
 Before any cleanup commit:
@@ -72,4 +81,10 @@ Before any cleanup commit:
 3. Run `npm run cleanup:harness -- --compare .runtime/cleanup-harness/<baseline>.json`.
 4. Stage source/docs only. Do not stage generated state unless the commit is explicitly a state-output commit.
 5. Confirm `npm run prod:verify` reports no unresolved conflicts and no staged generated/Japan paths.
+
+For larger `trading-engine.ts` cleanup, prefer fixture replay:
+
+1. Record a local fixture from the current runtime state with `npm run cleanup:harness -- --record-fixture .runtime/cleanup-fixtures/engine-current --snapshot-lines 24 --out .runtime/cleanup-harness/fixture-record.json`.
+2. Compare from the pinned fixture with `npm run cleanup:harness -- --fixture .runtime/cleanup-fixtures/engine-current --out .runtime/cleanup-harness/fixture-baseline.json`, then `npm run cleanup:harness -- --fixture .runtime/cleanup-fixtures/engine-current --compare .runtime/cleanup-harness/fixture-baseline.json`.
+3. Keep `.runtime/cleanup-fixtures/` local unless the operator explicitly asks to version a compact fixture. The harness trims `data/instrument-snapshots.jsonl` to the latest `--snapshot-lines` rows when recording.
 
