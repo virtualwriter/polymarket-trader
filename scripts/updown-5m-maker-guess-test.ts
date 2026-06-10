@@ -102,8 +102,12 @@ const COMPLEMENT_CROSS_BUFFER = Number(process.env.UPDOWN_MAKER_GUESS_COMPLEMENT
 const NUCLEAR_STOP_CENTS = Number(process.env.UPDOWN_MAKER_GUESS_NUCLEAR_STOP_CENTS ?? 0.01);
 const NUCLEAR_EXIT_RETRIES = Number(process.env.UPDOWN_MAKER_GUESS_NUCLEAR_EXIT_RETRIES ?? 8);
 // Residual sold by the nuclear stop counts as benign "dust" (e.g. FAK price-improvement
-// overfill) when it is at most this many shares and a profitable matched pair remains.
+// overfill) when a profitable matched pair remains and the residual is small
+// relative to the clip: at most max(NUCLEAR_DUST_MAX_SHARES, matched * fraction).
+// An absolute 1-share cap misclassified 1.5-3.5 share overfills on 50-share
+// clips as real nuclear exits, arming cooldowns that stalled sessions.
 const NUCLEAR_DUST_MAX_SHARES = Number(process.env.UPDOWN_MAKER_GUESS_NUCLEAR_DUST_MAX_SHARES ?? 1);
+const NUCLEAR_DUST_MAX_FRACTION = Number(process.env.UPDOWN_MAKER_GUESS_NUCLEAR_DUST_MAX_FRACTION ?? 0.10);
 // When > 0, each loop attempt waits until BTC's 10-minute high/low range (in %)
 // is below this threshold before entering.
 const CALM_RANGE_PCT = Number(process.env.UPDOWN_MAKER_GUESS_CALM_RANGE_PCT ?? 0);
@@ -118,7 +122,12 @@ const TREND_POLL_MS = Number(process.env.UPDOWN_MAKER_GUESS_TREND_POLL_MS ?? 3_0
 // a failed completion can flatten the naked leg in one HTTP round trip instead
 // of paying book-fetch + sign latency while the bids collapse.
 const PREARMED_EXIT = process.env.UPDOWN_MAKER_GUESS_PREARMED_EXIT !== "0";
-const PREARMED_EXIT_DEPTH = Number(process.env.UPDOWN_MAKER_GUESS_PREARMED_EXIT_DEPTH ?? 0.12);
+// Deep floor: a FAK sell executes at the bids' own prices, so the floor only
+// bounds the worst fill. 0.12 proved too shallow when a book collapsed 16c in
+// seconds (the pre-armed order couldn't match and the fallback paid -15c);
+// 0.25 keeps the instant exit alive through a full collapse at no extra cost
+// in normal exits.
+const PREARMED_EXIT_DEPTH = Number(process.env.UPDOWN_MAKER_GUESS_PREARMED_EXIT_DEPTH ?? 0.25);
 // Fills can be shaved below the nominal size by rounding/fees; an oversized
 // sell is rejected outright, so the pre-signed order is shaved by this much.
 const PREARMED_EXIT_SHAVE_SHARES = Number(process.env.UPDOWN_MAKER_GUESS_PREARMED_EXIT_SHAVE_SHARES ?? 0.04);
@@ -2215,7 +2224,8 @@ function classifyLoopOutcome(
     const soldByStop = Number(attempt.nuclearStop?.soldShares ?? 0);
     const residual = Math.max(0, imbalance - soldByStop);
     const cleanArbAttached = finalMatched > 0 && residual < IMBALANCE_DUST_SHARES && lockedProfit > 0;
-    if (cleanArbAttached && dustSold <= Math.min(NUCLEAR_DUST_MAX_SHARES, finalMatched * 0.5)) {
+    const dustCap = Math.max(NUCLEAR_DUST_MAX_SHARES, finalMatched * NUCLEAR_DUST_MAX_FRACTION);
+    if (cleanArbAttached && dustSold <= dustCap) {
       return "NUCLEAR_EXIT_DUST";
     }
     return "NUCLEAR_EXIT";
