@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-10T07:28:18.908Z",
+  "generatedAt": "2026-06-10T08:31:39.979Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.16889655061386522,
       "thesis": "BTC P/C ratio 1.44 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 61621,
+      "entryPrice": 61460,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -29,16 +29,27 @@
       "confidence": 0.07228199835593384,
       "thesis": "GOLD P/C ratio 1.30 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4196,
+      "entryPrice": 4173,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "ONE_TOUCH_HIGH_EDGE_NO: PM YES 77.5% vs model 62.9%, sell-YES edge 14.6 pts, spread 1c, liquidity $76k. Consistent with NO-side touch edge backtest: 4/6 live wins, avg P&L +4.5%. Gate conditions met (spread ≤3c, liquidity ≥5k, sell_yes_edge_pts >1)."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }

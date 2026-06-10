@@ -1,5 +1,17 @@
 {
   "acceptedCloses": [],
   "rejectedCloses": [],
-  "skippedTrades": []
+  "skippedTrades": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "ONE_TOUCH_HIGH_EDGE_NO: PM YES 77.5% vs model 62.9%, sell-YES edge 14.6 pts, spread 1c, liquidity $76k. Consistent with NO-side touch edge backtest: 4/6 live wins, avg P&L +4.5%. Gate conditions met (spread ≤3c, liquidity ≥5k, sell_yes_edge_pts >1)."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
+  "parameterUpdates": {}
 }
