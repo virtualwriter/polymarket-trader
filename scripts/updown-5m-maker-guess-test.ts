@@ -1605,11 +1605,18 @@ async function nuclearStopExit(
   const stopBid = normalizePrice(fillPrice - NUCLEAR_STOP_CENTS);
   const attempts: any[] = [];
   const before = await reconcileTokenBalance(address, tokenId);
+  // Fills can be shaved by rounding/fees, so the wallet may hold slightly less
+  // than the nominal imbalance; an oversized FAK sell is rejected outright and
+  // would strand the whole leg.
+  let target = shares;
+  if (before > IMBALANCE_DUST_SHARES && before < target) {
+    target = Math.floor(before * 100) / 100;
+  }
   let totalSold = 0;
   let totalProceeds = 0;
 
-  for (let idx = 0; idx < NUCLEAR_EXIT_RETRIES && totalSold + IMBALANCE_DUST_SHARES < shares; idx += 1) {
-    const remaining = roundShares(shares - totalSold);
+  for (let idx = 0; idx < NUCLEAR_EXIT_RETRIES && totalSold + IMBALANCE_DUST_SHARES < target; idx += 1) {
+    const remaining = roundShares(target - totalSold);
     const top = await fetchTop(tokenId);
     const attempt: any = {
       at: new Date().toISOString(),
@@ -1630,6 +1637,16 @@ async function nuclearStopExit(
       } catch (err: any) {
         response = { error: err?.message ?? String(err) };
         attempt.action = "error";
+        // The exchange reports the true available balance on oversized sells;
+        // clamp the target so retries can actually fill.
+        const balMatch = /balance is not enough -> balance: (\d+)/.exec(String((response as any).error ?? ""));
+        if (balMatch) {
+          const avail = Math.floor((Number(balMatch[1]) / 1e6) * 100) / 100;
+          if (avail >= 0 && totalSold + avail < target) {
+            target = roundShares(totalSold + avail);
+            attempt.clampedTargetTo = target;
+          }
+        }
       }
       await sleep(250);
       const after = await reconcileTokenBalance(address, tokenId);
@@ -1650,7 +1667,7 @@ async function nuclearStopExit(
       });
     }
     attempts.push(attempt);
-    if (totalSold + IMBALANCE_DUST_SHARES >= shares) break;
+    if (totalSold + IMBALANCE_DUST_SHARES >= target) break;
     await sleep(FILL_POLL_MS);
   }
 
@@ -1660,7 +1677,7 @@ async function nuclearStopExit(
     soldShares: totalSold,
     averagePrice: totalSold > 0 ? totalProceeds / totalSold : 0,
     realizedEstimate: totalSold > 0 ? totalProceeds - totalSold * fillPrice : 0,
-    status: totalSold + IMBALANCE_DUST_SHARES >= shares ? "sold" : "stranded",
+    status: totalSold + IMBALANCE_DUST_SHARES >= target ? "sold" : "stranded",
     attempts,
   };
 }
