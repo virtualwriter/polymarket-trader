@@ -502,22 +502,19 @@ This section records what has actually been implemented, committed, and pushed d
 
 ### Latest committed USA cleanup state
 
-Latest pushed USA cleanup commit: `0ba3575` (`Extract report data and engine artifact helpers`).
+Latest pushed USA cleanup commit: `a9f3b7b0` (`Add cleanup disk health and fixture harness`).
 
-That commit completed the second report-wrapper shrink and the next narrow `trading-engine.ts` pure-helper extraction:
+Recent committed cleanup state:
 
 - `scripts/trader-performance-report.ts` is now a thin 255-line CLI wrapper. Data loading/parsing, relative-value context, report input aggregation, hybrid-bot shadow loading, row builders, formatting, stats, and golden report coverage now live under `scripts/lib/reporting/`.
 - `scripts/lib/reporting/report-data.ts` now owns JSON/CSV loading, latest instrument snapshot tail-read, Hyperliquid mid extraction, closed-trade de-duping, and snapshot price marking.
 - `scripts/lib/trading/artifacts.ts` now owns pure artifact-shape helpers for lean artifact entries, execution plans, and dry-run verification payloads. `scripts/trading-engine.ts` still owns flags, paths, timestamps at call sites, writes, and all trading behavior.
 - Validation for the latest pushed state: TypeScript passed, focused reporting tests passed (`76` tests), CSV/Markdown report smokes passed, cleanup harness baseline/compare matched, lints were clean, and `npm run prod:verify` passed with only expected local env warnings.
-
-### Latest in-progress cleanup state
-
-The next two high-leverage cleanup prerequisites have been implemented locally and are pending commit:
-
 - `npm run cleanup:disk:health` now provides a read-only generated-state disk health report. It shows filesystem used/free space, key generated-state sizes, and the default safe-prune estimate without deleting anything.
 - `npm run cleanup:harness` now supports fixture replay with `--record-fixture`, `--fixture`, and `--snapshot-lines`. This records representative engine inputs under `.runtime/`, trims the instrument snapshot JSONL tail, temporarily overlays the fixture for dry-run/no-LLM execution, then restores inputs and dry-run artifacts before checking git dirt.
 - The fixture replay path was validated with a record/baseline/compare cycle; comparison status was `match` and no new dirty paths were introduced.
+- On 2026-06-10, the USA VPS was fast-forwarded to `a9f3b7b0` and `npm run cleanup:disk:health` reported root at 86.4% used with about 2.0 GB free. Key generated-state sizes: hot snapshots 232.6 MB, snapshot archives 272.9 MB, relative-value history 71.7 MB, generated backups 33.8 MB, `.git` 259.6 MB. Default prune estimate was 0 B, so no cleanup was applied.
+- On 2026-06-10, local fixture replay was rerun with `--fixture .runtime/cleanup-fixtures/engine-current --compare .runtime/cleanup-harness/fixture-baseline.json`; comparison status was `match` and no new dirty paths were introduced.
 
 ### Completed guardrails
 
@@ -525,10 +522,10 @@ The next two high-leverage cleanup prerequisites have been implemented locally a
 |------|-------|--------|
 | Production verifier | `scripts/prod-verify.ts`, `package.json` (`npm run prod:verify`) | Done. Read-only preflight for required production paths, state dir access, git conflicts, staged changes, generated/state changes, and frozen Japan/monotonic paths. |
 | Cleanup dry-run harness | `scripts/cleanup-dry-run-harness.ts`, `package.json` (`npm run cleanup:harness`) | Done. Runs `trading-engine.ts --dry-run --no-llm`, normalizes output, supports `--compare`, preserves dry-run artifacts, and detects dirty-file leakage. |
-| Fixture replay harness | `scripts/cleanup-dry-run-harness.ts`, `docs/cleanup-dry-run-harness.md` | Done locally. Records/replays pinned engine inputs so larger engine cleanup can compare against stable fixtures instead of live hourly data drift. |
+| Fixture replay harness | `scripts/cleanup-dry-run-harness.ts`, `docs/cleanup-dry-run-harness.md` | Done. Records/replays pinned engine inputs so larger engine cleanup can compare against stable fixtures instead of live hourly data drift. |
 | Harness docs | `docs/cleanup-dry-run-harness.md` | Done. Documents baseline capture, compare mode, expected warnings, and dirty-file detection. |
 | Generated/state hygiene | `.gitignore`, `docs/generated-state-hygiene.md` | Done. Documents tracked state categories and ignores known generated research/export artifacts. |
-| Generated-state disk health | `scripts/generated_state_health.py`, `package.json` (`npm run cleanup:disk:health`), `docs/generated-state-hygiene.md` | Done locally. Read-only monitor reports filesystem pressure, key generated-state sizes, and default prune estimate before/after maintenance. |
+| Generated-state disk health | `scripts/generated_state_health.py`, `package.json` (`npm run cleanup:disk:health`), `docs/generated-state-hygiene.md` | Done. Read-only monitor reports filesystem pressure, key generated-state sizes, and default prune estimate before/after maintenance. |
 | Japan/hybrid guardrails | This document | Done. Hybrid bot is excluded from cleanup code changes. Japan monotonic/UpDown cleanup remains frozen for USA cleanup work. |
 
 ### Completed report cleanup slices
@@ -609,12 +606,14 @@ Follow-up implemented after this emergency cleanup:
 1. **Production state/data weight.**
    - Highest operational leverage because disk pressure has already broken the hourly wrapper once.
    - Disk health monitoring now exists locally via `npm run cleanup:disk:health`.
-   - Next safe slice: run the health check on the USA VPS before/after the next hourly sync, record observed root free space, and decide whether snapshot archives should move off root or to a larger volume.
+   - Latest USA VPS health check: 86.4% used / about 2.0 GB free, with 0 B reclaimable under the default prune policy. No immediate pruning or off-root migration is required, but keep monitoring because hourly generated state can rebuild pressure.
+   - Next safe slice: set an operator cadence for `npm run cleanup:disk:health` after hourly syncs and revisit off-root snapshot archives if free space drops below 1 GB or root usage returns above 90-95%.
    - Keep trader history protected: do not delete tracked portfolio, trade ledger, hypotheses, blocked signals, learning journal, engine state, candidate actions, LLM state, or published heatmap artifacts.
 
 2. **Deeper golden harness for `trading-engine.ts`.**
    - Highest leverage before larger monolith reduction.
    - Fixture replay now exists locally for representative engine inputs and trimmed snapshot tails.
+   - Latest fixture gate: `status=match`, no new dirty paths. The next engine cleanup slice can use this gate before/after changes.
    - Next safe slice: use the fixture gate before each new engine extraction and broaden the fixture set only when a refactor touches inputs the current fixture does not cover.
    - Keep avoiding signal selection, LLM prompt assembly, portfolio mutation, or exit/open-position logic until fixture coverage is intentionally expanded.
 
