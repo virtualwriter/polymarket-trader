@@ -126,6 +126,9 @@ const LOOP_LOW_PROB_POST_MODE = (process.env.UPDOWN_MAKER_GUESS_LOOP_LOW_PROB_PO
 const POLY_BUILDER_CODE = process.env.POLY_BUILDER_CODE?.trim();
 const MIN_MARKETABLE_BUY_USD = Number(process.env.UPDOWN_MAKER_GUESS_MIN_MARKETABLE_BUY_USD ?? 1);
 const MAX_TEST_PAIR_NOTIONAL_USD = Number(process.env.UPDOWN_MAKER_GUESS_MAX_TEST_PAIR_NOTIONAL_USD ?? 20);
+// When > 0, size entries up toward this pair notional instead of the minimum
+// valid size. Still bounded by MAX_TEST_PAIR_NOTIONAL_USD.
+const TARGET_PAIR_NOTIONAL_USD = Number(process.env.UPDOWN_MAKER_GUESS_TARGET_PAIR_NOTIONAL_USD ?? 0);
 const MIN_SECONDS_TO_END = Number(process.env.UPDOWN_MAKER_GUESS_MIN_SECONDS_TO_END ?? 60);
 const MAX_SECONDS_TO_END = Number(process.env.UPDOWN_MAKER_GUESS_MAX_SECONDS_TO_END ?? 4 * 60);
 const TAGS = (process.env.UPDOWN_MAKER_GUESS_TAGS ?? "bitcoin,ethereum,solana,xrp,dogecoin,bnb,hyperliquid,crypto")
@@ -924,6 +927,23 @@ function minValidShares(price: number, minOrderSize: number): number {
   throw new Error(`no cent-valid size found for price=${price}`);
 }
 
+function planShares(
+  upPrice: number,
+  downPrice: number,
+  pairCost: number,
+  minShares: number,
+): number {
+  if (!(TARGET_PAIR_NOTIONAL_USD > 0)) return minShares;
+  const budget = Math.min(TARGET_PAIR_NOTIONAL_USD, MAX_TEST_PAIR_NOTIONAL_USD);
+  let shares = Math.floor((budget / pairCost) * 100) / 100;
+  // Walk down to the largest cent-valid size for both legs.
+  while (shares > minShares) {
+    if (clobBuyAmountValid(upPrice, shares) && clobBuyAmountValid(downPrice, shares)) return shares;
+    shares = Math.round((shares - 0.01) * 100) / 100;
+  }
+  return minShares;
+}
+
 type QuotePlan = {
   upTop: Top;
   downTop: Top;
@@ -989,10 +1009,11 @@ async function quotePlanForMarket(market: TrackedMarket): Promise<QuotePlan> {
   }
   const crossBlock = complementCrossBlock(upPrice, downPrice, upTop, downTop);
   if (crossBlock) throw new Error(`loop_cross_block ${crossBlock}`);
-  const shares = Math.max(
+  const minShares = Math.max(
     minValidShares(upPrice, upTop.minOrderSize),
     minValidShares(downPrice, downTop.minOrderSize),
   );
+  const shares = planShares(upPrice, downPrice, pairCost, minShares);
   const total = shares * pairCost;
   if (total > MAX_TEST_PAIR_NOTIONAL_USD + 1e-12) {
     throw new Error(`loop_minPairNotional=$${total.toFixed(2)} > maxTest=$${MAX_TEST_PAIR_NOTIONAL_USD.toFixed(2)}`);
@@ -2327,10 +2348,10 @@ async function main() {
     throw new Error(`no safe maker-guess market found: ${skips.slice(0, 5).join(" | ")}`);
   }
   let { market, upTop, downTop, upPrice, downPrice, pairCost } = selected;
-  let shares = Math.max(
+  let shares = planShares(upPrice, downPrice, pairCost, Math.max(
     minValidShares(upPrice, upTop.minOrderSize),
     minValidShares(downPrice, downTop.minOrderSize),
-  );
+  ));
   const attempt: any = {
     id: `UPDOWN-MAKER-GUESS-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
     createdAt: new Date().toISOString(),
@@ -2397,10 +2418,10 @@ async function main() {
   if (preSubmitCrossBlock) {
     throw new Error(`pre_submit_cross_block ${preSubmitCrossBlock}`);
   }
-  const preSubmitShares = Math.max(
+  const preSubmitShares = planShares(preSubmitUpPrice, preSubmitDownPrice, preSubmitPairCost, Math.max(
     minValidShares(preSubmitUpPrice, preSubmitUpTop.minOrderSize),
     minValidShares(preSubmitDownPrice, preSubmitDownTop.minOrderSize),
-  );
+  ));
   const preSubmitNotional = preSubmitShares * preSubmitPairCost;
   if (preSubmitNotional > MAX_TEST_PAIR_NOTIONAL_USD + 1e-12) {
     throw new Error(`pre_submit_minPairNotional=$${preSubmitNotional.toFixed(2)} > maxTest=$${MAX_TEST_PAIR_NOTIONAL_USD.toFixed(2)}`);
