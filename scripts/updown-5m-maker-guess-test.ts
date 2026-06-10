@@ -2395,9 +2395,20 @@ async function loopLiveMain(existingClob?: ClobBundle, installSignalHandlers = t
 const btcTrendSamples: Array<{ ts: number; px: number }> = [];
 let trendPollerStarted = false;
 
-// Hyperliquid is Tokyo-local (fastest from the japan VPS); Coinbase is the
-// fallback feed already proven for the calm gate.
+// Coinbase measured fastest from the japan VPS (~85ms vs ~340ms for
+// Hyperliquid) and is already proven for the calm gate; Hyperliquid is the
+// fallback feed.
 async function fetchBtcSpot(): Promise<number | null> {
+  try {
+    const res = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot", {
+      headers: { "User-Agent": "updown-maker-guess/1.0" },
+    });
+    if (res.ok) {
+      const body = await res.json() as { data?: { amount?: string } };
+      const px = Number(body?.data?.amount);
+      if (px > 0) return px;
+    }
+  } catch {}
   try {
     const res = await fetch("https://api.hyperliquid.xyz/info", {
       method: "POST",
@@ -2407,16 +2418,6 @@ async function fetchBtcSpot(): Promise<number | null> {
     if (res.ok) {
       const mids = await res.json() as Record<string, string>;
       const px = Number(mids?.BTC);
-      if (px > 0) return px;
-    }
-  } catch {}
-  try {
-    const res = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot", {
-      headers: { "User-Agent": "updown-maker-guess/1.0" },
-    });
-    if (res.ok) {
-      const body = await res.json() as { data?: { amount?: string } };
-      const px = Number(body?.data?.amount);
       if (px > 0) return px;
     }
   } catch {}
