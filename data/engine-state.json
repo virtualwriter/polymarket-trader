@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-10T09:28:14.269Z",
+  "generatedAt": "2026-06-10T10:28:21.730Z",
   "dataFreshness": {
-    "valuationRows": 910,
-    "latestValuationAt": "2026-06-10T09",
-    "macroRows": 908,
+    "valuationRows": 911,
+    "latestValuationAt": "2026-06-10T10",
+    "macroRows": 909,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-10T09"
+    "latestInstrumentSnapshotAt": "2026-06-10T10"
   },
   "portfolio": {
     "cash": 88.3501,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.9377,
     "totalTrades": 199,
     "winRatePct": 51.8,
-    "unrealizedPnl": 0.0131
+    "unrealizedPnl": 0.0141
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0,
       "currentPrice": 0.99,
-      "underlyingPrice": 63.357,
+      "underlyingPrice": 63.448,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -38,7 +38,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0.7,
       "currentPrice": 1.002,
-      "underlyingPrice": 63.357,
+      "underlyingPrice": 63.448,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -52,7 +52,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0.4,
       "currentPrice": 0.999,
-      "underlyingPrice": 63.357,
+      "underlyingPrice": 63.448,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -66,7 +66,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0,
       "currentPrice": 0.999,
-      "underlyingPrice": 1618.7,
+      "underlyingPrice": 1622.2,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -82,7 +82,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0.4,
       "currentPrice": 1.002,
-      "underlyingPrice": 4170.5,
+      "underlyingPrice": 4165.5,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -98,7 +98,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0,
       "currentPrice": 0.999,
-      "underlyingPrice": 61180,
+      "underlyingPrice": 61282,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -112,9 +112,9 @@
       "venue": "polymarket",
       "direction": "long",
       "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.1,
-      "currentPrice": 0.998,
-      "underlyingPrice": 4170.5,
+      "pnlPct": 0,
+      "currentPrice": 0.999,
+      "underlyingPrice": 4165.5,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -130,7 +130,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0.1,
       "currentPrice": 1,
-      "underlyingPrice": 1618.7,
+      "underlyingPrice": 1622.2,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -146,7 +146,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0,
       "currentPrice": 0.999,
-      "underlyingPrice": 4170.5,
+      "underlyingPrice": 4165.5,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -162,7 +162,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": -0.2,
       "currentPrice": 0.997,
-      "underlyingPrice": 1618.7,
+      "underlyingPrice": 1622.2,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -309,7 +309,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 64,
+    "openCount": 65,
     "resolvedCount": 628,
     "wouldHaveWon": 353,
     "wouldHaveLost": 275,
@@ -660,6 +660,22 @@
           ]
         },
         "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 9.3pt after haircuts. CBOE gap 11.8pt, CME gap 8.3pt, source agreement both_positive, spread 1.0c, liquidity 68809. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "GOLD",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "gc-over-under-jun-2026 — NO — Will Gold (GC) settle over $4,600 on the final trading day of June 2026?",
+        "marketQuality": {
+          "yesBid": 0.13,
+          "yesAsk": 0.15,
+          "yesSpread": 0.02,
+          "liquidity": 10573.44,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 8.2pt after haircuts. CBOE gap 10.7pt, CME gap 7.6pt, source agreement both_positive, spread 2.0c, liquidity 10573. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
