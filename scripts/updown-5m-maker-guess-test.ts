@@ -108,6 +108,20 @@ const NUCLEAR_DUST_MAX_SHARES = Number(process.env.UPDOWN_MAKER_GUESS_NUCLEAR_DU
 // is below this threshold before entering.
 const CALM_RANGE_PCT = Number(process.env.UPDOWN_MAKER_GUESS_CALM_RANGE_PCT ?? 0);
 const CALM_RECHECK_MS = Number(process.env.UPDOWN_MAKER_GUESS_CALM_RECHECK_MS ?? 30_000);
+// Refuse to post when short-term BTC momentum is running against the side we
+// would post; one-sided fills in trending tape were the dominant loss driver.
+// 0 disables the veto.
+const TREND_VETO_PCT = Number(process.env.UPDOWN_MAKER_GUESS_TREND_VETO_PCT ?? 0.05);
+const TREND_WINDOW_MS = Number(process.env.UPDOWN_MAKER_GUESS_TREND_WINDOW_MS ?? 180_000);
+const TREND_POLL_MS = Number(process.env.UPDOWN_MAKER_GUESS_TREND_POLL_MS ?? 3_000);
+// Pre-sign a deep FAK sell for the posted side the moment the entry posts, so
+// a failed completion can flatten the naked leg in one HTTP round trip instead
+// of paying book-fetch + sign latency while the bids collapse.
+const PREARMED_EXIT = process.env.UPDOWN_MAKER_GUESS_PREARMED_EXIT !== "0";
+const PREARMED_EXIT_DEPTH = Number(process.env.UPDOWN_MAKER_GUESS_PREARMED_EXIT_DEPTH ?? 0.12);
+// Fills can be shaved below the nominal size by rounding/fees; an oversized
+// sell is rejected outright, so the pre-signed order is shaved by this much.
+const PREARMED_EXIT_SHAVE_SHARES = Number(process.env.UPDOWN_MAKER_GUESS_PREARMED_EXIT_SHAVE_SHARES ?? 0.04);
 // Markets that produced a real nuclear exit this session; never re-enter them.
 const nuclearCooldownSlugs = new Set<string>();
 const REACTIVE_DEPTH_LEVELS = Number(process.env.UPDOWN_MAKER_GUESS_REACTIVE_DEPTH_LEVELS ?? 3);
@@ -1352,6 +1366,36 @@ function buildComplementLadder(
   return ladder;
 }
 
+type ExitLadder = {
+  tokenId: string;
+  shares: number;
+  ready: Array<{ price: number; order: any }>;
+};
+
+// Mirror of buildComplementLadder for the abort path: pre-sign one aggressive
+// FAK sell on the posted side at entry time. A limit sell at a deep floor
+// sweeps every bid above it, so a single pre-signed order replaces a whole
+// price ladder and the naked-leg exit fires without book-fetch or signing
+// latency.
+function buildExitLadder(
+  client: Awaited<ReturnType<typeof clobClient>>["client"],
+  market: TrackedMarket,
+  entryPlan: LoopEntryPlan,
+  shares: number,
+): ExitLadder | null {
+  if (!PREARMED_EXIT) return null;
+  if (entryPlan.mode !== "low_prob_only" || entryPlan.legs.length !== 1) return null;
+  const leg = entryPlan.legs[0];
+  const sellShares = Math.floor((shares - PREARMED_EXIT_SHAVE_SHARES) * 100) / 100;
+  if (!(sellShares > 0)) return null;
+  const floorPrice = normalizePrice(Math.max(TICK, leg.price - PREARMED_EXIT_DEPTH));
+  const ladder: ExitLadder = { tokenId: leg.tokenId, shares: sellShares, ready: [] };
+  void signedSell(client, leg.tokenId, floorPrice, sellShares)
+    .then((order) => { ladder.ready.push({ price: floorPrice, order }); })
+    .catch(() => {});
+  return ladder;
+}
+
 // Authoritative fill check straight from the CLOB; the data-api balance can
 // lag trades by many seconds and must not be used for fast-path decisions.
 async function orderMatchedShares(
@@ -1601,21 +1645,64 @@ async function nuclearStopExit(
   tokenId: string,
   fillPrice: number,
   shares: number,
+  prearmed: ExitLadder | null = null,
 ) {
   const stopBid = normalizePrice(fillPrice - NUCLEAR_STOP_CENTS);
   const attempts: any[] = [];
+  let totalSold = 0;
+  let totalProceeds = 0;
+  let prearmedFilled = false;
+
+  // Fire the pre-signed deep FAK sell before anything else: no book fetch, no
+  // signing, no balance reconcile in the hot path while bids are collapsing.
+  // Only valid when the whole posted size is naked; a partially-paired leg
+  // must not sell shares that belong to a matched pair.
+  if (prearmed && prearmed.tokenId === tokenId && prearmed.ready.length > 0
+      && prearmed.shares <= shares + IMBALANCE_DUST_SHARES) {
+    const entry = prearmed.ready[0];
+    const startedMs = Date.now();
+    const attempt: any = {
+      at: new Date().toISOString(),
+      action: "prearmed_fak_sell",
+      price: entry.price,
+      requested: prearmed.shares,
+      stopBid,
+    };
+    let response: unknown;
+    try {
+      response = await client.postOrder(entry.order, OrderType.FAK);
+      assertOrderResponse(response, "updown_maker_guess_prearmed_exit");
+    } catch (err: any) {
+      response = { error: err?.message ?? String(err) };
+      attempt.action = "prearmed_error";
+    }
+    const responseSold = Number((response as any)?.makingAmount);
+    const sold = Number.isFinite(responseSold) && responseSold > 0 ? Math.min(prearmed.shares, responseSold) : 0;
+    const sellPrice = averageSellPrice(response, entry.price);
+    totalSold = roundShares(totalSold + sold);
+    totalProceeds += sold * sellPrice;
+    prearmedFilled = totalSold + IMBALANCE_DUST_SHARES >= prearmed.shares;
+    Object.assign(attempt, { response, elapsedMs: Date.now() - startedMs, sold, sellPrice, totalSold });
+    attempts.push(attempt);
+  }
+
   const before = await reconcileTokenBalance(address, tokenId);
+  const preSold = totalSold;
   // Fills can be shaved by rounding/fees, so the wallet may hold slightly less
   // than the nominal imbalance; an oversized FAK sell is rejected outright and
   // would strand the whole leg.
   let target = shares;
-  if (before > IMBALANCE_DUST_SHARES && before < target) {
-    target = Math.floor(before * 100) / 100;
+  if (before > IMBALANCE_DUST_SHARES && preSold + before < target) {
+    target = roundShares(preSold + Math.floor(before * 100) / 100);
   }
-  let totalSold = 0;
-  let totalProceeds = 0;
+  // The pre-armed order is intentionally signed slightly under size; once it
+  // fills, the leftover sliver is below the exchange minimum and not worth
+  // burning retries on.
+  const doneTolerance = prearmedFilled
+    ? Math.max(IMBALANCE_DUST_SHARES, PREARMED_EXIT_SHAVE_SHARES + IMBALANCE_DUST_SHARES)
+    : IMBALANCE_DUST_SHARES;
 
-  for (let idx = 0; idx < NUCLEAR_EXIT_RETRIES && totalSold + IMBALANCE_DUST_SHARES < target; idx += 1) {
+  for (let idx = 0; idx < NUCLEAR_EXIT_RETRIES && totalSold + doneTolerance < target; idx += 1) {
     const remaining = roundShares(target - totalSold);
     const top = await fetchTop(tokenId);
     const attempt: any = {
@@ -1650,7 +1737,7 @@ async function nuclearStopExit(
       }
       await sleep(250);
       const after = await reconcileTokenBalance(address, tokenId);
-      const balanceSold = Math.max(0, roundShares(before - after - totalSold));
+      const balanceSold = Math.max(0, roundShares(before - after - (totalSold - preSold)));
       const responseSold = Number((response as any)?.makingAmount);
       const sold = Number.isFinite(responseSold) && responseSold > 0 ? Math.min(remaining, responseSold) : Math.min(remaining, balanceSold);
       const sellPrice = averageSellPrice(response, top.bid);
@@ -1667,7 +1754,7 @@ async function nuclearStopExit(
       });
     }
     attempts.push(attempt);
-    if (totalSold + IMBALANCE_DUST_SHARES >= target) break;
+    if (totalSold + doneTolerance >= target) break;
     await sleep(FILL_POLL_MS);
   }
 
@@ -1677,7 +1764,8 @@ async function nuclearStopExit(
     soldShares: totalSold,
     averagePrice: totalSold > 0 ? totalProceeds / totalSold : 0,
     realizedEstimate: totalSold > 0 ? totalProceeds - totalSold * fillPrice : 0,
-    status: totalSold + IMBALANCE_DUST_SHARES >= target ? "sold" : "stranded",
+    prearmedUsed: attempts.some((row) => row.action === "prearmed_fak_sell"),
+    status: totalSold + doneTolerance >= target ? "sold" : "stranded",
     attempts,
   };
 }
@@ -1692,6 +1780,7 @@ type LoopPair = {
   postedAtMs: number;
   attempt: any;
   ladder: ComplementLadder | null;
+  exitLadder: ExitLadder | null;
 };
 
 function balanceFillSignal(pair: LoopPair, filled: { up: number; down: number }): FillSignal | null {
@@ -1770,6 +1859,10 @@ async function postLoopPair(
   fillSignals.length = 0;
   userWsAudit.length = 0;
   const entryPlan = loopEntryPlan(market, quote);
+  for (const leg of entryPlan.legs) {
+    const veto = trendVetoReason(leg.side);
+    if (veto) throw new Error(`loop_trend_veto ${veto}`);
+  }
   const prepared = await prepareLimitBuy(client, entryPlan.legs);
   const preparedPostMode = loopPreparedPostMode(entryPlan);
   const postResult = await postPreparedLimitBuy(client, prepared, preparedPostMode);
@@ -1835,6 +1928,7 @@ async function postLoopPair(
     postedAtMs: Date.now(),
     attempt,
     ladder: buildComplementLadder(client, market, entryPlan, quote.shares),
+    exitLadder: buildExitLadder(client, market, entryPlan, quote.shares),
   };
 }
 
@@ -2029,7 +2123,7 @@ async function finalizeLoopPair(
       tokenId,
       fillPrice,
       attemptedShares: imbalance,
-      ...(await nuclearStopExit(client, address, tokenId, fillPrice, imbalance)),
+      ...(await nuclearStopExit(client, address, tokenId, fillPrice, imbalance, pair.exitLadder)),
     };
     latest = await waitForSettledFilled(address, pair.market, pair.before, 6_000);
     upFilled = latest.filled.up;
@@ -2118,7 +2212,8 @@ async function loopLiveMain(existingClob?: ClobBundle, installSignalHandlers = t
     process.once("SIGTERM", () => { shutdown().finally(() => process.exit(143)); });
   }
 
-  log(`${LOOP_LIVE ? "loop-live" : "loop-dry-run"}${runLabel ? ` ${runLabel}` : ""} starting BTC-only refreshMs=${LOOP_REFRESH_MS} maxMs=${LOOP_MAX_MS} maxNotional=$${MAX_TEST_PAIR_NOTIONAL_USD} maxPairCost=${maxSafePairCost().toFixed(4)} safetyBuffer=${COMPLEMENT_SAFETY_BUFFER.toFixed(4)} entryDepth=${ENTRY_DEPTH.toFixed(3)} maxCompletionPairCost=${maxCompletionPairCost().toFixed(4)} ladderTicks=${COMPLETION_LADDER_TICKS} gapFastExit=${GAP_FAST_EXIT.toFixed(3)} momentumCancel=${MOMENTUM_CANCEL_MOVE.toFixed(3)}@${MOMENTUM_WINDOW_MS}ms`);
+  log(`${LOOP_LIVE ? "loop-live" : "loop-dry-run"}${runLabel ? ` ${runLabel}` : ""} starting BTC-only refreshMs=${LOOP_REFRESH_MS} maxMs=${LOOP_MAX_MS} maxNotional=$${MAX_TEST_PAIR_NOTIONAL_USD} maxPairCost=${maxSafePairCost().toFixed(4)} safetyBuffer=${COMPLEMENT_SAFETY_BUFFER.toFixed(4)} entryDepth=${ENTRY_DEPTH.toFixed(3)} maxCompletionPairCost=${maxCompletionPairCost().toFixed(4)} ladderTicks=${COMPLETION_LADDER_TICKS} gapFastExit=${GAP_FAST_EXIT.toFixed(3)} momentumCancel=${MOMENTUM_CANCEL_MOVE.toFixed(3)}@${MOMENTUM_WINDOW_MS}ms trendVeto=${TREND_VETO_PCT > 0 ? `${TREND_VETO_PCT.toFixed(3)}%@${Math.round(TREND_WINDOW_MS / 1000)}s` : "off"} prearmedExit=${PREARMED_EXIT ? `depth=${PREARMED_EXIT_DEPTH.toFixed(3)}` : "off"}`);
+  startTrendPoller();
 
   while (Date.now() - startedMs < LOOP_MAX_MS) {
     if (LOOP_MAX_IDLE_MS > 0 && Date.now() - idleStartedMs > LOOP_MAX_IDLE_MS) {
@@ -2297,6 +2392,75 @@ async function loopLiveMain(existingClob?: ClobBundle, installSignalHandlers = t
   log("loop-live ended without terminal fill");
 }
 
+const btcTrendSamples: Array<{ ts: number; px: number }> = [];
+let trendPollerStarted = false;
+
+// Hyperliquid is Tokyo-local (fastest from the japan VPS); Coinbase is the
+// fallback feed already proven for the calm gate.
+async function fetchBtcSpot(): Promise<number | null> {
+  try {
+    const res = await fetch("https://api.hyperliquid.xyz/info", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ type: "allMids" }),
+    });
+    if (res.ok) {
+      const mids = await res.json() as Record<string, string>;
+      const px = Number(mids?.BTC);
+      if (px > 0) return px;
+    }
+  } catch {}
+  try {
+    const res = await fetch("https://api.coinbase.com/v2/prices/BTC-USD/spot", {
+      headers: { "User-Agent": "updown-maker-guess/1.0" },
+    });
+    if (res.ok) {
+      const body = await res.json() as { data?: { amount?: string } };
+      const px = Number(body?.data?.amount);
+      if (px > 0) return px;
+    }
+  } catch {}
+  return null;
+}
+
+function startTrendPoller() {
+  if (trendPollerStarted || !(TREND_VETO_PCT > 0)) return;
+  trendPollerStarted = true;
+  const poll = async () => {
+    const px = await fetchBtcSpot();
+    if (px != null) {
+      btcTrendSamples.push({ ts: Date.now(), px });
+      const cutoff = Date.now() - TREND_WINDOW_MS - 30_000;
+      while (btcTrendSamples.length && btcTrendSamples[0].ts < cutoff) btcTrendSamples.shift();
+    }
+  };
+  void poll();
+  const timer = setInterval(() => { void poll(); }, TREND_POLL_MS);
+  timer.unref?.();
+}
+
+// Signed BTC return (%) over the trend window. Null while the feed is stale or
+// history is too short (< 1/3 window) to call a trend; the veto then stands
+// down rather than blocking entries on missing data.
+function btcTrendPct(): number | null {
+  if (btcTrendSamples.length < 2) return null;
+  const latest = btcTrendSamples[btcTrendSamples.length - 1];
+  if (Date.now() - latest.ts > TREND_POLL_MS * 5) return null;
+  const cutoff = latest.ts - TREND_WINDOW_MS;
+  const past = btcTrendSamples.find((row) => row.ts >= cutoff) ?? btcTrendSamples[0];
+  if (!(past.px > 0) || latest.ts - past.ts < TREND_WINDOW_MS / 3) return null;
+  return ((latest.px - past.px) / past.px) * 100;
+}
+
+function trendVetoReason(side: "up" | "down"): string | null {
+  if (!(TREND_VETO_PCT > 0)) return null;
+  const trend = btcTrendPct();
+  if (trend == null) return null;
+  if (side === "up" && trend <= -TREND_VETO_PCT) return `btc_${trend.toFixed(3)}pct_against_up`;
+  if (side === "down" && trend >= TREND_VETO_PCT) return `btc_+${trend.toFixed(3)}pct_against_down`;
+  return null;
+}
+
 async function btcRangePct(): Promise<number | null> {
   try {
     const res = await fetch("https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=60", {
@@ -2315,6 +2479,7 @@ async function btcRangePct(): Promise<number | null> {
 }
 
 async function loopRepeatMain() {
+  startTrendPoller();
   const repeatCount = Math.max(1, Math.floor(LOOP_REPEAT_COUNT));
   if (repeatCount <= 1 && CALM_RANGE_PCT <= 0) {
     await loopLiveMain();
