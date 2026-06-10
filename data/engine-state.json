@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-10T02:28:11.880Z",
+  "generatedAt": "2026-06-10T03:28:19.579Z",
   "dataFreshness": {
-    "valuationRows": 904,
-    "latestValuationAt": "2026-06-10T02",
-    "macroRows": 902,
+    "valuationRows": 905,
+    "latestValuationAt": "2026-06-10T03",
+    "macroRows": 903,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-10T02"
+    "latestInstrumentSnapshotAt": "2026-06-10T03"
   },
   "portfolio": {
     "cash": 87.3467,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.9344,
     "totalTrades": 198,
     "winRatePct": 51.5,
-    "unrealizedPnl": 0.0244
+    "unrealizedPnl": 0.0288
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0,
       "currentPrice": 0.99,
-      "underlyingPrice": 64.542,
+      "underlyingPrice": 64.602,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -38,7 +38,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0.7,
       "currentPrice": 1.002,
-      "underlyingPrice": 64.542,
+      "underlyingPrice": 64.602,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -52,7 +52,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0.4,
       "currentPrice": 0.999,
-      "underlyingPrice": 64.542,
+      "underlyingPrice": 64.602,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -66,7 +66,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0.1,
       "currentPrice": 1,
-      "underlyingPrice": 1626.4,
+      "underlyingPrice": 1628.9,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -80,9 +80,9 @@
       "venue": "polymarket",
       "direction": "long",
       "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.1,
-      "currentPrice": 0.999,
-      "underlyingPrice": 4180.7,
+      "pnlPct": 0.4,
+      "currentPrice": 1.002,
+      "underlyingPrice": 4178.5,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -98,7 +98,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0,
       "currentPrice": 0.999,
-      "underlyingPrice": 61366,
+      "underlyingPrice": 61427,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -114,7 +114,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0,
       "currentPrice": 0.999,
-      "underlyingPrice": 4180.7,
+      "underlyingPrice": 4178.5,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -130,7 +130,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": 0.1,
       "currentPrice": 1,
-      "underlyingPrice": 1626.4,
+      "underlyingPrice": 1628.9,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -146,7 +146,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": -0.1,
       "currentPrice": 0.998,
-      "underlyingPrice": 4180.7,
+      "underlyingPrice": 4178.5,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -162,7 +162,7 @@
       "signalType": "MONOTONIC_ARB",
       "pnlPct": -0.1,
       "currentPrice": 0.998,
-      "underlyingPrice": 1626.4,
+      "underlyingPrice": 1628.9,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -176,9 +176,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 1.23,
-      "currentPrice": 87.8,
-      "underlyingPrice": 87.8,
+      "pnlPct": 1.37,
+      "currentPrice": 87.92,
+      "underlyingPrice": 87.92,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -326,7 +326,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 64,
+    "openCount": 65,
     "resolvedCount": 625,
     "wouldHaveWon": 353,
     "wouldHaveLost": 272,
@@ -677,6 +677,22 @@
           ]
         },
         "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 11.6pt after haircuts. CBOE gap 14.1pt, CME gap 11.3pt, source agreement both_positive, spread 1.0c, liquidity 94981. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin dip to $60,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.91,
+          "yesAsk": 0.92,
+          "yesSpread": 0.01,
+          "liquidity": 20431.93,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 8.5pt after haircuts. CBOE gap 11.0pt, CME gap 14.5pt, source agreement both_positive, spread 1.0c, liquidity 20432. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
