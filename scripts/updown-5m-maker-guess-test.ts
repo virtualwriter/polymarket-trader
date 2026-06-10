@@ -18,6 +18,7 @@ import {
   reconcileTokenBalance,
   roundShares,
 } from "./polymarket-real-monotonic-executor.js";
+import { cancelIndicatesMatched, InventoryLedger } from "./lib/updown/inventory-ledger.js";
 
 config({ path: "config.env" });
 config({ path: ".env" });
@@ -1301,6 +1302,7 @@ async function tryCompleteImbalance(
   sideFilled: "up" | "down",
   fillPrice: number,
   shares: number,
+  ledger: InventoryLedger | null = null,
 ) {
   const complementSide = sideFilled === "up" ? "down" : "up";
   const complementToken = complementSide === "up" ? market.upTokenId : market.downTokenId;
@@ -1347,9 +1349,24 @@ async function tryCompleteImbalance(
         response = await postFakBuyCached(client, complementToken, pick.price, remaining);
         assertOrderResponse(response, "maker_guess_completion");
         attempt.action = "fak_buy";
+        ledger?.trackTakerResult({
+          orderId: orderId(response),
+          tokenId: complementToken,
+          side: complementSide,
+          role: "completion",
+          requestedShares: remaining,
+          boughtShares: responseBuyShares(response),
+        });
       } catch (err: any) {
         response = { error: err?.message ?? String(err) };
         attempt.action = "error";
+        ledger?.trackFailedPost({
+          tokenId: complementToken,
+          side: complementSide,
+          role: "completion",
+          requestedShares: remaining,
+          error: String((response as any).error),
+        });
       }
       // FAK responses settle immediately and are authoritative; the balance
       // feed lags and double-counted fills across retries.
@@ -1461,38 +1478,48 @@ async function orderMatchedShares(
 // Last-resort fill source: executed trades. Unlike getOrder (archived once
 // fully matched) and cancelOrder (can return ok while a match lands
 // concurrently), the trades ledger records every execution. Sums shares per
-// posted order id, whether we were maker or taker.
+// order id, whether we were maker or taker.
+async function tradesFillSweepByIds(
+  client: Awaited<ReturnType<typeof clobClient>>["client"],
+  market: TrackedMarket,
+  ids: Iterable<string>,
+  sinceMs: number,
+): Promise<Map<string, number>> {
+  const filled = new Map<string, number>();
+  for (const id of ids) filled.set(id, 0);
+  if (!filled.size) return filled;
+  const addFill = (id: unknown, shares: number) => {
+    if (typeof id !== "string" || !filled.has(id)) return;
+    if (Number.isFinite(shares) && shares > 0) filled.set(id, filled.get(id)! + shares);
+  };
+  try {
+    const after = String(Math.max(0, Math.floor(sinceMs / 1000) - 10));
+    const trades: any[] = await client.getTrades({ market: market.conditionId, after }, true);
+    for (const trade of trades ?? []) {
+      addFill(trade?.taker_order_id, Number(trade?.size));
+      for (const makerOrder of trade?.maker_orders ?? []) {
+        addFill(makerOrder?.order_id, Number(makerOrder?.matched_amount));
+      }
+    }
+  } catch (err: any) {
+    log(`loop trades sweep error: ${err?.message ?? String(err)}`);
+  }
+  for (const [id, shares] of filled) filled.set(id, roundShares(shares));
+  return filled;
+}
+
 async function tradesFillSweep(
   client: Awaited<ReturnType<typeof clobClient>>["client"],
   market: TrackedMarket,
   orderIds: { up?: string; down?: string },
   sinceMs: number,
 ): Promise<{ up: number; down: number }> {
-  const filled = { up: 0, down: 0 };
-  const ids = new Map<string, "up" | "down">();
-  if (orderIds.up) ids.set(orderIds.up, "up");
-  if (orderIds.down) ids.set(orderIds.down, "down");
-  if (!ids.size) return filled;
-  try {
-    const after = String(Math.max(0, Math.floor(sinceMs / 1000) - 10));
-    const trades: any[] = await client.getTrades({ market: market.conditionId, after }, true);
-    for (const trade of trades ?? []) {
-      const takerSide = ids.get(trade?.taker_order_id);
-      if (takerSide) {
-        const size = Number(trade?.size);
-        if (Number.isFinite(size) && size > 0) filled[takerSide] += size;
-      }
-      for (const makerOrder of trade?.maker_orders ?? []) {
-        const makerSide = ids.get(makerOrder?.order_id);
-        if (!makerSide) continue;
-        const matched = Number(makerOrder?.matched_amount);
-        if (Number.isFinite(matched) && matched > 0) filled[makerSide] += matched;
-      }
-    }
-  } catch (err: any) {
-    log(`loop trades sweep error: ${err?.message ?? String(err)}`);
-  }
-  return { up: roundShares(filled.up), down: roundShares(filled.down) };
+  const ids = [orderIds.up, orderIds.down].filter(isString);
+  const byId = await tradesFillSweepByIds(client, market, ids, sinceMs);
+  return {
+    up: orderIds.up ? byId.get(orderIds.up) ?? 0 : 0,
+    down: orderIds.down ? byId.get(orderIds.down) ?? 0 : 0,
+  };
 }
 
 async function tryReactiveCompletion(
@@ -1503,6 +1530,7 @@ async function tryReactiveCompletion(
   orderIds: { up?: string; down?: string },
   postedPrices: { up: number; down: number } | null = null,
   ladder: ComplementLadder | null = null,
+  ledger: InventoryLedger | null = null,
 ) {
   const details = fillSignalDetails(signal, market, orderIds);
   const startedMs = Date.now();
@@ -1562,12 +1590,27 @@ async function tryReactiveCompletion(
         const response = await client.postOrder(rung.order, OrderType.FAK);
         assertOrderResponse(response, "maker_guess_presigned_completion");
         const bought = Math.min(responseBuyShares(response), remainingShares);
+        ledger?.trackTakerResult({
+          orderId: orderId(response),
+          tokenId: details.complementToken,
+          side: details.complementSide,
+          role: "completion",
+          requestedShares: ladder.shares,
+          boughtShares: bought,
+        });
         presigned.bought = bought;
         presigned.buyPrice = averageBuyPrice(response, rung.price);
         addBuy(bought, presigned.buyPrice);
         remainingShares = roundShares(Math.max(0, remainingShares - bought));
       } catch (err: any) {
         presigned.error = err?.message ?? String(err);
+        ledger?.trackFailedPost({
+          tokenId: details.complementToken,
+          side: details.complementSide,
+          role: "completion",
+          requestedShares: ladder.shares,
+          error: presigned.error,
+        });
       }
       presigned.elapsedMs = Date.now() - startedMs;
       if (remainingShares < IMBALANCE_DUST_SHARES) {
@@ -1602,6 +1645,14 @@ async function tryReactiveCompletion(
       assertOrderResponse(response, "maker_guess_completion_maker_bid");
       makerStage.response = response;
       const orderID = String((response as any)?.orderID ?? "");
+      ledger?.trackPost({
+        orderId: orderID,
+        tokenId: details.complementToken,
+        side: details.complementSide,
+        role: "completion",
+        requestedShares: remainingShares,
+        status: responseStatus(response),
+      });
       makerBought = responseBuyShares(response);
       while (makerBought + 1e-9 < remainingShares && Date.now() - makerStartedMs < COMPLETION_MAKER_WAIT_MS) {
         await sleep(250);
@@ -1609,12 +1660,29 @@ async function tryReactiveCompletion(
       }
       if (orderID && makerBought + 1e-9 < remainingShares) {
         makerStage.cancel = await cancelOrderTimed(client, orderID);
+        ledger?.recordCancelResult(orderID, makerStage.cancel);
         // Fills that landed during the cancel race still stand; re-read the
         // order itself, never the lagging balance API.
         makerBought = Math.max(makerBought, await orderMatchedShares(client, orderID));
+        // A fully matched order is archived and getOrder reads back nothing,
+        // so the cancel rejection is the only reliable full-fill signal left.
+        // Without this floor the ETH session read a matching completion bid
+        // as zero and nuked the paired leg as naked.
+        if (cancelIndicatesMatched(makerStage.cancel)) {
+          makerBought = remainingShares;
+          makerStage.cancelMatchedFloor = true;
+        }
       }
+      ledger?.recordMatched(orderID, Math.min(makerBought, remainingShares), "completion_maker_stage");
     } catch (err: any) {
       makerStage.error = err?.message ?? String(err);
+      ledger?.trackFailedPost({
+        tokenId: details.complementToken,
+        side: details.complementSide,
+        role: "completion",
+        requestedShares: remainingShares,
+        error: makerStage.error,
+      });
     }
     makerBought = Math.min(makerBought, remainingShares);
     makerStage.bought = makerBought;
@@ -1644,12 +1712,27 @@ async function tryReactiveCompletion(
   try {
     const response = await postFakBuyCached(client, details.complementToken, pick.price, remainingShares);
     assertOrderResponse(response, "maker_guess_reactive_completion");
+    ledger?.trackTakerResult({
+      orderId: orderId(response),
+      tokenId: details.complementToken,
+      side: details.complementSide,
+      role: "completion",
+      requestedShares: remainingShares,
+      boughtShares: responseBuyShares(response),
+    });
     addBuy(responseBuyShares(response), averageBuyPrice(response, pick.price));
     return done({
       response,
       completionMode: boughtShares > responseBuyShares(response) ? "mixed" : "taker",
     });
   } catch (err: any) {
+    ledger?.trackFailedPost({
+      tokenId: details.complementToken,
+      side: details.complementSide,
+      role: "completion",
+      requestedShares: remainingShares,
+      error: err?.message ?? String(err),
+    });
     return done({
       action: boughtShares > 0 ? undefined : "error",
       response: { error: err?.message ?? String(err) },
@@ -1827,6 +1910,7 @@ type LoopPair = {
   attempt: any;
   ladder: ComplementLadder | null;
   exitLadder: ExitLadder | null;
+  ledger: InventoryLedger;
 };
 
 function balanceFillSignal(pair: LoopPair, filled: { up: number; down: number }): FillSignal | null {
@@ -1967,6 +2051,19 @@ async function postLoopPair(
   }
   const postedSides = entryPlan.legs.map((leg) => `${leg.side}=${leg.price.toFixed(4)}`).join(" ");
   log(`loop posted ${market.slug} mode=${entryPlan.mode} postMode=${preparedPostMode} ${postedSides} pairSum=${quote.pairCost.toFixed(4)} shares=${quote.shares.toFixed(2)} ids=${orderIds.up ?? "?"}/${orderIds.down ?? "?"}`);
+  const ledger = new InventoryLedger();
+  for (const leg of entryPlan.legs) {
+    const legOrderId = leg.side === "up" ? orderIds.up : orderIds.down;
+    if (!legOrderId) continue;
+    ledger.trackPost({
+      orderId: legOrderId,
+      tokenId: leg.tokenId,
+      side: leg.side,
+      role: "entry",
+      requestedShares: leg.shares,
+      status: responseStatus(leg.side === "up" ? upResp : downResp),
+    });
+  }
   return {
     market,
     quote,
@@ -1978,6 +2075,52 @@ async function postLoopPair(
     attempt,
     ladder: buildComplementLadder(client, market, entryPlan, quote.shares),
     exitLadder: buildExitLadder(client, market, entryPlan, quote.shares),
+    ledger,
+  };
+}
+
+// Resolve every ledger order whose outcome is still unknown before any
+// naked-leg decision. getOrder size_matched and the trades ledger are the
+// audit truth (never the lagging balance feed); orders that still cannot be
+// confirmed after the polls close at their confirmed floor so the decision
+// cannot deadlock, with the evidence kept on the attempt row.
+async function auditLedgerOrders(
+  client: Clob,
+  market: TrackedMarket,
+  ledger: InventoryLedger,
+  sinceMs: number,
+): Promise<any> {
+  const startedMs = Date.now();
+  const audited = new Set<string>();
+  for (let poll = 0; poll < 3 && ledger.hasNonTerminalOrders(); poll += 1) {
+    if (poll > 0) await sleep(400);
+    // Synthetic ids (failed posts that never returned an order id) cannot be
+    // looked up; only real exchange ids are pollable.
+    const realIds = ledger.nonTerminalOrders()
+      .map((order) => order.orderId)
+      .filter((id) => id.startsWith("0x") || id.length > 12);
+    if (!realIds.length) break;
+    for (const id of realIds) audited.add(id);
+    const sweepPromise = tradesFillSweepByIds(client, market, realIds, sinceMs);
+    await Promise.all(realIds.map(async (id) => {
+      ledger.recordOrderLookup(id, await orderMatchedShares(client, id), `audit_get_order_${poll}`);
+    }));
+    for (const [id, shares] of await sweepPromise) {
+      ledger.recordOrderLookup(id, shares, `audit_trades_sweep_${poll}`);
+    }
+  }
+  const forcedClosed = ledger.nonTerminalOrders().map((order) => order.orderId);
+  for (const orderID of forcedClosed) {
+    ledger.resolveNoFurtherFill(orderID, "audit_exhausted_no_fill_evidence");
+  }
+  if (forcedClosed.length) {
+    log(`loop ledger audit closed ${forcedClosed.join(",")} at confirmed floors (no fill evidence)`);
+  }
+  return {
+    elapsedMs: Date.now() - startedMs,
+    audited: [...audited],
+    forcedClosed,
+    filled: ledger.confirmedFilled(),
   };
 }
 
@@ -2004,6 +2147,7 @@ async function finalizeLoopPair(
       pair.orderIds,
       { up: pair.quote.upPrice, down: pair.quote.downPrice },
       pair.ladder,
+      pair.ledger,
     );
     attempt.reactiveCompletion = reactiveCompletion;
     attempt.latency.reactiveCompletionMs = Date.now() - reactiveStartedMs;
@@ -2016,6 +2160,9 @@ async function finalizeLoopPair(
   const cancelStartedMs = Date.now();
   attempt.cancels = await cancelLoopPair(client, pair);
   attempt.latency.cancelAllMs = Date.now() - cancelStartedMs;
+  for (const cancelRow of (attempt.cancels ?? []) as any[]) {
+    if (cancelRow?.orderID) pair.ledger.recordCancelResult(cancelRow.orderID, cancelRow);
+  }
 
   // Authoritative reconcile. After the cancels above, each posted order's
   // size_matched is final, and completion purchases are known exactly from
@@ -2038,8 +2185,7 @@ async function finalizeLoopPair(
   // reliable signal that the whole posted size filled. Floor with it.
   const cancelMatchedFloor = { up: 0, down: 0 };
   for (const cancelRow of (attempt.cancels ?? []) as any[]) {
-    const reason = cancelRow?.notCanceled ? Object.values(cancelRow.notCanceled).join(" ") : "";
-    if (!/matched/i.test(reason)) continue;
+    if (!cancelIndicatesMatched(cancelRow)) continue;
     if (cancelRow.orderID && cancelRow.orderID === pair.orderIds.up) cancelMatchedFloor.up = pair.quote.shares;
     if (cancelRow.orderID && cancelRow.orderID === pair.orderIds.down) cancelMatchedFloor.down = pair.quote.shares;
   }
@@ -2082,9 +2228,57 @@ async function finalizeLoopPair(
     down: Math.max(downOrderFill, responseFill.down, signalFloor.down),
   };
   attempt.orderReconcile = { upOrderFill, downOrderFill, responseFill, signalFloor, rcBought };
+  if (pair.orderIds.up) pair.ledger.recordMatched(pair.orderIds.up, postedFill.up, "finalize_reconcile");
+  if (pair.orderIds.down) pair.ledger.recordMatched(pair.orderIds.down, postedFill.down, "finalize_reconcile");
   let upFilled = roundShares(postedFill.up + rcBought.up);
   let downFilled = roundShares(postedFill.down + rcBought.down);
   let imbalance = roundShares(Math.abs(upFilled - downFilled));
+
+  // Never act on a leg as naked while any complement-side order's outcome is
+  // unknown: the imbalance may already be paired (the ETH session nuked a
+  // paired leg because a matching completion bid read back as zero while its
+  // follow-up FAK failed on balance). Audits unresolved orders to a terminal
+  // state first, folds confirmed fills into the position, and only then
+  // allows completion buys or the nuclear stop.
+  const confirmNakedLeg = async (): Promise<boolean> => {
+    if (pair.ledger.hasNonTerminalOrders()) {
+      const audit = await auditLedgerOrders(client, pair.market, pair.ledger, pair.postedAtMs);
+      attempt.ledgerAudits = [...(attempt.ledgerAudits ?? []), audit];
+      upFilled = roundShares(Math.max(upFilled, audit.filled.up));
+      downFilled = roundShares(Math.max(downFilled, audit.filled.down));
+      imbalance = roundShares(Math.abs(upFilled - downFilled));
+      // Fills the audit rescued must reach the recorded position and the
+      // locked-profit estimate, or a saved pair would classify UNACCEPTABLE.
+      if (attempt.filled) {
+        const matched = Math.min(upFilled, downFilled);
+        Object.assign(attempt.filled, {
+          up: upFilled,
+          down: downFilled,
+          matched,
+          imbalance,
+          imbalanceSide: upFilled > downFilled ? "up" : downFilled > upFilled ? "down" : null,
+        });
+        if (matched > 0) {
+          // Sides rescued by the audit have no recorded fill price; fall back
+          // to the quote like the exit paths do.
+          const actualPairCost = (attempt.filled.actualFillPrices.up || pair.quote.upPrice)
+            + (attempt.filled.actualFillPrices.down || pair.quote.downPrice);
+          attempt.actualMatchedPair = {
+            pairCost: actualPairCost,
+            lockedProfitEstimate: matched * (1 - actualPairCost),
+          };
+        }
+      }
+    }
+    if (imbalance < IMBALANCE_DUST_SHARES) return false;
+    const decision = pair.ledger.nakedDecision(IMBALANCE_DUST_SHARES);
+    if (decision.state === "completion_in_flight") {
+      attempt.completionInFlightBlock = decision;
+      log(`loop refusing naked-leg action: completion in flight (${decision.blockedBy.join(",")})`);
+      return false;
+    }
+    return true;
+  };
   const actualFillPrices = {
     up: upFilled > 0 ? averageBuyPrice(pair.responses.up, pair.quote.upPrice) : 0,
     down: downFilled > 0 ? averageBuyPrice(pair.responses.down, pair.quote.downPrice) : 0,
@@ -2122,14 +2316,15 @@ async function finalizeLoopPair(
     };
   }
 
-  if (imbalance >= IMBALANCE_DUST_SHARES && attempt.reactiveCompletion?.fastExit) {
+  const nakedNeedsAction = imbalance >= IMBALANCE_DUST_SHARES ? await confirmNakedLeg() : false;
+  if (nakedNeedsAction && attempt.reactiveCompletion?.fastExit) {
     log(`loop gap-through fast exit: skipping completion window, going straight to nuclear`);
   }
-  if (imbalance >= IMBALANCE_DUST_SHARES && !attempt.reactiveCompletion?.fastExit) {
+  if (nakedNeedsAction && !attempt.reactiveCompletion?.fastExit) {
     const side = upFilled > downFilled ? "up" : "down";
     const tokenId = side === "up" ? pair.market.upTokenId : pair.market.downTokenId;
     const fillPrice = side === "up" ? (actualFillPrices.up || pair.quote.upPrice) : (actualFillPrices.down || pair.quote.downPrice);
-    const completion = await tryCompleteImbalance(client, address, pair.market, side, fillPrice, imbalance);
+    const completion = await tryCompleteImbalance(client, address, pair.market, side, fillPrice, imbalance, pair.ledger);
     attempt.completion = completion;
     latest = await currentFilled(address, pair.market, pair.before);
     // Completion buys are separate orders; add their confirmed fills instead of
@@ -2162,7 +2357,9 @@ async function finalizeLoopPair(
     }
   }
 
-  if (imbalance >= IMBALANCE_DUST_SHARES) {
+  // Re-confirm before the stop: completion FAK errors above may have left new
+  // unresolved orders whose fills would make this sale break a matched pair.
+  if (nakedNeedsAction && imbalance >= IMBALANCE_DUST_SHARES && await confirmNakedLeg()) {
     const side = upFilled > downFilled ? "up" : "down";
     const tokenId = side === "up" ? pair.market.upTokenId : pair.market.downTokenId;
     const fillPrice = side === "up" ? (actualFillPrices.up || pair.quote.upPrice) : (actualFillPrices.down || pair.quote.downPrice);
@@ -2195,6 +2392,7 @@ async function finalizeLoopPair(
     || o.asset_id === pair.market.downTokenId
   ));
   attempt.userWsAudit = userWsAudit.slice();
+  attempt.inventoryLedger = pair.ledger.snapshot();
   const finalMatched = Math.min(upFilled, downFilled);
   log(`loop result filled up=${upFilled} down=${downFilled} matched=${finalMatched} imbalance=${imbalance}`);
   const classification = classifyLoopOutcome(attempt, finalMatched, imbalance);
