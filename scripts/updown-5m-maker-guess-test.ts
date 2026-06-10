@@ -2424,6 +2424,26 @@ async function fetchBtcSpot(): Promise<number | null> {
   return null;
 }
 
+// Backfill the trend window from 1m candles so the veto is armed from the
+// very first post instead of standing down for the first minute of a run.
+async function seedTrendHistory() {
+  try {
+    const res = await fetch("https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=60", {
+      headers: { "User-Agent": "updown-maker-guess/1.0" },
+    });
+    const rows = await res.json() as number[][];
+    if (!Array.isArray(rows)) return;
+    const recent = rows.slice(0, Math.ceil(TREND_WINDOW_MS / 60_000) + 1).reverse();
+    for (const candle of recent) {
+      const ts = Math.min((Number(candle[0]) + 60) * 1000, Date.now());
+      const close = Number(candle[4]);
+      if (close > 0 && ts > Date.now() - TREND_WINDOW_MS - 30_000) {
+        btcTrendSamples.push({ ts, px: close });
+      }
+    }
+  } catch {}
+}
+
 function startTrendPoller() {
   if (trendPollerStarted || !(TREND_VETO_PCT > 0)) return;
   trendPollerStarted = true;
@@ -2435,7 +2455,9 @@ function startTrendPoller() {
       while (btcTrendSamples.length && btcTrendSamples[0].ts < cutoff) btcTrendSamples.shift();
     }
   };
-  void poll();
+  // Samples must stay time-ordered, so the candle seed completes before the
+  // first live poll lands.
+  void seedTrendHistory().then(() => poll());
   const timer = setInterval(() => { void poll(); }, TREND_POLL_MS);
   timer.unref?.();
 }
