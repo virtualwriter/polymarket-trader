@@ -515,6 +515,8 @@ Recent committed cleanup state:
 - The fixture replay path was validated with a record/baseline/compare cycle; comparison status was `match` and no new dirty paths were introduced.
 - On 2026-06-10, the USA VPS was fast-forwarded to `a9f3b7b0` and `npm run cleanup:disk:health` reported root at 86.4% used with about 2.0 GB free. Key generated-state sizes: hot snapshots 232.6 MB, snapshot archives 272.9 MB, relative-value history 71.7 MB, generated backups 33.8 MB, `.git` 259.6 MB. Default prune estimate was 0 B, so no cleanup was applied.
 - On 2026-06-10, local fixture replay was rerun with `--fixture .runtime/cleanup-fixtures/engine-current --compare .runtime/cleanup-harness/fixture-baseline.json`; comparison status was `match` and no new dirty paths were introduced.
+- Started the next fixture-gated engine cleanup slice by moving pure engine-state summary shaping into `scripts/lib/trading/artifacts.ts`. `trading-engine.ts` still owns all price marking, P&L estimation, signal logic, LLM behavior, paths, and writes.
+- Added `npm run cleanup:scanner-fixture`, an initial scanner output fixture harness that records/compares `data/daily-macro.csv`, `data/daily-valuations.csv`, and a trimmed `data/instrument-snapshots.jsonl` tail without calling live APIs or mutating scanner outputs.
 
 ### Completed guardrails
 
@@ -563,6 +565,13 @@ Recent committed cleanup state:
 | Stronger dry-run harness shape | `scripts/cleanup-dry-run-harness.ts` | Done. Harness now records execution-plan counts, dry-run verification checks, truth-state counts, entry-by-asset, and LLM-close eligibility counts. |
 | Lean artifact entry helper | `scripts/lib/trading/artifacts.ts`, `scripts/trading-engine.ts` | Done. Extracted a pure helper that builds the lean artifact write list while leaving file names and write behavior in the engine. |
 | Execution/dry-run artifact builders | `scripts/lib/trading/artifacts.ts`, `scripts/trading-engine.ts` | Done. Extracted pure helpers for execution-plan shape and dry-run verification payloads while leaving timestamps, flags, and writes orchestrated by the engine. |
+| Engine state summary helpers | `scripts/lib/trading/artifacts.ts`, `scripts/trading-engine.ts` | Done locally. Extracted pure helpers for data-freshness and portfolio-summary artifact shapes; fixture replay compare passed with no output drift. |
+
+### Completed scanner guardrail slices
+
+| Slice | Files | Status |
+|-------|-------|--------|
+| Scanner output fixture harness | `scripts/cleanup-scanner-fixture.ts`, `package.json` (`npm run cleanup:scanner-fixture`) | Done locally. Records and compares generated scanner output shape from macro CSV, valuation CSV, and a trimmed instrument-snapshot tail without invoking live APIs. |
 
 ### Completed VPS disk cleanup
 
@@ -619,11 +628,12 @@ Follow-up implemented after this emergency cleanup:
 
 3. **Narrow `trading-engine.ts` helper extraction.**
    - After the deeper harness, continue with pure helpers only: config/env parsing, artifact summaries, grouping/counting helpers, and readonly state snapshot builders.
+   - Latest started slice extracted engine-state summary artifact helpers and passed the fixture gate.
    - Avoid changing signal generation, LLM prompts, close/open execution, sizing, or portfolio writes.
 
 4. **`market-scanner.ts` module split.**
    - Big source-size win after engine harnessing. Likely targets: Hyperliquid fetch/parse helpers, Polymarket/Gamma fetch helpers, option valuation transforms, and CSV/snapshot writers.
-   - Needs a scanner golden fixture first: fixed API fixtures in, identical `daily-macro.csv`, `daily-valuations.csv`, and snapshot summary out.
+   - Initial scanner output fixture harness now exists. Next safe slice: use it to guard extraction of pure scanner output-summary or CSV/snapshot writer helpers, then build deeper fixed API fixtures before touching fetch/parse behavior.
 
 5. **Heatmap report split.**
    - `scripts/cross_venue_relative_value_report.py` is still a large Python monolith.

@@ -126,3 +126,48 @@ export function buildDryRunVerificationArtifact<TEngineState, TCandidateActions,
     ],
   };
 }
+
+export interface EngineDataFreshnessInputs<TValuationRow, TMacroRow, TInstrumentSnapshot> {
+  valuationRows: TValuationRow[];
+  macroRows: TMacroRow[];
+  instrumentSnapshots: TInstrumentSnapshot[];
+  latestValuationAt: string;
+  latestInstrumentSnapshotAt: string | null;
+}
+
+export function buildEngineDataFreshnessArtifact<TValuationRow, TMacroRow, TInstrumentSnapshot>(
+  inputs: EngineDataFreshnessInputs<TValuationRow, TMacroRow, TInstrumentSnapshot>,
+) {
+  return {
+    valuationRows: inputs.valuationRows.length,
+    latestValuationAt: inputs.latestValuationAt,
+    macroRows: inputs.macroRows.length,
+    instrumentSnapshots: inputs.instrumentSnapshots.length,
+    latestInstrumentSnapshotAt: inputs.latestInstrumentSnapshotAt,
+  };
+}
+
+export interface EnginePortfolioSummaryInputs<TPosition> {
+  portfolio: {
+    cash: number;
+    positions: TPosition[];
+    totalRealizedPnl: number;
+    totalTrades: number;
+    winCount: number;
+  };
+  unrealizedPnl: number;
+}
+
+export function buildEnginePortfolioSummaryArtifact<TPosition>(
+  inputs: EnginePortfolioSummaryInputs<TPosition>,
+) {
+  const { portfolio, unrealizedPnl } = inputs;
+  return {
+    cash: Number(portfolio.cash.toFixed(4)),
+    openPositions: portfolio.positions.length,
+    realizedPnl: Number(portfolio.totalRealizedPnl.toFixed(4)),
+    totalTrades: portfolio.totalTrades,
+    winRatePct: portfolio.totalTrades > 0 ? Number(((portfolio.winCount / portfolio.totalTrades) * 100).toFixed(1)) : null,
+    unrealizedPnl: Number(unrealizedPnl.toFixed(4)),
+  };
+}

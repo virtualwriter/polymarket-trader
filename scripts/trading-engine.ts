@@ -24,7 +24,13 @@ import {
   legSnapshotFromYesBook,
   type EntryBookSnapshot,
 } from "./polymarket-clob-book.js";
-import { buildDryRunVerificationArtifact, buildExecutionPlanArtifact, buildLeanArtifactEntries } from "./lib/trading/artifacts.js";
+import {
+  buildDryRunVerificationArtifact,
+  buildEngineDataFreshnessArtifact,
+  buildEnginePortfolioSummaryArtifact,
+  buildExecutionPlanArtifact,
+  buildLeanArtifactEntries,
+} from "./lib/trading/artifacts.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -6556,21 +6562,14 @@ function buildEngineState(
 
   return {
     generatedAt: new Date().toISOString(),
-    dataFreshness: {
-      valuationRows: valuationRows.length,
+    dataFreshness: buildEngineDataFreshnessArtifact({
+      valuationRows,
       latestValuationAt: String(latestRow?.date ?? ""),
-      macroRows: macroRows.length,
-      instrumentSnapshots: instrumentSnapshots.length,
+      macroRows,
+      instrumentSnapshots,
       latestInstrumentSnapshotAt: latestInstrumentSnapshot(instrumentSnapshots)?.timestamp ?? null,
-    },
-    portfolio: {
-      cash: Number(portfolio.cash.toFixed(4)),
-      openPositions: portfolio.positions.length,
-      realizedPnl: Number(portfolio.totalRealizedPnl.toFixed(4)),
-      totalTrades: portfolio.totalTrades,
-      winRatePct: portfolio.totalTrades > 0 ? Number(((portfolio.winCount / portfolio.totalTrades) * 100).toFixed(1)) : null,
-      unrealizedPnl: Number(unrealizedPnl.toFixed(4)),
-    },
+    }),
+    portfolio: buildEnginePortfolioSummaryArtifact({ portfolio, unrealizedPnl }),
     openPositions,
     signalHealth: weights.map((weight) => ({
       type: weight.type,

@@ -28,6 +28,7 @@
     "report:excel:fast": "npm run fast:sync && npm run report:trader:csv",
     "prod:verify": "tsx scripts/prod-verify.ts",
     "cleanup:harness": "tsx scripts/cleanup-dry-run-harness.ts",
+    "cleanup:scanner-fixture": "tsx scripts/cleanup-scanner-fixture.ts",
     "cleanup:disk": "python3 scripts/prune_generated_state.py",
     "cleanup:disk:health": "python3 scripts/generated_state_health.py",
     "telegram:trader": "tsx scripts/telegram-trader-bot.ts",
