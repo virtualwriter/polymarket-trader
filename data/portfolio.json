@@ -1,5 +1,5 @@
 {
-  "cash": 87.35009341622538,
+  "cash": 86.35009341622538,
   "positions": [
     {
       "id": "MA-1780403314728-llno",
@@ -51,7 +51,7 @@
         }
       ],
       "entryUnderlyingPrice": 78.905,
-      "currentUnderlyingPrice": 63.581,
+      "currentUnderlyingPrice": 62.536,
       "peakPnlPct": 1.010101010101011,
       "fundingPnlAccrued": 0
     },
@@ -105,7 +105,7 @@
         }
       ],
       "entryUnderlyingPrice": 72.839,
-      "currentUnderlyingPrice": 63.581,
+      "currentUnderlyingPrice": 62.536,
       "peakPnlPct": 0.9045226130653273,
       "fundingPnlAccrued": 0
     },
@@ -159,7 +159,7 @@
         }
       ],
       "entryUnderlyingPrice": 72.839,
-      "currentUnderlyingPrice": 63.581,
+      "currentUnderlyingPrice": 62.536,
       "peakPnlPct": 0.804020100502502,
       "fundingPnlAccrued": 0
     },
@@ -213,7 +213,7 @@
         }
       ],
       "entryUnderlyingPrice": 1658,
-      "currentUnderlyingPrice": 1633.4,
+      "currentUnderlyingPrice": 1609.7,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-05T07:28:36.353Z",
         "source": "clob_live",
@@ -303,7 +303,7 @@
         }
       ],
       "entryUnderlyingPrice": 4466,
-      "currentUnderlyingPrice": 4080.5,
+      "currentUnderlyingPrice": 4041.1,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-05T12:28:37.073Z",
         "source": "clob_live",
@@ -393,7 +393,7 @@
         }
       ],
       "entryUnderlyingPrice": 60800,
-      "currentUnderlyingPrice": 61879,
+      "currentUnderlyingPrice": 61242,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-06T14:28:42.778Z",
         "source": "clob_live",
@@ -483,7 +483,7 @@
         }
       ],
       "entryUnderlyingPrice": 4307,
-      "currentUnderlyingPrice": 4080.5,
+      "currentUnderlyingPrice": 4041.1,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-06T21:28:36.794Z",
         "source": "clob_live",
@@ -573,7 +573,7 @@
         }
       ],
       "entryUnderlyingPrice": 1631,
-      "currentUnderlyingPrice": 1633.4,
+      "currentUnderlyingPrice": 1609.7,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-07T18:28:31.932Z",
         "source": "clob_live",
@@ -663,7 +663,7 @@
         }
       ],
       "entryUnderlyingPrice": 4319,
-      "currentUnderlyingPrice": 4080.5,
+      "currentUnderlyingPrice": 4041.1,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-07T22:28:33.298Z",
         "source": "clob_live",
@@ -753,7 +753,7 @@
         }
       ],
       "entryUnderlyingPrice": 1669.5,
-      "currentUnderlyingPrice": 1633.4,
+      "currentUnderlyingPrice": 1609.7,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-09T13:28:41.441Z",
         "source": "clob_live",
@@ -843,7 +843,7 @@
         }
       ],
       "entryUnderlyingPrice": 64.777,
-      "currentUnderlyingPrice": 63.68,
+      "currentUnderlyingPrice": 62.594,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-10T15:28:15.301Z",
         "source": "clob_live",
@@ -882,11 +882,99 @@
       },
       "peakPnlPct": 0,
       "fundingPnlAccrued": 0
+    },
+    {
+      "id": "MA-1781130494900-zsxa",
+      "openedAt": "2026-06-10T22:28:14.900Z",
+      "asset": "GOLD",
+      "venue": "polymarket",
+      "direction": "long",
+      "entryPrice": 0.999,
+      "currentPrice": 0.999,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "MONOTONIC_ARB",
+      "hypothesisId": null,
+      "thesis": "[MONOTONIC ARB LIVE] Buy YES on broader above strike 5500 @ 0.0090 and buy NO on narrower above strike 6000 @ 0.9900. Gross locked edge 0.10c per paired share before fees/slippage; min payout $1.00 >= cost $0.9990 (risk-free). Threads the strike gap for the ~$1 jackpot payout.",
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDate": "2026-06-30T17:30:00Z",
+      "instrumentType": "pm_package",
+      "instrumentId": "gc-hit-jun-2026::YES-1032272+NO-1032271",
+      "instrumentLabel": "gc-hit-jun-2026 — monotonic arb package (LIVE) — YES 5500 / NO 6000",
+      "packageLegs": [
+        {
+          "role": "broad_yes",
+          "instrumentType": "pm_yes",
+          "instrumentId": "gc-hit-jun-2026::1032272",
+          "instrumentLabel": "gc-hit-jun-2026 — YES — Will Gold (GC) hit (HIGH) $5,500 by end of June?",
+          "entryPrice": 0.009,
+          "strike": 5500,
+          "direction": "above",
+          "yesBid": 0.007,
+          "yesAsk": 0.009,
+          "yesBidSize": 9047.87,
+          "yesAskSize": 6088.33,
+          "startDate": "2025-12-26T23:29:18.794Z"
+        },
+        {
+          "role": "narrow_no",
+          "instrumentType": "pm_no",
+          "instrumentId": "gc-hit-jun-2026::1032271",
+          "instrumentLabel": "gc-hit-jun-2026 — NO — Will Gold (GC) hit (HIGH) $6,000 by end of June?",
+          "entryPrice": 0.99,
+          "strike": 6000,
+          "direction": "above",
+          "yesBid": 0.01,
+          "yesAsk": 0.014,
+          "yesBidSize": 201.22,
+          "yesAskSize": 1260.84,
+          "startDate": "2025-12-26T23:29:16.713Z"
+        }
+      ],
+      "entryUnderlyingPrice": 4041,
+      "currentUnderlyingPrice": 4041,
+      "entryBookSnapshot": {
+        "capturedAt": "2026-06-10T22:28:15.228Z",
+        "source": "clob_live",
+        "packageCost": 0.999,
+        "lockedEdgeCents": 0.10000000000000009,
+        "minLegLiquidity": 44103.10926,
+        "packageAvailableSize": 201.22,
+        "legs": [
+          {
+            "role": "broad_yes",
+            "marketId": "1032272",
+            "yesBid": 0.007,
+            "yesAsk": 0.009,
+            "yesBidSize": 9047.87,
+            "yesAskSize": 6088.33,
+            "noBid": 0.991,
+            "noAsk": 0.993,
+            "noBidSize": 6088.33,
+            "noAskSize": 9047.87,
+            "liquidity": 44103.10926
+          },
+          {
+            "role": "narrow_no",
+            "marketId": "1032271",
+            "yesBid": 0.01,
+            "yesAsk": 0.014,
+            "yesBidSize": 201.22,
+            "yesAskSize": 1260.84,
+            "noBid": 0.986,
+            "noAsk": 0.99,
+            "noBidSize": 1260.84,
+            "noAskSize": 201.22,
+            "liquidity": 45076.20719
+          }
+        ]
+      }
     }
   ],
   "totalRealizedPnl": 0.9376999999999993,
   "totalTrades": 199,
   "winCount": 103,
   "lossCount": 96,
-  "lastUpdated": "2026-06-10T20:28:14.156Z"
+  "lastUpdated": "2026-06-10T22:29:35.807Z"
 }
