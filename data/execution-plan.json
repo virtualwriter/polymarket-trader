@@ -1,23 +1,10 @@
 {
-  "generatedAt": "2026-06-10T05:29:14.875Z",
+  "generatedAt": "2026-06-10T06:28:18.925Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1781015374052-syao",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "oil_cl_pc_ratio"
-      ],
-      "thesis": "The extreme high P/C ratio (1.448) that triggered the contrarian long has normalized to 0.709, erasing the excessive put-buying edge. The signal condition is no longer present, invalidating the original thesis."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -25,10 +12,10 @@
       "venue": "spot",
       "direction": "long",
       "strength": 0.295,
-      "confidence": 0.16866788760002244,
+      "confidence": 0.16889655061386522,
       "thesis": "BTC P/C ratio 1.44 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 61204,
+      "entryPrice": 61340,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -39,10 +26,10 @@
       "venue": "spot",
       "direction": "long",
       "strength": 0.12624999999999997,
-      "confidence": 0.07218413833729773,
+      "confidence": 0.07228199835593384,
       "thesis": "GOLD P/C ratio 1.30 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4182,
+      "entryPrice": 4212,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -52,6 +39,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
