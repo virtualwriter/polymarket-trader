@@ -779,8 +779,11 @@ async function fetchComplementTop(tokenId: string): Promise<Top> {
   return fetchTop(tokenId);
 }
 
+const UPDOWN_INTERVAL = (process.env.UPDOWN_MAKER_GUESS_INTERVAL ?? "5m").toLowerCase();
+const UPDOWN_SLUG_RE = new RegExp(`^[a-z0-9-]+-updown-${UPDOWN_INTERVAL}-\\d+$`);
+
 function isUpDown5mSlug(slug: string): boolean {
-  return /^[a-z0-9-]+-updown-5m-\d+$/.test(slug);
+  return UPDOWN_SLUG_RE.test(slug);
 }
 
 function secondsToEnd(endDate: string | null): number | null {
@@ -849,7 +852,7 @@ async function discoverMarkets(): Promise<TrackedMarket[]> {
 
 async function discoverBtcMarket(): Promise<TrackedMarket | null> {
   const markets = await discoverMarkets();
-  return markets.find((market) => market.slug.startsWith("btc-updown-5m-")) ?? null;
+  return markets.find((market) => market.slug.startsWith(`btc-updown-${UPDOWN_INTERVAL}-`)) ?? null;
 }
 
 function hasAtMostDecimals(value: number, decimals: number): boolean {
