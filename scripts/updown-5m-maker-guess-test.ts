@@ -876,9 +876,25 @@ async function discoverMarkets(): Promise<TrackedMarket[]> {
   });
 }
 
-async function discoverBtcMarket(): Promise<TrackedMarket | null> {
+// Assets the loop runner may trade, in slug-prefix form (e.g. "btc,eth").
+const LOOP_ASSETS = (process.env.UPDOWN_MAKER_GUESS_LOOP_ASSETS ?? "btc")
+  .toLowerCase().split(",").map((s) => s.trim()).filter(Boolean);
+let loopAssetRotation = 0;
+
+async function discoverLoopMarket(): Promise<TrackedMarket | null> {
   const markets = await discoverMarkets();
-  return markets.find((market) => market.slug.startsWith(`btc-updown-${UPDOWN_INTERVAL}-`)) ?? null;
+  const candidates = LOOP_ASSETS
+    .map((asset) => markets.find((market) => market.slug.startsWith(`${asset}-updown-${UPDOWN_INTERVAL}-`)))
+    .filter((market): market is TrackedMarket => Boolean(market));
+  if (!candidates.length) return null;
+  const available = candidates.filter((market) => !nuclearCooldownSlugs.has(market.slug));
+  if (!available.length) {
+    throw new Error(`market_in_nuclear_cooldown ${candidates.map((market) => market.slug).join(",")}`);
+  }
+  // Rotate the starting asset so a multi-asset config samples all books
+  // instead of always camping on the first one.
+  loopAssetRotation += 1;
+  return available[loopAssetRotation % available.length];
 }
 
 function hasAtMostDecimals(value: number, decimals: number): boolean {
@@ -1859,9 +1875,12 @@ async function postLoopPair(
   fillSignals.length = 0;
   userWsAudit.length = 0;
   const entryPlan = loopEntryPlan(market, quote);
-  for (const leg of entryPlan.legs) {
-    const veto = trendVetoReason(leg.side);
-    if (veto) throw new Error(`loop_trend_veto ${veto}`);
+  // The trend feed tracks BTC spot, so the veto only applies to BTC markets.
+  if (market.slug.startsWith("btc-")) {
+    for (const leg of entryPlan.legs) {
+      const veto = trendVetoReason(leg.side);
+      if (veto) throw new Error(`loop_trend_veto ${veto}`);
+    }
   }
   const prepared = await prepareLimitBuy(client, entryPlan.legs);
   const preparedPostMode = loopPreparedPostMode(entryPlan);
@@ -2212,7 +2231,7 @@ async function loopLiveMain(existingClob?: ClobBundle, installSignalHandlers = t
     process.once("SIGTERM", () => { shutdown().finally(() => process.exit(143)); });
   }
 
-  log(`${LOOP_LIVE ? "loop-live" : "loop-dry-run"}${runLabel ? ` ${runLabel}` : ""} starting BTC-only refreshMs=${LOOP_REFRESH_MS} maxMs=${LOOP_MAX_MS} maxNotional=$${MAX_TEST_PAIR_NOTIONAL_USD} maxPairCost=${maxSafePairCost().toFixed(4)} safetyBuffer=${COMPLEMENT_SAFETY_BUFFER.toFixed(4)} entryDepth=${ENTRY_DEPTH.toFixed(3)} maxCompletionPairCost=${maxCompletionPairCost().toFixed(4)} ladderTicks=${COMPLETION_LADDER_TICKS} gapFastExit=${GAP_FAST_EXIT.toFixed(3)} momentumCancel=${MOMENTUM_CANCEL_MOVE.toFixed(3)}@${MOMENTUM_WINDOW_MS}ms trendVeto=${TREND_VETO_PCT > 0 ? `${TREND_VETO_PCT.toFixed(3)}%@${Math.round(TREND_WINDOW_MS / 1000)}s` : "off"} prearmedExit=${PREARMED_EXIT ? `depth=${PREARMED_EXIT_DEPTH.toFixed(3)}` : "off"}`);
+  log(`${LOOP_LIVE ? "loop-live" : "loop-dry-run"}${runLabel ? ` ${runLabel}` : ""} starting assets=${LOOP_ASSETS.join(",")} refreshMs=${LOOP_REFRESH_MS} maxMs=${LOOP_MAX_MS} maxNotional=$${MAX_TEST_PAIR_NOTIONAL_USD} maxPairCost=${maxSafePairCost().toFixed(4)} safetyBuffer=${COMPLEMENT_SAFETY_BUFFER.toFixed(4)} entryDepth=${ENTRY_DEPTH.toFixed(3)} maxCompletionPairCost=${maxCompletionPairCost().toFixed(4)} ladderTicks=${COMPLETION_LADDER_TICKS} gapFastExit=${GAP_FAST_EXIT.toFixed(3)} momentumCancel=${MOMENTUM_CANCEL_MOVE.toFixed(3)}@${MOMENTUM_WINDOW_MS}ms trendVeto=${TREND_VETO_PCT > 0 ? `${TREND_VETO_PCT.toFixed(3)}%@${Math.round(TREND_WINDOW_MS / 1000)}s` : "off"} prearmedExit=${PREARMED_EXIT ? `depth=${PREARMED_EXIT_DEPTH.toFixed(3)}` : "off"}`);
   startTrendPoller();
 
   while (Date.now() - startedMs < LOOP_MAX_MS) {
@@ -2230,13 +2249,10 @@ async function loopLiveMain(existingClob?: ClobBundle, installSignalHandlers = t
       marketWs?.close();
       marketWs = null;
       marketBaseline = null;
-      market = await discoverBtcMarket();
+      market = await discoverLoopMarket();
       if (!market) {
         await sleep(LOOP_REFRESH_MS);
         continue;
-      }
-      if (nuclearCooldownSlugs.has(market.slug)) {
-        throw new Error(`market_in_nuclear_cooldown ${market.slug}`);
       }
       marketWs = await connectMarketWs(market);
       userWs = await connectUserWs(clob, market.conditionId, [market.upTokenId, market.downTokenId]);
