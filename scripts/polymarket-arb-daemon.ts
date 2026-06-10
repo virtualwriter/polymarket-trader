@@ -728,10 +728,7 @@ function isStaleSubmittedNoFill(row: LivePackage): boolean {
 function isDaemonOpenPackage(row: LivePackage): boolean {
   if (isStaleSubmittedNoFill(row)) return false;
   if (["quoted", "leg1_submitted", "leg1_filled", "leg2_submitted"].includes(row.status)) return true;
-  // A completed package is still live inventory until it is explicitly sold or
-  // settled. Treating clean completions as closed allowed duplicate same-package
-  // re-entry against shared tokens, which can strand one leg if balance is tight.
-  if (row.status === "package_complete") return true;
+  if (row.status === "package_complete") return !isCleanCompletedPackage(row);
   if (row.status !== "unwind_required") return false;
   return (row.actualCost ?? 0) > 0
     || (row.filledShares ?? 0) > 0
@@ -1237,7 +1234,15 @@ async function tryExecute(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
 
 async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
   if (tradingPausedReason) return;
-  if (inFlight.has(pkg.key) || alreadyOpen.has(pkg.key)) return;
+  if (inFlight.has(pkg.key) || alreadyOpen.has(pkg.key)) {
+    const now = Date.now();
+    const last = lastSkipLogAt.get(pkg.key) ?? 0;
+    if (now - last >= SKIP_LOG_THROTTLE_MS) {
+      lastSkipLogAt.set(pkg.key, now);
+      log(`skip ${pkg.key}: already open package/orphan before preflight`);
+    }
+    return;
+  }
   const executionTokens = [pkg.broadYesToken, pkg.narrowNoToken].filter(Boolean);
   if (quarantinedPackages.has(pkg.key) || executionTokens.some((tokenId) => quarantinedTokens.has(tokenId))) {
     const now = Date.now();
@@ -1277,7 +1282,16 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
   }
 
   const packageRows = readJsonArray<LivePackage>(PACKAGES_PATH);
-  if (daemonOpenPackageCount(packageRows) >= MAX_OPEN_PACKAGES) return;
+  const openCount = daemonOpenPackageCount(packageRows);
+  if (openCount >= MAX_OPEN_PACKAGES) {
+    const now = Date.now();
+    const last = lastSkipLogAt.get(pkg.key) ?? 0;
+    if (now - last >= SKIP_LOG_THROTTLE_MS) {
+      lastSkipLogAt.set(pkg.key, now);
+      log(`skip ${pkg.key}: max_open_packages open=${openCount} cap=${MAX_OPEN_PACKAGES}`);
+    }
+    return;
+  }
 
   let c = liveCandidate(pkg.base, legs);
   if (isSportsCandidate(c)) {
