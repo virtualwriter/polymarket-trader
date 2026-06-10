@@ -101,6 +101,9 @@ const IMBALANCE_DUST_SHARES = Number(process.env.UPDOWN_MAKER_GUESS_DUST_SHARES 
 const COMPLEMENT_CROSS_BUFFER = Number(process.env.UPDOWN_MAKER_GUESS_COMPLEMENT_CROSS_BUFFER ?? 0.01);
 const NUCLEAR_STOP_CENTS = Number(process.env.UPDOWN_MAKER_GUESS_NUCLEAR_STOP_CENTS ?? 0.01);
 const NUCLEAR_EXIT_RETRIES = Number(process.env.UPDOWN_MAKER_GUESS_NUCLEAR_EXIT_RETRIES ?? 8);
+// Residual sold by the nuclear stop counts as benign "dust" (e.g. FAK price-improvement
+// overfill) when it is at most this many shares and a profitable matched pair remains.
+const NUCLEAR_DUST_MAX_SHARES = Number(process.env.UPDOWN_MAKER_GUESS_NUCLEAR_DUST_MAX_SHARES ?? 1);
 const REACTIVE_DEPTH_LEVELS = Number(process.env.UPDOWN_MAKER_GUESS_REACTIVE_DEPTH_LEVELS ?? 3);
 const USER_WS_READY_MS = Number(process.env.UPDOWN_MAKER_GUESS_USER_WS_READY_MS ?? 2_000);
 const MARKET_WS_READY_MS = Number(process.env.UPDOWN_MAKER_GUESS_MARKET_WS_READY_MS ?? 2_000);
@@ -1797,7 +1800,7 @@ async function finalizeLoopPair(
   pair: LoopPair,
   firstFill: FillSignal | null,
   userWs: WebSocket | null,
-): Promise<"REAL_ARB_FILL" | "NUCLEAR_EXIT" | "NO_FILL" | "UNACCEPTABLE"> {
+): Promise<"REAL_ARB_FILL" | "NUCLEAR_EXIT" | "NUCLEAR_EXIT_DUST" | "NO_FILL" | "UNACCEPTABLE"> {
   const attempt = pair.attempt;
   attempt.userWsAudit = userWsAudit.slice();
   const responseFill = responseFilled(pair.responses);
@@ -1961,7 +1964,9 @@ async function finalizeLoopPair(
       imbalanceSide: upFilled > downFilled ? "up" : downFilled > upFilled ? "down" : null,
     };
     const matchedAfterCompletion = Math.min(upFilled, downFilled);
-    if (matchedAfterCompletion > 0 && imbalance < IMBALANCE_DUST_SHARES) {
+    // Record the locked profit on the matched portion even when overfill dust
+    // remains; the residual is accounted for separately by the nuclear stop.
+    if (matchedAfterCompletion > 0) {
       const actualPairCost = actualFillPrices.up + actualFillPrices.down;
       attempt.actualMatchedPair = {
         pairCost: actualPairCost,
@@ -2003,12 +2008,32 @@ async function finalizeLoopPair(
     || o.asset_id === pair.market.downTokenId
   ));
   attempt.userWsAudit = userWsAudit.slice();
-  appendJsonl(ATTEMPTS_PATH, attempt);
   const finalMatched = Math.min(upFilled, downFilled);
   log(`loop result filled up=${upFilled} down=${downFilled} matched=${finalMatched} imbalance=${imbalance}`);
-  if (attempt.nuclearStop?.status === "sold") return "NUCLEAR_EXIT";
+  const classification = classifyLoopOutcome(attempt, finalMatched, imbalance);
+  attempt.classification = classification;
+  appendJsonl(ATTEMPTS_PATH, attempt);
+  return classification;
+}
+
+function classifyLoopOutcome(
+  attempt: any,
+  finalMatched: number,
+  imbalance: number,
+): "REAL_ARB_FILL" | "NUCLEAR_EXIT" | "NUCLEAR_EXIT_DUST" | "NO_FILL" | "UNACCEPTABLE" {
+  const lockedProfit = attempt.actualMatchedPair?.lockedProfitEstimate ?? 0;
+  if (attempt.nuclearStop?.status === "sold") {
+    // Benign dust: a profitable matched pair is intact, nothing meaningful is left
+    // naked, and the residual the stop sold was small (FAK overfill, not a naked leg).
+    const dustSold = Number(attempt.nuclearStop?.attemptedShares ?? 0);
+    const cleanArbAttached = finalMatched > 0 && imbalance < IMBALANCE_DUST_SHARES && lockedProfit > 0;
+    if (cleanArbAttached && dustSold <= Math.min(NUCLEAR_DUST_MAX_SHARES, finalMatched * 0.5)) {
+      return "NUCLEAR_EXIT_DUST";
+    }
+    return "NUCLEAR_EXIT";
+  }
   if (finalMatched < IMBALANCE_DUST_SHARES && imbalance < IMBALANCE_DUST_SHARES) return "NO_FILL";
-  if (finalMatched > 0 && imbalance < IMBALANCE_DUST_SHARES && (attempt.actualMatchedPair?.lockedProfitEstimate ?? 0) > 0) {
+  if (finalMatched > 0 && imbalance < IMBALANCE_DUST_SHARES && lockedProfit > 0) {
     return "REAL_ARB_FILL";
   }
   return "UNACCEPTABLE";
