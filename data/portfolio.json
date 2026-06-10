@@ -1,5 +1,5 @@
 {
-  "cash": 88.35009341622538,
+  "cash": 87.35009341622538,
   "positions": [
     {
       "id": "MA-1780403314728-llno",
@@ -51,7 +51,7 @@
         }
       ],
       "entryUnderlyingPrice": 78.905,
-      "currentUnderlyingPrice": 65.075,
+      "currentUnderlyingPrice": 65.187,
       "peakPnlPct": 1.010101010101011,
       "fundingPnlAccrued": 0
     },
@@ -105,7 +105,7 @@
         }
       ],
       "entryUnderlyingPrice": 72.839,
-      "currentUnderlyingPrice": 65.075,
+      "currentUnderlyingPrice": 65.187,
       "peakPnlPct": 0.9045226130653273,
       "fundingPnlAccrued": 0
     },
@@ -159,7 +159,7 @@
         }
       ],
       "entryUnderlyingPrice": 72.839,
-      "currentUnderlyingPrice": 65.075,
+      "currentUnderlyingPrice": 65.187,
       "peakPnlPct": 0.804020100502502,
       "fundingPnlAccrued": 0
     },
@@ -213,7 +213,7 @@
         }
       ],
       "entryUnderlyingPrice": 1658,
-      "currentUnderlyingPrice": 1647.9,
+      "currentUnderlyingPrice": 1647.5,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-05T07:28:36.353Z",
         "source": "clob_live",
@@ -303,7 +303,7 @@
         }
       ],
       "entryUnderlyingPrice": 4466,
-      "currentUnderlyingPrice": 4168.1,
+      "currentUnderlyingPrice": 4134.3,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-05T12:28:37.073Z",
         "source": "clob_live",
@@ -350,7 +350,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.999,
-      "currentPrice": 1,
+      "currentPrice": 1.001,
       "size": 1,
       "leverage": 1,
       "signalType": "MONOTONIC_ARB",
@@ -393,7 +393,7 @@
         }
       ],
       "entryUnderlyingPrice": 60800,
-      "currentUnderlyingPrice": 62070,
+      "currentUnderlyingPrice": 62246,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-06T14:28:42.778Z",
         "source": "clob_live",
@@ -483,7 +483,7 @@
         }
       ],
       "entryUnderlyingPrice": 4307,
-      "currentUnderlyingPrice": 4168.1,
+      "currentUnderlyingPrice": 4134.3,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-06T21:28:36.794Z",
         "source": "clob_live",
@@ -573,7 +573,7 @@
         }
       ],
       "entryUnderlyingPrice": 1631,
-      "currentUnderlyingPrice": 1647.9,
+      "currentUnderlyingPrice": 1647.5,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-07T18:28:31.932Z",
         "source": "clob_live",
@@ -663,7 +663,7 @@
         }
       ],
       "entryUnderlyingPrice": 4319,
-      "currentUnderlyingPrice": 4168.1,
+      "currentUnderlyingPrice": 4134.3,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-07T22:28:33.298Z",
         "source": "clob_live",
@@ -753,7 +753,7 @@
         }
       ],
       "entryUnderlyingPrice": 1669.5,
-      "currentUnderlyingPrice": 1647.9,
+      "currentUnderlyingPrice": 1647.5,
       "entryBookSnapshot": {
         "capturedAt": "2026-06-09T13:28:41.441Z",
         "source": "clob_live",
@@ -792,11 +792,99 @@
       },
       "peakPnlPct": 0.20020020020018928,
       "fundingPnlAccrued": 0
+    },
+    {
+      "id": "MA-1781105294848-ovm1",
+      "openedAt": "2026-06-10T15:28:14.848Z",
+      "asset": "SILVER",
+      "venue": "polymarket",
+      "direction": "long",
+      "entryPrice": 0.999,
+      "currentPrice": 0.999,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "MONOTONIC_ARB",
+      "hypothesisId": null,
+      "thesis": "[MONOTONIC ARB LIVE] Buy YES on broader above strike 150 @ 0.0060 and buy NO on narrower above strike 170 @ 0.9930. Gross locked edge 0.10c per paired share before fees/slippage; min payout $1.00 >= cost $0.9990 (risk-free). Threads the strike gap for the ~$1 jackpot payout.",
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDate": "2026-06-30T17:30:00Z",
+      "instrumentType": "pm_package",
+      "instrumentId": "si-hit-jun-2026::YES-1032335+NO-1272495",
+      "instrumentLabel": "si-hit-jun-2026 — monotonic arb package (LIVE) — YES 150 / NO 170",
+      "packageLegs": [
+        {
+          "role": "broad_yes",
+          "instrumentType": "pm_yes",
+          "instrumentId": "si-hit-jun-2026::1032335",
+          "instrumentLabel": "si-hit-jun-2026 — YES — Will Silver (SI) hit (HIGH) $150 by end of June?",
+          "entryPrice": 0.006,
+          "strike": 150,
+          "direction": "above",
+          "yesBid": 0.005,
+          "yesAsk": 0.006,
+          "yesBidSize": 12289.18,
+          "yesAskSize": 77.78,
+          "startDate": "2025-12-26T23:35:18.343Z"
+        },
+        {
+          "role": "narrow_no",
+          "instrumentType": "pm_no",
+          "instrumentId": "si-hit-jun-2026::1272495",
+          "instrumentLabel": "si-hit-jun-2026 — NO — Will Silver (SI) hit (HIGH) $170 by end of June?",
+          "entryPrice": 0.993,
+          "strike": 170,
+          "direction": "above",
+          "yesBid": 0.007,
+          "yesAsk": 0.011,
+          "yesBidSize": 100,
+          "yesAskSize": 296.99,
+          "startDate": "2026-01-26T19:00:33.008Z"
+        }
+      ],
+      "entryUnderlyingPrice": 64.777,
+      "currentUnderlyingPrice": 64.777,
+      "entryBookSnapshot": {
+        "capturedAt": "2026-06-10T15:28:15.301Z",
+        "source": "clob_live",
+        "packageCost": 0.999,
+        "lockedEdgeCents": 0.10000000000000009,
+        "minLegLiquidity": 41624.06387,
+        "packageAvailableSize": 77.78,
+        "legs": [
+          {
+            "role": "broad_yes",
+            "marketId": "1032335",
+            "yesBid": 0.005,
+            "yesAsk": 0.006,
+            "yesBidSize": 12289.18,
+            "yesAskSize": 77.78,
+            "noBid": 0.994,
+            "noAsk": 0.995,
+            "noBidSize": 77.78,
+            "noAskSize": 12289.18,
+            "liquidity": 50536.25072
+          },
+          {
+            "role": "narrow_no",
+            "marketId": "1272495",
+            "yesBid": 0.007,
+            "yesAsk": 0.011,
+            "yesBidSize": 100,
+            "yesAskSize": 296.99,
+            "noBid": 0.989,
+            "noAsk": 0.993,
+            "noBidSize": 296.99,
+            "noAskSize": 100,
+            "liquidity": 41624.06387
+          }
+        ]
+      }
     }
   ],
   "totalRealizedPnl": 0.9376999999999993,
   "totalTrades": 199,
   "winCount": 103,
   "lossCount": 96,
-  "lastUpdated": "2026-06-10T14:29:08.486Z"
+  "lastUpdated": "2026-06-10T15:28:15.491Z"
 }
