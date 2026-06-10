@@ -28415,3 +28415,39 @@ Today's key development is the abrupt flip in BTC-gold correlation from -0.34 to
 
 ---
 
+### 2026-06-10 18:29 UTC
+
+**Portfolio:** $98.35 total | Cash $87.35 | 11 open | P&L $0.9377 | 52% win rate (199 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 9.2pp (was 1.1, now -8.1)
+- [anomaly] btc_med_max = 80000 is -3.7 std devs from mean (93190.84 ± 3582.73)
+- [anomaly] gold_med_min = 4022 is -3.6 std devs from mean (4339.55 ± 88.78)
+- [anomaly] gold_gc_spot = 4114 is -3.4 std devs from mean (4555.02 ± 129.61)
+- [anomaly] amzn_pc_ratio = 0.749 is 2.7 std devs from mean (0.43 ± 0.12)
+
+**Blocked signal learning:**
+- Open blocked shadows: 63
+- Resolved blocked shadows: 631 (354 wins / 277 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 7/12 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 6/10 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=116 (34W/69L/13flat, 33.0% win-rate, sum $-2.6384, avg -2.27%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=160 (50W/93L/17flat, 35.0% win-rate, sum $-2.7562, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.52%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-1.15%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+3.64%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-1.19%)
+
+**LLM analysis:**
+Gold's rapid decline and the BTC-GOLD correlation flip are the standout structural shifts. Previously, gold and BTC moved inversely, providing diversification, but the sudden positive correlation (+0.79) suggests a liquidity squeeze or macro event is driving both down (gold sharply, BTC modestly). This invalidates any existing theses that relied on the prior negative correlation. For open monotonic arb packages, gold's drop has not materially altered the arb spreads—the packages remain near 1.00 with low P&L. I'm watching gold's put/call ratio spike to 1.10 and IV spike to 34% as potential signs of panic; if GC spot continues below 4100, the GOLD monotonic arbs (which hold deep OTM YES vs NO) could get stressed. However, since these are long-dated arbs (June/July expiry), the current move is within expected vol. The oil funding extreme at -168% is the most extreme in the dataset, but OIL was disabled from FUNDING_EXTREME_SHORT after poor risk-adjusted returns; this is a strong why-not moment—the signal family was correctly disabled before this cascade event, as the tape shows persistent funding extremes that don't mean-revert quickly. No new live trades are warranted.
+
+---
+
