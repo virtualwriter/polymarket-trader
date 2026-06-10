@@ -2047,7 +2047,11 @@ function classifyLoopOutcome(
     // Benign dust: a profitable matched pair is intact, nothing meaningful is left
     // naked, and the residual the stop sold was small (FAK overfill, not a naked leg).
     const dustSold = Number(attempt.nuclearStop?.attemptedShares ?? 0);
-    const cleanArbAttached = finalMatched > 0 && imbalance < IMBALANCE_DUST_SHARES && lockedProfit > 0;
+    // The post-stop balance read can lag the stop's sale; credit shares the
+    // stop confirmed sold when judging the residual.
+    const soldByStop = Number(attempt.nuclearStop?.soldShares ?? 0);
+    const residual = Math.max(0, imbalance - soldByStop);
+    const cleanArbAttached = finalMatched > 0 && residual < IMBALANCE_DUST_SHARES && lockedProfit > 0;
     if (cleanArbAttached && dustSold <= Math.min(NUCLEAR_DUST_MAX_SHARES, finalMatched * 0.5)) {
       return "NUCLEAR_EXIT_DUST";
     }
