@@ -104,6 +104,12 @@ const NUCLEAR_EXIT_RETRIES = Number(process.env.UPDOWN_MAKER_GUESS_NUCLEAR_EXIT_
 // Residual sold by the nuclear stop counts as benign "dust" (e.g. FAK price-improvement
 // overfill) when it is at most this many shares and a profitable matched pair remains.
 const NUCLEAR_DUST_MAX_SHARES = Number(process.env.UPDOWN_MAKER_GUESS_NUCLEAR_DUST_MAX_SHARES ?? 1);
+// When > 0, each loop attempt waits until BTC's 10-minute high/low range (in %)
+// is below this threshold before entering.
+const CALM_RANGE_PCT = Number(process.env.UPDOWN_MAKER_GUESS_CALM_RANGE_PCT ?? 0);
+const CALM_RECHECK_MS = Number(process.env.UPDOWN_MAKER_GUESS_CALM_RECHECK_MS ?? 30_000);
+// Markets that produced a real nuclear exit this session; never re-enter them.
+const nuclearCooldownSlugs = new Set<string>();
 const REACTIVE_DEPTH_LEVELS = Number(process.env.UPDOWN_MAKER_GUESS_REACTIVE_DEPTH_LEVELS ?? 3);
 const USER_WS_READY_MS = Number(process.env.UPDOWN_MAKER_GUESS_USER_WS_READY_MS ?? 2_000);
 const MARKET_WS_READY_MS = Number(process.env.UPDOWN_MAKER_GUESS_MARKET_WS_READY_MS ?? 2_000);
@@ -2034,6 +2040,12 @@ async function finalizeLoopPair(
   const classification = classifyLoopOutcome(attempt, finalMatched, imbalance);
   attempt.classification = classification;
   appendJsonl(ATTEMPTS_PATH, attempt);
+  if (classification === "NUCLEAR_EXIT") {
+    // A real nuclear exit means this market is trending; re-entering it
+    // re-samples the same adverse regime.
+    nuclearCooldownSlugs.add(pair.market.slug);
+    log(`loop nuclear cooldown armed for ${pair.market.slug}`);
+  }
   return classification;
 }
 
@@ -2110,6 +2122,9 @@ async function loopLiveMain(existingClob?: ClobBundle, installSignalHandlers = t
       if (!market) {
         await sleep(LOOP_REFRESH_MS);
         continue;
+      }
+      if (nuclearCooldownSlugs.has(market.slug)) {
+        throw new Error(`market_in_nuclear_cooldown ${market.slug}`);
       }
       marketWs = await connectMarketWs(market);
       userWs = await connectUserWs(clob, market.conditionId, [market.upTokenId, market.downTokenId]);
@@ -2265,18 +2280,45 @@ async function loopLiveMain(existingClob?: ClobBundle, installSignalHandlers = t
   log("loop-live ended without terminal fill");
 }
 
+async function btcRangePct(): Promise<number | null> {
+  try {
+    const res = await fetch("https://api.exchange.coinbase.com/products/BTC-USD/candles?granularity=60", {
+      headers: { "User-Agent": "updown-maker-guess/1.0" },
+    });
+    const rows = await res.json() as number[][];
+    const recent = Array.isArray(rows) ? rows.slice(0, 10) : [];
+    if (!recent.length) return null;
+    const hi = Math.max(...recent.map((c) => c[2]));
+    const lo = Math.min(...recent.map((c) => c[1]));
+    if (!(hi > 0) || !(lo > 0)) return null;
+    return ((hi - lo) / lo) * 100;
+  } catch {
+    return null;
+  }
+}
+
 async function loopRepeatMain() {
   const repeatCount = Math.max(1, Math.floor(LOOP_REPEAT_COUNT));
-  if (repeatCount <= 1) {
+  if (repeatCount <= 1 && CALM_RANGE_PCT <= 0) {
     await loopLiveMain();
     return;
   }
   const clob = await clobClient();
-  log(`loop hot runner starting repeatCount=${repeatCount} pauseMs=${LOOP_REPEAT_PAUSE_MS}`);
+  log(`loop hot runner starting repeatCount=${repeatCount} pauseMs=${LOOP_REPEAT_PAUSE_MS} calmRangePct=${CALM_RANGE_PCT > 0 ? CALM_RANGE_PCT : "off"}`);
   let stopping = false;
   process.once("SIGINT", () => { stopping = true; });
   process.once("SIGTERM", () => { stopping = true; });
   for (let idx = 0; idx < repeatCount && !stopping; idx += 1) {
+    if (CALM_RANGE_PCT > 0) {
+      const range = await btcRangePct();
+      if (range == null || range >= CALM_RANGE_PCT) {
+        log(`loop calm gate: btc 10m range=${range == null ? "?" : range.toFixed(3)}% >= ${CALM_RANGE_PCT}%; waiting ${CALM_RECHECK_MS}ms`);
+        idx -= 1;
+        await sleep(CALM_RECHECK_MS);
+        continue;
+      }
+      log(`loop calm gate ok: btc 10m range=${range.toFixed(3)}% < ${CALM_RANGE_PCT}%`);
+    }
     log(`loop hot runner attempt ${idx + 1}/${repeatCount}`);
     try {
       await loopLiveMain(clob, false, `[${idx + 1}/${repeatCount}]`);
@@ -2284,8 +2326,9 @@ async function loopRepeatMain() {
       const message = err?.message ?? String(err);
       log(`loop hot runner attempt error: ${message}`);
       // A matched pair from the previous run blocks the same market until it
-      // resolves; wait it out without consuming an attempt.
-      if (message.includes("pre_existing_5m_position") && !stopping) {
+      // resolves, and a nuclear-cooldown market just needs the next window;
+      // wait these out without consuming an attempt.
+      if ((message.includes("pre_existing_5m_position") || message.includes("market_in_nuclear_cooldown")) && !stopping) {
         idx -= 1;
         await sleep(15_000);
         continue;
