@@ -1,11 +1,26 @@
 {
-  "generatedAt": "2026-06-11T18:28:16.352Z",
+  "generatedAt": "2026-06-11T19:28:59.112Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [],
+  "entrySignals": [
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.27249999999999996,
+      "confidence": 0.1560146103128077,
+      "thesis": "BTC P/C ratio 1.42 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 63617,
+      "targetPct": 6,
+      "stopPct": 1.5,
+      "expiryDays": 21
+    }
+  ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
