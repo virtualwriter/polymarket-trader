@@ -12,9 +12,9 @@
  *   npx tsx scripts/market-scanner.ts --snapshot # append daily row to CSVs
  */
 
-import { writeFileSync, readFileSync, existsSync, appendFileSync, mkdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
+import { appendScannerCsvRow, appendScannerJsonl } from "./lib/scanner/output.js";
 import { enrichStrikesFromClob } from "./polymarket-clob-book.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -2134,32 +2134,8 @@ const MACRO_HEADERS = [
   "gpu_h100_hit_275", "gpu_h100_hit_300",
 ];
 
-function csvVal(v: number | string | null | undefined): string {
-  if (v === null || v === undefined || (typeof v === "number" && isNaN(v))) return "";
-  if (typeof v === "string") return `"${v.replace(/"/g, '""')}"`;
-  return String(v);
-}
-
 function appendCsvRow(filename: string, headers: string[], row: Record<string, any>) {
-  const filepath = join(DATA_DIR, filename);
-  if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
-  if (!existsSync(filepath)) {
-    writeFileSync(filepath, headers.join(",") + "\n");
-  }
-
-  // Skip if this timestamp's row already exists
-  const existing = readFileSync(filepath, "utf-8");
-  const ts = row.date ?? new Date().toISOString().slice(0, 13);
-  const lines = existing.trim().split("\n");
-  const lastLine = lines[lines.length - 1] ?? "";
-  if (lastLine.startsWith(`"${ts}"`) || lastLine.startsWith(ts)) {
-    lines[lines.length - 1] = headers.map((h) => csvVal(row[h] ?? null)).join(",");
-    writeFileSync(filepath, lines.join("\n") + "\n");
-    return;
-  }
-
-  const values = headers.map((h) => csvVal(row[h] ?? null));
-  appendFileSync(filepath, values.join(",") + "\n");
+  appendScannerCsvRow(DATA_DIR, filename, headers, row);
 }
 
 function polymarketAssetForSlug(slug: string): string | null {
@@ -2176,15 +2152,7 @@ function polymarketAssetForSlug(slug: string): string | null {
 }
 
 function appendInstrumentSnapshot(snapshot: InstrumentSnapshotFile) {
-  const filepath = join(DATA_DIR, INSTRUMENT_SNAPSHOTS_JSONL);
-  if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
-  const line = JSON.stringify(snapshot);
-  if (!existsSync(filepath)) {
-    writeFileSync(filepath, line + "\n");
-    return;
-  }
-
-  appendFileSync(filepath, line + "\n");
+  appendScannerJsonl(DATA_DIR, INSTRUMENT_SNAPSHOTS_JSONL, snapshot);
 }
 
 function pcRatioFromChains(chains: OptionQuote[]): number | null {

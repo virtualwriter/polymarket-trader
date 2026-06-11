@@ -171,3 +171,31 @@ export function buildEnginePortfolioSummaryArtifact<TPosition>(
     unrealizedPnl: Number(unrealizedPnl.toFixed(4)),
   };
 }
+
+export interface EngineSignalHealthInput {
+  type: string;
+  enabled: boolean;
+  weight: number;
+  trades: number;
+  wins: number;
+  avgPnlPct: number;
+  perAsset?: Record<string, {
+    disabled?: boolean;
+  }>;
+}
+
+export function buildEngineSignalHealthArtifact<TSignalHealth extends EngineSignalHealthInput>(
+  weights: TSignalHealth[],
+) {
+  return weights.map((weight) => ({
+    type: weight.type,
+    enabled: weight.enabled,
+    weight: Number(weight.weight.toFixed(4)),
+    trades: weight.trades,
+    wins: weight.wins,
+    avgPnlPct: Number(weight.avgPnlPct.toFixed(4)),
+    disabledAssets: Object.entries(weight.perAsset ?? {})
+      .filter(([, stats]) => stats.disabled)
+      .map(([asset]) => asset),
+  }));
+}

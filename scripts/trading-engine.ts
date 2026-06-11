@@ -28,6 +28,7 @@ import {
   buildDryRunVerificationArtifact,
   buildEngineDataFreshnessArtifact,
   buildEnginePortfolioSummaryArtifact,
+  buildEngineSignalHealthArtifact,
   buildExecutionPlanArtifact,
   buildLeanArtifactEntries,
 } from "./lib/trading/artifacts.js";
@@ -6571,17 +6572,7 @@ function buildEngineState(
     }),
     portfolio: buildEnginePortfolioSummaryArtifact({ portfolio, unrealizedPnl }),
     openPositions,
-    signalHealth: weights.map((weight) => ({
-      type: weight.type,
-      enabled: weight.enabled,
-      weight: Number(weight.weight.toFixed(4)),
-      trades: weight.trades,
-      wins: weight.wins,
-      avgPnlPct: Number(weight.avgPnlPct.toFixed(4)),
-      disabledAssets: Object.entries(weight.perAsset ?? {})
-        .filter(([, stats]) => stats.disabled)
-        .map(([asset]) => asset),
-    })),
+    signalHealth: buildEngineSignalHealthArtifact(weights),
     blockedSummary,
     learningParams,
   };
