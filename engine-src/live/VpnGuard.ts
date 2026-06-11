@@ -13,10 +13,11 @@ import { SocksProxyAgent } from "socks-proxy-agent";
 import https from "https";
 import http from "http";
 
-const ALLOWED_COUNTRIES = new Set(["CH", "DE", "AT", "PT", "SG", "JP", "KR", "HK", "AE"]);
+const ALLOWED_COUNTRIES = new Set(["CH", "DE", "AT", "PT", "SG", "JP", "KR", "HK", "AE", "IE"]);
 const COUNTRY_NAME_TO_CODE: Record<string, string> = {
   Austria: "AT",
   Germany: "DE",
+  Ireland: "IE",
   Japan: "JP",
   Portugal: "PT",
   Singapore: "SG",
