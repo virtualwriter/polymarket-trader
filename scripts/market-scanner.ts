@@ -14,7 +14,7 @@
 
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
-import { appendScannerCsvRow, appendScannerJsonl } from "./lib/scanner/output.js";
+import { appendScannerCsvRow, appendScannerJsonl, roundNullable } from "./lib/scanner/output.js";
 import { enrichStrikesFromClob } from "./polymarket-clob-book.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -2234,7 +2234,7 @@ function writeSnapshot(
   const oilSettleEV = clSettle ? pmImpliedEVFromSettlement(clSettle.strikes) : null;
   const oilPm = clHit && oilWti ? pmImpliedEVFromTouches(clHit.strikes, oilWti) : null;
 
-  const r = (v: number | null | undefined, d = 2) => v != null ? Number(v.toFixed(d)) : null;
+  const r = roundNullable;
 
   appendCsvRow(VALUATION_CSV, VALUATION_HEADERS, {
     date: today,

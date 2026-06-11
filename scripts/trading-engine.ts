@@ -29,6 +29,7 @@ import {
   buildEngineDataFreshnessArtifact,
   buildEnginePortfolioSummaryArtifact,
   buildEngineSignalHealthArtifact,
+  buildEngineStateArtifact,
   buildExecutionPlanArtifact,
   buildLeanArtifactEntries,
 } from "./lib/trading/artifacts.js";
@@ -6561,8 +6562,7 @@ function buildEngineState(
     return sum + (live ? estimateOpenPositionPnl(live) : 0);
   }, 0);
 
-  return {
-    generatedAt: new Date().toISOString(),
+  return buildEngineStateArtifact({
     dataFreshness: buildEngineDataFreshnessArtifact({
       valuationRows,
       latestValuationAt: String(latestRow?.date ?? ""),
@@ -6575,7 +6575,7 @@ function buildEngineState(
     signalHealth: buildEngineSignalHealthArtifact(weights),
     blockedSummary,
     learningParams,
-  };
+  });
 }
 
 function setupIdForSignalType(signalType: string): { setupId: string; setupLabel: string } {

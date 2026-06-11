@@ -43,3 +43,7 @@ export function appendScannerJsonl(dataDir: string, filename: string, value: unk
   }
   appendFileSync(filepath, line + "\n");
 }
+
+export function roundNullable(value: number | null | undefined, decimals = 2): number | null {
+  return value != null ? Number(value.toFixed(decimals)) : null;
+}

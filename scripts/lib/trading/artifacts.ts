@@ -199,3 +199,27 @@ export function buildEngineSignalHealthArtifact<TSignalHealth extends EngineSign
       .map(([asset]) => asset),
   }));
 }
+
+export interface EngineStateArtifactInputs<TDataFreshness, TPortfolio, TOpenPosition, TSignalHealth, TBlockedSummary, TLearningParams> {
+  generatedAt?: string;
+  dataFreshness: TDataFreshness;
+  portfolio: TPortfolio;
+  openPositions: TOpenPosition[];
+  signalHealth: TSignalHealth[];
+  blockedSummary: TBlockedSummary;
+  learningParams: TLearningParams;
+}
+
+export function buildEngineStateArtifact<TDataFreshness, TPortfolio, TOpenPosition, TSignalHealth, TBlockedSummary, TLearningParams>(
+  inputs: EngineStateArtifactInputs<TDataFreshness, TPortfolio, TOpenPosition, TSignalHealth, TBlockedSummary, TLearningParams>,
+) {
+  return {
+    generatedAt: inputs.generatedAt ?? new Date().toISOString(),
+    dataFreshness: inputs.dataFreshness,
+    portfolio: inputs.portfolio,
+    openPositions: inputs.openPositions,
+    signalHealth: inputs.signalHealth,
+    blockedSummary: inputs.blockedSummary,
+    learningParams: inputs.learningParams,
+  };
+}

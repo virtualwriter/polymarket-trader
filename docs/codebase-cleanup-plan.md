@@ -519,6 +519,8 @@ Recent committed cleanup state:
 - Added `npm run cleanup:scanner-fixture`, an initial scanner output fixture harness that records/compares `data/daily-macro.csv`, `data/daily-valuations.csv`, and a trimmed `data/instrument-snapshots.jsonl` tail without calling live APIs or mutating scanner outputs.
 - Continued the fixture-gated engine cleanup by moving signal-health artifact shaping into `scripts/lib/trading/artifacts.ts`. Fixture replay compare stayed matched.
 - Started scanner output-helper cleanup by moving CSV row append and JSONL snapshot append helpers into `scripts/lib/scanner/output.ts`. Scanner fixture compare stayed matched.
+- Continued the fixture-gated engine cleanup by moving final engine-state artifact assembly into `scripts/lib/trading/artifacts.ts`. Fixture replay compare stayed matched.
+- Continued scanner output-helper cleanup by moving nullable rounding for snapshot/CSV output shaping into `scripts/lib/scanner/output.ts`. Scanner fixture compare stayed matched.
 
 ### Completed guardrails
 
@@ -569,6 +571,7 @@ Recent committed cleanup state:
 | Execution/dry-run artifact builders | `scripts/lib/trading/artifacts.ts`, `scripts/trading-engine.ts` | Done. Extracted pure helpers for execution-plan shape and dry-run verification payloads while leaving timestamps, flags, and writes orchestrated by the engine. |
 | Engine state summary helpers | `scripts/lib/trading/artifacts.ts`, `scripts/trading-engine.ts` | Done locally. Extracted pure helpers for data-freshness and portfolio-summary artifact shapes; fixture replay compare passed with no output drift. |
 | Engine signal-health helper | `scripts/lib/trading/artifacts.ts`, `scripts/trading-engine.ts` | Done locally. Extracted pure signal-health artifact shaping while leaving weight updates and signal decisions in the engine. |
+| Engine state artifact assembler | `scripts/lib/trading/artifacts.ts`, `scripts/trading-engine.ts` | Done locally. Extracted final engine-state artifact assembly while preserving engine-owned marking, P&L, signal, LLM, path, and write behavior. |
 
 ### Completed scanner guardrail slices
 
@@ -576,6 +579,7 @@ Recent committed cleanup state:
 |-------|-------|--------|
 | Scanner output fixture harness | `scripts/cleanup-scanner-fixture.ts`, `package.json` (`npm run cleanup:scanner-fixture`) | Done locally. Records and compares generated scanner output shape from macro CSV, valuation CSV, and a trimmed instrument-snapshot tail without invoking live APIs. |
 | Scanner output append helpers | `scripts/lib/scanner/output.ts`, `scripts/market-scanner.ts` | Done locally. CSV row append/update and JSONL snapshot append helpers moved behind a scanner output module; scanner fixture compare passed. |
+| Scanner output rounding helper | `scripts/lib/scanner/output.ts`, `scripts/market-scanner.ts` | Done locally. Nullable rounding for snapshot/CSV output shaping moved behind the scanner output module; scanner fixture compare passed. |
 
 ### Completed VPS disk cleanup
 
@@ -632,12 +636,12 @@ Follow-up implemented after this emergency cleanup:
 
 3. **Narrow `trading-engine.ts` helper extraction.**
    - After the deeper harness, continue with pure helpers only: config/env parsing, artifact summaries, grouping/counting helpers, and readonly state snapshot builders.
-   - Latest slices extracted engine-state summary and signal-health artifact helpers and passed the fixture gate.
+   - Latest slices extracted engine-state summary, signal-health, and final state-artifact assembly helpers and passed the fixture gate.
    - Avoid changing signal generation, LLM prompts, close/open execution, sizing, or portfolio writes.
 
 4. **`market-scanner.ts` module split.**
    - Big source-size win after engine harnessing. Likely targets: Hyperliquid fetch/parse helpers, Polymarket/Gamma fetch helpers, option valuation transforms, and CSV/snapshot writers.
-   - Initial scanner output fixture harness now exists, and CSV/snapshot append helpers have been extracted. Next safe slice: extract pure scanner output-summary/shape helpers, then build deeper fixed API fixtures before touching fetch/parse behavior.
+   - Initial scanner output fixture harness now exists, and CSV/snapshot append plus nullable rounding helpers have been extracted. Next safe slice: extract pure scanner output-summary/shape helpers, then build deeper fixed API fixtures before touching fetch/parse behavior.
 
 5. **Heatmap report split.**
    - `scripts/cross_venue_relative_value_report.py` is still a large Python monolith.
