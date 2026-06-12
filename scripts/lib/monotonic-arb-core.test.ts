@@ -23,6 +23,8 @@ describe("polymarketAssetForSlug", () => {
   it("classifies sports game ladders", () => {
     expect(polymarketAssetForSlug("nba-sas-nyk-2026-06-10")).toBe("NBA");
     expect(polymarketAssetForSlug("mlb-sea-bal-2026-06-09")).toBe("MLB");
+    expect(polymarketAssetForSlug("fifwc-can-bih-2026-06-12-more-markets")).toBe("SOCCER");
+    expect(polymarketAssetForSlug("mls-sea-por-2026-06-20-more-markets")).toBe("SOCCER");
   });
 
   it("leaves unknown slugs unclassified", () => {
@@ -38,6 +40,7 @@ describe("isNestedLadderEvent", () => {
     expect(isNestedLadderEvent("spacex-ipo-closing-market-cap-above")).toBe(true);
     expect(isNestedLadderEvent("nba-nyk-sas-2026-06-05")).toBe(true);
     expect(isNestedLadderEvent("mlb-sea-bal-2026-06-09")).toBe(true);
+    expect(isNestedLadderEvent("fifwc-can-bih-2026-06-12-more-markets")).toBe(true);
   });
 
   it("rejects settlement, final trading day, over-under, and range markets", () => {

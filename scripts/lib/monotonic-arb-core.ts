@@ -160,9 +160,15 @@ function normalizedOutcomeIndexes(outcomes: string[]): { yesIndex: number; noInd
   return yesIndex >= 0 && noIndex >= 0 ? { yesIndex, noIndex } : null;
 }
 
-function sportsSlugKind(eventSlug: string): "nba" | "mlb" | null {
+function sportsSlugKind(eventSlug: string): "nba" | "mlb" | "soccer" | null {
   if (eventSlug.startsWith("nba-")) return "nba";
   if (eventSlug.startsWith("mlb-")) return "mlb";
+  if (eventSlug.startsWith("fifwc-")
+    || eventSlug.startsWith("mls-")
+    || eventSlug.includes("soccer")
+    || eventSlug.includes("world-cup")
+    || eventSlug.includes("fifa")
+    || eventSlug.includes("uefa")) return "soccer";
   return null;
 }
 
@@ -172,7 +178,16 @@ function parseSportsMarket(eventSlug: string, question: string, outcomes: string
   const outcomeIndexes = normalizedOutcomeIndexes(outcomes);
   const slugKey = `${sport}:${eventSlug}`;
 
-  const fullGameTotal = question.match(/^.+?\s+vs\.\s+.+?:\s*O\/U\s+([0-9]+(?:\.5)?)$/i);
+  const totalScopeKey = (scope: string | undefined) => {
+    const normalized = (scope ?? "").trim().toLowerCase();
+    if (!normalized) return "full-game";
+    if (normalized === "1h" || normalized === "1st half" || normalized === "first half") return "first-half";
+    if (normalized === "2h" || normalized === "2nd half" || normalized === "second half") return "second-half";
+    return normalized.replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  };
+  const teamKey = (team: string) => team.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+  const fullGameTotal = question.match(/^.+?\s+vs\.?\s+.+?:\s*O\/U\s+([0-9]+(?:\.5)?)$/i);
   if (fullGameTotal && outcomeIndexes) {
     return {
       strike: parseNumber(fullGameTotal[1]),
@@ -182,12 +197,22 @@ function parseSportsMarket(eventSlug: string, question: string, outcomes: string
     };
   }
 
-  const firstHalfTotal = question.match(/^.+?\s+vs\.\s+.+?:\s*1H O\/U\s+([0-9]+(?:\.5)?)$/i);
-  if (firstHalfTotal && outcomeIndexes) {
+  const scopedTotal = question.match(/^.+?\s+vs\.?\s+.+?:\s*(1H|1st Half|First Half|2H|2nd Half|Second Half)\s+O\/U\s+([0-9]+(?:\.5)?)$/i);
+  if (scopedTotal && outcomeIndexes) {
     return {
-      strike: parseNumber(firstHalfTotal[1]),
+      strike: parseNumber(scopedTotal[2]),
       direction: "above",
-      ladderKey: `sports:${slugKey}:total:first-half`,
+      ladderKey: `sports:${slugKey}:total:${totalScopeKey(scopedTotal[1])}`,
+      ...outcomeIndexes,
+    };
+  }
+
+  const teamTotal = question.match(/^(.+?)\s+vs\.?\s+(.+?):\s*(.+?)\s+(?:(1H|1st Half|First Half|2H|2nd Half|Second Half)\s+)?O\/U\s+([0-9]+(?:\.5)?)$/i);
+  if (teamTotal && outcomeIndexes) {
+    return {
+      strike: parseNumber(teamTotal[5]),
+      direction: "above",
+      ladderKey: `sports:${slugKey}:team-total:${totalScopeKey(teamTotal[4])}:${teamKey(teamTotal[3])}`,
       ...outcomeIndexes,
     };
   }
@@ -199,11 +224,10 @@ function parseSportsMarket(eventSlug: string, question: string, outcomes: string
     const yesIndex = normalized.findIndex((outcome) => outcome === team.toLowerCase());
     const noIndex = normalized.findIndex((_, index) => index !== yesIndex);
     if (yesIndex >= 0 && noIndex >= 0) {
-      const teamKey = team.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
       return {
         strike: parseNumber(spread[3]),
         direction: "above",
-        ladderKey: `sports:${slugKey}:spread:${spread[1] ? "first-half" : "full-game"}:${teamKey}`,
+        ladderKey: `sports:${slugKey}:spread:${spread[1] ? "first-half" : "full-game"}:${teamKey(team)}`,
         yesIndex,
         noIndex,
       };
@@ -248,6 +272,7 @@ function parseMarket(eventSlug: string, question: string, groupItemTitle: string
 export function polymarketAssetForSlug(slug: string): string | null {
   if (slug.startsWith("nba-")) return "NBA";
   if (slug.startsWith("mlb-")) return "MLB";
+  if (sportsSlugKind(slug) === "soccer") return "SOCCER";
   if (slug.includes("spacex-ipo-closing-market-cap-above")) return "FINANCE";
   if (slug.includes("bitcoin")) return "BTC";
   if (slug.includes("ethereum")) return "ETH";
@@ -271,7 +296,7 @@ export function polymarketAssetForSlug(slug: string): string | null {
 }
 
 export function isNestedLadderEvent(slug: string, title = ""): boolean {
-  if (slug.startsWith("nba-") || slug.startsWith("mlb-")) return true;
+  if (sportsSlugKind(slug)) return true;
   const haystack = `${slug} ${title}`.toLowerCase();
   if (haystack.includes("settle") || haystack.includes("final trading day") || haystack.includes("over-under")) return false;
   if (haystack.includes("range") || /\$\d+(?:\.\d+)?\s*-\s*\$?\d+(?:\.\d+)?/.test(haystack)) return false;

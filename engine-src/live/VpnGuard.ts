@@ -28,6 +28,8 @@ const COUNTRY_NAME_TO_CODE: Record<string, string> = {
   Switzerland: "CH",
 };
 const GEO_CHECK_URLS = [
+  "https://ipapi.co/json",
+  "https://ipwho.is/",
   "https://ipinfo.io/json",
   "https://ifconfig.co/json",
 ];
