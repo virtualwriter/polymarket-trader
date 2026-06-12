@@ -36,7 +36,7 @@ import {
 } from "./lib/trading/artifacts.js";
 import { buildBlockedSignalObservations, summarizeBlockedSignals } from "./lib/trading/blocked-signals.js";
 import { parseEngineCliFlags, resolveEnginePathConfig } from "./lib/trading/config.js";
-import { sizeBinaryPosition } from "./lib/trading/sizing.js";
+import { resolveSizingProbability, sizeBinaryPosition, type SizingCalibrationBucket, type SizingProbabilitySource, type SizingSignalHistory } from "./lib/trading/sizing.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -47,6 +47,7 @@ const LIVE_STATE_DIR = ENGINE_PATHS.liveStateDir;
 const LIVE_PORTFOLIO_FILE = ENGINE_PATHS.livePortfolioFile;
 const PENDING_CLOSED_TRADES_FILE = ENGINE_PATHS.pendingClosedTradesFile;
 const RELATIVE_VALUE_CSV = ENGINE_PATHS.relativeValueCsv;
+const NO_BIAS_CALIBRATION_JSONL = join(import.meta.dirname ?? ".", "..", "relative-value", "calibration", "no_bias_candidates.jsonl");
 const HYBRID_BOT_TRADES_FILE = ENGINE_PATHS.hybridBotTradesFile;
 const HYBRID_BOT_STATE_FILE = ENGINE_PATHS.hybridBotStateFile;
 const HYBRID_STRATEGY_DOC = ENGINE_PATHS.hybridStrategyDoc;
@@ -71,6 +72,9 @@ const SIZING_PREVIEW_MIN_SIZE = 0.25;
 const SIZING_PREVIEW_MAX_SIZE = 3;
 const SIZING_PREVIEW_KELLY_FRACTION = 0.5;
 const SIZING_PREVIEW_MAX_BANKROLL_FRACTION = 0.03;
+const SIZING_PREVIEW_MIN_CALIBRATION_EVENTS = 5;
+const SIZING_PREVIEW_MIN_ASSET_HISTORY_TRADES = 5;
+const SIZING_PREVIEW_MIN_SIGNAL_HISTORY_TRADES = 10;
 const HEATMAP_SHADOW_MAX_SPREAD = 0.01;
 const HEATMAP_SHADOW_MIN_LIQUIDITY = 1000;
 const MONOTONIC_ARB_MAX_YES_SPREAD = 0.01;
@@ -909,8 +913,9 @@ interface CandidateSizingPreview {
   previewSize: number;
   reason: ReturnType<typeof sizeBinaryPosition>["reason"] | "unsupported_signal";
   entryPrice: number;
-  probabilitySource: "signal_confidence_preview" | "unsupported";
+  probabilitySource: SizingProbabilitySource;
   winProbability: number | null;
+  probabilitySampleSize: number | null;
   edgePts: number | null;
   rawKellyFraction: number | null;
   adjustedKellyFraction: number | null;
@@ -1098,6 +1103,70 @@ function readRelativeValueObservations(limit = 30): RelativeValueObservation[] {
       return score(b) - score(a);
     })
     .slice(0, limit);
+}
+
+function noBiasEntryPrice(row: Record<string, unknown>): number | null {
+  const yesBid = typeof row.pm_best_bid === "number" ? row.pm_best_bid : Number(row.pm_best_bid);
+  if (!Number.isFinite(yesBid)) return null;
+  const entry = 1 - yesBid;
+  return entry > 0 && entry < 1 ? entry : null;
+}
+
+function loadNoBiasCalibrationBuckets(path = NO_BIAS_CALIBRATION_JSONL): SizingCalibrationBucket[] {
+  if (!existsSync(path)) return [];
+  const byMarket = new Map<string, Record<string, unknown>[]>();
+  for (const line of readFileSync(path, "utf-8").split("\n")) {
+    if (!line.trim()) continue;
+    try {
+      const row = JSON.parse(line) as Record<string, unknown>;
+      const marketId = String(row.market_id ?? "");
+      if (!marketId) continue;
+      const rows = byMarket.get(marketId) ?? [];
+      rows.push(row);
+      byMarket.set(marketId, rows);
+    } catch {}
+  }
+
+  const byAsset = new Map<string, { n: number; wins: number }>();
+  let total = 0;
+  let wins = 0;
+  for (const rows of byMarket.values()) {
+    rows.sort((a, b) => String(a.timestamp ?? "").localeCompare(String(b.timestamp ?? "")));
+    const outcome = rows.find((row) => row.resolved_outcome === "YES" || row.resolved_outcome === "NO")?.resolved_outcome;
+    if (outcome !== "YES" && outcome !== "NO") continue;
+    const firstPass = rows.find((row) => row.candidate_passed === true);
+    if (!firstPass || noBiasEntryPrice(firstPass) === null) continue;
+    const asset = String(firstPass.asset ?? "");
+    const won = outcome === "NO";
+    total++;
+    if (won) wins++;
+    if (asset) {
+      const bucket = byAsset.get(asset) ?? { n: 0, wins: 0 };
+      bucket.n++;
+      if (won) bucket.wins++;
+      byAsset.set(asset, bucket);
+    }
+  }
+
+  const buckets: SizingCalibrationBucket[] = [];
+  if (total > 0) {
+    buckets.push({
+      signalType: NO_BIAS_ADJUSTED_GAP_SIGNAL,
+      n: total,
+      winRate: wins / total,
+      label: "NO-bias gate resolved events",
+    });
+  }
+  for (const [asset, bucket] of byAsset) {
+    buckets.push({
+      signalType: NO_BIAS_ADJUSTED_GAP_SIGNAL,
+      asset,
+      n: bucket.n,
+      winRate: bucket.wins / bucket.n,
+      label: `NO-bias gate resolved events / ${asset}`,
+    });
+  }
+  return buckets;
 }
 
 function appendTradeCsv(trade: ClosedTrade) {
@@ -6786,7 +6855,26 @@ function llmCloseEligibilityForPosition(
   };
 }
 
-function buildCandidateSizingPreview(signal: Signal, portfolio: Portfolio): CandidateSizingPreview {
+function sizingSignalHistories(weights: SignalWeight[]): SizingSignalHistory[] {
+  return weights.map((weight) => ({
+    signalType: weight.type,
+    trades: weight.trades,
+    wins: weight.wins,
+    perAsset: Object.fromEntries(Object.entries(weight.perAsset ?? {}).map(([asset, stats]) => [
+      asset,
+      { trades: stats.trades, wins: stats.wins },
+    ])),
+  }));
+}
+
+function buildCandidateSizingPreview(
+  signal: Signal,
+  portfolio: Portfolio,
+  probabilityInputs: {
+    calibrationBuckets: SizingCalibrationBucket[];
+    signalHistories: SizingSignalHistory[];
+  },
+): CandidateSizingPreview {
   const isBinaryPolymarket = signal.venue === "polymarket" && signal.entryPrice > 0 && signal.entryPrice < 1;
   const notes = [
     "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
@@ -6804,6 +6892,7 @@ function buildCandidateSizingPreview(signal: Signal, portfolio: Portfolio): Cand
       entryPrice: Number(signal.entryPrice.toFixed(6)),
       probabilitySource: "unsupported",
       winProbability: null,
+      probabilitySampleSize: null,
       edgePts: null,
       rawKellyFraction: null,
       adjustedKellyFraction: null,
@@ -6812,14 +6901,24 @@ function buildCandidateSizingPreview(signal: Signal, portfolio: Portfolio): Cand
     };
   }
 
-  notes.push("Uses signal.confidence as a temporary win-probability proxy; replace with calibrated bucket probability before live sizing.");
+  const probability = resolveSizingProbability({
+    signalType: signal.type,
+    asset: signal.asset,
+    fallbackConfidence: signal.confidence,
+    calibrationBuckets: probabilityInputs.calibrationBuckets,
+    signalHistories: probabilityInputs.signalHistories,
+    minCalibrationEvents: SIZING_PREVIEW_MIN_CALIBRATION_EVENTS,
+    minAssetHistoryTrades: SIZING_PREVIEW_MIN_ASSET_HISTORY_TRADES,
+    minSignalHistoryTrades: SIZING_PREVIEW_MIN_SIGNAL_HISTORY_TRADES,
+  });
+  notes.push(...probability.notes);
   const sizing = sizeBinaryPosition({
     bankroll: MAX_BANKROLL,
     availableCash: portfolio.cash,
     minSize: SIZING_PREVIEW_MIN_SIZE,
     maxSize: SIZING_PREVIEW_MAX_SIZE,
     entryPrice: signal.entryPrice,
-    winProbability: signal.confidence,
+    winProbability: probability.probability ?? Number.NaN,
     kellyFraction: SIZING_PREVIEW_KELLY_FRACTION,
     maxBankrollFraction: SIZING_PREVIEW_MAX_BANKROLL_FRACTION,
   });
@@ -6833,8 +6932,9 @@ function buildCandidateSizingPreview(signal: Signal, portfolio: Portfolio): Cand
     previewSize: sizing.size,
     reason: sizing.reason,
     entryPrice: Number(signal.entryPrice.toFixed(6)),
-    probabilitySource: "signal_confidence_preview",
-    winProbability: Number(signal.confidence.toFixed(6)),
+    probabilitySource: probability.source,
+    winProbability: probability.probability === null ? null : Number(probability.probability.toFixed(6)),
+    probabilitySampleSize: probability.sampleSize,
     edgePts: Number(sizing.edgePts.toFixed(4)),
     rawKellyFraction: Number(sizing.rawKellyFraction.toFixed(6)),
     adjustedKellyFraction: Number(sizing.adjustedKellyFraction.toFixed(6)),
@@ -6858,12 +6958,16 @@ function buildCandidateActions(portfolio: Portfolio, weights: SignalWeight[], si
     })
     .map((position) => ({ positionId: position.id, signalType: position.signalType, asset: position.asset }));
   const llmCloseEligibility = portfolio.positions.map((position) => llmCloseEligibilityForPosition(position, latestRow, snapshots));
+  const probabilityInputs = {
+    calibrationBuckets: loadNoBiasCalibrationBuckets(),
+    signalHistories: sizingSignalHistories(weights),
+  };
   return {
     generatedAt: new Date().toISOString(),
     mechanicalExits,
     signalKillExits,
     entryCandidates: signals,
-    sizingPreviews: signals.map((signal) => buildCandidateSizingPreview(signal, portfolio)),
+    sizingPreviews: signals.map((signal) => buildCandidateSizingPreview(signal, portfolio, probabilityInputs)),
     llmCloseEligibility,
   };
 }

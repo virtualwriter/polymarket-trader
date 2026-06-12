@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { binaryKellyFraction, sizeBinaryPosition } from "./sizing.js";
+import { binaryKellyFraction, resolveSizingProbability, sizeBinaryPosition } from "./sizing.js";
 
 describe("trading sizing helpers", () => {
   it("computes binary Kelly fraction from model probability and entry price", () => {
@@ -84,5 +84,79 @@ describe("trading sizing helpers", () => {
       entryPrice: 0.4,
       winProbability: 0.55,
     }).reason).toBe("no_cash");
+  });
+
+  it("prefers sampled calibration buckets over signal history", () => {
+    const probability = resolveSizingProbability({
+      signalType: "NO_BIAS_ADJUSTED_GAP_SHADOW",
+      asset: "BTC",
+      fallbackConfidence: 0.51,
+      calibrationBuckets: [
+        { signalType: "NO_BIAS_ADJUSTED_GAP_SHADOW", asset: "BTC", n: 8, winRate: 0.75, label: "BTC gate" },
+      ],
+      signalHistories: [
+        { signalType: "NO_BIAS_ADJUSTED_GAP_SHADOW", trades: 20, wins: 10 },
+      ],
+      minCalibrationEvents: 5,
+    });
+
+    expect(probability).toMatchObject({
+      probability: 0.75,
+      source: "calibration_bucket",
+      sampleSize: 8,
+    });
+    expect(probability.notes[0]).toContain("BTC gate");
+  });
+
+  it("falls through undersampled calibration to asset and family history", () => {
+    const assetProbability = resolveSizingProbability({
+      signalType: "PC_RATIO_EXTREME_HIGH",
+      asset: "BTC",
+      fallbackConfidence: 0.2,
+      calibrationBuckets: [
+        { signalType: "PC_RATIO_EXTREME_HIGH", asset: "BTC", n: 2, winRate: 1 },
+      ],
+      signalHistories: [
+        {
+          signalType: "PC_RATIO_EXTREME_HIGH",
+          trades: 26,
+          wins: 15,
+          perAsset: { BTC: { trades: 6, wins: 3 } },
+        },
+      ],
+    });
+
+    expect(assetProbability.source).toBe("signal_asset_history");
+    expect(assetProbability.probability).toBeCloseTo(4 / 8, 8);
+
+    const familyProbability = resolveSizingProbability({
+      signalType: "PC_RATIO_EXTREME_LOW",
+      asset: "GOLD",
+      fallbackConfidence: 0.2,
+      signalHistories: [
+        { signalType: "PC_RATIO_EXTREME_LOW", trades: 18, wins: 12, perAsset: { GOLD: { trades: 2, wins: 2 } } },
+      ],
+    });
+
+    expect(familyProbability.source).toBe("signal_family_history");
+    expect(familyProbability.probability).toBeCloseTo(13 / 20, 8);
+  });
+
+  it("falls back to signal confidence when no sampled evidence is available", () => {
+    const probability = resolveSizingProbability({
+      signalType: "NEW_SIGNAL",
+      asset: "ETH",
+      fallbackConfidence: 0.42,
+      signalHistories: [
+        { signalType: "NEW_SIGNAL", trades: 2, wins: 2 },
+      ],
+    });
+
+    expect(probability).toMatchObject({
+      probability: 0.42,
+      source: "signal_confidence_fallback",
+      sampleSize: null,
+    });
+    expect(probability.notes.join(" ")).toContain("Falling back");
   });
 });

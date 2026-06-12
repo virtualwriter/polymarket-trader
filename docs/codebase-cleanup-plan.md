@@ -532,6 +532,7 @@ Recent committed cleanup state:
 - Continued scanner cleanup by moving valuation CSV row construction into `scripts/lib/scanner/output.ts`. This is pure output shaping; scanner output fixture compare stayed matched.
 - Started the quant-upgrade foundation work from `docs/quant-model-roadmap.md` by adding tested binary fractional-Kelly sizing math in `scripts/lib/trading/sizing.ts`. This is not wired into live entries yet; behavior-changing sizing must be fixture-gated separately.
 - Continued the quant-upgrade sizing work by adding preview-only `candidate-actions.json` sizing metadata. Live `TRADE_SIZE` entries remain unchanged; the engine fixture drift is expected to be schema-only for this new read-only artifact field.
+- Improved sizing previews by replacing raw confidence-only probability sourcing with a resolver that prefers labeled calibration buckets, then signal/asset history, then signal-family history, then confidence fallback. Live sizing remains unchanged.
 
 ### Completed guardrails
 
@@ -591,6 +592,7 @@ Recent committed cleanup state:
 | Blocked-signal observation helper | `scripts/lib/trading/blocked-signals.ts`, `blocked-signals.test.ts`, `scripts/trading-engine.ts` | Done locally. Blocked-signal observation note construction moved behind a pure helper while keeping engine-owned signal names and thresholds in the engine config. |
 | Fractional-Kelly sizing foundation | `scripts/lib/trading/sizing.ts`, `sizing.test.ts` | Done locally. Adds tested binary-outcome sizing math for the quant roadmap's edge-proportional sizing step; live `TRADE_SIZE` wiring remains intentionally unchanged. |
 | Candidate sizing preview artifact | `scripts/trading-engine.ts`, `scripts/lib/trading/sizing.ts` | Done locally. `candidate-actions.json` now includes read-only `sizingPreviews` for entry candidates; actual open-position size/cash mutation still uses `TRADE_SIZE`. |
+| Sizing probability resolver | `scripts/lib/trading/sizing.ts`, `sizing.test.ts`, `scripts/trading-engine.ts` | Done locally. Sizing previews now prefer labeled NO-bias calibration buckets and signal history before falling back to `signal.confidence`; live size/cash mutation is unchanged. |
 
 ### Completed scanner guardrail slices
 
@@ -662,7 +664,7 @@ Follow-up implemented after this emergency cleanup:
    - After the deeper harness, continue with pure helpers only: config/env parsing, artifact summaries, grouping/counting helpers, and readonly state snapshot builders.
    - Latest slices extracted engine-state summary, signal-health, final state-artifact assembly, LLM truth-state artifact assembly, runtime config helpers, blocked-signal summary helpers, and blocked-signal observation helpers and passed the fixture gate.
    - Avoid changing signal generation, LLM prompts, close/open execution, sizing, or portfolio writes during cleanup-only slices. When implementing the quant roadmap, isolate those behavior changes in dedicated commits with dry-run fixture baselines and explicit expected diffs.
-   - Sizing foundation now exists in `scripts/lib/trading/sizing.ts`; sizing previews now surface in `candidate-actions.json` without changing actual opened position sizes. Next safe behavior-adjacent slice is to replace the temporary `signal.confidence` probability proxy with calibrated bucket probabilities before live sizing.
+   - Sizing foundation now exists in `scripts/lib/trading/sizing.ts`; sizing previews now surface in `candidate-actions.json` without changing actual opened position sizes. Probability sourcing now prefers calibration/history evidence before confidence fallback. Next safe behavior-adjacent slice is portfolio exposure/correlation preview before live sizing.
 
 4. **`market-scanner.ts` module split.**
    - Big source-size win after engine harnessing. Likely targets: Hyperliquid fetch/parse helpers, Polymarket/Gamma fetch helpers, option valuation transforms, and CSV/snapshot writers.
