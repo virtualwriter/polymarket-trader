@@ -529,6 +529,7 @@ Recent committed cleanup state:
 - Continued narrow engine cleanup by moving the blocked-signal learning summary aggregator into `scripts/lib/trading/blocked-signals.ts`. This is a pure read-only summary builder; the engine fixture compare stayed matched.
 - Continued narrow engine cleanup by moving blocked-signal observation note construction into `scripts/lib/trading/blocked-signals.ts`. This is pure journal/context text construction; the engine fixture compare stayed matched.
 - Started the next scanner cleanup slice by moving macro CSV row construction into `scripts/lib/scanner/output.ts`. This is pure output shaping; scanner output fixture compare stayed matched.
+- Continued scanner cleanup by moving valuation CSV row construction into `scripts/lib/scanner/output.ts`. This is pure output shaping; scanner output fixture compare stayed matched.
 
 ### Completed guardrails
 
@@ -596,6 +597,7 @@ Recent committed cleanup state:
 | Scanner output rounding helper | `scripts/lib/scanner/output.ts`, `scripts/market-scanner.ts` | Done locally. Nullable rounding for snapshot/CSV output shaping moved behind the scanner output module; scanner fixture compare passed. |
 | Scanner Hyperliquid snapshot helper | `scripts/lib/scanner/output.ts`, `scripts/market-scanner.ts` | Done locally. Hyperliquid quote snapshot shaping moved behind the scanner output module while preserving GOLD/OIL alias behavior. |
 | Scanner macro row helper | `scripts/lib/scanner/output.ts`, `output.test.ts`, `scripts/market-scanner.ts` | Done locally. Macro CSV row construction and event-probability lookups moved behind a pure scanner output helper; scanner fixture compare passed. |
+| Scanner valuation row helper | `scripts/lib/scanner/output.ts`, `output.test.ts`, `scripts/market-scanner.ts` | Done locally. Valuation CSV row construction moved behind a pure scanner output helper while keeping IV/forward/PM EV calculations in the scanner. |
 
 ### Completed VPS disk cleanup
 
@@ -658,7 +660,7 @@ Follow-up implemented after this emergency cleanup:
 
 4. **`market-scanner.ts` module split.**
    - Big source-size win after engine harnessing. Likely targets: Hyperliquid fetch/parse helpers, Polymarket/Gamma fetch helpers, option valuation transforms, and CSV/snapshot writers.
-   - Initial scanner output fixture harness now exists, and CSV/snapshot append, nullable rounding, Hyperliquid snapshot, and macro row helpers have been extracted. Next safe slice: extract pure scanner valuation row builders, then build deeper fixed API fixtures before touching fetch/parse behavior.
+   - Initial scanner output fixture harness now exists, and CSV/snapshot append, nullable rounding, Hyperliquid snapshot, macro row, and valuation row helpers have been extracted. Next safe slice: build deeper fixed API fixtures before touching fetch/parse behavior.
 
 5. **Heatmap report split.**
    - `scripts/cross_venue_relative_value_report.py` is still a large Python monolith.

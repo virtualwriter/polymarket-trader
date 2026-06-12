@@ -167,3 +167,120 @@ export function buildScannerMacroCsvRow(inputs: {
     gpu_h100_hit_300: gpuHitProbability("$3.00"),
   };
 }
+
+interface ScannerIvTenor {
+  iv: number;
+}
+
+interface ScannerPmTouchValue {
+  ev?: number | null;
+  impliedVol?: number | null;
+  medianMax?: number | null;
+  medianMin?: number | null;
+}
+
+export function buildScannerValuationCsvRow(inputs: {
+  date: string;
+  btcSpot: number | null;
+  btcFwd: number | null;
+  btcPm: ScannerPmTouchValue | null;
+  btcIv30: ScannerIvTenor | null;
+  btcIv90: ScannerIvTenor | null;
+  btcFundingAnnualized: number | null | undefined;
+  btcOpenInterestUsd: number | null | undefined;
+  btcPcRatio: number | null;
+  hypeSpot: number | null;
+  hypePm: ScannerPmTouchValue | null;
+  hypeFundingAnnualized: number | null | undefined;
+  hypeOpenInterestUsd: number | null | undefined;
+  goldGcSpot: number | null;
+  goldFwd: number | null;
+  goldSettleEV: number | null;
+  goldPm: ScannerPmTouchValue | null;
+  goldIv30: ScannerIvTenor | null;
+  goldIv90: ScannerIvTenor | null;
+  goldFundingAnnualized: number | null | undefined;
+  goldPcRatio: number | null;
+  amznStock: number | null;
+  amznHlPerp: number | null;
+  amznFwd: number | null;
+  amznIv30: ScannerIvTenor | null;
+  amznIv90: ScannerIvTenor | null;
+  amznFundingAnnualized: number | null | undefined;
+  amznBasis: number | null;
+  amznPcRatio: number | null;
+  oilWti: number | null;
+  oilBrent: number | null;
+  oilSpread: number | null;
+  oilFwd: number | null;
+  oilSettleEV: number | null;
+  oilPm: ScannerPmTouchValue | null;
+  oilIv30: ScannerIvTenor | null;
+  oilIv90: ScannerIvTenor | null;
+  oilFundingAnnualized: number | null | undefined;
+  oilPcRatio: number | null;
+  spySpot: number | null;
+  silverSpot: number | null;
+  ethSpot: number | null;
+  solSpot: number | null;
+}): Record<string, number | string | null> {
+  const r = roundNullable;
+  return {
+    date: inputs.date,
+    btc_spot: r(inputs.btcSpot, 0),
+    btc_opt_fwd_90d: r(inputs.btcFwd, 0),
+    btc_pm_ev: r(inputs.btcPm?.ev, 0),
+    btc_opt_iv_30d: r(inputs.btcIv30?.iv ? inputs.btcIv30.iv * 100 : null, 1),
+    btc_opt_iv_90d: r(inputs.btcIv90?.iv ? inputs.btcIv90.iv * 100 : null, 1),
+    btc_opt_iv_term_spread: r(
+      inputs.btcIv30?.iv && inputs.btcIv90?.iv ? (inputs.btcIv30.iv * 100) - (inputs.btcIv90.iv * 100) : null,
+      2,
+    ),
+    btc_pm_iv: r(inputs.btcPm?.impliedVol ? inputs.btcPm.impliedVol * 100 : null, 1),
+    btc_hl_funding_ann: r(inputs.btcFundingAnnualized ? inputs.btcFundingAnnualized * 100 : null, 2),
+    btc_hl_oi: r(inputs.btcOpenInterestUsd, 0),
+    btc_med_max: r(inputs.btcPm?.medianMax, 0),
+    btc_med_min: r(inputs.btcPm?.medianMin, 0),
+    btc_ibit_pc_ratio: r(inputs.btcPcRatio, 3),
+    hype_spot: r(inputs.hypeSpot, 4),
+    hype_pm_ev: r(inputs.hypePm?.ev, 2),
+    hype_pm_iv: r(inputs.hypePm?.impliedVol ? inputs.hypePm.impliedVol * 100 : null, 1),
+    hype_hl_funding_ann: r(inputs.hypeFundingAnnualized ? inputs.hypeFundingAnnualized * 100 : null, 2),
+    hype_hl_oi: r(inputs.hypeOpenInterestUsd, 0),
+    hype_med_max: r(inputs.hypePm?.medianMax, 1),
+    hype_med_min: r(inputs.hypePm?.medianMin, 1),
+    gold_gc_spot: r(inputs.goldGcSpot, 0),
+    gold_gld_spot: null,
+    gold_opt_fwd_90d: r(inputs.goldFwd, 0),
+    gold_pm_settle_ev: r(inputs.goldSettleEV, 0),
+    gold_opt_iv_30d: r(inputs.goldIv30?.iv ? inputs.goldIv30.iv * 100 : null, 1),
+    gold_opt_iv_90d: r(inputs.goldIv90?.iv ? inputs.goldIv90.iv * 100 : null, 1),
+    gold_pm_iv: r(inputs.goldPm?.impliedVol ? inputs.goldPm.impliedVol * 100 : null, 1),
+    gold_hl_funding_ann: r(inputs.goldFundingAnnualized ? inputs.goldFundingAnnualized * 100 : null, 2),
+    gold_med_max: r(inputs.goldPm?.medianMax, 0),
+    gold_med_min: r(inputs.goldPm?.medianMin, 0),
+    gold_gld_pc_ratio: r(inputs.goldPcRatio, 3),
+    amzn_stock: r(inputs.amznStock, 2),
+    amzn_hl_perp: r(inputs.amznHlPerp, 2),
+    amzn_opt_fwd_90d: r(inputs.amznFwd, 2),
+    amzn_opt_iv_30d: r(inputs.amznIv30?.iv ? inputs.amznIv30.iv * 100 : null, 1),
+    amzn_opt_iv_90d: r(inputs.amznIv90?.iv ? inputs.amznIv90.iv * 100 : null, 1),
+    amzn_hl_funding_ann: r(inputs.amznFundingAnnualized ? inputs.amznFundingAnnualized * 100 : null, 2),
+    amzn_hl_basis_pct: r(inputs.amznBasis, 2),
+    amzn_pc_ratio: r(inputs.amznPcRatio, 3),
+    oil_wti_spot: r(inputs.oilWti, 2),
+    oil_brent_spot: r(inputs.oilBrent, 2),
+    oil_brent_wti_spread: r(inputs.oilSpread, 1),
+    oil_opt_fwd_90d: r(inputs.oilFwd, 1),
+    oil_pm_settle_ev: r(inputs.oilSettleEV, 1),
+    oil_opt_iv_30d: r(inputs.oilIv30?.iv ? inputs.oilIv30.iv * 100 : null, 1),
+    oil_opt_iv_90d: r(inputs.oilIv90?.iv ? inputs.oilIv90.iv * 100 : null, 1),
+    oil_pm_iv: r(inputs.oilPm?.impliedVol ? inputs.oilPm.impliedVol * 100 : null, 1),
+    oil_hl_funding_ann: r(inputs.oilFundingAnnualized ? inputs.oilFundingAnnualized * 100 : null, 2),
+    oil_cl_pc_ratio: r(inputs.oilPcRatio, 3),
+    spy_spot: r(inputs.spySpot, 2),
+    silver_spot: r(inputs.silverSpot, 4),
+    eth_spot: r(inputs.ethSpot, 2),
+    sol_spot: r(inputs.solSpot, 4),
+  };
+}

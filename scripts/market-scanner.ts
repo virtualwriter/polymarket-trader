@@ -14,7 +14,7 @@
 
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
-import { appendScannerCsvRow, appendScannerJsonl, buildScannerHyperliquidSnapshot, buildScannerMacroCsvRow, roundNullable } from "./lib/scanner/output.js";
+import { appendScannerCsvRow, appendScannerJsonl, buildScannerHyperliquidSnapshot, buildScannerMacroCsvRow, buildScannerValuationCsvRow, roundNullable } from "./lib/scanner/output.js";
 import { enrichStrikesFromClob } from "./polymarket-clob-book.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -2236,51 +2236,51 @@ function writeSnapshot(
 
   const r = roundNullable;
 
-  appendCsvRow(VALUATION_CSV, VALUATION_HEADERS, {
+  appendCsvRow(VALUATION_CSV, VALUATION_HEADERS, buildScannerValuationCsvRow({
     date: today,
-    btc_spot: r(btcSpot, 0), btc_opt_fwd_90d: r(btcFwd, 0), btc_pm_ev: r(btcPm?.ev, 0),
-    btc_opt_iv_30d: r(btcIv30?.iv ? btcIv30.iv * 100 : null, 1),
-    btc_opt_iv_90d: r(btcIv90?.iv ? btcIv90.iv * 100 : null, 1),
-    btc_opt_iv_term_spread: r(
-      btcIv30?.iv && btcIv90?.iv ? (btcIv30.iv * 100) - (btcIv90.iv * 100) : null,
-      2,
-    ),
-    btc_pm_iv: r(btcPm?.impliedVol ? btcPm.impliedVol * 100 : null, 1),
-    btc_hl_funding_ann: r(hl.BTC?.fundingAnnualized ? hl.BTC.fundingAnnualized * 100 : null, 2),
-    btc_hl_oi: r(hl.BTC?.openInterestUsd, 0),
-    btc_med_max: r(btcPm?.medianMax, 0), btc_med_min: r(btcPm?.medianMin, 0),
-    btc_ibit_pc_ratio: r(opts.IBIT ? pcRatioFromChains(opts.IBIT.chains) : null, 3),
-    hype_spot: r(hypeSpot, 4), hype_pm_ev: r(hypePm?.ev, 2),
-    hype_pm_iv: r(hypePm?.impliedVol ? hypePm.impliedVol * 100 : null, 1),
-    hype_hl_funding_ann: r(hl.HYPE?.fundingAnnualized ? hl.HYPE.fundingAnnualized * 100 : null, 2),
-    hype_hl_oi: r(hl.HYPE?.openInterestUsd, 0),
-    hype_med_max: r(hypePm?.medianMax, 1), hype_med_min: r(hypePm?.medianMin, 1),
-    gold_gc_spot: r(goldGcSpot, 0), gold_gld_spot: null,
-    gold_opt_fwd_90d: r(goldFwd, 0), gold_pm_settle_ev: r(goldSettleEV, 0),
-    gold_opt_iv_30d: r(goldIv30?.iv ? goldIv30.iv * 100 : null, 1),
-    gold_opt_iv_90d: r(goldIv90?.iv ? goldIv90.iv * 100 : null, 1),
-    gold_pm_iv: r(goldPm?.impliedVol ? goldPm.impliedVol * 100 : null, 1),
-    gold_hl_funding_ann: r(hl["GOLD (GC)"]?.fundingAnnualized ? hl["GOLD (GC)"].fundingAnnualized * 100 : null, 2),
-    gold_med_max: r(goldPm?.medianMax, 0), gold_med_min: r(goldPm?.medianMin, 0),
-    gold_gld_pc_ratio: r(goldPcOptions ? pcRatioFromChains(goldPcOptions.chains) : null, 3),
-    amzn_stock: r(amznStock, 2), amzn_hl_perp: r(amznHlPerp, 2),
-    amzn_opt_fwd_90d: r(amznFwd, 2),
-    amzn_opt_iv_30d: r(amznIv30?.iv ? amznIv30.iv * 100 : null, 1),
-    amzn_opt_iv_90d: r(amznIv90?.iv ? amznIv90.iv * 100 : null, 1),
-    amzn_hl_funding_ann: r(hl["AMZN"]?.fundingAnnualized ? hl["AMZN"].fundingAnnualized * 100 : null, 2),
-    amzn_hl_basis_pct: r(amznBasis, 2),
-    amzn_pc_ratio: r(opts.AMZN ? pcRatioFromChains(opts.AMZN.chains) : null, 3),
-    oil_wti_spot: r(oilWti, 2), oil_brent_spot: r(oilBrent, 2),
-    oil_brent_wti_spread: r(oilSpread, 1),
-    oil_opt_fwd_90d: r(oilFwd, 1), oil_pm_settle_ev: r(oilSettleEV, 1),
-    oil_opt_iv_30d: r(oilIv30?.iv ? oilIv30.iv * 100 : null, 1),
-    oil_opt_iv_90d: r(oilIv90?.iv ? oilIv90.iv * 100 : null, 1),
-    oil_pm_iv: r(oilPm?.impliedVol ? oilPm.impliedVol * 100 : null, 1),
-    oil_hl_funding_ann: r(hl["OIL (CL)"]?.fundingAnnualized ? hl["OIL (CL)"].fundingAnnualized * 100 : null, 2),
-    oil_cl_pc_ratio: r(oilPcOptions ? pcRatioFromChains(oilPcOptions.chains) : null, 3),
-    spy_spot: r(spySpot, 2), silver_spot: r(silverSpot, 4),
-    eth_spot: r(ethSpot, 2), sol_spot: r(solSpot, 4),
-  });
+    btcSpot,
+    btcFwd,
+    btcPm,
+    btcIv30,
+    btcIv90,
+    btcFundingAnnualized: hl.BTC?.fundingAnnualized,
+    btcOpenInterestUsd: hl.BTC?.openInterestUsd,
+    btcPcRatio: opts.IBIT ? pcRatioFromChains(opts.IBIT.chains) : null,
+    hypeSpot,
+    hypePm,
+    hypeFundingAnnualized: hl.HYPE?.fundingAnnualized,
+    hypeOpenInterestUsd: hl.HYPE?.openInterestUsd,
+    goldGcSpot,
+    goldFwd,
+    goldSettleEV,
+    goldPm,
+    goldIv30,
+    goldIv90,
+    goldFundingAnnualized: hl["GOLD (GC)"]?.fundingAnnualized,
+    goldPcRatio: goldPcOptions ? pcRatioFromChains(goldPcOptions.chains) : null,
+    amznStock,
+    amznHlPerp,
+    amznFwd,
+    amznIv30,
+    amznIv90,
+    amznFundingAnnualized: hl["AMZN"]?.fundingAnnualized,
+    amznBasis,
+    amznPcRatio: opts.AMZN ? pcRatioFromChains(opts.AMZN.chains) : null,
+    oilWti,
+    oilBrent,
+    oilSpread,
+    oilFwd,
+    oilSettleEV,
+    oilPm,
+    oilIv30,
+    oilIv90,
+    oilFundingAnnualized: hl["OIL (CL)"]?.fundingAnnualized,
+    oilPcRatio: oilPcOptions ? pcRatioFromChains(oilPcOptions.chains) : null,
+    spySpot,
+    silverSpot,
+    ethSpot,
+    solSpot,
+  }));
 
   // ── Macro row ──
   const ms = computeMacroScore(macro, pm, hl, opts);
