@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { summarizeBlockedSignals } from "./blocked-signals.js";
+import { buildBlockedSignalObservations, summarizeBlockedSignals } from "./blocked-signals.js";
 
 const baseShadow = {
   status: "resolved" as const,
@@ -65,5 +65,44 @@ describe("blocked signal summary", () => {
         thesis: "fixture",
       },
     ]);
+  });
+});
+
+const observationConfig = {
+  staleLotteryTicketNoSignal: "STALE_LOTTERY_TICKET_NO",
+  oneTouchHighEdgeSignalNo: "ONE_TOUCH_HIGH_EDGE_NO",
+  oneTouchHighEdgeSignalYes: "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+  oneTouchNoShadowMinSellYesEdgePts: 1,
+  oneTouchNoShadowMaxSpread: 0.03,
+  oneTouchNoShadowMinLiquidity: 5000,
+};
+
+describe("blocked signal observations", () => {
+  it("emits stable notes for core shadow families", () => {
+    const notes = buildBlockedSignalObservations({
+      bySignal: [
+        { signalType: "OPT_IV_GT_PM_IV_DOWNSIDE", resolved: 4, wouldHaveWon: 4, wouldHaveLost: 0, avgPnlPct: 12.34 },
+        { signalType: "MONOTONIC_ARB", resolved: 3, wouldHaveWon: 1, wouldHaveLost: 2, avgPnlPct: -1.23 },
+        { signalType: "USER_MANUAL", resolved: 3, wouldHaveWon: 0, wouldHaveLost: 3, avgPnlPct: -5 },
+      ],
+    }, observationConfig);
+
+    expect(notes).toEqual([
+      "OPT_IV_GT_PM_IV missing downside leg is profitable: 4/4 below-contract shadows would have won. The engine is leaving money on the table by ignoring the downside contract.",
+      "MONOTONIC_ARB setup category has execution/model breaks: 2/3 shadow packages lost money despite locked-edge screening, avg P&L -1.23%.",
+      "USER_MANUAL manual shadow signal is weak: 3/3 shadows would have lost, avg P&L -5.00%.",
+    ]);
+  });
+
+  it("uses configured one-touch thresholds in observation text", () => {
+    const notes = buildBlockedSignalObservations({
+      bySignal: [
+        { signalType: "ONE_TOUCH_HIGH_EDGE_NO", resolved: 4, wouldHaveWon: 4, wouldHaveLost: 0, avgPnlPct: 20 },
+      ],
+    }, observationConfig);
+
+    expect(notes[0]).toContain("sell_yes_edge_pts >= 1");
+    expect(notes[0]).toContain("spread <= 3c");
+    expect(notes[0]).toContain("liquidity >= 5000");
   });
 });

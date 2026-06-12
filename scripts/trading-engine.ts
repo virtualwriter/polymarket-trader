@@ -34,7 +34,7 @@ import {
   buildLeanArtifactEntries,
   buildLlmTruthStateArtifact,
 } from "./lib/trading/artifacts.js";
-import { summarizeBlockedSignals } from "./lib/trading/blocked-signals.js";
+import { buildBlockedSignalObservations, summarizeBlockedSignals } from "./lib/trading/blocked-signals.js";
 import { parseEngineCliFlags, resolveEnginePathConfig } from "./lib/trading/config.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
@@ -162,6 +162,14 @@ const NO_BIAS_ADJUSTED_GAP_REASON = "no_bias_adjusted_gap_shadow";
 const NO_BIAS_ADJUSTED_GAP_HOLD_DAYS = 7;
 const NO_BIAS_ADJUSTED_GAP_MAX_SPREAD = 0.02;
 const NO_BIAS_ADJUSTED_GAP_MIN_LIQUIDITY = 5_000;
+const BLOCKED_SIGNAL_OBSERVATION_CONFIG = {
+  staleLotteryTicketNoSignal: STALE_LOTTERY_TICKET_NO_SIGNAL,
+  oneTouchHighEdgeSignalNo: ONE_TOUCH_HIGH_EDGE_SIGNAL_NO,
+  oneTouchHighEdgeSignalYes: ONE_TOUCH_HIGH_EDGE_SIGNAL_YES,
+  oneTouchNoShadowMinSellYesEdgePts: ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS,
+  oneTouchNoShadowMaxSpread: ONE_TOUCH_NO_SHADOW_MAX_SPREAD,
+  oneTouchNoShadowMinLiquidity: ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY,
+};
 const LONG_DATED_POLYMARKET_HOLD_DAYS = 90;
 const HYPE_STOCK_BUILDER_ASSETS = new Set([
   "AAPL", "AMD", "AMZN", "ARM", "BABA", "BIRD", "BX", "CBRS", "COIN",
@@ -4601,74 +4609,6 @@ function oneTouchBucketObservations(blockedSignals: BlockedSignalShadow[]): stri
   ];
 }
 
-function blockedSignalObservations(summary: BlockedSignalLearningSummary): string[] {
-  const notes: string[] = [];
-  for (const row of summary.bySignal) {
-    if (row.resolved < 3) continue;
-    if (row.signalType.endsWith("_DOWNSIDE")) {
-      // IV divergence missing-leg shadows
-      const base = row.signalType.replace("_DOWNSIDE", "");
-      if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
-        notes.push(`${base} missing downside leg is profitable: ${row.wouldHaveWon}/${row.resolved} below-contract shadows would have won. The engine is leaving money on the table by ignoring the downside contract.`);
-      } else if (row.wouldHaveLost >= row.wouldHaveWon + 2) {
-        notes.push(`${base} missing downside leg is unprofitable: ${row.wouldHaveLost}/${row.resolved} below-contract shadows would have lost. The current upside-only approach appears correct.`);
-      } else {
-        notes.push(`${base} missing downside leg is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
-      }
-    } else if (row.signalType.endsWith("_PM_PROXY_SHORT")) {
-      const base = row.signalType.replace("_PM_PROXY_SHORT", "");
-      if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
-        notes.push(`${base} Polymarket proxy short is promising: ${row.wouldHaveWon}/${row.resolved} NO-upside proxy shorts would have won, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
-      } else if (row.wouldHaveLost >= row.wouldHaveWon + 2) {
-        notes.push(`${base} Polymarket proxy short is weak: ${row.wouldHaveLost}/${row.resolved} NO-upside proxy shorts would have lost, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
-      } else {
-        notes.push(`${base} Polymarket proxy short is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
-      }
-    } else if (row.signalType === "MONOTONIC_ARB") {
-      if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
-        notes.push(`MONOTONIC_ARB setup category is validating: ${row.wouldHaveWon}/${row.resolved} shadow packages settled profitably, avg P&L ${row.avgPnlPct.toFixed(2)}%. Review fee/slippage assumptions before live promotion.`);
-      } else if (row.wouldHaveLost > 0) {
-        notes.push(`MONOTONIC_ARB setup category has execution/model breaks: ${row.wouldHaveLost}/${row.resolved} shadow packages lost money despite locked-edge screening, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
-      } else {
-        notes.push(`MONOTONIC_ARB setup category is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadow packages, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
-      }
-    } else if (row.signalType === STALE_LOTTERY_TICKET_NO_SIGNAL) {
-      if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
-        notes.push(`STALE_LOTTERY_TICKET_NO shadow is validating: ${row.wouldHaveWon}/${row.resolved} far-OTM NO shadows would have won, avg P&L ${row.avgPnlPct.toFixed(2)}%. The market is repricing stale lottery premium and the shadow is collecting it.`);
-      } else if (row.wouldHaveLost >= row.wouldHaveWon + 2) {
-        notes.push(`STALE_LOTTERY_TICKET_NO shadow is weak: ${row.wouldHaveLost}/${row.resolved} far-OTM NO shadows would have lost, avg P&L ${row.avgPnlPct.toFixed(2)}%. Either model touch prob is biased low or PM is pricing tails efficiently.`);
-      } else {
-        notes.push(`STALE_LOTTERY_TICKET_NO shadow is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
-      }
-    } else if (row.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO || row.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_YES) {
-      const side = row.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO ? "NO-only sell-YES-edge" : "YES exploratory";
-      if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
-        notes.push(`${side} one-touch shadow is validating: ${row.wouldHaveWon}/${row.resolved} shadows won, avg P&L ${row.avgPnlPct.toFixed(2)}%. For new touch-market shadows, keep NO-only, sell_yes_edge_pts >= ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}, spread <= ${(ONE_TOUCH_NO_SHADOW_MAX_SPREAD * 100).toFixed(0)}c, liquidity >= ${ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY}, and exit when edge disappears.`);
-      } else if (row.wouldHaveLost >= row.wouldHaveWon + 2) {
-        notes.push(`${side} one-touch shadow is weak: ${row.wouldHaveLost}/${row.resolved} shadows lost, avg P&L ${row.avgPnlPct.toFixed(2)}%. Do not promote YES contracts or sell_yes_edge_pts < ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}; continue bucketing NO edge size before sizing from edge magnitude.`);
-      } else {
-        notes.push(`${side} one-touch shadow is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%). Use edge as a gate, not a sizing multiplier, until edge-size buckets have more data.`);
-      }
-    } else if (row.signalType.startsWith("USER_")) {
-      if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
-        notes.push(`${row.signalType} manual shadow signal is promising: ${row.wouldHaveWon}/${row.resolved} shadows would have won, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
-      } else if (row.wouldHaveLost >= row.wouldHaveWon + 2) {
-        notes.push(`${row.signalType} manual shadow signal is weak: ${row.wouldHaveLost}/${row.resolved} shadows would have lost, avg P&L ${row.avgPnlPct.toFixed(2)}%.`);
-      } else {
-        notes.push(`${row.signalType} manual shadow signal is inconclusive (${row.wouldHaveWon}W/${row.wouldHaveLost}L across ${row.resolved} resolved shadows, avg P&L ${row.avgPnlPct.toFixed(2)}%).`);
-      }
-    } else {
-      // Trend-blocked shadows
-      if (row.wouldHaveWon >= row.wouldHaveLost + 2) {
-        notes.push(`${row.signalType} trend filter may be too strict: ${row.wouldHaveWon}/${row.resolved} blocked trades would have won.`);
-      } else if (row.wouldHaveLost >= row.wouldHaveWon + 2) {
-        notes.push(`${row.signalType} trend filter is avoiding losses: ${row.wouldHaveLost}/${row.resolved} blocked trades would have lost.`);
-      }
-    }
-  }
-  return notes;
-}
-
 function finalizeSignal(
   signal: Signal,
   rows: SnapshotRow[],
@@ -7960,7 +7900,7 @@ async function main() {
   let proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   let blockedSummary = summarizeBlockedSignals(blockedSignals);
   let oneTouchBucketObs = oneTouchBucketObservations(blockedSignals);
-  let blockedObs = [...blockedSignalObservations(blockedSummary), ...proxyComparisonObs, ...oneTouchBucketObs];
+  let blockedObs = [...buildBlockedSignalObservations(blockedSummary, BLOCKED_SIGNAL_OBSERVATION_CONFIG), ...proxyComparisonObs, ...oneTouchBucketObs];
   for (const note of blockedObs) console.log(`  Shadow learning: ${note}`);
 
   // Step 2: Update signal weights
@@ -8002,7 +7942,7 @@ async function main() {
   proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   blockedSummary = summarizeBlockedSignals(blockedSignals);
   oneTouchBucketObs = oneTouchBucketObservations(blockedSignals);
-  blockedObs = [...blockedSignalObservations(blockedSummary), ...proxyComparisonObs, ...oneTouchBucketObs];
+  blockedObs = [...buildBlockedSignalObservations(blockedSummary, BLOCKED_SIGNAL_OBSERVATION_CONFIG), ...proxyComparisonObs, ...oneTouchBucketObs];
   console.log(`\n  Signals generated: ${signals.length}`);
   for (const s of signals.slice(0, 8)) {
     console.log(`    ${s.asset} ${s.direction} (${s.type}) confidence=${s.confidence.toFixed(3)} — ${s.thesis.slice(0, 70)}`);
@@ -8109,7 +8049,7 @@ async function main() {
       proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
       blockedSummary = summarizeBlockedSignals(blockedSignals);
       oneTouchBucketObs = oneTouchBucketObservations(blockedSignals);
-      blockedObs = [...blockedSignalObservations(blockedSummary), ...proxyComparisonObs, ...oneTouchBucketObs];
+      blockedObs = [...buildBlockedSignalObservations(blockedSummary, BLOCKED_SIGNAL_OBSERVATION_CONFIG), ...proxyComparisonObs, ...oneTouchBucketObs];
     }
     llmState.lastCallAt = new Date().toISOString();
     llmState.lastCallReasons = cadence.reasons;
