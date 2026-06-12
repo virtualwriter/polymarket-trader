@@ -223,3 +223,19 @@ export function buildEngineStateArtifact<TDataFreshness, TPortfolio, TOpenPositi
     learningParams: inputs.learningParams,
   };
 }
+
+export interface LlmTruthStateArtifactInputs<TContaminationRule, TSetupFamily> {
+  generatedAt?: string;
+  contaminationRules: TContaminationRule[];
+  setupFamilies: TSetupFamily[];
+}
+
+export function buildLlmTruthStateArtifact<TContaminationRule, TSetupFamily>(
+  inputs: LlmTruthStateArtifactInputs<TContaminationRule, TSetupFamily>,
+) {
+  return {
+    generatedAt: inputs.generatedAt ?? new Date().toISOString(),
+    contaminationRules: inputs.contaminationRules,
+    setupFamilies: inputs.setupFamilies,
+  };
+}

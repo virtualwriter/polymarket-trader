@@ -14,7 +14,7 @@
 
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
-import { appendScannerCsvRow, appendScannerJsonl, roundNullable } from "./lib/scanner/output.js";
+import { appendScannerCsvRow, appendScannerJsonl, buildScannerHyperliquidSnapshot, roundNullable } from "./lib/scanner/output.js";
 import { enrichStrikesFromClob } from "./polymarket-clob-book.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -2324,41 +2324,7 @@ function writeSnapshot(
     gpu_h100_hit_300: findGpuP(gpu, "$3.00"),
   });
 
-  const hyperliquidSnapshot: Record<string, {
-    markPx: number | null;
-    fundingAnnualized: number | null;
-    openInterestUsd: number | null;
-    bestBid: number | null;
-    bestAsk: number | null;
-    spread: number | null;
-  }> = {};
-  for (const [asset, quote] of Object.entries(hl)) {
-    if (asset === "GOLD (GC)" || asset === "OIL (CL)" || asset === "BRENT OIL") continue;
-    hyperliquidSnapshot[asset] = {
-      markPx: r(quote?.markPx ?? null, 6),
-      fundingAnnualized: r(quote?.fundingAnnualized ?? null, 6),
-      openInterestUsd: r(quote?.openInterestUsd ?? null, 2),
-      bestBid: r(quote?.bestBid ?? null, 6),
-      bestAsk: r(quote?.bestAsk ?? null, 6),
-      spread: r(quote?.spread ?? null, 6),
-    };
-  }
-  hyperliquidSnapshot.GOLD = {
-    markPx: r(hl["GOLD (GC)"]?.markPx ?? null, 6),
-    fundingAnnualized: r(hl["GOLD (GC)"]?.fundingAnnualized ?? null, 6),
-    openInterestUsd: r(hl["GOLD (GC)"]?.openInterestUsd ?? null, 2),
-    bestBid: r(hl["GOLD (GC)"]?.bestBid ?? null, 6),
-    bestAsk: r(hl["GOLD (GC)"]?.bestAsk ?? null, 6),
-    spread: r(hl["GOLD (GC)"]?.spread ?? null, 6),
-  };
-  hyperliquidSnapshot.OIL = {
-    markPx: r(hl["OIL (CL)"]?.markPx ?? null, 6),
-    fundingAnnualized: r(hl["OIL (CL)"]?.fundingAnnualized ?? null, 6),
-    openInterestUsd: r(hl["OIL (CL)"]?.openInterestUsd ?? null, 2),
-    bestBid: r(hl["OIL (CL)"]?.bestBid ?? null, 6),
-    bestAsk: r(hl["OIL (CL)"]?.bestAsk ?? null, 6),
-    spread: r(hl["OIL (CL)"]?.spread ?? null, 6),
-  };
+  const hyperliquidSnapshot = buildScannerHyperliquidSnapshot(hl);
 
   appendInstrumentSnapshot({
     timestamp: today,

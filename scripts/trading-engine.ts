@@ -32,6 +32,7 @@ import {
   buildEngineStateArtifact,
   buildExecutionPlanArtifact,
   buildLeanArtifactEntries,
+  buildLlmTruthStateArtifact,
 } from "./lib/trading/artifacts.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
@@ -6801,7 +6802,7 @@ function buildLlmTruthState(hypotheses: Hypothesis[], weights: SignalWeight[], c
     })
     .sort((a, b) => b.evidenceSummary.cleanTrades + b.evidenceSummary.resolvedShadows - (a.evidenceSummary.cleanTrades + a.evidenceSummary.resolvedShadows));
 
-  return {
+  return buildLlmTruthStateArtifact({
     generatedAt,
     contaminationRules: [
       {
@@ -6812,7 +6813,7 @@ function buildLlmTruthState(hypotheses: Hypothesis[], weights: SignalWeight[], c
       },
     ],
     setupFamilies,
-  };
+  });
 }
 
 function llmCloseEligibilityForPosition(

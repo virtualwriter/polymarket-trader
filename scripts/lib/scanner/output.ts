@@ -47,3 +47,36 @@ export function appendScannerJsonl(dataDir: string, filename: string, value: unk
 export function roundNullable(value: number | null | undefined, decimals = 2): number | null {
   return value != null ? Number(value.toFixed(decimals)) : null;
 }
+
+export interface ScannerHyperliquidQuote {
+  markPx?: number | null;
+  fundingAnnualized?: number | null;
+  openInterestUsd?: number | null;
+  bestBid?: number | null;
+  bestAsk?: number | null;
+  spread?: number | null;
+}
+
+export function scannerHyperliquidQuoteSnapshot(quote: ScannerHyperliquidQuote | null | undefined) {
+  return {
+    markPx: roundNullable(quote?.markPx ?? null, 6),
+    fundingAnnualized: roundNullable(quote?.fundingAnnualized ?? null, 6),
+    openInterestUsd: roundNullable(quote?.openInterestUsd ?? null, 2),
+    bestBid: roundNullable(quote?.bestBid ?? null, 6),
+    bestAsk: roundNullable(quote?.bestAsk ?? null, 6),
+    spread: roundNullable(quote?.spread ?? null, 6),
+  };
+}
+
+export function buildScannerHyperliquidSnapshot(
+  quotes: Record<string, ScannerHyperliquidQuote>,
+) {
+  const snapshot: Record<string, ReturnType<typeof scannerHyperliquidQuoteSnapshot>> = {};
+  for (const [asset, quote] of Object.entries(quotes)) {
+    if (asset === "GOLD (GC)" || asset === "OIL (CL)" || asset === "BRENT OIL") continue;
+    snapshot[asset] = scannerHyperliquidQuoteSnapshot(quote);
+  }
+  snapshot.GOLD = scannerHyperliquidQuoteSnapshot(quotes["GOLD (GC)"]);
+  snapshot.OIL = scannerHyperliquidQuoteSnapshot(quotes["OIL (CL)"]);
+  return snapshot;
+}
