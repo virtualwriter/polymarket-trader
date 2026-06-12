@@ -521,15 +521,17 @@ This section records what has actually been implemented, committed, and pushed d
 | Formatting helpers | `scripts/lib/reporting/format.ts`, `format.test.ts` | Done. USD, percent, model/price, win-rate, and Markdown escaping helpers extracted and tested. |
 | Stats aggregation | `scripts/lib/reporting/stats.ts`, `stats.test.ts` | Done. Outcome/stats aggregation, sorting, grouping, and win-rate helpers extracted and tested. |
 | Position display helpers | `scripts/lib/reporting/position.ts`, `position.test.ts` | Done. Unrealized P&L, market detail, strike extraction, and expiry extraction extracted and tested. |
+| Report row builders | `scripts/lib/reporting/report-builders.ts`, `scripts/trader-performance-report.ts` | Done. CSV/Markdown row builders (`statsCsvRow`, `detailCsvRow`, `table`, `markdownPendingHypotheses`, `markdownOpenShadows`, `buildCsvReport`, `buildMarkdownReport`) now live in a dedicated reporting module; `trader-performance-report.ts` keeps thin wrappers/exports for compatibility. |
 | Open-position LLM clarity | `scripts/trader-performance-report.ts` | Done. CSV and Markdown open-position rows now expose entry model vs current model, current bid/ask, strike/expiry, row source (`snapshot`, `history_exact`, `history_nearest`, `missing`), timestamps, age, and distance. |
 | Provenance tests | `scripts/trader-performance-report.test.ts` | Done. Covers snapshot/nearest/exact/missing row provenance, row distance/age, `pm_no` bid/ask conversion, and model-context notes. |
 | Markdown/CSV row-builder tests | `scripts/trader-performance-report.test.ts` | Done. Covers CSV field placement, detail rows, Markdown escaping, limits, empty states, open shadow rows, pending hypotheses, and full report header shape. |
+| Golden report fixture | `scripts/fixtures/trader-report-golden.ts`, `.expected.csv`, `.expected.md`, `scripts/trader-performance-report.test.ts` | Done. Builds a deterministic synthetic portfolio/trade/shadow/hypothesis/hybrid-bot fixture and asserts full CSV + Markdown output byte-for-byte. |
 
 ### Current cleanup impact
 
-- `scripts/trader-performance-report.ts` is down to about 1,397 lines from the earlier 1,513-line reference.
+- `scripts/trader-performance-report.ts` is down to about 955 lines from the earlier 1,513-line reference; the extracted report-builder module is about 680 lines and is directly unit-tested.
 - Net repository source lines increased because focused tests and shared helpers were added. This is intentional: the immediate gain is safer future cleanup, not raw line deletion.
-- Runtime performance is expected to be effectively unchanged for the report path; the practical gain is improved testability, clearer LLM-facing report rows, and lower risk for the next extractions.
+- Runtime performance is expected to be effectively unchanged for the report path; the practical gain is improved testability, clearer LLM-facing report rows, byte-stable golden report coverage, and lower risk for the next extractions.
 - Trading behavior has not been changed. Each code slice was validated with reporting tests, report smoke output, `npm run cleanup:harness -- --compare ...`, `npm run prod:verify`, and TypeScript/lint checks.
 
 ### Remaining work after this point
@@ -537,30 +539,25 @@ This section records what has actually been implemented, committed, and pushed d
 1. **Commit this documentation update separately.**
    - Include only `docs/codebase-cleanup-plan.md` unless the operator explicitly asks to include unrelated dirty files.
 
-2. **Continue report-only cleanup before touching production monoliths.**
-   - Next safe target: move report row-builder functions (`statsCsvRow`, `detailCsvRow`, `table`, `markdownPendingHypotheses`, `markdownOpenShadows`, `buildCsvReport`, `buildMarkdownReport`) into a dedicated reporting module.
-   - The row-builder tests now provide a safety net for that extraction.
+2. **Continue report-only cleanup using the golden fixture as the safety gate.**
+   - Next safe targets should be smaller than the row-builder extraction: CLI argument parsing, report input loading, or dependency construction around `reportBuilderDeps()`.
    - Keep output shape unchanged and rerun the same harness/report smoke gates.
 
-3. **Add a golden report fixture if report cleanup continues.**
-   - Capture a small synthetic portfolio/shadow/trade fixture and assert deterministic CSV/Markdown output.
-   - This would make later report refactors safer than relying only on live-state smoke reports.
-
-4. **Do not start `trading-engine.ts`, `market-scanner.ts`, or heatmap-report extraction yet.**
+3. **Do not start `trading-engine.ts`, `market-scanner.ts`, or heatmap-report extraction yet.**
    - Those are still higher-risk production monoliths.
    - Before touching them, build a stronger golden harness around signal counts, candidate actions, portfolio output, LLM-disabled paths, and generated state diffs.
 
-5. **Data/git-weight cleanup remains open.**
+4. **Data/git-weight cleanup remains open.**
    - Snapshot retention/offload policy still needs an explicit operator decision.
    - Do not untrack `relative-value/index.html`; Vercel serves `relative-value/` directly.
    - Do not cap `learning-journal.md` until the LLM prompt-window behavior is mapped and tested.
 
-6. **Infra visibility remains open unless separately verified.**
+5. **Infra visibility remains open unless separately verified.**
    - Copy/reference VPS exit-scanner and daily-report wrappers into repo if still missing.
    - Snapshot systemd units into `docs/systemd/` as reference-only docs.
    - Do not deploy wrapper changes without a separate approval and VPS dry run.
 
-7. **Japan monotonic/UpDown remains separate.**
+6. **Japan monotonic/UpDown remains separate.**
    - USA cleanup should not commit or deploy Japan-only monotonic/UpDown changes.
    - If resumed later, use a separate Japan-labeled branch/PR and dedicated dry-run/log comparison.
 

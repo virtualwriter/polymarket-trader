@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 import {
   buildCsvReport,
   buildMarkdownReport,
@@ -12,6 +13,7 @@ import {
   table,
   type Position,
 } from "./trader-performance-report.js";
+import { buildGoldenTraderReport } from "./fixtures/trader-report-golden.js";
 import type { Stats } from "./lib/reporting/stats.js";
 
 const position: Position = {
@@ -288,5 +290,16 @@ describe("trader report row builders", () => {
     expect(csv).toContain("summary,generated_at");
     expect(markdown).toContain("| Position | Signal | Asset | Venue | Direction | Unrealized P&L | Entry | Current | Opened | Model Context | Thesis |");
     expect(markdown).toContain("| None | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | n/a | No open positions |");
+  });
+});
+
+describe("trader report golden fixture", () => {
+  it("keeps full CSV and Markdown output byte-stable", () => {
+    const report = buildGoldenTraderReport();
+    const expectedCsv = readFileSync(new URL("./fixtures/trader-report-golden.expected.csv", import.meta.url), "utf8");
+    const expectedMarkdown = readFileSync(new URL("./fixtures/trader-report-golden.expected.md", import.meta.url), "utf8");
+
+    expect(report.csv).toBe(expectedCsv);
+    expect(report.markdown).toBe(expectedMarkdown);
   });
 });
