@@ -523,6 +523,8 @@ Recent committed cleanup state:
 - Continued scanner output-helper cleanup by moving nullable rounding for snapshot/CSV output shaping into `scripts/lib/scanner/output.ts`. Scanner fixture compare stayed matched.
 - Continued the fixture-gated engine cleanup by moving LLM truth-state artifact assembly into `scripts/lib/trading/artifacts.ts`. A refreshed current fixture baseline compared cleanly after upstream truth-state drift made the older baseline stale.
 - Continued scanner output-helper cleanup by moving Hyperliquid quote snapshot shaping into `scripts/lib/scanner/output.ts`. Scanner fixture compare stayed matched.
+- On 2026-06-12, `npm run cleanup:disk:health` in the USA worktree reported 28.9% filesystem usage / 327.6 GB free in this environment, with no generated-state prune candidates. No cleanup was applied.
+- Strengthened `npm run cleanup:harness` by adding stable schema hashes for the primary engine artifacts (`candidate-actions.json`, `engine-state.json`, `execution-plan.json`, `dry-run-verification.json`, and `llm-truth-state.json`). The existing engine fixture replay baseline/compare cycle stayed matched.
 
 ### Completed guardrails
 
@@ -570,6 +572,7 @@ Recent committed cleanup state:
 | Slice | Files | Status |
 |-------|-------|--------|
 | Stronger dry-run harness shape | `scripts/cleanup-dry-run-harness.ts` | Done. Harness now records execution-plan counts, dry-run verification checks, truth-state counts, entry-by-asset, and LLM-close eligibility counts. |
+| Engine artifact schema hashes | `scripts/cleanup-dry-run-harness.ts`, `docs/cleanup-dry-run-harness.md` | Done. Fixture comparisons now include stable schema hashes and top-level keys for candidate-actions, engine-state, execution-plan, dry-run verification, and LLM truth-state artifacts. |
 | Lean artifact entry helper | `scripts/lib/trading/artifacts.ts`, `scripts/trading-engine.ts` | Done. Extracted a pure helper that builds the lean artifact write list while leaving file names and write behavior in the engine. |
 | Execution/dry-run artifact builders | `scripts/lib/trading/artifacts.ts`, `scripts/trading-engine.ts` | Done. Extracted pure helpers for execution-plan shape and dry-run verification payloads while leaving timestamps, flags, and writes orchestrated by the engine. |
 | Engine state summary helpers | `scripts/lib/trading/artifacts.ts`, `scripts/trading-engine.ts` | Done locally. Extracted pure helpers for data-freshness and portfolio-summary artifact shapes; fixture replay compare passed with no output drift. |
@@ -628,6 +631,7 @@ Follow-up implemented after this emergency cleanup:
 1. **Production state/data weight.**
    - Highest operational leverage because disk pressure has already broken the hourly wrapper once.
    - Disk health monitoring now exists locally via `npm run cleanup:disk:health`.
+- Latest local USA worktree health check (2026-06-12): 28.9% filesystem used, 327.6 GB free, and 0 B reclaimable under the default prune policy. No pruning was applied.
    - Latest USA VPS health check: 86.4% used / about 2.0 GB free, with 0 B reclaimable under the default prune policy. No immediate pruning or off-root migration is required, but keep monitoring because hourly generated state can rebuild pressure.
    - Next safe slice: set an operator cadence for `npm run cleanup:disk:health` after hourly syncs and revisit off-root snapshot archives if free space drops below 1 GB or root usage returns above 90-95%.
    - Keep trader history protected: do not delete tracked portfolio, trade ledger, hypotheses, blocked signals, learning journal, engine state, candidate actions, LLM state, or published heatmap artifacts.

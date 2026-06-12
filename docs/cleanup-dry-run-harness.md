@@ -28,6 +28,9 @@ It then records normalized counts and hashes for:
 - heatmap CSV row count
 - blocked-signal status counts
 - closed-trade row count
+- stable schema hashes for `candidate-actions.json`, `engine-state.json`,
+  `execution-plan.json`, `dry-run-verification.json`, and
+  `llm-truth-state.json`
 - dry-run stdout summary counts
 - before/after git status counts for detecting un-restored dry-run artifacts
 

@@ -46,6 +46,10 @@ function fileHash(path: string): string | null {
   return createHash("sha256").update(readFileSync(path)).digest("hex");
 }
 
+function textHash(text: string): string {
+  return createHash("sha256").update(text).digest("hex");
+}
+
 function countCsvRows(path: string): number {
   if (!existsSync(path)) return 0;
   const lines = readFileSync(path, "utf8").split("\n").filter((line) => line.trim() !== "");
@@ -59,6 +63,36 @@ function countBy<T>(rows: T[], keyFn: (row: T) => string): Record<string, number
     out[key] = (out[key] ?? 0) + 1;
   }
   return Object.fromEntries(Object.entries(out).sort(([a], [b]) => a.localeCompare(b)));
+}
+
+function shapePaths(value: unknown, path = "$", out: string[] = []): string[] {
+  if (value === null) {
+    out.push(`${path}:null`);
+    return out;
+  }
+  if (Array.isArray(value)) {
+    out.push(`${path}:array`);
+    for (const item of value.slice(0, 20)) shapePaths(item, `${path}[]`, out);
+    return out;
+  }
+  if (typeof value === "object") {
+    const entries = Object.entries(value as Record<string, unknown>).sort(([a], [b]) => a.localeCompare(b));
+    out.push(`${path}:object{${entries.map(([key]) => key).join(",")}}`);
+    for (const [key, item] of entries) shapePaths(item, `${path}.${key}`, out);
+    return out;
+  }
+  out.push(`${path}:${typeof value}`);
+  return out;
+}
+
+function schemaSummary(value: unknown): { topLevelKeys: string[]; shapeHash: string } {
+  const topLevelKeys = value && typeof value === "object" && !Array.isArray(value)
+    ? Object.keys(value as Record<string, unknown>).sort()
+    : [];
+  return {
+    topLevelKeys,
+    shapeHash: textHash([...new Set(shapePaths(value))].sort().join("\n")),
+  };
 }
 
 function backupPaths(paths: string[], backupRoot?: string): Backup[] {
@@ -328,6 +362,13 @@ const summary = {
     mutationDisabled: dryRunVerification.mutationDisabled ?? null,
     shadowArchitecture: dryRunVerification.shadowArchitecture ?? null,
     checks: dryRunVerification.checks ?? null,
+  },
+  artifactSchemas: {
+    candidateActions: schemaSummary(candidateActions),
+    engineState: schemaSummary(engineState),
+    executionPlan: schemaSummary(executionPlan),
+    dryRunVerification: schemaSummary(dryRunVerification),
+    truthState: schemaSummary(truthState),
   },
   blockedSignals: {
     total: blockedSignals.length,
