@@ -595,9 +595,10 @@ Recent committed cleanup state:
 | Candidate sizing preview artifact | `scripts/trading-engine.ts`, `scripts/lib/trading/sizing.ts` | Done and pushed. `candidate-actions.json` now includes read-only `sizingPreviews` for entry candidates; actual open-position size/cash mutation still uses `TRADE_SIZE`. |
 | Sizing probability resolver | `scripts/lib/trading/sizing.ts`, `sizing.test.ts`, `scripts/trading-engine.ts` | Done and pushed. Sizing previews now prefer labeled NO-bias calibration buckets and signal history before falling back to `signal.confidence`; live size/cash mutation is unchanged. |
 | Candidate exposure preview artifact | `scripts/lib/trading/exposure.ts`, `exposure.test.ts`, `scripts/trading-engine.ts` | Done and pushed. `candidate-actions.json` now includes read-only `portfolioExposurePreviews`; no live entry is blocked by this metadata yet. |
-| Candidate-action preview builders | `scripts/lib/trading/candidate-actions.ts`, `candidate-actions.test.ts`, `scripts/trading-engine.ts` | Done locally. Read-only sizing/exposure preview assembly moved behind a pure helper; `candidate-actions.json` schema hash and fixture output stayed matched. |
-| LLM close eligibility formatter and position timing | `scripts/lib/trading/close-eligibility.ts`, `close-eligibility.test.ts`, `scripts/trading-engine.ts` | Done locally. Position timing math, long-dated min-hold calculation, and LLM close eligibility shaping moved behind a pure helper; close decisions and live gating remain in the engine. |
-| Journal section builders | `scripts/lib/trading/journal-sections.ts`, `journal-sections.test.ts`, `scripts/trading-engine.ts` | Done locally. Markdown section construction moved out of the engine while append timing/path behavior stays unchanged. |
+| Candidate-action preview builders | `scripts/lib/trading/candidate-actions.ts`, `candidate-actions.test.ts`, `scripts/trading-engine.ts` | Done and pushed. Read-only sizing/exposure preview assembly moved behind a pure helper; `candidate-actions.json` schema hash and fixture output stayed matched. |
+| LLM close eligibility formatter and position timing | `scripts/lib/trading/close-eligibility.ts`, `close-eligibility.test.ts`, `scripts/trading-engine.ts` | Done and pushed. Position timing math, long-dated min-hold calculation, and LLM close eligibility shaping moved behind a pure helper; close decisions and live gating remain in the engine. |
+| Journal section builders | `scripts/lib/trading/journal-sections.ts`, `journal-sections.test.ts`, `scripts/trading-engine.ts` | Done and pushed. Markdown section construction moved out of the engine while append timing/path behavior stays unchanged. |
+| LLM prompt section builders | `scripts/lib/trading/llm-prompt-sections.ts`, `llm-prompt-sections.test.ts`, `scripts/trading-engine.ts` | Done locally. Repeated prompt data-section formatting moved behind pure helpers with focused exact-format tests; the engine still owns prompt order, rules, model calls, dry-run prompt writes, and JSON repair. |
 
 ### Completed scanner guardrail slices
 
@@ -642,7 +643,7 @@ Follow-up implemented after this emergency cleanup:
 
 ### Current cleanup impact
 
-- Current large-file line counts on USA: `scripts/trading-engine.ts` 8,121 lines after the candidate-preview / close-eligibility / timing / journal-section extraction, `scripts/market-scanner.ts` ~2,473 lines, `scripts/cross_venue_relative_value_report.py` ~2,490 lines, and `scripts/trader-performance-report.ts` ~246 lines.
+- Current large-file line counts on USA: `scripts/trading-engine.ts` 8,118 lines after the candidate-preview / close-eligibility / timing / journal-section / prompt-section extraction, `scripts/market-scanner.ts` ~2,473 lines, `scripts/cross_venue_relative_value_report.py` ~2,490 lines, and `scripts/trader-performance-report.ts` ~246 lines.
 - `scripts/trader-performance-report.ts` is down to about 246 lines from the earlier 1,513-line reference after helper, report-builder, relative-value context, input aggregation, hybrid report loading, report-data, and report-CLI extraction.
 - Net repository source lines increased because focused tests and shared helpers were added. This is intentional: the immediate gain is safer future cleanup, not raw line deletion.
 - Runtime performance is expected to be effectively unchanged for the report path; the practical gain is improved testability, clearer LLM-facing report rows, and lower risk for the next extractions.
@@ -652,10 +653,10 @@ Follow-up implemented after this emergency cleanup:
 ### Next high-leverage cleanup targets
 
 1. **`trading-engine.ts` monolith reduction.**
-   - Main focus now. Current USA line count is 8,121, so this is still the largest remaining production source file and the best place to reduce future-change risk.
+   - Main focus now. Current USA line count is 8,118, so this is still the largest remaining production source file and the best place to reduce future-change risk.
    - Continue pure helper extraction only behind `npm run cleanup:harness` fixture gates.
-   - Already extracted: artifact shaping, runtime config, blocked-signal summaries/observations, sizing previews, exposure previews, candidate-action preview builders, LLM close eligibility formatter, position timing helpers, and journal section builders.
-   - Next safe slices: LLM prompt section builders, LLM advice gate formatting, mechanical-exit candidate summarization, and pure setup-family label/status helpers. Keep signal generation, LLM prompt assembly semantics, live sizing, cash mutation, and execution behavior out of cleanup-only commits.
+   - Already extracted: artifact shaping, runtime config, blocked-signal summaries/observations, sizing previews, exposure previews, candidate-action preview builders, LLM close eligibility formatter, position timing helpers, journal section builders, and repeated LLM prompt section builders.
+   - Next safe slices: LLM advice gate formatting, mechanical-exit candidate summarization, and pure setup-family label/status helpers. Keep signal generation, LLM prompt assembly semantics, live sizing, cash mutation, and execution behavior out of cleanup-only commits.
 
 2. **Production state/data weight.**
    - Highest operational leverage because disk pressure has already broken the hourly wrapper once.

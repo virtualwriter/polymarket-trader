@@ -58,6 +58,15 @@ import {
   rejectionJournalSection,
   statObservationJournalSection,
 } from "./lib/trading/journal-sections.js";
+import {
+  formatActiveHypothesesPrompt,
+  formatAllowedActionSurfacePrompt,
+  formatKilledHypothesesPrompt,
+  formatPortfolioPromptSummary,
+  formatRecentClosedTradesPrompt,
+  formatSignalPerformancePrompt,
+  formatStatObservationsPrompt,
+} from "./lib/trading/llm-prompt-sections.js";
 import { type SizingCalibrationBucket } from "./lib/trading/sizing.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
@@ -7211,8 +7220,7 @@ INSTRUMENT SNAPSHOTS (latest run only — per-asset hourly trajectory is in MARK
 ${JSON.stringify(recentInstruments, null, 1)}
 
 PORTFOLIO:
-Cash: $${portfolio.cash.toFixed(2)} | Open positions: ${portfolio.positions.length} | Realized P&L: $${portfolio.totalRealizedPnl.toFixed(2)}
-Win rate: ${portfolio.totalTrades > 0 ? ((portfolio.winCount / portfolio.totalTrades) * 100).toFixed(0) : "N/A"}% over ${portfolio.totalTrades} trades
+${formatPortfolioPromptSummary(portfolio)}
 
 OPEN POSITIONS:
 ${openPositionContext}
@@ -7224,24 +7232,13 @@ CANONICAL CURRENT TRUTH BY SETUP FAMILY:
 ${JSON.stringify(truthState, null, 1)}
 
 ALLOWED ACTION SURFACE:
-${JSON.stringify({
-  llmCloseEligibility: candidateActions.llmCloseEligibility,
-  candidateEntryCount: candidateActions.entryCandidates.length,
-  mechanicalExitCount: candidateActions.mechanicalExits.length,
-  signalKillExitCount: candidateActions.signalKillExits.length,
-}, null, 1)}
+${formatAllowedActionSurfacePrompt(candidateActions)}
 
 SIGNAL PERFORMANCE:
-${activeWeights.map((w) => {
-  const disabledAssets = Object.entries(w.perAsset ?? {})
-    .filter(([, stats]) => stats.disabled)
-    .map(([asset, stats]) => `${asset} disabled (${stats.wins}/${stats.trades} wins, avg pnl=${stats.avgPnlPct.toFixed(2)}%)`)
-    .join("; ");
-  return `  ${w.type}: weight=${w.weight.toFixed(2)}, ${w.wins}/${w.trades} wins (${w.trades > 0 ? ((w.wins / w.trades) * 100).toFixed(0) : "N/A"}%), avg pnl=${w.avgPnlPct.toFixed(2)}%${disabledAssets ? ` | disabled assets: ${disabledAssets}` : ""}`;
-}).join("\n") || "  No trades yet"}
+${formatSignalPerformancePrompt(activeWeights)}
 
 ACTIVE HYPOTHESES:
-${activeHypotheses.map((h) => `  ${h.id} (${h.setupId ?? "unclassified"}): ${h.description} [${h.status}, ${(h.winRate * 100).toFixed(0)}% over ${h.tests.length} variant tests]`).join("\n") || "  None yet"}
+${formatActiveHypothesesPrompt(activeHypotheses)}
 
 HYPOTHESIS SHADOW TEST BACKLOG:
 ${JSON.stringify(hypothesisBacklog, null, 1)}
@@ -7258,13 +7255,13 @@ Active LLM hypothesis families that may continue shadow testing after regime-rel
 Do not mix long-bounce and liquidation-short HYPE evidence in a single hypothesis. Every hypothesis description should name LONG or SHORT and every prediction should match that direction.
 
 RECENTLY KILLED HYPOTHESES:
-${killedRecently.map((h) => `  ${h.id}: ${h.description} — ${h.postMortem}`).join("\n") || "  None"}
+${formatKilledHypothesesPrompt(killedRecently)}
 
 STATISTICAL OBSERVATIONS:
-${statObs.map((o) => `  [${o.type}] ${o.description}`).join("\n") || "  None"}
+${formatStatObservationsPrompt(statObs)}
 
 RECENT CLOSED TRADES:
-${closedTrades.slice(-10).map((t) => `  ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (market=${(t.marketPnl ?? t.pnl).toFixed(4)}, funding=${(t.fundingPnl ?? 0).toFixed(4)}) [${t.instrumentLabel ?? "n/a"}]`).join("\n") || "  None"}
+${formatRecentClosedTradesPrompt(closedTrades)}
 
 HYPERLIQUID HYBRID BOT — RECENT ACTIVITY (read-only context; not your trades):
 ${formatHybridBotSection(hybridBotCtx)}
