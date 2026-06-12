@@ -14,7 +14,7 @@
 
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
-import { appendScannerCsvRow, appendScannerJsonl, buildScannerHyperliquidSnapshot, roundNullable } from "./lib/scanner/output.js";
+import { appendScannerCsvRow, appendScannerJsonl, buildScannerHyperliquidSnapshot, buildScannerMacroCsvRow, roundNullable } from "./lib/scanner/output.js";
 import { enrichStrikesFromClob } from "./polymarket-clob-book.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -2285,44 +2285,12 @@ function writeSnapshot(
   // ── Macro row ──
   const ms = computeMacroScore(macro, pm, hl, opts);
 
-  const findOutperformP = (events: CategoryEvent[], keyword: string): number | null => {
-    for (const ev of events) {
-      const m = ev.markets.find((m) => m.question.toLowerCase().includes(keyword) && !m.closed);
-      if (m) return r(m.yesPrice * 100, 1);
-    }
-    return null;
-  };
-
-  const findGpuP = (events: CategoryEvent[], strike: string): number | null => {
-    for (const ev of events) {
-      const m = ev.markets.find((m) => m.question.includes(strike) && !m.closed);
-      if (m) return r(m.yesPrice * 100, 1);
-    }
-    return null;
-  };
-
-  appendCsvRow(MACRO_CSV, MACRO_HEADERS, {
+  appendCsvRow(MACRO_CSV, MACRO_HEADERS, buildScannerMacroCsvRow({
     date: today,
-    macro_composite: ms.composite, macro_label: ms.label,
-    fed_score: ms.fed.score, fed_signal: ms.fed.signal,
-    fed_p_at_least_one_cut: r(ms.fed.pAtLeastOneCut * 100, 1),
-    fed_expected_cuts: r(ms.fed.expectedCuts, 1),
-    fed_median_first_cut: ms.fed.medianFirstCut,
-    iran_score: ms.iran.score, iran_signal: ms.iran.signal,
-    iran_p_deal_ye: r(ms.iran.pDealByYE * 100, 1),
-    iran_p_ceasefire: ms.iran.pCeasefire === null ? null : r(ms.iran.pCeasefire * 100, 1),
-    iran_p_nuke_test: r(ms.iran.pNuclearTest * 100, 1),
-    oil_macro_score: ms.oil.score, oil_signal: ms.oil.signal,
-    oil_p_settle_above_current: r(ms.oil.pSettleAboveCurrent * 100, 1),
-    oil_p_spike_120: r(ms.oil.pSpike120 * 100, 1),
-    oil_brent_wti_spread: r(ms.oil.brentWtiSpread, 1),
-    btc_outperform_sp500: findOutperformP(btcOutperform, "s&p 500"),
-    btc_outperform_gold: findOutperformP(btcOutperform, "gold"),
-    btc_outperform_nvda: findOutperformP(btcOutperform, "nvidia"),
-    btc_outperform_silver: findOutperformP(btcOutperform, "silver"),
-    gpu_h100_hit_275: findGpuP(gpu, "$2.75"),
-    gpu_h100_hit_300: findGpuP(gpu, "$3.00"),
-  });
+    macroScore: ms,
+    btcOutperform,
+    gpu,
+  }));
 
   const hyperliquidSnapshot = buildScannerHyperliquidSnapshot(hl);
 
