@@ -17,7 +17,7 @@
 
 import { webcrypto } from "node:crypto";
 import { spawn } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { config } from "dotenv";
 import { dirname, join, resolve } from "node:path";
@@ -129,6 +129,8 @@ const LEDGER_ARCHIVE_DIR = join(dirname(PACKAGES_PATH), "archive");
 // still flows exclusively through the normal execution gate below.
 const NEAR_MISS_LOG_MS = Number(process.env.ARB_DAEMON_NEAR_MISS_LOG_MS ?? 60_000);
 const NEAR_MISS_TOP_N = Number(process.env.ARB_DAEMON_NEAR_MISS_TOP_N ?? 5);
+const CANDIDATE_SNAPSHOT_MIN_COST = Number(process.env.ARB_DAEMON_CANDIDATE_SNAPSHOT_MIN_COST ?? 1.00);
+const CANDIDATE_SNAPSHOT_MAX_COST = Number(process.env.ARB_DAEMON_CANDIDATE_SNAPSHOT_MAX_COST ?? 1.03);
 const MIN_MARKETABLE_BUY_USD = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_MARKETABLE_BUY_USD ?? 1);
 // Live sports books move far faster than the macro/crypto ladders. Keep the
 // base monotonic arb behavior unchanged for non-sports, but require sports
@@ -209,6 +211,7 @@ const DUST_EXIT_LIMIT_WAIT_MS = Number(process.env.ARB_DAEMON_DUST_EXIT_LIMIT_WA
 const DUST_EXIT_RETRY_MS = Number(process.env.ARB_DAEMON_DUST_EXIT_RETRY_MS ?? 60_000);
 const ORPHAN_COMPLETION_SKIP_LOG_MS = Number(process.env.ARB_DAEMON_ORPHAN_COMPLETION_SKIP_LOG_MS ?? 60_000);
 const ORPHANS_PATH = join(dirname(PACKAGES_PATH), "polymarket-live-orphans.json");
+const CANDIDATE_SNAPSHOTS_PATH = join(dirname(PACKAGES_PATH), "monotonic-candidate-snapshots.jsonl");
 const PAUSE_PATH = join(dirname(PACKAGES_PATH), "polymarket-arb-daemon-paused.json");
 const QUARANTINE_PATH = join(dirname(PACKAGES_PATH), "polymarket-arb-daemon-quarantine.json");
 
@@ -233,14 +236,27 @@ interface LiveLegs {
 }
 
 interface NearMissSample {
+  observedAt: string;
   packageId: string;
   eventSlug: string;
   asset: string;
+  eventTitle: string;
+  direction: Direction;
+  broadMarketId: string;
+  broadQuestion: string;
   broadStrike: number;
+  narrowMarketId: string;
+  narrowQuestion: string;
   narrowStrike: number;
+  broadEndDate: string | null;
+  narrowEndDate: string | null;
   cost: number;
   edge: number;
   availableSize: number;
+  broadYesAsk: number;
+  broadYesAskSize: number;
+  narrowNoAsk: number;
+  narrowNoAskSize: number;
   maxSpread: number;
   minShares: number;
   rangeBlock: string | null;
@@ -1087,14 +1103,27 @@ function recordNearMiss(candidate: Candidate) {
   nearMissObservations += 1;
   const minShares = requiredDisplayedTouch(candidate);
   const sample: NearMissSample = {
+    observedAt: new Date().toISOString(),
     packageId: candidate.packageId,
     eventSlug: candidate.eventSlug,
     asset: candidate.asset,
+    eventTitle: candidate.eventTitle,
+    direction: candidate.direction,
+    broadMarketId: candidate.broad.marketId,
+    broadQuestion: candidate.broad.question,
     broadStrike: candidate.broad.strike,
+    narrowMarketId: candidate.narrow.marketId,
+    narrowQuestion: candidate.narrow.question,
     narrowStrike: candidate.narrow.strike,
+    broadEndDate: candidate.broad.endDate,
+    narrowEndDate: candidate.narrow.endDate,
     cost: candidate.packageCost,
     edge: candidate.lockedEdge,
     availableSize: candidate.availableSize,
+    broadYesAsk: candidate.broad.yesBook.ask,
+    broadYesAskSize: candidate.broad.yesBook.askSize,
+    narrowNoAsk: candidate.narrow.noBook.ask,
+    narrowNoAskSize: candidate.narrow.noBook.askSize,
     maxSpread: candidate.maxSpread,
     minShares,
     rangeBlock: juneBreakevenRangeBlock(candidate),
@@ -1108,6 +1137,64 @@ function recordNearMiss(candidate: Candidate) {
   };
   const prev = nearMissBestByPackage.get(candidate.packageId);
   if (!prev || sample.cost < prev.cost) nearMissBestByPackage.set(candidate.packageId, sample);
+}
+
+function blockersForNearMiss(sample: NearMissSample): string[] {
+  return [
+    sample.edgeOk ? "" : "edge",
+    sample.spreadOk ? "" : "spread",
+    sample.sizeOk ? "" : "size",
+    sample.rangeBlock ? "june_range" : "",
+  ].filter(Boolean);
+}
+
+function appendCandidateSnapshots(samples: NearMissSample[]) {
+  const rows = samples
+    .filter((sample) =>
+      sample.cost + EPSILON >= CANDIDATE_SNAPSHOT_MIN_COST
+      && sample.cost <= CANDIDATE_SNAPSHOT_MAX_COST + EPSILON
+    )
+    .map((sample) => ({
+      schemaVersion: 1,
+      observedAt: sample.observedAt,
+      packageId: sample.packageId,
+      eventSlug: sample.eventSlug,
+      eventTitle: sample.eventTitle,
+      asset: sample.asset,
+      direction: sample.direction,
+      broad: {
+        marketId: sample.broadMarketId,
+        question: sample.broadQuestion,
+        strike: sample.broadStrike,
+        endDate: sample.broadEndDate,
+        yesAsk: sample.broadYesAsk,
+        yesAskSize: sample.broadYesAskSize,
+      },
+      narrow: {
+        marketId: sample.narrowMarketId,
+        question: sample.narrowQuestion,
+        strike: sample.narrowStrike,
+        endDate: sample.narrowEndDate,
+        noAsk: sample.narrowNoAsk,
+        noAskSize: sample.narrowNoAskSize,
+      },
+      packageCost: sample.cost,
+      lockedEdge: sample.edge,
+      availableSize: sample.availableSize,
+      minShares: sample.minShares,
+      maxSpread: sample.maxSpread,
+      gate: {
+        edgeOk: sample.edgeOk,
+        spreadOk: sample.spreadOk,
+        sizeOk: sample.sizeOk,
+        executableGate: sample.executableGate,
+        rangeBlock: sample.rangeBlock,
+        blockers: blockersForNearMiss(sample),
+      },
+    }));
+  if (!rows.length) return;
+  if (!existsSync(dirname(CANDIDATE_SNAPSHOTS_PATH))) mkdirSync(dirname(CANDIDATE_SNAPSHOTS_PATH), { recursive: true });
+  appendFileSync(CANDIDATE_SNAPSHOTS_PATH, rows.map((row) => JSON.stringify(row)).join("\n") + "\n");
 }
 
 function flushNearMissTelemetry() {
@@ -1127,15 +1214,11 @@ function flushNearMissTelemetry() {
     .sort((a, b) => a.cost - b.cost)
     .slice(0, Math.max(1, NEAR_MISS_TOP_N))
     .map((sample) => {
-      const blockers = [
-        sample.edgeOk ? "" : "edge",
-        sample.spreadOk ? "" : "spread",
-        sample.sizeOk ? "" : "size",
-        sample.rangeBlock ? "june_range" : "",
-      ].filter(Boolean).join("+") || "none";
+      const blockers = blockersForNearMiss(sample).join("+") || "none";
       return `${sample.asset} ${sample.eventSlug} YES ${sample.broadStrike}/NO ${sample.narrowStrike} cost=${sample.cost.toFixed(4)} edge=${(sample.edge * 100).toFixed(3)}c size=${sample.availableSize.toFixed(2)}/${sample.minShares.toFixed(2)} spread=${sample.maxSpread.toFixed(4)} block=${blockers}`;
     });
 
+  appendCandidateSnapshots(samples);
   log(`near-miss telemetry intervalMs=${Date.now() - nearMissStartedAt} observations=${nearMissObservations} unique=${samples.length} near<=1.005=${near.length} executableGate=${executable} ${bucketParts.join(" ")} nearPass edge=${edgeOk}/${near.length} spread=${spreadOk}/${near.length} size=${sizeOk}/${near.length} best=[${best.join(" | ")}]`);
   nearMissStartedAt = Date.now();
   nearMissObservations = 0;
