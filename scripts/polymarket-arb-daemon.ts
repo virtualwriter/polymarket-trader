@@ -129,7 +129,9 @@ const LEDGER_ARCHIVE_DIR = join(dirname(PACKAGES_PATH), "archive");
 // still flows exclusively through the normal execution gate below.
 const NEAR_MISS_LOG_MS = Number(process.env.ARB_DAEMON_NEAR_MISS_LOG_MS ?? 60_000);
 const NEAR_MISS_TOP_N = Number(process.env.ARB_DAEMON_NEAR_MISS_TOP_N ?? 5);
-const CANDIDATE_SNAPSHOT_MIN_COST = Number(process.env.ARB_DAEMON_CANDIDATE_SNAPSHOT_MIN_COST ?? 1.00);
+// Capture both true sub-$1 arbs ("home run" candidates if they also hit the
+// middle) and above-floor lottery candidates for later resolution analysis.
+const CANDIDATE_SNAPSHOT_MIN_COST = Number(process.env.ARB_DAEMON_CANDIDATE_SNAPSHOT_MIN_COST ?? 0.95);
 const CANDIDATE_SNAPSHOT_MAX_COST = Number(process.env.ARB_DAEMON_CANDIDATE_SNAPSHOT_MAX_COST ?? 1.03);
 const MIN_MARKETABLE_BUY_USD = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_MARKETABLE_BUY_USD ?? 1);
 // Live sports books move far faster than the macro/crypto ladders. Keep the
