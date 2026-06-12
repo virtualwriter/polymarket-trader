@@ -42,7 +42,6 @@ CSV_PATH = HOSTED_DIR / "cross_venue_relative_value.csv"
 HTML_PATH = HOSTED_DIR / "index.html"
 LATEST_JSON_PATH = HOSTED_DIR / "latest.json"
 CALIBRATION_JSONL_PATH = HOSTED_DIR / "calibration" / "no_bias_candidates.jsonl"
-ONE_TOUCH_TERMINAL_ONLY_SIGMA = 1.5
 # Drop Polymarket contracts whose YES bid/ask spread exceeds this threshold
 # from the heatmap entirely (CSV, HTML, archive, and downstream LLM prompt).
 # Wide-spread markets are not actionable for the trader (the engine's
@@ -61,8 +60,10 @@ OPTION_STRIKE_LOG_WINDOW = 0.35
 
 
 ASSET_TO_OPTION_SYMBOLS = {
-    "BTC": ["IBIT", "CME_BTC"],
-    "ETH": ["ETHA", "CME_ETH"],
+    # Deribit gives direct crypto vol surfaces; ETF proxies remain as fallback
+    # when the live fetch fails or is disabled.
+    "BTC": ["DERIBIT_BTC", "IBIT", "CME_BTC"],
+    "ETH": ["DERIBIT_ETH", "ETHA", "CME_ETH"],
     "HYPE": ["PURR"],
     "GOLD": ["GLD", "CME_GC"],
     "OIL": ["USO", "CME_CL"],
@@ -614,7 +615,16 @@ def one_touch_probability(
     dte_days: Optional[float],
     direction: str,
 ) -> Optional[float]:
-    """Approximate no-drift GBM one-touch probability for hit/reach/dip markets."""
+    """Exact one-touch probability under zero-rate risk-neutral GBM.
+
+    Uses the reflection-principle barrier-hitting formula with log drift
+    nu = -sigma^2/2 (martingale spot, zero rates):
+      up barrier B > S:  P = N((ln(S/B) - s2/2)/s) + (S/B) * N((ln(S/B) + s2/2)/s)
+      down barrier B < S: P = N((ln(B/S) + s2/2)/s) + (S/B) * N((ln(B/S) - s2/2)/s)
+    where s = sigma*sqrt(T) and s2 = sigma^2*T. Replaces the prior 2*N(d)
+    approximation, which overstated near-barrier touches and was paired with
+    a terminal-only shortcut that understated far-barrier touches.
+    """
     if not spot or not strike or not iv or not dte_days or spot <= 0 or strike <= 0 or iv <= 0 or dte_days <= 0:
         return None
     if direction == "above" and spot >= strike:
@@ -625,26 +635,16 @@ def one_touch_probability(
     sigma_t = iv * math.sqrt(t)
     if sigma_t <= 0:
         return None
-    d1 = (math.log(spot / strike) + 0.5 * iv * iv * t) / sigma_t
+    half_var = 0.5 * iv * iv * t
     if direction == "above":
-        return min(0.99, max(0.0, 2.0 * norm_cdf(d1)))
-    if direction == "below":
-        return min(0.99, max(0.0, 2.0 * norm_cdf(-d1)))
-    return None
-
-
-def barrier_sigma_distance(
-    spot: Optional[float],
-    strike: Optional[float],
-    iv: Optional[float],
-    dte_days: Optional[float],
-) -> Optional[float]:
-    if not spot or not strike or not iv or not dte_days or spot <= 0 or strike <= 0 or iv <= 0 or dte_days <= 0:
+        log_ratio = math.log(spot / strike)  # negative: barrier above spot
+        prob = norm_cdf((log_ratio - half_var) / sigma_t) + (spot / strike) * norm_cdf((log_ratio + half_var) / sigma_t)
+    elif direction == "below":
+        log_ratio = math.log(strike / spot)  # negative: barrier below spot
+        prob = norm_cdf((log_ratio + half_var) / sigma_t) + (spot / strike) * norm_cdf((log_ratio - half_var) / sigma_t)
+    else:
         return None
-    sigma_t = iv * math.sqrt(dte_days / 365.0)
-    if sigma_t <= 0:
-        return None
-    return abs(math.log(strike / spot)) / sigma_t
+    return min(0.99, max(0.0, prob))
 
 
 def is_one_touch_question(question: str) -> bool:
@@ -665,9 +665,9 @@ def touch_adjusted_probability(
         return None
     if not is_one_touch_question(question):
         return terminal_prob
-    sigma_distance = barrier_sigma_distance(spot, strike, iv, dte_days)
-    if sigma_distance is not None and sigma_distance > ONE_TOUCH_TERMINAL_ONLY_SIGMA:
-        return terminal_prob
+    # The exact barrier formula is valid at any moneyness, so far barriers no
+    # longer fall back to terminal-only probability (which understated touch
+    # odds and inflated NO gaps on far-OTM "hit/dip" contracts).
     touch_prob = one_touch_probability(spot, strike, iv, dte_days, direction)
     if touch_prob is not None:
         return max(terminal_prob, touch_prob)
@@ -844,6 +844,81 @@ def fetch_json_url(url: str) -> Any:
     request = urllib.request.Request(url, headers=HTTP_HEADERS)
     with urllib.request.urlopen(request, timeout=20) as response:
         return json.loads(response.read().decode("utf-8"))
+
+
+DERIBIT_BOOK_URL = "https://www.deribit.com/api/v2/public/get_book_summary_by_currency"
+DERIBIT_INDEX_URL = "https://www.deribit.com/api/v2/public/get_index_price"
+DERIBIT_CURRENCY_BY_SYMBOL = {"DERIBIT_BTC": "BTC", "DERIBIT_ETH": "ETH"}
+_DERIBIT_MONTHS = {
+    "JAN": 1, "FEB": 2, "MAR": 3, "APR": 4, "MAY": 5, "JUN": 6,
+    "JUL": 7, "AUG": 8, "SEP": 9, "OCT": 10, "NOV": 11, "DEC": 12,
+}
+
+
+def parse_deribit_instrument(name: str) -> Optional[Tuple[datetime, float]]:
+    """Parse 'BTC-26MAR27-105000-C' -> (expiry 2027-03-26 08:00 UTC, strike)."""
+    parts = name.split("-")
+    if len(parts) != 4 or parts[3] not in {"C", "P"}:
+        return None
+    raw = parts[1]
+    try:
+        day = int(raw[:-5])
+        month = _DERIBIT_MONTHS[raw[-5:-2]]
+        year = 2000 + int(raw[-2:])
+        expiry = datetime(year, month, day, 8, 0, tzinfo=timezone.utc)
+        strike = float(parts[2].replace("d", "."))
+    except (ValueError, KeyError):
+        return None
+    return expiry, strike
+
+
+def fetch_deribit_option_chain(currency: str) -> Optional[Dict[str, Any]]:
+    """Build a snapshot-shaped option chain from Deribit's live option board."""
+    summaries = fetch_json_url(f"{DERIBIT_BOOK_URL}?currency={currency}&kind=option").get("result", [])
+    index = fetch_json_url(f"{DERIBIT_INDEX_URL}?index_name={currency.lower()}_usd").get("result", {})
+    underlying = safe_float(index.get("index_price"))
+    if not summaries or not underlying:
+        return None
+    chains = []
+    for item in summaries:
+        name = str(item.get("instrument_name", ""))
+        if not name.endswith("-C"):
+            continue  # calls only; mark IV is shared across the strike
+        parsed = parse_deribit_instrument(name)
+        iv_pct = safe_float(item.get("mark_iv"))
+        if parsed is None or iv_pct is None or iv_pct <= 0:
+            continue
+        expiry, strike = parsed
+        chains.append({
+            "expiration": expiry.isoformat(),
+            "strike": strike,
+            "impliedVolatility": iv_pct / 100.0,
+            "bid": safe_float(item.get("bid_price")),
+            "ask": safe_float(item.get("ask_price")),
+        })
+    if not chains:
+        return None
+    return {"source": "Deribit live", "underlyingPrice": underlying, "chains": chains}
+
+
+def attach_deribit_chains(snapshot: Dict[str, Any]) -> List[str]:
+    """Inject live Deribit BTC/ETH chains into the snapshot options dict.
+
+    Failures are non-fatal: the asset symbol priority list falls back to the
+    ETF proxy (IBIT/ETHA) when a Deribit chain is unavailable.
+    """
+    attached = []
+    options = snapshot.setdefault("options", {})
+    for symbol, currency in DERIBIT_CURRENCY_BY_SYMBOL.items():
+        try:
+            chain = fetch_deribit_option_chain(currency)
+        except Exception as exc:  # network/HTTP errors must not kill the hourly run
+            print(f"WARNING: Deribit fetch failed for {currency}: {exc}")
+            continue
+        if chain:
+            options[symbol] = chain
+            attached.append(symbol)
+    return attached
 
 
 def parse_json_field(value: Any, fallback: Any) -> Any:
@@ -1414,6 +1489,8 @@ def snapshot_age_minutes(snapshot_timestamp: str) -> Optional[float]:
 
 def proxy_penalty_pts(option_symbol: str) -> float:
     return {
+        "DERIBIT_BTC": 0.0,
+        "DERIBIT_ETH": 0.0,
         "CME_BTC": 0.0,
         "CME_GC": 0.0,
         "CME_CL": 0.0,
@@ -2351,9 +2428,14 @@ def main() -> None:
     parser.add_argument("--skip-html", action="store_true", help="Skip writing the HTML artifact")
     parser.add_argument("--skip-calibration", action="store_true", help="Skip appending NO-bias calibration rows")
     parser.add_argument("--no-archive", action="store_true", help="Skip dated heatmap CSV archive")
+    parser.add_argument("--no-deribit", action="store_true", help="Skip live Deribit vol fetch (falls back to IBIT/ETHA proxies)")
     args = parser.parse_args()
 
     snapshot = read_latest_snapshot(args.snapshot)
+    if not args.no_deribit and os.environ.get("RELATIVE_VALUE_DERIBIT", "1") != "0":
+        attached = attach_deribit_chains(snapshot)
+        if attached:
+            print(f"Attached live Deribit chains: {', '.join(attached)}")
     latest_valuations = read_latest_csv_row(VALUATIONS_PATH)
     hyperliquid_overrides = {"OIL": fetch_hyperliquid_xyz_market("xyz:CL")} if args.live_hyperliquid else {}
     rows = build_rows(

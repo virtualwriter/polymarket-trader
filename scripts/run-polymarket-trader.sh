@@ -53,6 +53,9 @@ DATA_FILES=(
   relative-value/index.html
   relative-value/cross_venue_relative_value.csv
   relative-value/latest.json
+  relative-value/calibration/no_bias_candidates.jsonl
+  relative-value/calibration/resolutions_cache.json
+  relative-value/calibration/event_report.md
 )
 
 move_generated_untracked_artifacts() {
@@ -200,6 +203,17 @@ if [[ "${RELATIVE_VALUE_EDGE_HISTORY:-0}" == "1" ]]; then
 fi
 if ! timeout "${RELATIVE_VALUE_REPORT_TIMEOUT:-10m}" python3 scripts/cross_venue_relative_value_report.py "${relative_value_args[@]}"; then
   echo "WARNING: relative-value report timed out or failed; continuing trader run with the last available heatmap CSV."
+fi
+
+# Close the calibration loop: stamp real resolutions + forward marks into the
+# NO-bias calibration log, then refresh the deduplicated event-level report.
+if ! timeout "${CALIBRATION_BACKFILL_TIMEOUT:-5m}" python3 scripts/backfill_calibration_outcomes.py \
+    --archive-dir "$STATE_DIR/relative-value-history" \
+    --archive-dir relative-value/history; then
+  echo "WARNING: calibration outcome backfill failed; labels will catch up next run."
+fi
+if ! timeout "${CALIBRATION_REPORT_TIMEOUT:-2m}" python3 scripts/calibration_event_report.py; then
+  echo "WARNING: calibration event report failed; continuing."
 fi
 if [[ "${ENABLE_MONOTONIC_ARB_REAL_PM:-0}" == "1" ]]; then
   MONOTONIC_ARB_REAL_PM_SOURCE="${MONOTONIC_ARB_REAL_PM_SOURCE:-scan}" npx tsx scripts/polymarket-real-monotonic-executor.ts
