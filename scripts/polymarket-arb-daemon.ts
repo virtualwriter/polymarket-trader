@@ -118,10 +118,12 @@ const ALLOW_NBA_NON_ATOMIC_EXECUTION = process.env.ARB_DAEMON_ALLOW_NBA_NON_ATOM
 const NBA_LEDGER_ARCHIVE_GRACE_MS = Number(process.env.ARB_DAEMON_NBA_LEDGER_ARCHIVE_GRACE_MS ?? 30 * 60_000);
 const DISCOVER_NBA_GAMES = process.env.ARB_DAEMON_DISCOVER_NBA_GAMES !== "0";
 const DISCOVER_MLB_GAMES = process.env.ARB_DAEMON_DISCOVER_MLB_GAMES !== "0";
+const DISCOVER_SOCCER_GAMES = process.env.ARB_DAEMON_DISCOVER_SOCCER_GAMES !== "0";
 const DISCOVER_LADDERS = process.env.ARB_DAEMON_DISCOVER_LADDERS !== "0";
 const LADDER_DISCOVERY_TAGS = (process.env.ARB_DAEMON_LADDER_DISCOVERY_TAGS ?? "crypto,crypto-prices,stocks,commodities,indices,finance")
   .split(",").map((tag) => tag.trim()).filter(Boolean);
 const SPORTS_DISCOVERY_LIMIT = Number(process.env.ARB_DAEMON_SPORTS_DISCOVERY_LIMIT ?? process.env.ARB_DAEMON_MLB_DISCOVERY_LIMIT ?? 500);
+const SOCCER_DISCOVERY_LIMIT = Number(process.env.ARB_DAEMON_SOCCER_DISCOVERY_LIMIT ?? 1000);
 const LEDGER_ARCHIVE_DIR = join(dirname(PACKAGES_PATH), "archive");
 
 // Near-miss telemetry: proves whether the daemon is barely missing executable
@@ -583,11 +585,11 @@ function registerToken(tokenId: string, key: string) {
 }
 
 function isSportsGameSlug(slug: string): boolean {
-  return /^(?:nba|mlb)-[a-z0-9]+-[a-z0-9]+-\d{4}-\d{2}-\d{2}$/.test(slug);
+  return /^(?:(?:nba|mlb)-[a-z0-9]+-[a-z0-9]+|(?:fifwc|mls)-[a-z0-9]+-[a-z0-9]+)-\d{4}-\d{2}-\d{2}(?:-more-markets)?$/.test(slug);
 }
 
 function sportsGameDate(slug: string): string | null {
-  const match = slug.match(/-(\d{4}-\d{2}-\d{2})$/);
+  const match = slug.match(/-(\d{4}-\d{2}-\d{2})(?:-more-markets)?$/);
   return match?.[1] ?? null;
 }
 
@@ -633,14 +635,43 @@ async function configuredEventSlugs(): Promise<string[]> {
   return out;
 }
 
-async function discoverSportsGameSlugs(kind: "nba" | "mlb"): Promise<string[]> {
-  if (kind === "nba" && !DISCOVER_NBA_GAMES) return [];
-  if (kind === "mlb" && !DISCOVER_MLB_GAMES) return [];
+type SportsGameKind = "nba" | "mlb" | "soccer";
+
+function sportsGameDiscoveryEnabled(kind: SportsGameKind): boolean {
+  if (kind === "nba") return DISCOVER_NBA_GAMES;
+  if (kind === "mlb") return DISCOVER_MLB_GAMES;
+  return DISCOVER_SOCCER_GAMES;
+}
+
+function sportsGameDiscoveryTags(kind: SportsGameKind): string[] {
+  if (kind === "nba") return ["nba", "basketball"];
+  if (kind === "mlb") return ["mlb", "baseball"];
+  return ["soccer"];
+}
+
+function sportsGameDiscoveryLimit(kind: SportsGameKind): number {
+  return kind === "soccer" ? SOCCER_DISCOVERY_LIMIT : SPORTS_DISCOVERY_LIMIT;
+}
+
+function matchesSportsGameKind(slug: string, kind: SportsGameKind): boolean {
+  if (kind === "nba") return slug.startsWith("nba-");
+  if (kind === "mlb") return slug.startsWith("mlb-");
+  return slug.startsWith("fifwc-") || slug.startsWith("mls-");
+}
+
+function sportsGameHasLadder(event: GammaEvent): boolean {
+  return (event.markets ?? []).some((market) => {
+    const question = market.question ?? "";
+    return /\bO\/U\s+[0-9]/i.test(question) || /^Spread:/i.test(question);
+  });
+}
+
+async function discoverSportsGameSlugs(kind: SportsGameKind): Promise<string[]> {
+  if (!sportsGameDiscoveryEnabled(kind)) return [];
   const out = new Set<string>();
   const today = todayInNewYork();
-  const tags = kind === "nba" ? ["nba", "basketball"] : ["mlb", "baseball"];
-  for (const tag of tags) {
-    for (let offset = 0; offset < SPORTS_DISCOVERY_LIMIT; offset += 100) {
+  for (const tag of sportsGameDiscoveryTags(kind)) {
+    for (let offset = 0; offset < sportsGameDiscoveryLimit(kind); offset += 100) {
       const events = await fetchJson(`${GAMMA_API}/events?${new URLSearchParams({
         active: "true",
         closed: "false",
@@ -651,13 +682,9 @@ async function discoverSportsGameSlugs(kind: "nba" | "mlb"): Promise<string[]> {
       if (!Array.isArray(events) || events.length === 0) break;
       for (const event of events) {
         const slug = event.slug ?? "";
-        if (!slug.startsWith(`${kind}-`) || !isSportsGameSlug(slug)) continue;
+        if (!matchesSportsGameKind(slug, kind) || !isSportsGameSlug(slug)) continue;
         if (!isCurrentOrFutureSportsGameSlug(slug, today)) continue;
-        const hasLadder = (event.markets ?? []).some((market) => {
-          const question = market.question ?? "";
-          return /(^|:\s*)(?:1H\s+)?O\/U\s+[0-9]/i.test(question) || /^Spread:/i.test(question);
-        });
-        if (hasLadder) out.add(slug);
+        if (sportsGameHasLadder(event)) out.add(slug);
       }
       if (events.length < 100) break;
     }
@@ -703,15 +730,17 @@ async function discoverLadderEventSlugs(): Promise<string[]> {
 
 async function currentEventSlugs(): Promise<string[]> {
   const configured = await configuredEventSlugs();
-  const [discoveredNba, discoveredMlb, discoveredLadders] = await Promise.all([
+  const [discoveredNba, discoveredMlb, discoveredSoccer, discoveredLadders] = await Promise.all([
     discoverSportsGameSlugs("nba"),
     discoverSportsGameSlugs("mlb"),
+    discoverSportsGameSlugs("soccer"),
     discoverLadderEventSlugs(),
   ]);
   if (discoveredNba.length) log(`nba discovery: ${discoveredNba.length} active game slugs`);
   if (discoveredMlb.length) log(`mlb discovery: ${discoveredMlb.length} active game slugs`);
+  if (discoveredSoccer.length) log(`soccer discovery: ${discoveredSoccer.length} active game slugs`);
   if (discoveredLadders.length) log(`ladder discovery: ${discoveredLadders.length} active ladder events`);
-  return [...configured, ...discoveredNba, ...discoveredMlb, ...discoveredLadders].filter((slug, idx, slugs) => slugs.indexOf(slug) === idx);
+  return [...configured, ...discoveredNba, ...discoveredMlb, ...discoveredSoccer, ...discoveredLadders].filter((slug, idx, slugs) => slugs.indexOf(slug) === idx);
 }
 
 async function refreshWatchlist(): Promise<void> {
