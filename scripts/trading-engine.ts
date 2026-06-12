@@ -34,20 +34,20 @@ import {
   buildLeanArtifactEntries,
   buildLlmTruthStateArtifact,
 } from "./lib/trading/artifacts.js";
+import { parseEngineCliFlags, resolveEnginePathConfig } from "./lib/trading/config.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
-const DATA_DIR = join(import.meta.dirname ?? ".", "..", "data");
-const DEFAULT_LIVE_STATE_DIR = join(import.meta.dirname ?? ".", "..", ".runtime");
-const LIVE_STATE_DIR = process.env.POLYMARKET_TRADER_STATE_DIR ?? DEFAULT_LIVE_STATE_DIR;
-const LIVE_PORTFOLIO_FILE = process.env.POLYMARKET_TRADER_LIVE_PORTFOLIO ?? join(LIVE_STATE_DIR, "portfolio-live.json");
-const PENDING_CLOSED_TRADES_FILE = process.env.POLYMARKET_TRADER_PENDING_CLOSED_TRADES ?? join(LIVE_STATE_DIR, "pending-closed-trades.jsonl");
-const RELATIVE_VALUE_CSV = join(import.meta.dirname ?? ".", "..", "relative-value", "cross_venue_relative_value.csv");
-const HYBRID_BOT_TRADES_FILE = process.env.HYPERLIQUID_HYBRID_TRADES_FILE
-  ?? join(LIVE_STATE_DIR, "hyperliquid-hybrid-trades.jsonl");
-const HYBRID_BOT_STATE_FILE = process.env.HYPERLIQUID_HYBRID_STATE_FILE
-  ?? join(LIVE_STATE_DIR, "hyperliquid-hybrid-state.json");
-const HYBRID_STRATEGY_DOC = join(import.meta.dirname ?? ".", "..", "docs", "hybrid-strategy-context.md");
+const ENGINE_PATHS = resolveEnginePathConfig({ scriptDir: import.meta.dirname ?? ".", env: process.env });
+const DATA_DIR = ENGINE_PATHS.dataDir;
+const DEFAULT_LIVE_STATE_DIR = ENGINE_PATHS.defaultLiveStateDir;
+const LIVE_STATE_DIR = ENGINE_PATHS.liveStateDir;
+const LIVE_PORTFOLIO_FILE = ENGINE_PATHS.livePortfolioFile;
+const PENDING_CLOSED_TRADES_FILE = ENGINE_PATHS.pendingClosedTradesFile;
+const RELATIVE_VALUE_CSV = ENGINE_PATHS.relativeValueCsv;
+const HYBRID_BOT_TRADES_FILE = ENGINE_PATHS.hybridBotTradesFile;
+const HYBRID_BOT_STATE_FILE = ENGINE_PATHS.hybridBotStateFile;
+const HYBRID_STRATEGY_DOC = ENGINE_PATHS.hybridStrategyDoc;
 const HYBRID_BOT_RECENT_TRADE_LIMIT = Number(process.env.HYPERLIQUID_HYBRID_TRADE_LIMIT ?? 20);
 const INSTRUMENT_SNAPSHOTS_JSONL = "instrument-snapshots.jsonl";
 const INSTRUMENT_SNAPSHOT_LOOKBACK = Number(process.env.INSTRUMENT_SNAPSHOT_LOOKBACK ?? 12);
@@ -264,11 +264,12 @@ const LIVE_SIGNAL_ALLOWLIST = new Set([
 const LIVE_PROMOTED_HYPOTHESIS_IDS = new Set(["H-521"]);
 const OPERATIONALLY_TAINTED_TRADE_IDS = operationallyTaintedTradeIds();
 const LOOKBACK_HOURS = 24;
-const NO_LLM = process.argv.includes("--no-llm");
-const DRY_RUN = process.argv.includes("--dry-run");
-const SHADOW_ARCHITECTURE = process.argv.includes("--shadow-architecture") || DRY_RUN;
-const LLM_DRY_RUN = process.argv.includes("--llm-dry-run");
-const MUTATION_DISABLED = DRY_RUN || LLM_DRY_RUN;
+const ENGINE_CLI_FLAGS = parseEngineCliFlags(process.argv);
+const NO_LLM = ENGINE_CLI_FLAGS.noLlm;
+const DRY_RUN = ENGINE_CLI_FLAGS.dryRun;
+const SHADOW_ARCHITECTURE = ENGINE_CLI_FLAGS.shadowArchitecture;
+const LLM_DRY_RUN = ENGINE_CLI_FLAGS.llmDryRun;
+const MUTATION_DISABLED = ENGINE_CLI_FLAGS.mutationDisabled;
 const ALLOW_HOURLY_LLM_CLOSES = process.env.ALLOW_HOURLY_LLM_CLOSES !== "0" && process.env.ALLOW_HOURLY_LLM_CLOSES !== "false";
 const LLM_CLOSE_MIN_HOLD_HOURS = 12;
 const LLM_LONG_DATED_CLOSE_HOURS = 30 * 24;
