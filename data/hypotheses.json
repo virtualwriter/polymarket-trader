@@ -120,8 +120,8 @@
       {
         "date": "2026-06-09",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup hype_funding_oi_liquidation_short shadow test 17/20 opened via H-003 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "Missing funding history"
       }
     ],
     "winRate": 0,
@@ -603,6 +603,12 @@
         "triggered": true,
         "outcome": "win",
         "actualMove": "BTC moved -14.60% (71182 → 60791)"
+      },
+      {
+        "date": "2026-06-12",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup btc_median_range_strike_distribution shadow test 6/20 opened via H-017 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0.5,
@@ -721,8 +727,8 @@
       {
         "date": "2026-06-07",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup btc_median_range_strike_distribution shadow test 5/20 opened via H-021 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "BTC moved 4.47% (60786 → 63502)"
       }
     ],
     "winRate": 1,
@@ -3739,6 +3745,12 @@
         "triggered": true,
         "outcome": "win",
         "actualMove": "HYPE moved 7.68% (40.189 → 43.274)"
+      },
+      {
+        "date": "2026-06-12",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup hype_relative_oi_breakout_continuation shadow test 15/20 opened via H-122 after current row satisfied variant conditions."
       }
     ],
     "winRate": 1,
@@ -5709,6 +5721,12 @@
         "triggered": true,
         "outcome": "loss",
         "actualMove": "HYPE moved -7.68% (44.705 → 41.271)"
+      },
+      {
+        "date": "2026-06-12",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup hype_funding_oi_long_bounce shadow test 10/20 opened via H-190 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0,
@@ -6317,11 +6335,11 @@
       {
         "date": "2026-06-07",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup hype_relative_oi_breakout_continuation shadow test 14/20 opened via H-211 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "HYPE moved 4.80% (56.498 → 59.209)"
       }
     ],
-    "winRate": 0,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Covered by promoted setup family hype_breakout_oi_surge_momentum via primary H-116. | Split 2026-05-26 by operator into hype_relative_oi_breakout_continuation; this is the promoted/closest HYPE continuation set and no longer shares promotion with adjacent/cross-asset variants.",
@@ -6634,8 +6652,8 @@
       {
         "date": "2026-06-07",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup hype_funding_oi_long_bounce shadow test 9/20 opened via H-220 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "Missing funding history"
       }
     ],
     "winRate": 0,
