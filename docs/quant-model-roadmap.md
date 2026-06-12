@@ -2,7 +2,7 @@
 
 Strategic roadmap for graduating the polymarket-trader / hyperliquid-hybrid-bot system from "systematic trader with adaptive learning" to a defensible quant model. Updated as gaps close; review when shipping any structural change to sizing, calibration, or risk.
 
-Last updated: 2026-05-29.
+Last updated: 2026-06-12.
 
 ## TL;DR
 
@@ -19,7 +19,7 @@ Minimal viable upgrade to "yes, this is a quant model" is **~2-3 weeks of focuse
 | 3. Probabilistic model | 50 | Closed-form math (Black-Scholes terminal + one-touch reflection-principle + 1.5σ far-tail cap). No fitted model. | Either rigorously-validated closed-form *or* a trained probabilistic predictor (GBM, isotonic-calibrated logistic) with held-out validation. |
 | 4. Calibration | 25 | Scaffolding exists (8,173-row JSONL with `resolved_outcome` field), per-bucket observer shipped (`oneTouchBucketObservations`). No closed loop. | Brier score by bucket, reliability diagrams, isotonic regression mapping model→empirical probabilities, recomputed weekly. |
 | 5. Signal / alpha generation | 55 | Multiple signal families (one-touch, weekend HL funding, monotonic arb, hybrid bot, LLM hypothesis). Promotion gate at 65% shadow win rate over 20 trades. | Same + per-signal EV calc, signal correlation matrix, signal-decay tracking. |
-| 6. Portfolio construction / sizing | 10 | `TRADE_SIZE = 1` — every position identically sized regardless of edge or confidence. Live HL bot uses fixed $10. | Sizing as a function of edge × confidence × inverse-variance × portfolio-correlation-penalty. Typical: fractional Kelly, risk-parity, or mean-variance with covariance shrinkage. |
+| 6. Portfolio construction / sizing | 18 | Live entries still use `TRADE_SIZE = 1`, but reusable binary fractional-Kelly sizing math now exists in `scripts/lib/trading/sizing.ts`, and `candidate-actions.json` carries preview-only sizing metadata for entry candidates. Live HL bot uses fixed $10. | Sizing as a function of edge × confidence × inverse-variance × portfolio-correlation-penalty. Typical: fractional Kelly, risk-parity, or mean-variance with covariance shrinkage. |
 | 7. Risk management | 30 | Per-position stops, expiry-based hold limits, drawdown-mode flag (halves sizing below 35% recent win rate), hybrid bot consecutive-loser cooldown (3 losses → 36h coin-specific short suppression, `0090238`). | Portfolio-level VaR/CVaR, correlated-position caps, sector/asset exposure limits, dynamic vol-targeting on aggregate book. |
 | 8. Execution | 70 | Real HL fills with measured slippage + fees logged, PM via CLOB client. Live and shadow accounting cleanly separated. | Same + pre-trade impact modeling, optimal execution scheduling for large orders. |
 | 9. Backtesting / validation | 30 | Ad-hoc Python scripts for individual strategies (funding sweep, hybrid grid, IV variant, synthetic bull stress). | Unified walk-forward framework, train/test/OOS splits enforced, regime-stratified holdouts, leakage prevention. |
@@ -35,7 +35,7 @@ Minimal viable upgrade to "yes, this is a quant model" is **~2-3 weeks of focuse
 
 ### 1. Sizing is a constant
 
-`scripts/trading-engine.ts:48` — `TRADE_SIZE = 1`. Position size is independent of edge magnitude, model confidence, or asset volatility. No `kelly`, `covariance`, or `var(` anywhere. **Even basic fractional-Kelly sizing on one-touch signals would produce a different P&L distribution from what we have now.**
+`scripts/trading-engine.ts` still routes live entries through `TRADE_SIZE = 1`. Position size is not yet wired to edge magnitude, model confidence, or asset volatility. The additive foundation now exists in `scripts/lib/trading/sizing.ts`: binary-outcome fractional Kelly sizing with caps, confidence scaling, cash limits, and tests. `candidate-actions.json` now exposes read-only `sizingPreviews` so dry runs can show what fractional-Kelly sizing would do before live size mutation. **The next step is replacing the temporary `signal.confidence` probability proxy with calibrated bucket probabilities, then live sizing once the dry-run diff is intentionally accepted.**
 
 ### 2. No fitted probabilistic model
 
@@ -63,6 +63,7 @@ Ordered by leverage. A-D together = the smallest path to "yes, this is a quant m
 - Replace `TRADE_SIZE = 1` with `size = base_size × fractional_kelly(edge, vol)` per signal family.
 - Half-Kelly initially (conservative). Cap absolute position size.
 - Affects every signal that uses `TRADE_SIZE` (one-touch, weekend funding, monotonic arb, LLM hypotheses).
+- Foundation shipped: `scripts/lib/trading/sizing.ts` exposes tested binary fractional-Kelly sizing. `candidate-actions.json` now includes read-only sizing previews, but live entry size remains flat so fixture gates can separate metadata from behavior changes.
 - **Unlocks:** P&L distribution that actually responds to model confidence; high-edge slices (currently underutilized) get proportionally more capital.
 
 ### C. Walk-forward backtest framework — ~1-2 days
@@ -115,7 +116,7 @@ Update this table as gaps close. When a step ships, move from `pending` to a com
 | Step | Status | Commit / Notes |
 |---|---|---|
 | A. Calibration backfill ⊕ Brier scoring | done (2026-06-12) | `scripts/backfill_calibration_outcomes.py` stamps real UMA resolutions + h24/h72/h168 forward marks hourly via `run-polymarket-trader.sh`; `scripts/calibration_event_report.py` writes the deduplicated event-level report (`relative-value/calibration/event_report.md`, 200-resolved-event promotion bar). Same date: BTC/ETH switched to live Deribit vol (proxy penalty 0) and the one-touch model replaced with the exact reflection barrier formula. |
-| B. Edge-proportional sizing | pending | `TRADE_SIZE = 1` hardcoded at `trading-engine.ts:48`. |
+| B. Edge-proportional sizing | preview shipped (2026-06-12) | `scripts/lib/trading/sizing.ts` adds tested binary fractional-Kelly sizing math with caps, confidence, cash, and min-size handling. `candidate-actions.json` includes preview-only `sizingPreviews`. Engine entries still use `TRADE_SIZE = 1`; next slice should use calibrated probabilities instead of `signal.confidence` before changing live order size. |
 | C. Walk-forward backtest framework | pending | Ad-hoc scripts exist; no shared harness. |
 | D. Per-asset / per-signal covariance | pending | No portfolio-level risk surfaced yet. |
 | E. Fitted probability model | pending (gated on A) | No ML imports in repo. |
@@ -130,6 +131,7 @@ Update this table as gaps close. When a step ships, move from `pending` to a com
 - Legacy one-touch data artifact cleanup: commits `d604731`, `64dae40`.
 - Calibration data accumulator: `relative-value/calibration/no_bias_candidates.jsonl` (8,173 records, ~10 MB).
 - Heatmap row snapshot schema: `BlockedSignalShadow.heatmapRowSnapshot` in `scripts/trading-engine.ts:551`.
+- Cleanup sequencing and fixture gates: `docs/codebase-cleanup-plan.md` sections "Current cleanup impact", "Next high-leverage cleanup targets", and "Agent checklist before any change".
 - IV variant backtest: `scripts/iv_model_variant_backtest.py`.
 - Relevant prior chats:
   - [Shadow trade deep dive](aded226e-055a-4eac-820e-6e61618ab338) — IV variants + relative-decay exit proposals (May 26).

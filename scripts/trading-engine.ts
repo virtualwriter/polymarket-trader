@@ -36,6 +36,7 @@ import {
 } from "./lib/trading/artifacts.js";
 import { buildBlockedSignalObservations, summarizeBlockedSignals } from "./lib/trading/blocked-signals.js";
 import { parseEngineCliFlags, resolveEnginePathConfig } from "./lib/trading/config.js";
+import { sizeBinaryPosition } from "./lib/trading/sizing.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -66,6 +67,10 @@ const REAL_PM_PACKAGES_FILE = "polymarket-live-packages.json";
 const TRADE_SIZE = 1;
 const MAX_BANKROLL = 100;
 const MAX_OPEN_POSITIONS = 15;
+const SIZING_PREVIEW_MIN_SIZE = 0.25;
+const SIZING_PREVIEW_MAX_SIZE = 3;
+const SIZING_PREVIEW_KELLY_FRACTION = 0.5;
+const SIZING_PREVIEW_MAX_BANKROLL_FRACTION = 0.03;
 const HEATMAP_SHADOW_MAX_SPREAD = 0.01;
 const HEATMAP_SHADOW_MIN_LIQUIDITY = 1000;
 const MONOTONIC_ARB_MAX_YES_SPREAD = 0.01;
@@ -599,7 +604,17 @@ interface BlockedSignalShadow {
   learningParamsSnapshot: Omit<LearningParams, "updatedAt">;
   position: Position;
   hypotheticalResult?: {
-    closeReason: ClosedTrade["closeReason"];
+    closeReason:
+      | "target"
+      | "stop"
+      | "expiry"
+      | "data_quality_artifact"
+      | "breakeven_stop"
+      | "llm_decision"
+      | "signal_killed"
+      | "thesis_validated"
+      | "thesis_validated_profitable"
+      | "thesis_compressed_loss";
     exitPrice: number;
     pnl: number;
     pnlPct: number;
@@ -647,12 +662,12 @@ interface BlockedSignalLearningSummary {
     direction: Signal["direction"];
     blockedReason: BlockedSignalShadow["blockedReason"];
     outcome: "win" | "loss";
-    closeReason: ClosedTrade["closeReason"];
+    closeReason: NonNullable<BlockedSignalShadow["hypotheticalResult"]>["closeReason"];
     pnlPct: number;
     resolvedAt: string;
-    trendMetrics?: BlockedSignalShadow["trendMetrics"];
-    marketQuality?: BlockedSignalShadow["marketQuality"];
-    sourceComparison?: BlockedSignalShadow["sourceComparison"];
+    trendMetrics?: unknown;
+    marketQuality?: unknown;
+    sourceComparison?: unknown;
   }>;
   openQualityWarnings: Array<{
     signalType: string;
@@ -866,6 +881,7 @@ interface CandidateActions {
   mechanicalExits: Array<{ positionId: string; reason: ClosedTrade["closeReason"] }>;
   signalKillExits: Array<{ positionId: string; signalType: string; asset: string }>;
   entryCandidates: Signal[];
+  sizingPreviews: CandidateSizingPreview[];
   llmCloseEligibility: Array<{
     positionId: string;
     signalType: string;
@@ -882,6 +898,24 @@ interface CandidateActions {
     minHoldHours: number;
     reason: string;
   }>;
+}
+
+interface CandidateSizingPreview {
+  signalType: string;
+  asset: string;
+  venue: Signal["venue"];
+  direction: Signal["direction"];
+  currentFlatSize: number;
+  previewSize: number;
+  reason: ReturnType<typeof sizeBinaryPosition>["reason"] | "unsupported_signal";
+  entryPrice: number;
+  probabilitySource: "signal_confidence_preview" | "unsupported";
+  winProbability: number | null;
+  edgePts: number | null;
+  rawKellyFraction: number | null;
+  adjustedKellyFraction: number | null;
+  cappedKellyFraction: number | null;
+  notes: string[];
 }
 
 interface GatedLlmAdvice {
@@ -6752,6 +6786,63 @@ function llmCloseEligibilityForPosition(
   };
 }
 
+function buildCandidateSizingPreview(signal: Signal, portfolio: Portfolio): CandidateSizingPreview {
+  const isBinaryPolymarket = signal.venue === "polymarket" && signal.entryPrice > 0 && signal.entryPrice < 1;
+  const notes = [
+    "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
+  ];
+  if (!isBinaryPolymarket) {
+    notes.push("Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry.");
+    return {
+      signalType: signal.type,
+      asset: signal.asset,
+      venue: signal.venue,
+      direction: signal.direction,
+      currentFlatSize: TRADE_SIZE,
+      previewSize: 0,
+      reason: "unsupported_signal",
+      entryPrice: Number(signal.entryPrice.toFixed(6)),
+      probabilitySource: "unsupported",
+      winProbability: null,
+      edgePts: null,
+      rawKellyFraction: null,
+      adjustedKellyFraction: null,
+      cappedKellyFraction: null,
+      notes,
+    };
+  }
+
+  notes.push("Uses signal.confidence as a temporary win-probability proxy; replace with calibrated bucket probability before live sizing.");
+  const sizing = sizeBinaryPosition({
+    bankroll: MAX_BANKROLL,
+    availableCash: portfolio.cash,
+    minSize: SIZING_PREVIEW_MIN_SIZE,
+    maxSize: SIZING_PREVIEW_MAX_SIZE,
+    entryPrice: signal.entryPrice,
+    winProbability: signal.confidence,
+    kellyFraction: SIZING_PREVIEW_KELLY_FRACTION,
+    maxBankrollFraction: SIZING_PREVIEW_MAX_BANKROLL_FRACTION,
+  });
+
+  return {
+    signalType: signal.type,
+    asset: signal.asset,
+    venue: signal.venue,
+    direction: signal.direction,
+    currentFlatSize: TRADE_SIZE,
+    previewSize: sizing.size,
+    reason: sizing.reason,
+    entryPrice: Number(signal.entryPrice.toFixed(6)),
+    probabilitySource: "signal_confidence_preview",
+    winProbability: Number(signal.confidence.toFixed(6)),
+    edgePts: Number(sizing.edgePts.toFixed(4)),
+    rawKellyFraction: Number(sizing.rawKellyFraction.toFixed(6)),
+    adjustedKellyFraction: Number(sizing.adjustedKellyFraction.toFixed(6)),
+    cappedKellyFraction: Number(sizing.cappedKellyFraction.toFixed(6)),
+    notes,
+  };
+}
+
 function buildCandidateActions(portfolio: Portfolio, weights: SignalWeight[], signals: Signal[], latestRow: SnapshotRow, snapshots: InstrumentSnapshotFile[]): CandidateActions {
   const mechanicalExits = portfolio.positions
     .map((position) => {
@@ -6772,6 +6863,7 @@ function buildCandidateActions(portfolio: Portfolio, weights: SignalWeight[], si
     mechanicalExits,
     signalKillExits,
     entryCandidates: signals,
+    sizingPreviews: signals.map((signal) => buildCandidateSizingPreview(signal, portfolio)),
     llmCloseEligibility,
   };
 }

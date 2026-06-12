@@ -530,6 +530,8 @@ Recent committed cleanup state:
 - Continued narrow engine cleanup by moving blocked-signal observation note construction into `scripts/lib/trading/blocked-signals.ts`. This is pure journal/context text construction; the engine fixture compare stayed matched.
 - Started the next scanner cleanup slice by moving macro CSV row construction into `scripts/lib/scanner/output.ts`. This is pure output shaping; scanner output fixture compare stayed matched.
 - Continued scanner cleanup by moving valuation CSV row construction into `scripts/lib/scanner/output.ts`. This is pure output shaping; scanner output fixture compare stayed matched.
+- Started the quant-upgrade foundation work from `docs/quant-model-roadmap.md` by adding tested binary fractional-Kelly sizing math in `scripts/lib/trading/sizing.ts`. This is not wired into live entries yet; behavior-changing sizing must be fixture-gated separately.
+- Continued the quant-upgrade sizing work by adding preview-only `candidate-actions.json` sizing metadata. Live `TRADE_SIZE` entries remain unchanged; the engine fixture drift is expected to be schema-only for this new read-only artifact field.
 
 ### Completed guardrails
 
@@ -587,6 +589,8 @@ Recent committed cleanup state:
 | Engine runtime config helper | `scripts/lib/trading/config.ts`, `config.test.ts`, `scripts/trading-engine.ts` | Done locally. Runtime path resolution and CLI flag parsing moved behind pure helpers; fixture replay compare passed with no output drift. |
 | Blocked-signal summary helper | `scripts/lib/trading/blocked-signals.ts`, `blocked-signals.test.ts`, `scripts/trading-engine.ts` | Done locally. Blocked-signal learning summary aggregation moved behind a pure helper while preserving observation text and trade logic in the engine. |
 | Blocked-signal observation helper | `scripts/lib/trading/blocked-signals.ts`, `blocked-signals.test.ts`, `scripts/trading-engine.ts` | Done locally. Blocked-signal observation note construction moved behind a pure helper while keeping engine-owned signal names and thresholds in the engine config. |
+| Fractional-Kelly sizing foundation | `scripts/lib/trading/sizing.ts`, `sizing.test.ts` | Done locally. Adds tested binary-outcome sizing math for the quant roadmap's edge-proportional sizing step; live `TRADE_SIZE` wiring remains intentionally unchanged. |
+| Candidate sizing preview artifact | `scripts/trading-engine.ts`, `scripts/lib/trading/sizing.ts` | Done locally. `candidate-actions.json` now includes read-only `sizingPreviews` for entry candidates; actual open-position size/cash mutation still uses `TRADE_SIZE`. |
 
 ### Completed scanner guardrail slices
 
@@ -652,11 +656,13 @@ Follow-up implemented after this emergency cleanup:
    - Latest fixture gate: `status=match`, no new dirty paths. The next engine cleanup slice can use this gate before/after changes.
    - Next safe slice: use the fixture gate before each new engine extraction and broaden the fixture set only when a refactor touches inputs the current fixture does not cover.
    - Keep avoiding signal selection, LLM prompt assembly, portfolio mutation, or exit/open-position logic until fixture coverage is intentionally expanded.
+   - Cross-reference `docs/quant-model-roadmap.md`: edge-proportional sizing, walk-forward validation, and portfolio covariance are behavior upgrades, not pure cleanup. Add preview metadata or read-only artifacts first, then accept intentional fixture diffs before live mutation.
 
 3. **Narrow `trading-engine.ts` helper extraction.**
    - After the deeper harness, continue with pure helpers only: config/env parsing, artifact summaries, grouping/counting helpers, and readonly state snapshot builders.
    - Latest slices extracted engine-state summary, signal-health, final state-artifact assembly, LLM truth-state artifact assembly, runtime config helpers, blocked-signal summary helpers, and blocked-signal observation helpers and passed the fixture gate.
-   - Avoid changing signal generation, LLM prompts, close/open execution, sizing, or portfolio writes.
+   - Avoid changing signal generation, LLM prompts, close/open execution, sizing, or portfolio writes during cleanup-only slices. When implementing the quant roadmap, isolate those behavior changes in dedicated commits with dry-run fixture baselines and explicit expected diffs.
+   - Sizing foundation now exists in `scripts/lib/trading/sizing.ts`; sizing previews now surface in `candidate-actions.json` without changing actual opened position sizes. Next safe behavior-adjacent slice is to replace the temporary `signal.confidence` probability proxy with calibrated bucket probabilities before live sizing.
 
 4. **`market-scanner.ts` module split.**
    - Big source-size win after engine harnessing. Likely targets: Hyperliquid fetch/parse helpers, Polymarket/Gamma fetch helpers, option valuation transforms, and CSV/snapshot writers.
@@ -694,6 +700,7 @@ Follow-up implemented after this emergency cleanup:
 
 - [ ] Is the file labeled `PROD-*` or on the hourly pipeline path?
 - [ ] Will the change alter signal generation, LLM prompts, or order sizing?
+- [ ] If this implements `docs/quant-model-roadmap.md`, is it a pure foundation/helper, read-only preview artifact, or intentional behavior change?
 - [ ] Will the change alter env var names read on the VPS?
 - [ ] Will the change alter paths read by systemd units?
 - [ ] Is there a `--dry-run` or diff test gate defined?

@@ -1,11 +1,36 @@
+type BlockedSignalVenue = "polymarket" | "hyperliquid" | "spot";
+type BlockedSignalDirection = "long" | "short";
+type BlockedSignalReason =
+  | "short_blocked_by_positive_trend"
+  | "iv_downside_leg_untracked"
+  | "manual_shadow_trade"
+  | "polymarket_proxy_short"
+  | "relative_value_heatmap"
+  | "monotonic_arb_shadow"
+  | "one_touch_high_edge_shadow"
+  | "stale_lottery_ticket_shadow"
+  | "weekend_hl_funding_shadow"
+  | "no_bias_adjusted_gap_shadow";
+type BlockedSignalCloseReason =
+  | "target"
+  | "stop"
+  | "expiry"
+  | "data_quality_artifact"
+  | "breakeven_stop"
+  | "llm_decision"
+  | "signal_killed"
+  | "thesis_validated"
+  | "thesis_validated_profitable"
+  | "thesis_compressed_loss";
+
 export interface BlockedSignalSummaryShadow {
   status: "open" | "resolved" | "cancelled";
   resolvedAt?: string;
   signalType: string;
   asset: string;
-  venue: string;
-  direction: string;
-  blockedReason: string;
+  venue: BlockedSignalVenue;
+  direction: BlockedSignalDirection;
+  blockedReason: BlockedSignalReason;
   thesis: string;
   position: {
     instrumentLabel?: string;
@@ -16,7 +41,7 @@ export interface BlockedSignalSummaryShadow {
   } & Record<string, unknown>;
   hypotheticalResult?: {
     outcome: "win" | "loss";
-    closeReason: string;
+    closeReason: BlockedSignalCloseReason;
     pnlPct: number;
   };
   sourceComparison?: unknown;

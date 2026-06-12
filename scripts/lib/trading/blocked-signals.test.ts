@@ -11,7 +11,7 @@ const baseShadow = {
   blockedReason: "manual_shadow_trade",
   thesis: "fixture",
   position: { instrumentLabel: "BTC fixture" },
-};
+} as const;
 
 describe("blocked signal summary", () => {
   it("summarizes resolved, excluded, and open quality-warning shadows", () => {
