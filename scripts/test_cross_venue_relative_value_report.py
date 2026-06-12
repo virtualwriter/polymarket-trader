@@ -29,8 +29,21 @@ class OneTouchProbabilityTest(unittest.TestCase):
     def test_gold_downside_fixture_uses_named_one_touch_model(self) -> None:
         probability = report.one_touch_probability(4705.0, 4600.0, 0.243, 19.4, "below")
         self.assertIsNotNone(probability)
-        self.assertGreater(probability, 0.65)
-        self.assertLess(probability, 0.68)
+        self.assertGreater(probability, 0.68)
+        self.assertLess(probability, 0.71)
+
+    def test_exact_barrier_formula_bounds(self) -> None:
+        terminal = report.lognormal_terminal_probability(100.0, 120.0, 0.5, 30.0, "above")
+        touch = report.one_touch_probability(100.0, 120.0, 0.5, 30.0, "above")
+        self.assertGreater(touch, terminal)
+        self.assertLess(touch, 1.0)
+        # Far barriers keep a genuine (small) touch probability instead of the
+        # old terminal-only shortcut.
+        far_terminal = report.lognormal_terminal_probability(100.0, 200.0, 0.5, 30.0, "above")
+        far_touch = report.one_touch_probability(100.0, 200.0, 0.5, 30.0, "above")
+        self.assertGreater(far_touch, far_terminal)
+        # At-the-barrier converges to certainty (capped at 0.99).
+        self.assertAlmostEqual(report.one_touch_probability(100.0, 100.0001, 0.5, 30.0, "above"), 0.99)
 
     def test_oil_downside_fixture_is_not_old_two_x_shortcut(self) -> None:
         terminal = report.lognormal_terminal_probability(99.25, 90.0, 0.65, 19.4, "below")
@@ -180,7 +193,9 @@ class OneTouchProbabilityTest(unittest.TestCase):
         self.assertEqual(record["asset"], "BTC")
         self.assertEqual(record["dte_bucket"], "31-90d")
         self.assertEqual(record["moneyness_bucket"], "15-30%")
-        self.assertEqual(record["source_agreement_bucket"], "both_negative_or_fair")
+        # Exact barrier model prices this 20%-OTM touch ~17% vs PM 20%, so the
+        # CBOE gap is slightly positive while CME (IV 0.80) stays negative.
+        self.assertEqual(record["source_agreement_bucket"], "cboe_only")
         self.assertIn("proxy_penalty_pts", record["penalties"])
 
     def test_calibration_jsonl_dedupes_by_timestamp_and_market(self) -> None:

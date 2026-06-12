@@ -114,7 +114,7 @@ Update this table as gaps close. When a step ships, move from `pending` to a com
 
 | Step | Status | Commit / Notes |
 |---|---|---|
-| A. Calibration backfill ⊕ Brier scoring | pending | Scaffolding exists; outcomes never written. |
+| A. Calibration backfill ⊕ Brier scoring | done (2026-06-12) | `scripts/backfill_calibration_outcomes.py` stamps real UMA resolutions + h24/h72/h168 forward marks hourly via `run-polymarket-trader.sh`; `scripts/calibration_event_report.py` writes the deduplicated event-level report (`relative-value/calibration/event_report.md`, 200-resolved-event promotion bar). Same date: BTC/ETH switched to live Deribit vol (proxy penalty 0) and the one-touch model replaced with the exact reflection barrier formula. |
 | B. Edge-proportional sizing | pending | `TRADE_SIZE = 1` hardcoded at `trading-engine.ts:48`. |
 | C. Walk-forward backtest framework | pending | Ad-hoc scripts exist; no shared harness. |
 | D. Per-asset / per-signal covariance | pending | No portfolio-level risk surfaced yet. |
