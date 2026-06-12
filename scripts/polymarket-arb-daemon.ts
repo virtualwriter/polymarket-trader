@@ -261,6 +261,7 @@ interface NearMissSample {
   narrowNoAskSize: number;
   maxSpread: number;
   minShares: number;
+  farDatedBlock: string | null;
   rangeBlock: string | null;
   edgeOk: boolean;
   spreadOk: boolean;
@@ -1097,6 +1098,7 @@ function passesDynamicGate(candidate: Candidate): boolean {
   if (candidate.lockedEdge + EPSILON < minEdgeFor(candidate)) return false;
   if (candidate.maxSpread - EPSILON > maxSpreadFor(candidate)) return false;
   if (candidate.availableSize + EPSILON < requiredDisplayedTouch(candidate)) return false;
+  if (farDatedExecutionBlock(candidate)) return false;
   if (juneBreakevenRangeBlock(candidate)) return false;
   return true;
 }
@@ -1128,6 +1130,7 @@ function recordNearMiss(candidate: Candidate) {
     narrowNoAskSize: candidate.narrow.noBook.askSize,
     maxSpread: candidate.maxSpread,
     minShares,
+    farDatedBlock: farDatedExecutionBlock(candidate),
     rangeBlock: juneBreakevenRangeBlock(candidate),
     edgeOk: candidate.lockedEdge + EPSILON >= minEdgeFor(candidate),
     spreadOk: candidate.maxSpread - EPSILON <= maxSpreadFor(candidate),
@@ -1135,6 +1138,7 @@ function recordNearMiss(candidate: Candidate) {
     executableGate: candidate.lockedEdge + EPSILON >= minEdgeFor(candidate)
       && candidate.maxSpread - EPSILON <= maxSpreadFor(candidate)
       && candidate.availableSize + EPSILON >= minShares
+      && !farDatedExecutionBlock(candidate)
       && !juneBreakevenRangeBlock(candidate),
   };
   const prev = nearMissBestByPackage.get(candidate.packageId);
@@ -1146,6 +1150,7 @@ function blockersForNearMiss(sample: NearMissSample): string[] {
     sample.edgeOk ? "" : "edge",
     sample.spreadOk ? "" : "spread",
     sample.sizeOk ? "" : "size",
+    sample.farDatedBlock ? "far_dated" : "",
     sample.rangeBlock ? "june_range" : "",
   ].filter(Boolean);
 }
@@ -1256,13 +1261,23 @@ function sizingSpendableUsd(spendableUsd: number): number {
 // opportunities keep 2:1 priority over slow capital.
 const PRIORITY_NEAR_TERM_DAYS = Number(process.env.ARB_DAEMON_PRIORITY_NEAR_TERM_DAYS ?? 45);
 const FAR_DATED_BUDGET_FACTOR = Number(process.env.ARB_DAEMON_FAR_DATED_BUDGET_FACTOR ?? 0.5);
+const ALLOW_FAR_DATED_EXECUTION = process.env.ARB_DAEMON_ALLOW_FAR_DATED_EXECUTION === "1";
 
-function budgetFactorForCandidate(candidate: Candidate): number {
-  if (isSportsCandidate(candidate)) return 1;
+function isNearTermCandidate(candidate: Candidate): boolean {
   const ends = [candidate.broad.endDate, candidate.narrow.endDate]
     .map((value) => Date.parse(value ?? ""))
     .filter((ms) => Number.isFinite(ms));
-  if (ends.length && Math.max(...ends) - Date.now() <= PRIORITY_NEAR_TERM_DAYS * 86_400_000) return 1;
+  return ends.length > 0 && Math.max(...ends) - Date.now() <= PRIORITY_NEAR_TERM_DAYS * 86_400_000;
+}
+
+function farDatedExecutionBlock(candidate: Candidate): string | null {
+  if (ALLOW_FAR_DATED_EXECUTION || isSportsCandidate(candidate) || isNearTermCandidate(candidate)) return null;
+  const endDates = [candidate.broad.endDate, candidate.narrow.endDate].filter(Boolean).join("/");
+  return `far_dated_execution_disabled asset=${candidate.asset} endDates=${endDates || "unknown"} strikes=${candidate.broad.strike}/${candidate.narrow.strike}`;
+}
+
+function budgetFactorForCandidate(candidate: Candidate): number {
+  if (isSportsCandidate(candidate) || isNearTermCandidate(candidate)) return 1;
   return FAR_DATED_BUDGET_FACTOR;
 }
 
@@ -1459,6 +1474,16 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
       }
       return;
     }
+  }
+  const farDatedBlock = farDatedExecutionBlock(c);
+  if (farDatedBlock) {
+    const now = Date.now();
+    const last = lastSkipLogAt.get(pkg.key) ?? 0;
+    if (now - last >= SKIP_LOG_THROTTLE_MS) {
+      lastSkipLogAt.set(pkg.key, now);
+      log(`skip ${pkg.key}: ${farDatedBlock} edge=${(c.lockedEdge * 100).toFixed(2)}c cost=${c.packageCost.toFixed(4)}`);
+    }
+    return;
   }
   const rangeBlock = juneBreakevenRangeBlock(c);
   if (rangeBlock) {
