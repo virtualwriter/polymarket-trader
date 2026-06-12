@@ -599,6 +599,7 @@ Recent committed cleanup state:
 | LLM close eligibility formatter and position timing | `scripts/lib/trading/close-eligibility.ts`, `close-eligibility.test.ts`, `scripts/trading-engine.ts` | Done and pushed. Position timing math, long-dated min-hold calculation, and LLM close eligibility shaping moved behind a pure helper; close decisions and live gating remain in the engine. |
 | Journal section builders | `scripts/lib/trading/journal-sections.ts`, `journal-sections.test.ts`, `scripts/trading-engine.ts` | Done and pushed. Markdown section construction moved out of the engine while append timing/path behavior stays unchanged. |
 | LLM prompt section builders | `scripts/lib/trading/llm-prompt-sections.ts`, `llm-prompt-sections.test.ts`, `scripts/trading-engine.ts` | Done locally. Repeated prompt data-section formatting moved behind pure helpers with focused exact-format tests; the engine still owns prompt order, rules, model calls, dry-run prompt writes, and JSON repair. |
+| LLM advice gate helper | `scripts/lib/trading/llm-advice-gate.ts`, `llm-advice-gate.test.ts`, `scripts/trading-engine.ts` | Done locally. Close-advice gating, skip/rejection reasons, identity checks, evidence-column checks, and profit-taking rejection moved behind a pure helper; the engine still owns when the gate runs and how rejected advice is logged/persisted. |
 
 ### Completed scanner guardrail slices
 
@@ -643,7 +644,7 @@ Follow-up implemented after this emergency cleanup:
 
 ### Current cleanup impact
 
-- Current large-file line counts on USA: `scripts/trading-engine.ts` 8,118 lines after the candidate-preview / close-eligibility / timing / journal-section / prompt-section extraction, `scripts/market-scanner.ts` ~2,473 lines, `scripts/cross_venue_relative_value_report.py` ~2,490 lines, and `scripts/trader-performance-report.ts` ~246 lines.
+- Current large-file line counts on USA: `scripts/trading-engine.ts` 8,069 lines after the candidate-preview / close-eligibility / timing / journal-section / prompt-section / advice-gate extraction, `scripts/market-scanner.ts` ~2,473 lines, `scripts/cross_venue_relative_value_report.py` ~2,490 lines, and `scripts/trader-performance-report.ts` ~246 lines.
 - `scripts/trader-performance-report.ts` is down to about 246 lines from the earlier 1,513-line reference after helper, report-builder, relative-value context, input aggregation, hybrid report loading, report-data, and report-CLI extraction.
 - Net repository source lines increased because focused tests and shared helpers were added. This is intentional: the immediate gain is safer future cleanup, not raw line deletion.
 - Runtime performance is expected to be effectively unchanged for the report path; the practical gain is improved testability, clearer LLM-facing report rows, and lower risk for the next extractions.
@@ -653,10 +654,10 @@ Follow-up implemented after this emergency cleanup:
 ### Next high-leverage cleanup targets
 
 1. **`trading-engine.ts` monolith reduction.**
-   - Main focus now. Current USA line count is 8,118, so this is still the largest remaining production source file and the best place to reduce future-change risk.
+   - Main focus now. Current USA line count is 8,069, so this is still the largest remaining production source file and the best place to reduce future-change risk.
    - Continue pure helper extraction only behind `npm run cleanup:harness` fixture gates.
-   - Already extracted: artifact shaping, runtime config, blocked-signal summaries/observations, sizing previews, exposure previews, candidate-action preview builders, LLM close eligibility formatter, position timing helpers, journal section builders, and repeated LLM prompt section builders.
-   - Next safe slices: LLM advice gate formatting, mechanical-exit candidate summarization, and pure setup-family label/status helpers. Keep signal generation, LLM prompt assembly semantics, live sizing, cash mutation, and execution behavior out of cleanup-only commits.
+   - Already extracted: artifact shaping, runtime config, blocked-signal summaries/observations, sizing previews, exposure previews, candidate-action preview builders, LLM close eligibility formatter, position timing helpers, journal section builders, repeated LLM prompt section builders, and LLM advice gate helpers.
+   - Next safe slices: mechanical-exit candidate summarization and pure setup-family label/status helpers. Keep signal generation, LLM prompt assembly semantics, live sizing, cash mutation, and execution behavior out of cleanup-only commits.
 
 2. **Production state/data weight.**
    - Highest operational leverage because disk pressure has already broken the hourly wrapper once.
