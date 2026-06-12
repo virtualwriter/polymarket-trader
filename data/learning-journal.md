@@ -29860,3 +29860,39 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-06-12 16:29 UTC
+
+**Portfolio:** $98.35 total | Cash $82.35 | 16 open | P&L $0.9377 | 52% win rate (199 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_med_min = 31.3 is 7.3 std devs from mean (22.89 ± 1.15)
+- [anomaly] btc_med_max = 80000 is -2.9 std devs from mean (92638.19 ± 4389.61)
+- [anomaly] gold_med_min = 4021 is -2.8 std devs from mean (4326.41 ± 107.22)
+- [anomaly] gold_opt_fwd_90d = 4268 is -2.8 std devs from mean (4676.93 ± 145.53)
+- [anomaly] gold_med_max = 4424 is -2.3 std devs from mean (4890.03 ± 206.05)
+
+**Blocked signal learning:**
+- Open blocked shadows: 65
+- Resolved blocked shadows: 643 (361 wins / 282 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 7/12 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 6/10 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=116 (34W/69L/13flat, 33.0% win-rate, sum $-2.6384, avg -2.27%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=160 (50W/93L/17flat, 35.0% win-rate, sum $-2.7562, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+5.48%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-3.33%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+Today's data confirms elevated funding and rich PM IV across crypto and commodities, aligning with bearish macro and crowded positioning. All open positions are mechanical MONOTONIC_ARB trades that require no LLM intervention. No new hypotheses because the shadow-test backlog demands completion first. Heatmap showed few tradeable edges given spread and liquidity constraints; the NO-bias adjusted gap shadows continue to produce mixed results (some wins, some losses) but overall learning progresses. Will reassess when enough condition-triggered tests accumulate for active promoted families like H-531 and H-521.
+
+---
+
