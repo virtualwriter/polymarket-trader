@@ -35,9 +35,30 @@ import {
   buildLlmTruthStateArtifact,
 } from "./lib/trading/artifacts.js";
 import { buildBlockedSignalObservations, summarizeBlockedSignals } from "./lib/trading/blocked-signals.js";
+import {
+  buildCandidateActionPreviews,
+  sizingSignalHistories,
+  type CandidateSizingPreview,
+} from "./lib/trading/candidate-actions.js";
+import {
+  buildLlmCloseEligibility,
+  llmCloseMinHoldHours,
+  positionTimingContext,
+  type LlmCloseEligibility,
+} from "./lib/trading/close-eligibility.js";
 import { parseEngineCliFlags, resolveEnginePathConfig } from "./lib/trading/config.js";
-import { buildPortfolioExposurePreviews, type PortfolioExposurePreview } from "./lib/trading/exposure.js";
-import { resolveSizingProbability, sizeBinaryPosition, type SizingCalibrationBucket, type SizingProbabilitySource, type SizingSignalHistory } from "./lib/trading/sizing.js";
+import { type PortfolioExposurePreview } from "./lib/trading/exposure.js";
+import {
+  blockedSignalJournalSection,
+  closedTradesJournalSection,
+  llmJournalSection,
+  observationJournalSection,
+  openedPositionsJournalSection,
+  portfolioJournalSection,
+  rejectionJournalSection,
+  statObservationJournalSection,
+} from "./lib/trading/journal-sections.js";
+import { type SizingCalibrationBucket } from "./lib/trading/sizing.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -296,6 +317,13 @@ const LLM_LONG_DATED_CLOSE_HOURS = 30 * 24;
 const LLM_LONG_DATED_CLOSE_MIN_PROGRESS = 0.10;
 const LLM_LONG_DATED_CLOSE_MAX_EXTRA_BUFFER_HOURS = 7 * 24;
 const LLM_PROFIT_TAKE_TARGET_FRACTION = 0.75;
+const LLM_CLOSE_ELIGIBILITY_CONFIG = {
+  closeMinHoldHours: LLM_CLOSE_MIN_HOLD_HOURS,
+  longDatedCloseHours: LLM_LONG_DATED_CLOSE_HOURS,
+  longDatedCloseMinProgress: LLM_LONG_DATED_CLOSE_MIN_PROGRESS,
+  longDatedCloseMaxExtraBufferHours: LLM_LONG_DATED_CLOSE_MAX_EXTRA_BUFFER_HOURS,
+  profitTakeTargetFraction: LLM_PROFIT_TAKE_TARGET_FRACTION,
+};
 
 // LLM cadence gate. The hourly engine/reporting loop still runs, but expensive
 // Sonnet calls are capped and deduped so trigger noise cannot blow through the
@@ -889,41 +917,7 @@ interface CandidateActions {
   entryCandidates: Signal[];
   sizingPreviews: CandidateSizingPreview[];
   portfolioExposurePreviews: PortfolioExposurePreview[];
-  llmCloseEligibility: Array<{
-    positionId: string;
-    signalType: string;
-    asset: string;
-    venue: string;
-    direction: string;
-    allowed: boolean;
-    allowedCategories: NonNullable<LlmTradeInstruction["closeReasonCategory"]>[];
-    evidenceColumns: string[];
-    hoursOpen: number | null;
-    hoursToExpiry: number | null;
-    plannedHoldHours: number | null;
-    elapsedHoldPct: number | null;
-    minHoldHours: number;
-    reason: string;
-  }>;
-}
-
-interface CandidateSizingPreview {
-  signalType: string;
-  asset: string;
-  venue: Signal["venue"];
-  direction: Signal["direction"];
-  currentFlatSize: number;
-  previewSize: number;
-  reason: ReturnType<typeof sizeBinaryPosition>["reason"] | "unsupported_signal";
-  entryPrice: number;
-  probabilitySource: SizingProbabilitySource;
-  winProbability: number | null;
-  probabilitySampleSize: number | null;
-  edgePts: number | null;
-  rawKellyFraction: number | null;
-  adjustedKellyFraction: number | null;
-  cappedKellyFraction: number | null;
-  notes: string[];
+  llmCloseEligibility: LlmCloseEligibility[];
 }
 
 interface GatedLlmAdvice {
@@ -2957,35 +2951,6 @@ function isMechanicalLlmCloseEligible(signalType: string): boolean {
   return MECHANICAL_LLM_CLOSE_ELIGIBLE_SIGNALS.has(signalType);
 }
 
-function positionTimingContext(position: Position, nowMs = Date.now()): {
-  hoursOpen: number | null;
-  hoursToExpiry: number | null;
-  plannedHoldHours: number | null;
-  elapsedHoldPct: number | null;
-} {
-  const openedMs = Date.parse(position.openedAt);
-  const expiryMs = Date.parse(position.expiryDate);
-  const hoursOpen = Number.isFinite(openedMs) ? (nowMs - openedMs) / (60 * 60 * 1000) : null;
-  const hoursToExpiry = Number.isFinite(expiryMs) ? (expiryMs - nowMs) / (60 * 60 * 1000) : null;
-  const plannedHoldHours = Number.isFinite(openedMs) && Number.isFinite(expiryMs)
-    ? Math.max(0, (expiryMs - openedMs) / (60 * 60 * 1000))
-    : null;
-  const elapsedHoldPct = plannedHoldHours && plannedHoldHours > 0 && hoursOpen !== null
-    ? Math.max(0, Math.min(1, hoursOpen / plannedHoldHours))
-    : null;
-  return { hoursOpen, hoursToExpiry, plannedHoldHours, elapsedHoldPct };
-}
-
-function llmCloseMinHoldHours(position: Position, timing = positionTimingContext(position)): number {
-  const plannedHoldHours = timing.plannedHoldHours;
-  if (plannedHoldHours === null || plannedHoldHours < LLM_LONG_DATED_CLOSE_HOURS) return LLM_CLOSE_MIN_HOLD_HOURS;
-  const progressBuffer = plannedHoldHours * LLM_LONG_DATED_CLOSE_MIN_PROGRESS;
-  return Math.max(
-    LLM_CLOSE_MIN_HOLD_HOURS,
-    Math.min(LLM_LONG_DATED_CLOSE_MAX_EXTRA_BUFFER_HOURS, progressBuffer),
-  );
-}
-
 // Polymarket binary contracts on price come in two flavors with very
 // different resolution semantics. Keep these definitions explicit so the
 // LLM decoder below stays in sync with the upstream signal/heatmap
@@ -3117,7 +3082,7 @@ function formatMechanicalContextLine(
   mark: { pnlPct: number } | null,
 ): string {
   const { hoursOpen, hoursToExpiry, plannedHoldHours, elapsedHoldPct } = positionTimingContext(position);
-  const llmMinHold = llmCloseMinHoldHours(position, { hoursOpen, hoursToExpiry, plannedHoldHours, elapsedHoldPct });
+  const llmMinHold = llmCloseMinHoldHours(LLM_CLOSE_ELIGIBILITY_CONFIG, { hoursOpen, hoursToExpiry, plannedHoldHours, elapsedHoldPct });
 
   const parts: string[] = [];
   parts.push(`open ${hoursOpen === null ? "?" : hoursOpen.toFixed(1)}h`);
@@ -6804,146 +6769,15 @@ function llmCloseEligibilityForPosition(
 ): CandidateActions["llmCloseEligibility"][number] {
   const signalOwned = position.signalType === "LLM_HYPOTHESIS" || position.signalType === "PROMOTED_HYPOTHESIS";
   const mechanicalEligible = isMechanicalLlmCloseEligible(position.signalType);
-  const llmCloseEligible = signalOwned || mechanicalEligible;
-  const timing = positionTimingContext(position);
-  const minHoldHours = llmCloseMinHoldHours(position, timing);
   const mark = markPosition(position, latestRow, snapshots, true);
-  const baseCategories: NonNullable<LlmTradeInstruction["closeReasonCategory"]>[] = signalOwned
-    ? ["thesis_invalidated", "data_quality_issue", "hard_portfolio_risk", "risk_stale", "profit_taking"]
-    : mechanicalEligible
-      ? ["thesis_invalidated", "data_quality_issue", "hard_portfolio_risk"]
-      : [];
-  const conservativeCategories: NonNullable<LlmTradeInstruction["closeReasonCategory"]>[] = ["data_quality_issue", "hard_portfolio_risk"];
-  const profitableEnoughForEarlyTake =
-    signalOwned
-    && mark !== null
-    && position.targetPct !== null
-    && mark.pnlPct >= position.targetPct * LLM_PROFIT_TAKE_TARGET_FRACTION;
-  if (profitableEnoughForEarlyTake) conservativeCategories.push("profit_taking");
-
-  let allowed = llmCloseEligible;
-  let allowedCategories = baseCategories;
-  let reason = signalOwned
-    ? `LLM-owned/promoted setup may be closed after ${LLM_CLOSE_MIN_HOLD_HOURS}h if signal-family evidence supports it.`
-    : mechanicalEligible
-      ? `Mechanical ${position.signalType} setup may be closed after ${LLM_CLOSE_MIN_HOLD_HOURS}h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical.`
-      : "Rule-based signal exits remain mechanical; LLM closes are not allowed.";
-
-  if (llmCloseEligible && (timing.hoursOpen === null || timing.hoursOpen < LLM_CLOSE_MIN_HOLD_HOURS)) {
-    allowed = false;
-    allowedCategories = [];
-    const observed = timing.hoursOpen === null ? "unknown" : `${timing.hoursOpen.toFixed(1)}h`;
-    reason = `Too new for discretionary LLM close: open ${observed}, requires at least ${LLM_CLOSE_MIN_HOLD_HOURS}h.`;
-  } else if (signalOwned && timing.hoursOpen !== null && timing.hoursOpen < minHoldHours) {
-    allowed = true;
-    allowedCategories = conservativeCategories;
-    reason = `Long-dated trade is only ${(timing.elapsedHoldPct === null ? 0 : timing.elapsedHoldPct * 100).toFixed(1)}% through planned hold; early LLM closes limited to hard risk/data quality${profitableEnoughForEarlyTake ? "/profit-taking near target" : ""} until ${minHoldHours.toFixed(1)}h.`;
-  }
-
-  return {
-    positionId: position.id,
-    signalType: position.signalType,
-    asset: position.asset,
-    venue: position.venue,
-    direction: position.direction,
-    allowed,
-    allowedCategories,
+  return buildLlmCloseEligibility({
+    position,
+    mark,
     evidenceColumns: signalFamilyEvidenceColumns(position),
-    hoursOpen: timing.hoursOpen === null ? null : Number(timing.hoursOpen.toFixed(2)),
-    hoursToExpiry: timing.hoursToExpiry === null ? null : Number(timing.hoursToExpiry.toFixed(2)),
-    plannedHoldHours: timing.plannedHoldHours === null ? null : Number(timing.plannedHoldHours.toFixed(2)),
-    elapsedHoldPct: timing.elapsedHoldPct === null ? null : Number(timing.elapsedHoldPct.toFixed(4)),
-    minHoldHours: Number(minHoldHours.toFixed(2)),
-    reason,
-  };
-}
-
-function sizingSignalHistories(weights: SignalWeight[]): SizingSignalHistory[] {
-  return weights.map((weight) => ({
-    signalType: weight.type,
-    trades: weight.trades,
-    wins: weight.wins,
-    perAsset: Object.fromEntries(Object.entries(weight.perAsset ?? {}).map(([asset, stats]) => [
-      asset,
-      { trades: stats.trades, wins: stats.wins },
-    ])),
-  }));
-}
-
-function buildCandidateSizingPreview(
-  signal: Signal,
-  portfolio: Portfolio,
-  probabilityInputs: {
-    calibrationBuckets: SizingCalibrationBucket[];
-    signalHistories: SizingSignalHistory[];
-  },
-): CandidateSizingPreview {
-  const isBinaryPolymarket = signal.venue === "polymarket" && signal.entryPrice > 0 && signal.entryPrice < 1;
-  const notes = [
-    "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
-  ];
-  if (!isBinaryPolymarket) {
-    notes.push("Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry.");
-    return {
-      signalType: signal.type,
-      asset: signal.asset,
-      venue: signal.venue,
-      direction: signal.direction,
-      currentFlatSize: TRADE_SIZE,
-      previewSize: 0,
-      reason: "unsupported_signal",
-      entryPrice: Number(signal.entryPrice.toFixed(6)),
-      probabilitySource: "unsupported",
-      winProbability: null,
-      probabilitySampleSize: null,
-      edgePts: null,
-      rawKellyFraction: null,
-      adjustedKellyFraction: null,
-      cappedKellyFraction: null,
-      notes,
-    };
-  }
-
-  const probability = resolveSizingProbability({
-    signalType: signal.type,
-    asset: signal.asset,
-    fallbackConfidence: signal.confidence,
-    calibrationBuckets: probabilityInputs.calibrationBuckets,
-    signalHistories: probabilityInputs.signalHistories,
-    minCalibrationEvents: SIZING_PREVIEW_MIN_CALIBRATION_EVENTS,
-    minAssetHistoryTrades: SIZING_PREVIEW_MIN_ASSET_HISTORY_TRADES,
-    minSignalHistoryTrades: SIZING_PREVIEW_MIN_SIGNAL_HISTORY_TRADES,
+    signalOwned,
+    mechanicalEligible,
+    config: LLM_CLOSE_ELIGIBILITY_CONFIG,
   });
-  notes.push(...probability.notes);
-  const sizing = sizeBinaryPosition({
-    bankroll: MAX_BANKROLL,
-    availableCash: portfolio.cash,
-    minSize: SIZING_PREVIEW_MIN_SIZE,
-    maxSize: SIZING_PREVIEW_MAX_SIZE,
-    entryPrice: signal.entryPrice,
-    winProbability: probability.probability ?? Number.NaN,
-    kellyFraction: SIZING_PREVIEW_KELLY_FRACTION,
-    maxBankrollFraction: SIZING_PREVIEW_MAX_BANKROLL_FRACTION,
-  });
-
-  return {
-    signalType: signal.type,
-    asset: signal.asset,
-    venue: signal.venue,
-    direction: signal.direction,
-    currentFlatSize: TRADE_SIZE,
-    previewSize: sizing.size,
-    reason: sizing.reason,
-    entryPrice: Number(signal.entryPrice.toFixed(6)),
-    probabilitySource: probability.source,
-    winProbability: probability.probability === null ? null : Number(probability.probability.toFixed(6)),
-    probabilitySampleSize: probability.sampleSize,
-    edgePts: Number(sizing.edgePts.toFixed(4)),
-    rawKellyFraction: Number(sizing.rawKellyFraction.toFixed(6)),
-    adjustedKellyFraction: Number(sizing.adjustedKellyFraction.toFixed(6)),
-    cappedKellyFraction: Number(sizing.cappedKellyFraction.toFixed(6)),
-    notes,
-  };
 }
 
 function buildCandidateActions(portfolio: Portfolio, weights: SignalWeight[], signals: Signal[], latestRow: SnapshotRow, snapshots: InstrumentSnapshotFile[]): CandidateActions {
@@ -6961,29 +6795,32 @@ function buildCandidateActions(portfolio: Portfolio, weights: SignalWeight[], si
     })
     .map((position) => ({ positionId: position.id, signalType: position.signalType, asset: position.asset }));
   const llmCloseEligibility = portfolio.positions.map((position) => llmCloseEligibilityForPosition(position, latestRow, snapshots));
-  const probabilityInputs = {
+  const previews = buildCandidateActionPreviews({
+    portfolio: {
+      cash: portfolio.cash,
+      positions: portfolio.positions.map((position) => ({
+        asset: position.asset,
+        venue: position.venue,
+        direction: position.direction,
+        signalType: position.signalType,
+        size: position.size,
+        leverage: position.leverage,
+      })),
+    },
+    signals,
     calibrationBuckets: loadNoBiasCalibrationBuckets(),
     signalHistories: sizingSignalHistories(weights),
-  };
-  const sizingPreviews = signals.map((signal) => buildCandidateSizingPreview(signal, portfolio, probabilityInputs));
-  const portfolioExposurePreviews = buildPortfolioExposurePreviews({
-    positions: portfolio.positions.map((position) => ({
-      asset: position.asset,
-      venue: position.venue,
-      direction: position.direction,
-      signalType: position.signalType,
-      size: position.size,
-      leverage: position.leverage,
-    })),
-    candidates: signals.map((signal, index) => ({
-      candidateId: `${signal.type}:${signal.asset}:${index}`,
-      asset: signal.asset,
-      venue: signal.venue,
-      direction: signal.direction,
-      signalType: signal.type,
-      size: sizingPreviews[index]?.previewSize ?? 0,
-      leverage: signal.leverage,
-    })),
+    sizingConfig: {
+      tradeSize: TRADE_SIZE,
+      maxBankroll: MAX_BANKROLL,
+      minSize: SIZING_PREVIEW_MIN_SIZE,
+      maxSize: SIZING_PREVIEW_MAX_SIZE,
+      kellyFraction: SIZING_PREVIEW_KELLY_FRACTION,
+      maxBankrollFraction: SIZING_PREVIEW_MAX_BANKROLL_FRACTION,
+      minCalibrationEvents: SIZING_PREVIEW_MIN_CALIBRATION_EVENTS,
+      minAssetHistoryTrades: SIZING_PREVIEW_MIN_ASSET_HISTORY_TRADES,
+      minSignalHistoryTrades: SIZING_PREVIEW_MIN_SIGNAL_HISTORY_TRADES,
+    },
     maxClusterAbsExposure: EXPOSURE_PREVIEW_MAX_CLUSTER_ABS_EXPOSURE,
   });
   return {
@@ -6991,8 +6828,8 @@ function buildCandidateActions(portfolio: Portfolio, weights: SignalWeight[], si
     mechanicalExits,
     signalKillExits,
     entryCandidates: signals,
-    sizingPreviews,
-    portfolioExposurePreviews,
+    sizingPreviews: previews.sizingPreviews,
+    portfolioExposurePreviews: previews.portfolioExposurePreviews,
     llmCloseEligibility,
   };
 }
@@ -7733,76 +7570,15 @@ function writeJournalEntry(
 
   lines.push(`### ${dateStr} UTC`);
   lines.push("");
-
-  // Portfolio summary
-  const winRate = portfolio.totalTrades > 0 ? ((portfolio.winCount / portfolio.totalTrades) * 100).toFixed(0) : "N/A";
-  lines.push(`**Portfolio:** $${(portfolio.cash + portfolio.positions.length * TRADE_SIZE).toFixed(2)} total | Cash $${portfolio.cash.toFixed(2)} | ${portfolio.positions.length} open | P&L $${portfolio.totalRealizedPnl.toFixed(4)} | ${winRate}% win rate (${portfolio.totalTrades} trades)`);
-  lines.push("");
-
-  if (closedTrades.length > 0) {
-    lines.push(`**Closed ${closedTrades.length} trades:**`);
-    for (const t of closedTrades) {
-      const emoji = t.pnl >= 0 ? "✅" : "❌";
-      lines.push(`- ${emoji} ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} [${t.instrumentLabel ?? "n/a"}] (${t.signalType}) → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%, market ${(t.marketPnl ?? t.pnl).toFixed(4)}, funding ${(t.fundingPnl ?? 0).toFixed(4)})`);
-    }
-    lines.push("");
-  }
-
-  if (openedPositions.length > 0) {
-    lines.push(`**Opened ${openedPositions.length} positions:**`);
-    for (const p of openedPositions) {
-      lines.push(`- ${p.asset} ${p.direction} @ $${p.entryPrice} via ${p.venue}/${p.instrumentType ?? "legacy"} [${p.instrumentLabel ?? "n/a"}] (${p.signalType})`);
-    }
-    lines.push("");
-  }
-
-  if (weightObs.length > 0) {
-    lines.push("**Signal weight changes:**");
-    for (const o of weightObs) lines.push(`- ${o}`);
-    lines.push("");
-  }
-
-  if (hypothesisObs.length > 0) {
-    lines.push("**Hypothesis lifecycle:**");
-    for (const o of hypothesisObs) lines.push(`- ${o}`);
-    lines.push("");
-  }
-
-  if (statObs.length > 0) {
-    lines.push("**Statistical observations:**");
-    for (const o of statObs.slice(0, 5)) lines.push(`- [${o.type}] ${o.description}`);
-    lines.push("");
-  }
-
-  if (blockedObs.length > 0 || blockedSummary.recentResolved.length > 0 || blockedSummary.openCount > 0) {
-    lines.push("**Blocked signal learning:**");
-    lines.push(`- Open blocked shadows: ${blockedSummary.openCount}`);
-    lines.push(`- Resolved blocked shadows: ${blockedSummary.resolvedCount} (${blockedSummary.wouldHaveWon} wins / ${blockedSummary.wouldHaveLost} losses)`);
-    for (const note of blockedObs) lines.push(`- ${note}`);
-    for (const shadow of blockedSummary.recentResolved.slice(-4)) {
-      const emoji = shadow.outcome === "win" ? "✅" : "❌";
-      const label = shadow.blockedReason === "iv_downside_leg_untracked"
-        ? "Missing downside leg"
-        : shadow.blockedReason === "polymarket_proxy_short" ? "PM proxy short"
-        : shadow.blockedReason === "relative_value_heatmap" ? "Relative-value heatmap"
-        : shadow.blockedReason === "one_touch_high_edge_shadow" ? "One-touch high-edge"
-        : shadow.blockedReason === "stale_lottery_ticket_shadow" ? "Stale lottery NO"
-        : shadow.blockedReason === "manual_shadow_trade" ? "Manual shadow" : "Blocked";
-      lines.push(`- ${emoji} ${label}: ${shadow.signalType} ${shadow.asset} ${shadow.direction} via ${shadow.venue} would have ${humanCloseReason(shadow.closeReason)} (${shadow.pnlPct >= 0 ? "+" : ""}${shadow.pnlPct.toFixed(2)}%)`);
-    }
-    lines.push("");
-  }
-
-  if (llmJournal) {
-    lines.push("**LLM analysis:**");
-    lines.push(llmJournal);
-    lines.push("");
-  }
-
-  if (rejectionSection.length > 0) {
-    for (const line of rejectionSection) lines.push(line);
-    lines.push("");
-  }
+  lines.push(...portfolioJournalSection(portfolio));
+  lines.push(...closedTradesJournalSection(closedTrades));
+  lines.push(...openedPositionsJournalSection(openedPositions));
+  lines.push(...observationJournalSection("**Signal weight changes:**", weightObs));
+  lines.push(...observationJournalSection("**Hypothesis lifecycle:**", hypothesisObs));
+  lines.push(...statObservationJournalSection(statObs));
+  lines.push(...blockedSignalJournalSection(blockedObs, blockedSummary));
+  lines.push(...llmJournalSection(llmJournal));
+  lines.push(...rejectionJournalSection(rejectionSection));
 
   lines.push("---\n");
   appendJournal(lines.join("\n"));

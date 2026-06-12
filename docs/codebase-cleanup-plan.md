@@ -591,10 +591,13 @@ Recent committed cleanup state:
 | Engine runtime config helper | `scripts/lib/trading/config.ts`, `config.test.ts`, `scripts/trading-engine.ts` | Done locally. Runtime path resolution and CLI flag parsing moved behind pure helpers; fixture replay compare passed with no output drift. |
 | Blocked-signal summary helper | `scripts/lib/trading/blocked-signals.ts`, `blocked-signals.test.ts`, `scripts/trading-engine.ts` | Done locally. Blocked-signal learning summary aggregation moved behind a pure helper while preserving observation text and trade logic in the engine. |
 | Blocked-signal observation helper | `scripts/lib/trading/blocked-signals.ts`, `blocked-signals.test.ts`, `scripts/trading-engine.ts` | Done locally. Blocked-signal observation note construction moved behind a pure helper while keeping engine-owned signal names and thresholds in the engine config. |
-| Fractional-Kelly sizing foundation | `scripts/lib/trading/sizing.ts`, `sizing.test.ts` | Done locally. Adds tested binary-outcome sizing math for the quant roadmap's edge-proportional sizing step; live `TRADE_SIZE` wiring remains intentionally unchanged. |
-| Candidate sizing preview artifact | `scripts/trading-engine.ts`, `scripts/lib/trading/sizing.ts` | Done locally. `candidate-actions.json` now includes read-only `sizingPreviews` for entry candidates; actual open-position size/cash mutation still uses `TRADE_SIZE`. |
-| Sizing probability resolver | `scripts/lib/trading/sizing.ts`, `sizing.test.ts`, `scripts/trading-engine.ts` | Done locally. Sizing previews now prefer labeled NO-bias calibration buckets and signal history before falling back to `signal.confidence`; live size/cash mutation is unchanged. |
-| Candidate exposure preview artifact | `scripts/lib/trading/exposure.ts`, `exposure.test.ts`, `scripts/trading-engine.ts` | Done locally. `candidate-actions.json` now includes read-only `portfolioExposurePreviews`; no live entry is blocked by this metadata yet. |
+| Fractional-Kelly sizing foundation | `scripts/lib/trading/sizing.ts`, `sizing.test.ts` | Done and pushed. Adds tested binary-outcome sizing math for the quant roadmap's edge-proportional sizing step; live `TRADE_SIZE` wiring remains intentionally unchanged. |
+| Candidate sizing preview artifact | `scripts/trading-engine.ts`, `scripts/lib/trading/sizing.ts` | Done and pushed. `candidate-actions.json` now includes read-only `sizingPreviews` for entry candidates; actual open-position size/cash mutation still uses `TRADE_SIZE`. |
+| Sizing probability resolver | `scripts/lib/trading/sizing.ts`, `sizing.test.ts`, `scripts/trading-engine.ts` | Done and pushed. Sizing previews now prefer labeled NO-bias calibration buckets and signal history before falling back to `signal.confidence`; live size/cash mutation is unchanged. |
+| Candidate exposure preview artifact | `scripts/lib/trading/exposure.ts`, `exposure.test.ts`, `scripts/trading-engine.ts` | Done and pushed. `candidate-actions.json` now includes read-only `portfolioExposurePreviews`; no live entry is blocked by this metadata yet. |
+| Candidate-action preview builders | `scripts/lib/trading/candidate-actions.ts`, `candidate-actions.test.ts`, `scripts/trading-engine.ts` | Done locally. Read-only sizing/exposure preview assembly moved behind a pure helper; `candidate-actions.json` schema hash and fixture output stayed matched. |
+| LLM close eligibility formatter and position timing | `scripts/lib/trading/close-eligibility.ts`, `close-eligibility.test.ts`, `scripts/trading-engine.ts` | Done locally. Position timing math, long-dated min-hold calculation, and LLM close eligibility shaping moved behind a pure helper; close decisions and live gating remain in the engine. |
+| Journal section builders | `scripts/lib/trading/journal-sections.ts`, `journal-sections.test.ts`, `scripts/trading-engine.ts` | Done locally. Markdown section construction moved out of the engine while append timing/path behavior stays unchanged. |
 
 ### Completed scanner guardrail slices
 
@@ -639,14 +642,22 @@ Follow-up implemented after this emergency cleanup:
 
 ### Current cleanup impact
 
+- Current large-file line counts on USA: `scripts/trading-engine.ts` 8,121 lines after the candidate-preview / close-eligibility / timing / journal-section extraction, `scripts/market-scanner.ts` ~2,473 lines, `scripts/cross_venue_relative_value_report.py` ~2,490 lines, and `scripts/trader-performance-report.ts` ~246 lines.
 - `scripts/trader-performance-report.ts` is down to about 246 lines from the earlier 1,513-line reference after helper, report-builder, relative-value context, input aggregation, hybrid report loading, report-data, and report-CLI extraction.
 - Net repository source lines increased because focused tests and shared helpers were added. This is intentional: the immediate gain is safer future cleanup, not raw line deletion.
 - Runtime performance is expected to be effectively unchanged for the report path; the practical gain is improved testability, clearer LLM-facing report rows, and lower risk for the next extractions.
-- Trading behavior has not been changed. Each code slice was validated with reporting tests, report smoke output, `npm run cleanup:harness -- --compare ...`, `npm run prod:verify`, and TypeScript/lint checks.
+- Live trading behavior has not been changed by the sizing/risk work yet: `TRADE_SIZE`, cash mutation, and candidate execution gates remain unchanged. New quant-upgrade artifacts are read-only previews in `candidate-actions.json` (`sizingPreviews`, `portfolioExposurePreviews`).
+- Each code slice was validated with focused tests, TypeScript build/lints, fixture compares (`npm run cleanup:harness -- --compare ...`, scanner fixture compares where applicable), and production-path guardrails when relevant.
 
 ### Next high-leverage cleanup targets
 
-1. **Production state/data weight.**
+1. **`trading-engine.ts` monolith reduction.**
+   - Main focus now. Current USA line count is 8,121, so this is still the largest remaining production source file and the best place to reduce future-change risk.
+   - Continue pure helper extraction only behind `npm run cleanup:harness` fixture gates.
+   - Already extracted: artifact shaping, runtime config, blocked-signal summaries/observations, sizing previews, exposure previews, candidate-action preview builders, LLM close eligibility formatter, position timing helpers, and journal section builders.
+   - Next safe slices: LLM prompt section builders, LLM advice gate formatting, mechanical-exit candidate summarization, and pure setup-family label/status helpers. Keep signal generation, LLM prompt assembly semantics, live sizing, cash mutation, and execution behavior out of cleanup-only commits.
+
+2. **Production state/data weight.**
    - Highest operational leverage because disk pressure has already broken the hourly wrapper once.
    - Disk health monitoring now exists locally via `npm run cleanup:disk:health`.
 - Latest local USA worktree health check (2026-06-12): 28.9% filesystem used, 327.6 GB free, and 0 B reclaimable under the default prune policy. No pruning was applied.
@@ -654,7 +665,7 @@ Follow-up implemented after this emergency cleanup:
    - Next safe slice: set an operator cadence for `npm run cleanup:disk:health` after hourly syncs and revisit off-root snapshot archives if free space drops below 1 GB or root usage returns above 90-95%.
    - Keep trader history protected: do not delete tracked portfolio, trade ledger, hypotheses, blocked signals, learning journal, engine state, candidate actions, LLM state, or published heatmap artifacts.
 
-2. **Deeper golden harness for `trading-engine.ts`.**
+3. **Deeper golden harness for `trading-engine.ts`.**
    - Highest leverage before larger monolith reduction.
    - Fixture replay now exists locally for representative engine inputs and trimmed snapshot tails.
    - Latest fixture gate: `status=match`, no new dirty paths. The next engine cleanup slice can use this gate before/after changes.
@@ -662,21 +673,21 @@ Follow-up implemented after this emergency cleanup:
    - Keep avoiding signal selection, LLM prompt assembly, portfolio mutation, or exit/open-position logic until fixture coverage is intentionally expanded.
    - Cross-reference `docs/quant-model-roadmap.md`: edge-proportional sizing, walk-forward validation, and portfolio covariance are behavior upgrades, not pure cleanup. Add preview metadata or read-only artifacts first, then accept intentional fixture diffs before live mutation.
 
-3. **Narrow `trading-engine.ts` helper extraction.**
+4. **Narrow `trading-engine.ts` helper extraction.**
    - After the deeper harness, continue with pure helpers only: config/env parsing, artifact summaries, grouping/counting helpers, and readonly state snapshot builders.
    - Latest slices extracted engine-state summary, signal-health, final state-artifact assembly, LLM truth-state artifact assembly, runtime config helpers, blocked-signal summary helpers, and blocked-signal observation helpers and passed the fixture gate.
    - Avoid changing signal generation, LLM prompts, close/open execution, sizing, or portfolio writes during cleanup-only slices. When implementing the quant roadmap, isolate those behavior changes in dedicated commits with dry-run fixture baselines and explicit expected diffs.
    - Sizing foundation now exists in `scripts/lib/trading/sizing.ts`; sizing previews now surface in `candidate-actions.json` without changing actual opened position sizes. Probability sourcing now prefers calibration/history evidence before confidence fallback. Exposure previews now surface current and after-candidate risk clusters. Next safe behavior-adjacent slice is observing these previews for several runs, then adding non-blocking alert thresholds before live sizing/caps.
 
-4. **`market-scanner.ts` module split.**
+5. **`market-scanner.ts` module split.**
    - Big source-size win after engine harnessing. Likely targets: Hyperliquid fetch/parse helpers, Polymarket/Gamma fetch helpers, option valuation transforms, and CSV/snapshot writers.
    - Initial scanner output fixture harness now exists, and CSV/snapshot append, nullable rounding, Hyperliquid snapshot, macro row, and valuation row helpers have been extracted. Next safe slice: build deeper fixed API fixtures before touching fetch/parse behavior.
 
-5. **Heatmap report split.**
+6. **Heatmap report split.**
    - `scripts/cross_venue_relative_value_report.py` is still a large Python monolith.
    - Good target once fixtures exist: split model math, CLOB quote loading, row construction, and HTML rendering while preserving the published `relative-value/` outputs.
 
-6. **Legacy/generated code quarantine.**
+7. **Legacy/generated code quarantine.**
    - Continue moving dormant one-off scripts and research-only outputs behind clear `archive/` labels after import/package-script audits.
    - Do not move sports scripts, HL research directories, or Vercel-served `relative-value/` files without a dedicated reference audit.
 
