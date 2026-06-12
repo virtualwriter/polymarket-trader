@@ -526,6 +526,7 @@ Recent committed cleanup state:
 - On 2026-06-12, `npm run cleanup:disk:health` in the USA worktree reported 28.9% filesystem usage / 327.6 GB free in this environment, with no generated-state prune candidates. No cleanup was applied.
 - Strengthened `npm run cleanup:harness` by adding stable schema hashes for the primary engine artifacts (`candidate-actions.json`, `engine-state.json`, `execution-plan.json`, `dry-run-verification.json`, and `llm-truth-state.json`). The existing engine fixture replay baseline/compare cycle stayed matched.
 - Continued narrow engine cleanup by moving runtime path resolution and CLI flag parsing into `scripts/lib/trading/config.ts`. This is readonly/config-only; the engine fixture compare stayed matched.
+- Continued narrow engine cleanup by moving the blocked-signal learning summary aggregator into `scripts/lib/trading/blocked-signals.ts`. This is a pure read-only summary builder; the engine fixture compare stayed matched.
 
 ### Completed guardrails
 
@@ -581,6 +582,7 @@ Recent committed cleanup state:
 | Engine state artifact assembler | `scripts/lib/trading/artifacts.ts`, `scripts/trading-engine.ts` | Done locally. Extracted final engine-state artifact assembly while preserving engine-owned marking, P&L, signal, LLM, path, and write behavior. |
 | LLM truth-state artifact assembler | `scripts/lib/trading/artifacts.ts`, `scripts/trading-engine.ts` | Done locally. Extracted final truth-state artifact assembly while preserving setup-family scoring, contamination rules, and evidence calculations in the engine. |
 | Engine runtime config helper | `scripts/lib/trading/config.ts`, `config.test.ts`, `scripts/trading-engine.ts` | Done locally. Runtime path resolution and CLI flag parsing moved behind pure helpers; fixture replay compare passed with no output drift. |
+| Blocked-signal summary helper | `scripts/lib/trading/blocked-signals.ts`, `blocked-signals.test.ts`, `scripts/trading-engine.ts` | Done locally. Blocked-signal learning summary aggregation moved behind a pure helper while preserving observation text and trade logic in the engine. |
 
 ### Completed scanner guardrail slices
 
@@ -647,7 +649,7 @@ Follow-up implemented after this emergency cleanup:
 
 3. **Narrow `trading-engine.ts` helper extraction.**
    - After the deeper harness, continue with pure helpers only: config/env parsing, artifact summaries, grouping/counting helpers, and readonly state snapshot builders.
-   - Latest slices extracted engine-state summary, signal-health, final state-artifact assembly, LLM truth-state artifact assembly, and runtime config helpers and passed the fixture gate.
+   - Latest slices extracted engine-state summary, signal-health, final state-artifact assembly, LLM truth-state artifact assembly, runtime config helpers, and blocked-signal summary helpers and passed the fixture gate.
    - Avoid changing signal generation, LLM prompts, close/open execution, sizing, or portfolio writes.
 
 4. **`market-scanner.ts` module split.**
