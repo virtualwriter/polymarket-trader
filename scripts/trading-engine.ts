@@ -36,6 +36,7 @@ import {
 } from "./lib/trading/artifacts.js";
 import { buildBlockedSignalObservations, summarizeBlockedSignals } from "./lib/trading/blocked-signals.js";
 import { parseEngineCliFlags, resolveEnginePathConfig } from "./lib/trading/config.js";
+import { buildPortfolioExposurePreviews, type PortfolioExposurePreview } from "./lib/trading/exposure.js";
 import { resolveSizingProbability, sizeBinaryPosition, type SizingCalibrationBucket, type SizingProbabilitySource, type SizingSignalHistory } from "./lib/trading/sizing.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
@@ -75,6 +76,7 @@ const SIZING_PREVIEW_MAX_BANKROLL_FRACTION = 0.03;
 const SIZING_PREVIEW_MIN_CALIBRATION_EVENTS = 5;
 const SIZING_PREVIEW_MIN_ASSET_HISTORY_TRADES = 5;
 const SIZING_PREVIEW_MIN_SIGNAL_HISTORY_TRADES = 10;
+const EXPOSURE_PREVIEW_MAX_CLUSTER_ABS_EXPOSURE = 5;
 const HEATMAP_SHADOW_MAX_SPREAD = 0.01;
 const HEATMAP_SHADOW_MIN_LIQUIDITY = 1000;
 const MONOTONIC_ARB_MAX_YES_SPREAD = 0.01;
@@ -886,6 +888,7 @@ interface CandidateActions {
   signalKillExits: Array<{ positionId: string; signalType: string; asset: string }>;
   entryCandidates: Signal[];
   sizingPreviews: CandidateSizingPreview[];
+  portfolioExposurePreviews: PortfolioExposurePreview[];
   llmCloseEligibility: Array<{
     positionId: string;
     signalType: string;
@@ -6962,12 +6965,34 @@ function buildCandidateActions(portfolio: Portfolio, weights: SignalWeight[], si
     calibrationBuckets: loadNoBiasCalibrationBuckets(),
     signalHistories: sizingSignalHistories(weights),
   };
+  const sizingPreviews = signals.map((signal) => buildCandidateSizingPreview(signal, portfolio, probabilityInputs));
+  const portfolioExposurePreviews = buildPortfolioExposurePreviews({
+    positions: portfolio.positions.map((position) => ({
+      asset: position.asset,
+      venue: position.venue,
+      direction: position.direction,
+      signalType: position.signalType,
+      size: position.size,
+      leverage: position.leverage,
+    })),
+    candidates: signals.map((signal, index) => ({
+      candidateId: `${signal.type}:${signal.asset}:${index}`,
+      asset: signal.asset,
+      venue: signal.venue,
+      direction: signal.direction,
+      signalType: signal.type,
+      size: sizingPreviews[index]?.previewSize ?? 0,
+      leverage: signal.leverage,
+    })),
+    maxClusterAbsExposure: EXPOSURE_PREVIEW_MAX_CLUSTER_ABS_EXPOSURE,
+  });
   return {
     generatedAt: new Date().toISOString(),
     mechanicalExits,
     signalKillExits,
     entryCandidates: signals,
-    sizingPreviews: signals.map((signal) => buildCandidateSizingPreview(signal, portfolio, probabilityInputs)),
+    sizingPreviews,
+    portfolioExposurePreviews,
     llmCloseEligibility,
   };
 }

@@ -20,7 +20,7 @@ Minimal viable upgrade to "yes, this is a quant model" is **~2-3 weeks of focuse
 | 4. Calibration | 25 | Scaffolding exists (8,173-row JSONL with `resolved_outcome` field), per-bucket observer shipped (`oneTouchBucketObservations`). No closed loop. | Brier score by bucket, reliability diagrams, isotonic regression mapping model→empirical probabilities, recomputed weekly. |
 | 5. Signal / alpha generation | 55 | Multiple signal families (one-touch, weekend HL funding, monotonic arb, hybrid bot, LLM hypothesis). Promotion gate at 65% shadow win rate over 20 trades. | Same + per-signal EV calc, signal correlation matrix, signal-decay tracking. |
 | 6. Portfolio construction / sizing | 20 | Live entries still use `TRADE_SIZE = 1`, but reusable binary fractional-Kelly sizing math now exists in `scripts/lib/trading/sizing.ts`, and `candidate-actions.json` carries preview-only sizing metadata using calibration buckets, signal/asset history, signal-family history, then confidence fallback. Live HL bot uses fixed $10. | Sizing as a function of edge × confidence × inverse-variance × portfolio-correlation-penalty. Typical: fractional Kelly, risk-parity, or mean-variance with covariance shrinkage. |
-| 7. Risk management | 30 | Per-position stops, expiry-based hold limits, drawdown-mode flag (halves sizing below 35% recent win rate), hybrid bot consecutive-loser cooldown (3 losses → 36h coin-specific short suppression, `0090238`). | Portfolio-level VaR/CVaR, correlated-position caps, sector/asset exposure limits, dynamic vol-targeting on aggregate book. |
+| 7. Risk management | 33 | Per-position stops, expiry-based hold limits, drawdown-mode flag, hybrid bot consecutive-loser cooldown, and read-only `candidate-actions.json.portfolioExposurePreviews` for asset/signal/venue/risk-cluster exposure before candidate entries. | Portfolio-level VaR/CVaR, correlated-position caps, sector/asset exposure limits, dynamic vol-targeting on aggregate book. |
 | 8. Execution | 70 | Real HL fills with measured slippage + fees logged, PM via CLOB client. Live and shadow accounting cleanly separated. | Same + pre-trade impact modeling, optimal execution scheduling for large orders. |
 | 9. Backtesting / validation | 30 | Ad-hoc Python scripts for individual strategies (funding sweep, hybrid grid, IV variant, synthetic bull stress). | Unified walk-forward framework, train/test/OOS splits enforced, regime-stratified holdouts, leakage prevention. |
 | 10. Live monitoring & adaptive learning | 45 | Hypothesis system with backtest-validated promotion, shadow-trading infrastructure, per-signal weight adaptation, drawdown mode, per-bucket observer, LLM journals + email. | Model-drift alerting, signal P&L attribution at factor level, regime detection feeding parameter selection, auto-recalibration schedule. |
@@ -43,7 +43,7 @@ Probability outputs are derived from closed-form math (BS-terminal + one-touch r
 
 ### 3. No portfolio-level risk
 
-Currently ~92 open shadow positions plus a real hybrid bot book. Correlation matrix is unmodeled. If BTC ripped: one-touch NO shadows, hybrid bot shorts, and weekend-funding HL stock-perp longs (all correlated to BTC / risk-on) would move against us simultaneously. System doesn't see this until P&L hits.
+Currently open live/shadow books can still stack correlated risk, but `candidate-actions.json` now includes read-only `portfolioExposurePreviews` that show current exposure and after-candidate exposure by asset, venue, signal family, and simple risk clusters. This is not a blocker yet. If BTC ripped: one-touch NO shadows, hybrid bot shorts, and weekend-funding HL stock-perp longs can still move together unless the next step converts previews into explicit caps.
 
 ## Minimal Viable Quant Upgrade (A→E)
 
@@ -78,6 +78,7 @@ Ordered by leverage. A-D together = the smallest path to "yes, this is a quant m
 - Compute rolling correlation matrix between signal P&L streams (daily).
 - Hard cap on concurrent exposure to any single covariance cluster (e.g. all "long BTC delta" signals combined).
 - Surface in the engine log + daily journal.
+- Foundation shipped: `candidate-actions.json.portfolioExposurePreviews` surfaces current and after-candidate exposure by asset, venue, signal family, and coarse risk cluster. This is preview-only; no live candidate is blocked by it yet.
 - **Unlocks:** portfolio-level risk that's actually measured, not just per-position.
 
 ### E. Fitted probability model (optional / stretch) — ~3-5 days
@@ -118,7 +119,7 @@ Update this table as gaps close. When a step ships, move from `pending` to a com
 | A. Calibration backfill ⊕ Brier scoring | done (2026-06-12) | `scripts/backfill_calibration_outcomes.py` stamps real UMA resolutions + h24/h72/h168 forward marks hourly via `run-polymarket-trader.sh`; `scripts/calibration_event_report.py` writes the deduplicated event-level report (`relative-value/calibration/event_report.md`, 200-resolved-event promotion bar). Same date: BTC/ETH switched to live Deribit vol (proxy penalty 0) and the one-touch model replaced with the exact reflection barrier formula. |
 | B. Edge-proportional sizing | probability preview shipped (2026-06-12) | `scripts/lib/trading/sizing.ts` adds tested binary fractional-Kelly sizing math and probability resolution with calibration bucket, signal/asset history, signal-family history, and confidence fallback sources. `candidate-actions.json` includes preview-only `sizingPreviews`. Engine entries still use `TRADE_SIZE = 1`; next slice should add portfolio exposure/correlation previews before changing live order size. |
 | C. Walk-forward backtest framework | pending | Ad-hoc scripts exist; no shared harness. |
-| D. Per-asset / per-signal covariance | pending | No portfolio-level risk surfaced yet. |
+| D. Per-asset / per-signal covariance | exposure preview shipped (2026-06-12) | `candidate-actions.json.portfolioExposurePreviews` surfaces read-only asset/signal/venue/risk-cluster exposure before and after candidates. No live caps yet. |
 | E. Fitted probability model | pending (gated on A) | No ML imports in repo. |
 | Deferred: IV-variant data collection | partial | `scripts/iv_model_variant_backtest.py` writes comparison CSV but doesn't feed live model. |
 | Deferred: Relative-decay edge exit | pending | Current exit uses absolute 1pt floor; relative trigger not coded. |
