@@ -1,5 +1,4 @@
 #!/usr/bin/env tsx
-import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { readHybridBotReport as readHybridBotReportFromFiles, resolveHybridBotFile } from "./lib/reporting/hybrid-bot-report.js";
@@ -13,6 +12,7 @@ import {
   readLatestInstrumentSnapshot,
 } from "./lib/reporting/report-data.js";
 import type { InstrumentSnapshotFile } from "./lib/reporting/report-data.js";
+import { buildReportForFormat, parseReportCliArgs, writeReportOutput } from "./lib/reporting/report-cli.js";
 import {
   currentBidAsk,
   entryOneTouchModel,
@@ -195,17 +195,8 @@ export function buildMarkdownReport(args: BuildMarkdownReportArgs): string {
   return buildMarkdownReportWithDeps(args, reportBuilderDeps());
 }
 
-function writeOutput(path: string, content: string) {
-  mkdirSync(dirname(path), { recursive: true });
-  writeFileSync(path, content + "\n");
-}
-
 async function main() {
-  const args = process.argv.slice(2);
-  const outArg = args.find((arg) => arg.startsWith("--out="));
-  const outPath = outArg ? outArg.slice("--out=".length) : null;
-  const formatArg = args.find((arg) => arg.startsWith("--format="));
-  const format = formatArg?.slice("--format=".length) ?? (outPath?.endsWith(".csv") ? "csv" : "markdown");
+  const { outPath, format } = parseReportCliArgs(process.argv.slice(2));
 
   const portfolio = readJson<ReportPortfolio>(join(DATA_DIR, "portfolio.json"), {
     cash: 0,
@@ -242,8 +233,8 @@ async function main() {
     .filter((coin) => !reportArgs.hyperliquidMids.has(coin) && !reportArgs.hyperliquidMids.has(coin.toUpperCase()));
   await augmentMidsFromHyperliquid(reportArgs.hyperliquidMids, missingHybridCoins);
 
-  const report = format === "csv" ? buildCsvReport(reportArgs) : buildMarkdownReport(reportArgs);
-  if (outPath) writeOutput(outPath, report);
+  const report = buildReportForFormat(format, reportArgs, { buildCsvReport, buildMarkdownReport });
+  if (outPath) writeReportOutput(outPath, report);
   console.log(report);
 }
 

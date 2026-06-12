@@ -556,6 +556,7 @@ Recent committed cleanup state:
 | Report input aggregation extraction | `scripts/lib/reporting/report-inputs.ts`, `scripts/trader-performance-report.ts` | Done. De-duping, counted/raw stats, grouped rows, setup-family stats, duplicate IDs, and resolved-shadow rollups moved out of the CLI wrapper. |
 | Hybrid-bot report loading extraction | `scripts/lib/reporting/hybrid-bot-report.ts`, `scripts/trader-performance-report.ts` | Done. Hybrid shadow state/trade loading and fee/P&L normalization moved out of the CLI wrapper. |
 | Report data loading extraction | `scripts/lib/reporting/report-data.ts`, `scripts/trader-performance-report.ts` | Done. JSON/CSV file loading, latest instrument snapshot tail-read, Hyperliquid mids, trade de-duping, and snapshot marking moved out of the CLI wrapper. |
+| Report CLI helper extraction | `scripts/lib/reporting/report-cli.ts`, `report-cli.test.ts`, `scripts/trader-performance-report.ts` | Done. CLI arg parsing, report format selection, and output-file writing moved out of the wrapper with legacy newline behavior tested. |
 
 ### Completed infra visibility / quarantine slices
 
@@ -617,7 +618,7 @@ Follow-up implemented after this emergency cleanup:
 
 ### Current cleanup impact
 
-- `scripts/trader-performance-report.ts` is down to about 255 lines from the earlier 1,513-line reference after helper, report-builder, relative-value context, input aggregation, hybrid report loading, and report-data extraction.
+- `scripts/trader-performance-report.ts` is down to about 246 lines from the earlier 1,513-line reference after helper, report-builder, relative-value context, input aggregation, hybrid report loading, report-data, and report-CLI extraction.
 - Net repository source lines increased because focused tests and shared helpers were added. This is intentional: the immediate gain is safer future cleanup, not raw line deletion.
 - Runtime performance is expected to be effectively unchanged for the report path; the practical gain is improved testability, clearer LLM-facing report rows, and lower risk for the next extractions.
 - Trading behavior has not been changed. Each code slice was validated with reporting tests, report smoke output, `npm run cleanup:harness -- --compare ...`, `npm run prod:verify`, and TypeScript/lint checks.
