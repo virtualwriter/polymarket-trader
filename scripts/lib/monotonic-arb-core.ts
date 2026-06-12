@@ -228,6 +228,12 @@ function parseSportsMarket(eventSlug: string, question: string, outcomes: string
 function parseMarket(eventSlug: string, question: string, groupItemTitle: string, outcomes: string[]): ParsedMarket | null {
   const sports = parseSportsMarket(eventSlug, question, outcomes);
   if (sports) return sports;
+  // Sports events must never fall through to the generic strike parser:
+  // unrelated per-team markets ("run scored in the first inning?: <team>")
+  // parse to identical strikes on a shared ladderKey, producing false
+  // "monotonic" pairs across different questions (observed on
+  // mlb-atl-cws-2026-06-11 at packageCost 0.72 — not an arb).
+  if (sportsSlugKind(eventSlug)) return null;
 
   const parsed = parseStrike(question, groupItemTitle);
   const indexes = normalizedOutcomeIndexes(outcomes);
@@ -252,6 +258,15 @@ export function polymarketAssetForSlug(slug: string): string | null {
   if (slug.startsWith("si-") || slug.includes("silver") || slug.includes("xagusd")) return "SILVER";
   if (slug.startsWith("cl-") || slug.includes("wti") || slug.includes("crude-oil")) return "OIL";
   if (slug.includes("amazon") || slug.includes("amzn")) return "AMZN";
+  if (slug.includes("-xrp-")) return "XRP";
+  if (slug.includes("dogecoin") || slug.includes("-doge-")) return "DOGE";
+  if (slug.includes("-bnb-")) return "BNB";
+  if (slug.startsWith("ng-") || slug.includes("-ng-") || slug.includes("natural-gas")) return "NATGAS";
+  // Generic ladder families ("what price will <ticker> hit ...", "will <ticker>
+  // hit week of ..."): derive the asset from the ticker so newly listed ladders
+  // are tradable without a code change per asset.
+  const generic = slug.match(/^what-price-will-([a-z0-9]+)-hit/) ?? slug.match(/^will-([a-z0-9]+)-hit-(?:week|by)/);
+  if (generic) return generic[1].toUpperCase();
   return null;
 }
 
@@ -374,7 +389,7 @@ export function evaluatePair(config: ArbCoreConfig, asset: string, broad: Market
   const minLiquidity = Math.min(broad.liquidity, narrow.liquidity);
   const availableSize = Math.min(broad.yesBook.askSize, narrow.noBook.askSize);
   const rejectionReasons: string[] = [];
-  if (!config.allowedAssets.has(asset)) rejectionReasons.push("asset_not_allowlisted");
+  if (!config.allowedAssets.has("ALL") && !config.allowedAssets.has(asset)) rejectionReasons.push("asset_not_allowlisted");
   if (broad.ladderKey !== narrow.ladderKey) rejectionReasons.push("ladder_mismatch");
   if (broad.endDate && narrow.endDate && broad.endDate !== narrow.endDate) rejectionReasons.push("expiry_mismatch");
   if (!resolutionMatches(broad, narrow)) rejectionReasons.push("resolution_mismatch");

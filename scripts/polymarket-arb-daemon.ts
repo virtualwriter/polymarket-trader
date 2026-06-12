@@ -36,6 +36,7 @@ import {
   fetchEvent,
   fetchJson,
   findCandidates,
+  isNestedLadderEvent,
   marketQuote,
   polymarketAssetForSlug,
 } from "./lib/monotonic-arb-core.js";
@@ -117,6 +118,9 @@ const ALLOW_NBA_NON_ATOMIC_EXECUTION = process.env.ARB_DAEMON_ALLOW_NBA_NON_ATOM
 const NBA_LEDGER_ARCHIVE_GRACE_MS = Number(process.env.ARB_DAEMON_NBA_LEDGER_ARCHIVE_GRACE_MS ?? 30 * 60_000);
 const DISCOVER_NBA_GAMES = process.env.ARB_DAEMON_DISCOVER_NBA_GAMES !== "0";
 const DISCOVER_MLB_GAMES = process.env.ARB_DAEMON_DISCOVER_MLB_GAMES !== "0";
+const DISCOVER_LADDERS = process.env.ARB_DAEMON_DISCOVER_LADDERS !== "0";
+const LADDER_DISCOVERY_TAGS = (process.env.ARB_DAEMON_LADDER_DISCOVERY_TAGS ?? "crypto,crypto-prices,stocks,commodities,indices,finance")
+  .split(",").map((tag) => tag.trim()).filter(Boolean);
 const SPORTS_DISCOVERY_LIMIT = Number(process.env.ARB_DAEMON_SPORTS_DISCOVERY_LIMIT ?? process.env.ARB_DAEMON_MLB_DISCOVERY_LIMIT ?? 500);
 const LEDGER_ARCHIVE_DIR = join(dirname(PACKAGES_PATH), "archive");
 
@@ -642,15 +646,53 @@ async function discoverSportsGameSlugs(kind: "nba" | "mlb"): Promise<string[]> {
   return [...out].sort();
 }
 
+// Auto-discover price-ladder events (crypto/stock/commodity "what price will X
+// hit" families) so the watchlist tracks every live ladder, not just the
+// hardcoded defaults. Events must parse to a known asset and look like a
+// nested ladder with at least 3 strike markets.
+async function discoverLadderEventSlugs(): Promise<string[]> {
+  if (!DISCOVER_LADDERS) return [];
+  const out = new Set<string>();
+  for (const tag of LADDER_DISCOVERY_TAGS) {
+    for (let offset = 0; offset < SPORTS_DISCOVERY_LIMIT; offset += 100) {
+      let events: GammaEvent[];
+      try {
+        events = await fetchJson(`${GAMMA_API}/events?${new URLSearchParams({
+          active: "true",
+          closed: "false",
+          limit: "100",
+          offset: String(offset),
+          tag_slug: tag,
+        })}`, BOOK_FETCH_TIMEOUT_MS) as GammaEvent[];
+      } catch (err: any) {
+        log(`ladder discovery tag=${tag} offset=${offset} failed: ${err?.message ?? String(err)}`);
+        break;
+      }
+      if (!Array.isArray(events) || events.length === 0) break;
+      for (const event of events) {
+        const slug = event.slug ?? "";
+        if (!slug || (event.markets ?? []).length < 3) continue;
+        if (!polymarketAssetForSlug(slug)) continue;
+        if (!isNestedLadderEvent(slug, event.title ?? "")) continue;
+        out.add(slug);
+      }
+      if (events.length < 100) break;
+    }
+  }
+  return [...out].sort();
+}
+
 async function currentEventSlugs(): Promise<string[]> {
   const configured = await configuredEventSlugs();
-  const [discoveredNba, discoveredMlb] = await Promise.all([
+  const [discoveredNba, discoveredMlb, discoveredLadders] = await Promise.all([
     discoverSportsGameSlugs("nba"),
     discoverSportsGameSlugs("mlb"),
+    discoverLadderEventSlugs(),
   ]);
   if (discoveredNba.length) log(`nba discovery: ${discoveredNba.length} active game slugs`);
   if (discoveredMlb.length) log(`mlb discovery: ${discoveredMlb.length} active game slugs`);
-  return [...configured, ...discoveredNba, ...discoveredMlb].filter((slug, idx, slugs) => slugs.indexOf(slug) === idx);
+  if (discoveredLadders.length) log(`ladder discovery: ${discoveredLadders.length} active ladder events`);
+  return [...configured, ...discoveredNba, ...discoveredMlb, ...discoveredLadders].filter((slug, idx, slugs) => slugs.indexOf(slug) === idx);
 }
 
 async function refreshWatchlist(): Promise<void> {
@@ -1123,6 +1165,22 @@ function sizingSpendableUsd(spendableUsd: number): number {
   return Math.max(0, (spendableUsd - BALANCE_HEADROOM_USD) / Math.max(1, BALANCE_HEADROOM_MULTIPLIER));
 }
 
+// Sports games and near-dated expiries settle in hours/days and recycle
+// capital; far-dated ladders (Dec-2026 / before-2027) lock it for months.
+// Far-dated packages may only tap a fraction of spendable cash so near-term
+// opportunities keep 2:1 priority over slow capital.
+const PRIORITY_NEAR_TERM_DAYS = Number(process.env.ARB_DAEMON_PRIORITY_NEAR_TERM_DAYS ?? 45);
+const FAR_DATED_BUDGET_FACTOR = Number(process.env.ARB_DAEMON_FAR_DATED_BUDGET_FACTOR ?? 0.5);
+
+function budgetFactorForCandidate(candidate: Candidate): number {
+  if (isSportsCandidate(candidate)) return 1;
+  const ends = [candidate.broad.endDate, candidate.narrow.endDate]
+    .map((value) => Date.parse(value ?? ""))
+    .filter((ms) => Number.isFinite(ms));
+  if (ends.length && Math.max(...ends) - Date.now() <= PRIORITY_NEAR_TERM_DAYS * 86_400_000) return 1;
+  return FAR_DATED_BUDGET_FACTOR;
+}
+
 function reservedUsdForSized(nominalCost: number): number {
   return nominalCost * Math.max(1, BALANCE_HEADROOM_MULTIPLIER) + BALANCE_HEADROOM_USD;
 }
@@ -1329,7 +1387,7 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
   }
   const executionCandidate = executionSizingCandidate(c);
   const spendableUsd = spendableUsdAfterReservations();
-  const sized = sizeForCandidate(executionCandidate, packageRows, sizingSpendableUsd(spendableUsd));
+  const sized = sizeForCandidate(executionCandidate, packageRows, sizingSpendableUsd(spendableUsd) * budgetFactorForCandidate(executionCandidate));
   if (sized.reason) {
     const now = Date.now();
     const last = lastSkipLogAt.get(pkg.key) ?? 0;
@@ -1358,7 +1416,7 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
     return;
   }
   const freshSpendableUsd = spendableUsdAfterReservations();
-  const freshSized = sizeForCandidate(executionCandidate, freshPackageRows, sizingSpendableUsd(freshSpendableUsd));
+  const freshSized = sizeForCandidate(executionCandidate, freshPackageRows, sizingSpendableUsd(freshSpendableUsd) * budgetFactorForCandidate(executionCandidate));
   if (freshSized.reason) {
     const now = Date.now();
     const last = lastSkipLogAt.get(pkg.key) ?? 0;
