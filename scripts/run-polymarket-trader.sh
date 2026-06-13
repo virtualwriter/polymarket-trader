@@ -232,6 +232,18 @@ else
       -c user.email="37585392+virtualwriter@users.noreply.github.com" \
       commit -m "scan+trade $(date -u +%Y-%m-%d-%H%M)"
   robust_git_pull_rebase
+  # If the post-run rebase reapplies an autostash, make sure managed state files
+  # do not stay dirty on the VPS after the successful run.
+  for data_file in "${DATA_FILES[@]}"; do
+    if [[ -e "$data_file" ]]; then
+      git add -f "$data_file"
+    fi
+  done
+  if ! git diff --cached --quiet; then
+    git -c user.name="virtualwriter" \
+        -c user.email="37585392+virtualwriter@users.noreply.github.com" \
+        commit -m "scan+trade post-rebase state $(date -u +%Y-%m-%d-%H%M)"
+  fi
   git push origin HEAD:main
 fi
 
