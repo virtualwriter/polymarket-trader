@@ -1,7 +1,7 @@
 # NO-bias calibration: event-level report
 
-- Rows in log: 36640 | unique markets: 323
-- Resolved markets (real UMA labels): 56 usable, 248 still open
+- Rows in log: 34622 | unique markets: 329
+- Resolved markets (real UMA labels): 56 usable, 254 still open
 - Gate-passed markets: resolved 7, still open 12
 
 ## Promotion bar: 7 / 200 resolved gate-passed events
@@ -10,7 +10,7 @@ Progress: 3.5%. NO-bias stays shadow-only until the bar is met with positive exp
 ## Headline cohorts (buy NO at first qualifying snapshot)
 ```
 all resolved markets:    n= 56 | NO-win  92.9% | avg   -0.76% | total    -42.3% | median NO entry 0.992
-gate-passed (resolved):  n=  7 | NO-win  85.7% | avg  +24.13% | total   +168.9% | median NO entry 0.710
+gate-passed (resolved):  n=  7 | NO-win  85.7% | avg  +23.65% | total   +165.5% | median NO entry 0.710
 ```
 
 ## By asset
