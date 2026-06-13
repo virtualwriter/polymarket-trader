@@ -24,6 +24,7 @@ export type GammaMarket = {
   endDate?: string | null;
   active?: boolean;
   closed?: boolean;
+  acceptingOrders?: boolean;
 };
 
 export type GammaEvent = {
@@ -31,6 +32,8 @@ export type GammaEvent = {
   title?: string;
   startDate?: string | null;
   createdAt?: string | null;
+  closed?: boolean;
+  active?: boolean;
   markets?: GammaMarket[];
 };
 
@@ -355,6 +358,18 @@ export function parseMinOrderSize(value: unknown): number {
   return parsed > 0 ? parsed : DEFAULT_MIN_ORDER_SIZE;
 }
 
+function emptyBook(tokenId: string): Book {
+  return {
+    tokenId,
+    bid: 0,
+    bidSize: 0,
+    ask: 0,
+    askSize: 0,
+    spread: 0,
+    minOrderSize: DEFAULT_MIN_ORDER_SIZE,
+  };
+}
+
 export async function fetchBook(config: ArbCoreConfig, tokenId: string): Promise<Book> {
   const book = await fetchJson(`${config.host}/book?${new URLSearchParams({ token_id: tokenId })}`, config.fetchTimeoutMs);
   const bid = bestLevel(book.bids, "bid");
@@ -370,11 +385,42 @@ export async function fetchBook(config: ArbCoreConfig, tokenId: string): Promise
   };
 }
 
+export function structuralMarketQuote(event: GammaEvent, market: GammaMarket): MarketQuote | null {
+  const eventSlug = event.slug ?? "";
+  const marketId = String(market.id ?? "");
+  const question = market.question ?? "";
+  if (!eventSlug || !marketId || !question || market.closed || market.active === false || market.acceptingOrders === false) return null;
+  const outcomes = parseJsonArray(market.outcomes).map(String);
+  const tokenIds = parseJsonArray(market.clobTokenIds).map(String);
+  const parsed = parseMarket(eventSlug, question, market.groupItemTitle ?? "", outcomes);
+  if (!parsed) return null;
+  const { yesIndex, noIndex } = parsed;
+  if (yesIndex < 0 || noIndex < 0 || !tokenIds[yesIndex] || !tokenIds[noIndex]) return null;
+  return {
+    eventSlug,
+    eventTitle: event.title ?? eventSlug,
+    marketId,
+    ladderKey: parsed.ladderKey,
+    question,
+    description: market.description ?? "",
+    resolutionSource: market.resolutionSource ?? "",
+    strike: parsed.strike,
+    direction: parsed.direction,
+    startDate: market.startDate ?? market.createdAt ?? event.startDate ?? event.createdAt ?? null,
+    endDate: market.endDate ?? null,
+    liquidity: parseNumber(market.liquidityNum ?? market.liquidity),
+    yesTokenId: tokenIds[yesIndex],
+    noTokenId: tokenIds[noIndex],
+    yesBook: emptyBook(tokenIds[yesIndex]),
+    noBook: emptyBook(tokenIds[noIndex]),
+  };
+}
+
 export async function marketQuote(config: ArbCoreConfig, event: GammaEvent, market: GammaMarket): Promise<MarketQuote | null> {
   const eventSlug = event.slug ?? "";
   const marketId = String(market.id ?? "");
   const question = market.question ?? "";
-  if (!eventSlug || !marketId || !question || market.closed || market.active === false) return null;
+  if (!eventSlug || !marketId || !question || market.closed || market.active === false || market.acceptingOrders === false) return null;
   const outcomes = parseJsonArray(market.outcomes).map(String);
   const tokenIds = parseJsonArray(market.clobTokenIds).map(String);
   const parsed = parseMarket(eventSlug, question, market.groupItemTitle ?? "", outcomes);
@@ -450,17 +496,12 @@ export async function fetchEvent(config: ArbCoreConfig, slug: string): Promise<G
 export async function scanEvent(config: ArbCoreConfig, slug: string, foundAt: string): Promise<Candidate[]> {
   const event = await fetchEvent(config, slug);
   if (!event?.slug) return [];
+  if (event.closed || event.active === false) return [];
   const asset = polymarketAssetForSlug(event.slug);
   if (!asset || !isNestedLadderEvent(event.slug, event.title ?? "")) return [];
   const quotes = (await mapLimit(event.markets ?? [], config.marketConcurrency, (market) => marketQuote(config, event, market)))
     .filter((quote): quote is MarketQuote => quote !== null);
   const candidates: Candidate[] = [];
-  if (asset === "NBA") {
-    for (const quote of quotes) {
-      const candidate = evaluatePair(config, asset, quote, quote, foundAt);
-      candidates.push(candidate);
-    }
-  }
   for (const direction of ["above", "below"] as const) {
     const ladderKeys = [...new Set(quotes.filter((quote) => quote.direction === direction).map((quote) => quote.ladderKey))];
     for (const ladderKey of ladderKeys) {
@@ -486,6 +527,36 @@ export async function scanEvent(config: ArbCoreConfig, slug: string, foundAt: st
   return candidates;
 }
 
+export async function scanEventStructural(config: ArbCoreConfig, slug: string, foundAt: string): Promise<Candidate[]> {
+  const event = await fetchEvent(config, slug);
+  if (!event?.slug) return [];
+  if (event.closed || event.active === false) return [];
+  const asset = polymarketAssetForSlug(event.slug);
+  if (!asset || !isNestedLadderEvent(event.slug, event.title ?? "")) return [];
+  const quotes = (event.markets ?? [])
+    .map((market) => structuralMarketQuote(event, market))
+    .filter((quote): quote is MarketQuote => quote !== null);
+  const candidates: Candidate[] = [];
+  for (const direction of ["above", "below"] as const) {
+    const ladderKeys = [...new Set(quotes.filter((quote) => quote.direction === direction).map((quote) => quote.ladderKey))];
+    for (const ladderKey of ladderKeys) {
+      const directional = quotes
+        .filter((quote) => quote.direction === direction && quote.ladderKey === ladderKey)
+        .sort((a, b) => a.strike - b.strike);
+      for (let i = 0; i < directional.length; i++) {
+        for (let j = i + 1; j < directional.length; j++) {
+          const lower = directional[i];
+          const higher = directional[j];
+          const broad = direction === "above" ? lower : higher;
+          const narrow = direction === "above" ? higher : lower;
+          candidates.push(evaluatePair(config, asset, broad, narrow, foundAt));
+        }
+      }
+    }
+  }
+  return candidates;
+}
+
 /**
  * Discover monotonic-arb candidates across the given event slugs. Mirrors the
  * old executor `scanCandidates()` exactly (concurrency, per-slug error capture).
@@ -498,6 +569,27 @@ export async function findCandidates(
   const scans = await mapLimit(slugs, config.eventConcurrency, async (slug) => {
     try {
       return { slug, candidates: await scanEvent(config, slug, foundAt), error: null as string | null };
+    } catch (error: any) {
+      return { slug, candidates: [] as Candidate[], error: error?.message ?? String(error) };
+    }
+  });
+  const candidates: Candidate[] = [];
+  const errors: string[] = [];
+  for (const scan of scans) {
+    candidates.push(...scan.candidates);
+    if (scan.error) errors.push(`${scan.slug}: ${scan.error}`);
+  }
+  return { candidates, errors };
+}
+
+export async function findStructuralCandidates(
+  config: ArbCoreConfig,
+  slugs: string[],
+  foundAt: string,
+): Promise<{ candidates: Candidate[]; errors: string[] }> {
+  const scans = await mapLimit(slugs, config.eventConcurrency, async (slug) => {
+    try {
+      return { slug, candidates: await scanEventStructural(config, slug, foundAt), error: null as string | null };
     } catch (error: any) {
       return { slug, candidates: [] as Candidate[], error: error?.message ?? String(error) };
     }

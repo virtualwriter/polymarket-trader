@@ -35,7 +35,7 @@ import {
   fetchBook,
   fetchEvent,
   fetchJson,
-  findCandidates,
+  findStructuralCandidates,
   isNestedLadderEvent,
   marketQuote,
   polymarketAssetForSlug,
@@ -123,8 +123,21 @@ const DISCOVER_LADDERS = process.env.ARB_DAEMON_DISCOVER_LADDERS !== "0";
 const LADDER_DISCOVERY_TAGS = (process.env.ARB_DAEMON_LADDER_DISCOVERY_TAGS ?? "crypto,crypto-prices,stocks,commodities,indices,finance")
   .split(",").map((tag) => tag.trim()).filter(Boolean);
 const SPORTS_DISCOVERY_LIMIT = Number(process.env.ARB_DAEMON_SPORTS_DISCOVERY_LIMIT ?? process.env.ARB_DAEMON_MLB_DISCOVERY_LIMIT ?? 500);
-const SOCCER_DISCOVERY_LIMIT = Number(process.env.ARB_DAEMON_SOCCER_DISCOVERY_LIMIT ?? 1000);
+const SOCCER_DISCOVERY_LIMIT = Number(process.env.ARB_DAEMON_SOCCER_DISCOVERY_LIMIT ?? 300);
+const SPORTS_AUTO_DISCOVERY_DAYS = Number(process.env.ARB_DAEMON_SPORTS_AUTO_DISCOVERY_DAYS ?? 2);
+const KEEP_FAR_FUTURE_CONFIGURED_SPORTS = process.env.ARB_DAEMON_KEEP_FAR_FUTURE_CONFIGURED_SPORTS === "1";
+const DAEMON_MARKET_CONCURRENCY = Math.max(1, Number(process.env.ARB_DAEMON_MARKET_CONCURRENCY ?? 1));
+const DAEMON_EVENT_CONCURRENCY = Math.max(1, Number(process.env.ARB_DAEMON_EVENT_CONCURRENCY ?? 2));
+const CLOB_REST_429_COOLDOWN_MS = Number(process.env.ARB_DAEMON_CLOB_REST_429_COOLDOWN_MS ?? 60_000);
+const BOOK_SEED_MIN_INTERVAL_MS = Number(process.env.ARB_DAEMON_BOOK_SEED_MIN_INTERVAL_MS ?? 15 * 60_000);
+const BOOK_SEED_MAX_PER_RECONNECT = Math.max(0, Number(process.env.ARB_DAEMON_BOOK_SEED_MAX_PER_RECONNECT ?? 80));
+const BALANCE_REFRESH_RETRIES = Math.max(1, Number(process.env.ARB_DAEMON_BALANCE_REFRESH_RETRIES ?? 2));
+const BALANCE_REFRESH_RETRY_DELAY_MS = Number(process.env.ARB_DAEMON_BALANCE_REFRESH_RETRY_DELAY_MS ?? 1_000);
+const BALANCE_REFRESH_FAILURE_LOG_MS = Number(process.env.ARB_DAEMON_BALANCE_REFRESH_FAILURE_LOG_MS ?? 15 * 60_000);
 const LEDGER_ARCHIVE_DIR = join(dirname(PACKAGES_PATH), "archive");
+
+arbConfig.marketConcurrency = DAEMON_MARKET_CONCURRENCY;
+arbConfig.eventConcurrency = DAEMON_EVENT_CONCURRENCY;
 
 // Near-miss telemetry: proves whether the daemon is barely missing executable
 // arbs or the ladder is simply not offering them. This is telemetry only; entry
@@ -216,6 +229,7 @@ const DUST_EXIT_RETRY_MS = Number(process.env.ARB_DAEMON_DUST_EXIT_RETRY_MS ?? 6
 const ORPHAN_COMPLETION_SKIP_LOG_MS = Number(process.env.ARB_DAEMON_ORPHAN_COMPLETION_SKIP_LOG_MS ?? 60_000);
 const ORPHANS_PATH = join(dirname(PACKAGES_PATH), "polymarket-live-orphans.json");
 const CANDIDATE_SNAPSHOTS_PATH = join(dirname(PACKAGES_PATH), "monotonic-candidate-snapshots.jsonl");
+const MIDDLE_AUDIT_PATH = join(dirname(PACKAGES_PATH), "monotonic-middle-audit.jsonl");
 const PAUSE_PATH = join(dirname(PACKAGES_PATH), "polymarket-arb-daemon-paused.json");
 const QUARANTINE_PATH = join(dirname(PACKAGES_PATH), "polymarket-arb-daemon-quarantine.json");
 
@@ -246,12 +260,16 @@ interface NearMissSample {
   asset: string;
   eventTitle: string;
   direction: Direction;
+  ladderKey: string;
   broadMarketId: string;
   broadQuestion: string;
   broadStrike: number;
+  broadYesTokenId: string;
   narrowMarketId: string;
   narrowQuestion: string;
   narrowStrike: number;
+  narrowYesTokenId: string;
+  narrowNoTokenId: string;
   broadEndDate: string | null;
   narrowEndDate: string | null;
   cost: number;
@@ -330,6 +348,10 @@ let cachedFunderAllowance = 0;
 let balanceKnown = false;
 let pausedForLowBalanceLogged = false;
 let reservedSpendUsd = 0;
+let balanceRefreshFailures = 0;
+let lastBalanceFailureLogAt = 0;
+let clobRestCooldownUntil = 0;
+const lastBookSeedAt = new Map<string, number>();
 
 // Fill-signal waiters keyed by token id (resolved by the User websocket)
 const fillWaiters = new Map<string, Set<() => void>>();
@@ -370,6 +392,10 @@ const tickSizeCache = new Map<string, TickSize>();
 
 function log(...args: unknown[]) {
   console.log(`[arb-daemon ${new Date().toISOString()}]`, ...args);
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function installHttpKeepAlive() {
@@ -549,6 +575,9 @@ async function refreshSpotPrices() {
 }
 
 async function fetchRawBook(tokenId: string): Promise<{ bids: Array<{ price: number; size: number }>; asks: Array<{ price: number; size: number }> }> {
+  if (Date.now() < clobRestCooldownUntil) {
+    throw new Error(`CLOB REST cooldown active for ${Math.ceil((clobRestCooldownUntil - Date.now()) / 1000)}s`);
+  }
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), BOOK_FETCH_TIMEOUT_MS);
   try {
@@ -556,7 +585,10 @@ async function fetchRawBook(tokenId: string): Promise<{ bids: Array<{ price: num
       headers: { Accept: "application/json", "User-Agent": "polymarket-arb-daemon/1.0" },
       signal: controller.signal,
     });
-    if (!res.ok) throw new Error(`GET /book ${tokenId} -> ${res.status}`);
+    if (!res.ok) {
+      if (res.status === 429) clobRestCooldownUntil = Date.now() + CLOB_REST_429_COOLDOWN_MS;
+      throw new Error(`GET /book ${tokenId} -> ${res.status}`);
+    }
     const data = await res.json() as { bids?: Array<{ price?: string; size?: string }>; asks?: Array<{ price?: string; size?: string }> };
     const toLevels = (rows?: Array<{ price?: string; size?: string }>) => (rows ?? [])
       .map((r) => ({ price: Number(r.price), size: Number(r.size) }))
@@ -609,6 +641,19 @@ function isCurrentOrFutureSportsGameSlug(slug: string, today = todayInNewYork())
   return !!gameDate && gameDate >= today;
 }
 
+function addDaysToDateKey(dateKey: string, days: number): string {
+  const date = new Date(`${dateKey}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
+  return date.toISOString().slice(0, 10);
+}
+
+function isWithinSportsAutoDiscoveryHorizon(slug: string, today = todayInNewYork()): boolean {
+  if (SPORTS_AUTO_DISCOVERY_DAYS < 0) return true;
+  const gameDate = sportsGameDate(slug);
+  if (!gameDate || gameDate < today) return false;
+  return gameDate <= addDaysToDateKey(today, SPORTS_AUTO_DISCOVERY_DAYS);
+}
+
 async function configuredEventSlugs(): Promise<string[]> {
   const today = todayInNewYork();
   const out: string[] = [];
@@ -619,6 +664,10 @@ async function configuredEventSlugs(): Promise<string[]> {
     }
     if (!isCurrentOrFutureSportsGameSlug(slug, today)) {
       log(`sports lifecycle: dropping past configured slug ${slug}`);
+      continue;
+    }
+    if (!KEEP_FAR_FUTURE_CONFIGURED_SPORTS && !isWithinSportsAutoDiscoveryHorizon(slug, today)) {
+      log(`sports lifecycle: dropping far-future configured slug ${slug}; set ARB_DAEMON_KEEP_FAR_FUTURE_CONFIGURED_SPORTS=1 to keep it`);
       continue;
     }
     try {
@@ -683,7 +732,7 @@ async function discoverSportsGameSlugs(kind: SportsGameKind): Promise<string[]> 
       for (const event of events) {
         const slug = event.slug ?? "";
         if (!matchesSportsGameKind(slug, kind) || !isSportsGameSlug(slug)) continue;
-        if (!isCurrentOrFutureSportsGameSlug(slug, today)) continue;
+        if (!isWithinSportsAutoDiscoveryHorizon(slug, today)) continue;
         if (sportsGameHasLadder(event)) out.add(slug);
       }
       if (events.length < 100) break;
@@ -747,7 +796,7 @@ async function refreshWatchlist(): Promise<void> {
   const foundAt = new Date().toISOString();
   let candidates: Candidate[];
   try {
-    const result = await findCandidates(arbConfig, await currentEventSlugs(), foundAt);
+    const result = await findStructuralCandidates(arbConfig, await currentEventSlugs(), foundAt);
     candidates = result.candidates;
     if (result.errors.length) log(`watchlist scan errors=${result.errors.length} first=${result.errors[0]}`);
   } catch (err: any) {
@@ -760,9 +809,12 @@ async function refreshWatchlist(): Promise<void> {
   // dynamic gate (edge/spread/top-of-book size) is re-checked on every delta.
   // Static deal-breakers (wrong asset, expiry/resolution mismatch, low market
   // liquidity) stay filtered out.
-  const watch = candidates.filter((c) => !c.rejectionReasons.some((reason) =>
-    ["asset_not_allowlisted", "expiry_mismatch", "resolution_mismatch", "low_liquidity"].includes(reason)
-  ));
+  const watch = candidates.filter((c) =>
+    isTrueMiddleCandidate(c)
+    && !c.rejectionReasons.some((reason) =>
+      ["asset_not_allowlisted", "ladder_mismatch", "expiry_mismatch", "resolution_mismatch", "low_liquidity"].includes(reason)
+    )
+  );
   const seen = new Set<string>();
   let added = 0;
   for (const base of watch) {
@@ -837,6 +889,15 @@ function daemonOpenPackageCount(rows: LivePackage[]): number {
 }
 
 // ─── Live candidate + evaluation ───
+
+function isTrueMiddleCandidate(candidate: Candidate): boolean {
+  return candidate.broad.marketId !== candidate.narrow.marketId
+    && candidate.broad.question !== candidate.narrow.question
+    && candidate.broad.ladderKey === candidate.narrow.ladderKey
+    && candidate.broad.direction === candidate.narrow.direction
+    && candidate.broad.strike !== candidate.narrow.strike
+    && (!candidate.broad.endDate || !candidate.narrow.endDate || candidate.broad.endDate === candidate.narrow.endDate);
+}
 
 function liveLegs(pkg: WatchPackage): LiveLegs | null {
   const broad = topOfBook(pkg.broadYesToken);
@@ -1142,12 +1203,16 @@ function recordNearMiss(candidate: Candidate) {
     asset: candidate.asset,
     eventTitle: candidate.eventTitle,
     direction: candidate.direction,
+    ladderKey: candidate.broad.ladderKey,
     broadMarketId: candidate.broad.marketId,
     broadQuestion: candidate.broad.question,
     broadStrike: candidate.broad.strike,
+    broadYesTokenId: candidate.broad.yesTokenId,
     narrowMarketId: candidate.narrow.marketId,
     narrowQuestion: candidate.narrow.question,
     narrowStrike: candidate.narrow.strike,
+    narrowYesTokenId: candidate.narrow.yesTokenId,
+    narrowNoTokenId: candidate.narrow.noTokenId,
     broadEndDate: candidate.broad.endDate,
     narrowEndDate: candidate.narrow.endDate,
     cost: candidate.packageCost,
@@ -1184,25 +1249,49 @@ function blockersForNearMiss(sample: NearMissSample): string[] {
   ].filter(Boolean);
 }
 
+function isTrueMiddleSample(sample: NearMissSample): boolean {
+  return sample.broadMarketId !== sample.narrowMarketId
+    && sample.broadQuestion !== sample.narrowQuestion
+    && sample.broadEndDate === sample.narrowEndDate
+    && sample.broadStrike !== sample.narrowStrike;
+}
+
+function middleCondition(sample: NearMissSample): string {
+  const low = Math.min(sample.broadStrike, sample.narrowStrike);
+  const high = Math.max(sample.broadStrike, sample.narrowStrike);
+  if (sample.direction === "above") return `underlying > ${low} and <= ${high}`;
+  return `underlying <= ${high} and > ${low}`;
+}
+
+function appendJsonl(path: string, rows: unknown[]) {
+  if (!rows.length) return;
+  if (!existsSync(dirname(path))) mkdirSync(dirname(path), { recursive: true });
+  appendFileSync(path, rows.map((row) => JSON.stringify(row)).join("\n") + "\n");
+}
+
 function appendCandidateSnapshots(samples: NearMissSample[]) {
   const rows = samples
     .filter((sample) =>
-      sample.cost + EPSILON >= CANDIDATE_SNAPSHOT_MIN_COST
+      isTrueMiddleSample(sample)
+      && sample.cost + EPSILON >= CANDIDATE_SNAPSHOT_MIN_COST
       && sample.cost <= CANDIDATE_SNAPSHOT_MAX_COST + EPSILON
     )
     .map((sample) => ({
-      schemaVersion: 1,
+      schemaVersion: 2,
       observedAt: sample.observedAt,
       packageId: sample.packageId,
       eventSlug: sample.eventSlug,
       eventTitle: sample.eventTitle,
       asset: sample.asset,
       direction: sample.direction,
+      middleCondition: middleCondition(sample),
+      ladderKey: sample.ladderKey,
       broad: {
         marketId: sample.broadMarketId,
         question: sample.broadQuestion,
         strike: sample.broadStrike,
         endDate: sample.broadEndDate,
+        yesTokenId: sample.broadYesTokenId,
         yesAsk: sample.broadYesAsk,
         yesAskSize: sample.broadYesAskSize,
       },
@@ -1211,6 +1300,8 @@ function appendCandidateSnapshots(samples: NearMissSample[]) {
         question: sample.narrowQuestion,
         strike: sample.narrowStrike,
         endDate: sample.narrowEndDate,
+        yesTokenId: sample.narrowYesTokenId,
+        noTokenId: sample.narrowNoTokenId,
         noAsk: sample.narrowNoAsk,
         noAskSize: sample.narrowNoAskSize,
       },
@@ -1225,28 +1316,79 @@ function appendCandidateSnapshots(samples: NearMissSample[]) {
         sizeOk: sample.sizeOk,
         executableGate: sample.executableGate,
         rangeBlock: sample.rangeBlock,
+        farDatedBlock: sample.farDatedBlock,
         blockers: blockersForNearMiss(sample),
       },
     }));
-  if (!rows.length) return;
-  if (!existsSync(dirname(CANDIDATE_SNAPSHOTS_PATH))) mkdirSync(dirname(CANDIDATE_SNAPSHOTS_PATH), { recursive: true });
-  appendFileSync(CANDIDATE_SNAPSHOTS_PATH, rows.map((row) => JSON.stringify(row)).join("\n") + "\n");
+  appendJsonl(CANDIDATE_SNAPSHOTS_PATH, rows);
+}
+
+function appendMiddleAuditSnapshots(samples: NearMissSample[]): number {
+  const rows = samples
+    .filter(isTrueMiddleSample)
+    .map((sample) => ({
+      schemaVersion: 1,
+      observedAt: sample.observedAt,
+      packageId: sample.packageId,
+      eventSlug: sample.eventSlug,
+      eventTitle: sample.eventTitle,
+      asset: sample.asset,
+      direction: sample.direction,
+      ladderKey: sample.ladderKey,
+      middleCondition: middleCondition(sample),
+      broad: {
+        marketId: sample.broadMarketId,
+        question: sample.broadQuestion,
+        strike: sample.broadStrike,
+        endDate: sample.broadEndDate,
+        yesTokenId: sample.broadYesTokenId,
+        yesAsk: sample.broadYesAsk,
+        yesAskSize: sample.broadYesAskSize,
+      },
+      narrow: {
+        marketId: sample.narrowMarketId,
+        question: sample.narrowQuestion,
+        strike: sample.narrowStrike,
+        endDate: sample.narrowEndDate,
+        yesTokenId: sample.narrowYesTokenId,
+        noTokenId: sample.narrowNoTokenId,
+        noAsk: sample.narrowNoAsk,
+        noAskSize: sample.narrowNoAskSize,
+      },
+      packageCost: sample.cost,
+      lockedEdge: sample.edge,
+      availableSize: sample.availableSize,
+      minShares: sample.minShares,
+      maxSpread: sample.maxSpread,
+      gate: {
+        edgeOk: sample.edgeOk,
+        spreadOk: sample.spreadOk,
+        sizeOk: sample.sizeOk,
+        executableGate: sample.executableGate,
+        rangeBlock: sample.rangeBlock,
+        farDatedBlock: sample.farDatedBlock,
+        blockers: blockersForNearMiss(sample),
+      },
+    }));
+  appendJsonl(MIDDLE_AUDIT_PATH, rows);
+  return rows.length;
 }
 
 function flushNearMissTelemetry() {
   const samples = [...nearMissBestByPackage.values()];
   if (nearMissObservations === 0 && samples.length === 0) return;
+  const middleSamples = samples.filter(isTrueMiddleSample);
 
   const bucketParts = NEAR_MISS_BUCKETS.map((bucket) => {
-    const count = samples.filter((sample) => sample.cost <= bucket.cost + EPSILON).length;
+    const count = middleSamples.filter((sample) => sample.cost <= bucket.cost + EPSILON).length;
     return `${bucket.label}:${count}`;
   });
-  const near = samples.filter((sample) => sample.cost <= NEAR_MISS_BUCKETS[NEAR_MISS_BUCKETS.length - 1].cost + EPSILON);
-  const executable = samples.filter((sample) => sample.executableGate).length;
+  const near = middleSamples.filter((sample) => sample.cost <= NEAR_MISS_BUCKETS[NEAR_MISS_BUCKETS.length - 1].cost + EPSILON);
+  const executable = middleSamples.filter((sample) => sample.executableGate).length;
   const edgeOk = near.filter((sample) => sample.edgeOk).length;
   const spreadOk = near.filter((sample) => sample.spreadOk).length;
   const sizeOk = near.filter((sample) => sample.sizeOk).length;
-  const best = samples
+  const best = middleSamples
     .sort((a, b) => a.cost - b.cost)
     .slice(0, Math.max(1, NEAR_MISS_TOP_N))
     .map((sample) => {
@@ -1255,7 +1397,8 @@ function flushNearMissTelemetry() {
     });
 
   appendCandidateSnapshots(samples);
-  log(`near-miss telemetry intervalMs=${Date.now() - nearMissStartedAt} observations=${nearMissObservations} unique=${samples.length} near<=1.005=${near.length} executableGate=${executable} ${bucketParts.join(" ")} nearPass edge=${edgeOk}/${near.length} spread=${spreadOk}/${near.length} size=${sizeOk}/${near.length} best=[${best.join(" | ")}]`);
+  const audited = appendMiddleAuditSnapshots(samples);
+  log(`near-miss telemetry intervalMs=${Date.now() - nearMissStartedAt} observations=${nearMissObservations} unique=${samples.length} middleUnique=${middleSamples.length} middleAudit=${audited} near<=1.005=${near.length} executableGate=${executable} ${bucketParts.join(" ")} nearPass edge=${edgeOk}/${near.length} spread=${spreadOk}/${near.length} size=${sizeOk}/${near.length} best=[${best.join(" | ")}]`);
   nearMissStartedAt = Date.now();
   nearMissObservations = 0;
   nearMissBestByPackage.clear();
@@ -2464,14 +2607,34 @@ function connectMarketWs(attempt = 0) {
 }
 
 async function seedBooks(tokens: string[]) {
-  for (const tokenId of tokens) {
+  if (BOOK_SEED_MAX_PER_RECONNECT === 0) {
+    log(`book seed skipped: disabled by ARB_DAEMON_BOOK_SEED_MAX_PER_RECONNECT=0`);
+    return;
+  }
+  if (Date.now() < clobRestCooldownUntil) {
+    log(`book seed skipped: CLOB REST cooldown ${Math.ceil((clobRestCooldownUntil - Date.now()) / 1000)}s`);
+    return;
+  }
+  const now = Date.now();
+  const due = tokens
+    .filter((tokenId) => now - (lastBookSeedAt.get(tokenId) ?? 0) >= BOOK_SEED_MIN_INTERVAL_MS)
+    .slice(0, BOOK_SEED_MAX_PER_RECONNECT);
+  let seeded = 0;
+  let errors = 0;
+  for (const tokenId of due) {
     try {
       const { bids, asks } = await fetchRawBook(tokenId);
       applySnapshot(tokenId, bids, asks);
+      lastBookSeedAt.set(tokenId, Date.now());
       evaluateToken(tokenId);
+      seeded += 1;
     } catch {
-      // ignore; the WS snapshot/deltas will populate it
+      errors += 1;
+      if (Date.now() < clobRestCooldownUntil) break;
     }
+  }
+  if (due.length || tokens.length) {
+    log(`book seed: seeded=${seeded}/${due.length} errors=${errors} tokens=${tokens.length}${Date.now() < clobRestCooldownUntil ? ` cooldown=${Math.ceil((clobRestCooldownUntil - Date.now()) / 1000)}s` : ""}`);
   }
 }
 
@@ -2557,15 +2720,28 @@ async function connectUserWs(attempt = 0) {
 async function refreshBalance() {
   const funder = POLYMARKET_FUNDER_ADDRESS ?? reconcileAddress;
   if (!funder) return;
-  try {
-    const probe = await proxyCollateralProbe(funder);
-    cachedFunderBalance = probe.collateralBalance;
-    cachedFunderAllowance = probe.exchangeV2Allowance;
-    balanceKnown = true;
-    if (!lowBalance()) pausedForLowBalanceLogged = false;
-    log(`balance refresh: pUSD=${cachedFunderBalance.toFixed(6)} exchangeV2Allowance=${cachedFunderAllowance.toFixed(2)}`);
-  } catch (err: any) {
-    log(`balance refresh failed (keeping last known=${balanceKnown}): ${err?.message ?? String(err)}`);
+  let lastError: any;
+  for (let attempt = 1; attempt <= BALANCE_REFRESH_RETRIES; attempt += 1) {
+    try {
+      const probe = await proxyCollateralProbe(funder);
+      cachedFunderBalance = probe.collateralBalance;
+      cachedFunderAllowance = probe.exchangeV2Allowance;
+      balanceKnown = true;
+      balanceRefreshFailures = 0;
+      lastBalanceFailureLogAt = 0;
+      if (!lowBalance()) pausedForLowBalanceLogged = false;
+      log(`balance refresh: pUSD=${cachedFunderBalance.toFixed(6)} exchangeV2Allowance=${cachedFunderAllowance.toFixed(2)}`);
+      return;
+    } catch (err: any) {
+      lastError = err;
+      if (attempt < BALANCE_REFRESH_RETRIES) await sleep(BALANCE_REFRESH_RETRY_DELAY_MS);
+    }
+  }
+  balanceRefreshFailures += 1;
+  const now = Date.now();
+  if (now - lastBalanceFailureLogAt >= BALANCE_REFRESH_FAILURE_LOG_MS) {
+    lastBalanceFailureLogAt = now;
+    log(`balance refresh failed x${balanceRefreshFailures} (keeping last known=${balanceKnown}): ${lastError?.message ?? String(lastError)}`);
   }
 }
 
@@ -2586,6 +2762,7 @@ async function main() {
   log(`gates: maxPackage=$${MAX_PACKAGE_USD} maxDaily=$${MAX_DAILY_USD} maxOpen=${MAX_OPEN_PACKAGES} maxPerMin=${MAX_PER_MIN} minEdge=${(MIN_EDGE * 100).toFixed(2)}c minTouch=${MIN_AVAILABLE_SHARES} maxSpread=${MAX_SPREAD}`);
   log(`sports safety: NBA batch execution ${ENABLE_NBA_BATCH_EXECUTION ? "ENABLED (single postOrders request; orphan/no-loss fallback active)" : ALLOW_NBA_NON_ATOMIC_EXECUTION ? "ENABLED by non-atomic override" : "BLOCKED (batch disabled)"}`);
   log(`submit hot path: postMode=${MONOTONIC_POST_MODE} responseFillFirst=${RESPONSE_FILL_FIRST ? "1" : "0"} httpKeepAlive=${HTTP_KEEP_ALIVE ? "1" : "0"}`);
+  log(`watchlist throttle: eventConcurrency=${arbConfig.eventConcurrency} marketConcurrency=${arbConfig.marketConcurrency} sportsAutoDiscoveryDays=${SPORTS_AUTO_DISCOVERY_DAYS} soccerLimit=${SOCCER_DISCOVERY_LIMIT} bookSeedMax=${BOOK_SEED_MAX_PER_RECONNECT} bookSeedMinIntervalMs=${BOOK_SEED_MIN_INTERVAL_MS} clob429CooldownMs=${CLOB_REST_429_COOLDOWN_MS}`);
   log(`June breakeven filter: commodities<=${(JUNE_BREAKEVEN_COMMODITY_MAX_DISTANCE * 100).toFixed(1)}% crypto<=${(JUNE_BREAKEVEN_CRYPTO_MAX_DISTANCE * 100).toFixed(1)}% refreshMs=${SPOT_REFRESH_MS}`);
   log(`orphan policy: stop=${ORPHAN_STOP_CENTS} completionMargin=${ORPHAN_COMPLETION_MARGIN} expiryBufferMs=${ORPHAN_EXPIRY_BUFFER_MS} pollMs=${ORPHAN_POLL_MS} (re-pair naked legs across ladder, else unwind)`);
   log(`large-orphan quarantine: maxNakedShares=${MAX_NAKED_SHARES_BEFORE_PAUSE} quarantineFile=${QUARANTINE_PATH} globalPauseFile=${PAUSE_PATH}`);
