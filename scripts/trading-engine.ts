@@ -41,6 +41,10 @@ import {
   type CandidateSizingPreview,
 } from "./lib/trading/candidate-actions.js";
 import {
+  buildMechanicalExitCandidates,
+  buildSignalKillExitCandidates,
+} from "./lib/trading/candidate-exits.js";
+import {
   buildLlmCloseEligibility,
   llmCloseMinHoldHours,
   positionTimingContext,
@@ -68,6 +72,11 @@ import {
   formatSignalPerformancePrompt,
   formatStatObservationsPrompt,
 } from "./lib/trading/llm-prompt-sections.js";
+import {
+  finalizeSetupTruthRecord,
+  setupIdForSignalType as setupIdForSignalTypeHelper,
+  slugifySetupId,
+} from "./lib/trading/setup-family.js";
 import { type SizingCalibrationBucket } from "./lib/trading/sizing.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
@@ -5667,13 +5676,6 @@ function pendingHypothesisTests(hypothesis: Hypothesis): HypothesisTest[] {
   return hypothesis.tests.filter((test) => test.outcome === "pending" && !test.excludedFromSetupStats);
 }
 
-function slugifySetupId(label: string): string {
-  return label
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "_")
-    .replace(/^_+|_+$/g, "");
-}
-
 function classifyHypothesisSetup(hypothesis: Hypothesis): { setupId: string; setupLabel: string } {
   if (hypothesis.id === "H-523") {
     return {
@@ -6536,19 +6538,11 @@ function buildEngineState(
 }
 
 function setupIdForSignalType(signalType: string): { setupId: string; setupLabel: string } {
-  if (signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO) return { setupId: "one_touch_high_edge_no", setupLabel: "One-touch NO sell-YES edge" };
-  if (signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_YES) return { setupId: "one_touch_high_edge_yes_exploratory", setupLabel: "One-touch high-edge YES exploratory" };
-  if (signalType === STALE_LOTTERY_TICKET_NO_SIGNAL) return { setupId: "stale_lottery_ticket_no", setupLabel: "Stale lottery ticket NO" };
-  if (signalType.includes("USER_PM_IV_TOUCH_CHEAP_YES")) return { setupId: "manual_iv_touch_cheap_yes", setupLabel: "Manual IV-touch cheap YES" };
-  if (signalType.includes("USER_PM_IV_TOUCH_RICH_NO")) return { setupId: "manual_iv_touch_rich_no", setupLabel: "Manual IV-touch rich NO" };
-  if (signalType === "MONOTONIC_ARB") return { setupId: "monotonic_arb", setupLabel: "Monotonic arb" };
-  const label = signalType
-    .replace(/_PM_PROXY_SHORT$/, " Polymarket proxy short")
-    .replace(/_DOWNSIDE$/, " downside leg")
-    .replace(/_/g, " ")
-    .toLowerCase()
-    .replace(/\b\w/g, (ch) => ch.toUpperCase());
-  return { setupId: slugifySetupId(signalType), setupLabel: label };
+  return setupIdForSignalTypeHelper(signalType, {
+    oneTouchHighEdgeSignalNo: ONE_TOUCH_HIGH_EDGE_SIGNAL_NO,
+    oneTouchHighEdgeSignalYes: ONE_TOUCH_HIGH_EDGE_SIGNAL_YES,
+    staleLotteryTicketNoSignal: STALE_LOTTERY_TICKET_NO_SIGNAL,
+  });
 }
 
 function setupIdForTrade(trade: ClosedTrade, hypothesesById: Map<string, Hypothesis>): { setupId: string; setupLabel: string } {
@@ -6609,42 +6603,11 @@ function allowedEvidenceColumnsForSetup(setupId: string, assetHint?: string): st
   return uniqueColumns([columns.spot, columns.hlPerp, columns.funding, columns.pcRatio, columns.pmIv, columns.optIv30, columns.optIv90]);
 }
 
-function buildTruthConclusion(record: SetupTruthRecord): string {
-  const e = record.evidenceSummary;
-  const tradeRate = e.cleanTrades > 0 ? `${e.tradeWins}/${e.cleanTrades}` : "no clean live trades";
-  const shadowRate = e.resolvedShadows > 0 ? `${e.shadowWins}/${e.resolvedShadows}` : "no resolved shadows";
-  if (record.status === "contaminated_retest") {
-    return `${record.setupLabel} is under clean retest: contaminated or superseded historical evidence is excluded. Clean live trades: ${tradeRate}, avg P&L ${e.avgTradePnlPct.toFixed(2)}%; shadows: ${shadowRate}.`;
-  }
-  if (record.status === "eligible_live") {
-    return `${record.setupLabel} is eligible for live consideration based on grouped setup-family evidence. Clean live trades: ${tradeRate}, avg P&L ${e.avgTradePnlPct.toFixed(2)}%; shadows: ${shadowRate}.`;
-  }
-  if (record.status === "disabled") {
-    return `${record.setupLabel} is disabled or weak on current clean evidence. Clean live trades: ${tradeRate}, avg P&L ${e.avgTradePnlPct.toFixed(2)}%; shadows: ${shadowRate}.`;
-  }
-  if (record.status === "validating") {
-    return `${record.setupLabel} is validating but still sample-size sensitive. Clean live trades: ${tradeRate}, avg P&L ${e.avgTradePnlPct.toFixed(2)}%; shadows: ${shadowRate}.`;
-  }
-  return `${record.setupLabel} remains exploratory. Clean live trades: ${tradeRate}, avg P&L ${e.avgTradePnlPct.toFixed(2)}%; shadows: ${shadowRate}.`;
-}
-
 function finalizeTruthRecord(record: SetupTruthRecord): SetupTruthRecord {
-  const e = record.evidenceSummary;
-  const tradeWinRate = e.cleanTrades > 0 ? e.tradeWins / e.cleanTrades : null;
-  const shadowWinRate = e.resolvedShadows > 0 ? e.shadowWins / e.resolvedShadows : null;
-  if (record.knownInvalidAssumptions.length > 0 && e.cleanTrades + e.resolvedShadows < 10) {
-    record.status = "contaminated_retest";
-  } else if ((e.cleanTrades >= 5 && tradeWinRate !== null && tradeWinRate < KILL_THRESHOLD) || (e.cleanTrades >= 10 && e.avgTradePnlPct < -1)) {
-    record.status = "disabled";
-  } else if ((e.cleanTrades >= 5 && tradeWinRate !== null && tradeWinRate >= PROMOTE_THRESHOLD && e.avgTradePnlPct > 0) || (e.resolvedShadows >= 10 && shadowWinRate !== null && shadowWinRate >= PROMOTE_THRESHOLD && e.avgShadowPnlPct > 0)) {
-    record.status = "eligible_live";
-  } else if (e.cleanTrades + e.resolvedShadows + e.hypothesisTests >= 5) {
-    record.status = "validating";
-  } else {
-    record.status = "exploratory";
-  }
-  record.currentConclusion = buildTruthConclusion(record);
-  return record;
+  return finalizeSetupTruthRecord(record, {
+    killThreshold: KILL_THRESHOLD,
+    promoteThreshold: PROMOTE_THRESHOLD,
+  });
 }
 
 function buildLlmTruthState(hypotheses: Hypothesis[], weights: SignalWeight[], closedTrades: ClosedTrade[], blockedSignals: BlockedSignalShadow[]): LlmTruthState {
@@ -6791,19 +6754,11 @@ function llmCloseEligibilityForPosition(
 }
 
 function buildCandidateActions(portfolio: Portfolio, weights: SignalWeight[], signals: Signal[], latestRow: SnapshotRow, snapshots: InstrumentSnapshotFile[]): CandidateActions {
-  const mechanicalExits = portfolio.positions
-    .map((position) => {
-      const reason = mechanicalCloseReason(position, markPosition(position, latestRow, snapshots, true));
-      return reason ? { positionId: position.id, reason } : null;
-    })
-    .filter((row): row is { positionId: string; reason: ClosedTrade["closeReason"] } => !!row);
-  const signalKillExits = portfolio.positions
-    .filter((position) => {
-      const weight = weights.find((candidate) => candidate.type === position.signalType);
-      const perAsset = weight?.perAsset?.[position.asset];
-      return !!weight && (!weight.enabled || perAsset?.disabled === true);
-    })
-    .map((position) => ({ positionId: position.id, signalType: position.signalType, asset: position.asset }));
+  const mechanicalExits = buildMechanicalExitCandidates(portfolio.positions.map((position) => ({
+    positionId: position.id,
+    closeReason: mechanicalCloseReason(position, markPosition(position, latestRow, snapshots, true)),
+  })));
+  const signalKillExits = buildSignalKillExitCandidates(portfolio.positions, weights);
   const llmCloseEligibility = portfolio.positions.map((position) => llmCloseEligibilityForPosition(position, latestRow, snapshots));
   const previews = buildCandidateActionPreviews({
     portfolio: {
