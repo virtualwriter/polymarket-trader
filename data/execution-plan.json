@@ -1,11 +1,26 @@
 {
-  "generatedAt": "2026-06-14T17:29:34.622Z",
+  "generatedAt": "2026-06-14T18:30:37.732Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
   "entrySignals": [
+    {
+      "type": "FUNDING_EXTREME_SHORT",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "strength": 0.6779999999999999,
+      "confidence": 0.31239922842237994,
+      "thesis": "AMZN HL funding -38.7% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 239.22,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 7,
+      "leverage": 1
+    },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
@@ -15,16 +30,48 @@
       "confidence": 0.015744593701292536,
       "thesis": "OIL P/C ratio 1.22 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 81.01,
+      "entryPrice": 81.63,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
+    },
+    {
+      "type": "FUNDING_EXTREME_SHORT",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "strength": 0.006000000000000024,
+      "confidence": 0.0027645949417909846,
+      "thesis": "GOLD HL funding -15.2% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4227,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 7,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "sell",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "evidenceColumns": [
+          "oil_wti_spot",
+          "oil_pm_iv",
+          "oil_opt_iv_30d",
+          "oil_opt_iv_90d"
+        ],
+        "thesis": "One-touch NO edge: PM YES at 0.13 is overpriced relative to underlying cap and options IV; buy NO. Edge -1.85 pts, spread 2c, liquidity 20377. Source: relative-value heatmap."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }

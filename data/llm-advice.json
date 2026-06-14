@@ -1,6 +1,43 @@
 {
   "acceptedCloses": [],
   "rejectedCloses": [],
-  "skippedTrades": [],
-  "parameterUpdates": {}
+  "skippedTrades": [
+    {
+      "instruction": {
+        "action": "sell",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "evidenceColumns": [
+          "oil_wti_spot",
+          "oil_pm_iv",
+          "oil_opt_iv_30d",
+          "oil_opt_iv_90d"
+        ],
+        "thesis": "One-touch NO edge: PM YES at 0.13 is overpriced relative to underlying cap and options IV; buy NO. Edge -1.85 pts, spread 2c, liquidity 20377. Source: relative-value heatmap."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
+  "parameterUpdates": {
+    "macroMomentum24hThresholdPts": 4,
+    "contrarianTrendMarginPct": 0.5,
+    "positiveMomentum24hPct": 1.5,
+    "llmTradeExpiryDays": 14,
+    "momentumLongExpiryDays": 21,
+    "signalRisk": {
+      "PM_IV_GT_OPT_IV": {
+        "targetPct": null,
+        "stopPct": 5
+      },
+      "FUNDING_EXTREME_SHORT": {
+        "targetPct": 4,
+        "stopPct": 2
+      },
+      "LLM_HYPOTHESIS": {
+        "targetPct": 4,
+        "stopPct": 2
+      }
+    }
+  }
 }
