@@ -110,11 +110,13 @@ const GIT_PUSH = process.env.ARB_DAEMON_GIT_PUSH === "1";
 const HTTP_KEEP_ALIVE = process.env.ARB_DAEMON_HTTP_KEEP_ALIVE !== "0";
 const MONOTONIC_POST_MODE = (process.env.ARB_DAEMON_POST_MODE ?? "batch").toLowerCase();
 const RESPONSE_FILL_FIRST = process.env.ARB_DAEMON_RESPONSE_FILL_FIRST !== "0";
-// NBA live markets use a single CLOB batch request for the two FAK BUY legs.
-// This is the tightest API-supported coupling available; the exchange still
-// reports per-order fills, so orphan/no-loss handling remains the final guard.
+// Sports markets can partially fill paired FAK orders asymmetrically even when
+// posted in one CLOB batch. Keep sports in discovery/telemetry, but do not trade
+// them live unless the operator explicitly accepts non-atomic execution risk.
+const ALLOW_SPORTS_LIVE_EXECUTION = process.env.ARB_DAEMON_ALLOW_SPORTS_LIVE_EXECUTION !== "0";
 const ENABLE_NBA_BATCH_EXECUTION = process.env.ARB_DAEMON_ENABLE_NBA_BATCH_EXECUTION !== "0";
 const ALLOW_NBA_NON_ATOMIC_EXECUTION = process.env.ARB_DAEMON_ALLOW_NBA_NON_ATOMIC_EXECUTION === "1";
+const SPORTS_EXIT_BALANCE_WAIT_MS = Number(process.env.ARB_DAEMON_SPORTS_EXIT_BALANCE_WAIT_MS ?? 15_000);
 const NBA_LEDGER_ARCHIVE_GRACE_MS = Number(process.env.ARB_DAEMON_NBA_LEDGER_ARCHIVE_GRACE_MS ?? 30 * 60_000);
 const DISCOVER_NBA_GAMES = process.env.ARB_DAEMON_DISCOVER_NBA_GAMES !== "0";
 const DISCOVER_MLB_GAMES = process.env.ARB_DAEMON_DISCOVER_MLB_GAMES !== "0";
@@ -149,13 +151,13 @@ const NEAR_MISS_TOP_N = Number(process.env.ARB_DAEMON_NEAR_MISS_TOP_N ?? 5);
 const CANDIDATE_SNAPSHOT_MIN_COST = Number(process.env.ARB_DAEMON_CANDIDATE_SNAPSHOT_MIN_COST ?? 0.95);
 const CANDIDATE_SNAPSHOT_MAX_COST = Number(process.env.ARB_DAEMON_CANDIDATE_SNAPSHOT_MAX_COST ?? 1.03);
 const MIN_MARKETABLE_BUY_USD = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_MARKETABLE_BUY_USD ?? 1);
-// Live sports books move far faster than the macro/crypto ladders. Keep the
-// base monotonic arb behavior unchanged for non-sports, but require sports
-// packages to survive a fresh book pull, deeper displayed depth, and worse
-// limit prices before sending separate FAK legs.
+// Live sports books move faster than the macro/crypto ladders, so they still
+// require a fresh book pull before execution. Do not impose a sports-only share
+// floor: small-but-marketable clean arbs should execute, while larger books
+// should size to the maximum safely paired depth.
 const SPORTS_MIN_EDGE = Number(process.env.ARB_DAEMON_SPORTS_MIN_EDGE ?? 0);
-const SPORTS_MIN_AVAILABLE_SHARES = Number(process.env.ARB_DAEMON_SPORTS_MIN_AVAILABLE_SHARES ?? 50);
-const SPORTS_MAX_SPREAD = Number(process.env.ARB_DAEMON_SPORTS_MAX_SPREAD ?? 0.02);
+const SPORTS_MIN_AVAILABLE_SHARES = Number(process.env.ARB_DAEMON_SPORTS_MIN_AVAILABLE_SHARES ?? 0);
+const SPORTS_MAX_SPREAD = Number(process.env.ARB_DAEMON_SPORTS_MAX_SPREAD ?? 0.04);
 const SPORTS_PRICE_SLIPPAGE = Number(process.env.ARB_DAEMON_SPORTS_PRICE_SLIPPAGE ?? 0);
 // Balance headroom applies to every package: concurrent executions, just-matched
 // orders the exchange still counts against the balance, and fee dust all shave
@@ -174,12 +176,11 @@ const BALANCE_HEADROOM_MULTIPLIER = Number(
 // 0 means live sports are allowed after the scheduled start/endDate. Set a
 // positive value to block entries within that many ms before start.
 const SPORTS_ENTRY_CUTOFF_MS = Number(process.env.ARB_DAEMON_SPORTS_ENTRY_CUTOFF_MS ?? 0);
-// Do not consume the full displayed touch. We require reserve depth so stale or
-// vanishing displayed liquidity is less likely to produce one-sided partial
-// fills (Jun 9 GOLD orphan fired 70 shares into a 70.46 displayed touch and got
-// uneven partial fills on both legs). Sports books move faster, so they keep a
-// deeper reserve than the macro/crypto ladders.
-const SPORTS_DEPTH_RESERVE_MULTIPLIER = Number(process.env.ARB_DAEMON_SPORTS_DEPTH_RESERVE_MULTIPLIER ?? 3);
+// Non-sports keep reserve depth because stale or vanishing displayed liquidity
+// produced uneven partial-fill orphans. Sports execution now buys the cheap leg
+// first and sizes the hedge to the actual fill, so default to using the full
+// visible paired touch rather than capping sports size to a fraction of depth.
+const SPORTS_DEPTH_RESERVE_MULTIPLIER = Number(process.env.ARB_DAEMON_SPORTS_DEPTH_RESERVE_MULTIPLIER ?? 1);
 const NON_SPORTS_DEPTH_RESERVE_MULTIPLIER = Number(process.env.ARB_DAEMON_NON_SPORTS_DEPTH_RESERVE_MULTIPLIER ?? 1.5);
 const STALE_SUBMITTED_MS = Number(process.env.ARB_DAEMON_STALE_SUBMITTED_MS ?? 600_000);
 const HL_API = process.env.HYPERLIQUID_INFO_API ?? "https://api.hyperliquid.xyz/info";
@@ -381,6 +382,11 @@ const SKIP_LOG_THROTTLE_MS = 60_000;
 let nearMissStartedAt = Date.now();
 let nearMissObservations = 0;
 const nearMissBestByPackage = new Map<string, NearMissSample>();
+let sportsPreflightAttempts = 0;
+let sportsPreflightFetchMsTotal = 0;
+let sportsPreflightFetchMsMax = 0;
+let sportsPreflightPassed = 0;
+let sportsPreflightRejected = 0;
 
 let clob: Awaited<ReturnType<typeof clobClient>> | null = null;
 let reconcileAddress = "";
@@ -850,7 +856,7 @@ function refreshAlreadyOpen() {
   const rows = readJsonArray<LivePackage>(PACKAGES_PATH);
   const open = new Set<string>();
   for (const row of rows) {
-    if (isDaemonOpenPackage(row)) {
+    if (isDaemonOpenPackage(row) || isCompletedPackagePosition(row)) {
       open.add(row.packageId);
     }
   }
@@ -858,6 +864,14 @@ function refreshAlreadyOpen() {
     open.add(orphan.packageId);
   }
   alreadyOpen = open;
+}
+
+function isCompletedPackagePosition(row: LivePackage): boolean {
+  if (row.status !== "package_complete") return false;
+  if (row.failureReason) return false;
+  if ((row.actualCost ?? 0) <= 0 || (row.filledShares ?? 0) <= 0) return false;
+  const soldShares = Number((row as { soldShares?: number }).soldShares ?? 0);
+  return soldShares + EPSILON < (row.filledShares ?? 0);
 }
 
 function isStaleSubmittedNoFill(row: LivePackage): boolean {
@@ -961,6 +975,9 @@ function sportsEntryBlocked(candidate: Candidate): string | null {
 
 function sportsExecutionBlocked(candidate: Candidate): string | null {
   if (!isSportsCandidate(candidate)) return null;
+  if (!ALLOW_SPORTS_LIVE_EXECUTION) {
+    return "sports live execution disabled: CLOB FAK pairs are not atomic and can leave naked inventory";
+  }
   const entryBlock = sportsEntryBlocked(candidate);
   if (entryBlock) return entryBlock;
   if (ENABLE_NBA_BATCH_EXECUTION) return null;
@@ -1398,10 +1415,18 @@ function flushNearMissTelemetry() {
 
   appendCandidateSnapshots(samples);
   const audited = appendMiddleAuditSnapshots(samples);
-  log(`near-miss telemetry intervalMs=${Date.now() - nearMissStartedAt} observations=${nearMissObservations} unique=${samples.length} middleUnique=${middleSamples.length} middleAudit=${audited} near<=1.005=${near.length} executableGate=${executable} ${bucketParts.join(" ")} nearPass edge=${edgeOk}/${near.length} spread=${spreadOk}/${near.length} size=${sizeOk}/${near.length} best=[${best.join(" | ")}]`);
+  const sportsPreflightAvgMs = sportsPreflightAttempts > 0
+    ? sportsPreflightFetchMsTotal / sportsPreflightAttempts
+    : 0;
+  log(`near-miss telemetry intervalMs=${Date.now() - nearMissStartedAt} observations=${nearMissObservations} unique=${samples.length} middleUnique=${middleSamples.length} middleAudit=${audited} near<=1.005=${near.length} executableGate=${executable} ${bucketParts.join(" ")} nearPass edge=${edgeOk}/${near.length} spread=${spreadOk}/${near.length} size=${sizeOk}/${near.length} sportsPreflight attempts=${sportsPreflightAttempts} pass=${sportsPreflightPassed} reject=${sportsPreflightRejected} avgFetchMs=${sportsPreflightAvgMs.toFixed(0)} maxFetchMs=${sportsPreflightFetchMsMax} best=[${best.join(" | ")}]`);
   nearMissStartedAt = Date.now();
   nearMissObservations = 0;
   nearMissBestByPackage.clear();
+  sportsPreflightAttempts = 0;
+  sportsPreflightFetchMsTotal = 0;
+  sportsPreflightFetchMsMax = 0;
+  sportsPreflightPassed = 0;
+  sportsPreflightRejected = 0;
 }
 
 // ─── Caps / safety ───
@@ -1550,6 +1575,16 @@ function waitForFill(tokenId: string, timeoutMs: number): Promise<void> {
   });
 }
 
+async function waitForTokenBalance(tokenId: string, minShares: number, timeoutMs: number): Promise<number> {
+  const started = Date.now();
+  let latest = await reconcileTokenBalance(reconcileAddress, tokenId);
+  while (latest + EPSILON < minShares && Date.now() - started < timeoutMs) {
+    await waitForFill(tokenId, Math.min(1_000, Math.max(100, timeoutMs - (Date.now() - started))));
+    latest = await reconcileTokenBalance(reconcileAddress, tokenId);
+  }
+  return latest;
+}
+
 // ─── Execution ───
 
 async function tryExecute(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
@@ -1625,27 +1660,40 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
 
   let c = liveCandidate(pkg.base, legs);
   if (isSportsCandidate(c)) {
+    const wsCandidate = c;
+    const preflightStartedAt = Date.now();
     try {
       c = await freshSportsCandidate(c);
     } catch (err: any) {
+      const fetchMs = Date.now() - preflightStartedAt;
+      sportsPreflightAttempts += 1;
+      sportsPreflightFetchMsTotal += fetchMs;
+      sportsPreflightFetchMsMax = Math.max(sportsPreflightFetchMsMax, fetchMs);
       const now = Date.now();
       const last = lastSkipLogAt.get(pkg.key) ?? 0;
       if (now - last >= SKIP_LOG_THROTTLE_MS) {
         lastSkipLogAt.set(pkg.key, now);
-        log(`skip ${pkg.key}: sports_preflight_failed ${err?.message ?? String(err)}`);
+        log(`skip ${pkg.key}: sports_preflight_failed fetchMs=${fetchMs} wsCost=${wsCandidate.packageCost.toFixed(4)} wsSpread=${wsCandidate.maxSpread.toFixed(4)} ${err?.message ?? String(err)}`);
       }
       return;
     }
+    const fetchMs = Date.now() - preflightStartedAt;
+    sportsPreflightAttempts += 1;
+    sportsPreflightFetchMsTotal += fetchMs;
+    sportsPreflightFetchMsMax = Math.max(sportsPreflightFetchMsMax, fetchMs);
     if (!passesDynamicGate(c)) {
+      sportsPreflightRejected += 1;
       const now = Date.now();
       const last = lastSkipLogAt.get(pkg.key) ?? 0;
       if (now - last >= SKIP_LOG_THROTTLE_MS) {
         lastSkipLogAt.set(pkg.key, now);
         const rangeBlock = juneBreakevenRangeBlock(c);
-        log(`skip ${pkg.key}: sports_preflight_gate edge=${(c.lockedEdge * 100).toFixed(2)}c size=${c.availableSize.toFixed(2)} spread=${c.maxSpread.toFixed(4)} cost=${c.packageCost.toFixed(4)}${rangeBlock ? ` ${rangeBlock}` : ""}`);
+        log(`skip ${pkg.key}: sports_preflight_gate fetchMs=${fetchMs} wsCost=${wsCandidate.packageCost.toFixed(4)} wsSpread=${wsCandidate.maxSpread.toFixed(4)} freshCost=${c.packageCost.toFixed(4)} freshSpread=${c.maxSpread.toFixed(4)} edge=${(c.lockedEdge * 100).toFixed(2)}c size=${c.availableSize.toFixed(2)}${rangeBlock ? ` ${rangeBlock}` : ""}`);
       }
       return;
     }
+    sportsPreflightPassed += 1;
+    log(`sports_preflight_pass ${pkg.key}: fetchMs=${fetchMs} wsCost=${wsCandidate.packageCost.toFixed(4)} wsSpread=${wsCandidate.maxSpread.toFixed(4)} freshCost=${c.packageCost.toFixed(4)} freshSpread=${c.maxSpread.toFixed(4)} edge=${(c.lockedEdge * 100).toFixed(2)}c size=${c.availableSize.toFixed(2)}`);
   }
   const farDatedBlock = farDatedExecutionBlock(c);
   if (farDatedBlock) {
@@ -1739,6 +1787,10 @@ async function executeLive(pkg: WatchPackage, c: Candidate, shares: number): Pro
   if (!clob) throw new Error("CLOB client not initialized");
   const sportsBlock = sportsExecutionBlocked(c);
   if (sportsBlock) throw new Error(`blocked_sports_non_atomic_execution: ${sportsBlock}`);
+  if (isSportsCandidate(c)) {
+    await executeSportsCheapFirst(pkg, c, shares);
+    return;
+  }
   const client = clob.client;
   const record = packageRecord(c, reconcileAddress, shares, false);
   const orders: LiveOrder[] = [];
@@ -1902,6 +1954,19 @@ async function executeLive(pkg: WatchPackage, c: Candidate, shares: number): Pro
         orphanId: orphan.id,
         legErrors,
       });
+      if (sportsCandidate) {
+        pauseNewEntries(`sports_large_naked_leg_detected: ${nakedRole}=${nakedShares}; live sports execution is unsafe without atomic fills`, {
+          packageId: record.packageId,
+          eventSlug: c.eventSlug,
+          asset: c.asset,
+          role: nakedRole,
+          nakedShares,
+          matched,
+          intendedShares: shares,
+          orphanId: orphan.id,
+          legErrors,
+        });
+      }
     }
     if (sportsCandidate) {
       orphanInFlight.add(orphan.id);
@@ -1913,6 +1978,132 @@ async function executeLive(pkg: WatchPackage, c: Candidate, shares: number): Pro
     }
   }
   log(`package ${record.packageId} status=${record.status} leg1=${leg1Filled} leg2=${leg2Filled} matched=${matched.toFixed(2)} naked=${nakedShares.toFixed(2)}${nakedRole ? `(${nakedRole})` : ""} intended=${shares.toFixed(2)}`);
+}
+
+async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: number): Promise<void> {
+  if (!clob) throw new Error("CLOB client not initialized");
+  const client = clob.client;
+  const record = packageRecord(c, reconcileAddress, shares, false);
+  const orders: LiveOrder[] = [];
+  const submittedAt = new Date().toISOString();
+  const broadLeg = { role: "broad_yes" as const, tokenId: pkg.broadYesToken, price: c.broad.yesBook.ask };
+  const narrowLeg = { role: "narrow_no" as const, tokenId: pkg.narrowNoToken, price: c.narrow.noBook.ask };
+  const first = broadLeg.price <= narrowLeg.price ? broadLeg : narrowLeg;
+  const second = first.role === "broad_yes" ? narrowLeg : broadLeg;
+  const legErrors: string[] = [];
+  let broadFilled = 0;
+  let narrowFilled = 0;
+  let firstResp: unknown;
+  let secondResp: unknown | undefined;
+  const submitStartedMs = Date.now();
+
+  log(`SPORTS_ARB ${pkg.key} cheap_first=${first.role} cheap=${first.price.toFixed(4)} complement=${second.price.toFixed(4)} edge=${(c.lockedEdge * 100).toFixed(2)}c cost=${c.packageCost.toFixed(4)} intended=${shares.toFixed(2)}`);
+
+  record.status = "leg1_submitted";
+  record.updatedAt = new Date().toISOString();
+
+  try {
+    firstResp = await postFakBuy(client, first.tokenId, first.price, shares);
+    assertOrderResponse(firstResp, first.role);
+    record.legOrderIds[first.role === "broad_yes" ? "broadYes" : "narrowNo"] = orderId(firstResp);
+  } catch (err: any) {
+    firstResp = { error: err?.message ?? String(err) };
+    legErrors.push(`${first.role}:${err?.message ?? String(err)}`);
+  }
+  const firstFilled = roundShares(responseBuyShares(firstResp));
+  if (first.role === "broad_yes") broadFilled = firstFilled;
+  else narrowFilled = firstFilled;
+  orders.push({ packageId: record.packageId, createdAt: submittedAt, role: first.role, tokenId: first.tokenId, side: "BUY", price: first.price, size: firstFilled, orderType: "FAK", response: firstResp });
+
+  record.status = "leg2_submitted";
+  record.updatedAt = new Date().toISOString();
+
+  const complementNotional = firstFilled * second.price;
+  if (firstFilled > 0 && complementNotional + EPSILON >= MIN_MARKETABLE_BUY_USD) {
+    try {
+      secondResp = await postFakBuy(client, second.tokenId, second.price, firstFilled);
+      assertOrderResponse(secondResp, second.role);
+      record.legOrderIds[second.role === "broad_yes" ? "broadYes" : "narrowNo"] = orderId(secondResp);
+    } catch (err: any) {
+      secondResp = { error: err?.message ?? String(err) };
+      legErrors.push(`${second.role}:${err?.message ?? String(err)}`);
+    }
+    const secondFilled = roundShares(responseBuyShares(secondResp));
+    if (second.role === "broad_yes") broadFilled = secondFilled;
+    else narrowFilled = secondFilled;
+    orders.push({ packageId: record.packageId, createdAt: new Date().toISOString(), role: second.role, tokenId: second.tokenId, side: "BUY", price: second.price, size: secondFilled, orderType: "FAK", response: secondResp });
+  } else if (firstFilled > 0) {
+    legErrors.push(`${second.role}:skipped complement notional ${complementNotional.toFixed(4)} below minimum marketable buy`);
+  }
+
+  Object.assign((record as any).latency, {
+    preSubmitBalanceMs: 0,
+    balanceMode: "submit_response_first",
+    fillWaitMs: 0,
+    reconcileMs: 0,
+    postMode: "sports_cheap_first",
+    submitPairMs: Date.now() - submitStartedMs,
+  });
+  (record as any).fillSource = "submit_response";
+
+  const matched = roundShares(Math.min(broadFilled, narrowFilled));
+  record.filledShares = matched;
+  record.actualCost =
+    broadFilled * averageBuyPrice(first.role === "broad_yes" ? firstResp : secondResp, c.broad.yesBook.ask)
+    + narrowFilled * averageBuyPrice(first.role === "narrow_no" ? firstResp : secondResp, c.narrow.noBook.ask);
+  record.guaranteedFloor = matched;
+  record.lockedFloorProfit = matched * c.lockedEdge;
+  record.jackpotPayout = matched * c.jackpotPayoutPerShare;
+
+  const nakedShares = roundShares(Math.abs(broadFilled - narrowFilled));
+  const nakedRole: "broad_yes" | "narrow_no" | null =
+    broadFilled > narrowFilled ? "broad_yes" : narrowFilled > broadFilled ? "narrow_no" : null;
+  const errSuffix = legErrors.length ? ` errors=${legErrors.join("; ")}` : "";
+  if (matched > 0) {
+    record.status = "package_complete";
+    if (nakedRole) {
+      record.failureReason = `sports_cheap_first_partial matched=${matched} naked_${nakedRole}=${nakedShares} -> immediate_exit${errSuffix}`;
+    }
+  } else {
+    record.status = "unwind_required";
+    record.failureReason = nakedRole
+      ? `sports_cheap_first_naked_${nakedRole}=${nakedShares} -> immediate_exit (no matched fill)${errSuffix}`
+      : `sports_cheap_first_no_fill; no position${errSuffix}`;
+  }
+  record.updatedAt = new Date().toISOString();
+  persist(record, orders);
+
+  if (nakedRole && nakedShares >= SPORTS_ORPHAN_DUST_SHARES) {
+    const orphan = registerOrphanFromExecution(c, nakedRole, nakedShares, record.packageId);
+    quarantinePackage(pkg, c, `sports_cheap_first_residual: ${nakedRole}=${nakedShares}`, {
+      packageId: record.packageId,
+      eventSlug: c.eventSlug,
+      asset: c.asset,
+      role: nakedRole,
+      nakedShares,
+      matched,
+      intendedShares: shares,
+      orphanId: orphan.id,
+      legErrors,
+    });
+    orphanInFlight.add(orphan.id);
+    try {
+      await doSportsImmediateUnwind(orphan, `sports_cheap_first_residual matched=${matched} intended=${shares}`);
+    } finally {
+      orphanInFlight.delete(orphan.id);
+    }
+    if (orphan.status === "stranded" && orphan.shares > SPORTS_ORPHAN_DUST_SHARES) {
+      pauseNewEntries(`sports residual could not be cut immediately: ${nakedRole}=${orphan.shares}`, {
+        packageId: record.packageId,
+        eventSlug: c.eventSlug,
+        asset: c.asset,
+        role: nakedRole,
+        residualShares: orphan.shares,
+        orphanId: orphan.id,
+      });
+    }
+  }
+  log(`sports package ${record.packageId} status=${record.status} broad=${broadFilled} narrow=${narrowFilled} matched=${matched.toFixed(2)} naked=${nakedShares.toFixed(2)}${nakedRole ? `(${nakedRole})` : ""} intended=${shares.toFixed(2)}`);
 }
 
 function persist(record: LivePackage, orders: LiveOrder[]) {
@@ -1946,6 +2137,42 @@ function saveOrphans() {
 
 function activeOrphans(): Orphan[] {
   return [...orphans.values()].filter((o) => o.status === "completing");
+}
+
+function pairedPackageSharesForToken(tokenId: string): number {
+  const rows = readJsonArray<LivePackage>(PACKAGES_PATH);
+  let shares = 0;
+  for (const row of rows) {
+    if (row.status !== "package_complete") continue;
+    if ((row.actualCost ?? 0) <= 0 || (row.filledShares ?? 0) <= 0) continue;
+    const tokenIds = (row as { tokenIds?: Record<string, string | undefined> }).tokenIds ?? {};
+    if (!Object.values(tokenIds).includes(tokenId)) continue;
+    const soldShares = Number((row as { soldShares?: number }).soldShares ?? 0);
+    shares += Math.max(0, (row.filledShares ?? 0) - soldShares);
+  }
+  return roundShares(shares);
+}
+
+async function syncOrphanToUnpairedBalance(o: Orphan, reason: string): Promise<boolean> {
+  const bal = await reconcileTokenBalance(reconcileAddress, o.tokenId);
+  const pairedShares = pairedPackageSharesForToken(o.tokenId);
+  const unpairedShares = roundShares(Math.max(0, bal - pairedShares));
+  if (unpairedShares + EPSILON < ORPHAN_MIN_SHARES) {
+    o.status = "completed"; // position no longer held outside completed packages
+    o.note = `closed ${reason}: balance=${bal} paired=${pairedShares} unpaired=${unpairedShares}`;
+    o.updatedAt = new Date().toISOString();
+    saveOrphans();
+    log(`orphan ${o.id} closed ${reason}: balance=${bal} paired=${pairedShares} unpaired=${unpairedShares}`);
+    return false;
+  }
+  if (unpairedShares + EPSILON < o.shares) {
+    o.shares = unpairedShares; // trust on-chain, net of shares already owned by completed packages
+    o.note = `resized ${reason}: balance=${bal} paired=${pairedShares} unpaired=${unpairedShares}`;
+    o.updatedAt = new Date().toISOString();
+    saveOrphans();
+    log(`orphan ${o.id} resized ${reason}: balance=${bal} paired=${pairedShares} unpaired=${unpairedShares}`);
+  }
+  return true;
 }
 
 function registerOrphanFromExecution(c: Candidate, role: "broad_yes" | "narrow_no", shares: number, fromPackageId: string): Orphan {
@@ -2009,11 +2236,20 @@ async function doSportsImmediateUnwind(o: Orphan, reason: string) {
   }
 
   o.attempts += 1;
-  log(`orphan ${o.id} SPORTS_EXIT (${reason}): FAK-sell ${o.shares} @ bid=${bid.toFixed(4)} fill=${o.fillPrice.toFixed(4)}`);
-  const before = await reconcileTokenBalance(reconcileAddress, o.tokenId);
+  let before = await waitForTokenBalance(o.tokenId, Math.min(o.shares, ORPHAN_MIN_SHARES), SPORTS_EXIT_BALANCE_WAIT_MS);
+  const sellShares = roundShares(Math.min(o.shares, before));
+  if (sellShares + EPSILON < SPORTS_ORPHAN_DUST_SHARES) {
+    o.status = "stranded";
+    o.note = `sports immediate exit failed: balance unavailable balance=${before} shares=${o.shares} (${reason})`;
+    o.updatedAt = new Date().toISOString();
+    saveOrphans();
+    log(`orphan ${o.id} SPORTS_EXIT failed (${reason}): balance unavailable balance=${before} shares=${o.shares}`);
+    return;
+  }
+  log(`orphan ${o.id} SPORTS_EXIT (${reason}): FAK-sell ${sellShares} @ bid=${bid.toFixed(4)} fill=${o.fillPrice.toFixed(4)}`);
   let resp: unknown;
   try {
-    resp = await postFakSell(client, o.tokenId, bid, o.shares);
+    resp = await postFakSell(client, o.tokenId, bid, sellShares);
     assertOrderResponse(resp, "sports_unwind");
   } catch (err: any) {
     resp = { error: err?.message ?? String(err) };
@@ -2160,6 +2396,7 @@ async function processOrphan(o: Orphan) {
   if (orphanInFlight.has(o.id)) return;
   orphanInFlight.add(o.id);
   try {
+    if (!(await syncOrphanToUnpairedBalance(o, "preflight"))) return;
     if (o.shares + EPSILON < ORPHAN_MIN_SHARES) { // dust — flatten it
       await doUnwind(o, `dust shares=${o.shares}`);
       return;
@@ -2209,6 +2446,20 @@ async function doCompletion(o: Orphan, pick: CompletionPick) {
     const protectedShares = Math.min(o.shares, buyShares);
     const protectedEdge = protectedShares * (1 - o.fillPrice - pick.complementAsk);
     const extraComplementCost = overfillShares * pick.complementAsk;
+    const spendableUsd = spendableUsdAfterReservations();
+    if (Number.isFinite(spendableUsd) && completionCost > spendableUsd + EPSILON) {
+      const now = Date.now();
+      const last = completionSkipAttemptAt.get(o.id) ?? 0;
+      if (now - last >= ORPHAN_COMPLETION_SKIP_LOG_MS) {
+        completionSkipAttemptAt.set(o.id, now);
+        o.attempts += 1;
+        o.note = `completion skipped: insufficient cash cost=${completionCost.toFixed(4)} spendable=${spendableUsd.toFixed(4)} ask=${pick.complementAsk.toFixed(4)}`;
+        o.updatedAt = new Date().toISOString();
+        saveOrphans();
+        log(`orphan ${o.id} completion skipped: insufficient cash cost=$${completionCost.toFixed(4)} spendable=$${spendableUsd.toFixed(4)} ask=${pick.complementAsk.toFixed(4)} shares=${buyShares.toFixed(2)}`);
+      }
+      return;
+    }
     if (
       !Number.isFinite(buyShares)
       || completionCost + EPSILON < MIN_MARKETABLE_BUY_USD
@@ -2492,19 +2743,11 @@ async function reconcileOrphansAtStartup() {
   if (DRY_RUN || !reconcileAddress) return;
   for (const o of activeOrphans()) {
     try {
-      const bal = await reconcileTokenBalance(reconcileAddress, o.tokenId);
-      if (bal + EPSILON < ORPHAN_MIN_SHARES) {
-        o.status = "completed"; // position no longer held (settled/sold elsewhere)
-        o.note = `closed at startup: on-chain balance=${bal}`;
-      } else if (bal + EPSILON < o.shares) {
-        o.shares = roundShares(bal); // trust on-chain as the authority
-      }
-      o.updatedAt = new Date().toISOString();
+      await syncOrphanToUnpairedBalance(o, "at startup");
     } catch (err: any) {
       log(`orphan ${o.id} startup reconcile failed: ${err?.message ?? String(err)}`);
     }
   }
-  saveOrphans();
   const active = activeOrphans().length;
   if (active) log(`orphans: ${active} active (completing) loaded`);
 }
@@ -2522,6 +2765,9 @@ function evaluateToken(tokenId: string) {
     const candidate = liveCandidate(pkg.base, legs);
     recordNearMiss(candidate);
     if (!passesDynamicGate(candidate)) continue;
+    if (isSportsCandidate(candidate)) {
+      log(`sports_ws_gate_pass ${pkg.key}: wsCost=${candidate.packageCost.toFixed(4)} wsSpread=${candidate.maxSpread.toFixed(4)} edge=${(candidate.lockedEdge * 100).toFixed(2)}c size=${candidate.availableSize.toFixed(2)}`);
+    }
     void tryExecute(pkg, legs);
   }
 }
@@ -2759,8 +3005,8 @@ function flushLedger() {
 async function main() {
   installHttpKeepAlive();
   log(`starting; mode=${DRY_RUN ? "DRY_RUN" : "REAL"} enabled=${ENABLED} hardDisabled=${HARD_DISABLED}`);
-  log(`gates: maxPackage=$${MAX_PACKAGE_USD} maxDaily=$${MAX_DAILY_USD} maxOpen=${MAX_OPEN_PACKAGES} maxPerMin=${MAX_PER_MIN} minEdge=${(MIN_EDGE * 100).toFixed(2)}c minTouch=${MIN_AVAILABLE_SHARES} maxSpread=${MAX_SPREAD}`);
-  log(`sports safety: NBA batch execution ${ENABLE_NBA_BATCH_EXECUTION ? "ENABLED (single postOrders request; orphan/no-loss fallback active)" : ALLOW_NBA_NON_ATOMIC_EXECUTION ? "ENABLED by non-atomic override" : "BLOCKED (batch disabled)"}`);
+  log(`gates: maxPackage=$${MAX_PACKAGE_USD} maxDaily=$${MAX_DAILY_USD} maxOpen=${MAX_OPEN_PACKAGES} maxPerMin=${MAX_PER_MIN} minEdge=${(MIN_EDGE * 100).toFixed(2)}c minTouch=${MIN_AVAILABLE_SHARES} maxSpread=${MAX_SPREAD} sportsMaxSpread=${SPORTS_MAX_SPREAD}`);
+  log(`sports safety: live execution ${ALLOW_SPORTS_LIVE_EXECUTION ? "ENABLED (cheap-leg-first; no full expensive leg before hedge fill)" : "BLOCKED by ARB_DAEMON_ALLOW_SPORTS_LIVE_EXECUTION=0"}; nbaBatch=${ENABLE_NBA_BATCH_EXECUTION ? "1" : "0"} nonAtomicOverride=${ALLOW_NBA_NON_ATOMIC_EXECUTION ? "1" : "0"}`);
   log(`submit hot path: postMode=${MONOTONIC_POST_MODE} responseFillFirst=${RESPONSE_FILL_FIRST ? "1" : "0"} httpKeepAlive=${HTTP_KEEP_ALIVE ? "1" : "0"}`);
   log(`watchlist throttle: eventConcurrency=${arbConfig.eventConcurrency} marketConcurrency=${arbConfig.marketConcurrency} sportsAutoDiscoveryDays=${SPORTS_AUTO_DISCOVERY_DAYS} soccerLimit=${SOCCER_DISCOVERY_LIMIT} bookSeedMax=${BOOK_SEED_MAX_PER_RECONNECT} bookSeedMinIntervalMs=${BOOK_SEED_MIN_INTERVAL_MS} clob429CooldownMs=${CLOB_REST_429_COOLDOWN_MS}`);
   log(`June breakeven filter: commodities<=${(JUNE_BREAKEVEN_COMMODITY_MAX_DISTANCE * 100).toFixed(1)}% crypto<=${(JUNE_BREAKEVEN_CRYPTO_MAX_DISTANCE * 100).toFixed(1)}% refreshMs=${SPOT_REFRESH_MS}`);
