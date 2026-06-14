@@ -64,6 +64,11 @@ import {
 } from "./lib/trading/journal-sections.js";
 import { buildGatedLlmAdvice } from "./lib/trading/llm-advice-gate.js";
 import {
+  buildMonotonicPreflightReport,
+  isValidMonotonicArbPackage,
+  type MonotonicPreflightReport,
+} from "./lib/trading/monotonic-invariants.js";
+import {
   formatActiveHypothesesPrompt,
   formatAllowedActionSurfacePrompt,
   formatKilledHypothesesPrompt,
@@ -105,6 +110,7 @@ const CANDIDATE_ACTIONS_FILE = "candidate-actions.json";
 const LLM_ADVICE_FILE = "llm-advice.json";
 const EXECUTION_PLAN_FILE = "execution-plan.json";
 const DRY_RUN_VERIFICATION_FILE = "dry-run-verification.json";
+const MONOTONIC_PREFLIGHT_REPORT_FILE = "monotonic-arb-preflight-report.json";
 const REAL_PM_PACKAGES_FILE = "polymarket-live-packages.json";
 const TRADE_SIZE = 1;
 const MAX_BANKROLL = 100;
@@ -1478,6 +1484,10 @@ function savePortfolio(p: Portfolio) {
   p.lastUpdated = new Date().toISOString();
   writeJson("portfolio.json", p);
   writeJsonPath(LIVE_PORTFOLIO_FILE, p);
+}
+
+function saveMonotonicPreflightReport(report: MonotonicPreflightReport) {
+  writeJson(MONOTONIC_PREFLIGHT_REPORT_FILE, report);
 }
 
 function importCompletedRealPolymarketPackages(portfolio: Portfolio): string[] {
@@ -6477,14 +6487,6 @@ function evaluateHypotheses(
 
 // ─── Lean Engine State / Truth / Policy Artifacts ─────────────────────────────
 
-function isValidMonotonicArbPackage(position: Position): boolean {
-  return position.signalType === "MONOTONIC_ARB"
-    && position.instrumentType === "pm_package"
-    && Array.isArray(position.packageLegs)
-    && position.packageLegs.some((leg) => leg.role === "broad_yes")
-    && position.packageLegs.some((leg) => leg.role === "narrow_no");
-}
-
 function mechanicalCloseReason(position: Position, mark: { pnlPct: number } | null): ClosedTrade["closeReason"] | null {
   if (!mark) return null;
   if (position.signalType === "MONOTONIC_ARB") {
@@ -7668,6 +7670,8 @@ async function main() {
   const weights = loadWeights();
   let hypotheses = loadHypotheses();
   const blockedSignals = loadBlockedSignals();
+  const monotonicPreflightReport = buildMonotonicPreflightReport(portfolio.positions, new Date().toISOString());
+  saveMonotonicPreflightReport(monotonicPreflightReport);
   // Run the ghost-killer reconciliation FIRST, before any other startup
   // pass touches the portfolio. If a previously-closed position has been
   // rehydrated by an upstream state-restore path, we want it removed
@@ -7688,6 +7692,12 @@ async function main() {
   console.log(`  Portfolio: $${portfolio.cash.toFixed(2)} cash, ${portfolio.positions.length} open positions, $${portfolio.totalRealizedPnl.toFixed(4)} realized P&L`);
   console.log(`  Learnable params: macro24h>${learningParams.macroMomentum24hThresholdPts.toFixed(1)}, trend>${learningParams.contrarianTrendMarginPct.toFixed(2)}%, momentum>${learningParams.positiveMomentum24hPct.toFixed(2)}%, llm expiry=${learningParams.llmTradeExpiryDays}d, momentum expiry=${learningParams.momentumLongExpiryDays}d`);
   console.log(`  Risk params: HL funding ${formatTargetPct(learningParams.signalRisk.FUNDING_EXTREME_SHORT.targetPct)}/-${learningParams.signalRisk.FUNDING_EXTREME_SHORT.stopPct}, LLM ${formatTargetPct(learningParams.signalRisk.LLM_HYPOTHESIS.targetPct)}/-${learningParams.signalRisk.LLM_HYPOTHESIS.stopPct}, PM overvol ${formatTargetPct(learningParams.signalRisk.PM_IV_GT_OPT_IV.targetPct)}/-${learningParams.signalRisk.PM_IV_GT_OPT_IV.stopPct}`);
+  if (monotonicPreflightReport.malformedPositions.length > 0) {
+    console.log(`  ⚠ Monotonic preflight: ${monotonicPreflightReport.malformedPositions.length}/${monotonicPreflightReport.monotonicOpenPositions} open MONOTONIC_ARB positions are malformed; wrote ${MONOTONIC_PREFLIGHT_REPORT_FILE} for operator quarantine review.`);
+    for (const malformed of monotonicPreflightReport.malformedPositions.slice(0, 5)) {
+      console.log(`    - ${malformed.id} ${malformed.asset} via ${malformed.venue}/${malformed.instrumentType ?? "missing"}: ${malformed.reasons.join("; ")}`);
+    }
+  }
   for (const note of ghostKillNotes) console.log(`  Ghost killer: ${note}`);
   for (const note of migrationNotes) console.log(`  ${note}`);
   for (const note of longDatedTimelineNotes) console.log(`  Long-dated PM timeline: ${note}`);

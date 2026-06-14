@@ -710,7 +710,8 @@ Follow-up implemented after this emergency cleanup:
 2. **Monotonic arb invariants are partially addressed.**
    - `portfolio-ledger.ts` now treats closed `MONOTONIC_ARB` rows as contaminated unless they are `pm_package` rows.
    - `trading-engine.ts` now exempts monotonic arb positions from generic Polymarket target/stop policy and only allows mechanical expiry for valid broad-YES + narrow-NO packages.
-   - Remaining follow-up: add a preflight/migration report for any currently open malformed monotonic rows so operators can remove them deliberately rather than through generic stop logic.
+   - `scripts/lib/trading/monotonic-invariants.ts` now centralizes the package-shape check and the engine writes `data/monotonic-arb-preflight-report.json` each run, flagging malformed open rows for operator-review quarantine without closing or migrating them automatically.
+   - Remaining follow-up: decide whether any flagged malformed open rows should be manually removed from live state after reviewing the report; do not route them through generic stop/target logic.
 
 3. **Infra drift monitoring remains open.**
    - VPS exit-scanner and daily-report wrappers plus systemd units are now reference-snapshotted and hash-verified against the USA VPS.
