@@ -86,6 +86,7 @@ See `docs/runtime-state.md` for full tracked vs ignored file list.
 | `OPS-RECONCILE` | `scripts/reconcile_portfolio_and_ledger.py` | Portfolio vs ledger audit |
 | `OPS-SYNC` | `scripts/git-sync.sh`, `scripts/hybrid-sync.sh`, `scripts/sync-runtime-state.sh` | Dev ↔ VPS sync |
 | `OPS-COMPACT` | `scripts/compact_instrument_snapshots.py` | Snapshot compaction |
+| `OPS-CALIBRATION-COMPACT` | `scripts/compact_no_bias_calibration.py` | Dry-run-first compaction for the growing NO-bias calibration JSONL |
 | `OPS-TELEGRAM` | `scripts/telegram-trader-bot.ts` | Manual control bot |
 | `OPS-LEDGER` | `scripts/portfolio-ledger.ts` | Shared tainted-trade filtering |
 
@@ -120,6 +121,7 @@ See `docs/runtime-state.md` for full tracked vs ignored file list.
 | `GEN-HEATMAP-HIST` | `relative-value/history/`, `vps-history/` | ~165 MB | Mostly gitignored |
 | `GEN-DIST` | `dist/` | ~2.4 MB | Stale compiled TS; prod uses `tsx` |
 | `GEN-TRACKED-BLOAT` | `data/learning-journal.md`, `data/hypotheses.json`, `relative-value/index.html` | ~6 MB in git | Grows every hour |
+| `GEN-CALIBRATION-JSONL` | `relative-value/calibration/no_bias_candidates.jsonl` | growing hourly | Use `npm run calibration:compact` to dry-run compaction; `-- --apply` archives removed rows to ignored `.runtime/` |
 
 ---
 
@@ -664,9 +666,10 @@ Follow-up implemented after this emergency cleanup:
 2. **Production state/data weight.**
    - Highest operational leverage because disk pressure has already broken the hourly wrapper once.
    - Disk health monitoring now exists locally via `npm run cleanup:disk:health`.
-- Latest local USA worktree health check (2026-06-12): 28.9% filesystem used, 327.6 GB free, and 0 B reclaimable under the default prune policy. No pruning was applied.
+   - Latest local USA worktree health check (2026-06-12): 28.9% filesystem used, 327.6 GB free, and 0 B reclaimable under the default prune policy. No pruning was applied.
    - Latest USA VPS health check: 86.4% used / about 2.0 GB free, with 0 B reclaimable under the default prune policy. No immediate pruning or off-root migration is required, but keep monitoring because hourly generated state can rebuild pressure.
-   - Next safe slice: set an operator cadence for `npm run cleanup:disk:health` after hourly syncs and revisit off-root snapshot archives if free space drops below 1 GB or root usage returns above 90-95%.
+   - NO-bias calibration JSONL now has a dry-run-first reducer: `npm run calibration:compact` keeps first/pass/resolved/latest rows per market and only rewrites with `-- --apply`, archiving removed rows under ignored `.runtime/calibration-archives/`.
+   - Next safe slice: set an operator cadence for `npm run cleanup:disk:health` after hourly syncs, run `npm run calibration:compact` in dry-run after large calibration backfills, and revisit off-root snapshot archives if free space drops below 1 GB or root usage returns above 90-95%.
    - Keep trader history protected: do not delete tracked portfolio, trade ledger, hypotheses, blocked signals, learning journal, engine state, candidate actions, LLM state, or published heatmap artifacts.
 
 3. **Deeper golden harness for `trading-engine.ts`.**
@@ -699,16 +702,22 @@ Follow-up implemented after this emergency cleanup:
 
 1. **Data/git-weight cleanup remains open.**
    - Emergency 30-day snapshot archive pruning was performed on the USA VPS, and `npm run cleanup:disk` now provides a repeatable dry-run/apply path.
+   - `scripts/compact_no_bias_calibration.py` now covers the growing `relative-value/calibration/no_bias_candidates.jsonl` file; apply mode should be run only after reviewing the dry-run summary.
    - Snapshot retention/offload policy still needs monitoring; root disk pressure may still require off-root storage or disk expansion.
    - Do not untrack `relative-value/index.html`; Vercel serves `relative-value/` directly.
    - Do not cap `learning-journal.md` until the LLM prompt-window behavior is mapped and tested.
 
-2. **Infra drift monitoring remains open.**
+2. **Monotonic arb invariants are partially addressed.**
+   - `portfolio-ledger.ts` now treats closed `MONOTONIC_ARB` rows as contaminated unless they are `pm_package` rows.
+   - `trading-engine.ts` now exempts monotonic arb positions from generic Polymarket target/stop policy and only allows mechanical expiry for valid broad-YES + narrow-NO packages.
+   - Remaining follow-up: add a preflight/migration report for any currently open malformed monotonic rows so operators can remove them deliberately rather than through generic stop logic.
+
+3. **Infra drift monitoring remains open.**
    - VPS exit-scanner and daily-report wrappers plus systemd units are now reference-snapshotted and hash-verified against the USA VPS.
    - Re-check hashes before any live wrapper/unit deployment.
    - Do not deploy wrapper changes without a separate approval and VPS dry run.
 
-3. **Japan monotonic/UpDown remains separate.**
+4. **Japan monotonic/UpDown remains separate.**
    - USA cleanup should not commit or deploy Japan-only monotonic/UpDown changes.
    - Use `main` for USA and the `japan` branch for Japan monotonic/UpDown deployment work.
    - If shared files are touched, confirm the target branch/deployment before committing.

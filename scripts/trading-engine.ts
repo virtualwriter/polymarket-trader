@@ -1775,6 +1775,7 @@ function applySpotRiskToOpenPositions(portfolio: Portfolio): string[] {
 }
 
 function applyProductionPolymarketRisk(position: Position): string | null {
+  if (position.signalType === "MONOTONIC_ARB") return null;
   if (position.venue !== "polymarket" || (position.instrumentType !== "pm_yes" && position.instrumentType !== "pm_no")) return null;
   if (position.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO) {
     const risk = DEFAULT_SIGNAL_RISK[ONE_TOUCH_HIGH_EDGE_SIGNAL_NO];
@@ -6476,8 +6477,21 @@ function evaluateHypotheses(
 
 // ─── Lean Engine State / Truth / Policy Artifacts ─────────────────────────────
 
+function isValidMonotonicArbPackage(position: Position): boolean {
+  return position.signalType === "MONOTONIC_ARB"
+    && position.instrumentType === "pm_package"
+    && Array.isArray(position.packageLegs)
+    && position.packageLegs.some((leg) => leg.role === "broad_yes")
+    && position.packageLegs.some((leg) => leg.role === "narrow_no");
+}
+
 function mechanicalCloseReason(position: Position, mark: { pnlPct: number } | null): ClosedTrade["closeReason"] | null {
   if (!mark) return null;
+  if (position.signalType === "MONOTONIC_ARB") {
+    return isValidMonotonicArbPackage(position) && new Date(position.expiryDate) <= new Date()
+      ? "expiry"
+      : null;
+  }
   if (position.targetPct !== null && mark.pnlPct >= position.targetPct) return "target";
   if (fundingBreakevenStopHit(position, mark)) return "breakeven_stop";
   if (mark.pnlPct <= -position.stopPct) return "stop";

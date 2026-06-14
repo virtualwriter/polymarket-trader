@@ -80,12 +80,15 @@ export function operationallyTaintedTradeIds(): Set<string> {
 export interface ContaminationInput {
   id: string;
   closeReason?: string | null;
+  signalType?: string | null;
+  instrumentType?: string | null;
   thesis?: string | null;
 }
 
 export function isContaminatedTrade(trade: ContaminationInput): boolean {
   const tainted = loadOperationallyTaintedTrades();
   if (trade.id && tainted[trade.id]) return true;
+  if (trade.signalType === "MONOTONIC_ARB" && trade.instrumentType !== "pm_package") return true;
   const reason = trade.closeReason ?? "";
   if (reason === "data_quality_artifact") return true;
   if (reason.includes("DATA_CORRECTION_ARTIFACT")) return true;
