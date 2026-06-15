@@ -31628,3 +31628,39 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-06-15 21:29 UTC
+
+**Portfolio:** $98.35 total | Cash $75.35 | 23 open | P&L $0.9377 | 52% win rate (199 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 17.2pp (was 16.6, now -0.6)
+- [anomaly] hype_med_min = 31.3 is 3.8 std devs from mean (23.28 ± 2.10)
+- [anomaly] gold_pm_iv = 36.5 is 2.8 std devs from mean (21.16 ± 5.44)
+- [anomaly] gold_opt_iv_30d = 37.1 is 2.5 std devs from mean (24.80 ± 4.95)
+- [anomaly] gold_med_min = 4005 is -2.5 std devs from mean (4311.47 ± 124.44)
+
+**Blocked signal learning:**
+- Open blocked shadows: 65
+- Resolved blocked shadows: 649 (364 wins / 285 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 7/12 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 6/10 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=116 (34W/69L/13flat, 33.0% win-rate, sum $-2.6384, avg -2.27%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=161 (51W/93L/17flat, 35.4% win-rate, sum $-2.7340, avg -1.70%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+2.22%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-3.45%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-3.33%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+Macro backdrop remains bearish but crypto shows resilience near recent highs. BTC negative funding flip is notable but can be volatile; not a clean signal alone. Gold PM IV spike is interesting but spot divergence suggests caution. Oil weakness continues with negative funding, but no clean entry given thin PM markets. Monotonic arb positions are performing in line with expectations; no LLM-eligible closes allowed. Continue to watch for extreme positioning conditions that could trigger shadow hypotheses.
+
+---
+
