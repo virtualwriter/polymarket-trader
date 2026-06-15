@@ -228,6 +228,9 @@ const MAX_NAKED_SHARES_BEFORE_PAUSE = Number(process.env.ARB_DAEMON_MAX_NAKED_SH
 const DUST_EXIT_LIMIT_WAIT_MS = Number(process.env.ARB_DAEMON_DUST_EXIT_LIMIT_WAIT_MS ?? 5_000);
 const DUST_EXIT_RETRY_MS = Number(process.env.ARB_DAEMON_DUST_EXIT_RETRY_MS ?? 60_000);
 const ORPHAN_COMPLETION_SKIP_LOG_MS = Number(process.env.ARB_DAEMON_ORPHAN_COMPLETION_SKIP_LOG_MS ?? 60_000);
+// CTF balances can lag matched CLOB responses. A fresh orphan must not be
+// marked closed just because the first reconcile sees zero before settlement.
+const ORPHAN_BALANCE_SETTLE_GRACE_MS = Number(process.env.ARB_DAEMON_ORPHAN_BALANCE_SETTLE_GRACE_MS ?? 30_000);
 const ORPHANS_PATH = join(dirname(PACKAGES_PATH), "polymarket-live-orphans.json");
 const CANDIDATE_SNAPSHOTS_PATH = join(dirname(PACKAGES_PATH), "monotonic-candidate-snapshots.jsonl");
 const MIDDLE_AUDIT_PATH = join(dirname(PACKAGES_PATH), "monotonic-middle-audit.jsonl");
@@ -2199,6 +2202,15 @@ async function unpairedTokenBalance(tokenId: string, excludeOrphanPackageId?: st
 async function syncOrphanToUnpairedBalance(o: Orphan, reason: string): Promise<boolean> {
   const unpairedShares = await unpairedTokenBalance(o.tokenId, o.packageId);
   if (unpairedShares + EPSILON < ORPHAN_MIN_SHARES) {
+    const createdAtMs = Date.parse(o.createdAt);
+    const ageMs = Number.isFinite(createdAtMs) ? Date.now() - createdAtMs : Number.POSITIVE_INFINITY;
+    if (ageMs < ORPHAN_BALANCE_SETTLE_GRACE_MS && o.shares >= ORPHAN_MIN_SHARES) {
+      o.note = `balance pending ${reason}: unpaired=${unpairedShares}; ageMs=${Math.max(0, Math.round(ageMs))}`;
+      o.updatedAt = new Date().toISOString();
+      saveOrphans();
+      log(`orphan ${o.id} balance pending ${reason}: unpaired=${unpairedShares} ageMs=${Math.max(0, Math.round(ageMs))}`);
+      return true;
+    }
     o.status = "completed"; // position no longer held outside completed packages
     o.note = `closed ${reason}: unpaired=${unpairedShares}`;
     o.updatedAt = new Date().toISOString();
