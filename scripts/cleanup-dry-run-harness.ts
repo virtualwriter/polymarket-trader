@@ -14,6 +14,7 @@ const dryRunArtifacts = [
   join(dataDir, "dry-run-verification.json"),
   join(dataDir, "llm-advice.json"),
   join(dataDir, "llm-truth-state.json"),
+  join(dataDir, "monotonic-arb-preflight-report.json"),
 ];
 const fixtureInputFiles = [
   "data/portfolio.json",
@@ -288,6 +289,9 @@ const blockedSignals = readJson<any[]>(join(dataDir, "blocked-signals.json"), []
 const portfolio = readJson<any>(join(dataDir, "portfolio.json"), {});
 const openPositions: any[] = Array.isArray(portfolio.positions) ? portfolio.positions : [];
 const entryCandidates: any[] = Array.isArray(candidateActions.entryCandidates) ? candidateActions.entryCandidates : [];
+const sizingPreviews: any[] = Array.isArray(candidateActions.sizingPreviews) ? candidateActions.sizingPreviews : [];
+const portfolioExposurePreviews: any[] = Array.isArray(candidateActions.portfolioExposurePreviews) ? candidateActions.portfolioExposurePreviews : [];
+const stagedQuantRules: any[] = Array.isArray(candidateActions.stagedQuantRules) ? candidateActions.stagedQuantRules : [];
 const mechanicalExits: any[] = Array.isArray(candidateActions.mechanicalExits) ? candidateActions.mechanicalExits : [];
 const signalKillExits: any[] = Array.isArray(candidateActions.signalKillExits) ? candidateActions.signalKillExits : [];
 const llmCloseEligibility: any[] = Array.isArray(candidateActions.llmCloseEligibility) ? candidateActions.llmCloseEligibility : [];
@@ -332,6 +336,11 @@ const summary = {
     entryCandidates: entryCandidates.length,
     entryByType: countBy(entryCandidates, (row) => String(row.type ?? "unknown")),
     entryByAsset: countBy(entryCandidates, (row) => String(row.asset ?? "unknown")),
+    sizingPreviews: sizingPreviews.length,
+    portfolioExposurePreviews: portfolioExposurePreviews.length,
+    stagedQuantRules: stagedQuantRules.length,
+    stagedQuantWouldResize: stagedQuantRules.filter((row) => row.wouldResize === true).length,
+    stagedQuantLiveSizingEnabled: stagedQuantRules.filter((row) => row.liveSizingEnabled === true).length,
     mechanicalExits: mechanicalExits.length,
     signalKillExits: signalKillExits.length,
     llmCloseEligibility: llmCloseEligibility.length,

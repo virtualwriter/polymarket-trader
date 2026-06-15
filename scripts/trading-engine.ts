@@ -69,6 +69,11 @@ import {
   type MonotonicPreflightReport,
 } from "./lib/trading/monotonic-invariants.js";
 import {
+  buildStagedQuantRulePreviews,
+  type StagedQuantRuleMode,
+  type StagedQuantRulePreview,
+} from "./lib/trading/staged-quant-rules.js";
+import {
   formatActiveHypothesesPrompt,
   formatAllowedActionSurfacePrompt,
   formatKilledHypothesesPrompt,
@@ -123,6 +128,12 @@ const SIZING_PREVIEW_MIN_CALIBRATION_EVENTS = 5;
 const SIZING_PREVIEW_MIN_ASSET_HISTORY_TRADES = 5;
 const SIZING_PREVIEW_MIN_SIGNAL_HISTORY_TRADES = 10;
 const EXPOSURE_PREVIEW_MAX_CLUSTER_ABS_EXPOSURE = 5;
+const STAGED_QUANT_RULE_MODE: StagedQuantRuleMode = process.env.STAGED_QUANT_RULE_MODE === "apply_sizing_preview"
+  ? "apply_sizing_preview"
+  : "observe_uniform";
+const STAGED_QUANT_LIVE_SIZING_ENABLED = process.env.ENABLE_STAGED_QUANT_LIVE_SIZING === "1";
+const STAGED_QUANT_MIN_EDGE_PTS = Number(process.env.STAGED_QUANT_MIN_EDGE_PTS ?? 5);
+const STAGED_QUANT_MAX_EXPOSURE_ALERT_ABS = Number(process.env.STAGED_QUANT_MAX_EXPOSURE_ALERT_ABS ?? EXPOSURE_PREVIEW_MAX_CLUSTER_ABS_EXPOSURE);
 const HEATMAP_SHADOW_MAX_SPREAD = 0.01;
 const HEATMAP_SHADOW_MIN_LIQUIDITY = 1000;
 const MONOTONIC_ARB_MAX_YES_SPREAD = 0.01;
@@ -942,6 +953,7 @@ interface CandidateActions {
   entryCandidates: Signal[];
   sizingPreviews: CandidateSizingPreview[];
   portfolioExposurePreviews: PortfolioExposurePreview[];
+  stagedQuantRules: StagedQuantRulePreview[];
   llmCloseEligibility: LlmCloseEligibility[];
 }
 
@@ -5388,10 +5400,7 @@ function markToMarket(
     if (weekendHyperliquidFundingExitHit(pos, snapshots)) closeReason = !isStockPerpFundingWindowOpen()
       ? "expiry"
       : mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
-    else if (pos.targetPct !== null && mark.pnlPct >= pos.targetPct) closeReason = "target";
-    else if (fundingBreakevenStopHit(pos, mark)) closeReason = "breakeven_stop";
-    else if (mark.pnlPct <= -pos.stopPct) closeReason = "stop";
-    else if (new Date(pos.expiryDate) <= new Date()) closeReason = "expiry";
+    else closeReason = mechanicalCloseReason(pos, mark);
 
     if (closeReason) {
       const trade = realizeClosedPosition(portfolio, pos, mark, closeReason, now);
@@ -6804,6 +6813,17 @@ function buildCandidateActions(portfolio: Portfolio, weights: SignalWeight[], si
     },
     maxClusterAbsExposure: EXPOSURE_PREVIEW_MAX_CLUSTER_ABS_EXPOSURE,
   });
+  const stagedQuantRules = buildStagedQuantRulePreviews({
+    sizingPreviews: previews.sizingPreviews,
+    exposurePreviews: previews.portfolioExposurePreviews,
+    config: {
+      mode: STAGED_QUANT_RULE_MODE,
+      tradeSize: TRADE_SIZE,
+      liveSizingEnabled: STAGED_QUANT_LIVE_SIZING_ENABLED,
+      minEdgePts: STAGED_QUANT_MIN_EDGE_PTS,
+      maxExposureAlertAbs: STAGED_QUANT_MAX_EXPOSURE_ALERT_ABS,
+    },
+  });
   return {
     generatedAt: new Date().toISOString(),
     mechanicalExits,
@@ -6811,6 +6831,7 @@ function buildCandidateActions(portfolio: Portfolio, weights: SignalWeight[], si
     entryCandidates: signals,
     sizingPreviews: previews.sizingPreviews,
     portfolioExposurePreviews: previews.portfolioExposurePreviews,
+    stagedQuantRules,
     llmCloseEligibility,
   };
 }

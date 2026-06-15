@@ -90,6 +90,9 @@ export interface DryRunVerificationArtifactInputs<TEngineState, TCandidateAction
     mechanicalExits: unknown[];
     signalKillExits: unknown[];
     entryCandidates: unknown[];
+    sizingPreviews?: unknown[];
+    portfolioExposurePreviews?: unknown[];
+    stagedQuantRules?: Array<{ liveSizingEnabled?: boolean }>;
   };
   executionPlan: (TExecutionPlan & {
     llmCloses: unknown[];
@@ -112,6 +115,10 @@ export function buildDryRunVerificationArtifact<TEngineState, TCandidateActions,
       mechanicalExitCandidates: inputs.candidateActions.mechanicalExits.length,
       signalKillExitCandidates: inputs.candidateActions.signalKillExits.length,
       entryCandidates: inputs.candidateActions.entryCandidates.length,
+      sizingPreviews: inputs.candidateActions.sizingPreviews?.length ?? 0,
+      portfolioExposurePreviews: inputs.candidateActions.portfolioExposurePreviews?.length ?? 0,
+      stagedQuantRules: inputs.candidateActions.stagedQuantRules?.length ?? 0,
+      stagedQuantLiveSizingEnabled: inputs.candidateActions.stagedQuantRules?.filter((rule) => rule.liveSizingEnabled === true).length ?? 0,
       llmClosesAccepted: inputs.executionPlan?.llmCloses.length ?? 0,
       llmClosesRejected: inputs.executionPlan?.rejectedLlmActions.length ?? 0,
     },

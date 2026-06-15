@@ -653,6 +653,7 @@ Follow-up implemented after this emergency cleanup:
 - Net repository source lines increased because focused tests and shared helpers were added. This is intentional: the immediate gain is safer future cleanup, not raw line deletion.
 - Runtime performance is expected to be effectively unchanged for the report path; the practical gain is improved testability, clearer LLM-facing report rows, and lower risk for the next extractions.
 - Live trading behavior has not been changed by the sizing/risk work yet: `TRADE_SIZE`, cash mutation, and candidate execution gates remain unchanged. New quant-upgrade artifacts are read-only previews in `candidate-actions.json` (`sizingPreviews`, `portfolioExposurePreviews`).
+- Staged quant-rule scaffolding now records `stagedQuantRules` in `candidate-actions.json`: default mode is `observe_uniform`, `ENABLE_STAGED_QUANT_LIVE_SIZING` is off, and enforced live size remains the uniform `TRADE_SIZE` while preview/resizing alerts are observed.
 - Each code slice was validated with focused tests, TypeScript build/lints, fixture compares (`npm run cleanup:harness -- --compare ...`, scanner fixture compares where applicable), and production-path guardrails when relevant.
 
 ### Next high-leverage cleanup targets
@@ -675,6 +676,7 @@ Follow-up implemented after this emergency cleanup:
 3. **Deeper golden harness for `trading-engine.ts`.**
    - Highest leverage before larger monolith reduction.
    - Fixture replay now exists locally for representative engine inputs and trimmed snapshot tails.
+   - Dry-run verification now counts sizing previews, exposure previews, staged quant rules, and live-sizing-enabled staged rules, so a future sizing flip produces an intentional harness diff instead of an accidental execution change.
    - Latest fixture gate: `status=match`, no new dirty paths. The next engine cleanup slice can use this gate before/after changes.
    - Next safe slice: use the fixture gate before each new engine extraction and broaden the fixture set only when a refactor touches inputs the current fixture does not cover.
    - Keep avoiding signal selection, LLM prompt assembly, portfolio mutation, or exit/open-position logic until fixture coverage is intentionally expanded.
@@ -684,7 +686,7 @@ Follow-up implemented after this emergency cleanup:
    - After the deeper harness, continue with pure helpers only: config/env parsing, artifact summaries, grouping/counting helpers, and readonly state snapshot builders.
    - Latest slices extracted engine-state summary, signal-health, final state-artifact assembly, LLM truth-state artifact assembly, runtime config helpers, blocked-signal summary helpers, and blocked-signal observation helpers and passed the fixture gate.
    - Avoid changing signal generation, LLM prompts, close/open execution, sizing, or portfolio writes during cleanup-only slices. When implementing the quant roadmap, isolate those behavior changes in dedicated commits with dry-run fixture baselines and explicit expected diffs.
-   - Sizing foundation now exists in `scripts/lib/trading/sizing.ts`; sizing previews now surface in `candidate-actions.json` without changing actual opened position sizes. Probability sourcing now prefers calibration/history evidence before confidence fallback. Exposure previews now surface current and after-candidate risk clusters. Next safe behavior-adjacent slice is observing these previews for several runs, then adding non-blocking alert thresholds before live sizing/caps.
+   - Sizing foundation now exists in `scripts/lib/trading/sizing.ts`; sizing previews now surface in `candidate-actions.json` without changing actual opened position sizes. Probability sourcing now prefers calibration/history evidence before confidence fallback. Exposure previews now surface current and after-candidate risk clusters. Staged quant rules now add non-blocking resize/edge/exposure alerts while uniform sizing remains enforced; future live sizing requires explicitly setting `ENABLE_STAGED_QUANT_LIVE_SIZING=1` with `STAGED_QUANT_RULE_MODE=apply_sizing_preview` and accepting the fixture diff.
 
 5. **`market-scanner.ts` module split.**
    - Big source-size win after engine harnessing. Likely targets: Hyperliquid fetch/parse helpers, Polymarket/Gamma fetch helpers, option valuation transforms, and CSV/snapshot writers.
