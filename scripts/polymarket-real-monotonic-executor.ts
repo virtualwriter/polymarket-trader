@@ -123,6 +123,7 @@ type LivePackage = {
   jackpotPayout: number;
   settlementWindow: { startDate: string | null; endDate: string | null };
   legOrderIds: { broadYes?: string; narrowNo?: string };
+  latency?: Record<string, unknown>;
   tokenIds: { broadYes: string; narrowNo: string };
   prices: { broadYesAsk: number; narrowNoAsk: number; packageCost: number };
   packageLegs: Array<{
@@ -741,6 +742,7 @@ function packageRecord(candidate: Candidate, walletAddress: string, shares: numb
     jackpotPayout: shares * candidate.jackpotPayoutPerShare,
     settlementWindow: { startDate: candidate.broad.startDate ?? candidate.narrow.startDate, endDate: candidate.broad.endDate ?? candidate.narrow.endDate },
     legOrderIds: {},
+    latency: {},
     tokenIds: { broadYes: candidate.broad.yesTokenId, narrowNo: candidate.narrow.noTokenId },
     prices: { broadYesAsk: candidate.broad.yesBook.ask, narrowNoAsk: candidate.narrow.noBook.ask, packageCost: candidate.packageCost },
     packageLegs: [

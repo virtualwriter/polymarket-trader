@@ -1984,7 +1984,6 @@ async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: 
   if (!clob) throw new Error("CLOB client not initialized");
   const client = clob.client;
   const record = packageRecord(c, reconcileAddress, shares, false);
-  const orders: LiveOrder[] = [];
   const submittedAt = new Date().toISOString();
   const broadLeg = { role: "broad_yes" as const, tokenId: pkg.broadYesToken, price: c.broad.yesBook.ask };
   const narrowLeg = { role: "narrow_no" as const, tokenId: pkg.narrowNoToken, price: c.narrow.noBook.ask };
@@ -1999,8 +1998,14 @@ async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: 
 
   log(`SPORTS_ARB ${pkg.key} cheap_first=${first.role} cheap=${first.price.toFixed(4)} complement=${second.price.toFixed(4)} edge=${(c.lockedEdge * 100).toFixed(2)}c cost=${c.packageCost.toFixed(4)} intended=${shares.toFixed(2)}`);
 
+  // Durable intent before the race starts. There is intentionally no disk I/O
+  // between leg 1 and leg 2; startup recovery reconciles this intent if the
+  // process dies mid-sequence.
   record.status = "leg1_submitted";
   record.updatedAt = new Date().toISOString();
+  record.failureReason = `sports_cheap_first_intent first=${first.role} second=${second.role}`;
+  (record as any).latency = { preSubmitBalanceMs: 0, balanceMode: "intent_then_response" };
+  persist(record, []);
 
   try {
     firstResp = await postFakBuy(client, first.tokenId, first.price, shares);
@@ -2013,7 +2018,7 @@ async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: 
   const firstFilled = roundShares(responseBuyShares(firstResp));
   if (first.role === "broad_yes") broadFilled = firstFilled;
   else narrowFilled = firstFilled;
-  orders.push({ packageId: record.packageId, createdAt: submittedAt, role: first.role, tokenId: first.tokenId, side: "BUY", price: first.price, size: firstFilled, orderType: "FAK", response: firstResp });
+  const firstOrder: LiveOrder = { packageId: record.packageId, createdAt: submittedAt, role: first.role, tokenId: first.tokenId, side: "BUY", price: first.price, size: firstFilled, orderType: "FAK", response: firstResp };
 
   record.status = "leg2_submitted";
   record.updatedAt = new Date().toISOString();
@@ -2031,9 +2036,12 @@ async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: 
     const secondFilled = roundShares(responseBuyShares(secondResp));
     if (second.role === "broad_yes") broadFilled = secondFilled;
     else narrowFilled = secondFilled;
-    orders.push({ packageId: record.packageId, createdAt: new Date().toISOString(), role: second.role, tokenId: second.tokenId, side: "BUY", price: second.price, size: secondFilled, orderType: "FAK", response: secondResp });
   } else if (firstFilled > 0) {
     legErrors.push(`${second.role}:skipped complement notional ${complementNotional.toFixed(4)} below minimum marketable buy`);
+  }
+  const orders: LiveOrder[] = [firstOrder];
+  if (secondResp !== undefined) {
+    orders.push({ packageId: record.packageId, createdAt: new Date().toISOString(), role: second.role, tokenId: second.tokenId, side: "BUY", price: second.price, size: second.role === "broad_yes" ? broadFilled : narrowFilled, orderType: "FAK", response: secondResp });
   }
 
   Object.assign((record as any).latency, {
@@ -2045,6 +2053,24 @@ async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: 
     submitPairMs: Date.now() - submitStartedMs,
   });
   (record as any).fillSource = "submit_response";
+
+  const reconcileStartedMs = Date.now();
+  await Promise.all([
+    waitForFill(pkg.broadYesToken, FILL_WAIT_DAEMON_MS),
+    waitForFill(pkg.narrowNoToken, FILL_WAIT_DAEMON_MS),
+  ]);
+  const [broadBalance, narrowBalance] = await Promise.all([
+    unpairedTokenBalance(pkg.broadYesToken),
+    unpairedTokenBalance(pkg.narrowNoToken),
+  ]);
+  const reconciledBroad = Math.max(broadFilled, broadBalance);
+  const reconciledNarrow = Math.max(narrowFilled, narrowBalance);
+  if (Math.abs(reconciledBroad - broadFilled) > 0.000001 || Math.abs(reconciledNarrow - narrowFilled) > 0.000001) {
+    log(`sports reconcile adjusted fills ${pkg.key}: response broad=${broadFilled} narrow=${narrowFilled} onchain broad=${reconciledBroad} narrow=${reconciledNarrow}`);
+    broadFilled = reconciledBroad;
+    narrowFilled = reconciledNarrow;
+  }
+  Object.assign((record as any).latency, { reconcileMs: Date.now() - reconcileStartedMs });
 
   const matched = roundShares(Math.min(broadFilled, narrowFilled));
   record.filledShares = matched;
@@ -2153,24 +2179,39 @@ function pairedPackageSharesForToken(tokenId: string): number {
   return roundShares(shares);
 }
 
+function activeOrphanSharesForToken(tokenId: string, excludePackageId?: string): number {
+  let shares = 0;
+  for (const o of activeOrphans()) {
+    if (o.tokenId !== tokenId) continue;
+    if (excludePackageId && o.packageId === excludePackageId) continue;
+    shares += o.shares;
+  }
+  return roundShares(shares);
+}
+
+async function unpairedTokenBalance(tokenId: string, excludeOrphanPackageId?: string): Promise<number> {
+  const bal = await reconcileTokenBalance(reconcileAddress, tokenId);
+  const pairedShares = pairedPackageSharesForToken(tokenId);
+  const orphanShares = activeOrphanSharesForToken(tokenId, excludeOrphanPackageId);
+  return roundShares(Math.max(0, bal - pairedShares - orphanShares));
+}
+
 async function syncOrphanToUnpairedBalance(o: Orphan, reason: string): Promise<boolean> {
-  const bal = await reconcileTokenBalance(reconcileAddress, o.tokenId);
-  const pairedShares = pairedPackageSharesForToken(o.tokenId);
-  const unpairedShares = roundShares(Math.max(0, bal - pairedShares));
+  const unpairedShares = await unpairedTokenBalance(o.tokenId, o.packageId);
   if (unpairedShares + EPSILON < ORPHAN_MIN_SHARES) {
     o.status = "completed"; // position no longer held outside completed packages
-    o.note = `closed ${reason}: balance=${bal} paired=${pairedShares} unpaired=${unpairedShares}`;
+    o.note = `closed ${reason}: unpaired=${unpairedShares}`;
     o.updatedAt = new Date().toISOString();
     saveOrphans();
-    log(`orphan ${o.id} closed ${reason}: balance=${bal} paired=${pairedShares} unpaired=${unpairedShares}`);
+    log(`orphan ${o.id} closed ${reason}: unpaired=${unpairedShares}`);
     return false;
   }
   if (unpairedShares + EPSILON < o.shares) {
     o.shares = unpairedShares; // trust on-chain, net of shares already owned by completed packages
-    o.note = `resized ${reason}: balance=${bal} paired=${pairedShares} unpaired=${unpairedShares}`;
+    o.note = `resized ${reason}: unpaired=${unpairedShares}`;
     o.updatedAt = new Date().toISOString();
     saveOrphans();
-    log(`orphan ${o.id} resized ${reason}: balance=${bal} paired=${pairedShares} unpaired=${unpairedShares}`);
+    log(`orphan ${o.id} resized ${reason}: unpaired=${unpairedShares}`);
   }
   return true;
 }
@@ -2203,6 +2244,47 @@ function registerOrphanFromExecution(c: Candidate, role: "broad_yes" | "narrow_n
   getBook(o.tokenId);
   saveOrphans();
   log(`orphan ${o.id} OPEN role=${role} token=${tokenId.slice(0, 10)}… strike=${o.strike} shares=${o.shares} fill=${o.fillPrice.toFixed(4)} (re-pair target: complement on ${o.eventSlug})`);
+  return o;
+}
+
+function registerOrphanFromPackageRecord(row: LivePackage, role: "broad_yes" | "narrow_no", shares: number, note: string): Orphan {
+  const existing = activeOrphans().find((o) => o.packageId === row.packageId && o.role === role);
+  if (existing) {
+    existing.shares = roundShares(shares);
+    existing.note = note;
+    existing.updatedAt = new Date().toISOString();
+    saveOrphans();
+    return existing;
+  }
+  const now = new Date().toISOString();
+  const leg = row.packageLegs.find((entry) => entry.role === role);
+  const tokenId = role === "broad_yes" ? row.tokenIds.broadYes : row.tokenIds.narrowNo;
+  const fillPrice = role === "broad_yes" ? row.prices.broadYesAsk : row.prices.narrowNoAsk;
+  const marketId = leg?.instrumentId?.split("::").pop() ?? "";
+  const o: Orphan = {
+    id: `ORPH-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+    packageId: row.packageId,
+    eventSlug: row.eventSlug,
+    asset: row.asset,
+    direction: row.direction,
+    role,
+    marketId,
+    tokenId,
+    strike: role === "broad_yes" ? row.broadStrike : row.narrowStrike,
+    fillPrice,
+    shares: roundShares(shares),
+    endDate: row.settlementWindow.endDate,
+    resolutionSource: `recovered from sports intent ${row.eventSlug}`,
+    createdAt: now,
+    updatedAt: now,
+    status: "completing",
+    attempts: 0,
+    note,
+  };
+  orphans.set(o.id, o);
+  getBook(o.tokenId);
+  saveOrphans();
+  log(`orphan ${o.id} RECOVERED role=${role} token=${tokenId.slice(0, 10)}… shares=${o.shares} fill=${o.fillPrice.toFixed(4)} package=${row.packageId}`);
   return o;
 }
 
@@ -2752,6 +2834,65 @@ async function reconcileOrphansAtStartup() {
   if (active) log(`orphans: ${active} active (completing) loaded`);
 }
 
+async function recoverIncompleteSportsIntentsAtStartup() {
+  if (DRY_RUN || !reconcileAddress) return;
+  const rows = readJsonArray<LivePackage>(PACKAGES_PATH);
+  let changed = false;
+  for (const row of rows) {
+    const isSports = ["MLB", "NBA", "SOCCER"].includes(String(row.asset).toUpperCase())
+      || /^(mlb|nba|fifwc|soccer)-/i.test(row.eventSlug);
+    if (!isSports) continue;
+    if (!["leg1_submitted", "leg1_filled", "leg2_submitted"].includes(row.status)) continue;
+    if (!/sports_cheap_first_intent/i.test(row.failureReason ?? "")) continue;
+
+    const [broadUnpaired, narrowUnpaired] = await Promise.all([
+      unpairedTokenBalance(row.tokenIds.broadYes, row.packageId),
+      unpairedTokenBalance(row.tokenIds.narrowNo, row.packageId),
+    ]);
+    const broadFilled = roundShares(broadUnpaired);
+    const narrowFilled = roundShares(narrowUnpaired);
+    const matched = roundShares(Math.min(broadFilled, narrowFilled));
+    const nakedShares = roundShares(Math.abs(broadFilled - narrowFilled));
+    const nakedRole: "broad_yes" | "narrow_no" | null =
+      broadFilled > narrowFilled ? "broad_yes" : narrowFilled > broadFilled ? "narrow_no" : null;
+    row.filledShares = matched;
+    row.actualCost = broadFilled * row.prices.broadYesAsk + narrowFilled * row.prices.narrowNoAsk;
+    row.guaranteedFloor = matched;
+    row.lockedFloorProfit = Math.max(0, matched - row.actualCost);
+    const jackpotPerShare = row.intendedShares > 0 ? row.jackpotPayout / row.intendedShares : 0;
+    row.jackpotPayout = matched * jackpotPerShare;
+    row.updatedAt = new Date().toISOString();
+
+    if (matched > 0) {
+      row.status = "package_complete";
+      row.failureReason = nakedRole
+        ? `recovered_sports_intent_partial matched=${matched} naked_${nakedRole}=${nakedShares} -> immediate_exit`
+        : undefined;
+    } else {
+      row.status = "unwind_required";
+      row.failureReason = nakedRole
+        ? `recovered_sports_intent_naked_${nakedRole}=${nakedShares} -> immediate_exit`
+        : "recovered_sports_intent_no_fill";
+    }
+
+    if (nakedRole && nakedShares >= SPORTS_ORPHAN_DUST_SHARES) {
+      const orphan = registerOrphanFromPackageRecord(row, nakedRole, nakedShares, "recovered incomplete sports cheap-first intent at startup");
+      appendQuarantine({
+        quarantinedAt: new Date().toISOString(),
+        reason: `recovered_incomplete_sports_intent: ${nakedRole}=${nakedShares}`,
+        packageId: row.packageId,
+        eventSlug: row.eventSlug,
+        asset: row.asset,
+        tokenIds: [row.tokenIds.broadYes, row.tokenIds.narrowNo].filter(Boolean),
+        details: { orphanId: orphan.id, role: nakedRole, shares: nakedShares, matched },
+      });
+    }
+    changed = true;
+    log(`recovered sports intent ${row.packageId}: broad=${broadFilled} narrow=${narrowFilled} matched=${matched} naked=${nakedShares}${nakedRole ? `(${nakedRole})` : ""}`);
+  }
+  if (changed) writeJsonArray(PACKAGES_PATH, rows);
+}
+
 // ─── Evaluation entry point (called on every relevant book delta) ───
 
 function evaluateToken(tokenId: string) {
@@ -3049,6 +3190,7 @@ async function main() {
   loadQuarantine();
   loadOrphans();
   await refreshSpotPrices();
+  await recoverIncompleteSportsIntentsAtStartup();
   await reconcileOrphansAtStartup();
   archiveStaleNbaLedgers();
 
