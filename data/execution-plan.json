@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-15T09:28:32.295Z",
+  "generatedAt": "2026-06-15T10:29:46.865Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,16 +15,27 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 66.039,
+      "entryPrice": 67.251,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "HYPE",
+        "venue": "spot",
+        "direction": "long",
+        "thesis": "H-521 promoted hypothesis: HYPE breakout continuation with OI at record highs, spot within 6% of 7d high, funding normalized. Risk $1, hold up to 5 days."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }
