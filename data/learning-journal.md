@@ -32169,3 +32169,39 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-06-16 14:29 UTC
+
+**Portfolio:** $98.35 total | Cash $70.35 | 28 open | P&L $0.9377 | 52% win rate (199 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 9 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_med_min = 47.7 is 9.6 std devs from mean (23.43 ± 2.52)
+- [anomaly] oil_cl_pc_ratio = 2.444 is 3.7 std devs from mean since 2026-04-28 (1.12 ± 0.36)
+- [anomaly] oil_pm_settle_ev = 73.8 is -3.1 std devs from mean since 2026-04-28 (84.87 ± 3.57)
+- [anomaly] gold_pm_iv = 37.3 is 2.8 std devs from mean (21.39 ± 5.72)
+- [anomaly] oil_opt_iv_90d = 38.8 is -2.5 std devs from mean since 2026-04-28 (55.54 ± 6.60)
+
+**Blocked signal learning:**
+- Open blocked shadows: 65
+- Resolved blocked shadows: 649 (364 wins / 285 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 7/12 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 6/10 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=116 (34W/69L/13flat, 33.0% win-rate, sum $-2.6384, avg -2.27%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=161 (51W/93L/17flat, 35.4% win-rate, sum $-2.7340, avg -1.70%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+2.22%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-3.45%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-3.33%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+Today's market exhibits classic risk-off behavior with oil breaking down hard, gold stable, and crypto continuing its decoupled rally (HYPE strength, BTC range-bound). The oil move is validating our monotonic arb packages on the downside (Oil hit contracts are seeing YES premia decline as spot falls). No LLM-closable positions exist, and the backlog of hypothesis tests continues to grow with oil volatility providing rich data for H-530 (settlement bucket skew) and related oil-dislocation families. The promoted H-521 (HYPE breakout) continues to hold, though the exact condition 'within 6% of 7d high' may be borderline given the rapid move; inspection of recent snapshots shows hype_spot at 74.8 vs a 7d high of ~75.5 (very close). The system's avoidance of new hypothesis creation while backlog is incomplete is correct, as we should focus on validating existing families with the current market stress. The BLOCKED SIGNAL SHADOW LEARNING continues to show MONOTONIC_ARB and USER_PM_IV_TOUCH_RICH_NO as strong performers, and current monotonic arb open positions are consistent with those successful shadow patterns.
+
+---
+
