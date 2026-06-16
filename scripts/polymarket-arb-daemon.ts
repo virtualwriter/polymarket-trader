@@ -158,6 +158,7 @@ const MIN_MARKETABLE_BUY_USD = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_MARK
 const SPORTS_MIN_EDGE = Number(process.env.ARB_DAEMON_SPORTS_MIN_EDGE ?? 0);
 const SPORTS_MIN_AVAILABLE_SHARES = Number(process.env.ARB_DAEMON_SPORTS_MIN_AVAILABLE_SHARES ?? 0);
 const SPORTS_MAX_SPREAD = Number(process.env.ARB_DAEMON_SPORTS_MAX_SPREAD ?? 0.04);
+const SPORTS_MAX_PAIRED_SHARES = Number(process.env.ARB_DAEMON_SPORTS_MAX_PAIRED_SHARES ?? 0);
 const SPORTS_PRICE_SLIPPAGE = Number(process.env.ARB_DAEMON_SPORTS_PRICE_SLIPPAGE ?? 0);
 // Balance headroom applies to every package: concurrent executions, just-matched
 // orders the exchange still counts against the balance, and fee dust all shave
@@ -1129,10 +1130,11 @@ function juneBreakevenRangeBlock(candidate: Candidate): string | null {
 }
 
 function minEdgeFor(candidate: Candidate): number {
+  if (isSportsCandidate(candidate)) return SPORTS_MIN_EDGE;
   // June expiries are allowed at breakeven (cost <= 1.0000) to fish for middles.
   // Sizing/outlay rules remain exactly the normal daemon rules.
   if (isJuneExpiryCandidate(candidate)) return Number(process.env.ARB_DAEMON_JUNE_EXPIRY_MIN_EDGE ?? 0);
-  return isSportsCandidate(candidate) ? SPORTS_MIN_EDGE : MIN_EDGE;
+  return MIN_EDGE;
 }
 
 function minAvailableSharesFor(candidate: Candidate): number {
@@ -1148,18 +1150,24 @@ function depthReserveMultiplierFor(candidate: Candidate): number {
   return Math.max(1, multiplier);
 }
 
+function maxPairedSharesFor(candidate: Candidate): number {
+  if (isSportsCandidate(candidate) && SPORTS_MAX_PAIRED_SHARES > 0) return SPORTS_MAX_PAIRED_SHARES;
+  return Number.POSITIVE_INFINITY;
+}
+
 function requiredDisplayedTouch(candidate: Candidate): number {
   // The reserve-shrunken execution size must still clear the exchange minimum,
   // so the displayed touch has to be at least minShares * reserve multiplier.
   // Touches that can only fit an exchange-min order with zero depth margin are
   // exactly the ones that produced uneven partial-fill orphans.
-  return Math.max(minAvailableSharesFor(candidate), requiredLiveMinShares(candidate) * depthReserveMultiplierFor(candidate));
+  const requiredTouch = Math.max(minAvailableSharesFor(candidate), requiredLiveMinShares(candidate) * depthReserveMultiplierFor(candidate));
+  return requiredTouch <= maxPairedSharesFor(candidate) + EPSILON ? requiredTouch : Number.POSITIVE_INFINITY;
 }
 
 function executionSizingCandidate(candidate: Candidate): Candidate {
   const c = structuredClone(candidate);
   const reserveSize = Math.floor((candidate.availableSize / depthReserveMultiplierFor(candidate)) * 100) / 100;
-  c.availableSize = Math.max(0, reserveSize);
+  c.availableSize = Math.max(0, Math.min(reserveSize, maxPairedSharesFor(candidate)));
   return c;
 }
 
@@ -3158,7 +3166,7 @@ function flushLedger() {
 async function main() {
   installHttpKeepAlive();
   log(`starting; mode=${DRY_RUN ? "DRY_RUN" : "REAL"} enabled=${ENABLED} hardDisabled=${HARD_DISABLED}`);
-  log(`gates: maxPackage=$${MAX_PACKAGE_USD} maxDaily=$${MAX_DAILY_USD} maxOpen=${MAX_OPEN_PACKAGES} maxPerMin=${MAX_PER_MIN} minEdge=${(MIN_EDGE * 100).toFixed(2)}c minTouch=${MIN_AVAILABLE_SHARES} maxSpread=${MAX_SPREAD} sportsMaxSpread=${SPORTS_MAX_SPREAD}`);
+  log(`gates: maxPackage=$${MAX_PACKAGE_USD} maxDaily=$${MAX_DAILY_USD} maxOpen=${MAX_OPEN_PACKAGES} maxPerMin=${MAX_PER_MIN} minEdge=${(MIN_EDGE * 100).toFixed(2)}c minTouch=${MIN_AVAILABLE_SHARES} maxSpread=${MAX_SPREAD} sportsMinEdge=${(SPORTS_MIN_EDGE * 100).toFixed(2)}c sportsMaxSpread=${SPORTS_MAX_SPREAD} sportsMaxPairedShares=${SPORTS_MAX_PAIRED_SHARES > 0 ? SPORTS_MAX_PAIRED_SHARES : "none"}`);
   log(`sports safety: live execution ${ALLOW_SPORTS_LIVE_EXECUTION ? "ENABLED (cheap-leg-first; no full expensive leg before hedge fill)" : "BLOCKED by ARB_DAEMON_ALLOW_SPORTS_LIVE_EXECUTION=0"}; nbaBatch=${ENABLE_NBA_BATCH_EXECUTION ? "1" : "0"} nonAtomicOverride=${ALLOW_NBA_NON_ATOMIC_EXECUTION ? "1" : "0"}`);
   log(`submit hot path: postMode=${MONOTONIC_POST_MODE} responseFillFirst=${RESPONSE_FILL_FIRST ? "1" : "0"} httpKeepAlive=${HTTP_KEEP_ALIVE ? "1" : "0"}`);
   log(`watchlist throttle: eventConcurrency=${arbConfig.eventConcurrency} marketConcurrency=${arbConfig.marketConcurrency} sportsAutoDiscoveryDays=${SPORTS_AUTO_DISCOVERY_DAYS} soccerLimit=${SOCCER_DISCOVERY_LIMIT} bookSeedMax=${BOOK_SEED_MAX_PER_RECONNECT} bookSeedMinIntervalMs=${BOOK_SEED_MIN_INTERVAL_MS} clob429CooldownMs=${CLOB_REST_429_COOLDOWN_MS}`);
