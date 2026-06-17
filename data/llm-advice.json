@@ -1,5 +1,22 @@
 {
   "acceptedCloses": [],
   "rejectedCloses": [],
-  "skippedTrades": []
+  "skippedTrades": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "long",
+        "evidenceColumns": [
+          "oil_wti_spot",
+          "oil_opt_iv_30d",
+          "oil_pm_iv"
+        ],
+        "thesis": "Relative-value heatmap shows PM YES at 29.8% vs model probability 51.2% (edge 21.4 pts) on 'Will Crude Oil (CL) hit (LOW) $70 by end of June?' (cl-hit-jun-2026, marketId 1652697). Oil spot has fallen to $75 and options imply a higher probability of downside. Buy YES to profit from repricing or actual touch. Edge size meets buy_yes threshold and liquidity is 34k. Spread is tight (0.001)."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
+  "parameterUpdates": {}
 }
