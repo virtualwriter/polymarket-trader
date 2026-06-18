@@ -174,6 +174,13 @@ const SPORTS_HEDGE_BREAKEVEN_FILL = (process.env.ARB_DAEMON_SPORTS_HEDGE_BREAKEV
 // break-even (risk-free floor). Raise it to demand realized edge on completion at
 // the cost of more cheap-leg orphans when the hedge reprices hard.
 const SPORTS_HEDGE_COMPLETION_MIN_EDGE = Number(process.env.ARB_DAEMON_SPORTS_HEDGE_COMPLETION_MIN_EDGE ?? 0);
+// Pre-warm the CLOB client's tick-size + fee-rate caches for both legs before the
+// cheap-first sequence starts. Without this, the hedge leg's first order on a
+// fresh sports market pays two cold metadata round-trips (getTickSize +
+// getFeeRateBps) inside the cheap-fill -> hedge-submit gap — the exact window
+// where a reprice orphans the cheap leg. The warm-up is read-only and runs once
+// up front, shrinking the inter-leg gap to just the hedge order submit.
+const SPORTS_PREWARM_ORDER_META = (process.env.ARB_DAEMON_SPORTS_PREWARM_ORDER_META ?? "1") !== "0";
 // Balance headroom applies to every package: concurrent executions, just-matched
 // orders the exchange still counts against the balance, and fee dust all shave
 // real buying power below the cached on-chain number. The Jun 8 GOLD orphan was
@@ -1233,6 +1240,24 @@ function sportsHedgeCompletionPrice(snapshotAsk: number, cheapAvgFill: number): 
   return Math.min(0.99, Math.max(0.001, limit));
 }
 
+// Warm the CLOB client's per-token tick-size + fee-rate caches so a subsequent
+// createOrder/postOrder is all cache hits (no cold metadata round-trips between
+// legs). Best-effort: any failure falls back to the lazy fetch inside postFakBuy.
+async function prewarmOrderMetadata(client: Clob, tokenIds: string[]): Promise<number> {
+  if (!SPORTS_PREWARM_ORDER_META) return 0;
+  const started = Date.now();
+  const ids = tokenIds.filter(Boolean);
+  try {
+    await Promise.all([
+      ...ids.map((id) => client.getTickSize(id).catch(() => undefined)),
+      ...ids.map((id) => client.getFeeRateBps(id).catch(() => undefined)),
+    ]);
+  } catch {
+    // Ignore: postFakBuy will lazily fetch whatever is missing.
+  }
+  return Date.now() - started;
+}
+
 async function freshSportsCandidate(candidate: Candidate): Promise<Candidate> {
   const [broadYes, narrowNo, narrowYes] = await Promise.all([
     fetchBook(arbConfig, candidate.broad.yesTokenId),
@@ -2113,9 +2138,14 @@ async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: 
   let narrowFilled = 0;
   let firstResp: unknown;
   let secondResp: unknown | undefined;
+
+  // Warm tick-size + fee-rate caches for BOTH legs up front so the hedge submit
+  // after the cheap fill is a single network call, not 1-3 (cold metadata fetches
+  // otherwise land in the orphan-prone inter-leg gap). Excluded from submitPairMs.
+  const prewarmMs = await prewarmOrderMetadata(client, [first.tokenId, second.tokenId]);
   const submitStartedMs = Date.now();
 
-  log(`SPORTS_ARB ${pkg.key} cheap_first=${first.role} cheap=${first.price.toFixed(4)} complement=${second.price.toFixed(4)} edge=${(c.lockedEdge * 100).toFixed(2)}c cost=${c.packageCost.toFixed(4)} intended=${shares.toFixed(2)}`);
+  log(`SPORTS_ARB ${pkg.key} cheap_first=${first.role} cheap=${first.price.toFixed(4)} complement=${second.price.toFixed(4)} edge=${(c.lockedEdge * 100).toFixed(2)}c cost=${c.packageCost.toFixed(4)} intended=${shares.toFixed(2)} prewarmMs=${prewarmMs}`);
 
   // Durable intent before the race starts. There is intentionally no disk I/O
   // between leg 1 and leg 2; startup recovery reconciles this intent if the
@@ -2180,6 +2210,7 @@ async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: 
     reconcileMs: 0,
     postMode: "sports_cheap_first",
     submitPairMs: Date.now() - submitStartedMs,
+    prewarmMs,
   });
   (record as any).fillSource = "submit_response";
 
@@ -3320,7 +3351,7 @@ function flushLedger() {
 async function main() {
   installHttpKeepAlive();
   log(`starting; mode=${DRY_RUN ? "DRY_RUN" : "REAL"} enabled=${ENABLED} hardDisabled=${HARD_DISABLED}`);
-  log(`gates: maxPackage=$${MAX_PACKAGE_USD} maxDaily=$${MAX_DAILY_USD} maxOpen=${MAX_OPEN_PACKAGES} maxPerMin=${MAX_PER_MIN} minEdge=${(MIN_EDGE * 100).toFixed(2)}c minTouch=${MIN_AVAILABLE_SHARES} maxSpread=${MAX_SPREAD} sportsMinEdge=${(SPORTS_MIN_EDGE * 100).toFixed(2)}c sportsMaxSpread=${SPORTS_MAX_SPREAD} sportsMaxPairedShares=${SPORTS_MAX_PAIRED_SHARES > 0 ? SPORTS_MAX_PAIRED_SHARES : "none"} sportsHedgeFill=${SPORTS_HEDGE_BREAKEVEN_FILL ? `breakeven(minEdge=${(SPORTS_HEDGE_COMPLETION_MIN_EDGE * 100).toFixed(2)}c)` : "snapshot_ask"}`);
+  log(`gates: maxPackage=$${MAX_PACKAGE_USD} maxDaily=$${MAX_DAILY_USD} maxOpen=${MAX_OPEN_PACKAGES} maxPerMin=${MAX_PER_MIN} minEdge=${(MIN_EDGE * 100).toFixed(2)}c minTouch=${MIN_AVAILABLE_SHARES} maxSpread=${MAX_SPREAD} sportsMinEdge=${(SPORTS_MIN_EDGE * 100).toFixed(2)}c sportsMaxSpread=${SPORTS_MAX_SPREAD} sportsMaxPairedShares=${SPORTS_MAX_PAIRED_SHARES > 0 ? SPORTS_MAX_PAIRED_SHARES : "none"} sportsHedgeFill=${SPORTS_HEDGE_BREAKEVEN_FILL ? `breakeven(minEdge=${(SPORTS_HEDGE_COMPLETION_MIN_EDGE * 100).toFixed(2)}c)` : "snapshot_ask"} sportsPrewarmMeta=${SPORTS_PREWARM_ORDER_META ? "1" : "0"}`);
   log(`sports safety: live execution ${ALLOW_SPORTS_LIVE_EXECUTION ? "ENABLED (cheap-leg-first; no full expensive leg before hedge fill)" : "BLOCKED by ARB_DAEMON_ALLOW_SPORTS_LIVE_EXECUTION=0"}; nbaBatch=${ENABLE_NBA_BATCH_EXECUTION ? "1" : "0"} nonAtomicOverride=${ALLOW_NBA_NON_ATOMIC_EXECUTION ? "1" : "0"}`);
   log(`submit hot path: postMode=${MONOTONIC_POST_MODE} responseFillFirst=${RESPONSE_FILL_FIRST ? "1" : "0"} httpKeepAlive=${HTTP_KEEP_ALIVE ? "1" : "0"}`);
   log(`watchlist throttle: eventConcurrency=${arbConfig.eventConcurrency} marketConcurrency=${arbConfig.marketConcurrency} sportsAutoDiscoveryDays=${SPORTS_AUTO_DISCOVERY_DAYS} soccerLimit=${SOCCER_DISCOVERY_LIMIT} bookSeedMax=${BOOK_SEED_MAX_PER_RECONNECT} bookSeedMinIntervalMs=${BOOK_SEED_MIN_INTERVAL_MS} clob429CooldownMs=${CLOB_REST_429_COOLDOWN_MS}`);
