@@ -160,6 +160,20 @@ const SPORTS_MIN_AVAILABLE_SHARES = Number(process.env.ARB_DAEMON_SPORTS_MIN_AVA
 const SPORTS_MAX_SPREAD = Number(process.env.ARB_DAEMON_SPORTS_MAX_SPREAD ?? 0.04);
 const SPORTS_MAX_PAIRED_SHARES = Number(process.env.ARB_DAEMON_SPORTS_MAX_PAIRED_SHARES ?? 0);
 const SPORTS_PRICE_SLIPPAGE = Number(process.env.ARB_DAEMON_SPORTS_PRICE_SLIPPAGE ?? 0);
+// Hedge completion (knock out the ~290ms preflight reprice → naked-leg failure
+// mode). The cheap leg fills first; if the hedge ask ticks up past the stale
+// snapshot price between preflight and submit, the hedge FAK no-fills and leaves
+// the cheap leg naked. But for a monotonic middle the guaranteed floor pays >=$1,
+// so completing the pair at ANY price keeping pair cost <= $1 is risk-free and
+// strictly beats unwinding a naked directional leg. So once the cheap leg is
+// filled we price the hedge FAK at the locked-pair break-even ceiling
+// (1 - cheapAvgFill), not the snapshot ask: a reprice within the still-profitable
+// band now completes the arb, and only a reprice past break-even no-fills.
+const SPORTS_HEDGE_BREAKEVEN_FILL = (process.env.ARB_DAEMON_SPORTS_HEDGE_BREAKEVEN_FILL ?? "1") !== "0";
+// Edge (in price units) the completed pair must retain vs $1.00. 0 = complete at
+// break-even (risk-free floor). Raise it to demand realized edge on completion at
+// the cost of more cheap-leg orphans when the hedge reprices hard.
+const SPORTS_HEDGE_COMPLETION_MIN_EDGE = Number(process.env.ARB_DAEMON_SPORTS_HEDGE_COMPLETION_MIN_EDGE ?? 0);
 // Balance headroom applies to every package: concurrent executions, just-matched
 // orders the exchange still counts against the balance, and fee dust all shave
 // real buying power below the cached on-chain number. The Jun 8 GOLD orphan was
@@ -1205,6 +1219,20 @@ function withSportsExecutionPrices(candidate: Candidate, broadAsk: number, narro
   return c;
 }
 
+// Highest tick-valid hedge price that keeps the realized pair cost within the
+// completion edge floor (default: break-even, pair cost <= $1). A FAK still fills
+// against the resting ask, so lifting the ceiling above the stale snapshot ask
+// only widens the band in which a reprice completes the pair instead of orphaning
+// the cheap leg — it never makes us pay above break-even. Falls back to the
+// snapshot ask when disabled or when the cheap fill price is unknown.
+function sportsHedgeCompletionPrice(snapshotAsk: number, cheapAvgFill: number): number {
+  if (!SPORTS_HEDGE_BREAKEVEN_FILL) return snapshotAsk;
+  if (!Number.isFinite(cheapAvgFill) || cheapAvgFill <= 0) return snapshotAsk;
+  const ceiling = Math.floor((1 - cheapAvgFill - SPORTS_HEDGE_COMPLETION_MIN_EDGE) * 1000) / 1000;
+  const limit = Math.max(snapshotAsk, ceiling);
+  return Math.min(0.99, Math.max(0.001, limit));
+}
+
 async function freshSportsCandidate(candidate: Candidate): Promise<Candidate> {
   const [broadYes, narrowNo, narrowYes] = await Promise.all([
     fetchBook(arbConfig, candidate.broad.yesTokenId),
@@ -2114,10 +2142,20 @@ async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: 
   record.status = "leg2_submitted";
   record.updatedAt = new Date().toISOString();
 
-  const complementNotional = firstFilled * second.price;
+  // Price the hedge at the locked-pair break-even ceiling derived from the cheap
+  // leg's ACTUAL fill price, not the stale snapshot ask. This is the structural
+  // fix for the ~290ms preflight reprice: a hedge that ticked up still completes
+  // the pair as long as the pair stays profitable (>= break-even), and only a
+  // reprice past break-even no-fills (a clean cheap-leg orphan we then unwind).
+  const cheapAvgFill = firstFilled > 0 ? averageBuyPrice(firstResp, first.price) : first.price;
+  const hedgePrice = sportsHedgeCompletionPrice(second.price, cheapAvgFill);
+  if (hedgePrice > second.price + EPSILON) {
+    log(`sports hedge ceiling ${pkg.key}: ${second.role} snapshot=${second.price.toFixed(4)} -> breakeven=${hedgePrice.toFixed(4)} cheapFill=${cheapAvgFill.toFixed(4)} pairCeil=${(cheapAvgFill + hedgePrice).toFixed(4)}`);
+  }
+  const complementNotional = firstFilled * hedgePrice;
   if (firstFilled > 0 && complementNotional + EPSILON >= MIN_MARKETABLE_BUY_USD) {
     try {
-      secondResp = await postFakBuy(client, second.tokenId, second.price, firstFilled);
+      secondResp = await postFakBuy(client, second.tokenId, hedgePrice, firstFilled);
       assertOrderResponse(secondResp, second.role);
       record.legOrderIds[second.role === "broad_yes" ? "broadYes" : "narrowNo"] = orderId(secondResp);
     } catch (err: any) {
@@ -2132,7 +2170,7 @@ async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: 
   }
   const orders: LiveOrder[] = [firstOrder];
   if (secondResp !== undefined) {
-    orders.push({ packageId: record.packageId, createdAt: new Date().toISOString(), role: second.role, tokenId: second.tokenId, side: "BUY", price: second.price, size: second.role === "broad_yes" ? broadFilled : narrowFilled, orderType: "FAK", response: secondResp });
+    orders.push({ packageId: record.packageId, createdAt: new Date().toISOString(), role: second.role, tokenId: second.tokenId, side: "BUY", price: hedgePrice, size: second.role === "broad_yes" ? broadFilled : narrowFilled, orderType: "FAK", response: secondResp });
   }
 
   Object.assign((record as any).latency, {
@@ -3282,7 +3320,7 @@ function flushLedger() {
 async function main() {
   installHttpKeepAlive();
   log(`starting; mode=${DRY_RUN ? "DRY_RUN" : "REAL"} enabled=${ENABLED} hardDisabled=${HARD_DISABLED}`);
-  log(`gates: maxPackage=$${MAX_PACKAGE_USD} maxDaily=$${MAX_DAILY_USD} maxOpen=${MAX_OPEN_PACKAGES} maxPerMin=${MAX_PER_MIN} minEdge=${(MIN_EDGE * 100).toFixed(2)}c minTouch=${MIN_AVAILABLE_SHARES} maxSpread=${MAX_SPREAD} sportsMinEdge=${(SPORTS_MIN_EDGE * 100).toFixed(2)}c sportsMaxSpread=${SPORTS_MAX_SPREAD} sportsMaxPairedShares=${SPORTS_MAX_PAIRED_SHARES > 0 ? SPORTS_MAX_PAIRED_SHARES : "none"}`);
+  log(`gates: maxPackage=$${MAX_PACKAGE_USD} maxDaily=$${MAX_DAILY_USD} maxOpen=${MAX_OPEN_PACKAGES} maxPerMin=${MAX_PER_MIN} minEdge=${(MIN_EDGE * 100).toFixed(2)}c minTouch=${MIN_AVAILABLE_SHARES} maxSpread=${MAX_SPREAD} sportsMinEdge=${(SPORTS_MIN_EDGE * 100).toFixed(2)}c sportsMaxSpread=${SPORTS_MAX_SPREAD} sportsMaxPairedShares=${SPORTS_MAX_PAIRED_SHARES > 0 ? SPORTS_MAX_PAIRED_SHARES : "none"} sportsHedgeFill=${SPORTS_HEDGE_BREAKEVEN_FILL ? `breakeven(minEdge=${(SPORTS_HEDGE_COMPLETION_MIN_EDGE * 100).toFixed(2)}c)` : "snapshot_ask"}`);
   log(`sports safety: live execution ${ALLOW_SPORTS_LIVE_EXECUTION ? "ENABLED (cheap-leg-first; no full expensive leg before hedge fill)" : "BLOCKED by ARB_DAEMON_ALLOW_SPORTS_LIVE_EXECUTION=0"}; nbaBatch=${ENABLE_NBA_BATCH_EXECUTION ? "1" : "0"} nonAtomicOverride=${ALLOW_NBA_NON_ATOMIC_EXECUTION ? "1" : "0"}`);
   log(`submit hot path: postMode=${MONOTONIC_POST_MODE} responseFillFirst=${RESPONSE_FILL_FIRST ? "1" : "0"} httpKeepAlive=${HTTP_KEEP_ALIVE ? "1" : "0"}`);
   log(`watchlist throttle: eventConcurrency=${arbConfig.eventConcurrency} marketConcurrency=${arbConfig.marketConcurrency} sportsAutoDiscoveryDays=${SPORTS_AUTO_DISCOVERY_DAYS} soccerLimit=${SOCCER_DISCOVERY_LIMIT} bookSeedMax=${BOOK_SEED_MAX_PER_RECONNECT} bookSeedMinIntervalMs=${BOOK_SEED_MIN_INTERVAL_MS} clob429CooldownMs=${CLOB_REST_429_COOLDOWN_MS}`);
