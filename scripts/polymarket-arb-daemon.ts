@@ -217,6 +217,13 @@ const NON_SPORTS_ORPHAN_COMPLETION_MARGIN = Number(process.env.ARB_DAEMON_NON_SP
 // Force-unwind this long before the orphan market's own expiry (so we never
 // roll into a directional settlement). Default 10 min.
 const ORPHAN_EXPIRY_BUFFER_MS = Number(process.env.ARB_DAEMON_ORPHAN_EXPIRY_BUFFER_MS ?? 600_000);
+// This long PAST the orphan market's expiry we treat it as resolved: the game is
+// over, the market has settled, and there is nothing left to trade. A resolved
+// winner is auto-redeemed by Polymarket to the funder (and zeroes out via the
+// balance reconcile); a resolved loser has no bid and is worth $0. Either way we
+// must NOT keep deferring "unwind … no bid to sell into" every poll forever — we
+// close the orphan terminally. Default 30 min after expiry.
+const ORPHAN_RESOLVED_GRACE_MS = Number(process.env.ARB_DAEMON_ORPHAN_RESOLVED_GRACE_MS ?? 1_800_000);
 // Throttle the live event re-fetch per orphan (the completion ladder source).
 const ORPHAN_LADDER_REFRESH_MS = Number(process.env.ARB_DAEMON_ORPHAN_LADDER_REFRESH_MS ?? 5_000);
 // Smallest residual orphan we bother completing/holding; below this we just
@@ -236,6 +243,10 @@ const ORPHANS_PATH = join(dirname(PACKAGES_PATH), "polymarket-live-orphans.json"
 const CANDIDATE_SNAPSHOTS_PATH = join(dirname(PACKAGES_PATH), "monotonic-candidate-snapshots.jsonl");
 const MIDDLE_AUDIT_PATH = join(dirname(PACKAGES_PATH), "monotonic-middle-audit.jsonl");
 const PAUSE_PATH = join(dirname(PACKAGES_PATH), "polymarket-arb-daemon-paused.json");
+// Per-event pause scope: a sports orphan fences off ONLY its own event, instead
+// of the global PAUSE_PATH halting every asset/event. The global pause stays
+// reserved for genuinely account-wide failures (e.g. maker address not allowed).
+const PAUSED_EVENTS_PATH = join(dirname(PACKAGES_PATH), "polymarket-arb-daemon-paused-events.json");
 const QUARANTINE_PATH = join(dirname(PACKAGES_PATH), "polymarket-arb-daemon-quarantine.json");
 
 type PriceLevels = { bids: Map<number, number>; asks: Map<number, number> };
@@ -330,6 +341,13 @@ interface QuarantineEntry {
   details?: Record<string, unknown>;
 }
 
+interface PausedEventEntry {
+  eventSlug: string;
+  pausedAt: string;
+  reason: string;
+  details?: Record<string, unknown>;
+}
+
 // ─── In-memory order books, keyed by token id ───
 const books = new Map<string, PriceLevels>();
 // token id -> packages that reference it (for targeted re-evaluation)
@@ -344,6 +362,9 @@ let alreadyOpen = new Set<string>();
 const submitTimestamps: number[] = [];
 const quarantinedPackages = new Set<string>();
 const quarantinedTokens = new Set<string>();
+// eventSlug -> pause record. Scopes a sports orphan halt to its own event so an
+// orphan in one game cannot freeze entries on every other event/asset.
+const pausedEvents = new Map<string, PausedEventEntry>();
 const spotPrices = new Map<string, number>();
 let lastSpotRefreshAt = 0;
 
@@ -1096,6 +1117,7 @@ function archiveStaleNbaLedgers() {
   const remainingOrphans = orphanRows.filter((row) => !belongsToStaleSlug(row.packageId, row.eventSlug));
   writeJsonArray(ORPHANS_PATH, remainingOrphans);
   for (const row of archivedOrphans) orphans.delete(row.id);
+  for (const slug of staleSlugs) clearPausedEvent(slug);
   log(`archived stale sports ledgers slugs=${[...staleSlugs].sort().join(",")} packages=${archivedPackages.length} orders=${archivedOrders.length} orphans=${archivedOrphans.length}`);
 }
 
@@ -1519,6 +1541,54 @@ function loadPersistentPause() {
   }
 }
 
+function persistPausedEvents() {
+  writeFileSync(PAUSED_EVENTS_PATH, JSON.stringify([...pausedEvents.values()], null, 2) + "\n");
+}
+
+// Pause new entries for a SINGLE event (scoped halt). Idempotent; persisted so it
+// survives restarts like the global pause. Other events/assets keep trading.
+function pauseEventEntries(eventSlug: string, reason: string, details: Record<string, unknown> = {}) {
+  if (!eventSlug) {
+    // No event context — fall back to the global pause so we never silently skip a halt.
+    pauseNewEntries(reason, details);
+    return;
+  }
+  if (pausedEvents.has(eventSlug)) {
+    log(`event already paused: ${eventSlug} (${pausedEvents.get(eventSlug)!.reason}); additional reason=${reason}`);
+    return;
+  }
+  pausedEvents.set(eventSlug, { eventSlug, pausedAt: new Date().toISOString(), reason, details });
+  persistPausedEvents();
+  log(`PAUSED event ${eventSlug}: ${reason}`);
+}
+
+function loadPausedEvents() {
+  if (!existsSync(PAUSED_EVENTS_PATH)) return;
+  try {
+    const rows = JSON.parse(readFileSync(PAUSED_EVENTS_PATH, "utf8")) as PausedEventEntry[];
+    for (const row of Array.isArray(rows) ? rows : []) {
+      if (row?.eventSlug) pausedEvents.set(row.eventSlug, row);
+    }
+    if (pausedEvents.size) log(`paused events loaded: ${[...pausedEvents.keys()].sort().join(",")}`);
+  } catch (err: any) {
+    log(`paused events load failed; ignoring file: ${err?.message ?? String(err)}`);
+  }
+}
+
+function isEventPaused(eventSlug: string | undefined): string | null {
+  if (!eventSlug) return null;
+  return pausedEvents.get(eventSlug)?.reason ?? null;
+}
+
+// Drop a per-event pause (called when the event's ledgers are archived as stale,
+// so resolved games never linger in the paused set).
+function clearPausedEvent(eventSlug: string): boolean {
+  if (!pausedEvents.delete(eventSlug)) return false;
+  persistPausedEvents();
+  log(`cleared paused event ${eventSlug} (ledgers archived / resolved)`);
+  return true;
+}
+
 function loadQuarantine() {
   if (!existsSync(QUARANTINE_PATH)) return;
   try {
@@ -1610,6 +1680,16 @@ async function tryExecute(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
 
 async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
   if (tradingPausedReason) return;
+  const eventPauseReason = isEventPaused(pkg.base.eventSlug);
+  if (eventPauseReason) {
+    const now = Date.now();
+    const last = lastSkipLogAt.get(pkg.key) ?? 0;
+    if (now - last >= SKIP_LOG_THROTTLE_MS) {
+      lastSkipLogAt.set(pkg.key, now);
+      log(`skip ${pkg.key}: event paused ${pkg.base.eventSlug} (${eventPauseReason})`);
+    }
+    return;
+  }
   if (inFlight.has(pkg.key) || alreadyOpen.has(pkg.key)) {
     const now = Date.now();
     const last = lastSkipLogAt.get(pkg.key) ?? 0;
@@ -1966,7 +2046,7 @@ async function executeLive(pkg: WatchPackage, c: Candidate, shares: number): Pro
         legErrors,
       });
       if (sportsCandidate) {
-        pauseNewEntries(`sports_large_naked_leg_detected: ${nakedRole}=${nakedShares}; live sports execution is unsafe without atomic fills`, {
+        pauseEventEntries(c.eventSlug, `sports_large_naked_leg_detected: ${nakedRole}=${nakedShares}; live sports execution is unsafe without atomic fills (scoped to this event; other events keep trading)`, {
           packageId: record.packageId,
           eventSlug: c.eventSlug,
           asset: c.asset,
@@ -2130,7 +2210,7 @@ async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: 
       orphanInFlight.delete(orphan.id);
     }
     if (orphan.status === "stranded" && orphan.shares > SPORTS_ORPHAN_DUST_SHARES) {
-      pauseNewEntries(`sports residual could not be cut immediately: ${nakedRole}=${orphan.shares}`, {
+      pauseEventEntries(c.eventSlug, `sports residual could not be cut immediately: ${nakedRole}=${orphan.shares} (scoped to this event; other events keep trading)`, {
         packageId: record.packageId,
         eventSlug: c.eventSlug,
         asset: c.asset,
@@ -2506,6 +2586,13 @@ async function processOrphan(o: Orphan) {
     // Expiry guard: never roll into a directional settlement.
     if (o.endDate) {
       const t = Date.parse(o.endDate);
+      // Well past expiry: the market has resolved. Close terminally instead of
+      // spinning "unwind deferred: no bid to sell into" on a worthless loser
+      // every poll forever (winners are auto-redeemed by Polymarket).
+      if (Number.isFinite(t) && Date.now() >= t + ORPHAN_RESOLVED_GRACE_MS) {
+        await resolveExpiredOrphan(o);
+        return;
+      }
       if (Number.isFinite(t) && Date.now() >= t - ORPHAN_EXPIRY_BUFFER_MS) {
         await doUnwind(o, `near_expiry endDate=${o.endDate}`);
         return;
@@ -2777,6 +2864,30 @@ async function maybePostNoLossExitLimit(o: Orphan, reason: string): Promise<bool
   return true;
 }
 
+// Terminally dispose of an orphan whose market is well past expiry (resolved).
+// We never roll into a directional settlement, so there is nothing to trade: if
+// a residual bid somehow still exists we take it, otherwise we close the record.
+// Closing is financially safe — a resolved WINNER is auto-redeemed by Polymarket
+// to the funder regardless of this record (and would already have zeroed out via
+// the balance reconcile at the top of processOrphan), and a resolved LOSER has no
+// bid and is worth $0. The point is to stop the infinite "no bid to sell into"
+// retry loop that otherwise persists until a process restart archives the orphan.
+// Caller owns the orphanInFlight guard.
+async function resolveExpiredOrphan(o: Orphan) {
+  if (!clob || DRY_RUN) return;
+  const bid = orphanBestBid(o);
+  if (bid > 0) {
+    // Rare: a tradeable bid still exists post-expiry — flatten normally.
+    await doUnwind(o, `post_expiry endDate=${o.endDate}`);
+    return;
+  }
+  o.status = "completed";
+  o.note = `resolved_post_expiry endDate=${o.endDate}: no bid, market settled; residual ${o.shares} sh treated as resolved (winner auto-redeems to funder, loser worthless)`;
+  o.updatedAt = new Date().toISOString();
+  saveOrphans();
+  log(`orphan ${o.id} resolved_post_expiry: closed (residual ${o.shares} sh; market past endDate=${o.endDate} with no tradeable bid)`);
+}
+
 // FAK-sell the orphan to flatten it. Caller owns the orphanInFlight guard.
 async function doUnwind(o: Orphan, reason: string) {
   if (!clob || DRY_RUN) return;
@@ -2791,7 +2902,12 @@ async function doUnwind(o: Orphan, reason: string) {
     }
     const minExitPrice = Math.max(0.001, Math.ceil((o.fillPrice - ORPHAN_MAX_UNWIND_LOSS_CENTS - EPSILON) * 1000) / 1000);
     if (!(bid > 0)) {
-      log(`orphan ${o.id} unwind deferred (${reason}): no bid to sell into`);
+      const throttleKey = `orphan-nobid:${o.id}`;
+      const nowMs = Date.now();
+      if (nowMs - (lastSkipLogAt.get(throttleKey) ?? 0) >= SKIP_LOG_THROTTLE_MS) {
+        lastSkipLogAt.set(throttleKey, nowMs);
+        log(`orphan ${o.id} unwind deferred (${reason}): no bid to sell into`);
+      }
       await maybePostNoLossExitLimit(o, reason);
       return; // stay "completing"; retry next sweep
     }
@@ -3171,8 +3287,8 @@ async function main() {
   log(`submit hot path: postMode=${MONOTONIC_POST_MODE} responseFillFirst=${RESPONSE_FILL_FIRST ? "1" : "0"} httpKeepAlive=${HTTP_KEEP_ALIVE ? "1" : "0"}`);
   log(`watchlist throttle: eventConcurrency=${arbConfig.eventConcurrency} marketConcurrency=${arbConfig.marketConcurrency} sportsAutoDiscoveryDays=${SPORTS_AUTO_DISCOVERY_DAYS} soccerLimit=${SOCCER_DISCOVERY_LIMIT} bookSeedMax=${BOOK_SEED_MAX_PER_RECONNECT} bookSeedMinIntervalMs=${BOOK_SEED_MIN_INTERVAL_MS} clob429CooldownMs=${CLOB_REST_429_COOLDOWN_MS}`);
   log(`June breakeven filter: commodities<=${(JUNE_BREAKEVEN_COMMODITY_MAX_DISTANCE * 100).toFixed(1)}% crypto<=${(JUNE_BREAKEVEN_CRYPTO_MAX_DISTANCE * 100).toFixed(1)}% refreshMs=${SPOT_REFRESH_MS}`);
-  log(`orphan policy: stop=${ORPHAN_STOP_CENTS} completionMargin=${ORPHAN_COMPLETION_MARGIN} expiryBufferMs=${ORPHAN_EXPIRY_BUFFER_MS} pollMs=${ORPHAN_POLL_MS} (re-pair naked legs across ladder, else unwind)`);
-  log(`large-orphan quarantine: maxNakedShares=${MAX_NAKED_SHARES_BEFORE_PAUSE} quarantineFile=${QUARANTINE_PATH} globalPauseFile=${PAUSE_PATH}`);
+  log(`orphan policy: stop=${ORPHAN_STOP_CENTS} completionMargin=${ORPHAN_COMPLETION_MARGIN} expiryBufferMs=${ORPHAN_EXPIRY_BUFFER_MS} resolvedGraceMs=${ORPHAN_RESOLVED_GRACE_MS} pollMs=${ORPHAN_POLL_MS} (re-pair naked legs across ladder, else unwind; close terminally once past expiry)`);
+  log(`large-orphan quarantine: maxNakedShares=${MAX_NAKED_SHARES_BEFORE_PAUSE} quarantineFile=${QUARANTINE_PATH} globalPauseFile=${PAUSE_PATH} pausedEventsFile=${PAUSED_EVENTS_PATH} (sports orphans pause per-event, not globally)`);
 
   const vpnGuard = new VpnGuard({
     socksProxy: SOCKS_PROXY,
@@ -3207,6 +3323,7 @@ async function main() {
   }
 
   loadPersistentPause();
+  loadPausedEvents();
   loadQuarantine();
   loadOrphans();
   await refreshSpotPrices();
