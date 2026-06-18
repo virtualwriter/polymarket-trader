@@ -145,13 +145,10 @@ const MONOTONIC_ARB_MIN_LEG_LIQUIDITY = 10_000;
 const MONOTONIC_ARB_MIN_TOP_OF_BOOK_SIZE = 10;
 const MONOTONIC_ARB_MAX_SNAPSHOT_AGE_MINUTES = 20;
 const MONOTONIC_ARB_ASSETS = new Set(["BTC", "ETH", "GOLD", "OIL", "AMZN", "HYPE", "SPY", "SILVER", "SOL"]);
-// Promoted to live 2026-06-01 after 10/10 May shadow packages settled
-// profitably (avg +20.3%, two +100% jackpots, zero losers). Monotonic arb is
-// structurally risk-free (minimum payout >= cost by the locked-edge gate), so
-// it is exempt from the MAX_OPEN_POSITIONS cap and may run as many concurrent
-// packages as the bankroll allows (one dedup per unique package id). It still
-// draws TRADE_SIZE per package from cash like any other live position.
-const ENABLE_MONOTONIC_ARB_LIVE = true;
+// Monotonic arb is now handled by the dedicated real Polymarket executor/daemon,
+// not the main paper trader. Keep historical package marking/settlement below,
+// but do not open new paper MONOTONIC_ARB positions from this engine.
+const ENABLE_MONOTONIC_ARB_PAPER_TRADER = false;
 const INVALID_MONOTONIC_SETTLEMENT_REASON = "invalid_monotonic_settlement_bucket";
 const UNDERLYING_CAP_ENTRY_MAX_SPREAD = 0.02;
 const UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY = 1000;
@@ -3547,10 +3544,11 @@ async function recordMonotonicArbShadows(
   blockedSignals: BlockedSignalShadow[],
   portfolio: Portfolio | null = null,
 ): Promise<number> {
+  if (portfolio !== null && !ENABLE_MONOTONIC_ARB_PAPER_TRADER) return 0;
   if (!latestSnapshot) return 0;
   const ageMinutes = snapshotAgeMinutes(latestSnapshot.timestamp);
   if (ageMinutes !== null && ageMinutes > MONOTONIC_ARB_MAX_SNAPSHOT_AGE_MINUTES) return 0;
-  const liveMode = ENABLE_MONOTONIC_ARB_LIVE && portfolio !== null;
+  const liveMode = ENABLE_MONOTONIC_ARB_PAPER_TRADER && portfolio !== null;
   let recorded = 0;
 
   for (const event of latestSnapshot.polymarket) {
@@ -7809,7 +7807,7 @@ async function main() {
   }
   const newMonotonicArbShadows = await recordMonotonicArbShadows(latestRow, latestSnapshot, learningParams, blockedSignals, portfolio);
   if (newMonotonicArbShadows > 0) {
-    console.log(`\n  Opened ${newMonotonicArbShadows} monotonic-arb ${ENABLE_MONOTONIC_ARB_LIVE ? "LIVE" : "shadow"} package trades.`);
+    console.log(`\n  Opened ${newMonotonicArbShadows} monotonic-arb ${ENABLE_MONOTONIC_ARB_PAPER_TRADER ? "paper" : "shadow"} package trades.`);
   }
   const oneTouchHighEdgeNoLiveSignals = ENABLE_ONE_TOUCH_HIGH_EDGE_NO_OPENING
     ? generateOneTouchHighEdgeNoSignals(relativeValueRows, weights, learningParams, latestSnapshot)
