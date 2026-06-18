@@ -33647,3 +33647,39 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-06-18 14:29 UTC
+
+**Portfolio:** $98.35 total | Cash $60.35 | 38 open | P&L $0.9377 | 52% win rate (199 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 70.0pp (was 37.8, now 107.8)
+- [anomaly] oil_pm_iv = 151.8 is 7.9 std devs from mean since 2026-04-28 (63.63 ± 11.17)
+- [anomaly] hype_med_min = 46.8 is 4.3 std devs from mean (24.37 ± 5.27)
+- [anomaly] oil_wti_spot = 73.09 is -2.6 std devs from mean since 2026-04-28 (93.95 ± 8.16)
+- [anomaly] oil_cl_pc_ratio = 2.026 is 2.4 std devs from mean since 2026-04-28 (1.14 ± 0.36)
+
+**Blocked signal learning:**
+- Open blocked shadows: 63
+- Resolved blocked shadows: 656 (368 wins / 288 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 8/13 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 7/11 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=116 (34W/69L/13flat, 33.0% win-rate, sum $-2.6384, avg -2.27%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=161 (51W/93L/17flat, 35.4% win-rate, sum $-2.7340, avg -1.70%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-7.32%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit target (+3.14%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expired (+0.32%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+Oil PM IV hitting 7.9σ is an extreme anomaly that has systematically reset the risk premium for near-dated energy contracts. The monotonic arb packages on OIL have not been materially affected yet (PnL ±0.3%), but the thesis may be challenged if spot stays depressed while event odds repriced. The 24h GOLD-OIL correlation flipped from -0.80 to +0.48, unusual and worth tracking. BTC funding remains deeply negative, yet the IBIT P/C ratio retreat from extreme highs suggests options positioning is less panicked, which could precede a short-squeeze. No manual closes allowed; mechanical exits will manage all open positions. Review of existing hypotheses shows several oil-related theses under strain; avoid creating new oil hypotheses until the structural break clarifies.
+
+---
+
