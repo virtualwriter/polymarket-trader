@@ -150,6 +150,7 @@ const NEAR_MISS_TOP_N = Number(process.env.ARB_DAEMON_NEAR_MISS_TOP_N ?? 5);
 // middle) and above-floor lottery candidates for later resolution analysis.
 const CANDIDATE_SNAPSHOT_MIN_COST = Number(process.env.ARB_DAEMON_CANDIDATE_SNAPSHOT_MIN_COST ?? 0.95);
 const CANDIDATE_SNAPSHOT_MAX_COST = Number(process.env.ARB_DAEMON_CANDIDATE_SNAPSHOT_MAX_COST ?? 1.03);
+const CAPTURE_AUDIT_MIN_INTERVAL_MS = Number(process.env.ARB_DAEMON_CAPTURE_AUDIT_MIN_INTERVAL_MS ?? 5_000);
 const MIN_MARKETABLE_BUY_USD = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_MARKETABLE_BUY_USD ?? 1);
 // Live sports books move faster than the macro/crypto ladders, so they still
 // require a fresh book pull before execution. Do not impose a sports-only share
@@ -263,6 +264,7 @@ const ORPHAN_BALANCE_SETTLE_GRACE_MS = Number(process.env.ARB_DAEMON_ORPHAN_BALA
 const ORPHANS_PATH = join(dirname(PACKAGES_PATH), "polymarket-live-orphans.json");
 const CANDIDATE_SNAPSHOTS_PATH = join(dirname(PACKAGES_PATH), "monotonic-candidate-snapshots.jsonl");
 const MIDDLE_AUDIT_PATH = join(dirname(PACKAGES_PATH), "monotonic-middle-audit.jsonl");
+const CAPTURE_AUDIT_PATH = join(dirname(PACKAGES_PATH), "monotonic-capture-audit.jsonl");
 const PAUSE_PATH = join(dirname(PACKAGES_PATH), "polymarket-arb-daemon-paused.json");
 // Per-event pause scope: a sports orphan fences off ONLY its own event, instead
 // of the global PAUSE_PATH halting every asset/event. The global pause stays
@@ -324,6 +326,61 @@ interface NearMissSample {
   spreadOk: boolean;
   sizeOk: boolean;
   executableGate: boolean;
+}
+
+type CaptureTerminalStatus =
+  | "trading_paused"
+  | "event_paused"
+  | "already_open"
+  | "quarantined"
+  | "shared_token_in_flight"
+  | "sports_blocked"
+  | "per_minute_cap"
+  | "low_balance"
+  | "max_open_packages"
+  | "sports_preflight_failed"
+  | "sports_preflight_rejected"
+  | "far_dated_blocked"
+  | "range_blocked"
+  | "sizing_rejected"
+  | "dry_run"
+  | "post_preflight_lock"
+  | "post_refresh_lock"
+  | "fresh_sizing_rejected"
+  | "balance_headroom"
+  | "submitted_result"
+  | "execution_error";
+
+interface ExecutionCaptureResult {
+  packageRecordId: string;
+  recordStatus: string;
+  failureReason?: string;
+  intendedShares: number;
+  broadFilled: number;
+  narrowFilled: number;
+  matched: number;
+  nakedShares: number;
+  nakedRole: "broad_yes" | "narrow_no" | null;
+  actualCost: number;
+  actualPairCost: number | null;
+  broadAvgPrice: number | null;
+  narrowAvgPrice: number | null;
+  legErrors: string[];
+  fillSource?: string;
+  latency?: Record<string, unknown>;
+  orderIds?: Record<string, unknown>;
+  orphanId?: string;
+}
+
+interface CaptureContext {
+  captureId: string;
+  startedMs: number;
+  startedAt: string;
+  wsCandidate: Candidate;
+  executionTokens: string[];
+  preflight?: Record<string, unknown>;
+  sizing?: Record<string, unknown>;
+  execution?: ExecutionCaptureResult;
 }
 
 // A naked leg awaiting re-pair or unwind. `role` is which leg of the original
@@ -428,6 +485,7 @@ const SKIP_LOG_THROTTLE_MS = 60_000;
 let nearMissStartedAt = Date.now();
 let nearMissObservations = 0;
 const nearMissBestByPackage = new Map<string, NearMissSample>();
+const captureAuditLastAt = new Map<string, number>();
 let sportsPreflightAttempts = 0;
 let sportsPreflightFetchMsTotal = 0;
 let sportsPreflightFetchMsMax = 0;
@@ -1372,6 +1430,113 @@ function appendJsonl(path: string, rows: unknown[]) {
   appendFileSync(path, rows.map((row) => JSON.stringify(row)).join("\n") + "\n");
 }
 
+function captureCandidateFields(candidate: Candidate) {
+  const minShares = requiredDisplayedTouch(candidate);
+  const farDatedBlock = farDatedExecutionBlock(candidate);
+  const rangeBlock = juneBreakevenRangeBlock(candidate);
+  const blockers = [
+    candidate.lockedEdge + EPSILON >= minEdgeFor(candidate) ? "" : "edge",
+    candidate.maxSpread - EPSILON <= maxSpreadFor(candidate) ? "" : "spread",
+    candidate.availableSize + EPSILON >= minShares ? "" : "size",
+    farDatedBlock ? "far_dated" : "",
+    rangeBlock ? "june_range" : "",
+  ].filter(Boolean);
+  return {
+    packageId: candidate.packageId,
+    eventSlug: candidate.eventSlug,
+    eventTitle: candidate.eventTitle,
+    asset: candidate.asset,
+    direction: candidate.direction,
+    ladderKey: candidate.broad.ladderKey,
+    middleCondition: middleCondition({
+      direction: candidate.direction,
+      broadStrike: candidate.broad.strike,
+      narrowStrike: candidate.narrow.strike,
+    } as NearMissSample),
+    cost: candidate.packageCost,
+    edge: candidate.lockedEdge,
+    availableSize: candidate.availableSize,
+    maxSpread: candidate.maxSpread,
+    minShares,
+    blockers,
+    executableGate: blockers.length === 0,
+    farDatedBlock,
+    rangeBlock,
+    broad: {
+      marketId: candidate.broad.marketId,
+      question: candidate.broad.question,
+      strike: candidate.broad.strike,
+      endDate: candidate.broad.endDate,
+      yesTokenId: candidate.broad.yesTokenId,
+      yesAsk: candidate.broad.yesBook.ask,
+      yesAskSize: candidate.broad.yesBook.askSize,
+      yesSpread: candidate.broad.yesBook.spread,
+      minOrderSize: candidate.broad.yesBook.minOrderSize,
+    },
+    narrow: {
+      marketId: candidate.narrow.marketId,
+      question: candidate.narrow.question,
+      strike: candidate.narrow.strike,
+      endDate: candidate.narrow.endDate,
+      yesTokenId: candidate.narrow.yesTokenId,
+      noTokenId: candidate.narrow.noTokenId,
+      noAsk: candidate.narrow.noBook.ask,
+      noAskSize: candidate.narrow.noBook.askSize,
+      noSpread: candidate.narrow.yesBook.spread,
+      minOrderSize: candidate.narrow.noBook.minOrderSize,
+    },
+  };
+}
+
+function shouldCaptureCandidate(candidate: Candidate): boolean {
+  return isTrueMiddleCandidate(candidate)
+    && passesDynamicGate(candidate);
+}
+
+function beginCapture(candidate: Candidate, executionTokens: string[]): CaptureContext | null {
+  if (!shouldCaptureCandidate(candidate)) return null;
+  const startedMs = Date.now();
+  return {
+    captureId: `${candidate.packageId}-${startedMs}`,
+    startedMs,
+    startedAt: new Date(startedMs).toISOString(),
+    wsCandidate: structuredClone(candidate),
+    executionTokens,
+  };
+}
+
+function emitCapture(
+  ctx: CaptureContext | null,
+  terminalStatus: CaptureTerminalStatus,
+  reason: string,
+  extra: Record<string, unknown> = {},
+) {
+  if (!ctx) return;
+  const now = Date.now();
+  if (terminalStatus !== "submitted_result" && terminalStatus !== "execution_error") {
+    const throttleKey = `${ctx.wsCandidate.packageId}:${terminalStatus}:${reason}`;
+    const last = captureAuditLastAt.get(throttleKey) ?? 0;
+    if (now - last < CAPTURE_AUDIT_MIN_INTERVAL_MS) return;
+    captureAuditLastAt.set(throttleKey, now);
+  }
+  const terminalAt = new Date().toISOString();
+  appendJsonl(CAPTURE_AUDIT_PATH, [{
+    schemaVersion: 1,
+    captureId: ctx.captureId,
+    observedAt: ctx.startedAt,
+    terminalAt,
+    elapsedMs: now - ctx.startedMs,
+    terminalStatus,
+    reason,
+    executionTokens: ctx.executionTokens,
+    ws: captureCandidateFields(ctx.wsCandidate),
+    preflight: ctx.preflight,
+    sizing: ctx.sizing,
+    execution: ctx.execution,
+    ...extra,
+  }]);
+}
+
 function appendCandidateSnapshots(samples: NearMissSample[]) {
   const rows = samples
     .filter((sample) =>
@@ -1732,7 +1897,13 @@ async function tryExecute(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
 }
 
 async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void> {
-  if (tradingPausedReason) return;
+  const wsCandidate = liveCandidate(pkg.base, legs);
+  const executionTokens = [pkg.broadYesToken, pkg.narrowNoToken].filter(Boolean);
+  const capture = beginCapture(wsCandidate, executionTokens);
+  if (tradingPausedReason) {
+    emitCapture(capture, "trading_paused", tradingPausedReason);
+    return;
+  }
   const eventPauseReason = isEventPaused(pkg.base.eventSlug);
   if (eventPauseReason) {
     const now = Date.now();
@@ -1741,6 +1912,7 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
       lastSkipLogAt.set(pkg.key, now);
       log(`skip ${pkg.key}: event paused ${pkg.base.eventSlug} (${eventPauseReason})`);
     }
+    emitCapture(capture, "event_paused", eventPauseReason);
     return;
   }
   if (inFlight.has(pkg.key) || alreadyOpen.has(pkg.key)) {
@@ -1750,9 +1922,9 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
       lastSkipLogAt.set(pkg.key, now);
       log(`skip ${pkg.key}: already open package/orphan before preflight`);
     }
+    emitCapture(capture, "already_open", "already open package/orphan before preflight");
     return;
   }
-  const executionTokens = [pkg.broadYesToken, pkg.narrowNoToken].filter(Boolean);
   if (quarantinedPackages.has(pkg.key) || executionTokens.some((tokenId) => quarantinedTokens.has(tokenId))) {
     const now = Date.now();
     const last = lastSkipLogAt.get(pkg.key) ?? 0;
@@ -1760,6 +1932,7 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
       lastSkipLogAt.set(pkg.key, now);
       log(`skip ${pkg.key}: quarantined large-naked-leg market/package`);
     }
+    emitCapture(capture, "quarantined", "quarantined large-naked-leg market/package");
     return;
   }
   if (executionTokens.some((tokenId) => tokensInFlight.has(tokenId))) {
@@ -1769,6 +1942,7 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
       lastSkipLogAt.set(pkg.key, now);
       log(`skip ${pkg.key}: shared token already executing`);
     }
+    emitCapture(capture, "shared_token_in_flight", "shared token already executing");
     return;
   }
   const sportsBlock = sportsExecutionBlocked(pkg.base);
@@ -1779,14 +1953,19 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
       lastSkipLogAt.set(pkg.key, now);
       log(`skip ${pkg.key}: ${sportsBlock}`);
     }
+    emitCapture(capture, "sports_blocked", sportsBlock);
     return;
   }
-  if (perMinuteCapReached()) return;
+  if (perMinuteCapReached()) {
+    emitCapture(capture, "per_minute_cap", "per-minute submission cap reached");
+    return;
+  }
   if (lowBalance()) {
     if (!pausedForLowBalanceLogged) {
       log(`paused: cached funder balance=${cachedFunderBalance.toFixed(4)} allowance=${cachedFunderAllowance.toFixed(2)} < min marketable buy $${MIN_MARKETABLE_BUY_USD}; skipping new entries until refresh`);
       pausedForLowBalanceLogged = true;
     }
+    emitCapture(capture, "low_balance", `cached funder balance=${cachedFunderBalance.toFixed(4)} allowance=${cachedFunderAllowance.toFixed(2)} < min marketable buy $${MIN_MARKETABLE_BUY_USD}`);
     return;
   }
 
@@ -1799,10 +1978,11 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
       lastSkipLogAt.set(pkg.key, now);
       log(`skip ${pkg.key}: max_open_packages open=${openCount} cap=${MAX_OPEN_PACKAGES}`);
     }
+    emitCapture(capture, "max_open_packages", `max_open_packages open=${openCount} cap=${MAX_OPEN_PACKAGES}`);
     return;
   }
 
-  let c = liveCandidate(pkg.base, legs);
+  let c = wsCandidate;
   if (isSportsCandidate(c)) {
     const wsCandidate = c;
     const preflightStartedAt = Date.now();
@@ -1819,12 +1999,27 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
         lastSkipLogAt.set(pkg.key, now);
         log(`skip ${pkg.key}: sports_preflight_failed fetchMs=${fetchMs} wsCost=${wsCandidate.packageCost.toFixed(4)} wsSpread=${wsCandidate.maxSpread.toFixed(4)} ${err?.message ?? String(err)}`);
       }
+      if (capture) {
+        capture.preflight = {
+          status: "failed",
+          fetchMs,
+          error: err?.message ?? String(err),
+        };
+      }
+      emitCapture(capture, "sports_preflight_failed", err?.message ?? String(err));
       return;
     }
     const fetchMs = Date.now() - preflightStartedAt;
     sportsPreflightAttempts += 1;
     sportsPreflightFetchMsTotal += fetchMs;
     sportsPreflightFetchMsMax = Math.max(sportsPreflightFetchMsMax, fetchMs);
+    if (capture) {
+      capture.preflight = {
+        status: "pass_pending_gate",
+        fetchMs,
+        fresh: captureCandidateFields(c),
+      };
+    }
     if (!passesDynamicGate(c)) {
       sportsPreflightRejected += 1;
       const now = Date.now();
@@ -1834,9 +2029,12 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
         const rangeBlock = juneBreakevenRangeBlock(c);
         log(`skip ${pkg.key}: sports_preflight_gate fetchMs=${fetchMs} wsCost=${wsCandidate.packageCost.toFixed(4)} wsSpread=${wsCandidate.maxSpread.toFixed(4)} freshCost=${c.packageCost.toFixed(4)} freshSpread=${c.maxSpread.toFixed(4)} edge=${(c.lockedEdge * 100).toFixed(2)}c size=${c.availableSize.toFixed(2)}${rangeBlock ? ` ${rangeBlock}` : ""}`);
       }
+      if (capture?.preflight) capture.preflight = { ...capture.preflight, status: "rejected" };
+      emitCapture(capture, "sports_preflight_rejected", "fresh sports candidate failed dynamic gate");
       return;
     }
     sportsPreflightPassed += 1;
+    if (capture?.preflight) capture.preflight = { ...capture.preflight, status: "passed" };
     log(`sports_preflight_pass ${pkg.key}: fetchMs=${fetchMs} wsCost=${wsCandidate.packageCost.toFixed(4)} wsSpread=${wsCandidate.maxSpread.toFixed(4)} freshCost=${c.packageCost.toFixed(4)} freshSpread=${c.maxSpread.toFixed(4)} edge=${(c.lockedEdge * 100).toFixed(2)}c size=${c.availableSize.toFixed(2)}`);
   }
   const farDatedBlock = farDatedExecutionBlock(c);
@@ -1847,6 +2045,7 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
       lastSkipLogAt.set(pkg.key, now);
       log(`skip ${pkg.key}: ${farDatedBlock} edge=${(c.lockedEdge * 100).toFixed(2)}c cost=${c.packageCost.toFixed(4)}`);
     }
+    emitCapture(capture, "far_dated_blocked", farDatedBlock);
     return;
   }
   const rangeBlock = juneBreakevenRangeBlock(c);
@@ -1857,11 +2056,21 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
       lastSkipLogAt.set(pkg.key, now);
       log(`skip ${pkg.key}: ${rangeBlock} edge=${(c.lockedEdge * 100).toFixed(2)}c cost=${c.packageCost.toFixed(4)}`);
     }
+    emitCapture(capture, "range_blocked", rangeBlock);
     return;
   }
   const executionCandidate = executionSizingCandidate(c);
   const spendableUsd = spendableUsdAfterReservations();
   const sized = sizeForCandidate(executionCandidate, packageRows, sizingSpendableUsd(spendableUsd) * budgetFactorForCandidate(executionCandidate));
+  if (capture) {
+    capture.sizing = {
+      stage: "initial",
+      shares: sized.shares,
+      cost: sized.cost,
+      reason: sized.reason,
+      spendableUsd,
+    };
+  }
   if (sized.reason) {
     const now = Date.now();
     const last = lastSkipLogAt.get(pkg.key) ?? 0;
@@ -1869,17 +2078,20 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
       lastSkipLogAt.set(pkg.key, now);
       log(`skip ${pkg.key}: ${sized.reason} shares=${sized.shares.toFixed(2)} cost=$${sized.cost.toFixed(4)}`);
     }
+    emitCapture(capture, "sizing_rejected", sized.reason);
     return;
   }
 
   if (DRY_RUN) {
     log(`DRY_RUN arb ${pkg.key} edge=${(c.lockedEdge * 100).toFixed(2)}c size=${c.availableSize.toFixed(2)} shares=${sized.shares.toFixed(2)} cost=$${sized.cost.toFixed(4)}`);
     alreadyOpen.add(pkg.key); // avoid spamming the same package every tick in dry-run
+    emitCapture(capture, "dry_run", "dry run; would execute", { dryRunSized: sized });
     return;
   }
 
   if (alreadyOpen.has(pkg.key) || inFlight.has(pkg.key) || executionTokens.some((tokenId) => tokensInFlight.has(tokenId))) {
     log(`skip ${pkg.key}: execution lock acquired by another tick after preflight`);
+    emitCapture(capture, "post_preflight_lock", "execution lock acquired by another tick after preflight");
     return;
   }
   await refreshBalance();
@@ -1887,10 +2099,21 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
   refreshAlreadyOpen();
   if (alreadyOpen.has(pkg.key) || inFlight.has(pkg.key) || executionTokens.some((tokenId) => tokensInFlight.has(tokenId))) {
     log(`skip ${pkg.key}: blocked after fresh preflight (open package/orphan or shared token)`);
+    emitCapture(capture, "post_refresh_lock", "blocked after balance refresh/open state refresh");
     return;
   }
   const freshSpendableUsd = spendableUsdAfterReservations();
   const freshSized = sizeForCandidate(executionCandidate, freshPackageRows, sizingSpendableUsd(freshSpendableUsd) * budgetFactorForCandidate(executionCandidate));
+  if (capture) {
+    capture.sizing = {
+      stage: "fresh",
+      initial: capture.sizing,
+      shares: freshSized.shares,
+      cost: freshSized.cost,
+      reason: freshSized.reason,
+      spendableUsd: freshSpendableUsd,
+    };
+  }
   if (freshSized.reason) {
     const now = Date.now();
     const last = lastSkipLogAt.get(pkg.key) ?? 0;
@@ -1898,6 +2121,7 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
       lastSkipLogAt.set(pkg.key, now);
       log(`skip ${pkg.key}: fresh_${freshSized.reason} shares=${freshSized.shares.toFixed(2)} cost=$${freshSized.cost.toFixed(4)} reserved=$${reservedSpendUsd.toFixed(4)} spendable=$${spendableUsdAfterReservations().toFixed(4)}`);
     }
+    emitCapture(capture, "fresh_sizing_rejected", freshSized.reason);
     return;
   }
   const freshReservedUsd = reservedUsdForSized(freshSized.cost);
@@ -1908,6 +2132,7 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
       lastSkipLogAt.set(pkg.key, now);
       log(`skip ${pkg.key}: balance_headroom nominal=$${freshSized.cost.toFixed(4)} reserved=$${freshReservedUsd.toFixed(4)} spendable=$${freshSpendableUsd.toFixed(4)} shares=${freshSized.shares.toFixed(2)}`);
     }
+    emitCapture(capture, "balance_headroom", `reserved=$${freshReservedUsd.toFixed(4)} spendable=$${freshSpendableUsd.toFixed(4)}`, { freshReservedUsd });
     return;
   }
   reservedSpendUsd += freshReservedUsd;
@@ -1916,9 +2141,12 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
   for (const tokenId of executionTokens) tokensInFlight.add(tokenId);
   submitTimestamps.push(Date.now());
   try {
-    await executeLive(pkg, executionCandidate, freshSized.shares);
+    const result = await executeLive(pkg, executionCandidate, freshSized.shares);
+    if (capture) capture.execution = result;
+    emitCapture(capture, "submitted_result", result.recordStatus, { freshReservedUsd });
   } catch (err: any) {
     log(`execute ${pkg.key} failed: ${err?.message ?? String(err)}`);
+    emitCapture(capture, "execution_error", err?.message ?? String(err), { freshReservedUsd });
   } finally {
     reservedSpendUsd = Math.max(0, reservedSpendUsd - freshReservedUsd);
     inFlight.delete(pkg.key);
@@ -1927,13 +2155,12 @@ async function tryExecuteInner(pkg: WatchPackage, legs: LiveLegs): Promise<void>
   }
 }
 
-async function executeLive(pkg: WatchPackage, c: Candidate, shares: number): Promise<void> {
+async function executeLive(pkg: WatchPackage, c: Candidate, shares: number): Promise<ExecutionCaptureResult> {
   if (!clob) throw new Error("CLOB client not initialized");
   const sportsBlock = sportsExecutionBlocked(c);
   if (sportsBlock) throw new Error(`blocked_sports_non_atomic_execution: ${sportsBlock}`);
   if (isSportsCandidate(c)) {
-    await executeSportsCheapFirst(pkg, c, shares);
-    return;
+    return executeSportsCheapFirst(pkg, c, shares);
   }
   const client = clob.client;
   const record = packageRecord(c, reconcileAddress, shares, false);
@@ -2043,8 +2270,10 @@ async function executeLive(pkg: WatchPackage, c: Candidate, shares: number): Pro
   orders.push({ packageId: record.packageId, createdAt: submittedAt, role: "narrow_no", tokenId: pkg.narrowNoToken, side: "BUY", price: c.narrow.noBook.ask, size: leg2Filled, orderType: "FAK", response: leg2Resp });
 
   const matched = roundShares(Math.min(leg1Filled, leg2Filled));
+  const broadAvgPrice = averageBuyPrice(leg1Resp, c.broad.yesBook.ask);
+  const narrowAvgPrice = averageBuyPrice(leg2Resp, c.narrow.noBook.ask);
   record.filledShares = matched;
-  record.actualCost = (leg1Filled * averageBuyPrice(leg1Resp, c.broad.yesBook.ask)) + (leg2Filled * averageBuyPrice(leg2Resp, c.narrow.noBook.ask));
+  record.actualCost = (leg1Filled * broadAvgPrice) + (leg2Filled * narrowAvgPrice);
   record.guaranteedFloor = matched;
   record.lockedFloorProfit = matched * c.lockedEdge;
   record.jackpotPayout = matched * c.jackpotPayoutPerShare;
@@ -2122,9 +2351,28 @@ async function executeLive(pkg: WatchPackage, c: Candidate, shares: number): Pro
     }
   }
   log(`package ${record.packageId} status=${record.status} leg1=${leg1Filled} leg2=${leg2Filled} matched=${matched.toFixed(2)} naked=${nakedShares.toFixed(2)}${nakedRole ? `(${nakedRole})` : ""} intended=${shares.toFixed(2)}`);
+  return {
+    packageRecordId: record.packageId,
+    recordStatus: record.status,
+    failureReason: record.failureReason,
+    intendedShares: shares,
+    broadFilled: leg1Filled,
+    narrowFilled: leg2Filled,
+    matched,
+    nakedShares,
+    nakedRole,
+    actualCost: record.actualCost,
+    actualPairCost: matched > 0 ? broadAvgPrice + narrowAvgPrice : null,
+    broadAvgPrice,
+    narrowAvgPrice,
+    legErrors,
+    fillSource,
+    latency: (record as any).latency,
+    orderIds: record.legOrderIds,
+  };
 }
 
-async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: number): Promise<void> {
+async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: number): Promise<ExecutionCaptureResult> {
   if (!clob) throw new Error("CLOB client not initialized");
   const client = clob.client;
   const record = packageRecord(c, reconcileAddress, shares, false);
@@ -2138,6 +2386,7 @@ async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: 
   let narrowFilled = 0;
   let firstResp: unknown;
   let secondResp: unknown | undefined;
+  let orphanId: string | undefined;
 
   // Warm tick-size + fee-rate caches for BOTH legs up front so the hedge submit
   // after the cheap fill is a single network call, not 1-3 (cold metadata fetches
@@ -2233,10 +2482,12 @@ async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: 
   Object.assign((record as any).latency, { reconcileMs: Date.now() - reconcileStartedMs });
 
   const matched = roundShares(Math.min(broadFilled, narrowFilled));
+  const broadAvgPrice = averageBuyPrice(first.role === "broad_yes" ? firstResp : secondResp, c.broad.yesBook.ask);
+  const narrowAvgPrice = averageBuyPrice(first.role === "narrow_no" ? firstResp : secondResp, c.narrow.noBook.ask);
   record.filledShares = matched;
   record.actualCost =
-    broadFilled * averageBuyPrice(first.role === "broad_yes" ? firstResp : secondResp, c.broad.yesBook.ask)
-    + narrowFilled * averageBuyPrice(first.role === "narrow_no" ? firstResp : secondResp, c.narrow.noBook.ask);
+    broadFilled * broadAvgPrice
+    + narrowFilled * narrowAvgPrice;
   record.guaranteedFloor = matched;
   record.lockedFloorProfit = matched * c.lockedEdge;
   record.jackpotPayout = matched * c.jackpotPayoutPerShare;
@@ -2261,6 +2512,7 @@ async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: 
 
   if (nakedRole && nakedShares >= SPORTS_ORPHAN_DUST_SHARES) {
     const orphan = registerOrphanFromExecution(c, nakedRole, nakedShares, record.packageId);
+    orphanId = orphan.id;
     quarantinePackage(pkg, c, `sports_cheap_first_residual: ${nakedRole}=${nakedShares}`, {
       packageId: record.packageId,
       eventSlug: c.eventSlug,
@@ -2290,6 +2542,26 @@ async function executeSportsCheapFirst(pkg: WatchPackage, c: Candidate, shares: 
     }
   }
   log(`sports package ${record.packageId} status=${record.status} broad=${broadFilled} narrow=${narrowFilled} matched=${matched.toFixed(2)} naked=${nakedShares.toFixed(2)}${nakedRole ? `(${nakedRole})` : ""} intended=${shares.toFixed(2)}`);
+  return {
+    packageRecordId: record.packageId,
+    recordStatus: record.status,
+    failureReason: record.failureReason,
+    intendedShares: shares,
+    broadFilled,
+    narrowFilled,
+    matched,
+    nakedShares,
+    nakedRole,
+    actualCost: record.actualCost,
+    actualPairCost: matched > 0 ? broadAvgPrice + narrowAvgPrice : null,
+    broadAvgPrice,
+    narrowAvgPrice,
+    legErrors,
+    fillSource: "submit_response",
+    latency: (record as any).latency,
+    orderIds: record.legOrderIds,
+    orphanId,
+  };
 }
 
 function persist(record: LivePackage, orders: LiveOrder[]) {
