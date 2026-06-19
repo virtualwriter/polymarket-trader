@@ -33972,3 +33972,39 @@ No LLM-close-eligible positions exist; all open trades are monotonic arb package
 
 ---
 
+### 2026-06-19 01:28 UTC
+
+**Portfolio:** $98.35 total | Cash $60.35 | 38 open | P&L $0.9377 | 52% win rate (199 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] hype_med_min = 47.3 is 4.0 std devs from mean (24.56 ± 5.65)
+- [anomaly] oil_cl_pc_ratio = 2.389 is 3.2 std devs from mean since 2026-04-28 (1.15 ± 0.39)
+- [anomaly] oil_pm_settle_ev = 73 is -2.6 std devs from mean since 2026-04-28 (84.24 ± 4.39)
+- [anomaly] oil_wti_spot = 75.42 is -2.2 std devs from mean since 2026-04-28 (93.77 ± 8.33)
+- [anomaly] oil_pm_iv = 88.8 is 2.1 std devs from mean since 2026-04-28 (63.92 ± 11.64)
+
+**Blocked signal learning:**
+- Open blocked shadows: 63
+- Resolved blocked shadows: 658 (370 wins / 288 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- MONOTONIC_ARB setup category is validating: 10/10 shadow packages settled profitably, avg P&L 20.32%. Review fee/slippage assumptions before live promotion.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/14 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 7/11 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=116 (34W/69L/13flat, 33.0% win-rate, sum $-2.6384, avg -2.27%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=161 (51W/93L/17flat, 35.4% win-rate, sum $-2.7340, avg -1.70%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expired (+0.32%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have hit target (+3.23%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h since last call; daily budget 1/12; next scheduled 2026-06-19T03:28:21.862Z). Mechanical cycle ran normally._
+
+---
+
