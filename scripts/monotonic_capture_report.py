@@ -54,18 +54,42 @@ def parse_ts(value: Any) -> float | None:
         return None
 
 
-def load_rows(path: Path) -> list[dict[str, Any]]:
+def tail_lines(path: Path, limit: int) -> list[str]:
+    if limit <= 0:
+        raise SystemExit("--last-lines must be positive")
+    chunk_size = 1024 * 1024
+    chunks: list[bytes] = []
+    newline_count = 0
+    with path.open("rb") as handle:
+        handle.seek(0, 2)
+        position = handle.tell()
+        while position > 0 and newline_count <= limit:
+            read_size = min(chunk_size, position)
+            position -= read_size
+            handle.seek(position)
+            chunk = handle.read(read_size)
+            chunks.append(chunk)
+            newline_count += chunk.count(b"\n")
+    data = b"".join(reversed(chunks))
+    return data.decode(errors="replace").splitlines()[-limit:]
+
+
+def load_rows(path: Path, last_lines: int | None = None) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     if not path.exists():
         return rows
-    with path.open(errors="replace") as handle:
-        for line in handle:
+    lines = tail_lines(path, last_lines) if last_lines else path.open(errors="replace")
+    try:
+        for line in lines:
             try:
                 row = json.loads(line)
             except json.JSONDecodeError:
                 continue
             if isinstance(row, dict):
                 rows.append(row)
+    finally:
+        if not isinstance(lines, list):
+            lines.close()
     return rows
 
 
@@ -216,12 +240,13 @@ def main() -> None:
     parser.add_argument("--audit", default="data/monotonic-capture-audit.jsonl")
     parser.add_argument("--window-sec", type=int, default=5, help="Dedup package/window rows over this many seconds.")
     parser.add_argument("--since", help="Only include rows at or after this ISO timestamp.")
+    parser.add_argument("--last-lines", type=int, help="Only parse the last N JSONL rows for faster live reports.")
     parser.add_argument("--out")
     args = parser.parse_args()
 
     if args.window_sec <= 0:
         raise SystemExit("--window-sec must be positive")
-    report = summarize(load_rows(Path(args.audit)), args.window_sec, args.since)
+    report = summarize(load_rows(Path(args.audit), args.last_lines), args.window_sec, args.since)
     text = json.dumps(report, indent=2, sort_keys=True)
     if args.out:
         Path(args.out).write_text(text + "\n")
