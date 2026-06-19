@@ -150,6 +150,11 @@ const NEAR_MISS_TOP_N = Number(process.env.ARB_DAEMON_NEAR_MISS_TOP_N ?? 5);
 // middle) and above-floor lottery candidates for later resolution analysis.
 const CANDIDATE_SNAPSHOT_MIN_COST = Number(process.env.ARB_DAEMON_CANDIDATE_SNAPSHOT_MIN_COST ?? 0.95);
 const CANDIDATE_SNAPSHOT_MAX_COST = Number(process.env.ARB_DAEMON_CANDIDATE_SNAPSHOT_MAX_COST ?? 1.03);
+// Capture conversion audit includes the real execution path AND shadow rows for
+// non-executable near buckets. Shadow rows let us study 1.000-1.005 / 1.005-1.02
+// conversion blockers without loosening live trading gates or risking capital.
+const CAPTURE_AUDIT_MIN_COST = Number(process.env.ARB_DAEMON_CAPTURE_AUDIT_MIN_COST ?? CANDIDATE_SNAPSHOT_MIN_COST);
+const CAPTURE_AUDIT_MAX_COST = Number(process.env.ARB_DAEMON_CAPTURE_AUDIT_MAX_COST ?? 1.02);
 const CAPTURE_AUDIT_MIN_INTERVAL_MS = Number(process.env.ARB_DAEMON_CAPTURE_AUDIT_MIN_INTERVAL_MS ?? 5_000);
 const MIN_MARKETABLE_BUY_USD = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_MARKETABLE_BUY_USD ?? 1);
 // Live sports books move faster than the macro/crypto ladders, so they still
@@ -330,6 +335,7 @@ interface NearMissSample {
 
 type CaptureTerminalStatus =
   | "trading_paused"
+  | "shadow_gate_blocked"
   | "event_paused"
   | "already_open"
   | "quarantined"
@@ -1490,7 +1496,8 @@ function captureCandidateFields(candidate: Candidate) {
 
 function shouldCaptureCandidate(candidate: Candidate): boolean {
   return isTrueMiddleCandidate(candidate)
-    && passesDynamicGate(candidate);
+    && candidate.packageCost + EPSILON >= CAPTURE_AUDIT_MIN_COST
+    && candidate.packageCost <= CAPTURE_AUDIT_MAX_COST + EPSILON;
 }
 
 function beginCapture(candidate: Candidate, executionTokens: string[]): CaptureContext | null {
@@ -1535,6 +1542,19 @@ function emitCapture(
     execution: ctx.execution,
     ...extra,
   }]);
+}
+
+function emitShadowCapture(pkg: WatchPackage, candidate: Candidate) {
+  const executionTokens = [pkg.broadYesToken, pkg.narrowNoToken].filter(Boolean);
+  const ctx = beginCapture(candidate, executionTokens);
+  if (!ctx) return;
+  const fields = captureCandidateFields(candidate);
+  const reason = fields.blockers.length ? fields.blockers.join("+") : "not executable under live gate";
+  emitCapture(ctx, "shadow_gate_blocked", reason, {
+    shadow: true,
+    wouldTrade: false,
+    note: "shadow-only capture: candidate is outside current live execution gate or blocked by gate filters; no order was submitted",
+  });
 }
 
 function appendCandidateSnapshots(samples: NearMissSample[]) {
@@ -3382,7 +3402,10 @@ function evaluateToken(tokenId: string) {
     if (!legs) continue;
     const candidate = liveCandidate(pkg.base, legs);
     recordNearMiss(candidate);
-    if (!passesDynamicGate(candidate)) continue;
+    if (!passesDynamicGate(candidate)) {
+      emitShadowCapture(pkg, candidate);
+      continue;
+    }
     if (isSportsCandidate(candidate)) {
       log(`sports_ws_gate_pass ${pkg.key}: wsCost=${candidate.packageCost.toFixed(4)} wsSpread=${candidate.maxSpread.toFixed(4)} edge=${(candidate.lockedEdge * 100).toFixed(2)}c size=${candidate.availableSize.toFixed(2)}`);
     }
