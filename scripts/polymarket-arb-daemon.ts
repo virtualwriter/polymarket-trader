@@ -336,6 +336,9 @@ interface NearMissSample {
 type CaptureTerminalStatus =
   | "trading_paused"
   | "shadow_gate_blocked"
+  | "shadow_preflight_failed"
+  | "shadow_sizing_rejected"
+  | "shadow_would_submit"
   | "event_paused"
   | "already_open"
   | "quarantined"
@@ -492,6 +495,7 @@ let nearMissStartedAt = Date.now();
 let nearMissObservations = 0;
 const nearMissBestByPackage = new Map<string, NearMissSample>();
 const captureAuditLastAt = new Map<string, number>();
+const shadowCaptureInFlight = new Set<string>();
 let sportsPreflightAttempts = 0;
 let sportsPreflightFetchMsTotal = 0;
 let sportsPreflightFetchMsMax = 0;
@@ -1544,17 +1548,117 @@ function emitCapture(
   }]);
 }
 
-function emitShadowCapture(pkg: WatchPackage, candidate: Candidate) {
+async function emitShadowCapture(pkg: WatchPackage, candidate: Candidate) {
   const executionTokens = [pkg.broadYesToken, pkg.narrowNoToken].filter(Boolean);
   const ctx = beginCapture(candidate, executionTokens);
   if (!ctx) return;
-  const fields = captureCandidateFields(candidate);
-  const reason = fields.blockers.length ? fields.blockers.join("+") : "not executable under live gate";
-  emitCapture(ctx, "shadow_gate_blocked", reason, {
-    shadow: true,
-    wouldTrade: false,
-    note: "shadow-only capture: candidate is outside current live execution gate or blocked by gate filters; no order was submitted",
-  });
+  const preflightThrottleKey = `shadow-preflight:${pkg.key}`;
+  const now = Date.now();
+  const lastPreflight = captureAuditLastAt.get(preflightThrottleKey) ?? 0;
+  if (now - lastPreflight < CAPTURE_AUDIT_MIN_INTERVAL_MS) return;
+  if (shadowCaptureInFlight.has(pkg.key)) return;
+  captureAuditLastAt.set(preflightThrottleKey, now);
+  shadowCaptureInFlight.add(pkg.key);
+  try {
+    let c = candidate;
+    const initialFields = captureCandidateFields(candidate);
+    const hardInitialBlock = sportsExecutionBlocked(candidate)
+      ?? farDatedExecutionBlock(candidate)
+      ?? juneBreakevenRangeBlock(candidate);
+    if (hardInitialBlock) {
+      emitCapture(ctx, "shadow_gate_blocked", hardInitialBlock, {
+        shadow: true,
+        wouldTrade: false,
+        liveGateBlockers: initialFields.blockers,
+        note: "shadow-only capture: hard execution block; no order was submitted",
+      });
+      return;
+    }
+
+    if (isSportsCandidate(c)) {
+      const preflightStartedAt = Date.now();
+      try {
+        c = await freshSportsCandidate(c);
+      } catch (err: any) {
+        const fetchMs = Date.now() - preflightStartedAt;
+        ctx.preflight = {
+          status: "failed",
+          fetchMs,
+          error: err?.message ?? String(err),
+        };
+        emitCapture(ctx, "shadow_preflight_failed", err?.message ?? String(err), {
+          shadow: true,
+          wouldTrade: false,
+          note: "shadow-only capture: fresh sports book failed; no order was submitted",
+        });
+        return;
+      }
+      const fetchMs = Date.now() - preflightStartedAt;
+      ctx.preflight = {
+        status: passesDynamicGate(c) ? "passed_live_gate" : "failed_live_gate",
+        fetchMs,
+        fresh: captureCandidateFields(c),
+      };
+    } else {
+      ctx.preflight = {
+        status: passesDynamicGate(c) ? "ws_passed_live_gate" : "ws_failed_live_gate",
+        fetchMs: 0,
+        fresh: captureCandidateFields(c),
+      };
+    }
+
+    const freshFields = captureCandidateFields(c);
+    const hardFreshBlock = farDatedExecutionBlock(c) ?? juneBreakevenRangeBlock(c);
+    if (hardFreshBlock) {
+      emitCapture(ctx, "shadow_gate_blocked", hardFreshBlock, {
+        shadow: true,
+        wouldTrade: false,
+        liveGateBlockers: freshFields.blockers,
+        note: "shadow-only capture: hard execution block after fresh book; no order was submitted",
+      });
+      return;
+    }
+
+    const packageRows = readJsonArray<LivePackage>(PACKAGES_PATH);
+    const executionCandidate = executionSizingCandidate(c);
+    const spendableUsd = spendableUsdAfterReservations();
+    const sized = sizeForCandidate(
+      executionCandidate,
+      packageRows,
+      sizingSpendableUsd(spendableUsd) * budgetFactorForCandidate(executionCandidate),
+    );
+    const reservedUsd = reservedUsdForSized(sized.cost);
+    const balanceHeadroomReason = Number.isFinite(spendableUsd) && reservedUsd > spendableUsd + EPSILON
+      ? `reserved=$${reservedUsd.toFixed(4)} spendable=$${spendableUsd.toFixed(4)}`
+      : "";
+    ctx.sizing = {
+      stage: "shadow",
+      shares: sized.shares,
+      cost: sized.cost,
+      reason: sized.reason || balanceHeadroomReason || "",
+      spendableUsd,
+      reservedUsd,
+    };
+    if (sized.reason || balanceHeadroomReason) {
+      emitCapture(ctx, "shadow_sizing_rejected", sized.reason || balanceHeadroomReason, {
+        shadow: true,
+        wouldTrade: false,
+        liveGateBlockers: freshFields.blockers,
+        note: "shadow-only capture: candidate was not sizable under current caps/balance; no order was submitted",
+      });
+      return;
+    }
+
+    emitCapture(ctx, "shadow_would_submit", "shadow candidate passed fresh preflight and sizing", {
+      shadow: true,
+      wouldTrade: false,
+      liveGateBlockers: freshFields.blockers,
+      executableIfGateRelaxed: freshFields.blockers.every((blocker) => blocker === "edge"),
+      note: "shadow-only capture: no order was submitted",
+    });
+  } finally {
+    shadowCaptureInFlight.delete(pkg.key);
+  }
 }
 
 function appendCandidateSnapshots(samples: NearMissSample[]) {
@@ -3403,7 +3507,7 @@ function evaluateToken(tokenId: string) {
     const candidate = liveCandidate(pkg.base, legs);
     recordNearMiss(candidate);
     if (!passesDynamicGate(candidate)) {
-      emitShadowCapture(pkg, candidate);
+      void emitShadowCapture(pkg, candidate);
       continue;
     }
     if (isSportsCandidate(candidate)) {
