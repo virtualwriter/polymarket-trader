@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-21T12:28:27.051Z",
+  "generatedAt": "2026-06-21T13:28:29.407Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,10 +12,10 @@
       "confidence": 0.23044359871891787,
       "thesis": "OIL P/C ratio 1.52 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 78.5,
-      "targetPct": 6,
+      "entryPrice": 77.54,
+      "targetPct": 4,
       "stopPct": 1.5,
-      "expiryDays": 21
+      "expiryDays": 5
     },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -26,25 +26,10 @@
       "confidence": 0.1631712438133952,
       "thesis": "BTC P/C ratio 1.43 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 63993,
+      "entryPrice": 64109,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
-    },
-    {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 0.11314285714285717,
-      "confidence": 0.05213236175948694,
-      "thesis": "AMZN HL funding -19.0% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 242.97,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
     }
   ],
   "sizingPreviews": [
@@ -56,7 +41,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 78.5,
+      "entryPrice": 77.54,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -77,28 +62,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 63993,
-      "probabilitySource": "unsupported",
-      "winProbability": null,
-      "probabilitySampleSize": null,
-      "edgePts": null,
-      "rawKellyFraction": null,
-      "adjustedKellyFraction": null,
-      "cappedKellyFraction": null,
-      "notes": [
-        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
-        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
-      ]
-    },
-    {
-      "signalType": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "reason": "unsupported_signal",
-      "entryPrice": 242.97,
+      "entryPrice": 64109,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -279,91 +243,6 @@
       "warnings": [
         "risk_on cluster exposure 13.0000 exceeds preview threshold 5.0000."
       ]
-    },
-    {
-      "candidateId": "FUNDING_EXTREME_SHORT:AMZN:2",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "FUNDING_EXTREME_SHORT",
-      "candidateSize": 0,
-      "riskClusters": [
-        "amzn_delta",
-        "funding_reversion",
-        "hyperliquid_venue",
-        "risk_on"
-      ],
-      "current": {
-        "totalGross": 38,
-        "totalNet": 38,
-        "byAsset": {
-          "SOL": 3,
-          "ETH": 5,
-          "GOLD": 9,
-          "BTC": 5,
-          "SILVER": 7,
-          "OIL": 9
-        },
-        "bySignalType": {
-          "MONOTONIC_ARB": 38
-        },
-        "byVenue": {
-          "polymarket": 38
-        },
-        "byCluster": {
-          "monotonic_arb": 38,
-          "polymarket_binary": 38,
-          "polymarket_venue": 38,
-          "risk_on": 13,
-          "sol_delta": 3,
-          "eth_delta": 5,
-          "commodity": 25,
-          "gold_delta": 9,
-          "btc_delta": 5,
-          "silver_delta": 7,
-          "oil_delta": 9
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 38,
-        "totalNet": 38,
-        "byAsset": {
-          "SOL": 3,
-          "ETH": 5,
-          "GOLD": 9,
-          "BTC": 5,
-          "SILVER": 7,
-          "OIL": 9,
-          "AMZN": 0
-        },
-        "bySignalType": {
-          "MONOTONIC_ARB": 38,
-          "FUNDING_EXTREME_SHORT": 0
-        },
-        "byVenue": {
-          "polymarket": 38,
-          "hyperliquid": 0
-        },
-        "byCluster": {
-          "monotonic_arb": 38,
-          "polymarket_binary": 38,
-          "polymarket_venue": 38,
-          "risk_on": 13,
-          "sol_delta": 3,
-          "eth_delta": 5,
-          "commodity": 25,
-          "gold_delta": 9,
-          "btc_delta": 5,
-          "silver_delta": 7,
-          "oil_delta": 9,
-          "amzn_delta": 0,
-          "funding_reversion": 0,
-          "hyperliquid_venue": 0
-        }
-      },
-      "warnings": [
-        "risk_on cluster exposure 13.0000 exceeds preview threshold 5.0000."
-      ]
     }
   ],
   "stagedQuantRules": [
@@ -405,25 +284,6 @@
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
       ]
-    },
-    {
-      "candidateId": "FUNDING_EXTREME_SHORT:AMZN:2",
-      "signalType": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "mode": "observe_uniform",
-      "liveSizingEnabled": false,
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "enforcedLiveSize": 1,
-      "wouldResize": true,
-      "edgePts": null,
-      "alerts": [
-        "cluster exposure 38.00 > alert cap 5.00",
-        "risk_on cluster exposure 13.0000 exceeds preview threshold 5.0000."
-      ],
-      "notes": [
-        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
-      ]
     }
   ],
   "llmCloseEligibility": [
@@ -436,10 +296,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 456,
-      "hoursToExpiry": 4648.53,
+      "hoursOpen": 457,
+      "hoursToExpiry": 4647.53,
       "plannedHoldHours": 5104.52,
-      "elapsedHoldPct": 0.0893,
+      "elapsedHoldPct": 0.0895,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -452,10 +312,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 426,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 427,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0.6479,
+      "elapsedHoldPct": 0.6494,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -468,10 +328,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 426,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 427,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0.6479,
+      "elapsedHoldPct": 0.6494,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -486,10 +346,10 @@
       "evidenceColumns": [
         "eth_spot"
       ],
-      "hoursOpen": 389,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 390,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 620.52,
-      "elapsedHoldPct": 0.6269,
+      "elapsedHoldPct": 0.6285,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -504,10 +364,10 @@
       "evidenceColumns": [
         "gold_gc_spot"
       ],
-      "hoursOpen": 384,
-      "hoursToExpiry": 221.03,
+      "hoursOpen": 385,
+      "hoursToExpiry": 220.03,
       "plannedHoldHours": 605.02,
-      "elapsedHoldPct": 0.6347,
+      "elapsedHoldPct": 0.6363,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -522,10 +382,10 @@
       "evidenceColumns": [
         "btc_spot"
       ],
-      "hoursOpen": 358,
-      "hoursToExpiry": 4648.53,
+      "hoursOpen": 359,
+      "hoursToExpiry": 4647.53,
       "plannedHoldHours": 5006.52,
-      "elapsedHoldPct": 0.0715,
+      "elapsedHoldPct": 0.0717,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -540,10 +400,10 @@
       "evidenceColumns": [
         "gold_gc_spot"
       ],
-      "hoursOpen": 351,
-      "hoursToExpiry": 221.03,
+      "hoursOpen": 352,
+      "hoursToExpiry": 220.03,
       "plannedHoldHours": 572.02,
-      "elapsedHoldPct": 0.6136,
+      "elapsedHoldPct": 0.6154,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -558,10 +418,10 @@
       "evidenceColumns": [
         "eth_spot"
       ],
-      "hoursOpen": 330,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 331,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 561.52,
-      "elapsedHoldPct": 0.5877,
+      "elapsedHoldPct": 0.5895,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -576,10 +436,10 @@
       "evidenceColumns": [
         "gold_gc_spot"
       ],
-      "hoursOpen": 326,
-      "hoursToExpiry": 221.03,
+      "hoursOpen": 327,
+      "hoursToExpiry": 220.03,
       "plannedHoldHours": 547.02,
-      "elapsedHoldPct": 0.5959,
+      "elapsedHoldPct": 0.5978,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -594,10 +454,10 @@
       "evidenceColumns": [
         "eth_spot"
       ],
-      "hoursOpen": 287,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 288,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 518.52,
-      "elapsedHoldPct": 0.5535,
+      "elapsedHoldPct": 0.5554,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -610,10 +470,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 261,
-      "hoursToExpiry": 221.03,
+      "hoursOpen": 262,
+      "hoursToExpiry": 220.03,
       "plannedHoldHours": 482.03,
-      "elapsedHoldPct": 0.5415,
+      "elapsedHoldPct": 0.5435,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -628,10 +488,10 @@
       "evidenceColumns": [
         "gold_gc_spot"
       ],
-      "hoursOpen": 254,
-      "hoursToExpiry": 221.03,
+      "hoursOpen": 255,
+      "hoursToExpiry": 220.03,
       "plannedHoldHours": 475.03,
-      "elapsedHoldPct": 0.5347,
+      "elapsedHoldPct": 0.5368,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -646,10 +506,10 @@
       "evidenceColumns": [
         "gold_gc_spot"
       ],
-      "hoursOpen": 244,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 245,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 475.53,
-      "elapsedHoldPct": 0.5131,
+      "elapsedHoldPct": 0.5152,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -664,10 +524,10 @@
       "evidenceColumns": [
         "btc_spot"
       ],
-      "hoursOpen": 233,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 234,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 464.53,
-      "elapsedHoldPct": 0.5016,
+      "elapsedHoldPct": 0.5037,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -682,10 +542,10 @@
       "evidenceColumns": [
         "btc_spot"
       ],
-      "hoursOpen": 224,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 225,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 455.53,
-      "elapsedHoldPct": 0.4917,
+      "elapsedHoldPct": 0.4939,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -700,10 +560,10 @@
       "evidenceColumns": [
         "btc_spot"
       ],
-      "hoursOpen": 217,
-      "hoursToExpiry": 4648.53,
+      "hoursOpen": 218,
+      "hoursToExpiry": 4647.53,
       "plannedHoldHours": 4865.53,
-      "elapsedHoldPct": 0.0446,
+      "elapsedHoldPct": 0.0448,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -718,10 +578,10 @@
       "evidenceColumns": [
         "gold_gc_spot"
       ],
-      "hoursOpen": 169,
-      "hoursToExpiry": 4619.53,
+      "hoursOpen": 170,
+      "hoursToExpiry": 4618.53,
       "plannedHoldHours": 4788.53,
-      "elapsedHoldPct": 0.0353,
+      "elapsedHoldPct": 0.0355,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -736,10 +596,10 @@
       "evidenceColumns": [
         "oil_wti_spot"
       ],
-      "hoursOpen": 156,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 157,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 387.53,
-      "elapsedHoldPct": 0.4026,
+      "elapsedHoldPct": 0.4051,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -754,10 +614,10 @@
       "evidenceColumns": [
         "oil_wti_spot"
       ],
-      "hoursOpen": 154,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 155,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 385.53,
-      "elapsedHoldPct": 0.3995,
+      "elapsedHoldPct": 0.402,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -772,10 +632,10 @@
       "evidenceColumns": [
         "oil_wti_spot"
       ],
-      "hoursOpen": 151,
-      "hoursToExpiry": 222.03,
+      "hoursOpen": 152,
+      "hoursToExpiry": 221.03,
       "plannedHoldHours": 373.03,
-      "elapsedHoldPct": 0.4048,
+      "elapsedHoldPct": 0.4075,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -790,10 +650,10 @@
       "evidenceColumns": [
         "oil_wti_spot"
       ],
-      "hoursOpen": 146,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 147,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 377.53,
-      "elapsedHoldPct": 0.3867,
+      "elapsedHoldPct": 0.3894,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -808,10 +668,10 @@
       "evidenceColumns": [
         "btc_spot"
       ],
-      "hoursOpen": 142,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 143,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 373.53,
-      "elapsedHoldPct": 0.3802,
+      "elapsedHoldPct": 0.3828,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -826,10 +686,10 @@
       "evidenceColumns": [
         "oil_wti_spot"
       ],
-      "hoursOpen": 135,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 136,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 366.53,
-      "elapsedHoldPct": 0.3683,
+      "elapsedHoldPct": 0.3711,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -844,10 +704,10 @@
       "evidenceColumns": [
         "eth_spot"
       ],
-      "hoursOpen": 127,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 128,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 358.53,
-      "elapsedHoldPct": 0.3542,
+      "elapsedHoldPct": 0.357,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -862,10 +722,10 @@
       "evidenceColumns": [
         "gold_gc_spot"
       ],
-      "hoursOpen": 125,
-      "hoursToExpiry": 4619.53,
+      "hoursOpen": 126,
+      "hoursToExpiry": 4618.53,
       "plannedHoldHours": 4744.53,
-      "elapsedHoldPct": 0.0263,
+      "elapsedHoldPct": 0.0266,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -880,10 +740,10 @@
       "evidenceColumns": [
         "gold_gc_spot"
       ],
-      "hoursOpen": 125,
-      "hoursToExpiry": 4619.53,
+      "hoursOpen": 126,
+      "hoursToExpiry": 4618.53,
       "plannedHoldHours": 4744.53,
-      "elapsedHoldPct": 0.0263,
+      "elapsedHoldPct": 0.0266,
       "minHoldHours": 168,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -898,10 +758,10 @@
       "evidenceColumns": [
         "eth_spot"
       ],
-      "hoursOpen": 125,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 126,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 356.53,
-      "elapsedHoldPct": 0.3506,
+      "elapsedHoldPct": 0.3534,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -916,10 +776,10 @@
       "evidenceColumns": [
         "gold_gc_spot"
       ],
-      "hoursOpen": 118,
-      "hoursToExpiry": 221.03,
+      "hoursOpen": 119,
+      "hoursToExpiry": 220.03,
       "plannedHoldHours": 339.03,
-      "elapsedHoldPct": 0.3481,
+      "elapsedHoldPct": 0.351,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -934,10 +794,10 @@
       "evidenceColumns": [
         "oil_wti_spot"
       ],
-      "hoursOpen": 98,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 99,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 329.52,
-      "elapsedHoldPct": 0.2974,
+      "elapsedHoldPct": 0.3004,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -952,10 +812,10 @@
       "evidenceColumns": [
         "oil_wti_spot"
       ],
-      "hoursOpen": 98,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 99,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 329.52,
-      "elapsedHoldPct": 0.2974,
+      "elapsedHoldPct": 0.3004,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -970,10 +830,10 @@
       "evidenceColumns": [
         "oil_wti_spot"
       ],
-      "hoursOpen": 98,
-      "hoursToExpiry": 231.53,
+      "hoursOpen": 99,
+      "hoursToExpiry": 230.53,
       "plannedHoldHours": 329.52,
-      "elapsedHoldPct": 0.2974,
+      "elapsedHoldPct": 0.3004,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -988,10 +848,10 @@
       "evidenceColumns": [
         "oil_wti_spot"
       ],
-      "hoursOpen": 95,
-      "hoursToExpiry": 222.03,
+      "hoursOpen": 96,
+      "hoursToExpiry": 221.03,
       "plannedHoldHours": 317.03,
-      "elapsedHoldPct": 0.2997,
+      "elapsedHoldPct": 0.3028,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -1004,10 +864,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 73,
-      "hoursToExpiry": 221.03,
+      "hoursOpen": 74,
+      "hoursToExpiry": 220.03,
       "plannedHoldHours": 294.03,
-      "elapsedHoldPct": 0.2483,
+      "elapsedHoldPct": 0.2517,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -1020,10 +880,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 73,
-      "hoursToExpiry": 221.03,
+      "hoursOpen": 74,
+      "hoursToExpiry": 220.03,
       "plannedHoldHours": 294.03,
-      "elapsedHoldPct": 0.2483,
+      "elapsedHoldPct": 0.2517,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -1036,10 +896,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 72,
-      "hoursToExpiry": 221.03,
+      "hoursOpen": 73,
+      "hoursToExpiry": 220.03,
       "plannedHoldHours": 293.03,
-      "elapsedHoldPct": 0.2457,
+      "elapsedHoldPct": 0.2491,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -1052,10 +912,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 72,
-      "hoursToExpiry": 221.03,
+      "hoursOpen": 73,
+      "hoursToExpiry": 220.03,
       "plannedHoldHours": 293.03,
-      "elapsedHoldPct": 0.2457,
+      "elapsedHoldPct": 0.2491,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -1068,10 +928,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 72,
-      "hoursToExpiry": 221.03,
+      "hoursOpen": 73,
+      "hoursToExpiry": 220.03,
       "plannedHoldHours": 293.03,
-      "elapsedHoldPct": 0.2457,
+      "elapsedHoldPct": 0.2491,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -1084,10 +944,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 72,
-      "hoursToExpiry": 221.03,
+      "hoursOpen": 73,
+      "hoursToExpiry": 220.03,
       "plannedHoldHours": 293.03,
-      "elapsedHoldPct": 0.2457,
+      "elapsedHoldPct": 0.2491,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }

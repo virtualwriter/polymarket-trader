@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-21T12:28:59.377Z",
+  "generatedAt": "2026-06-21T13:28:29.433Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,10 +15,10 @@
       "confidence": 0.23044359871891787,
       "thesis": "OIL P/C ratio 1.52 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 78.5,
-      "targetPct": 6,
+      "entryPrice": 77.54,
+      "targetPct": 4,
       "stopPct": 1.5,
-      "expiryDays": 21
+      "expiryDays": 5
     },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -29,25 +29,10 @@
       "confidence": 0.1631712438133952,
       "thesis": "BTC P/C ratio 1.43 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 63993,
+      "entryPrice": 64109,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
-    },
-    {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 0.11314285714285717,
-      "confidence": 0.05213236175948694,
-      "thesis": "AMZN HL funding -19.0% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 242.97,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
