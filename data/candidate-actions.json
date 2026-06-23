@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-23T14:05:31.768Z",
+  "generatedAt": "2026-06-23T14:28:06.135Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,25 +8,11 @@
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.9825,
-      "confidence": 0.5617498290407528,
-      "thesis": "BTC P/C ratio 1.99 — heavy put buying → contrarian long.",
+      "strength": 0.8599999999999999,
+      "confidence": 0.49170977402040433,
+      "thesis": "BTC P/C ratio 1.89 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 62515,
-      "targetPct": 4,
-      "stopPct": 1.5,
-      "expiryDays": 5
-    },
-    {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.007500000000000007,
-      "confidence": 0.00428816663389888,
-      "thesis": "GOLD P/C ratio 1.21 — heavy put buying → contrarian long.",
-      "hypothesisId": null,
-      "entryPrice": 4140,
+      "entryPrice": 62521,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -34,58 +20,23 @@
   ],
   "llmCloseEligibility": [
     {
-      "positionId": "MA-1782223530507-bnlb",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "GOLD",
-      "venue": "polymarket",
+      "positionId": "T-1782223567517-zobs",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "BTC",
+      "venue": "spot",
       "direction": "long",
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [
-        "gold_gc_spot"
+        "btc_spot",
+        "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 0,
-      "hoursToExpiry": 181.91,
-      "plannedHoldHours": 181.91,
-      "elapsedHoldPct": 0,
+      "hoursOpen": 0.37,
+      "hoursToExpiry": 119.63,
+      "plannedHoldHours": 120,
+      "elapsedHoldPct": 0.0031,
       "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1782223530986-oi0i",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ],
-      "hoursOpen": 0,
-      "hoursToExpiry": 181.91,
-      "plannedHoldHours": 181.91,
-      "elapsedHoldPct": 0,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1782223531308-z09k",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ],
-      "hoursOpen": 0,
-      "hoursToExpiry": 181.91,
-      "plannedHoldHours": 181.91,
-      "elapsedHoldPct": 0,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+      "reason": "Too new for discretionary LLM close: open 0.4h, requires at least 12h."
     }
   ]
 }

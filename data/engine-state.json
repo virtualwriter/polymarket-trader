@@ -1,67 +1,36 @@
 {
-  "generatedAt": "2026-06-23T14:05:31.740Z",
+  "generatedAt": "2026-06-23T14:28:06.109Z",
   "dataFreshness": {
     "valuationRows": 896,
     "latestValuationAt": "2026-06-23T14",
     "macroRows": 894,
-    "instrumentSnapshots": 1,
+    "instrumentSnapshots": 2,
     "latestInstrumentSnapshotAt": "2026-06-23T14"
   },
   "portfolio": {
-    "cash": 95.3467,
-    "openPositions": 3,
+    "cash": 97.3467,
+    "openPositions": 1,
     "realizedPnl": 0.9344,
-    "totalTrades": 207,
-    "winRatePct": 53.6,
-    "unrealizedPnl": 0
+    "totalTrades": 210,
+    "winRatePct": 54.3,
+    "unrealizedPnl": 0.0001
   },
   "openPositions": [
     {
-      "positionId": "MA-1782223530507-bnlb",
-      "asset": "GOLD",
-      "venue": "polymarket",
+      "positionId": "T-1782223567517-zobs",
+      "asset": "BTC",
+      "venue": "spot",
       "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.8,
-      "currentPrice": 0.989,
-      "underlyingPrice": 4139.5,
-      "targetPct": null,
-      "stopPct": 100,
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": 0.01,
+      "currentPrice": 62521,
+      "underlyingPrice": 62521,
+      "targetPct": 3,
+      "stopPct": 1.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
-        "gold_gc_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1782223530986-oi0i",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.8,
-      "currentPrice": 0.991,
-      "underlyingPrice": 4139.5,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1782223531308-z09k",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.7,
-      "currentPrice": 0.992,
-      "underlyingPrice": 4139.5,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot"
+        "btc_spot",
+        "btc_ibit_pc_ratio"
       ]
     }
   ],
@@ -203,7 +172,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 65,
+    "openCount": 68,
     "resolvedCount": 618,
     "wouldHaveWon": 350,
     "wouldHaveLost": 268,
@@ -218,7 +187,7 @@
       },
       {
         "signalType": "MONOTONIC_ARB",
-        "blocked": 31,
+        "blocked": 34,
         "resolved": 10,
         "wouldHaveWon": 10,
         "wouldHaveLost": 0,
