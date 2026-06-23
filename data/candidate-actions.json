@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-23T14:28:06.135Z",
+  "generatedAt": "2026-06-23T15:28:45.485Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,25 @@
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.8599999999999999,
-      "confidence": 0.49170977402040433,
-      "thesis": "BTC P/C ratio 1.89 — heavy put buying → contrarian long.",
+      "strength": 0.7537499999999999,
+      "confidence": 0.430960746706837,
+      "thesis": "BTC P/C ratio 1.80 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 62521,
+      "entryPrice": 62266,
+      "targetPct": 4,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    },
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.44375,
+      "confidence": 0.2537165258390168,
+      "thesis": "GOLD P/C ratio 1.55 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 4128,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -31,12 +45,12 @@
         "btc_spot",
         "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 0.37,
-      "hoursToExpiry": 119.63,
+      "hoursOpen": 1.38,
+      "hoursToExpiry": 118.62,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0031,
+      "elapsedHoldPct": 0.0115,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 0.4h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 1.4h, requires at least 12h."
     }
   ]
 }
