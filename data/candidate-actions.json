@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-23T15:28:45.485Z",
+  "generatedAt": "2026-06-23T16:29:17.301Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.7537499999999999,
-      "confidence": 0.430960746706837,
-      "thesis": "BTC P/C ratio 1.80 — heavy put buying → contrarian long.",
+      "strength": 0.6887499999999999,
+      "confidence": 0.39379663587971336,
+      "thesis": "BTC P/C ratio 1.75 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 62266,
+      "entryPrice": 62570,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -22,11 +22,11 @@
       "asset": "GOLD",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.44375,
-      "confidence": 0.2537165258390168,
-      "thesis": "GOLD P/C ratio 1.55 — heavy put buying → contrarian long.",
+      "strength": 0.26499999999999996,
+      "confidence": 0.1515152210644269,
+      "thesis": "GOLD P/C ratio 1.41 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4128,
+      "entryPrice": 4137,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -45,12 +45,31 @@
         "btc_spot",
         "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 1.38,
-      "hoursToExpiry": 118.62,
+      "hoursOpen": 2.39,
+      "hoursToExpiry": 117.61,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0115,
+      "elapsedHoldPct": 0.0199,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 1.4h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 2.4h, requires at least 12h."
+    },
+    {
+      "positionId": "T-1782228525520-fhzv",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_gld_pc_ratio"
+      ],
+      "hoursOpen": 1.01,
+      "hoursToExpiry": 118.99,
+      "plannedHoldHours": 120,
+      "elapsedHoldPct": 0.0084,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     }
   ]
 }

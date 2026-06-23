@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-23T15:28:45.464Z",
+  "generatedAt": "2026-06-23T16:29:17.238Z",
   "dataFreshness": {
-    "valuationRows": 897,
-    "latestValuationAt": "2026-06-23T15",
-    "macroRows": 895,
-    "instrumentSnapshots": 3,
-    "latestInstrumentSnapshotAt": "2026-06-23T15"
+    "valuationRows": 898,
+    "latestValuationAt": "2026-06-23T16",
+    "macroRows": 896,
+    "instrumentSnapshots": 4,
+    "latestInstrumentSnapshotAt": "2026-06-23T16"
   },
   "portfolio": {
-    "cash": 97.3467,
-    "openPositions": 1,
+    "cash": 96.3467,
+    "openPositions": 2,
     "realizedPnl": 0.9344,
     "totalTrades": 210,
     "winRatePct": 54.3,
-    "unrealizedPnl": -0.004
+    "unrealizedPnl": 0.0031
   },
   "openPositions": [
     {
@@ -22,15 +22,32 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.4,
-      "currentPrice": 62266,
-      "underlyingPrice": 62266,
+      "pnlPct": 0.09,
+      "currentPrice": 62570,
+      "underlyingPrice": 62570,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "btc_spot",
         "btc_ibit_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1782228525520-fhzv",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": 0.22,
+      "currentPrice": 4137,
+      "underlyingPrice": 4137,
+      "targetPct": 3,
+      "stopPct": 1.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_gld_pc_ratio"
       ]
     }
   ],
