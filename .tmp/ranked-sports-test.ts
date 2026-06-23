@@ -15,6 +15,8 @@ import {
   PACKAGES_PATH,
   writeJsonArray,
 } from "../scripts/polymarket-real-monotonic-executor.js";
+import { appendFileSync, mkdirSync } from "node:fs";
+import { dirname, join } from "node:path";
 import WebSocket from "ws";
 
 type Direction = "above" | "below";
@@ -60,7 +62,11 @@ const GAMMA_API = process.env.GAMMA_API ?? "https://gamma-api.polymarket.com";
 const CLOB_API = process.env.CLOB_API_URL ?? process.env.CLOB_URL ?? "https://clob.polymarket.com";
 const USER_AGENT = "ranked-sports-test/1.0";
 const MARKET_WS_URL = process.env.POLYMARKET_MARKET_WS_URL ?? "wss://ws-subscriptions-clob.polymarket.com/ws/market";
+const MIN_PACKAGE_COST = Number(process.env.RANKED_SPORTS_MIN_PACKAGE_COST ?? 0);
 const MAX_PACKAGE_COST = Number(process.env.RANKED_SPORTS_MAX_PACKAGE_COST ?? 1.12);
+const MAX_EXECUTIONS = Math.max(0, Number(process.env.RANKED_SPORTS_MAX_EXECUTIONS ?? 5));
+const TEST_RESULTS_PATH = process.env.RANKED_SPORTS_TEST_RESULTS_PATH
+  ?? join(dirname(PACKAGES_PATH), "ranked-sports-test-results.jsonl");
 const MAX_PAIRED_SHARES = Number(process.env.ARB_DAEMON_SPORTS_MAX_PAIRED_SHARES ?? 10);
 const MAX_SPREAD = Number(process.env.ARB_DAEMON_SPORTS_MAX_SPREAD ?? 0.04);
 const MIN_MARKETABLE_BUY_USD = Number(process.env.MONOTONIC_ARB_REAL_PM_MIN_MARKETABLE_BUY_USD ?? 1);
@@ -74,12 +80,77 @@ const ONLY_CONFIGURED_SLUGS = process.env.RANKED_SPORTS_ONLY_CONFIGURED === "1";
 const ADJACENT_ONLY = process.env.RANKED_SPORTS_ADJACENT_ONLY !== "0";
 const PACKAGE_SPECS = (process.env.RANKED_SPORTS_PACKAGE_SPECS ?? "").split(",").map((spec) => spec.trim()).filter(Boolean);
 const SIZE_MODE = process.env.RANKED_SPORTS_SIZE_MODE ?? "min_valid";
+const SORT_BY = process.env.RANKED_SPORTS_SORT_BY ?? "pair_cost";
 const USE_WS_BOOKS = process.env.RANKED_SPORTS_BOOK_SOURCE !== "rest";
 const WS_WARMUP_MS = Number(process.env.RANKED_SPORTS_WS_WARMUP_MS ?? 15_000);
 const WS_REST_FALLBACK_LIMIT = Number(process.env.RANKED_SPORTS_WS_REST_FALLBACK_LIMIT ?? 60);
 const DRY_RUN = process.env.RANKED_SPORTS_DRY_RUN === "1" || process.argv.includes("--dry-run");
 const APPLY_EVENT_CAP = Number.isFinite(EVENT_CAP_USD) && EVENT_CAP_USD > 0;
 const APPLY_PACKAGE_USD_CAP = Number.isFinite(MAX_PACKAGE_USD) && MAX_PACKAGE_USD > 0;
+const APPLY_MIN_PACKAGE_COST = Number.isFinite(MIN_PACKAGE_COST) && MIN_PACKAGE_COST > 0;
+
+type AttemptOutcome =
+  | "preflight_rejected"
+  | "sizing_failed"
+  | "submit_rejected"
+  | "no_fill"
+  | "partial_orphan"
+  | "clean_paired_fill";
+
+type AttemptRecord = {
+  runAt: string;
+  bucket: string;
+  eventSlug: string;
+  eventTitle: string;
+  packageId: string;
+  packageLabel: string;
+  gameStart: string;
+  wsCost: number | null;
+  freshCost: number | null;
+  submittedBroadPrice: number | null;
+  submittedNarrowPrice: number | null;
+  filledBroadPrice: number | null;
+  filledNarrowPrice: number | null;
+  sharesRequested: number;
+  sharesMatched: number;
+  actualPairCost: number | null;
+  inBucket: boolean | null;
+  outcome: AttemptOutcome;
+  preflightPassed: boolean;
+  sizingPassed: boolean;
+  bothLegsSubmitted: boolean;
+  bothLegsFilled: boolean;
+  submitLatencyMs: number | null;
+  blocker: string;
+};
+
+function inCostBucket(cost: number): boolean {
+  if (!(cost > 0)) return false;
+  if (APPLY_MIN_PACKAGE_COST && cost + 1e-9 < MIN_PACKAGE_COST) return false;
+  if (cost > MAX_PACKAGE_COST + 1e-9) return false;
+  return true;
+}
+
+function bucketLabel(): string {
+  const lo = APPLY_MIN_PACKAGE_COST ? MIN_PACKAGE_COST.toFixed(3) : "<min";
+  return `${lo}-${MAX_PACKAGE_COST.toFixed(3)}`;
+}
+
+function packageLabel(candidate: Candidate): string {
+  return `Over ${candidate.broad.strike} + Under ${candidate.narrow.strike}`;
+}
+
+function appendAttempt(record: AttemptRecord) {
+  mkdirSync(dirname(TEST_RESULTS_PATH), { recursive: true });
+  appendFileSync(TEST_RESULTS_PATH, `${JSON.stringify(record)}\n`);
+}
+
+function median(values: number[]): number | null {
+  if (!values.length) return null;
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+}
 
 function parseJsonArray(value: unknown): unknown[] {
   if (Array.isArray(value)) return value;
@@ -526,6 +597,7 @@ async function scan(): Promise<Candidate[]> {
           const minShares = requiredSharesForBooks(broad.yesBook, narrow.noBook);
           const minPackageUsd = minShares * packageCost;
           const rejectionReasons = [
+            APPLY_MIN_PACKAGE_COST && packageCost + 1e-9 < MIN_PACKAGE_COST ? "cost_below_min" : "",
             packageCost > MAX_PACKAGE_COST + 1e-9 ? "cost_above_cap" : "",
             maxSpread > MAX_SPREAD + 1e-9 ? "wide_spread" : "",
             availableSize + 1e-9 < minShares ? `size_below_min_${minShares}` : "",
@@ -565,6 +637,7 @@ function recomputeCandidate(candidate: Candidate): Candidate {
   const minPackageUsd = minShares * packageCost;
   const rejectionReasons = [
     !(candidate.broad.yesBook.ask > 0 && candidate.narrow.noBook.ask > 0) ? "missing_book" : "",
+    APPLY_MIN_PACKAGE_COST && packageCost + 1e-9 < MIN_PACKAGE_COST ? "cost_below_min" : "",
     packageCost > MAX_PACKAGE_COST + 1e-9 ? "cost_above_cap" : "",
     maxSpread > MAX_SPREAD + 1e-9 ? "wide_spread" : "",
     availableSize + 1e-9 < minShares ? `size_below_min_${minShares}` : "",
@@ -726,6 +799,11 @@ function sizedShares(candidate: Candidate, remainingUsd: number): { shares: numb
   return { shares: maxShares, cost: maxShares * candidate.packageCost };
 }
 
+function candidateMinUsd(candidate: Candidate): number {
+  if (missingExecutableBook(candidate)) return Number.POSITIVE_INFINITY;
+  return requiredShares(candidate) * candidate.packageCost;
+}
+
 function candidateSortCost(candidate: Candidate): number {
   return missingExecutableBook(candidate) ? Number.POSITIVE_INFINITY : candidate.packageCost;
 }
@@ -742,6 +820,13 @@ function candidateGameStartLabel(candidate: Candidate): string {
 }
 
 function compareCandidates(a: Candidate, b: Candidate): number {
+  if (SORT_BY === "min_usd") {
+    return candidateMinUsd(a) - candidateMinUsd(b)
+      || candidateSortCost(a) - candidateSortCost(b)
+      || candidateGameStartMs(a) - candidateGameStartMs(b)
+      || b.availableSize - a.availableSize
+      || a.maxSpread - b.maxSpread;
+  }
   return candidateSortCost(a) - candidateSortCost(b)
     || candidateGameStartMs(a) - candidateGameStartMs(b)
     || b.availableSize - a.availableSize
@@ -777,7 +862,9 @@ function persist(record: any, orders: any[]) {
   if (orders.length) appendJsonArray(ORDERS_PATH, orders);
 }
 
-async function executeCheapFirst(client: any, walletAddress: string, candidate: Candidate, shares: number) {
+async function executeCheapFirst(client: any, walletAddress: string, candidate: Candidate, shares: number, wsCost: number | null) {
+  const runAt = new Date().toISOString();
+  const submitStartedAt = Date.now();
   const record = packageRecord(candidate as any, walletAddress, shares, false);
   const broadLeg = { role: "broad_yes" as const, tokenId: candidate.broad.yesTokenId, price: candidate.broad.yesBook.ask };
   const narrowLeg = { role: "narrow_no" as const, tokenId: candidate.narrow.noTokenId, price: candidate.narrow.noBook.ask };
@@ -786,8 +873,9 @@ async function executeCheapFirst(client: any, walletAddress: string, candidate: 
   const submittedAt = new Date().toISOString();
   const orders: any[] = [];
   const errors: string[] = [];
+  let bothLegsSubmitted = false;
 
-  console.log(`EXEC ${candidate.packageId} cost=${candidate.packageCost.toFixed(4)} first=${first.role}@${first.price.toFixed(4)} second=${second.role}@${second.price.toFixed(4)} shares=${shares.toFixed(2)}`);
+  console.log(`EXEC ${candidate.packageId} wsCost=${wsCost?.toFixed(4) ?? "na"} freshCost=${candidate.packageCost.toFixed(4)} first=${first.role}@${first.price.toFixed(4)} second=${second.role}@${second.price.toFixed(4)} shares=${shares.toFixed(2)}`);
   record.status = "leg1_submitted";
   record.failureReason = `ranked_sports_cheap_first_intent first=${first.role} second=${second.role}`;
   record.updatedAt = new Date().toISOString();
@@ -811,6 +899,7 @@ async function executeCheapFirst(client: any, walletAddress: string, candidate: 
   record.updatedAt = new Date().toISOString();
   let secondResp: any | undefined;
   if (firstFilled > 0 && firstFilled * second.price + 1e-9 >= MIN_MARKETABLE_BUY_USD) {
+    bothLegsSubmitted = true;
     try {
       secondResp = await postFakBuy(client, second.tokenId, second.price, firstFilled);
       assertOrderResponse(secondResp, second.role);
@@ -864,11 +953,47 @@ async function executeCheapFirst(client: any, walletAddress: string, candidate: 
       console.log(`UNWIND_SKIPPED ${record.packageId} ${nakedRole} shares=${nakedShares} bid=${book.bid} balance=${balance}`);
     }
   }
-  console.log(`RESULT ${record.packageId} status=${record.status} matched=${matched.toFixed(2)} broad=${broadFilled.toFixed(2)} narrow=${narrowFilled.toFixed(2)} actualCost=${record.actualCost.toFixed(4)} naked=${nakedShares.toFixed(2)}`);
-  return record;
+  const submitLatencyMs = Date.now() - submitStartedAt;
+  const actualPairCost = matched > 0 ? record.actualCost / matched : null;
+  const bothLegsFilled = matched > 0 && nakedShares < 0.01;
+  let outcome: AttemptOutcome = "no_fill";
+  if (errors.length && firstFilled <= 0) outcome = "submit_rejected";
+  else if (matched <= 0) outcome = "no_fill";
+  else if (nakedShares >= 0.01) outcome = "partial_orphan";
+  else outcome = "clean_paired_fill";
+  console.log(`RESULT ${record.packageId} status=${record.status} matched=${matched.toFixed(2)} broad=${broadFilled.toFixed(2)} narrow=${narrowFilled.toFixed(2)} actualCost=${record.actualCost.toFixed(4)} actualPairCost=${actualPairCost?.toFixed(4) ?? "na"} naked=${nakedShares.toFixed(2)} latencyMs=${submitLatencyMs}`);
+  const attempt: AttemptRecord = {
+    runAt,
+    bucket: bucketLabel(),
+    eventSlug: candidate.eventSlug,
+    eventTitle: candidate.eventTitle,
+    packageId: candidate.packageId,
+    packageLabel: packageLabel(candidate),
+    gameStart: candidateGameStartLabel(candidate),
+    wsCost,
+    freshCost: candidate.packageCost,
+    submittedBroadPrice: broadLeg.price,
+    submittedNarrowPrice: narrowLeg.price,
+    filledBroadPrice: broadFilled > 0 ? broadPrice : null,
+    filledNarrowPrice: narrowFilled > 0 ? narrowPrice : null,
+    sharesRequested: shares,
+    sharesMatched: matched,
+    actualPairCost,
+    inBucket: actualPairCost == null ? null : inCostBucket(actualPairCost),
+    outcome,
+    preflightPassed: true,
+    sizingPassed: true,
+    bothLegsSubmitted,
+    bothLegsFilled,
+    submitLatencyMs,
+    blocker: errors.join("; ") || record.failureReason || "",
+  };
+  appendAttempt(attempt);
+  return { record, attempt };
 }
 
 async function main() {
+  const runAt = new Date().toISOString();
   const probe = await proxyCollateralProbe(POLYMARKET_FUNDER_ADDRESS!);
   if (!probe) throw new Error("missing funder probe");
   const balanceBudget = Math.max(0, probe.collateralBalance - BALANCE_HEADROOM_USD);
@@ -876,21 +1001,33 @@ async function main() {
     .filter((row) => ["quoted", "leg1_submitted", "leg1_filled", "leg2_submitted", "package_complete"].includes(row.status))
     .map((row) => row.packageId));
   const scannedCandidates = await scan();
-  const hydratedCandidates = USE_WS_BOOKS
+  const wsHydrated = USE_WS_BOOKS
     ? await restFallbackMissingBooks(await hydrateCandidatesFromWs(scannedCandidates))
     : scannedCandidates;
-  for (const candidate of hydratedCandidates
+  const wsCostByPackage = new Map(wsHydrated.map((candidate) => [candidate.packageId, candidate.packageCost]));
+  const observedInBucket = wsHydrated.filter((candidate) => inCostBucket(candidate.packageCost));
+  const freshCandidates: Candidate[] = [];
+  for (const candidate of wsHydrated) {
+    if (!inCostBucket(wsCostByPackage.get(candidate.packageId) ?? candidate.packageCost)) continue;
+    try {
+      freshCandidates.push(await refreshCandidateRest(candidate));
+    } catch (err: any) {
+      console.log(`FRESH_PREFLIGHT_ERROR ${candidate.packageId} ${err?.message ?? String(err)}`);
+    }
+  }
+  for (const candidate of freshCandidates
     .slice()
     .sort(compareCandidates)
-    .slice(0, 10)) {
+    .slice(0, 15)) {
     const open = alreadyOpen.has(candidate.packageId) ? " open=1" : "";
-    console.log(`SEEN ${candidate.asset} ${candidate.eventSlug} start=${candidateGameStartLabel(candidate)} YES ${candidate.broad.strike} + NO ${candidate.narrow.strike} cost=${candidate.packageCost.toFixed(4)} spread=${candidate.maxSpread.toFixed(4)} size=${candidate.availableSize.toFixed(2)} eligible=${candidate.eligible}${open}${candidate.rejectionReasons.length ? ` reasons=${candidate.rejectionReasons.join(",")}` : ""} package=${candidate.packageId}`);
+    const wsCost = wsCostByPackage.get(candidate.packageId);
+    console.log(`SEEN ${candidate.asset} ${candidate.eventSlug} start=${candidateGameStartLabel(candidate)} YES ${candidate.broad.strike} + NO ${candidate.narrow.strike} wsCost=${wsCost?.toFixed(4) ?? "na"} freshCost=${candidate.packageCost.toFixed(4)} spread=${candidate.maxSpread.toFixed(4)} size=${candidate.availableSize.toFixed(2)} eligible=${candidate.eligible}${open}${candidate.rejectionReasons.length ? ` reasons=${candidate.rejectionReasons.join(",")}` : ""} package=${candidate.packageId}`);
   }
-  const candidates = hydratedCandidates
-    .filter((candidate) => candidate.eligible && !alreadyOpen.has(candidate.packageId))
+  const candidates = freshCandidates
+    .filter((candidate) => candidate.eligible && inCostBucket(candidate.packageCost) && !alreadyOpen.has(candidate.packageId))
     .sort(compareCandidates);
 
-  const selected: Array<{ candidate: Candidate; shares: number; cost: number }> = [];
+  const selected: Array<{ candidate: Candidate; shares: number; cost: number; wsCost: number | null }> = [];
   const eventSpend = new Map<string, number>();
   let remaining = balanceBudget;
   for (const candidate of candidates) {
@@ -898,27 +1035,161 @@ async function main() {
     const eventRemaining = APPLY_EVENT_CAP ? Math.max(0, EVENT_CAP_USD - (eventSpend.get(candidate.eventSlug) ?? 0)) : remaining;
     const sized = sizedShares(candidate, Math.min(remaining, eventRemaining));
     if (sized.reason) continue;
-    selected.push({ candidate, shares: sized.shares, cost: sized.cost });
+    selected.push({
+      candidate,
+      shares: sized.shares,
+      cost: sized.cost,
+      wsCost: wsCostByPackage.get(candidate.packageId) ?? null,
+    });
     remaining -= sized.cost;
     eventSpend.set(candidate.eventSlug, (eventSpend.get(candidate.eventSlug) ?? 0) + sized.cost);
     if (remaining < 2) break;
+    if (MAX_EXECUTIONS > 0 && selected.length >= MAX_EXECUTIONS) break;
   }
 
-  console.log(`RANKED_SCAN scanned=${scannedCandidates.length} eligible=${candidates.length} selected=${selected.length} pUSD=${probe.collateralBalance.toFixed(4)} budget=${balanceBudget.toFixed(4)} remainingAfterPlan=${remaining.toFixed(4)} maxPackageCost=${MAX_PACKAGE_COST} maxPackageUsd=${APPLY_PACKAGE_USD_CAP ? MAX_PACKAGE_USD : "none"} sizeMode=${SIZE_MODE} maxShares=${MAX_PAIRED_SHARES} maxEventUsd=${APPLY_EVENT_CAP ? EVENT_CAP_USD : "none"} bookSource=${USE_WS_BOOKS ? "websocket" : "rest"} dryRun=${DRY_RUN}`);
+  console.log(`RANKED_SCAN scanned=${scannedCandidates.length} wsInBucket=${observedInBucket.length} freshInBucket=${freshCandidates.length} freshEligible=${candidates.length} selected=${selected.length} pUSD=${probe.collateralBalance.toFixed(4)} budget=${balanceBudget.toFixed(4)} remainingAfterPlan=${remaining.toFixed(4)} minPackageCost=${APPLY_MIN_PACKAGE_COST ? MIN_PACKAGE_COST : "none"} maxPackageCost=${MAX_PACKAGE_COST} maxPackageUsd=${APPLY_PACKAGE_USD_CAP ? MAX_PACKAGE_USD : "none"} sizeMode=${SIZE_MODE} maxShares=${MAX_PAIRED_SHARES} maxEventUsd=${APPLY_EVENT_CAP ? EVENT_CAP_USD : "none"} maxExecutions=${MAX_EXECUTIONS || "none"} bookSource=${USE_WS_BOOKS ? "websocket+rest_preflight" : "rest"} dryRun=${DRY_RUN}`);
   for (const [idx, row] of selected.entries()) {
-    console.log(`PLAN ${idx + 1} ${row.candidate.asset} ${row.candidate.eventSlug} start=${candidateGameStartLabel(row.candidate)} YES ${row.candidate.broad.strike} + NO ${row.candidate.narrow.strike} cost=${row.candidate.packageCost.toFixed(4)} shares=${row.shares.toFixed(2)} usd=${row.cost.toFixed(4)} spread=${row.candidate.maxSpread.toFixed(4)} edge=${(row.candidate.lockedEdge * 100).toFixed(2)}c package=${row.candidate.packageId}`);
+    console.log(`PLAN ${idx + 1} ${row.candidate.asset} ${row.candidate.eventSlug} start=${candidateGameStartLabel(row.candidate)} YES ${row.candidate.broad.strike} + NO ${row.candidate.narrow.strike} wsCost=${row.wsCost?.toFixed(4) ?? "na"} freshCost=${row.candidate.packageCost.toFixed(4)} shares=${row.shares.toFixed(2)} usd=${row.cost.toFixed(4)} spread=${row.candidate.maxSpread.toFixed(4)} edge=${(row.candidate.lockedEdge * 100).toFixed(2)}c package=${row.candidate.packageId}`);
   }
-  if (DRY_RUN) return;
+
+  const attempts: AttemptRecord[] = [];
+  if (DRY_RUN) {
+    for (const row of selected) {
+      attempts.push({
+        runAt,
+        bucket: bucketLabel(),
+        eventSlug: row.candidate.eventSlug,
+        eventTitle: row.candidate.eventTitle,
+        packageId: row.candidate.packageId,
+        packageLabel: packageLabel(row.candidate),
+        gameStart: candidateGameStartLabel(row.candidate),
+        wsCost: row.wsCost,
+        freshCost: row.candidate.packageCost,
+        submittedBroadPrice: null,
+        submittedNarrowPrice: null,
+        filledBroadPrice: null,
+        filledNarrowPrice: null,
+        sharesRequested: row.shares,
+        sharesMatched: 0,
+        actualPairCost: null,
+        inBucket: inCostBucket(row.candidate.packageCost),
+        outcome: "preflight_rejected",
+        preflightPassed: true,
+        sizingPassed: true,
+        bothLegsSubmitted: false,
+        bothLegsFilled: false,
+        submitLatencyMs: null,
+        blocker: "dry_run",
+      });
+    }
+    printTestSummary(runAt, observedInBucket.length, selected.length, attempts);
+    return;
+  }
+
   const { client } = await clobClient();
+  let executionCount = 0;
   for (const row of selected) {
-    const fresh = await refreshCandidateRest(row.candidate);
-    const freshSized = sizedShares(fresh, row.cost + 0.01);
-    if (!fresh.eligible || freshSized.reason || fresh.packageCost > MAX_PACKAGE_COST + 1e-9) {
-      console.log(`SKIP_PREFLIGHT ${fresh.packageId} cost=${fresh.packageCost.toFixed(4)} eligible=${fresh.eligible} reason=${fresh.rejectionReasons.join(",") || freshSized.reason || "none"}`);
+    if (MAX_EXECUTIONS > 0 && executionCount >= MAX_EXECUTIONS) break;
+    executionCount += 1;
+    const preflightStartedAt = Date.now();
+    let fresh: Candidate;
+    try {
+      fresh = await refreshCandidateRest(row.candidate);
+    } catch (err: any) {
+      const attempt: AttemptRecord = {
+        runAt,
+        bucket: bucketLabel(),
+        eventSlug: row.candidate.eventSlug,
+        eventTitle: row.candidate.eventTitle,
+        packageId: row.candidate.packageId,
+        packageLabel: packageLabel(row.candidate),
+        gameStart: candidateGameStartLabel(row.candidate),
+        wsCost: row.wsCost,
+        freshCost: null,
+        submittedBroadPrice: null,
+        submittedNarrowPrice: null,
+        filledBroadPrice: null,
+        filledNarrowPrice: null,
+        sharesRequested: row.shares,
+        sharesMatched: 0,
+        actualPairCost: null,
+        inBucket: null,
+        outcome: "preflight_rejected",
+        preflightPassed: false,
+        sizingPassed: false,
+        bothLegsSubmitted: false,
+        bothLegsFilled: false,
+        submitLatencyMs: Date.now() - preflightStartedAt,
+        blocker: err?.message ?? String(err),
+      };
+      appendAttempt(attempt);
+      attempts.push(attempt);
+      console.log(`SKIP_PREFLIGHT ${row.candidate.packageId} fetchError=${attempt.blocker}`);
       continue;
     }
-    await executeCheapFirst(client, probe.address, fresh, Math.min(row.shares, freshSized.shares));
+    const freshSized = sizedShares(fresh, row.cost + 0.01);
+    const preflightOk = fresh.eligible && inCostBucket(fresh.packageCost) && !freshSized.reason;
+    if (!preflightOk) {
+      const attempt: AttemptRecord = {
+        runAt,
+        bucket: bucketLabel(),
+        eventSlug: fresh.eventSlug,
+        eventTitle: fresh.eventTitle,
+        packageId: fresh.packageId,
+        packageLabel: packageLabel(fresh),
+        gameStart: candidateGameStartLabel(fresh),
+        wsCost: row.wsCost,
+        freshCost: fresh.packageCost,
+        submittedBroadPrice: fresh.broad.yesBook.ask,
+        submittedNarrowPrice: fresh.narrow.noBook.ask,
+        filledBroadPrice: null,
+        filledNarrowPrice: null,
+        sharesRequested: row.shares,
+        sharesMatched: 0,
+        actualPairCost: null,
+        inBucket: inCostBucket(fresh.packageCost),
+        outcome: freshSized.reason ? "sizing_failed" : "preflight_rejected",
+        preflightPassed: fresh.eligible && inCostBucket(fresh.packageCost),
+        sizingPassed: !freshSized.reason,
+        bothLegsSubmitted: false,
+        bothLegsFilled: false,
+        submitLatencyMs: Date.now() - preflightStartedAt,
+        blocker: fresh.rejectionReasons.join(",") || freshSized.reason || "preflight_gate",
+      };
+      appendAttempt(attempt);
+      attempts.push(attempt);
+      console.log(`SKIP_PREFLIGHT ${fresh.packageId} wsCost=${row.wsCost?.toFixed(4) ?? "na"} freshCost=${fresh.packageCost.toFixed(4)} eligible=${fresh.eligible} reason=${attempt.blocker}`);
+      continue;
+    }
+    const { attempt } = await executeCheapFirst(client, probe.address, fresh, Math.min(row.shares, freshSized.shares), row.wsCost);
+    attempts.push(attempt);
   }
+  printTestSummary(runAt, observedInBucket.length, attempts.length, attempts);
+}
+
+function printTestSummary(runAt: string, observedInBucket: number, attempted: number, attempts: AttemptRecord[]) {
+  const wsCosts = attempts.map((row) => row.wsCost).filter((value): value is number => value != null);
+  const freshCosts = attempts.map((row) => row.freshCost).filter((value): value is number => value != null);
+  const actualCosts = attempts.map((row) => row.actualPairCost).filter((value): value is number => value != null);
+  const latencies = attempts.map((row) => row.submitLatencyMs).filter((value): value is number => value != null);
+  const summary = {
+    runAt,
+    bucket: bucketLabel(),
+    observedInBucket,
+    attempted,
+    cleanPairedFills: attempts.filter((row) => row.outcome === "clean_paired_fill").length,
+    noFills: attempts.filter((row) => row.outcome === "no_fill").length,
+    partialOrphans: attempts.filter((row) => row.outcome === "partial_orphan").length,
+    preflightRejected: attempts.filter((row) => row.outcome === "preflight_rejected").length,
+    sizingFailed: attempts.filter((row) => row.outcome === "sizing_failed").length,
+    submitRejected: attempts.filter((row) => row.outcome === "submit_rejected").length,
+    medianWsCost: median(wsCosts),
+    medianFreshCost: median(freshCosts),
+    medianActualPairCost: median(actualCosts),
+    medianSubmitLatencyMs: median(latencies),
+    inBucketActual: attempts.filter((row) => row.inBucket === true).length,
+  };
+  console.log(`TEST_SUMMARY ${JSON.stringify(summary)}`);
 }
 
 main().catch((err) => {

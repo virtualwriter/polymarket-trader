@@ -72,7 +72,7 @@ const MONOTONIC_ARB_ASSETS = new Set(["BTC", "ETH", "GOLD", "OIL", "AMZN", "HYPE
 // it is exempt from the MAX_OPEN_POSITIONS cap and may run as many concurrent
 // packages as the bankroll allows (one dedup per unique package id). It still
 // draws TRADE_SIZE per package from cash like any other live position.
-const ENABLE_MONOTONIC_ARB_LIVE = true;
+const ENABLE_MONOTONIC_ARB_LIVE = false;
 const INVALID_MONOTONIC_SETTLEMENT_REASON = "invalid_monotonic_settlement_bucket";
 const UNDERLYING_CAP_ENTRY_MAX_SPREAD = 0.02;
 const UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY = 1000;

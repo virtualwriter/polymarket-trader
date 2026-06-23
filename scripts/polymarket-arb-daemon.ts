@@ -180,6 +180,34 @@ const SPORTS_HEDGE_BREAKEVEN_FILL = (process.env.ARB_DAEMON_SPORTS_HEDGE_BREAKEV
 // break-even (risk-free floor). Raise it to demand realized edge on completion at
 // the cost of more cheap-leg orphans when the hedge reprices hard.
 const SPORTS_HEDGE_COMPLETION_MIN_EDGE = Number(process.env.ARB_DAEMON_SPORTS_HEDGE_COMPLETION_MIN_EDGE ?? 0);
+type CostRange = { label: string; min: number; max: number; includeMin: boolean; includeMax: boolean };
+
+function parseCostRangeToken(token: string): CostRange | null {
+  const raw = token.trim();
+  if (!raw) return null;
+  if (raw.startsWith("<=")) {
+    const max = Number(raw.slice(2));
+    return Number.isFinite(max) ? { label: raw, min: Number.NEGATIVE_INFINITY, max, includeMin: true, includeMax: true } : null;
+  }
+  if (raw.startsWith("<")) {
+    const max = Number(raw.slice(1));
+    return Number.isFinite(max) ? { label: raw, min: Number.NEGATIVE_INFINITY, max, includeMin: true, includeMax: false } : null;
+  }
+  const range = raw.match(/^([0-9.]+)\s*-\s*([0-9.]+)$/);
+  if (range) {
+    const min = Number(range[1]);
+    const max = Number(range[2]);
+    if (Number.isFinite(min) && Number.isFinite(max) && min <= max) {
+      return { label: raw, min, max, includeMin: true, includeMax: true };
+    }
+  }
+  return null;
+}
+
+const SPORTS_ALLOWED_COST_RANGES = (process.env.ARB_DAEMON_SPORTS_ALLOWED_COST_RANGES ?? "")
+  .split(",")
+  .map(parseCostRangeToken)
+  .filter((range): range is CostRange => Boolean(range));
 // Pre-warm the CLOB client's tick-size + fee-rate caches for both legs before the
 // cheap-first sequence starts. Without this, the hedge leg's first order on a
 // fresh sports market pays two cold metadata round-trips (getTickSize +
@@ -1266,6 +1294,19 @@ function maxPairedSharesFor(candidate: Candidate): number {
   return Number.POSITIVE_INFINITY;
 }
 
+function costInRange(cost: number, range: CostRange): boolean {
+  const aboveMin = range.includeMin ? cost + EPSILON >= range.min : cost > range.min + EPSILON;
+  const belowMax = range.includeMax ? cost <= range.max + EPSILON : cost < range.max - EPSILON;
+  return aboveMin && belowMax;
+}
+
+function sportsCostRangeBlock(candidate: Candidate): string | null {
+  if (!isSportsCandidate(candidate) || SPORTS_ALLOWED_COST_RANGES.length === 0) return null;
+  if (SPORTS_ALLOWED_COST_RANGES.some((range) => costInRange(candidate.packageCost, range))) return null;
+  const allowed = SPORTS_ALLOWED_COST_RANGES.map((range) => range.label).join("|");
+  return `sports_cost_range cost=${candidate.packageCost.toFixed(4)} allowed=${allowed}`;
+}
+
 function requiredDisplayedTouch(candidate: Candidate): number {
   // The reserve-shrunken execution size must still clear the exchange minimum,
   // so the displayed touch has to be at least minShares * reserve multiplier.
@@ -1359,6 +1400,7 @@ function passesDynamicGate(candidate: Candidate): boolean {
   if (candidate.lockedEdge + EPSILON < minEdgeFor(candidate)) return false;
   if (candidate.maxSpread - EPSILON > maxSpreadFor(candidate)) return false;
   if (candidate.availableSize + EPSILON < requiredDisplayedTouch(candidate)) return false;
+  if (sportsCostRangeBlock(candidate)) return false;
   if (farDatedExecutionBlock(candidate)) return false;
   if (juneBreakevenRangeBlock(candidate)) return false;
   return true;
@@ -1396,13 +1438,14 @@ function recordNearMiss(candidate: Candidate) {
     maxSpread: candidate.maxSpread,
     minShares,
     farDatedBlock: farDatedExecutionBlock(candidate),
-    rangeBlock: juneBreakevenRangeBlock(candidate),
+    rangeBlock: sportsCostRangeBlock(candidate) ?? juneBreakevenRangeBlock(candidate),
     edgeOk: candidate.lockedEdge + EPSILON >= minEdgeFor(candidate),
     spreadOk: candidate.maxSpread - EPSILON <= maxSpreadFor(candidate),
     sizeOk: candidate.availableSize + EPSILON >= minShares,
     executableGate: candidate.lockedEdge + EPSILON >= minEdgeFor(candidate)
       && candidate.maxSpread - EPSILON <= maxSpreadFor(candidate)
       && candidate.availableSize + EPSILON >= minShares
+      && !sportsCostRangeBlock(candidate)
       && !farDatedExecutionBlock(candidate)
       && !juneBreakevenRangeBlock(candidate),
   };
@@ -1416,7 +1459,7 @@ function blockersForNearMiss(sample: NearMissSample): string[] {
     sample.spreadOk ? "" : "spread",
     sample.sizeOk ? "" : "size",
     sample.farDatedBlock ? "far_dated" : "",
-    sample.rangeBlock ? "june_range" : "",
+    sample.rangeBlock ? sample.rangeBlock.split(" ")[0] : "",
   ].filter(Boolean);
 }
 
@@ -3751,6 +3794,7 @@ async function main() {
   installHttpKeepAlive();
   log(`starting; mode=${DRY_RUN ? "DRY_RUN" : "REAL"} enabled=${ENABLED} hardDisabled=${HARD_DISABLED}`);
   log(`gates: maxPackage=$${MAX_PACKAGE_USD} maxDaily=$${MAX_DAILY_USD} maxOpen=${MAX_OPEN_PACKAGES} maxPerMin=${MAX_PER_MIN} minEdge=${(MIN_EDGE * 100).toFixed(2)}c minTouch=${MIN_AVAILABLE_SHARES} maxSpread=${MAX_SPREAD} sportsMinEdge=${(SPORTS_MIN_EDGE * 100).toFixed(2)}c sportsMaxSpread=${SPORTS_MAX_SPREAD} sportsMaxPairedShares=${SPORTS_MAX_PAIRED_SHARES > 0 ? SPORTS_MAX_PAIRED_SHARES : "none"} sportsHedgeFill=${SPORTS_HEDGE_BREAKEVEN_FILL ? `breakeven(minEdge=${(SPORTS_HEDGE_COMPLETION_MIN_EDGE * 100).toFixed(2)}c)` : "snapshot_ask"} sportsPrewarmMeta=${SPORTS_PREWARM_ORDER_META ? "1" : "0"}`);
+  log(`sports cost ranges: ${SPORTS_ALLOWED_COST_RANGES.length ? SPORTS_ALLOWED_COST_RANGES.map((range) => range.label).join(",") : "unrestricted"}`);
   log(`sports safety: live execution ${ALLOW_SPORTS_LIVE_EXECUTION ? "ENABLED (cheap-leg-first; no full expensive leg before hedge fill)" : "BLOCKED by ARB_DAEMON_ALLOW_SPORTS_LIVE_EXECUTION=0"}; nbaBatch=${ENABLE_NBA_BATCH_EXECUTION ? "1" : "0"} nonAtomicOverride=${ALLOW_NBA_NON_ATOMIC_EXECUTION ? "1" : "0"}`);
   log(`submit hot path: postMode=${MONOTONIC_POST_MODE} responseFillFirst=${RESPONSE_FILL_FIRST ? "1" : "0"} httpKeepAlive=${HTTP_KEEP_ALIVE ? "1" : "0"}`);
   log(`watchlist throttle: eventConcurrency=${arbConfig.eventConcurrency} marketConcurrency=${arbConfig.marketConcurrency} sportsAutoDiscoveryDays=${SPORTS_AUTO_DISCOVERY_DAYS} soccerLimit=${SOCCER_DISCOVERY_LIMIT} bookSeedMax=${BOOK_SEED_MAX_PER_RECONNECT} bookSeedMinIntervalMs=${BOOK_SEED_MIN_INTERVAL_MS} clob429CooldownMs=${CLOB_REST_429_COOLDOWN_MS}`);
