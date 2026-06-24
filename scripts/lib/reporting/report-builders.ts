@@ -354,7 +354,7 @@ export function markdownPendingHypotheses(hypotheses: ReportHypothesis[]): strin
 }
 
 export function markdownOpenShadows(shadows: ReportBlockedSignalShadow[]): string[] {
-  const open = shadows.filter((shadow) => shadow.status === "open").sort((a, b) => a.blockedAt.localeCompare(b.blockedAt));
+  const open = shadows.filter(isReportableOpenShadow).sort((a, b) => a.blockedAt.localeCompare(b.blockedAt));
   const out = ["## Currently Open Shadow Trades", "", "| Shadow | Type | Asset | Venue | Direction | Unrealized P&L | Opened | Thesis |", "|---|---|---|---|---|---:|---|---|"];
   if (open.length === 0) {
     out.push("| None | n/a | n/a | n/a | n/a | n/a | n/a | No open shadow trades |");
@@ -367,6 +367,14 @@ export function markdownOpenShadows(shadows: ReportBlockedSignalShadow[]): strin
   }
   out.push("");
   return out;
+}
+
+function isReportableOpenShadow(shadow: ReportBlockedSignalShadow): boolean {
+  if (shadow.status !== "open") return false;
+  // Monotonic package shadows are maintained by the arb scanner/engine, not the
+  // macro trader. Keeping them here made stale scanner rows look like live macro
+  // exposure in Telegram/performance reports.
+  return !(shadow.signalType === "MONOTONIC_ARB" || shadow.position?.instrumentType === "pm_package");
 }
 
 export function buildCsvReport(args: BuildCsvReportArgs, deps: ReportBuilderDeps): string {
@@ -406,7 +414,7 @@ export function buildCsvReport(args: BuildCsvReportArgs, deps: ReportBuilderDeps
     ));
   }
 
-  for (const shadow of args.shadows.filter((shadow) => shadow.status === "open")) {
+  for (const shadow of args.shadows.filter(isReportableOpenShadow)) {
     const currentRowKey = deps.relativeValueKey(shadow.position);
     const currentRow = currentRowKey ? relativeValueRows.get(currentRowKey) : undefined;
     const entryMatch = deps.relativeValueEntryMatch(relativeValueHistoryRows, shadow.position, shadow.blockedAt, shadow.heatmapRowSnapshot?.row);
