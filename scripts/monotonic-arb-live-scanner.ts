@@ -126,6 +126,7 @@ function argValue(name: string): string | undefined {
 
 const DRY_RUN = process.argv.includes("--dry-run");
 const NO_SHADOW = process.argv.includes("--no-shadow");
+const WRITE_SHADOWS = process.argv.includes("--write-shadows") || process.env.MONOTONIC_ARB_LIVE_WRITE_SHADOWS === "1";
 const MIN_EDGE = Number(argValue("--min-edge") ?? DEFAULT_MIN_EDGE);
 const MIN_LIQUIDITY = Number(argValue("--min-liquidity") ?? DEFAULT_MIN_LIQUIDITY);
 const MAX_SPREAD = Number(argValue("--max-spread") ?? DEFAULT_MAX_SPREAD);
@@ -536,13 +537,13 @@ async function main() {
   if (!DRY_RUN) {
     if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
     writeFileSync(CANDIDATES_PATH, JSON.stringify(payload, null, 2) + "\n");
-    if (!NO_SHADOW) appended = appendEligibleShadows(candidates);
+    if (WRITE_SHADOWS && !NO_SHADOW) appended = appendEligibleShadows(candidates);
   }
 
   console.log(`Scanned ${eventSlugs().length} events; ${candidates.length} positive-edge candidates; ${eligible.length} eligible.`);
   console.log(`Thresholds: edge>=${(MIN_EDGE * 100).toFixed(2)}c liquidity>=${MIN_LIQUIDITY} spread<=${MAX_SPREAD} size>=${MIN_SIZE}`);
   if (DRY_RUN) console.log("Dry run: did not write candidate file or shadow ledger.");
-  else console.log(`Wrote ${CANDIDATES_PATH}; appended ${appended} shadow(s).`);
+  else console.log(`Wrote ${CANDIDATES_PATH}; shadow writes ${WRITE_SHADOWS && !NO_SHADOW ? "enabled" : "disabled"}; appended ${appended} shadow(s).`);
   for (const candidate of eligible.slice(0, 10)) {
     console.log(`  ${candidate.asset} ${candidate.packageId} edge=${candidate.lockedEdgeCents.toFixed(2)}c size=${candidate.availableSize.toFixed(2)} liq=${candidate.minLiquidity.toFixed(0)}`);
   }

@@ -242,6 +242,14 @@ def shadow_line(shadow: dict[str, Any], tz: ZoneInfo, resolved: bool) -> str:
     )
 
 
+def is_macro_report_shadow(shadow: dict[str, Any]) -> bool:
+    position = shadow.get("position", {})
+    return not (
+        shadow.get("signalType") == "MONOTONIC_ARB"
+        or position.get("instrumentType") == "pm_package"
+    )
+
+
 def journal_sections_for_window(path: Path, start_utc: datetime, end_utc: datetime, tz: ZoneInfo) -> list[str]:
     if not path.exists():
         return []
@@ -432,8 +440,9 @@ def build_report(window: ReportWindow) -> str:
     ]
     opened_real = opened_real_from_closed + opened_real_current
 
-    opened_shadows = [s for s in shadows if in_window(s.get("blockedAt"), window.start_utc, window.end_utc)]
-    resolved_shadows = [s for s in shadows if in_window(s.get("resolvedAt"), window.start_utc, window.end_utc)]
+    reportable_shadows = [s for s in shadows if is_macro_report_shadow(s)]
+    opened_shadows = [s for s in reportable_shadows if in_window(s.get("blockedAt"), window.start_utc, window.end_utc)]
+    resolved_shadows = [s for s in reportable_shadows if in_window(s.get("resolvedAt"), window.start_utc, window.end_utc)]
 
     realized = sum(num(row.get("pnl")) for row in closed_trades)
     counted_realized = sum(num(row.get("pnl")) for row in counted_closed_trades)
