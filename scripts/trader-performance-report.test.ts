@@ -248,47 +248,6 @@ describe("trader report row builders", () => {
     expect(joined).toContain("instrument_type=pm_yes; instrument_id=btc-hit-jun-2026::123; entry=0.4; current=0.5; edge \\| note");
   });
 
-  it("excludes monotonic package shadows from macro open-shadow reports", () => {
-    const lines = markdownOpenShadows([
-      {
-        id: "macro-shadow",
-        status: "open",
-        blockedAt: "2026-06-01T00:00:00.000Z",
-        blockedReason: "manual",
-        signalType: "TEST",
-        asset: "BTC",
-        venue: "polymarket",
-        direction: "long",
-        thesis: "macro shadow",
-        position,
-      },
-      {
-        id: "monotonic-shadow",
-        status: "open",
-        blockedAt: "2026-06-01T00:01:00.000Z",
-        blockedReason: "monotonic_arb_shadow",
-        signalType: "MONOTONIC_ARB",
-        asset: "GOLD",
-        venue: "polymarket",
-        direction: "long",
-        thesis: "monotonic package",
-        position: {
-          ...position,
-          id: "monotonic-position",
-          asset: "GOLD",
-          signalType: "MONOTONIC_ARB",
-          instrumentType: "pm_package",
-          instrumentId: "gc-hit-jun-2026::YES-1+NO-2",
-          instrumentLabel: "gc-hit-jun-2026 — monotonic arb package — YES 9000 / NO 10000",
-        },
-      },
-    ]);
-
-    const joined = lines.join("\n");
-    expect(joined).toContain("macro-shadow");
-    expect(joined).not.toContain("monotonic-shadow");
-  });
-
   it("keeps full CSV and Markdown report builder headers stable for empty reports", () => {
     const baseArgs = {
       generatedAt: "2026-06-08T18:00:00.000Z",

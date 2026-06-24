@@ -73,7 +73,6 @@ const MONOTONIC_ARB_ASSETS = new Set(["BTC", "ETH", "GOLD", "OIL", "AMZN", "HYPE
 // packages as the bankroll allows (one dedup per unique package id). It still
 // draws TRADE_SIZE per package from cash like any other live position.
 const ENABLE_MONOTONIC_ARB_LIVE = false;
-const ENABLE_MONOTONIC_ARB_SHADOWS = process.env.ENABLE_MONOTONIC_ARB_SHADOWS === "1";
 const INVALID_MONOTONIC_SETTLEMENT_REASON = "invalid_monotonic_settlement_bucket";
 const UNDERLYING_CAP_ENTRY_MAX_SPREAD = 0.02;
 const UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY = 1000;
@@ -3419,7 +3418,6 @@ async function recordMonotonicArbShadows(
   const ageMinutes = snapshotAgeMinutes(latestSnapshot.timestamp);
   if (ageMinutes !== null && ageMinutes > MONOTONIC_ARB_MAX_SNAPSHOT_AGE_MINUTES) return 0;
   const liveMode = ENABLE_MONOTONIC_ARB_LIVE && portfolio !== null;
-  if (!liveMode && !ENABLE_MONOTONIC_ARB_SHADOWS) return 0;
   let recorded = 0;
 
   for (const event of latestSnapshot.polymarket) {
