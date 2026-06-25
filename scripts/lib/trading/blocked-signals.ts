@@ -34,6 +34,7 @@ export interface BlockedSignalSummaryShadow {
   thesis: string;
   position: {
     instrumentLabel?: string;
+    instrumentType?: string;
   };
   trendMetrics?: unknown;
   marketQuality?: {
@@ -49,14 +50,15 @@ export interface BlockedSignalSummaryShadow {
 }
 
 export function summarizeBlockedSignals<TShadow extends BlockedSignalSummaryShadow>(blockedSignals: TShadow[]) {
-  const openCount = blockedSignals.filter((shadow) => shadow.status === "open").length;
-  const resolved = blockedSignals
+  const reportableSignals = blockedSignals.filter(isReportableShadowLearningSignal);
+  const openCount = reportableSignals.filter((shadow) => shadow.status === "open").length;
+  const resolved = reportableSignals
     .filter((shadow): shadow is TShadow & {
       hypotheticalResult: NonNullable<TShadow["hypotheticalResult"]>;
       resolvedAt: string;
     } => shadow.status === "resolved" && !!shadow.hypotheticalResult && !!shadow.resolvedAt && !shadow.learningExcluded)
     .sort((a, b) => a.resolvedAt.localeCompare(b.resolvedAt));
-  const openQualityWarnings = blockedSignals
+  const openQualityWarnings = reportableSignals
     .filter((shadow): shadow is TShadow & { marketQuality: NonNullable<TShadow["marketQuality"]> } =>
       shadow.status === "open" && !!shadow.marketQuality && shadow.marketQuality.flags.length > 0)
     .slice(-8)
@@ -77,7 +79,7 @@ export function summarizeBlockedSignals<TShadow extends BlockedSignalSummaryShad
     wouldHaveLost: number;
     avgPnlPct: number;
   }>();
-  for (const shadow of blockedSignals) {
+  for (const shadow of reportableSignals) {
     if (shadow.learningExcluded) continue;
     const row = bySignal.get(shadow.signalType) ?? {
       signalType: shadow.signalType,
@@ -122,6 +124,10 @@ export function summarizeBlockedSignals<TShadow extends BlockedSignalSummaryShad
     })),
     openQualityWarnings,
   };
+}
+
+function isReportableShadowLearningSignal(shadow: BlockedSignalSummaryShadow): boolean {
+  return shadow.signalType !== "MONOTONIC_ARB" && shadow.position.instrumentType !== "pm_package";
 }
 
 export interface BlockedSignalObservationRow {

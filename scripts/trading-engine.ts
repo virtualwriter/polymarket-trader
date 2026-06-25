@@ -1315,6 +1315,12 @@ function clearPendingScannerClosedTrades() {
   writeFileSync(PENDING_CLOSED_TRADES_FILE, "");
 }
 
+function isEngineLearnableClosedTrade(trade: ClosedTrade): boolean {
+  return trade.closeReason !== "data_quality_artifact" &&
+    trade.signalType !== "MONOTONIC_ARB" &&
+    trade.instrumentType !== "pm_package";
+}
+
 function appendJournal(entry: string) {
   const file = join(DATA_DIR, "learning-journal.md");
   if (!existsSync(file)) writeFileSync(file, "# Trading Engine Learning Journal\n\n");
@@ -7763,9 +7769,10 @@ async function main() {
   if (pendingScannerClosedTrades.length > 0) {
     const existingClosedTradeIds = new Set(readClosedTradeCsv().map((trade) => trade.id));
     const currentRunClosedIds = new Set(closedTrades.map((trade) => trade.id));
-    const newPendingScannerClosedTrades = pendingScannerClosedTrades.filter((trade) =>
+    const newPendingScannerClosedTradeCandidates = pendingScannerClosedTrades.filter((trade) =>
       !existingClosedTradeIds.has(trade.id) && !currentRunClosedIds.has(trade.id)
     );
+    const newPendingScannerClosedTrades = newPendingScannerClosedTradeCandidates.filter(isEngineLearnableClosedTrade);
     console.log(`\n  Importing ${newPendingScannerClosedTrades.length}/${pendingScannerClosedTrades.length} minute-scanner closed trades from live state:`);
     for (const t of newPendingScannerClosedTrades) {
       const emoji = t.pnl >= 0 ? "✅" : "❌";
@@ -7779,9 +7786,13 @@ async function main() {
   const processedClosedTrades = loadProcessedClosedTrades(allClosedTrades);
   const currentRunClosedIds = new Set(closedTrades.map((trade) => trade.id));
   const processedIds = new Set(processedClosedTrades.processedIds);
-  const scannerClosedTrades = allClosedTrades.filter((trade) =>
+  const scannerClosedTradeCandidates = allClosedTrades.filter((trade) =>
     !processedIds.has(trade.id) && !currentRunClosedIds.has(trade.id)
   );
+  const scannerClosedTrades = scannerClosedTradeCandidates.filter(isEngineLearnableClosedTrade);
+  const skippedScannerClosedTradeIds = scannerClosedTradeCandidates
+    .filter((trade) => !isEngineLearnableClosedTrade(trade))
+    .map((trade) => trade.id);
   if (scannerClosedTrades.length > 0) {
     console.log(`\n  Ingested ${scannerClosedTrades.length} minute-scanner closed trades for learning:`);
     for (const t of scannerClosedTrades) {
@@ -8040,7 +8051,7 @@ async function main() {
     saveLearningParams(learningParams);
     saveBlockedSignals(blockedSignals);
     saveProcessedClosedTrades({
-      processedIds: [...processedIds, ...closedTrades.map((trade) => trade.id)],
+      processedIds: [...processedIds, ...closedTrades.map((trade) => trade.id), ...skippedScannerClosedTradeIds],
       updatedAt: new Date().toISOString(),
     });
     clearPendingScannerClosedTrades();
