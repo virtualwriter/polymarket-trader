@@ -659,7 +659,15 @@ Follow-up disk/Git cleanup on 2026-06-25 after monotonic-artifact remediation:
 - Largest reachable blobs were mapped to repeated historical versions of `relative-value/calibration/no_bias_candidates.jsonl` and older `data/instrument-snapshots.jsonl` blobs.
 - `git gc --prune=now` was attempted earlier and stalled in `git pack-objects` for about 16 minutes without producing a new pack; do not retry default GC while root disk is tight.
 - `relative-value/calibration/no_bias_candidates.jsonl` is ignored by `.gitignore` but was still tracked and listed in the hourly wrapper's `DATA_FILES`; remove it from Git tracking and from the wrapper manifest so hourly commits do not re-add the large calibration JSONL.
-- Remaining `.git` loose-object bloat is reachable from the VPS's local ahead-only state history. Prune cannot remove it. The safe durable fix is a fresh checkout/current-state snapshot procedure rather than repeated in-place GC on the production box.
+- Completed the durable repo refresh:
+  - cloned a fresh `origin/main` checkout on the VPS;
+  - restored current production state into the fresh checkout;
+  - committed and pushed one compact state snapshot (`d592021a`);
+  - swapped the fresh checkout into `/opt/polymarket-trader`;
+  - installed the updated wrapper to `/usr/local/bin/run-polymarket-trader`;
+  - removed the old checkout's bloated `.git` object store by deleting the old worktree backup after verification.
+- Final verification after the refresh: `/opt/polymarket-trader/.git` was about 170 MB, loose objects were about 1.74 MiB, root disk was about 85% used / 3.4 GB free, `relative-value/calibration/no_bias_candidates.jsonl` was ignored and untracked, and the Telegram daily report dry-run still contained no monotonic/package text.
+- A temporary state backup remains under `/var/lib/polymarket-trader/maintenance-backups/repo-refresh-*` (~1.2 GB). It can be removed after the next successful hourly run if more free space is needed.
 
 ### Current cleanup impact
 
@@ -721,7 +729,7 @@ Follow-up disk/Git cleanup on 2026-06-25 after monotonic-artifact remediation:
    - Emergency 30-day snapshot archive pruning was performed on the USA VPS, and `npm run cleanup:disk` now provides a repeatable dry-run/apply path.
    - `scripts/compact_no_bias_calibration.py` now covers the growing `relative-value/calibration/no_bias_candidates.jsonl` file; apply mode should be run only after reviewing the dry-run summary.
    - `relative-value/calibration/no_bias_candidates.jsonl` must remain untracked and out of `scripts/run-polymarket-trader.sh`'s `DATA_FILES` manifest. It is too large for hourly Git history.
-   - The USA VPS repo may still need a fresh-clone/current-state snapshot reset because local reachable loose objects cannot be pruned away safely in place.
+   - The 2026-06-25 fresh-clone/current-state snapshot reset fixed the immediate loose-object blowup. Repeat that procedure instead of default `git gc` if local-only generated history builds up again.
    - Snapshot retention/offload policy still needs monitoring; root disk pressure may still require off-root storage or disk expansion.
    - Do not untrack `relative-value/index.html`; Vercel serves `relative-value/` directly.
    - Do not cap `learning-journal.md` until the LLM prompt-window behavior is mapped and tested.
