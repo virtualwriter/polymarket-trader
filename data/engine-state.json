@@ -1,608 +1,54 @@
 {
-  "generatedAt": "2026-06-21T17:28:34.633Z",
+  "generatedAt": "2026-06-25T16:30:30.262Z",
   "dataFreshness": {
-    "valuationRows": 1130,
-    "latestValuationAt": "2026-06-21T17",
-    "macroRows": 1128,
+    "valuationRows": 1224,
+    "latestValuationAt": "2026-06-25T16",
+    "macroRows": 1222,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-21T17"
+    "latestInstrumentSnapshotAt": "2026-06-25T16"
   },
   "portfolio": {
-    "cash": 60.3501,
-    "openPositions": 38,
-    "realizedPnl": 0.9377,
-    "totalTrades": 199,
-    "winRatePct": 51.8,
-    "unrealizedPnl": 0.0302
+    "cash": 96.4048,
+    "openPositions": 2,
+    "realizedPnl": 0.9922,
+    "totalTrades": 237,
+    "winRatePct": 57.4,
+    "unrealizedPnl": 0.0084
   },
   "openPositions": [
     {
-      "positionId": "MA-1780403314728-llno",
-      "asset": "SOL",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0,
-      "currentPrice": 0.99,
-      "underlyingPrice": 74.604,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "MA-1780511316427-4vq1",
-      "asset": "SOL",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.4,
-      "currentPrice": 0.999,
-      "underlyingPrice": 74.604,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "MA-1780511316427-qxg7",
-      "asset": "SOL",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.4,
-      "currentPrice": 0.999,
-      "underlyingPrice": 74.604,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "MA-1780644515935-bomt",
-      "asset": "ETH",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0,
-      "currentPrice": 0.999,
-      "underlyingPrice": 1727.5,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "eth_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1780662516612-mf3w",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.2,
-      "currentPrice": 0.996,
-      "underlyingPrice": 4166,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1780756122347-no4t",
+      "positionId": "T-1782401411926-lioz",
       "asset": "BTC",
-      "venue": "polymarket",
+      "venue": "spot",
       "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.1,
-      "currentPrice": 0.998,
-      "underlyingPrice": 64131,
-      "targetPct": null,
-      "stopPct": 100,
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": 0.69,
+      "currentPrice": 59701,
+      "underlyingPrice": 59701,
+      "targetPct": 3,
+      "stopPct": 1.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
-        "btc_spot"
+        "btc_spot",
+        "btc_ibit_pc_ratio"
       ]
     },
     {
-      "positionId": "MA-1780781316401-w1a7",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0,
-      "currentPrice": 0.999,
-      "underlyingPrice": 4166,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1780856911587-wz2s",
-      "asset": "ETH",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.1,
-      "currentPrice": 0.998,
-      "underlyingPrice": 1727.5,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "eth_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1780871312894-eb2e",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0,
-      "currentPrice": 0.999,
-      "underlyingPrice": 4166,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781011721131-phkx",
-      "asset": "ETH",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0,
-      "currentPrice": 0.999,
-      "underlyingPrice": 1727.5,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "eth_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781105294848-ovm1",
-      "asset": "SILVER",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.1,
-      "currentPrice": 0.998,
-      "underlyingPrice": 65.111,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "MA-1781130494900-zsxa",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0,
-      "currentPrice": 0.999,
-      "underlyingPrice": 4166,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781166493427-aldc",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.6,
-      "currentPrice": 0.993,
-      "underlyingPrice": 4166,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781206098612-0yo7",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.1,
-      "currentPrice": 0.999,
-      "underlyingPrice": 64131,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "btc_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781238505316-xyt0",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.1,
-      "currentPrice": 1,
-      "underlyingPrice": 64131,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "btc_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781263693450-24nj",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.3,
-      "currentPrice": 1.001,
-      "underlyingPrice": 64131,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "btc_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781436503904-yxsl",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.2,
-      "currentPrice": 1.001,
-      "underlyingPrice": 4166,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781483300626-drhr",
+      "positionId": "T-1782401411926-e7ms",
       "asset": "OIL",
-      "venue": "polymarket",
+      "venue": "spot",
       "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.2,
-      "currentPrice": 0.997,
-      "underlyingPrice": 78.614,
-      "targetPct": null,
-      "stopPct": 100,
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": 0.15,
+      "currentPrice": 71.65,
+      "underlyingPrice": 71.65,
+      "targetPct": 4,
+      "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
-        "oil_wti_spot"
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
       ]
-    },
-    {
-      "positionId": "MA-1781490504666-0264",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.2,
-      "currentPrice": 1.001,
-      "underlyingPrice": 78.614,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781501302104-b6z8",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.1,
-      "currentPrice": 0.998,
-      "underlyingPrice": 78.614,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781519305316-mdyr",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.2,
-      "currentPrice": 1.001,
-      "underlyingPrice": 78.614,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781533704541-nmyb",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0,
-      "currentPrice": 0.999,
-      "underlyingPrice": 64131,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "btc_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781558903818-kozp",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.1,
-      "currentPrice": 1,
-      "underlyingPrice": 78.614,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781587701648-s5jz",
-      "asset": "ETH",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.1,
-      "currentPrice": 0.997,
-      "underlyingPrice": 1727.5,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "eth_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781594898993-u7ri",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.3,
-      "currentPrice": 1,
-      "underlyingPrice": 4166,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781594899299-q03h",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.4,
-      "currentPrice": 1.002,
-      "underlyingPrice": 4166,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781594899491-mx0o",
-      "asset": "ETH",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.3,
-      "currentPrice": 1.001,
-      "underlyingPrice": 1727.5,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "eth_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781620107511-vc14",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.1,
-      "currentPrice": 0.999,
-      "underlyingPrice": 4166,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781692113687-g4b0",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.2,
-      "currentPrice": 0.999,
-      "underlyingPrice": 78.614,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781692114231-68rr",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0,
-      "currentPrice": 0.998,
-      "underlyingPrice": 78.614,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781692114378-h8m8",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.1,
-      "currentPrice": 0.999,
-      "underlyingPrice": 78.614,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781702902979-akh3",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.1,
-      "currentPrice": 1,
-      "underlyingPrice": 78.614,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ]
-    },
-    {
-      "positionId": "MA-1781782105850-6djw",
-      "asset": "SILVER",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.1,
-      "currentPrice": 0.997,
-      "underlyingPrice": 65.111,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "MA-1781782106163-kpb8",
-      "asset": "SILVER",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": -0.4,
-      "currentPrice": 0.998,
-      "underlyingPrice": 65.111,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "MA-1781785706694-r3z4",
-      "asset": "SILVER",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.4,
-      "currentPrice": 0.999,
-      "underlyingPrice": 65.111,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "MA-1781785707008-n095",
-      "asset": "SILVER",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.3,
-      "currentPrice": 0.997,
-      "underlyingPrice": 65.111,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "MA-1781785707158-1y7m",
-      "asset": "SILVER",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.5,
-      "currentPrice": 0.997,
-      "underlyingPrice": 65.111,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "MA-1781785707318-qe0p",
-      "asset": "SILVER",
-      "venue": "polymarket",
-      "direction": "long",
-      "signalType": "MONOTONIC_ARB",
-      "pnlPct": 0.1,
-      "currentPrice": 0.997,
-      "underlyingPrice": 65.111,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
     }
   ],
   "signalHealth": [
@@ -743,10 +189,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 62,
-    "resolvedCount": 662,
-    "wouldHaveWon": 371,
-    "wouldHaveLost": 291,
+    "openCount": 42,
+    "resolvedCount": 661,
+    "wouldHaveWon": 366,
+    "wouldHaveLost": 295,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -755,14 +201,6 @@
         "wouldHaveWon": 188,
         "wouldHaveLost": 65,
         "avgPnlPct": 0.99
-      },
-      {
-        "signalType": "MONOTONIC_ARB",
-        "blocked": 31,
-        "resolved": 10,
-        "wouldHaveWon": 10,
-        "wouldHaveLost": 0,
-        "avgPnlPct": 20.32
       },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -811,22 +249,33 @@
         "wouldHaveWon": 1,
         "wouldHaveLost": 0,
         "avgPnlPct": 6.73
+      },
+      {
+        "signalType": "PM_EV_BELOW_SPOT",
+        "blocked": 4,
+        "resolved": 4,
+        "wouldHaveWon": 2,
+        "wouldHaveLost": 2,
+        "avgPnlPct": 0.07
       }
     ],
     "recentResolved": [
       {
-        "signalType": "FUNDING_EXTREME_LONG",
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
         "asset": "GOLD",
-        "venue": "hyperliquid",
+        "venue": "polymarket",
         "direction": "short",
-        "blockedReason": "short_blocked_by_positive_trend",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
         "outcome": "win",
-        "closeReason": "expiry",
-        "pnlPct": 0.32,
-        "resolvedAt": "2026-06-18T00:28:27.382Z",
-        "trendMetrics": {
-          "aboveTrendPct": 1.67,
-          "momentumPct": 1.92
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 2.88,
+        "resolvedAt": "2026-06-23T09:28:20.430Z",
+        "marketQuality": {
+          "yesBid": 0.548,
+          "yesAsk": 0.549,
+          "yesSpread": 0.001,
+          "liquidity": 10253.27,
+          "flags": []
         }
       },
       {
@@ -835,50 +284,15 @@
         "venue": "polymarket",
         "direction": "short",
         "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 0,
-        "resolvedAt": "2026-06-18T06:28:30.860Z",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -4,
+        "resolvedAt": "2026-06-23T13:28:20.962Z",
         "marketQuality": {
-          "yesBid": 0.54,
-          "yesAsk": 0.55,
+          "yesBid": 0.75,
+          "yesAsk": 0.76,
           "yesSpread": 0.01,
-          "liquidity": 20329.88,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
-      {
-        "signalType": "PC_RATIO_EXTREME_LOW",
-        "asset": "GOLD",
-        "venue": "spot",
-        "direction": "short",
-        "blockedReason": "short_blocked_by_positive_trend",
-        "outcome": "win",
-        "closeReason": "target",
-        "pnlPct": 3.23,
-        "resolvedAt": "2026-06-18T16:28:24.606Z",
-        "trendMetrics": {
-          "aboveTrendPct": 1.68,
-          "momentumPct": 3.31
-        }
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 0,
-        "resolvedAt": "2026-06-18T17:28:24.440Z",
-        "marketQuality": {
-          "yesBid": 0.62,
-          "yesAsk": 0.63,
-          "yesSpread": 0.01,
-          "liquidity": 26828.63,
+          "liquidity": 30707.01,
           "flags": [
             "wide_pm_spread"
           ]
@@ -892,13 +306,13 @@
         "blockedReason": "no_bias_adjusted_gap_shadow",
         "outcome": "loss",
         "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.96,
-        "resolvedAt": "2026-06-19T04:28:28.567Z",
+        "pnlPct": -8,
+        "resolvedAt": "2026-06-24T11:28:21.155Z",
         "marketQuality": {
-          "yesBid": 0.49,
-          "yesAsk": 0.5,
+          "yesBid": 0.75,
+          "yesAsk": 0.76,
           "yesSpread": 0.01,
-          "liquidity": 14784.88,
+          "liquidity": 31609.69,
           "flags": [
             "wide_pm_spread"
           ]
@@ -910,35 +324,35 @@
         "venue": "polymarket",
         "direction": "short",
         "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -2.5,
-        "resolvedAt": "2026-06-19T13:28:24.352Z",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 15.09,
+        "resolvedAt": "2026-06-24T20:28:23.445Z",
+        "marketQuality": {
+          "yesBid": 0.47,
+          "yesAsk": 0.48,
+          "yesSpread": 0.01,
+          "liquidity": 21164.96,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 7.5,
+        "resolvedAt": "2026-06-24T20:28:23.445Z",
         "marketQuality": {
           "yesBid": 0.6,
           "yesAsk": 0.61,
           "yesSpread": 0.01,
-          "liquidity": 25129.82,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -4.35,
-        "resolvedAt": "2026-06-19T18:28:23.889Z",
-        "marketQuality": {
-          "yesBid": 0.77,
-          "yesAsk": 0.78,
-          "yesSpread": 0.01,
-          "liquidity": 31404.84,
+          "liquidity": 35429.04,
           "flags": [
             "wide_pm_spread"
           ]
@@ -952,16 +366,54 @@
         "blockedReason": "no_bias_adjusted_gap_shadow",
         "outcome": "win",
         "closeReason": "thesis_validated_profitable",
-        "pnlPct": 0,
-        "resolvedAt": "2026-06-20T10:28:23.953Z",
+        "pnlPct": 2.94,
+        "resolvedAt": "2026-06-24T20:28:23.445Z",
         "marketQuality": {
-          "yesBid": 0.48,
-          "yesAsk": 0.49,
+          "yesBid": 0.32,
+          "yesAsk": 0.33,
           "yesSpread": 0.01,
-          "liquidity": 13632.17,
+          "liquidity": 17298.98,
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 3.23,
+        "resolvedAt": "2026-06-25T13:28:28.193Z",
+        "marketQuality": {
+          "yesBid": 0.69,
+          "yesAsk": 0.7,
+          "yesSpread": 0.01,
+          "liquidity": 25339.21,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.39,
+        "resolvedAt": "2026-06-25T16:30:30.059Z",
+        "marketQuality": {
+          "yesBid": 0.28,
+          "yesAsk": 0.29,
+          "yesSpread": 0.01,
+          "liquidity": 23582.62,
+          "flags": []
         }
       }
     ],
@@ -1052,6 +504,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.8pt on ETH, spread 2.0c, liquidity 37242. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $75,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.51,
+          "yesAsk": 0.52,
+          "yesSpread": 0.01,
+          "liquidity": 32178.51,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 12.3pt after haircuts. CBOE gap 13.3pt, CME gap 23.5pt, source agreement both_positive, spread 1.0c, liquidity 32179. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },

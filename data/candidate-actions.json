@@ -1,47 +1,62 @@
 {
-  "generatedAt": "2026-06-21T17:28:36.550Z",
+  "generatedAt": "2026-06-25T16:30:32.876Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
+      "asset": "BTC",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.4025000000000001,
-      "confidence": 0.23044359871891787,
-      "thesis": "OIL P/C ratio 1.52 — heavy put buying → contrarian long.",
+      "strength": 1,
+      "confidence": 0.5725306800470008,
+      "thesis": "BTC P/C ratio 2.14 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 78.61,
+      "entryPrice": 59701,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "BTC",
+      "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.285,
-      "confidence": 0.1631712438133952,
-      "thesis": "BTC P/C ratio 1.43 — heavy put buying → contrarian long.",
+      "strength": 1,
+      "confidence": 0.5725306800470008,
+      "thesis": "OIL P/C ratio 2.42 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 64131,
+      "entryPrice": 71.65,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
+    },
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.25542857142857145,
+      "confidence": 0.1365597844843918,
+      "thesis": "GOLD HL funding 23.9% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4044,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "sizingPreviews": [
     {
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
+      "asset": "BTC",
       "venue": "spot",
       "direction": "long",
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 78.61,
+      "entryPrice": 59701,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,13 +71,34 @@
     },
     {
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "BTC",
+      "asset": "OIL",
       "venue": "spot",
       "direction": "long",
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 64131,
+      "entryPrice": 71.65,
+      "probabilitySource": "unsupported",
+      "winProbability": null,
+      "probabilitySampleSize": null,
+      "edgePts": null,
+      "rawKellyFraction": null,
+      "adjustedKellyFraction": null,
+      "cappedKellyFraction": null,
+      "notes": [
+        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
+        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
+      ]
+    },
+    {
+      "signalType": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "reason": "unsupported_signal",
+      "entryPrice": 4044,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -78,91 +114,7 @@
   ],
   "portfolioExposurePreviews": [
     {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:0",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "candidateSize": 0,
-      "riskClusters": [
-        "commodity",
-        "oil_delta",
-        "options_sentiment",
-        "spot_venue"
-      ],
-      "current": {
-        "totalGross": 38,
-        "totalNet": 38,
-        "byAsset": {
-          "SOL": 3,
-          "ETH": 5,
-          "GOLD": 9,
-          "BTC": 5,
-          "SILVER": 7,
-          "OIL": 9
-        },
-        "bySignalType": {
-          "MONOTONIC_ARB": 38
-        },
-        "byVenue": {
-          "polymarket": 38
-        },
-        "byCluster": {
-          "monotonic_arb": 38,
-          "polymarket_binary": 38,
-          "polymarket_venue": 38,
-          "risk_on": 13,
-          "sol_delta": 3,
-          "eth_delta": 5,
-          "commodity": 25,
-          "gold_delta": 9,
-          "btc_delta": 5,
-          "silver_delta": 7,
-          "oil_delta": 9
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 38,
-        "totalNet": 38,
-        "byAsset": {
-          "SOL": 3,
-          "ETH": 5,
-          "GOLD": 9,
-          "BTC": 5,
-          "SILVER": 7,
-          "OIL": 9
-        },
-        "bySignalType": {
-          "MONOTONIC_ARB": 38,
-          "PC_RATIO_EXTREME_HIGH": 0
-        },
-        "byVenue": {
-          "polymarket": 38,
-          "spot": 0
-        },
-        "byCluster": {
-          "monotonic_arb": 38,
-          "polymarket_binary": 38,
-          "polymarket_venue": 38,
-          "risk_on": 13,
-          "sol_delta": 3,
-          "eth_delta": 5,
-          "commodity": 25,
-          "gold_delta": 9,
-          "btc_delta": 5,
-          "silver_delta": 7,
-          "oil_delta": 9,
-          "options_sentiment": 0,
-          "spot_venue": 0
-        }
-      },
-      "warnings": [
-        "commodity cluster exposure 25.0000 exceeds preview threshold 5.0000.",
-        "oil_delta cluster exposure 9.0000 exceeds preview threshold 5.0000."
-      ]
-    },
-    {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:BTC:1",
+      "candidateId": "PC_RATIO_EXTREME_HIGH:BTC:0",
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
@@ -175,99 +127,179 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 38,
-        "totalNet": 38,
+        "totalGross": 2,
+        "totalNet": 2,
         "byAsset": {
-          "SOL": 3,
-          "ETH": 5,
-          "GOLD": 9,
-          "BTC": 5,
-          "SILVER": 7,
-          "OIL": 9
+          "BTC": 1,
+          "OIL": 1
         },
         "bySignalType": {
-          "MONOTONIC_ARB": 38
+          "PC_RATIO_EXTREME_HIGH": 2
         },
         "byVenue": {
-          "polymarket": 38
+          "spot": 2
         },
         "byCluster": {
-          "monotonic_arb": 38,
-          "polymarket_binary": 38,
-          "polymarket_venue": 38,
-          "risk_on": 13,
-          "sol_delta": 3,
-          "eth_delta": 5,
-          "commodity": 25,
-          "gold_delta": 9,
-          "btc_delta": 5,
-          "silver_delta": 7,
-          "oil_delta": 9
+          "btc_delta": 1,
+          "options_sentiment": 2,
+          "risk_on": 1,
+          "spot_venue": 2,
+          "commodity": 1,
+          "oil_delta": 1
         }
       },
       "afterCandidate": {
-        "totalGross": 38,
-        "totalNet": 38,
+        "totalGross": 2,
+        "totalNet": 2,
         "byAsset": {
-          "SOL": 3,
-          "ETH": 5,
-          "GOLD": 9,
-          "BTC": 5,
-          "SILVER": 7,
-          "OIL": 9
+          "BTC": 1,
+          "OIL": 1
         },
         "bySignalType": {
-          "MONOTONIC_ARB": 38,
-          "PC_RATIO_EXTREME_HIGH": 0
+          "PC_RATIO_EXTREME_HIGH": 2
         },
         "byVenue": {
-          "polymarket": 38,
-          "spot": 0
+          "spot": 2
         },
         "byCluster": {
-          "monotonic_arb": 38,
-          "polymarket_binary": 38,
-          "polymarket_venue": 38,
-          "risk_on": 13,
-          "sol_delta": 3,
-          "eth_delta": 5,
-          "commodity": 25,
-          "gold_delta": 9,
-          "btc_delta": 5,
-          "silver_delta": 7,
-          "oil_delta": 9,
-          "options_sentiment": 0,
-          "spot_venue": 0
+          "btc_delta": 1,
+          "options_sentiment": 2,
+          "risk_on": 1,
+          "spot_venue": 2,
+          "commodity": 1,
+          "oil_delta": 1
         }
       },
-      "warnings": [
-        "risk_on cluster exposure 13.0000 exceeds preview threshold 5.0000."
-      ]
+      "warnings": []
+    },
+    {
+      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:1",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "candidateSize": 0,
+      "riskClusters": [
+        "commodity",
+        "oil_delta",
+        "options_sentiment",
+        "spot_venue"
+      ],
+      "current": {
+        "totalGross": 2,
+        "totalNet": 2,
+        "byAsset": {
+          "BTC": 1,
+          "OIL": 1
+        },
+        "bySignalType": {
+          "PC_RATIO_EXTREME_HIGH": 2
+        },
+        "byVenue": {
+          "spot": 2
+        },
+        "byCluster": {
+          "btc_delta": 1,
+          "options_sentiment": 2,
+          "risk_on": 1,
+          "spot_venue": 2,
+          "commodity": 1,
+          "oil_delta": 1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 2,
+        "totalNet": 2,
+        "byAsset": {
+          "BTC": 1,
+          "OIL": 1
+        },
+        "bySignalType": {
+          "PC_RATIO_EXTREME_HIGH": 2
+        },
+        "byVenue": {
+          "spot": 2
+        },
+        "byCluster": {
+          "btc_delta": 1,
+          "options_sentiment": 2,
+          "risk_on": 1,
+          "spot_venue": 2,
+          "commodity": 1,
+          "oil_delta": 1
+        }
+      },
+      "warnings": []
+    },
+    {
+      "candidateId": "FUNDING_EXTREME_LONG:GOLD:2",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "candidateSize": 0,
+      "riskClusters": [
+        "commodity",
+        "funding_reversion",
+        "gold_delta",
+        "hyperliquid_venue"
+      ],
+      "current": {
+        "totalGross": 2,
+        "totalNet": 2,
+        "byAsset": {
+          "BTC": 1,
+          "OIL": 1
+        },
+        "bySignalType": {
+          "PC_RATIO_EXTREME_HIGH": 2
+        },
+        "byVenue": {
+          "spot": 2
+        },
+        "byCluster": {
+          "btc_delta": 1,
+          "options_sentiment": 2,
+          "risk_on": 1,
+          "spot_venue": 2,
+          "commodity": 1,
+          "oil_delta": 1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 2,
+        "totalNet": 2,
+        "byAsset": {
+          "BTC": 1,
+          "OIL": 1,
+          "GOLD": 0
+        },
+        "bySignalType": {
+          "PC_RATIO_EXTREME_HIGH": 2,
+          "FUNDING_EXTREME_LONG": 0
+        },
+        "byVenue": {
+          "spot": 2,
+          "hyperliquid": 0
+        },
+        "byCluster": {
+          "btc_delta": 1,
+          "options_sentiment": 2,
+          "risk_on": 1,
+          "spot_venue": 2,
+          "commodity": 1,
+          "oil_delta": 1,
+          "funding_reversion": 0,
+          "gold_delta": 0,
+          "hyperliquid_venue": 0
+        }
+      },
+      "warnings": []
     }
   ],
   "stagedQuantRules": [
     {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:0",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "mode": "observe_uniform",
-      "liveSizingEnabled": false,
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "enforcedLiveSize": 1,
-      "wouldResize": true,
-      "edgePts": null,
-      "alerts": [
-        "cluster exposure 38.00 > alert cap 5.00",
-        "commodity cluster exposure 25.0000 exceeds preview threshold 5.0000.",
-        "oil_delta cluster exposure 9.0000 exceeds preview threshold 5.0000."
-      ],
-      "notes": [
-        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
-      ]
-    },
-    {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:BTC:1",
+      "candidateId": "PC_RATIO_EXTREME_HIGH:BTC:0",
       "signalType": "PC_RATIO_EXTREME_HIGH",
       "asset": "BTC",
       "mode": "observe_uniform",
@@ -277,10 +309,39 @@
       "enforcedLiveSize": 1,
       "wouldResize": true,
       "edgePts": null,
-      "alerts": [
-        "cluster exposure 38.00 > alert cap 5.00",
-        "risk_on cluster exposure 13.0000 exceeds preview threshold 5.0000."
-      ],
+      "alerts": [],
+      "notes": [
+        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
+      ]
+    },
+    {
+      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:1",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "mode": "observe_uniform",
+      "liveSizingEnabled": false,
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "enforcedLiveSize": 1,
+      "wouldResize": true,
+      "edgePts": null,
+      "alerts": [],
+      "notes": [
+        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
+      ]
+    },
+    {
+      "candidateId": "FUNDING_EXTREME_LONG:GOLD:2",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "mode": "observe_uniform",
+      "liveSizingEnabled": false,
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "enforcedLiveSize": 1,
+      "wouldResize": true,
+      "edgePts": null,
+      "alerts": [],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
       ]
@@ -288,668 +349,42 @@
   ],
   "llmCloseEligibility": [
     {
-      "positionId": "MA-1780403314728-llno",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "SOL",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 461,
-      "hoursToExpiry": 4643.52,
-      "plannedHoldHours": 5104.52,
-      "elapsedHoldPct": 0.0903,
-      "minHoldHours": 168,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1780511316427-4vq1",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "SOL",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 431,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0.6555,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1780511316427-qxg7",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "SOL",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 431,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 657.52,
-      "elapsedHoldPct": 0.6555,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1780644515935-bomt",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "ETH",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "eth_spot"
-      ],
-      "hoursOpen": 394,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 620.52,
-      "elapsedHoldPct": 0.6349,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1780662516612-mf3w",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ],
-      "hoursOpen": 389,
-      "hoursToExpiry": 216.02,
-      "plannedHoldHours": 605.02,
-      "elapsedHoldPct": 0.6429,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1780756122347-no4t",
-      "signalType": "MONOTONIC_ARB",
+      "positionId": "T-1782401411926-lioz",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
       "asset": "BTC",
-      "venue": "polymarket",
+      "venue": "spot",
       "direction": "long",
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [
-        "btc_spot"
+        "btc_spot",
+        "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 363,
-      "hoursToExpiry": 4643.52,
-      "plannedHoldHours": 5006.52,
-      "elapsedHoldPct": 0.0725,
-      "minHoldHours": 168,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1780781316401-w1a7",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ],
-      "hoursOpen": 356,
-      "hoursToExpiry": 216.02,
-      "plannedHoldHours": 572.02,
-      "elapsedHoldPct": 0.6224,
+      "hoursOpen": 1.01,
+      "hoursToExpiry": 118.99,
+      "plannedHoldHours": 120,
+      "elapsedHoldPct": 0.0084,
       "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     },
     {
-      "positionId": "MA-1780856911587-wz2s",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "ETH",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "eth_spot"
-      ],
-      "hoursOpen": 335,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 561.52,
-      "elapsedHoldPct": 0.5966,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1780871312894-eb2e",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ],
-      "hoursOpen": 331,
-      "hoursToExpiry": 216.02,
-      "plannedHoldHours": 547.02,
-      "elapsedHoldPct": 0.6051,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781011721131-phkx",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "ETH",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "eth_spot"
-      ],
-      "hoursOpen": 292,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 518.52,
-      "elapsedHoldPct": 0.5631,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781105294848-ovm1",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "SILVER",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 266.01,
-      "hoursToExpiry": 216.02,
-      "plannedHoldHours": 482.03,
-      "elapsedHoldPct": 0.5518,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781130494900-zsxa",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ],
-      "hoursOpen": 259.01,
-      "hoursToExpiry": 216.02,
-      "plannedHoldHours": 475.03,
-      "elapsedHoldPct": 0.5452,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781166493427-aldc",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ],
-      "hoursOpen": 249.01,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 475.53,
-      "elapsedHoldPct": 0.5236,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781206098612-0yo7",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "btc_spot"
-      ],
-      "hoursOpen": 238,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 464.53,
-      "elapsedHoldPct": 0.5124,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781238505316-xyt0",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "btc_spot"
-      ],
-      "hoursOpen": 229,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 455.53,
-      "elapsedHoldPct": 0.5027,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781263693450-24nj",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "btc_spot"
-      ],
-      "hoursOpen": 222.01,
-      "hoursToExpiry": 4643.52,
-      "plannedHoldHours": 4865.53,
-      "elapsedHoldPct": 0.0456,
-      "minHoldHours": 168,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781436503904-yxsl",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ],
-      "hoursOpen": 174,
-      "hoursToExpiry": 4614.52,
-      "plannedHoldHours": 4788.53,
-      "elapsedHoldPct": 0.0363,
-      "minHoldHours": 168,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781483300626-drhr",
-      "signalType": "MONOTONIC_ARB",
+      "positionId": "T-1782401411926-e7ms",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
-      "venue": "polymarket",
+      "venue": "spot",
       "direction": "long",
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [
-        "oil_wti_spot"
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 161,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 387.53,
-      "elapsedHoldPct": 0.4155,
+      "hoursOpen": 1.01,
+      "hoursToExpiry": 502.99,
+      "plannedHoldHours": 504,
+      "elapsedHoldPct": 0.002,
       "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781490504666-0264",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ],
-      "hoursOpen": 159,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 385.53,
-      "elapsedHoldPct": 0.4124,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781501302104-b6z8",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ],
-      "hoursOpen": 156,
-      "hoursToExpiry": 217.02,
-      "plannedHoldHours": 373.03,
-      "elapsedHoldPct": 0.4182,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781519305316-mdyr",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ],
-      "hoursOpen": 151,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 377.53,
-      "elapsedHoldPct": 0.4,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781533704541-nmyb",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "BTC",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "btc_spot"
-      ],
-      "hoursOpen": 147,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 373.53,
-      "elapsedHoldPct": 0.3936,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781558903818-kozp",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ],
-      "hoursOpen": 140,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 366.53,
-      "elapsedHoldPct": 0.382,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781587701648-s5jz",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "ETH",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "eth_spot"
-      ],
-      "hoursOpen": 132,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 358.53,
-      "elapsedHoldPct": 0.3682,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781594898993-u7ri",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ],
-      "hoursOpen": 130,
-      "hoursToExpiry": 4614.52,
-      "plannedHoldHours": 4744.53,
-      "elapsedHoldPct": 0.0274,
-      "minHoldHours": 168,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781594899299-q03h",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ],
-      "hoursOpen": 130,
-      "hoursToExpiry": 4614.52,
-      "plannedHoldHours": 4744.53,
-      "elapsedHoldPct": 0.0274,
-      "minHoldHours": 168,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781594899491-mx0o",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "ETH",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "eth_spot"
-      ],
-      "hoursOpen": 130,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 356.53,
-      "elapsedHoldPct": 0.3646,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781620107511-vc14",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "GOLD",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "gold_gc_spot"
-      ],
-      "hoursOpen": 123,
-      "hoursToExpiry": 216.02,
-      "plannedHoldHours": 339.03,
-      "elapsedHoldPct": 0.3628,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781692113687-g4b0",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ],
-      "hoursOpen": 103,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 329.52,
-      "elapsedHoldPct": 0.3126,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781692114231-68rr",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ],
-      "hoursOpen": 103,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 329.52,
-      "elapsedHoldPct": 0.3126,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781692114378-h8m8",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ],
-      "hoursOpen": 103,
-      "hoursToExpiry": 226.52,
-      "plannedHoldHours": 329.52,
-      "elapsedHoldPct": 0.3126,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781702902979-akh3",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "oil_wti_spot"
-      ],
-      "hoursOpen": 100,
-      "hoursToExpiry": 217.02,
-      "plannedHoldHours": 317.03,
-      "elapsedHoldPct": 0.3154,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781782105850-6djw",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "SILVER",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 78,
-      "hoursToExpiry": 216.02,
-      "plannedHoldHours": 294.03,
-      "elapsedHoldPct": 0.2653,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781782106163-kpb8",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "SILVER",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 78,
-      "hoursToExpiry": 216.02,
-      "plannedHoldHours": 294.03,
-      "elapsedHoldPct": 0.2653,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781785706694-r3z4",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "SILVER",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 77,
-      "hoursToExpiry": 216.02,
-      "plannedHoldHours": 293.03,
-      "elapsedHoldPct": 0.2628,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781785707008-n095",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "SILVER",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 77,
-      "hoursToExpiry": 216.02,
-      "plannedHoldHours": 293.03,
-      "elapsedHoldPct": 0.2628,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781785707158-1y7m",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "SILVER",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 77,
-      "hoursToExpiry": 216.02,
-      "plannedHoldHours": 293.03,
-      "elapsedHoldPct": 0.2628,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "MA-1781785707318-qe0p",
-      "signalType": "MONOTONIC_ARB",
-      "asset": "SILVER",
-      "venue": "polymarket",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 77,
-      "hoursToExpiry": 216.02,
-      "plannedHoldHours": 293.03,
-      "elapsedHoldPct": 0.2628,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     }
   ]
 }
