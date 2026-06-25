@@ -646,6 +646,21 @@ Follow-up implemented after this emergency cleanup:
 - Tightened `compact_instrument_snapshots.py` hot-file retention from 36 to 18 recent snapshots. The engine reads 12 by default, so this keeps a buffer while reducing root-disk pressure.
 - Applied the durable cleanup on the USA VPS: default prune removed 423.6 MB, explicit 7-day snapshot archive / 14-day relative-value history prune removed another 265.8 MB, hot snapshot compaction reduced `data/instrument-snapshots.jsonl` to about 232 MB, Git GC reduced `.git` to about 99 MB, and an old `/tmp/polymarket-trader-dryrun` scratch clone was removed. Final observed root disk: about 2.3 GB free / 90% used. Tracked trader history files remained present.
 
+Follow-up disk/Git cleanup on 2026-06-25 after monotonic-artifact remediation:
+
+- The USA VPS root disk had regressed to about 98% used / 601 MB free.
+- `.git` was 3.6 GB again, but the pack directory was only about 98 MB. The bloat was loose reachable objects, not ordinary packed history.
+- `git reflog expire --expire=now --expire-unreachable=now --all` plus `git prune --expire=now` reduced loose objects from about 3.48 GiB to about 3.15 GiB and root usage from about 98% to about 94% before later work.
+- Removed rebuildable or non-current local artifacts:
+  - `/opt/polymarket-trader/node_modules`
+  - npm/pip/apt caches
+  - `/var/lib/polymarket-trader/generated-artifact-backups`
+  - `/var/lib/polymarket-trader/git-conflict-backups`
+- Largest reachable blobs were mapped to repeated historical versions of `relative-value/calibration/no_bias_candidates.jsonl` and older `data/instrument-snapshots.jsonl` blobs.
+- `git gc --prune=now` was attempted earlier and stalled in `git pack-objects` for about 16 minutes without producing a new pack; do not retry default GC while root disk is tight.
+- `relative-value/calibration/no_bias_candidates.jsonl` is ignored by `.gitignore` but was still tracked and listed in the hourly wrapper's `DATA_FILES`; remove it from Git tracking and from the wrapper manifest so hourly commits do not re-add the large calibration JSONL.
+- Remaining `.git` loose-object bloat is reachable from the VPS's local ahead-only state history. Prune cannot remove it. The safe durable fix is a fresh checkout/current-state snapshot procedure rather than repeated in-place GC on the production box.
+
 ### Current cleanup impact
 
 - Current large-file line counts on USA: `scripts/trading-engine.ts` 8,024 lines after the candidate-preview / close-eligibility / timing / journal-section / prompt-section / advice-gate / exit-candidate / setup-family helper extraction, `scripts/market-scanner.ts` ~2,473 lines, `scripts/cross_venue_relative_value_report.py` ~2,490 lines, and `scripts/trader-performance-report.ts` ~246 lines.
@@ -705,6 +720,8 @@ Follow-up implemented after this emergency cleanup:
 1. **Data/git-weight cleanup remains open.**
    - Emergency 30-day snapshot archive pruning was performed on the USA VPS, and `npm run cleanup:disk` now provides a repeatable dry-run/apply path.
    - `scripts/compact_no_bias_calibration.py` now covers the growing `relative-value/calibration/no_bias_candidates.jsonl` file; apply mode should be run only after reviewing the dry-run summary.
+   - `relative-value/calibration/no_bias_candidates.jsonl` must remain untracked and out of `scripts/run-polymarket-trader.sh`'s `DATA_FILES` manifest. It is too large for hourly Git history.
+   - The USA VPS repo may still need a fresh-clone/current-state snapshot reset because local reachable loose objects cannot be pruned away safely in place.
    - Snapshot retention/offload policy still needs monitoring; root disk pressure may still require off-root storage or disk expansion.
    - Do not untrack `relative-value/index.html`; Vercel serves `relative-value/` directly.
    - Do not cap `learning-journal.md` until the LLM prompt-window behavior is mapped and tested.

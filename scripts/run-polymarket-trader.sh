@@ -53,7 +53,6 @@ DATA_FILES=(
   relative-value/index.html
   relative-value/cross_venue_relative_value.csv
   relative-value/latest.json
-  relative-value/calibration/no_bias_candidates.jsonl
   relative-value/calibration/resolutions_cache.json
   relative-value/calibration/event_report.md
 )
