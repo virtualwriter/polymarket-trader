@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-25T19:28:31.679Z",
+  "generatedAt": "2026-06-25T20:28:31.976Z",
   "dataFreshness": {
-    "valuationRows": 1227,
-    "latestValuationAt": "2026-06-25T19",
-    "macroRows": 1225,
+    "valuationRows": 1228,
+    "latestValuationAt": "2026-06-25T20",
+    "macroRows": 1226,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-25T19"
+    "latestInstrumentSnapshotAt": "2026-06-25T20"
   },
   "portfolio": {
-    "cash": 96.4048,
-    "openPositions": 2,
+    "cash": 95.4048,
+    "openPositions": 3,
     "realizedPnl": 0.9922,
     "totalTrades": 237,
     "winRatePct": 57.4,
-    "unrealizedPnl": 0.0107
+    "unrealizedPnl": 0.0101
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.05,
-      "currentPrice": 59262,
-      "underlyingPrice": 59262,
+      "pnlPct": 0.68,
+      "currentPrice": 59697,
+      "underlyingPrice": 59697,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -39,15 +39,32 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 1.12,
-      "currentPrice": 72.34,
-      "underlyingPrice": 72.34,
+      "pnlPct": 0.55,
+      "currentPrice": 71.93,
+      "underlyingPrice": 71.93,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "oil_wti_spot",
         "oil_cl_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1782415747222-cwqc",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": -0.22,
+      "currentPrice": 4033,
+      "underlyingPrice": 4033,
+      "targetPct": 3,
+      "stopPct": 1.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_gld_pc_ratio"
       ]
     }
   ],
