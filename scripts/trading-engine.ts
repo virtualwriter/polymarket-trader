@@ -117,6 +117,7 @@ const EXECUTION_PLAN_FILE = "execution-plan.json";
 const DRY_RUN_VERIFICATION_FILE = "dry-run-verification.json";
 const MONOTONIC_PREFLIGHT_REPORT_FILE = "monotonic-arb-preflight-report.json";
 const REAL_PM_PACKAGES_FILE = "polymarket-live-packages.json";
+const ENABLE_REAL_PM_MONOTONIC_MIRROR = process.env.ENABLE_REAL_PM_MONOTONIC_MIRROR === "1";
 const TRADE_SIZE = 1;
 const MAX_BANKROLL = 100;
 const MAX_OPEN_POSITIONS = 15;
@@ -1501,6 +1502,7 @@ function saveMonotonicPreflightReport(report: MonotonicPreflightReport) {
 }
 
 function importCompletedRealPolymarketPackages(portfolio: Portfolio): string[] {
+  if (!ENABLE_REAL_PM_MONOTONIC_MIRROR) return [];
   const packages = readJson<RealPolymarketLivePackage[]>(REAL_PM_PACKAGES_FILE, []);
   if (!Array.isArray(packages) || packages.length === 0) return [];
 

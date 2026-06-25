@@ -131,9 +131,23 @@ def is_counted_real_trade(row: dict[str, Any]) -> bool:
     thesis = row.get("thesis") or ""
     return (
         row.get("id") not in OPERATIONALLY_TAINTED_TRADES
+        and close_reason != "data_quality_artifact"
         and "DATA_CORRECTION_ARTIFACT" not in close_reason
         and "NON_LEARNING_CLOSE" not in thesis
+        and is_macro_report_trade(row)
     )
+
+
+def is_monotonic_arb_record(row: dict[str, Any], *, signal_key: str, instrument_key: str) -> bool:
+    return row.get(signal_key) == "MONOTONIC_ARB" or row.get(instrument_key) == "pm_package"
+
+
+def is_macro_report_trade(row: dict[str, Any]) -> bool:
+    return not is_monotonic_arb_record(row, signal_key="signal_type", instrument_key="instrument_type")
+
+
+def is_macro_report_position(position: dict[str, Any]) -> bool:
+    return not is_monotonic_arb_record(position, signal_key="signalType", instrument_key="instrumentType")
 
 
 def win_loss(rows: list[dict[str, Any]]) -> tuple[int, int]:
@@ -244,10 +258,7 @@ def shadow_line(shadow: dict[str, Any], tz: ZoneInfo, resolved: bool) -> str:
 
 def is_macro_report_shadow(shadow: dict[str, Any]) -> bool:
     position = shadow.get("position", {})
-    return not (
-        shadow.get("signalType") == "MONOTONIC_ARB"
-        or position.get("instrumentType") == "pm_package"
-    )
+    return is_macro_report_position({"signalType": shadow.get("signalType"), "instrumentType": position.get("instrumentType")})
 
 
 def journal_sections_for_window(path: Path, start_utc: datetime, end_utc: datetime, tz: ZoneInfo) -> list[str]:
@@ -281,8 +292,10 @@ def journal_sections_for_window(path: Path, start_utc: datetime, end_utc: dateti
                 if capture and line.startswith("**") and line.endswith(":**"):
                     capture = False
                 if capture and line.strip():
+                    if "MONOTONIC_ARB" in line or "monotonic arb" in line.lower():
+                        continue
                     summary_lines.append(line)
-            if summary_lines:
+            if summary_lines and any(not line.startswith("**") for line in summary_lines):
                 sections.append(f"### {first_line}\n" + "\n".join(summary_lines[:24]))
     return sections
 
@@ -351,7 +364,7 @@ def risk_shape_report_lines(closed_rows: list[dict[str, str]]) -> list[str]:
     for signal in signals:
         rows = [
             row for row in closed_rows
-            if row.get("signal_type") == signal and "DATA_CORRECTION_ARTIFACT" not in (row.get("close_reason") or "")
+            if row.get("signal_type") == signal and is_macro_report_trade(row) and "DATA_CORRECTION_ARTIFACT" not in (row.get("close_reason") or "")
             and row.get("id") not in OPERATIONALLY_TAINTED_TRADES
         ]
         if not rows:
@@ -411,17 +424,18 @@ def build_report(window: ReportWindow) -> str:
     duplicate_closed_trade_rows = len(raw_closed_rows) - len(closed_rows)
 
     closed_trade_ids = {row.get("id") for row in closed_rows if row.get("id")}
-    closed_trades = [row for row in closed_rows if in_window(row.get("closed_at"), window.start_utc, window.end_utc)]
+    macro_closed_rows = [row for row in closed_rows if is_macro_report_trade(row)]
+    closed_trades = [row for row in macro_closed_rows if in_window(row.get("closed_at"), window.start_utc, window.end_utc)]
     counted_closed_trades = [row for row in closed_trades if is_counted_real_trade(row)]
     tainted_closed_trades = [row for row in closed_trades if row.get("id") in OPERATIONALLY_TAINTED_TRADES]
     cumulative_counted_trades = [
-        row for row in closed_rows
+        row for row in macro_closed_rows
         if is_counted_real_trade(row) and before_end(row.get("closed_at"), window.end_utc)
     ]
-    opened_real_from_closed = [row for row in closed_rows if in_window(row.get("opened_at"), window.start_utc, window.end_utc)]
+    opened_real_from_closed = [row for row in macro_closed_rows if in_window(row.get("opened_at"), window.start_utc, window.end_utc)]
     open_positions = [
         position for position in portfolio.get("positions", [])
-        if position.get("id") not in closed_trade_ids
+        if position.get("id") not in closed_trade_ids and is_macro_report_position(position)
     ]
     opened_real_current = [
         {

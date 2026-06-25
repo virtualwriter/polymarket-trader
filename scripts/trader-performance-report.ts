@@ -152,10 +152,23 @@ async function augmentMidsFromHyperliquid(
 }
 
 function isCountedRealTrade(trade: ReportClosedTrade): boolean {
-  return !OPERATIONALLY_TAINTED_TRADES[trade.id] &&
+  return isMacroReportTrade(trade) &&
+    !OPERATIONALLY_TAINTED_TRADES[trade.id] &&
     trade.closeReason !== "data_quality_artifact" &&
     !(trade.closeReason ?? "").includes("DATA_CORRECTION_ARTIFACT") &&
     !(trade.thesis ?? "").includes("NON_LEARNING_CLOSE");
+}
+
+function isMacroReportTrade(trade: ReportClosedTrade): boolean {
+  return trade.signalType !== "MONOTONIC_ARB" && trade.instrumentType !== "pm_package";
+}
+
+function isMacroReportPosition(position: ReportPosition): boolean {
+  return position.signalType !== "MONOTONIC_ARB" && position.instrumentType !== "pm_package";
+}
+
+function isMacroReportShadow(shadow: ReportBlockedSignalShadow): boolean {
+  return shadow.signalType !== "MONOTONIC_ARB" && shadow.position?.instrumentType !== "pm_package";
 }
 
 function readRelativeValueRows(): Map<string, Record<string, string>> {
@@ -207,9 +220,10 @@ async function main() {
     lossCount: 0,
     lastUpdated: "unknown",
   });
-  const trades = readClosedTrades(join(DATA_DIR, "trades-detailed.csv"));
+  portfolio.positions = portfolio.positions.filter(isMacroReportPosition);
+  const trades = readClosedTrades(join(DATA_DIR, "trades-detailed.csv")).filter(isMacroReportTrade);
   const hypotheses = readJson<ReportHypothesis[]>(join(DATA_DIR, "hypotheses.json"), []);
-  const shadows = readJson<ReportBlockedSignalShadow[]>(join(DATA_DIR, "blocked-signals.json"), []);
+  const shadows = readJson<ReportBlockedSignalShadow[]>(join(DATA_DIR, "blocked-signals.json"), []).filter(isMacroReportShadow);
   const latestSnapshot = readLatestInstrumentSnapshot(join(DATA_DIR, "instrument-snapshots.jsonl"));
   markHlPerpPositionsFromLatestSnapshot(portfolio.positions, latestSnapshot);
   markOpenShadowPositionsFromLatestSnapshot(shadows, latestSnapshot);
