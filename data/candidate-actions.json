@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-25T17:28:32.828Z",
+  "generatedAt": "2026-06-25T18:28:34.501Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -10,9 +10,9 @@
       "direction": "long",
       "strength": 1,
       "confidence": 0.5725306800470008,
-      "thesis": "BTC P/C ratio 2.47 — heavy put buying → contrarian long.",
+      "thesis": "BTC P/C ratio 2.34 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 59548,
+      "entryPrice": 59572,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -22,11 +22,11 @@
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 1,
-      "confidence": 0.5725306800470008,
-      "thesis": "OIL P/C ratio 2.06 — heavy put buying → contrarian long.",
+      "strength": 0.83375,
+      "confidence": 0.4773474544891869,
+      "thesis": "OIL P/C ratio 1.87 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 71.66,
+      "entryPrice": 71.88,
       "targetPct": 6,
       "stopPct": 1.5,
       "expiryDays": 21
@@ -36,11 +36,11 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.2154285714285714,
-      "confidence": 0.11517458333471074,
-      "thesis": "GOLD HL funding 22.5% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.0837142857142857,
+      "confidence": 0.04475617097754674,
+      "thesis": "GOLD HL funding 17.9% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4038,
+      "entryPrice": 4044,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
@@ -56,7 +56,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 59548,
+      "entryPrice": 59572,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -77,7 +77,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 71.66,
+      "entryPrice": 71.88,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -98,7 +98,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4038,
+      "entryPrice": 4044,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -360,12 +360,12 @@
         "btc_spot",
         "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 1.97,
-      "hoursToExpiry": 118.03,
+      "hoursOpen": 2.97,
+      "hoursToExpiry": 117.03,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0164,
+      "elapsedHoldPct": 0.0248,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
     },
     {
       "positionId": "T-1782401411926-e7ms",
@@ -379,12 +379,12 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 1.97,
-      "hoursToExpiry": 502.03,
+      "hoursOpen": 2.97,
+      "hoursToExpiry": 501.03,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0039,
+      "elapsedHoldPct": 0.0059,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
     }
   ]
 }
