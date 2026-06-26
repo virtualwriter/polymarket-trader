@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-26T07:28:36.125Z",
+  "generatedAt": "2026-06-26T08:28:35.170Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.5628759293354244,
       "thesis": "BTC P/C ratio 2.58 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 60561,
+      "entryPrice": 60304,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -26,7 +26,7 @@
       "confidence": 0.2786235850210352,
       "thesis": "OIL P/C ratio 1.60 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 70.35,
+      "entryPrice": 69.39,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -40,25 +40,10 @@
       "confidence": 0.19419219562072143,
       "thesis": "GOLD P/C ratio 1.48 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4036,
+      "entryPrice": 4034,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
-    },
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.037428571428571394,
-      "confidence": 0.0200104382186301,
-      "thesis": "GOLD HL funding 16.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4036,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
     }
   ],
   "sizingPreviews": [
@@ -70,7 +55,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 60561,
+      "entryPrice": 60304,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -91,7 +76,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 70.35,
+      "entryPrice": 69.39,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -112,28 +97,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4036,
-      "probabilitySource": "unsupported",
-      "winProbability": null,
-      "probabilitySampleSize": null,
-      "edgePts": null,
-      "rawKellyFraction": null,
-      "adjustedKellyFraction": null,
-      "cappedKellyFraction": null,
-      "notes": [
-        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
-        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
-      ]
-    },
-    {
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "reason": "unsupported_signal",
-      "entryPrice": 4036,
+      "entryPrice": 4034,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -162,48 +126,51 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 2,
-        "totalNet": 2,
-        "byAsset": {
-          "GOLD": 1,
-          "OIL": 1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 2
-        },
-        "byVenue": {
-          "spot": 2
-        },
-        "byCluster": {
-          "commodity": 2,
-          "gold_delta": 1,
-          "options_sentiment": 2,
-          "spot_venue": 2,
-          "oil_delta": 1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 2,
-        "totalNet": 2,
+        "totalGross": 3,
+        "totalNet": 3,
         "byAsset": {
           "GOLD": 1,
           "OIL": 1,
-          "BTC": 0
+          "BTC": 1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 2
+          "PC_RATIO_EXTREME_HIGH": 3
         },
         "byVenue": {
-          "spot": 2
+          "spot": 3
         },
         "byCluster": {
           "commodity": 2,
           "gold_delta": 1,
-          "options_sentiment": 2,
-          "spot_venue": 2,
+          "options_sentiment": 3,
+          "spot_venue": 3,
           "oil_delta": 1,
-          "btc_delta": 0,
-          "risk_on": 0
+          "btc_delta": 1,
+          "risk_on": 1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 3,
+        "totalNet": 3,
+        "byAsset": {
+          "GOLD": 1,
+          "OIL": 1,
+          "BTC": 1
+        },
+        "bySignalType": {
+          "PC_RATIO_EXTREME_HIGH": 3
+        },
+        "byVenue": {
+          "spot": 3
+        },
+        "byCluster": {
+          "commodity": 2,
+          "gold_delta": 1,
+          "options_sentiment": 3,
+          "spot_venue": 3,
+          "oil_delta": 1,
+          "btc_delta": 1,
+          "risk_on": 1
         }
       },
       "warnings": []
@@ -222,45 +189,51 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 2,
-        "totalNet": 2,
+        "totalGross": 3,
+        "totalNet": 3,
         "byAsset": {
           "GOLD": 1,
-          "OIL": 1
+          "OIL": 1,
+          "BTC": 1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 2
+          "PC_RATIO_EXTREME_HIGH": 3
         },
         "byVenue": {
-          "spot": 2
+          "spot": 3
         },
         "byCluster": {
           "commodity": 2,
           "gold_delta": 1,
-          "options_sentiment": 2,
-          "spot_venue": 2,
-          "oil_delta": 1
+          "options_sentiment": 3,
+          "spot_venue": 3,
+          "oil_delta": 1,
+          "btc_delta": 1,
+          "risk_on": 1
         }
       },
       "afterCandidate": {
-        "totalGross": 2,
-        "totalNet": 2,
+        "totalGross": 3,
+        "totalNet": 3,
         "byAsset": {
           "GOLD": 1,
-          "OIL": 1
+          "OIL": 1,
+          "BTC": 1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 2
+          "PC_RATIO_EXTREME_HIGH": 3
         },
         "byVenue": {
-          "spot": 2
+          "spot": 3
         },
         "byCluster": {
           "commodity": 2,
           "gold_delta": 1,
-          "options_sentiment": 2,
-          "spot_venue": 2,
-          "oil_delta": 1
+          "options_sentiment": 3,
+          "spot_venue": 3,
+          "oil_delta": 1,
+          "btc_delta": 1,
+          "risk_on": 1
         }
       },
       "warnings": []
@@ -279,106 +252,51 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 2,
-        "totalNet": 2,
+        "totalGross": 3,
+        "totalNet": 3,
         "byAsset": {
           "GOLD": 1,
-          "OIL": 1
+          "OIL": 1,
+          "BTC": 1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 2
+          "PC_RATIO_EXTREME_HIGH": 3
         },
         "byVenue": {
-          "spot": 2
+          "spot": 3
         },
         "byCluster": {
           "commodity": 2,
           "gold_delta": 1,
-          "options_sentiment": 2,
-          "spot_venue": 2,
-          "oil_delta": 1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 2,
-        "totalNet": 2,
-        "byAsset": {
-          "GOLD": 1,
-          "OIL": 1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 2
-        },
-        "byVenue": {
-          "spot": 2
-        },
-        "byCluster": {
-          "commodity": 2,
-          "gold_delta": 1,
-          "options_sentiment": 2,
-          "spot_venue": 2,
-          "oil_delta": 1
-        }
-      },
-      "warnings": []
-    },
-    {
-      "candidateId": "FUNDING_EXTREME_LONG:GOLD:3",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "candidateSize": 0,
-      "riskClusters": [
-        "commodity",
-        "funding_reversion",
-        "gold_delta",
-        "hyperliquid_venue"
-      ],
-      "current": {
-        "totalGross": 2,
-        "totalNet": 2,
-        "byAsset": {
-          "GOLD": 1,
-          "OIL": 1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 2
-        },
-        "byVenue": {
-          "spot": 2
-        },
-        "byCluster": {
-          "commodity": 2,
-          "gold_delta": 1,
-          "options_sentiment": 2,
-          "spot_venue": 2,
-          "oil_delta": 1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 2,
-        "totalNet": 2,
-        "byAsset": {
-          "GOLD": 1,
-          "OIL": 1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 2,
-          "FUNDING_EXTREME_LONG": 0
-        },
-        "byVenue": {
-          "spot": 2,
-          "hyperliquid": 0
-        },
-        "byCluster": {
-          "commodity": 2,
-          "gold_delta": 1,
-          "options_sentiment": 2,
-          "spot_venue": 2,
+          "options_sentiment": 3,
+          "spot_venue": 3,
           "oil_delta": 1,
-          "funding_reversion": 0,
-          "hyperliquid_venue": 0
+          "btc_delta": 1,
+          "risk_on": 1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 3,
+        "totalNet": 3,
+        "byAsset": {
+          "GOLD": 1,
+          "OIL": 1,
+          "BTC": 1
+        },
+        "bySignalType": {
+          "PC_RATIO_EXTREME_HIGH": 3
+        },
+        "byVenue": {
+          "spot": 3
+        },
+        "byCluster": {
+          "commodity": 2,
+          "gold_delta": 1,
+          "options_sentiment": 3,
+          "spot_venue": 3,
+          "oil_delta": 1,
+          "btc_delta": 1,
+          "risk_on": 1
         }
       },
       "warnings": []
@@ -432,22 +350,6 @@
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
       ]
-    },
-    {
-      "candidateId": "FUNDING_EXTREME_LONG:GOLD:3",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "mode": "observe_uniform",
-      "liveSizingEnabled": false,
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "enforcedLiveSize": 1,
-      "wouldResize": true,
-      "edgePts": null,
-      "alerts": [],
-      "notes": [
-        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
-      ]
     }
   ],
   "llmCloseEligibility": [
@@ -457,18 +359,22 @@
       "asset": "GOLD",
       "venue": "spot",
       "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
       "evidenceColumns": [
         "gold_gc_spot",
         "gold_gld_pc_ratio"
       ],
-      "hoursOpen": 11.99,
-      "hoursToExpiry": 108.01,
+      "hoursOpen": 12.99,
+      "hoursToExpiry": 107.01,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0999,
+      "elapsedHoldPct": 0.1083,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
+      "reason": "Mechanical PC_RATIO_EXTREME_HIGH setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
     {
       "positionId": "T-1782448159940-hwv9",
@@ -482,12 +388,31 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 2.99,
-      "hoursToExpiry": 117.01,
+      "hoursOpen": 3.99,
+      "hoursToExpiry": 116.01,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0249,
+      "elapsedHoldPct": 0.0332,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 4.0h, requires at least 12h."
+    },
+    {
+      "positionId": "T-1782458973356-h767",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "btc_spot",
+        "btc_ibit_pc_ratio"
+      ],
+      "hoursOpen": 0.98,
+      "hoursToExpiry": 119.02,
+      "plannedHoldHours": 120,
+      "elapsedHoldPct": 0.0082,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     }
   ]
 }
