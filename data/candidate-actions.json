@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-26T03:28:34.944Z",
+  "generatedAt": "2026-06-26T04:28:35.988Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.569984411373284,
       "thesis": "BTC P/C ratio 2.58 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 59056,
+      "entryPrice": 59896,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -26,7 +26,7 @@
       "confidence": 0.28214228362977567,
       "thesis": "OIL P/C ratio 1.60 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 70.64,
+      "entryPrice": 70.54,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -40,7 +40,7 @@
       "confidence": 0.19664462192378301,
       "thesis": "GOLD P/C ratio 1.48 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 3997,
+      "entryPrice": 4009,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -55,7 +55,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 59056,
+      "entryPrice": 59896,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -76,7 +76,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 70.64,
+      "entryPrice": 70.54,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -97,7 +97,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 3997,
+      "entryPrice": 4009,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -359,18 +359,22 @@
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
       "evidenceColumns": [
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 11.97,
-      "hoursToExpiry": 492.03,
+      "hoursOpen": 12.97,
+      "hoursToExpiry": 491.03,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0238,
+      "elapsedHoldPct": 0.0257,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
+      "reason": "Mechanical PC_RATIO_EXTREME_HIGH setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
     {
       "positionId": "T-1782415747222-cwqc",
@@ -384,12 +388,12 @@
         "gold_gc_spot",
         "gold_gld_pc_ratio"
       ],
-      "hoursOpen": 7.99,
-      "hoursToExpiry": 112.01,
+      "hoursOpen": 8.99,
+      "hoursToExpiry": 111.01,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0666,
+      "elapsedHoldPct": 0.0749,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 8.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 9.0h, requires at least 12h."
     },
     {
       "positionId": "T-1782440918297-cr1h",
@@ -403,12 +407,12 @@
         "btc_spot",
         "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 1,
-      "hoursToExpiry": 119,
+      "hoursOpen": 2,
+      "hoursToExpiry": 118,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0083,
+      "elapsedHoldPct": 0.0167,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
     }
   ]
 }

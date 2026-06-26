@@ -1,10 +1,23 @@
 {
-  "generatedAt": "2026-06-26T03:28:34.960Z",
+  "generatedAt": "2026-06-26T04:29:19.930Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1782401411926-e7ms",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "oil_cl_pc_ratio"
+      ],
+      "thesis": "Oil P/C ratio has normalized from 2.82 to 1.596, far below the extreme‑high threshold that triggered the contrarian long. The signal‑family evidence metric (oil_cl_pc_ratio) has round‑tripped past invalidation."
+    }
+  ],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -15,7 +28,7 @@
       "confidence": 0.569984411373284,
       "thesis": "BTC P/C ratio 2.58 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 59056,
+      "entryPrice": 59896,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -29,7 +42,7 @@
       "confidence": 0.28214228362977567,
       "thesis": "OIL P/C ratio 1.60 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 70.64,
+      "entryPrice": 70.54,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -43,7 +56,7 @@
       "confidence": 0.19664462192378301,
       "thesis": "GOLD P/C ratio 1.48 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 3997,
+      "entryPrice": 4009,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -53,6 +66,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
