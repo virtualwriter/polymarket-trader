@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-26T10:28:33.609Z",
+  "generatedAt": "2026-06-26T11:28:31.798Z",
   "dataFreshness": {
-    "valuationRows": 1241,
-    "latestValuationAt": "2026-06-26T10",
-    "macroRows": 1239,
+    "valuationRows": 1242,
+    "latestValuationAt": "2026-06-26T11",
+    "macroRows": 1240,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-26T10"
+    "latestInstrumentSnapshotAt": "2026-06-26T11"
   },
   "portfolio": {
-    "cash": 96.3685,
-    "openPositions": 2,
-    "realizedPnl": 0.9723,
-    "totalTrades": 241,
-    "winRatePct": 56.8,
-    "unrealizedPnl": 0.0025
+    "cash": 95.3685,
+    "openPositions": 3,
+    "realizedPnl": 0.9559,
+    "totalTrades": 242,
+    "winRatePct": 56.6,
+    "unrealizedPnl": 0.0039
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.12,
-      "currentPrice": 4047,
-      "underlyingPrice": 4047,
+      "pnlPct": 0.32,
+      "currentPrice": 4055,
+      "underlyingPrice": 4055,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -39,15 +39,32 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.13,
-      "currentPrice": 69.37,
-      "underlyingPrice": 69.37,
+      "pnlPct": 0.58,
+      "currentPrice": 69.68,
+      "underlyingPrice": 69.68,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "oil_wti_spot",
         "oil_cl_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1782469791636-eod1",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": -0.51,
+      "currentPrice": 59450,
+      "underlyingPrice": 59450,
+      "targetPct": 3,
+      "stopPct": 1.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "btc_spot",
+        "btc_ibit_pc_ratio"
       ]
     }
   ],
@@ -189,7 +206,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 41,
+    "openCount": 43,
     "resolvedCount": 662,
     "wouldHaveWon": 367,
     "wouldHaveLost": 295,
@@ -228,7 +245,7 @@
       },
       {
         "signalType": "FUNDING_EXTREME_LONG",
-        "blocked": 11,
+        "blocked": 12,
         "resolved": 11,
         "wouldHaveWon": 7,
         "wouldHaveLost": 4,
@@ -506,6 +523,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.8pt on ETH, spread 2.0c, liquidity 37242. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-in-june-2026 — NO — Will Bitcoin reach $62,500 in June?",
+        "marketQuality": {
+          "yesBid": 0.3,
+          "yesAsk": 0.31,
+          "yesSpread": 0.01,
+          "liquidity": 17062.94,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 8.6pt after haircuts. CBOE gap 9.6pt, CME gap 8.8pt, source agreement both_positive, spread 1.0c, liquidity 17063. Shadow-only calibration trade; hold 5d or exit if adjusted gap disappears."
       }
     ]
   },
