@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-26T13:28:32.974Z",
+  "generatedAt": "2026-06-26T14:28:32.878Z",
   "dataFreshness": {
-    "valuationRows": 1244,
-    "latestValuationAt": "2026-06-26T13",
-    "macroRows": 1242,
+    "valuationRows": 1245,
+    "latestValuationAt": "2026-06-26T14",
+    "macroRows": 1243,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-26T13"
+    "latestInstrumentSnapshotAt": "2026-06-26T14"
   },
   "portfolio": {
-    "cash": 96.352,
-    "openPositions": 2,
-    "realizedPnl": 0.9559,
-    "totalTrades": 242,
-    "winRatePct": 56.6,
-    "unrealizedPnl": 0.012
+    "cash": 94.352,
+    "openPositions": 4,
+    "realizedPnl": 0.9395,
+    "totalTrades": 243,
+    "winRatePct": 56.4,
+    "unrealizedPnl": 0.0214
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.4,
-      "currentPrice": 4058,
-      "underlyingPrice": 4058,
+      "pnlPct": 1.19,
+      "currentPrice": 4090,
+      "underlyingPrice": 4090,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -39,15 +39,49 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.81,
-      "currentPrice": 69.84,
-      "underlyingPrice": 69.84,
+      "pnlPct": -0.25,
+      "currentPrice": 69.11,
+      "underlyingPrice": 69.11,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "oil_wti_spot",
         "oil_cl_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1782480553154-7y87",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": 1.99,
+      "currentPrice": 60017,
+      "underlyingPrice": 60017,
+      "targetPct": 3,
+      "stopPct": 1.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "btc_spot",
+        "btc_ibit_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1782480553155-8iwm",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "pnlPct": -0.79,
+      "currentPrice": 4090,
+      "underlyingPrice": 4090,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
       ]
     }
   ],
@@ -189,7 +223,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 42,
+    "openCount": 43,
     "resolvedCount": 663,
     "wouldHaveWon": 367,
     "wouldHaveLost": 296,
