@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-26T02:28:35.531Z",
+  "generatedAt": "2026-06-26T03:28:32.177Z",
   "dataFreshness": {
-    "valuationRows": 1234,
-    "latestValuationAt": "2026-06-26T02",
-    "macroRows": 1232,
+    "valuationRows": 1235,
+    "latestValuationAt": "2026-06-26T03",
+    "macroRows": 1233,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-26T02"
+    "latestInstrumentSnapshotAt": "2026-06-26T03"
   },
   "portfolio": {
-    "cash": 96.3891,
-    "openPositions": 2,
-    "realizedPnl": 0.9922,
-    "totalTrades": 237,
-    "winRatePct": 57.4,
-    "unrealizedPnl": -0.0129
+    "cash": 95.3891,
+    "openPositions": 3,
+    "realizedPnl": 0.9765,
+    "totalTrades": 238,
+    "winRatePct": 57.1,
+    "unrealizedPnl": -0.0183
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.48,
-      "currentPrice": 71.2,
-      "underlyingPrice": 71.2,
+      "pnlPct": -1.26,
+      "currentPrice": 70.64,
+      "underlyingPrice": 70.64,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,15 +39,32 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.82,
-      "currentPrice": 4009,
-      "underlyingPrice": 4009,
+      "pnlPct": -1.11,
+      "currentPrice": 3997,
+      "underlyingPrice": 3997,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "gold_gc_spot",
         "gold_gld_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1782440918297-cr1h",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": 0.54,
+      "currentPrice": 59056,
+      "underlyingPrice": 59056,
+      "targetPct": 3,
+      "stopPct": 1.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "btc_spot",
+        "btc_ibit_pc_ratio"
       ]
     }
   ],
