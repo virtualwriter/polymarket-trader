@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-26T14:28:35.772Z",
+  "generatedAt": "2026-06-26T15:28:34.815Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,25 +8,25 @@
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
-      "strength": 1,
-      "confidence": 0.5442826317160208,
-      "thesis": "BTC P/C ratio 2.13 — heavy put buying → contrarian long.",
+      "strength": 0.955,
+      "confidence": 0.5197899132887998,
+      "thesis": "BTC P/C ratio 1.96 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 60017,
-      "targetPct": 4,
+      "entryPrice": 60254,
+      "targetPct": 6,
       "stopPct": 1.5,
-      "expiryDays": 5
+      "expiryDays": 21
     },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.42874999999999996,
-      "confidence": 0.23336117834824388,
-      "thesis": "OIL P/C ratio 1.54 — heavy put buying → contrarian long.",
+      "strength": 0.3975000000000001,
+      "confidence": 0.2163523461071183,
+      "thesis": "OIL P/C ratio 1.52 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 69.11,
+      "entryPrice": 68.86,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -41,7 +41,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 60017,
+      "entryPrice": 60254,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -62,7 +62,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 69.11,
+      "entryPrice": 68.86,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -271,10 +271,10 @@
         "gold_gc_spot",
         "gold_gld_pc_ratio"
       ],
-      "hoursOpen": 18.99,
-      "hoursToExpiry": 101.01,
+      "hoursOpen": 19.99,
+      "hoursToExpiry": 100.01,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.1583,
+      "elapsedHoldPct": 0.1666,
       "minHoldHours": 12,
       "reason": "Mechanical PC_RATIO_EXTREME_HIGH setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
@@ -290,12 +290,12 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 5,
-      "hoursToExpiry": 115,
+      "hoursOpen": 6,
+      "hoursToExpiry": 114,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0417,
+      "elapsedHoldPct": 0.05,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 6.0h, requires at least 12h."
     },
     {
       "positionId": "T-1782480553154-7y87",
@@ -309,12 +309,12 @@
         "btc_spot",
         "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 0.99,
-      "hoursToExpiry": 119.01,
+      "hoursOpen": 1.99,
+      "hoursToExpiry": 118.01,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0082,
+      "elapsedHoldPct": 0.0166,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
     },
     {
       "positionId": "T-1782480553155-8iwm",
@@ -328,12 +328,12 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 0.99,
-      "hoursToExpiry": 71.01,
+      "hoursOpen": 1.99,
+      "hoursToExpiry": 70.01,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.0137,
+      "elapsedHoldPct": 0.0276,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
     }
   ]
 }
