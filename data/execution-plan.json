@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-26T11:28:34.626Z",
+  "generatedAt": "2026-06-26T12:28:38.294Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.5520972137835538,
       "thesis": "BTC P/C ratio 2.58 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 59450,
+      "entryPrice": 59669,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -29,7 +29,7 @@
       "confidence": 0.27328812082285925,
       "thesis": "OIL P/C ratio 1.60 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 69.68,
+      "entryPrice": 69.78,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -43,10 +43,25 @@
       "confidence": 0.19047353875532608,
       "thesis": "GOLD P/C ratio 1.48 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4055,
-      "targetPct": 6,
+      "entryPrice": 4049,
+      "targetPct": 4,
       "stopPct": 1.5,
-      "expiryDays": 21
+      "expiryDays": 5
+    },
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.11914285714285719,
+      "confidence": 0.06369734913869284,
+      "thesis": "GOLD HL funding 19.2% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4049,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
