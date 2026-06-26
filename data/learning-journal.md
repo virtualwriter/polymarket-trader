@@ -39649,3 +39649,41 @@ Today's session shows asset bounces amid very bearish macro backdrop, suggesting
 
 ---
 
+### 2026-06-26 17:29 UTC
+
+**Portfolio:** $98.36 total | Cash $95.36 | 3 open | P&L $0.9504 | 57% win rate (244 trades)
+
+**Closed 1 trades:**
+- ✅ GOLD long via spot/spot [GOLD spot] (PC_RATIO_EXTREME_HIGH) → llm_decision: +$0.0109 (1.1%, market 0.0109, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_pm_iv = 58 is 3.5 std devs from mean (24.93 ± 9.54)
+- [anomaly] oil_pm_iv = 131.5 is 3.0 std devs from mean since 2026-04-28 (69.66 ± 20.62)
+- [anomaly] btc_ibit_pc_ratio = 2.18 is 2.6 std devs from mean (0.90 ± 0.49)
+- [anomaly] btc_med_max = 75000 is -2.2 std devs from mean (89706.61 ± 6624.15)
+- [anomaly] oil_wti_spot = 69.26 is -2.0 std devs from mean since 2026-04-28 (90.58 ± 10.60)
+
+**Blocked signal learning:**
+- Open blocked shadows: 43
+- Resolved blocked shadows: 663 (367 wins / 296 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/14 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 7/11 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=116 (34W/69L/13flat, 33.0% win-rate, sum $-2.6384, avg -2.27%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=161 (51W/93L/17flat, 35.4% win-rate, sum $-2.7340, avg -1.70%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+3.23%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.39%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-10.00%)
+
+**LLM analysis:**
+Closed the GOLD long as its signal (PC_RATIO_EXTREME_HIGH) reversed dramatically: gold_gld_pc_ratio fell from 1.48 to 0.48, now in extreme low territory, which would trigger a PC_RATIO_EXTREME_LOW short signal instead. The thesis of heavy put buying is completely gone. Other open positions remain within mandatory hold periods. Observed massive anomalies in gold PM IV (3.5σ) and oil PM IV (3.0σ) but no live trades are allowed from those assets at the moment. Cross-asset correlation flips (GOLD-OIL from -0.70 to +0.73 24h) are notable but not actionable without a live signal. Continuing to shadow test existing hypothesis families.
+
+---
+
