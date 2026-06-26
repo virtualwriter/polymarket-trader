@@ -1,47 +1,30 @@
 {
-  "generatedAt": "2026-06-26T04:28:33.258Z",
+  "generatedAt": "2026-06-26T05:28:31.874Z",
   "dataFreshness": {
-    "valuationRows": 1236,
-    "latestValuationAt": "2026-06-26T04",
-    "macroRows": 1234,
+    "valuationRows": 1237,
+    "latestValuationAt": "2026-06-26T05",
+    "macroRows": 1235,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-26T04"
+    "latestInstrumentSnapshotAt": "2026-06-26T05"
   },
   "portfolio": {
-    "cash": 95.3891,
+    "cash": 95.3751,
     "openPositions": 3,
-    "realizedPnl": 0.9765,
-    "totalTrades": 238,
-    "winRatePct": 57.1,
-    "unrealizedPnl": -0.0024
+    "realizedPnl": 0.9625,
+    "totalTrades": 239,
+    "winRatePct": 56.9,
+    "unrealizedPnl": 0.014
   },
   "openPositions": [
-    {
-      "positionId": "T-1782401411926-e7ms",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -1.4,
-      "currentPrice": 70.54,
-      "underlyingPrice": 70.54,
-      "targetPct": 4,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_cl_pc_ratio"
-      ]
-    },
     {
       "positionId": "T-1782415747222-cwqc",
       "asset": "GOLD",
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.82,
-      "currentPrice": 4009,
-      "underlyingPrice": 4009,
+      "pnlPct": -0.59,
+      "currentPrice": 4018,
+      "underlyingPrice": 4018,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -56,15 +39,32 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 1.97,
-      "currentPrice": 59896,
-      "underlyingPrice": 59896,
+      "pnlPct": 2.01,
+      "currentPrice": 59918,
+      "underlyingPrice": 59918,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "btc_spot",
         "btc_ibit_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1782448159940-hwv9",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": -0.01,
+      "currentPrice": 70.53,
+      "underlyingPrice": 70.53,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
       ]
     }
   ],
@@ -167,10 +167,10 @@
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "enabled": true,
-      "weight": 0.57,
-      "trades": 27,
+      "weight": 0.5648,
+      "trades": 28,
       "wins": 15,
-      "avgPnlPct": 0.3067,
+      "avgPnlPct": 0.2458,
       "disabledAssets": []
     },
     {

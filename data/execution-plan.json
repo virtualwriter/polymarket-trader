@@ -1,23 +1,10 @@
 {
-  "generatedAt": "2026-06-26T04:29:19.930Z",
+  "generatedAt": "2026-06-26T05:28:34.682Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1782401411926-e7ms",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "oil_cl_pc_ratio"
-      ],
-      "thesis": "Oil P/C ratio has normalized from 2.82 to 1.596, far below the extreme‑high threshold that triggered the contrarian long. The signal‑family evidence metric (oil_cl_pc_ratio) has round‑tripped past invalidation."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -25,10 +12,10 @@
       "venue": "spot",
       "direction": "long",
       "strength": 1,
-      "confidence": 0.569984411373284,
+      "confidence": 0.5648438925244343,
       "thesis": "BTC P/C ratio 2.58 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 59896,
+      "entryPrice": 59918,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -39,10 +26,10 @@
       "venue": "spot",
       "direction": "long",
       "strength": 0.49500000000000016,
-      "confidence": 0.28214228362977567,
+      "confidence": 0.2795977267995951,
       "thesis": "OIL P/C ratio 1.60 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 70.54,
+      "entryPrice": 70.53,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -53,19 +40,34 @@
       "venue": "spot",
       "direction": "long",
       "strength": 0.34500000000000003,
-      "confidence": 0.19664462192378301,
+      "confidence": 0.19487114292092986,
       "thesis": "GOLD P/C ratio 1.48 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4009,
+      "entryPrice": 4018,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
+    },
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.007714285714285702,
+      "confidence": 0.004124288793152766,
+      "thesis": "GOLD HL funding 15.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4018,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
