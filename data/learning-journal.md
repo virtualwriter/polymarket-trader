@@ -39757,3 +39757,39 @@ _LLM call skipped (duplicate-signals (3 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-06-26 20:29 UTC
+
+**Portfolio:** $98.36 total | Cash $94.36 | 4 open | P&L $0.9504 | 57% win rate (244 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_pm_iv = 59.3 is 3.5 std devs from mean (25.01 ± 9.67)
+- [anomaly] oil_pm_iv = 129.6 is 2.9 std devs from mean since 2026-04-28 (69.82 ± 20.83)
+- [anomaly] btc_ibit_pc_ratio = 2.073 is 2.4 std devs from mean (0.91 ± 0.49)
+- [anomaly] btc_med_max = 75000 is -2.2 std devs from mean (89671.17 ± 6655.34)
+- [anomaly] amzn_opt_iv_90d = 38.6 is 2.1 std devs from mean (34.74 ± 1.81)
+
+**Blocked signal learning:**
+- Open blocked shadows: 43
+- Resolved blocked shadows: 663 (367 wins / 296 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/14 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 7/11 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=116 (34W/69L/13flat, 33.0% win-rate, sum $-2.6384, avg -2.27%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=161 (51W/93L/17flat, 35.4% win-rate, sum $-2.7340, avg -1.70%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+3.23%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.39%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-10.00%)
+
+**LLM analysis:**
+Positions: OIL long (PC_RATIO_EXTREME_HIGH) +0.46%, BTC long (PC_RATIO_EXTREME_HIGH) +1.48%, GOLD short (FUNDING_EXTREME_LONG) -0.4%. None are eligible for discretionary close yet (under 12h). The P/C ratio signals are progressing as expected with declining put/call ratios and modest spot gains. The gold short is under pressure from spot rise but funding remains extreme; thesis intact. SKHX weekend funding reversion long is a mechanical trade and not our call.
+No parameter changes warranted. Continue monitoring for 12h mark to reassess thesis validity.
+
+---
+
