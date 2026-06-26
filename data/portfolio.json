@@ -1,5 +1,5 @@
 {
-  "cash": 95.36846075556943,
+  "cash": 94.35203480206081,
   "positions": [
     {
       "id": "T-1782415747222-cwqc",
@@ -8,8 +8,8 @@
       "venue": "spot",
       "direction": "long",
       "entryPrice": 4042,
-      "currentPrice": 4049,
-      "currentUnderlyingPrice": 4049,
+      "currentPrice": 4058,
+      "currentUnderlyingPrice": 4058,
       "entryUnderlyingPrice": 4042,
       "size": 1,
       "leverage": 1,
@@ -21,7 +21,7 @@
       "expiryDate": "2026-06-30T19:29:07.222Z",
       "instrumentType": "spot",
       "instrumentLabel": "GOLD spot",
-      "peakPnlPct": 0.3785254824344429,
+      "peakPnlPct": 0.51459673428996,
       "fundingPnlAccrued": 0
     },
     {
@@ -31,8 +31,8 @@
       "venue": "spot",
       "direction": "long",
       "entryPrice": 69.28,
-      "currentPrice": 69.78,
-      "currentUnderlyingPrice": 69.78,
+      "currentPrice": 69.84,
+      "currentUnderlyingPrice": 69.84,
       "entryUnderlyingPrice": 69.28,
       "size": 1,
       "leverage": 1,
@@ -48,15 +48,15 @@
       "fundingPnlAccrued": 0
     },
     {
-      "id": "T-1782469791636-eod1",
-      "openedAt": "2026-06-26T10:29:51.636Z",
+      "id": "T-1782480553154-7y87",
+      "openedAt": "2026-06-26T13:29:13.154Z",
       "asset": "BTC",
       "venue": "spot",
       "direction": "long",
-      "entryPrice": 59753,
-      "currentPrice": 59669,
-      "currentUnderlyingPrice": 59669,
-      "entryUnderlyingPrice": 59753,
+      "entryPrice": 58846,
+      "currentPrice": 58846,
+      "currentUnderlyingPrice": 58846,
+      "entryUnderlyingPrice": 58846,
       "size": 1,
       "leverage": 1,
       "signalType": "PC_RATIO_EXTREME_HIGH",
@@ -64,10 +64,31 @@
       "thesis": "BTC P/C ratio 2.58 — heavy put buying → contrarian long.",
       "targetPct": 3,
       "stopPct": 1.5,
-      "expiryDate": "2026-07-01T10:29:51.636Z",
+      "expiryDate": "2026-07-01T13:29:13.154Z",
       "instrumentType": "spot",
-      "instrumentLabel": "BTC spot",
-      "peakPnlPct": 0.02594012016133081,
+      "instrumentLabel": "BTC spot"
+    },
+    {
+      "id": "T-1782480553155-8iwm",
+      "openedAt": "2026-06-26T13:29:13.155Z",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "entryPrice": 4058,
+      "currentPrice": 4058,
+      "currentUnderlyingPrice": 4058,
+      "entryUnderlyingPrice": 4058,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "FUNDING_EXTREME_LONG",
+      "hypothesisId": null,
+      "thesis": "GOLD HL funding 26.8% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDate": "2026-06-29T13:29:13.155Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "GOLD",
+      "instrumentLabel": "HL GOLD perp",
       "fundingPnlAccrued": 0
     }
   ],
@@ -75,5 +96,5 @@
   "totalTrades": 242,
   "winCount": 137,
   "lossCount": 105,
-  "lastUpdated": "2026-06-26T12:28:38.298Z"
+  "lastUpdated": "2026-06-26T13:29:13.158Z"
 }
