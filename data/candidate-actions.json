@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-27T00:28:41.056Z",
+  "generatedAt": "2026-06-27T01:28:42.460Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.5383377843025255,
       "thesis": "BTC P/C ratio 2.07 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 60009,
+      "entryPrice": 59966,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 60009,
+      "entryPrice": 59966,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -61,8 +61,8 @@
         "byAsset": {
           "BTC": 1,
           "GOLD": -1,
-          "AMD": 5,
-          "BX": 5
+          "BX": 5,
+          "LITE": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_HIGH": 1,
@@ -82,8 +82,8 @@
           "funding_reversion": 9,
           "gold_delta": -1,
           "hyperliquid_venue": 9,
-          "amd_delta": 5,
-          "bx_delta": 5
+          "bx_delta": 5,
+          "lite_delta": 5
         }
       },
       "afterCandidate": {
@@ -92,8 +92,8 @@
         "byAsset": {
           "BTC": 1,
           "GOLD": -1,
-          "AMD": 5,
-          "BX": 5
+          "BX": 5,
+          "LITE": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_HIGH": 1,
@@ -113,8 +113,8 @@
           "funding_reversion": 9,
           "gold_delta": -1,
           "hyperliquid_venue": 9,
-          "amd_delta": 5,
-          "bx_delta": 5
+          "bx_delta": 5,
+          "lite_delta": 5
         }
       },
       "warnings": []
@@ -153,12 +153,12 @@
         "btc_spot",
         "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 10.99,
-      "hoursToExpiry": 109.01,
+      "hoursOpen": 11.99,
+      "hoursToExpiry": 108.01,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0916,
+      "elapsedHoldPct": 0.0999,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 11.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
     },
     {
       "positionId": "T-1782480553155-8iwm",
@@ -172,28 +172,12 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 10.99,
-      "hoursToExpiry": 61.01,
+      "hoursOpen": 11.99,
+      "hoursToExpiry": 60.01,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.1526,
+      "elapsedHoldPct": 0.1665,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 11.0h, requires at least 12h."
-    },
-    {
-      "positionId": "WF-1782509315159-AMD-718v",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "AMD",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 3,
-      "hoursToExpiry": 21,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.125,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
     },
     {
       "positionId": "WF-1782509315159-BX-g71u",
@@ -204,10 +188,26 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 3,
-      "hoursToExpiry": 21,
+      "hoursOpen": 4,
+      "hoursToExpiry": 20,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.125,
+      "elapsedHoldPct": 0.1667,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1782523719357-LITE-95oc",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "LITE",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 0,
+      "hoursToExpiry": 24,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
