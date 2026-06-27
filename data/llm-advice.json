@@ -1,5 +1,20 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [],
-  "skippedTrades": []
+  "rejectedCloses": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "WF-1782530924670-COST-uo3g",
+        "asset": "COST",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "data_quality_issue",
+        "evidenceColumns": [],
+        "thesis": "COST funding data appears unreliable: the weekend HL funding reversion signal opened 11h ago with funding -94.8% annualized, but the current snapshot still shows the same extreme reading with no drift toward zero. This suggests a stale or frozen funding quote, invalidating the thesis that funding will normalize and drive spot higher. Close immediately."
+      },
+      "reason": "LLM close rejected: position is not eligible for LLM exits."
+    }
+  ],
+  "skippedTrades": [],
+  "parameterUpdates": {}
 }

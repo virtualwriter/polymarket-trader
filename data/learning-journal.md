@@ -40435,3 +40435,49 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-06-27 14:29 UTC
+
+**Portfolio:** $98.39 total | Cash $93.39 | 5 open | P&L $0.9480 | 57% win rate (263 trades)
+
+**Closed 2 trades:**
+- ❌ RKLB long via hyperliquid/hl_perp [HL RKLB Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0108 (-1.1%, market -0.0118, funding 0.0010)
+- ✅ BTC long via spot/spot [BTC spot] (PC_RATIO_EXTREME_HIGH) → target: +$0.0309 (3.1%, market 0.0309, funding 0.0000)
+
+**Opened 1 positions:**
+- BTC long @ $60609 via spot/spot [BTC spot] (PC_RATIO_EXTREME_HIGH)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 12 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_pm_iv = 65.8 is 3.8 std devs from mean (25.54 ± 10.57)
+- [anomaly] oil_pm_iv = 141.5 is 3.2 std devs from mean since 2026-04-28 (70.88 ± 22.26)
+- [anomaly] hype_med_min = 48.8 is 2.9 std devs from mean (26.57 ± 7.70)
+- [anomaly] btc_ibit_pc_ratio = 2.073 is 2.3 std devs from mean (0.92 ± 0.51)
+- [anomaly] amzn_opt_iv_30d = 41.3 is 2.2 std devs from mean (32.24 ± 4.11)
+
+**Blocked signal learning:**
+- Open blocked shadows: 43
+- Resolved blocked shadows: 664 (367 wins / 297 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/14 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 7/11 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=117 (34W/70L/13flat, 32.7% win-rate, sum $-2.6832, avg -2.29%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=162 (51W/94L/17flat, 35.2% win-rate, sum $-2.7788, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.39%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-10.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-4.48%)
+
+**LLM analysis:**
+Today's analysis highlights several data-quality concerns. Gold HL funding is flat at 5.48% across all snapshots, which is highly suspicious and likely a frozen feed; many Gold funding-oscillation hypotheses are untestable with this data. Oil PM settlement EV continues to drift far above spot ($77.1 vs $71.01) due to the bucket-forward mechanism, making PM-EV based mean-reversion signals unreliable. The COST weekend funding reversion long opened with -94.8% annualized funding, but subsequent snapshots show no movement, indicating a possible missing-data issue rather than a genuine signal; closing it on data-quality grounds is appropriate. The other three open positions (GME, ZM, HIMS) are also funded-reversion longs and may suffer from similar stale-data problems; monitor them closely but they are below min hold for LLM close. The relative-value heatmap shows a strong NO edge on BTC $62,500 June contract (adjusted No gap 11.0pt after haircuts), suggesting a one-touch NO shadow trade could be opened, but the contract expires in a few days and spread is 2c, so I'll leave it for the mechanical ONE_TOUCH_HIGH_EDGE_NO scanner. No new hypotheses are proposed as the backlog still has 17 families needing retests.
+
+**LLM close rejections today (2026-06-27, token-burn signal):**
+- Total rejected close instructions: 2
+- Top signal/asset pairs: FUNDING_EXTREME_LONG / GOLD (1); WEEKEND_HL_FUNDING_REVERSION_LONG / COST (1)
+
+---
+
