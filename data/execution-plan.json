@@ -1,23 +1,10 @@
 {
-  "generatedAt": "2026-06-26T23:29:13.540Z",
+  "generatedAt": "2026-06-27T00:28:41.078Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1782466114077-rmc3",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "oil_cl_pc_ratio"
-      ],
-      "thesis": "OIL P/C ratio dropped from 1.596 to 1.175, well below entry extreme threshold, indicating extreme put buying has reversed, invalidating the contrarian long signal."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -25,10 +12,10 @@
       "venue": "spot",
       "direction": "long",
       "strength": 1,
-      "confidence": 0.5399129642313449,
+      "confidence": 0.5383377843025255,
       "thesis": "BTC P/C ratio 2.07 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 60003,
+      "entryPrice": 60009,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -38,6 +25,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
