@@ -1,24 +1,10 @@
 {
-  "generatedAt": "2026-06-27T05:29:26.905Z",
+  "generatedAt": "2026-06-27T06:29:00.753Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1782480553155-8iwm",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
-      ],
-      "thesis": "Gold HL funding has normalized well past the entry threshold, flipping to negative -3.3% from +26.8%. The crowded-long thesis is invalidated; closing to avoid further drawdown."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -29,7 +15,7 @@
       "confidence": 0.5383377843025255,
       "thesis": "BTC P/C ratio 2.07 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 60224,
+      "entryPrice": 60183,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -39,6 +25,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
