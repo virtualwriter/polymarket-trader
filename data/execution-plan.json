@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-27T02:29:19.786Z",
+  "generatedAt": "2026-06-27T03:28:47.871Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,32 +15,16 @@
       "confidence": 0.5383377843025255,
       "thesis": "BTC P/C ratio 2.07 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 60323,
+      "entryPrice": 60282,
       "targetPct": 6,
       "stopPct": 1.5,
       "expiryDays": 21
     }
   ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1782480553155-8iwm",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "gold_hl_funding_ann"
-        ],
-        "thesis": "Gold HL funding annualized has collapsed from 26.8% to 5.48%, well below the 15% entry gate. The extreme long funding that justified a short fade has fully normalised; the thesis that crowded longs would unwind is therefore invalidated. Closing the position."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
