@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-27T14:29:42.975Z",
+  "generatedAt": "2026-06-27T15:29:04.675Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,30 +15,16 @@
       "confidence": 0.5390156880857181,
       "thesis": "BTC P/C ratio 2.07 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 60609,
+      "entryPrice": 60703,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "WF-1782530924670-COST-uo3g",
-        "asset": "COST",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "closeReasonCategory": "data_quality_issue",
-        "evidenceColumns": [],
-        "thesis": "COST funding data appears unreliable: the weekend HL funding reversion signal opened 11h ago with funding -94.8% annualized, but the current snapshot still shows the same extreme reading with no drift toward zero. This suggests a stale or frozen funding quote, invalidating the thesis that funding will normalize and drive spot higher. Close immediately."
-      },
-      "reason": "LLM close rejected: position is not eligible for LLM exits."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-27T14:28:49.336Z",
+  "generatedAt": "2026-06-27T15:29:01.036Z",
   "dataFreshness": {
-    "valuationRows": 1269,
-    "latestValuationAt": "2026-06-27T14",
-    "macroRows": 1267,
+    "valuationRows": 1270,
+    "latestValuationAt": "2026-06-27T15",
+    "macroRows": 1268,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-27T14"
+    "latestInstrumentSnapshotAt": "2026-06-27T15"
   },
   "portfolio": {
-    "cash": 94.3914,
-    "openPositions": 4,
-    "realizedPnl": 0.948,
-    "totalTrades": 263,
-    "winRatePct": 56.7,
-    "unrealizedPnl": -0.0186
+    "cash": 93.3914,
+    "openPositions": 5,
+    "realizedPnl": 0.9789,
+    "totalTrades": 264,
+    "winRatePct": 56.8,
+    "unrealizedPnl": -0.024
   },
   "openPositions": [
     {
@@ -22,7 +22,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.57,
+      "pnlPct": 0.58,
       "currentPrice": 951.53,
       "underlyingPrice": null,
       "targetPct": 3,
@@ -36,7 +36,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.3,
+      "pnlPct": -0.29,
       "currentPrice": 22.233,
       "underlyingPrice": null,
       "targetPct": 3,
@@ -50,8 +50,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -1.59,
-      "currentPrice": 86.964,
+      "pnlPct": -2.27,
+      "currentPrice": 86.846,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 3,
@@ -64,13 +64,30 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.54,
-      "currentPrice": 34.222,
+      "pnlPct": -0.58,
+      "currentPrice": 34.219,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 3,
       "closeReasonIfMechanical": null,
       "evidenceColumns": []
+    },
+    {
+      "positionId": "T-1782570582979-7kjm",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": 0.16,
+      "currentPrice": 60703,
+      "underlyingPrice": 60703,
+      "targetPct": 3,
+      "stopPct": 1.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "btc_spot",
+        "btc_ibit_pc_ratio"
+      ]
     }
   ],
   "signalHealth": [
