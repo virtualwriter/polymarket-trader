@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-28T07:29:17.445Z",
+  "generatedAt": "2026-06-28T08:29:25.318Z",
   "dataFreshness": {
-    "valuationRows": 1285,
-    "latestValuationAt": "2026-06-28T07",
-    "macroRows": 1283,
+    "valuationRows": 1286,
+    "latestValuationAt": "2026-06-28T08",
+    "macroRows": 1284,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-28T07"
+    "latestInstrumentSnapshotAt": "2026-06-28T08"
   },
   "portfolio": {
-    "cash": 91.2252,
-    "openPositions": 7,
-    "realizedPnl": 0.8129,
-    "totalTrades": 293,
-    "winRatePct": 56.7,
-    "unrealizedPnl": -0.019
+    "cash": 93.2423,
+    "openPositions": 5,
+    "realizedPnl": 0.8298,
+    "totalTrades": 295,
+    "winRatePct": 56.9,
+    "unrealizedPnl": -0.0214
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.87,
-      "currentPrice": 60080,
-      "underlyingPrice": 60080,
+      "pnlPct": -0.69,
+      "currentPrice": 60191,
+      "underlyingPrice": 60191,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -39,8 +39,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.21,
-      "currentPrice": 110.12,
+      "pnlPct": -0.81,
+      "currentPrice": 109.89,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 3,
@@ -48,30 +48,13 @@
       "evidenceColumns": []
     },
     {
-      "positionId": "T-1782581387108-y024",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.04,
-      "currentPrice": 4081,
-      "underlyingPrice": 4081,
-      "targetPct": 4,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
-      ]
-    },
-    {
       "positionId": "T-1782599434372-2zfy",
       "asset": "AMZN",
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -0.16,
-      "currentPrice": 232.59,
+      "pnlPct": -0.12,
+      "currentPrice": 232.68,
       "underlyingPrice": 231.9,
       "targetPct": 4,
       "stopPct": 2,
@@ -88,22 +71,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -1.17,
-      "currentPrice": 85.524,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 3,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "WF-1782624555487-SNDK-815w",
-      "asset": "SNDK",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.06,
-      "currentPrice": 2087.7,
+      "pnlPct": -0.96,
+      "currentPrice": 85.557,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 3,
@@ -116,11 +85,11 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0,
-      "currentPrice": 15.536,
+      "pnlPct": 0.45,
+      "currentPrice": 15.55,
       "underlyingPrice": null,
       "targetPct": 3,
-      "stopPct": 100,
+      "stopPct": 3,
       "closeReasonIfMechanical": null,
       "evidenceColumns": []
     }
@@ -159,10 +128,10 @@
     {
       "type": "FUNDING_EXTREME_SHORT",
       "enabled": true,
-      "weight": 0.4608,
-      "trades": 29,
-      "wins": 14,
-      "avgPnlPct": -0.2837,
+      "weight": 0.4667,
+      "trades": 30,
+      "wins": 15,
+      "avgPnlPct": -0.2729,
       "disabledAssets": [
         "OIL"
       ]
