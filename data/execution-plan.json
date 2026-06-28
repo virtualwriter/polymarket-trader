@@ -1,23 +1,10 @@
 {
-  "generatedAt": "2026-06-28T13:30:53.635Z",
+  "generatedAt": "2026-06-28T14:29:50.534Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1782599434372-2zfy",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "amzn_hl_funding_ann"
-      ],
-      "thesis": "AMZN funding has normalized from -30.9% at entry to +5.48%, materially crossing back through the FUNDING_EXTREME_SHORT entry threshold of -15%, invalidating the crowded-short thesis."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -28,7 +15,7 @@
       "confidence": 0.5390156880857181,
       "thesis": "BTC P/C ratio 2.07 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 60076,
+      "entryPrice": 60111,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -38,6 +25,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
