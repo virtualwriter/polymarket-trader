@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-28T08:29:25.318Z",
+  "generatedAt": "2026-06-28T09:29:18.159Z",
   "dataFreshness": {
-    "valuationRows": 1286,
-    "latestValuationAt": "2026-06-28T08",
-    "macroRows": 1284,
+    "valuationRows": 1287,
+    "latestValuationAt": "2026-06-28T09",
+    "macroRows": 1285,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-28T08"
+    "latestInstrumentSnapshotAt": "2026-06-28T09"
   },
   "portfolio": {
-    "cash": 93.2423,
-    "openPositions": 5,
-    "realizedPnl": 0.8298,
-    "totalTrades": 295,
-    "winRatePct": 56.9,
-    "unrealizedPnl": -0.0214
+    "cash": 94.2544,
+    "openPositions": 4,
+    "realizedPnl": 0.842,
+    "totalTrades": 296,
+    "winRatePct": 57.1,
+    "unrealizedPnl": -0.0218
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.69,
-      "currentPrice": 60191,
-      "underlyingPrice": 60191,
+      "pnlPct": -0.49,
+      "currentPrice": 60313,
+      "underlyingPrice": 60313,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -39,8 +39,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.81,
-      "currentPrice": 109.89,
+      "pnlPct": -0.63,
+      "currentPrice": 109.91,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 3,
@@ -53,8 +53,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -0.12,
-      "currentPrice": 232.68,
+      "pnlPct": -0.09,
+      "currentPrice": 232.75,
       "underlyingPrice": 231.9,
       "targetPct": 4,
       "stopPct": 2,
@@ -71,22 +71,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.96,
-      "currentPrice": 85.557,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 3,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "WF-1782631757324-RIVN-2xad",
-      "asset": "RIVN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.45,
-      "currentPrice": 15.55,
+      "pnlPct": -0.97,
+      "currentPrice": 85.555,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 3,
@@ -232,7 +218,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 42,
+    "openCount": 43,
     "resolvedCount": 669,
     "wouldHaveWon": 368,
     "wouldHaveLost": 301,
@@ -549,6 +535,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.8pt on ETH, spread 2.0c, liquidity 37242. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $75,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.5,
+          "yesAsk": 0.51,
+          "yesSpread": 0.01,
+          "liquidity": 30516.06,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 8.1pt after haircuts. CBOE gap 9.1pt, CME gap 4.7pt, source agreement both_positive, spread 1.0c, liquidity 30516. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
