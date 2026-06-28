@@ -41059,3 +41059,46 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-06-28 07:29 UTC
+
+**Portfolio:** $98.23 total | Cash $92.23 | 6 open | P&L $0.8133 | 57% win rate (294 trades)
+
+**Closed 6 trades:**
+- ✅ COIN long via hyperliquid/hl_perp [HL COIN Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0139 (1.4%, market 0.0137, funding 0.0002)
+- ✅ MU long via hyperliquid/hl_perp [HL MU Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0056 (0.6%, market 0.0053, funding 0.0003)
+- ✅ RKLB long via hyperliquid/hl_perp [HL RKLB Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0200 (2.0%, market 0.0201, funding -0.0000)
+- ✅ SKHX long via hyperliquid/hl_perp [HL SKHX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0212 (2.1%, market 0.0212, funding -0.0000)
+- ✅ CRCL long via hyperliquid/hl_perp [HL CRCL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0207 (2.1%, market 0.0207, funding 0.0000)
+- ✅ GOLD long via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_SHORT) → llm_decision: +$0.0004 (0.0%, market 0.0005, funding -0.0001)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_pm_iv = 74.8 is 4.2 std devs from mean (26.10 ± 11.63)
+- [anomaly] oil_pm_iv = 159.2 is 3.6 std devs from mean since 2026-04-28 (72.00 ± 24.02)
+- [anomaly] hype_med_min = 49.4 is 2.8 std devs from mean (26.85 ± 8.06)
+- [anomaly] btc_ibit_pc_ratio = 2.073 is 2.2 std devs from mean (0.94 ± 0.52)
+- [anomaly] amzn_opt_iv_30d = 41.3 is 2.1 std devs from mean (32.35 ± 4.21)
+
+**Blocked signal learning:**
+- Open blocked shadows: 42
+- Resolved blocked shadows: 669 (368 wins / 301 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/14 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 7/11 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=117 (34W/70L/13flat, 32.7% win-rate, sum $-2.6832, avg -2.29%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=162 (51W/94L/17flat, 35.2% win-rate, sum $-2.7788, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-7.58%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-9.09%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+5.56%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.59%)
+
+**LLM analysis:**
+Closed the GOLD long (FUNDING_EXTREME_SHORT) as funding flipped positive, removing the original short-crowding edge. The signal family continues to struggle (48% win rate, avg -0.28%), and this rapid funding normalization is a clear invalidation. Gold PM IV remains at an extreme (74.8, +4.2σ), suggesting a separate volatility-expansion thesis may be emerging, but the backlog of shadow tests for existing hypotheses prevents new proposals now. The backlog has 17 active families needing tests and 6 pending; we should focus on clearing those before adding new ideas. BTC P/C ratio remains at 2.07 from entry, so no invalidation on that trade yet. Weekend funding-reversion scanner is running, adding small positions; these are mechanical and need no intervention.
+
+---
+

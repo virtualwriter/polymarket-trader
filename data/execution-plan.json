@@ -1,10 +1,23 @@
 {
-  "generatedAt": "2026-06-28T06:29:27.777Z",
+  "generatedAt": "2026-06-28T07:29:58.541Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1782581387108-y024",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_hl_funding_ann"
+      ],
+      "thesis": "Gold funding has normalized to +5.48% from entry extreme of -34.86%, invalidating the contrarian FUNDING_EXTREME_SHORT long thesis."
+    }
+  ],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -15,7 +28,7 @@
       "confidence": 0.5390156880857181,
       "thesis": "BTC P/C ratio 2.07 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 59889,
+      "entryPrice": 60080,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -25,6 +38,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
