@@ -41861,3 +41861,41 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-06-29 04:31 UTC
+
+**Portfolio:** $98.22 total | Cash $94.22 | 4 open | P&L $0.8110 | 57% win rate (319 trades)
+
+**Opened 1 positions:**
+- GOLD short @ $4067 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 12 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_pm_iv = 94.1 is 4.9 std devs from mean (27.04 ± 13.66)
+- [anomaly] oil_pm_iv = 202.7 is 4.6 std devs from mean since 2026-04-28 (73.96 ± 27.85)
+- [anomaly] amzn_hl_basis_pct = 1.4 is 2.8 std devs from mean (0.10 ± 0.47)
+- [anomaly] btc_ibit_pc_ratio = 2.073 is 2.1 std devs from mean (0.95 ± 0.53)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.60 to 0.76. Rolling correlation: 24h=0.77, 7d=0.81, 30d=0.78. Current 24h corr is at 90th pct of last 30 daily 24h-rolling values (range -0.97 to 0.91).
+
+**Blocked signal learning:**
+- Open blocked shadows: 43
+- Resolved blocked shadows: 671 (368 wins / 303 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/14 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 7/11 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=117 (34W/70L/13flat, 32.7% win-rate, sum $-2.6832, avg -2.29%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=162 (51W/94L/17flat, 35.2% win-rate, sum $-2.7788, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+5.56%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.59%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-2.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-5.41%)
+
+**LLM analysis:**
+Today's data continues to show extreme divergence between listed options IV and prediction market IV for gold and oil, with gold PM IV at 94.1 (4.9 std dev) and oil PM IV at 202.7 (4.6 std dev). BTC P/C ratio remains at the top of its range (2.073), signaling persistent put buying which historically has been a contrarian long signal, consistent with the open PC_RATIO_EXTREME_HIGH BTC long. Weekend funding reversion trades on COST and DKNG are performing in line with the strong shadow performance of that signal family (188/253 wins, avg +0.99%). The blocked shadow learning for WEEKEND_HL_FUNDING_REVERSION_LONG suggests the rule-based scanner is doing well; shadow-only trades on that family remain blocked from live but the evidence supports the concept. The ONE_TOUCH_HIGH_EDGE_NO signal shows excellent clean metrics (4/4 live wins) but recent shadow trades have been mixed with wider spreads. No parameter changes are recommended at this time.
+
+---
+
