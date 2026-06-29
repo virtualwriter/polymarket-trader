@@ -1,47 +1,30 @@
 {
-  "generatedAt": "2026-06-29T14:30:42.770Z",
+  "generatedAt": "2026-06-29T15:30:26.751Z",
   "dataFreshness": {
-    "valuationRows": 1316,
-    "latestValuationAt": "2026-06-29T14",
-    "macroRows": 1314,
+    "valuationRows": 1317,
+    "latestValuationAt": "2026-06-29T15",
+    "macroRows": 1315,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-29T14"
+    "latestInstrumentSnapshotAt": "2026-06-29T15"
   },
   "portfolio": {
-    "cash": 96.2372,
-    "openPositions": 2,
-    "realizedPnl": 0.8247,
-    "totalTrades": 325,
-    "winRatePct": 57.5,
-    "unrealizedPnl": 0.0062
+    "cash": 97.232,
+    "openPositions": 1,
+    "realizedPnl": 0.8195,
+    "totalTrades": 327,
+    "winRatePct": 57.2,
+    "unrealizedPnl": 0.0113
   },
   "openPositions": [
-    {
-      "positionId": "T-1782667815084-fiwd",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.31,
-      "currentPrice": 59408,
-      "underlyingPrice": 59408,
-      "targetPct": 3,
-      "stopPct": 1.5,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "btc_spot",
-        "btc_ibit_pc_ratio"
-      ]
-    },
     {
       "positionId": "T-1782707513852-jp6r",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 0.93,
-      "currentPrice": 4030,
-      "underlyingPrice": 4030,
+      "pnlPct": 1.13,
+      "currentPrice": 4022,
+      "underlyingPrice": 4022,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -150,11 +133,13 @@
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "enabled": true,
-      "weight": 0.5373,
-      "trades": 36,
+      "weight": 0.5287,
+      "trades": 38,
       "wins": 19,
-      "avgPnlPct": 0.2422,
-      "disabledAssets": []
+      "avgPnlPct": 0.2157,
+      "disabledAssets": [
+        "BTC"
+      ]
     },
     {
       "type": "PC_RATIO_EXTREME_LOW",
