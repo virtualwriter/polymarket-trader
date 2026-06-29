@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-29T12:30:26.408Z",
+  "generatedAt": "2026-06-29T13:30:56.484Z",
   "dataFreshness": {
-    "valuationRows": 1314,
-    "latestValuationAt": "2026-06-29T12",
-    "macroRows": 1312,
+    "valuationRows": 1315,
+    "latestValuationAt": "2026-06-29T13",
+    "macroRows": 1313,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-29T12"
+    "latestInstrumentSnapshotAt": "2026-06-29T13"
   },
   "portfolio": {
-    "cash": 91.1946,
-    "openPositions": 7,
-    "realizedPnl": 0.7821,
-    "totalTrades": 320,
-    "winRatePct": 57.2,
-    "unrealizedPnl": 0.059
+    "cash": 96.2372,
+    "openPositions": 2,
+    "realizedPnl": 0.8248,
+    "totalTrades": 325,
+    "winRatePct": 57.5,
+    "unrealizedPnl": 0.012
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 1.45,
-      "currentPrice": 60455,
-      "underlyingPrice": 60455,
+      "pnlPct": 0.62,
+      "currentPrice": 59962,
+      "underlyingPrice": 59962,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -34,42 +34,14 @@
       ]
     },
     {
-      "positionId": "WF-1782671403915-COST-uell",
-      "asset": "COST",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.61,
-      "currentPrice": 951.25,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 3,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "WF-1782696622368-DKNG-nlyb",
-      "asset": "DKNG",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.45,
-      "currentPrice": 25.795,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 3,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
       "positionId": "T-1782707513852-jp6r",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 0.66,
-      "currentPrice": 4041,
-      "underlyingPrice": 4041,
+      "pnlPct": 0.58,
+      "currentPrice": 4044,
+      "underlyingPrice": 4044,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -77,48 +49,6 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ]
-    },
-    {
-      "positionId": "WF-1782721816719-EBAY-4cu6",
-      "asset": "EBAY",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.05,
-      "currentPrice": 108.15,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 3,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "WF-1782725422856-ZM-9j08",
-      "asset": "ZM",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 1.34,
-      "currentPrice": 87.393,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 3,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "WF-1782729017280-BX-392b",
-      "asset": "BX",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 1.45,
-      "currentPrice": 115.09,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 3,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
     }
   ],
   "signalHealth": [
@@ -259,10 +189,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 41,
-    "resolvedCount": 673,
+    "openCount": 40,
+    "resolvedCount": 674,
     "wouldHaveWon": 369,
-    "wouldHaveLost": 304,
+    "wouldHaveLost": 305,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -330,26 +260,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -7.58,
-        "resolvedAt": "2026-06-27T18:28:58.286Z",
-        "marketQuality": {
-          "yesBid": 0.34,
-          "yesAsk": 0.36,
-          "yesSpread": 0.02,
-          "liquidity": 42043.88,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
         "asset": "BTC",
@@ -483,6 +393,31 @@
         "trendMetrics": {
           "aboveTrendPct": 0.72,
           "momentumPct": 1.81
+        }
+      },
+      {
+        "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "polymarket_proxy_short",
+        "outcome": "loss",
+        "closeReason": "expiry",
+        "pnlPct": -0.1,
+        "resolvedAt": "2026-06-29T13:30:56.345Z",
+        "marketQuality": {
+          "yesBid": 0.001,
+          "yesAsk": 0.005,
+          "yesSpread": 0.004,
+          "liquidity": 16579.11,
+          "flags": []
+        },
+        "sourceComparison": {
+          "sourceClosedAt": "2026-06-27T05:29:26.912Z",
+          "sourcePnl": -0.0075,
+          "sourcePnlPct": -0.75,
+          "proxyOutperformed": true,
+          "correlation": "same_direction"
         }
       }
     ],

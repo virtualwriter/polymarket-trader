@@ -42182,3 +42182,45 @@ All open positions are performing within thesis bounds. BTC long (PC_RATIO_EXTRE
 
 ---
 
+### 2026-06-29 13:30 UTC
+
+**Portfolio:** $98.24 total | Cash $96.24 | 2 open | P&L $0.8248 | 58% win rate (325 trades)
+
+**Closed 5 trades:**
+- ✅ COST long via hyperliquid/hl_perp [HL COST Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → expiry: +$0.0079 (0.8%, market 0.0045, funding 0.0034)
+- ❌ DKNG long via hyperliquid/hl_perp [HL DKNG Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → expiry: $-0.0095 (-0.9%, market -0.0120, funding 0.0026)
+- ✅ EBAY long via hyperliquid/hl_perp [HL EBAY Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → expiry: +$0.0000 (0.0%, market -0.0018, funding 0.0019)
+- ✅ ZM long via hyperliquid/hl_perp [HL ZM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → expiry: +$0.0189 (1.9%, market 0.0177, funding 0.0012)
+- ✅ BX long via hyperliquid/hl_perp [HL BX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → expiry: +$0.0253 (2.5%, market 0.0244, funding 0.0009)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 12 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_pm_iv = 108.6 is 5.4 std devs from mean (27.55 ± 14.95)
+- [anomaly] oil_pm_iv = 231.4 is 5.1 std devs from mean since 2026-04-28 (75.08 ± 30.49)
+- [anomaly] oil_pm_settle_ev = 67.3 is -2.6 std devs from mean since 2026-04-28 (82.43 ± 5.72)
+- [anomaly] btc_ibit_pc_ratio = 2.139 is 2.2 std devs from mean (0.96 ± 0.54)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.59 to 0.76. Rolling correlation: 24h=0.68, 7d=0.77, 30d=0.79. Current 24h corr is at 87th pct of last 30 daily 24h-rolling values (range -0.94 to 0.92).
+
+**Blocked signal learning:**
+- Open blocked shadows: 40
+- Resolved blocked shadows: 674 (369 wins / 305 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/14 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 8/12 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=117 (34W/70L/13flat, 32.7% win-rate, sum $-2.6832, avg -2.29%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=162 (51W/94L/17flat, 35.2% win-rate, sum $-2.7788, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-5.41%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-2.00%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expired (+0.59%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expired (-0.10%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (3 recurring signals seen within 6h); 1.0h since last call; daily budget 5/12; next scheduled 2026-06-29T15:30:59.685Z). Mechanical cycle ran normally._
+
+---
+
