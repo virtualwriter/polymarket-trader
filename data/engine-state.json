@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-06-29T04:30:21.956Z",
+  "generatedAt": "2026-06-29T05:30:04.476Z",
   "dataFreshness": {
-    "valuationRows": 1306,
-    "latestValuationAt": "2026-06-29T04",
-    "macroRows": 1304,
+    "valuationRows": 1307,
+    "latestValuationAt": "2026-06-29T05",
+    "macroRows": 1305,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-29T04"
+    "latestInstrumentSnapshotAt": "2026-06-29T05"
   },
   "portfolio": {
-    "cash": 95.2234,
-    "openPositions": 3,
+    "cash": 94.2234,
+    "openPositions": 4,
     "realizedPnl": 0.811,
     "totalTrades": 319,
     "winRatePct": 57.4,
-    "unrealizedPnl": 0.0198
+    "unrealizedPnl": 0.0112
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.55,
-      "currentPrice": 59923,
-      "underlyingPrice": 59923,
+      "pnlPct": 0.13,
+      "currentPrice": 59668,
+      "underlyingPrice": 59668,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -39,8 +39,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.5,
-      "currentPrice": 951.15,
+      "pnlPct": 0.37,
+      "currentPrice": 950.9,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 3,
@@ -53,13 +53,30 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.93,
-      "currentPrice": 25.83,
+      "pnlPct": 0.3,
+      "currentPrice": 25.795,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 3,
       "closeReasonIfMechanical": null,
       "evidenceColumns": []
+    },
+    {
+      "positionId": "T-1782707513852-jp6r",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "pnlPct": 0.32,
+      "currentPrice": 4054,
+      "underlyingPrice": 4054,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
+      ]
     }
   ],
   "signalHealth": [
