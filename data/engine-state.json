@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-29T05:30:04.476Z",
+  "generatedAt": "2026-06-29T06:30:08.565Z",
   "dataFreshness": {
-    "valuationRows": 1307,
-    "latestValuationAt": "2026-06-29T05",
-    "macroRows": 1305,
+    "valuationRows": 1308,
+    "latestValuationAt": "2026-06-29T06",
+    "macroRows": 1306,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-29T05"
+    "latestInstrumentSnapshotAt": "2026-06-29T06"
   },
   "portfolio": {
     "cash": 94.2234,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.811,
     "totalTrades": 319,
     "winRatePct": 57.4,
-    "unrealizedPnl": 0.0112
+    "unrealizedPnl": 0.0043
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.13,
-      "currentPrice": 59668,
-      "underlyingPrice": 59668,
+      "pnlPct": 0.99,
+      "currentPrice": 60185,
+      "underlyingPrice": 60185,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -39,8 +39,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.37,
-      "currentPrice": 950.9,
+      "pnlPct": 0.22,
+      "currentPrice": 950.63,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 3,
@@ -53,8 +53,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.3,
-      "currentPrice": 25.795,
+      "pnlPct": -0.84,
+      "currentPrice": 25.734,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 3,
@@ -67,9 +67,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 0.32,
-      "currentPrice": 4054,
-      "underlyingPrice": 4054,
+      "pnlPct": 0.05,
+      "currentPrice": 4065,
+      "underlyingPrice": 4065,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -217,10 +217,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 43,
-    "resolvedCount": 671,
+    "openCount": 42,
+    "resolvedCount": 672,
     "wouldHaveWon": 368,
-    "wouldHaveLost": 303,
+    "wouldHaveLost": 304,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -288,24 +288,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -4.48,
-        "resolvedAt": "2026-06-26T21:28:35.151Z",
-        "marketQuality": {
-          "yesBid": 0.04,
-          "yesAsk": 0.05,
-          "yesSpread": 0.01,
-          "liquidity": 31194.25,
-          "flags": []
-        }
-      },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
         "asset": "BTC",
@@ -445,6 +427,26 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -2,
+        "resolvedAt": "2026-06-29T06:30:08.410Z",
+        "marketQuality": {
+          "yesBid": 0.5,
+          "yesAsk": 0.51,
+          "yesSpread": 0.01,
+          "liquidity": 31744.18,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -534,22 +536,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.8pt on ETH, spread 2.0c, liquidity 37242. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $75,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.5,
-          "yesAsk": 0.51,
-          "yesSpread": 0.01,
-          "liquidity": 31744.18,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 11.3pt after haircuts. CBOE gap 12.3pt, CME gap 7.0pt, source agreement both_positive, spread 1.0c, liquidity 31744. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
