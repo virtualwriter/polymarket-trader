@@ -5230,11 +5230,11 @@
       {
         "date": "2026-06-22",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup btc_listed_iv_momentum_confirmation shadow test 5/20 opened via H-170 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "BTC moved -6.91% (63671 → 59273)"
       }
     ],
-    "winRate": 1,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Setup family inconclusive after 29 completed tests: 62% win rate. | This BTC IV compression shadow test family continues to show promising structure. Recent variants correctly identified the IV anomaly and spot consolidation. The promoted version (H-523) builds on this foundation and is performing as expected in early hours. | BTC IV compression / vol reversion trade triggered but momentum quickly broke; spot dropped below 24h low and funding turned negative. The regime-relative condition (BTC above short-term trend) held at entry but reversed rapidly. The family needs more shadow tests with tighter confirmation before next live promotion. | BTC IV compression / vol reversion (promoted variant) opened long at 77.6k but BTC has fallen to 76.8k with funding turning negative. The momentum condition (spot gaining vs short-term trend) has broken, and the IV reversion thesis has not yet materialized. The entry timing may benefit from a stricter momentum confirmation gate. | BTC PM IV (36.0) remains in the bottom 20% of its 30d range, spot (76776) within 5% of 7d high, fulfilling IV compression/vol reversion criteria. Spot has softened -1% but consolidation holds; no invalidation yet. | The recent BTC long was triggered when PM IV was compressed into the bottom 20% of its 30‑d range (z‑score –6.5σ) and spot was within 5% of the 7‑d high. That condition still holds, but the trade is on track to hit its 1.5% stop. The thesis isn’t invalidated by the IV metric, but short‑term price action failed to confirm the expected expansion bounce, suggesting the setup may need a wider stop or a longer hold to give the statistical edge time to play out. | Split 2026-05-26 by operator from BTC PM-IV compression family into btc_listed_iv_momentum_confirmation; adjacent listed-IV/momentum/P-C setup must earn its own promotion.",
@@ -15476,8 +15476,8 @@
       {
         "date": "2026-06-15",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup pm_odds_underlying_payoff_cap shadow test 4/20 opened via H-524 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "BTC moved -9.84% (65740 → 59273)"
       }
     ],
     "winRate": 0,
@@ -15535,6 +15535,12 @@
         "triggered": true,
         "outcome": "loss",
         "actualMove": "BTC moved -10.94% (73813 → 65740)"
+      },
+      {
+        "date": "2026-06-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup pm_odds_underlying_payoff_cap shadow test 5/20 opened via H-526 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0,
