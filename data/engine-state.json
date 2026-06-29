@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-29T10:30:17.407Z",
+  "generatedAt": "2026-06-29T11:30:14.951Z",
   "dataFreshness": {
-    "valuationRows": 1312,
-    "latestValuationAt": "2026-06-29T10",
-    "macroRows": 1310,
+    "valuationRows": 1313,
+    "latestValuationAt": "2026-06-29T11",
+    "macroRows": 1311,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-29T10"
+    "latestInstrumentSnapshotAt": "2026-06-29T11"
   },
   "portfolio": {
     "cash": 91.1946,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.7821,
     "totalTrades": 320,
     "winRatePct": 57.2,
-    "unrealizedPnl": 0.0342
+    "unrealizedPnl": 0.0498
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 1.02,
-      "currentPrice": 60199,
-      "underlyingPrice": 60199,
+      "pnlPct": 0.62,
+      "currentPrice": 59960,
+      "underlyingPrice": 59960,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -39,8 +39,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.67,
-      "currentPrice": 951.36,
+      "pnlPct": 0.3,
+      "currentPrice": 950.64,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 3,
@@ -53,8 +53,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 1.03,
-      "currentPrice": 25.825,
+      "pnlPct": -0.32,
+      "currentPrice": 25.755,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 3,
@@ -67,9 +67,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 0.68,
-      "currentPrice": 4040,
-      "underlyingPrice": 4040,
+      "pnlPct": 0.88,
+      "currentPrice": 4032,
+      "underlyingPrice": 4032,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -84,8 +84,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.49,
-      "currentPrice": 108.08,
+      "pnlPct": 0.3,
+      "currentPrice": 108.23,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 3,
@@ -98,8 +98,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.52,
-      "currentPrice": 87.272,
+      "pnlPct": 1.77,
+      "currentPrice": 87.483,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 3,
@@ -112,11 +112,11 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0,
-      "currentPrice": 114.77,
+      "pnlPct": 1.44,
+      "currentPrice": 115.1,
       "underlyingPrice": null,
       "targetPct": 3,
-      "stopPct": 100,
+      "stopPct": 3,
       "closeReasonIfMechanical": null,
       "evidenceColumns": []
     }
@@ -259,9 +259,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 42,
-    "resolvedCount": 672,
-    "wouldHaveWon": 368,
+    "openCount": 41,
+    "resolvedCount": 673,
+    "wouldHaveWon": 369,
     "wouldHaveLost": 304,
     "bySignal": [
       {
@@ -299,8 +299,8 @@
       {
         "signalType": "FUNDING_EXTREME_LONG",
         "blocked": 12,
-        "resolved": 11,
-        "wouldHaveWon": 7,
+        "resolved": 12,
+        "wouldHaveWon": 8,
         "wouldHaveLost": 4,
         "avgPnlPct": 0.56
       },
@@ -330,26 +330,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -6.25,
-        "resolvedAt": "2026-06-27T17:28:59.318Z",
-        "marketQuality": {
-          "yesBid": 0.68,
-          "yesAsk": 0.7,
-          "yesSpread": 0.02,
-          "liquidity": 30888.92,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
         "asset": "BTC",
@@ -488,6 +468,21 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "FUNDING_EXTREME_LONG",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "short",
+        "blockedReason": "short_blocked_by_positive_trend",
+        "outcome": "win",
+        "closeReason": "expiry",
+        "pnlPct": 0.59,
+        "resolvedAt": "2026-06-29T11:30:14.809Z",
+        "trendMetrics": {
+          "aboveTrendPct": 0.72,
+          "momentumPct": 1.81
         }
       }
     ],
