@@ -42042,3 +42042,38 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-06-29 09:31 UTC
+
+**Portfolio:** $98.19 total | Cash $92.19 | 6 open | P&L $0.7821 | 57% win rate (320 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 12 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_pm_iv = 101.4 is 5.2 std devs from mean (27.31 ± 14.33)
+- [anomaly] oil_pm_iv = 217 is 4.9 std devs from mean since 2026-04-28 (74.55 ± 29.22)
+- [anomaly] amzn_hl_basis_pct = 1.47 is 2.9 std devs from mean (0.11 ± 0.47)
+- [anomaly] btc_ibit_pc_ratio = 2.139 is 2.2 std devs from mean (0.96 ± 0.54)
+- [anomaly] oil_pm_settle_ev = 71 is -2.0 std devs from mean since 2026-04-28 (82.47 ± 5.69)
+
+**Blocked signal learning:**
+- Open blocked shadows: 42
+- Resolved blocked shadows: 672 (368 wins / 304 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/14 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 7/11 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=117 (34W/70L/13flat, 32.7% win-rate, sum $-2.6832, avg -2.29%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=162 (51W/94L/17flat, 35.2% win-rate, sum $-2.7788, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.59%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-2.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-5.41%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-2.00%)
+
+**LLM analysis:**
+Today's snapshot shows BTC P/C ratio edging higher to 2.139 — further into contrarian long territory, but spot stuck near 59.8k with no clear catalyst. Our long via PC_RATIO_EXTREME_HIGH is modestly green. Gold short from funding extreme long is early; funding eased to 21.2% but still above the threshold, and spot decline supports the trade. The weekend HL reversion longs (COST, DKNG) are working well, EBAY is underwater but within risk. The heatmap shows many one-touch contracts priced cheaply versus underlying caps, but liquidity and spread filters discourage new entry until clearer edge emerges. Overall, the VERY BEARISH macro environment warrants caution on new longs; we'll let mechanical signals handle entries and focus on testing existing families.
+
+---
+
