@@ -5543,6 +5543,17 @@ async function openPositions(
 function applyFundingRiskShapeToOpenPositions(portfolio: Portfolio, learningParams: LearningParams): string[] {
   const notes: string[] = [];
   for (const position of portfolio.positions) {
+    // Weekend HL stock funding uses its own exit policy (funding normalize / target /
+    // 24h hold) with stopPct=100. Do not inherit the generic funding-signal 3%/3%
+    // shape from riskForSignal's fallback.
+    if (position.signalType === WEEKEND_HL_FUNDING_LIVE_SIGNAL) {
+      if (position.targetPct !== WEEKEND_HL_FUNDING_TARGET_PCT || position.stopPct !== 100) {
+        notes.push(`${position.asset} ${position.signalType}: ${formatTargetPct(position.targetPct)}/-${position.stopPct} -> +${WEEKEND_HL_FUNDING_TARGET_PCT}/-100 (weekend funding policy)`);
+        position.targetPct = WEEKEND_HL_FUNDING_TARGET_PCT;
+        position.stopPct = 100;
+      }
+      continue;
+    }
     if (!isFundingSignal(position.signalType)) continue;
     const risk = riskForSignal(learningParams, position.signalType);
     if (position.targetPct !== risk.targetPct || position.stopPct !== risk.stopPct) {
