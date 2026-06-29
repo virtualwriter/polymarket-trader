@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-29T01:31:47.180Z",
+  "generatedAt": "2026-06-29T02:30:05.010Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.537330001539527,
       "thesis": "BTC P/C ratio 2.07 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 59362,
+      "entryPrice": 59403,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -25,11 +25,11 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.026285714285714284,
-      "confidence": 0.013916590927893265,
-      "thesis": "GOLD HL funding 15.9% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.11457142857142862,
+      "confidence": 0.06065818437049132,
+      "thesis": "GOLD HL funding 19.0% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4066,
+      "entryPrice": 4072,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
@@ -37,38 +37,9 @@
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "buy",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "evidenceColumns": [
-          "btc_spot",
-          "btc_pm_iv"
-        ],
-        "thesis": "ONE_TOUCH_HIGH_EDGE_NO signal: PM YES overpriced vs model; buy NO on BTC $75,000 Dec 2026. Adjusted NO gap positive, spread 1c, liquidity 32,137."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    },
-    {
-      "instruction": {
-        "action": "buy",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "evidenceColumns": [
-          "btc_spot",
-          "btc_pm_iv"
-        ],
-        "thesis": "ONE_TOUCH_HIGH_EDGE_NO signal: PM YES overpriced vs model; buy NO on BTC $70,000 Dec 2026. Adjusted NO gap positive, spread 1c, liquidity 33,899."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 2 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
