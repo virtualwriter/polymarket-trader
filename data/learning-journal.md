@@ -43361,3 +43361,38 @@ Today's data highlights several anomalies: Gold's PM IV collapsed to 7.2 (a 2.1-
 
 ---
 
+### 2026-06-30 22:30 UTC
+
+**Portfolio:** $98.22 total | Cash $98.22 | 0 open | P&L $0.8122 | 57% win rate (329 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 13 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved wider by 5.7pp (was -22.2, now -16.5)
+- [anomaly] hype_med_min = 45.8 is 2.1 std devs from mean (27.51 ± 8.57)
+- [anomaly] oil_pm_settle_ev = 70.4 is -2.0 std devs from mean since 2026-04-28 (82.17 ± 5.86)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.54 to 0.78. Rolling correlation: 24h=-0.00, 7d=0.41, 30d=0.79. Current 24h corr is at 70th pct of last 30 daily 24h-rolling values (range -0.92 to 0.94).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.11 to 0.80. Rolling correlation: 24h=-0.52, 7d=0.15, 30d=0.80. Current 24h corr is at 10th pct of last 30 daily 24h-rolling values (range -0.85 to 0.90).
+
+**Blocked signal learning:**
+- Open blocked shadows: 32
+- Resolved blocked shadows: 685 (375 wins / 310 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/14 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 8/12 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=117 (34W/70L/13flat, 32.7% win-rate, sum $-2.6832, avg -2.29%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=162 (51W/94L/17flat, 35.2% win-rate, sum $-2.7788, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have expired (-100.00%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO SPY short via polymarket would have expired (+14.71%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO SPY short via polymarket would have expired (+69.32%)
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO SPY short via polymarket would have expired (+7.31%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 8/12; next scheduled 2026-07-01T00:30:56.649Z). Mechanical cycle ran normally._
+
+---
+
