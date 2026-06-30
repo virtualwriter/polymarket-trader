@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-30T00:30:19.457Z",
+  "generatedAt": "2026-06-30T01:30:54.594Z",
   "dataFreshness": {
-    "valuationRows": 1326,
-    "latestValuationAt": "2026-06-30T00",
-    "macroRows": 1324,
+    "valuationRows": 1327,
+    "latestValuationAt": "2026-06-30T01",
+    "macroRows": 1325,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-30T00"
+    "latestInstrumentSnapshotAt": "2026-06-30T01"
   },
   "portfolio": {
     "cash": 96.232,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.8195,
     "totalTrades": 327,
     "winRatePct": 57.2,
-    "unrealizedPnl": 0.016
+    "unrealizedPnl": 0.022
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 1.41,
-      "currentPrice": 4011,
-      "underlyingPrice": 4011,
+      "pnlPct": 2.3,
+      "currentPrice": 3975,
+      "underlyingPrice": 3975,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 0.18,
-      "currentPrice": 66.409,
-      "underlyingPrice": 66.409,
+      "pnlPct": -0.1,
+      "currentPrice": 66.22,
+      "underlyingPrice": 66.22,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -190,7 +190,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 40,
+    "openCount": 41,
     "resolvedCount": 674,
     "wouldHaveWon": 369,
     "wouldHaveLost": 305,
@@ -509,6 +509,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.8pt on ETH, spread 2.0c, liquidity 37242. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $75,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.5,
+          "yesAsk": 0.51,
+          "yesSpread": 0.01,
+          "liquidity": 26833.79,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 10.5pt after haircuts. CBOE gap 11.5pt, CME gap 6.6pt, source agreement both_positive, spread 1.0c, liquidity 26834. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
