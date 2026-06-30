@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-30T17:30:47.479Z",
+  "generatedAt": "2026-06-30T18:30:49.766Z",
   "dataFreshness": {
-    "valuationRows": 1343,
-    "latestValuationAt": "2026-06-30T17",
-    "macroRows": 1341,
+    "valuationRows": 1344,
+    "latestValuationAt": "2026-06-30T18",
+    "macroRows": 1342,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-30T17"
+    "latestInstrumentSnapshotAt": "2026-06-30T18"
   },
   "portfolio": {
     "cash": 98.2247,
@@ -156,10 +156,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 38,
-    "resolvedCount": 679,
+    "openCount": 35,
+    "resolvedCount": 682,
     "wouldHaveWon": 372,
-    "wouldHaveLost": 307,
+    "wouldHaveLost": 310,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -172,10 +172,10 @@
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
         "blocked": 30,
-        "resolved": 16,
+        "resolved": 17,
         "wouldHaveWon": 13,
-        "wouldHaveLost": 3,
-        "avgPnlPct": 18.58
+        "wouldHaveLost": 4,
+        "avgPnlPct": 11.6
       },
       {
         "signalType": "USER_PM_APR_XAU_TAIL_NO",
@@ -227,66 +227,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -2,
-        "resolvedAt": "2026-06-29T06:30:08.410Z",
-        "marketQuality": {
-          "yesBid": 0.5,
-          "yesAsk": 0.51,
-          "yesSpread": 0.01,
-          "liquidity": 31744.18,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
-      {
-        "signalType": "FUNDING_EXTREME_LONG",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "blockedReason": "short_blocked_by_positive_trend",
-        "outcome": "win",
-        "closeReason": "expiry",
-        "pnlPct": 0.59,
-        "resolvedAt": "2026-06-29T11:30:14.809Z",
-        "trendMetrics": {
-          "aboveTrendPct": 0.72,
-          "momentumPct": 1.81
-        }
-      },
-      {
-        "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "polymarket_proxy_short",
-        "outcome": "loss",
-        "closeReason": "expiry",
-        "pnlPct": -0.1,
-        "resolvedAt": "2026-06-29T13:30:56.345Z",
-        "marketQuality": {
-          "yesBid": 0.001,
-          "yesAsk": 0.005,
-          "yesSpread": 0.004,
-          "liquidity": 16579.11,
-          "flags": []
-        },
-        "sourceComparison": {
-          "sourceClosedAt": "2026-06-27T05:29:26.912Z",
-          "sourcePnl": -0.0075,
-          "sourcePnlPct": -0.75,
-          "proxyOutperformed": true,
-          "correlation": "same_direction"
-        }
-      },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
         "asset": "BTC",
@@ -404,14 +344,75 @@
           "liquidity": 1775.47,
           "flags": []
         }
-      }
-    ],
-    "openQualityWarnings": [
+      },
+      {
+        "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "long",
+        "blockedReason": "manual_shadow_trade",
+        "outcome": "loss",
+        "closeReason": "expiry",
+        "pnlPct": -99.91,
+        "resolvedAt": "2026-06-30T18:30:49.610Z",
+        "marketQuality": {
+          "quoteSource": "live_clob",
+          "quotedAt": "2026-05-13T20:54:49Z",
+          "gammaUpdatedAt": "2026-05-13T20:50:51.547533Z",
+          "clobTimestamp": "1778705637761",
+          "yesBid": 0.536,
+          "yesAsk": 0.542,
+          "yesSpread": 0.006,
+          "yesBidSize": 72.3,
+          "yesAskSize": 164.47,
+          "noBid": 0.458,
+          "noAsk": 0.464,
+          "noSpread": 0.006,
+          "noBidSize": 164.47,
+          "noAskSize": 72.3,
+          "liquidity": 20721.16,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "long",
+        "blockedReason": "manual_shadow_trade",
+        "outcome": "loss",
+        "closeReason": "expiry",
+        "pnlPct": -99.83,
+        "resolvedAt": "2026-06-30T18:30:49.610Z",
+        "marketQuality": {
+          "quoteSource": "live_clob",
+          "quotedAt": "2026-05-19T02:20:50Z",
+          "gammaUpdatedAt": "2026-05-19T02:18:19.343093Z",
+          "clobTimestamp": "1779157067976",
+          "yesBid": 0.29,
+          "yesAsk": 0.3,
+          "yesSpread": 0.01,
+          "yesBidSize": 25.35,
+          "yesAskSize": 35.6,
+          "noBid": 0.7,
+          "noAsk": 0.71,
+          "noSpread": 0.01,
+          "noBidSize": 35.6,
+          "noAskSize": 25.35,
+          "liquidity": 35209.53,
+          "flags": []
+        }
+      },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
         "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
         "blockedReason": "manual_shadow_trade",
-        "instrumentLabel": "cl-hit-jun-2026 — NO — Will Crude Oil (CL) hit (LOW) $80 by end of June?",
+        "outcome": "loss",
+        "closeReason": "expiry",
+        "pnlPct": -100,
+        "resolvedAt": "2026-06-30T18:30:49.610Z",
         "marketQuality": {
           "quoteSource": "live_clob",
           "quotedAt": "2026-05-19T02:21:11Z",
@@ -432,9 +433,10 @@
             "wide_pm_spread",
             "wide_pm_no_spread"
           ]
-        },
-        "thesis": "Manual user IV-touch shadow signal: PM YES 40.0% vs IV touch model 23.4%; edge -14.6 pts. Exclude from official live-trader performance until validated."
-      },
+        }
+      }
+    ],
+    "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
         "asset": "HYPE",

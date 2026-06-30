@@ -43221,3 +43221,38 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 6/12; ne
 
 ---
 
+### 2026-06-30 18:31 UTC
+
+**Portfolio:** $98.22 total | Cash $98.22 | 0 open | P&L $0.8122 | 57% win rate (329 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 13 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 111.7pp (was 94.4, now -17.3)
+- [anomaly] oil_pm_iv = 258 is 4.4 std devs from mean since 2026-04-28 (79.39 ± 40.68)
+- [anomaly] hype_med_min = 45.2 is 2.1 std devs from mean (27.45 ± 8.53)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.54 to 0.78. Rolling correlation: 24h=0.02, 7d=0.48, 30d=0.79. Current 24h corr is at 67th pct of last 30 daily 24h-rolling values (range -0.93 to 0.92).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.11 to 0.80. Rolling correlation: 24h=-0.37, 7d=0.21, 30d=0.80. Current 24h corr is at 7th pct of last 30 daily 24h-rolling values (range -0.50 to 0.92).
+
+**Blocked signal learning:**
+- Open blocked shadows: 35
+- Resolved blocked shadows: 682 (372 wins / 310 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 13/17 shadows would have won, avg P&L 11.60%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/14 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 8/12 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=117 (34W/70L/13flat, 32.7% win-rate, sum $-2.6832, avg -2.29%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=162 (51W/94L/17flat, 35.2% win-rate, sum $-2.7788, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO GOLD short via polymarket would have expired (+12.25%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES OIL long via polymarket would have expired (-99.91%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_CHEAP_YES OIL long via polymarket would have expired (-99.83%)
+- ❌ Manual shadow: USER_PM_IV_TOUCH_RICH_NO OIL short via polymarket would have expired (-100.00%)
+
+**LLM analysis:**
+No trades today. Expiry‑driven gold PM‑IV collapse is noise, not signal. Oil PM‑IV dislocation persists but no low‑spread touch‑market opportunities pass liquidity gates. The Hyperliquid bot stays in bull regime but is underwater on recent longs, suggesting choppy alt conditions. Allow backlogged hypothesis tests to complete; no urgent parameter changes.
+
+---
+

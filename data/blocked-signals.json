@@ -2426,7 +2426,7 @@
       "instrumentId": "what-will-gold-gc-hit-by-end-of-december::1294367",
       "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $7,000 by end of December?",
       "entryUnderlyingPrice": 4593,
-      "currentUnderlyingPrice": 4025.3,
+      "currentUnderlyingPrice": 4032,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -3603,7 +3603,7 @@
       "instrumentId": "what-will-gold-gc-hit-by-end-of-december::1294363",
       "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $15,000 by end of December?",
       "entryUnderlyingPrice": 4538,
-      "currentUnderlyingPrice": 4025.3,
+      "currentUnderlyingPrice": 4032,
       "fundingPnlAccrued": 0
     },
     "resolvedAt": "2026-04-30T18:53:47.930244Z",
@@ -4194,7 +4194,7 @@
       "instrumentId": "what-will-gold-gc-hit-by-end-of-december::1294365",
       "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $10,000 by end of December?",
       "entryUnderlyingPrice": 4566,
-      "currentUnderlyingPrice": 4025.3,
+      "currentUnderlyingPrice": 4032,
       "fundingPnlAccrued": 0
     },
     "resolvedAt": "2026-04-30T18:53:47.930244Z",
@@ -4427,7 +4427,7 @@
       "instrumentId": "what-will-gold-gc-hit-by-end-of-december::1294366",
       "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $8,000 by end of December?",
       "entryUnderlyingPrice": 4538,
-      "currentUnderlyingPrice": 4025.3,
+      "currentUnderlyingPrice": 4032,
       "fundingPnlAccrued": 0
     },
     "resolvedAt": "2026-04-30T18:53:47.930244Z",
@@ -5391,7 +5391,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::1057916",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin dip to $15,000 by December 31, 2026?",
       "entryUnderlyingPrice": 75630,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "resolvedAt": "2026-04-30T18:53:47.930244Z",
@@ -6120,7 +6120,7 @@
       "instrumentId": "what-will-gold-gc-hit-by-end-of-december::1294364",
       "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $12,000 by end of December?",
       "entryUnderlyingPrice": 4636,
-      "currentUnderlyingPrice": 4025.3,
+      "currentUnderlyingPrice": 4032,
       "fundingPnlAccrued": 0
     },
     "resolvedAt": "2026-04-30T18:53:47.930244Z",
@@ -6252,7 +6252,7 @@
   },
   {
     "id": "RV-1777552073110-7ymk",
-    "status": "cancelled",
+    "status": "resolved",
     "blockedAt": "2026-04-30T12:27:53.110Z",
     "blockedReason": "relative_value_heatmap",
     "signalType": "RELATIVE_VALUE_HEATMAP",
@@ -6357,13 +6357,22 @@
       "instrumentId": "cl-hit-jun-2026::1032414",
       "instrumentLabel": "cl-hit-jun-2026 — NO — Will Crude Oil (CL) hit (LOW) $35 by end of June?",
       "entryUnderlyingPrice": 104.54,
-      "currentUnderlyingPrice": 69.689,
+      "currentUnderlyingPrice": 69.418,
       "fundingPnlAccrued": 0
     },
-    "resolvedAt": "2026-04-30T18:53:47.930244Z",
+    "resolvedAt": "2026-06-30T18:30:49.610Z",
     "learningExcluded": {
       "reason": "heatmap_shadow_horizon_mismatch",
       "note": "Cancelled: relative-value heatmap convergence should be evaluated on a longer horizon than minute/hour stop-target shadow trading."
+    },
+    "hypotheticalResult": {
+      "closeReason": "expiry",
+      "exitPrice": 0.999,
+      "pnl": 0.0628,
+      "pnlPct": 6.28,
+      "marketPnl": 0.0628,
+      "fundingPnl": 0,
+      "outcome": "win"
     }
   },
   {
@@ -8588,7 +8597,7 @@
   },
   {
     "id": "MA-1777937278544-cadt",
-    "status": "cancelled",
+    "status": "resolved",
     "blockedAt": "2026-05-04T23:27:58.544Z",
     "blockedReason": "monotonic_arb_shadow",
     "signalType": "MONOTONIC_ARB",
@@ -8682,7 +8691,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.989,
-      "currentPrice": 0.9974999999999999,
+      "currentPrice": 1,
       "size": 1,
       "leverage": 1,
       "signalType": "MONOTONIC_ARB",
@@ -8719,15 +8728,24 @@
         }
       ],
       "entryUnderlyingPrice": 104.91,
-      "currentUnderlyingPrice": 69.689,
+      "currentUnderlyingPrice": 69.42,
       "fundingPnlAccrued": 0
     },
-    "resolvedAt": "2026-05-05T16:03:43Z",
-    "learningExcluded": true
+    "resolvedAt": "2026-06-30T18:30:49.610Z",
+    "learningExcluded": true,
+    "hypotheticalResult": {
+      "closeReason": "expiry",
+      "exitPrice": 1,
+      "pnl": 0.0111,
+      "pnlPct": 1.11,
+      "marketPnl": 0.0111,
+      "fundingPnl": 0,
+      "outcome": "win"
+    }
   },
   {
     "id": "MA-1777937278544-66bs",
-    "status": "cancelled",
+    "status": "resolved",
     "blockedAt": "2026-05-04T23:27:58.544Z",
     "blockedReason": "monotonic_arb_shadow",
     "signalType": "MONOTONIC_ARB",
@@ -8821,7 +8839,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.31100000000000005,
-      "currentPrice": 0.9974999999999999,
+      "currentPrice": 1,
       "size": 1,
       "leverage": 1,
       "signalType": "MONOTONIC_ARB",
@@ -8858,15 +8876,24 @@
         }
       ],
       "entryUnderlyingPrice": 104.91,
-      "currentUnderlyingPrice": 69.689,
+      "currentUnderlyingPrice": 69.42,
       "fundingPnlAccrued": 0
     },
-    "resolvedAt": "2026-05-05T16:03:43Z",
-    "learningExcluded": true
+    "resolvedAt": "2026-06-30T18:30:49.610Z",
+    "learningExcluded": true,
+    "hypotheticalResult": {
+      "closeReason": "expiry",
+      "exitPrice": 1,
+      "pnl": 2.2154,
+      "pnlPct": 221.54,
+      "marketPnl": 2.2154,
+      "fundingPnl": 0,
+      "outcome": "win"
+    }
   },
   {
     "id": "MA-1777937278544-apkz",
-    "status": "cancelled",
+    "status": "resolved",
     "blockedAt": "2026-05-04T23:27:58.544Z",
     "blockedReason": "monotonic_arb_shadow",
     "signalType": "MONOTONIC_ARB",
@@ -8960,7 +8987,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.99,
-      "currentPrice": 1.0005,
+      "currentPrice": 1,
       "size": 1,
       "leverage": 1,
       "signalType": "MONOTONIC_ARB",
@@ -8997,15 +9024,24 @@
         }
       ],
       "entryUnderlyingPrice": 104.91,
-      "currentUnderlyingPrice": 69.689,
+      "currentUnderlyingPrice": 69.42,
       "fundingPnlAccrued": 0
     },
-    "resolvedAt": "2026-05-05T16:03:43Z",
-    "learningExcluded": true
+    "resolvedAt": "2026-06-30T18:30:49.610Z",
+    "learningExcluded": true,
+    "hypotheticalResult": {
+      "closeReason": "expiry",
+      "exitPrice": 1,
+      "pnl": 0.0101,
+      "pnlPct": 1.01,
+      "marketPnl": 0.0101,
+      "fundingPnl": 0,
+      "outcome": "win"
+    }
   },
   {
     "id": "MA-1777937278544-3kz9",
-    "status": "cancelled",
+    "status": "resolved",
     "blockedAt": "2026-05-04T23:27:58.544Z",
     "blockedReason": "monotonic_arb_shadow",
     "signalType": "MONOTONIC_ARB",
@@ -9099,7 +9135,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.31200000000000006,
-      "currentPrice": 1.0005,
+      "currentPrice": 1,
       "size": 1,
       "leverage": 1,
       "signalType": "MONOTONIC_ARB",
@@ -9136,15 +9172,24 @@
         }
       ],
       "entryUnderlyingPrice": 104.91,
-      "currentUnderlyingPrice": 69.689,
+      "currentUnderlyingPrice": 69.42,
       "fundingPnlAccrued": 0
     },
-    "resolvedAt": "2026-05-05T16:03:43Z",
-    "learningExcluded": true
+    "resolvedAt": "2026-06-30T18:30:49.610Z",
+    "learningExcluded": true,
+    "hypotheticalResult": {
+      "closeReason": "expiry",
+      "exitPrice": 1,
+      "pnl": 2.2051,
+      "pnlPct": 220.51,
+      "marketPnl": 2.2051,
+      "fundingPnl": 0,
+      "outcome": "win"
+    }
   },
   {
     "id": "MA-1777937278544-fnxq",
-    "status": "cancelled",
+    "status": "resolved",
     "blockedAt": "2026-05-04T23:27:58.544Z",
     "blockedReason": "monotonic_arb_shadow",
     "signalType": "MONOTONIC_ARB",
@@ -9238,7 +9283,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.3320000000000001,
-      "currentPrice": 0.998,
+      "currentPrice": 1,
       "size": 1,
       "leverage": 1,
       "signalType": "MONOTONIC_ARB",
@@ -9275,11 +9320,20 @@
         }
       ],
       "entryUnderlyingPrice": 104.91,
-      "currentUnderlyingPrice": 69.689,
+      "currentUnderlyingPrice": 69.42,
       "fundingPnlAccrued": 0
     },
-    "resolvedAt": "2026-05-05T16:03:43Z",
-    "learningExcluded": true
+    "resolvedAt": "2026-06-30T18:30:49.610Z",
+    "learningExcluded": true,
+    "hypotheticalResult": {
+      "closeReason": "expiry",
+      "exitPrice": 1,
+      "pnl": 2.012,
+      "pnlPct": 201.2,
+      "marketPnl": 2.012,
+      "fundingPnl": 0,
+      "outcome": "win"
+    }
   },
   {
     "id": "B-1777940881329-w5t2",
@@ -9401,7 +9455,7 @@
   },
   {
     "id": "MA-1777944481662-wq0k",
-    "status": "cancelled",
+    "status": "resolved",
     "blockedAt": "2026-05-05T01:28:01.662Z",
     "blockedReason": "monotonic_arb_shadow",
     "signalType": "MONOTONIC_ARB",
@@ -9495,7 +9549,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.999,
-      "currentPrice": 0.9934999999999999,
+      "currentPrice": 1,
       "size": 1,
       "leverage": 1,
       "signalType": "MONOTONIC_ARB",
@@ -9532,11 +9586,20 @@
         }
       ],
       "entryUnderlyingPrice": 104.8,
-      "currentUnderlyingPrice": 69.689,
+      "currentUnderlyingPrice": 69.42,
       "fundingPnlAccrued": 0
     },
-    "resolvedAt": "2026-05-05T16:03:43Z",
-    "learningExcluded": true
+    "resolvedAt": "2026-06-30T18:30:49.610Z",
+    "learningExcluded": true,
+    "hypotheticalResult": {
+      "closeReason": "expiry",
+      "exitPrice": 1,
+      "pnl": 0.001,
+      "pnlPct": 0.1,
+      "marketPnl": 0.001,
+      "fundingPnl": 0,
+      "outcome": "win"
+    }
   },
   {
     "id": "DL-1777962482475-j77x",
@@ -9661,7 +9724,7 @@
   },
   {
     "id": "MA-1777987733490-ajeb",
-    "status": "cancelled",
+    "status": "resolved",
     "blockedAt": "2026-05-05T13:28:53.490Z",
     "blockedReason": "monotonic_arb_shadow",
     "signalType": "MONOTONIC_ARB",
@@ -9755,7 +9818,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.957,
-      "currentPrice": 0.43849999999999995,
+      "currentPrice": 1,
       "size": 1,
       "leverage": 1,
       "signalType": "MONOTONIC_ARB",
@@ -9792,15 +9855,24 @@
         }
       ],
       "entryUnderlyingPrice": 102.48,
-      "currentUnderlyingPrice": 69.689,
+      "currentUnderlyingPrice": 69.42,
       "fundingPnlAccrued": 0
     },
-    "resolvedAt": "2026-05-05T16:03:43Z",
-    "learningExcluded": true
+    "resolvedAt": "2026-06-30T18:30:49.610Z",
+    "learningExcluded": true,
+    "hypotheticalResult": {
+      "closeReason": "expiry",
+      "exitPrice": 1,
+      "pnl": 0.0449,
+      "pnlPct": 4.49,
+      "marketPnl": 0.0449,
+      "fundingPnl": 0,
+      "outcome": "win"
+    }
   },
   {
     "id": "MA-1777987733490-xdk8",
-    "status": "cancelled",
+    "status": "resolved",
     "blockedAt": "2026-05-05T13:28:53.490Z",
     "blockedReason": "monotonic_arb_shadow",
     "signalType": "MONOTONIC_ARB",
@@ -9894,7 +9966,7 @@
       "venue": "polymarket",
       "direction": "long",
       "entryPrice": 0.96,
-      "currentPrice": 0.44149999999999995,
+      "currentPrice": 1,
       "size": 1,
       "leverage": 1,
       "signalType": "MONOTONIC_ARB",
@@ -9931,11 +10003,20 @@
         }
       ],
       "entryUnderlyingPrice": 102.48,
-      "currentUnderlyingPrice": 69.689,
+      "currentUnderlyingPrice": 69.42,
       "fundingPnlAccrued": 0
     },
-    "resolvedAt": "2026-05-05T16:03:43Z",
-    "learningExcluded": true
+    "resolvedAt": "2026-06-30T18:30:49.610Z",
+    "learningExcluded": true,
+    "hypotheticalResult": {
+      "closeReason": "expiry",
+      "exitPrice": 1,
+      "pnl": 0.0417,
+      "pnlPct": 4.17,
+      "marketPnl": 0.0417,
+      "fundingPnl": 0,
+      "outcome": "win"
+    }
   },
   {
     "id": "B-1777991284751-ffrq",
@@ -13541,7 +13622,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::701496",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — YES — Will Bitcoin reach $100,000 by December 31, 2026?",
       "entryUnderlyingPrice": 79201,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "resolvedAt": "2026-05-29T21:20:16.325Z",
@@ -13663,7 +13744,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::1345531",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — YES — Will Bitcoin reach $90,000 by December 31, 2026?",
       "entryUnderlyingPrice": 79201,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "resolvedAt": "2026-05-29T21:20:16.325Z",
@@ -13783,7 +13864,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::701495",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — YES — Will Bitcoin reach $110,000 by December 31, 2026?",
       "entryUnderlyingPrice": 79201,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "resolvedAt": "2026-05-29T21:20:16.325Z",
@@ -13903,7 +13984,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::701494",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — YES — Will Bitcoin reach $120,000 by December 31, 2026?",
       "entryUnderlyingPrice": 79201,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "resolvedAt": "2026-05-29T21:20:16.325Z",
@@ -14023,7 +14104,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::701493",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — YES — Will Bitcoin reach $130,000 by December 31, 2026?",
       "entryUnderlyingPrice": 79201,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "resolvedAt": "2026-05-29T21:20:16.325Z",
@@ -14839,7 +14920,7 @@
   },
   {
     "id": "MANUAL-IVTOUCH-OIL-YES-1652672-1778705689",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-13T20:54:49Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -14941,7 +15022,7 @@
       "instrumentId": "cl-hit-jun-2026::1652672",
       "instrumentLabel": "cl-hit-jun-2026 — YES — Will Crude Oil (CL) hit (HIGH) $115 by end of June?",
       "entryUnderlyingPrice": 96.926,
-      "currentUnderlyingPrice": 69.689,
+      "currentUnderlyingPrice": 69.418,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -15034,6 +15115,16 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    },
+    "resolvedAt": "2026-06-30T18:30:49.610Z",
+    "hypotheticalResult": {
+      "closeReason": "expiry",
+      "exitPrice": 0.0005,
+      "pnl": -0.9991,
+      "pnlPct": -99.91,
+      "marketPnl": -0.9991,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
@@ -17162,7 +17253,7 @@
       "instrumentId": "what-price-will-ethereum-hit-before-2027::701549",
       "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — YES — Will Ethereum reach $3,500 by December 31, 2026?",
       "entryUnderlyingPrice": 2287,
-      "currentUnderlyingPrice": 1570.2,
+      "currentUnderlyingPrice": 1575.3,
       "fundingPnlAccrued": 0
     },
     "resolvedAt": "2026-05-29T21:20:16.325Z",
@@ -17411,7 +17502,7 @@
       "instrumentId": "what-price-will-ethereum-hit-before-2027::701548",
       "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — YES — Will Ethereum reach $4,000 by December 31, 2026?",
       "entryUnderlyingPrice": 2287,
-      "currentUnderlyingPrice": 1570.2,
+      "currentUnderlyingPrice": 1575.3,
       "fundingPnlAccrued": 0
     },
     "resolvedAt": "2026-05-29T21:20:16.325Z",
@@ -22365,7 +22456,7 @@
       "venue": "polymarket",
       "direction": "short",
       "entryPrice": 0.9,
-      "currentPrice": 0.9339999999999999,
+      "currentPrice": 0.942,
       "size": 1,
       "leverage": 1,
       "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -22378,7 +22469,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::701492",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $140,000 by December 31, 2026?",
       "entryUnderlyingPrice": 77137,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -22605,7 +22696,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::701501",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin dip to $55,000 by December 31, 2026?",
       "entryUnderlyingPrice": 77137,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -23400,7 +23491,7 @@
       "instrumentId": "what-price-will-ethereum-hit-before-2027::701549",
       "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — YES — Will Ethereum reach $3,500 by December 31, 2026?",
       "entryUnderlyingPrice": 2122.3,
-      "currentUnderlyingPrice": 1570.2,
+      "currentUnderlyingPrice": 1575.3,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -23599,7 +23690,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::701496",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — YES — Will Bitcoin reach $100,000 by December 31, 2026?",
       "entryUnderlyingPrice": 76603,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -23785,7 +23876,7 @@
       "venue": "polymarket",
       "direction": "short",
       "entryPrice": 0.6,
-      "currentPrice": 0.35,
+      "currentPrice": 0.36,
       "size": 1,
       "leverage": 1,
       "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -23798,7 +23889,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::1339767",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin dip to $50,000 by December 31, 2026?",
       "entryUnderlyingPrice": 76603,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -23895,7 +23986,7 @@
   },
   {
     "id": "MANUAL-IVTOUCH-OIL-YES-1652685-1779157250",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-19T02:20:50Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
@@ -23997,7 +24088,7 @@
       "instrumentId": "cl-hit-jun-2026::1652685",
       "instrumentLabel": "cl-hit-jun-2026 — YES — Will Crude Oil (CL) hit (HIGH) $130 by end of June?",
       "entryUnderlyingPrice": 102.6,
-      "currentUnderlyingPrice": 69.689,
+      "currentUnderlyingPrice": 69.418,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -24090,11 +24181,21 @@
       },
       "selectedSide": "yes",
       "selectedSignalType": "USER_PM_IV_TOUCH_CHEAP_YES"
+    },
+    "resolvedAt": "2026-06-30T18:30:49.610Z",
+    "hypotheticalResult": {
+      "closeReason": "expiry",
+      "exitPrice": 0.0005,
+      "pnl": -0.9983,
+      "pnlPct": -99.83,
+      "marketPnl": -0.9983,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
     "id": "MANUAL-IVTOUCH-OIL-NO-1652706-1779157271",
-    "status": "open",
+    "status": "resolved",
     "blockedAt": "2026-05-19T02:21:11Z",
     "blockedReason": "manual_shadow_trade",
     "signalType": "USER_PM_IV_TOUCH_RICH_NO",
@@ -24196,7 +24297,7 @@
       "instrumentId": "cl-hit-jun-2026::1652706",
       "instrumentLabel": "cl-hit-jun-2026 — NO — Will Crude Oil (CL) hit (LOW) $80 by end of June?",
       "entryUnderlyingPrice": 102.6,
-      "currentUnderlyingPrice": 69.689,
+      "currentUnderlyingPrice": 69.418,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -24292,6 +24393,16 @@
       },
       "selectedSide": "no",
       "selectedSignalType": "USER_PM_IV_TOUCH_RICH_NO"
+    },
+    "resolvedAt": "2026-06-30T18:30:49.610Z",
+    "hypotheticalResult": {
+      "closeReason": "expiry",
+      "exitPrice": 0,
+      "pnl": -1,
+      "pnlPct": -100,
+      "marketPnl": -1,
+      "fundingPnl": 0,
+      "outcome": "loss"
     }
   },
   {
@@ -24939,7 +25050,7 @@
       "instrumentId": "what-will-gold-gc-hit-by-end-of-december::1294367",
       "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $7,000 by end of December?",
       "entryUnderlyingPrice": 4490.7,
-      "currentUnderlyingPrice": 4025.3,
+      "currentUnderlyingPrice": 4032,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -25349,7 +25460,7 @@
       "instrumentId": "spx-hit-jun-2026::1125382",
       "instrumentLabel": "spx-hit-jun-2026 — NO — Will S&P 500 (SPX) hit $6,300 (LOW) in June?",
       "entryUnderlyingPrice": 7356,
-      "currentUnderlyingPrice": 7469,
+      "currentUnderlyingPrice": 7466.9,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -25548,7 +25659,7 @@
       "instrumentId": "spx-hit-jun-2026::2236210",
       "instrumentLabel": "spx-hit-jun-2026 — NO — Will S&P 500 (SPX) hit $6,900 (LOW) in June?",
       "entryUnderlyingPrice": 7356,
-      "currentUnderlyingPrice": 7469,
+      "currentUnderlyingPrice": 7466.9,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -25747,7 +25858,7 @@
       "instrumentId": "what-price-will-ethereum-hit-before-2027::701552",
       "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum dip to $1,500 by December 31, 2026?",
       "entryUnderlyingPrice": 2113.8,
-      "currentUnderlyingPrice": 1570.2,
+      "currentUnderlyingPrice": 1575.3,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -27029,7 +27140,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::701503",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin dip to $35,000 by December 31, 2026?",
       "entryUnderlyingPrice": 77521,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -27228,7 +27339,7 @@
       "instrumentId": "what-price-will-ethereum-hit-before-2027::701554",
       "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum dip to $800 by December 31, 2026?",
       "entryUnderlyingPrice": 2137.4,
-      "currentUnderlyingPrice": 1570.2,
+      "currentUnderlyingPrice": 1575.3,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -27427,7 +27538,7 @@
       "instrumentId": "spx-hit-jun-2026::1125383",
       "instrumentLabel": "spx-hit-jun-2026 — NO — Will S&P 500 (SPX) hit $6,000 (LOW) in June?",
       "entryUnderlyingPrice": 7388.5,
-      "currentUnderlyingPrice": 7469,
+      "currentUnderlyingPrice": 7466.9,
       "fundingPnlAccrued": 0
     },
     "marketQuality": {
@@ -30085,7 +30196,7 @@
       "instrumentId": "what-price-will-hyperliquid-hit-before-2027::701726",
       "instrumentLabel": "what-price-will-hyperliquid-hit-before-2027 — YES — Will Hyperliquid reach $100 by December 31, 2026?",
       "entryUnderlyingPrice": 57.127,
-      "currentUnderlyingPrice": 64.673,
+      "currentUnderlyingPrice": 64.662,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -30447,7 +30558,7 @@
       "instrumentId": "what-price-will-hyperliquid-hit-before-2027::701742",
       "instrumentLabel": "what-price-will-hyperliquid-hit-before-2027 — YES — Will Hyperliquid dip to $16 by December 31, 2026?",
       "entryUnderlyingPrice": 54.714,
-      "currentUnderlyingPrice": 64.673,
+      "currentUnderlyingPrice": 64.662,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -30621,7 +30732,7 @@
       "instrumentId": "what-price-will-hyperliquid-hit-before-2027::701743",
       "instrumentLabel": "what-price-will-hyperliquid-hit-before-2027 — YES — Will Hyperliquid dip to $12 by December 31, 2026?",
       "entryUnderlyingPrice": 54.714,
-      "currentUnderlyingPrice": 64.673,
+      "currentUnderlyingPrice": 64.662,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -30795,7 +30906,7 @@
       "instrumentId": "what-price-will-hyperliquid-hit-before-2027::701744",
       "instrumentLabel": "what-price-will-hyperliquid-hit-before-2027 — YES — Will Hyperliquid dip to $8 by December 31, 2026?",
       "entryUnderlyingPrice": 54.714,
-      "currentUnderlyingPrice": 64.673,
+      "currentUnderlyingPrice": 64.662,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -33616,7 +33727,7 @@
       "venue": "polymarket",
       "direction": "short",
       "entryPrice": 0.9,
-      "currentPrice": 0.9339999999999999,
+      "currentPrice": 0.942,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
@@ -33629,7 +33740,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::701492",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $140,000 by December 31, 2026?",
       "entryUnderlyingPrice": 75404,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -34359,7 +34470,7 @@
       "instrumentId": "what-will-gold-gc-hit-by-end-of-december::1294366",
       "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $8,000 by end of December?",
       "entryUnderlyingPrice": 4505,
-      "currentUnderlyingPrice": 4025.3,
+      "currentUnderlyingPrice": 4032,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -34533,7 +34644,7 @@
       "instrumentId": "what-price-will-ethereum-hit-before-2027::701546",
       "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $5,000 by December 31, 2026?",
       "entryUnderlyingPrice": 2066.1,
-      "currentUnderlyingPrice": 1570.2,
+      "currentUnderlyingPrice": 1575.3,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -35075,7 +35186,7 @@
       "instrumentId": "what-price-will-ethereum-hit-before-2027::701545",
       "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $5,500 by December 31, 2026?",
       "entryUnderlyingPrice": 2066.1,
-      "currentUnderlyingPrice": 1570.2,
+      "currentUnderlyingPrice": 1575.3,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -35249,7 +35360,7 @@
       "instrumentId": "what-will-gold-gc-hit-by-end-of-december::1294364",
       "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $12,000 by end of December?",
       "entryUnderlyingPrice": 4505,
-      "currentUnderlyingPrice": 4025.3,
+      "currentUnderlyingPrice": 4032,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -35607,7 +35718,7 @@
       "instrumentId": "what-price-will-ethereum-hit-before-2027::701544",
       "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $6,000 by December 31, 2026?",
       "entryUnderlyingPrice": 2066.1,
-      "currentUnderlyingPrice": 1570.2,
+      "currentUnderlyingPrice": 1575.3,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -36333,7 +36444,7 @@
       "instrumentId": "what-will-gold-gc-hit-by-end-of-december::1294363",
       "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $15,000 by end of December?",
       "entryUnderlyingPrice": 4505,
-      "currentUnderlyingPrice": 4025.3,
+      "currentUnderlyingPrice": 4032,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -36691,7 +36802,7 @@
       "instrumentId": "what-price-will-ethereum-hit-before-2027::701541",
       "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $7,500 by December 31, 2026?",
       "entryUnderlyingPrice": 2066.1,
-      "currentUnderlyingPrice": 1570.2,
+      "currentUnderlyingPrice": 1575.3,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -37419,7 +37530,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::701486",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $200,000 by December 31, 2026?",
       "entryUnderlyingPrice": 75404,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -37593,7 +37704,7 @@
       "instrumentId": "what-price-will-ethereum-hit-before-2027::701543",
       "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $6,500 by December 31, 2026?",
       "entryUnderlyingPrice": 2066.1,
-      "currentUnderlyingPrice": 1570.2,
+      "currentUnderlyingPrice": 1575.3,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -38122,7 +38233,7 @@
       "venue": "polymarket",
       "direction": "short",
       "entryPrice": 0.967,
-      "currentPrice": 0.979,
+      "currentPrice": 0.978,
       "size": 1,
       "leverage": 1,
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
@@ -38135,7 +38246,7 @@
       "instrumentId": "what-price-will-ethereum-hit-before-2027::701540",
       "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $8,000 by December 31, 2026?",
       "entryUnderlyingPrice": 2066.1,
-      "currentUnderlyingPrice": 1570.2,
+      "currentUnderlyingPrice": 1575.3,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -38309,7 +38420,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::1057883",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $250,000 by December 31, 2026?",
       "entryUnderlyingPrice": 75404,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -38483,7 +38594,7 @@
       "instrumentId": "what-price-will-ethereum-hit-before-2027::701539",
       "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $10,000 by December 31, 2026?",
       "entryUnderlyingPrice": 2066.1,
-      "currentUnderlyingPrice": 1570.2,
+      "currentUnderlyingPrice": 1575.3,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -38845,7 +38956,7 @@
       "instrumentId": "what-price-will-ethereum-hit-before-2027::701542",
       "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $7,000 by December 31, 2026?",
       "entryUnderlyingPrice": 2066.1,
-      "currentUnderlyingPrice": 1570.2,
+      "currentUnderlyingPrice": 1575.3,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -39387,7 +39498,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::1393068",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $500,000 by December 31, 2026?",
       "entryUnderlyingPrice": 75404,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
@@ -40115,7 +40226,7 @@
       "instrumentId": "what-price-will-bitcoin-hit-before-2027::1343228",
       "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin dip to $5,000 by December 31, 2026?",
       "entryUnderlyingPrice": 75404,
-      "currentUnderlyingPrice": 58348,
+      "currentUnderlyingPrice": 58478,
       "fundingPnlAccrued": 0
     },
     "heatmapRowSnapshot": {
