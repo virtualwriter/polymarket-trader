@@ -42694,3 +42694,38 @@ GOLD short continues to benefit from falling spot (3965) and positive funding (2
 
 ---
 
+### 2026-06-30 03:30 UTC
+
+**Portfolio:** $98.23 total | Cash $96.23 | 2 open | P&L $0.8195 | 57% win rate (327 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 13 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_pm_iv = 120 is 5.2 std devs from mean (28.50 ± 17.49)
+- [anomaly] oil_pm_iv = 253.6 is 4.9 std devs from mean since 2026-04-28 (77.16 ± 35.79)
+- [anomaly] hype_med_min = 47.5 is 2.4 std devs from mean (27.24 ± 8.34)
+- [anomaly] gold_gc_spot = 3969 is -2.1 std devs from mean (4431.06 ± 221.56)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.56 to 0.77. Rolling correlation: 24h=-0.52, 7d=0.63, 30d=0.79. Current 24h corr is at 43th pct of last 30 daily 24h-rolling values (range -0.98 to 0.92).
+
+**Blocked signal learning:**
+- Open blocked shadows: 42
+- Resolved blocked shadows: 674 (369 wins / 305 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/14 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 8/12 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=117 (34W/70L/13flat, 32.7% win-rate, sum $-2.6832, avg -2.29%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=162 (51W/94L/17flat, 35.2% win-rate, sum $-2.7788, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-5.41%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-2.00%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expired (+0.59%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expired (-0.10%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h since last call; daily budget 1/12; next scheduled 2026-06-30T05:30:24.956Z). Mechanical cycle ran normally._
+
+---
+
