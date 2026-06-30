@@ -1,38 +1,21 @@
 {
-  "generatedAt": "2026-06-30T09:31:55.604Z",
+  "generatedAt": "2026-06-30T10:30:34.194Z",
   "dataFreshness": {
-    "valuationRows": 1335,
-    "latestValuationAt": "2026-06-30T09",
-    "macroRows": 1333,
+    "valuationRows": 1336,
+    "latestValuationAt": "2026-06-30T10",
+    "macroRows": 1334,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-30T09"
+    "latestInstrumentSnapshotAt": "2026-06-30T10"
   },
   "portfolio": {
-    "cash": 97.2429,
-    "openPositions": 1,
-    "realizedPnl": 0.8304,
-    "totalTrades": 328,
-    "winRatePct": 57.3,
-    "unrealizedPnl": -0.0182
+    "cash": 98.2247,
+    "openPositions": 0,
+    "realizedPnl": 0.8122,
+    "totalTrades": 329,
+    "winRatePct": 57.1,
+    "unrealizedPnl": 0
   },
-  "openPositions": [
-    {
-      "positionId": "T-1782754282794-cszu",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": -1.82,
-      "currentPrice": 65.085,
-      "underlyingPrice": 65.085,
-      "targetPct": 4,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "hype_spot"
-      ]
-    }
-  ],
+  "openPositions": [],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -173,10 +156,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 41,
-    "resolvedCount": 676,
+    "openCount": 40,
+    "resolvedCount": 677,
     "wouldHaveWon": 370,
-    "wouldHaveLost": 306,
+    "wouldHaveLost": 307,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -244,26 +227,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.59,
-        "resolvedAt": "2026-06-28T06:29:24.532Z",
-        "marketQuality": {
-          "yesBid": 0.37,
-          "yesAsk": 0.38,
-          "yesSpread": 0.01,
-          "liquidity": 18671.01,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
         "asset": "BTC",
@@ -402,6 +365,24 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.52,
+        "resolvedAt": "2026-06-30T10:30:34.046Z",
+        "marketQuality": {
+          "yesBid": 0.34,
+          "yesAsk": 0.35,
+          "yesSpread": 0.01,
+          "liquidity": 19074.81,
+          "flags": []
         }
       }
     ],

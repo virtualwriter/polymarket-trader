@@ -42945,3 +42945,38 @@ Closed HYPE long at -1.82% before stop was hit because the breakout thesis faile
 
 ---
 
+### 2026-06-30 10:30 UTC
+
+**Portfolio:** $98.22 total | Cash $98.22 | 0 open | P&L $0.8122 | 57% win rate (329 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 13 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_pm_iv = 118.4 is 4.8 std devs from mean (28.98 ± 18.63)
+- [anomaly] oil_pm_iv = 252.9 is 4.6 std devs from mean since 2026-04-28 (78.21 ± 38.18)
+- [anomaly] hype_med_min = 46.4 is 2.3 std devs from mean (27.35 ± 8.45)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.55 to 0.78. Rolling correlation: 24h=0.08, 7d=0.56, 30d=0.79. Current 24h corr is at 63th pct of last 30 daily 24h-rolling values (range -0.94 to 0.87).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.12 to 0.80. Rolling correlation: 24h=0.14, 7d=0.30, 30d=0.80. Current 24h corr is at 27th pct of last 30 daily 24h-rolling values (range -0.69 to 0.97).
+
+**Blocked signal learning:**
+- Open blocked shadows: 40
+- Resolved blocked shadows: 677 (370 wins / 307 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 12/15 shadows would have won, avg P&L 19.00%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/14 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 8/12 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=117 (34W/70L/13flat, 32.7% win-rate, sum $-2.6832, avg -2.29%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=162 (51W/94L/17flat, 35.2% win-rate, sum $-2.7788, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have expired (-0.10%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-2.70%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.52%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 0.9h since last call; daily budget 4/12; next scheduled 2026-06-30T12:30:37.557Z). Mechanical cycle ran normally._
+
+---
+
