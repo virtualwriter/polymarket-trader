@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-30T08:30:38.091Z",
+  "generatedAt": "2026-06-30T09:31:59.425Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -56,55 +56,42 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 2,
-        "totalNet": 0,
+        "totalGross": 1,
+        "totalNet": 1,
         "byAsset": {
-          "GOLD": -1,
           "HYPE": 1
         },
         "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1,
           "PROMOTED_HYPOTHESIS": 1
         },
         "byVenue": {
-          "hyperliquid": -1,
           "spot": 1
         },
         "byCluster": {
-          "commodity": -1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1,
           "hype_delta": 1,
           "risk_on": 1,
           "spot_venue": 1
         }
       },
       "afterCandidate": {
-        "totalGross": 2,
-        "totalNet": 0,
+        "totalGross": 1,
+        "totalNet": 1,
         "byAsset": {
-          "GOLD": -1,
           "HYPE": 1,
           "OIL": 0
         },
         "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1,
           "PROMOTED_HYPOTHESIS": 1,
           "PC_RATIO_EXTREME_HIGH": 0
         },
         "byVenue": {
-          "hyperliquid": -1,
           "spot": 1
         },
         "byCluster": {
-          "commodity": -1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1,
           "hype_delta": 1,
           "risk_on": 1,
           "spot_venue": 1,
+          "commodity": 0,
           "oil_delta": 0,
           "options_sentiment": 0
         }
@@ -132,29 +119,6 @@
   ],
   "llmCloseEligibility": [
     {
-      "positionId": "T-1782707513852-jp6r",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
-      ],
-      "hoursOpen": 27.98,
-      "hoursToExpiry": 44.02,
-      "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.3886,
-      "minHoldHours": 12,
-      "reason": "Mechanical FUNDING_EXTREME_LONG setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    },
-    {
       "positionId": "T-1782754282794-cszu",
       "signalType": "PROMOTED_HYPOTHESIS",
       "asset": "HYPE",
@@ -171,10 +135,10 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 14.99,
-      "hoursToExpiry": 489.01,
+      "hoursOpen": 16.01,
+      "hoursToExpiry": 487.99,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0297,
+      "elapsedHoldPct": 0.0318,
       "minHoldHours": 12,
       "reason": "LLM-owned/promoted setup may be closed after 12h if signal-family evidence supports it."
     }
