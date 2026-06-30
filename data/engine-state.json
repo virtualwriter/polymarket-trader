@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-30T16:30:46.633Z",
+  "generatedAt": "2026-06-30T17:30:47.479Z",
   "dataFreshness": {
-    "valuationRows": 1342,
-    "latestValuationAt": "2026-06-30T16",
-    "macroRows": 1340,
+    "valuationRows": 1343,
+    "latestValuationAt": "2026-06-30T17",
+    "macroRows": 1341,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-30T16"
+    "latestInstrumentSnapshotAt": "2026-06-30T17"
   },
   "portfolio": {
     "cash": 98.2247,
@@ -156,9 +156,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 40,
-    "resolvedCount": 677,
-    "wouldHaveWon": 370,
+    "openCount": 38,
+    "resolvedCount": 679,
+    "wouldHaveWon": 372,
     "wouldHaveLost": 307,
     "bySignal": [
       {
@@ -172,10 +172,10 @@
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
         "blocked": 30,
-        "resolved": 15,
-        "wouldHaveWon": 12,
+        "resolved": 16,
+        "wouldHaveWon": 13,
         "wouldHaveLost": 3,
-        "avgPnlPct": 19
+        "avgPnlPct": 18.58
       },
       {
         "signalType": "USER_PM_APR_XAU_TAIL_NO",
@@ -227,46 +227,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -2,
-        "resolvedAt": "2026-06-28T10:29:23.638Z",
-        "marketQuality": {
-          "yesBid": 0.5,
-          "yesAsk": 0.51,
-          "yesSpread": 0.01,
-          "liquidity": 30516.06,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -5.41,
-        "resolvedAt": "2026-06-29T03:30:01.593Z",
-        "marketQuality": {
-          "yesBid": 0.63,
-          "yesAsk": 0.64,
-          "yesSpread": 0.01,
-          "liquidity": 34168.86,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
         "asset": "BTC",
@@ -384,6 +344,66 @@
           "liquidity": 19074.81,
           "flags": []
         }
+      },
+      {
+        "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "long",
+        "blockedReason": "manual_shadow_trade",
+        "outcome": "win",
+        "closeReason": "expiry",
+        "pnlPct": 233,
+        "resolvedAt": "2026-06-30T17:30:47.351Z",
+        "marketQuality": {
+          "quoteSource": "live_clob",
+          "quotedAt": "2026-05-19T19:33:56Z",
+          "gammaUpdatedAt": "2026-05-19T19:26:58.619804Z",
+          "clobTimestamp": "1779219235977",
+          "yesBid": 0.27,
+          "yesAsk": 0.3,
+          "yesSpread": 0.03,
+          "yesBidSize": 951.54,
+          "yesAskSize": 629.09,
+          "noBid": 0.7,
+          "noAsk": 0.73,
+          "noSpread": 0.03,
+          "noBidSize": 629.09,
+          "noAskSize": 951.54,
+          "liquidity": 6680.93,
+          "flags": [
+            "wide_pm_no_spread"
+          ]
+        }
+      },
+      {
+        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "manual_shadow_trade",
+        "outcome": "win",
+        "closeReason": "expiry",
+        "pnlPct": 12.25,
+        "resolvedAt": "2026-06-30T17:30:47.351Z",
+        "marketQuality": {
+          "quoteSource": "live_clob",
+          "quotedAt": "2026-05-22T21:29:10Z",
+          "gammaUpdatedAt": "2026-05-22T21:16:56.654803Z",
+          "clobTimestamp": "1779485312765",
+          "yesBid": 0.11,
+          "yesAsk": 0.12,
+          "yesSpread": 0.01,
+          "yesBidSize": 300,
+          "yesAskSize": 20,
+          "noBid": 0.88,
+          "noAsk": 0.89,
+          "noSpread": 0.01,
+          "noBidSize": 20,
+          "noAskSize": 300,
+          "liquidity": 1775.47,
+          "flags": []
+        }
       }
     ],
     "openQualityWarnings": [
@@ -414,33 +434,6 @@
           ]
         },
         "thesis": "Manual user IV-touch shadow signal: PM YES 40.0% vs IV touch model 23.4%; edge -14.6 pts. Exclude from official live-trader performance until validated."
-      },
-      {
-        "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
-        "asset": "GOLD",
-        "blockedReason": "manual_shadow_trade",
-        "instrumentLabel": "gc-hit-jun-2026 — YES — Will Gold (GC) hit (LOW) $4,200 by end of June?",
-        "marketQuality": {
-          "quoteSource": "live_clob",
-          "quotedAt": "2026-05-19T19:33:56Z",
-          "gammaUpdatedAt": "2026-05-19T19:26:58.619804Z",
-          "clobTimestamp": "1779219235977",
-          "yesBid": 0.27,
-          "yesAsk": 0.3,
-          "yesSpread": 0.03,
-          "yesBidSize": 951.54,
-          "yesAskSize": 629.09,
-          "noBid": 0.7,
-          "noAsk": 0.73,
-          "noSpread": 0.03,
-          "noBidSize": 629.09,
-          "noAskSize": 951.54,
-          "liquidity": 6680.93,
-          "flags": [
-            "wide_pm_no_spread"
-          ]
-        },
-        "thesis": "Manual user IV-touch shadow signal: PM YES 28.5% vs IV touch model 40.3%; edge +10.3 pts. Exclude from official live-trader performance until validated."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
