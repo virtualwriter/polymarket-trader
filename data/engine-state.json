@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-30T19:31:01.275Z",
+  "generatedAt": "2026-06-30T20:31:01.429Z",
   "dataFreshness": {
-    "valuationRows": 1345,
-    "latestValuationAt": "2026-06-30T19",
-    "macroRows": 1343,
+    "valuationRows": 1346,
+    "latestValuationAt": "2026-06-30T20",
+    "macroRows": 1344,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-30T19"
+    "latestInstrumentSnapshotAt": "2026-06-30T20"
   },
   "portfolio": {
     "cash": 98.2247,
@@ -156,9 +156,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 35,
-    "resolvedCount": 682,
-    "wouldHaveWon": 372,
+    "openCount": 32,
+    "resolvedCount": 685,
+    "wouldHaveWon": 375,
     "wouldHaveLost": 310,
     "bySignal": [
       {
@@ -172,10 +172,10 @@
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
         "blocked": 30,
-        "resolved": 17,
-        "wouldHaveWon": 13,
+        "resolved": 20,
+        "wouldHaveWon": 16,
         "wouldHaveLost": 4,
-        "avgPnlPct": 11.6
+        "avgPnlPct": 14.43
       },
       {
         "signalType": "USER_PM_APR_XAU_TAIL_NO",
@@ -227,64 +227,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -2.7,
-        "resolvedAt": "2026-06-30T06:30:57.525Z",
-        "marketQuality": {
-          "yesBid": 0.63,
-          "yesAsk": 0.64,
-          "yesSpread": 0.01,
-          "liquidity": 33543.23,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 0,
-        "resolvedAt": "2026-06-30T08:30:34.523Z",
-        "marketQuality": {
-          "yesBid": 0.5,
-          "yesAsk": 0.51,
-          "yesSpread": 0.01,
-          "liquidity": 26833.79,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.52,
-        "resolvedAt": "2026-06-30T10:30:34.046Z",
-        "marketQuality": {
-          "yesBid": 0.34,
-          "yesAsk": 0.35,
-          "yesSpread": 0.01,
-          "liquidity": 19074.81,
-          "flags": []
-        }
-      },
       {
         "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
         "asset": "GOLD",
@@ -433,6 +375,93 @@
             "wide_pm_spread",
             "wide_pm_no_spread"
           ]
+        }
+      },
+      {
+        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+        "asset": "SPY",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "manual_shadow_trade",
+        "outcome": "win",
+        "closeReason": "expiry",
+        "pnlPct": 14.71,
+        "resolvedAt": "2026-06-30T20:31:01.138Z",
+        "marketQuality": {
+          "quoteSource": "live_clob",
+          "quotedAt": "2026-05-19T19:34:48Z",
+          "gammaUpdatedAt": "2026-05-19T19:28:12.900405Z",
+          "clobTimestamp": "1779219205128",
+          "yesBid": 0.13,
+          "yesAsk": 0.14,
+          "yesSpread": 0.01,
+          "yesBidSize": 8434.11,
+          "yesAskSize": 80.57,
+          "noBid": 0.86,
+          "noAsk": 0.87,
+          "noSpread": 0.01,
+          "noBidSize": 80.57,
+          "noAskSize": 8434.11,
+          "liquidity": 2560.37,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+        "asset": "SPY",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "manual_shadow_trade",
+        "outcome": "win",
+        "closeReason": "expiry",
+        "pnlPct": 69.32,
+        "resolvedAt": "2026-06-30T20:31:01.138Z",
+        "marketQuality": {
+          "quoteSource": "live_clob",
+          "quotedAt": "2026-05-19T19:34:55Z",
+          "gammaUpdatedAt": "2026-05-19T19:27:55.764963Z",
+          "clobTimestamp": "1779216235419",
+          "yesBid": 0.41,
+          "yesAsk": 0.43,
+          "yesSpread": 0.02,
+          "yesBidSize": 48.75,
+          "yesAskSize": 14.08,
+          "noBid": 0.57,
+          "noAsk": 0.59,
+          "noSpread": 0.02,
+          "noBidSize": 14.08,
+          "noAskSize": 48.75,
+          "liquidity": 22185.57,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+        "asset": "SPY",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "manual_shadow_trade",
+        "outcome": "win",
+        "closeReason": "expiry",
+        "pnlPct": 7.31,
+        "resolvedAt": "2026-06-30T20:31:01.138Z",
+        "marketQuality": {
+          "quoteSource": "live_clob",
+          "quotedAt": "2026-05-20T15:31:23Z",
+          "gammaUpdatedAt": "2026-05-20T15:27:00.105769Z",
+          "clobTimestamp": "1779290961855",
+          "yesBid": 0.07,
+          "yesAsk": 0.09,
+          "yesSpread": 0.02,
+          "yesBidSize": 539.58,
+          "yesAskSize": 1341.98,
+          "noBid": 0.91,
+          "noAsk": 0.93,
+          "noSpread": 0.02,
+          "noBidSize": 1341.98,
+          "noAskSize": 539.58,
+          "liquidity": 8558.45,
+          "flags": []
         }
       }
     ],
