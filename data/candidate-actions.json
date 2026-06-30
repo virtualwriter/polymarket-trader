@@ -1,23 +1,8 @@
 {
-  "generatedAt": "2026-06-30T01:30:58.117Z",
+  "generatedAt": "2026-06-30T02:30:49.559Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.348,
-      "confidence": 0.18424356250189125,
-      "thesis": "GOLD HL funding 27.2% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 3975,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
-    },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
@@ -27,22 +12,37 @@
       "confidence": 0.13019087264975057,
       "thesis": "OIL P/C ratio 1.40 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 70.29,
+      "entryPrice": 70.39,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
+    },
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.23085714285714282,
+      "confidence": 0.12222397249714953,
+      "thesis": "GOLD HL funding 23.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 3965,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "sizingPreviews": [
     {
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 3975,
+      "entryPrice": 70.39,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,14 +56,14 @@
       ]
     },
     {
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 70.29,
+      "entryPrice": 3965,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -79,72 +79,7 @@
   ],
   "portfolioExposurePreviews": [
     {
-      "candidateId": "FUNDING_EXTREME_LONG:GOLD:0",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "candidateSize": 0,
-      "riskClusters": [
-        "commodity",
-        "funding_reversion",
-        "gold_delta",
-        "hyperliquid_venue"
-      ],
-      "current": {
-        "totalGross": 2,
-        "totalNet": 0,
-        "byAsset": {
-          "GOLD": -1,
-          "HYPE": 1
-        },
-        "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1,
-          "PROMOTED_HYPOTHESIS": 1
-        },
-        "byVenue": {
-          "hyperliquid": -1,
-          "spot": 1
-        },
-        "byCluster": {
-          "commodity": -1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1,
-          "hype_delta": 1,
-          "risk_on": 1,
-          "spot_venue": 1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 2,
-        "totalNet": 0,
-        "byAsset": {
-          "GOLD": -1,
-          "HYPE": 1
-        },
-        "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1,
-          "PROMOTED_HYPOTHESIS": 1
-        },
-        "byVenue": {
-          "hyperliquid": -1,
-          "spot": 1
-        },
-        "byCluster": {
-          "commodity": -1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1,
-          "hype_delta": 1,
-          "risk_on": 1,
-          "spot_venue": 1
-        }
-      },
-      "warnings": []
-    },
-    {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:1",
+      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:0",
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
@@ -211,13 +146,78 @@
         }
       },
       "warnings": []
+    },
+    {
+      "candidateId": "FUNDING_EXTREME_LONG:GOLD:1",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "candidateSize": 0,
+      "riskClusters": [
+        "commodity",
+        "funding_reversion",
+        "gold_delta",
+        "hyperliquid_venue"
+      ],
+      "current": {
+        "totalGross": 2,
+        "totalNet": 0,
+        "byAsset": {
+          "GOLD": -1,
+          "HYPE": 1
+        },
+        "bySignalType": {
+          "FUNDING_EXTREME_LONG": -1,
+          "PROMOTED_HYPOTHESIS": 1
+        },
+        "byVenue": {
+          "hyperliquid": -1,
+          "spot": 1
+        },
+        "byCluster": {
+          "commodity": -1,
+          "funding_reversion": -1,
+          "gold_delta": -1,
+          "hyperliquid_venue": -1,
+          "hype_delta": 1,
+          "risk_on": 1,
+          "spot_venue": 1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 2,
+        "totalNet": 0,
+        "byAsset": {
+          "GOLD": -1,
+          "HYPE": 1
+        },
+        "bySignalType": {
+          "FUNDING_EXTREME_LONG": -1,
+          "PROMOTED_HYPOTHESIS": 1
+        },
+        "byVenue": {
+          "hyperliquid": -1,
+          "spot": 1
+        },
+        "byCluster": {
+          "commodity": -1,
+          "funding_reversion": -1,
+          "gold_delta": -1,
+          "hyperliquid_venue": -1,
+          "hype_delta": 1,
+          "risk_on": 1,
+          "spot_venue": 1
+        }
+      },
+      "warnings": []
     }
   ],
   "stagedQuantRules": [
     {
-      "candidateId": "FUNDING_EXTREME_LONG:GOLD:0",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
+      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:0",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
       "currentFlatSize": 1,
@@ -231,9 +231,9 @@
       ]
     },
     {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:1",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
+      "candidateId": "FUNDING_EXTREME_LONG:GOLD:1",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
       "currentFlatSize": 1,
@@ -264,10 +264,10 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 20.98,
-      "hoursToExpiry": 51.02,
+      "hoursOpen": 21.98,
+      "hoursToExpiry": 50.02,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.2914,
+      "elapsedHoldPct": 0.3053,
       "minHoldHours": 12,
       "reason": "Mechanical FUNDING_EXTREME_LONG setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
@@ -282,12 +282,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 7.99,
-      "hoursToExpiry": 496.01,
+      "hoursOpen": 8.99,
+      "hoursToExpiry": 495.01,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0159,
+      "elapsedHoldPct": 0.0178,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 8.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 9.0h, requires at least 12h."
     }
   ]
 }
