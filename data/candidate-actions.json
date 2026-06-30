@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-30T04:30:35.261Z",
+  "generatedAt": "2026-06-30T05:30:38.731Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.2877142857142857,
-      "confidence": 0.15232616374335345,
-      "thesis": "GOLD HL funding 25.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.4357142857142857,
+      "confidence": 0.23068262135910034,
+      "thesis": "GOLD HL funding 30.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 3982,
+      "entryPrice": 3984,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
@@ -27,7 +27,7 @@
       "confidence": 0.13019087264975057,
       "thesis": "OIL P/C ratio 1.40 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 70.39,
+      "entryPrice": 70.24,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -42,7 +42,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 3982,
+      "entryPrice": 3984,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -63,7 +63,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 70.39,
+      "entryPrice": 70.24,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -264,10 +264,10 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 23.98,
-      "hoursToExpiry": 48.02,
+      "hoursOpen": 24.98,
+      "hoursToExpiry": 47.02,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.333,
+      "elapsedHoldPct": 0.3469,
       "minHoldHours": 12,
       "reason": "Mechanical FUNDING_EXTREME_LONG setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
@@ -282,12 +282,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 10.99,
-      "hoursToExpiry": 493.01,
+      "hoursOpen": 11.99,
+      "hoursToExpiry": 492.01,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0218,
+      "elapsedHoldPct": 0.0238,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 11.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
     }
   ]
 }
