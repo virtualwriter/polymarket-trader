@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-30T15:32:00.008Z",
+  "generatedAt": "2026-06-30T16:30:50.094Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,11 +11,11 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.10942857142857138,
-      "confidence": 0.057756178247802964,
-      "thesis": "GOLD HL funding 18.8% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.05714285714285714,
+      "confidence": 0.030159884202508088,
+      "thesis": "GOLD HL funding 17.0% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4033,
+      "entryPrice": 4031,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
@@ -23,20 +23,9 @@
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "sell",
-        "asset": "OIL",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "thesis": "OIL funding annualized at 27.4%, reflecting extreme long perp positioning. Mean-reversion expected as over-leveraged longs face funding pressure. Signal family average PnL -0.51% but OIL is not a disabled asset; entering per extreme funding short rule."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
