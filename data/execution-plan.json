@@ -1,10 +1,23 @@
 {
-  "generatedAt": "2026-06-30T07:30:41.375Z",
+  "generatedAt": "2026-06-30T08:31:39.218Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1782707513852-jp6r",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_hl_funding_ann"
+      ],
+      "thesis": "Gold funding rate collapsed from 25.7% to 9.3%, well below the 15% entry threshold and indicative of unwound crowded longs. The FUNDING_EXTREME_LONG short signal's premise has materially receded."
+    }
+  ],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -15,7 +28,7 @@
       "confidence": 0.13019087264975057,
       "thesis": "OIL P/C ratio 1.40 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 70.36,
+      "entryPrice": 70.6,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -25,6 +38,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
