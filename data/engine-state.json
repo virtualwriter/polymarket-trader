@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-06-30T05:30:35.478Z",
+  "generatedAt": "2026-06-30T06:30:57.762Z",
   "dataFreshness": {
-    "valuationRows": 1331,
-    "latestValuationAt": "2026-06-30T05",
-    "macroRows": 1329,
+    "valuationRows": 1332,
+    "latestValuationAt": "2026-06-30T06",
+    "macroRows": 1330,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-06-30T05"
+    "latestInstrumentSnapshotAt": "2026-06-30T06"
   },
   "portfolio": {
     "cash": 96.232,
@@ -13,7 +13,7 @@
     "realizedPnl": 0.8195,
     "totalTrades": 327,
     "winRatePct": 57.2,
-    "unrealizedPnl": 0.012
+    "unrealizedPnl": 0.0034
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 2.08,
-      "currentPrice": 3984,
-      "underlyingPrice": 3984,
+      "pnlPct": 1.53,
+      "currentPrice": 4006,
+      "underlyingPrice": 4006,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": -0.87,
-      "currentPrice": 65.71,
-      "underlyingPrice": 65.71,
+      "pnlPct": -1.19,
+      "currentPrice": 65.497,
+      "underlyingPrice": 65.497,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -190,10 +190,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 42,
-    "resolvedCount": 674,
+    "openCount": 41,
+    "resolvedCount": 675,
     "wouldHaveWon": 369,
-    "wouldHaveLost": 305,
+    "wouldHaveLost": 306,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -261,26 +261,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -9.09,
-        "resolvedAt": "2026-06-28T02:29:02.520Z",
-        "marketQuality": {
-          "yesBid": 0.67,
-          "yesAsk": 0.69,
-          "yesSpread": 0.02,
-          "liquidity": 31867.5,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
         "asset": "BTC",
@@ -420,6 +400,26 @@
           "proxyOutperformed": true,
           "correlation": "same_direction"
         }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -2.7,
+        "resolvedAt": "2026-06-30T06:30:57.525Z",
+        "marketQuality": {
+          "yesBid": 0.63,
+          "yesAsk": 0.64,
+          "yesSpread": 0.01,
+          "liquidity": 33543.23,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -525,22 +525,6 @@
           ]
         },
         "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 10.5pt after haircuts. CBOE gap 11.5pt, CME gap 6.6pt, source agreement both_positive, spread 1.0c, liquidity 26834. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $70,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.63,
-          "yesAsk": 0.64,
-          "yesSpread": 0.01,
-          "liquidity": 33543.23,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 8.5pt after haircuts. CBOE gap 9.5pt, CME gap 8.5pt, source agreement both_positive, spread 1.0c, liquidity 33543. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
