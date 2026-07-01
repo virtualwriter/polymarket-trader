@@ -1,46 +1,15 @@
 {
-  "generatedAt": "2026-07-01T11:32:45.975Z",
+  "generatedAt": "2026-07-01T12:31:05.985Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.06085714285714283,
-      "confidence": 0.032120276675671106,
-      "thesis": "GOLD HL funding 17.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4026,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
-    }
-  ],
+  "entrySignals": [],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "sell",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "evidenceColumns": [
-          "btc_spot",
-          "btc_pm_iv"
-        ],
-        "thesis": "[ONE-TOUCH HIGH-EDGE NO] Sell-YES edge 10.4 pts (pmYes 0.455 vs model 0.346), spread 1c, liquidity 33500. Fits promoted NO-side touch rules; high edge, tight spread, sufficient liquidity. Hold until sell_yes_edge_pts disappears or falls below gate."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
