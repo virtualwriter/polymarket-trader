@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-30T23:30:51.836Z",
+  "generatedAt": "2026-07-01T00:31:58.087Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,9 +7,20 @@
   "llmCloses": [],
   "entrySignals": [],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "ONE-TOUCH NO EDGE SHADOW: BTC upside 75k Dec 2026 contract is overpriced relative to model (11.3 pt sell-YES edge). Buy NO on contract 2467209 at ask 0.55, targeting convergence as edge compresses. Spread 2c, liquidity 32k, qualifies under touch-market NO promotion rule. Shadow-only for calibration."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }
