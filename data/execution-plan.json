@@ -1,11 +1,26 @@
 {
-  "generatedAt": "2026-07-01T13:31:15.975Z",
+  "generatedAt": "2026-07-01T14:32:38.622Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [],
+  "entrySignals": [
+    {
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "short",
+      "strength": 0.16666666666666663,
+      "confidence": 0.086925551727772,
+      "thesis": "GOLD P/C ratio 0.45 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 4099,
+      "targetPct": 5,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    }
+  ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
