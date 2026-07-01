@@ -1,116 +1,11 @@
 {
-  "generatedAt": "2026-07-01T06:31:42.049Z",
+  "generatedAt": "2026-07-01T07:31:28.340Z",
   "mechanicalExits": [],
   "signalKillExits": [],
-  "entryCandidates": [
-    {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 65.032,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7
-    }
-  ],
-  "sizingPreviews": [
-    {
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "reason": "unsupported_signal",
-      "entryPrice": 65.032,
-      "probabilitySource": "unsupported",
-      "winProbability": null,
-      "probabilitySampleSize": null,
-      "edgePts": null,
-      "rawKellyFraction": null,
-      "adjustedKellyFraction": null,
-      "cappedKellyFraction": null,
-      "notes": [
-        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
-        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
-      ]
-    }
-  ],
-  "portfolioExposurePreviews": [
-    {
-      "candidateId": "PROMOTED_HYPOTHESIS:HYPE:0",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "candidateSize": 0,
-      "riskClusters": [
-        "hype_delta",
-        "risk_on",
-        "spot_venue"
-      ],
-      "current": {
-        "totalGross": 1,
-        "totalNet": 1,
-        "byAsset": {
-          "HYPE": 1
-        },
-        "bySignalType": {
-          "PROMOTED_HYPOTHESIS": 1
-        },
-        "byVenue": {
-          "spot": 1
-        },
-        "byCluster": {
-          "hype_delta": 1,
-          "risk_on": 1,
-          "spot_venue": 1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": 1,
-        "byAsset": {
-          "HYPE": 1
-        },
-        "bySignalType": {
-          "PROMOTED_HYPOTHESIS": 1
-        },
-        "byVenue": {
-          "spot": 1
-        },
-        "byCluster": {
-          "hype_delta": 1,
-          "risk_on": 1,
-          "spot_venue": 1
-        }
-      },
-      "warnings": []
-    }
-  ],
-  "stagedQuantRules": [
-    {
-      "candidateId": "PROMOTED_HYPOTHESIS:HYPE:0",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "mode": "observe_uniform",
-      "liveSizingEnabled": false,
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "enforcedLiveSize": 1,
-      "wouldResize": true,
-      "edgePts": null,
-      "alerts": [],
-      "notes": [
-        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
-      ]
-    }
-  ],
+  "entryCandidates": [],
+  "sizingPreviews": [],
+  "portfolioExposurePreviews": [],
+  "stagedQuantRules": [],
   "llmCloseEligibility": [
     {
       "positionId": "T-1782873094824-x036",
@@ -123,12 +18,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 4,
-      "hoursToExpiry": 164,
+      "hoursOpen": 5,
+      "hoursToExpiry": 163,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0238,
+      "elapsedHoldPct": 0.0297,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 4.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
     }
   ]
 }
