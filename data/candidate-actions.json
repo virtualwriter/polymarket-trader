@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-01T20:31:18.389Z",
+  "generatedAt": "2026-07-01T21:31:09.643Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.32142857142857145,
-      "confidence": 0.16964934863910802,
-      "thesis": "GOLD HL funding 26.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.6962857142857142,
+      "confidence": 0.36749818900756104,
+      "thesis": "GOLD HL funding 39.4% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4042,
+      "entryPrice": 4038,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
@@ -28,7 +28,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4042,
+      "entryPrice": 4038,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -57,30 +57,41 @@
         "hyperliquid_venue"
       ],
       "current": {
-        "totalGross": 0,
-        "totalNet": 0,
-        "byAsset": {},
-        "bySignalType": {},
-        "byVenue": {},
-        "byCluster": {}
-      },
-      "afterCandidate": {
-        "totalGross": 0,
-        "totalNet": 0,
+        "totalGross": 1,
+        "totalNet": -1,
         "byAsset": {
-          "GOLD": 0
+          "GOLD": -1
         },
         "bySignalType": {
-          "FUNDING_EXTREME_LONG": 0
+          "FUNDING_EXTREME_LONG": -1
         },
         "byVenue": {
-          "hyperliquid": 0
+          "hyperliquid": -1
         },
         "byCluster": {
-          "commodity": 0,
-          "funding_reversion": 0,
-          "gold_delta": 0,
-          "hyperliquid_venue": 0
+          "commodity": -1,
+          "funding_reversion": -1,
+          "gold_delta": -1,
+          "hyperliquid_venue": -1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 1,
+        "totalNet": -1,
+        "byAsset": {
+          "GOLD": -1
+        },
+        "bySignalType": {
+          "FUNDING_EXTREME_LONG": -1
+        },
+        "byVenue": {
+          "hyperliquid": -1
+        },
+        "byCluster": {
+          "commodity": -1,
+          "funding_reversion": -1,
+          "gold_delta": -1,
+          "hyperliquid_venue": -1
         }
       },
       "warnings": []
@@ -104,5 +115,25 @@
       ]
     }
   ],
-  "llmCloseEligibility": []
+  "llmCloseEligibility": [
+    {
+      "positionId": "T-1782937878411-0ky7",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
+      ],
+      "hoursOpen": 1,
+      "hoursToExpiry": 71,
+      "plannedHoldHours": 72,
+      "elapsedHoldPct": 0.0138,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+    }
+  ]
 }

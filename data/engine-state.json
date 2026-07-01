@@ -1,21 +1,39 @@
 {
-  "generatedAt": "2026-07-01T20:31:14.891Z",
+  "generatedAt": "2026-07-01T21:31:06.025Z",
   "dataFreshness": {
-    "valuationRows": 1370,
-    "latestValuationAt": "2026-07-01T20",
-    "macroRows": 1368,
+    "valuationRows": 1371,
+    "latestValuationAt": "2026-07-01T21",
+    "macroRows": 1369,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-01T20"
+    "latestInstrumentSnapshotAt": "2026-07-01T21"
   },
   "portfolio": {
-    "cash": 98.204,
-    "openPositions": 0,
+    "cash": 97.204,
+    "openPositions": 1,
     "realizedPnl": 0.7915,
     "totalTrades": 330,
     "winRatePct": 57,
-    "unrealizedPnl": 0
+    "unrealizedPnl": 0.001
   },
-  "openPositions": [],
+  "openPositions": [
+    {
+      "positionId": "T-1782937878411-0ky7",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "pnlPct": 0.1,
+      "currentPrice": 4038,
+      "underlyingPrice": 4038,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
+      ]
+    }
+  ],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -156,7 +174,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 32,
+    "openCount": 33,
     "resolvedCount": 688,
     "wouldHaveWon": 375,
     "wouldHaveLost": 313,
