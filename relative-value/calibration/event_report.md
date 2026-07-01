@@ -1,31 +1,31 @@
 # NO-bias calibration: event-level report
 
-- Rows in log: 111117 | unique markets: 376
-- Resolved markets (real UMA labels): 160 usable, 196 still open
-- Gate-passed markets: resolved 13, still open 12
+- Rows in log: 111202 | unique markets: 376
+- Resolved markets (real UMA labels): 242 usable, 114 still open
+- Gate-passed markets: resolved 14, still open 11
 
-## Promotion bar: 13 / 200 resolved gate-passed events
-Progress: 6.5%. NO-bias stays shadow-only until the bar is met with positive expectancy.
+## Promotion bar: 14 / 200 resolved gate-passed events
+Progress: 7.0%. NO-bias stays shadow-only until the bar is met with positive expectancy.
 
 ## Headline cohorts (buy NO at first qualifying snapshot)
 ```
-all resolved markets:    n=160 | NO-win  77.5% | avg   -1.03% | total   -165.3% | median NO entry 0.932
-gate-passed (resolved):  n= 13 | NO-win  61.5% | avg  -12.69% | total   -165.0% | median NO entry 0.644
+all resolved markets:    n=242 | NO-win  81.4% | avg   +8.76% | total  +2119.2% | median NO entry 0.950
+gate-passed (resolved):  n= 14 | NO-win  64.3% | avg  -10.32% | total   -144.5% | median NO entry 0.672
 ```
 
 ## By asset
 ```
-OIL                    n= 48 | NO-win  75.0% | avg  -12.06% | total   -579.1% | median NO entry 0.920
+OIL                    n= 90 | NO-win  77.8% | avg  +14.92% | total  +1343.1% | median NO entry 0.920
+GOLD                   n= 73 | NO-win  84.9% | avg   -1.11% | total    -80.9% | median NO entry 0.968
 BTC                    n= 41 | NO-win  82.9% | avg  +19.37% | total   +794.1% | median NO entry 0.947
-GOLD                   n= 33 | NO-win  69.7% | avg  -13.43% | total   -443.3% | median NO entry 0.930
 ETH                    n= 28 | NO-win  78.6% | avg   -0.59% | total    -16.6% | median NO entry 0.964
 SPY                    n= 10 | NO-win  90.0% | avg   +7.96% | total    +79.6% | median NO entry 0.880
 ```
 
 ## By adjusted gap bin (at entry)
 ```
-<0-0                   n=147 | NO-win  78.2% | avg   -0.74% | total   -108.8% | median NO entry 0.950
-0-4                    n=  7 | NO-win  57.1% | avg  -25.56% | total   -178.9% | median NO entry 0.720
+<0-0                   n=225 | NO-win  81.8% | avg   +9.21% | total  +2071.5% | median NO entry 0.953
+0-4                    n= 11 | NO-win  72.7% | avg   -6.80% | total    -74.8% | median NO entry 0.750
 >=12                   n=  3 | NO-win 100.0% | avg  +53.91% | total   +161.7% | median NO entry 0.620
 4-8                    n=  2 | NO-win 100.0% | avg  +30.35% | total    +60.7% | median NO entry 0.780
 8-12                   n=  1 | NO-win   0.0% | avg -100.00% | total   -100.0% | median NO entry 0.530
@@ -33,23 +33,25 @@ SPY                    n= 10 | NO-win  90.0% | avg   +7.96% | total    +79.6% | 
 
 ## By moneyness bucket
 ```
-5-15%                  n= 55 | NO-win  76.4% | avg   +5.32% | total   +292.8% | median NO entry 0.820
->30%                   n= 39 | NO-win 100.0% | avg   +1.74% | total    +67.8% | median NO entry 0.991
-15-30%                 n= 35 | NO-win  82.9% | avg  -12.78% | total   -447.2% | median NO entry 0.964
-<5%                    n= 31 | NO-win  45.2% | avg   -2.54% | total    -78.7% | median NO entry 0.470
+>30%                   n= 77 | NO-win  92.2% | avg   -6.14% | total   -472.8% | median NO entry 0.988
+5-15%                  n= 69 | NO-win  79.7% | avg  +11.40% | total   +786.4% | median NO entry 0.830
+15-30%                 n= 61 | NO-win  86.9% | avg  +24.93% | total  +1520.5% | median NO entry 0.960
+<5%                    n= 35 | NO-win  51.4% | avg   +8.15% | total   +285.1% | median NO entry 0.500
 ```
 
 ## By DTE bucket
 ```
-8-30d                  n= 68 | NO-win  70.6% | avg   +9.83% | total   +668.6% | median NO entry 0.850
-0-7d                   n= 58 | NO-win  93.1% | avg   +0.27% | total    +15.9% | median NO entry 0.991
-31-90d                 n= 34 | NO-win  64.7% | avg  -24.99% | total   -849.8% | median NO entry 0.860
+31-90d                 n=102 | NO-win  81.4% | avg   -7.51% | total   -765.8% | median NO entry 0.955
+8-30d                  n= 78 | NO-win  71.8% | avg  +36.48% | total  +2845.8% | median NO entry 0.800
+0-7d                   n= 62 | NO-win  93.5% | avg   +0.63% | total    +39.1% | median NO entry 0.990
 ```
 
 ## By contract type / direction
 ```
-touch/above            n= 85 | NO-win  94.1% | avg  +31.66% | total  +2690.8% | median NO entry 0.934
-touch/below            n= 75 | NO-win  58.7% | avg  -38.08% | total  -2856.1% | median NO entry 0.930
+touch/above            n=117 | NO-win  95.7% | avg  +27.70% | total  +3240.8% | median NO entry 0.950
+touch/below            n= 85 | NO-win  63.5% | avg  -33.38% | total  -2837.1% | median NO entry 0.950
+settlement/above       n= 38 | NO-win  76.3% | avg  +45.12% | total  +1714.4% | median NO entry 0.910
+settlement/below       n=  2 | NO-win 100.0% | avg   +0.55% | total     +1.1% | median NO entry 0.994
 ```
 
 ## Reading guide
