@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-01T12:31:02.329Z",
+  "generatedAt": "2026-07-01T13:31:12.646Z",
   "dataFreshness": {
-    "valuationRows": 1362,
-    "latestValuationAt": "2026-07-01T12",
-    "macroRows": 1360,
+    "valuationRows": 1363,
+    "latestValuationAt": "2026-07-01T13",
+    "macroRows": 1361,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-01T12"
+    "latestInstrumentSnapshotAt": "2026-07-01T13"
   },
   "portfolio": {
     "cash": 98.204,
@@ -156,10 +156,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 33,
-    "resolvedCount": 687,
+    "openCount": 32,
+    "resolvedCount": 688,
     "wouldHaveWon": 375,
-    "wouldHaveLost": 312,
+    "wouldHaveLost": 313,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -227,35 +227,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "long",
-        "blockedReason": "manual_shadow_trade",
-        "outcome": "loss",
-        "closeReason": "expiry",
-        "pnlPct": -99.91,
-        "resolvedAt": "2026-06-30T18:30:49.610Z",
-        "marketQuality": {
-          "quoteSource": "live_clob",
-          "quotedAt": "2026-05-13T20:54:49Z",
-          "gammaUpdatedAt": "2026-05-13T20:50:51.547533Z",
-          "clobTimestamp": "1778705637761",
-          "yesBid": 0.536,
-          "yesAsk": 0.542,
-          "yesSpread": 0.006,
-          "yesBidSize": 72.3,
-          "yesAskSize": 164.47,
-          "noBid": 0.458,
-          "noAsk": 0.464,
-          "noSpread": 0.006,
-          "noBidSize": 164.47,
-          "noAskSize": 72.3,
-          "liquidity": 20721.16,
-          "flags": []
-        }
-      },
       {
         "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
         "asset": "OIL",
@@ -443,6 +414,26 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.82,
+        "resolvedAt": "2026-07-01T13:31:12.519Z",
+        "marketQuality": {
+          "yesBid": 0.45,
+          "yesAsk": 0.47,
+          "yesSpread": 0.02,
+          "liquidity": 32005.53,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -477,22 +468,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.8pt on ETH, spread 2.0c, liquidity 37242. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $75,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.45,
-          "yesAsk": 0.47,
-          "yesSpread": 0.02,
-          "liquidity": 32005.53,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 11.3pt after haircuts. CBOE gap 12.3pt, CME gap 12.4pt, source agreement both_positive, spread 2.0c, liquidity 32006. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
