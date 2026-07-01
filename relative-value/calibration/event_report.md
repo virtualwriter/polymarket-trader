@@ -1,6 +1,6 @@
 # NO-bias calibration: event-level report
 
-- Rows in log: 110421 | unique markets: 373
+- Rows in log: 110508 | unique markets: 373
 - Resolved markets (real UMA labels): 66 usable, 288 still open
 - Gate-passed markets: resolved 7, still open 18
 
