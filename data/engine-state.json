@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-01T01:30:57.614Z",
+  "generatedAt": "2026-07-01T02:30:50.411Z",
   "dataFreshness": {
-    "valuationRows": 1351,
-    "latestValuationAt": "2026-07-01T01",
-    "macroRows": 1349,
+    "valuationRows": 1352,
+    "latestValuationAt": "2026-07-01T02",
+    "macroRows": 1350,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-01T01"
+    "latestInstrumentSnapshotAt": "2026-07-01T02"
   },
   "portfolio": {
     "cash": 98.2247,
@@ -156,10 +156,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 35,
-    "resolvedCount": 685,
+    "openCount": 33,
+    "resolvedCount": 687,
     "wouldHaveWon": 375,
-    "wouldHaveLost": 310,
+    "wouldHaveLost": 312,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -227,66 +227,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "long",
-        "blockedReason": "manual_shadow_trade",
-        "outcome": "win",
-        "closeReason": "expiry",
-        "pnlPct": 233,
-        "resolvedAt": "2026-06-30T17:30:47.351Z",
-        "marketQuality": {
-          "quoteSource": "live_clob",
-          "quotedAt": "2026-05-19T19:33:56Z",
-          "gammaUpdatedAt": "2026-05-19T19:26:58.619804Z",
-          "clobTimestamp": "1779219235977",
-          "yesBid": 0.27,
-          "yesAsk": 0.3,
-          "yesSpread": 0.03,
-          "yesBidSize": 951.54,
-          "yesAskSize": 629.09,
-          "noBid": 0.7,
-          "noAsk": 0.73,
-          "noSpread": 0.03,
-          "noBidSize": 629.09,
-          "noAskSize": 951.54,
-          "liquidity": 6680.93,
-          "flags": [
-            "wide_pm_no_spread"
-          ]
-        }
-      },
-      {
-        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "manual_shadow_trade",
-        "outcome": "win",
-        "closeReason": "expiry",
-        "pnlPct": 12.25,
-        "resolvedAt": "2026-06-30T17:30:47.351Z",
-        "marketQuality": {
-          "quoteSource": "live_clob",
-          "quotedAt": "2026-05-22T21:29:10Z",
-          "gammaUpdatedAt": "2026-05-22T21:16:56.654803Z",
-          "clobTimestamp": "1779485312765",
-          "yesBid": 0.11,
-          "yesAsk": 0.12,
-          "yesSpread": 0.01,
-          "yesBidSize": 300,
-          "yesAskSize": 20,
-          "noBid": 0.88,
-          "noAsk": 0.89,
-          "noSpread": 0.01,
-          "noBidSize": 20,
-          "noAskSize": 300,
-          "liquidity": 1775.47,
-          "flags": []
-        }
-      },
       {
         "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
         "asset": "OIL",
@@ -463,6 +403,46 @@
           "liquidity": 8558.45,
           "flags": []
         }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -2.38,
+        "resolvedAt": "2026-07-01T02:30:50.273Z",
+        "marketQuality": {
+          "yesBid": 0.58,
+          "yesAsk": 0.59,
+          "yesSpread": 0.01,
+          "liquidity": 34073.53,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.49,
+        "resolvedAt": "2026-07-01T02:30:50.273Z",
+        "marketQuality": {
+          "yesBid": 0.33,
+          "yesAsk": 0.34,
+          "yesSpread": 0.01,
+          "liquidity": 24881.06,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -513,38 +493,6 @@
           ]
         },
         "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 11.3pt after haircuts. CBOE gap 12.3pt, CME gap 12.4pt, source agreement both_positive, spread 2.0c, liquidity 32006. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $70,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.58,
-          "yesAsk": 0.59,
-          "yesSpread": 0.01,
-          "liquidity": 34073.53,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 9.4pt after haircuts. CBOE gap 10.4pt, CME gap 8.7pt, source agreement both_positive, spread 1.0c, liquidity 34074. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "BTC",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $80,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.33,
-          "yesAsk": 0.34,
-          "yesSpread": 0.01,
-          "liquidity": 24881.06,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 9.2pt after haircuts. CBOE gap 10.2pt, CME gap 9.7pt, source agreement both_positive, spread 1.0c, liquidity 24881. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
