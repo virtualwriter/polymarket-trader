@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-02T13:31:28.847Z",
+  "generatedAt": "2026-07-02T14:32:42.929Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,16 +15,60 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 65.815,
+      "entryPrice": 65.362,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
+    },
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 1,
+      "confidence": 0.5286938990852813,
+      "thesis": "OIL P/C ratio 2.26 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 67.6,
+      "targetPct": 4,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    },
+    {
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "short",
+      "strength": 0.3166666666666666,
+      "confidence": 0.1651585482827668,
+      "thesis": "GOLD P/C ratio 0.41 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 4120,
+      "targetPct": 5,
+      "stopPct": 1.5,
+      "expiryDays": 5
     }
   ],
-  "rejectedLlmActions": [],
+  "rejectedLlmActions": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1782937878411-0ky7",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "gold_hl_funding_ann"
+        ],
+        "thesis": "Gold funding rate collapsed from 26.3% annualized at entry to 5.48%, crossing well below the +15% entry threshold; the crowded-long funding thesis that justified the short is no longer supported."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+    }
+  ],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
   ]
 }
