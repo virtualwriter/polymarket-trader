@@ -44714,3 +44714,35 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-07-02 16:31 UTC
+
+**Portfolio:** $98.20 total | Cash $95.20 | 3 open | P&L $0.7915 | 57% win rate (330 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] GOLD-OIL correlation shifted from -0.51 to 0.80. Rolling correlation: 24h=-0.20, 7d=-0.04, 30d=0.80. Current 24h corr is at 57th pct of last 30 daily 24h-rolling values (range -0.93 to 0.94).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.09 to 0.79. Rolling correlation: 24h=0.73, 7d=0.62, 30d=0.81. Current 24h corr is at 73th pct of last 30 daily 24h-rolling values (range -0.37 to 0.91).
+
+**Blocked signal learning:**
+- Open blocked shadows: 35
+- Resolved blocked shadows: 688 (375 wins / 313 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/14 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 8/12 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=117 (34W/70L/13flat, 32.7% win-rate, sum $-2.6832, avg -2.29%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=162 (51W/94L/17flat, 35.2% win-rate, sum $-2.7788, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Manual shadow: USER_PM_IV_TOUCH_RICH_NO SPY short via polymarket would have expired (+7.31%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-2.38%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.49%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.82%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h since last call; daily budget 6/12; next scheduled 2026-07-02T18:31:33.446Z). Mechanical cycle ran normally._
+
+---
+

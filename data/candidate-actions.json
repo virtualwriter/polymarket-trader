@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-02T15:31:33.724Z",
+  "generatedAt": "2026-07-02T16:31:33.443Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,36 +12,37 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 65.311,
+      "entryPrice": 65.341,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 7
     },
     {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.5300000000000001,
-      "confidence": 0.2802077665151992,
-      "thesis": "OIL P/C ratio 1.62 — heavy put buying → contrarian long.",
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.04199999999999997,
+      "confidence": 0.02216751488884343,
+      "thesis": "GOLD HL funding 16.5% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 67.81,
-      "targetPct": 4,
-      "stopPct": 1.5,
-      "expiryDays": 5
+      "entryPrice": 4119,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "sizingPreviews": [
     {
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 67.81,
+      "entryPrice": 4119,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -62,7 +63,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 65.311,
+      "entryPrice": 65.341,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -78,17 +79,17 @@
   ],
   "portfolioExposurePreviews": [
     {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:0",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "candidateId": "FUNDING_EXTREME_LONG:GOLD:0",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
       "candidateSize": 0,
       "riskClusters": [
         "commodity",
-        "oil_delta",
-        "options_sentiment",
-        "spot_venue"
+        "funding_reversion",
+        "gold_delta",
+        "hyperliquid_venue"
       ],
       "current": {
         "totalGross": 3,
@@ -225,9 +226,9 @@
   ],
   "stagedQuantRules": [
     {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:0",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
+      "candidateId": "FUNDING_EXTREME_LONG:GOLD:0",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
       "currentFlatSize": 1,
@@ -274,10 +275,10 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 19,
-      "hoursToExpiry": 53,
+      "hoursOpen": 20,
+      "hoursToExpiry": 52,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.2639,
+      "elapsedHoldPct": 0.2778,
       "minHoldHours": 12,
       "reason": "Mechanical FUNDING_EXTREME_LONG setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
@@ -292,12 +293,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 3.98,
-      "hoursToExpiry": 500.02,
+      "hoursOpen": 4.98,
+      "hoursToExpiry": 499.02,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0079,
+      "elapsedHoldPct": 0.0099,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 4.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
     },
     {
       "positionId": "T-1783002762936-gqzc",
@@ -311,12 +312,12 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 0.98,
-      "hoursToExpiry": 119.02,
+      "hoursOpen": 1.98,
+      "hoursToExpiry": 118.02,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0082,
+      "elapsedHoldPct": 0.0165,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
     }
   ]
 }
