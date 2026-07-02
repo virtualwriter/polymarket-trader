@@ -1,10 +1,23 @@
 {
-  "generatedAt": "2026-07-02T16:31:33.462Z",
+  "generatedAt": "2026-07-02T17:32:41.091Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1782937878411-0ky7",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_hl_funding_ann"
+      ],
+      "thesis": "FUNDING_EXTREME_LONG short: entry triggered by gold HL funding >15% (26.25% at open). Funding has now normalized to 10.29%, crossing back below the entry threshold, invalidating the crowded-long fade signal. Spot moved against but funding normalization is the primary evidence."
+    }
+  ],
   "entrySignals": [
     {
       "type": "PROMOTED_HYPOTHESIS",
@@ -15,31 +28,16 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 65.341,
-      "targetPct": 4,
+      "entryPrice": 66.19,
+      "targetPct": 6,
       "stopPct": 2,
-      "expiryDays": 7
-    },
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.04199999999999997,
-      "confidence": 0.02216751488884343,
-      "thesis": "GOLD HL funding 16.5% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4119,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
+      "expiryDays": 21
     }
   ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
