@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-02T11:31:35.997Z",
+  "generatedAt": "2026-07-02T12:32:04.846Z",
   "dataFreshness": {
-    "valuationRows": 1384,
-    "latestValuationAt": "2026-07-02T11",
-    "macroRows": 1382,
+    "valuationRows": 1385,
+    "latestValuationAt": "2026-07-02T12",
+    "macroRows": 1383,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-02T11"
+    "latestInstrumentSnapshotAt": "2026-07-02T12"
   },
   "portfolio": {
-    "cash": 97.204,
-    "openPositions": 1,
+    "cash": 96.204,
+    "openPositions": 2,
     "realizedPnl": 0.7915,
     "totalTrades": 330,
     "winRatePct": 57,
-    "unrealizedPnl": -0.0062
+    "unrealizedPnl": -0.0046
   },
   "openPositions": [
     {
@@ -22,15 +22,31 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -0.62,
-      "currentPrice": 4068,
-      "underlyingPrice": 4068,
+      "pnlPct": -0.67,
+      "currentPrice": 4070,
+      "underlyingPrice": 4070,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "gold_gc_spot",
         "gold_hl_funding_ann"
+      ]
+    },
+    {
+      "positionId": "T-1782991948475-72mk",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "pnlPct": 0.21,
+      "currentPrice": 64.817,
+      "underlyingPrice": 64.817,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "hype_spot"
       ]
     }
   ],

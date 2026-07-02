@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-02T11:31:39.531Z",
+  "generatedAt": "2026-07-02T12:32:08.438Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 64.678,
+      "entryPrice": 64.817,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
@@ -22,11 +22,11 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.25771428571428573,
-      "confidence": 0.1360210777533115,
-      "thesis": "GOLD HL funding 24.0% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.1394285714285714,
+      "confidence": 0.07359011745411972,
+      "thesis": "GOLD HL funding 19.9% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4068,
+      "entryPrice": 4070,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
@@ -42,7 +42,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4068,
+      "entryPrice": 4070,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -63,7 +63,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 64.678,
+      "entryPrice": 64.817,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -92,41 +92,53 @@
         "hyperliquid_venue"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": 0,
         "byAsset": {
-          "GOLD": -1
+          "GOLD": -1,
+          "HYPE": 1
         },
         "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1
+          "FUNDING_EXTREME_LONG": -1,
+          "PROMOTED_HYPOTHESIS": 1
         },
         "byVenue": {
-          "hyperliquid": -1
+          "hyperliquid": -1,
+          "spot": 1
         },
         "byCluster": {
           "commodity": -1,
           "funding_reversion": -1,
           "gold_delta": -1,
-          "hyperliquid_venue": -1
+          "hyperliquid_venue": -1,
+          "hype_delta": 1,
+          "risk_on": 1,
+          "spot_venue": 1
         }
       },
       "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": 0,
         "byAsset": {
-          "GOLD": -1
+          "GOLD": -1,
+          "HYPE": 1
         },
         "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1
+          "FUNDING_EXTREME_LONG": -1,
+          "PROMOTED_HYPOTHESIS": 1
         },
         "byVenue": {
-          "hyperliquid": -1
+          "hyperliquid": -1,
+          "spot": 1
         },
         "byCluster": {
           "commodity": -1,
           "funding_reversion": -1,
           "gold_delta": -1,
-          "hyperliquid_venue": -1
+          "hyperliquid_venue": -1,
+          "hype_delta": 1,
+          "risk_on": 1,
+          "spot_venue": 1
         }
       },
       "warnings": []
@@ -144,47 +156,53 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": -1,
-        "byAsset": {
-          "GOLD": -1
-        },
-        "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1
-        },
-        "byVenue": {
-          "hyperliquid": -1
-        },
-        "byCluster": {
-          "commodity": -1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": 0,
         "byAsset": {
           "GOLD": -1,
-          "HYPE": 0
+          "HYPE": 1
         },
         "bySignalType": {
           "FUNDING_EXTREME_LONG": -1,
-          "PROMOTED_HYPOTHESIS": 0
+          "PROMOTED_HYPOTHESIS": 1
         },
         "byVenue": {
           "hyperliquid": -1,
-          "spot": 0
+          "spot": 1
         },
         "byCluster": {
           "commodity": -1,
           "funding_reversion": -1,
           "gold_delta": -1,
           "hyperliquid_venue": -1,
-          "hype_delta": 0,
-          "risk_on": 0,
-          "spot_venue": 0
+          "hype_delta": 1,
+          "risk_on": 1,
+          "spot_venue": 1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 2,
+        "totalNet": 0,
+        "byAsset": {
+          "GOLD": -1,
+          "HYPE": 1
+        },
+        "bySignalType": {
+          "FUNDING_EXTREME_LONG": -1,
+          "PROMOTED_HYPOTHESIS": 1
+        },
+        "byVenue": {
+          "hyperliquid": -1,
+          "spot": 1
+        },
+        "byCluster": {
+          "commodity": -1,
+          "funding_reversion": -1,
+          "gold_delta": -1,
+          "hyperliquid_venue": -1,
+          "hype_delta": 1,
+          "risk_on": 1,
+          "spot_venue": 1
         }
       },
       "warnings": []
@@ -241,12 +259,30 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 15,
-      "hoursToExpiry": 57,
+      "hoursOpen": 16.01,
+      "hoursToExpiry": 55.99,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.2084,
+      "elapsedHoldPct": 0.2224,
       "minHoldHours": 12,
       "reason": "Mechanical FUNDING_EXTREME_LONG setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
+    },
+    {
+      "positionId": "T-1782991948475-72mk",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "hype_spot"
+      ],
+      "hoursOpen": 0.99,
+      "hoursToExpiry": 503.01,
+      "plannedHoldHours": 504,
+      "elapsedHoldPct": 0.002,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     }
   ]
 }
