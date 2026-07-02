@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-02T14:31:46.706Z",
+  "generatedAt": "2026-07-02T15:31:29.899Z",
   "dataFreshness": {
-    "valuationRows": 1387,
-    "latestValuationAt": "2026-07-02T14",
-    "macroRows": 1385,
+    "valuationRows": 1388,
+    "latestValuationAt": "2026-07-02T15",
+    "macroRows": 1386,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-02T14"
+    "latestInstrumentSnapshotAt": "2026-07-02T15"
   },
   "portfolio": {
-    "cash": 96.204,
-    "openPositions": 2,
+    "cash": 95.204,
+    "openPositions": 3,
     "realizedPnl": 0.7915,
     "totalTrades": 330,
     "winRatePct": 57,
-    "unrealizedPnl": -0.0085
+    "unrealizedPnl": -0.0089
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -1.91,
-      "currentPrice": 4120,
-      "underlyingPrice": 4120,
+      "pnlPct": -2.18,
+      "currentPrice": 4131,
+      "underlyingPrice": 4131,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -39,14 +39,31 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 1.06,
-      "currentPrice": 65.362,
-      "underlyingPrice": 65.362,
+      "pnlPct": 0.98,
+      "currentPrice": 65.311,
+      "underlyingPrice": 65.311,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "hype_spot"
+      ]
+    },
+    {
+      "positionId": "T-1783002762936-gqzc",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": 0.31,
+      "currentPrice": 67.81,
+      "underlyingPrice": 67.81,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
       ]
     }
   ],
