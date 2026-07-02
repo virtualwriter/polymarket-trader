@@ -1,15 +1,52 @@
 {
-  "generatedAt": "2026-07-02T08:31:31.979Z",
+  "generatedAt": "2026-07-02T10:33:09.395Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [],
+  "entrySignals": [
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.18914285714285717,
+      "confidence": 0.09982921671030179,
+      "thesis": "GOLD HL funding 21.6% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4070,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
+    }
+  ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "sell",
+        "asset": "OIL",
+        "venue": "hyperliquid",
+        "direction": "short",
+        "thesis": "OIL HL funding at 20.4% annualized, well above the +15% extreme-long threshold. Crowded longs create a fading opportunity. Short HL perp at current mark (67.65)."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    },
+    {
+      "instruction": {
+        "action": "sell",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "Relative-value heatmap shows sell-yes edge +3.1 pts (PM YES 0.10 vs model prob 0.069) on BTC 100k Dec 2026 (marketId 701496). Spread 2c, liquidity 140k. Buy NO to fade overpriced upside touch."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 2 non-close instructions skipped."
   ]
 }
