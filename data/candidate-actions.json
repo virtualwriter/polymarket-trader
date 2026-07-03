@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-03T05:32:08.335Z",
+  "generatedAt": "2026-07-03T06:32:09.677Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 67.349,
+      "entryPrice": 67.376,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 67.349,
+      "entryPrice": 67.376,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -55,29 +55,39 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 0,
-        "totalNet": 0,
-        "byAsset": {},
-        "bySignalType": {},
-        "byVenue": {},
-        "byCluster": {}
-      },
-      "afterCandidate": {
-        "totalGross": 0,
-        "totalNet": 0,
+        "totalGross": 1,
+        "totalNet": 1,
         "byAsset": {
-          "HYPE": 0
+          "HYPE": 1
         },
         "bySignalType": {
-          "PROMOTED_HYPOTHESIS": 0
+          "PROMOTED_HYPOTHESIS": 1
         },
         "byVenue": {
-          "spot": 0
+          "spot": 1
         },
         "byCluster": {
-          "hype_delta": 0,
-          "risk_on": 0,
-          "spot_venue": 0
+          "hype_delta": 1,
+          "risk_on": 1,
+          "spot_venue": 1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 1,
+        "totalNet": 1,
+        "byAsset": {
+          "HYPE": 1
+        },
+        "bySignalType": {
+          "PROMOTED_HYPOTHESIS": 1
+        },
+        "byVenue": {
+          "spot": 1
+        },
+        "byCluster": {
+          "hype_delta": 1,
+          "risk_on": 1,
+          "spot_venue": 1
         }
       },
       "warnings": []
@@ -101,5 +111,24 @@
       ]
     }
   ],
-  "llmCloseEligibility": []
+  "llmCloseEligibility": [
+    {
+      "positionId": "T-1783056728360-7fzz",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "hype_spot"
+      ],
+      "hoursOpen": 1,
+      "hoursToExpiry": 503,
+      "plannedHoldHours": 504,
+      "elapsedHoldPct": 0.002,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+    }
+  ]
 }
