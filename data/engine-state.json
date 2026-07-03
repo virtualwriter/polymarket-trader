@@ -1,55 +1,21 @@
 {
-  "generatedAt": "2026-07-03T04:31:47.263Z",
+  "generatedAt": "2026-07-03T05:32:04.688Z",
   "dataFreshness": {
-    "valuationRows": 1401,
-    "latestValuationAt": "2026-07-03T04",
-    "macroRows": 1399,
+    "valuationRows": 1402,
+    "latestValuationAt": "2026-07-03T05",
+    "macroRows": 1400,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-03T04"
+    "latestInstrumentSnapshotAt": "2026-07-03T05"
   },
   "portfolio": {
-    "cash": 96.1859,
-    "openPositions": 2,
-    "realizedPnl": 0.7734,
-    "totalTrades": 331,
-    "winRatePct": 56.8,
-    "unrealizedPnl": 0.0469
+    "cash": 98.2476,
+    "openPositions": 0,
+    "realizedPnl": 0.7943,
+    "totalTrades": 332,
+    "winRatePct": 56.9,
+    "unrealizedPnl": 0
   },
-  "openPositions": [
-    {
-      "positionId": "T-1782991948475-72mk",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 2.6,
-      "currentPrice": 66.362,
-      "underlyingPrice": 66.362,
-      "targetPct": 4,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "hype_spot"
-      ]
-    },
-    {
-      "positionId": "T-1783002762936-gqzc",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 2.09,
-      "currentPrice": 69.01,
-      "underlyingPrice": 69.01,
-      "targetPct": 4,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_cl_pc_ratio"
-      ]
-    }
-  ],
+  "openPositions": [],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -149,10 +115,10 @@
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "enabled": true,
-      "weight": 0.5287,
-      "trades": 38,
-      "wins": 19,
-      "avgPnlPct": 0.2157,
+      "weight": 0.5263,
+      "trades": 39,
+      "wins": 20,
+      "avgPnlPct": 0.2636,
       "disabledAssets": [
         "BTC"
       ]
@@ -190,7 +156,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 34,
+    "openCount": 35,
     "resolvedCount": 689,
     "wouldHaveWon": 375,
     "wouldHaveLost": 314,
@@ -229,7 +195,7 @@
       },
       {
         "signalType": "FUNDING_EXTREME_LONG",
-        "blocked": 13,
+        "blocked": 14,
         "resolved": 13,
         "wouldHaveWon": 8,
         "wouldHaveLost": 5,

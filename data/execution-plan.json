@@ -1,43 +1,30 @@
 {
-  "generatedAt": "2026-07-03T04:32:39.904Z",
+  "generatedAt": "2026-07-03T05:32:08.357Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1783002762936-gqzc",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "oil_cl_pc_ratio"
-      ],
-      "thesis": "Oil P/C ratio has normalized from the extreme entry level of 2.26 down to 1.117, invalidating the contrarian-long thesis."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
+      "type": "PROMOTED_HYPOTHESIS",
+      "asset": "HYPE",
       "venue": "spot",
-      "direction": "short",
-      "strength": 0.013333333333333346,
-      "confidence": 0.006954044138221769,
-      "thesis": "BTC P/C ratio 0.50 — heavy call buying → contrarian short.",
-      "hypothesisId": null,
-      "entryPrice": 61424,
-      "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 5
+      "direction": "long",
+      "strength": 0.6666666666666666,
+      "confidence": 0.5466666666666666,
+      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
+      "hypothesisId": "H-521",
+      "entryPrice": 67.349,
+      "targetPct": 6,
+      "stopPct": 2,
+      "expiryDays": 21
     }
   ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
