@@ -1,22 +1,8 @@
 {
-  "generatedAt": "2026-07-03T02:32:10.437Z",
+  "generatedAt": "2026-07-03T03:32:14.006Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
-    {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 66.903,
-      "targetPct": 6,
-      "stopPct": 2,
-      "expiryDays": 21
-    },
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "asset": "BTC",
@@ -26,7 +12,7 @@
       "confidence": 0.006954044138221769,
       "thesis": "BTC P/C ratio 0.50 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 61495,
+      "entryPrice": 61562,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -41,28 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 61495,
-      "probabilitySource": "unsupported",
-      "winProbability": null,
-      "probabilitySampleSize": null,
-      "edgePts": null,
-      "rawKellyFraction": null,
-      "adjustedKellyFraction": null,
-      "cappedKellyFraction": null,
-      "notes": [
-        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
-        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
-      ]
-    },
-    {
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "reason": "unsupported_signal",
-      "entryPrice": 66.903,
+      "entryPrice": 61562,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -140,66 +105,6 @@
         }
       },
       "warnings": []
-    },
-    {
-      "candidateId": "PROMOTED_HYPOTHESIS:HYPE:1",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "candidateSize": 0,
-      "riskClusters": [
-        "hype_delta",
-        "risk_on",
-        "spot_venue"
-      ],
-      "current": {
-        "totalGross": 2,
-        "totalNet": 2,
-        "byAsset": {
-          "HYPE": 1,
-          "OIL": 1
-        },
-        "bySignalType": {
-          "PROMOTED_HYPOTHESIS": 1,
-          "PC_RATIO_EXTREME_HIGH": 1
-        },
-        "byVenue": {
-          "spot": 2
-        },
-        "byCluster": {
-          "hype_delta": 1,
-          "risk_on": 1,
-          "spot_venue": 2,
-          "commodity": 1,
-          "oil_delta": 1,
-          "options_sentiment": 1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 2,
-        "totalNet": 2,
-        "byAsset": {
-          "HYPE": 1,
-          "OIL": 1
-        },
-        "bySignalType": {
-          "PROMOTED_HYPOTHESIS": 1,
-          "PC_RATIO_EXTREME_HIGH": 1
-        },
-        "byVenue": {
-          "spot": 2
-        },
-        "byCluster": {
-          "hype_delta": 1,
-          "risk_on": 1,
-          "spot_venue": 2,
-          "commodity": 1,
-          "oil_delta": 1,
-          "options_sentiment": 1
-        }
-      },
-      "warnings": []
     }
   ],
   "stagedQuantRules": [
@@ -207,22 +112,6 @@
       "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
       "signalType": "PC_RATIO_EXTREME_LOW",
       "asset": "BTC",
-      "mode": "observe_uniform",
-      "liveSizingEnabled": false,
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "enforcedLiveSize": 1,
-      "wouldResize": true,
-      "edgePts": null,
-      "alerts": [],
-      "notes": [
-        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
-      ]
-    },
-    {
-      "candidateId": "PROMOTED_HYPOTHESIS:HYPE:1",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
       "currentFlatSize": 1,
@@ -254,10 +143,10 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 14.99,
-      "hoursToExpiry": 489.01,
+      "hoursOpen": 16,
+      "hoursToExpiry": 488,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0298,
+      "elapsedHoldPct": 0.0317,
       "minHoldHours": 12,
       "reason": "LLM-owned/promoted setup may be closed after 12h if signal-family evidence supports it."
     },
@@ -267,18 +156,22 @@
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
       "evidenceColumns": [
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 11.99,
-      "hoursToExpiry": 108.01,
+      "hoursOpen": 12.99,
+      "hoursToExpiry": 107.01,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0999,
+      "elapsedHoldPct": 0.1083,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
+      "reason": "Mechanical PC_RATIO_EXTREME_HIGH setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     }
   ]
 }
