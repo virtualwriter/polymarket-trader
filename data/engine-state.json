@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-03T15:32:02.617Z",
+  "generatedAt": "2026-07-03T16:31:58.876Z",
   "dataFreshness": {
-    "valuationRows": 1411,
-    "latestValuationAt": "2026-07-03T15",
-    "macroRows": 1409,
+    "valuationRows": 1412,
+    "latestValuationAt": "2026-07-03T16",
+    "macroRows": 1410,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-03T15"
+    "latestInstrumentSnapshotAt": "2026-07-03T16"
   },
   "portfolio": {
-    "cash": 97.2878,
-    "openPositions": 1,
-    "realizedPnl": 0.8351,
-    "totalTrades": 333,
-    "winRatePct": 57.1,
-    "unrealizedPnl": -0.0016
+    "cash": 95.2878,
+    "openPositions": 3,
+    "realizedPnl": 0.8753,
+    "totalTrades": 334,
+    "winRatePct": 57.2,
+    "unrealizedPnl": 0.0023
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -0.16,
-      "currentPrice": 243.41,
+      "pnlPct": -0.09,
+      "currentPrice": 243.58,
       "underlyingPrice": 243,
       "targetPct": 4,
       "stopPct": 2,
@@ -32,6 +32,39 @@
         "amzn_stock",
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
+      ]
+    },
+    {
+      "positionId": "T-1783092726305-rlta",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "pnlPct": 0.24,
+      "currentPrice": 70.416,
+      "underlyingPrice": 70.416,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "hype_spot"
+      ]
+    },
+    {
+      "positionId": "T-1783092726305-5kvn",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "pnlPct": 0.07,
+      "currentPrice": 4169,
+      "underlyingPrice": 4169,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
       ]
     }
   ],
