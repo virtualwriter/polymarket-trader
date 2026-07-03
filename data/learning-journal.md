@@ -45582,3 +45582,35 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-07-03 19:33 UTC
+
+**Portfolio:** $98.29 total | Cash $95.29 | 3 open | P&L $0.8753 | 57% win rate (334 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] GOLD-OIL correlation shifted from -0.49 to 0.79. Rolling correlation: 24h=0.48, 7d=-0.25, 30d=0.79. Current 24h corr is at 77th pct of last 30 daily 24h-rolling values (range -0.93 to 0.91).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.07 to 0.77. Rolling correlation: 24h=0.47, 7d=0.82, 30d=0.79. Current 24h corr is at 50th pct of last 30 daily 24h-rolling values (range -0.43 to 0.92).
+
+**Blocked signal learning:**
+- Open blocked shadows: 36
+- Resolved blocked shadows: 689 (375 wins / 314 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/14 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 8/13 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=117 (34W/70L/13flat, 32.7% win-rate, sum $-2.6832, avg -2.29%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=162 (51W/94L/17flat, 35.2% win-rate, sum $-2.7788, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-2.38%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.49%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.82%)
+- ❌ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have hit stop (-3.29%)
+
+**LLM analysis:**
+All three open positions are in their minimum hold window (none yet eligible for discretionary close). AMZN funding spike has fully normalized from -43% to +5.5%, weakening the crowded-short thesis but the perp still trades at a slight discount to spot; the position is flat. GOLD short was entered at 27.4% funding, which collapsed to 5.5% within hours, a classic fade signal, but the position is only 4h old and mechanical stop/expiry remain in place. HYPE long is early but performing as expected. The broader crypto-alt environment is supportive (hybrid bot bull regime after long bear), confirming risk appetite. I will hold all positions and revisit when the 12h policy lock expires.
+
+---
+
