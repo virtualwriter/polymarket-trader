@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-03T07:31:55.050Z",
+  "generatedAt": "2026-07-03T09:31:37.736Z",
   "dataFreshness": {
-    "valuationRows": 1404,
-    "latestValuationAt": "2026-07-03T07",
-    "macroRows": 1402,
+    "valuationRows": 1405,
+    "latestValuationAt": "2026-07-03T09",
+    "macroRows": 1403,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-03T07"
+    "latestInstrumentSnapshotAt": "2026-07-03T09"
   },
   "portfolio": {
-    "cash": 97.2476,
-    "openPositions": 1,
+    "cash": 96.2476,
+    "openPositions": 2,
     "realizedPnl": 0.8351,
     "totalTrades": 333,
     "winRatePct": 57.1,
-    "unrealizedPnl": -0.0042
+    "unrealizedPnl": 0.0052
   },
   "openPositions": [
     {
@@ -22,14 +22,32 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": -0.42,
-      "currentPrice": 67.065,
-      "underlyingPrice": 67.065,
+      "pnlPct": 0.56,
+      "currentPrice": 67.729,
+      "underlyingPrice": 67.729,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "hype_spot"
+      ]
+    },
+    {
+      "positionId": "T-1783063994719-f1im",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "pnlPct": -0.05,
+      "currentPrice": 243.68,
+      "underlyingPrice": 243,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "amzn_stock",
+        "amzn_hl_perp",
+        "amzn_hl_funding_ann"
       ]
     }
   ],
