@@ -1,43 +1,15 @@
 {
-  "generatedAt": "2026-07-04T17:33:43.381Z",
+  "generatedAt": "2026-07-04T18:32:52.218Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1783092726305-rlta",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "hype_spot"
-      ],
-      "thesis": "HYPE breakout continuation thesis invalidated: open interest dropped below the top 15% of last 24h, breaking the entry condition; spot stable but OI decline signals fading positioning momentum."
-    }
-  ],
-  "entrySignals": [
-    {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "strength": 0.013333333333333346,
-      "confidence": 0.006954044138221769,
-      "thesis": "BTC P/C ratio 0.50 — heavy call buying → contrarian short.",
-      "hypothesisId": null,
-      "entryPrice": 62980,
-      "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 5
-    }
-  ],
+  "llmCloses": [],
+  "entrySignals": [],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
