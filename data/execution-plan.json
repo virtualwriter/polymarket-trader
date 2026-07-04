@@ -1,10 +1,23 @@
 {
-  "generatedAt": "2026-07-04T07:33:01.379Z",
+  "generatedAt": "2026-07-04T08:33:39.111Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1783092726305-5kvn",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_hl_funding_ann"
+      ],
+      "thesis": "Gold funding extreme (27.4%) that triggered short has normalized to 5.48%, removing the crowded-long fade signal and invalidating the thesis."
+    }
+  ],
   "entrySignals": [
     {
       "type": "PROMOTED_HYPOTHESIS",
@@ -15,7 +28,7 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 71.481,
+      "entryPrice": 71.282,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
@@ -29,7 +42,7 @@
       "confidence": 0.006954044138221769,
       "thesis": "BTC P/C ratio 0.50 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 62535,
+      "entryPrice": 62554,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -39,6 +52,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
