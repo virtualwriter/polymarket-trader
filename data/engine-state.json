@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-04T08:32:31.867Z",
+  "generatedAt": "2026-07-04T09:32:49.436Z",
   "dataFreshness": {
-    "valuationRows": 1428,
-    "latestValuationAt": "2026-07-04T08",
-    "macroRows": 1426,
+    "valuationRows": 1429,
+    "latestValuationAt": "2026-07-04T09",
+    "macroRows": 1427,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-04T08"
+    "latestInstrumentSnapshotAt": "2026-07-04T09"
   },
   "portfolio": {
-    "cash": 93.5167,
+    "cash": 93.5155,
     "openPositions": 5,
-    "realizedPnl": 1.1043,
-    "totalTrades": 353,
-    "winRatePct": 59.2,
-    "unrealizedPnl": 0.0165
+    "realizedPnl": 1.1032,
+    "totalTrades": 354,
+    "winRatePct": 59,
+    "unrealizedPnl": -0.0002
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 1.48,
-      "currentPrice": 71.282,
-      "underlyingPrice": 71.282,
+      "pnlPct": 1.11,
+      "currentPrice": 71.027,
+      "underlyingPrice": 71.027,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -33,29 +33,12 @@
       ]
     },
     {
-      "positionId": "T-1783092726305-5kvn",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -0.12,
-      "currentPrice": 4177,
-      "underlyingPrice": 4177,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
-      ]
-    },
-    {
       "positionId": "WF-1783114333570-COST-8hay",
       "asset": "COST",
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.16,
+      "pnlPct": 0.15,
       "currentPrice": 948.47,
       "underlyingPrice": null,
       "targetPct": 3,
@@ -69,8 +52,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.59,
-      "currentPrice": 112.97,
+      "pnlPct": -0.73,
+      "currentPrice": 112.94,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -83,8 +66,22 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.73,
-      "currentPrice": 105.18,
+      "pnlPct": -0.56,
+      "currentPrice": 104.91,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1783157569296-GME-gjnz",
+      "asset": "GME",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 22.87,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -114,10 +111,10 @@
     {
       "type": "FUNDING_EXTREME_LONG",
       "enabled": true,
-      "weight": 0.5236,
-      "trades": 28,
+      "weight": 0.5175,
+      "trades": 29,
       "wins": 14,
-      "avgPnlPct": -0.561,
+      "avgPnlPct": -0.5456,
       "disabledAssets": [
         "AMZN",
         "HYPE"
