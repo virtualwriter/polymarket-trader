@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-04T11:34:21.012Z",
+  "generatedAt": "2026-07-04T12:32:58.372Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,28 +15,16 @@
       "confidence": 0.006954044138221769,
       "thesis": "BTC P/C ratio 0.50 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 62478,
+      "entryPrice": 62558,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "sell",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "evidenceColumns": [],
-        "thesis": "Relative-value heatmap: BTC $100K July (marketId 2758332) pmYes 0.0015 vs modelProb 0.00006266 gives a 9.3c sell‑YES edge. Spread is 0.1c, liquidity $211k; PM heavily overprices this extreme upside event. Enter a small NO position to capture the edge."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
