@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-04T00:32:33.051Z",
+  "generatedAt": "2026-07-04T01:32:25.850Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,18 +7,33 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
+      "type": "FUNDING_EXTREME_SHORT",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
       "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 70.864,
-      "targetPct": 6,
+      "strength": 0.2671428571428572,
+      "confidence": 0.12893630312928522,
+      "thesis": "AMZN HL funding -24.4% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 243.69,
+      "targetPct": 4,
       "stopPct": 2,
-      "expiryDays": 21
+      "expiryDays": 7,
+      "leverage": 1
+    },
+    {
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "strength": 0.013333333333333346,
+      "confidence": 0.006954044138221769,
+      "thesis": "BTC P/C ratio 0.50 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 62429,
+      "targetPct": 5,
+      "stopPct": 1.5,
+      "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
