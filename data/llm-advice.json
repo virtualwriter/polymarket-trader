@@ -1,5 +1,22 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [],
-  "skippedTrades": []
+  "rejectedCloses": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1783092726305-5kvn",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "gold_hl_funding_ann"
+        ],
+        "thesis": "Gold funding dropped from 27.4% to 5.48%, no longer signalling extreme long crowding; the funding extreme long thesis is invalidated."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+    }
+  ],
+  "skippedTrades": [],
+  "parameterUpdates": {}
 }
