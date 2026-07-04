@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-04T05:33:27.412Z",
+  "generatedAt": "2026-07-04T06:33:01.414Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,7 +15,7 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 71.128,
+      "entryPrice": 70.812,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
@@ -29,32 +29,16 @@
       "confidence": 0.006954044138221769,
       "thesis": "BTC P/C ratio 0.50 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 62526,
+      "entryPrice": 62336,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1783092726305-5kvn",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "gold_hl_funding_ann"
-        ],
-        "thesis": "Gold funding dropped from 27.4% to 5.48%, no longer signalling extreme long crowding; the funding extreme long thesis is invalidated."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
