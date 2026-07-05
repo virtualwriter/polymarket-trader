@@ -47130,3 +47130,39 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-05 16:36 UTC
+
+**Portfolio:** $98.75 total | Cash $89.75 | 9 open | P&L $1.3369 | 60% win rate (392 trades)
+
+**Closed 1 trades:**
+- ✅ RKLB long via hyperliquid/hl_perp [HL RKLB Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0251 (2.5%, market 0.0252, funding -0.0001)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -11.23 is -2.0 std devs from mean (-0.07 ± 5.55)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.46 to 0.77. Rolling correlation: 24h=0.21, 7d=-0.47, 30d=0.77. Current 24h corr is at 60th pct of last 30 daily 24h-rolling values (range -0.93 to 0.92).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.05 to 0.74. Rolling correlation: 24h=-0.19, 7d=0.91, 30d=0.72. Current 24h corr is at 20th pct of last 30 daily 24h-rolling values (range -0.35 to 0.94).
+
+**Blocked signal learning:**
+- Open blocked shadows: 35
+- Resolved blocked shadows: 691 (375 wins / 316 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/15 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 8/14 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=117 (34W/70L/13flat, 32.7% win-rate, sum $-2.6832, avg -2.29%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=162 (51W/94L/17flat, 35.2% win-rate, sum $-2.7788, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.82%)
+- ❌ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have hit stop (-3.29%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.21%)
+- ❌ Blocked: FUNDING_EXTREME_LONG BTC short via hyperliquid would have hit stop (-2.65%)
+
+**LLM analysis:**
+No new trades are opened or closed. The open WEEKEND_HL_FUNDING_REVERSION_LONG positions are under mechanical management and not eligible for LLM closes. The relative-value heatmap shows some very large edge ratios in HYPE downside contracts, but those require buying YES, which violates the touch-market only-NO promotion rule. The OIL $130 upside contract has a small overpricing edge but does not meet the high-edge threshold for ONE_TOUCH_HIGH_EDGE_NO. Promoted hypothesis H-521 continues to align with the HYPE market; we will monitor OI behavior for any deviation. The macro backdrop remains hostile, so risk assets like BTC need exceptionally strong inflow to break out; current positioning suggests continued consolidation.
+
+---
+
