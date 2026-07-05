@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-05T02:33:01.309Z",
+  "generatedAt": "2026-07-05T03:32:58.867Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.006954044138221769,
       "thesis": "BTC P/C ratio 0.50 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 62673,
+      "entryPrice": 62680,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 62673,
+      "entryPrice": 62680,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,80 +56,76 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 37,
-        "totalNet": 37,
+        "totalGross": 32,
+        "totalNet": 32,
         "byAsset": {
           "EBAY": 5,
           "GOLD": 1,
           "COST": 5,
           "AMZN": 1,
-          "DKNG": 5,
           "COIN": 5,
-          "BIRD": 5,
           "HIMS": 5,
-          "RIVN": 5
+          "RIVN": 5,
+          "LITE": 5
         },
         "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 35,
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 30,
           "FUNDING_EXTREME_SHORT": 2
         },
         "byVenue": {
-          "hyperliquid": 37
+          "hyperliquid": 32
         },
         "byCluster": {
           "ebay_delta": 5,
-          "funding_reversion": 37,
-          "hyperliquid_venue": 37,
+          "funding_reversion": 32,
+          "hyperliquid_venue": 32,
           "commodity": 1,
           "gold_delta": 1,
           "cost_delta": 5,
           "amzn_delta": 1,
           "risk_on": 1,
-          "dkng_delta": 5,
           "coin_delta": 5,
-          "bird_delta": 5,
           "hims_delta": 5,
-          "rivn_delta": 5
+          "rivn_delta": 5,
+          "lite_delta": 5
         }
       },
       "afterCandidate": {
-        "totalGross": 37,
-        "totalNet": 37,
+        "totalGross": 32,
+        "totalNet": 32,
         "byAsset": {
           "EBAY": 5,
           "GOLD": 1,
           "COST": 5,
           "AMZN": 1,
-          "DKNG": 5,
           "COIN": 5,
-          "BIRD": 5,
           "HIMS": 5,
           "RIVN": 5,
+          "LITE": 5,
           "BTC": 0
         },
         "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 35,
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 30,
           "FUNDING_EXTREME_SHORT": 2,
           "PC_RATIO_EXTREME_LOW": 0
         },
         "byVenue": {
-          "hyperliquid": 37,
+          "hyperliquid": 32,
           "spot": 0
         },
         "byCluster": {
           "ebay_delta": 5,
-          "funding_reversion": 37,
-          "hyperliquid_venue": 37,
+          "funding_reversion": 32,
+          "hyperliquid_venue": 32,
           "commodity": 1,
           "gold_delta": 1,
           "cost_delta": 5,
           "amzn_delta": 1,
           "risk_on": 1,
-          "dkng_delta": 5,
           "coin_delta": 5,
-          "bird_delta": 5,
           "hims_delta": 5,
           "rivn_delta": 5,
+          "lite_delta": 5,
           "btc_delta": 0,
           "options_sentiment": 0,
           "spot_venue": 0
@@ -151,7 +147,7 @@
       "wouldResize": true,
       "edgePts": null,
       "alerts": [
-        "cluster exposure 37.00 > alert cap 5.00"
+        "cluster exposure 32.00 > alert cap 5.00"
       ],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
@@ -168,10 +164,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 8,
-      "hoursToExpiry": 16,
+      "hoursOpen": 9,
+      "hoursToExpiry": 15,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.3334,
+      "elapsedHoldPct": 0.3751,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -187,12 +183,12 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 6.98,
-      "hoursToExpiry": 161.02,
+      "hoursOpen": 7.98,
+      "hoursToExpiry": 160.02,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0416,
+      "elapsedHoldPct": 0.0475,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 7.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 8.0h, requires at least 12h."
     },
     {
       "positionId": "WF-1783200772370-COST-rgij",
@@ -203,10 +199,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 5,
-      "hoursToExpiry": 19,
+      "hoursOpen": 6,
+      "hoursToExpiry": 18,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.2084,
+      "elapsedHoldPct": 0.25,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -223,28 +219,12 @@
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ],
-      "hoursOpen": 4.97,
-      "hoursToExpiry": 163.03,
+      "hoursOpen": 5.97,
+      "hoursToExpiry": 162.03,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0296,
+      "elapsedHoldPct": 0.0355,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
-    },
-    {
-      "positionId": "WF-1783204370847-DKNG-35sr",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "DKNG",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 4,
-      "hoursToExpiry": 20,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.1667,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+      "reason": "Too new for discretionary LLM close: open 6.0h, requires at least 12h."
     },
     {
       "positionId": "WF-1783207967081-COIN-88ga",
@@ -255,17 +235,17 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 3,
-      "hoursToExpiry": 21,
+      "hoursOpen": 4,
+      "hoursToExpiry": 20,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.1251,
+      "elapsedHoldPct": 0.1668,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
-      "positionId": "WF-1783215179295-BIRD-18v0",
+      "positionId": "WF-1783218776868-HIMS-jzvp",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "BIRD",
+      "asset": "HIMS",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
@@ -279,25 +259,25 @@
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
-      "positionId": "WF-1783218776868-HIMS-jzvp",
+      "positionId": "WF-1783218776868-RIVN-vg17",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "HIMS",
+      "asset": "RIVN",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 0,
-      "hoursToExpiry": 24,
+      "hoursOpen": 1,
+      "hoursToExpiry": 23,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0,
+      "elapsedHoldPct": 0.0416,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
-      "positionId": "WF-1783218776868-RIVN-vg17",
+      "positionId": "WF-1783222374402-LITE-75nn",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "RIVN",
+      "asset": "LITE",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
