@@ -47347,3 +47347,44 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-07-05 22:35 UTC
+
+**Portfolio:** $98.80 total | Cash $89.80 | 9 open | P&L $1.3900 | 60% win rate (400 trades)
+
+**Closed 2 trades:**
+- ✅ SKHX long via hyperliquid/hl_perp [HL SKHX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0150 (1.5%, market 0.0139, funding 0.0011)
+- ✅ HOOD long via hyperliquid/hl_perp [HL HOOD Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0110 (1.1%, market 0.0105, funding 0.0005)
+
+**Opened 1 positions:**
+- AMZN long @ $244.61 via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved narrower by 5.6pp (was 8.9, now 3.3)
+- [anomaly] amzn_hl_funding_ann = -38.58 is -2.5 std devs from mean (11.71 ± 20.46)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.46 to 0.77. Rolling correlation: 24h=-0.82, 7d=-0.52, 30d=0.76. Current 24h corr is at 13th pct of last 30 daily 24h-rolling values (range -0.85 to 0.94).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.05 to 0.73. Rolling correlation: 24h=0.28, 7d=0.92, 30d=0.72. Current 24h corr is at 40th pct of last 30 daily 24h-rolling values (range -0.62 to 0.88).
+
+**Blocked signal learning:**
+- Open blocked shadows: 35
+- Resolved blocked shadows: 691 (375 wins / 316 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/15 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 8/14 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=117 (34W/70L/13flat, 32.7% win-rate, sum $-2.6832, avg -2.29%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=162 (51W/94L/17flat, 35.2% win-rate, sum $-2.7788, avg -1.72%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW BTC short via polymarket would have edge compressed but trade lost money (-1.82%)
+- ❌ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have hit stop (-3.29%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.21%)
+- ❌ Blocked: FUNDING_EXTREME_LONG BTC short via hyperliquid would have hit stop (-2.65%)
+
+**LLM analysis:**
+Today's late-session crypto rally caught momentum; H-521 HYPE long is in profit. The weekend funding reversion trades on ZM, GME, DKNG, NFLX, BX, COST, AMD are all mechanical and not yet at target; no LLM intervention possible. The relative-value heatmap suggests strong buy-YES signals on HYPE and BTC upside contracts, but promotion rules currently forbid YES-side touch trades. Continue monitoring existing hypotheses and wait for shadow-test results to mature.
+
+---
+
