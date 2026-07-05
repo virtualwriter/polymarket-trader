@@ -1,35 +1,10 @@
 {
-  "generatedAt": "2026-07-05T10:34:02.837Z",
+  "generatedAt": "2026-07-05T11:33:15.105Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1783193632599-ph55",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "any",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "gold_hl_funding_ann"
-      ],
-      "thesis": "GOLD funding has flipped from -34.6% to +5.5%, no longer extreme short; crowded-short thesis invalidated."
-    },
-    {
-      "action": "close",
-      "positionId": "T-1783200885493-4n86",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "any",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "amzn_hl_funding_ann"
-      ],
-      "thesis": "AMZN funding has flipped from -34.2% to +5.5%; extreme short crowded thesis invalidated."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_LOW",
@@ -40,7 +15,7 @@
       "confidence": 0.024339154483776188,
       "thesis": "BTC P/C ratio 0.49 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 62708,
+      "entryPrice": 62603,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -50,6 +25,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "2 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
