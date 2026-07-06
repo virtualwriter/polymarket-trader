@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-06T21:34:51.285Z",
+  "generatedAt": "2026-07-06T22:34:57.102Z",
   "dataFreshness": {
-    "valuationRows": 1488,
-    "latestValuationAt": "2026-07-06T21",
-    "macroRows": 1486,
+    "valuationRows": 1489,
+    "latestValuationAt": "2026-07-06T22",
+    "macroRows": 1487,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-06T21"
+    "latestInstrumentSnapshotAt": "2026-07-06T22"
   },
   "portfolio": {
-    "cash": 96.6878,
-    "openPositions": 2,
+    "cash": 95.6878,
+    "openPositions": 3,
     "realizedPnl": 1.2751,
     "totalTrades": 414,
     "winRatePct": 60.1,
-    "unrealizedPnl": -0.0037
+    "unrealizedPnl": -0.0033
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.35,
-      "currentPrice": 68.67,
-      "underlyingPrice": 68.67,
+      "pnlPct": -0.29,
+      "currentPrice": 68.71,
+      "underlyingPrice": 68.71,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,14 +39,31 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": -0.03,
-      "currentPrice": 71.455,
-      "underlyingPrice": 71.455,
+      "pnlPct": -0.06,
+      "currentPrice": 71.43,
+      "underlyingPrice": 71.43,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "hype_spot"
+      ]
+    },
+    {
+      "positionId": "T-1783373695725-cw6x",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "pnlPct": 0.02,
+      "currentPrice": 4168,
+      "underlyingPrice": 4168,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
       ]
     }
   ],
