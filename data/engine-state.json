@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-06T04:34:51.129Z",
+  "generatedAt": "2026-07-06T05:34:58.783Z",
   "dataFreshness": {
-    "valuationRows": 1471,
-    "latestValuationAt": "2026-07-06T04",
-    "macroRows": 1469,
+    "valuationRows": 1472,
+    "latestValuationAt": "2026-07-06T05",
+    "macroRows": 1470,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-06T04"
+    "latestInstrumentSnapshotAt": "2026-07-06T05"
   },
   "portfolio": {
     "cash": 94.8567,
@@ -13,7 +13,7 @@
     "realizedPnl": 1.444,
     "totalTrades": 407,
     "winRatePct": 60.7,
-    "unrealizedPnl": -0.1004
+    "unrealizedPnl": -0.0912
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -10.31,
-      "currentPrice": 87.534,
+      "pnlPct": -10.15,
+      "currentPrice": 87.575,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -36,9 +36,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 1.3,
-      "currentPrice": 71.288,
-      "underlyingPrice": 71.288,
+      "pnlPct": 0.95,
+      "currentPrice": 71.044,
+      "underlyingPrice": 71.044,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -52,8 +52,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -0.18,
-      "currentPrice": 244.21,
+      "pnlPct": -0.21,
+      "currentPrice": 244.16,
       "underlyingPrice": 243,
       "targetPct": 4,
       "stopPct": 2,
@@ -70,8 +70,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.84,
-      "currentPrice": 206.4,
+      "pnlPct": 0.28,
+      "currentPrice": 206.86,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -219,9 +219,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 35,
-    "resolvedCount": 691,
-    "wouldHaveWon": 375,
+    "openCount": 34,
+    "resolvedCount": 692,
+    "wouldHaveWon": 376,
     "wouldHaveLost": 316,
     "bySignal": [
       {
@@ -259,10 +259,10 @@
       {
         "signalType": "FUNDING_EXTREME_LONG",
         "blocked": 15,
-        "resolved": 14,
-        "wouldHaveWon": 8,
+        "resolved": 15,
+        "wouldHaveWon": 9,
         "wouldHaveLost": 6,
-        "avgPnlPct": 0.06
+        "avgPnlPct": 0.09
       },
       {
         "signalType": "PM_IV_GT_OPT_IV_DOWNSIDE",
@@ -290,35 +290,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-        "asset": "SPY",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "manual_shadow_trade",
-        "outcome": "win",
-        "closeReason": "expiry",
-        "pnlPct": 69.32,
-        "resolvedAt": "2026-06-30T20:31:01.138Z",
-        "marketQuality": {
-          "quoteSource": "live_clob",
-          "quotedAt": "2026-05-19T19:34:55Z",
-          "gammaUpdatedAt": "2026-05-19T19:27:55.764963Z",
-          "clobTimestamp": "1779216235419",
-          "yesBid": 0.41,
-          "yesAsk": 0.43,
-          "yesSpread": 0.02,
-          "yesBidSize": 48.75,
-          "yesAskSize": 14.08,
-          "noBid": 0.57,
-          "noAsk": 0.59,
-          "noSpread": 0.02,
-          "noBidSize": 14.08,
-          "noAskSize": 48.75,
-          "liquidity": 22185.57,
-          "flags": []
-        }
-      },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
         "asset": "SPY",
@@ -451,6 +422,21 @@
         "trendMetrics": {
           "aboveTrendPct": 0.5,
           "momentumPct": 2.65
+        }
+      },
+      {
+        "signalType": "FUNDING_EXTREME_LONG",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "short",
+        "blockedReason": "short_blocked_by_positive_trend",
+        "outcome": "win",
+        "closeReason": "expiry",
+        "pnlPct": 0.59,
+        "resolvedAt": "2026-07-06T05:34:58.552Z",
+        "trendMetrics": {
+          "aboveTrendPct": 1.39,
+          "momentumPct": 2.86
         }
       }
     ],
