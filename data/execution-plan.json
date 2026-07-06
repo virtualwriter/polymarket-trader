@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-06T20:36:10.230Z",
+  "generatedAt": "2026-07-06T21:34:55.723Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,11 +11,11 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.20228571428571424,
-      "confidence": 0.10468241797832802,
-      "thesis": "GOLD HL funding 22.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.3125714285714286,
+      "confidence": 0.16175503568967642,
+      "thesis": "GOLD HL funding 25.9% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4166,
+      "entryPrice": 4169,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
@@ -30,27 +30,16 @@
       "confidence": 0.07763115144397105,
       "thesis": "OIL P/C ratio 1.32 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 68.72,
+      "entryPrice": 68.67,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "buy",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "thesis": "Relative-value heatmap shows BTC $190k YES contract overpriced vs option/cap models; sell-YES edge 1.44 pts, spread 2c, liquidity $72k. One-touch NO trade: PM assigns too high odds to a far upside target; buy NO / sell YES. Market ID 701487 (Will Bitcoin reach $190,000 by December 31, 2026?)."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
