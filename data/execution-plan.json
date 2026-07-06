@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-06T19:34:46.492Z",
+  "generatedAt": "2026-07-06T20:36:10.230Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,38 +7,50 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 71.56,
-      "targetPct": 6,
-      "stopPct": 2,
-      "expiryDays": 21
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.20228571428571424,
+      "confidence": 0.10468241797832802,
+      "thesis": "GOLD HL funding 22.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4166,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.2125000000000002,
-      "confidence": 0.11184148936843287,
-      "thesis": "OIL P/C ratio 1.37 — heavy put buying → contrarian long.",
+      "strength": 0.14750000000000013,
+      "confidence": 0.07763115144397105,
+      "thesis": "OIL P/C ratio 1.32 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 68.75,
+      "entryPrice": 68.72,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "Relative-value heatmap shows BTC $190k YES contract overpriced vs option/cap models; sell-YES edge 1.44 pts, spread 2c, liquidity $72k. One-touch NO trade: PM assigns too high odds to a far upside target; buy NO / sell YES. Market ID 701487 (Will Bitcoin reach $190,000 by December 31, 2026?)."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }

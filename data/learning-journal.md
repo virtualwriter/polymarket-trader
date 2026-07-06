@@ -48104,3 +48104,36 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-07-06 20:36 UTC
+
+**Portfolio:** $98.69 total | Cash $96.69 | 2 open | P&L $1.2751 | 60% win rate (414 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_pm_iv = 27.9 is -2.6 std devs from mean (42.14 ± 5.40)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.45 to 0.76. Rolling correlation: 24h=0.01, 7d=-0.50, 30d=0.73. Current 24h corr is at 57th pct of last 30 daily 24h-rolling values (range -0.91 to 0.91).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.03 to 0.71. Rolling correlation: 24h=0.63, 7d=0.91, 30d=0.65. Current 24h corr is at 67th pct of last 30 daily 24h-rolling values (range -0.50 to 0.89).
+
+**Blocked signal learning:**
+- Open blocked shadows: 32
+- Resolved blocked shadows: 694 (377 wins / 317 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/16 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=117 (34W/70L/13flat, 32.7% win-rate, sum $-2.6832, avg -2.29%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=163 (52W/94L/17flat, 35.6% win-rate, sum $-2.7455, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: FUNDING_EXTREME_LONG BTC short via hyperliquid would have hit stop (-2.65%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expired (+0.59%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+3.33%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.04%)
+
+**LLM analysis:**
+Market recovering from intraday BTC dip, with PM IV compression notable. Opened a systematic one-touch NO trade on BTC $190k via the heatmap, meeting the NO-side gate (sell-YES edge 1.44 pts, tight spread). Existing oil P/C trade still valid, HYPE promoted position too early to judge. No new hypotheses needed; focus remains on testing existing LLM setup families.
+
+---
+

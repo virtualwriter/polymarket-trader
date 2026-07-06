@@ -1,32 +1,33 @@
 {
-  "generatedAt": "2026-07-06T19:34:46.470Z",
+  "generatedAt": "2026-07-06T20:35:11.166Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
     {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 71.56,
-      "targetPct": 6,
-      "stopPct": 2,
-      "expiryDays": 21
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.20228571428571424,
+      "confidence": 0.10468241797832802,
+      "thesis": "GOLD HL funding 22.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4166,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.2125000000000002,
-      "confidence": 0.11184148936843287,
-      "thesis": "OIL P/C ratio 1.37 — heavy put buying → contrarian long.",
+      "strength": 0.14750000000000013,
+      "confidence": 0.07763115144397105,
+      "thesis": "OIL P/C ratio 1.32 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 68.75,
+      "entryPrice": 68.72,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -34,14 +35,14 @@
   ],
   "sizingPreviews": [
     {
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 68.75,
+      "entryPrice": 4166,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -55,14 +56,14 @@
       ]
     },
     {
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
       "venue": "spot",
       "direction": "long",
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 71.56,
+      "entryPrice": 68.72,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -78,7 +79,74 @@
   ],
   "portfolioExposurePreviews": [
     {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:0",
+      "candidateId": "FUNDING_EXTREME_LONG:GOLD:0",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "candidateSize": 0,
+      "riskClusters": [
+        "commodity",
+        "funding_reversion",
+        "gold_delta",
+        "hyperliquid_venue"
+      ],
+      "current": {
+        "totalGross": 2,
+        "totalNet": 2,
+        "byAsset": {
+          "OIL": 1,
+          "HYPE": 1
+        },
+        "bySignalType": {
+          "PC_RATIO_EXTREME_HIGH": 1,
+          "PROMOTED_HYPOTHESIS": 1
+        },
+        "byVenue": {
+          "spot": 2
+        },
+        "byCluster": {
+          "commodity": 1,
+          "oil_delta": 1,
+          "options_sentiment": 1,
+          "spot_venue": 2,
+          "hype_delta": 1,
+          "risk_on": 1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 2,
+        "totalNet": 2,
+        "byAsset": {
+          "OIL": 1,
+          "HYPE": 1,
+          "GOLD": 0
+        },
+        "bySignalType": {
+          "PC_RATIO_EXTREME_HIGH": 1,
+          "PROMOTED_HYPOTHESIS": 1,
+          "FUNDING_EXTREME_LONG": 0
+        },
+        "byVenue": {
+          "spot": 2,
+          "hyperliquid": 0
+        },
+        "byCluster": {
+          "commodity": 1,
+          "oil_delta": 1,
+          "options_sentiment": 1,
+          "spot_venue": 2,
+          "hype_delta": 1,
+          "risk_on": 1,
+          "funding_reversion": 0,
+          "gold_delta": 0,
+          "hyperliquid_venue": 0
+        }
+      },
+      "warnings": []
+    },
+    {
+      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:1",
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
@@ -137,73 +205,13 @@
         }
       },
       "warnings": []
-    },
-    {
-      "candidateId": "PROMOTED_HYPOTHESIS:HYPE:1",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "candidateSize": 0,
-      "riskClusters": [
-        "hype_delta",
-        "risk_on",
-        "spot_venue"
-      ],
-      "current": {
-        "totalGross": 2,
-        "totalNet": 2,
-        "byAsset": {
-          "OIL": 1,
-          "HYPE": 1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 1,
-          "PROMOTED_HYPOTHESIS": 1
-        },
-        "byVenue": {
-          "spot": 2
-        },
-        "byCluster": {
-          "commodity": 1,
-          "oil_delta": 1,
-          "options_sentiment": 1,
-          "spot_venue": 2,
-          "hype_delta": 1,
-          "risk_on": 1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 2,
-        "totalNet": 2,
-        "byAsset": {
-          "OIL": 1,
-          "HYPE": 1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 1,
-          "PROMOTED_HYPOTHESIS": 1
-        },
-        "byVenue": {
-          "spot": 2
-        },
-        "byCluster": {
-          "commodity": 1,
-          "oil_delta": 1,
-          "options_sentiment": 1,
-          "spot_venue": 2,
-          "hype_delta": 1,
-          "risk_on": 1
-        }
-      },
-      "warnings": []
     }
   ],
   "stagedQuantRules": [
     {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:0",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
+      "candidateId": "FUNDING_EXTREME_LONG:GOLD:0",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
       "currentFlatSize": 1,
@@ -217,9 +225,9 @@
       ]
     },
     {
-      "candidateId": "PROMOTED_HYPOTHESIS:HYPE:1",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
+      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:1",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
       "currentFlatSize": 1,
@@ -246,12 +254,12 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 4.97,
-      "hoursToExpiry": 115.03,
+      "hoursOpen": 5.98,
+      "hoursToExpiry": 114.02,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0415,
+      "elapsedHoldPct": 0.0498,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 6.0h, requires at least 12h."
     },
     {
       "positionId": "T-1783359387909-u6hp",
@@ -264,12 +272,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 1.97,
-      "hoursToExpiry": 502.03,
+      "hoursOpen": 2.98,
+      "hoursToExpiry": 501.02,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0039,
+      "elapsedHoldPct": 0.0059,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
     }
   ]
 }
