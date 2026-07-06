@@ -47765,3 +47765,38 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-06 10:35 UTC
+
+**Portfolio:** $98.82 total | Cash $95.82 | 3 open | P&L $1.4035 | 61% win rate (410 trades)
+
+**Closed 1 trades:**
+- ✅ CBRS long via hyperliquid/hl_perp [HL CBRS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → target: +$0.0370 (3.7%, market 0.0363, funding 0.0008)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] GOLD-OIL correlation shifted from -0.45 to 0.76. Rolling correlation: 24h=0.31, 7d=-0.53, 30d=0.75. Current 24h corr is at 67th pct of last 30 daily 24h-rolling values (range -0.95 to 0.92).
+- [correlation_flip] BTC-GOLD correlation shifted from -0.04 to 0.72. Rolling correlation: 24h=0.19, 7d=0.92, 30d=0.68. Current 24h corr is at 33th pct of last 30 daily 24h-rolling values (range -0.70 to 0.96).
+
+**Blocked signal learning:**
+- Open blocked shadows: 33
+- Resolved blocked shadows: 693 (377 wins / 316 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 9/15 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=117 (34W/70L/13flat, 32.7% win-rate, sum $-2.6832, avg -2.29%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=163 (52W/94L/17flat, 35.6% win-rate, sum $-2.7455, avg -1.68%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.21%)
+- ❌ Blocked: FUNDING_EXTREME_LONG BTC short via hyperliquid would have hit stop (-2.65%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expired (+0.59%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+3.33%)
+
+**LLM analysis:**
+AMZN funding has completed a massive 180° flip from -38.6% to +31.2% since the FUNDING_EXTREME_SHORT long was entered. The original thesis (crowded shorts → unwind) has now fully played out; funding is strongly positive indicating crowded longs. This would qualify as thesis invalidation, but the position is still 12 minutes short of the minimum 12‑hour hold and the LLM‑close surface blocks it. If funding stays extreme positive after the hold window opens, I will close the position. BIRD funding‑reversion long just opened; no action needed. No new hypotheses as backlog remains incomplete; focus remains on testing existing families.
+
+---
+

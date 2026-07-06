@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-06T09:34:59.032Z",
+  "generatedAt": "2026-07-06T10:34:58.383Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.024339154483776188,
       "thesis": "BTC P/C ratio 0.49 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 62742,
+      "entryPrice": 62879,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 62742,
+      "entryPrice": 62879,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -61,7 +61,7 @@
         "byAsset": {
           "HYPE": 1,
           "AMZN": 1,
-          "CBRS": 5
+          "BIRD": 5
         },
         "bySignalType": {
           "PROMOTED_HYPOTHESIS": 1,
@@ -79,7 +79,7 @@
           "amzn_delta": 1,
           "funding_reversion": 6,
           "hyperliquid_venue": 6,
-          "cbrs_delta": 5
+          "bird_delta": 5
         }
       },
       "afterCandidate": {
@@ -88,7 +88,7 @@
         "byAsset": {
           "HYPE": 1,
           "AMZN": 1,
-          "CBRS": 5,
+          "BIRD": 5,
           "BTC": 0
         },
         "bySignalType": {
@@ -108,7 +108,7 @@
           "amzn_delta": 1,
           "funding_reversion": 6,
           "hyperliquid_venue": 6,
-          "cbrs_delta": 5,
+          "bird_delta": 5,
           "btc_delta": 0,
           "options_sentiment": 0
         }
@@ -154,10 +154,10 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 12.99,
-      "hoursToExpiry": 155.01,
+      "hoursOpen": 13.99,
+      "hoursToExpiry": 154.01,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0773,
+      "elapsedHoldPct": 0.0833,
       "minHoldHours": 12,
       "reason": "LLM-owned/promoted setup may be closed after 12h if signal-family evidence supports it."
     },
@@ -174,26 +174,26 @@
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ],
-      "hoursOpen": 10.99,
-      "hoursToExpiry": 157.01,
+      "hoursOpen": 11.99,
+      "hoursToExpiry": 156.01,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0654,
+      "elapsedHoldPct": 0.0714,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 11.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
     },
     {
-      "positionId": "WF-1783301665024-CBRS-lw8g",
+      "positionId": "WF-1783334093886-BIRD-21tu",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "CBRS",
+      "asset": "BIRD",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 8.01,
-      "hoursToExpiry": 15.99,
+      "hoursOpen": 0,
+      "hoursToExpiry": 24,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.3337,
+      "elapsedHoldPct": 0,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
