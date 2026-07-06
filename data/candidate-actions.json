@@ -1,33 +1,33 @@
 {
-  "generatedAt": "2026-07-06T13:35:05.689Z",
+  "generatedAt": "2026-07-06T14:34:56.756Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
     {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
       "venue": "spot",
-      "direction": "short",
-      "strength": 0.04666666666666671,
-      "confidence": 0.024339154483776188,
-      "thesis": "BTC P/C ratio 0.49 — heavy call buying → contrarian short.",
+      "direction": "long",
+      "strength": 0.48000000000000015,
+      "confidence": 0.2526301877498718,
+      "thesis": "OIL P/C ratio 1.58 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 61520,
-      "targetPct": 5,
+      "entryPrice": 68.91,
+      "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
   "sizingPreviews": [
     {
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
       "venue": "spot",
-      "direction": "short",
+      "direction": "long",
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 61520,
+      "entryPrice": 68.91,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -43,58 +43,41 @@
   ],
   "portfolioExposurePreviews": [
     {
-      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
-      "asset": "BTC",
+      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:0",
+      "asset": "OIL",
       "venue": "spot",
-      "direction": "short",
-      "signalType": "PC_RATIO_EXTREME_LOW",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
       "candidateSize": 0,
       "riskClusters": [
-        "btc_delta",
+        "commodity",
+        "oil_delta",
         "options_sentiment",
-        "risk_on",
         "spot_venue"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": 1,
-        "byAsset": {
-          "AMZN": 1
-        },
-        "bySignalType": {
-          "FUNDING_EXTREME_SHORT": 1
-        },
-        "byVenue": {
-          "hyperliquid": 1
-        },
-        "byCluster": {
-          "amzn_delta": 1,
-          "funding_reversion": 1,
-          "hyperliquid_venue": 1,
-          "risk_on": 1
-        }
+        "totalGross": 0,
+        "totalNet": 0,
+        "byAsset": {},
+        "bySignalType": {},
+        "byVenue": {},
+        "byCluster": {}
       },
       "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": 1,
+        "totalGross": 0,
+        "totalNet": 0,
         "byAsset": {
-          "AMZN": 1,
-          "BTC": 0
+          "OIL": 0
         },
         "bySignalType": {
-          "FUNDING_EXTREME_SHORT": 1,
-          "PC_RATIO_EXTREME_LOW": 0
+          "PC_RATIO_EXTREME_HIGH": 0
         },
         "byVenue": {
-          "hyperliquid": 1,
           "spot": 0
         },
         "byCluster": {
-          "amzn_delta": 1,
-          "funding_reversion": 1,
-          "hyperliquid_venue": 1,
-          "risk_on": 1,
-          "btc_delta": 0,
+          "commodity": 0,
+          "oil_delta": 0,
           "options_sentiment": 0,
           "spot_venue": 0
         }
@@ -104,9 +87,9 @@
   ],
   "stagedQuantRules": [
     {
-      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
+      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:0",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
       "currentFlatSize": 1,
@@ -120,30 +103,5 @@
       ]
     }
   ],
-  "llmCloseEligibility": [
-    {
-      "positionId": "T-1783290918119-zh5t",
-      "signalType": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "amzn_stock",
-        "amzn_hl_perp",
-        "amzn_hl_funding_ann"
-      ],
-      "hoursOpen": 15,
-      "hoursToExpiry": 153,
-      "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0893,
-      "minHoldHours": 12,
-      "reason": "Mechanical FUNDING_EXTREME_SHORT setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    }
-  ]
+  "llmCloseEligibility": []
 }
