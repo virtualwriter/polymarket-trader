@@ -1,41 +1,15 @@
 {
-  "generatedAt": "2026-07-06T14:36:14.234Z",
+  "generatedAt": "2026-07-06T15:35:06.709Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [
-    {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.48000000000000015,
-      "confidence": 0.2526301877498718,
-      "thesis": "OIL P/C ratio 1.58 — heavy put buying → contrarian long.",
-      "hypothesisId": null,
-      "entryPrice": 68.91,
-      "targetPct": 4,
-      "stopPct": 1.5,
-      "expiryDays": 5
-    }
-  ],
+  "entrySignals": [],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "sell",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "thesis": "ONE_TOUCH_HIGH_EDGE_NO: Polymarket overprices ETH $7,000 one-touch by Dec 2026; sell-YES edge 2.19 pts above 1pt gate, spread 1c, liquidity $65k."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
