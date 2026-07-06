@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-06T11:34:48.998Z",
+  "generatedAt": "2026-07-06T12:34:58.400Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.024339154483776188,
       "thesis": "BTC P/C ratio 0.49 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 62885,
+      "entryPrice": 62045,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 62885,
+      "entryPrice": 62045,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,59 +56,63 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 7,
-        "totalNet": 7,
+        "totalGross": 12,
+        "totalNet": 12,
         "byAsset": {
           "HYPE": 1,
           "AMZN": 1,
-          "BIRD": 5
+          "BIRD": 5,
+          "ZM": 5
         },
         "bySignalType": {
           "PROMOTED_HYPOTHESIS": 1,
           "FUNDING_EXTREME_SHORT": 1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 5
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10
         },
         "byVenue": {
           "spot": 1,
-          "hyperliquid": 6
+          "hyperliquid": 11
         },
         "byCluster": {
           "hype_delta": 1,
           "risk_on": 2,
           "spot_venue": 1,
           "amzn_delta": 1,
-          "funding_reversion": 6,
-          "hyperliquid_venue": 6,
-          "bird_delta": 5
+          "funding_reversion": 11,
+          "hyperliquid_venue": 11,
+          "bird_delta": 5,
+          "zm_delta": 5
         }
       },
       "afterCandidate": {
-        "totalGross": 7,
-        "totalNet": 7,
+        "totalGross": 12,
+        "totalNet": 12,
         "byAsset": {
           "HYPE": 1,
           "AMZN": 1,
           "BIRD": 5,
+          "ZM": 5,
           "BTC": 0
         },
         "bySignalType": {
           "PROMOTED_HYPOTHESIS": 1,
           "FUNDING_EXTREME_SHORT": 1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 5,
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10,
           "PC_RATIO_EXTREME_LOW": 0
         },
         "byVenue": {
           "spot": 1,
-          "hyperliquid": 6
+          "hyperliquid": 11
         },
         "byCluster": {
           "hype_delta": 1,
           "risk_on": 2,
           "spot_venue": 1,
           "amzn_delta": 1,
-          "funding_reversion": 6,
-          "hyperliquid_venue": 6,
+          "funding_reversion": 11,
+          "hyperliquid_venue": 11,
           "bird_delta": 5,
+          "zm_delta": 5,
           "btc_delta": 0,
           "options_sentiment": 0
         }
@@ -129,7 +133,7 @@
       "wouldResize": true,
       "edgePts": null,
       "alerts": [
-        "cluster exposure 6.00 > alert cap 5.00"
+        "cluster exposure 11.00 > alert cap 5.00"
       ],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
@@ -154,10 +158,10 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 14.99,
-      "hoursToExpiry": 153.01,
+      "hoursOpen": 15.99,
+      "hoursToExpiry": 152.01,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0892,
+      "elapsedHoldPct": 0.0952,
       "minHoldHours": 12,
       "reason": "LLM-owned/promoted setup may be closed after 12h if signal-family evidence supports it."
     },
@@ -178,10 +182,10 @@
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ],
-      "hoursOpen": 12.99,
-      "hoursToExpiry": 155.01,
+      "hoursOpen": 13.99,
+      "hoursToExpiry": 154.01,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0773,
+      "elapsedHoldPct": 0.0833,
       "minHoldHours": 12,
       "reason": "Mechanical FUNDING_EXTREME_SHORT setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
@@ -194,10 +198,26 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 1,
-      "hoursToExpiry": 23,
+      "hoursOpen": 2,
+      "hoursToExpiry": 22,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0416,
+      "elapsedHoldPct": 0.0833,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1783341293961-ZM-r3ik",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "ZM",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 0,
+      "hoursToExpiry": 24,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
