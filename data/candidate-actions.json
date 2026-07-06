@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-06T12:34:58.400Z",
+  "generatedAt": "2026-07-06T13:35:05.689Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.024339154483776188,
       "thesis": "BTC P/C ratio 0.49 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 62045,
+      "entryPrice": 61520,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 62045,
+      "entryPrice": 61520,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,65 +56,47 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 12,
-        "totalNet": 12,
+        "totalGross": 1,
+        "totalNet": 1,
         "byAsset": {
-          "HYPE": 1,
-          "AMZN": 1,
-          "BIRD": 5,
-          "ZM": 5
+          "AMZN": 1
         },
         "bySignalType": {
-          "PROMOTED_HYPOTHESIS": 1,
-          "FUNDING_EXTREME_SHORT": 1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10
+          "FUNDING_EXTREME_SHORT": 1
         },
         "byVenue": {
-          "spot": 1,
-          "hyperliquid": 11
+          "hyperliquid": 1
         },
         "byCluster": {
-          "hype_delta": 1,
-          "risk_on": 2,
-          "spot_venue": 1,
           "amzn_delta": 1,
-          "funding_reversion": 11,
-          "hyperliquid_venue": 11,
-          "bird_delta": 5,
-          "zm_delta": 5
+          "funding_reversion": 1,
+          "hyperliquid_venue": 1,
+          "risk_on": 1
         }
       },
       "afterCandidate": {
-        "totalGross": 12,
-        "totalNet": 12,
+        "totalGross": 1,
+        "totalNet": 1,
         "byAsset": {
-          "HYPE": 1,
           "AMZN": 1,
-          "BIRD": 5,
-          "ZM": 5,
           "BTC": 0
         },
         "bySignalType": {
-          "PROMOTED_HYPOTHESIS": 1,
           "FUNDING_EXTREME_SHORT": 1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10,
           "PC_RATIO_EXTREME_LOW": 0
         },
         "byVenue": {
-          "spot": 1,
-          "hyperliquid": 11
+          "hyperliquid": 1,
+          "spot": 0
         },
         "byCluster": {
-          "hype_delta": 1,
-          "risk_on": 2,
-          "spot_venue": 1,
           "amzn_delta": 1,
-          "funding_reversion": 11,
-          "hyperliquid_venue": 11,
-          "bird_delta": 5,
-          "zm_delta": 5,
+          "funding_reversion": 1,
+          "hyperliquid_venue": 1,
+          "risk_on": 1,
           "btc_delta": 0,
-          "options_sentiment": 0
+          "options_sentiment": 0,
+          "spot_venue": 0
         }
       },
       "warnings": []
@@ -132,39 +114,13 @@
       "enforcedLiveSize": 1,
       "wouldResize": true,
       "edgePts": null,
-      "alerts": [
-        "cluster exposure 11.00 > alert cap 5.00"
-      ],
+      "alerts": [],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
       ]
     }
   ],
   "llmCloseEligibility": [
-    {
-      "positionId": "T-1783283722949-knwy",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk",
-        "risk_stale",
-        "profit_taking"
-      ],
-      "evidenceColumns": [
-        "hype_spot"
-      ],
-      "hoursOpen": 15.99,
-      "hoursToExpiry": 152.01,
-      "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0952,
-      "minHoldHours": 12,
-      "reason": "LLM-owned/promoted setup may be closed after 12h if signal-family evidence supports it."
-    },
     {
       "positionId": "T-1783290918119-zh5t",
       "signalType": "FUNDING_EXTREME_SHORT",
@@ -182,44 +138,12 @@
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ],
-      "hoursOpen": 13.99,
-      "hoursToExpiry": 154.01,
+      "hoursOpen": 15,
+      "hoursToExpiry": 153,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0833,
+      "elapsedHoldPct": 0.0893,
       "minHoldHours": 12,
       "reason": "Mechanical FUNDING_EXTREME_SHORT setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    },
-    {
-      "positionId": "WF-1783334093886-BIRD-21tu",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "BIRD",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 2,
-      "hoursToExpiry": 22,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0833,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "WF-1783341293961-ZM-r3ik",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "ZM",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 0,
-      "hoursToExpiry": 24,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
   ]
 }
