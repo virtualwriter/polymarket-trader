@@ -1,23 +1,10 @@
 {
-  "generatedAt": "2026-07-07T03:35:28.252Z",
+  "generatedAt": "2026-07-07T04:35:15.756Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1783348574239-z2v4",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "oil_cl_pc_ratio"
-      ],
-      "thesis": "Oil P/C ratio dropped from extreme 1.584 entry trigger through normalization to 1.318, removing contrarian edge; close long."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -25,10 +12,10 @@
       "venue": "spot",
       "direction": "long",
       "strength": 0.14750000000000013,
-      "confidence": 0.07763115144397105,
+      "confidence": 0.0776021037273754,
       "thesis": "OIL P/C ratio 1.32 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 69.03,
+      "entryPrice": 69.04,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -38,6 +25,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
