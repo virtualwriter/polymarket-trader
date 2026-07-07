@@ -1,8 +1,22 @@
 {
-  "generatedAt": "2026-07-07T09:35:10.716Z",
+  "generatedAt": "2026-07-07T10:35:06.743Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
+    {
+      "type": "PROMOTED_HYPOTHESIS",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.6666666666666666,
+      "confidence": 0.5466666666666666,
+      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
+      "hypothesisId": "H-521",
+      "entryPrice": 71.685,
+      "targetPct": 6,
+      "stopPct": 2,
+      "expiryDays": 21
+    },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
@@ -12,7 +26,7 @@
       "confidence": 0.0776021037273754,
       "thesis": "OIL P/C ratio 1.32 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 69.35,
+      "entryPrice": 69.25,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +41,28 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 69.35,
+      "entryPrice": 69.25,
+      "probabilitySource": "unsupported",
+      "winProbability": null,
+      "probabilitySampleSize": null,
+      "edgePts": null,
+      "rawKellyFraction": null,
+      "adjustedKellyFraction": null,
+      "cappedKellyFraction": null,
+      "notes": [
+        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
+        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
+      ]
+    },
+    {
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "reason": "unsupported_signal",
+      "entryPrice": 71.685,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -100,6 +135,64 @@
         }
       },
       "warnings": []
+    },
+    {
+      "candidateId": "PROMOTED_HYPOTHESIS:HYPE:1",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "candidateSize": 0,
+      "riskClusters": [
+        "hype_delta",
+        "risk_on",
+        "spot_venue"
+      ],
+      "current": {
+        "totalGross": 1,
+        "totalNet": -1,
+        "byAsset": {
+          "GOLD": -1
+        },
+        "bySignalType": {
+          "FUNDING_EXTREME_LONG": -1
+        },
+        "byVenue": {
+          "hyperliquid": -1
+        },
+        "byCluster": {
+          "commodity": -1,
+          "funding_reversion": -1,
+          "gold_delta": -1,
+          "hyperliquid_venue": -1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 1,
+        "totalNet": -1,
+        "byAsset": {
+          "GOLD": -1,
+          "HYPE": 0
+        },
+        "bySignalType": {
+          "FUNDING_EXTREME_LONG": -1,
+          "PROMOTED_HYPOTHESIS": 0
+        },
+        "byVenue": {
+          "hyperliquid": -1,
+          "spot": 0
+        },
+        "byCluster": {
+          "commodity": -1,
+          "funding_reversion": -1,
+          "gold_delta": -1,
+          "hyperliquid_venue": -1,
+          "hype_delta": 0,
+          "risk_on": 0,
+          "spot_venue": 0
+        }
+      },
+      "warnings": []
     }
   ],
   "stagedQuantRules": [
@@ -107,6 +200,22 @@
       "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:0",
       "signalType": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
+      "mode": "observe_uniform",
+      "liveSizingEnabled": false,
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "enforcedLiveSize": 1,
+      "wouldResize": true,
+      "edgePts": null,
+      "alerts": [],
+      "notes": [
+        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
+      ]
+    },
+    {
+      "candidateId": "PROMOTED_HYPOTHESIS:HYPE:1",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "asset": "HYPE",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
       "currentFlatSize": 1,
@@ -137,10 +246,10 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 12,
-      "hoursToExpiry": 60,
+      "hoursOpen": 13,
+      "hoursToExpiry": 59,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.1667,
+      "elapsedHoldPct": 0.1806,
       "minHoldHours": 12,
       "reason": "Mechanical FUNDING_EXTREME_LONG setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     }

@@ -1,6 +1,22 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [],
+  "rejectedCloses": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1783373695725-cw6x",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "gold_hl_funding_ann"
+        ],
+        "thesis": "GOLD funding dropped from 25.94% annualized to 13.73%, crossing below the 15% entry threshold for FUNDING_EXTREME_LONG, invalidating the crowded-longs fade setup."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+    }
+  ],
   "skippedTrades": [],
   "parameterUpdates": {}
 }

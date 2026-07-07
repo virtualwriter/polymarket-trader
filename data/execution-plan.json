@@ -1,11 +1,25 @@
 {
-  "generatedAt": "2026-07-07T09:36:18.107Z",
+  "generatedAt": "2026-07-07T10:36:01.073Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
   "entrySignals": [
+    {
+      "type": "PROMOTED_HYPOTHESIS",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.6666666666666666,
+      "confidence": 0.5466666666666666,
+      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
+      "hypothesisId": "H-521",
+      "entryPrice": 71.685,
+      "targetPct": 6,
+      "stopPct": 2,
+      "expiryDays": 21
+    },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
@@ -15,16 +29,32 @@
       "confidence": 0.0776021037273754,
       "thesis": "OIL P/C ratio 1.32 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 69.35,
+      "entryPrice": 69.25,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
-  "rejectedLlmActions": [],
+  "rejectedLlmActions": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1783373695725-cw6x",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "gold_hl_funding_ann"
+        ],
+        "thesis": "GOLD funding dropped from 25.94% annualized to 13.73%, crossing below the 15% entry threshold for FUNDING_EXTREME_LONG, invalidating the crowded-longs fade setup."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+    }
+  ],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
   ]
 }
