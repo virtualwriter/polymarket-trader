@@ -1,5 +1,17 @@
 {
   "acceptedCloses": [],
   "rejectedCloses": [],
-  "skippedTrades": []
+  "skippedTrades": [
+    {
+      "instruction": {
+        "action": "sell",
+        "asset": "OIL",
+        "venue": "hyperliquid",
+        "direction": "short",
+        "thesis": "OIL perp funding annualized is 147.33%, extreme positive, indicating crowded long positioning. Shorting earns significant carry and bets on mean reversion in funding/spot. Using FUNDING_EXTREME_LONG signal with target +5%, stop -2.5%."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
+  "parameterUpdates": {}
 }
