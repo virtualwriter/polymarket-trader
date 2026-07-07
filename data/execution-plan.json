@@ -1,10 +1,23 @@
 {
-  "generatedAt": "2026-07-07T12:35:19.934Z",
+  "generatedAt": "2026-07-07T13:36:13.563Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1783373695725-cw6x",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_hl_funding_ann"
+      ],
+      "thesis": "GOLD funding annualized dropped from 25.94% to 5.93%, falling below the 15% entry threshold. The crowded-long extreme that justified the short has dissipated; close the position."
+    }
+  ],
   "entrySignals": [
     {
       "type": "PROMOTED_HYPOTHESIS",
@@ -15,7 +28,7 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 71.951,
+      "entryPrice": 71.597,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
@@ -29,16 +42,16 @@
       "confidence": 0.0776021037273754,
       "thesis": "OIL P/C ratio 1.32 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 69.08,
-      "targetPct": 4,
+      "entryPrice": 69.74,
+      "targetPct": 6,
       "stopPct": 1.5,
-      "expiryDays": 5
+      "expiryDays": 21
     }
   ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
