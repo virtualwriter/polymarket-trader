@@ -1,25 +1,11 @@
 {
-  "generatedAt": "2026-07-07T01:34:56.750Z",
+  "generatedAt": "2026-07-07T02:36:56.875Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
   "entrySignals": [
-    {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 71.387,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7
-    },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
@@ -29,16 +15,31 @@
       "confidence": 0.07763115144397105,
       "thesis": "OIL P/C ratio 1.32 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 68.78,
+      "entryPrice": 69.27,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "evidenceColumns": [
+          "btc_spot",
+          "btc_pm_iv"
+        ],
+        "thesis": "Relative-value heatmap identifies a sell-YES edge of 1.21 pts on the contract 'Will Bitcoin reach $250,000 by December 31, 2026?' (marketId 1057883). Model probability from options IV/gap is 0.09% vs PM YES at 1.35%, implying YES is overpriced. Spread is tight (0.1c) and liquidity is deep ($114.7k), satisfying strict one-touch NO entry rules. Buy NO to capture the edge, with no mechanical stop (100% stop), holding to expiry or edge disappearance."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }

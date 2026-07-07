@@ -1,22 +1,8 @@
 {
-  "generatedAt": "2026-07-07T01:34:56.727Z",
+  "generatedAt": "2026-07-07T02:34:56.397Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
-    {
-      "type": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.6666666666666666,
-      "confidence": 0.5466666666666666,
-      "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
-      "hypothesisId": "H-521",
-      "entryPrice": 71.387,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7
-    },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
@@ -26,7 +12,7 @@
       "confidence": 0.07763115144397105,
       "thesis": "OIL P/C ratio 1.32 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 68.78,
+      "entryPrice": 69.27,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -41,28 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 68.78,
-      "probabilitySource": "unsupported",
-      "winProbability": null,
-      "probabilitySampleSize": null,
-      "edgePts": null,
-      "rawKellyFraction": null,
-      "adjustedKellyFraction": null,
-      "cappedKellyFraction": null,
-      "notes": [
-        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
-        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
-      ]
-    },
-    {
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "reason": "unsupported_signal",
-      "entryPrice": 71.387,
+      "entryPrice": 69.27,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -149,78 +114,6 @@
         }
       },
       "warnings": []
-    },
-    {
-      "candidateId": "PROMOTED_HYPOTHESIS:HYPE:1",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "candidateSize": 0,
-      "riskClusters": [
-        "hype_delta",
-        "risk_on",
-        "spot_venue"
-      ],
-      "current": {
-        "totalGross": 3,
-        "totalNet": 1,
-        "byAsset": {
-          "OIL": 1,
-          "HYPE": 1,
-          "GOLD": -1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 1,
-          "PROMOTED_HYPOTHESIS": 1,
-          "FUNDING_EXTREME_LONG": -1
-        },
-        "byVenue": {
-          "spot": 2,
-          "hyperliquid": -1
-        },
-        "byCluster": {
-          "commodity": 0,
-          "oil_delta": 1,
-          "options_sentiment": 1,
-          "spot_venue": 2,
-          "hype_delta": 1,
-          "risk_on": 1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 3,
-        "totalNet": 1,
-        "byAsset": {
-          "OIL": 1,
-          "HYPE": 1,
-          "GOLD": -1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 1,
-          "PROMOTED_HYPOTHESIS": 1,
-          "FUNDING_EXTREME_LONG": -1
-        },
-        "byVenue": {
-          "spot": 2,
-          "hyperliquid": -1
-        },
-        "byCluster": {
-          "commodity": 0,
-          "oil_delta": 1,
-          "options_sentiment": 1,
-          "spot_venue": 2,
-          "hype_delta": 1,
-          "risk_on": 1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1
-        }
-      },
-      "warnings": []
     }
   ],
   "stagedQuantRules": [
@@ -228,22 +121,6 @@
       "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:0",
       "signalType": "PC_RATIO_EXTREME_HIGH",
       "asset": "OIL",
-      "mode": "observe_uniform",
-      "liveSizingEnabled": false,
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "enforcedLiveSize": 1,
-      "wouldResize": true,
-      "edgePts": null,
-      "alerts": [],
-      "notes": [
-        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
-      ]
-    },
-    {
-      "candidateId": "PROMOTED_HYPOTHESIS:HYPE:1",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "asset": "HYPE",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
       "currentFlatSize": 1,
@@ -270,12 +147,12 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 10.98,
-      "hoursToExpiry": 109.02,
+      "hoursOpen": 11.98,
+      "hoursToExpiry": 108.02,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0915,
+      "elapsedHoldPct": 0.0998,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 11.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
     },
     {
       "positionId": "T-1783359387909-u6hp",
@@ -288,12 +165,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 7.97,
-      "hoursToExpiry": 496.03,
+      "hoursOpen": 8.97,
+      "hoursToExpiry": 495.03,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0158,
+      "elapsedHoldPct": 0.0178,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 8.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 9.0h, requires at least 12h."
     },
     {
       "positionId": "T-1783373695725-cw6x",
@@ -307,12 +184,12 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 4,
-      "hoursToExpiry": 68,
+      "hoursOpen": 5,
+      "hoursToExpiry": 67,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.0555,
+      "elapsedHoldPct": 0.0694,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 4.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
     }
   ]
 }

@@ -1,5 +1,21 @@
 {
   "acceptedCloses": [],
   "rejectedCloses": [],
-  "skippedTrades": []
+  "skippedTrades": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "evidenceColumns": [
+          "btc_spot",
+          "btc_pm_iv"
+        ],
+        "thesis": "Relative-value heatmap identifies a sell-YES edge of 1.21 pts on the contract 'Will Bitcoin reach $250,000 by December 31, 2026?' (marketId 1057883). Model probability from options IV/gap is 0.09% vs PM YES at 1.35%, implying YES is overpriced. Spread is tight (0.1c) and liquidity is deep ($114.7k), satisfying strict one-touch NO entry rules. Buy NO to capture the edge, with no mechanical stop (100% stop), holding to expiry or edge disappearance."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
+  "parameterUpdates": {}
 }
