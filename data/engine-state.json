@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-07T10:35:02.127Z",
+  "generatedAt": "2026-07-07T11:34:49.544Z",
   "dataFreshness": {
-    "valuationRows": 1500,
-    "latestValuationAt": "2026-07-07T10",
-    "macroRows": 1498,
+    "valuationRows": 1501,
+    "latestValuationAt": "2026-07-07T11",
+    "macroRows": 1499,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-07T10"
+    "latestInstrumentSnapshotAt": "2026-07-07T11"
   },
   "portfolio": {
-    "cash": 97.6686,
-    "openPositions": 1,
+    "cash": 96.6686,
+    "openPositions": 2,
     "realizedPnl": 1.2559,
     "totalTrades": 416,
     "winRatePct": 60.1,
-    "unrealizedPnl": 0.0071
+    "unrealizedPnl": 0.0003
   },
   "openPositions": [
     {
@@ -22,15 +22,31 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 0.71,
-      "currentPrice": 4140,
-      "underlyingPrice": 4140,
+      "pnlPct": 0.56,
+      "currentPrice": 4146,
+      "underlyingPrice": 4146,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "gold_gc_spot",
         "gold_hl_funding_ann"
+      ]
+    },
+    {
+      "positionId": "T-1783420561076-uyz8",
+      "asset": "HYPE",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PROMOTED_HYPOTHESIS",
+      "pnlPct": -0.53,
+      "currentPrice": 71.307,
+      "underlyingPrice": 71.307,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "hype_spot"
       ]
     }
   ],
