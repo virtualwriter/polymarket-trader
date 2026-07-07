@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-07T02:34:56.397Z",
+  "generatedAt": "2026-07-07T03:34:52.900Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.07763115144397105,
       "thesis": "OIL P/C ratio 1.32 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 69.27,
+      "entryPrice": 69.03,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 69.27,
+      "entryPrice": 69.03,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -141,18 +141,22 @@
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
       "evidenceColumns": [
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 11.98,
-      "hoursToExpiry": 108.02,
+      "hoursOpen": 12.98,
+      "hoursToExpiry": 107.02,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0998,
+      "elapsedHoldPct": 0.1081,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
+      "reason": "Mechanical PC_RATIO_EXTREME_HIGH setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
     {
       "positionId": "T-1783359387909-u6hp",
@@ -165,12 +169,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 8.97,
-      "hoursToExpiry": 495.03,
+      "hoursOpen": 9.97,
+      "hoursToExpiry": 494.03,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0178,
+      "elapsedHoldPct": 0.0198,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 9.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 10.0h, requires at least 12h."
     },
     {
       "positionId": "T-1783373695725-cw6x",
@@ -184,12 +188,12 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 5,
-      "hoursToExpiry": 67,
+      "hoursOpen": 6,
+      "hoursToExpiry": 66,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.0694,
+      "elapsedHoldPct": 0.0833,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 6.0h, requires at least 12h."
     }
   ]
 }
