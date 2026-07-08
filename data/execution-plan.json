@@ -1,23 +1,10 @@
 {
-  "generatedAt": "2026-07-08T06:36:54.574Z",
+  "generatedAt": "2026-07-08T07:35:24.226Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1783442114239-80ts",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "btc_ibit_pc_ratio"
-      ],
-      "thesis": "The entry signal (PC_RATIO_EXTREME_LOW) was driven by BTC IBIT P/C ratio at 0.358. The ratio has risen to 0.481, moving above the extreme low threshold. The call-buying extreme has faded, invalidating the contrarian short thesis. Position is up +2.14%, close before mechanical expiry as thesis is no longer supported."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_LOW",
@@ -25,10 +12,10 @@
       "venue": "spot",
       "direction": "short",
       "strength": 0.0633333333333334,
-      "confidence": 0.0330317096565534,
+      "confidence": 0.033576953208070394,
       "thesis": "BTC P/C ratio 0.48 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 62648,
+      "entryPrice": 62796,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -38,6 +25,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

@@ -1,39 +1,21 @@
 {
-  "generatedAt": "2026-07-08T06:35:14.195Z",
+  "generatedAt": "2026-07-08T07:35:19.528Z",
   "dataFreshness": {
-    "valuationRows": 1520,
-    "latestValuationAt": "2026-07-08T06",
-    "macroRows": 1518,
+    "valuationRows": 1521,
+    "latestValuationAt": "2026-07-08T07",
+    "macroRows": 1519,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-08T06"
+    "latestInstrumentSnapshotAt": "2026-07-08T07"
   },
   "portfolio": {
-    "cash": 97.6481,
-    "openPositions": 1,
-    "realizedPnl": 1.2354,
-    "totalTrades": 418,
-    "winRatePct": 60,
-    "unrealizedPnl": 0.0214
+    "cash": 98.6695,
+    "openPositions": 0,
+    "realizedPnl": 1.2568,
+    "totalTrades": 419,
+    "winRatePct": 60.1,
+    "unrealizedPnl": 0
   },
-  "openPositions": [
-    {
-      "positionId": "T-1783442114239-80ts",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 2.14,
-      "currentPrice": 62648,
-      "underlyingPrice": 62648,
-      "targetPct": 3,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "btc_spot",
-        "btc_ibit_pc_ratio"
-      ]
-    }
-  ],
+  "openPositions": [],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -144,10 +126,10 @@
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "enabled": true,
-      "weight": 0.5216,
-      "trades": 18,
-      "wins": 10,
-      "avgPnlPct": 0.0355,
+      "weight": 0.5302,
+      "trades": 19,
+      "wins": 11,
+      "avgPnlPct": 0.1463,
       "disabledAssets": [
         "AMZN"
       ]
@@ -380,6 +362,13 @@
           "flags": [
             "wide_pm_spread"
           ]
+        },
+        "sourceComparison": {
+          "sourceClosedAt": "2026-07-08T06:36:54.581Z",
+          "sourcePnl": 0.0214,
+          "sourcePnlPct": 2.14,
+          "proxyOutperformed": false,
+          "correlation": "opposite_direction"
         }
       }
     ],
