@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-08T11:35:20.958Z",
+  "generatedAt": "2026-07-08T12:36:19.237Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,16 +15,47 @@
       "confidence": 0.033576953208070394,
       "thesis": "BTC P/C ratio 0.48 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 62053,
+      "entryPrice": 62246,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "sell",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "Relative-value heatmap: PM YES at 1.55c is overpriced vs model prob 0.26%, sell-YES edge 1.3pt (>1), spread 0.1c tight, liquidity $83k, one-touch NO strategy entry."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    },
+    {
+      "instruction": {
+        "action": "sell",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "Relative-value heatmap: PM YES 1.85c vs model 0.32%, sell-YES edge 1.5pt, spread 0.1c, liquidity $70k, one-touch NO entry."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    },
+    {
+      "instruction": {
+        "action": "sell",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "Relative-value heatmap: PM YES 1.95c vs model 0.40%, sell-YES edge 1.5pt, spread 0.1c, liquidity $53.7k, one-touch NO entry."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 3 non-close instructions skipped."
   ]
 }
