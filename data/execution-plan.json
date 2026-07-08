@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-08T17:37:25.845Z",
+  "generatedAt": "2026-07-08T18:35:21.292Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,50 +7,39 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.06750000000000006,
-      "confidence": 0.03551282712947688,
-      "thesis": "GOLD P/C ratio 1.25 — heavy put buying → contrarian long.",
-      "hypothesisId": null,
-      "entryPrice": 4074,
-      "targetPct": 4,
-      "stopPct": 1.5,
-      "expiryDays": 5
-    },
-    {
       "type": "FUNDING_EXTREME_LONG",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.018571428571428582,
-      "confidence": 0.00956193001475351,
-      "thesis": "GOLD HL funding 15.7% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.0951428571428571,
+      "confidence": 0.048986502998660246,
+      "thesis": "GOLD HL funding 18.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4074,
+      "entryPrice": 4072,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
       "leverage": 1
+    },
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.02375000000000016,
+      "confidence": 0.012495253990001197,
+      "thesis": "GOLD P/C ratio 1.22 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 4072,
+      "targetPct": 4,
+      "stopPct": 1.5,
+      "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "buy",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "thesis": "Relative-value heatmap: BTC $110k Dec YES overpriced (sell-YES edge 2.2 pts), buy NO to exploit overpriced upside one-touch. Spread 1c, liquidity 79k, meets touch-market NO promotion criteria."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
