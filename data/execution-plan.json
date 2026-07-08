@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-08T09:36:50.190Z",
+  "generatedAt": "2026-07-08T10:35:17.077Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,31 +15,16 @@
       "confidence": 0.033576953208070394,
       "thesis": "BTC P/C ratio 0.48 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 61887,
+      "entryPrice": 62072,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [
-    {
-      "instruction": {
-        "action": "buy",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "evidenceColumns": [
-          "btc_spot",
-          "btc_pm_iv"
-        ],
-        "thesis": "ONE_TOUCH_HIGH_EDGE_NO: sell-YES edge of ~2.8pt on ETH $7k Dec 2026, spread 2c, liquidity 37k; buy NO (short) to capture edge reversion per signal family."
-      },
-      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
-    }
-  ],
+  "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
