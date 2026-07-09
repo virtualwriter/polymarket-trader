@@ -1,21 +1,39 @@
 {
-  "generatedAt": "2026-07-09T20:35:15.727Z",
+  "generatedAt": "2026-07-09T21:35:15.348Z",
   "dataFreshness": {
-    "valuationRows": 1556,
-    "latestValuationAt": "2026-07-09T20",
-    "macroRows": 1554,
+    "valuationRows": 1557,
+    "latestValuationAt": "2026-07-09T21",
+    "macroRows": 1555,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-09T20"
+    "latestInstrumentSnapshotAt": "2026-07-09T21"
   },
   "portfolio": {
-    "cash": 98.6695,
-    "openPositions": 0,
+    "cash": 97.6695,
+    "openPositions": 1,
     "realizedPnl": 1.2568,
     "totalTrades": 419,
     "winRatePct": 60.1,
-    "unrealizedPnl": 0
+    "unrealizedPnl": 0.001
   },
-  "openPositions": [],
+  "openPositions": [
+    {
+      "positionId": "T-1783629321224-lzru",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": 0.1,
+      "currentPrice": 4128,
+      "underlyingPrice": 4128,
+      "targetPct": 3,
+      "stopPct": 1.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_gld_pc_ratio"
+      ]
+    }
+  ],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
