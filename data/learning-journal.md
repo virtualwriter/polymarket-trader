@@ -50285,3 +50285,35 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 5/12; ne
 
 ---
 
+### 2026-07-09 16:35 UTC
+
+**Portfolio:** $98.67 total | Cash $98.67 | 0 open | P&L $1.2568 | 60% win rate (419 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_pm_iv = 28.9 is -2.1 std devs from mean (41.59 ± 5.91)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.42 to 0.72. Rolling correlation: 24h=-0.89, 7d=-0.82, 30d=0.58. Current 24h corr is at 17th pct of last 30 daily 24h-rolling values (range -0.94 to 0.86).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.06 to 0.61. Rolling correlation: 24h=0.88, 7d=0.22, 30d=0.67. Current 24h corr is at 90th pct of last 30 daily 24h-rolling values (range -0.48 to 0.97).
+
+**Blocked signal learning:**
+- Open blocked shadows: 31
+- Resolved blocked shadows: 699 (380 wins / 319 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=118 (35W/70L/13flat, 33.3% win-rate, sum $-2.6582, avg -2.25%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=166 (55W/94L/17flat, 36.9% win-rate, sum $-2.6268, avg -1.58%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.15%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.50%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-10.34%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit stop (-2.82%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 2.0h since last call; daily budget 5/12; next scheduled 2026-07-09T18:35:19.717Z). Mechanical cycle ran normally._
+
+---
+
