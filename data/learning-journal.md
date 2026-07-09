@@ -50218,3 +50218,37 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 4/12; ne
 
 ---
 
+### 2026-07-09 14:36 UTC
+
+**Portfolio:** $98.67 total | Cash $98.67 | 0 open | P&L $1.2568 | 60% win rate (419 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 12 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 8.2pp (was -7.7, now 0.5)
+- [anomaly] btc_pm_iv = 28.9 is -2.2 std devs from mean (41.60 ± 5.90)
+- [anomaly] amzn_opt_iv_30d = 44.3 is 2.0 std devs from mean (33.92 ± 5.19)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.42 to 0.72. Rolling correlation: 24h=-0.85, 7d=-0.77, 30d=0.58. Current 24h corr is at 17th pct of last 30 daily 24h-rolling values (range -0.97 to 0.91).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.06 to 0.61. Rolling correlation: 24h=0.88, 7d=0.26, 30d=0.67. Current 24h corr is at 87th pct of last 30 daily 24h-rolling values (range -0.63 to 0.96).
+
+**Blocked signal learning:**
+- Open blocked shadows: 30
+- Resolved blocked shadows: 699 (380 wins / 319 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=118 (35W/70L/13flat, 33.3% win-rate, sum $-2.6582, avg -2.25%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=166 (55W/94L/17flat, 36.9% win-rate, sum $-2.6268, avg -1.58%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.15%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.50%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-10.34%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit stop (-2.82%)
+
+**LLM analysis:**
+Portfolio is flat. Gold PC ratio collapse (1.175→0.607) is anomalous and likely a data refresh artifact; avoid trading on it. BTC PM IV is at a multi‑sigma low, a situation that historically leads to vol expansion—watch for H-523 shadow tests. HYPE OI remains high but price hasn’t broken above 68.3, so no entry yet. Funding‑extreme signals remain mediocre performers; no parameter changes warranted today.
+
+---
+
