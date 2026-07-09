@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-09T07:35:21.692Z",
+  "generatedAt": "2026-07-09T08:36:46.621Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,9 +7,20 @@
   "llmCloses": [],
   "entrySignals": [],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "long",
+        "thesis": "Relative-value heatmap indicates PM underpricing of July $90 upside touch: edgePts 5.45, liquidity 28444, spread 0.008. Market appears cheap vs options implied probability."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }
