@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-09T16:35:14.265Z",
+  "generatedAt": "2026-07-09T17:35:23.351Z",
   "dataFreshness": {
-    "valuationRows": 1552,
-    "latestValuationAt": "2026-07-09T16",
-    "macroRows": 1550,
+    "valuationRows": 1553,
+    "latestValuationAt": "2026-07-09T17",
+    "macroRows": 1551,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-09T16"
+    "latestInstrumentSnapshotAt": "2026-07-09T17"
   },
   "portfolio": {
     "cash": 98.6695,
@@ -156,9 +156,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 31,
-    "resolvedCount": 699,
-    "wouldHaveWon": 380,
+    "openCount": 30,
+    "resolvedCount": 700,
+    "wouldHaveWon": 381,
     "wouldHaveLost": 319,
     "bySignal": [
       {
@@ -194,6 +194,14 @@
         "avgPnlPct": 0.09
       },
       {
+        "signalType": "PC_RATIO_EXTREME_LOW",
+        "blocked": 19,
+        "resolved": 18,
+        "wouldHaveWon": 10,
+        "wouldHaveLost": 8,
+        "avgPnlPct": 0.17
+      },
+      {
         "signalType": "PM_IV_GT_OPT_IV_DOWNSIDE",
         "blocked": 3,
         "resolved": 3,
@@ -210,14 +218,6 @@
         "avgPnlPct": 6.73
       },
       {
-        "signalType": "PC_RATIO_EXTREME_LOW",
-        "blocked": 19,
-        "resolved": 17,
-        "wouldHaveWon": 9,
-        "wouldHaveLost": 8,
-        "avgPnlPct": 0
-      },
-      {
         "signalType": "PM_EV_BELOW_SPOT",
         "blocked": 4,
         "resolved": 4,
@@ -227,21 +227,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "FUNDING_EXTREME_LONG",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "blockedReason": "short_blocked_by_positive_trend",
-        "outcome": "win",
-        "closeReason": "expiry",
-        "pnlPct": 0.59,
-        "resolvedAt": "2026-07-06T05:34:58.552Z",
-        "trendMetrics": {
-          "aboveTrendPct": 1.39,
-          "momentumPct": 2.86
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
@@ -369,6 +354,21 @@
         "trendMetrics": {
           "aboveTrendPct": 3.5,
           "momentumPct": 4.86
+        }
+      },
+      {
+        "signalType": "PC_RATIO_EXTREME_LOW",
+        "asset": "OIL",
+        "venue": "spot",
+        "direction": "short",
+        "blockedReason": "short_blocked_by_positive_trend",
+        "outcome": "win",
+        "closeReason": "target",
+        "pnlPct": 3.05,
+        "resolvedAt": "2026-07-09T17:35:23.186Z",
+        "trendMetrics": {
+          "aboveTrendPct": 3.76,
+          "momentumPct": 6.6
         }
       }
     ],
