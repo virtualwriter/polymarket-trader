@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-09T01:35:18.914Z",
+  "generatedAt": "2026-07-09T02:38:36.427Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,9 +7,20 @@
   "llmCloses": [],
   "entrySignals": [],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "sell",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "BTC $190k December upside contract trades 1.5pts rich vs model probability, with tight midprice spread (0.2c) and $68k liquidity. Sell YES per ONE_TOUCH_HIGH_EDGE_NO signal."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }
