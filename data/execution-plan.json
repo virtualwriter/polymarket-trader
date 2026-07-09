@@ -1,15 +1,45 @@
 {
-  "generatedAt": "2026-07-09T18:35:25.704Z",
+  "generatedAt": "2026-07-09T19:36:39.319Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [],
+  "entrySignals": [
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.06624999999999992,
+      "confidence": 0.03485518218263464,
+      "thesis": "GOLD P/C ratio 1.25 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 4123,
+      "targetPct": 4,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    }
+  ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "evidenceColumns": [
+          "btc_spot",
+          "btc_pm_iv"
+        ],
+        "thesis": "ONE_TOUCH_HIGH_EDGE_NO: sell-YES edge 2.53 pts on BTC $100k Dec'26 (model prob 7.5% vs PM YES 10.5%). Spread 1c, liquidity $111k. Edge well above the 1pt promote gate with tight spread and deep liquidity. Per shadow backtest, edge-disappearance exit yields +2.44% avg."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }
