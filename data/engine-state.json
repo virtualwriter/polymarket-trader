@@ -1,21 +1,81 @@
 {
-  "generatedAt": "2026-07-10T19:35:19.464Z",
+  "generatedAt": "2026-07-10T20:35:19.490Z",
   "dataFreshness": {
-    "valuationRows": 1579,
-    "latestValuationAt": "2026-07-10T19",
-    "macroRows": 1577,
+    "valuationRows": 1580,
+    "latestValuationAt": "2026-07-10T20",
+    "macroRows": 1578,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-10T19"
+    "latestInstrumentSnapshotAt": "2026-07-10T20"
   },
   "portfolio": {
-    "cash": 98.6455,
-    "openPositions": 0,
+    "cash": 94.6455,
+    "openPositions": 4,
     "realizedPnl": 1.2328,
     "totalTrades": 421,
     "winRatePct": 59.9,
-    "unrealizedPnl": 0
+    "unrealizedPnl": 0.0011
   },
-  "openPositions": [],
+  "openPositions": [
+    {
+      "positionId": "T-1783712126297-7da7",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "short",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "pnlPct": 0.11,
+      "currentPrice": 71.6,
+      "underlyingPrice": 71.6,
+      "targetPct": 3,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "WF-1783715719272-CBRS-69ci",
+      "asset": "CBRS",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 213.94,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1783715719272-HIMS-449m",
+      "asset": "HIMS",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 34.168,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1783715719272-SKHX-2506",
+      "asset": "SKHX",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 1474.5,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    }
+  ],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
