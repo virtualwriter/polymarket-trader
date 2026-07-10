@@ -7,6 +7,7 @@ export interface BuildReportInputsArgs {
   portfolio: ReportPortfolio;
   trades: ReportClosedTrade[];
   dedupedTrades: ReportClosedTrade[];
+  monotonicTrades?: ReportClosedTrade[];
   hypotheses: ReportHypothesis[];
   shadows: ReportBlockedSignalShadow[];
   hybridBot: ReportHybridBot;
@@ -54,6 +55,19 @@ function shadowKey(shadow: ReportBlockedSignalShadow): string {
   return `${shadow.blockedReason} / ${shadow.signalType}`;
 }
 
+/**
+ * One-touch NO shadows resolved on "edge_disappeared" were force-closed at a
+ * mid-flight mark instead of being held to expiry as the family's convention
+ * requires (the resolver bug is fixed in trading-engine.ts, 2026-07-10).
+ * Those historical closes are measurement artifacts, not strategy results,
+ * so they are excluded from shadow P&L rollups.
+ */
+export function isForceClosedOneTouchShadow(shadow: ReportBlockedSignalShadow): boolean {
+  return shadow.signalType === "ONE_TOUCH_HIGH_EDGE_NO"
+    && shadow.blockedReason === "one_touch_high_edge_shadow"
+    && shadow.thesis.includes("edge_disappeared");
+}
+
 function hypothesisStats(hypothesis: ReportHypothesis): Stats {
   const stats = emptyStats();
   for (const test of hypothesis.tests ?? []) {
@@ -98,6 +112,7 @@ export function buildReportInputs(args: BuildReportInputsArgs): BuildCsvReportAr
 
   const resolvedShadows = args.shadows.filter((shadow) =>
     shadow.status === "resolved" && shadow.hypotheticalResult && !shadow.learningExcluded
+    && !isForceClosedOneTouchShadow(shadow)
   );
   const allShadowStats = emptyStats();
   for (const shadow of resolvedShadows) {
@@ -113,6 +128,7 @@ export function buildReportInputs(args: BuildReportInputsArgs): BuildCsvReportAr
     allShadowStats,
     duplicateTradeIds,
     operationallyTaintedTrades,
+    monotonicTrades: args.monotonicTrades ?? [],
     rawTrades: args.trades,
     resolvedTrades: countedTrades,
     resolvedShadows,

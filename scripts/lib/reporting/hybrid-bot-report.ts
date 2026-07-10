@@ -42,6 +42,16 @@ export function resolveHybridBotFile(args: {
   return existsSync(localFallback) ? localFallback : primary;
 }
 
+/**
+ * The hybrid bot's real-dollar trades belong to a separate fund and must never
+ * be counted at real notional in this trader's reports. This trader analyzes
+ * $1 paper trades, so every hybrid event is re-normalized to a fixed $1 shadow
+ * notional here, regardless of what size_usd the feed recorded (the live
+ * service ran with --shadow-size 2000, which wrote real-fund notional into
+ * the shadow feed).
+ */
+export const HYBRID_SHADOW_NOTIONAL_USD = 1.0;
+
 export function readHybridBotReport(args: {
   stateFile: string;
   tradesFile: string;
@@ -85,12 +95,14 @@ export function readHybridBotReport(args: {
         const coin = event.coin ?? "UNKNOWN";
         const stats = report.perCoinStats.get(coin) ?? { ...empty };
         const totals = report.totalsAcrossAllCoins;
-        const rawFee = Number(event.fee_usd ?? 0);
-        const realSize = Number(event.real_size_usd ?? 0);
-        const shadowSizeForFee = Number(event.size_usd ?? 1);
-        const fee = event.real_fee_usd == null && realSize > 0 && shadowSizeForFee > 0
-          ? rawFee * (shadowSizeForFee / realSize)
-          : rawFee;
+        // Scale the actual exchange fee down to the $1 paper notional. Real
+        // fees (real_fee_usd over real_size_usd) are preferred; fall back to
+        // the recorded fee over the recorded size.
+        const realFee = Number(event.real_fee_usd ?? event.fee_usd ?? 0);
+        const realSize = Number(event.real_size_usd ?? event.size_usd ?? 0);
+        const fee = realFee > 0 && realSize > 0
+          ? realFee * (HYBRID_SHADOW_NOTIONAL_USD / realSize)
+          : 0;
         stats.feesUsd += fee;
         totals.feesUsd += fee;
         if (event.action === "open") {
@@ -102,8 +114,7 @@ export function readHybridBotReport(args: {
           stats.trades += 1;
           totals.trades += 1;
           const pct = Number(event.pnl_pct ?? 0);
-          const shadowSize = Number(event.size_usd ?? 1);
-          const pnlUsd = (pct / 100) * shadowSize - fee;
+          const pnlUsd = (pct / 100) * HYBRID_SHADOW_NOTIONAL_USD - fee;
           stats.realizedPnlUsd += pnlUsd;
           stats.realizedPnlPctSum += pct;
           totals.realizedPnlUsd += pnlUsd;

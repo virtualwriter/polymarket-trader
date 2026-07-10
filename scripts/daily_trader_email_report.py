@@ -142,6 +142,29 @@ def is_monotonic_arb_record(row: dict[str, Any], *, signal_key: str, instrument_
     return row.get(signal_key) == "MONOTONIC_ARB" or row.get(instrument_key) == "pm_package"
 
 
+def monotonic_arb_accounting(rows: list[dict[str, Any]]) -> dict[str, tuple[float, int]]:
+    """Honest all-time split of the monotonic-arb ledger.
+
+    Monotonic packages are risk-free at resolution, so realized losses are by
+    definition operational errors (tainted IDs or rows that lost their
+    pm_package structure — same contamination rule as portfolio-ledger.ts).
+    Returns {"legitimate": (pnl, n), "operational_error": (pnl, n)}.
+    """
+    legitimate_pnl, legitimate_n = 0.0, 0
+    error_pnl, error_n = 0.0, 0
+    for row in rows:
+        if not is_monotonic_arb_record(row, signal_key="signal_type", instrument_key="instrument_type"):
+            continue
+        pnl = num(row.get("pnl"))
+        if row.get("id") in OPERATIONALLY_TAINTED_TRADES or row.get("instrument_type") != "pm_package":
+            error_pnl += pnl
+            error_n += 1
+        else:
+            legitimate_pnl += pnl
+            legitimate_n += 1
+    return {"legitimate": (legitimate_pnl, legitimate_n), "operational_error": (error_pnl, error_n)}
+
+
 def is_macro_report_trade(row: dict[str, Any]) -> bool:
     return not is_monotonic_arb_record(row, signal_key="signal_type", instrument_key="instrument_type")
 
@@ -259,6 +282,18 @@ def shadow_line(shadow: dict[str, Any], tz: ZoneInfo, resolved: bool) -> str:
 def is_macro_report_shadow(shadow: dict[str, Any]) -> bool:
     position = shadow.get("position", {})
     return is_macro_report_position({"signalType": shadow.get("signalType"), "instrumentType": position.get("instrumentType")})
+
+
+def is_force_closed_one_touch_shadow(shadow: dict[str, Any]) -> bool:
+    """Historical one-touch NO shadows force-closed on edge_disappeared are
+    measurement artifacts (family convention is hold-to-expiry; resolver bug
+    fixed 2026-07-10 in trading-engine.ts). Mirror of
+    isForceClosedOneTouchShadow in scripts/lib/reporting/report-inputs.ts."""
+    return (
+        shadow.get("signalType") == "ONE_TOUCH_HIGH_EDGE_NO"
+        and shadow.get("blockedReason") == "one_touch_high_edge_shadow"
+        and "edge_disappeared" in (shadow.get("thesis") or "")
+    )
 
 
 def journal_sections_for_window(path: Path, start_utc: datetime, end_utc: datetime, tz: ZoneInfo) -> list[str]:
@@ -454,7 +489,16 @@ def build_report(window: ReportWindow) -> str:
     ]
     opened_real = opened_real_from_closed + opened_real_current
 
-    reportable_shadows = [s for s in shadows if is_macro_report_shadow(s)]
+    monotonic_rows_to_date = [
+        row for row in closed_rows
+        if not is_macro_report_trade(row) and before_end(row.get("closed_at"), window.end_utc)
+    ]
+    monotonic_accounting = monotonic_arb_accounting(monotonic_rows_to_date)
+
+    reportable_shadows = [
+        s for s in shadows
+        if is_macro_report_shadow(s) and not is_force_closed_one_touch_shadow(s) and not s.get("learningExcluded")
+    ]
     opened_shadows = [s for s in reportable_shadows if in_window(s.get("blockedAt"), window.start_utc, window.end_utc)]
     resolved_shadows = [s for s in reportable_shadows if in_window(s.get("resolvedAt"), window.start_utc, window.end_utc)]
 
@@ -507,6 +551,10 @@ def build_report(window: ReportWindow) -> str:
         f"({len(cumulative_counted_trades)} counted, {cumulative_wins}W/{cumulative_losses}L)",
         f"- Portfolio audit/reference: {money(portfolio_realized)} "
         f"({portfolio_trades} trades, {portfolio_wins}W/{portfolio_losses}L)",
+        f"- Monotonic arb (excluded from macro ledger): {money(monotonic_accounting['legitimate'][0])} "
+        f"on {monotonic_accounting['legitimate'][1]} legitimately-managed packages | "
+        f"{money(monotonic_accounting['operational_error'][0])} across "
+        f"{monotonic_accounting['operational_error'][1]} operational-error closes (excluded from strategy record)",
         f"- Hypotheses: {dict(hypothesis_status)} | pending tests {pending_tests}",
         "",
         "## Hourly Closed P&L",

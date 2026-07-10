@@ -184,6 +184,7 @@ export interface BuildCsvReportArgs {
   allShadowStats: Stats;
   duplicateTradeIds: Set<string>;
   operationallyTaintedTrades: ReportClosedTrade[];
+  monotonicTrades: ReportClosedTrade[];
   rawTrades: ReportClosedTrade[];
   resolvedTrades: ReportClosedTrade[];
   resolvedShadows: ReportBlockedSignalShadow[];
@@ -209,6 +210,7 @@ export interface BuildMarkdownReportArgs {
   allShadowStats: Stats;
   duplicateTradeIds: Set<string>;
   operationallyTaintedTrades: ReportClosedTrade[];
+  monotonicTrades: ReportClosedTrade[];
   tradeSetupRows: Array<[string, Stats]>;
   assetRows: Array<[string, Stats]>;
   tradeTypeAssetRows: Array<[string, Stats]>;
@@ -220,6 +222,47 @@ export interface BuildMarkdownReportArgs {
   shadows: ReportBlockedSignalShadow[];
   hypothesesById: Map<string, ReportHypothesis>;
   hybridBot: ReportHybridBot;
+}
+
+export interface MonotonicArbAccounting {
+  legitimate: Stats;
+  operationalError: Stats;
+  total: Stats;
+  operationalErrorReasons: string[];
+}
+
+/**
+ * Honest all-time accounting for the monotonic-arb strategy.
+ *
+ * Monotonic packages are risk-free when held to resolution, so any realized
+ * loss is by definition an operational error (e.g. the 2026-06-02 incident
+ * where a pm_package was migrated to a single-leg position and repeatedly
+ * stop-closed). This splits the raw MONOTONIC_ARB ledger into:
+ *  - legitimate: intact pm_package trades managed by the arb rules,
+ *  - operational_error: trades in the operationally-tainted list, or rows
+ *    that lost their package structure (instrument_type !== pm_package) —
+ *    the same rule portfolio-ledger.ts uses for contamination.
+ */
+export function monotonicArbAccounting(
+  trades: ReportClosedTrade[],
+  taintedTrades: Record<string, string>,
+): MonotonicArbAccounting {
+  const legitimate = emptyStats();
+  const operationalError = emptyStats();
+  const total = emptyStats();
+  const reasons = new Set<string>();
+  for (const trade of trades) {
+    addStats(total, trade.pnl, trade.pnlPct);
+    const taintReason = taintedTrades[trade.id];
+    const lostPackageStructure = trade.instrumentType !== "pm_package";
+    if (taintReason || lostPackageStructure) {
+      addStats(operationalError, trade.pnl, trade.pnlPct);
+      reasons.add(taintReason ?? `instrument_type=${trade.instrumentType ?? "missing"} (package structure lost)`);
+    } else {
+      addStats(legitimate, trade.pnl, trade.pnlPct);
+    }
+  }
+  return { legitimate, operationalError, total, operationalErrorReasons: [...reasons] };
 }
 
 export function statsCsvRow(section: string, group: string, stats: Stats): string[] {
@@ -391,6 +434,16 @@ export function buildCsvReport(args: BuildCsvReportArgs, deps: ReportBuilderDeps
   rows.push(["summary", "duplicate_trade_ids", String(args.duplicateTradeIds.size), "", "", "", "", "", "", "", "", "", [...args.duplicateTradeIds].join("; "), "", "", "", "", "", "", "", "", ""]);
   rows.push(["summary", "operationally_tainted_trade_ids", String(args.operationallyTaintedTrades.length), "", "", "", "", "", "", "", "", "", args.operationallyTaintedTrades.map((trade) => `${trade.id}: ${deps.operationallyTaintedTrades[trade.id]}`).join("; "), "", "", "", "", "", "", "", "", ""]);
 
+  if (args.monotonicTrades.length > 0) {
+    const monotonic = monotonicArbAccounting(args.monotonicTrades, deps.operationallyTaintedTrades);
+    rows.push(detailCsvRow("monotonic_arb_accounting", "legitimate_packages", monotonic.legitimate, "", "counted", "",
+      "risk-free arb record: intact pm_package trades managed by arb rules; excluded from macro ledger by design"));
+    rows.push(detailCsvRow("monotonic_arb_accounting", "operational_error_excluded", monotonic.operationalError, "", "excluded", "",
+      `operational errors, not strategy losses; reasons=${monotonic.operationalErrorReasons.join(" | ")}`));
+    rows.push(detailCsvRow("monotonic_arb_accounting", "raw_total", monotonic.total, "", "reference", "",
+      "raw MONOTONIC_ARB ledger total (legitimate + operational error); reference only"));
+  }
+
   for (const [group, stats] of args.tradeSetupRows) rows.push(statsCsvRow("trade_setup_type", group, stats));
   for (const row of llmHypothesisTradeBreakoutRows(args.resolvedTrades, args.hypothesesById)) {
     rows.push(detailCsvRow("llm_hypothesis_trade_breakout", row.group, row.stats, row.id, "", row.asset, row.notes));
@@ -549,8 +602,8 @@ export function buildCsvReport(args: BuildCsvReportArgs, deps: ReportBuilderDeps
       `source=${deps.hybridBotTradesFile}; state_mtime=${bot.stateLastModified ?? "n/a"}; `
       + `feed_mtime=${bot.feedLastModified ?? "n/a"}; opens=${totals.opens}; closes=${totals.closes}; `
       + `fees_usd=${totals.feesUsd.toFixed(6)}; open_positions=${bot.positions.size}; `
-      + `note=shadow trades from the separate Hyperliquid hybrid perp bot; `
-      + `LLM trader does not own these positions; size_usd is scaled shadow size (default $1)`,
+      + `note=paper-trade view of the separate Hyperliquid hybrid perp bot; `
+      + `all figures normalized to fixed $1 paper notional per trade; real-dollar trades belong to a separate fund and are never counted here`,
       "", totals.realizedPnlUsd.toFixed(6), "", "", "", "", "", bot.totalsAcrossAllCoins.lastEventTs ?? "", "", "", "", "", "", "",
     ]);
 
@@ -594,7 +647,7 @@ export function buildCsvReport(args: BuildCsvReportArgs, deps: ReportBuilderDeps
         + `mode=${pos.mode ?? "n/a"}; instrument_type=hl_perp; instrument_id=${coin}; `
         + `entry=${entry || "n/a"}; current=${mid ?? "n/a"}; shadow_size_usd=${HYBRID_SHADOW_SIZE_USD}; `
         + `source=hyperliquid-hybrid-state.json; `
-        + `note=Hyperliquid hybrid bot shadow — LLM trader does not own this position`,
+        + `note=Hyperliquid hybrid bot $1 paper shadow — real-dollar positions belong to a separate fund, not this trader`,
         unrealizedPct !== null ? unrealizedPct.toFixed(4) : "",
         "",
         unrealizedUsd !== null ? unrealizedUsd.toFixed(6) : "",
@@ -633,13 +686,20 @@ export function buildMarkdownReport(args: BuildMarkdownReportArgs, deps: ReportB
   if (args.operationallyTaintedTrades.length > 0) {
     lines.push(`- Operationally tainted trades labeled separately: ${args.operationallyTaintedTrades.map((trade) => `${trade.id} (${deps.operationallyTaintedTrades[trade.id]})`).join("; ")}`);
   }
+  if (args.monotonicTrades.length > 0) {
+    const monotonic = monotonicArbAccounting(args.monotonicTrades, deps.operationallyTaintedTrades);
+    lines.push(
+      `- Monotonic arb (excluded from macro ledger): ${fmtUsd(monotonic.legitimate.pnl)} on ${monotonic.legitimate.trades} legitimately-managed packages; `
+      + `${fmtUsd(monotonic.operationalError.pnl)} across ${monotonic.operationalError.trades} operational-error closes excluded from the strategy record`,
+    );
+  }
   lines.push(`- Current cash: $${args.portfolio.cash.toFixed(4)}`);
   lines.push(`- Open positions: ${args.portfolio.positions.length}`);
   lines.push(`- Resolved shadow P&L: ${fmtUsd(args.allShadowStats.pnl)} (${args.allShadowStats.trades} resolved shadows, ${args.allShadowStats.wins}W/${args.allShadowStats.losses}L, ${winRate(args.allShadowStats)} win rate)`);
   if (args.hybridBot.available) {
     const t = args.hybridBot.totalsAcrossAllCoins;
     const wr = t.trades > 0 ? `${((t.wins / t.trades) * 100).toFixed(1)}%` : "n/a";
-    lines.push(`- Hyperliquid hybrid bot (separate; LLM does not own): ${fmtUsd(t.realizedPnlUsd)} shadow realized over ${t.trades} closed trades (${t.wins}W/${t.losses}L, ${wr} win rate), ${args.hybridBot.positions.size} open, fees ${fmtUsd(t.feesUsd)}`);
+    lines.push(`- Hyperliquid hybrid bot ($1 paper view; real-dollar trades belong to a separate fund): ${fmtUsd(t.realizedPnlUsd)} paper realized over ${t.trades} closed trades (${t.wins}W/${t.losses}L, ${wr} win rate), ${args.hybridBot.positions.size} open, fees ${fmtUsd(t.feesUsd)}`);
   }
   lines.push("");
   lines.push(...table("Win/Loss By Trade Setup Type", args.tradeSetupRows, 60));

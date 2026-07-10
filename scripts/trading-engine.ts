@@ -4461,6 +4461,56 @@ function cancelLegacyOneTouchShadows(blockedSignals: BlockedSignalShadow[]): { c
   return { cancelled, retroExcluded };
 }
 
+// Retroactive cleanup for the gate-force-close resolver bug (fixed 2026-07-10):
+// shadows were "resolved" the moment their heatmap row failed entry gates or
+// simply vanished from the CSV, realizing mid-flight marks. Two artifact
+// classes are stamped learningExcluded so LLM training and promotion stats
+// never see them (realized accounting rows stay intact, mirroring the
+// legacy-one-touch sweep):
+//  1. ALL one-touch NO edge_disappeared closes — the old resolver fired on
+//     ANY gate failure (spread/liquidity/flag flicker) or a missing heatmap
+//     row, not an observed edge compression, so none of these closes are a
+//     valid measurement of the new observed-gap-exit policy. (New closes are
+//     annotated observed_gap_closed and are legitimate.)
+//  2. NO-bias gap closes on the explicit ID list in
+//     data/shadow-measurement-artifacts.json — verified against the hourly
+//     calibration log as coverage losses, not observed gap closes. (Gap-exit
+//     is that family's designed exit, so only proven coverage losses are
+//     excluded.)
+function excludeGateForceCloseArtifacts(blockedSignals: BlockedSignalShadow[]): { oneTouch: number; noBias: number } {
+  let noBiasArtifactIds = new Set<string>();
+  try {
+    const raw = JSON.parse(readFileSync(join(DATA_DIR, "shadow-measurement-artifacts.json"), "utf-8")) as Record<string, unknown>;
+    const ids = raw["no_bias_coverage_loss_force_close"];
+    if (Array.isArray(ids)) noBiasArtifactIds = new Set(ids as string[]);
+  } catch {
+    // File absent or unreadable: one-touch rule-based exclusion still applies.
+  }
+  let oneTouch = 0;
+  let noBias = 0;
+  for (const shadow of blockedSignals) {
+    if (shadow.status !== "resolved" || shadow.learningExcluded) continue;
+    if (
+      shadow.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO
+      && shadow.blockedReason === "one_touch_high_edge_shadow"
+      && shadow.thesis.includes("edge_disappeared")
+    ) {
+      shadow.learningExcluded = {
+        reason: "one_touch_gate_force_close_artifact",
+        note: "Resolved on edge_disappeared by the old resolver, which fired on any gate failure or missing heatmap row rather than an observed edge compression, so the close realized a mid-flight mark, not the thesis. Matched replay vs real UMA resolutions: observed-gap-exit +$8.49 vs hold +$2.13 vs -$2.22 as force-closed. Excluded from learning; resolver replaced with observed_gap_closed 2026-07-10.",
+      };
+      oneTouch += 1;
+    } else if (shadow.signalType === NO_BIAS_ADJUSTED_GAP_SIGNAL && noBiasArtifactIds.has(shadow.id)) {
+      shadow.learningExcluded = {
+        reason: "no_bias_coverage_loss_force_close",
+        note: "Closed as adjusted_no_gap_disappeared while the market had no heatmap coverage within +/-2h (verified against the hourly calibration log) — a coverage loss, not an observed gap close. Excluded from learning; resolver now holds through missing rows (fixed 2026-07-10).",
+      };
+      noBias += 1;
+    }
+  }
+  return { oneTouch, noBias };
+}
+
 function cancelOpenRelativeValueHeatmapShadows(blockedSignals: BlockedSignalShadow[]): string[] {
   const now = new Date().toISOString();
   const notes: string[] = [];
@@ -4483,19 +4533,44 @@ function currentOneTouchNoEdgeRow(shadow: BlockedSignalShadow, relativeValueRows
   return relativeValueRows.find((row) => row.eventSlug === eventSlug && row.marketId === marketId) ?? null;
 }
 
-function oneTouchNoEdgeDisappeared(shadow: BlockedSignalShadow, relativeValueRows: RelativeValueObservation[]): boolean {
+function buyYesEdgePts(row: RelativeValueObservation): number | null {
+  const explicit = num(row.rawRow.buy_yes_edge_pts);
+  if (explicit !== null) return explicit;
+  return row.bestExpression === "buy_yes" && row.edgePts !== null ? Math.abs(row.edgePts) : null;
+}
+
+// Observed-gap exit for one-touch shadows (both sides), replacing the old
+// gate-disappearance resolver that force-closed on ANY gate failure or a
+// missing heatmap row (75% of its closes were coverage losses; recorded
+// -$3.96 on trades that were genuinely profitable). Matched replay against
+// real UMA resolutions (2026-07-10, same 134 trades): exit-on-observed-gap
+// -close +$8.49 vs hold-to-resolution +$2.13 — the exit gives up small
+// profit on winners but dodges the -100% blowups. Rules:
+//  - exit ONLY when the row is present and the edge itself has compressed
+//    below the entry threshold (spread/liquidity/flag flicker is not an exit),
+//  - a missing row means coverage loss: hold, never close,
+//  - otherwise resolve at expiry.
+function oneTouchEdgeGapClosed(shadow: BlockedSignalShadow, relativeValueRows: RelativeValueObservation[]): boolean {
   if (shadow.blockedReason !== "one_touch_high_edge_shadow") return false;
-  if (shadow.signalType !== ONE_TOUCH_HIGH_EDGE_SIGNAL_NO || shadow.position.instrumentType !== "pm_no") return false;
+  const isNoSide = shadow.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO && shadow.position.instrumentType === "pm_no";
+  const isYesSide = shadow.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_YES && shadow.position.instrumentType === "pm_yes";
+  if (!isNoSide && !isYesSide) return false;
   const row = currentOneTouchNoEdgeRow(shadow, relativeValueRows);
-  if (!row) return true;
-  return !oneTouchNoShadowEligible(row);
+  if (!row) return false;
+  const edge = isNoSide ? sellYesEdgePts(row) : buyYesEdgePts(row);
+  if (edge === null) return false;
+  return edge < ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS;
 }
 
 function noBiasAdjustedGapDisappeared(shadow: BlockedSignalShadow, relativeValueRows: RelativeValueObservation[]): boolean {
   if (shadow.blockedReason !== NO_BIAS_ADJUSTED_GAP_REASON) return false;
   if (shadow.signalType !== NO_BIAS_ADJUSTED_GAP_SIGNAL || shadow.position.instrumentType !== "pm_no") return false;
   const row = currentOneTouchNoEdgeRow(shadow, relativeValueRows);
-  if (!row) return true;
+  // A missing heatmap row means the scanner lost coverage (market rolled,
+  // liquidity filter, transient gap) — NOT that the adjusted gap closed.
+  // Gap-exit is this family's designed exit, but it requires observing the
+  // gap actually failing the gates; without a row we hold to expiry.
+  if (!row) return false;
   return !noBiasAdjustedGapEligible(row);
 }
 
@@ -4538,7 +4613,7 @@ function resolveBlockedSignalShadows(
       || shadow.blockedReason === "one_touch_high_edge_shadow"
       || shadow.blockedReason === "stale_lottery_ticket_shadow";
     let closeReason: ClosedTrade["closeReason"] | null = null;
-    const edgeDisappeared = oneTouchNoEdgeDisappeared(shadow, relativeValueRows);
+    const edgeDisappeared = oneTouchEdgeGapClosed(shadow, relativeValueRows);
     const noBiasGapDisappeared = noBiasAdjustedGapDisappeared(shadow, relativeValueRows);
     const weekendFundingExit = shadow.blockedReason === WEEKEND_HL_FUNDING_SHADOW_REASON
       && (
@@ -4563,7 +4638,7 @@ function resolveBlockedSignalShadows(
     shadow.status = "resolved";
     shadow.resolvedAt = now;
     if (edgeDisappeared) {
-      shadow.thesis = `${shadow.thesis} [CLOSED ${now}: edge_disappeared — Current heatmap no longer has valid NO edge under shadow-promotion gates: sell_yes_edge_pts >= ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}, spread <= ${(ONE_TOUCH_NO_SHADOW_MAX_SPREAD * 100).toFixed(0)}c, liquidity >= ${ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY}.]`;
+      shadow.thesis = `${shadow.thesis} [CLOSED ${now}: observed_gap_closed — Heatmap row present and the touch edge itself compressed below ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}pt. Spread/liquidity flicker and missing rows do not trigger this exit (coverage loss = hold; resolver fixed 2026-07-10).]`;
       shadow.position.thesis = shadow.thesis;
     }
     if (noBiasGapDisappeared) {
@@ -7727,6 +7802,7 @@ async function main() {
   const cancelledHeatmapShadows = cancelOpenRelativeValueHeatmapShadows(blockedSignals);
   const cancelledInvalidMonotonicArbShadows = cancelOpenInvalidMonotonicArbShadows(blockedSignals);
   const legacyOneTouchSweep = cancelLegacyOneTouchShadows(blockedSignals);
+  const forceCloseArtifactSweep = excludeGateForceCloseArtifacts(blockedSignals);
   const realPmMirrorNotes = importCompletedRealPolymarketPackages(portfolio);
 
   console.log(`  Portfolio: $${portfolio.cash.toFixed(2)} cash, ${portfolio.positions.length} open positions, $${portfolio.totalRealizedPnl.toFixed(4)} realized P&L`);
@@ -7746,6 +7822,9 @@ async function main() {
   for (const note of productionPolymarketRiskNotes) console.log(`  Production PM risk shape: ${note}`);
   for (const note of weekendFundingPromotionNotes) console.log(`  Weekend funding promotion: ${note}`);
   for (const note of realPmMirrorNotes) console.log(`  Real PM mirror: ${note}`);
+  if (forceCloseArtifactSweep.oneTouch > 0 || forceCloseArtifactSweep.noBias > 0) {
+    console.log(`  Gate force-close artifact sweep: excluded ${forceCloseArtifactSweep.oneTouch} one-touch NO and ${forceCloseArtifactSweep.noBias} NO-bias resolutions from learning.`);
+  }
   if (cancelledHeatmapShadows.length > 0) {
     console.log(`  Cancelled ${cancelledHeatmapShadows.length} open relative-value heatmap shadow trades; heatmap is report-only until the horizon model is redesigned.`);
   }
@@ -7839,16 +7918,16 @@ async function main() {
     ? generateOneTouchHighEdgeNoSignals(relativeValueRows, weights, learningParams, latestSnapshot)
     : [];
   const oneTouchHighEdgeLiveCoveredKeys = liveOneTouchHighEdgeNoKeys(oneTouchHighEdgeNoLiveSignals);
-  if (ENABLE_ONE_TOUCH_HIGH_EDGE_NO_OPENING) {
-    if (oneTouchHighEdgeNoLiveSignals.length > 0) {
-      console.log(`\n  Generated ${oneTouchHighEdgeNoLiveSignals.length} one-touch high-edge NO live signals (${Array.from(ONE_TOUCH_HIGH_EDGE_LIVE_ASSETS).join("/")}, |edge|>=${ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE}, strict).`);
-    }
-    const newOneTouchHighEdgeShadows = recordOneTouchHighEdgeShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals, oneTouchHighEdgeLiveCoveredKeys);
-    if (newOneTouchHighEdgeShadows > 0) {
-      console.log(`\n  Opened ${newOneTouchHighEdgeShadows} one-touch NO edge shadow trades.`);
-    }
-  } else {
-    console.log("\n  One-touch high-edge NO live/shadow opening is disabled; existing shadows still resolve normally.");
+  if (ENABLE_ONE_TOUCH_HIGH_EDGE_NO_OPENING && oneTouchHighEdgeNoLiveSignals.length > 0) {
+    console.log(`\n  Generated ${oneTouchHighEdgeNoLiveSignals.length} one-touch high-edge NO live signals (${Array.from(ONE_TOUCH_HIGH_EDGE_LIVE_ASSETS).join("/")}, |edge|>=${ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE}, strict).`);
+  }
+  // Shadow testing is intentionally decoupled from the live-opening flag:
+  // disabling live entries must not stop evidence accumulation (shadow
+  // recording silently stopped 2026-05-26 when live opening was turned off,
+  // stalling the family's promotion record).
+  const newOneTouchHighEdgeShadows = recordOneTouchHighEdgeShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals, oneTouchHighEdgeLiveCoveredKeys);
+  if (newOneTouchHighEdgeShadows > 0) {
+    console.log(`\n  Opened ${newOneTouchHighEdgeShadows} one-touch NO edge shadow trades${ENABLE_ONE_TOUCH_HIGH_EDGE_NO_OPENING ? "" : " (live opening disabled; shadow-only)"}.`);
   }
   const newNoBiasAdjustedGapShadows = recordNoBiasAdjustedGapShadows(relativeValueRows, latestRow, latestSnapshot, learningParams, blockedSignals);
   if (newNoBiasAdjustedGapShadows > 0) {

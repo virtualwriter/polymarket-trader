@@ -304,6 +304,7 @@ describe("trader report row builders", () => {
       allShadowStats: stats({ trades: 0, wins: 0, losses: 0, pnl: 0, pnlPctSum: 0 }),
       duplicateTradeIds: new Set<string>(),
       operationallyTaintedTrades: [],
+      monotonicTrades: [],
       tradeSetupRows: [],
       assetRows: [],
       tradeTypeAssetRows: [],

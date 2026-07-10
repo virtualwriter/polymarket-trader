@@ -221,7 +221,9 @@ async function main() {
     lastUpdated: "unknown",
   });
   portfolio.positions = portfolio.positions.filter(isMacroReportPosition);
-  const trades = readClosedTrades(join(DATA_DIR, "trades-detailed.csv")).filter(isMacroReportTrade);
+  const allClosedTrades = readClosedTrades(join(DATA_DIR, "trades-detailed.csv"));
+  const trades = allClosedTrades.filter(isMacroReportTrade);
+  const monotonicTrades = dedupeClosedTrades(allClosedTrades.filter((trade) => !isMacroReportTrade(trade)));
   const hypotheses = readJson<ReportHypothesis[]>(join(DATA_DIR, "hypotheses.json"), []);
   const shadows = readJson<ReportBlockedSignalShadow[]>(join(DATA_DIR, "blocked-signals.json"), []).filter(isMacroReportShadow);
   const latestSnapshot = readLatestInstrumentSnapshot(join(DATA_DIR, "instrument-snapshots.jsonl"));
@@ -235,6 +237,7 @@ async function main() {
     portfolio,
     trades,
     dedupedTrades,
+    monotonicTrades,
     hypotheses,
     shadows,
     hybridBot: readHybridBotReport(),

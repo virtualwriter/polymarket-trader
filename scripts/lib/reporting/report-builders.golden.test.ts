@@ -187,6 +187,48 @@ const baseArgs: BuildMarkdownReportArgs = {
     thesis: "tainted",
     closeReason: "manual",
   }],
+  monotonicTrades: [
+    {
+      id: "mono-legit",
+      openedAt: "2026-06-02T00:00:00.000Z",
+      closedAt: "2026-06-03T00:00:00.000Z",
+      asset: "SOL",
+      venue: "polymarket",
+      direction: "long",
+      entryPrice: 0.98,
+      exitPrice: 1,
+      size: 1,
+      pnl: 0.02,
+      pnlPct: 2,
+      marketPnl: 0.02,
+      fundingPnl: 0,
+      signalType: "MONOTONIC_ARB",
+      hypothesisId: null,
+      thesis: "package",
+      closeReason: "resolution",
+      instrumentType: "pm_package",
+    },
+    {
+      id: "mono-error",
+      openedAt: "2026-06-02T00:00:00.000Z",
+      closedAt: "2026-06-02T01:00:00.000Z",
+      asset: "SOL",
+      venue: "polymarket",
+      direction: "long",
+      entryPrice: 0.11,
+      exitPrice: 0.1,
+      size: 1,
+      pnl: -0.09,
+      pnlPct: -9,
+      marketPnl: -0.09,
+      fundingPnl: 0,
+      signalType: "MONOTONIC_ARB",
+      hypothesisId: null,
+      thesis: "package migrated to single leg",
+      closeReason: "stop",
+      instrumentType: "pm_yes",
+    },
+  ],
   tradeSetupRows: [["LLM_HYPOTHESIS / Breakout | Pipe", stats()]],
   assetRows: [["BTC", stats()]],
   tradeTypeAssetRows: [["LLM_HYPOTHESIS / BTC", stats()]],
@@ -249,6 +291,9 @@ describe("golden trader report fixture", () => {
     expect(csv).toContain("2026-06-08T18:00:00.000Z");
     expect(csv).toContain("trade_setup_type,LLM_HYPOTHESIS / Breakout | Pipe,2,1,1,50.0,1.250000,0.625000,6.2500");
     expect(csv).toContain("currently_tested_llm_hypothesis,Breakout | Pipe,0,0,0,,0.000000,0.000000,0.0000,hyp-1,active,,pending_tests=1; Watch BTC breakout | continuation");
+    expect(csv).toContain("monotonic_arb_accounting,legitimate_packages,1,1,0,100.0,0.020000");
+    expect(csv).toContain("monotonic_arb_accounting,operational_error_excluded,1,0,1,0.0,-0.090000");
+    expect(csv).toContain("monotonic_arb_accounting,raw_total,2,1,1,50.0,-0.070000");
 
     const openPosition = lines.find((line) => line.startsWith("open_position,LLM_HYPOTHESIS / Breakout | Pipe,1,")) ?? "";
     expect(openPosition).toContain("pos-1,open,BTC");
@@ -262,6 +307,7 @@ describe("golden trader report fixture", () => {
     expect(markdown).toContain("# Trader Performance Since Inception");
     expect(markdown).toContain("- Realized P&L, de-duped counted ledger: +$1.2500 (2 counted trades, 1W/1L, 50.0% win rate)");
     expect(markdown).toContain("- Operationally tainted trades labeled separately: trade-tainted (manual correction)");
+    expect(markdown).toContain("- Monotonic arb (excluded from macro ledger): +$0.0200 on 1 legitimately-managed packages; -$0.0900 across 1 operational-error closes excluded from the strategy record");
     expect(markdown).toContain("| LLM_HYPOTHESIS / Breakout \\| Pipe | 2 | 1 | 1 | 50.0% | +$1.2500 | +$0.6250 | +6.25% |");
     expect(markdown).toContain("| hyp-1 | Breakout \\| Pipe | active | 1 | 0/0 | n/a | Watch BTC breakout \\| continuation |");
     expect(markdown).toContain("| shadow-1 | manual / TEST | BTC | polymarket | long | +$0.7500 | 2026-06-08T16:00:00.000Z |");
