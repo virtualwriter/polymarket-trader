@@ -50733,3 +50733,35 @@ Gold P/C extreme high (1.595) is the most significant anomaly in the dataset—w
 
 ---
 
+### 2026-07-10 04:59 UTC
+
+**Portfolio:** $98.67 total | Cash $97.67 | 1 open | P&L $1.2568 | 60% win rate (419 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_gld_pc_ratio = 1.595 is 2.9 std devs from mean (0.71 ± 0.30)
+- [anomaly] btc_pm_iv = 29.2 is -2.1 std devs from mean (41.49 ± 5.99)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.42 to 0.71. Rolling correlation: 24h=-0.86, 7d=-0.93, 30d=0.55. Current 24h corr is at 7th pct of last 30 daily 24h-rolling values (range -0.88 to 0.94).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.09 to 0.59. Rolling correlation: 24h=0.65, 7d=0.11, 30d=0.71. Current 24h corr is at 70th pct of last 30 daily 24h-rolling values (range -0.85 to 0.88).
+
+**Blocked signal learning:**
+- Open blocked shadows: 60
+- Resolved blocked shadows: 493 (292 wins / 201 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 10/18 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.04%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-10.34%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit stop (-2.82%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit target (+3.05%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 0.4h since last call; daily budget 2/12; next scheduled 2026-07-10T06:59:24.152Z). Mechanical cycle ran normally._
+
+---
+
