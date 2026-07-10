@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-10T22:35:23.767Z",
+  "generatedAt": "2026-07-10T23:35:22.871Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.08659319511554987,
       "thesis": "OIL P/C ratio 0.45 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 71.43,
+      "entryPrice": 71.5,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 71.43,
+      "entryPrice": 71.5,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,21 +56,20 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 16,
-        "totalNet": 14,
+        "totalGross": 11,
+        "totalNet": 9,
         "byAsset": {
           "OIL": -1,
           "CBRS": 5,
-          "HIMS": 5,
-          "SKHX": 5
+          "HIMS": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 15
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10
         },
         "byVenue": {
           "spot": -1,
-          "hyperliquid": 15
+          "hyperliquid": 10
         },
         "byCluster": {
           "commodity": -1,
@@ -78,28 +77,26 @@
           "options_sentiment": -1,
           "spot_venue": -1,
           "cbrs_delta": 5,
-          "funding_reversion": 15,
-          "hyperliquid_venue": 15,
-          "hims_delta": 5,
-          "skhx_delta": 5
+          "funding_reversion": 10,
+          "hyperliquid_venue": 10,
+          "hims_delta": 5
         }
       },
       "afterCandidate": {
-        "totalGross": 16,
-        "totalNet": 14,
+        "totalGross": 11,
+        "totalNet": 9,
         "byAsset": {
           "OIL": -1,
           "CBRS": 5,
-          "HIMS": 5,
-          "SKHX": 5
+          "HIMS": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 15
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10
         },
         "byVenue": {
           "spot": -1,
-          "hyperliquid": 15
+          "hyperliquid": 10
         },
         "byCluster": {
           "commodity": -1,
@@ -107,10 +104,9 @@
           "options_sentiment": -1,
           "spot_venue": -1,
           "cbrs_delta": 5,
-          "funding_reversion": 15,
-          "hyperliquid_venue": 15,
-          "hims_delta": 5,
-          "skhx_delta": 5
+          "funding_reversion": 10,
+          "hyperliquid_venue": 10,
+          "hims_delta": 5
         }
       },
       "warnings": []
@@ -129,7 +125,7 @@
       "wouldResize": true,
       "edgePts": null,
       "alerts": [
-        "cluster exposure 15.00 > alert cap 5.00"
+        "cluster exposure 10.00 > alert cap 5.00"
       ],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
@@ -149,12 +145,12 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 3,
-      "hoursToExpiry": 117,
+      "hoursOpen": 4,
+      "hoursToExpiry": 116,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.025,
+      "elapsedHoldPct": 0.0333,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 4.0h, requires at least 12h."
     },
     {
       "positionId": "WF-1783715719272-CBRS-69ci",
@@ -165,10 +161,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 2,
-      "hoursToExpiry": 22,
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0833,
+      "elapsedHoldPct": 0.125,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -181,26 +177,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 2,
-      "hoursToExpiry": 22,
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0833,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "WF-1783715719272-SKHX-2506",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "SKHX",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 2,
-      "hoursToExpiry": 22,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0833,
+      "elapsedHoldPct": 0.125,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }

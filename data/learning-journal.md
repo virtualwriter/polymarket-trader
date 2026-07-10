@@ -51338,3 +51338,36 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-10 23:35 UTC
+
+**Portfolio:** $98.63 total | Cash $95.63 | 3 open | P&L $1.2212 | 60% win rate (422 trades)
+
+**Closed 1 trades:**
+- ❌ SKHX long via hyperliquid/hl_perp [HL SKHX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0116 (-1.2%, market -0.0122, funding 0.0006)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] GOLD-OIL correlation shifted from -0.41 to 0.68. Rolling correlation: 24h=0.21, 7d=-0.92, 30d=0.52. Current 24h corr is at 73th pct of last 30 daily 24h-rolling values (range -0.91 to 0.91).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.14 to 0.57. Rolling correlation: 24h=-0.51, 7d=0.11, 30d=0.75. Current 24h corr is at 3th pct of last 30 daily 24h-rolling values (range -0.51 to 0.89).
+
+**Blocked signal learning:**
+- Open blocked shadows: 55
+- Resolved blocked shadows: 504 (295 wins / 209 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 10/18 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.11%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-8.70%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.05%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.22%)
+
+**LLM analysis:**
+Today's data shows extreme intraday funding swings in OIL and HYPE, suggesting positioning stress. The OIL P/C ratio low trade is still early (4h), with P/C ratio moving up slightly but still in bottom 3rd percentile of 30d range. The bounce in pc_ratio is not yet thesis-invalidating. The WEEKEND_FUNDING trades on CBRS and HIMS are mechanical and performing moderately (+1.6% and +0.8%). H-521 (HYPE OI breakout continuation) may be near conditions for a shadow test given OI still in top quartile and spot within 6% of 7d high. However, per policy we should not open new live positions until further tested. Overall, the system is in a holding pattern, allowing existing mechanical and LLM positions to mature.
+
+---
+
