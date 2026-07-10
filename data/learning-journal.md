@@ -50862,3 +50862,38 @@ Existing open position GOLD long via PC_RATIO_EXTREME_HIGH is still within its 1
 
 ---
 
+### 2026-07-10 08:36 UTC
+
+**Portfolio:** $98.67 total | Cash $96.67 | 2 open | P&L $1.2568 | 60% win rate (419 trades)
+
+**Opened 1 positions:**
+- HYPE long @ $68.749 via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_gld_pc_ratio = 1.595 is 2.9 std devs from mean (0.71 ± 0.31)
+- [anomaly] btc_pm_iv = 29.3 is -2.0 std devs from mean (41.46 ± 6.01)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.42 to 0.70. Rolling correlation: 24h=-0.51, 7d=-0.93, 30d=0.55. Current 24h corr is at 43th pct of last 30 daily 24h-rolling values (range -0.92 to 0.93).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.10 to 0.58. Rolling correlation: 24h=-0.11, 7d=0.11, 30d=0.72. Current 24h corr is at 17th pct of last 30 daily 24h-rolling values (range -0.85 to 0.97).
+
+**Blocked signal learning:**
+- Open blocked shadows: 60
+- Resolved blocked shadows: 496 (293 wins / 203 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 10/18 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit target (+3.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.21%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-5.88%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-3.70%)
+
+**LLM analysis:**
+The open GOLD long (PC_RATIO_EXTREME_HIGH) is early in its hold window (12h open, -0.44%). Gold's intraday drift lower while crypto rallies appears driven by short-term correlation decoupling; the P/C ratio at 1.595 remains extreme (2.9σ anomaly), so the contrarian signal is not invalidated. No close action taken. Focus tonight on monitoring whether the P/C ratio normalizes and whether spot stabilizes around 4100-4150. Crypto long-side hypotheses (H-521, H-523) are performing well in this environment, validating the regime-relative approach. No new hypotheses are created while the backlog of 17 setup families needing tests remains, in line with the system's directives.
+
+---
+
