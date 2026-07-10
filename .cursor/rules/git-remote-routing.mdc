@@ -1,0 +1,12 @@
+---
+description: Route sports-arb and polymarket-trader commits to the correct GitHub remotes
+alwaysApply: true
+---
+
+# Git Remote Routing
+
+- Sports arbitrage work belongs in the `sports-arb` GitHub repo (`git@github.com:virtualwriter/sports-arb.git`).
+- Broader polymarket-trader work belongs in the original `polymarket-trader` GitHub repo (`git@github.com:virtualwriter/polymarket-trader.git`).
+- Before committing or pushing, inspect the changed files and classify the work as sports-arb, polymarket-trader, or mixed.
+- If changes are mixed, split them into separate commits and push each commit to the appropriate remote/branch.
+- Do not assume the current branch push target is correct for every change. Verify remotes with `git remote -v` and use explicit push targets when needed.
