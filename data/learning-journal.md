@@ -51181,3 +51181,33 @@ Entered two BTC one-touch NO trades with sell-YES edge >4pt and tight 1c spreads
 
 ---
 
+### 2026-07-10 18:35 UTC
+
+**Portfolio:** $98.65 total | Cash $98.65 | 0 open | P&L $1.2328 | 60% win rate (421 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] GOLD-OIL correlation shifted from -0.41 to 0.69. Rolling correlation: 24h=0.31, 7d=-0.92, 30d=0.53. Current 24h corr is at 70th pct of last 30 daily 24h-rolling values (range -0.94 to 0.74).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.13 to 0.57. Rolling correlation: 24h=-0.77, 7d=0.10, 30d=0.74. Current 24h corr is at 3th pct of last 30 daily 24h-rolling values (range -0.77 to 0.95).
+
+**Blocked signal learning:**
+- Open blocked shadows: 55
+- Resolved blocked shadows: 503 (295 wins / 208 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 10/18 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.65%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.11%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-8.70%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.05%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h since last call; daily budget 7/12; next scheduled 2026-07-10T20:35:24.223Z). Mechanical cycle ran normally._
+
+---
+
