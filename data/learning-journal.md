@@ -50828,3 +50828,37 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-07-10 07:36 UTC
+
+**Portfolio:** $98.67 total | Cash $97.67 | 1 open | P&L $1.2568 | 60% win rate (419 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved narrower by 7.1pp (was -0.4, now -7.5)
+- [anomaly] gold_gld_pc_ratio = 1.595 is 2.9 std devs from mean (0.71 ± 0.31)
+- [anomaly] btc_pm_iv = 29.1 is -2.1 std devs from mean (41.47 ± 6.01)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.42 to 0.70. Rolling correlation: 24h=-0.70, 7d=-0.93, 30d=0.55. Current 24h corr is at 27th pct of last 30 daily 24h-rolling values (range -0.90 to 0.94).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.10 to 0.58. Rolling correlation: 24h=0.13, 7d=0.11, 30d=0.72. Current 24h corr is at 37th pct of last 30 daily 24h-rolling values (range -0.86 to 0.97).
+
+**Blocked signal learning:**
+- Open blocked shadows: 61
+- Resolved blocked shadows: 495 (293 wins / 202 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 10/18 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- NO-only sell-YES-edge one-touch shadow is inconclusive (2W/1L across 3 resolved shadows, avg P&L 4.63%). Use edge as a gate, not a sizing multiplier, until edge-size buckets have more data.
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit stop (-2.82%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit target (+3.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.21%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-5.88%)
+
+**LLM analysis:**
+Existing open position GOLD long via PC_RATIO_EXTREME_HIGH is still within its 12h minimum hold; P/C ratio unchanged at extreme. No close action allowed. No new trades from allowed signals. Focus remains on observing existing hypothesis backlog as per system rules; no new hypotheses proposed until active families complete retesting.
+
+---
+
