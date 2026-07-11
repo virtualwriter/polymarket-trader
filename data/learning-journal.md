@@ -51846,3 +51846,37 @@ Gold options IV anomaly (46.3, 5.2σ) highlights extreme pricing in listed marke
 
 ---
 
+### 2026-07-11 16:35 UTC
+
+**Portfolio:** $98.67 total | Cash $88.67 | 10 open | P&L $1.2544 | 61% win rate (440 trades)
+
+**Closed 1 trades:**
+- ❌ CBRS long via hyperliquid/hl_perp [HL CBRS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0621 (-6.2%, market -0.0632, funding 0.0010)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved wider by 10.0pp (was -32.3, now -22.3)
+- [anomaly] gold_opt_iv_30d = 36.3 is 2.8 std devs from mean (24.29 ± 4.24)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.41 to 0.67. Rolling correlation: 24h=0.27, 7d=-0.92, 30d=0.47. Current 24h corr is at 63th pct of last 30 daily 24h-rolling values (range -0.97 to 0.91).
+
+**Blocked signal learning:**
+- Open blocked shadows: 57
+- Resolved blocked shadows: 515 (298 wins / 217 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 10/18 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.16%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.22%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.11%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 6/12; next scheduled 2026-07-11T18:35:25.654Z). Mechanical cycle ran normally._
+
+---
+
