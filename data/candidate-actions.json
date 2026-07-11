@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-11T00:35:22.628Z",
+  "generatedAt": "2026-07-11T01:35:22.633Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.08659319511554987,
       "thesis": "OIL P/C ratio 0.45 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 71.58,
+      "entryPrice": 71.55,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 71.58,
+      "entryPrice": 71.55,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,69 +56,57 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 26,
-        "totalNet": 24,
+        "totalGross": 11,
+        "totalNet": 9,
         "byAsset": {
           "OIL": -1,
-          "HIMS": 5,
-          "COIN": 5,
-          "CRCL": 5,
           "META": 5,
-          "ZM": 5
+          "RKLB": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 25
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10
         },
         "byVenue": {
           "spot": -1,
-          "hyperliquid": 25
+          "hyperliquid": 10
         },
         "byCluster": {
           "commodity": -1,
           "oil_delta": -1,
           "options_sentiment": -1,
           "spot_venue": -1,
-          "funding_reversion": 25,
-          "hims_delta": 5,
-          "hyperliquid_venue": 25,
-          "coin_delta": 5,
-          "crcl_delta": 5,
+          "funding_reversion": 10,
+          "hyperliquid_venue": 10,
           "meta_delta": 5,
-          "zm_delta": 5
+          "rklb_delta": 5
         }
       },
       "afterCandidate": {
-        "totalGross": 26,
-        "totalNet": 24,
+        "totalGross": 11,
+        "totalNet": 9,
         "byAsset": {
           "OIL": -1,
-          "HIMS": 5,
-          "COIN": 5,
-          "CRCL": 5,
           "META": 5,
-          "ZM": 5
+          "RKLB": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 25
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10
         },
         "byVenue": {
           "spot": -1,
-          "hyperliquid": 25
+          "hyperliquid": 10
         },
         "byCluster": {
           "commodity": -1,
           "oil_delta": -1,
           "options_sentiment": -1,
           "spot_venue": -1,
-          "funding_reversion": 25,
-          "hims_delta": 5,
-          "hyperliquid_venue": 25,
-          "coin_delta": 5,
-          "crcl_delta": 5,
+          "funding_reversion": 10,
+          "hyperliquid_venue": 10,
           "meta_delta": 5,
-          "zm_delta": 5
+          "rklb_delta": 5
         }
       },
       "warnings": []
@@ -137,7 +125,7 @@
       "wouldResize": true,
       "edgePts": null,
       "alerts": [
-        "cluster exposure 25.00 > alert cap 5.00"
+        "cluster exposure 10.00 > alert cap 5.00"
       ],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
@@ -157,60 +145,12 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 5,
-      "hoursToExpiry": 115,
+      "hoursOpen": 6,
+      "hoursToExpiry": 114,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0416,
+      "elapsedHoldPct": 0.05,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
-    },
-    {
-      "positionId": "WF-1783715719272-HIMS-449m",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "HIMS",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 4,
-      "hoursToExpiry": 20,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.1666,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "WF-1783730115670-COIN-znit",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "COIN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 0,
-      "hoursToExpiry": 24,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "WF-1783730115670-CRCL-1iwd",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "CRCL",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 0,
-      "hoursToExpiry": 24,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+      "reason": "Too new for discretionary LLM close: open 6.0h, requires at least 12h."
     },
     {
       "positionId": "WF-1783730115670-META-6uf3",
@@ -221,17 +161,17 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 0,
-      "hoursToExpiry": 24,
+      "hoursOpen": 1,
+      "hoursToExpiry": 23,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0,
+      "elapsedHoldPct": 0.0417,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
-      "positionId": "WF-1783730115670-ZM-zkvo",
+      "positionId": "WF-1783733715081-RKLB-j0c1",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "ZM",
+      "asset": "RKLB",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
