@@ -1,5 +1,21 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [],
+  "rejectedCloses": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1783712126297-7da7",
+        "asset": "OIL",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "oil_cl_pc_ratio"
+        ],
+        "thesis": "OIL P/C ratio has risen from 0.405 to 0.445, normalizing away from extreme low, invalidating the contrarian short thesis."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+    }
+  ],
   "skippedTrades": []
 }

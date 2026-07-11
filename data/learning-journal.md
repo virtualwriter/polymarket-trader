@@ -51982,3 +51982,36 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-11 21:36 UTC
+
+**Portfolio:** $98.70 total | Cash $90.70 | 8 open | P&L $1.2869 | 61% win rate (446 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [correlation_flip] GOLD-OIL correlation shifted from -0.41 to 0.66. Rolling correlation: 24h=-0.48, 7d=-0.92, 30d=0.46. Current 24h corr is at 33th pct of last 30 daily 24h-rolling values (range -0.94 to 0.74).
+
+**Blocked signal learning:**
+- Open blocked shadows: 57
+- Resolved blocked shadows: 517 (298 wins / 219 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 10/18 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.11%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-5.43%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.11%)
+
+**LLM analysis:**
+Closed OIL short after P/C ratio normalization eroded the contrarian edge. HYPE breakout continuation hypothesis remains valid. Gold/Oil correlation flip to positive 0.66 is notable and may be driven by broader macro factors; not yet actionable. The BIRD long from weekend funding reversion is deep in the red (-8.98%), highlighting risk of illiquid HL perps, but we cannot intervene. Overall portfolio is near flat, waiting for weekend reversion longs to mature.
+
+**LLM close rejections today (2026-07-11, token-burn signal):**
+- Total rejected close instructions: 1
+- Top signal/asset pairs: PC_RATIO_EXTREME_LOW / OIL (1)
+
+---
+

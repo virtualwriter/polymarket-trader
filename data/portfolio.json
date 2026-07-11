@@ -1,5 +1,5 @@
 {
-  "cash": 91.6997632747848,
+  "cash": 90.6997632747848,
   "positions": [
     {
       "id": "T-1783712126297-7da7",
@@ -8,8 +8,8 @@
       "venue": "spot",
       "direction": "short",
       "entryPrice": 71.68,
-      "currentPrice": 71.72,
-      "currentUnderlyingPrice": 71.72,
+      "currentPrice": 71.82,
+      "currentUnderlyingPrice": 71.82,
       "entryUnderlyingPrice": 71.68,
       "size": 1,
       "leverage": 1,
@@ -31,7 +31,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 914.09,
-      "currentPrice": 912.36,
+      "currentPrice": 912.6,
       "entryUnderlyingPrice": 914.09,
       "size": 1,
       "leverage": 5,
@@ -44,7 +44,7 @@
       "instrumentType": "hl_perp",
       "instrumentId": "COST",
       "instrumentLabel": "HL COST Builder DEX stock perp",
-      "fundingPnlAccrued": 0.0013974760273972602,
+      "fundingPnlAccrued": 0.0016131592465753425,
       "peakPnlPct": 0.610084963113706
     },
     {
@@ -54,7 +54,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 81.58,
-      "currentPrice": 81.282,
+      "currentPrice": 81.166,
       "entryUnderlyingPrice": 81.58,
       "size": 1,
       "leverage": 5,
@@ -67,7 +67,7 @@
       "instrumentType": "hl_perp",
       "instrumentId": "RKLB",
       "instrumentLabel": "HL RKLB Builder DEX stock perp",
-      "fundingPnlAccrued": 0.0006368504566210042,
+      "fundingPnlAccrued": 0.0006056004566210042,
       "peakPnlPct": -1.2384148869194356
     },
     {
@@ -77,7 +77,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 245.96,
-      "currentPrice": 245.8,
+      "currentPrice": 246.05,
       "currentUnderlyingPrice": 245.7,
       "entryUnderlyingPrice": 245.7,
       "size": 1,
@@ -91,7 +91,7 @@
       "instrumentType": "hl_perp",
       "instrumentId": "AMZN",
       "instrumentLabel": "HL AMZN perp",
-      "fundingPnlAccrued": -0.00000460673515981735,
+      "fundingPnlAccrued": -0.00001085673515981735,
       "peakPnlPct": 0.18295657830541087
     },
     {
@@ -101,7 +101,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 3.1573,
-      "currentPrice": 3.067,
+      "currentPrice": 3.1,
       "entryUnderlyingPrice": 3.1573,
       "size": 1,
       "leverage": 5,
@@ -114,8 +114,8 @@
       "instrumentType": "hl_perp",
       "instrumentId": "BIRD",
       "instrumentLabel": "HL BIRD Builder DEX stock perp",
-      "fundingPnlAccrued": 0,
-      "peakPnlPct": -14.300193203053249
+      "fundingPnlAccrued": 0.0009115736301369864,
+      "peakPnlPct": -8.98305161301014
     },
     {
       "id": "WF-1783802114173-AMD-rfy9",
@@ -124,8 +124,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 565.74,
-      "currentPrice": 565.74,
-      "currentUnderlyingPrice": 565.74,
+      "currentPrice": 565.04,
       "entryUnderlyingPrice": 565.74,
       "size": 1,
       "leverage": 5,
@@ -138,7 +137,8 @@
       "instrumentType": "hl_perp",
       "instrumentId": "AMD",
       "instrumentLabel": "HL AMD Builder DEX stock perp",
-      "fundingPnlAccrued": 0
+      "fundingPnlAccrued": 0,
+      "peakPnlPct": -0.6186587478347345
     },
     {
       "id": "WF-1783802114173-ZM-mepz",
@@ -147,8 +147,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 89.756,
-      "currentPrice": 89.756,
-      "currentUnderlyingPrice": 89.756,
+      "currentPrice": 89.689,
       "entryUnderlyingPrice": 89.756,
       "size": 1,
       "leverage": 5,
@@ -161,12 +160,36 @@
       "instrumentType": "hl_perp",
       "instrumentId": "ZM",
       "instrumentLabel": "HL ZM Builder DEX stock perp",
+      "fundingPnlAccrued": 0,
+      "peakPnlPct": -0.373234101341455
+    },
+    {
+      "id": "WF-1783805716042-BX-ud0i",
+      "openedAt": "2026-07-11T21:35:16.042Z",
+      "asset": "BX",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 122.17,
+      "currentPrice": 122.17,
+      "currentUnderlyingPrice": 122.17,
+      "entryUnderlyingPrice": 122.17,
+      "size": 1,
+      "leverage": 5,
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "hypothesisId": null,
+      "thesis": "[WEEKEND HL FUNDING LIVE] BX Builder DEX stock perp funding -97.2% annualized in mid band [-100%, -50%] during US-equity-closed window (Fri 4:00pm ET → Mon 9:30am ET). Live tracked long at 5x; exit when margin P&L >= 3%, funding >= 10%, or held 24h.",
+      "targetPct": 3,
+      "stopPct": 100,
+      "expiryDate": "2026-07-12T21:35:16.042Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "BX",
+      "instrumentLabel": "HL BX Builder DEX stock perp",
       "fundingPnlAccrued": 0
     }
   ],
-  "totalRealizedPnl": 1.2869394063903614,
+  "totalRealizedPnl": 1.2868999999999982,
   "totalTrades": 446,
   "winCount": 272,
   "lossCount": 174,
-  "lastUpdated": "2026-07-11T20:35:23.546Z"
+  "lastUpdated": "2026-07-11T21:36:47.127Z"
 }
