@@ -52015,3 +52015,39 @@ Closed OIL short after P/C ratio normalization eroded the contrarian edge. HYPE 
 
 ---
 
+### 2026-07-11 23:35 UTC
+
+**Portfolio:** $98.66 total | Cash $88.66 | 10 open | P&L $1.2200 | 61% win rate (450 trades)
+
+**Closed 4 trades:**
+- ✅ COST long via hyperliquid/hl_perp [HL COST Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → undefined: +$0.0176 (1.8%, market 0.0162, funding 0.0014)
+- ❌ BIRD long via hyperliquid/hl_perp [HL BIRD Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → undefined: $-0.0718 (-7.2%, market -0.0736, funding 0.0018)
+- ✅ BX long via hyperliquid/hl_perp [HL BX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → undefined: +$0.0319 (3.2%, market 0.0319, funding 0.0000)
+- ❌ OIL short via spot/spot [OIL spot] (PC_RATIO_EXTREME_LOW) → undefined: $-0.0223 (-2.2%, market -0.0223, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 10 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = 243.78 is 3.5 std devs from mean since 2026-04-28 (-9.11 ± 73.01)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.41 to 0.66. Rolling correlation: 24h=-0.68, 7d=-0.92, 30d=0.45. Current 24h corr is at 33th pct of last 30 daily 24h-rolling values (range -0.93 to 0.83).
+
+**Blocked signal learning:**
+- Open blocked shadows: 58
+- Resolved blocked shadows: 517 (298 wins / 219 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 10/18 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.11%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-5.43%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.11%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 2.0h since last call; daily budget 8/12; next scheduled 2026-07-12T01:35:22.780Z). Mechanical cycle ran normally._
+
+---
+

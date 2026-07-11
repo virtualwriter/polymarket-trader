@@ -1,46 +1,15 @@
 {
-  "generatedAt": "2026-07-11T21:36:47.124Z",
+  "generatedAt": "2026-07-11T23:35:22.792Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [
-    {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "short",
-      "strength": 0.18333333333333332,
-      "confidence": 0.09719644349704579,
-      "thesis": "OIL P/C ratio 0.45 — heavy call buying → contrarian short.",
-      "hypothesisId": null,
-      "entryPrice": 71.82,
-      "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 5
-    }
-  ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1783712126297-7da7",
-        "asset": "OIL",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "oil_cl_pc_ratio"
-        ],
-        "thesis": "OIL P/C ratio has risen from 0.405 to 0.445, normalizing away from extreme low, invalidating the contrarian short thesis."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    }
-  ],
+  "entrySignals": [],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
