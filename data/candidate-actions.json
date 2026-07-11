@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-11T01:35:22.633Z",
+  "generatedAt": "2026-07-11T02:35:23.088Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.08659319511554987,
       "thesis": "OIL P/C ratio 0.45 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 71.55,
+      "entryPrice": 71.48,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 71.55,
+      "entryPrice": 71.48,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,57 +56,65 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 11,
-        "totalNet": 9,
+        "totalGross": 21,
+        "totalNet": 19,
         "byAsset": {
           "OIL": -1,
           "META": 5,
-          "RKLB": 5
+          "RKLB": 5,
+          "BIRD": 5,
+          "DKNG": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 20
         },
         "byVenue": {
           "spot": -1,
-          "hyperliquid": 10
+          "hyperliquid": 20
         },
         "byCluster": {
           "commodity": -1,
           "oil_delta": -1,
           "options_sentiment": -1,
           "spot_venue": -1,
-          "funding_reversion": 10,
-          "hyperliquid_venue": 10,
+          "funding_reversion": 20,
+          "hyperliquid_venue": 20,
           "meta_delta": 5,
-          "rklb_delta": 5
+          "rklb_delta": 5,
+          "bird_delta": 5,
+          "dkng_delta": 5
         }
       },
       "afterCandidate": {
-        "totalGross": 11,
-        "totalNet": 9,
+        "totalGross": 21,
+        "totalNet": 19,
         "byAsset": {
           "OIL": -1,
           "META": 5,
-          "RKLB": 5
+          "RKLB": 5,
+          "BIRD": 5,
+          "DKNG": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 20
         },
         "byVenue": {
           "spot": -1,
-          "hyperliquid": 10
+          "hyperliquid": 20
         },
         "byCluster": {
           "commodity": -1,
           "oil_delta": -1,
           "options_sentiment": -1,
           "spot_venue": -1,
-          "funding_reversion": 10,
-          "hyperliquid_venue": 10,
+          "funding_reversion": 20,
+          "hyperliquid_venue": 20,
           "meta_delta": 5,
-          "rklb_delta": 5
+          "rklb_delta": 5,
+          "bird_delta": 5,
+          "dkng_delta": 5
         }
       },
       "warnings": []
@@ -125,7 +133,7 @@
       "wouldResize": true,
       "edgePts": null,
       "alerts": [
-        "cluster exposure 10.00 > alert cap 5.00"
+        "cluster exposure 20.00 > alert cap 5.00"
       ],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
@@ -145,17 +153,33 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 6,
-      "hoursToExpiry": 114,
+      "hoursOpen": 7,
+      "hoursToExpiry": 113,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.05,
+      "elapsedHoldPct": 0.0583,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 6.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 7.0h, requires at least 12h."
     },
     {
       "positionId": "WF-1783730115670-META-6uf3",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "asset": "META",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 2,
+      "hoursToExpiry": 22,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0.0833,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1783733715081-RKLB-j0c1",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "RKLB",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
@@ -169,9 +193,25 @@
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
-      "positionId": "WF-1783733715081-RKLB-j0c1",
+      "positionId": "WF-1783737315576-BIRD-9cow",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "RKLB",
+      "asset": "BIRD",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 0,
+      "hoursToExpiry": 24,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1783737315577-DKNG-hlkj",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "DKNG",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,

@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-11T01:35:15.294Z",
+  "generatedAt": "2026-07-11T02:35:15.807Z",
   "dataFreshness": {
-    "valuationRows": 1585,
-    "latestValuationAt": "2026-07-11T01",
-    "macroRows": 1583,
+    "valuationRows": 1586,
+    "latestValuationAt": "2026-07-11T02",
+    "macroRows": 1584,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-11T01"
+    "latestInstrumentSnapshotAt": "2026-07-11T02"
   },
   "portfolio": {
-    "cash": 95.6284,
-    "openPositions": 3,
+    "cash": 93.6284,
+    "openPositions": 5,
     "realizedPnl": 1.2157,
     "totalTrades": 427,
     "winRatePct": 60,
-    "unrealizedPnl": 0.008
+    "unrealizedPnl": -0.0006
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 0.18,
-      "currentPrice": 71.55,
-      "underlyingPrice": 71.55,
+      "pnlPct": 0.28,
+      "currentPrice": 71.48,
+      "underlyingPrice": 71.48,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,8 +39,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.62,
-      "currentPrice": 668.07,
+      "pnlPct": -0.28,
+      "currentPrice": 666.87,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -53,8 +53,36 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": -0.06,
+      "currentPrice": 81.31,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1783737315576-BIRD-9cow",
+      "asset": "BIRD",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "pnlPct": 0,
-      "currentPrice": 81.32,
+      "currentPrice": 3.1373,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1783737315577-DKNG-hlkj",
+      "asset": "DKNG",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 26.462,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -202,10 +230,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 62,
-    "resolvedCount": 505,
+    "openCount": 59,
+    "resolvedCount": 510,
     "wouldHaveWon": 296,
-    "wouldHaveLost": 209,
+    "wouldHaveLost": 214,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -275,102 +303,6 @@
     "recentResolved": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.14,
-        "resolvedAt": "2026-07-10T10:35:16.461Z",
-        "marketQuality": {
-          "yesBid": 0.12,
-          "yesAsk": 0.13,
-          "yesSpread": 0.01,
-          "liquidity": 46502.34,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -14.89,
-        "resolvedAt": "2026-07-10T10:35:16.461Z",
-        "marketQuality": {
-          "yesBid": 0.53,
-          "yesAsk": 0.54,
-          "yesSpread": 0.01,
-          "liquidity": 28777.53,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 0.65,
-        "resolvedAt": "2026-07-10T12:35:17.240Z",
-        "marketQuality": {
-          "yesBid": 0.074,
-          "yesAsk": 0.076,
-          "yesSpread": 0.002,
-          "liquidity": 53468.91,
-          "flags": []
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.11,
-        "resolvedAt": "2026-07-10T12:35:17.240Z",
-        "marketQuality": {
-          "yesBid": 0.1,
-          "yesAsk": 0.11,
-          "yesSpread": 0.01,
-          "liquidity": 115320.02,
-          "flags": []
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -8.7,
-        "resolvedAt": "2026-07-10T15:35:27.387Z",
-        "marketQuality": {
-          "yesBid": 0.31,
-          "yesAsk": 0.32,
-          "yesSpread": 0.01,
-          "liquidity": 33927.03,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
         "venue": "polymarket",
         "direction": "short",
@@ -422,6 +354,98 @@
           "yesAsk": 0.03,
           "yesSpread": 0.001,
           "liquidity": 45631.54,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -0.2,
+        "resolvedAt": "2026-07-11T02:35:15.554Z",
+        "marketQuality": {
+          "yesBid": 0.021,
+          "yesAsk": 0.023,
+          "yesSpread": 0.002,
+          "liquidity": 91026.44,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -0.21,
+        "resolvedAt": "2026-07-11T02:35:15.554Z",
+        "marketQuality": {
+          "yesBid": 0.026,
+          "yesAsk": 0.027,
+          "yesSpread": 0.001,
+          "liquidity": 94399.54,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.05,
+        "resolvedAt": "2026-07-11T02:35:15.554Z",
+        "marketQuality": {
+          "yesBid": 0.05,
+          "yesAsk": 0.06,
+          "yesSpread": 0.01,
+          "liquidity": 52156.25,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.14,
+        "resolvedAt": "2026-07-11T02:35:15.554Z",
+        "marketQuality": {
+          "yesBid": 0.12,
+          "yesAsk": 0.13,
+          "yesSpread": 0.01,
+          "liquidity": 55868.75,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -0.1,
+        "resolvedAt": "2026-07-11T02:35:15.554Z",
+        "marketQuality": {
+          "yesBid": 0.011,
+          "yesAsk": 0.012,
+          "yesSpread": 0.001,
+          "liquidity": 54430.38,
           "flags": []
         }
       }
@@ -543,17 +567,17 @@
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
         "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-in-july-2026 — NO — Will Bitcoin dip to $55,000 in July?",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $90,000 by December 31, 2026?",
         "marketQuality": {
-          "yesBid": 0.12,
-          "yesAsk": 0.13,
+          "yesBid": 0.18,
+          "yesAsk": 0.19,
           "yesSpread": 0.01,
-          "liquidity": 55868.75,
+          "liquidity": 75526.52,
           "flags": [
             "wide_pm_spread"
           ]
         },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.1pt on BTC, spread 1.0c, liquidity 55869. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.0pt on BTC, spread 1.0c, liquidity 75527. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
