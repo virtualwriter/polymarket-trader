@@ -12,6 +12,7 @@ import argparse
 import csv
 import json
 import os
+import shutil
 import smtplib
 import ssl
 import urllib.parse
@@ -29,6 +30,22 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR = ROOT / "data"
 REPORT_DIR = DATA_DIR / "daily-email-reports"
 EASTERN_TZ = ZoneInfo("America/New_York")
+
+# Warn well before writes start failing; the VPS hit 99% full on 2026-07-14.
+DISK_WARN_PCT = 80.0
+
+
+def disk_usage_line(path: str = "/") -> str:
+    """Host disk usage summary so a filling disk is visible in every report."""
+    try:
+        usage = shutil.disk_usage(path)
+    except OSError:
+        return "- Disk: usage unavailable"
+    used_pct = usage.used / usage.total * 100 if usage.total else 0.0
+    free_gb = usage.free / (1024 ** 3)
+    total_gb = usage.total / (1024 ** 3)
+    flag = " ⚠️ LOW DISK" if used_pct >= DISK_WARN_PCT else ""
+    return f"- Disk: {used_pct:.0f}% used ({free_gb:.1f} GB free of {total_gb:.0f} GB){flag}"
 
 
 def _load_operationally_tainted_trades() -> dict[str, str]:
@@ -556,6 +573,7 @@ def build_report(window: ReportWindow) -> str:
         f"{money(monotonic_accounting['operational_error'][0])} across "
         f"{monotonic_accounting['operational_error'][1]} operational-error closes (excluded from strategy record)",
         f"- Hypotheses: {dict(hypothesis_status)} | pending tests {pending_tests}",
+        disk_usage_line(),
         "",
         "## Hourly Closed P&L",
     ]
