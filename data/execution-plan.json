@@ -1,23 +1,10 @@
 {
-  "generatedAt": "2026-07-14T17:06:26.415Z",
+  "generatedAt": "2026-07-14T17:35:24.151Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1783780561921-xhpi",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "amzn_hl_funding_ann"
-      ],
-      "thesis": "AMZN funding has fully round-tripped from -49% at entry to +16.86%, crossing back through the -15% entry threshold and normalizing into positive territory. The FUNDING_EXTREME_SHORT condition is extinguished; close the AMZN long per thesis-invalidated rule."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -26,18 +13,18 @@
       "direction": "long",
       "strength": 1,
       "confidence": 0.5240278321453544,
-      "thesis": "GOLD P/C ratio 2.86 — heavy put buying → contrarian long.",
+      "thesis": "GOLD P/C ratio 2.79 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4061,
-      "targetPct": 4,
+      "entryPrice": 4063,
+      "targetPct": 6,
       "stopPct": 1.5,
-      "expiryDays": 5
+      "expiryDays": 21
     }
   ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

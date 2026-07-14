@@ -52099,3 +52099,35 @@ Closed AMZN long as funding normalized and flipped positive, removing the crowde
 
 ---
 
+### 2026-07-14 17:35 UTC
+
+**Portfolio:** $98.59 total | Cash $97.59 | 1 open | P&L $1.1763 | 61% win rate (460 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_gld_pc_ratio = 2.79 is 6.3 std devs from mean (0.73 ± 0.33)
+- [anomaly] btc_opt_iv_term_spread = -17.55 is -3.1 std devs from mean (-0.49 ± 5.49)
+- [anomaly] btc_opt_iv_90d = 53.4 is 2.1 std devs from mean (39.83 ± 6.56)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.36 to 0.54. Rolling correlation: 24h=0.09, 7d=-0.86, 30d=0.46. Current 24h corr is at 57th pct of last 30 daily 24h-rolling values (range -0.92 to 0.92).
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 527 (303 wins / 224 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 11/20 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+22.95%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.04%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.20%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 0.5h since last call; daily budget 1/12; next scheduled 2026-07-14T19:35:24.133Z). Mechanical cycle ran normally._
+
+---
+
