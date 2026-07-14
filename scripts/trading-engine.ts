@@ -11,7 +11,6 @@
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statSync, openSync, readSync, closeSync } from "node:fs";
-import { StringDecoder } from "node:string_decoder";
 import { join } from "node:path";
 import { z } from "zod";
 import {
@@ -89,6 +88,7 @@ import {
   slugifySetupId,
 } from "./lib/trading/setup-family.js";
 import { type SizingCalibrationBucket } from "./lib/trading/sizing.js";
+import { readCalibrationBucketsSummary } from "./lib/research/calibration-summary.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -99,7 +99,7 @@ const LIVE_STATE_DIR = ENGINE_PATHS.liveStateDir;
 const LIVE_PORTFOLIO_FILE = ENGINE_PATHS.livePortfolioFile;
 const PENDING_CLOSED_TRADES_FILE = ENGINE_PATHS.pendingClosedTradesFile;
 const RELATIVE_VALUE_CSV = ENGINE_PATHS.relativeValueCsv;
-const NO_BIAS_CALIBRATION_JSONL = join(import.meta.dirname ?? ".", "..", "relative-value", "calibration", "no_bias_candidates.jsonl");
+const CALIBRATION_BUCKETS_SUMMARY_FILE = join(ENGINE_PATHS.dataDir, "calibration-buckets-summary.json");
 const HYBRID_BOT_TRADES_FILE = ENGINE_PATHS.hybridBotTradesFile;
 const HYBRID_BOT_STATE_FILE = ENGINE_PATHS.hybridBotStateFile;
 const HYBRID_STRATEGY_DOC = ENGINE_PATHS.hybridStrategyDoc;
@@ -1160,111 +1160,22 @@ function readRelativeValueObservations(limit = 30): RelativeValueObservation[] {
     .slice(0, limit);
 }
 
-function noBiasEntryPrice(row: Record<string, unknown>): number | null {
-  const yesBid = typeof row.pm_best_bid === "number" ? row.pm_best_bid : Number(row.pm_best_bid);
-  if (!Number.isFinite(yesBid)) return null;
-  const entry = 1 - yesBid;
-  return entry > 0 && entry < 1 ? entry : null;
-}
-
-function loadNoBiasCalibrationBuckets(path = NO_BIAS_CALIBRATION_JSONL): SizingCalibrationBucket[] {
-  if (!existsSync(path)) return [];
-  // The calibration log grows without bound (240MB+ / 150k rows on the VPS as
-  // of 2026-07-14) and the previous implementation retained every parsed row
-  // in memory, which OOM-crashed the engine on the 1GB VPS every run from
-  // Jul 11 onward. Stream the file in chunks and keep only a tiny per-market
-  // aggregate: the earliest resolved outcome and the earliest gate-passing
-  // row's entry price + asset (same selection the old sort-then-find did).
-  interface MarketAgg {
-    outcome: "YES" | "NO" | null;
-    outcomeTs: string;
-    passTs: string;
-    passEntry: number | null;
-    passAsset: string;
-    hasPass: boolean;
+function loadNoBiasCalibrationBuckets(path = CALIBRATION_BUCKETS_SUMMARY_FILE): SizingCalibrationBucket[] {
+  // Phase 4 split: the hourly engine no longer scans the unbounded
+  // calibration JSONL (240MB+; the full-file read OOM-crashed every run
+  // Jul 11-14). The nightly research run aggregates it into a small summary
+  // artifact; we read only that. Failure isolation: missing/stale/invalid
+  // artifacts never block the hourly run — stale buckets are still used
+  // (calibration win rates move slowly), and missing/invalid falls back to
+  // empty buckets (sizing then uses signal history / confidence).
+  const result = readCalibrationBucketsSummary(path);
+  if (result.status === "fresh") return result.buckets;
+  if (result.status === "stale") {
+    console.log(`   ⚠️ Calibration buckets summary is stale (generatedAt=${result.generatedAt}); using anyway.`);
+    return result.buckets;
   }
-  const byMarket = new Map<string, MarketAgg>();
-  const consumeLine = (line: string): void => {
-    if (!line.trim()) return;
-    try {
-      const row = JSON.parse(line) as Record<string, unknown>;
-      const marketId = String(row.market_id ?? "");
-      if (!marketId) return;
-      const ts = String(row.timestamp ?? "");
-      let agg = byMarket.get(marketId);
-      if (!agg) {
-        agg = { outcome: null, outcomeTs: "", passTs: "", passEntry: null, passAsset: "", hasPass: false };
-        byMarket.set(marketId, agg);
-      }
-      if ((row.resolved_outcome === "YES" || row.resolved_outcome === "NO")
-          && (agg.outcome === null || ts < agg.outcomeTs)) {
-        agg.outcome = row.resolved_outcome;
-        agg.outcomeTs = ts;
-      }
-      if (row.candidate_passed === true && (!agg.hasPass || ts < agg.passTs)) {
-        agg.hasPass = true;
-        agg.passTs = ts;
-        agg.passEntry = noBiasEntryPrice(row);
-        agg.passAsset = String(row.asset ?? "");
-      }
-    } catch {}
-  };
-
-  const fd = openSync(path, "r");
-  try {
-    const chunk = Buffer.alloc(8 * 1024 * 1024);
-    const decoder = new StringDecoder("utf8");
-    let carry = "";
-    for (;;) {
-      const bytesRead = readSync(fd, chunk, 0, chunk.length, null);
-      if (bytesRead === 0) break;
-      const lines = (carry + decoder.write(chunk.subarray(0, bytesRead))).split("\n");
-      carry = lines.pop() ?? "";
-      for (const line of lines) consumeLine(line);
-    }
-    consumeLine(carry + decoder.end());
-  } finally {
-    closeSync(fd);
-  }
-
-  const byAsset = new Map<string, { n: number; wins: number }>();
-  let total = 0;
-  let wins = 0;
-  for (const agg of byMarket.values()) {
-    const outcome = agg.outcome;
-    if (outcome !== "YES" && outcome !== "NO") continue;
-    if (!agg.hasPass || agg.passEntry === null) continue;
-    const asset = agg.passAsset;
-    const won = outcome === "NO";
-    total++;
-    if (won) wins++;
-    if (asset) {
-      const bucket = byAsset.get(asset) ?? { n: 0, wins: 0 };
-      bucket.n++;
-      if (won) bucket.wins++;
-      byAsset.set(asset, bucket);
-    }
-  }
-
-  const buckets: SizingCalibrationBucket[] = [];
-  if (total > 0) {
-    buckets.push({
-      signalType: NO_BIAS_ADJUSTED_GAP_SIGNAL,
-      n: total,
-      winRate: wins / total,
-      label: "NO-bias gate resolved events",
-    });
-  }
-  for (const [asset, bucket] of byAsset) {
-    buckets.push({
-      signalType: NO_BIAS_ADJUSTED_GAP_SIGNAL,
-      asset,
-      n: bucket.n,
-      winRate: bucket.wins / bucket.n,
-      label: `NO-bias gate resolved events / ${asset}`,
-    });
-  }
-  return buckets;
+  console.log(`   ⚠️ Calibration buckets summary ${result.status} at ${path}; sizing previews fall back to signal history.`);
+  return [];
 }
 
 function appendTradeCsv(trade: ClosedTrade) {
@@ -7823,7 +7734,21 @@ function snapshotTimeMs(ts: string): number {
 function readJournalTail(lines: number = 50): string {
   const file = join(DATA_DIR, "learning-journal.md");
   if (!existsSync(file)) return "";
-  const content = readFileSync(file, "utf-8");
+  // Read only the last chunk of the file instead of the whole journal
+  // (the journal grows without bound; nightly compaction archives old
+  // entries, but the hourly engine must stay safe regardless).
+  const stat = statSync(file);
+  const maxBytes = 256 * 1024;
+  const start = Math.max(0, stat.size - maxBytes);
+  const fd = openSync(file, "r");
+  let content: string;
+  try {
+    const buffer = Buffer.alloc(stat.size - start);
+    const bytesRead = readSync(fd, buffer, 0, buffer.length, start);
+    content = buffer.subarray(0, bytesRead).toString("utf-8");
+  } finally {
+    closeSync(fd);
+  }
   const allLines = content.split("\n");
   return allLines.slice(-lines).join("\n");
 }

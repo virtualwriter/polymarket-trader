@@ -1,0 +1,12 @@
+[Unit]
+Description=Polymarket nightly research — calibration backfill/compaction, event report, buckets summary, lessons artifact, journal compaction (Phase 4 research/execution split)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/polymarket-trader
+EnvironmentFile=/etc/polymarket-trader.env
+ExecStart=/usr/local/bin/run-polymarket-nightly-research
+TimeoutStartSec=45m
+MemoryMax=700M

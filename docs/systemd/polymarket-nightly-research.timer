@@ -1,0 +1,10 @@
+[Unit]
+Description=Run Polymarket nightly research at 03:05 ET
+
+[Timer]
+OnCalendar=*-*-* 03:05:00 America/New_York
+Persistent=true
+Unit=polymarket-nightly-research.service
+
+[Install]
+WantedBy=timers.target
