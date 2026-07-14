@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T18:28:12.518Z",
+  "generatedAt": "2026-07-14T19:29:37.919Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -13,18 +13,29 @@
       "direction": "long",
       "strength": 1,
       "confidence": 0.5240278321453544,
-      "thesis": "GOLD P/C ratio 2.58 — heavy put buying → contrarian long.",
+      "thesis": "GOLD P/C ratio 3.20 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4059,
-      "targetPct": 6,
+      "entryPrice": 4055,
+      "targetPct": 4,
       "stopPct": 1.5,
-      "expiryDays": 21
+      "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "sell",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "thesis": "Sell-YES edge 5.1pt on BTC $67,500 July contract (slug: what-price-will-bitcoin-hit-in-july-2026, marketId: 2758339). Tight 1c spread, strong liquidity. Exit when edge disappears or falls below 1pt."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }
