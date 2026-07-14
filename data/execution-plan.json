@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-14T21:28:10.511Z",
+  "generatedAt": "2026-07-14T22:29:40.139Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,16 +15,46 @@
       "confidence": 0.5240278321453544,
       "thesis": "GOLD P/C ratio 2.71 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4056,
+      "entryPrice": 4052,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
+    },
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.045999999999999985,
+      "confidence": 0.02368416511346637,
+      "thesis": "GOLD HL funding 16.6% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4052,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
-  "skippedLlmActions": [],
+  "skippedLlmActions": [
+    {
+      "instruction": {
+        "action": "buy",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "long",
+        "evidenceColumns": [
+          "btc_spot",
+          "btc_pm_iv"
+        ],
+        "thesis": "[Shadow] Relative-value heatmap edge: buy YES on BTC $80k July (marketId 2758334). Options model probability 1.74% vs PM YES 0.85% gives 0.84pt edge. Underlying-cap ratio 0.010 (<0.35) indicates cheap vs spot/strike cap. Liquid market (liquidity 64k, spread 1c). Testing H-526 cap-ratio shadow hypothesis. Exit when edge disappears or after 14d."
+      },
+      "reason": "Direct LLM entries remain disabled; hypotheses must be promoted before trading."
+    }
+  ],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 1 non-close instructions skipped."
   ]
 }
