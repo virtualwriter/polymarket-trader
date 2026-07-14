@@ -52051,3 +52051,51 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 8/12; ne
 
 ---
 
+### 2026-07-14 17:06 UTC
+
+**Portfolio:** $98.59 total | Cash $97.59 | 1 open | P&L $1.1102 | 61% win rate (460 trades)
+
+**Closed 10 trades:**
+- ❌ RKLB long via hyperliquid/hl_perp [HL RKLB Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → undefined: $-0.0175 (-1.8%, market -0.0176, funding 0.0001)
+- ✅ PLTR long via hyperliquid/hl_perp [HL PLTR Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → undefined: +$0.0100 (1.0%, market 0.0095, funding 0.0005)
+- ✅ SNDK long via hyperliquid/hl_perp [HL SNDK Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → undefined: +$0.0084 (0.8%, market 0.0082, funding 0.0002)
+- ❌ AMD long via hyperliquid/hl_perp [HL AMD Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → undefined: $-0.0464 (-4.6%, market -0.0481, funding 0.0017)
+- ❌ META long via hyperliquid/hl_perp [HL META Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → undefined: $-0.0028 (-0.3%, market -0.0028, funding 0.0000)
+- ❌ ZM long via hyperliquid/hl_perp [HL ZM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → undefined: $-0.0299 (-3.0%, market -0.0345, funding 0.0046)
+- ❌ TSM long via hyperliquid/hl_perp [HL TSM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → undefined: $-0.0044 (-0.4%, market -0.0050, funding 0.0007)
+- ✅ HOOD long via hyperliquid/hl_perp [HL HOOD Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → undefined: +$0.0165 (1.6%, market 0.0161, funding 0.0004)
+- ✅ EBAY long via hyperliquid/hl_perp [HL EBAY Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → undefined: +$0.0000 (0.0%, market -0.0039, funding 0.0038)
+- ✅ AMZN long via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT) → llm_decision: +$0.0001 (0.0%, market 0.0002, funding -0.0001)
+
+**Opened 1 positions:**
+- GOLD long @ $4061 via spot/spot [GOLD spot] (PC_RATIO_EXTREME_HIGH)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 3 condition-triggered setup-family shadow tests from the first 25 LLM setup families.
+- 🧪 Hypothesis setup retest queue: 11 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_gld_pc_ratio = 2.862 is 6.6 std devs from mean (0.73 ± 0.33)
+- [anomaly] btc_opt_iv_term_spread = -19.05 is -3.4 std devs from mean (-0.48 ± 5.47)
+- [anomaly] btc_opt_iv_90d = 54.5 is 2.2 std devs from mean (39.82 ± 6.56)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.36 to 0.54. Rolling correlation: 24h=0.23, 7d=-0.87, 30d=0.46. Current 24h corr is at 67th pct of last 30 daily 24h-rolling values (range -0.91 to 0.92).
+
+**Blocked signal learning:**
+- Open blocked shadows: 57
+- Resolved blocked shadows: 522 (300 wins / 222 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 11/20 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_YES_SHADOW HYPE long via polymarket would have edge compressed but trade lost money (-2.56%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expired (+1.67%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit stop (-7.26%)
+
+**LLM analysis:**
+Closed AMZN long as funding normalized and flipped positive, removing the crowded-short thesis. BTC's term structure anomaly (30d IV 35.4 vs 90d IV 54.5, -19pt spread) is the most notable cross-venue datapoint today; this extreme backwardation may signal dealer hedging stress or a regime shift in options. Oil's persistent negative funding and weak spot suggest continued downside pressure; however, OIL FUNDING_EXTREME_SHORT is disabled, so no action. Current backlog of LLM shadow tests remains at 17/35 families needing more data – no new hypotheses should be proposed until that backlog clears.
+
+---
+
