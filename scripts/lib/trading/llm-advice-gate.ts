@@ -105,3 +105,51 @@ export function buildGatedLlmAdvice<TParameterUpdates>(inputs: {
     parameterUpdates: inputs.llmResult.parameterUpdates,
   };
 }
+
+export interface LlmShadowSignalDraft {
+  type: "LLM_HYPOTHESIS";
+  asset: string;
+  venue: LlmAdviceVenue;
+  direction: Exclude<LlmAdviceDirection, "any">;
+  strength: number;
+  confidence: number;
+  thesis: string;
+  hypothesisId: null;
+  entryPrice: number;
+  targetPct: number | null;
+  stopPct: number;
+  expiryDays: number;
+}
+
+/**
+ * Convert a skipped LLM entry instruction into a shadow-signal draft so
+ * unvetted ideas are measured instead of silently discarded. Live entries
+ * stay disabled (the gate above skips them); this preserves the learning
+ * signal so promotion decisions can be made on evidence. Returns null when
+ * the instruction cannot be expressed as a shadow (close action, unknown
+ * entry price).
+ */
+export function llmEntryInstructionToShadowDraft(
+  instruction: LlmAdviceInstruction,
+  opts: { entryPrice: number | null; targetPct: number | null; stopPct: number; expiryDays: number },
+): LlmShadowSignalDraft | null {
+  if (instruction.action === "close") return null;
+  if (opts.entryPrice === null || !(opts.entryPrice > 0)) return null;
+  const direction: Exclude<LlmAdviceDirection, "any"> = instruction.direction !== "any"
+    ? instruction.direction
+    : instruction.action === "buy" ? "long" : "short";
+  return {
+    type: "LLM_HYPOTHESIS",
+    asset: instruction.asset,
+    venue: instruction.venue,
+    direction,
+    strength: 0.5,
+    confidence: 0.5,
+    thesis: `[LLM UNPROMOTED ENTRY SHADOW] ${instruction.thesis}`,
+    hypothesisId: null,
+    entryPrice: opts.entryPrice,
+    targetPct: opts.targetPct,
+    stopPct: opts.stopPct,
+    expiryDays: opts.expiryDays,
+  };
+}

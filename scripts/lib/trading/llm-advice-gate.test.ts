@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildGatedLlmAdvice, type LlmAdviceInstruction } from "./llm-advice-gate.js";
+import { buildGatedLlmAdvice, llmEntryInstructionToShadowDraft, type LlmAdviceInstruction } from "./llm-advice-gate.js";
 
 const baseInstruction: LlmAdviceInstruction = {
   action: "close",
@@ -112,5 +112,44 @@ describe("LLM advice gate", () => {
     });
 
     expect(result.rejectedCloses[0].reason).toBe("LLM close rejected: profit-taking on rule-based signals is handled by mechanical targets.");
+  });
+});
+
+describe("llmEntryInstructionToShadowDraft", () => {
+  const buyInstruction: LlmAdviceInstruction = {
+    action: "buy",
+    asset: "BTC",
+    venue: "spot",
+    direction: "long",
+    thesis: "BTC momentum idea.",
+  };
+  const opts = { entryPrice: 60000, targetPct: 3.5, stopPct: 2.5, expiryDays: 14 };
+
+  it("converts a buy instruction into a shadow-only LLM_HYPOTHESIS draft", () => {
+    const draft = llmEntryInstructionToShadowDraft(buyInstruction, opts);
+    expect(draft).toMatchObject({
+      type: "LLM_HYPOTHESIS",
+      asset: "BTC",
+      venue: "spot",
+      direction: "long",
+      entryPrice: 60000,
+      targetPct: 3.5,
+      stopPct: 2.5,
+      expiryDays: 14,
+    });
+    expect(draft?.thesis).toContain("[LLM UNPROMOTED ENTRY SHADOW]");
+  });
+
+  it("infers direction from the action when direction is 'any'", () => {
+    const sell = llmEntryInstructionToShadowDraft({ ...buyInstruction, action: "sell", direction: "any" }, opts);
+    expect(sell?.direction).toBe("short");
+    const buy = llmEntryInstructionToShadowDraft({ ...buyInstruction, direction: "any" }, opts);
+    expect(buy?.direction).toBe("long");
+  });
+
+  it("returns null for close instructions and unknown entry prices", () => {
+    expect(llmEntryInstructionToShadowDraft({ ...buyInstruction, action: "close" }, opts)).toBeNull();
+    expect(llmEntryInstructionToShadowDraft(buyInstruction, { ...opts, entryPrice: null })).toBeNull();
+    expect(llmEntryInstructionToShadowDraft(buyInstruction, { ...opts, entryPrice: 0 })).toBeNull();
   });
 });

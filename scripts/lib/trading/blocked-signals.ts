@@ -10,7 +10,8 @@ type BlockedSignalReason =
   | "one_touch_high_edge_shadow"
   | "stale_lottery_ticket_shadow"
   | "weekend_hl_funding_shadow"
-  | "no_bias_adjusted_gap_shadow";
+  | "no_bias_adjusted_gap_shadow"
+  | "live_entry_not_promoted";
 type BlockedSignalCloseReason =
   | "target"
   | "stop"

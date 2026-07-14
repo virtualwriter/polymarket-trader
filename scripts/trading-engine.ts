@@ -63,7 +63,7 @@ import {
   rejectionJournalSection,
   statObservationJournalSection,
 } from "./lib/trading/journal-sections.js";
-import { buildGatedLlmAdvice } from "./lib/trading/llm-advice-gate.js";
+import { buildGatedLlmAdvice, llmEntryInstructionToShadowDraft } from "./lib/trading/llm-advice-gate.js";
 import {
   buildMonotonicPreflightReport,
   isValidMonotonicArbPackage,
@@ -650,7 +650,7 @@ interface BlockedSignalShadow {
   status: "open" | "resolved" | "cancelled";
   blockedAt: string;
   resolvedAt?: string;
-  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short" | "relative_value_heatmap" | "monotonic_arb_shadow" | "one_touch_high_edge_shadow" | "stale_lottery_ticket_shadow" | "weekend_hl_funding_shadow" | "no_bias_adjusted_gap_shadow";
+  blockedReason: "short_blocked_by_positive_trend" | "iv_downside_leg_untracked" | "manual_shadow_trade" | "polymarket_proxy_short" | "relative_value_heatmap" | "monotonic_arb_shadow" | "one_touch_high_edge_shadow" | "stale_lottery_ticket_shadow" | "weekend_hl_funding_shadow" | "no_bias_adjusted_gap_shadow" | "live_entry_not_promoted";
   signalType: string;
   asset: string;
   venue: Signal["venue"];
@@ -6983,6 +6983,73 @@ function gateLlmAdvice(llmResult: LlmAnalysisResult | null, portfolio: Portfolio
   });
 }
 
+// Phase 2 of the July infrastructure plan: unvetted LLM entry ideas never
+// trade live (the advice gate skips them; LLM_HYPOTHESIS is not in
+// LIVE_SIGNAL_ALLOWLIST) — but discarding them silently also throws away
+// the evidence needed to judge the LLM's idea quality. Record each skipped
+// buy/sell as a $1 shadow so the ledger measures what the idea would have
+// done. Live entry still requires the normal promotion bar
+// (all-time record of raw live LLM ideas: 25 trades, -$0.29 vs promoted
+// survivors +$0.14 over 52 — the filter is the edge).
+function recordUnpromotedLlmEntryShadows(
+  skippedTrades: GatedLlmAdvice["skippedTrades"],
+  rows: SnapshotRow[],
+  learningParams: LearningParams,
+  latestRow: SnapshotRow,
+  latestSnapshot: InstrumentSnapshotFile | null,
+  blockedSignals: BlockedSignalShadow[],
+): number {
+  let recorded = 0;
+  const llmRisk = riskForSignal(learningParams, "LLM_HYPOTHESIS");
+  for (const skipped of skippedTrades) {
+    const draft = llmEntryInstructionToShadowDraft(skipped.instruction, {
+      entryPrice: getAssetPrice(latestRow, skipped.instruction.asset),
+      targetPct: llmRisk.targetPct,
+      stopPct: llmRisk.stopPct,
+      expiryDays: learningParams.llmTradeExpiryDays,
+    });
+    if (!draft) continue;
+
+    const key = blockedSignalKey(draft);
+    if (blockedSignals.some((shadow) =>
+      shadow.status === "open"
+      && blockedSignalKey({ type: shadow.signalType, asset: shadow.asset, venue: shadow.venue, direction: shadow.direction }) === key
+    )) continue;
+
+    const position = buildPositionFromSignal(draft, latestRow, latestSnapshot);
+    if (!position) continue;
+    applyConservativePolymarketEntry(position, latestSnapshot);
+    const blockedAt = new Date().toISOString();
+    position.id = `LU-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    position.openedAt = blockedAt;
+
+    blockedSignals.push({
+      id: position.id,
+      status: "open",
+      blockedAt,
+      blockedReason: "live_entry_not_promoted",
+      signalType: draft.type,
+      asset: draft.asset,
+      venue: draft.venue,
+      direction: draft.direction,
+      confidence: draft.confidence,
+      thesis: draft.thesis,
+      marketQuality: polymarketMarketQuality(position, latestSnapshot),
+      learningParamsSnapshot: {
+        macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+        contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
+        positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
+        llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
+        momentumLongExpiryDays: learningParams.momentumLongExpiryDays,
+        signalRisk: learningParams.signalRisk,
+      },
+      position,
+    });
+    recorded++;
+  }
+  return recorded;
+}
+
 function buildExecutionPlan(candidateActions: CandidateActions, gatedAdvice: GatedLlmAdvice, signals: Signal[]): ExecutionPlan {
   return buildExecutionPlanArtifact({
     candidateActions,
@@ -7375,7 +7442,7 @@ IMPORTANT RULES:
 - Every newHypothesis MUST include a direction field: "long" if the spot/perp price is predicted to go up, "short" if predicted down, "neutral" for vol/IV/spread/basis theses that do NOT carry a directional spot view (e.g. "BTC IV expands as PM IV mean reverts" — the price could go either way). Direction is enforced as the authoritative signal when the hypothesis is later promoted; do NOT rely on the engine to infer direction from prose. If the thesis is contrarian, "long" still means buy spot (e.g. "P/C extreme high → contrarian long" is direction=long, not short).
 - Existing LLM hypotheses must receive ${HYPOTHESIS_SHADOW_TESTS_REQUIRED} condition-triggered shadow tests before promotion/kill/inconclusive demotion. Do not create new hypotheses while the backlog is incomplete.
 - Similar hypotheses are grouped into setup families. Promotion/kill decisions happen at the setup-family level, not per wording variant. Prefer reviewing whether the parent setup is working over proposing near-duplicate threshold variants.
-- Generic live LLM_HYPOTHESIS entries are retired. The LLM may propose hypotheses for shadow testing and may advise eligible closes, but live entries require a non-retired promoted setup family.
+- Generic live LLM_HYPOTHESIS entries are retired. The LLM may propose hypotheses for shadow testing and may advise eligible closes, but live entries require a non-retired promoted setup family. Any buy/sell instruction you emit is recorded as a $1 shadow trade (never live) so your idea quality is measured against the promotion bar; emit entries only when you have genuine conviction, since these shadows are scored.
 - Focus on cross-venue divergences and patterns the rule-based system can't detect
 - Be honest about what's working and what isn't
 - If a pattern stopped working, explain WHY you think it changed
@@ -8129,6 +8196,12 @@ async function main() {
       }
       for (const skipped of gatedAdvice.skippedTrades) {
         console.log(`    Skipped LLM ${skipped.instruction.action}: ${skipped.reason}`);
+      }
+      const unpromotedShadows = recordUnpromotedLlmEntryShadows(
+        gatedAdvice.skippedTrades, valRows, learningParams, latestRow, latestSnapshot, blockedSignals,
+      );
+      if (unpromotedShadows > 0) {
+        console.log(`    Recorded ${unpromotedShadows} unpromoted LLM entry idea(s) as $1 shadows (live entry requires promotion).`);
       }
       if (gatedAdvice.rejectedCloses.length > 0 && !MUTATION_DISABLED) {
         const tracked = recordLlmCloseRejections(gatedAdvice.rejectedCloses, portfolio);
