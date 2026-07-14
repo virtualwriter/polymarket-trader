@@ -645,6 +645,21 @@ interface Signal {
   };
 }
 
+// Why a shadow resolved, as a first-class enum. Historical records may carry
+// only the legacy thesis-string annotation; the backfill script
+// (scripts/backfill_shadow_close_context.py) stamps triggers where the text
+// is unambiguous and leaves the rest untagged rather than guessed.
+type ShadowCloseTrigger =
+  | "target_hit"
+  | "stop_hit"
+  | "expiry"
+  | "observed_gap_closed"          // one-touch: row present, edge compressed below entry threshold
+  | "adjusted_no_gap_disappeared"  // NO-bias: row present, adjusted-gap gates failed
+  | "weekend_window_closed"        // weekend HL funding: US equity market reopened
+  | "weekend_funding_normalized"   // weekend HL funding: funding rose above exit threshold
+  | "manual_close"                 // operator-initiated close via the Telegram bot
+  | "legacy_gate_force_close";     // pre-2026-07-10 resolver artifact (gate flicker / coverage loss)
+
 interface BlockedSignalShadow {
   id: string;
   status: "open" | "resolved" | "cancelled";
@@ -685,6 +700,12 @@ interface BlockedSignalShadow {
       | "thesis_validated"
       | "thesis_validated_profitable"
       | "thesis_compressed_loss";
+    // Structured close provenance (July 2026 infrastructure plan, Phase 3).
+    // closeReason says WHAT the outcome bucket was; closeTrigger says WHY the
+    // shadow resolved. Consumers must read these fields, never regex `thesis`
+    // (close annotations are still appended there for humans only).
+    closeTrigger?: ShadowCloseTrigger;
+    closeNote?: string;
     exitPrice: number;
     pnl: number;
     pnlPct: number;
@@ -4534,10 +4555,15 @@ function excludeGateForceCloseArtifacts(blockedSignals: BlockedSignalShadow[]): 
   let noBias = 0;
   for (const shadow of blockedSignals) {
     if (shadow.status !== "resolved" || shadow.learningExcluded) continue;
+    // Prefer the structured closeTrigger (Phase 3); fall back to the legacy
+    // thesis annotation only for records the backfill has not stamped yet.
+    const trigger = shadow.hypotheticalResult?.closeTrigger;
+    const isLegacyOneTouchForceClose = trigger === "legacy_gate_force_close"
+      || (trigger === undefined && shadow.thesis.includes("edge_disappeared"));
     if (
       shadow.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO
       && shadow.blockedReason === "one_touch_high_edge_shadow"
-      && shadow.thesis.includes("edge_disappeared")
+      && isLegacyOneTouchForceClose
     ) {
       shadow.learningExcluded = {
         reason: "one_touch_gate_force_close_artifact",
@@ -4664,14 +4690,34 @@ function resolveBlockedSignalShadows(
         !isStockPerpFundingWindowOpen()
         || (getHyperliquidFundingFromSnapshot(latestInstrumentSnapshot(snapshots), shadow.asset) ?? Number.NEGATIVE_INFINITY) >= WEEKEND_HL_FUNDING_EXIT_PCT
       );
-    if (weekendFundingExit) closeReason = !isStockPerpFundingWindowOpen()
-      ? "expiry"
-      : mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
-    else if (!expiryOnlyShadow && shadow.position.targetPct !== null && mark.pnlPct >= shadow.position.targetPct) closeReason = "target";
-    else if (!expiryOnlyShadow && mark.pnlPct <= -shadow.position.stopPct) closeReason = "stop";
-    else if (edgeDisappeared) closeReason = mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
-    else if (noBiasGapDisappeared) closeReason = mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
-    else if (new Date(shadow.position.expiryDate) <= new Date()) closeReason = "expiry";
+    let closeTrigger: ShadowCloseTrigger | undefined;
+    let closeNote: string | undefined;
+    if (weekendFundingExit) {
+      closeReason = !isStockPerpFundingWindowOpen()
+        ? "expiry"
+        : mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
+      closeTrigger = !isStockPerpFundingWindowOpen() ? "weekend_window_closed" : "weekend_funding_normalized";
+      closeNote = closeTrigger === "weekend_window_closed"
+        ? "US equity market reopened; weekend funding window over."
+        : `Funding normalized above ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}% annualized exit threshold.`;
+    } else if (!expiryOnlyShadow && shadow.position.targetPct !== null && mark.pnlPct >= shadow.position.targetPct) {
+      closeReason = "target";
+      closeTrigger = "target_hit";
+    } else if (!expiryOnlyShadow && mark.pnlPct <= -shadow.position.stopPct) {
+      closeReason = "stop";
+      closeTrigger = "stop_hit";
+    } else if (edgeDisappeared) {
+      closeReason = mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
+      closeTrigger = "observed_gap_closed";
+      closeNote = `Heatmap row present and touch edge compressed below ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}pt; spread/liquidity flicker and missing rows do not trigger this exit.`;
+    } else if (noBiasGapDisappeared) {
+      closeReason = mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
+      closeTrigger = "adjusted_no_gap_disappeared";
+      closeNote = `Heatmap row present but no longer passes adjusted NO-bias gates (gap threshold, spread <= ${(NO_BIAS_ADJUSTED_GAP_MAX_SPREAD * 100).toFixed(0)}c, liquidity >= ${NO_BIAS_ADJUSTED_GAP_MIN_LIQUIDITY}).`;
+    } else if (new Date(shadow.position.expiryDate) <= new Date()) {
+      closeReason = "expiry";
+      closeTrigger = "expiry";
+    }
 
     shadow.position.currentPrice = mark.currentPrice;
     shadow.position.currentUnderlyingPrice = mark.underlyingPrice ?? undefined;
@@ -4681,16 +4727,15 @@ function resolveBlockedSignalShadows(
 
     shadow.status = "resolved";
     shadow.resolvedAt = now;
-    if (edgeDisappeared) {
-      shadow.thesis = `${shadow.thesis} [CLOSED ${now}: observed_gap_closed — Heatmap row present and the touch edge itself compressed below ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}pt. Spread/liquidity flicker and missing rows do not trigger this exit (coverage loss = hold; resolver fixed 2026-07-10).]`;
-      shadow.position.thesis = shadow.thesis;
-    }
-    if (noBiasGapDisappeared) {
-      shadow.thesis = `${shadow.thesis} [CLOSED ${now}: adjusted_no_gap_disappeared — Current heatmap no longer passes adjusted NO-bias gates: adjusted gap threshold, spread <= ${(NO_BIAS_ADJUSTED_GAP_MAX_SPREAD * 100).toFixed(0)}c, liquidity >= ${NO_BIAS_ADJUSTED_GAP_MIN_LIQUIDITY}.]`;
+    // Human-readable annotation only — all classification reads closeTrigger.
+    if (closeTrigger === "observed_gap_closed" || closeTrigger === "adjusted_no_gap_disappeared") {
+      shadow.thesis = `${shadow.thesis} [CLOSED ${now}: ${closeTrigger} — ${closeNote}]`;
       shadow.position.thesis = shadow.thesis;
     }
     shadow.hypotheticalResult = {
       closeReason,
+      closeTrigger,
+      ...(closeNote ? { closeNote } : {}),
       exitPrice: mark.currentPrice,
       pnl: Number(mark.pnl.toFixed(4)),
       pnlPct: Number(mark.pnlPct.toFixed(2)),

@@ -797,6 +797,8 @@ function confirmAction(chatId: string, id: string | undefined): string {
       shadow.resolvedAt = now;
       shadow.hypotheticalResult = {
         closeReason,
+        closeTrigger: "manual_close",
+        closeNote: `Operator close via Telegram (${action.reason}).`,
         exitPrice: Number(mark.exitPrice.toFixed(6)),
         pnl: Number(mark.pnl.toFixed(4)),
         pnlPct: Number(mark.pnlPct.toFixed(2)),

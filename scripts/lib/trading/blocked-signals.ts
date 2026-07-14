@@ -45,6 +45,8 @@ export interface BlockedSignalSummaryShadow {
     outcome: "win" | "loss";
     closeReason: BlockedSignalCloseReason;
     pnlPct: number;
+    closeTrigger?: string;
+    closeNote?: string;
   };
   sourceComparison?: unknown;
   learningExcluded?: unknown;

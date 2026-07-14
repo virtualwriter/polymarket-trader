@@ -2,6 +2,14 @@ import type { BuildCsvReportArgs, ReportBlockedSignalShadow, ReportClosedTrade, 
 import { addStats, emptyStats, grouped, sortStatsRows } from "./stats.js";
 import type { Stats } from "./stats.js";
 
+/** Shadows may carry structured close metadata on hypotheticalResult (engine writes since 2026-07). */
+export type ReportShadowWithCloseTrigger = ReportBlockedSignalShadow & {
+  hypotheticalResult?: NonNullable<ReportBlockedSignalShadow["hypotheticalResult"]> & {
+    closeTrigger?: string;
+    closeNote?: string;
+  };
+};
+
 export interface BuildReportInputsArgs {
   generatedAt: string;
   portfolio: ReportPortfolio;
@@ -56,16 +64,25 @@ function shadowKey(shadow: ReportBlockedSignalShadow): string {
 }
 
 /**
- * One-touch NO shadows resolved on "edge_disappeared" were force-closed at a
- * mid-flight mark instead of being held to expiry as the family's convention
- * requires (the resolver bug is fixed in trading-engine.ts, 2026-07-10).
- * Those historical closes are measurement artifacts, not strategy results,
- * so they are excluded from shadow P&L rollups.
+ * One-touch NO shadows force-closed at a mid-flight mark instead of being held
+ * to expiry are measurement artifacts, not strategy results, so they are
+ * excluded from shadow P&L rollups.
+ *
+ * Prefer `hypotheticalResult.closeTrigger === "legacy_gate_force_close"` when
+ * present (all new engine writes include closeTrigger). Fall back to
+ * `thesis.includes("edge_disappeared")` only for pre-backfill records that
+ * lack closeTrigger.
  */
-export function isForceClosedOneTouchShadow(shadow: ReportBlockedSignalShadow): boolean {
-  return shadow.signalType === "ONE_TOUCH_HIGH_EDGE_NO"
-    && shadow.blockedReason === "one_touch_high_edge_shadow"
-    && shadow.thesis.includes("edge_disappeared");
+export function isForceClosedOneTouchShadow(shadow: ReportShadowWithCloseTrigger): boolean {
+  if (shadow.signalType !== "ONE_TOUCH_HIGH_EDGE_NO") return false;
+  if (shadow.blockedReason !== "one_touch_high_edge_shadow") return false;
+
+  const closeTrigger = shadow.hypotheticalResult?.closeTrigger;
+  if (closeTrigger !== undefined) {
+    return closeTrigger === "legacy_gate_force_close";
+  }
+
+  return shadow.thesis.includes("edge_disappeared");
 }
 
 function hypothesisStats(hypothesis: ReportHypothesis): Stats {

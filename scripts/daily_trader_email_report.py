@@ -281,11 +281,14 @@ def shadow_line(shadow: dict[str, Any], tz: ZoneInfo, resolved: bool) -> str:
     if resolved:
         result = shadow.get("hypotheticalResult", {})
         learnable = "excluded" if shadow.get("learningExcluded") else "learnable"
+        close_trigger = result.get("closeTrigger")
+        close_reason = result.get("closeReason")
+        close_label = f"{close_reason}/{close_trigger}" if close_trigger else close_reason
         return (
             f"- {eastern_hour(shadow.get('resolvedAt'))} | RESOLVED | {shadow.get('asset')} "
             f"{shadow.get('direction')} via {shadow.get('venue')}/{position.get('instrumentType') or 'legacy'} "
             f"{shadow.get('blockedReason')} ({shadow.get('signalType')}) "
-            f"{result.get('closeReason')}: {money(num(result.get('pnl')))} / {pct(num(result.get('pnlPct')))} "
+            f"{close_label}: {money(num(result.get('pnl')))} / {pct(num(result.get('pnlPct')))} "
             f"[{short_label(position.get('instrumentLabel'))}] ({learnable})"
         )
     return (
@@ -302,15 +305,21 @@ def is_macro_report_shadow(shadow: dict[str, Any]) -> bool:
 
 
 def is_force_closed_one_touch_shadow(shadow: dict[str, Any]) -> bool:
-    """Historical one-touch NO shadows force-closed on edge_disappeared are
+    """Historical one-touch NO shadows force-closed via legacy gate are
     measurement artifacts (family convention is hold-to-expiry; resolver bug
-    fixed 2026-07-10 in trading-engine.ts). Mirror of
-    isForceClosedOneTouchShadow in scripts/lib/reporting/report-inputs.ts."""
-    return (
-        shadow.get("signalType") == "ONE_TOUCH_HIGH_EDGE_NO"
-        and shadow.get("blockedReason") == "one_touch_high_edge_shadow"
-        and "edge_disappeared" in (shadow.get("thesis") or "")
-    )
+    fixed 2026-07-10 in trading-engine.ts). Prefers hypotheticalResult.closeTrigger
+    when present; falls back to thesis edge_disappeared substring for older
+    records. Mirror of isForceClosedOneTouchShadow in
+    scripts/lib/reporting/report-inputs.ts."""
+    if (
+        shadow.get("signalType") != "ONE_TOUCH_HIGH_EDGE_NO"
+        or shadow.get("blockedReason") != "one_touch_high_edge_shadow"
+    ):
+        return False
+    trigger = (shadow.get("hypotheticalResult") or {}).get("closeTrigger")
+    if trigger is not None:
+        return trigger == "legacy_gate_force_close"
+    return "edge_disappeared" in (shadow.get("thesis") or "")
 
 
 def journal_sections_for_window(path: Path, start_utc: datetime, end_utc: datetime, tz: ZoneInfo) -> list[str]:
