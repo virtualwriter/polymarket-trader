@@ -11,6 +11,7 @@
  */
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statSync, openSync, readSync, closeSync } from "node:fs";
+import { StringDecoder } from "node:string_decoder";
 import { join } from "node:path";
 import { z } from "zod";
 import {
@@ -1147,29 +1148,72 @@ function noBiasEntryPrice(row: Record<string, unknown>): number | null {
 
 function loadNoBiasCalibrationBuckets(path = NO_BIAS_CALIBRATION_JSONL): SizingCalibrationBucket[] {
   if (!existsSync(path)) return [];
-  const byMarket = new Map<string, Record<string, unknown>[]>();
-  for (const line of readFileSync(path, "utf-8").split("\n")) {
-    if (!line.trim()) continue;
+  // The calibration log grows without bound (240MB+ / 150k rows on the VPS as
+  // of 2026-07-14) and the previous implementation retained every parsed row
+  // in memory, which OOM-crashed the engine on the 1GB VPS every run from
+  // Jul 11 onward. Stream the file in chunks and keep only a tiny per-market
+  // aggregate: the earliest resolved outcome and the earliest gate-passing
+  // row's entry price + asset (same selection the old sort-then-find did).
+  interface MarketAgg {
+    outcome: "YES" | "NO" | null;
+    outcomeTs: string;
+    passTs: string;
+    passEntry: number | null;
+    passAsset: string;
+    hasPass: boolean;
+  }
+  const byMarket = new Map<string, MarketAgg>();
+  const consumeLine = (line: string): void => {
+    if (!line.trim()) return;
     try {
       const row = JSON.parse(line) as Record<string, unknown>;
       const marketId = String(row.market_id ?? "");
-      if (!marketId) continue;
-      const rows = byMarket.get(marketId) ?? [];
-      rows.push(row);
-      byMarket.set(marketId, rows);
+      if (!marketId) return;
+      const ts = String(row.timestamp ?? "");
+      let agg = byMarket.get(marketId);
+      if (!agg) {
+        agg = { outcome: null, outcomeTs: "", passTs: "", passEntry: null, passAsset: "", hasPass: false };
+        byMarket.set(marketId, agg);
+      }
+      if ((row.resolved_outcome === "YES" || row.resolved_outcome === "NO")
+          && (agg.outcome === null || ts < agg.outcomeTs)) {
+        agg.outcome = row.resolved_outcome;
+        agg.outcomeTs = ts;
+      }
+      if (row.candidate_passed === true && (!agg.hasPass || ts < agg.passTs)) {
+        agg.hasPass = true;
+        agg.passTs = ts;
+        agg.passEntry = noBiasEntryPrice(row);
+        agg.passAsset = String(row.asset ?? "");
+      }
     } catch {}
+  };
+
+  const fd = openSync(path, "r");
+  try {
+    const chunk = Buffer.alloc(8 * 1024 * 1024);
+    const decoder = new StringDecoder("utf8");
+    let carry = "";
+    for (;;) {
+      const bytesRead = readSync(fd, chunk, 0, chunk.length, null);
+      if (bytesRead === 0) break;
+      const lines = (carry + decoder.write(chunk.subarray(0, bytesRead))).split("\n");
+      carry = lines.pop() ?? "";
+      for (const line of lines) consumeLine(line);
+    }
+    consumeLine(carry + decoder.end());
+  } finally {
+    closeSync(fd);
   }
 
   const byAsset = new Map<string, { n: number; wins: number }>();
   let total = 0;
   let wins = 0;
-  for (const rows of byMarket.values()) {
-    rows.sort((a, b) => String(a.timestamp ?? "").localeCompare(String(b.timestamp ?? "")));
-    const outcome = rows.find((row) => row.resolved_outcome === "YES" || row.resolved_outcome === "NO")?.resolved_outcome;
+  for (const agg of byMarket.values()) {
+    const outcome = agg.outcome;
     if (outcome !== "YES" && outcome !== "NO") continue;
-    const firstPass = rows.find((row) => row.candidate_passed === true);
-    if (!firstPass || noBiasEntryPrice(firstPass) === null) continue;
-    const asset = String(firstPass.asset ?? "");
+    if (!agg.hasPass || agg.passEntry === null) continue;
+    const asset = agg.passAsset;
     const won = outcome === "NO";
     total++;
     if (won) wins++;
