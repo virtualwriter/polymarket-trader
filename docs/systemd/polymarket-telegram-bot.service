@@ -1,0 +1,18 @@
+[Unit]
+Description=Polymarket trader interactive Telegram bot (read-only analyst)
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/polymarket-trader
+EnvironmentFile=/etc/polymarket-trader.env
+ExecStart=/usr/bin/npx tsx scripts/telegram-trader-bot.ts
+Restart=always
+RestartSec=10
+# Long-polling analyst over existing state files; must never grow into the
+# engine's footprint on the 1GB VPS.
+MemoryMax=300M
+
+[Install]
+WantedBy=multi-user.target
