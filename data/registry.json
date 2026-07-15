@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "records": [
+    {
+      "id": "STRAT-0001",
+      "type": "strategy",
+      "evidenceClass": "VALID",
+      "status": "active",
+      "title": "Weekend HL funding reversion (WEEKEND_HL_FUNDING_REVERSION_LONG)",
+      "body": {
+        "universe": "Hyperliquid Builder DEX stock perps",
+        "window": "Fri 4:00pm ET - Mon 9:30am ET (US equities closed)",
+        "entry": "annualized funding in [-100%, -50%]",
+        "exit": "first of: window close, funding >= +10% annualized, +3% margin P&L target, 24h max hold; no stop loss (stopPct 100)",
+        "leverage": 5,
+        "cleanPnlUsd": 0.8892,
+        "cleanTrades": 170,
+        "implementation": "scripts/trading-engine.ts WEEKEND_HL_FUNDING_* constants"
+      },
+      "links": {
+        "relatedRecords": [
+          "PARAM-0001",
+          "DEC-0001",
+          "INC-0002"
+        ]
+      },
+      "created": "2026-07-15T17:00:00Z",
+      "source": "backfill-2026-07-15"
+    },
+    {
+      "id": "STRAT-0002",
+      "type": "strategy",
+      "evidenceClass": "VALID",
+      "status": "retired",
+      "title": "One-touch high-edge NO (ONE_TOUCH_HIGH_EDGE_NO)",
+      "body": {
+        "record": "4/4 wins, +0.7367 total",
+        "retirement": "disabled via ENABLE_ONE_TOUCH_HIGH_EDGE_NO_OPENING=false, retired well before 2026-07; original rationale not preserved in any machine-readable form"
+      },
+      "links": {
+        "relatedRecords": [
+          "DEC-0002"
+        ]
+      },
+      "created": "2026-07-15T17:00:00Z",
+      "source": "backfill-2026-07-15",
+      "needsOperatorAnnotation": true
+    },
+    {
+      "id": "STRAT-0003",
+      "type": "strategy",
+      "evidenceClass": "VALID",
+      "status": "retired",
+      "title": "Polymarket monotonic strike arbitrage (MONOTONIC_ARB)",
+      "body": {
+        "cleanPnlUsd": 0.0545,
+        "cleanTrades": 38,
+        "disposition": "strategy migrated out of polymarket-trader repo (continues in sports-arb); excluded from engine learning by isEngineLearnableClosedTrade"
+      },
+      "links": {
+        "relatedRecords": [
+          "DEC-0003",
+          "INC-0001"
+        ]
+      },
+      "created": "2026-07-15T17:00:00Z",
+      "source": "backfill-2026-07-15"
+    },
+    {
+      "id": "PARAM-0001",
+      "type": "parameter-change",
+      "evidenceClass": "DERIVED",
+      "status": "final",
+      "title": "Weekend funding entry band tightened to mid-tier",
+      "body": {
+        "parameter": "WEEKEND_HL_FUNDING entry band",
+        "from": "funding <= -0.30 annualized",
+        "to": "-1.00 <= funding <= -0.50 annualized",
+        "evidence": "backtest (.runtime/funding-analysis-bundle/Funding Rate Analysis_Summary.md section D): shallow band (-0.30..-0.50) 197 trades -0.085% avg -16.8% cum; deep band (<=-1.00) 100 trades -0.017% avg -1.7% cum; mid band 91 trades +1.07% avg +97.1% cum Sharpe 0.223 (~4.7x baseline)"
+      },
+      "links": {
+        "relatedRecords": [
+          "DEC-0001"
+        ]
+      },
+      "created": "2026-06-01T00:00:00Z",
+      "source": "backfill-2026-07-15"
+    },
+    {
+      "id": "DEC-0001",
+      "type": "decision",
+      "evidenceClass": "VALID",
+      "status": "final",
+      "title": "Adopt mid-tier weekend funding entry band",
+      "body": {
+        "rationale": "Backtest showed mid band [-100%,-50%] is the only profitable tier; shallow band was a net-negative drag and deep band flat with more tail risk"
+      },
+      "links": {
+        "relatedRecords": [
+          "PARAM-0001",
+          "STRAT-0001"
+        ]
+      },
+      "created": "2026-06-01T00:00:00Z",
+      "source": "backfill-2026-07-15"
+    },
+    {
+      "id": "DEC-0002",
+      "type": "decision",
+      "evidenceClass": "VALID",
+      "status": "final",
+      "title": "Retire one-touch high-edge NO strategy",
+      "body": {
+        "rationale": "Operator decision, made well before 2026-07. Recorded rationale not preserved; needs operator annotation. Perfect 4/4 record is too small a sample to contradict the retirement decision.",
+        "decisionDate": "unknown, well before 2026-07"
+      },
+      "links": {},
+      "created": "2026-07-15T17:00:00Z",
+      "source": "backfill-2026-07-15",
+      "needsOperatorAnnotation": true
+    },
+    {
+      "id": "DEC-0003",
+      "type": "decision",
+      "evidenceClass": "VALID",
+      "status": "final",
+      "title": "Migrate monotonic-arb out of polymarket-trader",
+      "body": {
+        "rationale": "Strategy moved to the sports-arb daemon; 38 stale live positions in this repo closed at tracker mark on 2026-06-25 and later relabeled strategy_migrated (clean P&L counts: +0.0545)"
+      },
+      "links": {
+        "relatedRecords": [
+          "STRAT-0003"
+        ]
+      },
+      "created": "2026-06-25T00:00:00Z",
+      "source": "backfill-2026-07-15"
+    },
+    {
+      "id": "INC-0001",
+      "type": "incident",
+      "evidenceClass": "INVALID",
+      "status": "final",
+      "title": "Duplicated SOL monotonic package stop-outs",
+      "body": {
+        "rootCause": "operational error: same SOL 300/320 monotonic-arb package tracked as 9 duplicate live positions; all 'stopped' 2026-06-02 at ~-9% each, impossible for a risk-free package (marking/duplication artifact)",
+        "fix": "positions closed; rows relabeled close_reason=data_quality_artifact on 2026-07-15 and excluded from counted P&L",
+        "costUsd": -0.8307,
+        "guard": "duplicate-position detector (Phase 1, planned)",
+        "discovered": "2026-07-15",
+        "occurred": "2026-06-02"
+      },
+      "links": {
+        "relatedTradeIds": [
+          "MONOTONIC_ARB stop rows closed 2026-06-02, 9 trades"
+        ],
+        "affectedReports": [
+          "all P&L rollups computed between 2026-06-02 and 2026-07-15"
+        ]
+      },
+      "created": "2026-06-02T00:00:00Z",
+      "source": "backfill-2026-07-15"
+    },
+    {
+      "id": "INC-0002",
+      "type": "incident",
+      "evidenceClass": "INVALID",
+      "status": "final",
+      "title": "stopPct overwrite caused premature weekend-funding stops",
+      "body": {
+        "rootCause": "applyFundingRiskShapeToOpenPositions overwrote weekend HL funding stopPct from 100 (no stop) to default 3%, causing premature price stops before funding-normalization exit",
+        "fix": "engine branch now enforces target +3%/stop 100 for WEEKEND_HL_FUNDING_REVERSION_LONG; 16 affected trades (2026-06-26..2026-06-29) labeled data_quality_artifact at close",
+        "costUsd": -0.6526,
+        "guard": "stop-policy invariant check (Phase 1, planned)",
+        "occurred": "2026-06-26..2026-06-29"
+      },
+      "links": {
+        "relatedRecords": [
+          "STRAT-0001"
+        ]
+      },
+      "created": "2026-06-26T00:00:00Z",
+      "source": "backfill-2026-07-15"
+    }
+  ]
+}
