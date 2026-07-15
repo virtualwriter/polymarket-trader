@@ -734,3 +734,36 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-15 09:28 UTC
+
+**Portfolio:** $98.59 total | Cash $96.59 | 2 open | P&L $1.1763 | 61% win rate (460 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 13 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_gld_pc_ratio = 2.714 is 5.1 std devs from mean (0.75 ± 0.38)
+- [anomaly] hype_hl_funding_ann = 58.59 is 3.3 std devs from mean (9.70 ± 14.88)
+- [anomaly] btc_opt_iv_term_spread = -19.38 is -3.3 std devs from mean (-0.67 ± 5.75)
+- [anomaly] btc_pm_iv = 26.5 is -2.5 std devs from mean (41.13 ± 5.94)
+- [anomaly] btc_opt_iv_90d = 54.9 is 2.2 std devs from mean (39.97 ± 6.68)
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 552 (313 wins / 239 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 11/20 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.33%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.10%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+GOLD PC_RATIO_EXTREME_HIGH: P/C ratio is still at the 98th–99th percentile, far from normalizing; spot dip is within stop risk. No thesis invalidation. HYPE PROMOTED_HYPOTHESIS: well within minimum hold, +1.17% P&L, and hype_spot trajectory positive. Funding spike to 58.6% annual is a carry headwind to monitor but not a close trigger for this setup. No discretionary closes warranted this hour.
+
+---
+
