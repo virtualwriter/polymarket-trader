@@ -833,3 +833,36 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-07-15 12:28 UTC
+
+**Portfolio:** $98.59 total | Cash $96.59 | 2 open | P&L $1.1763 | 61% win rate (460 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 13 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 6.5pp (was -7.9, now -14.4)
+- [anomaly] gold_gld_pc_ratio = 2.714 is 5.0 std devs from mean (0.75 ± 0.39)
+- [anomaly] btc_opt_iv_term_spread = -18.89 is -3.1 std devs from mean (-0.70 ± 5.80)
+- [anomaly] btc_opt_iv_90d = 53.6 is 2.0 std devs from mean (39.99 ± 6.70)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.33 to 0.49. Rolling correlation: 24h=-0.52, 7d=-0.85, 30d=0.37. Current 24h corr is at 30th pct of last 30 daily 24h-rolling values (range -0.90 to 0.93).
+
+**Blocked signal learning:**
+- Open blocked shadows: 49
+- Resolved blocked shadows: 553 (313 wins / 240 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 11/20 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.33%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.10%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.05%)
+
+**LLM analysis:**
+GOLD long (PC_RATIO_EXTREME_HIGH) remains well within thesis: gold_gld_pc_ratio is unchanged at 2.714 and still in the 98th+ percentile, so no invalidation. Spot gold drifted ~0.5% lower but that is within noise; the extreme put buying that triggered the contrarian long is persistent. HYPE long (PROMOTED_HYPOTHESIS) is still inside the 12h lockout, currently +1.65% with OI continuing to expand and funding at 32%, consistent with breakout continuation; no action. Noted gold 30d IV spike to 28.7%—a possible volatility regime shift, but it's a context-only metric and does not cross the thesis_invalidated threshold for the P/C ratio signal. No discretionary closes warranted.
+
+---
+
