@@ -1,10 +1,23 @@
 {
-  "generatedAt": "2026-07-15T13:28:12.175Z",
+  "generatedAt": "2026-07-15T14:28:39.308Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1784048786418-bo3z",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_gld_pc_ratio"
+      ],
+      "thesis": "The PC_RATIO_EXTREME_HIGH signal entered on extreme put buying (GLD P/C 2.79) expecting mean reversion. The P/C ratio has now collapsed to 0.459, far beyond normalization, while gold spot is unchanged. The original contrarian‑long premise is completely reversed; there is no remaining signal edge."
+    }
+  ],
   "entrySignals": [
     {
       "type": "PROMOTED_HYPOTHESIS",
@@ -15,45 +28,30 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 68.761,
+      "entryPrice": 68.407,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
     },
     {
-      "type": "PC_RATIO_EXTREME_HIGH",
+      "type": "PC_RATIO_EXTREME_LOW",
       "asset": "GOLD",
       "venue": "spot",
-      "direction": "long",
-      "strength": 1,
-      "confidence": 0.5240278321453544,
-      "thesis": "GOLD P/C ratio 2.71 — heavy put buying → contrarian long.",
+      "direction": "short",
+      "strength": 0.1366666666666666,
+      "confidence": 0.07286220101585535,
+      "thesis": "GOLD P/C ratio 0.46 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4058,
-      "targetPct": 4,
+      "entryPrice": 4059,
+      "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
-    },
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.11314285714285717,
-      "confidence": 0.0582542197821906,
-      "thesis": "GOLD HL funding 19.0% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4058,
-      "targetPct": 5,
-      "stopPct": 2,
-      "expiryDays": 3,
-      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
