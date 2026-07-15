@@ -19644,6 +19644,101 @@
       },
       "created": "2026-07-15T19:00:44Z",
       "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "DEC-0009",
+      "type": "decision",
+      "evidenceClass": "DERIVED",
+      "status": "active",
+      "title": "DEC: replay clock injection via preload (REPLAY_NOW_MS), no engine patch",
+      "body": {
+        "rationale": "The trading engine has dozens of new Date()/Date.now() call sites, including the America/New_York weekend-window gate isStockPerpFundingWindowOpen(). To replay a past hour deterministically the clock must be injected everywhere. The replay harness freezes the global Date in a NODE --import preload (scripts/replay-preload.mjs) to REPLAY_NOW_MS, rather than patching engine source.",
+        "decision": "Use approach (c): a tsx/node preload that fakes Date globally for the child process, plus an offline fetch stub. NO engine source was patched for the replay.",
+        "inertness": "replay-preload.mjs early-returns when REPLAY_NOW_MS is unset/invalid, so it is a strict no-op for any normal production run and only affects processes the harness explicitly launches with REPLAY_NOW_MS set. There is therefore no change to production engine behavior and nothing to review/commit in trading-engine.ts.",
+        "alternativesConsidered": [
+          "(a) reuse an existing engine env var for the clock: rejected - none exists; resolveEnginePathConfig/parseEngineCliFlags expose no clock override.",
+          "(b) minimal engine patch adding REPLAY_NOW_MS support at each new Date()/Date.now(): rejected - touches the hot production decision path in many places, needs careful review, and carries behavior-risk for a live paper trader; the preload achieves the same determinism with zero engine edits.",
+          "(c) global Date freeze via preload (chosen)."
+        ],
+        "networkNeutralization": "The same preload replaces globalThis.fetch with an empty-JSON (HTTP 200 []) stub so Polymarket Gamma/CLOB book lookups degrade to null gracefully (fetchMarketYesNoBooks returns null; openPositions does not throw). Combined with --no-llm (callLLM never invoked) this guarantees zero network egress and zero LLM token spend during replay.",
+        "isolation": "DATA_DIR = join(import.meta.dirname,'..','data') is not env-redirectable, so the harness copies the scripts/ tree into the sandbox; the engine then resolves DATA_DIR and the default live-state dir inside the sandbox (POLYMARKET_TRADER_STATE_DIR is also set to <sandbox>/.runtime). No production state (data/, /var/lib/polymarket-trader) is ever written."
+      },
+      "links": {},
+      "created": "2026-07-15T19:19:26Z",
+      "source": "replay-harness-agent"
+    },
+    {
+      "id": "EXP-0536",
+      "type": "experiment",
+      "evidenceClass": "DERIVED",
+      "status": "final",
+      "title": "EXP: deterministic replay harness validation vs production weekend HL funding (2026-07-10..14)",
+      "body": {
+        "question": "Does a deterministic offline replay of scripts/trading-engine.ts over archived hourly instrument snapshots reproduce production's weekend Hyperliquid stock-perp funding-reversion (WEEKEND_HL_FUNDING_REVERSION_LONG) trades for 2026-07-10..2026-07-14 (the last weekend gate)?",
+        "method": "Isolated sandbox replay (scripts/replay-harness.ts). DATA_DIR is not env-redirectable (join(import.meta.dirname,'..','data')), so the whole scripts/ tree is copied into /tmp/replay-1/scripts and the engine reads/writes only /tmp/replay-1/data. Per replay hour T the harness reconstructs inputs: 12-snapshot lookback (option-stripped, mirroring readInstrumentSnapshotPrefix) from data/instrument-snapshot-archives/*.gz + hot file, daily-valuations/daily-macro truncated to date<=T, closest relative-value-history CSV <=T, a fresh $100 portfolio, empty ledger and empty blocked-signals. Determinism: global Date frozen to T via a NODE --import preload (REPLAY_NOW_MS); fetch replaced with an empty-JSON offline stub; engine run with --no-llm (zero token spend). 116 hourly engine invocations. Comparison (scripts/replay_compare.py) matches on asset+entry-hour vs production data/trades-detailed.csv.",
+        "window": {
+          "start": "2026-07-10",
+          "end": "2026-07-14",
+          "matchOn": "entry"
+        },
+        "results": {
+          "replayTrades": 76,
+          "matchedWithProduction": 37,
+          "productionTrades": 37,
+          "missed": 0,
+          "extra": 39,
+          "replayPnl": -0.3243,
+          "productionPnl": -0.0343,
+          "matchedMaxAbsPnlDiff": 0.0011,
+          "matchedMeanAbsPnlDiff": 0.000397,
+          "pnlCorrelationMatched": 1.0,
+          "assetIntersection": 23,
+          "productionOnlyAssets": 0,
+          "replayOnlyAssets": 8,
+          "replayCloseReasons": {
+            "thesis_validated_profitable": 41,
+            "thesis_compressed_loss": 23,
+            "target": 6,
+            "breakeven_stop": 5,
+            "expiry": 1
+          },
+          "productionCloseReasons": {
+            "thesis_validated_profitable": 24,
+            "thesis_compressed_loss": 11,
+            "breakeven_stop": 2
+          }
+        },
+        "conclusion": "PASS. The replay reproduces every one of the 37 production weekend-funding entries (0 missed) on the same asset+entry-hour, with matched-trade P&L near-identical (max abs diff 0.0011, correlation 1.0) and matching close reasons. The mechanical exits (target/24h-expiry/funding-normalize/window-close) fire per the rules. The only divergence is 39 extra re-entries (mostly Jul 12-13) fully explained by the fresh-portfolio, empty-blocked-signals design (no re-entry dedup / slot occupancy / shadow suppression that constrained production).",
+        "perHourWallTimeSec": 1.33,
+        "fullWindowEstimateMin": 23.9,
+        "totalReplayWallSec": 171.7,
+        "snapshotStoreBuildSec": 17,
+        "limitations": [
+          "Fresh empty portfolio + empty blocked-signals: no position/shadow carry-over from before the window, so production's re-entry dedup (skip if a weekend-funding position or shadow is already open for an asset) and 15-slot/$100 occupancy are not reproduced -> 39 extra re-entries on Jul 12-13 after Jul 11 positions close.",
+          "Static configs (learning-params.json, signal-weights.json, hypotheses.json) copied as an as-of-now snapshot; intra-window config drift is not reconstructed. Weekend-funding entry/exit logic is hardcoded (ENABLE=true, band [-100%,-50%], 10% funding exit, 3% target, 24h, 5x) and independent of these configs, so it is unaffected.",
+          "Snapshots are hour-granular and option-stripped (exactly what the engine reads); ~13% of calendar hours have no archived snapshot and are skipped.",
+          "Polymarket Gamma/CLOB fetches are neutralized offline, so any polymarket entry path is inert; the replay is faithful only for snapshot-driven signals (weekend HL funding and other Hyperliquid/valuation-driven signals).",
+          "LLM disabled (--no-llm), so any LLM-gated closes/entries that occurred in production are absent by design."
+        ],
+        "artifacts": {
+          "harness": "scripts/replay-harness.ts",
+          "preload": "scripts/replay-preload.mjs",
+          "snapshotStore": "scripts/replay-snapshot-store.py",
+          "compare": "scripts/replay_compare.py",
+          "sandbox": "/tmp/replay-1",
+          "report": "/tmp/replay-1/replay-report.json"
+        }
+      },
+      "links": {
+        "related": [
+          "EXP-0001"
+        ],
+        "decision": [
+          "DEC-0009"
+        ]
+      },
+      "created": "2026-07-15T19:19:35Z",
+      "source": "replay-harness-agent"
     }
   ]
 }
