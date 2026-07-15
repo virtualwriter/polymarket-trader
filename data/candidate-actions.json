@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T15:28:11.418Z",
+  "generatedAt": "2026-07-15T16:28:13.204Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 67.701,
+      "entryPrice": 67.719,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 67.701,
+      "entryPrice": 67.719,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -118,17 +118,23 @@
       "asset": "HYPE",
       "venue": "spot",
       "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk",
+        "risk_stale",
+        "profit_taking"
+      ],
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 11.99,
-      "hoursToExpiry": 492.01,
+      "hoursOpen": 13,
+      "hoursToExpiry": 491,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0238,
+      "elapsedHoldPct": 0.0258,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
+      "reason": "LLM-owned/promoted setup may be closed after 12h if signal-family evidence supports it."
     }
   ]
 }

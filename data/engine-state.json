@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-15T15:28:11.287Z",
+  "generatedAt": "2026-07-15T16:28:13.137Z",
   "dataFreshness": {
-    "valuationRows": 1691,
-    "latestValuationAt": "2026-07-15T15",
-    "macroRows": 1689,
+    "valuationRows": 1692,
+    "latestValuationAt": "2026-07-15T16",
+    "macroRows": 1690,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-15T15"
+    "latestInstrumentSnapshotAt": "2026-07-15T16"
   },
   "portfolio": {
     "cash": 97.5887,
     "openPositions": 1,
-    "realizedPnl": 1.1758,
-    "totalTrades": 461,
-    "winRatePct": 60.5,
-    "unrealizedPnl": 0.0054
+    "realizedPnl": 1.8284,
+    "totalTrades": 445,
+    "winRatePct": 62.7,
+    "unrealizedPnl": 0.0056
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 0.54,
-      "currentPrice": 67.701,
-      "underlyingPrice": 67.701,
+      "pnlPct": 0.56,
+      "currentPrice": 67.719,
+      "underlyingPrice": 67.719,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -173,7 +173,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 47,
+    "openCount": 48,
     "resolvedCount": 555,
     "wouldHaveWon": 313,
     "wouldHaveLost": 242,
@@ -474,6 +474,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.9pt on BTC, spread 1.0c, liquidity 43190. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-wti-hit-in-july-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $65 in July?",
+        "marketQuality": {
+          "yesBid": 0.09,
+          "yesAsk": 0.1,
+          "yesSpread": 0.01,
+          "liquidity": 43935.16,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.2pt on OIL, spread 1.0c, liquidity 43935. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
