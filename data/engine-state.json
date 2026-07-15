@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-15T16:28:13.137Z",
+  "generatedAt": "2026-07-15T17:28:15.711Z",
   "dataFreshness": {
-    "valuationRows": 1692,
-    "latestValuationAt": "2026-07-15T16",
-    "macroRows": 1690,
+    "valuationRows": 1693,
+    "latestValuationAt": "2026-07-15T17",
+    "macroRows": 1691,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-15T16"
+    "latestInstrumentSnapshotAt": "2026-07-15T17"
   },
   "portfolio": {
     "cash": 97.5887,
@@ -13,7 +13,7 @@
     "realizedPnl": 1.8284,
     "totalTrades": 445,
     "winRatePct": 62.7,
-    "unrealizedPnl": 0.0056
+    "unrealizedPnl": 0.008
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 0.56,
-      "currentPrice": 67.719,
-      "underlyingPrice": 67.719,
+      "pnlPct": 0.8,
+      "currentPrice": 67.879,
+      "underlyingPrice": 67.879,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -173,10 +173,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 48,
-    "resolvedCount": 555,
+    "openCount": 47,
+    "resolvedCount": 556,
     "wouldHaveWon": 313,
-    "wouldHaveLost": 242,
+    "wouldHaveLost": 243,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -244,26 +244,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.06,
-        "resolvedAt": "2026-07-15T09:28:13.000Z",
-        "marketQuality": {
-          "yesBid": 0.06,
-          "yesAsk": 0.07,
-          "yesSpread": 0.01,
-          "liquidity": 52262.86,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -392,6 +372,26 @@
           "aboveTrendPct": 0.64,
           "momentumPct": 2.01
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.1,
+        "resolvedAt": "2026-07-15T17:28:15.442Z",
+        "marketQuality": {
+          "yesBid": 0.09,
+          "yesAsk": 0.1,
+          "yesSpread": 0.01,
+          "liquidity": 43935.16,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -474,22 +474,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.9pt on BTC, spread 1.0c, liquidity 43190. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-wti-hit-in-july-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $65 in July?",
-        "marketQuality": {
-          "yesBid": 0.09,
-          "yesAsk": 0.1,
-          "yesSpread": 0.01,
-          "liquidity": 43935.16,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.2pt on OIL, spread 1.0c, liquidity 43935. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },

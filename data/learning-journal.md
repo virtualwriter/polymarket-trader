@@ -997,3 +997,38 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-15 17:29 UTC
+
+**Portfolio:** $98.59 total | Cash $96.59 | 2 open | P&L $1.8284 | 63% win rate (445 trades)
+
+**Opened 1 positions:**
+- GOLD long @ $4040 via spot/spot [GOLD spot] (PC_RATIO_EXTREME_HIGH)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 12 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -19.63 is -3.2 std devs from mean (-0.76 ± 5.89)
+- [anomaly] gold_gld_pc_ratio = 1.718 is 2.4 std devs from mean (0.76 ± 0.39)
+- [anomaly] btc_pm_iv = 26.8 is -2.4 std devs from mean (41.08 ± 5.99)
+- [anomaly] btc_opt_iv_90d = 55.2 is 2.2 std devs from mean (40.04 ± 6.74)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.32 to 0.48. Rolling correlation: 24h=-0.24, 7d=-0.85, 30d=0.35. Current 24h corr is at 47th pct of last 30 daily 24h-rolling values (range -0.92 to 0.92).
+
+**Blocked signal learning:**
+- Open blocked shadows: 47
+- Resolved blocked shadows: 556 (313 wins / 243 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.05%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-4.35%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.07%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.10%)
+
+**LLM analysis:**
+HYPE long (T-1784086111076-7ms9) remains within thesis parameters. Spot peaked +2.39% before retreating to +0.80%, but still holds above entry and the OI‑breakout continuation setup is not invalidated. The sharp funding rate surge (10.95% → 34.72%) is a concern – it points to overcrowding and possible forced unwind risk – but funding is a context‑only metric and not part of the signal‑family evidence columns. Profit‑taking is allowed but not justified at a quarter of the target. Continue monitoring for spot breakdown below entry or OI‑driven momentum loss.
+
+---
+
