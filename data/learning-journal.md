@@ -664,3 +664,40 @@ GOLD long (PC_RATIO_EXTREME_HIGH) still holds: GLD P/C ratio is 2.714, 98th perc
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-07-15T07:07:23.559Z, model=deepseek-v4-pro)
+- Hypotheses added: 0 (rejected 0); reviews applied: 3; param updates: FUNDING_EXTREME_LONG risk: +5/-2.5 -> +5/-2; FUNDING_EXTREME_SHORT risk: +4/-2.5 -> +4/-2.
+- Strategy review: ONE_TOUCH_HIGH_EDGE_NO continues to deliver consistent small wins with high win-rate in shadows, while PC_RATIO_EXTREME_HIGH and LOW are mildly positive overall. The main drag is FUNDING_EXTREME_LONG (avg -0.53%) and FUNDING_EXTREME_SHORT (avg -0.23%) despite reasonable win-rates; asset-specific underperformance on AMZN/HYPE for LONG and OIL for SHORT suggests the signal constructs are sound but suboptimal on those venues. Promoted HYPE breakout hypothesis is slightly negative but within stop, while many active LLM-hypotheses have low win-rates, reflecting a pattern of overfit broad narratives
+- Nightly journal: Tonight's review shows the portfolio remains in mild profit with ONE_TOUCH_HIGH_EDGE_NO as the standout performer. Funding signals continue to bleed and warrant a tighter stop (2.5% → 2.0%) to protect against tail losses, especially after already disabling the worst-performing assets. I've proposed three new shadow hypotheses: a spread-liquidity filter for ONE_TOUCH_NO, a cross-asset expansion of the Manual IV-touch NO to GOLD, and a basis/funding refinement for Weekend HL Funding Reversion Long. I also flagged several active hypotheses with 0% win-rates for potential pruning and cautioned tha
+### 2026-07-15 07:28 UTC
+
+**Portfolio:** $98.59 total | Cash $96.59 | 2 open | P&L $1.1763 | 61% win rate (460 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 13 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_gld_pc_ratio = 2.714 is 5.2 std devs from mean (0.75 ± 0.38)
+- [anomaly] btc_opt_iv_term_spread = -18.52 is -3.1 std devs from mean (-0.65 ± 5.72)
+- [anomaly] btc_opt_iv_90d = 53.4 is 2.0 std devs from mean (39.95 ± 6.66)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.34 to 0.50. Rolling correlation: 24h=-0.64, 7d=-0.84, 30d=0.40. Current 24h corr is at 50th pct of last 30 daily 24h-rolling values (range -0.89 to 0.95).
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 541 (310 wins / 231 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 11/20 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.06%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.14%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+1.12%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.10%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h since last call; daily budget 3/12; next scheduled 2026-07-15T09:28:11.327Z). Mechanical cycle ran normally._
+
+---
+
