@@ -767,3 +767,36 @@ GOLD PC_RATIO_EXTREME_HIGH: P/C ratio is still at the 98th–99th percentile, fa
 
 ---
 
+### 2026-07-15 10:28 UTC
+
+**Portfolio:** $98.59 total | Cash $96.59 | 2 open | P&L $1.1763 | 61% win rate (460 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 13 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_gld_pc_ratio = 2.714 is 5.1 std devs from mean (0.75 ± 0.39)
+- [anomaly] btc_opt_iv_term_spread = -19.52 is -3.3 std devs from mean (-0.68 ± 5.77)
+- [anomaly] hype_hl_funding_ann = 55.31 is 3.1 std devs from mean (9.72 ± 14.92)
+- [anomaly] btc_pm_iv = 26.6 is -2.4 std devs from mean (41.12 ± 5.95)
+- [anomaly] btc_opt_iv_90d = 54.5 is 2.2 std devs from mean (39.98 ± 6.69)
+
+**Blocked signal learning:**
+- Open blocked shadows: 49
+- Resolved blocked shadows: 553 (313 wins / 240 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 11/20 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.33%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.10%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.05%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h since last call; daily budget 4/12; next scheduled 2026-07-15T12:28:11.250Z). Mechanical cycle ran normally._
+
+---
+
