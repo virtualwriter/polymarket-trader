@@ -1,0 +1,79 @@
+{
+  "generatedAt": "2026-07-15T00:43:43.008Z",
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "strategyReview": "What is working: The weekend funding reversion signal (eligible_live) continues to produce reliable, low-volatility gains with a 68% win rate on live trades (126/186, avg +0.13%) and strong shadow performance (188/253, avg +1.0%). One-touch high-edge NO has exceptional realized PnL on the four live trades (4/4, avg +18.4%) and, though shadow win rate is low (37%), the payoff structure remains positive (+0.7% avg shadow PnL) because winning trades more than offset small, thesis-compressed losers. Manual IV-touch rich NO shadows (eligible_live) show an 80% win rate and +14.4% avg PnL, justifying promotion readiness. What is failing: Funding extreme long continues to destroy value overall (30 trades, avg -0.53%) even after disabling the worst assets (AMZN 29% win, HYPE 33% win), and funding extreme short is only marginally negative but heavily reliant on AMZN (79% win) while other assets underperform. The PC ratio signals are merely break-even (avg +0.25% and +0.03%) with low conviction, and the one-touch NO shadow testing reveals that edge compression during volatile markets and wide Polymarket spreads systematically erode the edge, causing small but frequent losses.",
+  "failureClusters": [
+    {
+      "theme": "Funding Extreme Long AMZN/HYPE Trap",
+      "evidence": "FUNDING_EXTREME_LONG live trades on AMZN (n=7, 29% win, total -$0.11) and HYPE (n=6, 33% win, total -$0.10) consistently fail, while GOLD delivers 69% win rate and positive net PnL. Overall the signal averages -0.53% gross PnL despite GOLD’s contribution. The lesson shows the worst assets are already disabled, yet the signal remains enabled for other assets where it likely continues to produce small net losses.",
+      "recommendation": "Further tighten the signal’s asset eligibility by applying a rolling 10-trade conditional win rate filter (e.g., require >55% win rate over last 10 live trades on that asset). Alternatively, retire the long side entirely and promote the GOLD-specific pattern as a separate funded-mean-reversion hypothesis that triggers only when gold funding is deeply negative and P/C ratio is elevated."
+    },
+    {
+      "theme": "One-Touch NO Edge Compression Losses",
+      "evidence": "In the last resolved shadows for ONE_TOUCH_HIGH_EDGE_NO, four of the six losses were closed with reason 'thesis_compressed_loss', meaning the sell-YES edge disappeared before the trade could reach profit. Affected assets included BTC, GOLD, and HYPE, and most positions exhibited wide_pm_spread flags. Total shadow PnL is still positive, but these premature exits cap the upside and increase churn.",
+      "recommendation": "Add a persistence filter: only enter a NO shadow when the sell-YES edge has been above a small threshold (e.g., 1.5 pts) for at least 2 consecutive hours, and avoid any market where the YES spread exceeds 2% of the mid-price. Additionally, implement a rapid exit rule that closes the position immediately if the edge retreats below 0.5 pts, rather than waiting for full compression, to preserve capital."
+    },
+    {
+      "theme": "One-Touch NO Wide Spread Execution Degradation",
+      "evidence": "Many recent open quality warnings for ONE_TOUCH_HIGH_EDGE_NO show yesSpreads of 1-2 cents on contracts with tight bid-ask, flagged as 'wide_pm_spread'. Even in the recent shadows, losses occurred when spreads were wide (e.g., BTC with 0.01 spread and $32k liquidity). The market quality flags are being raised but not universally preventing entry in shadows.",
+      "recommendation": "Formalize a pre-entry spread test: block any ONE_TOUCH_NO entry where yesSpread > 1.5% of yesMid or where liquidity (usd depth) is below $50,000. This mirrors the manual IV-touch rich NO behavior that only enters when execution costs are favorable, likely contributing to its high success rate."
+    }
+  ],
+  "newHypotheses": [
+    {
+      "created": "2026-07-15",
+      "description": "Gold funding-negative P/C extreme long: When gold's put/call ratio spikes into the top quintile of its 30d range AND the perpetual funding rate is deeply negative (below -10%), the market is likely over-hedged and short-squeeze prone. Enter a long GOLD spot trade anticipating a mean-reversion rally as extreme defensive positioning unwinds.",
+      "conditions": {
+        "gold_gld_pc_ratio_percentile_30d": "> 80",
+        "gold_hl_funding_ann": "< -10"
+      },
+      "prediction": "GOLD spot price rises at least 1.0% within 5 days as short covering drives a recovery.",
+      "timeframeDays": 5,
+      "confidence": 0.65,
+      "direction": "long",
+      "source": "llm"
+    },
+    {
+      "created": "2026-07-15",
+      "description": "Oil PM IV rich NO directional short: When oil’s prediction-market implied volatility (PM IV) is in the top decile of its 30d history and the listed options IV is significantly lower (by >10 points), the PM market is pricing in excessive upside risk while the options market sees lower vol. This creates a rich NO contract – sell the YES or short oil spot, expecting spot to fail to reach the extreme strike.",
+      "conditions": {
+        "oil_pm_iv_percentile_30d": "> 90",
+        "oil_opt_iv_30d": "< oil_pm_iv - 10"
+      },
+      "prediction": "Oil spot (WTI) declines or remains well below the rich upside target over the next 14 days, causing NO contracts to expire profitably.",
+      "timeframeDays": 14,
+      "confidence": 0.7,
+      "direction": "short",
+      "source": "llm"
+    },
+    {
+      "created": "2026-07-15",
+      "description": "BTC one-touch NO with funding and trend filter: Enhance the one-touch high-edge NO thesis by only entering when BTC is already >5% off its 7d high, perpetual funding is negative (below -5%), and PM IV is in the bottom 20% of its 30d range (suggesting low fear of a breakout). This stack of bearish macro/positioning signals raises the probability that BTC will not hit the high strike before expiry.",
+      "conditions": {
+        "btc_spot_pct_from_7d_high": "< -5",
+        "btc_hl_funding_ann": "< -5",
+        "btc_pm_iv_percentile_30d": "< 20"
+      },
+      "prediction": "BTC spot price will not surge to the rich upside strike within the typical expiry window, resulting in profitable NO expiry or discrete edge capture.",
+      "timeframeDays": 14,
+      "confidence": 0.6,
+      "direction": "short",
+      "source": "llm"
+    }
+  ],
+  "hypothesisReviews": [
+    {
+      "id": "H-001",
+      "observation": "H-001 (BTC PM IV expansion/reversion) has maintained a 60% win rate over 6 hypothesis tests, with correct direction predictions when PM IV is in the bottom 20% of its 30d range leading to subsequent BTC price declines. The 5 clean completed tests within the parent setup family 'btc_pm_iv_expansion_reversion' (3 wins, avg not given) validate the logic, but the sample is still small. The recent successful predictions were moderately sized moves. Shadow testing via Polymarket NO contracts or spot shorts would be appropriate to measure realized edge."
+    }
+  ],
+  "parameterUpdates": {
+    "macroMomentum24hThresholdPts": 4,
+    "contrarianTrendMarginPct": 0.5,
+    "positiveMomentum24hPct": 1.5,
+    "llmTradeExpiryDays": 14,
+    "momentumLongExpiryDays": 21
+  },
+  "journalEntry": "Tonight’s research confirms that the engine’s best-performing live signals are the weekend funding reversion and the one-touch high-edge NO (4/4 +18.4% live). The manual IV-touch rich NO shadows also meet promotion thresholds (80% win, +14.4% avg PnL) and should be moved to live after verifying execution quality filters. The funding extreme long signal is a net drag, especially on AMZN and HYPE; although those assets are disabled, the signal’s weight and remaining performance are still negative. I recommend either retiring the long side or promoting the GOLD-specific 69% win pattern as a standalone hypothesis. The cluster of ‘thesis_compressed_loss’ exits in one-touch NO shadows indicates that edge persistence and market-quality filters are needed before upgrading to live; I added a spread-based block recommendation in failureClusters. Three new hypotheses are proposed: a gold funding/P-C overlay to improve extreme-high setups, an oil PM-IV rich directional short formalizing the manual IV-touch logic, and a BTC one-touch NO filter stack using trend, funding, and IV regime. Finally, H-001 shows reliable PM IV expansion prediction and merits shadow testing on the short side via NO contracts or spot."
+}
