@@ -41,7 +41,7 @@ const ACTIONS_FILE = join(RUNTIME_DIR, "telegram-actions.json");
 const OFFSET_FILE = join(RUNTIME_DIR, "telegram-offset.json");
 const TELEGRAM_API = "https://api.telegram.org";
 const MAX_TELEGRAM_MESSAGE = 3900;
-const TELEGRAM_LLM_MAX_CONTEXT_CHARS = Number(process.env.TELEGRAM_LLM_MAX_CONTEXT_CHARS ?? 24_000);
+const TELEGRAM_LLM_MAX_CONTEXT_CHARS = Number(process.env.TELEGRAM_LLM_MAX_CONTEXT_CHARS ?? 48_000);
 const TELEGRAM_LLM_MAX_TOKENS = Number(process.env.TELEGRAM_LLM_MAX_TOKENS ?? 900);
 const LLM_PROVIDER = process.env.LLM_PROVIDER ?? "anthropic";
 const LLM_REQUEST_TIMEOUT_MS = Number(process.env.LLM_REQUEST_TIMEOUT_MS ?? 120_000);
@@ -178,6 +178,7 @@ function commandHelp(): string {
     "/noedge - open shadow trades whose current held-side edge is weak/inverted",
     "/shadows [open|resolved|all|<instrument_id>] [asset] - shadow trade history",
     "/manual_touch_pnl - resolved manual IV-touch shadow P&L",
+    "/trades_pnl [signal_substring] [days] - closed live trade P&L by signal type",
     "/why_no_trade <asset> - explain blockers from current artifacts, no LLM",
     "/ask <question> - explicit LLM answer using current trader artifacts",
     "/review <asset> - explicit LLM review for one asset",
@@ -576,6 +577,195 @@ function compactOpenShadows(asset?: string): JsonObject[] {
     });
 }
 
+// Mechanical rules for strategies the operator commonly asks about, sourced
+// from scripts/trading-engine.ts. Keep in sync when engine constants change.
+const STRATEGY_REFERENCE: JsonObject = {
+  WEEKEND_HL_FUNDING_REVERSION_LONG: {
+    universe: "Hyperliquid Builder DEX stock perps (HYPE_STOCK_BUILDER_ASSETS)",
+    window: "US-equity-closed window only: Fri 4:00pm ET through Mon 9:30am ET (America/New_York). Hourly cron at :27, so first entry is Fri 4:27pm ET.",
+    entry: "Annualized funding in mid band [-100%, -50%] (shorts paying longs). Open LONG at 5x leverage, standard trade size. Band tightened 2026-06-01 after backtest: shallow band (-30%..-50%) was net-negative, deep band (<-100%) flat, mid band +1.07% avg/trade.",
+    exit: "First of: (1) window closes / US market reopens -> close_reason expiry or weekend_window_closed; (2) funding normalizes to >= +10% annualized -> weekend_funding_normalized; (3) margin P&L target +3% hit; (4) max hold 24h expiry. No stop loss (stop set to 100%).",
+    source: "scripts/trading-engine.ts (WEEKEND_HL_FUNDING_* constants, weekendHyperliquidFundingCandidates, weekendHyperliquidFundingExitHit, isStockPerpFundingWindowOpen)",
+  },
+  note: "Rules for other signal types live in scripts/trading-engine.ts on this host; they are not included in these artifacts.",
+};
+
+type LedgerTrade = {
+  id: string;
+  openedAt: string;
+  closedAt: string;
+  asset: string;
+  venue: string;
+  direction: string;
+  signalType: string;
+  pnl: number;
+  pnlPct: number;
+  marketPnl: number;
+  fundingPnl: number;
+  closeReason: string;
+};
+
+function parseCsvLine(line: string): string[] {
+  const fields: string[] = [];
+  let current = "";
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (inQuotes) {
+      if (ch === '"' && line[i + 1] === '"') {
+        current += '"';
+        i++;
+      } else if (ch === '"') {
+        inQuotes = false;
+      } else {
+        current += ch;
+      }
+    } else if (ch === '"') {
+      inQuotes = true;
+    } else if (ch === ",") {
+      fields.push(current);
+      current = "";
+    } else {
+      current += ch;
+    }
+  }
+  fields.push(current);
+  return fields;
+}
+
+function readClosedTradesLedger(): LedgerTrade[] {
+  const path = dataPath("trades-detailed.csv");
+  if (!existsSync(path)) return [];
+  const lines = readFileSync(path, "utf8").split(/\r?\n/).filter((line) => line.trim() !== "");
+  if (lines.length < 2) return [];
+  const header = parseCsvLine(lines[0]);
+  const col = (name: string) => header.indexOf(name);
+  const idxes = {
+    id: col("id"),
+    openedAt: col("opened_at"),
+    closedAt: col("closed_at"),
+    asset: col("asset"),
+    venue: col("venue"),
+    direction: col("direction"),
+    signalType: col("signal_type"),
+    pnl: col("pnl"),
+    pnlPct: col("pnl_pct"),
+    marketPnl: col("market_pnl"),
+    fundingPnl: col("funding_pnl"),
+    closeReason: col("close_reason"),
+  };
+  return lines.slice(1)
+    .map(parseCsvLine)
+    .map((fields) => ({
+      id: fields[idxes.id] ?? "",
+      openedAt: fields[idxes.openedAt] ?? "",
+      closedAt: fields[idxes.closedAt] ?? "",
+      asset: fields[idxes.asset] ?? "",
+      venue: fields[idxes.venue] ?? "",
+      direction: fields[idxes.direction] ?? "",
+      signalType: fields[idxes.signalType] ?? "",
+      pnl: num(fields[idxes.pnl]) ?? 0,
+      pnlPct: num(fields[idxes.pnlPct]) ?? 0,
+      marketPnl: num(fields[idxes.marketPnl]) ?? 0,
+      fundingPnl: num(fields[idxes.fundingPnl]) ?? 0,
+      closeReason: fields[idxes.closeReason] ?? "",
+    }))
+    .filter((trade) => trade.closedAt !== "")
+    .sort((a, b) => Date.parse(a.closedAt) - Date.parse(b.closedAt));
+}
+
+// data_quality_artifact rows are operational errors / bad marks, explicitly
+// excluded from counted P&L per operator. They are reported separately, never
+// silently dropped.
+function isExcludedFromPnl(trade: LedgerTrade): boolean {
+  return trade.closeReason === "data_quality_artifact";
+}
+
+function rollupTradesBySignal(trades: LedgerTrade[]): Record<string, JsonObject> {
+  const buckets: Record<string, { count: number; wins: number; pnl: number; marketPnl: number; fundingPnl: number; pnlPctSum: number }> = {};
+  for (const trade of trades) {
+    const key = trade.signalType || "unknown";
+    const bucket = buckets[key] ?? { count: 0, wins: 0, pnl: 0, marketPnl: 0, fundingPnl: 0, pnlPctSum: 0 };
+    bucket.count += 1;
+    bucket.wins += trade.pnl >= 0 ? 1 : 0;
+    bucket.pnl += trade.pnl;
+    bucket.marketPnl += trade.marketPnl;
+    bucket.fundingPnl += trade.fundingPnl;
+    bucket.pnlPctSum += trade.pnlPct;
+    buckets[key] = bucket;
+  }
+  return Object.fromEntries(Object.entries(buckets).map(([key, bucket]) => [key, {
+    count: bucket.count,
+    wins: bucket.wins,
+    losses: bucket.count - bucket.wins,
+    pnl: Number(bucket.pnl.toFixed(4)),
+    marketPnl: Number(bucket.marketPnl.toFixed(4)),
+    fundingPnl: Number(bucket.fundingPnl.toFixed(4)),
+    avgPnlPct: bucket.count > 0 ? Number((bucket.pnlPctSum / bucket.count).toFixed(2)) : 0,
+  }]));
+}
+
+function closedTradesContext(asset?: string): JsonObject {
+  const assetUpper = asset?.toUpperCase();
+  const ledger = readClosedTradesLedger()
+    .filter((trade) => !assetUpper || trade.asset.toUpperCase() === assetUpper);
+  const excluded = ledger.filter(isExcludedFromPnl);
+  const all = ledger.filter((trade) => !isExcludedFromPnl(trade));
+  const weekAgo = Date.now() - 7 * 86_400_000;
+  const last7d = all.filter((trade) => Date.parse(trade.closedAt) >= weekAgo);
+  const recent = all.slice(-100).reverse().map((trade) =>
+    `${trade.closedAt.slice(0, 10)} ${trade.asset} ${trade.direction} ${trade.venue} ${trade.signalType} pnl=${trade.pnl.toFixed(4)} (mkt=${trade.marketPnl.toFixed(4)} fund=${trade.fundingPnl.toFixed(4)}) opened=${trade.openedAt.slice(0, 10)} ${trade.closeReason}`
+  );
+  return {
+    note: "Closed live trades from trades-detailed.csv, grouped by signal_type. WEEKEND_HL_FUNDING_REVERSION_LONG is the weekend Hyperliquid funding-reversion strategy. Dates are UTC. recentClosedTrades is newest-first. Rows with close_reason data_quality_artifact (operational errors / bad marks) are excluded from all P&L figures and summarized in excludedDataQualityArtifacts.",
+    totalClosedTrades: all.length,
+    allTimeBySignalType: rollupTradesBySignal(all),
+    last7DaysBySignalType: rollupTradesBySignal(last7d),
+    excludedDataQualityArtifacts: {
+      count: excluded.length,
+      pnlNotCounted: Number(excluded.reduce((sum, trade) => sum + trade.pnl, 0).toFixed(4)),
+      bySignalType: rollupTradesBySignal(excluded),
+    },
+    recentClosedTrades: recent,
+  };
+}
+
+function tradesPnlReport(args: string[]): string {
+  const filter = args[0]?.toLowerCase() ?? "";
+  const days = num(args[1]);
+  const cutoff = days !== null && days > 0 ? Date.now() - days * 86_400_000 : null;
+  const matched = readClosedTradesLedger()
+    .filter((trade) => !filter || trade.signalType.toLowerCase().includes(filter))
+    .filter((trade) => cutoff === null || Date.parse(trade.closedAt) >= cutoff);
+  const excluded = matched.filter(isExcludedFromPnl);
+  const trades = matched.filter((trade) => !isExcludedFromPnl(trade));
+  if (trades.length === 0) {
+    return `No closed trades found${filter ? ` for signal ~"${filter}"` : ""}${days ? ` in last ${days}d` : ""}. Usage: /trades_pnl [signal_substring] [days]`;
+  }
+  const rollup = rollupTradesBySignal(trades);
+  const totalPnl = trades.reduce((sum, trade) => sum + trade.pnl, 0);
+  const wins = trades.filter((trade) => trade.pnl >= 0).length;
+  return [
+    `Closed trades P&L${filter ? ` (signal ~"${filter}")` : ""}${days ? ` (last ${days}d)` : " (all time)"}`,
+    `Trades: ${trades.length}; wins=${wins} losses=${trades.length - wins}`,
+    `Total P&L: $${totalPnl.toFixed(4)}`,
+    ...(excluded.length > 0
+      ? [`Excluded ${excluded.length} data_quality_artifact row(s) (operational errors, P&L $${excluded.reduce((sum, trade) => sum + trade.pnl, 0).toFixed(4)} not counted)`]
+      : []),
+    "",
+    "By signal:",
+    ...Object.entries(rollup).map(([key, value]) => {
+      const row = obj(value);
+      return `- ${key}: ${fmtNum(row.wins, 0)}/${fmtNum(row.count, 0)} wins, P&L $${fmtNum(row.pnl, 4)} (mkt $${fmtNum(row.marketPnl, 4)} + fund $${fmtNum(row.fundingPnl, 4)}), avg ${fmtPct(row.avgPnlPct)}`;
+    }),
+    "",
+    "Recent:",
+    ...trades.slice(-10).reverse().map((trade) =>
+      `- ${trade.closedAt.slice(0, 10)} ${trade.asset} ${trade.direction} ${trade.signalType} $${trade.pnl.toFixed(4)} ${trade.closeReason}`
+    ),
+  ].join("\n");
+}
+
 function traderContext(asset?: string): JsonObject {
   const engine = readJson<JsonObject>(dataPath("engine-state.json"), {});
   const candidates = readJson<JsonObject>(dataPath("candidate-actions.json"), {});
@@ -585,6 +775,8 @@ function traderContext(asset?: string): JsonObject {
   return {
     generatedAt: new Date().toISOString(),
     scopeAsset: assetUpper ?? null,
+    strategyReference: STRATEGY_REFERENCE,
+    closedTrades: closedTradesContext(assetUpper),
     manualIvTouchPnl: manualTouchPnlSummary(),
     engineGeneratedAt: engine.generatedAt,
     dataFreshness: engine.dataFreshness,
@@ -850,6 +1042,8 @@ async function handleCommand(chatId: string, text: string): Promise<string> {
       return shadowsReport(args);
     case "/manual_touch_pnl":
       return manualTouchPnlReport();
+    case "/trades_pnl":
+      return tradesPnlReport(args);
     case "/why_no_trade":
       return whyNoTradeReport(args[0]);
     case "/ask":
