@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T04:28:09.715Z",
+  "generatedAt": "2026-07-15T05:28:09.994Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 66.85,
+      "entryPrice": 66.725,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
@@ -26,7 +26,7 @@
       "confidence": 0.5240278321453544,
       "thesis": "GOLD P/C ratio 2.71 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4036,
+      "entryPrice": 4028,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -41,7 +41,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4036,
+      "entryPrice": 4028,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -62,7 +62,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 66.85,
+      "entryPrice": 66.725,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -240,18 +240,22 @@
       "asset": "GOLD",
       "venue": "spot",
       "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
       "evidenceColumns": [
         "gold_gc_spot",
         "gold_gld_pc_ratio"
       ],
-      "hoursOpen": 11.36,
-      "hoursToExpiry": 108.64,
+      "hoursOpen": 12.36,
+      "hoursToExpiry": 107.64,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0947,
+      "elapsedHoldPct": 0.103,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 11.4h, requires at least 12h."
+      "reason": "Mechanical PC_RATIO_EXTREME_HIGH setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
     {
       "positionId": "T-1784086111076-7ms9",
@@ -264,12 +268,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 0.99,
-      "hoursToExpiry": 503.01,
+      "hoursOpen": 1.99,
+      "hoursToExpiry": 502.01,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.002,
+      "elapsedHoldPct": 0.004,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
     }
   ]
 }
