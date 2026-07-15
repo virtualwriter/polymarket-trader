@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T14:28:14.280Z",
+  "generatedAt": "2026-07-15T15:28:11.418Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,48 +12,13 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 68.407,
+      "entryPrice": 67.701,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
-    },
-    {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "short",
-      "strength": 0.1366666666666666,
-      "confidence": 0.07286220101585535,
-      "thesis": "GOLD P/C ratio 0.46 — heavy call buying → contrarian short.",
-      "hypothesisId": null,
-      "entryPrice": 4059,
-      "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 5
     }
   ],
   "sizingPreviews": [
-    {
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "short",
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "reason": "unsupported_signal",
-      "entryPrice": 4059,
-      "probabilitySource": "unsupported",
-      "winProbability": null,
-      "probabilitySampleSize": null,
-      "edgePts": null,
-      "rawKellyFraction": null,
-      "adjustedKellyFraction": null,
-      "cappedKellyFraction": null,
-      "notes": [
-        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
-        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
-      ]
-    },
     {
       "signalType": "PROMOTED_HYPOTHESIS",
       "asset": "HYPE",
@@ -62,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 68.407,
+      "entryPrice": 67.701,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -78,69 +43,7 @@
   ],
   "portfolioExposurePreviews": [
     {
-      "candidateId": "PC_RATIO_EXTREME_LOW:GOLD:0",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "short",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "candidateSize": 0,
-      "riskClusters": [
-        "commodity",
-        "gold_delta",
-        "options_sentiment",
-        "spot_venue"
-      ],
-      "current": {
-        "totalGross": 2,
-        "totalNet": 2,
-        "byAsset": {
-          "GOLD": 1,
-          "HYPE": 1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 1,
-          "PROMOTED_HYPOTHESIS": 1
-        },
-        "byVenue": {
-          "spot": 2
-        },
-        "byCluster": {
-          "commodity": 1,
-          "gold_delta": 1,
-          "options_sentiment": 1,
-          "spot_venue": 2,
-          "hype_delta": 1,
-          "risk_on": 1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 2,
-        "totalNet": 2,
-        "byAsset": {
-          "GOLD": 1,
-          "HYPE": 1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 1,
-          "PROMOTED_HYPOTHESIS": 1,
-          "PC_RATIO_EXTREME_LOW": 0
-        },
-        "byVenue": {
-          "spot": 2
-        },
-        "byCluster": {
-          "commodity": 1,
-          "gold_delta": 1,
-          "options_sentiment": 1,
-          "spot_venue": 2,
-          "hype_delta": 1,
-          "risk_on": 1
-        }
-      },
-      "warnings": []
-    },
-    {
-      "candidateId": "PROMOTED_HYPOTHESIS:HYPE:1",
+      "candidateId": "PROMOTED_HYPOTHESIS:HYPE:0",
       "asset": "HYPE",
       "venue": "spot",
       "direction": "long",
@@ -152,49 +55,39 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 2,
-        "totalNet": 2,
+        "totalGross": 1,
+        "totalNet": 1,
         "byAsset": {
-          "GOLD": 1,
           "HYPE": 1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 1,
           "PROMOTED_HYPOTHESIS": 1
         },
         "byVenue": {
-          "spot": 2
+          "spot": 1
         },
         "byCluster": {
-          "commodity": 1,
-          "gold_delta": 1,
-          "options_sentiment": 1,
-          "spot_venue": 2,
           "hype_delta": 1,
-          "risk_on": 1
+          "risk_on": 1,
+          "spot_venue": 1
         }
       },
       "afterCandidate": {
-        "totalGross": 2,
-        "totalNet": 2,
+        "totalGross": 1,
+        "totalNet": 1,
         "byAsset": {
-          "GOLD": 1,
           "HYPE": 1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 1,
           "PROMOTED_HYPOTHESIS": 1
         },
         "byVenue": {
-          "spot": 2
+          "spot": 1
         },
         "byCluster": {
-          "commodity": 1,
-          "gold_delta": 1,
-          "options_sentiment": 1,
-          "spot_venue": 2,
           "hype_delta": 1,
-          "risk_on": 1
+          "risk_on": 1,
+          "spot_venue": 1
         }
       },
       "warnings": []
@@ -202,23 +95,7 @@
   ],
   "stagedQuantRules": [
     {
-      "candidateId": "PC_RATIO_EXTREME_LOW:GOLD:0",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "GOLD",
-      "mode": "observe_uniform",
-      "liveSizingEnabled": false,
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "enforcedLiveSize": 1,
-      "wouldResize": true,
-      "edgePts": null,
-      "alerts": [],
-      "notes": [
-        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
-      ]
-    },
-    {
-      "candidateId": "PROMOTED_HYPOTHESIS:HYPE:1",
+      "candidateId": "PROMOTED_HYPOTHESIS:HYPE:0",
       "signalType": "PROMOTED_HYPOTHESIS",
       "asset": "HYPE",
       "mode": "observe_uniform",
@@ -236,29 +113,6 @@
   ],
   "llmCloseEligibility": [
     {
-      "positionId": "T-1784048786418-bo3z",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_gld_pc_ratio"
-      ],
-      "hoursOpen": 21.36,
-      "hoursToExpiry": 98.64,
-      "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.178,
-      "minHoldHours": 12,
-      "reason": "Mechanical PC_RATIO_EXTREME_HIGH setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    },
-    {
       "positionId": "T-1784086111076-7ms9",
       "signalType": "PROMOTED_HYPOTHESIS",
       "asset": "HYPE",
@@ -269,12 +123,12 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 11,
-      "hoursToExpiry": 493,
+      "hoursOpen": 11.99,
+      "hoursToExpiry": 492.01,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0218,
+      "elapsedHoldPct": 0.0238,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 11.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
     }
   ]
 }

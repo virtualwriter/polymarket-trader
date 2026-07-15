@@ -1,47 +1,30 @@
 {
-  "generatedAt": "2026-07-15T14:28:14.217Z",
+  "generatedAt": "2026-07-15T15:28:11.287Z",
   "dataFreshness": {
-    "valuationRows": 1690,
-    "latestValuationAt": "2026-07-15T14",
-    "macroRows": 1688,
+    "valuationRows": 1691,
+    "latestValuationAt": "2026-07-15T15",
+    "macroRows": 1689,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-15T14"
+    "latestInstrumentSnapshotAt": "2026-07-15T15"
   },
   "portfolio": {
-    "cash": 96.5892,
-    "openPositions": 2,
-    "realizedPnl": 1.1763,
-    "totalTrades": 460,
-    "winRatePct": 60.7,
-    "unrealizedPnl": 0.0154
+    "cash": 97.5887,
+    "openPositions": 1,
+    "realizedPnl": 1.1758,
+    "totalTrades": 461,
+    "winRatePct": 60.5,
+    "unrealizedPnl": 0.0054
   },
   "openPositions": [
-    {
-      "positionId": "T-1784048786418-bo3z",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.05,
-      "currentPrice": 4059,
-      "underlyingPrice": 4059,
-      "targetPct": 3,
-      "stopPct": 1.5,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_gld_pc_ratio"
-      ]
-    },
     {
       "positionId": "T-1784086111076-7ms9",
       "asset": "HYPE",
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 1.59,
-      "currentPrice": 68.407,
-      "underlyingPrice": 68.407,
+      "pnlPct": 0.54,
+      "currentPrice": 67.701,
+      "underlyingPrice": 67.701,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -149,10 +132,10 @@
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "enabled": true,
-      "weight": 0.524,
-      "trades": 41,
+      "weight": 0.5204,
+      "trades": 42,
       "wins": 21,
-      "avgPnlPct": 0.2456,
+      "avgPnlPct": 0.2385,
       "disabledAssets": [
         "BTC"
       ]
@@ -190,10 +173,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 48,
-    "resolvedCount": 554,
+    "openCount": 47,
+    "resolvedCount": 555,
     "wouldHaveWon": 313,
-    "wouldHaveLost": 241,
+    "wouldHaveLost": 242,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -228,14 +211,6 @@
         "avgPnlPct": 0.09
       },
       {
-        "signalType": "PC_RATIO_EXTREME_LOW",
-        "blocked": 21,
-        "resolved": 20,
-        "wouldHaveWon": 11,
-        "wouldHaveLost": 9,
-        "avgPnlPct": -0.12
-      },
-      {
         "signalType": "PM_IV_GT_OPT_IV_DOWNSIDE",
         "blocked": 3,
         "resolved": 3,
@@ -252,6 +227,14 @@
         "avgPnlPct": 6.73
       },
       {
+        "signalType": "PC_RATIO_EXTREME_LOW",
+        "blocked": 21,
+        "resolved": 21,
+        "wouldHaveWon": 11,
+        "wouldHaveLost": 10,
+        "avgPnlPct": -0.22
+      },
+      {
         "signalType": "PM_EV_BELOW_SPOT",
         "blocked": 4,
         "resolved": 4,
@@ -261,26 +244,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.19,
-        "resolvedAt": "2026-07-15T09:28:13.000Z",
-        "marketQuality": {
-          "yesBid": 0.16,
-          "yesAsk": 0.17,
-          "yesSpread": 0.01,
-          "liquidity": 111575.05,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -413,6 +376,21 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "PC_RATIO_EXTREME_LOW",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "short",
+        "blockedReason": "short_blocked_by_positive_trend",
+        "outcome": "loss",
+        "closeReason": "stop",
+        "pnlPct": -2.07,
+        "resolvedAt": "2026-07-15T15:28:11.111Z",
+        "trendMetrics": {
+          "aboveTrendPct": 0.64,
+          "momentumPct": 2.01
         }
       }
     ],
