@@ -1,0 +1,425 @@
+{
+  "generatedAt": "2026-07-15T18:56:40.300Z",
+  "sources": [
+    {
+      "name": "hypotheses_test_level",
+      "n": 581,
+      "description": "hypotheses.json: static per-hypothesis confidence bucketed against triggered test outcomes (win/loss); confidence is per-hypothesis, not per-trade-instance."
+    },
+    {
+      "name": "live_trades_via_hypothesis",
+      "n": 52,
+      "description": "trades-detailed.csv(+archive) closed trades whose hypothesis_id joins to hypotheses.json; confidence is the hypothesis's static value, used as a proxy ex-ante probability for the trade. Excludes tainted/data-quality trades. Covers only the minority of live trades that carry a hypothesis_id."
+    },
+    {
+      "name": "shadow:all_combined",
+      "n": 818,
+      "description": "blocked-signals.json: all resolved shadow trades across every blockedReason, combined. confidence is recorded ex-ante at blockedAt; outcome is hypotheticalResult.outcome (win/loss). Excludes data_quality_artifact and unresolved-outcome shadows."
+    },
+    {
+      "name": "shadow:iv_downside_leg_untracked",
+      "n": 19,
+      "description": "blocked-signals.json shadows with blockedReason='iv_downside_leg_untracked'; confidence recorded ex-ante at blockedAt, outcome from hypotheticalResult.outcome."
+    },
+    {
+      "name": "shadow:manual_shadow_trade",
+      "n": 45,
+      "description": "blocked-signals.json shadows with blockedReason='manual_shadow_trade'; confidence recorded ex-ante at blockedAt, outcome from hypotheticalResult.outcome."
+    },
+    {
+      "name": "shadow:monotonic_arb_shadow",
+      "n": 18,
+      "description": "blocked-signals.json shadows with blockedReason='monotonic_arb_shadow'; confidence recorded ex-ante at blockedAt, outcome from hypotheticalResult.outcome."
+    },
+    {
+      "name": "shadow:no_bias_adjusted_gap_shadow",
+      "n": 127,
+      "description": "blocked-signals.json shadows with blockedReason='no_bias_adjusted_gap_shadow'; confidence recorded ex-ante at blockedAt, outcome from hypotheticalResult.outcome."
+    },
+    {
+      "name": "shadow:one_touch_high_edge_shadow",
+      "n": 266,
+      "description": "blocked-signals.json shadows with blockedReason='one_touch_high_edge_shadow'; confidence recorded ex-ante at blockedAt, outcome from hypotheticalResult.outcome."
+    },
+    {
+      "name": "shadow:polymarket_proxy_short",
+      "n": 22,
+      "description": "blocked-signals.json shadows with blockedReason='polymarket_proxy_short'; confidence recorded ex-ante at blockedAt, outcome from hypotheticalResult.outcome."
+    },
+    {
+      "name": "shadow:relative_value_heatmap",
+      "n": 24,
+      "description": "blocked-signals.json shadows with blockedReason='relative_value_heatmap'; confidence recorded ex-ante at blockedAt, outcome from hypotheticalResult.outcome."
+    },
+    {
+      "name": "shadow:short_blocked_by_positive_trend",
+      "n": 43,
+      "description": "blocked-signals.json shadows with blockedReason='short_blocked_by_positive_trend'; confidence recorded ex-ante at blockedAt, outcome from hypotheticalResult.outcome."
+    },
+    {
+      "name": "shadow:weekend_hl_funding_shadow",
+      "n": 254,
+      "description": "blocked-signals.json shadows with blockedReason='weekend_hl_funding_shadow'; confidence recorded ex-ante at blockedAt, outcome from hypotheticalResult.outcome."
+    }
+  ],
+  "buckets": [
+    {
+      "source": "hypotheses_test_level",
+      "bucketLabel": "0.4-0.6",
+      "bucketLow": 0.4,
+      "bucketHigh": 0.6,
+      "n": 3,
+      "meanConfidence": 0.5333,
+      "bucketMidpoint": 0.5,
+      "realizedWinRate": 0.3333,
+      "gap": -0.2
+    },
+    {
+      "source": "hypotheses_test_level",
+      "bucketLabel": "0.6-0.8",
+      "bucketLow": 0.6,
+      "bucketHigh": 0.8,
+      "n": 479,
+      "meanConfidence": 0.6859,
+      "bucketMidpoint": 0.7,
+      "realizedWinRate": 0.3987,
+      "gap": -0.2871
+    },
+    {
+      "source": "hypotheses_test_level",
+      "bucketLabel": "0.8-1.0",
+      "bucketLow": 0.8,
+      "bucketHigh": 1.0,
+      "n": 99,
+      "meanConfidence": 0.8177,
+      "bucketMidpoint": 0.9,
+      "realizedWinRate": 0.4444,
+      "gap": -0.3732
+    },
+    {
+      "source": "live_trades_via_hypothesis",
+      "bucketLabel": "0.6-0.8",
+      "bucketLow": 0.6,
+      "bucketHigh": 0.8,
+      "n": 6,
+      "meanConfidence": 0.6833,
+      "bucketMidpoint": 0.7,
+      "realizedWinRate": 0.1667,
+      "gap": -0.5167
+    },
+    {
+      "source": "live_trades_via_hypothesis",
+      "bucketLabel": "0.8-1.0",
+      "bucketLow": 0.8,
+      "bucketHigh": 1.0,
+      "n": 46,
+      "meanConfidence": 0.823,
+      "bucketMidpoint": 0.9,
+      "realizedWinRate": 0.4348,
+      "gap": -0.3883
+    },
+    {
+      "source": "shadow:all_combined",
+      "bucketLabel": "0.0-0.2",
+      "bucketLow": 0.0,
+      "bucketHigh": 0.2,
+      "n": 46,
+      "meanConfidence": 0.0796,
+      "bucketMidpoint": 0.1,
+      "realizedWinRate": 0.5,
+      "gap": 0.4204
+    },
+    {
+      "source": "shadow:all_combined",
+      "bucketLabel": "0.2-0.4",
+      "bucketLow": 0.2,
+      "bucketHigh": 0.4,
+      "n": 46,
+      "meanConfidence": 0.2563,
+      "bucketMidpoint": 0.30000000000000004,
+      "realizedWinRate": 0.3261,
+      "gap": 0.0698
+    },
+    {
+      "source": "shadow:all_combined",
+      "bucketLabel": "0.4-0.6",
+      "bucketLow": 0.4,
+      "bucketHigh": 0.6,
+      "n": 646,
+      "meanConfidence": 0.5059,
+      "bucketMidpoint": 0.5,
+      "realizedWinRate": 0.5372,
+      "gap": 0.0313
+    },
+    {
+      "source": "shadow:all_combined",
+      "bucketLabel": "0.6-0.8",
+      "bucketLow": 0.6,
+      "bucketHigh": 0.8,
+      "n": 27,
+      "meanConfidence": 0.6736,
+      "bucketMidpoint": 0.7,
+      "realizedWinRate": 0.3333,
+      "gap": -0.3403
+    },
+    {
+      "source": "shadow:all_combined",
+      "bucketLabel": "0.8-1.0",
+      "bucketLow": 0.8,
+      "bucketHigh": 1.0,
+      "n": 53,
+      "meanConfidence": 1.0,
+      "bucketMidpoint": 0.9,
+      "realizedWinRate": 0.717,
+      "gap": -0.283
+    },
+    {
+      "source": "shadow:iv_downside_leg_untracked",
+      "bucketLabel": "0.0-0.2",
+      "bucketLow": 0.0,
+      "bucketHigh": 0.2,
+      "n": 15,
+      "meanConfidence": 0.0779,
+      "bucketMidpoint": 0.1,
+      "realizedWinRate": 0.1333,
+      "gap": 0.0554
+    },
+    {
+      "source": "shadow:iv_downside_leg_untracked",
+      "bucketLabel": "0.2-0.4",
+      "bucketLow": 0.2,
+      "bucketHigh": 0.4,
+      "n": 2,
+      "meanConfidence": 0.2063,
+      "bucketMidpoint": 0.30000000000000004,
+      "realizedWinRate": 0.5,
+      "gap": 0.2937
+    },
+    {
+      "source": "shadow:iv_downside_leg_untracked",
+      "bucketLabel": "0.4-0.6",
+      "bucketLow": 0.4,
+      "bucketHigh": 0.6,
+      "n": 2,
+      "meanConfidence": 0.4938,
+      "bucketMidpoint": 0.5,
+      "realizedWinRate": 0.5,
+      "gap": 0.0062
+    },
+    {
+      "source": "shadow:manual_shadow_trade",
+      "bucketLabel": "0.8-1.0",
+      "bucketLow": 0.8,
+      "bucketHigh": 1.0,
+      "n": 45,
+      "meanConfidence": 1.0,
+      "bucketMidpoint": 0.9,
+      "realizedWinRate": 0.6667,
+      "gap": -0.3333
+    },
+    {
+      "source": "shadow:monotonic_arb_shadow",
+      "bucketLabel": "0.0-0.2",
+      "bucketLow": 0.0,
+      "bucketHigh": 0.2,
+      "n": 8,
+      "meanConfidence": 0.1,
+      "bucketMidpoint": 0.1,
+      "realizedWinRate": 1.0,
+      "gap": 0.9
+    },
+    {
+      "source": "shadow:monotonic_arb_shadow",
+      "bucketLabel": "0.2-0.4",
+      "bucketLow": 0.2,
+      "bucketHigh": 0.4,
+      "n": 2,
+      "meanConfidence": 0.2,
+      "bucketMidpoint": 0.30000000000000004,
+      "realizedWinRate": 1.0,
+      "gap": 0.8
+    },
+    {
+      "source": "shadow:monotonic_arb_shadow",
+      "bucketLabel": "0.8-1.0",
+      "bucketLow": 0.8,
+      "bucketHigh": 1.0,
+      "n": 8,
+      "meanConfidence": 1.0,
+      "bucketMidpoint": 0.9,
+      "realizedWinRate": 1.0,
+      "gap": 0.0
+    },
+    {
+      "source": "shadow:no_bias_adjusted_gap_shadow",
+      "bucketLabel": "0.4-0.6",
+      "bucketLow": 0.4,
+      "bucketHigh": 0.6,
+      "n": 121,
+      "meanConfidence": 0.554,
+      "bucketMidpoint": 0.5,
+      "realizedWinRate": 0.4132,
+      "gap": -0.1407
+    },
+    {
+      "source": "shadow:no_bias_adjusted_gap_shadow",
+      "bucketLabel": "0.6-0.8",
+      "bucketLow": 0.6,
+      "bucketHigh": 0.8,
+      "n": 6,
+      "meanConfidence": 0.6399,
+      "bucketMidpoint": 0.7,
+      "realizedWinRate": 0.6667,
+      "gap": 0.0267
+    },
+    {
+      "source": "shadow:one_touch_high_edge_shadow",
+      "bucketLabel": "0.4-0.6",
+      "bucketLow": 0.4,
+      "bucketHigh": 0.6,
+      "n": 254,
+      "meanConfidence": 0.4876,
+      "bucketMidpoint": 0.5,
+      "realizedWinRate": 0.3976,
+      "gap": -0.0899
+    },
+    {
+      "source": "shadow:one_touch_high_edge_shadow",
+      "bucketLabel": "0.6-0.8",
+      "bucketLow": 0.6,
+      "bucketHigh": 0.8,
+      "n": 12,
+      "meanConfidence": 0.6889,
+      "bucketMidpoint": 0.7,
+      "realizedWinRate": 0.1667,
+      "gap": -0.5223
+    },
+    {
+      "source": "shadow:polymarket_proxy_short",
+      "bucketLabel": "0.2-0.4",
+      "bucketLow": 0.2,
+      "bucketHigh": 0.4,
+      "n": 22,
+      "meanConfidence": 0.25,
+      "bucketMidpoint": 0.30000000000000004,
+      "realizedWinRate": 0.1818,
+      "gap": -0.0682
+    },
+    {
+      "source": "shadow:relative_value_heatmap",
+      "bucketLabel": "0.2-0.4",
+      "bucketLow": 0.2,
+      "bucketHigh": 0.4,
+      "n": 12,
+      "meanConfidence": 0.2554,
+      "bucketMidpoint": 0.30000000000000004,
+      "realizedWinRate": 0.25,
+      "gap": -0.0054
+    },
+    {
+      "source": "shadow:relative_value_heatmap",
+      "bucketLabel": "0.4-0.6",
+      "bucketLow": 0.4,
+      "bucketHigh": 0.6,
+      "n": 5,
+      "meanConfidence": 0.5287,
+      "bucketMidpoint": 0.5,
+      "realizedWinRate": 0.4,
+      "gap": -0.1287
+    },
+    {
+      "source": "shadow:relative_value_heatmap",
+      "bucketLabel": "0.6-0.8",
+      "bucketLow": 0.6,
+      "bucketHigh": 0.8,
+      "n": 7,
+      "meanConfidence": 0.6639,
+      "bucketMidpoint": 0.7,
+      "realizedWinRate": 0.4286,
+      "gap": -0.2353
+    },
+    {
+      "source": "shadow:short_blocked_by_positive_trend",
+      "bucketLabel": "0.0-0.2",
+      "bucketLow": 0.0,
+      "bucketHigh": 0.2,
+      "n": 23,
+      "meanConfidence": 0.0737,
+      "bucketMidpoint": 0.1,
+      "realizedWinRate": 0.5652,
+      "gap": 0.4915
+    },
+    {
+      "source": "shadow:short_blocked_by_positive_trend",
+      "bucketLabel": "0.2-0.4",
+      "bucketLow": 0.2,
+      "bucketHigh": 0.4,
+      "n": 8,
+      "meanConfidence": 0.3015,
+      "bucketMidpoint": 0.30000000000000004,
+      "realizedWinRate": 0.625,
+      "gap": 0.3235
+    },
+    {
+      "source": "shadow:short_blocked_by_positive_trend",
+      "bucketLabel": "0.4-0.6",
+      "bucketLow": 0.4,
+      "bucketHigh": 0.6,
+      "n": 10,
+      "meanConfidence": 0.5285,
+      "bucketMidpoint": 0.5,
+      "realizedWinRate": 0.4,
+      "gap": -0.1285
+    },
+    {
+      "source": "shadow:short_blocked_by_positive_trend",
+      "bucketLabel": "0.6-0.8",
+      "bucketLow": 0.6,
+      "bucketHigh": 0.8,
+      "n": 2,
+      "meanConfidence": 0.7168,
+      "bucketMidpoint": 0.7,
+      "realizedWinRate": 0.0,
+      "gap": -0.7168
+    },
+    {
+      "source": "shadow:weekend_hl_funding_shadow",
+      "bucketLabel": "0.4-0.6",
+      "bucketLow": 0.4,
+      "bucketHigh": 0.6,
+      "n": 254,
+      "meanConfidence": 0.5,
+      "bucketMidpoint": 0.5,
+      "realizedWinRate": 0.7441,
+      "gap": 0.2441
+    }
+  ],
+  "excludedTaintedCount": 28,
+  "excludedDataQualityShadowCount": 32,
+  "dataAvailability": {
+    "joinable": [
+      "data/blocked-signals.json shadow trades: 818 resolved shadows carry an ex-ante `confidence` (recorded at blockedAt) joined to hypotheticalResult.outcome (win/loss).",
+      "data/hypotheses.json: 581 triggered test events joined to each hypothesis's static ex-ante `confidence`.",
+      "52 of 482 closed live trades (11%) join via hypothesis_id to hypotheses.json confidence."
+    ],
+    "notJoinable": [
+      "402 of 482 closed live trades carry no hypothesis_id and have NO recoverable ex-ante confidence: the engine's Position/ClosedTrade schema (scripts/trading-engine.ts) never persists a confidence/probability field per trade, and trades-detailed.csv has no confidence column.",
+      "data/candidate-actions.json entryCandidates[].confidence is real ex-ante confidence but the file is overwritten every engine run (current snapshot only, no history) — past candidates cannot be joined back to the trades opened from them.",
+      "data/engine-state.json openPositions and data/position-snapshots.csv are derived point-in-time summaries with no confidence field.",
+      "data/calibration-buckets-summary.json stores only realized winRate for NO_BIAS_ADJUSTED_GAP_SHADOW shadows, with no confidence field — it is outcome-only and cannot itself be used for a calibration gap.",
+      "data/llm-close-rejections.json, data/llm-state.json, data/llm-advice.json are operational logs of close decisions/skips; none store an entry-time win probability."
+    ]
+  },
+  "keyFindings": [
+    "shadow:one_touch_high_edge_shadow bucket 0.6-0.8: predicted 0.689, realized win rate 0.167 (n=12), gap=-0.522 (overconfident)",
+    "shadow:short_blocked_by_positive_trend bucket 0.0-0.2: predicted 0.074, realized win rate 0.565 (n=23), gap=+0.491 (underconfident)",
+    "shadow:all_combined bucket 0.0-0.2: predicted 0.080, realized win rate 0.500 (n=46), gap=+0.420 (underconfident)"
+  ],
+  "verdict": "significant_miscalibration",
+  "notes": [
+    "Bucket width is fixed at 0.2 confidence points ([0.0, 0.2, 0.4, 0.6, 0.8, 1.0]).",
+    "meanConfidence is the mean of actual confidence values observed in the bucket (reliability-diagram convention), not the bucket midpoint; bucketMidpoint is also reported for reference.",
+    "Key findings require n>=10 in a bucket to avoid noise from small samples.",
+    "Live trades and shadow trades are NOT the same population: shadows are signals the engine chose NOT to take live, so 'shadow:*' calibration describes the model's probability estimates for blocked/paper signals, not necessarily the same distribution as live entries."
+  ]
+}

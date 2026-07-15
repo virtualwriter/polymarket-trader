@@ -495,6 +495,126 @@
       "links": {},
       "created": "2026-07-15T17:46:51Z",
       "source": "retention-audit-2026-07-15-corrected-deep-scan"
+    },
+    {
+      "id": "EXP-0003",
+      "type": "experiment",
+      "evidenceClass": "DERIVED",
+      "status": "final",
+      "title": "EXP: ex-ante confidence calibration audit (live trades, shadows, hypotheses)",
+      "body": {
+        "question": "Is the trading system's ex-ante confidence/probability well-calibrated against realized win rates, and which trade/shadow populations have a recoverable ex-ante confidence to test this at all?",
+        "method": "scripts/confidence_calibration.py (stdlib-only) audits every candidate confidence source named in the Phase 3 brief by reading scripts/trading-engine.ts's Position/ClosedTrade interfaces and every named data file. It joins three verified-joinable sources to realized outcomes, buckets observations into fixed 0.2-wide confidence buckets, and computes gap = realizedWinRate - meanConfidence per (source, bucket). Excludes trades with close_reason=data_quality_artifact or id in operationally-tainted-trades.json, and shadows with hypotheticalResult.closeReason=data_quality_artifact or an unresolved outcome.",
+        "dataAvailability": {
+          "joinable": [
+            "data/blocked-signals.json: 818 resolved shadow trades carry an ex-ante `confidence` (recorded at blockedAt) joined to hypotheticalResult.outcome (win/loss); 32 excluded as data_quality_artifact/unresolved. Spans 9 blockedReason families.",
+            "data/hypotheses.json: 581 triggered test events joined to each hypothesis's static ex-ante `confidence` (531 hypotheses, all with numeric confidence).",
+            "52 of 482 closed live trades (10.8%) join via a non-empty hypothesis_id to hypotheses.json confidence, after excluding 28 tainted/data_quality_artifact trades."
+          ],
+          "notJoinable": [
+            "402 of 482 closed live trades (89.2%) have NO recoverable ex-ante confidence: verified by reading the Position and ClosedTrade TypeScript interfaces in scripts/trading-engine.ts — neither persists a confidence/probability field — and trades-detailed.csv has no confidence column. Confidence is computed transiently in signal-generation code (e.g. `confidence: strength * weight.weight`) but discarded once a position opens.",
+            "data/candidate-actions.json entryCandidates[].confidence is real ex-ante confidence but the file is overwritten every engine run (current snapshot only, no history) — past candidates can't be joined back to the trades opened from them.",
+            "data/engine-state.json openPositions and data/position-snapshots.csv are derived point-in-time summaries with no confidence field.",
+            "data/calibration-buckets-summary.json stores only realized winRate for NO_BIAS_ADJUSTED_GAP_SHADOW shadows with no confidence field — outcome-only, not a calibration input.",
+            "data/llm-close-rejections.json, data/llm-state.json, data/llm-advice.json are operational logs of close decisions/skips; none store an entry-time win probability."
+          ]
+        },
+        "keyFindings": [
+          "Systemic overconfidence at high confidence in hypothesis-derived populations: hypotheses_test_level bucket 0.6-0.8 (n=479) predicts 0.686 but realizes 0.399 (gap -0.287), and bucket 0.8-1.0 (n=99) predicts 0.818 but realizes 0.444 (gap -0.373). The same pattern repeats in the live-trade subset traceable to a hypothesis (live_trades_via_hypothesis 0.8-1.0, n=46, predicts 0.823, realizes 0.435, gap -0.388) — 'high confidence' hypotheses win less than half the time in both the paper test-event population and the live trades linked to them.",
+          "shadow:weekend_hl_funding_shadow is the single largest bucket in the dataset (n=254, confidence clustered at ~0.50) and realizes a 74.4% win rate — gap +0.244, substantially underconfident. This is the strategy backing STRAT-0001 (currently active live).",
+          "shadow:short_blocked_by_positive_trend at confidence 0.0-0.2 (n=23) realizes a 56.5% win rate versus a predicted 7.4% (gap +0.491): signals the engine blocks specifically for having low computed confidence actually win more than half the time in this sample."
+        ],
+        "artifact": "data/confidence-calibration.json"
+      },
+      "links": {},
+      "created": "2026-07-15T18:14:44Z",
+      "source": "confidence-calibration-2026-07-15"
+    },
+    {
+      "id": "DEC-0005",
+      "type": "decision",
+      "evidenceClass": "DERIVED",
+      "status": "proposed",
+      "title": "Persist ex-ante confidence per trade on live positions/ledger",
+      "body": {
+        "rationale": "EXP-0003 found that 89.2% of closed live trades have zero recoverable ex-ante confidence: scripts/trading-engine.ts's Position and ClosedTrade interfaces never persist the confidence value that IS computed at signal-generation time (e.g. `confidence: strength * weight.weight`), and trades-detailed.csv has no confidence column. The only live-trade confidence signal available today is an indirect, coarse proxy: joining via hypothesis_id to a hypothesis's single static confidence value (10.8% coverage). Meanwhile the shadow-trade population (blocked-signals.json) shows this is a solvable problem — it already persists confidence per shadow instance at blockedAt and enables real calibration analysis today. Persisting the same per-instance ex-ante confidence on live Position/ClosedTrade records (not just the hypothesis's static value) would let calibration audits, Kelly-sizing work, and signal-weight tuning use the full live population instead of an ~11% joinable slice.",
+        "proposedChange": "Add a `confidence: number` field to the Position and ClosedTrade interfaces in scripts/trading-engine.ts, populated from the signal's `confidence` at the moment a position is opened (the same value already computed and used for sizing/ranking), and add a matching `confidence` column to trades-detailed.csv's writer/reader so it survives to the ledger. No change to sizing, entry logic, stops, or targets.",
+        "affectedArtifact": "data/confidence-calibration.json"
+      },
+      "links": {
+        "basedOn": "EXP-0003"
+      },
+      "created": "2026-07-15T18:14:45Z",
+      "source": "confidence-calibration-2026-07-15"
+    },
+    {
+      "id": "EXP-0004",
+      "type": "experiment",
+      "evidenceClass": "DERIVED",
+      "status": "final",
+      "title": "EXP: reproducible re-run of confidence calibration via run_experiment.py",
+      "body": {
+        "question": "Does scripts/run_experiment.py reproduce the EXP-0003 confidence calibration run, tying a fresh execution to a git commit and a persisted artifact?",
+        "method": "run_experiment.py runner (Phase 3 Deliverable 2) executes the command below, capturing git HEAD, stdout/stderr, and exit code into data/experiments/, then appends a run summary into this records body.runs.",
+        "spec": {
+          "command": [
+            "python3",
+            "scripts/confidence_calibration.py"
+          ],
+          "dataRange": "all available blocked-signals.json / hypotheses.json / trades-detailed.csv(+archive) rows as of run time",
+          "description": "Re-run scripts/confidence_calibration.py as a registry-tracked, reproducible experiment; demo of scripts/run_experiment.py."
+        },
+        "runs": [
+          {
+            "runAt": "2026-07-15T18:31:09.100Z",
+            "finishedAt": "2026-07-15T18:31:09.428Z",
+            "gitCommit": "a4488c3d910e5ed316c4b1988c2e407e03fdbcb2",
+            "exitCode": 0,
+            "timedOut": false,
+            "durationMs": 328,
+            "artifact": "data/experiments/EXP-0004-run-2026-07-15T183109100Z.json"
+          },
+          {
+            "runAt": "2026-07-15T18:55:06.614Z",
+            "finishedAt": "2026-07-15T18:55:06.848Z",
+            "gitCommit": "a4488c3d910e5ed316c4b1988c2e407e03fdbcb2",
+            "exitCode": 0,
+            "timedOut": false,
+            "durationMs": 233,
+            "artifact": "data/experiments/EXP-0004-run-2026-07-15T185506614Z.json"
+          },
+          {
+            "runAt": "2026-07-15T18:55:32.515Z",
+            "finishedAt": "2026-07-15T18:55:32.679Z",
+            "gitCommit": "a4488c3d910e5ed316c4b1988c2e407e03fdbcb2",
+            "exitCode": 0,
+            "timedOut": false,
+            "durationMs": 163,
+            "artifact": "data/experiments/EXP-0004-run-2026-07-15T185532515Z.json"
+          },
+          {
+            "runAt": "2026-07-15T18:55:37.443Z",
+            "finishedAt": "2026-07-15T18:55:37.613Z",
+            "gitCommit": "a4488c3d910e5ed316c4b1988c2e407e03fdbcb2",
+            "exitCode": 0,
+            "timedOut": false,
+            "durationMs": 169,
+            "artifact": "data/experiments/EXP-0004-run-2026-07-15T185537443Z.json"
+          },
+          {
+            "runAt": "2026-07-15T18:56:40.120Z",
+            "finishedAt": "2026-07-15T18:56:40.313Z",
+            "gitCommit": "a4488c3d910e5ed316c4b1988c2e407e03fdbcb2",
+            "exitCode": 0,
+            "timedOut": false,
+            "durationMs": 193,
+            "artifact": "data/experiments/EXP-0004-run-2026-07-15T185640120Z.json"
+          }
+        ]
+      },
+      "links": {},
+      "created": "2026-07-15T18:30:57Z",
+      "source": "run-experiment-demo-2026-07-15"
     }
   ]
 }

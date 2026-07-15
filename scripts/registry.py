@@ -261,6 +261,54 @@ def cmd_add(args: argparse.Namespace) -> int:
     return 0
 
 
+def deep_merge(base: Any, patch: Any) -> Any:
+    """Merge `patch` into `base`. Dicts are merged key-by-key (recursively);
+    lists are concatenated (base + patch) so callers can "append" to an
+    existing array field (e.g. body.runs) without clobbering prior entries;
+    any other type in `patch` overwrites the corresponding `base` value."""
+    if isinstance(base, dict) and isinstance(patch, dict):
+        result = dict(base)
+        for key, value in patch.items():
+            if key in result:
+                result[key] = deep_merge(result[key], value)
+            else:
+                result[key] = value
+        return result
+    if isinstance(base, list) and isinstance(patch, list):
+        return base + patch
+    return patch
+
+
+def cmd_update_body(args: argparse.Namespace) -> int:
+    data = load_registry(args.registry)
+    records = data.get("records", [])
+    target = None
+    for record in records:
+        if record.get("id") == args.id:
+            target = record
+            break
+    if target is None:
+        print(f"error: record not found: {args.id}", file=sys.stderr)
+        return 1
+
+    patch = parse_json_arg(args.body, "--body")
+    if not isinstance(patch, dict):
+        print("error: --body must be a JSON object", file=sys.stderr)
+        return 1
+
+    target["body"] = deep_merge(target.get("body", {}), patch)
+
+    errors = validate_registry(data)
+    if errors:
+        for err in errors:
+            print(f"error: {err}", file=sys.stderr)
+        return 1
+
+    write_registry(args.registry, data)
+    print(json.dumps(target, indent=2, ensure_ascii=False))
+    return 0
+
+
 def filter_records(
     records: list[dict[str, Any]], args: argparse.Namespace
 ) -> list[dict[str, Any]]:
@@ -367,6 +415,14 @@ def build_parser() -> argparse.ArgumentParser:
     supersede_p.add_argument("--id", required=True)
     supersede_p.add_argument("--by", required=True)
 
+    update_body_p = sub.add_parser(
+        "update-body",
+        help="merge a JSON fragment into an existing record's body (dicts merge "
+        "key-by-key; lists concatenate, i.e. append)",
+    )
+    update_body_p.add_argument("--id", required=True)
+    update_body_p.add_argument("--body", required=True, help="JSON object fragment to merge into body")
+
     return parser
 
 
@@ -380,6 +436,7 @@ def main() -> int:
         "query": cmd_query,
         "timeline": cmd_timeline,
         "supersede": cmd_supersede,
+        "update-body": cmd_update_body,
     }
     return handlers[args.command](args)
 
