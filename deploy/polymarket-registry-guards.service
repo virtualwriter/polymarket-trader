@@ -1,0 +1,12 @@
+# /etc/systemd/system/polymarket-registry-guards.service
+[Unit]
+Description=Polymarket research registry read-only invariant guards
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/polymarket-trader
+EnvironmentFile=/etc/polymarket-trader.env
+ExecStart=/usr/bin/python3 scripts/registry_guards.py
+TimeoutStartSec=30s

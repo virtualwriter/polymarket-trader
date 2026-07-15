@@ -181,6 +181,22 @@
       },
       "created": "2026-06-26T00:00:00Z",
       "source": "backfill-2026-07-15"
+    },
+    {
+      "id": "INC-0003",
+      "type": "incident",
+      "evidenceClass": "INVALID",
+      "status": "final",
+      "title": "Tainted trade id erased from all ledgers (T-1779478230785-kc6x)",
+      "body": {
+        "rootCause": "trade T-1779478230785-kc6x (sub-cent one-sided Polymarket entry artifact outside the trader thesis) was tainted in operationally-tainted-trades.json but the row was deleted from both trades-detailed.csv and trades-detailed-archive.csv rather than archived; taint entry became vestigial and tripped the Phase 1 taint-coverage guard",
+        "fix": "taint entry removed 2026-07-15; original reason preserved in this record; guard now clean",
+        "costUsd": 0,
+        "guard": "taint-coverage check in scripts/registry_guards.py (active)"
+      },
+      "links": {},
+      "created": "2026-07-15T17:32:17Z",
+      "source": "relabel-cleanup-2026-07-15"
     }
   ]
 }

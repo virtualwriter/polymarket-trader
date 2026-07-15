@@ -674,11 +674,37 @@ function readClosedTradesLedger(): LedgerTrade[] {
     .sort((a, b) => Date.parse(a.closedAt) - Date.parse(b.closedAt));
 }
 
+// Loaded fresh per report call (not cached) so a relabel_evidence.py --apply
+// run while the bot is already running is picked up on the very next command,
+// without needing a bot restart. Tolerates a missing file (Phase 0/1 hosts
+// that have never tainted a trade).
+function loadTaintedTradeIds(): Set<string> {
+  const path = dataPath("operationally-tainted-trades.json");
+  if (!existsSync(path)) return new Set();
+  try {
+    const parsed = JSON.parse(readFileSync(path, "utf8")) as Record<string, string>;
+    return new Set(Object.keys(parsed ?? {}));
+  } catch {
+    return new Set();
+  }
+}
+
 // data_quality_artifact rows are operational errors / bad marks, explicitly
 // excluded from counted P&L per operator. They are reported separately, never
 // silently dropped.
-function isExcludedFromPnl(trade: LedgerTrade): boolean {
+function isDataQualityArtifact(trade: LedgerTrade): boolean {
   return trade.closeReason === "data_quality_artifact";
+}
+
+// Trades relabeled via scripts/relabel_evidence.py (data/operationally-tainted-trades.json)
+// without necessarily changing close_reason — see scripts/portfolio-ledger.ts
+// isContaminatedTrade for the canonical definition this mirrors.
+function isTaintListExcluded(trade: LedgerTrade, taintedIds: Set<string>): boolean {
+  return taintedIds.has(trade.id);
+}
+
+function isExcludedFromPnl(trade: LedgerTrade, taintedIds: Set<string>): boolean {
+  return isDataQualityArtifact(trade) || isTaintListExcluded(trade, taintedIds);
 }
 
 function rollupTradesBySignal(trades: LedgerTrade[]): Record<string, JsonObject> {
@@ -707,24 +733,31 @@ function rollupTradesBySignal(trades: LedgerTrade[]): Record<string, JsonObject>
 
 function closedTradesContext(asset?: string): JsonObject {
   const assetUpper = asset?.toUpperCase();
+  const taintedIds = loadTaintedTradeIds();
   const ledger = readClosedTradesLedger()
     .filter((trade) => !assetUpper || trade.asset.toUpperCase() === assetUpper);
-  const excluded = ledger.filter(isExcludedFromPnl);
-  const all = ledger.filter((trade) => !isExcludedFromPnl(trade));
+  const excludedDataQuality = ledger.filter(isDataQualityArtifact);
+  const excludedTaint = ledger.filter((trade) => !isDataQualityArtifact(trade) && isTaintListExcluded(trade, taintedIds));
+  const all = ledger.filter((trade) => !isExcludedFromPnl(trade, taintedIds));
   const weekAgo = Date.now() - 7 * 86_400_000;
   const last7d = all.filter((trade) => Date.parse(trade.closedAt) >= weekAgo);
   const recent = all.slice(-100).reverse().map((trade) =>
     `${trade.closedAt.slice(0, 10)} ${trade.asset} ${trade.direction} ${trade.venue} ${trade.signalType} pnl=${trade.pnl.toFixed(4)} (mkt=${trade.marketPnl.toFixed(4)} fund=${trade.fundingPnl.toFixed(4)}) opened=${trade.openedAt.slice(0, 10)} ${trade.closeReason}`
   );
   return {
-    note: "Closed live trades from trades-detailed.csv, grouped by signal_type. WEEKEND_HL_FUNDING_REVERSION_LONG is the weekend Hyperliquid funding-reversion strategy. Dates are UTC. recentClosedTrades is newest-first. Rows with close_reason data_quality_artifact (operational errors / bad marks) are excluded from all P&L figures and summarized in excludedDataQualityArtifacts.",
+    note: "Closed live trades from trades-detailed.csv, grouped by signal_type. WEEKEND_HL_FUNDING_REVERSION_LONG is the weekend Hyperliquid funding-reversion strategy. Dates are UTC. recentClosedTrades is newest-first. Rows with close_reason data_quality_artifact (operational errors / bad marks) are excluded from all P&L figures and summarized in excludedDataQualityArtifacts; rows whose id is in data/operationally-tainted-trades.json (relabeled evidence, see scripts/relabel_evidence.py) are excluded separately and summarized in excludedTaintListTrades.",
     totalClosedTrades: all.length,
     allTimeBySignalType: rollupTradesBySignal(all),
     last7DaysBySignalType: rollupTradesBySignal(last7d),
     excludedDataQualityArtifacts: {
-      count: excluded.length,
-      pnlNotCounted: Number(excluded.reduce((sum, trade) => sum + trade.pnl, 0).toFixed(4)),
-      bySignalType: rollupTradesBySignal(excluded),
+      count: excludedDataQuality.length,
+      pnlNotCounted: Number(excludedDataQuality.reduce((sum, trade) => sum + trade.pnl, 0).toFixed(4)),
+      bySignalType: rollupTradesBySignal(excludedDataQuality),
+    },
+    excludedTaintListTrades: {
+      count: excludedTaint.length,
+      pnlNotCounted: Number(excludedTaint.reduce((sum, trade) => sum + trade.pnl, 0).toFixed(4)),
+      bySignalType: rollupTradesBySignal(excludedTaint),
     },
     recentClosedTrades: recent,
   };
@@ -734,11 +767,13 @@ function tradesPnlReport(args: string[]): string {
   const filter = args[0]?.toLowerCase() ?? "";
   const days = num(args[1]);
   const cutoff = days !== null && days > 0 ? Date.now() - days * 86_400_000 : null;
+  const taintedIds = loadTaintedTradeIds();
   const matched = readClosedTradesLedger()
     .filter((trade) => !filter || trade.signalType.toLowerCase().includes(filter))
     .filter((trade) => cutoff === null || Date.parse(trade.closedAt) >= cutoff);
-  const excluded = matched.filter(isExcludedFromPnl);
-  const trades = matched.filter((trade) => !isExcludedFromPnl(trade));
+  const excludedDataQuality = matched.filter(isDataQualityArtifact);
+  const excludedTaint = matched.filter((trade) => !isDataQualityArtifact(trade) && isTaintListExcluded(trade, taintedIds));
+  const trades = matched.filter((trade) => !isExcludedFromPnl(trade, taintedIds));
   if (trades.length === 0) {
     return `No closed trades found${filter ? ` for signal ~"${filter}"` : ""}${days ? ` in last ${days}d` : ""}. Usage: /trades_pnl [signal_substring] [days]`;
   }
@@ -749,8 +784,8 @@ function tradesPnlReport(args: string[]): string {
     `Closed trades P&L${filter ? ` (signal ~"${filter}")` : ""}${days ? ` (last ${days}d)` : " (all time)"}`,
     `Trades: ${trades.length}; wins=${wins} losses=${trades.length - wins}`,
     `Total P&L: $${totalPnl.toFixed(4)}`,
-    ...(excluded.length > 0
-      ? [`Excluded ${excluded.length} data_quality_artifact row(s) (operational errors, P&L $${excluded.reduce((sum, trade) => sum + trade.pnl, 0).toFixed(4)} not counted)`]
+    ...(excludedDataQuality.length > 0 || excludedTaint.length > 0
+      ? [`Excluded ${excludedDataQuality.length} data_quality_artifact row(s) (P&L $${excludedDataQuality.reduce((sum, trade) => sum + trade.pnl, 0).toFixed(4)} not counted) and ${excludedTaint.length} taint-list row(s) (P&L $${excludedTaint.reduce((sum, trade) => sum + trade.pnl, 0).toFixed(4)} not counted)`]
       : []),
     "",
     "By signal:",

@@ -1,0 +1,11 @@
+# /etc/systemd/system/polymarket-registry-guards.timer
+[Unit]
+Description=Run Polymarket research registry guards hourly at minute 40 (after the :27 engine run)
+
+[Timer]
+OnCalendar=*-*-* *:40:00
+Persistent=true
+Unit=polymarket-registry-guards.service
+
+[Install]
+WantedBy=timers.target
