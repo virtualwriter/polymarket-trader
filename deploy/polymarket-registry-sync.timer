@@ -1,0 +1,11 @@
+# /etc/systemd/system/polymarket-registry-sync.timer
+[Unit]
+Description=Daily sync of hypotheses into research registry at 07:10 UTC
+
+[Timer]
+OnCalendar=*-*-* 07:10:00
+Persistent=true
+Unit=polymarket-registry-sync.service
+
+[Install]
+WantedBy=timers.target

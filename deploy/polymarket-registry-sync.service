@@ -1,0 +1,12 @@
+# /etc/systemd/system/polymarket-registry-sync.service
+[Unit]
+Description=Sync trading hypotheses into research registry
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/polymarket-trader
+EnvironmentFile=/etc/polymarket-trader.env
+ExecStart=/usr/bin/python3 scripts/sync_hypotheses_registry.py --apply
+TimeoutStartSec=120s

@@ -882,22 +882,47 @@ function registryReport(args: string[]): string {
 }
 
 function researchRegistryContext(): JsonObject {
-  const records = loadRegistryRecords()
-    .slice()
-    .sort((a, b) => Date.parse(a.created) - Date.parse(b.created))
-    .map((record) => ({
-      id: record.id,
-      type: record.type,
-      status: record.status,
-      evidenceClass: record.evidenceClass,
-      created: record.created,
-      title: record.title,
-      summary: flattenBodySummary(record.body),
-    }));
+  const all = loadRegistryRecords();
+  // Synced LLM hypotheses (evidenceClass HYPOTHESIS) number in the hundreds
+  // and would blow the LLM context cap; include only non-hypothesis records
+  // plus running/final hypotheses, and summarize the rest as counts.
+  const hypotheses = all.filter((record) => record.evidenceClass === "HYPOTHESIS");
+  const recentRunningHypothesisIds = new Set(
+    hypotheses
+      .filter((record) => record.status === "running")
+      .sort((a, b) => Date.parse(b.created) - Date.parse(a.created))
+      .slice(0, 10)
+      .map((record) => record.id)
+  );
+  const included = all
+    .filter((record) =>
+      record.evidenceClass !== "HYPOTHESIS" ||
+      record.status === "final" ||
+      recentRunningHypothesisIds.has(record.id)
+    )
+    .sort((a, b) => Date.parse(a.created) - Date.parse(b.created));
+  const compact = included.map((record) => ({
+    id: record.id,
+    type: record.type,
+    status: record.status,
+    evidenceClass: record.evidenceClass,
+    created: record.created,
+    title: record.title,
+    summary: flattenBodySummary(
+      record.body,
+      record.evidenceClass === "HYPOTHESIS" ? 120 : 300
+    ),
+  }));
   return {
-    note: "Authoritative institutional memory: decisions, incidents (operational failures whose P&L is excluded), parameter changes, and strategy lifecycles. For WHY questions, answer by citing these record ids chronologically rather than inferring from trade data alone.",
-    recordCount: records.length,
-    records,
+    note: "Authoritative institutional memory: decisions, incidents (operational failures whose P&L is excluded), parameter changes, and strategy lifecycles. For WHY questions, answer by citing these record ids chronologically rather than inferring from trade data alone. LLM hypotheses are summarized in hypothesisCounts; only promoted (final) and the 10 newest running ones are listed here — the rest are queryable with /registry.",
+    recordCount: all.length,
+    hypothesisCounts: {
+      total: hypotheses.length,
+      running: hypotheses.filter((record) => record.status === "running").length,
+      final: hypotheses.filter((record) => record.status === "final").length,
+      retired: hypotheses.filter((record) => record.status === "retired").length,
+    },
+    records: compact,
   };
 }
 
