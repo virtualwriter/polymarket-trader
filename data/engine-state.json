@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-15T17:28:15.711Z",
+  "generatedAt": "2026-07-15T18:28:12.860Z",
   "dataFreshness": {
-    "valuationRows": 1693,
-    "latestValuationAt": "2026-07-15T17",
-    "macroRows": 1691,
+    "valuationRows": 1691,
+    "latestValuationAt": "2026-07-15T18",
+    "macroRows": 1689,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-15T17"
+    "latestInstrumentSnapshotAt": "2026-07-15T18"
   },
   "portfolio": {
-    "cash": 97.5887,
-    "openPositions": 1,
+    "cash": 96.5887,
+    "openPositions": 2,
     "realizedPnl": 1.8284,
     "totalTrades": 445,
     "winRatePct": 62.7,
-    "unrealizedPnl": 0.008
+    "unrealizedPnl": 0.0217
   },
   "openPositions": [
     {
@@ -22,14 +22,31 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": 0.8,
-      "currentPrice": 67.879,
-      "underlyingPrice": 67.879,
+      "pnlPct": 1.38,
+      "currentPrice": 68.268,
+      "underlyingPrice": 68.268,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "hype_spot"
+      ]
+    },
+    {
+      "positionId": "T-1784136549825-rtik",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": 0.79,
+      "currentPrice": 4072,
+      "underlyingPrice": 4072,
+      "targetPct": 3,
+      "stopPct": 1.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_gld_pc_ratio"
       ]
     }
   ],

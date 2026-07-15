@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-15T17:28:15.775Z",
+  "generatedAt": "2026-07-15T18:28:12.924Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.5466666666666666,
       "thesis": "[PROMOTED HYPE relative OI breakout continuation via H-521] HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
       "hypothesisId": "H-521",
-      "entryPrice": 67.879,
+      "entryPrice": 68.268,
       "targetPct": 6,
       "stopPct": 2,
       "expiryDays": 21
@@ -22,11 +22,11 @@
       "asset": "GOLD",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.6475,
-      "confidence": 0.3369743181169994,
+      "strength": 0.6487500000000002,
+      "confidence": 0.3376248476886539,
       "thesis": "GOLD P/C ratio 1.72 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4040,
+      "entryPrice": 4072,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -41,7 +41,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4040,
+      "entryPrice": 4072,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -62,7 +62,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 67.879,
+      "entryPrice": 68.268,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -91,44 +91,49 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": 1,
-        "byAsset": {
-          "HYPE": 1
-        },
-        "bySignalType": {
-          "PROMOTED_HYPOTHESIS": 1
-        },
-        "byVenue": {
-          "spot": 1
-        },
-        "byCluster": {
-          "hype_delta": 1,
-          "risk_on": 1,
-          "spot_venue": 1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": 1,
+        "totalGross": 2,
+        "totalNet": 2,
         "byAsset": {
           "HYPE": 1,
-          "GOLD": 0
+          "GOLD": 1
         },
         "bySignalType": {
           "PROMOTED_HYPOTHESIS": 1,
-          "PC_RATIO_EXTREME_HIGH": 0
+          "PC_RATIO_EXTREME_HIGH": 1
         },
         "byVenue": {
-          "spot": 1
+          "spot": 2
         },
         "byCluster": {
           "hype_delta": 1,
           "risk_on": 1,
-          "spot_venue": 1,
-          "commodity": 0,
-          "gold_delta": 0,
-          "options_sentiment": 0
+          "spot_venue": 2,
+          "commodity": 1,
+          "gold_delta": 1,
+          "options_sentiment": 1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 2,
+        "totalNet": 2,
+        "byAsset": {
+          "HYPE": 1,
+          "GOLD": 1
+        },
+        "bySignalType": {
+          "PROMOTED_HYPOTHESIS": 1,
+          "PC_RATIO_EXTREME_HIGH": 1
+        },
+        "byVenue": {
+          "spot": 2
+        },
+        "byCluster": {
+          "hype_delta": 1,
+          "risk_on": 1,
+          "spot_venue": 2,
+          "commodity": 1,
+          "gold_delta": 1,
+          "options_sentiment": 1
         }
       },
       "warnings": []
@@ -146,39 +151,49 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": 1,
+        "totalGross": 2,
+        "totalNet": 2,
         "byAsset": {
-          "HYPE": 1
+          "HYPE": 1,
+          "GOLD": 1
         },
         "bySignalType": {
-          "PROMOTED_HYPOTHESIS": 1
+          "PROMOTED_HYPOTHESIS": 1,
+          "PC_RATIO_EXTREME_HIGH": 1
         },
         "byVenue": {
-          "spot": 1
+          "spot": 2
         },
         "byCluster": {
           "hype_delta": 1,
           "risk_on": 1,
-          "spot_venue": 1
+          "spot_venue": 2,
+          "commodity": 1,
+          "gold_delta": 1,
+          "options_sentiment": 1
         }
       },
       "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": 1,
+        "totalGross": 2,
+        "totalNet": 2,
         "byAsset": {
-          "HYPE": 1
+          "HYPE": 1,
+          "GOLD": 1
         },
         "bySignalType": {
-          "PROMOTED_HYPOTHESIS": 1
+          "PROMOTED_HYPOTHESIS": 1,
+          "PC_RATIO_EXTREME_HIGH": 1
         },
         "byVenue": {
-          "spot": 1
+          "spot": 2
         },
         "byCluster": {
           "hype_delta": 1,
           "risk_on": 1,
-          "spot_venue": 1
+          "spot_venue": 2,
+          "commodity": 1,
+          "gold_delta": 1,
+          "options_sentiment": 1
         }
       },
       "warnings": []
@@ -236,12 +251,31 @@
       "evidenceColumns": [
         "hype_spot"
       ],
-      "hoursOpen": 14,
-      "hoursToExpiry": 490,
+      "hoursOpen": 14.99,
+      "hoursToExpiry": 489.01,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0278,
+      "elapsedHoldPct": 0.0298,
       "minHoldHours": 12,
       "reason": "LLM-owned/promoted setup may be closed after 12h if signal-family evidence supports it."
+    },
+    {
+      "positionId": "T-1784136549825-rtik",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_gld_pc_ratio"
+      ],
+      "hoursOpen": 0.98,
+      "hoursToExpiry": 119.02,
+      "plannedHoldHours": 120,
+      "elapsedHoldPct": 0.0082,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     }
   ]
 }
