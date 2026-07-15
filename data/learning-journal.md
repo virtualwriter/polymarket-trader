@@ -1064,3 +1064,35 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-07-15 19:28 UTC
+
+**Portfolio:** $98.59 total | Cash $96.59 | 2 open | P&L $1.8284 | 63% win rate (445 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 12 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -19.29 is -3.1 std devs from mean (-0.79 ± 5.92)
+- [anomaly] gold_gld_pc_ratio = 1.722 is 2.4 std devs from mean (0.76 ± 0.40)
+- [anomaly] btc_pm_iv = 26.9 is -2.4 std devs from mean (41.06 ± 6.01)
+- [anomaly] btc_opt_iv_90d = 54.1 is 2.1 std devs from mean (40.06 ± 6.76)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.32 to 0.47. Rolling correlation: 24h=-0.17, 7d=-0.85, 30d=0.34. Current 24h corr is at 43th pct of last 30 daily 24h-rolling values (range -0.92 to 0.89).
+
+**Blocked signal learning:**
+- Open blocked shadows: 47
+- Resolved blocked shadows: 556 (313 wins / 243 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.05%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-4.35%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.07%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.10%)
+
+**LLM analysis:**
+GOLD position (T-1784136549825-rtik) is too fresh for discretionary close and thesis is intact: P/C ratio still elevated at 1.722 and spot up +0.45%. HYPE position (T-1784086111076-7ms9) has no invalidation in its signal-family evidence (hype_spot); price is mid-range on the day and the breakout continuation narrative is still very early in the 504h planned hold. HYPE funding spiked briefly to 34.72% but has retraced back near entry levels, and OI declined slightly — both are context-only and not actionable as close evidence. Continue to monitor HYPE for a significant breach below the 24h support of 65.15 or a clear loss of the OI breakout story.
+
+---
+
