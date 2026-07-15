@@ -197,6 +197,304 @@
       "links": {},
       "created": "2026-07-15T17:32:17Z",
       "source": "relabel-cleanup-2026-07-15"
+    },
+    {
+      "id": "EXP-0001",
+      "type": "experiment",
+      "evidenceClass": "DERIVED",
+      "status": "superseded",
+      "title": "EXP: snapshot/heatmap retention audit for replay feasibility",
+      "body": {
+        "question": "How much full-fidelity market snapshot history exists on the production VPS to support a 6-month engine replay harness, and what is thinned by compaction or pruning?",
+        "method": "filesystem audit of production artifact stores",
+        "findings": {
+          "instrumentSnapshotsHot": {
+            "path": "/opt/polymarket-trader/data/instrument-snapshots.jsonl",
+            "count": 18,
+            "oldestTs": "2026-07-15T01",
+            "newestTs": "2026-07-15T17",
+            "sizeMB": 223,
+            "cadence": "hourly (production engine reads last 12 via INSTRUMENT_SNAPSHOT_LOOKBACK)",
+            "compactionPolicy": "scripts/compact_instrument_snapshots.py moves older lines to gz archives when hot file exceeds 200MB; keeps 18 lines in hot file; runs hourly in run-polymarket-trader.sh; does not delete archives"
+          },
+          "instrumentSnapshotsArchives": {
+            "path": "/opt/polymarket-trader/data/instrument-snapshot-archives/",
+            "count": 927,
+            "oldestTs": "2026-05-31T23",
+            "newestTs": "2026-07-15T00",
+            "sizeMB": 1500,
+            "cadence": "one gz file per hourly compaction run (~1 snapshot per archive; median 1h between runs)",
+            "compactionPolicy": "append-only gzip archives; optional deletion via scripts/prune_generated_state.py --snapshot-archive-days (default 14d, not scheduled on VPS as of audit)"
+          },
+          "instrumentSnapshotsCombined": {
+            "path": "hot + archives",
+            "count": 945,
+            "oldestTs": "2026-05-31T23",
+            "newestTs": "2026-07-15T17",
+            "sizeMB": 1723,
+            "cadence": "hourly with ~87% hour coverage over span",
+            "compactionPolicy": "see hot and archives entries"
+          },
+          "relativeValueHeatmapHistory": {
+            "path": "/var/lib/polymarket-trader/relative-value-history/",
+            "count": 1081,
+            "oldestTs": "2026-05-26T00",
+            "newestTs": "2026-07-15T17",
+            "sizeMB": 249,
+            "cadence": "hourly CSV snapshots (~21 per day; 6-24 files/day)",
+            "compactionPolicy": "written by cross_venue_relative_value_report.py --archive-dir; optional deletion via prune_generated_state.py --relative-value-history-days (default 21d, not scheduled)"
+          },
+          "relativeValueHeatmapCurrent": {
+            "path": "/opt/polymarket-trader/relative-value/",
+            "count": 4,
+            "oldestTs": "n/a (rolling latest)",
+            "newestTs": "2026-07-15T17:28Z",
+            "sizeMB": 7.4,
+            "cadence": "hourly overwrite of latest.json and cross_venue_relative_value.csv",
+            "compactionPolicy": "no history in repo dir; history only in state dir"
+          },
+          "dailyValuations": {
+            "path": "/opt/polymarket-trader/data/daily-valuations.csv",
+            "count": 1690,
+            "oldestTs": "2026-04-03",
+            "newestTs": "2026-07-15",
+            "sizeMB": 0.47,
+            "cadence": "daily",
+            "compactionPolicy": "append-only; 3 merge-conflict rows at file tip excluded from date stats"
+          },
+          "dailyMacro": {
+            "path": "/opt/polymarket-trader/data/daily-macro.csv",
+            "count": 1688,
+            "oldestTs": "2026-04-03",
+            "newestTs": "2026-07-15",
+            "sizeMB": 0.23,
+            "cadence": "daily",
+            "compactionPolicy": "append-only; 3 merge-conflict rows at file tip excluded"
+          },
+          "tradesDetailed": {
+            "path": "/opt/polymarket-trader/data/trades-detailed.csv",
+            "count": 470,
+            "oldestTs": "2026-04-03 (opened_at)",
+            "newestTs": "2026-07-15 (closed_at)",
+            "sizeMB": 0.22,
+            "cadence": "per trade event",
+            "compactionPolicy": "append-only ledger"
+          },
+          "tradesDetailedArchive": {
+            "path": "/opt/polymarket-trader/data/trades-detailed-archive.csv",
+            "count": 12,
+            "oldestTs": "2026-04-25",
+            "newestTs": "2026-05-17",
+            "sizeMB": 0.01,
+            "cadence": "archived closed trades",
+            "compactionPolicy": "manual archive slice"
+          },
+          "fundingRateHistory": {
+            "path": "embedded in instrument snapshots (hyperliquid.*.fundingAnnualized); no standalone hourly funding store",
+            "count": 0,
+            "oldestTs": "2026-05-31T23 (via snapshots)",
+            "newestTs": "2026-07-15T17",
+            "sizeMB": 0,
+            "cadence": "hourly inside snapshots",
+            "compactionPolicy": "same as instrument snapshots; .runtime/funding-analysis-bundle/ absent on VPS"
+          },
+          "backups": {
+            "path": "/var/lib/polymarket-trader/backups/ and neon-backups/",
+            "count": 2,
+            "oldestTs": "2026-06-25 (state cleanup backups)",
+            "newestTs": "2026-07-01 (neon trades dump)",
+            "sizeMB": 12,
+            "cadence": "ad hoc / monthly neon",
+            "compactionPolicy": "Neon dump is trades table only; does not extend market snapshot window"
+          },
+          "diskHeadroom": {
+            "path": "/dev/vda2",
+            "count": 1,
+            "oldestTs": "n/a",
+            "newestTs": "n/a",
+            "sizeMB": 23552,
+            "cadence": "n/a",
+            "compactionPolicy": "9.2GB free (58% used); prune dry-run would reclaim 1.1GB of archives+RVH older than defaults"
+          }
+        },
+        "replayFeasibleWindow": {
+          "fullFidelityEngineReplay": "~45 days (2026-05-31T23 to 2026-07-15T17) using instrument snapshot hot+archives",
+          "weekendHlFundingReversion": "~45 days hourly funding via snapshots; covers active STRAT-0001 period but not 6 months",
+          "relativeValueHeatmap": "~51 days (2026-05-26 to 2026-07-15) via relative-value-history CSVs; heatmap signals retired from live engine",
+          "dailyValuationsMacroOnly": "~103 days (2026-04-03 to 2026-07-15) at daily fidelity without full PM/options/HL snapshot inputs",
+          "sixMonthReplayGoal": "not feasible today; instrument snapshot history starts ~2026-05-31 and pre-June archives are absent"
+        },
+        "caveats": [
+          "Production engine reads only the hot JSONL tail (12-18 lines); replay harness must explicitly load instrument-snapshot-archives/*.jsonl.gz",
+          "prune_generated_state.py defaults (14d archives, 21d RVH) are not cron-scheduled but a manual --apply would delete 627 artifacts (~1.1GB) today",
+          "daily-valuations.csv and daily-macro.csv contain unresolved git merge markers on 3 tip rows",
+          "Neon backup contains trades only; state backups from 2026-06-25 are engine/portfolio snapshots not market history",
+          "No separate funding-rate time series exists outside instrument snapshots"
+        ]
+      },
+      "links": {
+        "supersededBy": "EXP-0002"
+      },
+      "created": "2026-07-15T17:45:36Z",
+      "source": "retention-audit-2026-07-15"
+    },
+    {
+      "id": "DEC-0004",
+      "type": "decision",
+      "evidenceClass": "VALID",
+      "status": "proposed",
+      "title": "Retention policy for replay-grade market snapshot history",
+      "body": {
+        "rationale": "EXP-0001 shows only ~45 days of full-fidelity instrument snapshots and ~51 days of heatmap history exist, far short of a 6-month replay goal. Compaction (hourly gzip archival) preserves history today, but prune_generated_state.py defaults would delete 627 artifacts (~1.1GB) if applied. Recommend: (1) disable or raise prune thresholds to 180 days or -1 for both instrument-snapshot-archives and relative-value-history; (2) keep compact_instrument_snapshots.py as-is (archive-only, never delete); (3) build replay harness to read archives not just hot JSONL; (4) do not run prune --apply until operator approves. Estimated retention cost: ~1.0-1.3 GB/month combined (snapshots ~1.0 GB/mo at ~1.6 MB/hour gz + RVH ~150 MB/mo). With 9.2 GB free, 180-day retention (~6 GB) is feasible without disk upgrade; 365-day would need monitoring or larger volume.",
+        "recommendedPolicy": {
+          "instrumentSnapshotArchives": {
+            "keepDays": 180,
+            "action": "raise prune --snapshot-archive-days to 180 or -1; never delete via manual prune without review"
+          },
+          "relativeValueHistory": {
+            "keepDays": 180,
+            "action": "raise prune --relative-value-history-days to 180 or -1"
+          },
+          "hotInstrumentSnapshots": {
+            "keepLines": 18,
+            "action": "no change; compaction already archives to gz"
+          },
+          "dailyValuationsMacro": {
+            "keepDays": -1,
+            "action": "keep append-only; fix merge-conflict tip rows separately"
+          },
+          "fundingHistory": {
+            "keepDays": -1,
+            "action": "derive from instrument snapshots; consider optional standalone funding JSONL export for lighter replays"
+          },
+          "pruneAutomation": {
+            "keepDays": 0,
+            "action": "do not schedule prune_generated_state.py --apply until policy approved"
+          }
+        },
+        "estimatedDiskCostPerMonthGB": 1.15,
+        "currentFreeDiskGB": 9.2,
+        "operatorApprovalRequired": true
+      },
+      "links": {
+        "relatedRecords": [
+          "EXP-0001"
+        ]
+      },
+      "created": "2026-07-15T17:45:43Z",
+      "source": "retention-audit-2026-07-15"
+    },
+    {
+      "id": "EXP-0002",
+      "type": "experiment",
+      "evidenceClass": "DERIVED",
+      "status": "final",
+      "title": "EXP: snapshot/heatmap retention audit for replay feasibility",
+      "body": {
+        "question": "How much full-fidelity market snapshot history exists on the production VPS to support a 6-month engine replay harness, and what is thinned by compaction or pruning?",
+        "method": "filesystem audit of production artifact stores plus completed full scan of gzipped instrument snapshot archives",
+        "findings": {
+          "instrumentSnapshotsHot": {
+            "path": "/opt/polymarket-trader/data/instrument-snapshots.jsonl",
+            "count": 18,
+            "oldestTs": "2026-07-15T01",
+            "newestTs": "2026-07-15T17",
+            "sizeMB": 223,
+            "cadence": "hourly; production engine reads last 12 via INSTRUMENT_SNAPSHOT_LOOKBACK",
+            "compactionPolicy": "scripts/compact_instrument_snapshots.py moves older lines to gz archives when hot file exceeds 200MB; keeps 18 lines in hot file; runs hourly in run-polymarket-trader.sh; does not delete archives"
+          },
+          "instrumentSnapshotsArchives": {
+            "path": "/opt/polymarket-trader/data/instrument-snapshot-archives/",
+            "count": 946,
+            "fileCount": 927,
+            "oldestTs": "2026-05-31T23",
+            "newestTs": "2026-07-15T00",
+            "sizeMB": 1500,
+            "cadence": "927 gz files containing 946 records; median 1h snapshot cadence; 939 unique hourly buckets; 70 gaps greater than 1h; max gap 25h",
+            "compactionPolicy": "append-only gzip archives; optional deletion via scripts/prune_generated_state.py --snapshot-archive-days (default 14d, not scheduled on VPS as of audit)"
+          },
+          "instrumentSnapshotsCombined": {
+            "path": "hot + archives",
+            "count": 964,
+            "oldestTs": "2026-05-31T23",
+            "newestTs": "2026-07-15T17",
+            "sizeMB": 1723,
+            "cadence": "hourly with occasional gaps; full-fidelity snapshot fields include spots, hyperliquid funding/marks, polymarket events, and options",
+            "compactionPolicy": "see hot and archives entries"
+          },
+          "relativeValueHeatmapHistory": {
+            "path": "/var/lib/polymarket-trader/relative-value-history/",
+            "count": 1081,
+            "oldestTs": "2026-05-26T00",
+            "newestTs": "2026-07-15T17",
+            "sizeMB": 249,
+            "cadence": "hourly CSV snapshots across 51 day dirs (~21 per day; 6-24 files/day)",
+            "compactionPolicy": "written by cross_venue_relative_value_report.py --archive-dir; optional deletion via prune_generated_state.py --relative-value-history-days (default 21d, not scheduled)"
+          },
+          "dailyValuations": {
+            "path": "/opt/polymarket-trader/data/daily-valuations.csv",
+            "count": 1690,
+            "oldestTs": "2026-04-03",
+            "newestTs": "2026-07-15",
+            "sizeMB": 0.47,
+            "cadence": "daily",
+            "compactionPolicy": "append-only; 3 merge-conflict rows at file tip excluded from date stats"
+          },
+          "dailyMacro": {
+            "path": "/opt/polymarket-trader/data/daily-macro.csv",
+            "count": 1688,
+            "oldestTs": "2026-04-03",
+            "newestTs": "2026-07-15",
+            "sizeMB": 0.23,
+            "cadence": "daily",
+            "compactionPolicy": "append-only; 3 merge-conflict rows at file tip excluded"
+          },
+          "tradesDetailed": {
+            "path": "/opt/polymarket-trader/data/trades-detailed.csv plus trades-detailed-archive.csv",
+            "count": 482,
+            "oldestTs": "2026-04-03",
+            "newestTs": "2026-07-15",
+            "sizeMB": 0.23,
+            "cadence": "per trade event",
+            "compactionPolicy": "append-only ledger plus manual archive slice"
+          },
+          "fundingRateHistory": {
+            "path": "embedded in instrument snapshots (hyperliquid.*.fundingAnnualized); no standalone hourly funding store",
+            "count": 964,
+            "oldestTs": "2026-05-31T23",
+            "newestTs": "2026-07-15T17",
+            "sizeMB": 0,
+            "cadence": "hourly inside snapshots",
+            "compactionPolicy": "same as instrument snapshots; .runtime/funding-analysis-bundle/ absent on VPS"
+          },
+          "diskHeadroom": {
+            "path": "/dev/vda2",
+            "count": 1,
+            "oldestTs": "n/a",
+            "newestTs": "n/a",
+            "sizeMB": 23552,
+            "cadence": "n/a",
+            "compactionPolicy": "9.2GB free (58% used); prune dry-run would reclaim 1.1GB of archives+RVH older than defaults"
+          }
+        },
+        "replayFeasibleWindow": {
+          "fullFidelityEngineReplay": "~45 days (2026-05-31T23 to 2026-07-15T17) using instrument snapshot hot+archives",
+          "weekendHlFundingReversion": "~45 days hourly funding via snapshots; covers active STRAT-0001 period but not 6 months",
+          "relativeValueHeatmap": "~51 days (2026-05-26 to 2026-07-15) via relative-value-history CSVs; heatmap signals retired from live engine",
+          "dailyValuationsMacroOnly": "~103 days (2026-04-03 to 2026-07-15) at daily fidelity without full PM/options/HL snapshot inputs",
+          "sixMonthReplayGoal": "not feasible today; instrument snapshot history starts ~2026-05-31 and pre-June archives are absent"
+        },
+        "caveats": [
+          "This record supersedes EXP-0001 to correct archive record counts after the full gz scan completed",
+          "Production engine reads only the hot JSONL tail (12-18 lines); replay harness must explicitly load instrument-snapshot-archives/*.jsonl.gz",
+          "prune_generated_state.py defaults (14d archives, 21d RVH) are not cron-scheduled but a manual --apply would delete 627 artifacts (~1.1GB) today",
+          "daily-valuations.csv and daily-macro.csv contain unresolved git merge markers on 3 tip rows",
+          "No separate funding-rate time series exists outside instrument snapshots"
+        ]
+      },
+      "links": {},
+      "created": "2026-07-15T17:46:51Z",
+      "source": "retention-audit-2026-07-15-corrected-deep-scan"
     }
   ]
 }

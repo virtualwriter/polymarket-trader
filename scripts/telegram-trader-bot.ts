@@ -179,6 +179,7 @@ function commandHelp(): string {
     "/shadows [open|resolved|all|<instrument_id>] [asset] - shadow trade history",
     "/manual_touch_pnl - resolved manual IV-touch shadow P&L",
     "/trades_pnl [signal_substring] [days] - closed live trade P&L by signal type",
+    "/registry [query|id] - research registry summary, record lookup, or search",
     "/why_no_trade <asset> - explain blockers from current artifacts, no LLM",
     "/ask <question> - explicit LLM answer using current trader artifacts",
     "/review <asset> - explicit LLM review for one asset",
@@ -731,6 +732,175 @@ function rollupTradesBySignal(trades: LedgerTrade[]): Record<string, JsonObject>
   }]));
 }
 
+type RegistryRecord = {
+  id: string;
+  type: string;
+  evidenceClass: string;
+  status: string;
+  title: string;
+  body: JsonObject;
+  links: JsonObject;
+  created: string;
+  source: string;
+  needsOperatorAnnotation: boolean;
+};
+
+const REGISTRY_ID_RE = /^(STRAT|EXP|DEC|INC|PARAM)-\d+$/i;
+
+function loadRegistryRecords(): RegistryRecord[] {
+  const file = readJson<{ version?: number; records?: unknown }>(dataPath("registry.json"), {});
+  return arr(file.records)
+    .map((row) => ({
+      id: str(row.id),
+      type: str(row.type),
+      evidenceClass: str(row.evidenceClass),
+      status: str(row.status),
+      title: str(row.title),
+      body: obj(row.body),
+      links: obj(row.links),
+      created: str(row.created),
+      source: str(row.source),
+      needsOperatorAnnotation: row.needsOperatorAnnotation === true,
+    }))
+    .filter((record) => record.id !== "");
+}
+
+function flattenBodyValue(value: unknown): string {
+  if (value === null || value === undefined) return "";
+  if (typeof value === "string") return value;
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  if (Array.isArray(value)) return value.map(flattenBodyValue).filter(Boolean).join("; ");
+  if (typeof value === "object") {
+    return Object.entries(obj(value))
+      .map(([key, nested]) => `${key}: ${flattenBodyValue(nested)}`)
+      .join("; ");
+  }
+  return String(value);
+}
+
+function flattenBodySummary(body: JsonObject, maxChars = 300): string {
+  const flat = flattenBodyValue(body).replace(/\s+/g, " ").trim();
+  if (flat.length <= maxChars) return flat;
+  return `${flat.slice(0, maxChars - 3)}...`;
+}
+
+function registrySearchText(record: RegistryRecord): string {
+  return `${record.title} ${flattenBodyValue(record.body)}`.toLowerCase();
+}
+
+function formatRegistryDate(created: string): string {
+  return created.slice(0, 10);
+}
+
+function formatRegistryOneLiner(record: RegistryRecord): string {
+  return `${record.id} | ${formatRegistryDate(record.created)} | ${record.type} | ${record.status} | ${record.title}`;
+}
+
+function formatRegistryLinks(links: JsonObject): string[] {
+  const lines: string[] = [];
+  for (const [key, value] of Object.entries(links)) {
+    if (Array.isArray(value)) {
+      lines.push(`${key}: ${value.map((item) => String(item)).join(", ")}`);
+    } else if (value && typeof value === "object") {
+      lines.push(`${key}: ${flattenBodyValue(value)}`);
+    } else {
+      lines.push(`${key}: ${String(value)}`);
+    }
+  }
+  return lines;
+}
+
+function formatRegistryRecordFull(record: RegistryRecord): string {
+  const lines = [
+    record.id,
+    `Title: ${record.title}`,
+    `Type: ${record.type}`,
+    `Status: ${record.status}`,
+    `Evidence: ${record.evidenceClass}`,
+    `Created: ${record.created}`,
+    `Source: ${record.source}`,
+  ];
+  if (record.needsOperatorAnnotation) lines.push("Needs operator annotation: yes");
+  lines.push("", "Body:");
+  for (const [key, value] of Object.entries(record.body)) {
+    lines.push(`  ${key}: ${flattenBodyValue(value)}`);
+  }
+  const linkLines = formatRegistryLinks(record.links);
+  if (linkLines.length > 0) {
+    lines.push("", "Links:");
+    for (const line of linkLines) {
+      lines.push(`  ${line}`);
+    }
+  }
+  return lines.join("\n");
+}
+
+function registryReport(args: string[]): string {
+  const query = args.join(" ").trim();
+  const records = loadRegistryRecords();
+  if (records.length === 0) return "Research registry is empty (data/registry.json has no records).";
+
+  if (!query) {
+    const byType: Record<string, number> = {};
+    for (const record of records) {
+      byType[record.type] = (byType[record.type] ?? 0) + 1;
+    }
+    const recent = records
+      .slice()
+      .sort((a, b) => Date.parse(b.created) - Date.parse(a.created))
+      .slice(0, 10);
+    return [
+      `Research registry (${records.length} records)`,
+      "",
+      "By type:",
+      ...Object.entries(byType)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([type, count]) => `- ${type}: ${count}`),
+      "",
+      "Recent (10):",
+      ...recent.map(formatRegistryOneLiner),
+    ].join("\n");
+  }
+
+  if (REGISTRY_ID_RE.test(query)) {
+    const id = query.toUpperCase();
+    const record = records.find((row) => row.id.toUpperCase() === id);
+    if (!record) return `No registry record found for ${id}.`;
+    return formatRegistryRecordFull(record);
+  }
+
+  const needle = query.toLowerCase();
+  const matches = records
+    .filter((record) => registrySearchText(record).includes(needle))
+    .sort((a, b) => Date.parse(a.created) - Date.parse(b.created))
+    .slice(0, 15);
+  if (matches.length === 0) return `No registry records matched "${query}".`;
+  return [
+    `Registry search "${query}" (${matches.length} match${matches.length === 1 ? "" : "es"})`,
+    ...matches.map(formatRegistryOneLiner),
+  ].join("\n");
+}
+
+function researchRegistryContext(): JsonObject {
+  const records = loadRegistryRecords()
+    .slice()
+    .sort((a, b) => Date.parse(a.created) - Date.parse(b.created))
+    .map((record) => ({
+      id: record.id,
+      type: record.type,
+      status: record.status,
+      evidenceClass: record.evidenceClass,
+      created: record.created,
+      title: record.title,
+      summary: flattenBodySummary(record.body),
+    }));
+  return {
+    note: "Authoritative institutional memory: decisions, incidents (operational failures whose P&L is excluded), parameter changes, and strategy lifecycles. For WHY questions, answer by citing these record ids chronologically rather than inferring from trade data alone.",
+    recordCount: records.length,
+    records,
+  };
+}
+
 function closedTradesContext(asset?: string): JsonObject {
   const assetUpper = asset?.toUpperCase();
   const taintedIds = loadTaintedTradeIds();
@@ -811,6 +981,7 @@ function traderContext(asset?: string): JsonObject {
     generatedAt: new Date().toISOString(),
     scopeAsset: assetUpper ?? null,
     strategyReference: STRATEGY_REFERENCE,
+    researchRegistry: researchRegistryContext(),
     closedTrades: closedTradesContext(assetUpper),
     manualIvTouchPnl: manualTouchPnlSummary(),
     engineGeneratedAt: engine.generatedAt,
@@ -931,7 +1102,7 @@ async function askLlmReport(question: string): Promise<string> {
   const context = truncateContext(JSON.stringify(traderContext(), null, 2));
   const prompt = `You are a cautious trading-operations assistant for a paper Polymarket trader.
 
-Answer the user's question using only the current artifacts below. Do not claim to have run live commands. Do not recommend live execution unless the user explicitly asks. If the artifacts are stale or insufficient, say so. Be concise and practical.
+Answer the user's question using only the current artifacts below. Do not claim to have run live commands. Do not recommend live execution unless the user explicitly asks. If the artifacts are stale or insufficient, say so. Be concise and practical. When the question asks WHY something changed, improved, or was retired, build the answer from researchRegistry records (citing record ids and dates chronologically) rather than inferring from trade data alone.
 
 User question:
 ${question}
@@ -1079,6 +1250,8 @@ async function handleCommand(chatId: string, text: string): Promise<string> {
       return manualTouchPnlReport();
     case "/trades_pnl":
       return tradesPnlReport(args);
+    case "/registry":
+      return registryReport(args);
     case "/why_no_trade":
       return whyNoTradeReport(args[0]);
     case "/ask":
