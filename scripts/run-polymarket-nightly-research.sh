@@ -28,6 +28,7 @@ NIGHTLY_FILES=(
   data/calibration-buckets-summary.json
   data/lessons.json
   data/nightly-llm-advice.json
+  data/neon-parity.json
   data/learning-journal.md
   relative-value/calibration/resolutions_cache.json
   relative-value/calibration/event_report.md
@@ -124,6 +125,13 @@ nightly_research_exit=0
 if ! timeout "${NIGHTLY_RESEARCH_TIMEOUT:-15m}" npx tsx scripts/nightly-research.ts; then
   echo "WARNING: nightly research failed; continuing to commit earlier artifacts."
   nightly_research_exit=1
+fi
+
+# Verify the Neon mirror matches the CSV ledger (Phase 6 parity gate).
+if [[ -n "${NEON_DATABASE_URL:-}" ]]; then
+  if ! timeout "${NEON_PARITY_TIMEOUT:-3m}" npx tsx scripts/neon-parity-check.ts; then
+    echo "WARNING: Neon parity check reported a problem; see data/neon-parity.json."
+  fi
 fi
 
 for nightly_file in "${NIGHTLY_FILES[@]}"; do

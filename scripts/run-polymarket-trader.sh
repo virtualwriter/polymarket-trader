@@ -212,6 +212,14 @@ if [[ "${ENABLE_MONOTONIC_ARB_REAL_PM:-0}" == "1" ]]; then
 fi
 npx tsx scripts/trading-engine.ts
 
+# Mirror the closed-trades ledger to Neon (Phase 6). CSV stays the source of
+# truth; a Neon failure is a warning, never a blocker.
+if [[ -n "${NEON_DATABASE_URL:-}" ]]; then
+  if ! timeout "${NEON_SYNC_TIMEOUT:-3m}" npx tsx scripts/neon-trades-sync.ts; then
+    echo "WARNING: Neon trades sync failed; CSV ledger remains canonical."
+  fi
+fi
+
 for data_file in "${DATA_FILES[@]}"; do
   if [[ -e "$data_file" ]]; then
     git add -f "$data_file"

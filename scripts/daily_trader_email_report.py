@@ -48,6 +48,54 @@ def disk_usage_line(path: str = "/") -> str:
     return f"- Disk: {used_pct:.0f}% used ({free_gb:.1f} GB free of {total_gb:.0f} GB){flag}"
 
 
+def neon_parity_line(path: Path, now_utc: datetime) -> str | None:
+    """Neon mirror parity status from data/neon-parity.json."""
+    if not path.exists():
+        return None
+    try:
+        with path.open() as fh:
+            data = json.load(fh)
+    except (OSError, json.JSONDecodeError, TypeError):
+        return "- Neon mirror: parity file unreadable"
+    if not isinstance(data, dict):
+        return "- Neon mirror: parity file unreadable"
+
+    status = data.get("status")
+    try:
+        neon_count = int(data.get("neonCount", 0))
+        csv_deduped_count = int(data.get("csvDedupedCount", 0))
+        pnl_delta_abs = float(data.get("pnlDeltaAbs", 0))
+        missing_in_neon = data.get("missingInNeon") or []
+        extra_in_neon = data.get("extraInNeon") or []
+        if not isinstance(missing_in_neon, list):
+            missing_in_neon = []
+        if not isinstance(extra_in_neon, list):
+            extra_in_neon = []
+    except (TypeError, ValueError):
+        return "- Neon mirror: parity file unreadable"
+
+    checked_at_raw = data.get("checkedAt")
+    checked_at = parse_ts(checked_at_raw if isinstance(checked_at_raw, str) else None)
+
+    if status == "ok":
+        line = f"- Neon mirror: OK — {neon_count} trades, P&L match (Δ ${pnl_delta_abs:.4f})"
+    elif status == "mismatch":
+        line = (
+            f"- Neon mirror: MISMATCH — csv {csv_deduped_count} vs neon {neon_count} trades, "
+            f"P&L Δ ${pnl_delta_abs:.4f}, {len(missing_in_neon)} missing / {len(extra_in_neon)} extra "
+            f"(see data/neon-parity.json)"
+        )
+    else:
+        return "- Neon mirror: parity file unreadable"
+
+    if checked_at is not None:
+        now = now_utc if now_utc.tzinfo else now_utc.replace(tzinfo=timezone.utc)
+        if now - checked_at > timedelta(hours=48):
+            line += f" [stale check: {checked_at_raw}]"
+
+    return line
+
+
 def _load_operationally_tainted_trades() -> dict[str, str]:
     """Load the canonical tainted-trade list from data/operationally-tainted-trades.json.
 
@@ -583,9 +631,14 @@ def build_report(window: ReportWindow) -> str:
         f"{monotonic_accounting['operational_error'][1]} operational-error closes (excluded from strategy record)",
         f"- Hypotheses: {dict(hypothesis_status)} | pending tests {pending_tests}",
         disk_usage_line(),
+    ]
+    neon_line = neon_parity_line(DATA_DIR / "neon-parity.json", datetime.now(timezone.utc))
+    if neon_line:
+        lines.append(neon_line)
+    lines.extend([
         "",
         "## Hourly Closed P&L",
-    ]
+    ])
     if by_hour:
         for hour_key in sorted(by_hour):
             row = by_hour[hour_key]

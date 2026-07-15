@@ -1,0 +1,11 @@
+[Unit]
+Description=Polymarket Neon schema backup — monthly logical dump of polymarket_trader with 12-month retention
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/polymarket-trader
+EnvironmentFile=/etc/polymarket-trader.env
+ExecStart=/usr/local/bin/polymarket-neon-backup
+TimeoutStartSec=15m

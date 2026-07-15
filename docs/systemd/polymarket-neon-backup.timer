@@ -1,0 +1,10 @@
+[Unit]
+Description=Run monthly Polymarket Neon schema backup on the 1st at 04:15 ET (12-month retention)
+
+[Timer]
+OnCalendar=*-*-01 04:15:00 America/New_York
+Persistent=true
+Unit=polymarket-neon-backup.service
+
+[Install]
+WantedBy=timers.target

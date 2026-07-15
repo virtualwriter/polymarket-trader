@@ -29,6 +29,8 @@
     "refresh:excel": "npm run fast:sync && npm run report:excel:live",
     "report:excel:fast": "npm run fast:sync && npm run report:trader:csv",
     "prod:verify": "tsx scripts/prod-verify.ts",
+    "neon:sync": "tsx scripts/neon-trades-sync.ts",
+    "neon:parity": "tsx scripts/neon-parity-check.ts",
     "cleanup:harness": "tsx scripts/cleanup-dry-run-harness.ts",
     "cleanup:scanner-fixture": "tsx scripts/cleanup-scanner-fixture.ts",
     "cleanup:disk": "python3 scripts/prune_generated_state.py",
@@ -51,12 +53,14 @@
     "dotenv": "^16.4.0",
     "ethers": "^5.8.0",
     "fastify": "^5.2.0",
+    "pg": "^8.22.0",
     "socks-proxy-agent": "^9.0.0",
     "ws": "^8.19.0",
     "zod": "^3.24.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
+    "@types/pg": "^8.20.0",
     "@types/ws": "^8.18.1",
     "concurrently": "^9.0.0",
     "tsx": "^4.19.0",
