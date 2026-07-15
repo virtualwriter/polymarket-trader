@@ -45,6 +45,8 @@ DATA_FILES=(
   data/learning-journal.md
   data/engine-state.json
   data/llm-truth-state.json
+  data/nightly-llm-advice.json
+  data/nightly-llm-advice-ingested.json
   data/candidate-actions.json
   data/polymarket-live-packages.json
   data/polymarket-live-orders.json
@@ -147,8 +149,8 @@ if ! flock -n 9; then
   exit 0
 fi
 
-if [[ -z "${ANTHROPIC_API_KEY:-}" ]]; then
-  echo "ANTHROPIC_API_KEY is missing. Set it in /etc/polymarket-trader.env."
+if [[ -z "${ANTHROPIC_API_KEY:-}" && -z "${DEEPSEEK_API_KEY:-}" ]]; then
+  echo "No LLM API key set (need ANTHROPIC_API_KEY or DEEPSEEK_API_KEY). Set one in /etc/polymarket-trader.env."
   exit 1
 fi
 

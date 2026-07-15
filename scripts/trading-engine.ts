@@ -89,6 +89,7 @@ import {
 } from "./lib/trading/setup-family.js";
 import { type SizingCalibrationBucket } from "./lib/trading/sizing.js";
 import { readCalibrationBucketsSummary } from "./lib/research/calibration-summary.js";
+import { extractLlmJsonObject, requestLlmText, resolveLlmRoute } from "./lib/trading/llm-transport.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -7064,44 +7065,7 @@ function writeDryRunVerification(engineState: EngineState, candidateActions: Can
 }
 
 // ─── LLM Integration ─────────────────────────────────────────────────────────
-
-function extractBalancedJsonObject(text: string): string | null {
-  const candidates: number[] = [];
-  for (let i = 0; i < text.length; i++) {
-    if (text[i] === "{") candidates.push(i);
-  }
-
-  for (const start of candidates) {
-    let depth = 0;
-    let inString = false;
-    let escaped = false;
-
-    for (let i = start; i < text.length; i++) {
-      const ch = text[i];
-      if (escaped) {
-        escaped = false;
-        continue;
-      }
-      if (ch === "\\") {
-        escaped = inString;
-        continue;
-      }
-      if (ch === "\"") {
-        inString = !inString;
-        continue;
-      }
-      if (inString) continue;
-
-      if (ch === "{") depth++;
-      if (ch === "}") {
-        depth--;
-        if (depth === 0) return text.slice(start, i + 1);
-      }
-    }
-  }
-
-  return null;
-}
+// Transport + provider routing live in lib/trading/llm-transport.ts (Phase 5).
 
 const llmTradeInstructionSchema = z.object({
   action: z.enum(["buy", "sell", "close"]),
@@ -7141,12 +7105,15 @@ const llmParameterUpdatesSchema = z.object({
 
 const llmAnalysisResultSchema = z.object({
   marketAssessment: z.string().min(1),
-  newHypotheses: z.array(llmNewHypothesisSchema),
+  // Hypothesis and parameter work moved to the nightly research run (Phase 5);
+  // the hourly model is told to return empty values, and the schema tolerates
+  // their absence so a lean response never fails validation.
+  newHypotheses: z.array(llmNewHypothesisSchema).default([]),
   hypothesisReviews: z.array(z.object({
     id: z.string().min(1),
     observation: z.string().min(1),
-  })),
-  trades: z.array(llmTradeInstructionSchema),
+  })).default([]),
+  trades: z.array(llmTradeInstructionSchema).default([]),
   parameterUpdates: llmParameterUpdatesSchema,
   journalEntry: z.string().min(1),
 });
@@ -7174,10 +7141,7 @@ function stripLockedSignalRiskUpdates(raw: unknown): void {
 }
 
 function parseLlmJson(text: string): { result: LlmAnalysisResult | null; error: string | null; jsonText: string | null } {
-  const trimmed = text.trim()
-    .replace(/^```(?:json)?\s*/i, "")
-    .replace(/\s*```$/i, "");
-  const jsonText = extractBalancedJsonObject(trimmed);
+  const jsonText = extractLlmJsonObject(text);
   if (!jsonText) return { result: null, error: "No balanced JSON object found in response", jsonText: null };
 
   try {
@@ -7190,80 +7154,165 @@ function parseLlmJson(text: string): { result: LlmAnalysisResult | null; error: 
   }
 }
 
-function anthropicText(data: any): string {
-  const content = Array.isArray(data?.content) ? data.content : [];
-  return content
-    .map((block: any) => typeof block?.text === "string" ? block.text : "")
-    .filter(Boolean)
-    .join("\n")
-    .trim();
+// ─── Nightly LLM advice ingest (Phase 5) ─────────────────────────────────────
+// The nightly research run writes data/nightly-llm-advice.json (strongest
+// model, full context). The hourly engine ingests it exactly once per
+// generatedAt, routing every field through the same validation and gates the
+// hourly LLM output used to pass through: per-item zod validation, the
+// hypothesis backlog gate, retired-setup blocking, locked signal-risk
+// stripping, and parameter bounds clamping. A missing or malformed advice
+// file never blocks the run.
+
+const NIGHTLY_LLM_ADVICE_FILE = "nightly-llm-advice.json";
+const NIGHTLY_LLM_ADVICE_INGESTED_FILE = "nightly-llm-advice-ingested.json";
+
+interface NightlyLlmAdviceIngestResult {
+  learningParams: LearningParams;
+  notes: string[];
+  journalLines: string[];
 }
 
-const LLM_PROVIDER = process.env.LLM_PROVIDER ?? "anthropic";
-const LLM_REQUEST_TIMEOUT_MS = Number(process.env.LLM_REQUEST_TIMEOUT_MS ?? 300_000);
+function ingestNightlyLlmAdvice(
+  hypotheses: Hypothesis[],
+  learningParams: LearningParams,
+): NightlyLlmAdviceIngestResult {
+  const noop: NightlyLlmAdviceIngestResult = { learningParams, notes: [], journalLines: [] };
+  const advice = readJson<Record<string, unknown> | null>(NIGHTLY_LLM_ADVICE_FILE, null);
+  if (!advice || typeof advice !== "object") return noop;
+  const generatedAt = typeof advice.generatedAt === "string" ? advice.generatedAt : null;
+  if (!generatedAt) return noop;
+  const marker = readJson<{ generatedAt?: string }>(NIGHTLY_LLM_ADVICE_INGESTED_FILE, {});
+  if (marker.generatedAt === generatedAt) return noop;
 
-type LmMessage = { role: "user" | "assistant"; content: string };
+  const notes: string[] = [];
+  const journalLines: string[] = [
+    `\n### Nightly research advice ingested (generatedAt=${generatedAt}, model=${String(advice.model ?? "unknown")})`,
+  ];
 
-async function requestLlmText(
-  apiKey: string,
-  model: string,
-  messages: LmMessage[],
-): Promise<{ text: string; stopReason: string | null }> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), LLM_REQUEST_TIMEOUT_MS);
-
-  try {
-    if (LLM_PROVIDER === "deepseek") {
-      const res = await fetch("https://api.deepseek.com/chat/completions", {
-        method: "POST",
-        signal: controller.signal,
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model,
-          max_tokens: 16384,
-          temperature: 0.2,
-          messages,
-          stream: false,
-        }),
-      });
-      if (!res.ok) throw new Error(`DeepSeek API error: ${res.status} ${res.statusText}`);
-      const data = await res.json() as any;
-      const choice = data?.choices?.[0];
-      return {
-        text: choice?.message?.content?.trim() ?? "",
-        stopReason: choice?.finish_reason ?? null,
+  // New hypotheses: per-item validation + the same backlog/retired gates.
+  const rawHypotheses = Array.isArray(advice.newHypotheses) ? advice.newHypotheses : [];
+  let added = 0;
+  let rejected = 0;
+  const backlog = llmHypothesisBacklog(hypotheses);
+  if (!backlog.complete && rawHypotheses.length > 0) {
+    notes.push(`Nightly advice: skipping ${rawHypotheses.length} new hypotheses; ${backlog.needingTests} existing hypotheses still need shadow tests.`);
+  } else {
+    for (const raw of rawHypotheses) {
+      const parsed = llmNewHypothesisSchema.safeParse(raw);
+      if (!parsed.success) {
+        rejected++;
+        continue;
+      }
+      const nh = parsed.data;
+      const id = `H-${String(hypotheses.length + 1).padStart(3, "0")}`;
+      const hypothesis: Hypothesis = {
+        id, created: nh.created, description: nh.description,
+        conditions: nh.conditions, prediction: nh.prediction,
+        timeframeDays: nh.timeframeDays, confidence: nh.confidence,
+        direction: nh.direction,
+        tests: [{ date: new Date().toISOString().slice(0, 10), triggered: true, outcome: "pending", actualMove: `Shadow test 1/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened for initial validation.` }],
+        winRate: 0, status: "active", promotedToSignal: false, postMortem: null,
+        source: nh.source ?? "llm",
       };
+      ensureHypothesisSetupMetadata(hypothesis);
+      if (RETIRED_LLM_SETUP_IDS.has(hypothesis.setupId ?? "")) {
+        notes.push(`Nightly advice: skipping retired LLM setup hypothesis: ${hypothesis.setupLabel}`);
+        continue;
+      }
+      hypotheses.push(hypothesis);
+      added++;
+      notes.push(`Nightly advice: new hypothesis ${id}: ${nh.description.slice(0, 80)}`);
     }
+  }
+  if (rejected > 0) notes.push(`Nightly advice: rejected ${rejected} malformed hypothesis record(s).`);
 
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      signal: controller.signal,
-      headers: {
-        "Content-Type": "application/json",
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-      },
-      body: JSON.stringify({
-        model,
-        max_tokens: 16384,
-        temperature: 0.2,
-        messages,
-      }),
-    });
+  // Hypothesis reviews → postMortem, same as the old hourly path.
+  const rawReviews = Array.isArray(advice.hypothesisReviews) ? advice.hypothesisReviews : [];
+  let reviewsApplied = 0;
+  for (const raw of rawReviews) {
+    if (!raw || typeof raw !== "object") continue;
+    const review = raw as { id?: unknown; observation?: unknown };
+    if (typeof review.id !== "string" || typeof review.observation !== "string" || !review.observation) continue;
+    const h = hypotheses.find((h) => h.id === review.id);
+    if (!h) continue;
+    h.postMortem = h.postMortem ? `${h.postMortem} | ${review.observation}` : review.observation;
+    reviewsApplied++;
+  }
 
-    if (!res.ok) throw new Error(`Anthropic API error: ${res.status} ${res.statusText}`);
-    const data = await res.json() as any;
-    return { text: anthropicText(data), stopReason: data.stop_reason ?? null };
-  } catch (e: any) {
-    if (e?.name === "AbortError") {
-      throw new Error(`LLM request timeout after ${Math.round(LLM_REQUEST_TIMEOUT_MS / 1000)}s`);
+  // Parameter updates: strip locked signal risk, validate, clamp via the
+  // same bounds logic as before.
+  let nextParams = learningParams;
+  const paramNotes: string[] = [];
+  if (advice.parameterUpdates && typeof advice.parameterUpdates === "object") {
+    const wrapper = { parameterUpdates: advice.parameterUpdates };
+    stripLockedSignalRiskUpdates(wrapper);
+    const parsedParams = llmParameterUpdatesSchema.safeParse(wrapper.parameterUpdates);
+    if (parsedParams.success && parsedParams.data) {
+      const applied = applyLearningParamUpdates(learningParams, parsedParams.data as Partial<Omit<LearningParams, "updatedAt">>);
+      nextParams = applied.next;
+      paramNotes.push(...applied.notes);
+    } else if (!parsedParams.success) {
+      notes.push("Nightly advice: parameterUpdates failed validation; ignored.");
     }
-    throw e;
-  } finally {
-    clearTimeout(timeout);
+  }
+  for (const note of paramNotes) notes.push(`Nightly advice param update: ${note}`);
+
+  journalLines.push(`- Hypotheses added: ${added} (rejected ${rejected}); reviews applied: ${reviewsApplied}; param updates: ${paramNotes.length > 0 ? paramNotes.join("; ") : "none"}.`);
+  if (typeof advice.strategyReview === "string" && advice.strategyReview) {
+    journalLines.push(`- Strategy review: ${advice.strategyReview.slice(0, 600)}`);
+  }
+  if (typeof advice.journalEntry === "string" && advice.journalEntry) {
+    journalLines.push(`- Nightly journal: ${advice.journalEntry.slice(0, 600)}`);
+  }
+
+  notes.push(`Nightly advice ingested (generatedAt=${generatedAt}): ${added} hypotheses, ${reviewsApplied} reviews, ${paramNotes.length} param changes.`);
+  if (!MUTATION_DISABLED) {
+    writeJson(NIGHTLY_LLM_ADVICE_INGESTED_FILE, { generatedAt, ingestedAt: new Date().toISOString() });
+  }
+  return { learningParams: nextParams, notes, journalLines };
+}
+
+// Phase 5 prompt diet: scope the 88KB+ full truth state down to the setup
+// families of currently-open positions. Close review only needs truth for
+// what is actually held; the nightly research run sees the full state.
+function scopeTruthStateForOpenPositions(
+  truthState: LlmTruthState,
+  portfolio: Portfolio,
+  hypotheses: Hypothesis[],
+): LlmTruthState {
+  const hypothesesById = new Map(hypotheses.map((h) => [h.id, h]));
+  const setupIds = new Set<string>();
+  for (const position of portfolio.positions) {
+    const hypothesis = position.hypothesisId ? hypothesesById.get(position.hypothesisId) : null;
+    if (hypothesis?.setupId) setupIds.add(hypothesis.setupId);
+    setupIds.add(setupIdForSignalType(position.signalType).setupId);
+  }
+  return {
+    ...truthState,
+    setupFamilies: truthState.setupFamilies.filter((family) => setupIds.has(family.setupId)),
+  };
+}
+
+// Nightly lessons (data/lessons.json, Phase 4 artifact) scoped to the signal
+// families of open positions. Missing/stale/invalid artifacts never block
+// the hourly run.
+function scopedLessonsForPrompt(portfolio: Portfolio): string {
+  const path = join(DATA_DIR, "lessons.json");
+  if (!existsSync(path)) return "  (lessons artifact not available yet)";
+  try {
+    const artifact = JSON.parse(readFileSync(path, "utf-8")) as {
+      lessons?: Array<{ signalType: string; scope: string; asset?: string; note?: string }>;
+    };
+    const signalTypes = new Set(portfolio.positions.map((p) => p.signalType));
+    const scoped = (artifact.lessons ?? [])
+      .filter((lesson) => signalTypes.has(lesson.signalType))
+      .slice(0, 24);
+    if (scoped.length === 0) return "  (no lessons for currently open signal families)";
+    return scoped
+      .map((lesson) => `  - [${lesson.scope}] ${lesson.signalType}${lesson.asset ? `/${lesson.asset}` : ""}: ${lesson.note ?? ""}`)
+      .join("\n");
+  } catch {
+    return "  (lessons artifact unreadable)";
   }
 }
 
@@ -7272,56 +7321,42 @@ async function callLLM(
   macroRows: SnapshotRow[],
   instrumentSnapshots: InstrumentSnapshotFile[],
   portfolio: Portfolio,
-  learningParams: LearningParams,
   weights: SignalWeight[],
   hypotheses: Hypothesis[],
-  statObs: StatObservation[],
   closedTrades: ClosedTrade[],
-  blockedSummary: BlockedSignalLearningSummary,
-  relativeValueRows: RelativeValueObservation[],
   journalTail: string,
   engineState: EngineState,
   truthState: LlmTruthState,
   candidateActions: CandidateActions,
 ): Promise<LlmAnalysisResult | null> {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  const llmModel = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-6";
+  const route = resolveLlmRoute("hourly_engine");
 
-  const recentValuations = sanitizeValuationsForLlm(valuationRows.slice(-14));
-  const recentMacro = macroRows.slice(-14);
-  // Only the latest instrument snapshot is sent to the LLM. Per-asset hourly
-  // trajectory (spot / IV / funding / OI / PC ratio) is already provided in
-  // the denser MARKET DATA section above (14 hourly rows), so historical
-  // instrument snapshots add no unique information and previously bloated
-  // the prompt by ~390 KB / cycle (~$0.33/call) by duplicating the full
-  // Polymarket contract list 4 times. The latest snapshot is retained
-  // because the decoder (formatOneTouchDirectionalLine) and signal-family
-  // gates need access to current per-contract structure via
-  // latestInstrumentSnapshot(), and the latest option chain summary is the
-  // only source of options OI / volume / chain breadth in the prompt.
-  const recentInstruments = instrumentSnapshots.slice(-1).map(compactInstrumentSnapshotForLlm);
-  const activeHypotheses = hypotheses.filter((h) => h.status === "active" || h.status === "promoted");
-  const killedRecently = hypotheses.filter((h) => h.status === "killed").slice(-5);
+  // Phase 5 scope + token diet: the hourly call is close review and light
+  // summarization only. Hypothesis generation, hypothesis reviews, and
+  // parameter updates moved to the nightly research run (strongest model,
+  // full context, once a day). Sections dropped from this prompt vs the old
+  // mega-prompt: full truth state (scoped instead), instrument snapshots,
+  // 250-row relative-value heatmap, active hypotheses + backlog + killed,
+  // statistical observations, hybrid bot context, blocked-shadow summary
+  // JSON, learnable parameters, and all hypothesis/parameter rules.
+  const recentValuations = sanitizeValuationsForLlm(valuationRows.slice(-6));
+  const recentMacro = macroRows.slice(-3);
   const activeWeights = weights.filter((w) => w.trades > 0);
-  const hypothesisBacklog = llmHypothesisBacklog(hypotheses);
   const openPositionContext = openPositionContextForLlm(portfolio.positions, valuationRows, instrumentSnapshots);
-  const hybridBotCtx = loadHybridBotContext();
-  const hybridStrategyDoc = loadHybridStrategyDoc();
+  const scopedTruth = scopeTruthStateForOpenPositions(truthState, portfolio, hypotheses);
 
-  const prompt = `You are a quantitative paper trading system analyzing cross-venue market data. Your job is to:
-1. Assess the current market state
-2. Propose NEW testable hypotheses about patterns in the data
-3. Review existing hypotheses
-4. Suggest specific trades
+  const prompt = `You are the hourly close-review analyst for a quantitative paper trading system. Rule-based exits are fully mechanical and have already been evaluated this run; new entries come only from promoted signals, never from you. Your job this run is ONLY to:
+1. Assess the current market state in 2-3 sentences
+2. Review OPEN POSITIONS for eligible discretionary closes (see ALLOWED ACTION SURFACE)
+3. Write a short journal note
+
+Hypothesis generation, hypothesis reviews, and parameter updates are owned by the nightly research run. Do NOT propose them here; if you have such ideas, mention them briefly in journalEntry only.
 
 MARKET DATA (last ${recentValuations.length} snapshots):
 ${JSON.stringify(recentValuations, null, 1)}
 
 MACRO DATA (last ${recentMacro.length} snapshots):
 ${JSON.stringify(recentMacro, null, 1)}
-
-INSTRUMENT SNAPSHOTS (latest run only — per-asset hourly trajectory is in MARKET DATA above):
-${JSON.stringify(recentInstruments, null, 1)}
 
 PORTFOLIO:
 ${formatPortfolioPromptSummary(portfolio)}
@@ -7332,8 +7367,11 @@ ${openPositionContext}
 CANONICAL ENGINE STATE:
 ${JSON.stringify(engineState, null, 1)}
 
-CANONICAL CURRENT TRUTH BY SETUP FAMILY:
-${JSON.stringify(truthState, null, 1)}
+TRUTH BY SETUP FAMILY (scoped to open positions; canonical):
+${JSON.stringify(scopedTruth, null, 1)}
+
+NIGHTLY LESSONS (scoped to open signal families):
+${scopedLessonsForPrompt(portfolio)}
 
 ALLOWED ACTION SURFACE:
 ${formatAllowedActionSurfacePrompt(candidateActions)}
@@ -7341,157 +7379,50 @@ ${formatAllowedActionSurfacePrompt(candidateActions)}
 SIGNAL PERFORMANCE:
 ${formatSignalPerformancePrompt(activeWeights)}
 
-ACTIVE HYPOTHESES:
-${formatActiveHypothesesPrompt(activeHypotheses)}
-
-HYPOTHESIS SHADOW TEST BACKLOG:
-${JSON.stringify(hypothesisBacklog, null, 1)}
-${hypothesisBacklog.complete ? "Existing LLM setup-family backlog is complete; new hypotheses may be proposed." : `Do NOT propose unrelated new setup families right now. Existing LLM setup families still need condition-triggered repeat shadow tests (${hypothesisBacklog.needingTests}/${hypothesisBacklog.setupFamilies} setup families need more tests, ${hypothesisBacklog.pending} pending). Only the first ${HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT} setup families are active for retesting; others wait. You MAY propose regime-relative replacement variants for already-promoted setup families when existing variants use brittle absolute price levels. Otherwise return newHypotheses: [] and focus on reviewing/testing existing setup families.`}
-Retired LLM setup families are blocked from live trading and new hypothesis creation: ${Array.from(RETIRED_LLM_SETUP_IDS).join(", ")}. Do not recreate these broad families under a new name; propose only narrower replacement variants with distinct measurable inputs.
-Current live production signal allowlist: ${Array.from(LIVE_SIGNAL_ALLOWLIST).join(", ")} plus promoted hypothesis IDs ${Array.from(LIVE_PROMOTED_HYPOTHESIS_IDS).join(", ")}. Treat all other signal families as shadow/research only.
-Active LLM hypothesis families that may continue shadow testing after regime-relative rewrites:
-  - BTC dealer hedge stress / pullback: SHORT BTC pullback only; requires near-high spot, stressed front IV/term structure, and crowded long positioning.
-  - PM odds / underlying payoff cap: Polymarket one-touch cap-ratio only; rich/over-cap upside contracts are buy-NO or avoid-YES, deeply cheap cap-adjusted upside contracts are buy-YES.
-  - BTC momentum / correlation breakout: LONG BTC momentum continuation only; requires spot strength relative to recent trend and optional HYPE confirmation, not absolute BTC price levels.
-  - AMZN options positioning / momentum: LONG AMZN momentum only; requires low put-call ratio relative to its own history plus positive stock momentum, not fixed stock prices.
-  - HYPE funding/OI long bounce: LONG HYPE bounce only; requires funding in its low/negative regime, OI stabilizing, and spot lifting from recent lows.
-  - HYPE funding/OI liquidation short: SHORT HYPE liquidation only; requires funding in its high/crowded-long regime, OI falling, and spot losing short-term trend.
-Do not mix long-bounce and liquidation-short HYPE evidence in a single hypothesis. Every hypothesis description should name LONG or SHORT and every prediction should match that direction.
-
-RECENTLY KILLED HYPOTHESES:
-${formatKilledHypothesesPrompt(killedRecently)}
-
-STATISTICAL OBSERVATIONS:
-${formatStatObservationsPrompt(statObs)}
-
 RECENT CLOSED TRADES:
 ${formatRecentClosedTradesPrompt(closedTrades)}
 
-HYPERLIQUID HYBRID BOT — RECENT ACTIVITY (read-only context; not your trades):
-${formatHybridBotSection(hybridBotCtx)}
-${hybridStrategyDoc ? `\nHYPERLIQUID HYBRID BOT — STRATEGY CONTEXT:\n${hybridStrategyDoc}` : ""}
-
-CURRENT LEARNABLE PARAMETERS:
-${JSON.stringify(learningParams, null, 2)}
-
-BLOCKED SIGNAL SHADOW LEARNING:
-${JSON.stringify(blockedSummary, null, 1)}
-
-RELATIVE-VALUE HEATMAP OBSERVATIONS (ranked by absolute executable edge):
-${serializeRelativeValueRowsForLlm(relativeValueRows)}
-
 AUDIT LOG TAIL${DRY_RUN ? " (dry-run debug only; not canonical truth)" : " (not canonical decision truth)"}:
-${DRY_RUN ? (journalTail || "  No entries yet") : "  Omitted from decision context. Use CANONICAL CURRENT TRUTH BY SETUP FAMILY instead."}
+${DRY_RUN ? (journalTail || "  No entries yet") : "  Omitted from decision context. Use TRUTH BY SETUP FAMILY instead."}
 
 IMPORTANT RULES:
-- Each hypothesis MUST be specific and testable with a clear timeframe (1-14 days)
-- Each hypothesis MUST define measurable conditions using column names from the data
-- Prefer regime-relative conditions over hard-coded price levels so promoted setup families can generalize across BTC/HYPE/GOLD/OIL/AMZN price regimes. Use absolute spot thresholds only when the exact level is essential to the thesis.
-- Supported derived condition keys:
-  - <column>_pct_from_<N>h_high / <column>_pct_from_<N>d_high, e.g. btc_spot_pct_from_7d_high > -3
-  - <column>_pct_from_<N>h_low / <column>_pct_from_<N>d_low, e.g. btc_spot_pct_from_3d_low > 2
-  - <column>_pct_vs_<N>h_sma / <column>_pct_vs_<N>d_sma, e.g. btc_spot_pct_vs_24h_sma > 0
-  - <column>_percentile_<N>h / <column>_percentile_<N>d, e.g. btc_ibit_pc_ratio_percentile_30d < 15
-  - <column>_zscore_<N>h / <column>_zscore_<N>d, e.g. btc_pm_iv_zscore_30d < -2
-  - <column>_change_pct_<N>h / <column>_change_pct_<N>d, e.g. btc_spot_change_pct_24h > 1.5
-- For promoted setup-family variants, describe the reusable setup in relative terms such as "within 3% of 7d high", "bottom 15th percentile P/C ratio", "PM IV z-score below -2", or "spot above 24h SMA" instead of "BTC above 78k".
-- Every newHypothesis MUST include a direction field: "long" if the spot/perp price is predicted to go up, "short" if predicted down, "neutral" for vol/IV/spread/basis theses that do NOT carry a directional spot view (e.g. "BTC IV expands as PM IV mean reverts" — the price could go either way). Direction is enforced as the authoritative signal when the hypothesis is later promoted; do NOT rely on the engine to infer direction from prose. If the thesis is contrarian, "long" still means buy spot (e.g. "P/C extreme high → contrarian long" is direction=long, not short).
-- Existing LLM hypotheses must receive ${HYPOTHESIS_SHADOW_TESTS_REQUIRED} condition-triggered shadow tests before promotion/kill/inconclusive demotion. Do not create new hypotheses while the backlog is incomplete.
-- Similar hypotheses are grouped into setup families. Promotion/kill decisions happen at the setup-family level, not per wording variant. Prefer reviewing whether the parent setup is working over proposing near-duplicate threshold variants.
-- Generic live LLM_HYPOTHESIS entries are retired. The LLM may propose hypotheses for shadow testing and may advise eligible closes, but live entries require a non-retired promoted setup family. Any buy/sell instruction you emit is recorded as a $1 shadow trade (never live) so your idea quality is measured against the promotion bar; emit entries only when you have genuine conviction, since these shadows are scored.
-- Focus on cross-venue divergences and patterns the rule-based system can't detect
-- Be honest about what's working and what isn't
-- If a pattern stopped working, explain WHY you think it changed
-- Trade sizes are always $1, max $100 bankroll
-- Available venues: polymarket, hyperliquid, spot
-- Available assets: BTC, HYPE, GOLD, AMZN, OIL
-- Polymarket trades are real contract simulations: long = buy YES, short = buy NO on a specific contract
 - Hyperliquid trades are perp simulations and include funding carry in realized P&L
 - Hyperliquid funding sign convention: negative funding means shorts pay longs, so a FUNDING_EXTREME_SHORT long benefits from negative funding carry. More-negative funding is thesis continuation/intensification, not a carry cost and not by itself a close reason. Positive funding means longs pay shorts, so a FUNDING_EXTREME_LONG short benefits from positive funding carry. Only treat funding as thesis weakening when it normalizes materially toward zero/flips sign or when price action fails over the intended hold/risk window despite favorable carry.
 - Spot trades are marked only to the underlying spot price
-- Prefer polymarket only for assets with explicit contracts in the instrument snapshots
-- If you suggest parameter changes, keep them incremental and evidence-based
-- Use BLOCKED SIGNAL SHADOW LEARNING to judge whether filters are too strict or appropriately defensive. If a blocked short loses money, the block was directionally correct.
-- Separately evaluate market quality. A blocked trade can be correctly blocked by trend AND still be a bad setup because the Polymarket bid/ask is too wide or liquidity is too thin.
-- Never treat one-sided Polymarket entries below ${(MIN_ONE_SIDED_PM_ENTRY_PRICE * 100).toFixed(0)}c as legitimate learning evidence or valid trades. Sub-cent entries are near-resolved artifacts, not the thesis the trader is testing; exclude them from performance conclusions and avoid reopening them.
-- Avoid suggesting generic Polymarket trades when yesSpread > ${(HEATMAP_SHADOW_MAX_SPREAD * 100).toFixed(0)}c, liquidity < ${HEATMAP_SHADOW_MIN_LIQUIDITY}, or marketQuality flags include wide_pm_spread / low_pm_liquidity / missing_bid_ask. Treat those as "avoid due to spread/liquidity", not as clean directional evidence. The touch-market shadow-promotion rule below has its own stricter liquidity and explicit 3c max-spread gate from the dedicated backtest.
-- Use RELATIVE-VALUE HEATMAP OBSERVATIONS to look for clean cross-venue edges. If you suggest a trade because of this section, say "relative-value heatmap" in the thesis so its performance can be reviewed.
-- HYPERLIQUID HYBRID BOT activity is informational only. Do NOT emit trades, closes, or hypotheses targeting the alt coins in that bot's universe (ADA/APT/ARB/AVAX/BCH/CRV/DOT/FARTCOIN/INJ/LIDO/OP/TRUMP). Use its current regime (bull/bear) and recent closed-trade tape as a cross-check on broad crypto-alt risk appetite. A sustained bull regime with positive recent closes ≈ alt breadth healthy; a flip back to bear with losing shorts ≈ breakouts dominating ranges. Do not over-weight a sample of < ~30 closed trades.
-- Touch-market shadow-promotion guidance from May 14+ backtest: only promote NO-side touch trades. Hard avoid YES contracts and NO trades with sell_yes_edge_pts < ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}. Require spread <= ${(ONE_TOUCH_NO_SHADOW_MAX_SPREAD * 100).toFixed(0)}c and liquidity >= ${ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY}. Exit when sell_yes_edge_pts disappears or falls below the gate. Why: spread-filtered generic NO was weak (-2.92% avg, -76.50c total one-share P&L); positive sell-YES edge NO improved materially (-0.38% avg, +34.60c); adding edge-disappearance exits turned it positive (+2.44% avg, +81.55c), a +158.05c total-cent improvement versus generic NO. Treat edge size as a gate for now, but keep evaluating edge-size buckets because more data may show edge magnitude is predictive.
-- For upside "hit/reach" contracts, use underlyingCapYes and pmToUnderlyingCapRatio to interpret sentiment against the underlying payoff cap. A ratio above 1.0 means PM YES is richer than the spot/strike cap; 0.85-1.0 means very bullish cap-adjacent pricing; below ~0.35 means weak sentiment relative to the underlying upside payoff.
-- Supported hypothesis aggregate keys for this cap-ratio setup: btc_pm_underlying_cap_ratio_max/min/avg, hype_pm_underlying_cap_ratio_max/min/avg, gold_pm_underlying_cap_ratio_max/min/avg, oil_pm_underlying_cap_ratio_max/min/avg, and the matching *_edge_pts_max/min/avg keys. Add _tight before the comparison suffix to require spread <= ${(UNDERLYING_CAP_ENTRY_MAX_SPREAD * 100).toFixed(0)}c and liquidity >= ${UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY}, e.g. btc_pm_underlying_cap_ratio_max_tight > ${UNDERLYING_CAP_BUY_NO_RATIO.toFixed(2)} for buy-NO over-cap tests or btc_pm_underlying_cap_ratio_min_tight < ${UNDERLYING_CAP_BUY_YES_RATIO.toFixed(2)} for buy-YES cheap-vs-cap tests.
-- Treat GOLD/OIL settle-at bucket markets as drifting Polymarket bucket-forwards / volatility shape indicators, not fair-value anchors for spot. Columns named *_pm_settle_ev are probability-weighted settlement-bucket values from Polymarket; they have their own drift and may stay far from spot for long periods. Do NOT argue that spot should revert to *_pm_settle_ev, and do NOT cite a static PM/spot gap as new close evidence. Anti-pattern: "oil_pm_settle_ev is $87 while spot is $97, so spot should drift to $87" — wrong unless oil_pm_settle_ev itself moved materially since the trade opened and belongs to the signal family under review. Supported aggregate keys: gold_pm_settle_yes_sum_max/min/avg, gold_pm_settle_overround_max/min/avg, gold_pm_settle_tail_yes_max/min/avg, gold_pm_settle_skew_yes_max/min/avg, plus oil_* equivalents. yes_sum/overround measure bucket-price breadth, tail_yes measures total top+bottom tail demand, and skew_yes measures upside minus downside tail demand.
-- Settlement-bucket volatility hypotheses must be replicable across changing ladders: use aggregate bucket metrics from the current active market prices, not hard-coded strikes or price levels. "Top tail" means the highest active settle-at bucket; "bottom tail" means the lowest active settle-at bucket.
+- Treat GOLD/OIL settle-at bucket markets as drifting Polymarket bucket-forwards / volatility shape indicators, not fair-value anchors for spot. Columns named *_pm_settle_ev are probability-weighted settlement-bucket values from Polymarket; they have their own drift and may stay far from spot for long periods. Do NOT argue that spot should revert to *_pm_settle_ev, and do NOT cite a static PM/spot gap as new close evidence. Anti-pattern: "oil_pm_settle_ev is $87 while spot is $97, so spot should drift to $87" — wrong unless oil_pm_settle_ev itself moved materially since the trade opened and belongs to the signal family under review.
 - You may return \"action: close\" to exit an existing open position only when ALLOWED ACTION SURFACE says allowed=true for that exact positionId and the requested category is listed in allowedCategories.
 - LLM-owned/promoted trades need at least ${LLM_CLOSE_MIN_HOLD_HOURS}h before discretionary closes. Long-dated trades may have a higher minHoldHours; if they are still early in their planned hold, do not make drastic thesis calls from short-term noise unless the allowed category is hard_portfolio_risk, data_quality_issue, or explicitly allowed profit_taking near target.
-- If a position is below minHoldHours or allowed=false, discuss concerns in journalEntry/hypothesisReviews only; do not emit a close instruction.
+- If a position is below minHoldHours or allowed=false, discuss concerns in journalEntry only; do not emit a close instruction.
 - Every close instruction MUST include the exact positionId from OPEN POSITIONS and ALLOWED ACTION SURFACE.
 - Every close instruction SHOULD include closeReasonCategory and evidenceColumns. Allowed categories are thesis_invalidated, data_quality_issue, hard_portfolio_risk, risk_stale, profit_taking.
 - Rule-based signal closes are policy-gated. Profit-taking on rule-based signals is rejected; mechanical targets handle routine profit-taking.
 - For close decisions, use each open position's "Signal-family evidence metrics" as the primary evidence. Do not justify closing a P/C-ratio trade with PM EV, funding, macro, or other context-only metrics unless there is a hard portfolio risk breach; if context-only metrics were already present at entry, do not describe them as new evidence.
 - For \"action: close\", set direction to long, short, or any and include positionId to identify which existing position to close.
-- Keep parameter updates inside these bounds:
-  - macroMomentum24hThresholdPts: 2 to 20
-  - contrarianTrendMarginPct: 0 to 5
-  - positiveMomentum24hPct: 0 to 10
-  - llmTradeExpiryDays: 3 to 30
-  - momentumLongExpiryDays: 3 to 45
-  - signalRisk.<signal>.targetPct: 0.5 to 15, or null for no upside take-profit cap
-  - signalRisk.<signal>.stopPct: 0.5 to 10
-- You may update signalRisk when realized wins are too small, losses are too large, or shadow/blocked learning shows a better payoff shape.
-- Keep signalRisk updates incremental and explain them in journalEntry.
-- Do NOT include parameterUpdates.signalRisk entries for these locked signals; their risk is fixed by their backtest convention and any proposed change will be silently dropped: ONE_TOUCH_HIGH_EDGE_NO.
+- Do NOT return buy/sell instructions, newHypotheses entries, hypothesisReviews entries, or parameterUpdates. Those belong to the nightly research run and will be ignored here.
 
 Respond with ONLY valid JSON in this exact format:
 {
   "marketAssessment": "2-3 sentence summary",
-  "newHypotheses": [
-    {
-      "created": "YYYY-MM-DD",
-      "description": "clear description of pattern",
-      "conditions": {"column_name": "> value", ...},
-      "prediction": "specific testable prediction",
-      "timeframeDays": 7,
-      "confidence": 0.6,
-      "direction": "long",
-      "source": "llm"
-    }
-  ],
-  "hypothesisReviews": [{"id": "H-xxx", "observation": "what happened and why"}],
+  "newHypotheses": [],
+  "hypothesisReviews": [],
   "trades": [{"action": "close", "positionId": "T-example", "asset": "BTC", "venue": "spot", "direction": "long", "closeReasonCategory": "thesis_invalidated", "evidenceColumns": ["btc_spot"], "thesis": "reason"}],
-  "parameterUpdates": {
-    "macroMomentum24hThresholdPts": 4,
-    "contrarianTrendMarginPct": 0.5,
-    "positiveMomentum24hPct": 1.5,
-    "llmTradeExpiryDays": 14,
-    "momentumLongExpiryDays": 21,
-    "signalRisk": {
-      "PM_IV_GT_OPT_IV": {"targetPct": null, "stopPct": 5},
-      "FUNDING_EXTREME_SHORT": {"targetPct": 2.5, "stopPct": 2.5},
-      "LLM_HYPOTHESIS": {"targetPct": 3.5, "stopPct": 2.5}
-    }
-  },
-  "journalEntry": "Key observations and lessons from today's analysis..."
+  "journalEntry": "Key observations from this close review..."
 }`;
 
   if (DRY_RUN) {
     ensureLiveStateDir();
     const dumpFile = join(LIVE_STATE_DIR, "dry-run-prompt.txt");
     writeFileSync(dumpFile, prompt);
-    console.log(`  [LLM] Dry-run: prompt written to ${dumpFile} (${prompt.length} chars).`);
   }
 
-  if (!apiKey) {
-    if (LLM_PROVIDER === "deepseek") {
-      console.log("  [LLM] DeepSeek provider active (no ANTHROPIC_API_KEY), skipping LLM reasoning.");
-    } else {
-      console.log("  [LLM] No ANTHROPIC_API_KEY set, skipping LLM reasoning.");
-    }
+  if (!route) {
+    console.log("  [LLM] No API key configured for hourly_engine route, skipping LLM reasoning.");
     return null;
   }
+  console.log(`  [LLM] Hourly prompt: ${prompt.length} chars (provider=${route.provider}, model=${route.model}).`);
 
   try {
-    const first = await requestLlmText(apiKey, llmModel, [{ role: "user", content: prompt }]);
+    const first = await requestLlmText(route, [{ role: "user", content: prompt }]);
     const parsed = parseLlmJson(first.text);
     if (parsed.result) return parsed.result;
 
@@ -7503,16 +7434,15 @@ Parse error: ${parsed.error}
 Return ONLY a corrected JSON object that follows the original schema exactly. Do not include markdown, comments, or explanation. Preserve the same analysis as much as possible.
 Required top-level keys and types:
 - marketAssessment: non-empty string
-- newHypotheses: array of objects with created, description, conditions, prediction, timeframeDays, confidence, direction ("long"|"short"|"neutral"), source="llm"
-- hypothesisReviews: array of {id, observation}
-- trades: array of {action, positionId?, asset, venue, direction, closeReasonCategory?, evidenceColumns?, thesis}
-- parameterUpdates: optional object
+- newHypotheses: [] (always empty; owned by the nightly research run)
+- hypothesisReviews: [] (always empty; owned by the nightly research run)
+- trades: array of {action: "close", positionId, asset, venue, direction, closeReasonCategory?, evidenceColumns?, thesis}
 - journalEntry: non-empty string
 
 Previous response:
 ${first.text.slice(0, 12000)}`;
 
-    const repaired = await requestLlmText(apiKey, llmModel, [
+    const repaired = await requestLlmText(route, [
       { role: "user", content: prompt },
       { role: "assistant", content: first.text },
       { role: "user", content: repairPrompt },
@@ -8050,6 +7980,17 @@ async function main() {
     for (const o of killedSignalWeightObs) console.log(`  ${o}`);
   }
 
+  // Step 2.6: Ingest nightly LLM research advice (Phase 5). New hypotheses,
+  // hypothesis reviews, and parameter updates come from the nightly run's
+  // strongest-model analysis, validated and gated by the exact same rules the
+  // hourly output used to pass through.
+  const nightlyIngest = ingestNightlyLlmAdvice(hypotheses, learningParams);
+  learningParams = nightlyIngest.learningParams;
+  for (const note of nightlyIngest.notes) console.log(`  ${note}`);
+  if (nightlyIngest.journalLines.length > 0 && !MUTATION_DISABLED) {
+    appendJournal(nightlyIngest.journalLines.join("\n"));
+  }
+
   // Step 3: Evaluate hypotheses
   const hypothesisObs = evaluateHypotheses(hypotheses, valRows, relativeValueRows);
   for (const o of hypothesisObs) console.log(`  ${o}`);
@@ -8115,49 +8056,16 @@ async function main() {
     console.log(`    Triggers: ${cadence.reasons.join(" | ")}`);
     console.log(`    LLM daily budget before call: ${cadence.callsToday}/${cadence.maxCallsPerDay}`);
     const journalTail = readJournalTail(40);
-    const llmResult = await callLLM(valRows, macroRows, instrumentSnapshots, portfolio, learningParams, weights, hypotheses, statObs, closedTrades, blockedSummary, relativeValueRows, journalTail, engineState, truthState, candidateActions);
+    const llmResult = await callLLM(valRows, macroRows, instrumentSnapshots, portfolio, weights, hypotheses, closedTrades, journalTail, engineState, truthState, candidateActions);
 
     if (llmResult) {
       console.log(`  LLM assessment: ${llmResult.marketAssessment.slice(0, 120)}`);
-      const appliedUpdates = applyLearningParamUpdates(learningParams, llmResult.parameterUpdates);
-      learningParams = appliedUpdates.next;
-      for (const note of appliedUpdates.notes) {
-        console.log(`    Param update: ${note}`);
-      }
-
-      // Add new hypotheses only after the existing LLM backlog has enough repeat shadow tests.
-      const currentHypothesisBacklog = llmHypothesisBacklog(hypotheses);
-      if (!currentHypothesisBacklog.complete && (llmResult.newHypotheses ?? []).length > 0) {
-        console.log(`    Skipping ${llmResult.newHypotheses.length} new LLM hypotheses; ${currentHypothesisBacklog.needingTests} existing hypotheses still need shadow tests.`);
-      } else {
-        for (const nh of llmResult.newHypotheses ?? []) {
-          const id = `H-${String(hypotheses.length + 1).padStart(3, "0")}`;
-          const hypothesis: Hypothesis = {
-            id, created: nh.created, description: nh.description,
-            conditions: nh.conditions, prediction: nh.prediction,
-            timeframeDays: nh.timeframeDays, confidence: nh.confidence,
-            direction: nh.direction,
-            tests: [{ date: new Date().toISOString().slice(0, 10), triggered: true, outcome: "pending", actualMove: `Shadow test 1/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened for initial validation.` }],
-            winRate: 0, status: "active", promotedToSignal: false, postMortem: null,
-            source: nh.source ?? "llm",
-          };
-          ensureHypothesisSetupMetadata(hypothesis);
-          if (RETIRED_LLM_SETUP_IDS.has(hypothesis.setupId ?? "")) {
-            console.log(`    Skipping retired LLM setup hypothesis ${id}: ${hypothesis.setupLabel}`);
-            continue;
-          }
-          hypotheses.push(hypothesis);
-          console.log(`    New hypothesis ${id}: ${nh.description.slice(0, 80)}`);
-        }
-      }
-
-      // Process hypothesis reviews
-      for (const review of llmResult.hypothesisReviews ?? []) {
-        const h = hypotheses.find((h) => h.id === review.id);
-        if (h) {
-          if (!h.postMortem) h.postMortem = review.observation;
-          else h.postMortem += " | " + review.observation;
-        }
+      // Phase 5 scope split: hypothesis generation, hypothesis reviews, and
+      // parameter updates are owned by the nightly research run and ingested
+      // via ingestNightlyLlmAdvice. If the hourly model returns them anyway,
+      // they are logged and dropped — never applied.
+      if ((llmResult.newHypotheses ?? []).length > 0 || (llmResult.hypothesisReviews ?? []).length > 0 || llmResult.parameterUpdates) {
+        console.log(`    Ignoring hourly hypothesis/parameter output (${(llmResult.newHypotheses ?? []).length} hypotheses, ${(llmResult.hypothesisReviews ?? []).length} reviews); the nightly research run owns these.`);
       }
 
       gatedAdvice = gateLlmAdvice(llmResult, portfolio, candidateActions);

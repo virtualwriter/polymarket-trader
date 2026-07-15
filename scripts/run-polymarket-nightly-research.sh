@@ -27,6 +27,7 @@ fi
 NIGHTLY_FILES=(
   data/calibration-buckets-summary.json
   data/lessons.json
+  data/nightly-llm-advice.json
   data/learning-journal.md
   relative-value/calibration/resolutions_cache.json
   relative-value/calibration/event_report.md

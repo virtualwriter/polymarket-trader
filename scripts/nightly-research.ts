@@ -3,12 +3,14 @@ import { join } from "node:path";
 import { aggregateNoBiasCalibrationBuckets, writeCalibrationBucketsSummary } from "./lib/research/calibration-summary.js";
 import { compactJournalFile } from "./lib/research/journal-compaction.js";
 import { buildLessonsArtifactFromFiles, writeLessonsArtifact } from "./lib/research/lessons.js";
+import { runNightlyLlmStep } from "./lib/research/nightly-llm.js";
 
 /**
- * Nightly research orchestrator (July 2026 infrastructure plan, Phase 4).
+ * Nightly research orchestrator (July 2026 infrastructure plan, Phase 4-5).
  *
  * Runs the research work that used to live inline in the hourly trading
- * engine — calibration aggregation, lesson rollups, journal compaction — as
+ * engine — calibration aggregation, lesson rollups, journal compaction, and
+ * (Phase 5) LLM-driven hypothesis generation/review/parameter tuning — as
  * an independent nightly job. Each step is isolated: one step failing never
  * blocks the others, and the hourly engine only ever reads the small
  * artifacts this script produces (never the raw, unbounded source logs).
@@ -28,9 +30,9 @@ const LESSONS_FILE = join(DATA_DIR, "lessons.json");
 const LEARNING_JOURNAL_FILE = join(DATA_DIR, "learning-journal.md");
 const JOURNAL_ARCHIVE_DIR = join(DATA_DIR, "journal-archive");
 
-function runStep(name: string, fn: () => void): string | null {
+async function runStep(name: string, fn: () => void | Promise<void>): Promise<string | null> {
   try {
-    fn();
+    await fn();
     return null;
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
@@ -63,14 +65,31 @@ function stepJournalCompaction(): void {
   }
 }
 
-function main(): void {
+// Retired-setup blocking is enforced at ingest by the hourly engine
+// (RETIRED_LLM_SETUP_IDS in ingestNightlyLlmAdvice), so this orchestrator
+// doesn't need to know the retired list itself — it's passed through only
+// so the prompt can tell the model not to bother proposing them.
+async function stepNightlyLlm(): Promise<void> {
+  const result = await runNightlyLlmStep({ dataDir: DATA_DIR, retiredSetupIds: [] });
+  if (result.skipped) {
+    console.log("[nightly-research] nightly-llm: skipped (no API key configured or NIGHTLY_LLM_DISABLE=1)");
+    return;
+  }
+  if (!result.wrote) {
+    throw new Error(result.error ?? "nightly-llm step failed without a specific error");
+  }
+  console.log("[nightly-research] nightly-llm: wrote data/nightly-llm-advice.json");
+}
+
+async function main(): Promise<void> {
   const failures: string[] = [];
   for (const [name, fn] of [
     ["calibration-buckets", stepCalibrationBuckets],
     ["lessons", stepLessons],
     ["journal-compaction", stepJournalCompaction],
+    ["nightly-llm", stepNightlyLlm],
   ] as const) {
-    const failure = runStep(name, fn);
+    const failure = await runStep(name, fn);
     if (failure) failures.push(failure);
   }
 
@@ -81,4 +100,7 @@ function main(): void {
   console.log("[nightly-research] completed successfully");
 }
 
-main();
+main().catch((e) => {
+  console.error("[nightly-research] Fatal error:", e);
+  process.exit(1);
+});
