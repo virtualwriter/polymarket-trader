@@ -432,3 +432,40 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-07-15T00:43:43.008Z, model=deepseek-v4-pro)
+- Hypotheses added: 0 (rejected 0); reviews applied: 1; param updates: none.
+- Strategy review: What is working: The weekend funding reversion signal (eligible_live) continues to produce reliable, low-volatility gains with a 68% win rate on live trades (126/186, avg +0.13%) and strong shadow performance (188/253, avg +1.0%). One-touch high-edge NO has exceptional realized PnL on the four live trades (4/4, avg +18.4%) and, though shadow win rate is low (37%), the payoff structure remains positive (+0.7% avg shadow PnL) because winning trades more than offset small, thesis-compressed losers. Manual IV-touch rich NO shadows (eligible_live) show an 80% win rate and +14.4% avg PnL, justifying
+- Nightly journal: Tonight’s research confirms that the engine’s best-performing live signals are the weekend funding reversion and the one-touch high-edge NO (4/4 +18.4% live). The manual IV-touch rich NO shadows also meet promotion thresholds (80% win, +14.4% avg PnL) and should be moved to live after verifying execution quality filters. The funding extreme long signal is a net drag, especially on AMZN and HYPE; although those assets are disabled, the signal’s weight and remaining performance are still negative. I recommend either retiring the long side or promoting the GOLD-specific 69% win pattern as a stand
+### 2026-07-15 01:28 UTC
+
+**Portfolio:** $98.59 total | Cash $97.59 | 1 open | P&L $1.1763 | 61% win rate (460 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 13 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_gld_pc_ratio = 2.714 is 5.5 std devs from mean (0.74 ± 0.36)
+- [anomaly] btc_opt_iv_term_spread = -19.48 is -3.4 std devs from mean (-0.58 ± 5.62)
+- [anomaly] btc_opt_iv_90d = 54.7 is 2.2 std devs from mean (39.90 ± 6.62)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.35 to 0.52. Rolling correlation: 24h=-0.57, 7d=-0.83, 30d=0.43. Current 24h corr is at 30th pct of last 30 daily 24h-rolling values (range -0.91 to 0.90).
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 535 (307 wins / 228 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 11/20 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-6.38%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.39%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.04%)
+
+**LLM analysis:**
+GOLD PC_RATIO_EXTREME_HIGH long (positionId T-1784048786418-bo3z) is only 8.4h into a 120h planned hold with a 12h minimum before discretionary close consideration. The gold spot has been rangebound near entry ($4058 vs $4061), and the GLD P/C ratio remains historically extreme (2.714, 99th percentile over 30 days) though slightly off its local spike. No thesis invalidation yet—the signal family evidence (P/C ratio) has not normalized back through the entry threshold. Macro bearishness and Fed hawkishness were already present at entry and do not constitute new close evidence. Continue to monitor; eligible close review begins after 12h.
+
+---
+
