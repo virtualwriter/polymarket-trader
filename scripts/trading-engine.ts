@@ -108,6 +108,17 @@ const HYBRID_BOT_RECENT_TRADE_LIMIT = Number(process.env.HYPERLIQUID_HYBRID_TRAD
 const INSTRUMENT_SNAPSHOTS_JSONL = "instrument-snapshots.jsonl";
 const INSTRUMENT_SNAPSHOT_LOOKBACK = Number(process.env.INSTRUMENT_SNAPSHOT_LOOKBACK ?? 12);
 const OIL_CRUDE_HISTORY_START = process.env.OIL_CRUDE_HISTORY_START ?? "2026-04-28";
+// When set (e.g. by replay harness experiment 2), skip one-touch / heatmap
+// shadows whose option lineage matches the audit's soft-suspect cohort:
+// HYPE→PURR proxy, and manual OIL/GOLD *_VALUATION_IV placeholders.
+const EXCLUDE_LINEAGE_SUSPECT_SHADOWS =
+  process.env.EXCLUDE_LINEAGE_SUSPECT_SHADOWS === "1" ||
+  process.env.EXCLUDE_LINEAGE_SUSPECT_SHADOWS === "true";
+const LINEAGE_SUSPECT_OPTION_SYMBOLS = new Set([
+  "PURR",
+  "OIL_VALUATION_IV",
+  "GOLD_VALUATION_IV",
+]);
 const LEARNING_PARAMS_FILE = "learning-params.json";
 const BLOCKED_SIGNALS_FILE = "blocked-signals.json";
 const PROCESSED_CLOSED_TRADES_FILE = "processed-closed-trades.json";
@@ -3739,11 +3750,18 @@ function isStrikeIvSkewArtifact(row: RelativeValueObservation): boolean {
   return (optIv / pmIv) >= ONE_TOUCH_SKEW_GUARD_IV_RATIO;
 }
 
+function isLineageSuspectRelativeValueRow(row: RelativeValueObservation): boolean {
+  if (row.asset === "HYPE") return true;
+  const optionSymbol = String(row.rawRow.option_symbol ?? "").toUpperCase();
+  return LINEAGE_SUSPECT_OPTION_SYMBOLS.has(optionSymbol);
+}
+
 function strictOneTouchHighEdgeEligible(row: RelativeValueObservation): boolean {
   if (row.modelVersion !== ONE_TOUCH_MODEL_VERSION) return false;
   if (!row.marketId || !row.eventSlug) return false;
   if (row.edgePts === null || Math.abs(row.edgePts) < ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE) return false;
   if (row.bestExpression !== "sell_yes_or_buy_no" && row.bestExpression !== "buy_yes") return false;
+  if (EXCLUDE_LINEAGE_SUSPECT_SHADOWS && isLineageSuspectRelativeValueRow(row)) return false;
   const flags = relativeValueFlagSet(row);
   const badFlags = row.bestExpression === "buy_yes" ? ONE_TOUCH_BUY_YES_BAD_FLAGS : ONE_TOUCH_STRICT_BAD_FLAGS;
   if (Array.from(badFlags).some((flag) => flags.has(flag))) return false;
@@ -3783,6 +3801,7 @@ function oneTouchNoShadowEligible(row: RelativeValueObservation): boolean {
   if (row.modelVersion !== ONE_TOUCH_MODEL_VERSION) return false;
   if (!row.marketId || !row.eventSlug) return false;
   if (row.bestExpression !== "sell_yes_or_buy_no") return false;
+  if (EXCLUDE_LINEAGE_SUSPECT_SHADOWS && isLineageSuspectRelativeValueRow(row)) return false;
   const edge = sellYesEdgePts(row);
   if (edge === null || edge < ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS) return false;
   if (row.pmSpread === null || row.pmSpread > ONE_TOUCH_NO_SHADOW_MAX_SPREAD) return false;

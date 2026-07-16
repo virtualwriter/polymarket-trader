@@ -1,0 +1,176 @@
+{
+  "created": "2026-07-16T03:53:36Z",
+  "window": {
+    "start": "2026-07-01",
+    "end": "2026-07-14"
+  },
+  "exp1_oil_contamination_cutoff": {
+    "experiment": "oil_contamination_cutoff",
+    "window": {
+      "start": "2026-07-01",
+      "end": "2026-07-14"
+    },
+    "includePreCutoffHistory": {
+      "closed": 160,
+      "pnl": -0.2574,
+      "oilGoldClosed": 7,
+      "oilGoldPnl": -0.0338,
+      "hypeOneTouchShadows": 4,
+      "lineageSuspectOptionSymbolShadows": 4,
+      "shadowTotal": 333
+    },
+    "cleanCutoff_2026-04-28": {
+      "closed": 160,
+      "pnl": -0.2574,
+      "oilGoldClosed": 7,
+      "oilGoldPnl": -0.0338,
+      "hypeOneTouchShadows": 5,
+      "lineageSuspectOptionSymbolShadows": 5,
+      "shadowTotal": 347
+    },
+    "delta": {
+      "closed": 0,
+      "pnl": 0.0,
+      "oilGoldClosed": 0,
+      "oilGoldPnl": 0.0,
+      "hypeOneTouchShadows": 1
+    }
+  },
+  "exp2_lineage_suspect_exclusion": {
+    "experiment": "lineage_suspect_exclusion",
+    "window": {
+      "start": "2026-07-01",
+      "end": "2026-07-14"
+    },
+    "suspectIncluded": {
+      "closed": 160,
+      "pnl": -0.2574,
+      "oilGoldClosed": 7,
+      "oilGoldPnl": -0.0338,
+      "hypeOneTouchShadows": 5,
+      "lineageSuspectOptionSymbolShadows": 5,
+      "shadowTotal": 349
+    },
+    "suspectExcluded": {
+      "closed": 160,
+      "pnl": -0.2574,
+      "oilGoldClosed": 7,
+      "oilGoldPnl": -0.0338,
+      "hypeOneTouchShadows": 0,
+      "lineageSuspectOptionSymbolShadows": 0,
+      "shadowTotal": 344
+    },
+    "delta": {
+      "closed": 0,
+      "pnl": 0.0,
+      "oilGoldClosed": 0,
+      "oilGoldPnl": 0.0,
+      "hypeOneTouchShadows": -5
+    },
+    "productionSuspectCohort": {
+      "cohortIds": [
+        "MANUAL-IVTOUCH-OIL-NO-2074237-1777996309",
+        "MANUAL-IVTOUCH-GOLD-YES-2074203-1778625442",
+        "OT-1779330545196-1sqi",
+        "OT-1779467353409-vwz1",
+        "OT-1779481755789-p52i",
+        "OT-1779481755790-dg12",
+        "OT-1779481755790-ib4m",
+        "OT-1779805767726-fu2y",
+        "OT-1784048736086-glrs"
+      ],
+      "rows": [
+        {
+          "id": "MANUAL-IVTOUCH-OIL-NO-2074237-1777996309",
+          "found": true,
+          "asset": "OIL",
+          "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+          "status": "resolved",
+          "option_symbol": "OIL_VALUATION_IV",
+          "pnl": 0.6481,
+          "learningExcluded": false
+        },
+        {
+          "id": "MANUAL-IVTOUCH-GOLD-YES-2074203-1778625442",
+          "found": true,
+          "asset": "GOLD",
+          "signalType": "USER_PM_IV_TOUCH_CHEAP_YES",
+          "status": "resolved",
+          "option_symbol": "GOLD_VALUATION_IV",
+          "pnl": -0.8421,
+          "learningExcluded": false
+        },
+        {
+          "id": "OT-1779330545196-1sqi",
+          "found": true,
+          "asset": "HYPE",
+          "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+          "status": "resolved",
+          "option_symbol": "PURR",
+          "pnl": 0.069,
+          "learningExcluded": false
+        },
+        {
+          "id": "OT-1779467353409-vwz1",
+          "found": true,
+          "asset": "HYPE",
+          "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+          "status": "open",
+          "option_symbol": "PURR",
+          "pnl": null,
+          "learningExcluded": false
+        },
+        {
+          "id": "OT-1779481755789-p52i",
+          "found": true,
+          "asset": "HYPE",
+          "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+          "status": "open",
+          "option_symbol": "PURR",
+          "pnl": null,
+          "learningExcluded": false
+        },
+        {
+          "id": "OT-1779481755790-dg12",
+          "found": true,
+          "asset": "HYPE",
+          "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+          "status": "resolved",
+          "option_symbol": "PURR",
+          "pnl": -0.3333,
+          "learningExcluded": false
+        },
+        {
+          "id": "OT-1779481755790-ib4m",
+          "found": true,
+          "asset": "HYPE",
+          "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
+          "status": "resolved",
+          "option_symbol": "PURR",
+          "pnl": -0.0256,
+          "learningExcluded": false
+        },
+        {
+          "id": "OT-1779805767726-fu2y",
+          "found": true,
+          "asset": "HYPE",
+          "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+          "status": "resolved",
+          "option_symbol": "PURR",
+          "pnl": -0.001,
+          "learningExcluded": true
+        },
+        {
+          "id": "OT-1784048736086-glrs",
+          "found": true,
+          "asset": "HYPE",
+          "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+          "status": "resolved",
+          "option_symbol": "PURR",
+          "pnl": -0.0052,
+          "learningExcluded": false
+        }
+      ]
+    }
+  }
+}

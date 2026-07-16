@@ -68,6 +68,20 @@ function parseArgs(argv: string[]): Record<string, string | boolean> {
   return out;
 }
 
+function parseSetEnv(argv: string[]): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] !== "--set-env") continue;
+    const spec = argv[i + 1];
+    if (!spec || spec.startsWith("--")) continue;
+    const eq = spec.indexOf("=");
+    if (eq <= 0) continue;
+    out[spec.slice(0, eq)] = spec.slice(eq + 1);
+    i++;
+  }
+  return out;
+}
+
 const args = parseArgs(process.argv.slice(2));
 const START = String(args.start ?? "");
 const END = String(args.end ?? "");
@@ -76,12 +90,19 @@ const LOOKBACK = Number(args.lookback ?? 12);
 const KEEP_GOING = Boolean(args["keep-going"]);
 const REBUILD_STORE = Boolean(args["rebuild-store"]);
 const LIMIT_HOURS = args["limit-hours"] ? Number(args["limit-hours"]) : Infinity;
+const EXPERIMENT_TAG = String(args.tag ?? "");
+const NULL_FEATURES_BEFORE = String(args["null-features-before"] ?? "");
+const NULL_FEATURE_PREFIXES = String(args["null-feature-prefixes"] ?? "oil_,gold_")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+const EXTRA_ENV = parseSetEnv(process.argv.slice(2));
 const SIGNALS_FILTER = args.signals
   ? String(args.signals).split(",").map((s) => s.trim()).filter(Boolean)
   : [];
 
 if (!START || !END || !SANDBOX) {
-  console.error("usage: replay-harness --start YYYY-MM-DD --end YYYY-MM-DD --sandbox PATH [--signals A,B] [--lookback 12] [--keep-going] [--rebuild-store] [--limit-hours N]");
+  console.error("usage: replay-harness --start YYYY-MM-DD --end YYYY-MM-DD --sandbox PATH [--signals A,B] [--lookback 12] [--keep-going] [--rebuild-store] [--limit-hours N] [--tag NAME] [--set-env KEY=VAL] [--null-features-before YYYY-MM-DD] [--null-feature-prefixes oil_,gold_]");
   process.exit(2);
 }
 
@@ -231,6 +252,25 @@ function writeSnapshotWindow(storeDir: string, index: Record<string, string>, ho
   writeFileSync(join(SANDBOX, "data", "instrument-snapshots.jsonl"), parts.join("\n") + "\n");
 }
 
+function nullFeatureColumns(header: string, rows: string[], beforeDate: string, prefixes: string[]): string[] {
+  if (!beforeDate || prefixes.length === 0) return rows;
+  const cols = parseCsvLine(header);
+  const wipeIdx = cols
+    .map((name, i) => ({ name, i }))
+    .filter(({ name }) => prefixes.some((p) => name.startsWith(p)))
+    .map(({ i }) => i);
+  if (wipeIdx.length === 0) return rows;
+  return rows.map((line) => {
+    const date = firstCsvField(line);
+    if (date >= beforeDate) return line;
+    const fields = parseCsvLine(line);
+    for (const i of wipeIdx) {
+      if (i < fields.length) fields[i] = "";
+    }
+    return fields.map((f) => (f.includes(",") || f.includes('"') || f.includes("\n") ? `"${f.replace(/"/g, '""')}"` : f)).join(",");
+  });
+}
+
 function truncateCsv(name: string, rows: string[], header: string, T: string) {
   const kept = rows.filter((line) => firstCsvField(line) <= T);
   writeFileSync(join(SANDBOX, "data", name), header + "\n" + kept.join("\n") + "\n");
@@ -249,6 +289,7 @@ function runEngineHour(T: string): { ok: boolean; ms: number; log: string } {
       cwd: SANDBOX,
       env: {
         ...process.env,
+        ...EXTRA_ENV,
         REPLAY_NOW_MS: String(ms),
         POLYMARKET_TRADER_STATE_DIR: join(SANDBOX, ".runtime"),
         // Ensure no accidental live-order envs; make LLM keys absent.
@@ -346,8 +387,14 @@ function main() {
   const macroAll = readFileSync(join(REPO, "data", "daily-macro.csv"), "utf-8").split("\n").filter((l) => l.trim() !== "");
   const valHeader = valAll[0];
   const macroHeader = macroAll[0];
-  const valRows = valAll.slice(1);
-  const macroRows = macroAll.slice(1);
+  const valRows = nullFeatureColumns(valHeader, valAll.slice(1), NULL_FEATURES_BEFORE, NULL_FEATURE_PREFIXES);
+  const macroRows = nullFeatureColumns(macroHeader, macroAll.slice(1), NULL_FEATURES_BEFORE, NULL_FEATURE_PREFIXES);
+  if (NULL_FEATURES_BEFORE) {
+    log(`[setup] nulling feature prefixes [${NULL_FEATURE_PREFIXES.join(", ")}] before ${NULL_FEATURES_BEFORE}`);
+  }
+  if (Object.keys(EXTRA_ENV).length > 0) {
+    log(`[setup] extra engine env: ${JSON.stringify(EXTRA_ENV)}`);
+  }
 
   const perHourMs: number[] = [];
   let failed = 0;
@@ -391,11 +438,50 @@ function main() {
   const openBySignal: Record<string, number> = {};
   for (const p of finalPortfolio.positions ?? []) openBySignal[p.signalType] = (openBySignal[p.signalType] ?? 0) + 1;
 
+  // Shadow / blocked-signal summary (experiment 2 cares about HYPE one-touch).
+  let blockedSignals: Array<Record<string, unknown>> = [];
+  const blockedPath = join(SANDBOX, "data", "blocked-signals.json");
+  if (existsSync(blockedPath)) {
+    try {
+      blockedSignals = JSON.parse(readFileSync(blockedPath, "utf-8")) as Array<Record<string, unknown>>;
+    } catch {
+      blockedSignals = [];
+    }
+  }
+  const shadowSummary = {
+    total: blockedSignals.length,
+    byReason: {} as Record<string, number>,
+    byAssetSignal: {} as Record<string, number>,
+    hypeOneTouch: 0,
+    lineageSuspectOptionSymbol: 0,
+  };
+  for (const s of blockedSignals) {
+    const reason = String(s.blockedReason ?? "unknown");
+    shadowSummary.byReason[reason] = (shadowSummary.byReason[reason] ?? 0) + 1;
+    const asset = String(s.asset ?? "");
+    const sig = String(s.signalType ?? "");
+    const key = `${asset}|${sig}`;
+    shadowSummary.byAssetSignal[key] = (shadowSummary.byAssetSignal[key] ?? 0) + 1;
+    const opt = String(((s.heatmapRowSnapshot as { row?: { option_symbol?: string } } | undefined)?.row?.option_symbol) ?? "").toUpperCase();
+    if (asset === "HYPE" && sig.includes("ONE_TOUCH")) shadowSummary.hypeOneTouch += 1;
+    if (opt === "PURR" || opt === "OIL_VALUATION_IV" || opt === "GOLD_VALUATION_IV") {
+      shadowSummary.lineageSuspectOptionSymbol += 1;
+    }
+  }
+
+  const oilGoldClosed = ledger.filter((r) => ["OIL", "GOLD", "USO", "GLD"].includes(r.asset.toUpperCase()));
+  const oilGoldBySignal = groupBy(oilGoldClosed, (r) => `${r.asset}|${r.signal_type}`);
+  const oilGoldTrades: Record<string, { count: number; pnl: number }> = {};
+  for (const [k, rows] of Object.entries(oilGoldBySignal)) {
+    oilGoldTrades[k] = { count: rows.length, pnl: Number(rows.reduce((s, r) => s + r.pnl, 0).toFixed(6)) };
+  }
+
   const avgMs = perHourMs.reduce((a, b) => a + b, 0) / (perHourMs.length || 1);
   const perHourSec = Number((avgMs / 1000).toFixed(2));
   const fullWindowEstimateMin = Number(((perHourSec * 24 * 45) / 60).toFixed(1));
 
   const report = {
+    tag: EXPERIMENT_TAG || null,
     window: { start: START, end: END, startKey, endKey },
     hoursReplayed: replayHours.length,
     hoursFailed: failed,
@@ -407,13 +493,20 @@ function main() {
       llm: "disabled (--no-llm)",
       clock: "frozen via REPLAY_NOW_MS (replay-preload.mjs)",
       freshPortfolioCash: 100,
+      extraEnv: EXTRA_ENV,
+      nullFeaturesBefore: NULL_FEATURES_BEFORE || null,
+      nullFeaturePrefixes: NULL_FEATURES_BEFORE ? NULL_FEATURE_PREFIXES : [],
     },
     tradesClosedBySignal,
+    oilGoldClosedTrades: oilGoldTrades,
     openPositionsAtEndBySignal: openBySignal,
+    shadowSummary,
     totals: {
       closedTrades: ledger.length,
       totalPnl: Number(ledger.reduce((s, r) => s + r.pnl, 0).toFixed(6)),
       openAtEnd: (finalPortfolio.positions ?? []).length,
+      oilGoldClosed: oilGoldClosed.length,
+      oilGoldPnl: Number(oilGoldClosed.reduce((s, r) => s + r.pnl, 0).toFixed(6)),
     },
     perHourWallTimeSec: perHourSec,
     fullWindowEstimateMin,

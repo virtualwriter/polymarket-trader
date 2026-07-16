@@ -1,0 +1,109 @@
+{
+  "tag": "EXP-heatmap-suspect-included",
+  "window": {
+    "start": "2026-07-01",
+    "end": "2026-07-14",
+    "startKey": "2026-07-01T00",
+    "endKey": "2026-07-14T23"
+  },
+  "hoursReplayed": 325,
+  "hoursFailed": 0,
+  "config": {
+    "lookback": 12,
+    "signalsFilter": [],
+    "sandbox": "/tmp/replay-heatmap-suspect-included",
+    "offline": true,
+    "llm": "disabled (--no-llm)",
+    "clock": "frozen via REPLAY_NOW_MS (replay-preload.mjs)",
+    "freshPortfolioCash": 100,
+    "extraEnv": {},
+    "nullFeaturesBefore": null,
+    "nullFeaturePrefixes": []
+  },
+  "tradesClosedBySignal": {
+    "FUNDING_EXTREME_LONG": {
+      "count": 3,
+      "pnl": -0.0058
+    },
+    "WEEKEND_HL_FUNDING_REVERSION_LONG": {
+      "count": 151,
+      "pnl": -0.2556
+    },
+    "PC_RATIO_EXTREME_HIGH": {
+      "count": 2,
+      "pnl": 0.0229
+    },
+    "FUNDING_EXTREME_SHORT": {
+      "count": 2,
+      "pnl": -0.0282
+    },
+    "PC_RATIO_EXTREME_LOW": {
+      "count": 2,
+      "pnl": 0.0093
+    }
+  },
+  "oilGoldClosedTrades": {
+    "GOLD|FUNDING_EXTREME_LONG": {
+      "count": 3,
+      "pnl": -0.0058
+    },
+    "OIL|PC_RATIO_EXTREME_HIGH": {
+      "count": 1,
+      "pnl": 0.0382
+    },
+    "GOLD|FUNDING_EXTREME_SHORT": {
+      "count": 1,
+      "pnl": -0.0269
+    },
+    "OIL|PC_RATIO_EXTREME_LOW": {
+      "count": 1,
+      "pnl": -0.024
+    },
+    "GOLD|PC_RATIO_EXTREME_HIGH": {
+      "count": 1,
+      "pnl": -0.0153
+    }
+  },
+  "openPositionsAtEndBySignal": {
+    "FUNDING_EXTREME_SHORT": 1,
+    "FUNDING_EXTREME_LONG": 1,
+    "PC_RATIO_EXTREME_HIGH": 1
+  },
+  "shadowSummary": {
+    "total": 349,
+    "byReason": {
+      "one_touch_high_edge_shadow": 329,
+      "no_bias_adjusted_gap_shadow": 5,
+      "polymarket_proxy_short": 3,
+      "short_blocked_by_positive_trend": 12
+    },
+    "byAssetSignal": {
+      "BTC|ONE_TOUCH_HIGH_EDGE_NO": 176,
+      "ETH|ONE_TOUCH_HIGH_EDGE_NO": 71,
+      "GOLD|ONE_TOUCH_HIGH_EDGE_NO": 44,
+      "SPY|ONE_TOUCH_HIGH_EDGE_NO": 4,
+      "BTC|NO_BIAS_ADJUSTED_GAP_SHADOW": 5,
+      "HYPE|ONE_TOUCH_HIGH_EDGE_NO": 5,
+      "OIL|ONE_TOUCH_HIGH_EDGE_NO": 29,
+      "GOLD|FUNDING_EXTREME_LONG_PM_PROXY_SHORT": 2,
+      "GOLD|FUNDING_EXTREME_LONG": 2,
+      "BTC|PC_RATIO_EXTREME_LOW": 4,
+      "BTC|FUNDING_EXTREME_LONG": 1,
+      "BTC|PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT": 1,
+      "OIL|PC_RATIO_EXTREME_LOW": 4,
+      "GOLD|PC_RATIO_EXTREME_LOW": 1
+    },
+    "hypeOneTouch": 5,
+    "lineageSuspectOptionSymbol": 5
+  },
+  "totals": {
+    "closedTrades": 160,
+    "totalPnl": -0.2574,
+    "openAtEnd": 3,
+    "oilGoldClosed": 7,
+    "oilGoldPnl": -0.0338
+  },
+  "perHourWallTimeSec": 1.41,
+  "fullWindowEstimateMin": 25.4,
+  "totalReplayWallSec": 505.2
+}
