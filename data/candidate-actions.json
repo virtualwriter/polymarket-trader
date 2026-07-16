@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T16:28:11.377Z",
+  "generatedAt": "2026-07-16T16:56:26.655Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -92,45 +92,49 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": 0,
         "byAsset": {
-          "GOLD": -1
-        },
-        "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1
-        },
-        "byVenue": {
-          "hyperliquid": -1
-        },
-        "byCluster": {
-          "commodity": -1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": -1,
-        "byAsset": {
-          "GOLD": -1
+          "GOLD": 0
         },
         "bySignalType": {
           "FUNDING_EXTREME_LONG": -1,
-          "PC_RATIO_EXTREME_HIGH": 0
+          "PC_RATIO_EXTREME_HIGH": 1
         },
         "byVenue": {
           "hyperliquid": -1,
-          "spot": 0
+          "spot": 1
         },
         "byCluster": {
-          "commodity": -1,
+          "commodity": 0,
           "funding_reversion": -1,
-          "gold_delta": -1,
+          "gold_delta": 0,
           "hyperliquid_venue": -1,
-          "options_sentiment": 0,
-          "spot_venue": 0
+          "options_sentiment": 1,
+          "spot_venue": 1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 2,
+        "totalNet": 0,
+        "byAsset": {
+          "GOLD": 0
+        },
+        "bySignalType": {
+          "FUNDING_EXTREME_LONG": -1,
+          "PC_RATIO_EXTREME_HIGH": 1
+        },
+        "byVenue": {
+          "hyperliquid": -1,
+          "spot": 1
+        },
+        "byCluster": {
+          "commodity": 0,
+          "funding_reversion": -1,
+          "gold_delta": 0,
+          "hyperliquid_venue": -1,
+          "options_sentiment": 1,
+          "spot_venue": 1
         }
       },
       "warnings": []
@@ -149,41 +153,49 @@
         "hyperliquid_venue"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": 0,
         "byAsset": {
-          "GOLD": -1
+          "GOLD": 0
         },
         "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1
+          "FUNDING_EXTREME_LONG": -1,
+          "PC_RATIO_EXTREME_HIGH": 1
         },
         "byVenue": {
-          "hyperliquid": -1
+          "hyperliquid": -1,
+          "spot": 1
         },
         "byCluster": {
-          "commodity": -1,
+          "commodity": 0,
           "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1
+          "gold_delta": 0,
+          "hyperliquid_venue": -1,
+          "options_sentiment": 1,
+          "spot_venue": 1
         }
       },
       "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": 0,
         "byAsset": {
-          "GOLD": -1
+          "GOLD": 0
         },
         "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1
+          "FUNDING_EXTREME_LONG": -1,
+          "PC_RATIO_EXTREME_HIGH": 1
         },
         "byVenue": {
-          "hyperliquid": -1
+          "hyperliquid": -1,
+          "spot": 1
         },
         "byCluster": {
-          "commodity": -1,
+          "commodity": 0,
           "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1
+          "gold_delta": 0,
+          "hyperliquid_venue": -1,
+          "options_sentiment": 1,
+          "spot_venue": 1
         }
       },
       "warnings": []
@@ -236,12 +248,31 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 2.99,
-      "hoursToExpiry": 69.01,
+      "hoursOpen": 3.46,
+      "hoursToExpiry": 68.54,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.0415,
+      "elapsedHoldPct": 0.0481,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 3.5h, requires at least 12h."
+    },
+    {
+      "positionId": "T-1784219291393-zbud",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_gld_pc_ratio"
+      ],
+      "hoursOpen": 0.47,
+      "hoursToExpiry": 119.53,
+      "plannedHoldHours": 120,
+      "elapsedHoldPct": 0.0039,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 0.5h, requires at least 12h."
     }
   ]
 }
