@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-16T21:28:05.198Z",
+  "generatedAt": "2026-07-16T22:28:05.521Z",
   "dataFreshness": {
-    "valuationRows": 1717,
-    "latestValuationAt": "2026-07-16T21",
-    "macroRows": 1715,
+    "valuationRows": 1718,
+    "latestValuationAt": "2026-07-16T22",
+    "macroRows": 1716,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-16T21"
+    "latestInstrumentSnapshotAt": "2026-07-16T22"
   },
   "portfolio": {
     "cash": 96.5631,
@@ -22,9 +22,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 0.6,
-      "currentPrice": 3983,
-      "underlyingPrice": 3983,
+      "pnlPct": 0.7,
+      "currentPrice": 3979,
+      "underlyingPrice": 3979,
       "targetPct": 5,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.2,
-      "currentPrice": 3983,
-      "underlyingPrice": 3983,
+      "pnlPct": -0.3,
+      "currentPrice": 3979,
+      "underlyingPrice": 3979,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -191,7 +191,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 51,
+    "openCount": 52,
     "resolvedCount": 561,
     "wouldHaveWon": 317,
     "wouldHaveLost": 244,
@@ -418,22 +418,6 @@
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
         "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $7,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.03,
-          "yesAsk": 0.05,
-          "yesSpread": 0.02,
-          "liquidity": 37241.66,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.8pt on ETH, spread 2.0c, liquidity 37242. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $5,000 by December 31, 2026?",
         "marketQuality": {
           "yesBid": 0.04,
@@ -541,6 +525,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.4pt on ETH, spread 1.3c, liquidity 49863. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-in-july-2026 — NO — Will Bitcoin reach $65,000 in July?",
+        "marketQuality": {
+          "yesBid": 0.82,
+          "yesAsk": 0.84,
+          "yesSpread": 0.02,
+          "liquidity": 11728.31,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.4pt on BTC, spread 2.0c, liquidity 11728. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
