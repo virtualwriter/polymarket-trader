@@ -19991,6 +19991,32 @@
       "links": {},
       "created": "2026-07-16T03:53:36Z",
       "source": "run_heatmap_audit_replays"
+    },
+    {
+      "id": "DEC-0011",
+      "type": "decision",
+      "evidenceClass": "DERIVED",
+      "status": "final",
+      "title": "Exclude lineage-suspect heatmap shadows from learning; gate default-on",
+      "body": {
+        "rationale": "EXP-0538 showed gating lineage-suspect HYPE/PURR and *_VALUATION_IV shadows removes those shadow opens with zero live paper P&L impact. Adopt as default: (1) EXCLUDE_LINEAGE_SUSPECT_SHADOWS on unless explicitly set to 0; (2) cancel open and learningExclude resolved/open suspects so the strategy learner never trains on them; ops P&L history retained.",
+        "actions": [
+          "default EXCLUDE_LINEAGE_SUSPECT_SHADOWS=on",
+          "excludeLineageSuspectShadows engine sweep",
+          "backfill 9 audit cohort IDs"
+        ],
+        "evidence": [
+          "EXP-0538"
+        ],
+        "optOut": "EXCLUDE_LINEAGE_SUSPECT_SHADOWS=0"
+      },
+      "links": {
+        "relatedRecords": [
+          "EXP-0538"
+        ]
+      },
+      "created": "2026-07-16T04:08:06Z",
+      "source": "operator+EXP-0538"
     }
   ]
 }

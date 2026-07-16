@@ -108,17 +108,21 @@ const HYBRID_BOT_RECENT_TRADE_LIMIT = Number(process.env.HYPERLIQUID_HYBRID_TRAD
 const INSTRUMENT_SNAPSHOTS_JSONL = "instrument-snapshots.jsonl";
 const INSTRUMENT_SNAPSHOT_LOOKBACK = Number(process.env.INSTRUMENT_SNAPSHOT_LOOKBACK ?? 12);
 const OIL_CRUDE_HISTORY_START = process.env.OIL_CRUDE_HISTORY_START ?? "2026-04-28";
-// When set (e.g. by replay harness experiment 2), skip one-touch / heatmap
-// shadows whose option lineage matches the audit's soft-suspect cohort:
-// HYPE→PURR proxy, and manual OIL/GOLD *_VALUATION_IV placeholders.
+// Default ON (EXP-0538 / DEC-0011): skip one-touch shadows whose option
+// lineage matches the heatmap-audit soft-suspect cohort — HYPE→PURR proxy
+// and manual OIL/GOLD *_VALUATION_IV placeholders. Set
+// EXCLUDE_LINEAGE_SUSPECT_SHADOWS=0 to re-enable for a controlled experiment.
 const EXCLUDE_LINEAGE_SUSPECT_SHADOWS =
-  process.env.EXCLUDE_LINEAGE_SUSPECT_SHADOWS === "1" ||
-  process.env.EXCLUDE_LINEAGE_SUSPECT_SHADOWS === "true";
+  process.env.EXCLUDE_LINEAGE_SUSPECT_SHADOWS !== "0" &&
+  process.env.EXCLUDE_LINEAGE_SUSPECT_SHADOWS !== "false";
 const LINEAGE_SUSPECT_OPTION_SYMBOLS = new Set([
   "PURR",
   "OIL_VALUATION_IV",
   "GOLD_VALUATION_IV",
 ]);
+const LINEAGE_SUSPECT_EXCLUSION_REASON = "lineage_suspect_heatmap_option_source";
+const LINEAGE_SUSPECT_EXCLUSION_NOTE =
+  "Excluded: heatmap option lineage is soft-suspect (HYPE/PURR proxy or OIL/GOLD *_VALUATION_IV placeholder). P&L kept for ops reporting; strategy learner ignores. Gate default-on after EXP-0538 (DEC-0011).";
 const LEARNING_PARAMS_FILE = "learning-params.json";
 const BLOCKED_SIGNALS_FILE = "blocked-signals.json";
 const PROCESSED_CLOSED_TRADES_FILE = "processed-closed-trades.json";
@@ -4528,6 +4532,43 @@ function cancelOpenRelativeValueHeatmapShadows(blockedSignals: BlockedSignalShad
   return notes;
 }
 
+function isLineageSuspectBlockedShadow(shadow: BlockedSignalShadow): boolean {
+  if (shadow.asset === "HYPE" && String(shadow.signalType).includes("ONE_TOUCH")) return true;
+  const optionSymbol = String(shadow.heatmapRowSnapshot?.row?.option_symbol ?? "").toUpperCase();
+  return LINEAGE_SUSPECT_OPTION_SYMBOLS.has(optionSymbol);
+}
+
+/** Cancel open + stamp learningExcluded on lineage-suspect heatmap shadows (idempotent). */
+function excludeLineageSuspectShadows(blockedSignals: BlockedSignalShadow[]): {
+  cancelled: string[];
+  retroExcluded: number;
+} {
+  const now = new Date().toISOString();
+  const cancelled: string[] = [];
+  let retroExcluded = 0;
+  for (const shadow of blockedSignals) {
+    if (!isLineageSuspectBlockedShadow(shadow)) continue;
+    if (shadow.status === "open") {
+      shadow.status = "cancelled";
+      shadow.resolvedAt = now;
+      shadow.learningExcluded = {
+        reason: LINEAGE_SUSPECT_EXCLUSION_REASON,
+        note: LINEAGE_SUSPECT_EXCLUSION_NOTE,
+      };
+      cancelled.push(shadow.id);
+      continue;
+    }
+    if (!shadow.learningExcluded) {
+      shadow.learningExcluded = {
+        reason: LINEAGE_SUSPECT_EXCLUSION_REASON,
+        note: LINEAGE_SUSPECT_EXCLUSION_NOTE,
+      };
+      retroExcluded += 1;
+    }
+  }
+  return { cancelled, retroExcluded };
+}
+
 function currentOneTouchNoEdgeRow(shadow: BlockedSignalShadow, relativeValueRows: RelativeValueObservation[]): RelativeValueObservation | null {
   const [eventSlug, marketId] = shadow.position.instrumentId?.split("::") ?? [];
   if (!eventSlug || !marketId) return null;
@@ -7841,6 +7882,7 @@ async function main() {
   const cancelledInvalidMonotonicArbShadows = cancelOpenInvalidMonotonicArbShadows(blockedSignals);
   const legacyOneTouchSweep = cancelLegacyOneTouchShadows(blockedSignals);
   const forceCloseArtifactSweep = excludeGateForceCloseArtifacts(blockedSignals);
+  const lineageSuspectSweep = excludeLineageSuspectShadows(blockedSignals);
   const realPmMirrorNotes = importCompletedRealPolymarketPackages(portfolio);
 
   console.log(`  Portfolio: $${portfolio.cash.toFixed(2)} cash, ${portfolio.positions.length} open positions, $${portfolio.totalRealizedPnl.toFixed(4)} realized P&L`);
@@ -7862,6 +7904,9 @@ async function main() {
   for (const note of realPmMirrorNotes) console.log(`  Real PM mirror: ${note}`);
   if (forceCloseArtifactSweep.oneTouch > 0 || forceCloseArtifactSweep.noBias > 0) {
     console.log(`  Gate force-close artifact sweep: excluded ${forceCloseArtifactSweep.oneTouch} one-touch NO and ${forceCloseArtifactSweep.noBias} NO-bias resolutions from learning.`);
+  }
+  if (lineageSuspectSweep.cancelled.length > 0 || lineageSuspectSweep.retroExcluded > 0) {
+    console.log(`  Lineage-suspect sweep: cancelled ${lineageSuspectSweep.cancelled.length} open, learning-excluded ${lineageSuspectSweep.retroExcluded} resolved (HYPE/PURR or *_VALUATION_IV).`);
   }
   if (cancelledHeatmapShadows.length > 0) {
     console.log(`  Cancelled ${cancelledHeatmapShadows.length} open relative-value heatmap shadow trades; heatmap is report-only until the horizon model is redesigned.`);
