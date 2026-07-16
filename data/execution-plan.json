@@ -1,59 +1,31 @@
 {
-  "generatedAt": "2026-07-16T14:28:38.438Z",
+  "generatedAt": "2026-07-16T15:28:13.373Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1784136549825-rtik",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "gold_gld_pc_ratio",
-        "gold_gc_spot"
-      ],
-      "thesis": "Entry P/C ratio extreme high (1.72) has collapsed to 0.775, far below the entry threshold, indicating complete sentiment reversal from heavy put buying to call buying. The contrarian long thesis is invalidated; spot weakness further confirms the breakdown."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "FUNDING_EXTREME_LONG",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.6405714285714286,
-      "confidence": 0.3298130322011901,
-      "thesis": "GOLD HL funding 37.4% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.46571428571428575,
+      "confidence": 0.2397837834468956,
+      "thesis": "GOLD HL funding 31.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4003,
+      "entryPrice": 4017,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 3,
       "leverage": 1
-    },
-    {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.08000000000000007,
-      "confidence": 0.04163389258588413,
-      "thesis": "OIL P/C ratio 1.26 — heavy put buying → contrarian long.",
-      "hypothesisId": null,
-      "entryPrice": 79.64,
-      "targetPct": 4,
-      "stopPct": 1.5,
-      "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
