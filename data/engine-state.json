@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-16T09:28:10.899Z",
+  "generatedAt": "2026-07-16T10:28:12.472Z",
   "dataFreshness": {
-    "valuationRows": 1705,
-    "latestValuationAt": "2026-07-16T09",
-    "macroRows": 1703,
+    "valuationRows": 1706,
+    "latestValuationAt": "2026-07-16T10",
+    "macroRows": 1704,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-16T09"
+    "latestInstrumentSnapshotAt": "2026-07-16T10"
   },
   "portfolio": {
     "cash": 97.5722,
@@ -13,7 +13,7 @@
     "realizedPnl": 1.8119,
     "totalTrades": 446,
     "winRatePct": 62.6,
-    "unrealizedPnl": -0.0017
+    "unrealizedPnl": -0.0012
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.17,
-      "currentPrice": 4033,
-      "underlyingPrice": 4033,
+      "pnlPct": -0.12,
+      "currentPrice": 4035,
+      "underlyingPrice": 4035,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -174,9 +174,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 50,
-    "resolvedCount": 556,
-    "wouldHaveWon": 315,
+    "openCount": 49,
+    "resolvedCount": 557,
+    "wouldHaveWon": 316,
     "wouldHaveLost": 241,
     "bySignal": [
       {
@@ -245,21 +245,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "PC_RATIO_EXTREME_LOW",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "short",
-        "blockedReason": "short_blocked_by_positive_trend",
-        "outcome": "loss",
-        "closeReason": "stop",
-        "pnlPct": -2.07,
-        "resolvedAt": "2026-07-15T15:28:11.111Z",
-        "trendMetrics": {
-          "aboveTrendPct": 0.64,
-          "momentumPct": 2.01
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "OIL",
@@ -396,6 +381,24 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 2.29,
+        "resolvedAt": "2026-07-16T10:28:12.244Z",
+        "marketQuality": {
+          "yesBid": 0.04,
+          "yesAsk": 0.05,
+          "yesSpread": 0.01,
+          "liquidity": 29096.57,
+          "flags": []
         }
       }
     ],

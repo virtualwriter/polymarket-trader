@@ -1514,3 +1514,34 @@ The open GOLD long (PC_RATIO_EXTREME_HIGH) is 16h in with -0.17% P&L. The signal
 
 ---
 
+### 2026-07-16 10:28 UTC
+
+**Portfolio:** $98.57 total | Cash $97.57 | 1 open | P&L $1.8119 | 63% win rate (446 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 12 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] gold_gld_pc_ratio = 1.992 is 3.0 std devs from mean (0.77 ± 0.41)
+- [anomaly] btc_opt_iv_term_spread = -17.37 is -2.7 std devs from mean (-0.94 ± 6.13)
+- [anomaly] btc_pm_iv = 27.6 is -2.2 std devs from mean (40.94 ± 6.12)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.30 to 0.45. Rolling correlation: 24h=0.29, 7d=-0.86, 30d=0.26. Current 24h corr is at 77th pct of last 30 daily 24h-rolling values (range -0.89 to 0.94).
+
+**Blocked signal learning:**
+- Open blocked shadows: 49
+- Resolved blocked shadows: 557 (316 wins / 241 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+41.18%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+23.40%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.29%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 4/12; next scheduled 2026-07-16T12:28:12.612Z). Mechanical cycle ran normally._
+
+---
+
