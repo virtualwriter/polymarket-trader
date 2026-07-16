@@ -1641,3 +1641,36 @@ Gold long (PC_RATIO_EXTREME_HIGH) opened at 4040 with P/C ratio 1.72; after 20h,
 
 ---
 
+### 2026-07-16 14:28 UTC
+
+**Portfolio:** $98.56 total | Cash $97.56 | 1 open | P&L $1.8027 | 62% win rate (447 trades)
+
+**Closed 1 trades:**
+- ❌ GOLD long via spot/spot [GOLD spot] (PC_RATIO_EXTREME_HIGH) → llm_decision: $-0.0092 (-0.9%, market -0.0092, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 12 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -18.31 is -2.8 std devs from mean (-0.97 ± 6.17)
+- [anomaly] btc_pm_iv = 27.5 is -2.2 std devs from mean (40.91 ± 6.14)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.30 to 0.44. Rolling correlation: 24h=-0.06, 7d=-0.86, 30d=0.22. Current 24h corr is at 60th pct of last 30 daily 24h-rolling values (range -0.89 to 0.92).
+
+**Blocked signal learning:**
+- Open blocked shadows: 54
+- Resolved blocked shadows: 558 (317 wins / 241 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+41.18%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+23.40%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.29%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+2.41%)
+
+**LLM analysis:**
+Closed GOLD long on PC_RATIO_EXTREME_HIGH as P/C ratio plummeted from 1.72 to 0.775 — a clear round‑trip beyond invalidation. The signal's own evidence metric shows extreme put buying has vanished, removing the contrarian setup. Spot also fell –0.92% since entry, approaching stop but the primary driver is thesis failure. Meanwhile, gold funding surged to 37% annualized, leading to a new FUNDING_EXTREME_LONG short entry, which may benefit from the unwind of crowded longs. The overall macro backdrop remains very bearish; gold's decline aligns with hawkish Fed sentiment and easing geopolitical risks.
+
+---
+
