@@ -137,8 +137,8 @@ def print_disk_usage(paths: list[Path]) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Prune local-only generated state safely.")
     parser.add_argument("--apply", action="store_true", help="delete candidates; default is dry-run")
-    parser.add_argument("--snapshot-archive-days", type=int, default=14, help="keep this many days of gzipped instrument snapshot archives; -1 disables")
-    parser.add_argument("--relative-value-history-days", type=int, default=21, help="keep this many days of relative-value history; -1 disables")
+    parser.add_argument("--snapshot-archive-days", type=int, default=180, help="keep this many days of gzipped instrument snapshot archives; -1 disables")
+    parser.add_argument("--relative-value-history-days", type=int, default=180, help="keep this many days of relative-value history; -1 disables")
     parser.add_argument("--backup-days", type=int, default=7, help="keep this many days of generated backup dirs; -1 disables")
     parser.add_argument("--state-dir", type=Path, default=DEFAULT_STATE_DIR, help="runtime state directory")
     args = parser.parse_args()

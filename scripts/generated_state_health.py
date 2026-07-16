@@ -55,8 +55,8 @@ def main() -> int:
     parser.add_argument("--warn-used-pct", type=float, default=90.0, help="warn at this filesystem used percentage")
     parser.add_argument("--critical-used-pct", type=float, default=95.0, help="fail at this filesystem used percentage")
     parser.add_argument("--min-free-gb", type=float, default=1.0, help="fail below this free-space threshold")
-    parser.add_argument("--snapshot-archive-days", type=int, default=14, help="retention assumption for pruning estimate")
-    parser.add_argument("--relative-value-history-days", type=int, default=21, help="retention assumption for pruning estimate")
+    parser.add_argument("--snapshot-archive-days", type=int, default=180, help="retention assumption for pruning estimate")
+    parser.add_argument("--relative-value-history-days", type=int, default=180, help="retention assumption for pruning estimate")
     parser.add_argument("--backup-days", type=int, default=7, help="retention assumption for pruning estimate")
     args = parser.parse_args()
 

@@ -342,7 +342,7 @@
       "id": "DEC-0004",
       "type": "decision",
       "evidenceClass": "VALID",
-      "status": "proposed",
+      "status": "final",
       "title": "Retention policy for replay-grade market snapshot history",
       "body": {
         "rationale": "EXP-0001 shows only ~45 days of full-fidelity instrument snapshots and ~51 days of heatmap history exist, far short of a 6-month replay goal. Compaction (hourly gzip archival) preserves history today, but prune_generated_state.py defaults would delete 627 artifacts (~1.1GB) if applied. Recommend: (1) disable or raise prune thresholds to 180 days or -1 for both instrument-snapshot-archives and relative-value-history; (2) keep compact_instrument_snapshots.py as-is (archive-only, never delete); (3) build replay harness to read archives not just hot JSONL; (4) do not run prune --apply until operator approves. Estimated retention cost: ~1.0-1.3 GB/month combined (snapshots ~1.0 GB/mo at ~1.6 MB/hour gz + RVH ~150 MB/mo). With 9.2 GB free, 180-day retention (~6 GB) is feasible without disk upgrade; 365-day would need monitoring or larger volume.",
@@ -374,7 +374,16 @@
         },
         "estimatedDiskCostPerMonthGB": 1.15,
         "currentFreeDiskGB": 9.2,
-        "operatorApprovalRequired": true
+        "operatorApprovalRequired": false,
+        "approvedAt": "2026-07-16T04:09:36Z",
+        "approvedPolicy": {
+          "instrumentSnapshotArchivesKeepDays": 180,
+          "relativeValueHistoryKeepDays": 180,
+          "pruneDefaultsUpdated": true,
+          "pruneAutoApplyScheduled": false,
+          "note": "Operator approved 180-day VPS filesystem retention for replay-grade instrument-snapshot archives and relative-value history. Not Neon/Postgres. prune_generated_state.py and generated_state_health.py defaults raised 14/21 -> 180/180. No automated prune --apply scheduled.",
+          "clarification": "This policy is for on-disk VPS artifacts (data/instrument-snapshot-archives, /var/lib/polymarket-trader/relative-value-history). Neon Postgres backups remain on polymarket-neon-backup.timer (separate)."
+        }
       },
       "links": {
         "relatedRecords": [
