@@ -1,51 +1,88 @@
 {
-  "generatedAt": "2026-07-15T07:07:23.559Z",
+  "generatedAt": "2026-07-16T07:07:20.990Z",
   "provider": "deepseek",
   "model": "deepseek-v4-pro",
-  "strategyReview": "ONE_TOUCH_HIGH_EDGE_NO continues to deliver consistent small wins with high win-rate in shadows, while PC_RATIO_EXTREME_HIGH and LOW are mildly positive overall. The main drag is FUNDING_EXTREME_LONG (avg -0.53%) and FUNDING_EXTREME_SHORT (avg -0.23%) despite reasonable win-rates; asset-specific underperformance on AMZN/HYPE for LONG and OIL for SHORT suggests the signal constructs are sound but suboptimal on those venues. Promoted HYPE breakout hypothesis is slightly negative but within stop, while many active LLM-hypotheses have low win-rates, reflecting a pattern of overfit broad narratives that the system recently retired.",
+  "strategyReview": "Portfolio realized PnL is positive on a 446-trade basis with a 62.6% win rate, but the current open GOLD long is flat and recent ONE_TOUCH_HIGH_EDGE_NO shadows have turned into a losing cluster across BTC, GOLD, and OIL as spot trends upward. FUNDING_EXTREME_LONG and FUNDING_EXTREME_SHORT remain marginal losers overall; however, asset-level breakdowns reveal that FUNDING_EXTREME_LONG works well on GOLD (69% win) while FUNDING_EXTREME_SHORT works on AMZN (79% win) but both bleed in other assets, making pure asset selection critical. PC_RATIO_EXTREME_HIGH and PC_RATIO_EXTREME_LOW are mild net positives and continue to operate within expectations. Several eligible shadow-only setups (WEEKEND_HL_FUNDING_REVERSION_LONG, USER_PM_IV_TOUCH_RICH_NO, MONOTONIC_ARB) are strong but remain blocked, representing the largest untapped edge.",
   "failureClusters": [
     {
-      "theme": "Funding extreme signals – residual negative P&L after asset disabling",
-      "evidence": "FUNDING_EXTREME_LONG shows -0.53% avg PnL over 30 trades; worst on AMZN (29% win, -$0.11) and HYPE (33% win, -$0.10), already disabled. FUNDING_EXTREME_SHORT has -0.23% avg PnL over 36 trades; worst on OIL (38% win, -$0.01, disabled). Even after disabling those assets, the signals remain net negative, indicating remaining assets still produce tail losses.",
-      "recommendation": "Tighten stop-loss on both funding signals from 2.5% to 2.0% to cap tail risk, and consider further discretionary asset gating or a minimum funding-threshold threshold."
+      "theme": "ONE_TOUCH_NO edge selling failures in uptrends",
+      "evidence": "Of 8 recently resolved trades, 6 were ONE_TOUCH_HIGH_EDGE_NO shadows that ended in thesis_compressed_loss across BTC, GOLD, and OIL, while spot price likely moved against the shorts. The overall shadow win rate is 37% and the open ONE_TOUCH warnings show wide bid/ask spreads, indicating the pure edge signal is overwhelmed when spot sustains an uptrend.",
+      "recommendation": "Add a trend/momentum guard: only trigger sell-YES when spot is below its 24h SMA and 24h price change is less than +1.5%. Consider blocking signals entirely if the asset is above its 7d high in a strong uptrend, and test this as a new hypothesis under the ONE_TOUCH family."
     },
     {
-      "theme": "LLM-generated broad narratives overfit and underperform",
-      "evidence": "Active hypotheses list many with 0% win-rate (H-006, H-007, H-023, H-024, etc.) and recently killed H-517, H-518, H-519 were retired due to ‘broad cross-asset narrative prone to overfit’. The LLM_HYPOTHESIS signal itself is disabled, yet numerous active hypotheses remain, risking noise in shadow tests.",
-      "recommendation": "Prune active hypotheses with zero wins after 5+ tests; restrict new hypotheses to narrowly scoped, single-asset conditions with clearly measurable thresholds, avoiding multi-asset conjunctions."
-    },
-    {
-      "theme": "Promoted HYPE breakout hypothesis facing mean-reversion headwinds",
-      "evidence": "Current open HYPE long (PROMOTED_HYPOTHESIS) is -0.39%; the underlying setup family ‘hype_relative_oi_breakout_continuation’ has only 43% win-rate (19/44) and a modest avg PnL of 0.49%. Recent hypothesis tests within the family show some 0% win-rate trials.",
-      "recommendation": "Monitor closely; if the current trade stops out, consider raising the OI percentile threshold for entry or adding a funding-regime filter before allowing new promoted entries."
+      "theme": "FUNDING_EXTREME_LONG asset-specific drag",
+      "evidence": "Live FUNDING_EXTREME_LONG trades on GOLD win at 69% with a positive PnL, while AMZN (29% win) and HYPE (33% win) generate steep losses that drag the signal’s average PnL to -0.53%. The overall 30-trade set is unprofitable despite the strong GOLD subset.",
+      "recommendation": "Restrict FUNDING_EXTREME_LONG to GOLD only in live trading until further shadow evidence proves robustness on other assets, or create a dedicated gold funding long variant with refined entry conditions. Continue to disable AMZN and HYPE from this signal."
     }
   ],
-  "newHypotheses": [],
-  "hypothesisReviews": [
+  "newHypotheses": [
     {
-      "id": "H-521",
-      "observation": "Hypothesis triggered a HYPE long (current open position) and is -0.39%. The thesis of breakout continuation after OI record is plausible, but the family win-rate is only 43% and recent sub-tests have been weak. No immediate invalidation, but the edge is thin."
+      "created": "2026-07-16",
+      "description": "ONE_TOUCH_NO with momentum guard: only sell-YES NO contracts when the sell-YES edge exceeds 1.5 pts AND spot is below its 24h simple moving average AND 24h price change is less than +1.5%, avoiding shorting into strong momentum uptrends that have been compressing recent NO shadows.",
+      "conditions": {
+        "btc_one_touch_sell_yes_edge_pts": "> 1.5",
+        "btc_spot_pct_vs_24h_sma": "< 0",
+        "btc_spot_change_pct_24h": "< 1.5"
+      },
+      "prediction": "Selling YES with edge and momentum filter will increase win rate and reduce thesis_compressed_loss events compared to the unfiltered ONE_TOUCH_HIGH_EDGE_NO signal.",
+      "timeframeDays": 14,
+      "confidence": 0.7,
+      "direction": "short",
+      "source": "llm"
     },
     {
+      "created": "2026-07-16",
+      "description": "GOLD funding extreme long enhanced: when gold funding rate annualized is in the bottom 10th percentile of its 30-day range (deeply negative) and spot is above its 24h SMA, suggesting extreme short-covering pressure combined with an intact uptrend for a high-probability long.",
+      "conditions": {
+        "gold_hl_funding_ann_percentile_30d": "< 10",
+        "gold_gc_spot_pct_vs_24h_sma": "> 0"
+      },
+      "prediction": "Gold spot will rise over the next 7 days as extreme funding stress normalises within an uptrend, outperforming the broader FUNDING_EXTREME_LONG signal.",
+      "timeframeDays": 7,
+      "confidence": 0.65,
+      "direction": "long",
+      "source": "llm"
+    },
+    {
+      "created": "2026-07-16",
+      "description": "Cross-asset funding divergence: when gold funding is deeply negative (bottom 10th percentile) and BTC funding is extremely positive (top 10th percentile) simultaneously, the divergence indicates a relative-value dislocation where gold is oversold and BTC is overbought, favouring a long gold position over the next week.",
+      "conditions": {
+        "gold_hl_funding_ann_percentile_30d": "< 10",
+        "btc_hl_funding_ann_percentile_30d": "> 90"
+      },
+      "prediction": "Gold spot will outperform and rise over the next 7 days as funding regimes converge.",
+      "timeframeDays": 7,
+      "confidence": 0.55,
+      "direction": "long",
+      "source": "llm"
+    }
+  ],
+  "hypothesisReviews": [
+    {
       "id": "H-001",
-      "observation": "BTC PM IV expansion reversion shows 60% win-rate over 6 tests, consistent with the underlying thesis. The family is ‘validating’ with a few clean hypothesis tests; continued positive outcomes would support promotion once sample size meets threshold."
+      "observation": "BTC PM-IV expansion/reversion hypothesis holds a 60% win rate over 6 tests but remains in limbo with no live trades. The edge is statistically compelling enough to move to a shadow trade phase with a tight stop (e.g., 2%) to gather real-market behaviour under the btc_pm_iv_expansion_reversion family."
     },
     {
       "id": "H-523",
-      "observation": "BTC PM IV regime-relative compression is promoted but only has 1 win in 3 tests (33%). The small sample suggests the promotion may have been premature; ongoing monitoring is required, and the hypothesis should be demoted to shadow if losses continue."
+      "observation": "BTC PM IV regime-relative compression shows only 1 win in 3 tests, suggesting the current 30-day bottom-20% threshold is too permissive. Consider tightening the entry to bottom-10% PM IV percentile and requiring spot above the 3-day SMA before further shadow testing."
+    },
+    {
+      "id": "H-524",
+      "observation": "The SHORT/NO cap-rich upside hypothesis (pure edge selling without trend filter) lost both resolved tests, consistent with the recent ONE_TOUCH_NO thesis_compressed_losses. Recommend merging a momentum guard into this hypothesis before running additional shadow tests, as proposed in the new ONE_TOUCH_NO with momentum guard hypothesis."
     }
   ],
   "parameterUpdates": {
+    "macroMomentum24hThresholdPts": 4,
+    "contrarianTrendMarginPct": 0.5,
+    "positiveMomentum24hPct": 1.5,
+    "llmTradeExpiryDays": 14,
+    "momentumLongExpiryDays": 21,
     "signalRisk": {
-      "FUNDING_EXTREME_LONG": {
-        "targetPct": 5,
-        "stopPct": 2
-      },
       "FUNDING_EXTREME_SHORT": {
-        "targetPct": 4,
+        "targetPct": 3,
         "stopPct": 2
       }
     }
   },
-  "journalEntry": "Tonight's review shows the portfolio remains in mild profit with ONE_TOUCH_HIGH_EDGE_NO as the standout performer. Funding signals continue to bleed and warrant a tighter stop (2.5% → 2.0%) to protect against tail losses, especially after already disabling the worst-performing assets. I've proposed three new shadow hypotheses: a spread-liquidity filter for ONE_TOUCH_NO, a cross-asset expansion of the Manual IV-touch NO to GOLD, and a basis/funding refinement for Weekend HL Funding Reversion Long. I also flagged several active hypotheses with 0% win-rates for potential pruning and cautioned that the promoted HYPE breakout hypothesis is sitting near its stop. The pattern of LLM-generated broad narratives failing reinforces the need for narrow, single-asset theses with clear, measurable triggers."
+  "journalEntry": "Tonight’s review centred on the ONE_TOUCH_NO failure cluster as spot trended higher against multiple short positions, confirming that the pure edge signal needs a momentum guard. Augmented the research pipeline with a new hypothesis that adds trend filters to ONE_TOUCH_NO. Asset-level lessons showed FUNDING_EXTREME_LONG is a gold-only signal in practice; recommend restricting live to gold until further notice. FUNDING_EXTREME_SHORT’s low target hit rate and slightly negative PnL motivated a target reduction from 4% to 3% to capture profits more reliably. Strong blocked setups (WEEKEND_HL_FUNDING_REVERSION_LONG, USER_PM_IV_TOUCH_RICH_NO) remain the highest-edge opportunities pending promotion; will flag for operator review. Minor refinement of BTC PM-IV hypotheses to tighten entry thresholds and move promising H-001 toward shadow trading."
 }
