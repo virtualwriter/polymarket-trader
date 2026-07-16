@@ -1286,3 +1286,37 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-07-16 03:30 UTC
+
+**Portfolio:** $98.57 total | Cash $97.57 | 1 open | P&L $1.8119 | 63% win rate (446 trades)
+
+**Closed 1 trades:**
+- ❌ HYPE long via spot/spot [HYPE spot] (PROMOTED_HYPOTHESIS) → llm_decision: $-0.0165 (-1.7%, market -0.0165, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 13 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -20.75 is -3.3 std devs from mean (-0.86 ± 6.04)
+- [anomaly] gold_gld_pc_ratio = 1.992 is 3.1 std devs from mean (0.76 ± 0.40)
+- [anomaly] btc_pm_iv = 26.7 is -2.4 std devs from mean (41.00 ± 6.07)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.32 to 0.47. Rolling correlation: 24h=0.09, 7d=-0.85, 30d=0.30. Current 24h corr is at 63th pct of last 30 daily 24h-rolling values (range -0.92 to 0.88).
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 558 (314 wins / 244 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 16/20 shadows would have won, avg P&L 14.43%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.07%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.10%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.22%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-4.35%)
+
+**LLM analysis:**
+HYPE hypothesis invalidation: The promoted OI breakout trade reversed sharply after an early gain, with spot now underperforming. The 24h percentile at 4 highlights the breakdown, and the surge in funding to 33% annual adds a cost headwind. Closing before stop. GOLD PC_RATIO_EXTREME_HIGH is still within min hold (10h) so no action; the P/C ratio has actually risen further to 1.99, reinforcing the contrarian thesis, though spot is slightly down. Will re-evaluate after 12h.
+
+---
+
