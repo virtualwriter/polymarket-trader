@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T18:28:09.550Z",
+  "generatedAt": "2026-07-16T19:28:06.707Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "GOLD",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.56625,
-      "confidence": 0.2919675162167045,
-      "thesis": "GOLD P/C ratio 1.65 — heavy put buying → contrarian long.",
+      "strength": 1,
+      "confidence": 0.5156159226785069,
+      "thesis": "GOLD P/C ratio 3.00 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 3990,
+      "entryPrice": 3983,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -22,11 +22,11 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.4385714285714286,
-      "confidence": 0.22580865496379435,
-      "thesis": "GOLD HL funding 30.4% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.454,
+      "confidence": 0.23375241220682033,
+      "thesis": "GOLD HL funding 30.9% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 3990,
+      "entryPrice": 3983,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 3,
@@ -42,7 +42,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 3990,
+      "entryPrice": 3983,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -63,7 +63,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 3990,
+      "entryPrice": 3983,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -248,12 +248,12 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 4.99,
-      "hoursToExpiry": 67.01,
+      "hoursOpen": 5.99,
+      "hoursToExpiry": 66.01,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.0693,
+      "elapsedHoldPct": 0.0832,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 6.0h, requires at least 12h."
     },
     {
       "positionId": "T-1784219291393-zbud",
@@ -267,12 +267,12 @@
         "gold_gc_spot",
         "gold_gld_pc_ratio"
       ],
-      "hoursOpen": 2,
-      "hoursToExpiry": 118,
+      "hoursOpen": 3,
+      "hoursToExpiry": 117,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0167,
+      "elapsedHoldPct": 0.025,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
     }
   ]
 }
