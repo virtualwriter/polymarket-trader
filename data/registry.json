@@ -382,7 +382,11 @@
           "pruneDefaultsUpdated": true,
           "pruneAutoApplyScheduled": false,
           "note": "Operator approved 180-day VPS filesystem retention for replay-grade instrument-snapshot archives and relative-value history. Not Neon/Postgres. prune_generated_state.py and generated_state_health.py defaults raised 14/21 -> 180/180. No automated prune --apply scheduled.",
-          "clarification": "This policy is for on-disk VPS artifacts (data/instrument-snapshot-archives, /var/lib/polymarket-trader/relative-value-history). Neon Postgres backups remain on polymarket-neon-backup.timer (separate)."
+          "clarification": "This policy is for on-disk VPS artifacts (data/instrument-snapshot-archives, /var/lib/polymarket-trader/relative-value-history). Neon Postgres backups remain on polymarket-neon-backup.timer (separate).",
+          "storageVenue": "vps_filesystem",
+          "notNeon": true,
+          "operatorConfirmedLocalNotNeonAt": "2026-07-16T04:11:42Z",
+          "operatorNote": "Operator confirmed: full instrument snapshots and relative-value history stay on VPS disk (180-day retention). Neon remains for structured trade/ledger data and DB backups only — not full snapshot JSONL."
         }
       },
       "links": {
