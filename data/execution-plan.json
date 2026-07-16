@@ -1,21 +1,35 @@
 {
-  "generatedAt": "2026-07-16T16:11:25.780Z",
-  "dryRun": true,
+  "generatedAt": "2026-07-16T16:28:11.390Z",
+  "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
   "entrySignals": [
     {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.5387500000000001,
+      "confidence": 0.2777880783430456,
+      "thesis": "GOLD P/C ratio 1.63 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 3991,
+      "targetPct": 4,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    },
+    {
       "type": "FUNDING_EXTREME_LONG",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.46571428571428575,
-      "confidence": 0.2397837834468956,
-      "thesis": "GOLD HL funding 31.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.42371428571428565,
+      "confidence": 0.21815911095199148,
+      "thesis": "GOLD HL funding 29.8% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4017,
+      "entryPrice": 3991,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 3,
@@ -25,7 +39,7 @@
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
-    "Executor mutations disabled for dry-run verification.",
+    "Executor mutations enabled.",
     "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
