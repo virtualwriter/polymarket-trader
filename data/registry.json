@@ -20094,6 +20094,314 @@
       },
       "created": "2026-07-16T16:11:18Z",
       "source": "operator"
+    },
+    {
+      "id": "EXP-0539",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-532: [shadow_mined] NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD (short-rich-tail/no): historical shadow WR=62% over n=8 (sumPnl=+0.368). Re-test when edge/funding ...",
+      "body": {
+        "hypothesisId": "H-532",
+        "hypothesisStatus": "active",
+        "description": "[shadow_mined] NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD (short-rich-tail/no): historical shadow WR=62% over n=8 (sumPnl=+0.368). Re-test when edge/funding conditions reappear.",
+        "prediction": "GOLD spot will decline >2% within 2 days when mined shadow conditions re-trigger",
+        "conditions": {
+          "gold_pm_underlying_cap_edge_pts_max": ">= 12.3"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 2,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "shadow_mined",
+        "created": "2026-07-16",
+        "setupId": "shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no",
+        "setupLabel": "Shadow-mined NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short-rich-tail",
+        "postMortem": "Mined from clean shadows: {\"n\": 8, \"wins\": 5, \"winRate\": 0.625, \"sumPnl\": 0.3679, \"hasHeatmap\": true, \"sampleIds\": [\"NB-1779884974279-sish\", \"NB-1779978513889-iyhc\", \"NB-1779992914338-ypn5\", \"NB-1780673324852-nmxh\", \"NB-1780856911945-5t48\"]}"
+      },
+      "links": {},
+      "created": "2026-07-16T16:57:20Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0540",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "retired",
+      "title": "H-533: [shadow_mined] NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD (heatmap/no): historical shadow WR=62% over n=8 (sumPnl=+0.368). Re-test when edge/funding conditio...",
+      "body": {
+        "hypothesisId": "H-533",
+        "hypothesisStatus": "archived",
+        "description": "[shadow_mined] NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD (heatmap/no): historical shadow WR=62% over n=8 (sumPnl=+0.368). Re-test when edge/funding conditions reappear.",
+        "prediction": "GOLD spot will decline >2% within 2 days when mined shadow conditions re-trigger",
+        "conditions": {
+          "gold_pm_underlying_cap_edge_pts_max": ">= 12.3"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 2,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "shadow_mined",
+        "created": "2026-07-16",
+        "setupId": "shadow_no_bias_adjusted_gap_shadow_gold_heatmap_no",
+        "setupLabel": "Shadow-mined NO_BIAS_ADJUSTED_GAP_SHADOW GOLD heatmap",
+        "postMortem": "Mined from clean shadows: {\"n\": 8, \"wins\": 5, \"winRate\": 0.625, \"sumPnl\": 0.3679, \"hasHeatmap\": true, \"sampleIds\": [\"NB-1779884974279-sish\", \"NB-1779978513889-iyhc\", \"NB-1779992914338-ypn5\", \"NB-1780673324852-nmxh\", \"NB-1780856911945-5t48\"]} | Archived: coarse duplicate of H-532."
+      },
+      "links": {},
+      "created": "2026-07-16T16:57:20Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0541",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-534: [shadow_mined] ONE_TOUCH_HIGH_EDGE_NO on GOLD (heatmap/no): historical shadow WR=58% over n=12 (sumPnl=+0.649). Re-test when edge/funding conditions r...",
+      "body": {
+        "hypothesisId": "H-534",
+        "hypothesisStatus": "active",
+        "description": "[shadow_mined] ONE_TOUCH_HIGH_EDGE_NO on GOLD (heatmap/no): historical shadow WR=58% over n=12 (sumPnl=+0.649). Re-test when edge/funding conditions reappear.",
+        "prediction": "GOLD spot will decline >2% within 2 days when mined shadow conditions re-trigger",
+        "conditions": {
+          "gold_pm_underlying_cap_edge_pts_max": ">= 10.0"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 2,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "shadow_mined",
+        "created": "2026-07-16",
+        "setupId": "shadow_one_touch_high_edge_no_gold_heatmap_no",
+        "setupLabel": "Shadow-mined ONE_TOUCH_HIGH_EDGE_NO GOLD heatmap",
+        "postMortem": "Mined from clean shadows: {\"n\": 12, \"wins\": 7, \"winRate\": 0.5833, \"sumPnl\": 0.6492, \"hasHeatmap\": true, \"sampleIds\": [\"OT-1779348547074-tm2l\", \"OT-1783659557591-81cc\", \"OT-1783659557594-u7s1\", \"OT-1783694116078-dtpj\", \"OT-1783780517241-ssvk\"]}"
+      },
+      "links": {},
+      "created": "2026-07-16T16:57:20Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0542",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-535: [shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on MU (weekend_hl_funding_shadow/long): historical shadow WR=100% over n=8 (sumPnl=+0.273). Re-test w...",
+      "body": {
+        "hypothesisId": "H-535",
+        "hypothesisStatus": "active",
+        "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on MU (weekend_hl_funding_shadow/long): historical shadow WR=100% over n=8 (sumPnl=+0.273). Re-test when edge/funding conditions reappear.",
+        "prediction": "MU spot will move >2% within 2 days when mined shadow conditions re-trigger",
+        "conditions": {
+          "mu_hl_funding_ann": "< -10"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 2,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "shadow_mined",
+        "created": "2026-07-16",
+        "setupId": "shadow_weekend_hl_funding_reversion_long_mu_weekend_hl_funding_shadow_long",
+        "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG MU weekend_hl_funding_shadow",
+        "postMortem": "Mined from clean shadows: {\"n\": 8, \"wins\": 8, \"winRate\": 1.0, \"sumPnl\": 0.273, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779665359141-MU-u2e8\", \"WF-1780087728968-MU-flsz\", \"WF-1780140511145-MU-bwzp\", \"WF-1780255715660-MU-lpo9\", \"WF-1780759716467-MU-wbbj\"]}"
+      },
+      "links": {},
+      "created": "2026-07-16T16:57:20Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0543",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-536: [shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on HOOD (weekend_hl_funding_shadow/long): historical shadow WR=92% over n=12 (sumPnl=+0.159). Re-test...",
+      "body": {
+        "hypothesisId": "H-536",
+        "hypothesisStatus": "active",
+        "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on HOOD (weekend_hl_funding_shadow/long): historical shadow WR=92% over n=12 (sumPnl=+0.159). Re-test when edge/funding conditions reappear.",
+        "prediction": "HOOD spot will move >2% within 2 days when mined shadow conditions re-trigger",
+        "conditions": {
+          "hood_hl_funding_ann": "< -10"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 2,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "shadow_mined",
+        "created": "2026-07-16",
+        "setupId": "shadow_weekend_hl_funding_reversion_long_hood_weekend_hl_funding_shadow_long",
+        "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG HOOD weekend_hl_funding_shadow",
+        "postMortem": "Mined from clean shadows: {\"n\": 12, \"wins\": 11, \"winRate\": 0.9167, \"sumPnl\": 0.1593, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779661761704-HOOD-66ul\", \"WF-1780158509117-HOOD-8pyf\", \"WF-1780180113914-HOOD-k344\", \"WF-1780223315920-HOOD-j2j0\", \"WF-1780248512606-HOOD-rasn\"]}"
+      },
+      "links": {},
+      "created": "2026-07-16T16:57:20Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0544",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-537: [shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on AAPL (weekend_hl_funding_shadow/long): historical shadow WR=89% over n=9 (sumPnl=+0.010). Re-test ...",
+      "body": {
+        "hypothesisId": "H-537",
+        "hypothesisStatus": "active",
+        "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on AAPL (weekend_hl_funding_shadow/long): historical shadow WR=89% over n=9 (sumPnl=+0.010). Re-test when edge/funding conditions reappear.",
+        "prediction": "AAPL spot will move >2% within 2 days when mined shadow conditions re-trigger",
+        "conditions": {
+          "aapl_hl_funding_ann": "< -10"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 2,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "shadow_mined",
+        "created": "2026-07-16",
+        "setupId": "shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long",
+        "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG AAPL weekend_hl_funding_shadow",
+        "postMortem": "Mined from clean shadows: {\"n\": 9, \"wins\": 8, \"winRate\": 0.8889, \"sumPnl\": 0.0102, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779661761704-AAPL-fawa\", \"WF-1780087728967-AAPL-0wbd\", \"WF-1780158509116-AAPL-q73w\", \"WF-1780237715514-AAPL-tmdd\", \"WF-1780266518746-AAPL-thv2\"]}"
+      },
+      "links": {},
+      "created": "2026-07-16T16:57:20Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0545",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-538: [shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on COIN (weekend_hl_funding_shadow/long): historical shadow WR=89% over n=9 (sumPnl=+0.127). Re-test ...",
+      "body": {
+        "hypothesisId": "H-538",
+        "hypothesisStatus": "active",
+        "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on COIN (weekend_hl_funding_shadow/long): historical shadow WR=89% over n=9 (sumPnl=+0.127). Re-test when edge/funding conditions reappear.",
+        "prediction": "COIN spot will move >2% within 2 days when mined shadow conditions re-trigger",
+        "conditions": {
+          "coin_hl_funding_ann": "< -10"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 2,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "shadow_mined",
+        "created": "2026-07-16",
+        "setupId": "shadow_weekend_hl_funding_reversion_long_coin_weekend_hl_funding_shadow_long",
+        "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG COIN weekend_hl_funding_shadow",
+        "postMortem": "Mined from clean shadows: {\"n\": 9, \"wins\": 8, \"winRate\": 0.8889, \"sumPnl\": 0.1268, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1780090108884-COIN-j1pm\", \"WF-1780115314549-COIN-g0n7\", \"WF-1780180113912-COIN-ctg9\", \"WF-1780205309859-COIN-hei0\", \"WF-1780212512519-COIN-62r1\"]}"
+      },
+      "links": {},
+      "created": "2026-07-16T16:57:20Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0546",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-539: [shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on CBRS (weekend_hl_funding_shadow/long): historical shadow WR=88% over n=8 (sumPnl=+0.110). Re-test ...",
+      "body": {
+        "hypothesisId": "H-539",
+        "hypothesisStatus": "active",
+        "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on CBRS (weekend_hl_funding_shadow/long): historical shadow WR=88% over n=8 (sumPnl=+0.110). Re-test when edge/funding conditions reappear.",
+        "prediction": "CBRS spot will move >2% within 2 days when mined shadow conditions re-trigger",
+        "conditions": {
+          "cbrs_hl_funding_ann": "< -10"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 2,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "shadow_mined",
+        "created": "2026-07-16",
+        "setupId": "shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long",
+        "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG CBRS weekend_hl_funding_shadow",
+        "postMortem": "Mined from clean shadows: {\"n\": 8, \"wins\": 7, \"winRate\": 0.875, \"sumPnl\": 0.1099, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1780087728968-CBRS-i1qh\", \"WF-1780097309084-CBRS-cnjn\", \"WF-1780111718103-CBRS-vnni\", \"WF-1780129709984-CBRS-x5h5\", \"WF-1780147713961-CBRS-qr9e\"]}"
+      },
+      "links": {},
+      "created": "2026-07-16T16:57:20Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "DEC-0014",
+      "type": "decision",
+      "evidenceClass": "DERIVED",
+      "status": "final",
+      "title": "Shadow→hypothesis mine path + parallel shadow_mined retest queue",
+      "body": {
+        "rationale": "Clean blocked-signal/heatmap shadows had no path into hypotheses.json. Added mine_shadow_hypotheses.py → shadow-mined-hypotheses.json, engine ingest as source=shadow_mined (bypasses LLM backlog), parallel retest queue (40 families, up to 2 pending, timeframeDays=2).",
+        "initialIngest": [
+          "H-532",
+          "H-534",
+          "H-535",
+          "H-536",
+          "H-537",
+          "H-538",
+          "H-539"
+        ],
+        "heatmapBacked": [
+          "H-532",
+          "H-534"
+        ],
+        "acceleration": {
+          "shadowMinedRetestLimit": 40,
+          "maxPendingPerFamily": 2,
+          "timeframeDays": 2
+        }
+      },
+      "links": {
+        "relatedRecords": [
+          "DEC-0013",
+          "EXP-0538"
+        ]
+      },
+      "created": "2026-07-16T16:57:50Z",
+      "source": "operator"
     }
   ]
 }

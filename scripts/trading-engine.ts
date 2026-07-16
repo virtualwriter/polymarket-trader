@@ -263,6 +263,13 @@ const HYPE_STOCK_BUILDER_ASSETS = new Set([
 ]);
 const HYPOTHESIS_SHADOW_TESTS_REQUIRED = 20;
 const HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT = 25;
+/** Parallel retest budget for shadow-mined families (does not steal LLM slots). */
+const SHADOW_MINED_RETEST_ACTIVE_LIMIT = 40;
+/** Allow multiple in-flight tests per shadow-mined family to accelerate evidence. */
+const SHADOW_MINED_MAX_PENDING_PER_FAMILY = 2;
+const SHADOW_MINED_ADVICE_FILE = "shadow-mined-hypotheses.json";
+const SHADOW_MINED_ADVICE_INGESTED_FILE = "shadow-mined-hypotheses-ingested.json";
+const SHADOW_MINED_MAX_NEW_PER_INGEST = 8;
 const PROMOTE_THRESHOLD = 0.65;
 const PROMOTE_MIN_TESTS = HYPOTHESIS_SHADOW_TESTS_REQUIRED;
 const DEMOTE_THRESHOLD = 0.45;
@@ -631,7 +638,7 @@ interface Hypothesis {
   status: "active" | "promoted" | "archived" | "killed";
   promotedToSignal: boolean;
   postMortem: string | null;
-  source: "llm" | "statistical";
+  source: "llm" | "statistical" | "shadow_mined";
 }
 
 interface HypothesisSetupFamily {
@@ -6086,6 +6093,16 @@ function classifyHypothesisSetup(hypothesis: Hypothesis): { setupId: string; set
 }
 
 function ensureHypothesisSetupMetadata(hypothesis: Hypothesis): void {
+  // Shadow-mined hyps carry a stable cluster setupId from the miner — keep it.
+  if (
+    hypothesis.source === "shadow_mined" &&
+    typeof hypothesis.setupId === "string" &&
+    hypothesis.setupId.length > 0 &&
+    typeof hypothesis.setupLabel === "string" &&
+    hypothesis.setupLabel.length > 0
+  ) {
+    return;
+  }
   const setup = classifyHypothesisSetup(hypothesis);
   hypothesis.setupId = setup.setupId;
   hypothesis.setupLabel = setup.setupLabel;
@@ -6144,8 +6161,11 @@ function hypothesisSetupFamilies(hypotheses: Hypothesis[]): HypothesisSetupFamil
   });
 }
 
-function hypothesisSetupNeedsMoreShadowTests(family: HypothesisSetupFamily): boolean {
-  if (!family.hypotheses.some((hypothesis) => hypothesis.source === "llm")) return false;
+function hypothesisSetupNeedsMoreShadowTests(
+  family: HypothesisSetupFamily,
+  sources: ReadonlySet<string> = new Set(["llm"]),
+): boolean {
+  if (!family.hypotheses.some((hypothesis) => sources.has(hypothesis.source))) return false;
   if (!family.hypotheses.some((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived")) return false;
   return family.completed.length < HYPOTHESIS_SHADOW_TESTS_REQUIRED;
 }
@@ -6674,48 +6694,68 @@ function evaluateHypotheses(
     }
   }
 
-  const familiesNeedingTests = hypothesisSetupFamilies(hypotheses.filter((hypothesis) => hypothesis.source === "llm"))
-    .filter(hypothesisSetupNeedsMoreShadowTests);
-  const activeSetupIds = new Set(
-    familiesNeedingTests
-      .slice(0, HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT)
-      .map((family) => family.setupId),
+  const openRetestsForSources = (
+    sources: ReadonlySet<string>,
+    activeLimit: number,
+    maxPendingPerFamily: number,
+    label: string,
+  ) => {
+    let opened = 0;
+    let skippedInactive = 0;
+    let skippedCond = 0;
+    const familiesNeedingTests = hypothesisSetupFamilies(
+      hypotheses.filter((hypothesis) => sources.has(hypothesis.source)),
+    ).filter((family) => hypothesisSetupNeedsMoreShadowTests(family, sources));
+    const activeSetupIds = new Set(
+      familiesNeedingTests.slice(0, activeLimit).map((family) => family.setupId),
+    );
+
+    for (const family of familiesNeedingTests) {
+      if (family.pending.length >= maxPendingPerFamily) continue;
+      if (!activeSetupIds.has(family.setupId)) {
+        skippedInactive++;
+        continue;
+      }
+
+      const candidate = family.hypotheses
+        .filter((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived")
+        .filter((hypothesis) => pendingHypothesisTests(hypothesis).length === 0)
+        .sort((a, b) => completedHypothesisTests(a).length - completedHypothesisTests(b).length || b.confidence - a.confidence)
+        .find((hypothesis) => hypothesisConditionsSatisfied(hypothesis, valuationRows, relativeValueRows));
+
+      if (!candidate) {
+        skippedCond++;
+        continue;
+      }
+
+      const nextTestNumber = family.completed.length + family.pending.length + 1;
+      candidate.tests.push({
+        date: latestDate,
+        triggered: true,
+        outcome: "pending",
+        actualMove: `Setup ${family.setupId} shadow test ${nextTestNumber}/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened via ${candidate.id} after current row satisfied variant conditions.`,
+      });
+      opened++;
+    }
+
+    if (opened > 0) {
+      observations.push(`🧪 Opened ${opened} ${label} setup-family shadow tests (active cap ${activeLimit}, maxPending/family ${maxPendingPerFamily}).`);
+    }
+    if (skippedCond > 0 || skippedInactive > 0) {
+      observations.push(`🧪 ${label} retest queue: ${skippedCond} active families did not trigger; ${skippedInactive} later families waiting.`);
+    }
+    openedShadowTests += opened;
+    skippedConditionNotMet += skippedCond;
+    skippedInactiveBacklog += skippedInactive;
+  };
+
+  openRetestsForSources(new Set(["llm"]), HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT, 1, "LLM");
+  openRetestsForSources(
+    new Set(["shadow_mined"]),
+    SHADOW_MINED_RETEST_ACTIVE_LIMIT,
+    SHADOW_MINED_MAX_PENDING_PER_FAMILY,
+    "shadow_mined",
   );
-
-  for (const family of familiesNeedingTests) {
-    if (family.pending.length > 0) continue;
-    if (!activeSetupIds.has(family.setupId)) {
-      skippedInactiveBacklog++;
-      continue;
-    }
-
-    const candidate = family.hypotheses
-      .filter((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived")
-      .filter((hypothesis) => pendingHypothesisTests(hypothesis).length === 0)
-      .sort((a, b) => completedHypothesisTests(a).length - completedHypothesisTests(b).length || b.confidence - a.confidence)
-      .find((hypothesis) => hypothesisConditionsSatisfied(hypothesis, valuationRows, relativeValueRows));
-
-    if (!candidate) {
-      skippedConditionNotMet++;
-      continue;
-    }
-
-    const nextTestNumber = family.completed.length + family.pending.length + 1;
-    candidate.tests.push({
-      date: latestDate,
-      triggered: true,
-      outcome: "pending",
-      actualMove: `Setup ${family.setupId} shadow test ${nextTestNumber}/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened via ${candidate.id} after current row satisfied variant conditions.`,
-    });
-    openedShadowTests++;
-  }
-
-  if (openedShadowTests > 0) {
-    observations.push(`🧪 Opened ${openedShadowTests} condition-triggered setup-family shadow tests from the first ${HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT} LLM setup families.`);
-  }
-  if (skippedConditionNotMet > 0 || skippedInactiveBacklog > 0) {
-    observations.push(`🧪 Hypothesis setup retest queue: ${skippedConditionNotMet} of the first ${HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT} setup families did not trigger; ${skippedInactiveBacklog} later setup families are waiting for the next batch.`);
-  }
 
   return observations;
 }
@@ -7448,6 +7488,135 @@ function ingestNightlyLlmAdvice(
   return { learningParams: nextParams, notes, journalLines };
 }
 
+interface ShadowMinedIngestResult {
+  notes: string[];
+  added: number;
+}
+
+/** Ingest miner output into hypotheses.json. Bypasses the LLM backlog gate so
+ *  heatmap-derived ideas get their own retest queue (source=shadow_mined). */
+function ingestShadowMinedHypotheses(hypotheses: Hypothesis[]): ShadowMinedIngestResult {
+  const noop: ShadowMinedIngestResult = { notes: [], added: 0 };
+  const advice = readJson<Record<string, unknown> | null>(SHADOW_MINED_ADVICE_FILE, null);
+  if (!advice || typeof advice !== "object") return noop;
+  const generatedAt = typeof advice.generatedAt === "string" ? advice.generatedAt : null;
+  if (!generatedAt) return noop;
+  const marker = readJson<{ generatedAt?: string }>(SHADOW_MINED_ADVICE_INGESTED_FILE, {});
+  if (marker.generatedAt === generatedAt) return noop;
+
+  const notes: string[] = [];
+  const rawHypotheses = Array.isArray(advice.newHypotheses) ? advice.newHypotheses : [];
+  let added = 0;
+  let rejected = 0;
+  const rejectReasons: Record<string, number> = {};
+  const bumpReject = (reason: string) => {
+    rejected++;
+    rejectReasons[reason] = (rejectReasons[reason] ?? 0) + 1;
+  };
+
+  for (const raw of rawHypotheses) {
+    if (added >= SHADOW_MINED_MAX_NEW_PER_INGEST) {
+      bumpReject("ingest_cap");
+      continue;
+    }
+    if (!raw || typeof raw !== "object") {
+      bumpReject("schema");
+      continue;
+    }
+    const nh = raw as Record<string, unknown>;
+    const description = typeof nh.description === "string" ? nh.description : "";
+    const prediction = typeof nh.prediction === "string" ? nh.prediction : "";
+    const conditions = nh.conditions && typeof nh.conditions === "object"
+      ? nh.conditions as Record<string, string>
+      : null;
+    const timeframeDays = Number(nh.timeframeDays);
+    const confidence = Number(nh.confidence);
+    const direction = nh.direction === "long" || nh.direction === "short" || nh.direction === "neutral"
+      ? nh.direction
+      : null;
+    if (!description || !prediction || !conditions || Object.keys(conditions).length === 0) {
+      bumpReject("schema");
+      continue;
+    }
+    if (!Number.isFinite(timeframeDays) || timeframeDays < 1 || timeframeDays > 14) {
+      bumpReject("timeframe");
+      continue;
+    }
+    if (!Number.isFinite(confidence) || confidence < 0.70) {
+      bumpReject("low_confidence");
+      continue;
+    }
+    if (!direction || direction === "neutral") {
+      bumpReject("direction");
+      continue;
+    }
+    const descKey = description.trim().toLowerCase().slice(0, 80);
+    if (hypotheses.some((h) => h.description.trim().toLowerCase().slice(0, 80) === descKey)) {
+      bumpReject("duplicate_description");
+      continue;
+    }
+    const setupId = typeof nh.setupId === "string" && nh.setupId ? nh.setupId : null;
+    const setupLabel = typeof nh.setupLabel === "string" && nh.setupLabel ? nh.setupLabel : null;
+    if (setupId && hypotheses.some((h) => h.setupId === setupId && h.status !== "killed" && h.status !== "archived")) {
+      bumpReject("duplicate_setup");
+      continue;
+    }
+
+    const id = `H-${String(hypotheses.length + 1).padStart(3, "0")}`;
+    const hypothesis: Hypothesis = {
+      id,
+      created: typeof nh.created === "string" ? nh.created : new Date().toISOString().slice(0, 10),
+      description,
+      conditions,
+      prediction,
+      timeframeDays: Math.round(timeframeDays),
+      confidence,
+      direction,
+      tests: [{
+        date: new Date().toISOString().slice(0, 10),
+        triggered: true,
+        outcome: "pending",
+        actualMove: `Shadow-mined test 1/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened from blocked-signal cohort.`,
+      }],
+      winRate: 0,
+      status: "active",
+      promotedToSignal: false,
+      postMortem: typeof nh.mineStats === "object" && nh.mineStats
+        ? `Mined from clean shadows: ${JSON.stringify(nh.mineStats).slice(0, 400)}`
+        : "Mined from clean blocked-signal / heatmap shadow cohort.",
+      source: "shadow_mined",
+      setupId: setupId ?? undefined,
+      setupLabel: setupLabel ?? undefined,
+    };
+    ensureHypothesisSetupMetadata(hypothesis);
+    if (RETIRED_LLM_SETUP_IDS.has(hypothesis.setupId ?? "")) {
+      bumpReject("retired_setup");
+      continue;
+    }
+    if (isDataContaminatedSetup(hypothesis.setupId ?? "")) {
+      bumpReject("contaminated_setup");
+      continue;
+    }
+    if (!inferHypothesisAsset(hypothesis) || !inferHypothesisDirection(hypothesis)) {
+      bumpReject("ambiguous_thesis");
+      continue;
+    }
+    hypotheses.push(hypothesis);
+    added++;
+    notes.push(`Shadow-mined hypothesis ${id} (${hypothesis.setupId}): ${description.slice(0, 80)}`);
+  }
+
+  if (rejected > 0) {
+    const detail = Object.entries(rejectReasons).map(([k, v]) => `${k}=${v}`).join(", ");
+    notes.push(`Shadow-mined ingest: rejected ${rejected} (${detail}).`);
+  }
+  notes.push(`Shadow-mined ingest (generatedAt=${generatedAt}): added ${added}.`);
+  if (!MUTATION_DISABLED) {
+    writeJson(SHADOW_MINED_ADVICE_INGESTED_FILE, { generatedAt, ingestedAt: new Date().toISOString(), added });
+  }
+  return { notes, added };
+}
+
 // Phase 5 prompt diet: scope the 88KB+ full truth state down to the setup
 // families of currently-open positions. Close review only needs truth for
 // what is actually held; the nightly research run sees the full state.
@@ -8171,6 +8340,11 @@ async function main() {
   if (nightlyIngest.journalLines.length > 0 && !MUTATION_DISABLED) {
     appendJournal(nightlyIngest.journalLines.join("\n"));
   }
+
+  // Step 2.7: Ingest shadow-mined hypotheses (heatmap / blocked-signal cohort).
+  // Separate source + retest queue so these never wait behind the LLM backlog.
+  const shadowMinedIngest = ingestShadowMinedHypotheses(hypotheses);
+  for (const note of shadowMinedIngest.notes) console.log(`  ${note}`);
 
   // Step 3: Evaluate hypotheses
   const hypothesisObs = evaluateHypotheses(hypotheses, valRows, relativeValueRows);
