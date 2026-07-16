@@ -334,12 +334,12 @@ const LIVE_SIGNAL_ALLOWLIST = new Set([
   "FUNDING_EXTREME_SHORT",
   "FUNDING_EXTREME_LONG",
 ]);
-// H-523 was a "BTC vol expands as PM IV mean reverts" thesis that the
-// engine was force-converting into a directional BTC spot long via a
-// keyword-scanner bug. Even with the bug fixed (vol-only theses are now
-// skipped explicitly), the hypothesis itself doesn't carry a spot view
-// and shouldn't be live. Re-promote only when there's a directional thesis.
-const LIVE_PROMOTED_HYPOTHESIS_IDS = new Set(["H-521"]);
+// Second human gate on top of evaluateHypotheses family promotion
+// (≥ PROMOTE_MIN_TESTS completed family tests and ≥ PROMOTE_THRESHOLD win rate).
+// Empty as of 2026-07-15: H-521 was force-listed despite its family having only
+// 19 tests at ~58% WR (below the gate). Re-add an ID only after the family
+// re-qualifies under evaluateHypotheses and an operator intentionally enables it.
+const LIVE_PROMOTED_HYPOTHESIS_IDS = new Set<string>([]);
 const OPERATIONALLY_TAINTED_TRADE_IDS = operationallyTaintedTradeIds();
 const LOOKBACK_HOURS = 24;
 const ENGINE_CLI_FLAGS = parseEngineCliFlags(process.argv);
@@ -6495,51 +6495,59 @@ function evaluateHypotheses(
 
   for (const family of setupFamilies) {
     const completedCount = family.completed.length;
-    if (completedCount < PROMOTE_MIN_TESTS) continue;
-
     const activeFamilyHypotheses = family.hypotheses.filter((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived");
     if (activeFamilyHypotheses.length === 0) continue;
     if (RETIRED_LLM_SETUP_IDS.has(family.setupId)) continue;
     if (isDataContaminatedSetup(family.setupId)) continue;
 
-    if (family.winRate >= PROMOTE_THRESHOLD) {
-      const primary = family.primary;
-      const alreadyPromoted = primary.status === "promoted" && primary.promotedToSignal;
-      primary.status = "promoted";
-      primary.promotedToSignal = true;
-      primary.winRate = family.winRate;
-      primary.postMortem = primary.postMortem ?? `Setup family promoted: ${(family.winRate * 100).toFixed(0)}% win rate over ${completedCount} completed tests across ${family.hypotheses.length} variants.`;
-      for (const sibling of activeFamilyHypotheses) {
-        if (sibling.id === primary.id) continue;
-        if (sibling.status === "promoted") sibling.status = "active";
-        sibling.promotedToSignal = false;
-        sibling.postMortem = sibling.postMortem ?? `Covered by promoted setup family ${family.setupId} via primary ${primary.id}.`;
-      }
-      if (!alreadyPromoted) {
-        observations.push(`🎯 Setup family ${family.setupId} PROMOTED via ${primary.id} (${(family.winRate * 100).toFixed(0)}% over ${completedCount} tests across ${family.hypotheses.length} variants): ${family.setupLabel}`);
-      }
-      continue;
-    }
+    const meetsPromotionGate =
+      completedCount >= PROMOTE_MIN_TESTS && family.winRate >= PROMOTE_THRESHOLD;
 
-    if (family.winRate < KILL_THRESHOLD) {
+    // Enforce on every run: promotions that do not currently meet the gate are
+    // demoted. Previously `if (completedCount < PROMOTE_MIN_TESTS) continue`
+    // skipped demotion entirely, so operator/"replacement" promotions with
+    // thin evidence (H-521, H-523) stayed status=promoted forever.
+    if (!meetsPromotionGate) {
       for (const hypothesis of activeFamilyHypotheses) {
-        hypothesis.status = "killed";
-        hypothesis.promotedToSignal = false;
-        hypothesis.postMortem = hypothesis.postMortem ?? `Setup family killed: ${(family.winRate * 100).toFixed(0)}% win rate over ${completedCount} completed tests across ${family.hypotheses.length} variants.`;
-      }
-      observations.push(`💀 Setup family ${family.setupId} KILLED (${(family.winRate * 100).toFixed(0)}% over ${completedCount} tests across ${family.hypotheses.length} variants): ${family.setupLabel}`);
-      continue;
-    }
-
-    for (const hypothesis of activeFamilyHypotheses) {
-      if (hypothesis.status === "promoted" && family.winRate < DEMOTE_THRESHOLD) {
+        if (hypothesis.status !== "promoted" && !hypothesis.promotedToSignal) continue;
+        const reason = completedCount < PROMOTE_MIN_TESTS
+          ? `Demoted: insufficient evidence (${completedCount}/${PROMOTE_MIN_TESTS} completed family tests; need ≥${(PROMOTE_THRESHOLD * 100).toFixed(0)}% win rate).`
+          : `Demoted: family win rate ${(family.winRate * 100).toFixed(0)}% below promote threshold ${(PROMOTE_THRESHOLD * 100).toFixed(0)}% over ${completedCount} tests.`;
         hypothesis.status = "active";
         hypothesis.promotedToSignal = false;
-        hypothesis.postMortem = `Setup family demoted: win rate dropped to ${(family.winRate * 100).toFixed(0)}% over ${completedCount} completed tests.`;
-        observations.push(`📉 Setup family ${family.setupId} DEMOTED from promoted trading: ${family.setupLabel}`);
-      } else if (family.winRate < PROMOTE_THRESHOLD) {
-        hypothesis.postMortem = hypothesis.postMortem ?? `Setup family inconclusive after ${completedCount} completed tests: ${(family.winRate * 100).toFixed(0)}% win rate.`;
+        hypothesis.postMortem = reason;
+        observations.push(`📉 ${hypothesis.id} DEMOTED — promotion gate failed (${family.setupId}): ${reason}`);
       }
+
+      if (completedCount >= PROMOTE_MIN_TESTS && family.winRate < KILL_THRESHOLD) {
+        for (const hypothesis of activeFamilyHypotheses) {
+          hypothesis.status = "killed";
+          hypothesis.promotedToSignal = false;
+          hypothesis.postMortem = hypothesis.postMortem ?? `Setup family killed: ${(family.winRate * 100).toFixed(0)}% win rate over ${completedCount} completed tests across ${family.hypotheses.length} variants.`;
+        }
+        observations.push(`💀 Setup family ${family.setupId} KILLED (${(family.winRate * 100).toFixed(0)}% over ${completedCount} tests across ${family.hypotheses.length} variants): ${family.setupLabel}`);
+      } else if (completedCount >= PROMOTE_MIN_TESTS && family.winRate < PROMOTE_THRESHOLD) {
+        for (const hypothesis of activeFamilyHypotheses) {
+          hypothesis.postMortem = hypothesis.postMortem ?? `Setup family inconclusive after ${completedCount} completed tests: ${(family.winRate * 100).toFixed(0)}% win rate.`;
+        }
+      }
+      continue;
+    }
+
+    const primary = family.primary;
+    const alreadyPromoted = primary.status === "promoted" && primary.promotedToSignal;
+    primary.status = "promoted";
+    primary.promotedToSignal = true;
+    primary.winRate = family.winRate;
+    primary.postMortem = primary.postMortem ?? `Setup family promoted: ${(family.winRate * 100).toFixed(0)}% win rate over ${completedCount} completed tests across ${family.hypotheses.length} variants.`;
+    for (const sibling of activeFamilyHypotheses) {
+      if (sibling.id === primary.id) continue;
+      if (sibling.status === "promoted") sibling.status = "active";
+      sibling.promotedToSignal = false;
+      sibling.postMortem = sibling.postMortem ?? `Covered by promoted setup family ${family.setupId} via primary ${primary.id}.`;
+    }
+    if (!alreadyPromoted) {
+      observations.push(`🎯 Setup family ${family.setupId} PROMOTED via ${primary.id} (${(family.winRate * 100).toFixed(0)}% over ${completedCount} tests across ${family.hypotheses.length} variants): ${family.setupLabel}`);
     }
   }
 

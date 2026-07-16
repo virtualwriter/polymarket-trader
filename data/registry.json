@@ -1027,10 +1027,10 @@
         "timeframeDays": 7,
         "testStats": {
           "total": 3,
-          "completed": 2,
-          "wins": 0,
-          "pending": 1,
-          "winRate": 0
+          "completed": 3,
+          "wins": 1,
+          "pending": 0,
+          "winRate": 0.3333333333333333
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -19202,11 +19202,11 @@
       "id": "EXP-0525",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "final",
+      "status": "running",
       "title": "H-521: HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and ...",
       "body": {
         "hypothesisId": "H-521",
-        "hypothesisStatus": "promoted",
+        "hypothesisStatus": "active",
         "description": "HYPE breakout continuation when open interest is in the top 15% of the last 24h, spot remains within 6% of its 7d high and above its 24h average, and funding is normalized relative to the last week.",
         "prediction": "HYPE sustains upside momentum for 5-7 days when relative OI expansion confirms price strength near recent highs.",
         "conditions": {
@@ -19222,14 +19222,14 @@
           "completed": 0,
           "wins": 0,
           "pending": 0,
-          "winRate": 0.6666666666666666
+          "winRate": 0.0
         },
-        "promotedToSignal": true,
+        "promotedToSignal": false,
         "source": "llm",
         "created": "2026-05-04",
         "setupId": "hype_relative_oi_breakout_continuation",
         "setupLabel": "HYPE relative OI breakout continuation",
-        "postMortem": "Regime-relative replacement for H-116; inherits setup-family promotion while removing brittle absolute spot thresholds. | HYPE breakout continuation setup (promoted): Current HYPE OI at 821M is below the top-15% threshold of recent 24h range, and spot at 40.1 is ~8% below its 7d high near 43.7. Conditions not met — HYPE is in distribution phase, not breakout continuation. Setup family correctly not triggering here. | HYPE OI at 822M is within the top 15% of recent 24h range (OI has been declining from 870M peak), spot at 40.3 is within 6% of 7d high (~43.5), and funding is normalized at 10.95%. The promoted setup conditions are partially met but the OI level is borderline — the 'top 15%' condition is relative to recent declining OI, so this needs careful monitoring. The spot decline from 43.5 to 40.3 (-7.5%) over 5 days suggests the momentum component is weakening. Shadow test should be cautious given the killed HYPE distribution family context. | HYPE breakout continuation (promoted): HYPE OI at 826M is below the 860M threshold and spot at 40.3 is -7.4% from its 7d high of ~43.5, just outside the 6% window. Conditions not currently met. Watching for OI recovery above 860M and spot stabilization closer to recent highs before triggering. | HYPE breakout continuation promoted hypothesis: HYPE OI at 822-826M is NOT in the top 15% of the last 24h (it's declining), spot at 40.1-40.3 is within 6% of 7d high but trending down, and funding at +10.95% is normalized. Conditions are borderline — OI is declining not surging, which is the opposite of the setup. No trigger this session. | HYPE breakout continuation setup (promoted): Current HYPE OI at 833M is in the top 15% of recent 24h range (OI has been 820-862M), spot at 40.6 is within 6% of 7d high (~43.2), and funding at +10.95% is normalized relative to last week. Conditions are borderline met but spot is 6% below the 7d high — right at the edge of the threshold. No clean breakout signal present; HYPE is in distribution..."
+        "postMortem": "Demoted 2026-07-15: failed promotion gate (completedTests=0, winRate=0.000). Gate requires family >=20 completed tests and >=65% win rate; LIVE_PROMOTED_HYPOTHESIS_IDS allowlist cleared. | Regime-relative replacement for H-116; inherits setup-family promotion while removing brittle absolute spot thresholds. | HYPE breakout continuation setup (promoted): Current HYPE OI at 821M is below the top-15% threshold of recent 24h range, and spot at 40.1 is ~8% below its 7d high near 43.7. Conditions not met — HYPE is in distribution phase, not breakout continuation. Setup family correctly not triggering here. | HYPE OI at 822M is within the top 15% of recent 24h range (OI has been declining from 870M peak), spot at 40.3 is within 6% of 7d high (~43.5), and funding is normalized at 10.95%. The promoted setup conditions are partially met but the OI level is borderline — the 'top 15%' condition is relative to recent declining OI, so this needs careful monitoring. The spot decline from 43.5 to 40.3 (-7.5%) over 5 days suggests the momentum component is weakening. Shadow test should be cautious given the killed HYPE distribution family context. | HYPE breakout continuation (promoted): HYPE OI at 826M is below the 860M threshold and spot at 40.3 is -7.4% from its 7d high of ~43.5, just outside the 6% window. Conditions not currently met. Watching for OI recovery above 860M and spot stabilization closer to recent highs before triggering. | HYPE breakout continuation promoted hypothesis: HYPE OI at 822-826M is NOT in the top 15% of the last 24h (it's declining), spot at 40.1-40.3 is within 6% of 7d high but trending down, and funding at +10.95% is normalized. Conditions are borderline — OI is declining not surging, which is the opposite of the setup. No trigger this session. | HYPE breakout continuation setup (promoted): Current HYPE OI at 833M is in the top 15% of recent 24h range (OI has been 820-862M), spot at 40.6 is within 6% of 7d high (~43.2), and funding at +10.95% is nor..."
       },
       "links": {},
       "created": "2026-07-15T19:00:44Z",
@@ -19275,11 +19275,11 @@
       "id": "EXP-0527",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "final",
+      "status": "running",
       "title": "H-523: BTC PM IV compression / vol reversion when PM IV is in the bottom 20% of its 30d range and at least 1.25 standard deviations below its 30d mean while ...",
       "body": {
         "hypothesisId": "H-523",
-        "hypothesisStatus": "promoted",
+        "hypothesisStatus": "active",
         "description": "BTC PM IV compression / vol reversion when PM IV is in the bottom 20% of its 30d range and at least 1.25 standard deviations below its 30d mean while BTC spot consolidates within 5% of its 7d high.",
         "prediction": "BTC volatility expands within one week as prediction-market IV mean reverts from relative compression near recent spot highs.",
         "conditions": {
@@ -19297,12 +19297,12 @@
           "pending": 0,
           "winRate": 0.3333333333333333
         },
-        "promotedToSignal": true,
+        "promotedToSignal": false,
         "source": "llm",
         "created": "2026-05-04",
         "setupId": "btc_pm_iv_regime_relative_compression",
         "setupLabel": "BTC PM IV regime-relative compression",
-        "postMortem": "Regime-relative replacement for H-234; inherits setup-family promotion while removing brittle absolute spot thresholds. | BTC PM IV compression / vol reversion (promoted): BTC PM IV at 36.6-37.6% across recent snapshots. The 30d mean has been around 38-39%, so current readings are modestly below mean but not at extreme -1.25σ threshold. Setup is close to triggering but not yet clean. Watch for further compression. | BTC PM IV at 36.6% is below the 30d mean (estimated ~40-41% based on recent data), representing compression. BTC spot at 80.4k is within 5% of its 7d high (~81.7k). The promoted setup conditions appear met. However, the macro regime deterioration (composite 53→48, fed_score 25→16) adds headwind. The BTC-OIL correlation flip to -0.72 is notable — oil's surge may be drawing risk capital away from BTC. This setup family has strong historical performance (100% over 1 variant test for H-523) but the macro shift warrants monitoring. | BTC PM IV compression / vol reversion (promoted): BTC PM IV at 36.6-36.8% is in the bottom 20% of its 30d range and approximately -2 std devs below the 30d mean. BTC spot at 80.4-80.8k is within 5% of its 7d high (~81.7k, so -1.5% from high). Conditions are met. Strong historical support from H-219, H-224, H-268, H-270, H-273, H-289, H-291, H-301, H-307 all at 100% win rate. However, macro deterioration (composite 48, fed_score 15) creates headwinds for a vol expansion bounce. Monitoring closely. | BTC PM IV compression promoted hypothesis: BTC PM IV at 36.5-36.8% is below the 30d mean and likely in the bottom 20% of its 30d range. However, macro composite dropped from 53 to 48 and BTC outperform-SP500 fell to 22%, creating headwinds for a vol expansion bounce. The setup is technically triggered but macro regime is unfavorable — this is a useful stress test for whether the hypothesis holds across macro regimes. | BTC PM IV compression / vol reversion (promoted): BTC PM IV at 36.5% is in the bottom 20% of its 30d range and appr..."
+        "postMortem": "Demoted 2026-07-15: failed promotion gate (completedTests=3, winRate=0.333). Gate requires family >=20 completed tests and >=65% win rate; LIVE_PROMOTED_HYPOTHESIS_IDS allowlist cleared. | Regime-relative replacement for H-234; inherits setup-family promotion while removing brittle absolute spot thresholds. | BTC PM IV compression / vol reversion (promoted): BTC PM IV at 36.6-37.6% across recent snapshots. The 30d mean has been around 38-39%, so current readings are modestly below mean but not at extreme -1.25σ threshold. Setup is close to triggering but not yet clean. Watch for further compression. | BTC PM IV at 36.6% is below the 30d mean (estimated ~40-41% based on recent data), representing compression. BTC spot at 80.4k is within 5% of its 7d high (~81.7k). The promoted setup conditions appear met. However, the macro regime deterioration (composite 53→48, fed_score 25→16) adds headwind. The BTC-OIL correlation flip to -0.72 is notable — oil's surge may be drawing risk capital away from BTC. This setup family has strong historical performance (100% over 1 variant test for H-523) but the macro shift warrants monitoring. | BTC PM IV compression / vol reversion (promoted): BTC PM IV at 36.6-36.8% is in the bottom 20% of its 30d range and approximately -2 std devs below the 30d mean. BTC spot at 80.4-80.8k is within 5% of its 7d high (~81.7k, so -1.5% from high). Conditions are met. Strong historical support from H-219, H-224, H-268, H-270, H-273, H-289, H-291, H-301, H-307 all at 100% win rate. However, macro deterioration (composite 48, fed_score 15) creates headwinds for a vol expansion bounce. Monitoring closely. | BTC PM IV compression promoted hypothesis: BTC PM IV at 36.5-36.8% is below the 30d mean and likely in the bottom 20% of its 30d range. However, macro composite dropped from 53 to 48 and BTC outperform-SP500 fell to 22%, creating headwinds for a vol expansion bounce. The setup is technically triggered but macro regime is unfavorable — this is a us..."
       },
       "links": {},
       "created": "2026-07-15T19:00:44Z",
@@ -19609,7 +19609,7 @@
       "id": "DEC-0007",
       "type": "decision",
       "evidenceClass": "DERIVED",
-      "status": "final",
+      "status": "superseded",
       "title": "Promote hypothesis H-521 to live signal",
       "body": {
         "rationale": "Hypothesis H-521 reached promotion criteria (0/0 wins, winRate=0.67) and is emitted as PROMOTED_HYPOTHESIS by the trading engine.",
@@ -19620,7 +19620,8 @@
       "links": {
         "relatedRecords": [
           "EXP-0525"
-        ]
+        ],
+        "supersededBy": "DEC-0010"
       },
       "created": "2026-07-15T19:00:44Z",
       "source": "sync_hypotheses_registry"
@@ -19629,7 +19630,7 @@
       "id": "DEC-0008",
       "type": "decision",
       "evidenceClass": "DERIVED",
-      "status": "final",
+      "status": "superseded",
       "title": "Promote hypothesis H-523 to live signal",
       "body": {
         "rationale": "Hypothesis H-523 reached promotion criteria (1/3 wins, winRate=0.33) and is emitted as PROMOTED_HYPOTHESIS by the trading engine.",
@@ -19640,7 +19641,8 @@
       "links": {
         "relatedRecords": [
           "EXP-0527"
-        ]
+        ],
+        "supersededBy": "DEC-0010"
       },
       "created": "2026-07-15T19:00:44Z",
       "source": "sync_hypotheses_registry"
@@ -19739,6 +19741,38 @@
       },
       "created": "2026-07-15T19:19:35Z",
       "source": "replay-harness-agent"
+    },
+    {
+      "id": "DEC-0010",
+      "type": "decision",
+      "evidenceClass": "DERIVED",
+      "status": "final",
+      "title": "Enforce hypothesis promotion gate; demote H-521 and H-523; clear live allowlist",
+      "body": {
+        "rationale": "Hypothesis promotions must continuously meet the family gate (>=20 completed tests, >=65% win rate). Previously, families below PROMOTE_MIN_TESTS skipped demotion entirely, so thin operator/replacement promotions stayed status=promoted. evaluateHypotheses now demotes any promotion that fails the gate on every run. LIVE_PROMOTED_HYPOTHESIS_IDS cleared (removed force-listed H-521). H-521 and H-523 demoted to active; H-150 kept because family amzn_perp_spot_funding_convergence qualifies (20 tests / 65%). Open paper HYPE position T-1784086111076-7ms9 (PROMOTED_HYPOTHESIS/H-521) left to natural exit; no new PROMOTED_HYPOTHESIS entries until an ID is re-allowlisted after re-qualifying.",
+        "demoted": [
+          "H-521",
+          "H-523"
+        ],
+        "keptPromoted": [
+          "H-150"
+        ],
+        "gate": {
+          "minCompletedFamilyTests": 20,
+          "minWinRate": 0.65
+        }
+      },
+      "links": {
+        "relatedRecords": [
+          "EXP-0525",
+          "EXP-0527",
+          "EXP-0154",
+          "DEC-0007",
+          "DEC-0008"
+        ]
+      },
+      "created": "2026-07-16T03:06:28Z",
+      "source": "operator+engine-fix"
     }
   ]
 }
