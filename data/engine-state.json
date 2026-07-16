@@ -1,37 +1,21 @@
 {
-  "generatedAt": "2026-07-16T03:29:13.120Z",
+  "generatedAt": "2026-07-16T04:28:12.652Z",
   "dataFreshness": {
-    "valuationRows": 1699,
-    "latestValuationAt": "2026-07-16T03",
-    "macroRows": 1697,
+    "valuationRows": 1700,
+    "latestValuationAt": "2026-07-16T04",
+    "macroRows": 1698,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-16T03"
+    "latestInstrumentSnapshotAt": "2026-07-16T04"
   },
   "portfolio": {
-    "cash": 96.5887,
-    "openPositions": 2,
-    "realizedPnl": 1.8284,
-    "totalTrades": 445,
-    "winRatePct": 62.7,
-    "unrealizedPnl": -0.0178
+    "cash": 97.5722,
+    "openPositions": 1,
+    "realizedPnl": 1.8119,
+    "totalTrades": 446,
+    "winRatePct": 62.6,
+    "unrealizedPnl": -0.0012
   },
   "openPositions": [
-    {
-      "positionId": "T-1784086111076-7ms9",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PROMOTED_HYPOTHESIS",
-      "pnlPct": -1.65,
-      "currentPrice": 66.226,
-      "underlyingPrice": 66.226,
-      "targetPct": 4,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "hype_spot"
-      ]
-    },
     {
       "positionId": "T-1784136549825-rtik",
       "asset": "GOLD",
@@ -190,10 +174,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 53,
-    "resolvedCount": 558,
-    "wouldHaveWon": 314,
-    "wouldHaveLost": 244,
+    "openCount": 50,
+    "resolvedCount": 552,
+    "wouldHaveWon": 312,
+    "wouldHaveLost": 240,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -205,11 +189,11 @@
       },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-        "blocked": 30,
-        "resolved": 20,
-        "wouldHaveWon": 16,
+        "blocked": 29,
+        "resolved": 19,
+        "wouldHaveWon": 15,
         "wouldHaveLost": 4,
-        "avgPnlPct": 14.43
+        "avgPnlPct": 11.78
       },
       {
         "signalType": "USER_PM_APR_XAU_TAIL_NO",
@@ -414,22 +398,6 @@
       }
     ],
     "openQualityWarnings": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
-        "asset": "HYPE",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-hyperliquid-hit-before-2027 — YES — Will Hyperliquid dip to $16 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.07,
-          "yesAsk": 0.09,
-          "yesSpread": 0.02,
-          "liquidity": 45693.34,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH HIGH-EDGE SHADOW] Strict one-touch YES 41.7pt edge on HYPE; hold 14d to test high-edge repricing. YES tracked separately as weaker exploratory side. Edge >=20pt: higher-conviction bucket, monitor concentration."
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",

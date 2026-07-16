@@ -1320,3 +1320,34 @@ HYPE hypothesis invalidation: The promoted OI breakout trade reversed sharply af
 
 ---
 
+### 2026-07-16 04:28 UTC
+
+**Portfolio:** $98.57 total | Cash $97.57 | 1 open | P&L $1.8119 | 63% win rate (446 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Hypothesis setup retest queue: 13 of the first 25 setup families did not trigger; 0 later setup families are waiting for the next batch.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -21.03 is -3.3 std devs from mean (-0.88 ± 6.06)
+- [anomaly] gold_gld_pc_ratio = 1.992 is 3.0 std devs from mean (0.76 ± 0.40)
+- [anomaly] btc_pm_iv = 26.7 is -2.4 std devs from mean (40.99 ± 6.07)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.31 to 0.46. Rolling correlation: 24h=0.11, 7d=-0.85, 30d=0.30. Current 24h corr is at 63th pct of last 30 daily 24h-rolling values (range -0.91 to 0.91).
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 552 (312 wins / 240 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.07%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.10%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.22%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-4.35%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 2/12; next scheduled 2026-07-16T06:28:12.788Z). Mechanical cycle ran normally._
+
+---
+

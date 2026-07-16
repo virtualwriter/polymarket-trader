@@ -1,23 +1,10 @@
 {
-  "generatedAt": "2026-07-16T03:30:16.604Z",
+  "generatedAt": "2026-07-16T04:28:12.796Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1784086111076-7ms9",
-      "asset": "HYPE",
-      "venue": "spot",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "hype_spot"
-      ],
-      "thesis": "HYPE breakout continuation hypothesis invalidated: price reversed after an initial spike to +2.4%, now down -1.65% and at the low end of the 24h range (4th percentile). The breakout structure has broken down, and the thesis of OI-driven continuation is no longer supported. Discretionary close to limit losses before stop -2%."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -38,6 +25,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
