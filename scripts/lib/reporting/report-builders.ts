@@ -20,6 +20,7 @@ export interface ReportPosition {
   leverage?: number;
   signalType: string;
   hypothesisId: string | null;
+  entryConfidence?: number | null;
   thesis: string;
   instrumentType?: string;
   instrumentId?: string;
@@ -47,6 +48,7 @@ export interface ReportClosedTrade {
   fundingPnl: number;
   signalType: string;
   hypothesisId: string | null;
+  entryConfidence?: number | null;
   thesis: string;
   closeReason: string;
   instrumentType?: string;

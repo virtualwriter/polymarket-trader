@@ -53,6 +53,7 @@ interface Position {
   currentUnderlyingPrice?: number;
   fundingPnlAccrued?: number;
   peakPnlPct?: number;
+  entryConfidence?: number;
 }
 
 interface Portfolio {
@@ -96,6 +97,7 @@ interface ClosedTrade {
   instrumentType?: string;
   instrumentId?: string;
   instrumentLabel?: string;
+  entryConfidence?: number | null;
 }
 
 interface PolymarketContractMark {
@@ -317,6 +319,7 @@ function realizeClosedPosition(portfolio: Portfolio, position: Position, mark: M
     instrumentType: position.instrumentType,
     instrumentId: position.instrumentId,
     instrumentLabel: position.instrumentLabel,
+    entryConfidence: position.entryConfidence ?? null,
   };
 
   portfolio.cash += position.size + mark.pnl;
@@ -333,7 +336,7 @@ function realizeClosedPosition(portfolio: Portfolio, position: Position, mark: M
 }
 
 function appendTradeCsv(trade: ClosedTrade) {
-  const header = "id,opened_at,closed_at,asset,venue,direction,instrument_type,instrument_id,instrument_label,entry_price,exit_price,size,leverage,pnl,pnl_pct,market_pnl,funding_pnl,signal_type,hypothesis_id,thesis,close_reason\n";
+  const header = "id,opened_at,closed_at,asset,venue,direction,instrument_type,instrument_id,instrument_label,entry_price,exit_price,size,leverage,pnl,pnl_pct,market_pnl,funding_pnl,signal_type,hypothesis_id,entry_confidence,thesis,close_reason\n";
   const filepath = dataPath("trades-detailed.csv");
   if (!existsSync(filepath)) appendFileSync(filepath, header);
   const vals = [
@@ -344,6 +347,7 @@ function appendTradeCsv(trade: ClosedTrade) {
     trade.pnl.toFixed(4), trade.pnlPct.toFixed(2),
     (trade.marketPnl ?? trade.pnl).toFixed(4), (trade.fundingPnl ?? 0).toFixed(4),
     trade.signalType, trade.hypothesisId ?? "",
+    (trade.entryConfidence === null || trade.entryConfidence === undefined || !Number.isFinite(trade.entryConfidence)) ? "" : Number(trade.entryConfidence).toFixed(4),
     `"${trade.thesis.replace(/"/g, '""')}"`, trade.closeReason,
   ];
   appendFileSync(filepath, vals.join(",") + "\n");

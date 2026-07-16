@@ -547,12 +547,22 @@
       "id": "DEC-0005",
       "type": "decision",
       "evidenceClass": "DERIVED",
-      "status": "proposed",
+      "status": "final",
       "title": "Persist ex-ante confidence per trade on live positions/ledger",
       "body": {
         "rationale": "EXP-0003 found that 89.2% of closed live trades have zero recoverable ex-ante confidence: scripts/trading-engine.ts's Position and ClosedTrade interfaces never persist the confidence value that IS computed at signal-generation time (e.g. `confidence: strength * weight.weight`), and trades-detailed.csv has no confidence column. The only live-trade confidence signal available today is an indirect, coarse proxy: joining via hypothesis_id to a hypothesis's single static confidence value (10.8% coverage). Meanwhile the shadow-trade population (blocked-signals.json) shows this is a solvable problem — it already persists confidence per shadow instance at blockedAt and enables real calibration analysis today. Persisting the same per-instance ex-ante confidence on live Position/ClosedTrade records (not just the hypothesis's static value) would let calibration audits, Kelly-sizing work, and signal-weight tuning use the full live population instead of an ~11% joinable slice.",
         "proposedChange": "Add a `confidence: number` field to the Position and ClosedTrade interfaces in scripts/trading-engine.ts, populated from the signal's `confidence` at the moment a position is opened (the same value already computed and used for sizing/ranking), and add a matching `confidence` column to trades-detailed.csv's writer/reader so it survives to the ledger. No change to sizing, entry logic, stops, or targets.",
-        "affectedArtifact": "data/confidence-calibration.json"
+        "affectedArtifact": "data/confidence-calibration.json",
+        "operatorApprovalRequired": false,
+        "approvedAt": "2026-07-16T16:11:18Z",
+        "implemented": {
+          "field": "entryConfidence",
+          "csvColumn": "entry_confidence",
+          "populatedAtOpenFrom": "Signal.confidence",
+          "weekendFundingPrior": 0.5,
+          "historicalRowsBlank": true,
+          "note": "New opens persist ex-ante confidence; pre-existing ledger rows remain blank."
+        }
       },
       "links": {
         "basedOn": "EXP-0003"
@@ -19304,10 +19314,10 @@
         "confidence": 0.9,
         "timeframeDays": 7,
         "testStats": {
-          "total": 3,
+          "total": 4,
           "completed": 3,
           "wins": 1,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0.3333333333333333
         },
         "promotedToSignal": false,
@@ -20030,6 +20040,60 @@
       },
       "created": "2026-07-16T04:08:06Z",
       "source": "operator+EXP-0538"
+    },
+    {
+      "id": "DEC-0012",
+      "type": "decision",
+      "evidenceClass": "DERIVED",
+      "status": "final",
+      "title": "Tighter live gate for PROMOTED_HYPOTHESIS (30 tests / 70% WR / 5 primary)",
+      "body": {
+        "rationale": "Research promotion (20 tests / 65% WR) remains for institutional memory, but live emission via LIVE_PROMOTED_HYPOTHESIS_IDS additionally requires family >=30 completed tests, >=70% win rate, and primary hypothesis >=5 completed tests, plus inferable asset/direction. Analysis shows 2 families meet research gate and 0 meet the live gate today (including H-150), so the allowlist stays empty until a family re-qualifies.",
+        "liveGate": {
+          "minFamilyTests": 30,
+          "minWinRate": 0.7,
+          "minPrimaryTests": 5
+        },
+        "researchGate": {
+          "minFamilyTests": 20,
+          "minWinRate": 0.65
+        },
+        "analysisArtifact": "data/experiments/promoted-hypothesis-gate-analysis.json",
+        "allowlist": []
+      },
+      "links": {
+        "relatedRecords": [
+          "DEC-0010",
+          "DEC-0011",
+          "EXP-0154"
+        ]
+      },
+      "created": "2026-07-16T16:11:18Z",
+      "source": "operator"
+    },
+    {
+      "id": "DEC-0013",
+      "type": "decision",
+      "evidenceClass": "DERIVED",
+      "status": "final",
+      "title": "Tighten nightly hypothesis funnel entry quality",
+      "body": {
+        "rationale": "After dual promotion gates, the bottleneck is idea quality entering hypotheses.json. Nightly ingest now caps at 3 new hypotheses/day, requires confidence >=0.70, description >=40 chars, non-empty conditions, inferable asset+direction, and rejects duplicates/retired/contaminated setups.",
+        "gates": {
+          "maxNewPerNight": 3,
+          "minConfidence": 0.7,
+          "minDescriptionChars": 40,
+          "minConditionKeys": 1,
+          "requireInferableAssetAndDirection": true
+        }
+      },
+      "links": {
+        "relatedRecords": [
+          "DEC-0012"
+        ]
+      },
+      "created": "2026-07-16T16:11:18Z",
+      "source": "operator"
     }
   ]
 }

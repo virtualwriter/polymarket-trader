@@ -353,8 +353,12 @@ const LIVE_SIGNAL_ALLOWLIST = new Set([
 // (≥ PROMOTE_MIN_TESTS completed family tests and ≥ PROMOTE_THRESHOLD win rate).
 // Empty as of 2026-07-15: H-521 was force-listed despite its family having only
 // 19 tests at ~58% WR (below the gate). Re-add an ID only after the family
-// re-qualifies under evaluateHypotheses and an operator intentionally enables it.
+// also meets the tighter LIVE_PROMOTED_* gate below and an operator enables it.
 const LIVE_PROMOTED_HYPOTHESIS_IDS = new Set<string>([]);
+/** Tighter live-emission bar than research promotion (DEC-0012). */
+const LIVE_PROMOTED_MIN_FAMILY_TESTS = 30;
+const LIVE_PROMOTED_MIN_WIN_RATE = 0.70;
+const LIVE_PROMOTED_MIN_PRIMARY_TESTS = 5;
 const OPERATIONALLY_TAINTED_TRADE_IDS = operationallyTaintedTradeIds();
 const LOOKBACK_HOURS = 24;
 const ENGINE_CLI_FLAGS = parseEngineCliFlags(process.argv);
@@ -474,6 +478,8 @@ interface Position {
   currentUnderlyingPrice?: number;
   fundingPnlAccrued?: number;
   peakPnlPct?: number;
+  /** Ex-ante signal confidence frozen at open (DEC-0005). */
+  entryConfidence?: number;
 }
 
 interface RealPolymarketLivePackage {
@@ -526,6 +532,8 @@ interface ClosedTrade {
   instrumentType?: string;
   instrumentId?: string;
   instrumentLabel?: string;
+  /** Ex-ante confidence at open; blank for pre-DEC-0005 ledger rows. */
+  entryConfidence?: number | null;
 }
 
 interface Portfolio {
@@ -1194,16 +1202,48 @@ function loadNoBiasCalibrationBuckets(path = CALIBRATION_BUCKETS_SUMMARY_FILE): 
   return [];
 }
 
+const TRADES_DETAILED_HEADERS = [
+  "id", "opened_at", "closed_at", "asset", "venue", "direction",
+  "instrument_type", "instrument_id", "instrument_label",
+  "entry_price", "exit_price", "size", "leverage",
+  "pnl", "pnl_pct", "market_pnl", "funding_pnl",
+  "signal_type", "hypothesis_id", "entry_confidence", "thesis", "close_reason",
+] as const;
+
+/** One-time additive schema bump for DEC-0005 (safe if column already present). */
+function ensureTradesDetailedCsvSchema() {
+  const file = join(DATA_DIR, "trades-detailed.csv");
+  if (!existsSync(file)) return;
+  const raw = readFileSync(file, "utf-8");
+  if (!raw.trim()) return;
+  const lines = raw.split(/\r?\n/);
+  const headerLine = lines[0] ?? "";
+  if (headerLine.split(",").includes("entry_confidence")) return;
+  const headers = parseCsvLine(headerLine);
+  const thesisIdx = headers.indexOf("thesis");
+  const insertAt = thesisIdx >= 0 ? thesisIdx : headers.length;
+  const newHeaders = [...headers.slice(0, insertAt), "entry_confidence", ...headers.slice(insertAt)];
+  const rewritten = [newHeaders.join(",")];
+  for (const line of lines.slice(1)) {
+    if (!line.trim()) continue;
+    const values = parseCsvLine(line);
+    while (values.length < headers.length) values.push("");
+    values.splice(insertAt, 0, "");
+    rewritten.push(values.map((v) =>
+      /[",\n]/.test(v) ? `"${v.replace(/"/g, '""')}"` : v
+    ).join(","));
+  }
+  writeFileSync(file, rewritten.join("\n") + "\n");
+}
+
 function appendTradeCsv(trade: ClosedTrade) {
   const file = join(DATA_DIR, "trades-detailed.csv");
-  const headers = [
-    "id", "opened_at", "closed_at", "asset", "venue", "direction",
-    "instrument_type", "instrument_id", "instrument_label",
-    "entry_price", "exit_price", "size", "leverage",
-    "pnl", "pnl_pct", "market_pnl", "funding_pnl",
-    "signal_type", "hypothesis_id", "thesis", "close_reason",
-  ];
-  if (!existsSync(file)) writeFileSync(file, headers.join(",") + "\n");
+  ensureTradesDetailedCsvSchema();
+  if (!existsSync(file)) writeFileSync(file, TRADES_DETAILED_HEADERS.join(",") + "\n");
+  const conf =
+    trade.entryConfidence === null || trade.entryConfidence === undefined || !Number.isFinite(trade.entryConfidence)
+      ? ""
+      : Number(trade.entryConfidence).toFixed(4);
   const vals = [
     trade.id, trade.openedAt, trade.closedAt, trade.asset, trade.venue,
     trade.direction, trade.instrumentType ?? "", trade.instrumentId ?? "",
@@ -1211,7 +1251,7 @@ function appendTradeCsv(trade: ClosedTrade) {
     trade.entryPrice, trade.exitPrice, trade.size, trade.leverage ?? 1,
     trade.pnl.toFixed(4), trade.pnlPct.toFixed(2),
     (trade.marketPnl ?? trade.pnl).toFixed(4), (trade.fundingPnl ?? 0).toFixed(4),
-    trade.signalType, trade.hypothesisId ?? "",
+    trade.signalType, trade.hypothesisId ?? "", conf,
     `"${trade.thesis.replace(/"/g, '""')}"`, trade.closeReason,
   ];
   appendFileSync(file, vals.join(",") + "\n");
@@ -1248,6 +1288,9 @@ function readClosedTradeCsv(): ClosedTrade[] {
       fundingPnl: Number(row.funding_pnl),
       signalType: row.signal_type,
       hypothesisId: row.hypothesis_id || null,
+      entryConfidence: row.entry_confidence !== undefined && row.entry_confidence !== ""
+        ? Number(row.entry_confidence)
+        : null,
       thesis: row.thesis,
       closeReason: row.close_reason as ClosedTrade["closeReason"],
       instrumentType: row.instrument_type || undefined,
@@ -2681,6 +2724,7 @@ function realizeClosedPosition(
     fundingPnl: mark.fundingPnl,
     signalType: position.signalType,
     hypothesisId: position.hypothesisId,
+    entryConfidence: position.entryConfidence ?? null,
     thesis: thesisOverride ?? position.thesis,
     closeReason,
     instrumentType: position.instrumentType,
@@ -4195,6 +4239,8 @@ function weekendHyperliquidFundingCandidates(latestSnapshot: InstrumentSnapshotF
       instrumentId: asset,
       instrumentLabel: `HL ${asset} Builder DEX stock perp`,
       fundingPnlAccrued: 0,
+      // Mid-band mechanical entry — no model score; freeze a stable prior for calibration.
+      entryConfidence: 0.5,
     });
   }
 
@@ -4250,6 +4296,7 @@ function promoteOpenWeekendFundingShadowsToLive(
       thesis: shadow.position.thesis
         .replace("[WEEKEND HL FUNDING SHADOW]", "[WEEKEND HL FUNDING LIVE]")
         .replace("Shadow long", "Live tracked long"),
+      entryConfidence: shadow.position.entryConfidence ?? shadow.confidence ?? 0.5,
     };
     if (portfolio.positions.some((p) =>
       p.signalType === WEEKEND_HL_FUNDING_LIVE_SIGNAL &&
@@ -5589,6 +5636,9 @@ function buildPositionFromSignal(
     targetPct: riskAdjustedSignal.targetPct,
     stopPct: riskAdjustedSignal.stopPct,
     expiryDate: expiry.toISOString(),
+    entryConfidence: Number.isFinite(riskAdjustedSignal.confidence)
+      ? Number(riskAdjustedSignal.confidence)
+      : undefined,
   };
 
   if (riskAdjustedSignal.venue === "spot") {
@@ -6435,6 +6485,17 @@ function inferHypothesisDirection(hypothesis: Hypothesis): "long" | "short" | nu
   return null;
 }
 
+function meetsLivePromotedGate(family: HypothesisSetupFamily, primary: Hypothesis): boolean {
+  if (RETIRED_LLM_SETUP_IDS.has(family.setupId)) return false;
+  if (isDataContaminatedSetup(family.setupId)) return false;
+  if (family.completed.length < LIVE_PROMOTED_MIN_FAMILY_TESTS) return false;
+  if (family.winRate < LIVE_PROMOTED_MIN_WIN_RATE) return false;
+  if (completedHypothesisTests(primary).length < LIVE_PROMOTED_MIN_PRIMARY_TESTS) return false;
+  if (!inferHypothesisAsset(primary)) return false;
+  if (!inferHypothesisDirection(primary)) return false;
+  return true;
+}
+
 function generatePromotedHypothesisSignals(
   hypotheses: Hypothesis[],
   rows: SnapshotRow[],
@@ -6448,6 +6509,7 @@ function generatePromotedHypothesisSignals(
   const risk = riskForSignal(learningParams, "PROMOTED_HYPOTHESIS");
   const promotedFamilies = hypothesisSetupFamilies(hypotheses)
     .filter((family) => !RETIRED_LLM_SETUP_IDS.has(family.setupId))
+    .filter((family) => meetsLivePromotedGate(family, family.primary))
     .filter((family) => family.hypotheses.some((hypothesis) =>
       hypothesis.status === "promoted" &&
       hypothesis.promotedToSignal &&
@@ -6458,7 +6520,8 @@ function generatePromotedHypothesisSignals(
     const promotedRepresentatives = family.hypotheses.filter((hypothesis) =>
       hypothesis.status === "promoted" &&
       hypothesis.promotedToSignal &&
-      LIVE_PROMOTED_HYPOTHESIS_IDS.has(hypothesis.id)
+      LIVE_PROMOTED_HYPOTHESIS_IDS.has(hypothesis.id) &&
+      meetsLivePromotedGate(family, hypothesis)
     );
     for (const representative of promotedRepresentatives) {
       const promotedAsset = inferHypothesisAsset(representative);
@@ -7257,21 +7320,47 @@ function ingestNightlyLlmAdvice(
     `\n### Nightly research advice ingested (generatedAt=${generatedAt}, model=${String(advice.model ?? "unknown")})`,
   ];
 
-  // New hypotheses: per-item validation + the same backlog/retired gates.
+  // New hypotheses: per-item validation + backlog/retired/quality gates.
+  // Funnel quality (post DEC-0012): fewer, higher-prior ideas only.
+  const NIGHTLY_MAX_NEW_HYPOTHESES = 3;
+  const NIGHTLY_MIN_HYPOTHESIS_CONFIDENCE = 0.70;
+  const NIGHTLY_MIN_DESCRIPTION_CHARS = 40;
+  const NIGHTLY_MIN_CONDITION_KEYS = 1;
   const rawHypotheses = Array.isArray(advice.newHypotheses) ? advice.newHypotheses : [];
   let added = 0;
   let rejected = 0;
+  const rejectReasons: Record<string, number> = {};
+  const bumpReject = (reason: string) => {
+    rejected++;
+    rejectReasons[reason] = (rejectReasons[reason] ?? 0) + 1;
+  };
   const backlog = llmHypothesisBacklog(hypotheses);
   if (!backlog.complete && rawHypotheses.length > 0) {
     notes.push(`Nightly advice: skipping ${rawHypotheses.length} new hypotheses; ${backlog.needingTests} existing hypotheses still need shadow tests.`);
   } else {
     for (const raw of rawHypotheses) {
+      if (added >= NIGHTLY_MAX_NEW_HYPOTHESES) {
+        bumpReject("daily_cap");
+        continue;
+      }
       const parsed = llmNewHypothesisSchema.safeParse(raw);
       if (!parsed.success) {
-        rejected++;
+        bumpReject("schema");
         continue;
       }
       const nh = parsed.data;
+      if (!(typeof nh.confidence === "number") || nh.confidence < NIGHTLY_MIN_HYPOTHESIS_CONFIDENCE) {
+        bumpReject("low_confidence");
+        continue;
+      }
+      if (nh.description.trim().length < NIGHTLY_MIN_DESCRIPTION_CHARS) {
+        bumpReject("short_description");
+        continue;
+      }
+      if (Object.keys(nh.conditions ?? {}).length < NIGHTLY_MIN_CONDITION_KEYS) {
+        bumpReject("empty_conditions");
+        continue;
+      }
       const id = `H-${String(hypotheses.length + 1).padStart(3, "0")}`;
       const hypothesis: Hypothesis = {
         id, created: nh.created, description: nh.description,
@@ -7285,6 +7374,22 @@ function ingestNightlyLlmAdvice(
       ensureHypothesisSetupMetadata(hypothesis);
       if (RETIRED_LLM_SETUP_IDS.has(hypothesis.setupId ?? "")) {
         notes.push(`Nightly advice: skipping retired LLM setup hypothesis: ${hypothesis.setupLabel}`);
+        bumpReject("retired_setup");
+        continue;
+      }
+      if (isDataContaminatedSetup(hypothesis.setupId ?? "")) {
+        notes.push(`Nightly advice: skipping contaminated setup hypothesis: ${hypothesis.setupLabel}`);
+        bumpReject("contaminated_setup");
+        continue;
+      }
+      if (!inferHypothesisAsset(hypothesis) || !inferHypothesisDirection(hypothesis)) {
+        notes.push(`Nightly advice: skipping direction/asset-ambiguous hypothesis: ${nh.description.slice(0, 60)}`);
+        bumpReject("ambiguous_thesis");
+        continue;
+      }
+      const descKey = nh.description.trim().toLowerCase().slice(0, 80);
+      if (hypotheses.some((h) => h.description.trim().toLowerCase().slice(0, 80) === descKey)) {
+        bumpReject("duplicate_description");
         continue;
       }
       hypotheses.push(hypothesis);
@@ -7292,7 +7397,10 @@ function ingestNightlyLlmAdvice(
       notes.push(`Nightly advice: new hypothesis ${id}: ${nh.description.slice(0, 80)}`);
     }
   }
-  if (rejected > 0) notes.push(`Nightly advice: rejected ${rejected} malformed hypothesis record(s).`);
+  if (rejected > 0) {
+    const detail = Object.entries(rejectReasons).map(([k, v]) => `${k}=${v}`).join(", ");
+    notes.push(`Nightly advice: rejected ${rejected} hypothesis record(s) (${detail}).`);
+  }
 
   // Hypothesis reviews → postMortem, same as the old hourly path.
   const rawReviews = Array.isArray(advice.hypothesisReviews) ? advice.hypothesisReviews : [];
@@ -7842,6 +7950,7 @@ function applyLearningParamUpdates(
 
 async function main() {
   ensureDataDir();
+  ensureTradesDetailedCsvSchema();
   const timestamp = new Date().toISOString().slice(0, 19).replace("T", " ");
   console.log(`\n  Trading Engine — ${timestamp} UTC`);
   console.log(`  ${"─".repeat(55)}`);

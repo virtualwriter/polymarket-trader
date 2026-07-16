@@ -42,10 +42,13 @@ CREATE TABLE IF NOT EXISTS ${TRADES_TABLE} (
   funding_pnl DOUBLE PRECISION,
   signal_type TEXT NOT NULL,
   hypothesis_id TEXT,
+  entry_confidence DOUBLE PRECISION,
   thesis TEXT,
   close_reason TEXT,
   synced_at TIMESTAMPTZ NOT NULL DEFAULT now()
 )`;
+
+const ADD_ENTRY_CONFIDENCE_SQL = `ALTER TABLE ${TRADES_TABLE} ADD COLUMN IF NOT EXISTS entry_confidence DOUBLE PRECISION`;
 
 const CREATE_INDEXES_SQL = [
   `CREATE INDEX IF NOT EXISTS trades_signal_type_idx ON ${TRADES_TABLE} (signal_type)`,
@@ -58,10 +61,10 @@ INSERT INTO ${TRADES_TABLE} (
   instrument_type, instrument_id, instrument_label,
   entry_price, exit_price, size,
   pnl, pnl_pct, market_pnl, funding_pnl,
-  signal_type, hypothesis_id, thesis, close_reason, synced_at
+  signal_type, hypothesis_id, entry_confidence, thesis, close_reason, synced_at
 ) VALUES (
   $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,
-  $13, $14, $15, $16, $17, $18, $19, $20, now()
+  $13, $14, $15, $16, $17, $18, $19, $20, $21, now()
 )
 ON CONFLICT (id) DO UPDATE SET
   opened_at = EXCLUDED.opened_at,
@@ -81,6 +84,7 @@ ON CONFLICT (id) DO UPDATE SET
   funding_pnl = EXCLUDED.funding_pnl,
   signal_type = EXCLUDED.signal_type,
   hypothesis_id = EXCLUDED.hypothesis_id,
+  entry_confidence = EXCLUDED.entry_confidence,
   thesis = EXCLUDED.thesis,
   close_reason = EXCLUDED.close_reason,
   synced_at = now()
@@ -125,6 +129,7 @@ export function tradeToUpsertParams(trade: ReportClosedTrade): unknown[] {
     finiteOrNull(trade.fundingPnl),
     trade.signalType,
     trade.hypothesisId ?? null,
+    finiteOrNull(trade.entryConfidence),
     trade.thesis ?? null,
     trade.closeReason ?? null,
   ];
@@ -161,7 +166,8 @@ export async function connectNeon(env: Record<string, string | undefined> = proc
 
 export async function ensureTradesSchema(client: Client): Promise<void> {
   await client.query(CREATE_SCHEMA_SQL);
-  await client.query(CREATE_TRADES_TABLE_SQL);
+  await client.query(CREATE_TRADES_TABLE_SQL)
+  await client.query(ADD_ENTRY_CONFIDENCE_SQL);
   for (const sql of CREATE_INDEXES_SQL) await client.query(sql);
 }
 

@@ -78,6 +78,7 @@ export function readClosedTrades(file: string): ReportClosedTrade[] {
       fundingPnl: Number(row.funding_pnl),
       signalType: row.signal_type,
       hypothesisId: row.hypothesis_id || null,
+      entryConfidence: row.entry_confidence ? Number(row.entry_confidence) : null,
       thesis: row.thesis,
       closeReason: row.close_reason,
       instrumentType: row.instrument_type || undefined,
