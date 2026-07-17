@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-17T00:28:04.039Z",
+  "generatedAt": "2026-07-17T01:28:05.039Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.5156159226785069,
       "thesis": "GOLD P/C ratio 2.85 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 3988,
+      "entryPrice": 3992,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -22,14 +22,29 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.5285714285714286,
-      "confidence": 0.27214723888144593,
-      "thesis": "GOLD HL funding 33.5% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.2422857142857143,
+      "confidence": 0.12474641003863035,
+      "thesis": "GOLD HL funding 23.5% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 3988,
+      "entryPrice": 3992,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 3,
+      "leverage": 1
+    },
+    {
+      "type": "FUNDING_EXTREME_SHORT",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "strength": 0.07685714285714289,
+      "confidence": 0.03960468875757023,
+      "thesis": "AMZN HL funding -17.7% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 249.12,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 7,
       "leverage": 1
     }
   ],
@@ -42,7 +57,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 3988,
+      "entryPrice": 3992,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -63,7 +78,28 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 3988,
+      "entryPrice": 3992,
+      "probabilitySource": "unsupported",
+      "winProbability": null,
+      "probabilitySampleSize": null,
+      "edgePts": null,
+      "rawKellyFraction": null,
+      "adjustedKellyFraction": null,
+      "cappedKellyFraction": null,
+      "notes": [
+        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
+        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
+      ]
+    },
+    {
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "reason": "unsupported_signal",
+      "entryPrice": 249.12,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -199,6 +235,71 @@
         }
       },
       "warnings": []
+    },
+    {
+      "candidateId": "FUNDING_EXTREME_SHORT:AMZN:2",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "candidateSize": 0,
+      "riskClusters": [
+        "amzn_delta",
+        "funding_reversion",
+        "hyperliquid_venue",
+        "risk_on"
+      ],
+      "current": {
+        "totalGross": 2,
+        "totalNet": 0,
+        "byAsset": {
+          "GOLD": 0
+        },
+        "bySignalType": {
+          "FUNDING_EXTREME_LONG": -1,
+          "PC_RATIO_EXTREME_HIGH": 1
+        },
+        "byVenue": {
+          "hyperliquid": -1,
+          "spot": 1
+        },
+        "byCluster": {
+          "commodity": 0,
+          "funding_reversion": -1,
+          "gold_delta": 0,
+          "hyperliquid_venue": -1,
+          "options_sentiment": 1,
+          "spot_venue": 1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 2,
+        "totalNet": 0,
+        "byAsset": {
+          "GOLD": 0,
+          "AMZN": 0
+        },
+        "bySignalType": {
+          "FUNDING_EXTREME_LONG": -1,
+          "PC_RATIO_EXTREME_HIGH": 1,
+          "FUNDING_EXTREME_SHORT": 0
+        },
+        "byVenue": {
+          "hyperliquid": -1,
+          "spot": 1
+        },
+        "byCluster": {
+          "commodity": 0,
+          "funding_reversion": -1,
+          "gold_delta": 0,
+          "hyperliquid_venue": -1,
+          "options_sentiment": 1,
+          "spot_venue": 1,
+          "amzn_delta": 0,
+          "risk_on": 0
+        }
+      },
+      "warnings": []
     }
   ],
   "stagedQuantRules": [
@@ -233,6 +334,22 @@
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
       ]
+    },
+    {
+      "candidateId": "FUNDING_EXTREME_SHORT:AMZN:2",
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "asset": "AMZN",
+      "mode": "observe_uniform",
+      "liveSizingEnabled": false,
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "enforcedLiveSize": 1,
+      "wouldResize": true,
+      "edgePts": null,
+      "alerts": [],
+      "notes": [
+        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
+      ]
     }
   ],
   "llmCloseEligibility": [
@@ -248,12 +365,12 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 10.99,
-      "hoursToExpiry": 61.01,
+      "hoursOpen": 11.99,
+      "hoursToExpiry": 60.01,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.1526,
+      "elapsedHoldPct": 0.1665,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 11.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
     },
     {
       "positionId": "T-1784219291393-zbud",
@@ -267,12 +384,12 @@
         "gold_gc_spot",
         "gold_gld_pc_ratio"
       ],
-      "hoursOpen": 8,
-      "hoursToExpiry": 112,
+      "hoursOpen": 9,
+      "hoursToExpiry": 111,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0666,
+      "elapsedHoldPct": 0.075,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 8.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 9.0h, requires at least 12h."
     }
   ]
 }
