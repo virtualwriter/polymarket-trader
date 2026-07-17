@@ -1,74 +1,74 @@
 {
-  "generatedAt": "2026-07-16T07:07:20.990Z",
+  "generatedAt": "2026-07-17T07:09:39.436Z",
   "provider": "deepseek",
   "model": "deepseek-v4-pro",
-  "strategyReview": "Portfolio realized PnL is positive on a 446-trade basis with a 62.6% win rate, but the current open GOLD long is flat and recent ONE_TOUCH_HIGH_EDGE_NO shadows have turned into a losing cluster across BTC, GOLD, and OIL as spot trends upward. FUNDING_EXTREME_LONG and FUNDING_EXTREME_SHORT remain marginal losers overall; however, asset-level breakdowns reveal that FUNDING_EXTREME_LONG works well on GOLD (69% win) while FUNDING_EXTREME_SHORT works on AMZN (79% win) but both bleed in other assets, making pure asset selection critical. PC_RATIO_EXTREME_HIGH and PC_RATIO_EXTREME_LOW are mild net positives and continue to operate within expectations. Several eligible shadow-only setups (WEEKEND_HL_FUNDING_REVERSION_LONG, USER_PM_IV_TOUCH_RICH_NO, MONOTONIC_ARB) are strong but remain blocked, representing the largest untapped edge.",
+  "strategyReview": "ONE_TOUCH_HIGH_EDGE_NO remains our strongest signal with 4/4 live trades all winning and shadows accumulating +$0.78 total PnL. PC_RATIO_EXTREME_HIGH on OIL delivers steady profitability (60% win). WEEKEND_HL_FUNDING_REVERSION_LONG is eligible for live and consistently profitable across many assets with 74% win rate. Meanwhile, FUNDING_EXTREME_LONG on non-Gold assets (AMZN, HYPE) continues to drag performance, though Gold-specific trades do well. LLM_HYPOTHESIS remains disabled after large Oil losses. NO_BIAS_ADJUSTED_GAP_SHADOW is a shadow failure that should be retired.",
   "failureClusters": [
     {
-      "theme": "ONE_TOUCH_NO edge selling failures in uptrends",
-      "evidence": "Of 8 recently resolved trades, 6 were ONE_TOUCH_HIGH_EDGE_NO shadows that ended in thesis_compressed_loss across BTC, GOLD, and OIL, while spot price likely moved against the shorts. The overall shadow win rate is 37% and the open ONE_TOUCH warnings show wide bid/ask spreads, indicating the pure edge signal is overwhelmed when spot sustains an uptrend.",
-      "recommendation": "Add a trend/momentum guard: only trigger sell-YES when spot is below its 24h SMA and 24h price change is less than +1.5%. Consider blocking signals entirely if the asset is above its 7d high in a strong uptrend, and test this as a new hypothesis under the ONE_TOUCH family."
+      "theme": "Funding Extreme Long on AMZN & HYPE Bleeds",
+      "evidence": "AMZN: 7 trades, 29% win, -$0.11 total; HYPE: 6 trades, 33% win, -$0.10 total. Both assets are disabled but historical damage persists.",
+      "recommendation": "Permanently keep FUNDING_EXTREME_LONG disabled on AMZN and HYPE; only allow GOLD where this signal is net positive."
     },
     {
-      "theme": "FUNDING_EXTREME_LONG asset-specific drag",
-      "evidence": "Live FUNDING_EXTREME_LONG trades on GOLD win at 69% with a positive PnL, while AMZN (29% win) and HYPE (33% win) generate steep losses that drag the signal’s average PnL to -0.53%. The overall 30-trade set is unprofitable despite the strong GOLD subset.",
-      "recommendation": "Restrict FUNDING_EXTREME_LONG to GOLD only in live trading until further shadow evidence proves robustness on other assets, or create a dedicated gold funding long variant with refined entry conditions. Continue to disable AMZN and HYPE from this signal."
+      "theme": "NO_BIAS_ADJUSTED_GAP_SHADOW Systematic Loss",
+      "evidence": "Setup family: 89 resolved shadows, 37 wins, avg PnL -1.30%, large single losses (e.g., -51.79%).",
+      "recommendation": "Retire the family and kill all associated hypotheses; the strategy is structurally losing."
+    },
+    {
+      "theme": "LLM_HYPOTHESIS Oil Dislocation Burns Capital",
+      "evidence": "6 live OIL trades, 1 win, -$0.39 total, 17% win rate. Even after data cleanup, the disabled signal cannot recover.",
+      "recommendation": "Keep LLM_HYPOTHESIS disabled indefinitely; only allow a new, narrow, measurable Oil hypothesis to restart shadow testing."
     }
   ],
   "newHypotheses": [
     {
-      "created": "2026-07-16",
-      "description": "ONE_TOUCH_NO with momentum guard: only sell-YES NO contracts when the sell-YES edge exceeds 1.5 pts AND spot is below its 24h simple moving average AND 24h price change is less than +1.5%, avoiding shorting into strong momentum uptrends that have been compressing recent NO shadows.",
+      "created": "2026-07-17",
+      "description": "ONE_TOUCH_HIGH_EDGE_NO on BTC refined entry: only enter when BTC is at least 2% below its 7d high (not near recent peak) and PM IV is in the lower 30th percentile (low implied movement expectations). This filters out high-probability touch scenarios.",
       "conditions": {
-        "btc_one_touch_sell_yes_edge_pts": "> 1.5",
-        "btc_spot_pct_vs_24h_sma": "< 0",
-        "btc_spot_change_pct_24h": "< 1.5"
+        "btc_spot_pct_from_7d_high": "< -2",
+        "btc_pm_iv_percentile_30d": "< 30"
       },
-      "prediction": "Selling YES with edge and momentum filter will increase win rate and reduce thesis_compressed_loss events compared to the unfiltered ONE_TOUCH_HIGH_EDGE_NO signal.",
+      "prediction": "Sell YES on BTC one-touch contracts when filters are met; high probability YES value decays as spot stays below the high strike.",
       "timeframeDays": 14,
-      "confidence": 0.7,
+      "confidence": 0.65,
       "direction": "short",
       "source": "llm"
     },
     {
-      "created": "2026-07-16",
-      "description": "GOLD funding extreme long enhanced: when gold funding rate annualized is in the bottom 10th percentile of its 30-day range (deeply negative) and spot is above its 24h SMA, suggesting extreme short-covering pressure combined with an intact uptrend for a high-probability long.",
+      "created": "2026-07-17",
+      "description": "BTC extreme PC ratio contrarian long with momentum filter: when IBIT put/call ratio is in its top 15th percentile (extreme high, signaling capitulation) and spot has positive 24h momentum (change >0.5%), go long.",
       "conditions": {
-        "gold_hl_funding_ann_percentile_30d": "< 10",
-        "gold_gc_spot_pct_vs_24h_sma": "> 0"
+        "btc_ibit_pc_ratio_percentile_30d": "> 85",
+        "btc_spot_change_pct_24h": "> 0.5"
       },
-      "prediction": "Gold spot will rise over the next 7 days as extreme funding stress normalises within an uptrend, outperforming the broader FUNDING_EXTREME_LONG signal.",
+      "prediction": "BTC spot rises over next 7 days as excessive put positioning is unwound and momentum continues.",
       "timeframeDays": 7,
-      "confidence": 0.65,
+      "confidence": 0.6,
       "direction": "long",
       "source": "llm"
     },
     {
-      "created": "2026-07-16",
-      "description": "Cross-asset funding divergence: when gold funding is deeply negative (bottom 10th percentile) and BTC funding is extremely positive (top 10th percentile) simultaneously, the divergence indicates a relative-value dislocation where gold is oversold and BTC is overbought, favouring a long gold position over the next week.",
+      "created": "2026-07-17",
+      "description": "Gold funding extreme long asset-specific short: when Gold perpetual funding rate is extremely high (>50% annualized) and spot is trading below its 24h SMA (momentum fading), short Gold.",
       "conditions": {
-        "gold_hl_funding_ann_percentile_30d": "< 10",
-        "btc_hl_funding_ann_percentile_30d": "> 90"
+        "gold_hl_funding_ann": "> 50",
+        "gold_gc_spot_pct_vs_24h_sma": "< 0"
       },
-      "prediction": "Gold spot will outperform and rise over the next 7 days as funding regimes converge.",
-      "timeframeDays": 7,
-      "confidence": 0.55,
-      "direction": "long",
+      "prediction": "Gold spot price declines over the next 10 days as excessive long positioning unwinds.",
+      "timeframeDays": 10,
+      "confidence": 0.5,
+      "direction": "short",
       "source": "llm"
     }
   ],
   "hypothesisReviews": [
     {
       "id": "H-001",
-      "observation": "BTC PM-IV expansion/reversion hypothesis holds a 60% win rate over 6 tests but remains in limbo with no live trades. The edge is statistically compelling enough to move to a shadow trade phase with a tight stop (e.g., 2%) to gather real-market behaviour under the btc_pm_iv_expansion_reversion family."
+      "observation": "BTC PM-IV expansion/reversion (60% win over 6 tests) shows promising edge but sample still small. Continue shadow testing and consider promotion once it reaches a higher trade count with stable performance."
     },
     {
       "id": "H-523",
-      "observation": "BTC PM IV regime-relative compression shows only 1 win in 3 tests, suggesting the current 30-day bottom-20% threshold is too permissive. Consider tightening the entry to bottom-10% PM IV percentile and requiring spot above the 3-day SMA before further shadow testing."
-    },
-    {
-      "id": "H-524",
-      "observation": "The SHORT/NO cap-rich upside hypothesis (pure edge selling without trend filter) lost both resolved tests, consistent with the recent ONE_TOUCH_NO thesis_compressed_losses. Recommend merging a momentum guard into this hypothesis before running additional shadow tests, as proposed in the new ONE_TOUCH_NO with momentum guard hypothesis."
+      "observation": "BTC PM IV regime-relative compression (33% win over 4 tests) suffered one large loss; the concept may benefit from stricter regime filters (e.g., require IV at <15th percentile) to avoid premature entries."
     }
   ],
   "parameterUpdates": {
@@ -78,11 +78,67 @@
     "llmTradeExpiryDays": 14,
     "momentumLongExpiryDays": 21,
     "signalRisk": {
+      "PM_IV_GT_OPT_IV": {
+        "targetPct": null,
+        "stopPct": 5
+      },
+      "OPT_IV_GT_PM_IV": {
+        "targetPct": 5,
+        "stopPct": 3.5
+      },
+      "FUNDING_EXTREME_LONG": {
+        "targetPct": 5,
+        "stopPct": 2
+      },
       "FUNDING_EXTREME_SHORT": {
+        "targetPct": 4,
+        "stopPct": 2
+      },
+      "PM_EV_ABOVE_SPOT": {
+        "targetPct": 4,
+        "stopPct": 4
+      },
+      "PM_EV_BELOW_SPOT": {
         "targetPct": 3,
+        "stopPct": 3.5
+      },
+      "PC_RATIO_EXTREME_HIGH": {
+        "targetPct": 4,
+        "stopPct": 1.5
+      },
+      "PC_RATIO_EXTREME_LOW": {
+        "targetPct": 5,
+        "stopPct": 1.5
+      },
+      "BASIS_PREMIUM": {
+        "targetPct": 1.5,
+        "stopPct": 1.5
+      },
+      "BASIS_DISCOUNT": {
+        "targetPct": 1.5,
+        "stopPct": 1.5
+      },
+      "MACRO_MOMENTUM_UP": {
+        "targetPct": 3,
+        "stopPct": 3
+      },
+      "MACRO_MOMENTUM_DOWN": {
+        "targetPct": 4,
+        "stopPct": 3
+      },
+      "LLM_HYPOTHESIS": {
+        "targetPct": 3.5,
+        "stopPct": 2.5
+      },
+      "MOMENTUM_LONG": {
+        "targetPct": 6,
+        "stopPct": 3.5
+      },
+      "PROMOTED_HYPOTHESIS": {
+        "targetPct": 4,
         "stopPct": 2
       }
     }
   },
-  "journalEntry": "Tonight’s review centred on the ONE_TOUCH_NO failure cluster as spot trended higher against multiple short positions, confirming that the pure edge signal needs a momentum guard. Augmented the research pipeline with a new hypothesis that adds trend filters to ONE_TOUCH_NO. Asset-level lessons showed FUNDING_EXTREME_LONG is a gold-only signal in practice; recommend restricting live to gold until further notice. FUNDING_EXTREME_SHORT’s low target hit rate and slightly negative PnL motivated a target reduction from 4% to 3% to capture profits more reliably. Strong blocked setups (WEEKEND_HL_FUNDING_REVERSION_LONG, USER_PM_IV_TOUCH_RICH_NO) remain the highest-edge opportunities pending promotion; will flag for operator review. Minor refinement of BTC PM-IV hypotheses to tighten entry thresholds and move promising H-001 toward shadow trading."
+  "journalEntry": "Nightly review confirms ONE_TOUCH_HIGH_EDGE_NO is our star performer and requires no parameter adjustment. PC_RATIO_EXTREME_HIGH on OIL remains a steady contributor. We retired NO_BIAS_ADJUSTED_GAP_SHADOW due to persistent losses. LLM_HYPOTHESIS stays locked. Three new hypotheses introduced: a refined BTC one-touch NO entry, a contrarian BTC PC ratio long with momentum, and a Gold funding extreme long short variant—each designed to capture proven dynamics with added filters. No parameter changes justified."
 }

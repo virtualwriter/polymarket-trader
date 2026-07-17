@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-16T16:56:22Z",
+  "generatedAt": "2026-07-17T07:09:39Z",
   "model": "shadow_miner_v1",
   "source": "mine_shadow_hypotheses.py",
   "filters": {
@@ -11,231 +11,7 @@
   },
   "newHypotheses": [
     {
-      "created": "2026-07-16",
-      "description": "[shadow_mined] NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD (short-rich-tail/no): historical shadow WR=62% over n=8 (sumPnl=+0.368). Re-test when edge/funding conditions reappear.",
-      "conditions": {
-        "gold_pm_underlying_cap_edge_pts_max": ">= 12.3"
-      },
-      "prediction": "GOLD spot will decline >2% within 2 days when mined shadow conditions re-trigger",
-      "timeframeDays": 2,
-      "confidence": 0.7,
-      "direction": "short",
-      "source": "shadow_mined",
-      "setupId": "shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no",
-      "setupLabel": "Shadow-mined NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short-rich-tail",
-      "mineStats": {
-        "n": 8,
-        "wins": 5,
-        "winRate": 0.625,
-        "sumPnl": 0.3679,
-        "hasHeatmap": true,
-        "sampleIds": [
-          "NB-1779884974279-sish",
-          "NB-1779978513889-iyhc",
-          "NB-1779992914338-ypn5",
-          "NB-1780673324852-nmxh",
-          "NB-1780856911945-5t48"
-        ]
-      }
-    },
-    {
-      "created": "2026-07-16",
-      "description": "[shadow_mined] NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD (heatmap/no): historical shadow WR=62% over n=8 (sumPnl=+0.368). Re-test when edge/funding conditions reappear.",
-      "conditions": {
-        "gold_pm_underlying_cap_edge_pts_max": ">= 12.3"
-      },
-      "prediction": "GOLD spot will decline >2% within 2 days when mined shadow conditions re-trigger",
-      "timeframeDays": 2,
-      "confidence": 0.7,
-      "direction": "short",
-      "source": "shadow_mined",
-      "setupId": "shadow_no_bias_adjusted_gap_shadow_gold_heatmap_no",
-      "setupLabel": "Shadow-mined NO_BIAS_ADJUSTED_GAP_SHADOW GOLD heatmap",
-      "mineStats": {
-        "n": 8,
-        "wins": 5,
-        "winRate": 0.625,
-        "sumPnl": 0.3679,
-        "hasHeatmap": true,
-        "sampleIds": [
-          "NB-1779884974279-sish",
-          "NB-1779978513889-iyhc",
-          "NB-1779992914338-ypn5",
-          "NB-1780673324852-nmxh",
-          "NB-1780856911945-5t48"
-        ]
-      }
-    },
-    {
-      "created": "2026-07-16",
-      "description": "[shadow_mined] ONE_TOUCH_HIGH_EDGE_NO on GOLD (heatmap/no): historical shadow WR=58% over n=12 (sumPnl=+0.649). Re-test when edge/funding conditions reappear.",
-      "conditions": {
-        "gold_pm_underlying_cap_edge_pts_max": ">= 10.0"
-      },
-      "prediction": "GOLD spot will decline >2% within 2 days when mined shadow conditions re-trigger",
-      "timeframeDays": 2,
-      "confidence": 0.7,
-      "direction": "short",
-      "source": "shadow_mined",
-      "setupId": "shadow_one_touch_high_edge_no_gold_heatmap_no",
-      "setupLabel": "Shadow-mined ONE_TOUCH_HIGH_EDGE_NO GOLD heatmap",
-      "mineStats": {
-        "n": 12,
-        "wins": 7,
-        "winRate": 0.5833,
-        "sumPnl": 0.6492,
-        "hasHeatmap": true,
-        "sampleIds": [
-          "OT-1779348547074-tm2l",
-          "OT-1783659557591-81cc",
-          "OT-1783659557594-u7s1",
-          "OT-1783694116078-dtpj",
-          "OT-1783780517241-ssvk"
-        ]
-      }
-    },
-    {
-      "created": "2026-07-16",
-      "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on MU (weekend_hl_funding_shadow/long): historical shadow WR=100% over n=8 (sumPnl=+0.273). Re-test when edge/funding conditions reappear.",
-      "conditions": {
-        "mu_hl_funding_ann": "< -10"
-      },
-      "prediction": "MU spot will move >2% within 2 days when mined shadow conditions re-trigger",
-      "timeframeDays": 2,
-      "confidence": 0.7,
-      "direction": "long",
-      "source": "shadow_mined",
-      "setupId": "shadow_weekend_hl_funding_reversion_long_mu_weekend_hl_funding_shadow_long",
-      "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG MU weekend_hl_funding_shadow",
-      "mineStats": {
-        "n": 8,
-        "wins": 8,
-        "winRate": 1.0,
-        "sumPnl": 0.273,
-        "hasHeatmap": false,
-        "sampleIds": [
-          "WF-1779665359141-MU-u2e8",
-          "WF-1780087728968-MU-flsz",
-          "WF-1780140511145-MU-bwzp",
-          "WF-1780255715660-MU-lpo9",
-          "WF-1780759716467-MU-wbbj"
-        ]
-      }
-    },
-    {
-      "created": "2026-07-16",
-      "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on HOOD (weekend_hl_funding_shadow/long): historical shadow WR=92% over n=12 (sumPnl=+0.159). Re-test when edge/funding conditions reappear.",
-      "conditions": {
-        "hood_hl_funding_ann": "< -10"
-      },
-      "prediction": "HOOD spot will move >2% within 2 days when mined shadow conditions re-trigger",
-      "timeframeDays": 2,
-      "confidence": 0.7,
-      "direction": "long",
-      "source": "shadow_mined",
-      "setupId": "shadow_weekend_hl_funding_reversion_long_hood_weekend_hl_funding_shadow_long",
-      "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG HOOD weekend_hl_funding_shadow",
-      "mineStats": {
-        "n": 12,
-        "wins": 11,
-        "winRate": 0.9167,
-        "sumPnl": 0.1593,
-        "hasHeatmap": false,
-        "sampleIds": [
-          "WF-1779661761704-HOOD-66ul",
-          "WF-1780158509117-HOOD-8pyf",
-          "WF-1780180113914-HOOD-k344",
-          "WF-1780223315920-HOOD-j2j0",
-          "WF-1780248512606-HOOD-rasn"
-        ]
-      }
-    },
-    {
-      "created": "2026-07-16",
-      "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on AAPL (weekend_hl_funding_shadow/long): historical shadow WR=89% over n=9 (sumPnl=+0.010). Re-test when edge/funding conditions reappear.",
-      "conditions": {
-        "aapl_hl_funding_ann": "< -10"
-      },
-      "prediction": "AAPL spot will move >2% within 2 days when mined shadow conditions re-trigger",
-      "timeframeDays": 2,
-      "confidence": 0.7,
-      "direction": "long",
-      "source": "shadow_mined",
-      "setupId": "shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long",
-      "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG AAPL weekend_hl_funding_shadow",
-      "mineStats": {
-        "n": 9,
-        "wins": 8,
-        "winRate": 0.8889,
-        "sumPnl": 0.0102,
-        "hasHeatmap": false,
-        "sampleIds": [
-          "WF-1779661761704-AAPL-fawa",
-          "WF-1780087728967-AAPL-0wbd",
-          "WF-1780158509116-AAPL-q73w",
-          "WF-1780237715514-AAPL-tmdd",
-          "WF-1780266518746-AAPL-thv2"
-        ]
-      }
-    },
-    {
-      "created": "2026-07-16",
-      "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on COIN (weekend_hl_funding_shadow/long): historical shadow WR=89% over n=9 (sumPnl=+0.127). Re-test when edge/funding conditions reappear.",
-      "conditions": {
-        "coin_hl_funding_ann": "< -10"
-      },
-      "prediction": "COIN spot will move >2% within 2 days when mined shadow conditions re-trigger",
-      "timeframeDays": 2,
-      "confidence": 0.7,
-      "direction": "long",
-      "source": "shadow_mined",
-      "setupId": "shadow_weekend_hl_funding_reversion_long_coin_weekend_hl_funding_shadow_long",
-      "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG COIN weekend_hl_funding_shadow",
-      "mineStats": {
-        "n": 9,
-        "wins": 8,
-        "winRate": 0.8889,
-        "sumPnl": 0.1268,
-        "hasHeatmap": false,
-        "sampleIds": [
-          "WF-1780090108884-COIN-j1pm",
-          "WF-1780115314549-COIN-g0n7",
-          "WF-1780180113912-COIN-ctg9",
-          "WF-1780205309859-COIN-hei0",
-          "WF-1780212512519-COIN-62r1"
-        ]
-      }
-    },
-    {
-      "created": "2026-07-16",
-      "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on CBRS (weekend_hl_funding_shadow/long): historical shadow WR=88% over n=8 (sumPnl=+0.110). Re-test when edge/funding conditions reappear.",
-      "conditions": {
-        "cbrs_hl_funding_ann": "< -10"
-      },
-      "prediction": "CBRS spot will move >2% within 2 days when mined shadow conditions re-trigger",
-      "timeframeDays": 2,
-      "confidence": 0.7,
-      "direction": "long",
-      "source": "shadow_mined",
-      "setupId": "shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long",
-      "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG CBRS weekend_hl_funding_shadow",
-      "mineStats": {
-        "n": 8,
-        "wins": 7,
-        "winRate": 0.875,
-        "sumPnl": 0.1099,
-        "hasHeatmap": false,
-        "sampleIds": [
-          "WF-1780087728968-CBRS-i1qh",
-          "WF-1780097309084-CBRS-cnjn",
-          "WF-1780111718103-CBRS-vnni",
-          "WF-1780129709984-CBRS-x5h5",
-          "WF-1780147713961-CBRS-qr9e"
-        ]
-      }
-    },
-    {
-      "created": "2026-07-16",
+      "created": "2026-07-17",
       "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on RKLB (weekend_hl_funding_shadow/long): historical shadow WR=82% over n=11 (sumPnl=+0.308). Re-test when edge/funding conditions reappear.",
       "conditions": {
         "rklb_hl_funding_ann": "< -10"
@@ -263,7 +39,7 @@
       }
     },
     {
-      "created": "2026-07-16",
+      "created": "2026-07-17",
       "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on MRVL (weekend_hl_funding_shadow/long): historical shadow WR=82% over n=11 (sumPnl=+0.099). Re-test when edge/funding conditions reappear.",
       "conditions": {
         "mrvl_hl_funding_ann": "< -10"
@@ -291,7 +67,7 @@
       }
     },
     {
-      "created": "2026-07-16",
+      "created": "2026-07-17",
       "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on LLY (weekend_hl_funding_shadow/long): historical shadow WR=78% over n=9 (sumPnl=+0.013). Re-test when edge/funding conditions reappear.",
       "conditions": {
         "lly_hl_funding_ann": "< -10"
@@ -319,7 +95,7 @@
       }
     },
     {
-      "created": "2026-07-16",
+      "created": "2026-07-17",
       "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on LITE (weekend_hl_funding_shadow/long): historical shadow WR=78% over n=9 (sumPnl=+0.140). Re-test when edge/funding conditions reappear.",
       "conditions": {
         "lite_hl_funding_ann": "< -10"
@@ -343,6 +119,146 @@
           "WF-1780151312594-LITE-1z3b",
           "WF-1780190910080-LITE-gre5",
           "WF-1780212512521-LITE-bm0i"
+        ]
+      }
+    },
+    {
+      "created": "2026-07-17",
+      "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on ORCL (weekend_hl_funding_shadow/long): historical shadow WR=70% over n=10 (sumPnl=+0.130). Re-test when edge/funding conditions reappear.",
+      "conditions": {
+        "orcl_hl_funding_ann": "< -10"
+      },
+      "prediction": "ORCL spot will move >2% within 2 days when mined shadow conditions re-trigger",
+      "timeframeDays": 2,
+      "confidence": 0.7,
+      "direction": "long",
+      "source": "shadow_mined",
+      "setupId": "shadow_weekend_hl_funding_reversion_long_orcl_weekend_hl_funding_shadow_long",
+      "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG ORCL weekend_hl_funding_shadow",
+      "mineStats": {
+        "n": 10,
+        "wins": 7,
+        "winRate": 0.7,
+        "sumPnl": 0.1304,
+        "hasHeatmap": false,
+        "sampleIds": [
+          "WF-1779650958036-ORCL-mp01",
+          "WF-1780115314551-ORCL-t25h",
+          "WF-1780154913130-ORCL-58ow",
+          "WF-1780219714089-ORCL-npyr",
+          "WF-1780259310694-ORCL-v3ps"
+        ]
+      }
+    },
+    {
+      "created": "2026-07-17",
+      "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on MSTR (weekend_hl_funding_shadow/long): historical shadow WR=62% over n=8 (sumPnl=+0.018). Re-test when edge/funding conditions reappear.",
+      "conditions": {
+        "mstr_hl_funding_ann": "< -10"
+      },
+      "prediction": "MSTR spot will move >2% within 2 days when mined shadow conditions re-trigger",
+      "timeframeDays": 2,
+      "confidence": 0.7,
+      "direction": "long",
+      "source": "shadow_mined",
+      "setupId": "shadow_weekend_hl_funding_reversion_long_mstr_weekend_hl_funding_shadow_long",
+      "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG MSTR weekend_hl_funding_shadow",
+      "mineStats": {
+        "n": 8,
+        "wins": 5,
+        "winRate": 0.625,
+        "sumPnl": 0.0185,
+        "hasHeatmap": false,
+        "sampleIds": [
+          "WF-1780087728968-MSTR-aodt",
+          "WF-1780115314551-MSTR-e2f1",
+          "WF-1780126109119-MSTR-ttwp",
+          "WF-1780180113914-MSTR-uxw6",
+          "WF-1780208915318-MSTR-ulij"
+        ]
+      }
+    },
+    {
+      "created": "2026-07-17",
+      "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on ARM (weekend_hl_funding_shadow/long): historical shadow WR=62% over n=13 (sumPnl=+0.123). Re-test when edge/funding conditions reappear.",
+      "conditions": {
+        "arm_hl_funding_ann": "< -10"
+      },
+      "prediction": "ARM spot will move >2% within 2 days when mined shadow conditions re-trigger",
+      "timeframeDays": 2,
+      "confidence": 0.7,
+      "direction": "long",
+      "source": "shadow_mined",
+      "setupId": "shadow_weekend_hl_funding_reversion_long_arm_weekend_hl_funding_shadow_long",
+      "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG ARM weekend_hl_funding_shadow",
+      "mineStats": {
+        "n": 13,
+        "wins": 8,
+        "winRate": 0.6154,
+        "sumPnl": 0.1232,
+        "hasHeatmap": false,
+        "sampleIds": [
+          "WF-1779650958036-ARM-kn64",
+          "WF-1780087728967-ARM-yigm",
+          "WF-1780093713967-ARM-0se1",
+          "WF-1780180113912-ARM-vmqb",
+          "WF-1780198110351-ARM-5x79"
+        ]
+      }
+    },
+    {
+      "created": "2026-07-17",
+      "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on SKHX (weekend_hl_funding_shadow/long): historical shadow WR=56% over n=9 (sumPnl=-0.303). Re-test when edge/funding conditions reappear.",
+      "conditions": {
+        "skhx_hl_funding_ann": "< -10"
+      },
+      "prediction": "SKHX spot will move >2% within 2 days when mined shadow conditions re-trigger",
+      "timeframeDays": 2,
+      "confidence": 0.7,
+      "direction": "long",
+      "source": "shadow_mined",
+      "setupId": "shadow_weekend_hl_funding_reversion_long_skhx_weekend_hl_funding_shadow_long",
+      "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG SKHX weekend_hl_funding_shadow",
+      "mineStats": {
+        "n": 9,
+        "wins": 5,
+        "winRate": 0.5556,
+        "sumPnl": -0.3031,
+        "hasHeatmap": false,
+        "sampleIds": [
+          "WF-1779661761706-SKHX-koue",
+          "WF-1780093713967-SKHX-py8y",
+          "WF-1780115314551-SKHX-p57t",
+          "WF-1780133314725-SKHX-8sny",
+          "WF-1780180113914-SKHX-gqve"
+        ]
+      }
+    },
+    {
+      "created": "2026-07-17",
+      "description": "[shadow_mined] WEEKEND_HL_FUNDING_REVERSION_LONG on BIRD (weekend_hl_funding_shadow/long): historical shadow WR=56% over n=9 (sumPnl=+0.078). Re-test when edge/funding conditions reappear.",
+      "conditions": {
+        "bird_hl_funding_ann": "< -10"
+      },
+      "prediction": "BIRD spot will move >2% within 2 days when mined shadow conditions re-trigger",
+      "timeframeDays": 2,
+      "confidence": 0.7,
+      "direction": "long",
+      "source": "shadow_mined",
+      "setupId": "shadow_weekend_hl_funding_reversion_long_bird_weekend_hl_funding_shadow_long",
+      "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG BIRD weekend_hl_funding_shadow",
+      "mineStats": {
+        "n": 9,
+        "wins": 5,
+        "winRate": 0.5556,
+        "sumPnl": 0.0778,
+        "hasHeatmap": false,
+        "sampleIds": [
+          "WF-1780089616522-BIRD-4mgx",
+          "WF-1780180113912-BIRD-jhjr",
+          "WF-1780234109059-BIRD-78da",
+          "WF-1780273715095-BIRD-xjuk",
+          "WF-1780280914671-BIRD-wh8u"
         ]
       }
     }
