@@ -6107,7 +6107,7 @@ function ensureHypothesisSetupMetadata(hypothesis: Hypothesis): void {
   }
   // FIND-linked research hyps keep a stable per-FIND family (not freeform classifiers / retired other_mixed).
   if (typeof hypothesis.originFindingId === "string" && hypothesis.originFindingId.length > 0) {
-    hypothesis.setupId = `find_${hypothesis.originFindingId.toLowerCase().replace(/-/g, "_")}`;
+    hypothesis.setupId = `find_${hypothesis.originFindingId.replace(/^FIND-/i, "").toLowerCase()}`;
     hypothesis.setupLabel = `FIND-linked ${hypothesis.originFindingId}`;
     return;
   }
@@ -7483,7 +7483,7 @@ function ingestNightlyLlmAdvice(
     };
     if (isFindLinked) {
       // Stable per-FIND setup family so classifiers do not dump new research into retired other_mixed.
-      hypothesis.setupId = `find_${nh.originFindingId!.toLowerCase().replace(/-/g, "_")}`;
+      hypothesis.setupId = `find_${nh.originFindingId!.replace(/^FIND-/i, "").toLowerCase()}`;
       hypothesis.setupLabel = `FIND-linked ${nh.originFindingId}`;
     } else {
       ensureHypothesisSetupMetadata(hypothesis);
