@@ -7350,35 +7350,39 @@ function pushUniqueString(values: string[], value: string): string[] {
   return values.includes(value) ? values : [...values, value];
 }
 
-function linkFindingToHypothesis(originFindingId: string, hypothesisId: string, themeId?: string): boolean {
-  const registry = readJson<Record<string, unknown> | null>(REGISTRY_FILE, null);
-  if (!registry || typeof registry !== "object" || !Array.isArray(registry.records)) return false;
-  const finding = registry.records.find((record: unknown) =>
-    !!record && typeof record === "object"
-    && (record as Record<string, unknown>).id === originFindingId
-    && (record as Record<string, unknown>).type === "finding") as Record<string, unknown> | undefined;
-  if (!finding) return false;
+function linkFindingToHypothesis(originFindingId: string, hypothesisId: string, themeId?: string): "linked" | "missing" | "error" {
+  try {
+    const registry = readJson<Record<string, unknown> | null>(REGISTRY_FILE, null);
+    if (!registry || typeof registry !== "object" || !Array.isArray(registry.records)) return "missing";
+    const finding = registry.records.find((record: unknown) =>
+      !!record && typeof record === "object"
+      && (record as Record<string, unknown>).id === originFindingId
+      && (record as Record<string, unknown>).type === "finding") as Record<string, unknown> | undefined;
+    if (!finding) return "missing";
 
-  const links = finding.links && typeof finding.links === "object"
-    ? finding.links as Record<string, unknown>
-    : {};
-  links.hypotheses = pushUniqueString(stringArray(links.hypotheses), hypothesisId);
-  finding.links = links;
+    const links = finding.links && typeof finding.links === "object"
+      ? finding.links as Record<string, unknown>
+      : {};
+    links.hypotheses = pushUniqueString(stringArray(links.hypotheses), hypothesisId);
+    finding.links = links;
 
-  const body = finding.body && typeof finding.body === "object"
-    ? finding.body as Record<string, unknown>
-    : {};
-  body.hypothesisIds = pushUniqueString(stringArray(body.hypothesisIds), hypothesisId);
-  body.lastLinkedHypothesisId = hypothesisId;
-  body.lastLinkedHypothesisAt = new Date().toISOString();
-  if (themeId && typeof body.themeId !== "string") body.themeId = themeId;
-  finding.body = body;
+    const body = finding.body && typeof finding.body === "object"
+      ? finding.body as Record<string, unknown>
+      : {};
+    body.hypothesisIds = pushUniqueString(stringArray(body.hypothesisIds), hypothesisId);
+    body.lastLinkedHypothesisId = hypothesisId;
+    body.lastLinkedHypothesisAt = new Date().toISOString();
+    if (themeId && typeof body.themeId !== "string") body.themeId = themeId;
+    finding.body = body;
 
-  const outFile = join(DATA_DIR, REGISTRY_FILE);
-  const tmp = `${outFile}.tmp`;
-  writeFileSync(tmp, JSON.stringify(registry, null, 2) + "\n");
-  renameSync(tmp, outFile);
-  return true;
+    const outFile = join(DATA_DIR, REGISTRY_FILE);
+    const tmp = `${outFile}.tmp-${process.pid}-${Date.now()}`;
+    writeFileSync(tmp, JSON.stringify(registry, null, 2) + "\n");
+    renameSync(tmp, outFile);
+    return "linked";
+  } catch {
+    return "error";
+  }
 }
 
 interface NightlyLlmAdviceIngestResult {
@@ -7482,8 +7486,9 @@ function ingestNightlyLlmAdvice(
       added++;
       if (nh.originFindingId && !MUTATION_DISABLED) {
         const linked = linkFindingToHypothesis(nh.originFindingId, id, nh.themeId);
-        if (linked) notes.push(`Nightly advice: linked ${nh.originFindingId} to ${id}.`);
-        else notes.push(`Nightly advice: could not link missing registry finding ${nh.originFindingId} to ${id}.`);
+        if (linked === "linked") notes.push(`Nightly advice: linked ${nh.originFindingId} to ${id}.`);
+        else if (linked === "missing") notes.push(`Nightly advice: could not link missing registry finding ${nh.originFindingId} to ${id}.`);
+        else notes.push(`Nightly advice: registry link failed for ${nh.originFindingId} -> ${id}; continuing ingest.`);
       }
       notes.push(`Nightly advice: new hypothesis ${id}: ${nh.description.slice(0, 80)}`);
     }
