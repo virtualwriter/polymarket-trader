@@ -22848,6 +22848,34 @@
       },
       "created": "2026-07-18T04:07:39Z",
       "source": "add_find_phase_e_dec.py"
+    },
+    {
+      "id": "DEC-0020",
+      "type": "decision",
+      "evidenceClass": "DERIVED",
+      "status": "final",
+      "title": "Phase F: negative FIND writeback from failed hypotheses",
+      "body": {
+        "rationale": "Phase F closes the FIND→hypothesis→experiment loop: when a hypothesis with originFindingId fails (killed/archived or >=5 resolved tests with winRate < 0.40), writeback_negative_findings.py marks the FIND status=negative and links the failed hyp id. upsert_finding never reopens negative records on re-mine; score_research_findings excludes negatives from opportunities.",
+        "failureRules": {
+          "killed": true,
+          "archived": true,
+          "lowWinRate": {
+            "minResolvedTests": 5,
+            "maxWinRate": 0.4
+          }
+        },
+        "artifacts": [
+          "scripts/writeback_negative_findings.py"
+        ]
+      },
+      "links": {
+        "relatedRecords": [
+          "DEC-0019"
+        ]
+      },
+      "created": "2026-07-18T04:09:55Z",
+      "source": "add_find_phase_f_dec.py"
     }
   ]
 }
