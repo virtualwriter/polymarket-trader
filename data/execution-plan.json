@@ -1,15 +1,44 @@
 {
-  "generatedAt": "2026-07-18T17:28:05.130Z",
+  "generatedAt": "2026-07-18T18:28:50.383Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
-  "entrySignals": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1784208521735-ub7u",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_hl_funding_ann"
+      ],
+      "thesis": "Funding has round-tripped from +28.1% at entry through zero to -19.21%, fully normalizing the extreme long bias and invalidating the fade-crowded-longs thesis."
+    }
+  ],
+  "entrySignals": [
+    {
+      "type": "FUNDING_EXTREME_SHORT",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "strength": 0.12028571428571432,
+      "confidence": 0.06198354634549094,
+      "thesis": "GOLD HL funding -19.2% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4016,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 7,
+      "leverage": 1
+    }
+  ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

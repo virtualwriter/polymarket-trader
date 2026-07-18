@@ -1907,3 +1907,40 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 1/12; ne
 
 ---
 
+### 2026-07-18 18:28 UTC
+
+**Portfolio:** $98.56 total | Cash $92.56 | 6 open | P&L $1.8003 | 62% win rate (448 trades)
+
+**Closed 1 trades:**
+- ❌ GOLD short via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG) → llm_decision: $-0.0024 (-0.2%, market -0.0025, funding 0.0001)
+
+**Hypothesis lifecycle:**
+- 💀 Setup family hype_funding_oi_long_bounce KILLED (15% over 20 tests across 5 variants): HYPE funding/OI long bounce
+- 💀 Setup family gold_iv_compression_vol_reversion KILLED (10% over 20 tests across 6 variants): Gold IV compression / vol reversion
+- 🧪 Opened 2 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 15 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -19.59 is -2.8 std devs from mean (-1.28 ± 6.45)
+- [anomaly] oil_hl_funding_ann = 144.48 is 2.1 std devs from mean since 2026-04-28 (-8.00 ± 71.02)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.26 to 0.29. Rolling correlation: 24h=0.67, 7d=-0.82, 30d=-0.09. Current 24h corr is at 93th pct of last 30 daily 24h-rolling values (range -0.92 to 0.88).
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 565 (320 wins / 245 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+39.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+8.22%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+11.48%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-35.71%)
+
+**LLM analysis:**
+GOLD FUNDING_EXTREME_LONG short (T-1784208521735-ub7u) closed on thesis_invalidated: funding collapsed from +28.1% to -19.21%, flipping the carry regime and erasing the signal. The GOLD PC_RATIO_EXTREME_HIGH long is in profit with the P/C ratio reverting sharply lower – not invalidated, but profit-taking remains mechanical. WEEKEND_HL_FUNDING_REVERSION_LONG positions are not eligible for LLM closes; no risk or quality flags, historical edge remains strong (74% win rate, 170 trades).
+
+---
+
