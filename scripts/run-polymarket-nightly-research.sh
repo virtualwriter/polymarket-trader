@@ -143,6 +143,21 @@ if ! timeout "${NIGHTLY_REPORT_TIMEOUT:-2m}" python3 scripts/build_nightly_resea
   echo "WARNING: build_nightly_research_report.py failed; continuing."
 fi
 
+# Mark FIND records negative when linked hypotheses fail (Phase F anti-rediscovery).
+if ! timeout "${WRITEBACK_NEGATIVE_TIMEOUT:-2m}" python3 scripts/writeback_negative_findings.py; then
+  echo "WARNING: writeback_negative_findings.py failed; continuing."
+fi
+
+# Refresh opportunity ranking after negative writeback.
+if ! timeout "${SCORE_FINDINGS_TIMEOUT:-2m}" python3 scripts/score_research_findings.py; then
+  echo "WARNING: score_research_findings.py failed; continuing."
+fi
+
+# Rebuild operator report so negative FINDs appear in section 5.
+if ! timeout "${NIGHTLY_REPORT_TIMEOUT:-2m}" python3 scripts/build_nightly_research_report.py; then
+  echo "WARNING: build_nightly_research_report.py (post-writeback) failed; continuing."
+fi
+
 # Verify the Neon mirror matches the CSV ledger (Phase 6 parity gate).
 if [[ -n "${NEON_DATABASE_URL:-}" ]]; then
   if ! timeout "${NEON_PARITY_TIMEOUT:-3m}" npx tsx scripts/neon-parity-check.ts; then

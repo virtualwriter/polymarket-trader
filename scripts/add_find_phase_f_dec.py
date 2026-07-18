@@ -1,0 +1,67 @@
+#!/usr/bin/env python3
+"""Add DEC-0020 documenting Phase F negative FIND writeback."""
+from __future__ import annotations
+
+import json
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+SCRIPTS = Path(__file__).resolve().parent
+if str(SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(SCRIPTS))
+
+from registry import default_registry_path, load_registry, next_id, write_registry  # noqa: E402
+
+MARKER_TITLE = "Phase F: negative FIND writeback from failed hypotheses"
+
+
+def main() -> int:
+    registry_path = default_registry_path()
+    if not registry_path.exists():
+        print(f"skip: {registry_path} not found (VPS-only registry)")
+        return 0
+
+    data = load_registry(registry_path)
+    records = data.setdefault("records", [])
+    for record in records:
+        if record.get("type") == "decision" and record.get("title") == MARKER_TITLE:
+            print(f"skip: decision already exists ({record['id']})")
+            return 0
+
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    dec = {
+        "id": next_id(records, "decision"),
+        "type": "decision",
+        "evidenceClass": "DERIVED",
+        "status": "final",
+        "title": MARKER_TITLE,
+        "body": {
+            "rationale": (
+                "Phase F closes the FIND→hypothesis→experiment loop: when a "
+                "hypothesis with originFindingId fails (killed/archived or "
+                ">=5 resolved tests with winRate < 0.40), writeback_negative_findings.py "
+                "marks the FIND status=negative and links the failed hyp id. "
+                "upsert_finding never reopens negative records on re-mine; "
+                "score_research_findings excludes negatives from opportunities."
+            ),
+            "failureRules": {
+                "killed": True,
+                "archived": True,
+                "lowWinRate": {"minResolvedTests": 5, "maxWinRate": 0.40},
+            },
+            "artifacts": ["scripts/writeback_negative_findings.py"],
+        },
+        "links": {"relatedRecords": ["DEC-0019"]},
+        "created": now,
+        "source": "add_find_phase_f_dec.py",
+    }
+    records.append(dec)
+    data["version"] = 1
+    write_registry(registry_path, data)
+    print(json.dumps(dec, indent=2))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
