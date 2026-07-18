@@ -23559,6 +23559,46 @@
       "links": {},
       "created": "2026-07-18T18:33:13Z",
       "source": "agent"
+    },
+    {
+      "id": "DEC-0023",
+      "type": "decision",
+      "evidenceClass": "DERIVED",
+      "status": "final",
+      "title": "Kill zombie settlement-bucket hypotheses H-527/528/529",
+      "body": {
+        "rationale": "Killed as zombie research: settlement-bucket conditions require gold_pm_settle_overround_max / gold_pm_settle_tail_yes_max / gold_pm_settle_skew_yes_max / oil_pm_settle_* columns that are not persisted in daily-valuations history (only gold_pm_settle_ev / oil_pm_settle_ev exist). Historical shadow backfill cannot trigger; feature pipeline was never restored. See DEC-0023.",
+        "killedHypotheses": [
+          "H-527",
+          "H-528",
+          "H-529"
+        ],
+        "setupIds": [
+          "gold_settlement_bucket_tail_volatility",
+          "oil_settlement_bucket_tail_volatility",
+          "gold_settlement_bucket_skew"
+        ],
+        "missingColumns": [
+          "gold_pm_settle_overround_max",
+          "gold_pm_settle_tail_yes_max",
+          "gold_pm_settle_skew_yes_max",
+          "oil_pm_settle_overround_max",
+          "oil_pm_settle_tail_yes_max"
+        ],
+        "presentInstead": [
+          "gold_pm_settle_ev",
+          "oil_pm_settle_ev"
+        ]
+      },
+      "links": {
+        "relatedHypotheses": [
+          "H-527",
+          "H-528",
+          "H-529"
+        ]
+      },
+      "created": "2026-07-18T18:58:13Z",
+      "source": "operator+backfill-audit"
     }
   ]
 }
