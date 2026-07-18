@@ -28,6 +28,8 @@ NIGHTLY_FILES=(
   data/calibration-buckets-summary.json
   data/lessons.json
   data/nightly-llm-advice.json
+  data/nightly-research-report.json
+  data/nightly-research-report.md
   data/research-findings.json
   data/research-opportunities.json
   data/research-themes.json
@@ -134,6 +136,11 @@ fi
 # Auto H-* promotion from shadow mine is deferred to Phase D.
 if ! timeout "${SHADOW_MINE_TIMEOUT:-3m}" python3 scripts/mine_shadow_findings.py; then
   echo "WARNING: mine_shadow_findings.py failed; continuing."
+fi
+
+# Evidence-first operator report from ranked FIND opportunities + themes (Phase E).
+if ! timeout "${NIGHTLY_REPORT_TIMEOUT:-2m}" python3 scripts/build_nightly_research_report.py; then
+  echo "WARNING: build_nightly_research_report.py failed; continuing."
 fi
 
 # Verify the Neon mirror matches the CSV ledger (Phase 6 parity gate).

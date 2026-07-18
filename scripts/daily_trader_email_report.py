@@ -96,6 +96,86 @@ def neon_parity_line(path: Path, now_utc: datetime) -> str | None:
     return line
 
 
+def _short_cluster_key(cluster_key: str | None, max_len: int = 36) -> str:
+    if not cluster_key:
+        return "—"
+    if len(cluster_key) <= max_len:
+        return cluster_key
+    return cluster_key[: max_len - 1] + "…"
+
+
+def nightly_research_loop_lines(
+    report_json_path: Path | None = None,
+    *,
+    max_chars: int = 1200,
+) -> list[str]:
+    """Compact nightly research summary for the daily report / Telegram."""
+    path = report_json_path or (DATA_DIR / "nightly-research-report.json")
+    header = "## Nightly Research Loop"
+    if not path.exists():
+        return [header, "- Nightly research report not yet available."]
+
+    try:
+        with path.open() as fh:
+            report = json.load(fh)
+    except (OSError, json.JSONDecodeError, TypeError):
+        return [header, "- Nightly research report not yet available."]
+
+    if not isinstance(report, dict):
+        return [header, "- Nightly research report not yet available."]
+
+    lines = [header]
+    summary = report.get("summary") or {}
+    themes = report.get("themesOverview") or []
+    theme_bits = [
+        f"{theme.get('slug', '?')}:{theme.get('findingCount', 0)}"
+        for theme in themes[:6]
+        if isinstance(theme, dict)
+    ]
+    theme_line = ", ".join(theme_bits) if theme_bits else "none"
+    lines.append(f"- Themes ({summary.get('themeCount', len(themes))}): {theme_line}")
+
+    if summary.get("advicePresent"):
+        lines.append(f"- New hyps from nightly advice: {summary.get('authoredHypothesisCount', 0)}")
+    else:
+        lines.append("- New hyps from nightly advice: advice not yet available")
+
+    lines.append("- Top opportunities:")
+    for row in (report.get("topOpportunities") or [])[:3]:
+        if not isinstance(row, dict):
+            continue
+        opp = row.get("opportunityScore")
+        opp_text = f"{opp:.3f}" if isinstance(opp, (int, float)) else "—"
+        lines.append(
+            f"  {row.get('rank', '?')}. {row.get('id', '?')} "
+            f"opp={opp_text} {_short_cluster_key(row.get('clusterKey'))}"
+        )
+
+    lines.append("- Full report: data/nightly-research-report.md")
+
+    section = "\n".join(lines)
+    if len(section) <= max_chars:
+        return lines
+
+    # Aggressive trim: drop theme detail first, then shorten clusters further.
+    compact = [header]
+    compact.append(f"- Themes: {summary.get('themeCount', len(themes))}")
+    if summary.get("advicePresent"):
+        compact.append(f"- New hyps: {summary.get('authoredHypothesisCount', 0)}")
+    compact.append("- Top opportunities:")
+    for row in (report.get("topOpportunities") or [])[:3]:
+        if not isinstance(row, dict):
+            continue
+        opp = row.get("opportunityScore")
+        opp_text = f"{opp:.3f}" if isinstance(opp, (int, float)) else "—"
+        compact.append(
+            f"  {row.get('id', '?')} opp={opp_text} "
+            f"{_short_cluster_key(row.get('clusterKey'), 24)}"
+        )
+    compact.append("- data/nightly-research-report.md")
+    return compact
+
+
 def _load_operationally_tainted_trades() -> dict[str, str]:
     """Load the canonical tainted-trade list from data/operationally-tainted-trades.json.
 
@@ -635,6 +715,7 @@ def build_report(window: ReportWindow) -> str:
     neon_line = neon_parity_line(DATA_DIR / "neon-parity.json", datetime.now(timezone.utc))
     if neon_line:
         lines.append(neon_line)
+    lines.extend(["", *nightly_research_loop_lines()])
     lines.extend([
         "",
         "## Hourly Closed P&L",
