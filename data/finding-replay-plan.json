@@ -1,0 +1,41 @@
+{
+  "candidates": [
+    {
+      "argv": [
+        "npx",
+        "tsx",
+        "scripts/replay-harness.ts",
+        "--start",
+        "2026-07-11",
+        "--end",
+        "2026-07-12",
+        "--sandbox",
+        "/tmp/finding-replay-FIND-0003",
+        "--signals",
+        "ONE_TOUCH_HIGH_EDGE_NO",
+        "--limit-hours",
+        "1",
+        "--keep-going"
+      ],
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|GOLD|heatmap|no",
+      "confidenceScore": 0.3182,
+      "id": "FIND-0003",
+      "opportunityScore": 0.7807,
+      "rank": 1,
+      "reproducibleCommand": "npx tsx scripts/replay-harness.ts --start 2026-07-11 --end 2026-07-12 --sandbox /tmp/finding-replay-FIND-0003 --signals ONE_TOUCH_HIGH_EDGE_NO --limit-hours 1 --keep-going",
+      "sandbox": "/tmp/finding-replay-FIND-0003",
+      "signals": "ONE_TOUCH_HIGH_EDGE_NO",
+      "status": "open",
+      "summaryPath": "/tmp/finding-replay-FIND-0003/replay-report.json",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on GOLD (heatmap/no): WR=58% n=12 sumPnl=+0.649"
+    }
+  ],
+  "generatedAt": "2026-07-18T04:37:20Z",
+  "limitHours": 1,
+  "topK": 1,
+  "window": {
+    "end": "2026-07-12",
+    "source": "latest_available_weekend",
+    "start": "2026-07-11"
+  }
+}

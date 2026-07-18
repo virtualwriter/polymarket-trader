@@ -32,6 +32,7 @@ NIGHTLY_FILES=(
   data/nightly-research-report.md
   data/research-findings.json
   data/research-opportunities.json
+  data/finding-replay-plan.json
   data/research-themes.json
   data/neon-parity.json
   data/learning-journal.md
@@ -151,6 +152,22 @@ fi
 # Refresh opportunity ranking after negative writeback.
 if ! timeout "${SCORE_FINDINGS_TIMEOUT:-2m}" python3 scripts/score_research_findings.py; then
   echo "WARNING: score_research_findings.py failed; continuing."
+fi
+
+
+# Plan replay evidence for top FIND opportunities (Phase G). Full attachment is opt-in.
+if ! timeout "${FIND_REPLAY_PLAN_TIMEOUT:-2m}" python3 scripts/attach_finding_replays.py \
+    --plan-only \
+    --top-k "${FIND_REPLAY_TOP_K:-1}" \
+    --limit-hours "${FIND_REPLAY_LIMIT_HOURS:-2}"; then
+  echo "WARNING: attach_finding_replays.py --plan-only failed; continuing."
+fi
+if [[ "${FIND_REPLAY_ATTACH:-0}" == "1" ]]; then
+  if ! timeout "${FIND_REPLAY_ATTACH_TIMEOUT:-10m}" python3 scripts/attach_finding_replays.py \
+      --top-k 1 \
+      --limit-hours "${FIND_REPLAY_LIMIT_HOURS:-2}"; then
+    echo "WARNING: attach_finding_replays.py attach failed; continuing."
+  fi
 fi
 
 # Rebuild operator report so negative FINDs appear in section 5.

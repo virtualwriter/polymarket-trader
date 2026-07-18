@@ -20796,9 +20796,34 @@
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ],
-        "themeId": "THEME-0001"
+        "themeId": "THEME-0001",
+        "replayEvidence": {
+          "status": "attached",
+          "tradeCount": 0,
+          "totalPnl": 0.0,
+          "window": {
+            "start": "2026-07-11",
+            "end": "2026-07-12",
+            "hoursReplayed": 1,
+            "hoursFailed": 0
+          },
+          "signals": "ONE_TOUCH_HIGH_EDGE_NO",
+          "opportunityScoreAtAttach": 0.7807
+        }
       },
-      "links": {},
+      "links": {
+        "replays": [
+          {
+            "sandbox": "/tmp/finding-replay-FIND-0003",
+            "started": "2026-07-11",
+            "ended": "2026-07-12",
+            "signals": "ONE_TOUCH_HIGH_EDGE_NO",
+            "summaryPath": "/tmp/finding-replay-FIND-0003/replay-report.json",
+            "attachedAt": "2026-07-18T04:37:20Z",
+            "reproducibleCommand": "npx tsx scripts/replay-harness.ts --start 2026-07-11 --end 2026-07-12 --sandbox /tmp/finding-replay-FIND-0003 --signals ONE_TOUCH_HIGH_EDGE_NO --limit-hours 1 --keep-going"
+          }
+        ]
+      },
       "created": "2026-07-18T03:02:16Z",
       "source": "shadow_miner_v1"
     },
@@ -22876,6 +22901,40 @@
       },
       "created": "2026-07-18T04:09:55Z",
       "source": "add_find_phase_f_dec.py"
+    },
+    {
+      "id": "DEC-0021",
+      "type": "decision",
+      "evidenceClass": "VALID",
+      "status": "final",
+      "title": "Phase G: attach replay evidence to top FIND opportunities",
+      "body": {
+        "rationale": "Replay evidence should be attached only to the highest-opportunity FIND records, not every mined finding. Nightly writes a cheap reproducible replay plan by default and performs short real attachments only when FIND_REPLAY_ATTACH=1 is set, preserving the research loop without adding routine VPS load.",
+        "selection": {
+          "source": "data/research-opportunities.json",
+          "defaultTopK": 1,
+          "skipStatus": [
+            "negative"
+          ]
+        },
+        "attachment": {
+          "link": "finding.links.replays",
+          "body": "finding.body.replayEvidence",
+          "sandboxPrefix": "/tmp/finding-replay-"
+        },
+        "nightly": {
+          "planOnlyDefault": true,
+          "fullAttachEnv": "FIND_REPLAY_ATTACH=1",
+          "artifact": "data/finding-replay-plan.json"
+        },
+        "artifacts": [
+          "scripts/attach_finding_replays.py",
+          "data/finding-replay-plan.json"
+        ]
+      },
+      "links": {},
+      "created": "2026-07-18T04:36:59Z",
+      "source": "phase_g_replay_attachment"
     }
   ]
 }
