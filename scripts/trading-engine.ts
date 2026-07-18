@@ -275,11 +275,14 @@ const HYPE_STOCK_BUILDER_ASSETS = new Set([
   "LITE", "LLY", "META", "MRVL", "MSFT", "MSTR", "MU", "NFLX", "NVDA",
   "ORCL", "PLTR", "RIVN", "RKLB", "SKHX", "SNDK", "TSLA", "TSM", "ZM",
 ]);
-const HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT = 25;
+/** Live retest fan-out for LLM + FIND-linked setup families (~8x prior 25). */
+const HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT = 200;
+/** Max in-flight pending shadow tests per LLM/FIND family (~8x prior 1). */
+const HYPOTHESIS_SETUP_MAX_PENDING_PER_FAMILY = 8;
 /** Parallel retest budget for shadow-mined families (does not steal LLM slots). */
-const SHADOW_MINED_RETEST_ACTIVE_LIMIT = 40;
+const SHADOW_MINED_RETEST_ACTIVE_LIMIT = 80;
 /** Allow multiple in-flight tests per shadow-mined family to accelerate evidence. */
-const SHADOW_MINED_MAX_PENDING_PER_FAMILY = 2;
+const SHADOW_MINED_MAX_PENDING_PER_FAMILY = 4;
 const SHADOW_MINED_ADVICE_FILE = "shadow-mined-hypotheses.json";
 const SHADOW_MINED_ADVICE_INGESTED_FILE = "shadow-mined-hypotheses-ingested.json";
 const SHADOW_MINED_MAX_NEW_PER_INGEST = 8;
@@ -6205,7 +6208,7 @@ function evaluateHypotheses(
     skippedInactiveBacklog += skippedInactive;
   };
 
-  openRetestsForSources(new Set(["llm"]), HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT, 1, "LLM");
+  openRetestsForSources(new Set(["llm"]), HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT, HYPOTHESIS_SETUP_MAX_PENDING_PER_FAMILY, "LLM");
   openRetestsForSources(
     new Set(["shadow_mined"]),
     SHADOW_MINED_RETEST_ACTIVE_LIMIT,
