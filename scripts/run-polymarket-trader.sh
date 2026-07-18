@@ -43,6 +43,7 @@ DATA_FILES=(
   data/blocked-signals.json
   data/processed-closed-trades.json
   data/learning-journal.md
+  data/core-loop-heartbeat.json
   data/engine-state.json
   data/llm-truth-state.json
   data/nightly-llm-advice.json
@@ -251,5 +252,27 @@ fi
 # Keep transient package/tsx caches from eating disk on the small VPS.
 npm cache clean --force >/dev/null 2>&1 || true
 rm -rf /tmp/tsx-* /tmp/node-compile-cache
+
+
+# Heartbeat for daily Telegram "Core Loop running" health.
+python3 - <<'PY'
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+path = Path("data/core-loop-heartbeat.json")
+path.write_text(
+    json.dumps(
+        {
+            "completedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "service": "polymarket-trader",
+            "ok": True,
+        },
+        indent=2,
+    )
+    + "\n"
+)
+print(f"Wrote {path}")
+PY
+git add -f data/core-loop-heartbeat.json || true
 
 echo "[$(date -u +%Y-%m-%dT%H:%M:%SZ)] Completed polymarket trader run"
