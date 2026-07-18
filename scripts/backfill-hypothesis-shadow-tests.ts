@@ -37,6 +37,7 @@ interface CliOptions {
   hypothesesPath: string;
   valuationsPath: string;
   relativeValuePath: string;
+  hlFundingHistoryPath: string;
   reportPath: string;
 }
 
@@ -63,6 +64,7 @@ interface Report {
   hypothesesPath: string;
   valuationsPath: string;
   relativeValuePath: string;
+  hlFundingHistoryPath: string;
   before: Counts;
   after: Counts;
   totals: {
@@ -95,6 +97,7 @@ function parseArgs(argv: string[]): CliOptions {
     hypothesesPath: "data/hypotheses.json",
     valuationsPath: "data/daily-valuations.csv",
     relativeValuePath: "relative-value/cross_venue_relative_value.csv",
+    hlFundingHistoryPath: "data/hl-funding-history.csv",
     reportPath: "data/hypothesis-shadow-backfill-report.json",
   };
 
@@ -112,6 +115,7 @@ function parseArgs(argv: string[]): CliOptions {
     else if (arg === "--hypotheses") opts.hypothesesPath = next();
     else if (arg === "--valuations") opts.valuationsPath = next();
     else if (arg === "--relative-value") opts.relativeValuePath = next();
+    else if (arg === "--hl-funding-history") opts.hlFundingHistoryPath = next();
     else if (arg === "--report") opts.reportPath = next();
     else throw new Error(`Unknown argument: ${arg}`);
   }
@@ -173,6 +177,71 @@ function readCsvFile(path: string): Record<string, string>[] {
   });
 }
 
+
+interface HlFundingHistoryPoint {
+  timestampMs: number;
+  value: number;
+}
+
+type HlFundingHistoryIndex = Map<string, HlFundingHistoryPoint[]>;
+
+function hlFundingAssetKey(label: string): string {
+  return label
+    .replace(/^GOLD \(GC\)$/i, "GOLD")
+    .replace(/^OIL \(CL\)$/i, "OIL")
+    .replace(/^xyz:/i, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+}
+
+function readHlFundingHistory(path: string): HlFundingHistoryIndex {
+  const index: HlFundingHistoryIndex = new Map();
+  for (const row of readCsvFile(path)) {
+    const label = row.label || row.coin;
+    const value = num(row.funding_ann_pct);
+    const timestampMs = timeMs(row.timestamp ?? "");
+    if (!label || value === null || !Number.isFinite(timestampMs) || timestampMs <= 0) continue;
+    const key = hlFundingAssetKey(label);
+    const points = index.get(key) ?? [];
+    points.push({ timestampMs, value });
+    index.set(key, points);
+  }
+  for (const points of index.values()) points.sort((a, b) => a.timestampMs - b.timestampMs);
+  return index;
+}
+
+function nearestHlFunding(points: HlFundingHistoryPoint[], timestampMs: number): number | null {
+  if (points.length === 0) return null;
+  let lo = 0;
+  let hi = points.length - 1;
+  while (lo < hi) {
+    const mid = Math.floor((lo + hi) / 2);
+    if (points[mid].timestampMs < timestampMs) lo = mid + 1;
+    else hi = mid;
+  }
+  const candidates = [points[lo], points[lo - 1]].filter(Boolean) as HlFundingHistoryPoint[];
+  candidates.sort((a, b) => Math.abs(a.timestampMs - timestampMs) - Math.abs(b.timestampMs - timestampMs));
+  return candidates[0]?.value ?? null;
+}
+
+function enrichValuationRowsWithHlFunding(rows: SnapshotRow[], history: HlFundingHistoryIndex): SnapshotRow[] {
+  if (history.size === 0) return rows;
+  return rows.map((row) => {
+    const timestampMs = timeMs(String(row.date));
+    if (!Number.isFinite(timestampMs) || timestampMs <= 0) return row;
+    let enriched: SnapshotRow | null = null;
+    for (const [asset, points] of history.entries()) {
+      const key = `${asset}_hl_funding_ann`;
+      if (num(row[key]) !== null) continue;
+      const value = nearestHlFunding(points, timestampMs);
+      if (value === null) continue;
+      if (!enriched) enriched = { ...row };
+      enriched[key] = value;
+    }
+    return enriched ?? row;
+  });
+}
 
 function collectCsvFiles(path: string): string[] {
   if (!existsSync(path)) return [];
@@ -506,8 +575,12 @@ function backfill(opts: CliOptions): Report {
   const hypothesesPath = resolve(opts.hypothesesPath);
   const valuationsPath = resolve(opts.valuationsPath);
   const relativeValuePath = resolve(opts.relativeValuePath);
+  const hlFundingHistoryPath = resolve(opts.hlFundingHistoryPath);
   const hypotheses = JSON.parse(readFileSync(hypothesesPath, "utf-8")) as Hypothesis[];
-  const valuationRows = readValuationRows(valuationsPath);
+  const valuationRows = enrichValuationRowsWithHlFunding(
+    readValuationRows(valuationsPath),
+    readHlFundingHistory(hlFundingHistoryPath),
+  );
   const relativeRows = readRelativeValueRows(relativeValuePath);
 
   if (valuationRows.length === 0) throw new Error(`No valuation rows loaded from ${valuationsPath}`);
@@ -621,6 +694,7 @@ function backfill(opts: CliOptions): Report {
     hypothesesPath: opts.hypothesesPath,
     valuationsPath: opts.valuationsPath,
     relativeValuePath: opts.relativeValuePath,
+    hlFundingHistoryPath: opts.hlFundingHistoryPath,
     before,
     after,
     totals: {
