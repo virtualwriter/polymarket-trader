@@ -20402,6 +20402,1157 @@
       },
       "created": "2026-07-16T16:57:50Z",
       "source": "operator"
+    },
+    {
+      "id": "FIND-0001",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD (short-rich-tail/no): WR=62% n=8 sumPnl=+0.368",
+      "body": {
+        "clusterKey": "NO_BIAS_ADJUSTED_GAP_SHADOW|GOLD|short-rich-tail|no",
+        "asset": "GOLD",
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "side": "no",
+        "bucket": "short-rich-tail",
+        "evidence": {
+          "n": 8,
+          "winRate": 0.625,
+          "sumPnl": 0.3679
+        },
+        "mineStats": {
+          "n": 8,
+          "wins": 5,
+          "winRate": 0.625,
+          "sumPnl": 0.3679,
+          "hasHeatmap": true,
+          "sampleIds": [
+            "NB-1779884974279-sish",
+            "NB-1779978513889-iyhc",
+            "NB-1779992914338-ypn5",
+            "NB-1780673324852-nmxh",
+            "NB-1780856911945-5t48"
+          ]
+        },
+        "sampleShadowIds": [
+          "NB-1779884974279-sish",
+          "NB-1779978513889-iyhc",
+          "NB-1779992914338-ypn5",
+          "NB-1780673324852-nmxh",
+          "NB-1780856911945-5t48"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-27T12:29:34.279Z",
+            "end": "2026-06-23T08:28:21.856Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:16Z",
+        "lastSeenAt": "2026-07-18T03:02:16Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:16Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0002",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD (heatmap/no): WR=62% n=8 sumPnl=+0.368",
+      "body": {
+        "clusterKey": "NO_BIAS_ADJUSTED_GAP_SHADOW|GOLD|heatmap|no",
+        "asset": "GOLD",
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "side": "no",
+        "bucket": "heatmap",
+        "evidence": {
+          "n": 8,
+          "winRate": 0.625,
+          "sumPnl": 0.3679
+        },
+        "mineStats": {
+          "n": 8,
+          "wins": 5,
+          "winRate": 0.625,
+          "sumPnl": 0.3679,
+          "hasHeatmap": true,
+          "sampleIds": [
+            "NB-1779884974279-sish",
+            "NB-1779978513889-iyhc",
+            "NB-1779992914338-ypn5",
+            "NB-1780673324852-nmxh",
+            "NB-1780856911945-5t48"
+          ]
+        },
+        "sampleShadowIds": [
+          "NB-1779884974279-sish",
+          "NB-1779978513889-iyhc",
+          "NB-1779992914338-ypn5",
+          "NB-1780673324852-nmxh",
+          "NB-1780856911945-5t48"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-27T12:29:34.279Z",
+            "end": "2026-06-23T08:28:21.856Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:16Z",
+        "lastSeenAt": "2026-07-18T03:02:16Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:16Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0003",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on GOLD (heatmap/no): WR=58% n=12 sumPnl=+0.649",
+      "body": {
+        "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|GOLD|heatmap|no",
+        "asset": "GOLD",
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "side": "no",
+        "bucket": "heatmap",
+        "evidence": {
+          "n": 12,
+          "winRate": 0.5833,
+          "sumPnl": 0.6492
+        },
+        "mineStats": {
+          "n": 12,
+          "wins": 7,
+          "winRate": 0.5833,
+          "sumPnl": 0.6492,
+          "hasHeatmap": true,
+          "sampleIds": [
+            "OT-1779348547074-tm2l",
+            "OT-1783659557591-81cc",
+            "OT-1783659557594-u7s1",
+            "OT-1783694116078-dtpj",
+            "OT-1783780517241-ssvk"
+          ]
+        },
+        "sampleShadowIds": [
+          "OT-1779348547074-tm2l",
+          "OT-1783659557591-81cc",
+          "OT-1783659557594-u7s1",
+          "OT-1783694116078-dtpj",
+          "OT-1783780517241-ssvk"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-21T07:29:07.074Z",
+            "end": "2026-07-16T07:28:08.972Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:16Z",
+        "lastSeenAt": "2026-07-18T03:02:16Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:16Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0004",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on MU (weekend_hl_funding_shadow/long): WR=100% n=8 sumPnl=+0.273",
+      "body": {
+        "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|MU|weekend_hl_funding_shadow|long",
+        "asset": "MU",
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "side": "long",
+        "bucket": "weekend_hl_funding_shadow",
+        "evidence": {
+          "n": 8,
+          "winRate": 1.0,
+          "sumPnl": 0.273
+        },
+        "mineStats": {
+          "n": 8,
+          "wins": 8,
+          "winRate": 1.0,
+          "sumPnl": 0.273,
+          "hasHeatmap": false,
+          "sampleIds": [
+            "WF-1779665359141-MU-u2e8",
+            "WF-1780087728968-MU-flsz",
+            "WF-1780140511145-MU-bwzp",
+            "WF-1780255715660-MU-lpo9",
+            "WF-1780759716467-MU-wbbj"
+          ]
+        },
+        "sampleShadowIds": [
+          "WF-1779665359141-MU-u2e8",
+          "WF-1780087728968-MU-flsz",
+          "WF-1780140511145-MU-bwzp",
+          "WF-1780255715660-MU-lpo9",
+          "WF-1780759716467-MU-wbbj"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-24T23:29:19.141Z",
+            "end": "2026-06-07T22:28:33.376Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:16Z",
+        "lastSeenAt": "2026-07-18T03:02:16Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:16Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0005",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on HOOD (weekend_hl_funding_shadow/long): WR=92% n=12 sumPnl=+0.159",
+      "body": {
+        "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|HOOD|weekend_hl_funding_shadow|long",
+        "asset": "HOOD",
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "side": "long",
+        "bucket": "weekend_hl_funding_shadow",
+        "evidence": {
+          "n": 12,
+          "winRate": 0.9167,
+          "sumPnl": 0.1593
+        },
+        "mineStats": {
+          "n": 12,
+          "wins": 11,
+          "winRate": 0.9167,
+          "sumPnl": 0.1593,
+          "hasHeatmap": false,
+          "sampleIds": [
+            "WF-1779661761704-HOOD-66ul",
+            "WF-1780158509117-HOOD-8pyf",
+            "WF-1780180113914-HOOD-k344",
+            "WF-1780223315920-HOOD-j2j0",
+            "WF-1780248512606-HOOD-rasn"
+          ]
+        },
+        "sampleShadowIds": [
+          "WF-1779661761704-HOOD-66ul",
+          "WF-1780158509117-HOOD-8pyf",
+          "WF-1780180113914-HOOD-k344",
+          "WF-1780223315920-HOOD-j2j0",
+          "WF-1780248512606-HOOD-rasn"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-24T22:29:21.704Z",
+            "end": "2026-06-07T18:28:31.991Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:16Z",
+        "lastSeenAt": "2026-07-18T03:02:16Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:16Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0006",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on AAPL (weekend_hl_funding_shadow/long): WR=89% n=9 sumPnl=+0.010",
+      "body": {
+        "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|AAPL|weekend_hl_funding_shadow|long",
+        "asset": "AAPL",
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "side": "long",
+        "bucket": "weekend_hl_funding_shadow",
+        "evidence": {
+          "n": 9,
+          "winRate": 0.8889,
+          "sumPnl": 0.0102
+        },
+        "mineStats": {
+          "n": 9,
+          "wins": 8,
+          "winRate": 0.8889,
+          "sumPnl": 0.0102,
+          "hasHeatmap": false,
+          "sampleIds": [
+            "WF-1779661761704-AAPL-fawa",
+            "WF-1780087728967-AAPL-0wbd",
+            "WF-1780158509116-AAPL-q73w",
+            "WF-1780237715514-AAPL-tmdd",
+            "WF-1780266518746-AAPL-thv2"
+          ]
+        },
+        "sampleShadowIds": [
+          "WF-1779661761704-AAPL-fawa",
+          "WF-1780087728967-AAPL-0wbd",
+          "WF-1780158509116-AAPL-q73w",
+          "WF-1780237715514-AAPL-tmdd",
+          "WF-1780266518746-AAPL-thv2"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-24T22:29:21.704Z",
+            "end": "2026-06-07T22:28:33.376Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:16Z",
+        "lastSeenAt": "2026-07-18T03:02:16Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:16Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0007",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on COIN (weekend_hl_funding_shadow/long): WR=89% n=9 sumPnl=+0.127",
+      "body": {
+        "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|COIN|weekend_hl_funding_shadow|long",
+        "asset": "COIN",
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "side": "long",
+        "bucket": "weekend_hl_funding_shadow",
+        "evidence": {
+          "n": 9,
+          "winRate": 0.8889,
+          "sumPnl": 0.1268
+        },
+        "mineStats": {
+          "n": 9,
+          "wins": 8,
+          "winRate": 0.8889,
+          "sumPnl": 0.1268,
+          "hasHeatmap": false,
+          "sampleIds": [
+            "WF-1780090108884-COIN-j1pm",
+            "WF-1780115314549-COIN-g0n7",
+            "WF-1780180113912-COIN-ctg9",
+            "WF-1780205309859-COIN-hei0",
+            "WF-1780212512519-COIN-62r1"
+          ]
+        },
+        "sampleShadowIds": [
+          "WF-1780090108884-COIN-j1pm",
+          "WF-1780115314549-COIN-g0n7",
+          "WF-1780180113912-COIN-ctg9",
+          "WF-1780205309859-COIN-hei0",
+          "WF-1780212512519-COIN-62r1"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-29T21:28:28.883Z",
+            "end": "2026-06-07T15:28:34.808Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:16Z",
+        "lastSeenAt": "2026-07-18T03:02:16Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:16Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0008",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on CBRS (weekend_hl_funding_shadow/long): WR=88% n=8 sumPnl=+0.110",
+      "body": {
+        "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|CBRS|weekend_hl_funding_shadow|long",
+        "asset": "CBRS",
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "side": "long",
+        "bucket": "weekend_hl_funding_shadow",
+        "evidence": {
+          "n": 8,
+          "winRate": 0.875,
+          "sumPnl": 0.1099
+        },
+        "mineStats": {
+          "n": 8,
+          "wins": 7,
+          "winRate": 0.875,
+          "sumPnl": 0.1099,
+          "hasHeatmap": false,
+          "sampleIds": [
+            "WF-1780087728968-CBRS-i1qh",
+            "WF-1780097309084-CBRS-cnjn",
+            "WF-1780111718103-CBRS-vnni",
+            "WF-1780129709984-CBRS-x5h5",
+            "WF-1780147713961-CBRS-qr9e"
+          ]
+        },
+        "sampleShadowIds": [
+          "WF-1780087728968-CBRS-i1qh",
+          "WF-1780097309084-CBRS-cnjn",
+          "WF-1780111718103-CBRS-vnni",
+          "WF-1780129709984-CBRS-x5h5",
+          "WF-1780147713961-CBRS-qr9e"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-29T20:48:48.967Z",
+            "end": "2026-06-07T21:28:34.988Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:16Z",
+        "lastSeenAt": "2026-07-18T03:02:16Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:16Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0009",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on RKLB (weekend_hl_funding_shadow/long): WR=82% n=11 sumPnl=+0.308",
+      "body": {
+        "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|RKLB|weekend_hl_funding_shadow|long",
+        "asset": "RKLB",
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "side": "long",
+        "bucket": "weekend_hl_funding_shadow",
+        "evidence": {
+          "n": 11,
+          "winRate": 0.8182,
+          "sumPnl": 0.3078
+        },
+        "mineStats": {
+          "n": 11,
+          "wins": 9,
+          "winRate": 0.8182,
+          "sumPnl": 0.3078,
+          "hasHeatmap": false,
+          "sampleIds": [
+            "WF-1779647357955-RKLB-ufyk",
+            "WF-1780104507765-RKLB-ebma",
+            "WF-1780122515620-RKLB-t7gb",
+            "WF-1780147713961-RKLB-qmcj",
+            "WF-1780194512774-RKLB-zr6p"
+          ]
+        },
+        "sampleShadowIds": [
+          "WF-1779647357955-RKLB-ufyk",
+          "WF-1780104507765-RKLB-ebma",
+          "WF-1780122515620-RKLB-t7gb",
+          "WF-1780147713961-RKLB-qmcj",
+          "WF-1780194512774-RKLB-zr6p"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-24T18:29:17.954Z",
+            "end": "2026-06-07T19:28:36.735Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:16Z",
+        "lastSeenAt": "2026-07-18T03:02:16Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:16Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0010",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on MRVL (weekend_hl_funding_shadow/long): WR=82% n=11 sumPnl=+0.099",
+      "body": {
+        "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|MRVL|weekend_hl_funding_shadow|long",
+        "asset": "MRVL",
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "side": "long",
+        "bucket": "weekend_hl_funding_shadow",
+        "evidence": {
+          "n": 11,
+          "winRate": 0.8182,
+          "sumPnl": 0.099
+        },
+        "mineStats": {
+          "n": 11,
+          "wins": 9,
+          "winRate": 0.8182,
+          "sumPnl": 0.099,
+          "hasHeatmap": false,
+          "sampleIds": [
+            "WF-1779661761706-MRVL-jbxs",
+            "WF-1780115314551-MRVL-ub48",
+            "WF-1780154913130-MRVL-x5nl",
+            "WF-1780190910080-MRVL-vntt",
+            "WF-1780244912356-MRVL-itll"
+          ]
+        },
+        "sampleShadowIds": [
+          "WF-1779661761706-MRVL-jbxs",
+          "WF-1780115314551-MRVL-ub48",
+          "WF-1780154913130-MRVL-x5nl",
+          "WF-1780190910080-MRVL-vntt",
+          "WF-1780244912356-MRVL-itll"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-24T22:29:21.704Z",
+            "end": "2026-06-07T19:28:36.735Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:17Z",
+        "lastSeenAt": "2026-07-18T03:02:17Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:17Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0011",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on LLY (weekend_hl_funding_shadow/long): WR=78% n=9 sumPnl=+0.013",
+      "body": {
+        "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|LLY|weekend_hl_funding_shadow|long",
+        "asset": "LLY",
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "side": "long",
+        "bucket": "weekend_hl_funding_shadow",
+        "evidence": {
+          "n": 9,
+          "winRate": 0.7778,
+          "sumPnl": 0.0133
+        },
+        "mineStats": {
+          "n": 9,
+          "wins": 7,
+          "winRate": 0.7778,
+          "sumPnl": 0.0133,
+          "hasHeatmap": false,
+          "sampleIds": [
+            "WF-1779647357955-LLY-p62h",
+            "WF-1780126109119-LLY-nt2o",
+            "WF-1780140511145-LLY-3qqh",
+            "WF-1780158509117-LLY-tcqh",
+            "WF-1780201706254-LLY-f1so"
+          ]
+        },
+        "sampleShadowIds": [
+          "WF-1779647357955-LLY-p62h",
+          "WF-1780126109119-LLY-nt2o",
+          "WF-1780140511145-LLY-3qqh",
+          "WF-1780158509117-LLY-tcqh",
+          "WF-1780201706254-LLY-f1so"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-24T18:29:17.954Z",
+            "end": "2026-06-07T04:28:33.175Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:17Z",
+        "lastSeenAt": "2026-07-18T03:02:17Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:17Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0012",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on LITE (weekend_hl_funding_shadow/long): WR=78% n=9 sumPnl=+0.140",
+      "body": {
+        "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|LITE|weekend_hl_funding_shadow|long",
+        "asset": "LITE",
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "side": "long",
+        "bucket": "weekend_hl_funding_shadow",
+        "evidence": {
+          "n": 9,
+          "winRate": 0.7778,
+          "sumPnl": 0.1399
+        },
+        "mineStats": {
+          "n": 9,
+          "wins": 7,
+          "winRate": 0.7778,
+          "sumPnl": 0.1399,
+          "hasHeatmap": false,
+          "sampleIds": [
+            "WF-1779665359141-LITE-r32r",
+            "WF-1780115314549-LITE-ddo6",
+            "WF-1780151312594-LITE-1z3b",
+            "WF-1780190910080-LITE-gre5",
+            "WF-1780212512521-LITE-bm0i"
+          ]
+        },
+        "sampleShadowIds": [
+          "WF-1779665359141-LITE-r32r",
+          "WF-1780115314549-LITE-ddo6",
+          "WF-1780151312594-LITE-1z3b",
+          "WF-1780190910080-LITE-gre5",
+          "WF-1780212512521-LITE-bm0i"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-24T23:29:19.141Z",
+            "end": "2026-06-07T00:28:35.346Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:17Z",
+        "lastSeenAt": "2026-07-18T03:02:17Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:17Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0013",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on ORCL (weekend_hl_funding_shadow/long): WR=70% n=10 sumPnl=+0.130",
+      "body": {
+        "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|ORCL|weekend_hl_funding_shadow|long",
+        "asset": "ORCL",
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "side": "long",
+        "bucket": "weekend_hl_funding_shadow",
+        "evidence": {
+          "n": 10,
+          "winRate": 0.7,
+          "sumPnl": 0.1304
+        },
+        "mineStats": {
+          "n": 10,
+          "wins": 7,
+          "winRate": 0.7,
+          "sumPnl": 0.1304,
+          "hasHeatmap": false,
+          "sampleIds": [
+            "WF-1779650958036-ORCL-mp01",
+            "WF-1780115314551-ORCL-t25h",
+            "WF-1780154913130-ORCL-58ow",
+            "WF-1780219714089-ORCL-npyr",
+            "WF-1780259310694-ORCL-v3ps"
+          ]
+        },
+        "sampleShadowIds": [
+          "WF-1779650958036-ORCL-mp01",
+          "WF-1780115314551-ORCL-t25h",
+          "WF-1780154913130-ORCL-58ow",
+          "WF-1780219714089-ORCL-npyr",
+          "WF-1780259310694-ORCL-v3ps"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-24T19:29:18.036Z",
+            "end": "2026-06-07T07:28:41.439Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:17Z",
+        "lastSeenAt": "2026-07-18T03:02:17Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:17Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0014",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on MSTR (weekend_hl_funding_shadow/long): WR=62% n=8 sumPnl=+0.018",
+      "body": {
+        "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|MSTR|weekend_hl_funding_shadow|long",
+        "asset": "MSTR",
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "side": "long",
+        "bucket": "weekend_hl_funding_shadow",
+        "evidence": {
+          "n": 8,
+          "winRate": 0.625,
+          "sumPnl": 0.0185
+        },
+        "mineStats": {
+          "n": 8,
+          "wins": 5,
+          "winRate": 0.625,
+          "sumPnl": 0.0185,
+          "hasHeatmap": false,
+          "sampleIds": [
+            "WF-1780087728968-MSTR-aodt",
+            "WF-1780115314551-MSTR-e2f1",
+            "WF-1780126109119-MSTR-ttwp",
+            "WF-1780180113914-MSTR-uxw6",
+            "WF-1780208915318-MSTR-ulij"
+          ]
+        },
+        "sampleShadowIds": [
+          "WF-1780087728968-MSTR-aodt",
+          "WF-1780115314551-MSTR-e2f1",
+          "WF-1780126109119-MSTR-ttwp",
+          "WF-1780180113914-MSTR-uxw6",
+          "WF-1780208915318-MSTR-ulij"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-29T20:48:48.967Z",
+            "end": "2026-06-07T15:28:34.808Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:17Z",
+        "lastSeenAt": "2026-07-18T03:02:17Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:17Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0015",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on ARM (weekend_hl_funding_shadow/long): WR=62% n=13 sumPnl=+0.123",
+      "body": {
+        "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|ARM|weekend_hl_funding_shadow|long",
+        "asset": "ARM",
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "side": "long",
+        "bucket": "weekend_hl_funding_shadow",
+        "evidence": {
+          "n": 13,
+          "winRate": 0.6154,
+          "sumPnl": 0.1232
+        },
+        "mineStats": {
+          "n": 13,
+          "wins": 8,
+          "winRate": 0.6154,
+          "sumPnl": 0.1232,
+          "hasHeatmap": false,
+          "sampleIds": [
+            "WF-1779650958036-ARM-kn64",
+            "WF-1780087728967-ARM-yigm",
+            "WF-1780093713967-ARM-0se1",
+            "WF-1780180113912-ARM-vmqb",
+            "WF-1780198110351-ARM-5x79"
+          ]
+        },
+        "sampleShadowIds": [
+          "WF-1779650958036-ARM-kn64",
+          "WF-1780087728967-ARM-yigm",
+          "WF-1780093713967-ARM-0se1",
+          "WF-1780180113912-ARM-vmqb",
+          "WF-1780198110351-ARM-5x79"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-24T19:29:18.036Z",
+            "end": "2026-06-07T18:28:31.991Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:17Z",
+        "lastSeenAt": "2026-07-18T03:02:17Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:17Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0016",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on SKHX (weekend_hl_funding_shadow/long): WR=56% n=9 sumPnl=-0.303",
+      "body": {
+        "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|SKHX|weekend_hl_funding_shadow|long",
+        "asset": "SKHX",
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "side": "long",
+        "bucket": "weekend_hl_funding_shadow",
+        "evidence": {
+          "n": 9,
+          "winRate": 0.5556,
+          "sumPnl": -0.3031
+        },
+        "mineStats": {
+          "n": 9,
+          "wins": 5,
+          "winRate": 0.5556,
+          "sumPnl": -0.3031,
+          "hasHeatmap": false,
+          "sampleIds": [
+            "WF-1779661761706-SKHX-koue",
+            "WF-1780093713967-SKHX-py8y",
+            "WF-1780115314551-SKHX-p57t",
+            "WF-1780133314725-SKHX-8sny",
+            "WF-1780180113914-SKHX-gqve"
+          ]
+        },
+        "sampleShadowIds": [
+          "WF-1779661761706-SKHX-koue",
+          "WF-1780093713967-SKHX-py8y",
+          "WF-1780115314551-SKHX-p57t",
+          "WF-1780133314725-SKHX-8sny",
+          "WF-1780180113914-SKHX-gqve"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-24T22:29:21.704Z",
+            "end": "2026-06-07T15:28:34.808Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:17Z",
+        "lastSeenAt": "2026-07-18T03:02:17Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:17Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "FIND-0017",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on BIRD (weekend_hl_funding_shadow/long): WR=56% n=9 sumPnl=+0.078",
+      "body": {
+        "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|BIRD|weekend_hl_funding_shadow|long",
+        "asset": "BIRD",
+        "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+        "side": "long",
+        "bucket": "weekend_hl_funding_shadow",
+        "evidence": {
+          "n": 9,
+          "winRate": 0.5556,
+          "sumPnl": 0.0778
+        },
+        "mineStats": {
+          "n": 9,
+          "wins": 5,
+          "winRate": 0.5556,
+          "sumPnl": 0.0778,
+          "hasHeatmap": false,
+          "sampleIds": [
+            "WF-1780089616522-BIRD-4mgx",
+            "WF-1780180113912-BIRD-jhjr",
+            "WF-1780234109059-BIRD-78da",
+            "WF-1780273715095-BIRD-xjuk",
+            "WF-1780280914671-BIRD-wh8u"
+          ]
+        },
+        "sampleShadowIds": [
+          "WF-1780089616522-BIRD-4mgx",
+          "WF-1780180113912-BIRD-jhjr",
+          "WF-1780234109059-BIRD-78da",
+          "WF-1780273715095-BIRD-xjuk",
+          "WF-1780280914671-BIRD-wh8u"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-05-29T21:20:16.521Z",
+            "end": "2026-06-07T12:28:41.703Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "af1e1006",
+          "inputArtifacts": [
+            "data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-18T03:02:17Z",
+        "lastSeenAt": "2026-07-18T03:02:17Z"
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:17Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "DEC-0015",
+      "type": "decision",
+      "evidenceClass": "DERIVED",
+      "status": "final",
+      "title": "Phase A: permanent FIND records with provenance",
+      "body": {
+        "rationale": "Phase A stats-first research loop stores mined shadow clusters as FIND records (clusterKey upsert) with immutable provenance and evidence {n, winRate, sumPnl}. Auto H-* hypothesis promotion from shadow mine is deferred to Phase D; nightly runs mine_shadow_findings.py instead of mine_shadow_hypotheses.py.",
+        "schema": {
+          "type": "finding",
+          "prefix": "FIND",
+          "requiredBody": [
+            "clusterKey",
+            "evidence",
+            "provenance"
+          ],
+          "statuses": [
+            "open",
+            "strengthened",
+            "weakened",
+            "resolved",
+            "negative"
+          ]
+        }
+      },
+      "links": {},
+      "created": "2026-07-18T03:02:17Z",
+      "source": "add_find_phase_a_dec.py"
     }
   ]
 }

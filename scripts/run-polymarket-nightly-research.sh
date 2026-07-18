@@ -28,7 +28,7 @@ NIGHTLY_FILES=(
   data/calibration-buckets-summary.json
   data/lessons.json
   data/nightly-llm-advice.json
-  data/shadow-mined-hypotheses.json
+  data/research-findings.json
   data/neon-parity.json
   data/learning-journal.md
   relative-value/calibration/resolutions_cache.json
@@ -128,10 +128,10 @@ if ! timeout "${NIGHTLY_RESEARCH_TIMEOUT:-15m}" npx tsx scripts/nightly-research
   nightly_research_exit=1
 fi
 
-# Mine clean heatmap/blocked-signal shadows → data/shadow-mined-hypotheses.json.
-# Hourly engine ingests with source=shadow_mined (parallel retest queue).
-if ! timeout "${SHADOW_MINE_TIMEOUT:-3m}" python3 scripts/mine_shadow_hypotheses.py; then
-  echo "WARNING: mine_shadow_hypotheses.py failed; continuing."
+# Mine clean heatmap/blocked-signal shadows → permanent FIND records in registry.
+# Auto H-* promotion from shadow mine is deferred to Phase D.
+if ! timeout "${SHADOW_MINE_TIMEOUT:-3m}" python3 scripts/mine_shadow_findings.py; then
+  echo "WARNING: mine_shadow_findings.py failed; continuing."
 fi
 
 # Verify the Neon mirror matches the CSV ledger (Phase 6 parity gate).

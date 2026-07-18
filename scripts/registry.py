@@ -21,23 +21,52 @@ TYPE_PREFIX = {
     "decision": "DEC",
     "incident": "INC",
     "parameter-change": "PARAM",
+    "finding": "FIND",
 }
 
 VALID_TYPES = frozenset(TYPE_PREFIX)
 VALID_EVIDENCE = frozenset({"VALID", "INVALID", "DERIVED", "HYPOTHESIS"})
 VALID_STATUS = frozenset(
-    {"proposed", "running", "final", "superseded", "retired", "active"}
+    {
+        "proposed",
+        "running",
+        "final",
+        "superseded",
+        "retired",
+        "active",
+        "open",
+        "strengthened",
+        "weakened",
+        "resolved",
+        "negative",
+    }
 )
 
 ID_PATTERN = re.compile(
-    r"^(STRAT|EXP|DEC|INC|PARAM)-(\d{4})$"
+    r"^(STRAT|EXP|DEC|INC|PARAM|FIND)-(\d{4})$"
 )
 
 REQUIRED_BODY_FIELDS: dict[str, frozenset[str]] = {
     "incident": frozenset({"rootCause", "fix", "costUsd", "guard"}),
     "decision": frozenset({"rationale"}),
     "parameter-change": frozenset({"parameter", "from", "to"}),
+    "finding": frozenset({"clusterKey", "evidence", "provenance"}),
 }
+
+PROVENANCE_REQUIRED_KEYS = frozenset(
+    {
+        "generatedBy",
+        "inputWindow",
+        "featureSet",
+        "scoringVersion",
+        "gitSha",
+        "inputArtifacts",
+        "filters",
+        "reproducibleCommand",
+    }
+)
+
+EVIDENCE_REQUIRED_KEYS = frozenset({"n", "winRate", "sumPnl"})
 
 
 def default_registry_path() -> Path:
@@ -70,6 +99,63 @@ def write_registry(path: Path, data: dict[str, Any]) -> None:
         except OSError:
             pass
         raise
+
+
+def validate_provenance(provenance: Any, prefix: str) -> list[str]:
+    errors: list[str] = []
+    if not isinstance(provenance, dict):
+        return [f"{prefix}: provenance must be an object"]
+    for key in PROVENANCE_REQUIRED_KEYS:
+        if key not in provenance:
+            errors.append(f"{prefix}: provenance missing required key '{key}'")
+    input_window = provenance.get("inputWindow")
+    if not isinstance(input_window, dict):
+        errors.append(f"{prefix}: provenance.inputWindow must be an object")
+    else:
+        for key in ("start", "end"):
+            if key not in input_window:
+                errors.append(
+                    f"{prefix}: provenance.inputWindow missing required key '{key}'"
+                )
+    if "inputArtifacts" in provenance and not isinstance(
+        provenance["inputArtifacts"], list
+    ):
+        errors.append(f"{prefix}: provenance.inputArtifacts must be a list")
+    if "filters" in provenance and not isinstance(provenance["filters"], dict):
+        errors.append(f"{prefix}: provenance.filters must be an object")
+    git_sha = provenance.get("gitSha")
+    if git_sha is not None and not isinstance(git_sha, str):
+        errors.append(f"{prefix}: provenance.gitSha must be a string")
+    return errors
+
+
+def validate_evidence(evidence: Any, prefix: str) -> list[str]:
+    errors: list[str] = []
+    if not isinstance(evidence, dict):
+        return [f"{prefix}: evidence must be an object"]
+    for key in EVIDENCE_REQUIRED_KEYS:
+        if key not in evidence:
+            errors.append(f"{prefix}: evidence missing required key '{key}'")
+    return errors
+
+
+def validate_finding_body(body: dict[str, Any], prefix: str) -> list[str]:
+    errors: list[str] = []
+    errors.extend(validate_evidence(body.get("evidence"), f"{prefix}.body"))
+    errors.extend(validate_provenance(body.get("provenance"), f"{prefix}.body"))
+    history = body.get("provenanceHistory")
+    if history is not None:
+        if not isinstance(history, list):
+            errors.append(f"{prefix}.body: provenanceHistory must be a list")
+        else:
+            for i, item in enumerate(history):
+                errors.extend(
+                    validate_provenance(item, f"{prefix}.body.provenanceHistory[{i}]")
+                )
+    score_history = body.get("scoreHistory")
+    if score_history is not None and not isinstance(score_history, list):
+        errors.append(f"{prefix}.body: scoreHistory must be a list")
+    return errors
 
 
 def validate_record(record: Any, index: int | None = None) -> list[str]:
@@ -108,6 +194,8 @@ def validate_record(record: Any, index: int | None = None) -> list[str]:
                 errors.append(
                     f"{prefix}: body missing required field '{field}' for type '{rtype}'"
                 )
+        if rtype == "finding":
+            errors.extend(validate_finding_body(body, prefix))
 
     links = record.get("links")
     if links is not None and not isinstance(links, dict):
@@ -163,6 +251,153 @@ def validate_registry(data: dict[str, Any]) -> list[str]:
             seen_ids.add(rid)
 
     return errors
+
+
+def find_finding_by_cluster_key(
+    records: list[dict[str, Any]], cluster_key: str
+) -> dict[str, Any] | None:
+    for record in records:
+        if record.get("type") != "finding":
+            continue
+        body = record.get("body") or {}
+        if body.get("clusterKey") == cluster_key:
+            return record
+    return None
+
+
+def _evidence_strengthened(old_evidence: dict[str, Any], new_evidence: dict[str, Any]) -> bool:
+    old_n = old_evidence.get("n")
+    old_wr = old_evidence.get("winRate")
+    new_n = new_evidence.get("n")
+    new_wr = new_evidence.get("winRate")
+    if isinstance(old_n, (int, float)) and isinstance(new_n, (int, float)) and new_n > old_n:
+        return True
+    if (
+        isinstance(old_wr, (int, float))
+        and isinstance(new_wr, (int, float))
+        and new_wr > old_wr
+    ):
+        return True
+    return False
+
+
+def _evidence_weakened(old_evidence: dict[str, Any], new_evidence: dict[str, Any]) -> bool:
+    old_n = old_evidence.get("n")
+    old_wr = old_evidence.get("winRate")
+    new_n = new_evidence.get("n")
+    new_wr = new_evidence.get("winRate")
+    if isinstance(old_n, (int, float)) and isinstance(new_n, (int, float)) and new_n < old_n:
+        return True
+    if (
+        isinstance(old_wr, (int, float))
+        and isinstance(new_wr, (int, float))
+        and new_wr < old_wr
+    ):
+        return True
+    return False
+
+
+def upsert_finding(
+    registry_path: Path,
+    body: dict[str, Any],
+    title: str,
+    source: str = "shadow_miner_v1",
+    evidence_class: str = "DERIVED",
+    links: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Create or update a FIND record keyed by body['clusterKey']."""
+    cluster_key = body.get("clusterKey")
+    if not isinstance(cluster_key, str) or not cluster_key.strip():
+        raise ValueError("body.clusterKey must be a non-empty string")
+    if evidence_class not in VALID_EVIDENCE:
+        raise ValueError(f"invalid evidenceClass '{evidence_class}'")
+
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    data = load_registry(registry_path)
+    records = data.setdefault("records", [])
+    existing = find_finding_by_cluster_key(records, cluster_key)
+
+    if existing is None:
+        create_body = dict(body)
+        create_body.setdefault("detectedAt", now)
+        create_body["lastSeenAt"] = now
+        record: dict[str, Any] = {
+            "id": next_id(records, "finding"),
+            "type": "finding",
+            "evidenceClass": evidence_class,
+            "status": "open",
+            "title": title,
+            "body": create_body,
+            "links": links or {},
+            "created": now,
+            "source": source,
+        }
+        rec_errors = validate_record(record)
+        if rec_errors:
+            raise ValueError("; ".join(rec_errors))
+        records.append(record)
+        data["version"] = REGISTRY_VERSION
+        write_registry(registry_path, data)
+        return record
+
+    old_body = dict(existing.get("body") or {})
+    old_status = existing.get("status")
+    old_evidence = dict(old_body.get("evidence") or {})
+    new_evidence = body.get("evidence") or {}
+
+    updated_body = dict(old_body)
+    updated_body["evidence"] = new_evidence
+    updated_body["lastSeenAt"] = now
+
+    if "provenance" in body:
+        old_provenance = old_body.get("provenance")
+        if old_provenance:
+            history = list(updated_body.get("provenanceHistory") or [])
+            history.append(old_provenance)
+            updated_body["provenanceHistory"] = history
+        updated_body["provenance"] = body["provenance"]
+
+    optional_fields = (
+        "asset",
+        "signalType",
+        "side",
+        "bucket",
+        "mineStats",
+        "sampleShadowIds",
+        "opportunityScore",
+        "confidenceScore",
+    )
+    for field in optional_fields:
+        if field in body:
+            updated_body[field] = body[field]
+
+    if body.get("opportunityScore") is not None or body.get("confidenceScore") is not None:
+        score_entry: dict[str, Any] = {"at": now}
+        if body.get("opportunityScore") is not None:
+            score_entry["opportunityScore"] = body["opportunityScore"]
+        if body.get("confidenceScore") is not None:
+            score_entry["confidenceScore"] = body["confidenceScore"]
+        score_history = list(updated_body.get("scoreHistory") or [])
+        score_history.append(score_entry)
+        updated_body["scoreHistory"] = score_history
+
+    existing["title"] = title
+    existing["body"] = updated_body
+
+    if old_status != "negative":
+        if old_status == "open":
+            if _evidence_strengthened(old_evidence, new_evidence):
+                existing["status"] = "strengthened"
+            elif _evidence_weakened(old_evidence, new_evidence):
+                existing["status"] = "weakened"
+
+    rec_errors = validate_record(existing)
+    if rec_errors:
+        raise ValueError("; ".join(rec_errors))
+
+    data["version"] = REGISTRY_VERSION
+    write_registry(registry_path, data)
+    return existing
 
 
 def next_id(records: list[dict[str, Any]], rtype: str) -> str:

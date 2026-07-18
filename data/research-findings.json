@@ -1,0 +1,533 @@
+{
+  "generatedAt": "2026-07-18T03:02:16Z",
+  "model": "shadow_miner_v1",
+  "findings": [
+    {
+      "id": "FIND-0001",
+      "clusterKey": "NO_BIAS_ADJUSTED_GAP_SHADOW|GOLD|short-rich-tail|no",
+      "status": "open",
+      "evidence": {
+        "n": 8,
+        "winRate": 0.625,
+        "sumPnl": 0.3679
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-27T12:29:34.279Z",
+          "end": "2026-06-23T08:28:21.856Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0002",
+      "clusterKey": "NO_BIAS_ADJUSTED_GAP_SHADOW|GOLD|heatmap|no",
+      "status": "open",
+      "evidence": {
+        "n": 8,
+        "winRate": 0.625,
+        "sumPnl": 0.3679
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-27T12:29:34.279Z",
+          "end": "2026-06-23T08:28:21.856Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0003",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|GOLD|heatmap|no",
+      "status": "open",
+      "evidence": {
+        "n": 12,
+        "winRate": 0.5833,
+        "sumPnl": 0.6492
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-21T07:29:07.074Z",
+          "end": "2026-07-16T07:28:08.972Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0004",
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|MU|weekend_hl_funding_shadow|long",
+      "status": "open",
+      "evidence": {
+        "n": 8,
+        "winRate": 1.0,
+        "sumPnl": 0.273
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-24T23:29:19.141Z",
+          "end": "2026-06-07T22:28:33.376Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0005",
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|HOOD|weekend_hl_funding_shadow|long",
+      "status": "open",
+      "evidence": {
+        "n": 12,
+        "winRate": 0.9167,
+        "sumPnl": 0.1593
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-24T22:29:21.704Z",
+          "end": "2026-06-07T18:28:31.991Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0006",
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|AAPL|weekend_hl_funding_shadow|long",
+      "status": "open",
+      "evidence": {
+        "n": 9,
+        "winRate": 0.8889,
+        "sumPnl": 0.0102
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-24T22:29:21.704Z",
+          "end": "2026-06-07T22:28:33.376Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0007",
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|COIN|weekend_hl_funding_shadow|long",
+      "status": "open",
+      "evidence": {
+        "n": 9,
+        "winRate": 0.8889,
+        "sumPnl": 0.1268
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-29T21:28:28.883Z",
+          "end": "2026-06-07T15:28:34.808Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0008",
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|CBRS|weekend_hl_funding_shadow|long",
+      "status": "open",
+      "evidence": {
+        "n": 8,
+        "winRate": 0.875,
+        "sumPnl": 0.1099
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-29T20:48:48.967Z",
+          "end": "2026-06-07T21:28:34.988Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0009",
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|RKLB|weekend_hl_funding_shadow|long",
+      "status": "open",
+      "evidence": {
+        "n": 11,
+        "winRate": 0.8182,
+        "sumPnl": 0.3078
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-24T18:29:17.954Z",
+          "end": "2026-06-07T19:28:36.735Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0010",
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|MRVL|weekend_hl_funding_shadow|long",
+      "status": "open",
+      "evidence": {
+        "n": 11,
+        "winRate": 0.8182,
+        "sumPnl": 0.099
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-24T22:29:21.704Z",
+          "end": "2026-06-07T19:28:36.735Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0011",
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|LLY|weekend_hl_funding_shadow|long",
+      "status": "open",
+      "evidence": {
+        "n": 9,
+        "winRate": 0.7778,
+        "sumPnl": 0.0133
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-24T18:29:17.954Z",
+          "end": "2026-06-07T04:28:33.175Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0012",
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|LITE|weekend_hl_funding_shadow|long",
+      "status": "open",
+      "evidence": {
+        "n": 9,
+        "winRate": 0.7778,
+        "sumPnl": 0.1399
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-24T23:29:19.141Z",
+          "end": "2026-06-07T00:28:35.346Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0013",
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|ORCL|weekend_hl_funding_shadow|long",
+      "status": "open",
+      "evidence": {
+        "n": 10,
+        "winRate": 0.7,
+        "sumPnl": 0.1304
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-24T19:29:18.036Z",
+          "end": "2026-06-07T07:28:41.439Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0014",
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|MSTR|weekend_hl_funding_shadow|long",
+      "status": "open",
+      "evidence": {
+        "n": 8,
+        "winRate": 0.625,
+        "sumPnl": 0.0185
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-29T20:48:48.967Z",
+          "end": "2026-06-07T15:28:34.808Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0015",
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|ARM|weekend_hl_funding_shadow|long",
+      "status": "open",
+      "evidence": {
+        "n": 13,
+        "winRate": 0.6154,
+        "sumPnl": 0.1232
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-24T19:29:18.036Z",
+          "end": "2026-06-07T18:28:31.991Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0016",
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|SKHX|weekend_hl_funding_shadow|long",
+      "status": "open",
+      "evidence": {
+        "n": 9,
+        "winRate": 0.5556,
+        "sumPnl": -0.3031
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-24T22:29:21.704Z",
+          "end": "2026-06-07T15:28:34.808Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0017",
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|BIRD|weekend_hl_funding_shadow|long",
+      "status": "open",
+      "evidence": {
+        "n": 9,
+        "winRate": 0.5556,
+        "sumPnl": 0.0778
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-29T21:20:16.521Z",
+          "end": "2026-06-07T12:28:41.703Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "af1e1006",
+        "inputArtifacts": [
+          "data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    }
+  ]
+}
