@@ -1,44 +1,15 @@
 {
-  "generatedAt": "2026-07-18T19:28:33.291Z",
+  "generatedAt": "2026-07-18T20:28:13.092Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1784219291393-zbud",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "gold_gld_pc_ratio"
-      ],
-      "thesis": "GOLD P/C ratio entered this position at 1.631 (extreme put buying) and has since collapsed to 1.104, well below the extreme-high threshold and below neutral, completely reversing the signal input. The contrarian long thesis is invalidated; exit now per PC_RATIO_EXTREME_HIGH close rules."
-    }
-  ],
-  "entrySignals": [
-    {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 0.3162857142857143,
-      "confidence": 0.16298286414360677,
-      "thesis": "AMZN HL funding -26.1% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 247.2,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
-    }
-  ],
+  "llmCloses": [],
+  "entrySignals": [],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
