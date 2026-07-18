@@ -22,6 +22,7 @@ TYPE_PREFIX = {
     "incident": "INC",
     "parameter-change": "PARAM",
     "finding": "FIND",
+    "theme": "THEME",
 }
 
 VALID_TYPES = frozenset(TYPE_PREFIX)
@@ -43,7 +44,7 @@ VALID_STATUS = frozenset(
 )
 
 ID_PATTERN = re.compile(
-    r"^(STRAT|EXP|DEC|INC|PARAM|FIND)-(\d{4})$"
+    r"^(STRAT|EXP|DEC|INC|PARAM|FIND|THEME)-(\d{4})$"
 )
 
 REQUIRED_BODY_FIELDS: dict[str, frozenset[str]] = {
@@ -51,6 +52,7 @@ REQUIRED_BODY_FIELDS: dict[str, frozenset[str]] = {
     "decision": frozenset({"rationale"}),
     "parameter-change": frozenset({"parameter", "from", "to"}),
     "finding": frozenset({"clusterKey", "evidence", "provenance"}),
+    "theme": frozenset({"slug", "family"}),
 }
 
 PROVENANCE_REQUIRED_KEYS = frozenset(
@@ -398,6 +400,128 @@ def upsert_finding(
     data["version"] = REGISTRY_VERSION
     write_registry(registry_path, data)
     return existing
+
+
+def find_theme_by_slug(
+    records: list[dict[str, Any]], slug: str
+) -> dict[str, Any] | None:
+    for record in records:
+        if record.get("type") != "theme":
+            continue
+        body = record.get("body") or {}
+        if body.get("slug") == slug:
+            return record
+    return None
+
+
+def find_record_by_id(
+    records: list[dict[str, Any]], record_id: str
+) -> dict[str, Any] | None:
+    for record in records:
+        if record.get("id") == record_id:
+            return record
+    return None
+
+
+def upsert_theme(
+    registry_path: Path,
+    slug: str,
+    title: str,
+    body_extra: dict[str, Any] | None = None,
+    source: str = "assign_research_themes_v1",
+) -> dict[str, Any]:
+    """Create or update a THEME record keyed by body['slug']."""
+    if not isinstance(slug, str) or not slug.strip():
+        raise ValueError("slug must be a non-empty string")
+
+    now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    data = load_registry(registry_path)
+    records = data.setdefault("records", [])
+    existing = find_theme_by_slug(records, slug)
+
+    family = (body_extra or {}).get("family") or slug
+    body: dict[str, Any] = {"slug": slug, "family": family}
+    if body_extra:
+        body.update(body_extra)
+    body["slug"] = slug
+    body.setdefault("family", family)
+
+    if existing is None:
+        record: dict[str, Any] = {
+            "id": next_id(records, "theme"),
+            "type": "theme",
+            "evidenceClass": "DERIVED",
+            "status": "active",
+            "title": title,
+            "body": body,
+            "links": {"findings": []},
+            "created": now,
+            "source": source,
+        }
+        rec_errors = validate_record(record)
+        if rec_errors:
+            raise ValueError("; ".join(rec_errors))
+        records.append(record)
+        data["version"] = REGISTRY_VERSION
+        write_registry(registry_path, data)
+        return record
+
+    existing["title"] = title
+    merged_body = dict(existing.get("body") or {})
+    merged_body.update(body)
+    existing["body"] = merged_body
+    existing.setdefault("links", {}).setdefault("findings", [])
+
+    rec_errors = validate_record(existing)
+    if rec_errors:
+        raise ValueError("; ".join(rec_errors))
+
+    data["version"] = REGISTRY_VERSION
+    write_registry(registry_path, data)
+    return existing
+
+
+def assign_finding_theme(
+    registry_path: Path,
+    finding_id: str,
+    theme_id: str,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Link a FIND to a THEME via body.themeId and links.findings."""
+    data = load_registry(registry_path)
+    records = data.setdefault("records", [])
+    finding = find_record_by_id(records, finding_id)
+    theme = find_record_by_id(records, theme_id)
+
+    if finding is None:
+        raise ValueError(f"finding not found: {finding_id}")
+    if theme is None:
+        raise ValueError(f"theme not found: {theme_id}")
+    if finding.get("type") != "finding":
+        raise ValueError(f"{finding_id} is not a finding record")
+    if theme.get("type") != "theme":
+        raise ValueError(f"{theme_id} is not a theme record")
+
+    body = dict(finding.get("body") or {})
+    body["themeId"] = theme_id
+    finding["body"] = body
+
+    links = theme.setdefault("links", {})
+    findings = list(links.get("findings") or [])
+    if finding_id not in findings:
+        findings.append(finding_id)
+        findings.sort()
+    links["findings"] = findings
+
+    rec_errors = validate_record(finding)
+    if rec_errors:
+        raise ValueError(f"{finding_id}: {'; '.join(rec_errors)}")
+    rec_errors = validate_record(theme)
+    if rec_errors:
+        raise ValueError(f"{theme_id}: {'; '.join(rec_errors)}")
+
+    data["version"] = REGISTRY_VERSION
+    write_registry(registry_path, data)
+    return finding, theme
 
 
 def next_id(records: list[dict[str, Any]], rtype: str) -> str:

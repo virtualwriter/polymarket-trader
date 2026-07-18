@@ -30,6 +30,7 @@ NIGHTLY_FILES=(
   data/nightly-llm-advice.json
   data/research-findings.json
   data/research-opportunities.json
+  data/research-themes.json
   data/neon-parity.json
   data/learning-journal.md
   relative-value/calibration/resolutions_cache.json

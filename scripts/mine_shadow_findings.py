@@ -30,6 +30,7 @@ from lib.shadow_mine_common import (  # noqa: E402
 )
 from registry import default_registry_path, load_registry, upsert_finding  # noqa: E402
 from score_research_findings import score_research_findings  # noqa: E402
+from assign_research_themes import assign_research_themes  # noqa: E402
 
 DEFAULT_BLOCKED = REPO / "data" / "blocked-signals.json"
 DEFAULT_REGISTRY = default_registry_path()
@@ -190,6 +191,7 @@ def main() -> int:
     ap.add_argument("--max-findings", type=int, default=50)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--no-score", action="store_true", help="Skip Phase B scoring")
+    ap.add_argument("--no-themes", action="store_true", help="Skip Phase C theme assignment")
     args = ap.parse_args()
 
     result = mine_findings(
@@ -223,6 +225,13 @@ def main() -> int:
         print(
             f"scored {score_result['scoredCount']} finding(s), "
             f"top {score_result['opportunityCount']} opportunit(ies)"
+        )
+
+    if not args.dry_run and not args.no_themes and not args.no_score:
+        theme_result = assign_research_themes(registry_path=args.registry)
+        print(
+            f"themed {theme_result['assigned']} finding(s) into "
+            f"{theme_result['themeCount']} theme(s)"
         )
     return 0
 
