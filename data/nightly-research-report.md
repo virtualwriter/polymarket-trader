@@ -1,6 +1,6 @@
 # Nightly Research Report
 
-_Generated 2026-07-18T04:07:39Z_
+_Generated 2026-07-18T07:06:32Z_
 
 ## 1. Summary
 - FIND records: 17 total (open 17, strengthened 0, weakened 0, negative 0)
@@ -24,9 +24,9 @@ _Generated 2026-07-18T04:07:39Z_
 - **THEME-0001** (heatmap_one_touch): 3 findings, avg opp 0.7637
 
 ## 4. Newly authored hypotheses
-- `—` / —: ONE_TOUCH_HIGH_EDGE_NO on BTC refined entry: only enter when BTC is at least 2% below its 7d high (not near recent peak) and PM IV is in the lower 30th percentile (low implied movement expectations). This filters out high-probability touch…
-- `—` / —: BTC extreme PC ratio contrarian long with momentum filter: when IBIT put/call ratio is in its top 15th percentile (extreme high, signaling capitulation) and spot has positive 24h momentum (change >0.5%), go long.
-- `—` / —: Gold funding extreme long asset-specific short: when Gold perpetual funding rate is extremely high (>50% annualized) and spot is trading below its 24h SMA (momentum fading), short Gold.
+- `FIND-0003` / THEME-0001: Shadow-test: ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap cluster. Enter a short position (sell YES) when a GOLD one-touch YES contract exhibits a sell-YES edge ≥ 1.2pts, yesAsk < 0.25, spread ≤ 0.03, and liquidity ≥ 15000, reflecting rich prici…
+- `FIND-0001` / THEME-0001: Shadow-test: NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD short-rich-tail. Enter short GOLD when the no-bias adjusted gap model signals a rich tail: spot trades >1.5% above its 7-day SMA, PM IV is in the top quartile (30-day percentile > 80), and G…
+- `FIND-0004` / THEME-0002: Shadow-test: WEEKEND_HL_FUNDING_REVERSION_LONG on MU. Enter long MU perp when mu_hl_funding_ann < -50% on a Thursday–Saturday evening, capturing the weekend bounce as extreme negative funding normalizes. Exit when funding rises above -10%…
 
 ## 5. Negative / suppressed findings
 - None.
@@ -34,7 +34,7 @@ _Generated 2026-07-18T04:07:39Z_
 ## 6. Provenance
 - Scoring version: research_score_v1
 - Miner model: shadow_miner_v1
-- Opportunities export: 2026-07-18T03:03:58Z
-- Findings export: 2026-07-18T03:03:56Z
-- Themes export: 2026-07-18T03:05:11Z
-- LLM advice: 2026-07-17T07:09:39.436Z
+- Opportunities export: 2026-07-18T07:06:32Z
+- Findings export: 2026-07-18T07:06:29Z
+- Themes export: 2026-07-18T07:06:31Z
+- LLM advice: 2026-07-18T07:06:29.464Z
