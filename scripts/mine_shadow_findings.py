@@ -29,6 +29,7 @@ from lib.shadow_mine_common import (  # noqa: E402
     iter_cluster_candidates,
 )
 from registry import default_registry_path, load_registry, upsert_finding  # noqa: E402
+from score_research_findings import score_research_findings  # noqa: E402
 
 DEFAULT_BLOCKED = REPO / "data" / "blocked-signals.json"
 DEFAULT_REGISTRY = default_registry_path()
@@ -188,6 +189,7 @@ def main() -> int:
     ap.add_argument("--min-wr", type=float, default=MIN_WR)
     ap.add_argument("--max-findings", type=int, default=50)
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--no-score", action="store_true", help="Skip Phase B scoring")
     args = ap.parse_args()
 
     result = mine_findings(
@@ -212,6 +214,16 @@ def main() -> int:
         )
     if not args.dry_run:
         print(f"wrote {args.out}")
+
+    if not args.dry_run and not args.no_score:
+        score_result = score_research_findings(
+            registry_path=args.registry,
+            top_n=10,
+        )
+        print(
+            f"scored {score_result['scoredCount']} finding(s), "
+            f"top {score_result['opportunityCount']} opportunit(ies)"
+        )
     return 0
 
 
