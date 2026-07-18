@@ -33,6 +33,7 @@ NIGHTLY_FILES=(
   data/research-findings.json
   data/research-opportunities.json
   data/finding-replay-plan.json
+  data/registry.json
   data/research-themes.json
   data/neon-parity.json
   data/learning-journal.md

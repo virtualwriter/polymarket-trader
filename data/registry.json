@@ -20807,8 +20807,11 @@
             "hoursReplayed": 1,
             "hoursFailed": 0
           },
-          "signals": "ONE_TOUCH_HIGH_EDGE_NO",
-          "opportunityScoreAtAttach": 0.7807
+          "signals": [
+            "ONE_TOUCH_HIGH_EDGE_NO"
+          ],
+          "opportunityScoreAtAttach": 0.7807,
+          "attachedAt": "2026-07-18T04:48:51Z"
         }
       },
       "links": {
@@ -20821,6 +20824,17 @@
             "summaryPath": "/tmp/finding-replay-FIND-0003/replay-report.json",
             "attachedAt": "2026-07-18T04:37:20Z",
             "reproducibleCommand": "npx tsx scripts/replay-harness.ts --start 2026-07-11 --end 2026-07-12 --sandbox /tmp/finding-replay-FIND-0003 --signals ONE_TOUCH_HIGH_EDGE_NO --limit-hours 1 --keep-going"
+          },
+          {
+            "sandbox": "/tmp/finding-replay-FIND-0003",
+            "started": "2026-07-18T04:48:48Z",
+            "ended": "2026-07-18T04:48:51Z",
+            "signals": [
+              "ONE_TOUCH_HIGH_EDGE_NO"
+            ],
+            "summaryPath": "/tmp/finding-replay-FIND-0003/replay-report.json",
+            "attachedAt": "2026-07-18T04:48:51Z",
+            "reproducibleCommand": "cd /opt/polymarket-trader && npx tsx scripts/replay-harness.ts --start 2026-07-11 --end 2026-07-12 --sandbox /tmp/finding-replay-FIND-0003 --signals ONE_TOUCH_HIGH_EDGE_NO --limit-hours 1 --keep-going"
           }
         ]
       },
