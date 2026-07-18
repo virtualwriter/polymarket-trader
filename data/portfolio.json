@@ -1,5 +1,5 @@
 {
-  "cash": 96.56305667499589,
+  "cash": 94.56305667499589,
   "positions": [
     {
       "id": "T-1784208521735-ub7u",
@@ -8,8 +8,8 @@
       "venue": "hyperliquid",
       "direction": "short",
       "entryPrice": 4006,
-      "currentPrice": 4014,
-      "currentUnderlyingPrice": 4014,
+      "currentPrice": 4020,
+      "currentUnderlyingPrice": 4020,
       "entryUnderlyingPrice": 4006,
       "size": 1,
       "leverage": 1,
@@ -23,8 +23,8 @@
       "instrumentType": "hl_perp",
       "instrumentId": "GOLD",
       "instrumentLabel": "HL GOLD perp",
-      "fundingPnlAccrued": 0.00005943618721461189,
-      "peakPnlPct": 0.46929605591613033
+      "fundingPnlAccrued": 0.00014068618721461187,
+      "peakPnlPct": 1.0637607034368584
     },
     {
       "id": "T-1784219291393-zbud",
@@ -33,8 +33,8 @@
       "venue": "spot",
       "direction": "long",
       "entryPrice": 3991,
-      "currentPrice": 4014,
-      "currentUnderlyingPrice": 4014,
+      "currentPrice": 4020,
+      "currentUnderlyingPrice": 4020,
       "entryUnderlyingPrice": 3991,
       "size": 1,
       "leverage": 1,
@@ -47,13 +47,61 @@
       "entryConfidence": 0.2777880783430456,
       "instrumentType": "spot",
       "instrumentLabel": "GOLD spot",
-      "peakPnlPct": 0.5762966675018792,
+      "peakPnlPct": 0.8168378852417918,
       "fundingPnlAccrued": 0
+    },
+    {
+      "id": "WF-1784395684812-GME-yd86",
+      "openedAt": "2026-07-18T17:28:04.812Z",
+      "asset": "GME",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 22.038,
+      "currentPrice": 22.038,
+      "currentUnderlyingPrice": 22.038,
+      "entryUnderlyingPrice": 22.038,
+      "size": 1,
+      "leverage": 5,
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "hypothesisId": null,
+      "thesis": "[WEEKEND HL FUNDING LIVE] GME Builder DEX stock perp funding -74.3% annualized in mid band [-100%, -50%] during US-equity-closed window (Fri 4:00pm ET → Mon 9:30am ET). Live tracked long at 5x; exit when margin P&L >= 3%, funding >= 10%, or held 24h.",
+      "targetPct": 3,
+      "stopPct": 100,
+      "expiryDate": "2026-07-19T17:28:04.812Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "GME",
+      "instrumentLabel": "HL GME Builder DEX stock perp",
+      "fundingPnlAccrued": 0,
+      "entryConfidence": 0.5
+    },
+    {
+      "id": "WF-1784395684812-LITE-bhj8",
+      "openedAt": "2026-07-18T17:28:04.812Z",
+      "asset": "LITE",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 720.05,
+      "currentPrice": 720.05,
+      "currentUnderlyingPrice": 720.05,
+      "entryUnderlyingPrice": 720.05,
+      "size": 1,
+      "leverage": 5,
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "hypothesisId": null,
+      "thesis": "[WEEKEND HL FUNDING LIVE] LITE Builder DEX stock perp funding -96.7% annualized in mid band [-100%, -50%] during US-equity-closed window (Fri 4:00pm ET → Mon 9:30am ET). Live tracked long at 5x; exit when margin P&L >= 3%, funding >= 10%, or held 24h.",
+      "targetPct": 3,
+      "stopPct": 100,
+      "expiryDate": "2026-07-19T17:28:04.812Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "LITE",
+      "instrumentLabel": "HL LITE Builder DEX stock perp",
+      "fundingPnlAccrued": 0,
+      "entryConfidence": 0.5
     }
   ],
   "totalRealizedPnl": 1.802699999999998,
   "totalTrades": 447,
   "winCount": 279,
   "lossCount": 168,
-  "lastUpdated": "2026-07-18T16:50:16.353Z"
+  "lastUpdated": "2026-07-18T17:28:05.133Z"
 }
