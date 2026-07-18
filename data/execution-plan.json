@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-18T18:28:50.383Z",
+  "generatedAt": "2026-07-18T19:28:33.291Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,28 +7,28 @@
   "llmCloses": [
     {
       "action": "close",
-      "positionId": "T-1784208521735-ub7u",
+      "positionId": "T-1784219291393-zbud",
       "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
+      "venue": "spot",
+      "direction": "long",
       "closeReasonCategory": "thesis_invalidated",
       "evidenceColumns": [
-        "gold_hl_funding_ann"
+        "gold_gld_pc_ratio"
       ],
-      "thesis": "Funding has round-tripped from +28.1% at entry through zero to -19.21%, fully normalizing the extreme long bias and invalidating the fade-crowded-longs thesis."
+      "thesis": "GOLD P/C ratio entered this position at 1.631 (extreme put buying) and has since collapsed to 1.104, well below the extreme-high threshold and below neutral, completely reversing the signal input. The contrarian long thesis is invalidated; exit now per PC_RATIO_EXTREME_HIGH close rules."
     }
   ],
   "entrySignals": [
     {
       "type": "FUNDING_EXTREME_SHORT",
-      "asset": "GOLD",
+      "asset": "AMZN",
       "venue": "hyperliquid",
       "direction": "long",
-      "strength": 0.12028571428571432,
-      "confidence": 0.06198354634549094,
-      "thesis": "GOLD HL funding -19.2% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.3162857142857143,
+      "confidence": 0.16298286414360677,
+      "thesis": "AMZN HL funding -26.1% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4016,
+      "entryPrice": 247.2,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 7,

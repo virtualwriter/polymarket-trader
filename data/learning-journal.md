@@ -1944,3 +1944,46 @@ GOLD FUNDING_EXTREME_LONG short (T-1784208521735-ub7u) closed on thesis_invalida
 
 ---
 
+### 2026-07-18 19:28 UTC
+
+**Portfolio:** $98.58 total | Cash $92.58 | 6 open | P&L $1.8167 | 62% win rate (450 trades)
+
+**Closed 2 trades:**
+- ✅ ORCL long via hyperliquid/hl_perp [HL ORCL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0099 (1.0%, market 0.0099, funding 0.0000)
+- ✅ GOLD long via spot/spot [GOLD spot] (PC_RATIO_EXTREME_HIGH) → llm_decision: +$0.0065 (0.7%, market 0.0065, funding 0.0000)
+
+**Opened 1 positions:**
+- AMZN long @ $247.2 via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT)
+
+**Hypothesis lifecycle:**
+- 💀 Setup family amzn_options_positioning_momentum KILLED (30% over 20 tests across 6 variants): AMZN options positioning / momentum
+- 💀 Setup family btc_options_positioning_macro KILLED (25% over 20 tests across 1 variants): BTC options positioning / macro
+- 💀 Setup family pm_odds_underlying_payoff_cap KILLED (15% over 20 tests across 3 variants): PM odds / underlying payoff cap
+- 💀 Setup family oil_settlement_bucket_skew KILLED (20% over 20 tests across 1 variants): Oil settlement bucket upside skew
+- 💀 Setup family find_0003 KILLED (0% over 20 tests across 1 variants): FIND-linked FIND-0003
+- 🧪 LLM retest queue: 8 active families did not trigger; 0 later families waiting.
+- 🧪 Opened 1 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -19.59 is -2.8 std devs from mean (-1.29 ± 6.46)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.26 to 0.29. Rolling correlation: 24h=0.65, 7d=-0.81, 30d=-0.10. Current 24h corr is at 87th pct of last 30 daily 24h-rolling values (range -0.91 to 0.91).
+
+**Blocked signal learning:**
+- Open blocked shadows: 54
+- Resolved blocked shadows: 566 (320 wins / 246 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+8.22%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+11.48%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-35.71%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit stop (-2.30%)
+
+**LLM analysis:**
+Closed GOLD long (T-1784219291393-zbud) on thesis_invalidated as gold_gld_pc_ratio plummeted from 1.63 to 1.10, far past the entry extreme. The weekend HL funding reversion longs are too early to assess, and LITE is drawing down -3.1% quickly, but no LLM close permitted; will monitor mechanical exits. P/C ratio signal family remains weak overall; gold P/C gave a clear round-trip, underscoring the importance of this exit rule.
+
+---
+

@@ -2,15 +2,15 @@
   "acceptedCloses": [
     {
       "action": "close",
-      "positionId": "T-1784208521735-ub7u",
+      "positionId": "T-1784219291393-zbud",
       "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
+      "venue": "spot",
+      "direction": "long",
       "closeReasonCategory": "thesis_invalidated",
       "evidenceColumns": [
-        "gold_hl_funding_ann"
+        "gold_gld_pc_ratio"
       ],
-      "thesis": "Funding has round-tripped from +28.1% at entry through zero to -19.21%, fully normalizing the extreme long bias and invalidating the fade-crowded-longs thesis."
+      "thesis": "GOLD P/C ratio entered this position at 1.631 (extreme put buying) and has since collapsed to 1.104, well below the extreme-high threshold and below neutral, completely reversing the signal input. The contrarian long thesis is invalidated; exit now per PC_RATIO_EXTREME_HIGH close rules."
     }
   ],
   "rejectedCloses": [],
