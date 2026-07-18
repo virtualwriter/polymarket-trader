@@ -2053,3 +2053,42 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 3/12; ne
 
 ---
 
+### 2026-07-18 22:28 UTC
+
+**Portfolio:** $98.58 total | Cash $92.58 | 6 open | P&L $1.8174 | 62% win rate (453 trades)
+
+**Closed 3 trades:**
+- ✅ COST long via hyperliquid/hl_perp [HL COST Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0065 (0.6%, market 0.0053, funding 0.0012)
+- ✅ HIMS long via hyperliquid/hl_perp [HL HIMS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0108 (1.1%, market 0.0096, funding 0.0012)
+- ❌ CBRS long via hyperliquid/hl_perp [HL CBRS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0166 (-1.7%, market -0.0171, funding 0.0005)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_pm_iv = 21.3 is -3.1 std devs from mean (40.71 ± 6.26)
+- [anomaly] btc_opt_iv_term_spread = -17.62 is -2.5 std devs from mean (-1.32 ± 6.49)
+- [anomaly] btc_opt_iv_90d = 54.6 is 2.0 std devs from mean (40.45 ± 6.98)
+- [anomaly] oil_hl_funding_ann = 135.97 is 2.0 std devs from mean since 2026-04-28 (-7.83 ± 71.09)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.26 to 0.27. Rolling correlation: 24h=0.64, 7d=-0.80, 30d=-0.12. Current 24h corr is at 90th pct of last 30 daily 24h-rolling values (range -0.90 to 0.94).
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 571 (322 wins / 249 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-5.56%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+4.85%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.25%)
+
+**LLM analysis:**
+No discretionary closes permitted – all positions are either rule‑based (WEEKEND_HL_FUNDING_REVERSION_LONG) or still within the 12h minimum hold (AMZN FUNDING_EXTREME_SHORT at 3h). LITE funding has nearly fully normalized intraday from -96.7% to -2.6%, and AMZN funding flipped to +5.5%, which could weaken the reversion thesis, but mechanical exits (target/stop/expiry) remain in control. Continue monitoring LITE PnL (-5.22%) for any adverse price action despite funding normalization; note overall WEEKEND_HL_FUNDING_REVERSION_LONG family has 74% win rate and positive average P&L, so no structural concern at this stage.
+
+---
+
