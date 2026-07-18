@@ -19245,7 +19245,7 @@
           "completed": 0,
           "wins": 0,
           "pending": 0,
-          "winRate": 0.0
+          "winRate": 0
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -19716,7 +19716,7 @@
           "productionPnl": -0.0343,
           "matchedMaxAbsPnlDiff": 0.0011,
           "matchedMeanAbsPnlDiff": 0.000397,
-          "pnlCorrelationMatched": 1.0,
+          "pnlCorrelationMatched": 1,
           "assetIntersection": 23,
           "productionOnlyAssets": 0,
           "replayOnlyAssets": 8,
@@ -19836,9 +19836,9 @@
           },
           "delta": {
             "closed": 0,
-            "pnl": 0.0,
+            "pnl": 0,
             "oilGoldClosed": 0,
-            "oilGoldPnl": 0.0,
+            "oilGoldPnl": 0,
             "hypeOneTouchShadows": 1
           }
         },
@@ -19887,9 +19887,9 @@
           },
           "delta": {
             "closed": 0,
-            "pnl": 0.0,
+            "pnl": 0,
             "oilGoldClosed": 0,
-            "oilGoldPnl": 0.0,
+            "oilGoldPnl": 0,
             "hypeOneTouchShadows": -5
           },
           "productionSuspectCohort": {
@@ -20563,9 +20563,18 @@
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ],
-        "themeId": "THEME-0001"
+        "themeId": "THEME-0001",
+        "hypothesisIds": [
+          "H-541"
+        ],
+        "lastLinkedHypothesisId": "H-541",
+        "lastLinkedHypothesisAt": "2026-07-18T16:49:50.728Z"
       },
-      "links": {},
+      "links": {
+        "hypotheses": [
+          "H-541"
+        ]
+      },
       "created": "2026-07-18T03:02:16Z",
       "source": "shadow_miner_v1"
     },
@@ -20899,7 +20908,7 @@
         "replayEvidence": {
           "status": "attached",
           "tradeCount": 0,
-          "totalPnl": 0.0,
+          "totalPnl": 0,
           "window": {
             "start": "2026-07-11",
             "end": "2026-07-12",
@@ -20911,7 +20920,12 @@
           ],
           "opportunityScoreAtAttach": 0.7807,
           "attachedAt": "2026-07-18T04:48:51Z"
-        }
+        },
+        "hypothesisIds": [
+          "H-540"
+        ],
+        "lastLinkedHypothesisId": "H-540",
+        "lastLinkedHypothesisAt": "2026-07-18T16:49:50.702Z"
       },
       "links": {
         "replays": [
@@ -20935,6 +20949,9 @@
             "attachedAt": "2026-07-18T04:48:51Z",
             "reproducibleCommand": "cd /opt/polymarket-trader && npx tsx scripts/replay-harness.ts --start 2026-07-11 --end 2026-07-12 --sandbox /tmp/finding-replay-FIND-0003 --signals ONE_TOUCH_HIGH_EDGE_NO --limit-hours 1 --keep-going"
           }
+        ],
+        "hypotheses": [
+          "H-540"
         ]
       },
       "created": "2026-07-18T03:02:16Z",
@@ -20954,13 +20971,13 @@
         "bucket": "weekend_hl_funding_shadow",
         "evidence": {
           "n": 8,
-          "winRate": 1.0,
+          "winRate": 1,
           "sumPnl": 0.273
         },
         "mineStats": {
           "n": 8,
           "wins": 8,
-          "winRate": 1.0,
+          "winRate": 1,
           "sumPnl": 0.273,
           "hasHeatmap": false,
           "sampleIds": [
@@ -21100,9 +21117,18 @@
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ],
-        "themeId": "THEME-0002"
+        "themeId": "THEME-0002",
+        "hypothesisIds": [
+          "H-542"
+        ],
+        "lastLinkedHypothesisId": "H-542",
+        "lastLinkedHypothesisAt": "2026-07-18T16:50:16.088Z"
       },
-      "links": {},
+      "links": {
+        "hypotheses": [
+          "H-542"
+        ]
+      },
       "created": "2026-07-18T03:02:16Z",
       "source": "shadow_miner_v1"
     },

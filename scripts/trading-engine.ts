@@ -6105,6 +6105,12 @@ function ensureHypothesisSetupMetadata(hypothesis: Hypothesis): void {
   ) {
     return;
   }
+  // FIND-linked research hyps keep a stable per-FIND family (not freeform classifiers / retired other_mixed).
+  if (typeof hypothesis.originFindingId === "string" && hypothesis.originFindingId.length > 0) {
+    hypothesis.setupId = `find_${hypothesis.originFindingId.toLowerCase().replace(/-/g, "_")}`;
+    hypothesis.setupLabel = `FIND-linked ${hypothesis.originFindingId}`;
+    return;
+  }
   const setup = classifyHypothesisSetup(hypothesis);
   hypothesis.setupId = setup.setupId;
   hypothesis.setupLabel = setup.setupLabel;
@@ -7423,75 +7429,100 @@ function ingestNightlyLlmAdvice(
     rejectReasons[reason] = (rejectReasons[reason] ?? 0) + 1;
   };
   const backlog = llmHypothesisBacklog(hypotheses);
-  if (!backlog.complete && rawHypotheses.length > 0) {
-    notes.push(`Nightly advice: skipping ${rawHypotheses.length} new hypotheses; ${backlog.needingTests} existing hypotheses still need shadow tests.`);
-  } else {
-    for (const raw of rawHypotheses) {
-      if (added >= NIGHTLY_MAX_NEW_HYPOTHESES) {
-        bumpReject("daily_cap");
-        continue;
-      }
-      const parsed = llmNewHypothesisSchema.safeParse(raw);
-      if (!parsed.success) {
-        bumpReject("schema");
-        continue;
-      }
-      const nh = parsed.data;
-      if (!(typeof nh.confidence === "number") || nh.confidence < NIGHTLY_MIN_HYPOTHESIS_CONFIDENCE) {
-        bumpReject("low_confidence");
-        continue;
-      }
-      if (nh.description.trim().length < NIGHTLY_MIN_DESCRIPTION_CHARS) {
-        bumpReject("short_description");
-        continue;
-      }
-      if (Object.keys(nh.conditions ?? {}).length < NIGHTLY_MIN_CONDITION_KEYS) {
-        bumpReject("empty_conditions");
-        continue;
-      }
-      const id = `H-${String(hypotheses.length + 1).padStart(3, "0")}`;
-      const hypothesis: Hypothesis = {
-        id, created: nh.created, description: nh.description,
-        conditions: nh.conditions, prediction: nh.prediction,
-        timeframeDays: nh.timeframeDays, confidence: nh.confidence,
-        direction: nh.direction,
-        originFindingId: nh.originFindingId,
-        themeId: nh.themeId,
-        tests: [{ date: new Date().toISOString().slice(0, 10), triggered: true, outcome: "pending", actualMove: `Shadow test 1/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened for initial validation.` }],
-        winRate: 0, status: "active", promotedToSignal: false, postMortem: null,
-        source: nh.source ?? "llm",
-      };
-      ensureHypothesisSetupMetadata(hypothesis);
-      if (RETIRED_LLM_SETUP_IDS.has(hypothesis.setupId ?? "")) {
-        notes.push(`Nightly advice: skipping retired LLM setup hypothesis: ${hypothesis.setupLabel}`);
-        bumpReject("retired_setup");
-        continue;
-      }
-      if (isDataContaminatedSetup(hypothesis.setupId ?? "")) {
-        notes.push(`Nightly advice: skipping contaminated setup hypothesis: ${hypothesis.setupLabel}`);
-        bumpReject("contaminated_setup");
-        continue;
-      }
-      if (!inferHypothesisAsset(hypothesis) || !inferHypothesisDirection(hypothesis)) {
-        notes.push(`Nightly advice: skipping direction/asset-ambiguous hypothesis: ${nh.description.slice(0, 60)}`);
-        bumpReject("ambiguous_thesis");
-        continue;
-      }
-      const descKey = nh.description.trim().toLowerCase().slice(0, 80);
-      if (hypotheses.some((h) => h.description.trim().toLowerCase().slice(0, 80) === descKey)) {
-        bumpReject("duplicate_description");
-        continue;
-      }
-      hypotheses.push(hypothesis);
-      added++;
-      if (nh.originFindingId && !MUTATION_DISABLED) {
-        const linked = linkFindingToHypothesis(nh.originFindingId, id, nh.themeId);
-        if (linked === "linked") notes.push(`Nightly advice: linked ${nh.originFindingId} to ${id}.`);
-        else if (linked === "missing") notes.push(`Nightly advice: could not link missing registry finding ${nh.originFindingId} to ${id}.`);
-        else notes.push(`Nightly advice: registry link failed for ${nh.originFindingId} -> ${id}; continuing ingest.`);
-      }
-      notes.push(`Nightly advice: new hypothesis ${id}: ${nh.description.slice(0, 80)}`);
+  // Phase D FIND-linked hyps bypass the legacy LLM backlog gate. Freeform
+  // (no originFindingId) still wait until existing LLM setup families clear.
+  let deferredForBacklog = 0;
+  if (!backlog.complete) {
+    notes.push(
+      `Nightly advice: LLM setup backlog still open (${backlog.needingTests} families need shadow tests); ` +
+        `admitting FIND-linked hypotheses only.`,
+    );
+  }
+  for (const raw of rawHypotheses) {
+    if (added >= NIGHTLY_MAX_NEW_HYPOTHESES) {
+      bumpReject("daily_cap");
+      continue;
     }
+    const parsed = llmNewHypothesisSchema.safeParse(raw);
+    if (!parsed.success) {
+      bumpReject("schema");
+      continue;
+    }
+    const nh = parsed.data;
+    const isFindLinked = typeof nh.originFindingId === "string" && nh.originFindingId.length > 0;
+    if (!backlog.complete && !isFindLinked) {
+      deferredForBacklog++;
+      bumpReject("backlog");
+      continue;
+    }
+    // FIND-authored hyps use a softer confidence floor; ranking already selected them.
+    const minConfidence = isFindLinked ? 0.55 : NIGHTLY_MIN_HYPOTHESIS_CONFIDENCE;
+    if (!(typeof nh.confidence === "number") || nh.confidence < minConfidence) {
+      bumpReject("low_confidence");
+      continue;
+    }
+    if (nh.description.trim().length < NIGHTLY_MIN_DESCRIPTION_CHARS) {
+      bumpReject("short_description");
+      continue;
+    }
+    if (Object.keys(nh.conditions ?? {}).length < NIGHTLY_MIN_CONDITION_KEYS) {
+      bumpReject("empty_conditions");
+      continue;
+    }
+    const id = `H-${String(hypotheses.length + 1).padStart(3, "0")}`;
+    const hypothesis: Hypothesis = {
+      id, created: nh.created, description: nh.description,
+      conditions: nh.conditions, prediction: nh.prediction,
+      timeframeDays: nh.timeframeDays, confidence: nh.confidence,
+      direction: nh.direction,
+      originFindingId: nh.originFindingId,
+      themeId: nh.themeId,
+      tests: [{ date: new Date().toISOString().slice(0, 10), triggered: true, outcome: "pending", actualMove: `Shadow test 1/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened for initial validation.` }],
+      winRate: 0, status: "active", promotedToSignal: false, postMortem: null,
+      source: nh.source ?? "llm",
+    };
+    if (isFindLinked) {
+      // Stable per-FIND setup family so classifiers do not dump new research into retired other_mixed.
+      hypothesis.setupId = `find_${nh.originFindingId!.toLowerCase().replace(/-/g, "_")}`;
+      hypothesis.setupLabel = `FIND-linked ${nh.originFindingId}`;
+    } else {
+      ensureHypothesisSetupMetadata(hypothesis);
+    }
+    if (!isFindLinked && RETIRED_LLM_SETUP_IDS.has(hypothesis.setupId ?? "")) {
+      notes.push(`Nightly advice: skipping retired LLM setup hypothesis: ${hypothesis.setupLabel}`);
+      bumpReject("retired_setup");
+      continue;
+    }
+    if (isDataContaminatedSetup(hypothesis.setupId ?? "")) {
+      notes.push(`Nightly advice: skipping contaminated setup hypothesis: ${hypothesis.setupLabel}`);
+      bumpReject("contaminated_setup");
+      continue;
+    }
+    // FIND-linked hyps already carry explicit direction from the opportunity authoring step.
+    if (!isFindLinked && (!inferHypothesisAsset(hypothesis) || !inferHypothesisDirection(hypothesis))) {
+      notes.push(`Nightly advice: skipping direction/asset-ambiguous hypothesis: ${nh.description.slice(0, 60)}`);
+      bumpReject("ambiguous_thesis");
+      continue;
+    }
+    const descKey = nh.description.trim().toLowerCase().slice(0, 80);
+    if (hypotheses.some((h) => h.description.trim().toLowerCase().slice(0, 80) === descKey)) {
+      bumpReject("duplicate_description");
+      continue;
+    }
+    hypotheses.push(hypothesis);
+    added++;
+    if (nh.originFindingId && !MUTATION_DISABLED) {
+      const linked = linkFindingToHypothesis(nh.originFindingId, id, nh.themeId);
+      if (linked === "linked") notes.push(`Nightly advice: linked ${nh.originFindingId} to ${id}.`);
+      else if (linked === "missing") notes.push(`Nightly advice: could not link missing registry finding ${nh.originFindingId} to ${id}.`);
+      else notes.push(`Nightly advice: registry link failed for ${nh.originFindingId} -> ${id}; continuing ingest.`);
+    }
+    notes.push(`Nightly advice: new hypothesis ${id}: ${nh.description.slice(0, 80)}`);
+  }
+  if (deferredForBacklog > 0) {
+    notes.push(
+      `Nightly advice: deferred ${deferredForBacklog} freeform hypothesis record(s) until LLM setup backlog clears.`,
+    );
   }
   if (rejected > 0) {
     const detail = Object.entries(rejectReasons).map(([k, v]) => `${k}=${v}`).join(", ");
@@ -7538,8 +7569,16 @@ function ingestNightlyLlmAdvice(
   }
 
   notes.push(`Nightly advice ingested (generatedAt=${generatedAt}): ${added} hypotheses, ${reviewsApplied} reviews, ${paramNotes.length} param changes.`);
+  // Do not consume the advice file while freeform hyps remain deferred for backlog,
+  // so the next hourly run can retry them. FIND-linked admissions still dedupe on description.
   if (!MUTATION_DISABLED) {
-    writeJson(NIGHTLY_LLM_ADVICE_INGESTED_FILE, { generatedAt, ingestedAt: new Date().toISOString() });
+    if (deferredForBacklog > 0) {
+      notes.push(
+        `Nightly advice: not marking ingested (${deferredForBacklog} freeform hyp(s) deferred for backlog).`,
+      );
+    } else {
+      writeJson(NIGHTLY_LLM_ADVICE_INGESTED_FILE, { generatedAt, ingestedAt: new Date().toISOString() });
+    }
   }
   return { learningParams: nextParams, notes, journalLines };
 }

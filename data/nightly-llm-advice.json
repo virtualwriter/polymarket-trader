@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-07-18T07:06:29.464Z",
+  "generatedAt": "2026-07-18T16:50:01.743Z",
   "provider": "deepseek",
   "model": "deepseek-v4-pro",
-  "strategyReview": "The portfolio is net positive with a 62.4% win rate driven primarily by weekend funding reversion and monotonic arb trades. Live ONE_TOUCH_HIGH_EDGE_NO signals are performing well (4.49% avg PnL on 6 trades), and locked shadow signals—especially IV-touch rich NO and weekend funding reversion—show exceptional backtest profitability but remain blocked. Live funding-extreme signals are losing on aggregate, dragged down by poor performance on AMZN and HYPE (already disabled) while GOLD shows strength. PC-ratio signals are marginally profitable overall but exhibit wide asset-level dispersion. PM_EV_BELOW_SPOT and LLM_HYPOTHESIS continue to weaken and remain disabled. The critical gap is the barrier preventing shadow-validated setups (WEEKEND_HL_FUNDING_REVERSION_LONG, USER_PM_IV_TOUCH_RICH_NO, etc.) from entering live execution, which limits overall PnL capture.",
+  "strategyReview": "The portfolio is net positive with a 62.4% win rate driven primarily by weekend funding reversion and monotonic arb trades. Live ONE_TOUCH_HIGH_EDGE_NO signals are performing well (4.49% avg PnL on 6 trades), and locked shadow signals\u2014especially IV-touch rich NO and weekend funding reversion\u2014show exceptional backtest profitability but remain blocked. Live funding-extreme signals are losing on aggregate, dragged down by poor performance on AMZN and HYPE (already disabled) while GOLD shows strength. PC-ratio signals are marginally profitable overall but exhibit wide asset-level dispersion. PM_EV_BELOW_SPOT and LLM_HYPOTHESIS continue to weaken and remain disabled. The critical gap is the barrier preventing shadow-validated setups (WEEKEND_HL_FUNDING_REVERSION_LONG, USER_PM_IV_TOUCH_RICH_NO, etc.) from entering live execution, which limits overall PnL capture.",
   "failureClusters": [
     {
       "theme": "Funding Extreme Long on Equities (AMZN/HYPE)",
@@ -23,43 +23,7 @@
   "newHypotheses": [
     {
       "created": "2026-07-17",
-      "description": "Shadow-test: ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap cluster. Enter a short position (sell YES) when a GOLD one-touch YES contract exhibits a sell-YES edge ≥ 1.2pts, yesAsk < 0.25, spread ≤ 0.03, and liquidity ≥ 15000, reflecting rich pricing on low-probability upside targets. Exit when edge compresses below 0.5pts or stop loss hits -100%.",
-      "conditions": {
-        "venue": "polymarket",
-        "asset": "GOLD",
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "sell_yes_edge_pts": ">= 1.2",
-        "yesAsk": "< 0.25",
-        "yesSpread": "<= 0.03",
-        "liquidity": ">= 15000"
-      },
-      "prediction": "GOLD one-touch YES contracts with rich sell-YES edge and tight spread will revert toward fair value, generating positive PnL on the short side within 7-14 days.",
-      "timeframeDays": 14,
-      "confidence": 0.65,
-      "direction": "short",
-      "originFindingId": "FIND-0003",
-      "themeId": "THEME-0001",
-      "source": "llm"
-    },
-    {
-      "created": "2026-07-17",
-      "description": "Shadow-test: NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD short-rich-tail. Enter short GOLD when the no-bias adjusted gap model signals a rich tail: spot trades >1.5% above its 7-day SMA, PM IV is in the top quartile (30-day percentile > 80), and GLD put/call ratio is in the bottom quartile (30-day percentile < 20), indicating overbought conditions. Exit when gap closes or stop triggers.",
-      "conditions": {
-        "gold_gc_spot_pct_vs_7d_sma": "> 1.5",
-        "gold_pm_iv_percentile_30d": "> 80",
-        "gold_gld_pc_ratio_percentile_30d": "< 20"
-      },
-      "prediction": "Gold will decline from overbought rich-tail states as mean reversion brings spot back toward fair value, with historical shadow win rate of 62%.",
-      "timeframeDays": 7,
-      "confidence": 0.62,
-      "direction": "short",
-      "originFindingId": "FIND-0001",
-      "themeId": "THEME-0001",
-      "source": "llm"
-    },
-    {
-      "created": "2026-07-17",
-      "description": "Shadow-test: WEEKEND_HL_FUNDING_REVERSION_LONG on MU. Enter long MU perp when mu_hl_funding_ann < -50% on a Thursday–Saturday evening, capturing the weekend bounce as extreme negative funding normalizes. Exit when funding rises above -10% or on Monday open; stop loss limited to -3.5%.",
+      "description": "Shadow-test: WEEKEND_HL_FUNDING_REVERSION_LONG on MU. Enter long MU perp when mu_hl_funding_ann < -50% on a Thursday\u2013Saturday evening, capturing the weekend bounce as extreme negative funding normalizes. Exit when funding rises above -10% or on Monday open; stop loss limited to -3.5%.",
       "conditions": {
         "asset": "MU",
         "mu_hl_funding_ann": "< -50",
@@ -84,5 +48,6 @@
       "observation": "BTC PM IV regime-relative compression has delivered mixed results: 1 win, 2 losses across 3 completed shadow tests. The IV compression trigger alone may not reliably predict spot reversion. Adding a momentum confirmation (e.g., btc_spot_change_pct_24h > 0) could filter whipsaws and is worth exploring."
     }
   ],
-  "journalEntry": "Tonight's review confirms that the portfolio is stable but leaving significant edge untapped due to shadow gates. The top performers—weekend funding reversion, IV-touch rich NO, and one-touch edge NO—are all operating in shadow and deserve a pathway to live. Failure analysis shows that the biggest drags come from signals already disabled, so current live risk is well contained. The three new shadow hypotheses from ranked research (GOLD one-touch NO, GOLD rich-tail gap short, and MU weekend funding bounce) extend the system's reach into high-confidence, evidence-backed patterns. No parameter changes are required given that stopped signals are already gated and there is no clear need to tweak risk on live families."
+  "journalEntry": "Tonight's review confirms that the portfolio is stable but leaving significant edge untapped due to shadow gates. The top performers\u2014weekend funding reversion, IV-touch rich NO, and one-touch edge NO\u2014are all operating in shadow and deserve a pathway to live. Failure analysis shows that the biggest drags come from signals already disabled, so current live risk is well contained. The three new shadow hypotheses from ranked research (GOLD one-touch NO, GOLD rich-tail gap short, and MU weekend funding bounce) extend the system's reach into high-confidence, evidence-backed patterns. No parameter changes are required given that stopped signals are already gated and there is no clear need to tweak risk on live families.",
+  "note": "retry FIND-0004 only after ambiguous_thesis exemption"
 }

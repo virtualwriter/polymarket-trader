@@ -1738,3 +1738,141 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-07-18T07:06:29.464Z, model=deepseek-v4-pro)
+- Hypotheses added: 0 (rejected 0); reviews applied: 2; param updates: none.
+- Strategy review: The portfolio is net positive with a 62.4% win rate driven primarily by weekend funding reversion and monotonic arb trades. Live ONE_TOUCH_HIGH_EDGE_NO signals are performing well (4.49% avg PnL on 6 trades), and locked shadow signals—especially IV-touch rich NO and weekend funding reversion—show exceptional backtest profitability but remain blocked. Live funding-extreme signals are losing on aggregate, dragged down by poor performance on AMZN and HYPE (already disabled) while GOLD shows strength. PC-ratio signals are marginally profitable overall but exhibit wide asset-level dispersion. PM_EV
+- Nightly journal: Tonight's review confirms that the portfolio is stable but leaving significant edge untapped due to shadow gates. The top performers—weekend funding reversion, IV-touch rich NO, and one-touch edge NO—are all operating in shadow and deserve a pathway to live. Failure analysis shows that the biggest drags come from signals already disabled, so current live risk is well contained. The three new shadow hypotheses from ranked research (GOLD one-touch NO, GOLD rich-tail gap short, and MU weekend funding bounce) extend the system's reach into high-confidence, evidence-backed patterns. No parameter ch
+### 2026-07-18 16:27 UTC
+
+**Portfolio:** $98.56 total | Cash $96.56 | 2 open | P&L $1.8027 | 62% win rate (447 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 25, maxPending/family 1).
+- 🧪 LLM retest queue: 12 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -15.66 is -2.2 std devs from mean (-1.26 ± 6.43)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.26 to 0.30. Rolling correlation: 24h=0.64, 7d=-0.83, 30d=-0.08. Current 24h corr is at 93th pct of last 30 daily 24h-rolling values (range -0.91 to 0.83).
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 564 (320 wins / 244 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.20%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+39.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+8.22%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+11.48%)
+
+---
+
+
+### Nightly research advice ingested (generatedAt=2026-07-18T07:06:29.464Z, model=deepseek-v4-pro)
+- Hypotheses added: 0 (rejected 3); reviews applied: 2; param updates: none.
+- Strategy review: The portfolio is net positive with a 62.4% win rate driven primarily by weekend funding reversion and monotonic arb trades. Live ONE_TOUCH_HIGH_EDGE_NO signals are performing well (4.49% avg PnL on 6 trades), and locked shadow signals—especially IV-touch rich NO and weekend funding reversion—show exceptional backtest profitability but remain blocked. Live funding-extreme signals are losing on aggregate, dragged down by poor performance on AMZN and HYPE (already disabled) while GOLD shows strength. PC-ratio signals are marginally profitable overall but exhibit wide asset-level dispersion. PM_EV
+- Nightly journal: Tonight's review confirms that the portfolio is stable but leaving significant edge untapped due to shadow gates. The top performers—weekend funding reversion, IV-touch rich NO, and one-touch edge NO—are all operating in shadow and deserve a pathway to live. Failure analysis shows that the biggest drags come from signals already disabled, so current live risk is well contained. The three new shadow hypotheses from ranked research (GOLD one-touch NO, GOLD rich-tail gap short, and MU weekend funding bounce) extend the system's reach into high-confidence, evidence-backed patterns. No parameter ch
+### 2026-07-18 16:49 UTC
+
+**Portfolio:** $98.56 total | Cash $96.56 | 2 open | P&L $1.8027 | 62% win rate (447 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 12 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -15.66 is -2.2 std devs from mean (-1.26 ± 6.43)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.26 to 0.30. Rolling correlation: 24h=0.64, 7d=-0.83, 30d=-0.08. Current 24h corr is at 93th pct of last 30 daily 24h-rolling values (range -0.91 to 0.83).
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 564 (320 wins / 244 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.20%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+39.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+8.22%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+11.48%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 0.4h since last call; daily budget 1/12; next scheduled 2026-07-18T18:49:17.251Z). Mechanical cycle ran normally._
+
+---
+
+
+### Nightly research advice ingested (generatedAt=2026-07-18T07:06:29.464Z, model=deepseek-v4-pro)
+- Hypotheses added: 2 (rejected 1); reviews applied: 2; param updates: none.
+- Strategy review: The portfolio is net positive with a 62.4% win rate driven primarily by weekend funding reversion and monotonic arb trades. Live ONE_TOUCH_HIGH_EDGE_NO signals are performing well (4.49% avg PnL on 6 trades), and locked shadow signals—especially IV-touch rich NO and weekend funding reversion—show exceptional backtest profitability but remain blocked. Live funding-extreme signals are losing on aggregate, dragged down by poor performance on AMZN and HYPE (already disabled) while GOLD shows strength. PC-ratio signals are marginally profitable overall but exhibit wide asset-level dispersion. PM_EV
+- Nightly journal: Tonight's review confirms that the portfolio is stable but leaving significant edge untapped due to shadow gates. The top performers—weekend funding reversion, IV-touch rich NO, and one-touch edge NO—are all operating in shadow and deserve a pathway to live. Failure analysis shows that the biggest drags come from signals already disabled, so current live risk is well contained. The three new shadow hypotheses from ranked research (GOLD one-touch NO, GOLD rich-tail gap short, and MU weekend funding bounce) extend the system's reach into high-confidence, evidence-backed patterns. No parameter ch
+### 2026-07-18 16:49 UTC
+
+**Portfolio:** $98.56 total | Cash $96.56 | 2 open | P&L $1.8027 | 62% win rate (447 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 10 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -15.66 is -2.2 std devs from mean (-1.26 ± 6.43)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.26 to 0.30. Rolling correlation: 24h=0.64, 7d=-0.83, 30d=-0.08. Current 24h corr is at 93th pct of last 30 daily 24h-rolling values (range -0.91 to 0.83).
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 564 (320 wins / 244 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.20%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+39.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+8.22%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+11.48%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 0.4h since last call; daily budget 1/12; next scheduled 2026-07-18T18:49:50.935Z). Mechanical cycle ran normally._
+
+---
+
+
+### Nightly research advice ingested (generatedAt=2026-07-18T16:50:01.743Z, model=deepseek-v4-pro)
+- Hypotheses added: 1 (rejected 0); reviews applied: 2; param updates: none.
+- Strategy review: The portfolio is net positive with a 62.4% win rate driven primarily by weekend funding reversion and monotonic arb trades. Live ONE_TOUCH_HIGH_EDGE_NO signals are performing well (4.49% avg PnL on 6 trades), and locked shadow signals—especially IV-touch rich NO and weekend funding reversion—show exceptional backtest profitability but remain blocked. Live funding-extreme signals are losing on aggregate, dragged down by poor performance on AMZN and HYPE (already disabled) while GOLD shows strength. PC-ratio signals are marginally profitable overall but exhibit wide asset-level dispersion. PM_EV
+- Nightly journal: Tonight's review confirms that the portfolio is stable but leaving significant edge untapped due to shadow gates. The top performers—weekend funding reversion, IV-touch rich NO, and one-touch edge NO—are all operating in shadow and deserve a pathway to live. Failure analysis shows that the biggest drags come from signals already disabled, so current live risk is well contained. The three new shadow hypotheses from ranked research (GOLD one-touch NO, GOLD rich-tail gap short, and MU weekend funding bounce) extend the system's reach into high-confidence, evidence-backed patterns. No parameter ch
+### 2026-07-18 16:50 UTC
+
+**Portfolio:** $98.56 total | Cash $96.56 | 2 open | P&L $1.8027 | 62% win rate (447 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 12 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -15.66 is -2.2 std devs from mean (-1.26 ± 6.43)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.26 to 0.30. Rolling correlation: 24h=0.64, 7d=-0.83, 30d=-0.08. Current 24h corr is at 93th pct of last 30 daily 24h-rolling values (range -0.91 to 0.83).
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 564 (320 wins / 244 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.20%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+39.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+8.22%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+11.48%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 0.4h since last call; daily budget 1/12; next scheduled 2026-07-18T18:50:16.325Z). Mechanical cycle ran normally._
+
+---
+
