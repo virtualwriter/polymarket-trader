@@ -22791,6 +22791,42 @@
       },
       "created": "2026-07-18T03:05:12Z",
       "source": "add_find_phase_c_dec.py"
+    },
+    {
+      "id": "DEC-0018",
+      "type": "decision",
+      "evidenceClass": "DERIVED",
+      "status": "final",
+      "title": "Phase D: nightly LLM authors hypotheses from ranked FIND opportunities",
+      "body": {
+        "rationale": "Phase D closes the stats-invent/LLM-experiment loop: deterministic mining and scoring select top-N FIND opportunities, while the nightly LLM may author new hypotheses only from those ranked findings. Each LLM hypothesis must carry originFindingId and themeId when available so engine ingest can preserve provenance and update FIND registry links.",
+        "promptContract": {
+          "sourceArtifacts": [
+            "data/research-opportunities.json",
+            "data/research-themes.json"
+          ],
+          "maxNewHypotheses": 3,
+          "requiresOriginFindingId": true,
+          "requiresThemeIdWhenAvailable": true,
+          "freeformWhenOpportunitiesExist": false
+        },
+        "ingestContract": {
+          "preserveFields": [
+            "originFindingId",
+            "themeId"
+          ],
+          "registryBacklink": "finding.links.hypotheses plus finding.body.hypothesisIds"
+        }
+      },
+      "links": {
+        "relatedRecords": [
+          "DEC-0015",
+          "DEC-0016",
+          "DEC-0017"
+        ]
+      },
+      "created": "2026-07-18T04:05:22Z",
+      "source": "phase-d-implementation"
     }
   ]
 }

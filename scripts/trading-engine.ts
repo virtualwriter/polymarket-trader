@@ -10,7 +10,7 @@
  *   npx tsx scripts/trading-engine.ts --dry-run    # show signals without trading
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statSync, openSync, readSync, closeSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statSync, openSync, readSync, closeSync, renameSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import {
@@ -633,6 +633,8 @@ interface Hypothesis {
   // hypotheses created before this field existed leave it undefined,
   // which falls back to the keyword inferrer.
   direction?: "long" | "short" | "neutral";
+  originFindingId?: string;
+  themeId?: string;
   tests: HypothesisTest[];
   winRate: number;
   status: "active" | "promoted" | "archived" | "killed";
@@ -6181,7 +6183,7 @@ function isRepeatHypothesisShadowTest(test: HypothesisTest): boolean {
 function llmHypothesisBacklog(hypotheses: Hypothesis[]) {
   const llmHypotheses = hypotheses.filter((hypothesis) => hypothesis.source === "llm");
   const families = hypothesisSetupFamilies(llmHypotheses);
-  const needingTests = families.filter(hypothesisSetupNeedsMoreShadowTests);
+  const needingTests = families.filter((family) => hypothesisSetupNeedsMoreShadowTests(family));
   const activeRetestQueue = needingTests.slice(0, HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT);
   const pending = needingTests.reduce((sum, family) => sum + family.pending.length, 0);
   return {
@@ -7257,6 +7259,8 @@ const llmNewHypothesisSchema = z.object({
   timeframeDays: z.number().int().min(1).max(30),
   confidence: z.number().min(0).max(1),
   direction: z.enum(["long", "short", "neutral"]),
+  originFindingId: z.string().regex(/^FIND-\d{4}$/).optional(),
+  themeId: z.string().regex(/^THEME-\d{4}$/).optional(),
   source: z.literal("llm"),
 });
 
@@ -7336,6 +7340,46 @@ function parseLlmJson(text: string): { result: LlmAnalysisResult | null; error: 
 
 const NIGHTLY_LLM_ADVICE_FILE = "nightly-llm-advice.json";
 const NIGHTLY_LLM_ADVICE_INGESTED_FILE = "nightly-llm-advice-ingested.json";
+const REGISTRY_FILE = "registry.json";
+
+function stringArray(value: unknown): string[] {
+  return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+}
+
+function pushUniqueString(values: string[], value: string): string[] {
+  return values.includes(value) ? values : [...values, value];
+}
+
+function linkFindingToHypothesis(originFindingId: string, hypothesisId: string, themeId?: string): boolean {
+  const registry = readJson<Record<string, unknown> | null>(REGISTRY_FILE, null);
+  if (!registry || typeof registry !== "object" || !Array.isArray(registry.records)) return false;
+  const finding = registry.records.find((record: unknown) =>
+    !!record && typeof record === "object"
+    && (record as Record<string, unknown>).id === originFindingId
+    && (record as Record<string, unknown>).type === "finding") as Record<string, unknown> | undefined;
+  if (!finding) return false;
+
+  const links = finding.links && typeof finding.links === "object"
+    ? finding.links as Record<string, unknown>
+    : {};
+  links.hypotheses = pushUniqueString(stringArray(links.hypotheses), hypothesisId);
+  finding.links = links;
+
+  const body = finding.body && typeof finding.body === "object"
+    ? finding.body as Record<string, unknown>
+    : {};
+  body.hypothesisIds = pushUniqueString(stringArray(body.hypothesisIds), hypothesisId);
+  body.lastLinkedHypothesisId = hypothesisId;
+  body.lastLinkedHypothesisAt = new Date().toISOString();
+  if (themeId && typeof body.themeId !== "string") body.themeId = themeId;
+  finding.body = body;
+
+  const outFile = join(DATA_DIR, REGISTRY_FILE);
+  const tmp = `${outFile}.tmp`;
+  writeFileSync(tmp, JSON.stringify(registry, null, 2) + "\n");
+  renameSync(tmp, outFile);
+  return true;
+}
 
 interface NightlyLlmAdviceIngestResult {
   learningParams: LearningParams;
@@ -7407,6 +7451,8 @@ function ingestNightlyLlmAdvice(
         conditions: nh.conditions, prediction: nh.prediction,
         timeframeDays: nh.timeframeDays, confidence: nh.confidence,
         direction: nh.direction,
+        originFindingId: nh.originFindingId,
+        themeId: nh.themeId,
         tests: [{ date: new Date().toISOString().slice(0, 10), triggered: true, outcome: "pending", actualMove: `Shadow test 1/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened for initial validation.` }],
         winRate: 0, status: "active", promotedToSignal: false, postMortem: null,
         source: nh.source ?? "llm",
@@ -7434,6 +7480,11 @@ function ingestNightlyLlmAdvice(
       }
       hypotheses.push(hypothesis);
       added++;
+      if (nh.originFindingId && !MUTATION_DISABLED) {
+        const linked = linkFindingToHypothesis(nh.originFindingId, id, nh.themeId);
+        if (linked) notes.push(`Nightly advice: linked ${nh.originFindingId} to ${id}.`);
+        else notes.push(`Nightly advice: could not link missing registry finding ${nh.originFindingId} to ${id}.`);
+      }
       notes.push(`Nightly advice: new hypothesis ${id}: ${nh.description.slice(0, 80)}`);
     }
   }

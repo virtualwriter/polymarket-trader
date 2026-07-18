@@ -87,6 +87,40 @@ describe("buildNightlyResearchPrompt", () => {
     expect(prompt).toContain("ONE_TOUCH_HIGH_EDGE_NO");
   });
 
+  it("renders ranked research opportunities and theme summaries", () => {
+    const prompt = buildNightlyResearchPrompt({
+      ...emptyInputs,
+      opportunities: [
+        {
+          rank: 1,
+          id: "FIND-0003",
+          clusterKey: "ONE_TOUCH_HIGH_EDGE_NO|GOLD|heatmap|no",
+          opportunityScore: 0.7807,
+          confidenceScore: 0.3182,
+          evidence: { n: 12, winRate: 0.5833, sumPnl: 0.6492 },
+          themeId: "THEME-0001",
+          title: "Shadow FIND: one-touch GOLD NO",
+        },
+      ],
+      themes: [
+        {
+          id: "THEME-0001",
+          title: "Heatmap one-touch shadows",
+          status: "active",
+          findingIds: ["FIND-0003"],
+          findingCount: 1,
+          avgOpportunityScore: 0.7807,
+        },
+      ],
+    });
+    expect(prompt).toContain("RANKED RESEARCH OPPORTUNITIES");
+    expect(prompt).toContain("FIND-0003");
+    expect(prompt).toContain("themeId=THEME-0001");
+    expect(prompt).toContain("ONE_TOUCH_HIGH_EDGE_NO|GOLD|heatmap|no");
+    expect(prompt).toContain("RESEARCH THEMES SUMMARY");
+    expect(prompt).toContain("every newHypothesis MUST be authored from one of those findings");
+  });
+
   it("lists retired setup ids as blocked when provided", () => {
     const prompt = buildNightlyResearchPrompt({ ...emptyInputs, retiredSetupIds: ["generic_macro_correlation"] });
     expect(prompt).toContain("Retired LLM setup families are blocked");
@@ -175,6 +209,8 @@ describe("parseNightlyAdvice", () => {
         timeframeDays: 5,
         confidence: 0.6,
         direction: "long",
+        originFindingId: "FIND-0003",
+        themeId: "THEME-0001",
         source: "llm",
       },
     ],
@@ -195,6 +231,8 @@ describe("parseNightlyAdvice", () => {
     expect(advice!.failureClusters).toHaveLength(1);
     expect(advice!.newHypotheses).toHaveLength(1);
     expect(advice!.newHypotheses[0].direction).toBe("long");
+    expect(advice!.newHypotheses[0].originFindingId).toBe("FIND-0003");
+    expect(advice!.newHypotheses[0].themeId).toBe("THEME-0001");
     expect(advice!.hypothesisReviews).toHaveLength(1);
     expect(advice!.parameterUpdates?.macroMomentum24hThresholdPts).toBe(5);
     expect(advice!.parameterUpdates?.signalRisk?.LLM_HYPOTHESIS.targetPct).toBe(4);
@@ -216,6 +254,34 @@ describe("parseNightlyAdvice", () => {
     // Only the well-formed hypothesis survives; the two out-of-bounds items are dropped.
     expect(advice!.newHypotheses).toHaveLength(1);
     expect(advice!.newHypotheses[0].timeframeDays).toBe(5);
+  });
+
+  it("drops hypotheses missing originFindingId", () => {
+    const payload = {
+      ...validPayload,
+      newHypotheses: [
+        validPayload.newHypotheses[0],
+        { ...validPayload.newHypotheses[0], originFindingId: undefined },
+      ],
+    };
+    const { advice, error } = parseNightlyAdvice(JSON.stringify(payload));
+    expect(error).toBeNull();
+    expect(advice!.newHypotheses).toHaveLength(1);
+    expect(advice!.newHypotheses[0].originFindingId).toBe("FIND-0003");
+  });
+
+  it("drops hypotheses whose originFindingId was not in the ranked opportunities set", () => {
+    const payload = {
+      ...validPayload,
+      newHypotheses: [
+        validPayload.newHypotheses[0],
+        { ...validPayload.newHypotheses[0], originFindingId: "FIND-9999" },
+      ],
+    };
+    const { advice, error } = parseNightlyAdvice(JSON.stringify(payload), { allowedOriginFindingIds: ["FIND-0003"] });
+    expect(error).toBeNull();
+    expect(advice!.newHypotheses).toHaveLength(1);
+    expect(advice!.newHypotheses[0].originFindingId).toBe("FIND-0003");
   });
 
   it("drops out-of-bounds parameterUpdates fields but keeps in-bounds ones", () => {

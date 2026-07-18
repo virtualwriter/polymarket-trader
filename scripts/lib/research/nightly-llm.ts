@@ -28,12 +28,34 @@ export interface NightlyHypothesisSummary {
   setupId?: string;
 }
 
+export interface NightlyResearchOpportunity {
+  rank?: number;
+  id: string;
+  clusterKey?: string;
+  opportunityScore?: number;
+  confidenceScore?: number;
+  evidence?: unknown;
+  themeId?: string;
+  title?: string;
+}
+
+export interface NightlyResearchThemeSummary {
+  id: string;
+  title?: string;
+  status?: string;
+  findingIds?: string[];
+  findingCount?: number;
+  avgOpportunityScore?: number;
+}
+
 export interface BuildNightlyResearchPromptInputs {
   truthState: unknown;
   engineState: unknown;
   lessons: unknown;
   hypotheses: NightlyHypothesisSummary[];
   learningParams: unknown;
+  opportunities?: NightlyResearchOpportunity[];
+  themes?: NightlyResearchThemeSummary[];
   /**
    * Setup family ids that are retired from live trading / new hypothesis
    * creation. Blocking itself is enforced at ingest by the hourly engine
@@ -59,6 +81,23 @@ function killedHypothesisOneLiner(h: NightlyHypothesisSummary): string {
   return `  ${h.id}: ${h.description.slice(0, 100)} — ${h.postMortem ?? "no postmortem"}`;
 }
 
+function scoreLabel(value: unknown): string {
+  return typeof value === "number" && Number.isFinite(value) ? value.toFixed(4) : "n/a";
+}
+
+function opportunityOneLiner(o: NightlyResearchOpportunity): string {
+  const rank = typeof o.rank === "number" ? o.rank : "?";
+  const theme = o.themeId ? ` themeId=${o.themeId}` : "";
+  const evidence = o.evidence === undefined ? "n/a" : JSON.stringify(o.evidence);
+  return `  ${rank}. ${o.id}${theme} clusterKey=${o.clusterKey ?? "n/a"} opportunityScore=${scoreLabel(o.opportunityScore)} confidenceScore=${scoreLabel(o.confidenceScore)} title=${o.title ?? "untitled"} evidence=${evidence}`;
+}
+
+function themeOneLiner(t: NightlyResearchThemeSummary): string {
+  const findingIds = Array.isArray(t.findingIds) ? t.findingIds.slice(0, 12).join(",") : "";
+  const tail = Array.isArray(t.findingIds) && t.findingIds.length > 12 ? ",..." : "";
+  return `  ${t.id} [${t.status ?? "unknown"}]: ${t.title ?? "untitled"} findingCount=${t.findingCount ?? t.findingIds?.length ?? "n/a"} avgOpportunityScore=${scoreLabel(t.avgOpportunityScore)} findings=${findingIds}${tail}`;
+}
+
 /**
  * PURE — builds the nightly research prompt from already-loaded inputs.
  * No file I/O so it is directly unit-testable.
@@ -67,9 +106,13 @@ export function buildNightlyResearchPrompt(inputs: BuildNightlyResearchPromptInp
   const retiredSetupIds = inputs.retiredSetupIds ?? [];
   const activeHypotheses = inputs.hypotheses.filter((h) => h.status === "active" || h.status === "promoted");
   const killedRecently = inputs.hypotheses.filter((h) => h.status === "killed").slice(-5);
+  const opportunities = inputs.opportunities ?? [];
+  const themes = inputs.themes ?? [];
 
   const activeLines = activeHypotheses.length > 0 ? activeHypotheses.map(activeHypothesisOneLiner).join("\n") : "  None yet";
   const killedLines = killedRecently.length > 0 ? killedRecently.map(killedHypothesisOneLiner).join("\n") : "  None";
+  const opportunityLines = opportunities.length > 0 ? opportunities.map(opportunityOneLiner).join("\n") : "  None available. Prefer returning zero newHypotheses instead of inventing freeform ideas.";
+  const themeLines = themes.length > 0 ? themes.map(themeOneLiner).join("\n") : "  None available";
 
   const retiredLine = retiredSetupIds.length > 0
     ? `Retired LLM setup families are blocked from live trading and new hypothesis creation: ${retiredSetupIds.join(", ")}. Do not recreate these broad families under a new name; propose only narrower replacement variants with distinct measurable inputs.`
@@ -80,7 +123,7 @@ export function buildNightlyResearchPrompt(inputs: BuildNightlyResearchPromptInp
 Your job this run is to:
 1. Write a strategyReview: one short paragraph on what is working and what is failing, grounded in the truth state and lessons below.
 2. Identify failureClusters: group recent losing patterns into named themes, each with supporting evidence and a recommendation.
-3. Propose up to 3 newHypotheses, and write hypothesisReviews for existing hypotheses you have new observations about.
+3. Propose up to 3 newHypotheses from the ranked research opportunities only, and write hypothesisReviews for existing hypotheses you have new observations about.
 4. Suggest parameterUpdates within the bounds below, only when the evidence supports a change.
 
 CANONICAL ENGINE STATE:
@@ -91,6 +134,12 @@ ${jsonOrUnavailable(inputs.truthState, 1)}
 
 NIGHTLY LESSONS:
 ${jsonOrUnavailable(inputs.lessons, 1)}
+
+RANKED RESEARCH OPPORTUNITIES:
+${opportunityLines}
+
+RESEARCH THEMES SUMMARY:
+${themeLines}
 
 ACTIVE / PROMOTED HYPOTHESES:
 ${activeLines}
@@ -104,6 +153,8 @@ ${jsonOrUnavailable(inputs.learningParams, 2)}
 IMPORTANT RULES:
 - Each hypothesis MUST be specific and testable with a clear timeframe (1-30 days)
 - Each hypothesis MUST define measurable conditions using column names from the data
+- When RANKED RESEARCH OPPORTUNITIES contains FIND records, every newHypothesis MUST be authored from one of those findings, MUST include originFindingId exactly matching a listed FIND id, and MUST include themeId when the listed finding has one.
+- Do NOT invent unrelated freeform ideas when ranked opportunities exist. Prefer up to 3 hypotheses total; if no ranked opportunities are listed, prefer returning zero newHypotheses.
 - Prefer regime-relative conditions over hard-coded price levels so promoted setup families can generalize across BTC/HYPE/GOLD/OIL/AMZN price regimes. Use absolute spot thresholds only when the exact level is essential to the thesis.
 - Supported derived condition keys:
   - <column>_pct_from_<N>h_high / <column>_pct_from_<N>d_high, e.g. btc_spot_pct_from_7d_high > -3
@@ -141,6 +192,8 @@ Respond with ONLY valid JSON in this exact format:
       "timeframeDays": 7,
       "confidence": 0.6,
       "direction": "long",
+      "originFindingId": "FIND-0003",
+      "themeId": "THEME-0001",
       "source": "llm"
     }
   ],
@@ -174,6 +227,8 @@ const hypothesisItemSchema = z.object({
   timeframeDays: z.number().int().min(1).max(30),
   confidence: z.number().min(0).max(1),
   direction: z.enum(["long", "short", "neutral"]),
+  originFindingId: z.string().regex(/^FIND-\d{4}$/),
+  themeId: z.string().regex(/^THEME-\d{4}$/).optional(),
   source: z.literal("llm"),
 });
 export type NightlyAdviceHypothesis = z.infer<typeof hypothesisItemSchema>;
@@ -262,7 +317,10 @@ function sanitizeParameterUpdates(raw: unknown): NightlyAdviceParameterUpdates |
  * are individually dropped (see design note above) rather than failing the
  * whole response.
  */
-export function parseNightlyAdvice(text: string): { advice: NightlyAdvice | null; error: string | null } {
+export function parseNightlyAdvice(
+  text: string,
+  opts: { allowedOriginFindingIds?: Iterable<string> } = {},
+): { advice: NightlyAdvice | null; error: string | null } {
   const jsonText = extractLlmJsonObject(text);
   if (!jsonText) return { advice: null, error: "No balanced JSON object found in response" };
 
@@ -276,11 +334,16 @@ export function parseNightlyAdvice(text: string): { advice: NightlyAdvice | null
     return { advice: null, error: "Top-level JSON is not an object" };
   }
   const src = raw as Record<string, unknown>;
+  const allowedOriginFindingIds = opts.allowedOriginFindingIds
+    ? new Set(Array.from(opts.allowedOriginFindingIds))
+    : null;
+  const newHypotheses = filterValid(hypothesisItemSchema, src.newHypotheses)
+    .filter((h) => !allowedOriginFindingIds || allowedOriginFindingIds.has(h.originFindingId));
 
   const advice: NightlyAdvice = {
     strategyReview: typeof src.strategyReview === "string" && src.strategyReview ? src.strategyReview : undefined,
     failureClusters: filterValid(failureClusterItemSchema, src.failureClusters),
-    newHypotheses: filterValid(hypothesisItemSchema, src.newHypotheses),
+    newHypotheses,
     hypothesisReviews: filterValid(hypothesisReviewItemSchema, src.hypothesisReviews),
     parameterUpdates: sanitizeParameterUpdates(src.parameterUpdates),
     journalEntry: typeof src.journalEntry === "string" && src.journalEntry ? src.journalEntry : undefined,
@@ -321,6 +384,58 @@ function loadHypothesesSummaries(path: string): NightlyHypothesisSummary[] {
     && typeof (h as any).description === "string");
 }
 
+function loadResearchThemesSummary(path: string): NightlyResearchThemeSummary[] {
+  const raw = readJsonOrNull(path);
+  const themes = raw && typeof raw === "object" && Array.isArray((raw as any).themes)
+    ? (raw as any).themes
+    : Array.isArray(raw) ? raw : [];
+  return themes.filter((t: unknown): t is NightlyResearchThemeSummary =>
+    !!t && typeof t === "object"
+    && typeof (t as any).id === "string"
+    && /^THEME-\d{4}$/.test((t as any).id));
+}
+
+function themeIdByFindingId(themes: NightlyResearchThemeSummary[]): Map<string, string> {
+  const out = new Map<string, string>();
+  for (const theme of themes) {
+    for (const findingId of theme.findingIds ?? []) {
+      if (/^FIND-\d{4}$/.test(findingId)) out.set(findingId, theme.id);
+    }
+  }
+  return out;
+}
+
+function loadRankedResearchOpportunities(path: string, themes: NightlyResearchThemeSummary[]): NightlyResearchOpportunity[] {
+  const raw = readJsonOrNull(path);
+  if (!raw || typeof raw !== "object") return [];
+  const src = raw as Record<string, unknown>;
+  const opportunities = Array.isArray(src.opportunities) ? src.opportunities : [];
+  const topN = typeof src.topN === "number" && Number.isFinite(src.topN) ? Math.max(0, Math.floor(src.topN)) : opportunities.length;
+  const themeByFinding = themeIdByFindingId(themes);
+  return opportunities
+    .slice(0, topN)
+    .filter((item): item is Record<string, unknown> =>
+      !!item && typeof item === "object"
+      && typeof (item as any).id === "string"
+      && /^FIND-\d{4}$/.test((item as any).id))
+    .map((item) => {
+      const id = item.id as string;
+      const themeId = typeof item.themeId === "string" && /^THEME-\d{4}$/.test(item.themeId)
+        ? item.themeId
+        : themeByFinding.get(id);
+      return {
+        rank: typeof item.rank === "number" ? item.rank : undefined,
+        id,
+        clusterKey: typeof item.clusterKey === "string" ? item.clusterKey : undefined,
+        opportunityScore: typeof item.opportunityScore === "number" ? item.opportunityScore : undefined,
+        confidenceScore: typeof item.confidenceScore === "number" ? item.confidenceScore : undefined,
+        evidence: item.evidence,
+        themeId,
+        title: typeof item.title === "string" ? item.title : undefined,
+      };
+    });
+}
+
 function buildRepairPrompt(parseError: string, previousText: string): string {
   return `Your previous response was not valid JSON and could not be parsed.
 
@@ -357,6 +472,9 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
   const lessons = readJsonOrNull(join(opts.dataDir, "lessons.json"));
   const learningParams = readJsonOrNull(join(opts.dataDir, "learning-params.json"));
   const hypotheses = loadHypothesesSummaries(join(opts.dataDir, "hypotheses.json"));
+  const themes = loadResearchThemesSummary(join(opts.dataDir, "research-themes.json"));
+  const opportunities = loadRankedResearchOpportunities(join(opts.dataDir, "research-opportunities.json"), themes);
+  const allowedOriginFindingIds = new Set(opportunities.map((o) => o.id));
 
   const prompt = buildNightlyResearchPrompt({
     truthState,
@@ -364,13 +482,15 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
     lessons,
     hypotheses,
     learningParams,
+    opportunities,
+    themes,
     retiredSetupIds: opts.retiredSetupIds ?? [],
   });
   console.log(`[nightly-llm] prompt: ${prompt.length} chars (provider=${route.provider}, model=${route.model}).`);
 
   try {
     const first = await requestLlmText(route, [{ role: "user", content: prompt }], { maxTokens: 8192 });
-    let parsed = parseNightlyAdvice(first.text);
+    let parsed = parseNightlyAdvice(first.text, { allowedOriginFindingIds });
 
     if (!parsed.advice) {
       console.log(`[nightly-llm] invalid JSON (${parsed.error}); requesting repair.${first.stopReason ? ` stop_reason=${first.stopReason}` : ""}`);
@@ -379,7 +499,7 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
         { role: "assistant", content: first.text },
         { role: "user", content: buildRepairPrompt(parsed.error ?? "unknown parse error", first.text) },
       ], { maxTokens: 8192 });
-      parsed = parseNightlyAdvice(repaired.text);
+      parsed = parseNightlyAdvice(repaired.text, { allowedOriginFindingIds });
       if (!parsed.advice) {
         console.log(`[nightly-llm] repair failed: ${parsed.error}${repaired.stopReason ? ` stop_reason=${repaired.stopReason}` : ""}`);
         return { skipped: false, wrote: false, error: parsed.error ?? "unknown parse error" };
