@@ -14,7 +14,7 @@
 
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
-import { appendScannerCsvRow, appendScannerJsonl, buildScannerHyperliquidSnapshot, buildScannerMacroCsvRow, buildScannerValuationCsvRow, roundNullable } from "./lib/scanner/output.js";
+import { appendScannerCsvRow, appendScannerJsonl, buildScannerHyperliquidSnapshot, buildScannerMacroCsvRow, buildScannerValuationCsvRow, roundNullable, scannerHyperliquidFundingColumns } from "./lib/scanner/output.js";
 import { enrichStrikesFromClob } from "./polymarket-clob-book.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -2101,7 +2101,7 @@ interface InstrumentSnapshotFile {
   options: Record<string, OptionsSnapshot>;
 }
 
-const VALUATION_HEADERS = [
+const CORE_VALUATION_HEADERS = [
   "date",
   "btc_spot", "btc_opt_fwd_90d", "btc_pm_ev", "btc_opt_iv_30d", "btc_opt_iv_90d",
   "btc_opt_iv_term_spread",
@@ -2116,12 +2116,23 @@ const VALUATION_HEADERS = [
   "oil_wti_spot", "oil_brent_spot", "oil_brent_wti_spread", "oil_opt_fwd_90d",
   "oil_pm_settle_ev", "oil_opt_iv_30d", "oil_opt_iv_90d", "oil_pm_iv",
   "oil_hl_funding_ann", "oil_cl_pc_ratio",
+];
+const HL_VALUATION_FUNDING_HEADERS = scannerHyperliquidFundingColumns([
+  ...HL_PERP_COINS,
+  ...HL_BUILDER_COINS.map((coin) => coin.label),
+]);
+const VALUATION_TRAILING_HEADERS = [
   // Vestigial trailing columns kept for on-disk schema alignment; no current
   // writer populates them, no current reader consumes them.
   "oil_cme_yf_spot", "gold_cme_yf_spot", "btc_cme_yf_spot",
   // SPX index level (SPY ETF x10), silver, ETH and SOL spot — used for
   // monotonic-arb settlement (each MONOTONIC_ARB_ASSET needs a spot column).
   "spy_spot", "silver_spot", "eth_spot", "sol_spot",
+];
+const VALUATION_HEADERS = [
+  ...CORE_VALUATION_HEADERS,
+  ...HL_VALUATION_FUNDING_HEADERS.filter((header) => !CORE_VALUATION_HEADERS.includes(header)),
+  ...VALUATION_TRAILING_HEADERS,
 ];
 
 const MACRO_HEADERS = [
@@ -2276,6 +2287,7 @@ function writeSnapshot(
     oilIv90,
     oilFundingAnnualized: hl["OIL (CL)"]?.fundingAnnualized,
     oilPcRatio: oilPcOptions ? pcRatioFromChains(oilPcOptions.chains) : null,
+    hyperliquidQuotes: hl,
     spySpot,
     silverSpot,
     ethSpot,

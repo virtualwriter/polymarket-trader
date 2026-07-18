@@ -7,6 +7,77 @@ export function scannerCsvValue(value: number | string | null | undefined): stri
   return String(value);
 }
 
+
+function parseScannerCsvLine(line: string): string[] {
+  const cells: string[] = [];
+  let cell = "";
+  let inQuotes = false;
+
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i + 1] === '"') {
+        cell += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (ch === "," && !inQuotes) {
+      cells.push(cell);
+      cell = "";
+    } else {
+      cell += ch;
+    }
+  }
+
+  cells.push(cell);
+  return cells;
+}
+
+function migrateScannerCsvHeader(existing: string, headers: string[]): string {
+  const lines = existing.trimEnd().split("\n");
+  if (lines.length === 0 || lines[0] === headers.join(",")) return existing;
+
+  const existingHeaders = parseScannerCsvLine(lines[0] ?? "");
+  const isAdditive = existingHeaders.every((header) => headers.includes(header));
+  if (!isAdditive) return existing;
+
+  const migrated = [headers.join(",")];
+  for (const line of lines.slice(1)) {
+    if (!line.trim()) continue;
+    const values = parseScannerCsvLine(line);
+    const row = new Map(existingHeaders.map((header, idx) => [header, values[idx] ?? ""]));
+    migrated.push(headers.map((header) => scannerCsvValue(row.get(header) ?? "")).join(","));
+  }
+  return migrated.join("\n") + "\n";
+}
+
+export function scannerHyperliquidFundingColumn(asset: string): string {
+  const normalized = asset
+    .replace(/^GOLD \(GC\)$/i, "GOLD")
+    .replace(/^OIL \(CL\)$/i, "OIL")
+    .replace(/^xyz:/i, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
+  return `${normalized}_hl_funding_ann`;
+}
+
+export function scannerHyperliquidFundingColumns(assets: string[]): string[] {
+  const seen = new Set<string>();
+  const columns: string[] = [];
+  for (const asset of assets) {
+    const column = scannerHyperliquidFundingColumn(asset);
+    if (seen.has(column)) continue;
+    seen.add(column);
+    columns.push(column);
+  }
+  return columns;
+}
+
+function fundingAnnualizedPct(value: number | null | undefined): number | null {
+  return roundNullable(value == null ? null : value * 100, 2);
+}
 export function appendScannerCsvRow(
   dataDir: string,
   filename: string,
@@ -19,7 +90,9 @@ export function appendScannerCsvRow(
     writeFileSync(filepath, headers.join(",") + "\n");
   }
 
-  const existing = readFileSync(filepath, "utf-8");
+  const rawExisting = readFileSync(filepath, "utf-8");
+  const existing = migrateScannerCsvHeader(rawExisting, headers);
+  if (existing !== rawExisting) writeFileSync(filepath, existing);
   const ts = row.date ?? new Date().toISOString().slice(0, 13);
   const lines = existing.trim().split("\n");
   const lastLine = lines[lines.length - 1] ?? "";
@@ -219,13 +292,14 @@ export function buildScannerValuationCsvRow(inputs: {
   oilIv90: ScannerIvTenor | null;
   oilFundingAnnualized: number | null | undefined;
   oilPcRatio: number | null;
+  hyperliquidQuotes?: Record<string, ScannerHyperliquidQuote | null | undefined>;
   spySpot: number | null;
   silverSpot: number | null;
   ethSpot: number | null;
   solSpot: number | null;
 }): Record<string, number | string | null> {
   const r = roundNullable;
-  return {
+  const row: Record<string, number | string | null> = {
     date: inputs.date,
     btc_spot: r(inputs.btcSpot, 0),
     btc_opt_fwd_90d: r(inputs.btcFwd, 0),
@@ -237,7 +311,7 @@ export function buildScannerValuationCsvRow(inputs: {
       2,
     ),
     btc_pm_iv: r(inputs.btcPm?.impliedVol ? inputs.btcPm.impliedVol * 100 : null, 1),
-    btc_hl_funding_ann: r(inputs.btcFundingAnnualized ? inputs.btcFundingAnnualized * 100 : null, 2),
+    btc_hl_funding_ann: fundingAnnualizedPct(inputs.btcFundingAnnualized),
     btc_hl_oi: r(inputs.btcOpenInterestUsd, 0),
     btc_med_max: r(inputs.btcPm?.medianMax, 0),
     btc_med_min: r(inputs.btcPm?.medianMin, 0),
@@ -245,7 +319,7 @@ export function buildScannerValuationCsvRow(inputs: {
     hype_spot: r(inputs.hypeSpot, 4),
     hype_pm_ev: r(inputs.hypePm?.ev, 2),
     hype_pm_iv: r(inputs.hypePm?.impliedVol ? inputs.hypePm.impliedVol * 100 : null, 1),
-    hype_hl_funding_ann: r(inputs.hypeFundingAnnualized ? inputs.hypeFundingAnnualized * 100 : null, 2),
+    hype_hl_funding_ann: fundingAnnualizedPct(inputs.hypeFundingAnnualized),
     hype_hl_oi: r(inputs.hypeOpenInterestUsd, 0),
     hype_med_max: r(inputs.hypePm?.medianMax, 1),
     hype_med_min: r(inputs.hypePm?.medianMin, 1),
@@ -256,7 +330,7 @@ export function buildScannerValuationCsvRow(inputs: {
     gold_opt_iv_30d: r(inputs.goldIv30?.iv ? inputs.goldIv30.iv * 100 : null, 1),
     gold_opt_iv_90d: r(inputs.goldIv90?.iv ? inputs.goldIv90.iv * 100 : null, 1),
     gold_pm_iv: r(inputs.goldPm?.impliedVol ? inputs.goldPm.impliedVol * 100 : null, 1),
-    gold_hl_funding_ann: r(inputs.goldFundingAnnualized ? inputs.goldFundingAnnualized * 100 : null, 2),
+    gold_hl_funding_ann: fundingAnnualizedPct(inputs.goldFundingAnnualized),
     gold_med_max: r(inputs.goldPm?.medianMax, 0),
     gold_med_min: r(inputs.goldPm?.medianMin, 0),
     gold_gld_pc_ratio: r(inputs.goldPcRatio, 3),
@@ -265,7 +339,7 @@ export function buildScannerValuationCsvRow(inputs: {
     amzn_opt_fwd_90d: r(inputs.amznFwd, 2),
     amzn_opt_iv_30d: r(inputs.amznIv30?.iv ? inputs.amznIv30.iv * 100 : null, 1),
     amzn_opt_iv_90d: r(inputs.amznIv90?.iv ? inputs.amznIv90.iv * 100 : null, 1),
-    amzn_hl_funding_ann: r(inputs.amznFundingAnnualized ? inputs.amznFundingAnnualized * 100 : null, 2),
+    amzn_hl_funding_ann: fundingAnnualizedPct(inputs.amznFundingAnnualized),
     amzn_hl_basis_pct: r(inputs.amznBasis, 2),
     amzn_pc_ratio: r(inputs.amznPcRatio, 3),
     oil_wti_spot: r(inputs.oilWti, 2),
@@ -276,11 +350,17 @@ export function buildScannerValuationCsvRow(inputs: {
     oil_opt_iv_30d: r(inputs.oilIv30?.iv ? inputs.oilIv30.iv * 100 : null, 1),
     oil_opt_iv_90d: r(inputs.oilIv90?.iv ? inputs.oilIv90.iv * 100 : null, 1),
     oil_pm_iv: r(inputs.oilPm?.impliedVol ? inputs.oilPm.impliedVol * 100 : null, 1),
-    oil_hl_funding_ann: r(inputs.oilFundingAnnualized ? inputs.oilFundingAnnualized * 100 : null, 2),
+    oil_hl_funding_ann: fundingAnnualizedPct(inputs.oilFundingAnnualized),
     oil_cl_pc_ratio: r(inputs.oilPcRatio, 3),
     spy_spot: r(inputs.spySpot, 2),
     silver_spot: r(inputs.silverSpot, 4),
     eth_spot: r(inputs.ethSpot, 2),
     sol_spot: r(inputs.solSpot, 4),
   };
+
+  for (const [asset, quote] of Object.entries(inputs.hyperliquidQuotes ?? {})) {
+    row[scannerHyperliquidFundingColumn(asset)] = fundingAnnualizedPct(quote?.fundingAnnualized);
+  }
+
+  return row;
 }
