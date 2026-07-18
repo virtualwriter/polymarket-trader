@@ -80,6 +80,10 @@ export interface RelativeValueObservation {
   sourceAgreementBucket: string;
   noBiasCandidatePassed: boolean;
   liquidity: number | null;
+  perpFundingAnn?: number | null;
+  perpOiUsd?: number | null;
+  perpBasisPct?: number | null;
+  sellYesEdgePts?: number | null;
   flags: string;
   rawRow?: Record<string, string>;
 }
@@ -614,35 +618,82 @@ function derivedHypothesisConditionValue(key: string, valuationRows: SnapshotRow
   return null;
 }
 
-function relativeValueConditionValue(key: string, relativeValueRows: RelativeValueObservation[]): number | null {
-  const match = key.match(/^([a-z]+)_pm_(underlying_cap|settle)_(ratio|edge_pts|yes_sum|overround|tail_yes|skew_yes)_(max|min|avg)(_tight)?$/);
-  if (!match) return null;
-  const [, rawAsset, group, metric, reducer, tightOnly] = match;
-  const asset = rawAsset.toUpperCase();
-  const values = relativeValueRows
-    .filter((row) => row.asset === asset)
-    .filter((row) => group !== "underlying_cap" || (row.direction === "above" && row.underlyingCapYes !== null))
-    .filter((row) => group !== "settle" || row.settlementYesSum !== null)
-    .filter((row) => !tightOnly || (
-      row.pmSpread !== null
-      && row.pmSpread <= UNDERLYING_CAP_ENTRY_MAX_SPREAD
-      && row.liquidity !== null
-      && row.liquidity >= UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY
-    ))
-    .map((row) => {
-      if (metric === "ratio") return row.pmToUnderlyingCapRatio;
-      if (metric === "edge_pts") return row.edgePts;
-      if (metric === "yes_sum") return row.settlementYesSum;
-      if (metric === "overround") return row.settlementOverround;
-      if (metric === "tail_yes") return row.settlementTailYes;
-      if (metric === "skew_yes") return row.settlementSkewYes;
-      return null;
-    })
-    .filter((value): value is number => value !== null);
+function conditionAsset(hypothesis: Hypothesis): string | null {
+  const raw = hypothesis.conditions?.asset;
+  if (!raw) return null;
+  const cleaned = String(raw).trim().replace(/^["']|["']$/g, "");
+  const listMatch = cleaned.match(/^in\s*\[?(.+?)\]?$/i);
+  const first = (listMatch ? listMatch[1] : cleaned).split(/[,|]/)[0]?.trim();
+  return first ? first.replace(/^["']|["']$/g, "").toUpperCase() : null;
+}
+
+function reduceRelativeValues(values: number[], reducer: "max" | "min" | "avg"): number | null {
   if (values.length === 0) return null;
   if (reducer === "max") return Math.max(...values);
   if (reducer === "min") return Math.min(...values);
   return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function relativeValueConditionValue(
+  key: string,
+  relativeValueRows: RelativeValueObservation[],
+  hypothesis: Hypothesis,
+): number | null {
+  const match = key.match(/^([a-z]+)_pm_(underlying_cap|settle)_(ratio|edge_pts|yes_sum|overround|tail_yes|skew_yes)_(max|min|avg)(_tight)?$/);
+  if (match) {
+    const [, rawAsset, group, metric, reducer, tightOnly] = match;
+    const asset = rawAsset.toUpperCase();
+    const values = relativeValueRows
+      .filter((row) => row.asset === asset)
+      .filter((row) => group !== "underlying_cap" || (row.direction === "above" && row.underlyingCapYes !== null))
+      .filter((row) => group !== "settle" || row.settlementYesSum !== null)
+      .filter((row) => !tightOnly || (
+        row.pmSpread !== null
+        && row.pmSpread <= UNDERLYING_CAP_ENTRY_MAX_SPREAD
+        && row.liquidity !== null
+        && row.liquidity >= UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY
+      ))
+      .map((row) => {
+        if (metric === "ratio") return row.pmToUnderlyingCapRatio;
+        if (metric === "edge_pts") return row.edgePts;
+        if (metric === "yes_sum") return row.settlementYesSum;
+        if (metric === "overround") return row.settlementOverround;
+        if (metric === "tail_yes") return row.settlementTailYes;
+        if (metric === "skew_yes") return row.settlementSkewYes;
+        return null;
+      })
+      .filter((value): value is number => value !== null);
+    return reduceRelativeValues(values, reducer as "max" | "min" | "avg");
+  }
+
+  const perpMatch = key.match(/^([a-z]+)_hl_(funding_ann|oi|basis_pct)$/);
+  if (perpMatch) {
+    const [, rawAsset, metric] = perpMatch;
+    const values = relativeValueRows
+      .filter((row) => row.asset === rawAsset.toUpperCase())
+      .map((row) => {
+        if (metric === "funding_ann") return row.perpFundingAnn ?? null;
+        if (metric === "oi") return row.perpOiUsd ?? null;
+        return row.perpBasisPct ?? null;
+      })
+      .filter((value): value is number => value !== null);
+    return reduceRelativeValues(values, "avg");
+  }
+
+  const asset = conditionAsset(hypothesis);
+  const scopedRows = asset ? relativeValueRows.filter((row) => row.asset === asset) : relativeValueRows;
+  const values = scopedRows
+    .map((row) => {
+      if (key === "sell_yes_edge_pts") return row.sellYesEdgePts ?? null;
+      if (key === "yesAsk") return row.pmAsk;
+      if (key === "yesSpread") return row.pmSpread;
+      if (key === "liquidity") return row.liquidity;
+      return null;
+    })
+    .filter((value): value is number => value !== null);
+  if (key === "yesAsk" || key === "yesSpread") return reduceRelativeValues(values, "min");
+  if (key === "sell_yes_edge_pts" || key === "liquidity") return reduceRelativeValues(values, "max");
+  return null;
 }
 
 function hypothesisConditionValue(
@@ -659,7 +710,7 @@ function hypothesisConditionValue(
   if (direct !== null) return direct;
   const derived = derivedHypothesisConditionValue(key, valuationRows);
   if (derived !== null) return derived;
-  const relativeValue = relativeValueConditionValue(key, relativeValueRows);
+  const relativeValue = relativeValueConditionValue(key, relativeValueRows, hypothesis);
   if (relativeValue !== null) return relativeValue;
 
   if (key === "ratio") {

@@ -23536,6 +23536,29 @@
       "links": {},
       "created": "2026-07-18T04:36:59Z",
       "source": "phase_g_replay_attachment"
+    },
+    {
+      "id": "DEC-0022",
+      "type": "decision",
+      "evidenceClass": "DERIVED",
+      "status": "active",
+      "title": "Hypothesis shadow backfill fill-rate policy",
+      "body": {
+        "rationale": "Historical backfill should measure whether hypotheses would have triggered on available history without letting metadata-only fields or future-dated pendings suppress eligible tests. The policy keeps real metric misses visible, uses archived relative-value observations where available, and separates live retest fan-out from historical backfill accounting.",
+        "decision": "Use backfill-only metadata handling, archived relative-value snapshots, and historical pending resolution before target caps; keep raised live retest concurrency caps.",
+        "policy": [
+          "Treat venue, asset, signalType, and day_of_week as metadata during historical backfill unless clearly false; evaluate day_of_week from the row date when possible.",
+          "Skip unknown non-numeric condition keys with warning counts, but keep metric-like missing keys as hard failures and report them.",
+          "Resolve historically mature pending tests before opening new backfill tests and do not let future-dated pendings occupy historical target slots.",
+          "Include LLM/FIND-linked and shadow_mined setup families in backfill eligibility under the 20-test target.",
+          "Use latest daily archived relative-value snapshots for historical FIND and settlement-bucket conditions.",
+          "Live LLM/FIND retests are capped at 200 active / 8 pending per family; shadow_mined retests at 80 active / 4 pending per family."
+        ],
+        "validation": "Dry-run improved expanded eligible-under-20 families from 22 to 15, with AMZN/HYPE 19+pending families reaching 20 completed."
+      },
+      "links": {},
+      "created": "2026-07-18T18:33:13Z",
+      "source": "agent"
     }
   ]
 }

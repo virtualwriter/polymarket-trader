@@ -31,6 +31,7 @@ NIGHTLY_FILES=(
   data/nightly-research-report.json
   data/nightly-research-report.md
   data/research-findings.json
+  data/hypothesis-shadow-backfill-report.json
   data/research-opportunities.json
   data/finding-replay-plan.json
   data/registry.json
@@ -138,6 +139,12 @@ fi
 # Auto H-* promotion from shadow mine is deferred to Phase D.
 if ! timeout "${SHADOW_MINE_TIMEOUT:-3m}" python3 scripts/mine_shadow_findings.py; then
   echo "WARNING: mine_shadow_findings.py failed; continuing."
+fi
+
+if [[ "${HYPOTHESIS_SHADOW_BACKFILL:-0}" == "1" ]]; then
+  if ! timeout "${HYPOTHESIS_SHADOW_BACKFILL_TIMEOUT:-10m}" npx tsx scripts/backfill-hypothesis-shadow-tests.ts --apply; then
+    echo "WARNING: hypothesis shadow backfill failed; continuing."
+  fi
 fi
 
 # Evidence-first operator report from ranked FIND opportunities + themes (Phase E).

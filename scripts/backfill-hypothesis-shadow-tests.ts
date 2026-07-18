@@ -12,14 +12,14 @@
  * historical research mutations do not surprise the live loop.
  */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import {
   HYPOTHESIS_SHADOW_TESTS_REQUIRED,
   RETIRED_LLM_SETUP_IDS,
   completedHypothesisTests,
+  evaluateHypothesisCondition,
   evaluateHypothesisTest,
-  hypothesisConditionsSatisfied,
   hypothesisSetupFamilies,
   isDataContaminatedSetup,
   pendingHypothesisTests,
@@ -71,6 +71,9 @@ interface Report {
     testsResolved: number;
     wins: number;
     losses: number;
+    skippedMetadataConditions: number;
+    skippedUnknownConditions: Record<string, number>;
+    missingMetricConditions: Record<string, number>;
   };
   families: FamilyBackfillSummary[];
   unfilledFamilies: FamilyBackfillSummary[];
@@ -170,6 +173,37 @@ function readCsvFile(path: string): Record<string, string>[] {
   });
 }
 
+
+function collectCsvFiles(path: string): string[] {
+  if (!existsSync(path)) return [];
+  const stat = statSync(path);
+  if (stat.isFile()) return path.endsWith(".csv") ? [path] : [];
+  if (!stat.isDirectory()) return [];
+  return readdirSync(path)
+    .flatMap((entry) => collectCsvFiles(resolve(path, entry)))
+    .sort();
+}
+
+function latestCsvPerDay(paths: string[]): string[] {
+  const byDay = new Map<string, string>();
+  for (const path of paths) {
+    const day = path.match(/(\d{4}-\d{2}-\d{2})/)?.[1] ?? path;
+    const current = byDay.get(day);
+    if (!current || path.localeCompare(current) > 0) byDay.set(day, path);
+  }
+  return [...byDay.values()].sort();
+}
+
+function relativeValueInputPaths(path: string): string[] {
+  const stateDir = process.env.POLYMARKET_TRADER_STATE_DIR ?? "/var/lib/polymarket-trader";
+  const latestPath = collectCsvFiles(path);
+  const archivedPaths = latestCsvPerDay([
+    ...collectCsvFiles(resolve("relative-value/history")),
+    ...collectCsvFiles(resolve(stateDir, "relative-value-history")),
+  ]);
+  return [...new Set([...archivedPaths, ...latestPath])];
+}
+
 function readValuationRows(path: string): SnapshotRow[] {
   return readCsvFile(path)
     .map((raw) => {
@@ -184,7 +218,8 @@ function readValuationRows(path: string): SnapshotRow[] {
 }
 
 function readRelativeValueRows(path: string): RelativeValueObservation[] {
-  return readCsvFile(path)
+  return relativeValueInputPaths(path)
+    .flatMap((inputPath) => readCsvFile(inputPath))
     .map((row): RelativeValueObservation | null => {
       const edgePts = num(row.edge_score);
       const strike = num(row.strike);
@@ -225,6 +260,10 @@ function readRelativeValueRows(path: string): RelativeValueObservation[] {
         sourceAgreementBucket: row.source_agreement_bucket ?? "",
         noBiasCandidatePassed: String(row.no_bias_candidate_passed ?? "").toLowerCase() === "true",
         liquidity: num(row.liquidity),
+        perpFundingAnn: num(row.perp_funding_ann),
+        perpOiUsd: num(row.perp_oi_usd),
+        perpBasisPct: num(row.perp_basis_pct),
+        sellYesEdgePts: num(row.sell_yes_edge_pts),
         flags: row.flags ?? "",
         rawRow: row,
       };
@@ -265,8 +304,125 @@ function refreshWinRates(hypotheses: Hypothesis[]) {
   }
 }
 
+const BACKFILL_META_CONDITION_KEYS = new Set(["venue", "asset", "signalType", "day_of_week"]);
+const METRIC_KEY_HINT = /(funding|ratio|percentile|pct_|zscore|change|iv|oi|open_interest|volume|price|spread|basis|skew|tail|overround|edge|yes|ask|bid|liquidity|spot|perp|futures|cme|cboe|hl_|pm_|opt_)/i;
+const DERIVED_KEY_PATTERN = /^(.+)_(pct_from_\d+[hd]_(high|low)|pct_vs_\d+[hd]_sma|percentile_\d+[hd]|zscore_\d+[hd]|change_pct_\d+[hd])$/;
+const RELATIVE_VALUE_KEY_PATTERN = /^([a-z]+)_pm_(underlying_cap|settle)_(ratio|edge_pts|yes_sum|overround|tail_yes|skew_yes)_(max|min|avg)(_tight)?$/;
+
+interface ConditionBackfillStats {
+  skippedMetadataConditions: number;
+  skippedUnknownConditions: Map<string, number>;
+  missingMetricConditions: Map<string, number>;
+}
+
+function incrementCounter(counter: Map<string, number>, key: string) {
+  counter.set(key, (counter.get(key) ?? 0) + 1);
+}
+
+function mapToSortedRecord(counter: Map<string, number>): Record<string, number> {
+  return Object.fromEntries([...counter.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])));
+}
+
+function parseListExpression(rawExpression: string): string[] | null {
+  const expression = String(rawExpression).trim();
+  const list = expression.match(/^in\s*\[?(.+?)\]?$/i);
+  const body = list ? list[1] : expression.match(/^(?:=|==)\s*(.+)$/)?.[1];
+  if (!body) return null;
+  return body
+    .split(/[,|]/)
+    .map((value) => value.trim().replace(/^["']|["']$/g, "").toLowerCase())
+    .filter(Boolean);
+}
+
+function weekdayName(date: string): string | null {
+  const ms = timeMs(date);
+  if (!Number.isFinite(ms) || ms <= 0) return null;
+  return ["sun", "mon", "tue", "wed", "thu", "fri", "sat"][new Date(ms).getUTCDay()] ?? null;
+}
+
+function metadataConditionAllows(
+  key: string,
+  rawExpression: string,
+  latestRow: SnapshotRow,
+): boolean | null {
+  const allowed = parseListExpression(rawExpression);
+  if (!allowed || allowed.length === 0) return null;
+  if (key === "day_of_week") {
+    const day = weekdayName(String(latestRow.date));
+    return day ? allowed.some((value) => day === value.slice(0, 3)) : null;
+  }
+  const rowValue = latestRow[key];
+  if (typeof rowValue !== "string" || rowValue.trim() === "") return null;
+  return allowed.includes(rowValue.trim().toLowerCase());
+}
+
+function conditionKeyHasNumericData(
+  key: string,
+  valuationRows: SnapshotRow[],
+  relativeValueRows: RelativeValueObservation[],
+  hypothesis: Hypothesis,
+): boolean {
+  const latestRow = valuationRows[valuationRows.length - 1];
+  const previousRow = valuationRows.length > 1 ? valuationRows[valuationRows.length - 2] : null;
+  if (!latestRow) return false;
+  if (key.startsWith("previous_")) return previousRow ? num(previousRow[key.replace(/^previous_/, "")]) !== null : false;
+  if (num(latestRow[key]) !== null) return true;
+  const derived = key.match(DERIVED_KEY_PATTERN);
+  if (derived) return valuationRows.some((row) => num(row[derived[1]]) !== null);
+  if (RELATIVE_VALUE_KEY_PATTERN.test(key)) return relativeValueRows.length > 0;
+  const perp = key.match(/^([a-z]+)_hl_(funding_ann|oi|basis_pct)$/);
+  if (perp) return relativeValueRows.some((row) => row.asset === perp[1].toUpperCase() && row.rawRow?.perp_funding_ann !== undefined);
+  if (["sell_yes_edge_pts", "yesAsk", "yesSpread", "liquidity"].includes(key)) {
+    const assetExpression = hypothesis.conditions?.asset;
+    const assets = assetExpression ? parseListExpression(String(assetExpression)) : null;
+    return relativeValueRows.some((row) => !assets || assets.includes(row.asset.toLowerCase()));
+  }
+  if (key === "ratio") {
+    const pmIvKey = Object.keys(hypothesis.conditions).find((conditionKey) => conditionKey.endsWith("_pm_iv"));
+    const optIvKey = Object.keys(hypothesis.conditions).find((conditionKey) => conditionKey.includes("_opt_iv"));
+    return Boolean(pmIvKey && optIvKey && num(latestRow[pmIvKey]) !== null && num(latestRow[optIvKey]) !== null);
+  }
+  return false;
+}
+
+function isMetricLikeConditionKey(key: string): boolean {
+  return METRIC_KEY_HINT.test(key) || DERIVED_KEY_PATTERN.test(key) || RELATIVE_VALUE_KEY_PATTERN.test(key);
+}
+
+function backfillConditionsSatisfied(
+  hypothesis: Hypothesis,
+  valuationRows: SnapshotRow[],
+  relativeValueRows: RelativeValueObservation[],
+  stats: ConditionBackfillStats,
+): boolean {
+  const latestRow = valuationRows[valuationRows.length - 1];
+  if (!latestRow) return false;
+  const entries = Object.entries(hypothesis.conditions ?? {});
+  if (entries.length === 0) return false;
+
+  return entries.every(([key, rawExpression]) => {
+    const expression = String(rawExpression);
+    if (BACKFILL_META_CONDITION_KEYS.has(key)) {
+      const allowed = metadataConditionAllows(key, expression, latestRow);
+      if (allowed === false) return false;
+      stats.skippedMetadataConditions++;
+      return true;
+    }
+
+    if (evaluateHypothesisCondition(key, expression, valuationRows, hypothesis, relativeValueRows)) return true;
+    if (conditionKeyHasNumericData(key, valuationRows, relativeValueRows, hypothesis)) return false;
+    if (isMetricLikeConditionKey(key)) {
+      incrementCounter(stats.missingMetricConditions, key);
+      return false;
+    }
+    incrementCounter(stats.skippedUnknownConditions, key);
+    return true;
+  });
+}
+
 function eligibleFamilies(hypotheses: Hypothesis[]): HypothesisSetupFamily[] {
-  return hypothesisSetupFamilies(hypotheses.filter((hypothesis) => hypothesis.source === "llm"))
+  const eligibleSources = new Set(["llm", "shadow_mined"]);
+  return hypothesisSetupFamilies(hypotheses.filter((hypothesis) => eligibleSources.has(hypothesis.source) || Boolean(hypothesis.originFindingId)))
     .filter((family) => !RETIRED_LLM_SETUP_IDS.has(family.setupId))
     .filter((family) => !isDataContaminatedSetup(family.setupId))
     .filter((family) => family.hypotheses.some((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived"));
@@ -287,9 +443,10 @@ function hasFamilyTestOnDate(family: HypothesisSetupFamily, date: string): boole
   return family.hypotheses.some((hypothesis) => hypothesis.tests.some((test) => dayKey(test.date) === date));
 }
 
-function familySnapshot(family: HypothesisSetupFamily) {
+function familySnapshot(family: HypothesisSetupFamily, asOfDate: string | null = null) {
   const completed = completedFamilyTests(family);
-  const pending = pendingFamilyTests(family);
+  const pending = pendingFamilyTests(family)
+    .filter((test) => asOfDate === null || timeMs(dayKey(test.date)) <= timeMs(asOfDate));
   return { completed, pending, total: completed.length + pending.length };
 }
 
@@ -302,6 +459,7 @@ function candidateForDate(
   family: HypothesisSetupFamily,
   valuationHistory: SnapshotRow[],
   relativeHistory: RelativeValueObservation[],
+  stats: ConditionBackfillStats,
 ): Hypothesis | null {
   return [...family.hypotheses]
     .filter((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived")
@@ -313,7 +471,7 @@ function candidateForDate(
       if (b.confidence !== a.confidence) return b.confidence - a.confidence;
       return a.id.localeCompare(b.id);
     })
-    .find((hypothesis) => hypothesisConditionsSatisfied(hypothesis, valuationHistory, relativeHistory)) ?? null;
+    .find((hypothesis) => backfillConditionsSatisfied(hypothesis, valuationHistory, relativeHistory, stats)) ?? null;
 }
 
 function resolveEligiblePending(
@@ -376,6 +534,11 @@ function backfill(opts: CliOptions): Report {
   let totalResolved = 0;
   let totalWins = 0;
   let totalLosses = 0;
+  const conditionStats: ConditionBackfillStats = {
+    skippedMetadataConditions: 0,
+    skippedUnknownConditions: new Map(),
+    missingMetricConditions: new Map(),
+  };
 
   for (const family of selectedFamilies) {
     const beforeSnapshot = familySnapshot(family);
@@ -396,7 +559,7 @@ function backfill(opts: CliOptions): Report {
       wins += resolution.wins;
       losses += resolution.losses;
 
-      let snapshot = familySnapshot(family);
+      let snapshot = familySnapshot(family, currentDate);
       if (snapshot.completed.length >= opts.targetTests) break;
       if (snapshot.total >= opts.targetTests) continue;
       if (hasFamilyTestOnDate(family, currentDate)) {
@@ -404,10 +567,10 @@ function backfill(opts: CliOptions): Report {
         continue;
       }
 
-      const candidate = candidateForDate(family, valuationHistory, relativeHistory);
+      const candidate = candidateForDate(family, valuationHistory, relativeHistory, conditionStats);
       if (!candidate) continue;
 
-      snapshot = familySnapshot(family);
+      snapshot = familySnapshot(family, currentDate);
       if (snapshot.completed.length + snapshot.pending.length >= opts.targetTests) continue;
       candidate.tests.push({
         date: currentDate,
@@ -466,6 +629,9 @@ function backfill(opts: CliOptions): Report {
       testsResolved: totalResolved,
       wins: totalWins,
       losses: totalLosses,
+      skippedMetadataConditions: conditionStats.skippedMetadataConditions,
+      skippedUnknownConditions: mapToSortedRecord(conditionStats.skippedUnknownConditions),
+      missingMetricConditions: mapToSortedRecord(conditionStats.missingMetricConditions),
     },
     families: summaries,
     unfilledFamilies: summaries.filter((family) => family.afterCompleted < opts.targetTests),
@@ -491,5 +657,8 @@ console.log(JSON.stringify({
   wins: report.totals.wins,
   losses: report.totals.losses,
   unfilledFamilies: report.unfilledFamilies.length,
+  skippedMetadataConditions: report.totals.skippedMetadataConditions,
+  skippedUnknownConditions: report.totals.skippedUnknownConditions,
+  missingMetricConditions: report.totals.missingMetricConditions,
   reportPath: opts.reportPath,
 }, null, 2));
