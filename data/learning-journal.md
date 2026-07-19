@@ -2270,3 +2270,34 @@ No discretionary closes are eligible this hour. The AMZN FUNDING_EXTREME_SHORT t
 
 ---
 
+### 2026-07-19 06:28 UTC
+
+**Portfolio:** $98.56 total | Cash $91.56 | 7 open | P&L $1.8030 | 63% win rate (460 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 8 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_pm_iv = 21.2 is -3.1 std devs from mean (40.64 ± 6.35)
+- [anomaly] btc_opt_iv_term_spread = -17.97 is -2.5 std devs from mean (-1.37 ± 6.55)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.25 to 0.24. Rolling correlation: 24h=0.49, 7d=-0.77, 30d=-0.16. Current 24h corr is at 83th pct of last 30 daily 24h-rolling values (range -0.90 to 0.93).
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 574 (324 wins / 250 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.25%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-25.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.28%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 2/12; next scheduled 2026-07-19T08:28:14.426Z). Mechanical cycle ran normally._
+
+---
+
