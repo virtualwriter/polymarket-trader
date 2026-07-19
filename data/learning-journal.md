@@ -2236,3 +2236,37 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-07-19 05:28 UTC
+
+**Portfolio:** $98.56 total | Cash $92.56 | 6 open | P&L $1.8030 | 63% win rate (460 trades)
+
+**Closed 1 trades:**
+- ✅ DKNG long via hyperliquid/hl_perp [HL DKNG Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0217 (2.2%, market 0.0217, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 8 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_pm_iv = 21.3 is -3.1 std devs from mean (40.66 ± 6.34)
+- [anomaly] btc_opt_iv_term_spread = -17.92 is -2.5 std devs from mean (-1.36 ± 6.54)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.25 to 0.25. Rolling correlation: 24h=0.55, 7d=-0.77, 30d=-0.16. Current 24h corr is at 83th pct of last 30 daily 24h-rolling values (range -0.90 to 0.94).
+
+**Blocked signal learning:**
+- Open blocked shadows: 54
+- Resolved blocked shadows: 573 (323 wins / 250 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+4.85%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.25%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-25.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+No discretionary closes are eligible this hour. The AMZN FUNDING_EXTREME_SHORT trade (T-1784402913294-87we) is only 10 hours old and still inside its 12‑hour minimum hold, despite a dramatic funding normalization from –26.1% to –5.95% (a 77% move toward zero) that, if sustained, would qualify as thesis invalidation; I will prioritise a review when the 12‑hour gate opens. The four WEEKEND_HL_FUNDING_REVERSION_LONG positions (BX, RIVN, HIMS, COST) are purely mechanical; BX and COST are currently negative while RIVN and HIMS are slightly positive, all well within the wide –100% stops and 3% targets—no structural concerns beyond the observed wide stop levels that are intended per the signal family design. The OIL PC_RATIO_EXTREME_LOW short is also too new (4h) and the P/C ratio hasn't moved, so no action there. Broad macro risk remains elevated, but none of the open positions show hard portfolio risk or data‑quality issues that would override the gating rules.
+
+---
+
