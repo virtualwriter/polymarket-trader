@@ -1,37 +1,68 @@
 {
-  "generatedAt": "2026-07-18T16:50:01.743Z",
+  "generatedAt": "2026-07-19T07:09:07.827Z",
   "provider": "deepseek",
   "model": "deepseek-v4-pro",
-  "strategyReview": "The portfolio is net positive with a 62.4% win rate driven primarily by weekend funding reversion and monotonic arb trades. Live ONE_TOUCH_HIGH_EDGE_NO signals are performing well (4.49% avg PnL on 6 trades), and locked shadow signals\u2014especially IV-touch rich NO and weekend funding reversion\u2014show exceptional backtest profitability but remain blocked. Live funding-extreme signals are losing on aggregate, dragged down by poor performance on AMZN and HYPE (already disabled) while GOLD shows strength. PC-ratio signals are marginally profitable overall but exhibit wide asset-level dispersion. PM_EV_BELOW_SPOT and LLM_HYPOTHESIS continue to weaken and remain disabled. The critical gap is the barrier preventing shadow-validated setups (WEEKEND_HL_FUNDING_REVERSION_LONG, USER_PM_IV_TOUCH_RICH_NO, etc.) from entering live execution, which limits overall PnL capture.",
+  "strategyReview": "The WEEKEND_HL_FUNDING_REVERSION_LONG signal remains the standout performer with a 74% win rate and +0.89 total PnL across 181 live trades, while ONE_TOUCH_HIGH_EDGE_NO has a perfect 4/4 live track record and strong shadow PnL, supporting further promotion. FUNDING_EXTREME_SHORT works well on AMZN (79%) but poorly on OIL (38%), and FUNDING_EXTREME_LONG continues to underperform (47% win, negative PnL) especially on AMZN and HYPE, which are correctly disabled. LLM_HYPOTHESIS and NO_BIAS_ADJUSTED_GAP_SHADOW are consistent loss generators with net negative PnL, while the ONE_TOUCH_HIGH_EDGE_NO shadows on BTC suffer from wide spreads and edge decay. PC_RATIO_EXTREME signals are modestly positive overall but asset-specific; PC_RATIO_EXTREME_LOW on AMZN is a disaster (20% win).",
   "failureClusters": [
     {
-      "theme": "Funding Extreme Long on Equities (AMZN/HYPE)",
-      "evidence": "FUNDING_EXTREME_LONG live on AMZN: 7 trades, 29% win rate, -$0.11 total PnL, 5 stops out of 7 exits. HYPE: 6 trades, 33% win rate, -$0.10 total PnL, all exits via stop/breakeven. Both assets are already disabled in signalHealth.",
-      "recommendation": "Keep AMZN and HYPE disabled; restrict funding-extreme long to assets with positive edge like GOLD. Monitor GOLD-specific risk parameters but no immediate change needed."
+      "theme": "Funding Extreme Long Decay on AMZN/HYPE",
+      "evidence": "Live FUNDING_EXTREME_LONG on AMZN has 29% win rate and -$0.11, on HYPE 33% and -$0.10; stops dominate. Shadow signals also underperform (FUNDING_EXTREME_LONG shadows 60% win but only +0.01).",
+      "recommendation": "Keep AMZN and HYPE disabled for FUNDING_EXTREME_LONG; do not reactivate until clean signals emerge. Consider permanent exclusion for these assets in this signal family."
     },
     {
-      "theme": "LLM Hypothesis on Oil",
-      "evidence": "LLM_HYPOTHESIS live on OIL: 6 trades, 17% win rate, -$0.39 total PnL. Stops dominated exits. Signal disabled for OIL and overall LLM_HYPOTHESIS disabled.",
-      "recommendation": "No live trading on OIL for LLM_HYPOTHESIS. The disabled state is correct; no further action until new oil data is available post-contamination cleanup."
+      "theme": "No-Bias Adjusted Gap Shadow Underwater",
+      "evidence": "NO_BIAS_ADJUSTED_GAP_SHADOW has 42% win rate (37/89) and -1.16 net PnL across all assets, with heavy losses on BTC and GOLD. Recent resolved shadows show consistent gaps that collapse unfavorably.",
+      "recommendation": "Keep this signal in shadow-only mode with no live promotion. Consider adding a stricter edge size filter or only triggering when spreads are tight."
     },
     {
-      "theme": "PM_EV_BELOW_SPOT Underperformance",
-      "evidence": "PM_EV_BELOW_SPOT: 4 live trades, 25% win rate, avg PnL -1.89%. Shadow evidence (2/4 wins, avg +0.07%) is inconclusive. Signal already disabled.",
-      "recommendation": "Keep PM_EV_BELOW_SPOT disabled until retest completes with clean data. No parameter tuning warranted."
+      "theme": "One-Touch NO Edge Collapse on BTC",
+      "evidence": "Three recent resolved ONE_TOUCH_HIGH_EDGE_NO shadows on BTC resulted in losses of -0.1%, -5.56%, and -1.25%, often with wide spreads and moderate edge (1–2pts). Overall shadow win rate 42.5% despite positive average PnL.",
+      "recommendation": "Require a higher minimum sell-YES edge (>2 pts) and tighter spread (<0.01) for BTC one-touch NO shadows. Monitor open quality warnings for spread widening."
     }
   ],
   "newHypotheses": [
     {
-      "created": "2026-07-17",
-      "description": "Shadow-test: WEEKEND_HL_FUNDING_REVERSION_LONG on MU. Enter long MU perp when mu_hl_funding_ann < -50% on a Thursday\u2013Saturday evening, capturing the weekend bounce as extreme negative funding normalizes. Exit when funding rises above -10% or on Monday open; stop loss limited to -3.5%.",
+      "created": "2026-07-19",
+      "description": "Extend the ONE_TOUCH_HIGH_EDGE_NO signal to GOLD when PM IV is deeply compressed relative to options IV and the one-touch sell-YES edge is elevated, indicating rich YES pricing. Enter a short position (sell YES) on GOLD one-touch NO contracts.",
       "conditions": {
-        "asset": "MU",
-        "mu_hl_funding_ann": "< -50",
-        "day_of_week": "in [Thu, Fri, Sat]"
+        "gold_pm_iv_zscore_30d": "< -1.5",
+        "gold_opt_iv_30d_zscore_30d": "> 1.5",
+        "gold_gc_spot_pct_from_30d_high": "> -10"
       },
-      "prediction": "MU spot will rally over the weekend as deeply negative perp funding reverts, generating positive returns consistent with shadow 100% win rate (n=8).",
-      "timeframeDays": 5,
-      "confidence": 0.75,
+      "prediction": "GOLD YES contracts will lose value as the underlying does not reach the high strike, leading to profit on the short position.",
+      "timeframeDays": 14,
+      "confidence": 0.6,
+      "direction": "short",
+      "originFindingId": "FIND-0003",
+      "themeId": "THEME-0001",
+      "source": "llm"
+    },
+    {
+      "created": "2026-07-19",
+      "description": "Shadow-mined NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD: when funding is extremely negative (tail-short crowd) and PM IV is elevated, sell YES on no-bias adjusted gap contracts to capture mean reversion of the edge.",
+      "conditions": {
+        "gold_hl_funding_ann_percentile_30d": "< 10",
+        "gold_pm_iv_percentile_30d": "> 70",
+        "gold_gc_spot_pct_from_7d_low": "> 5"
+      },
+      "prediction": "The compressed gap between PM and options will widen again, causing the YES price to fall and the short position to profit.",
+      "timeframeDays": 14,
+      "confidence": 0.55,
+      "direction": "short",
+      "originFindingId": "FIND-0001",
+      "themeId": "THEME-0001",
+      "source": "llm"
+    },
+    {
+      "created": "2026-07-19",
+      "description": "WEEKEND_HL_FUNDING_REVERSION_LONG on MU: go long MU perp when Hyperliquid funding is deeply negative (< -5%) during weekend hours, expecting funding normalization and a spot bounce.",
+      "conditions": {
+        "mu_hl_funding_ann": "< -5",
+        "mu_spot_pct_from_7d_low": "< 10"
+      },
+      "prediction": "MU spot will rise as funding normalizes, generating a profitable long position within 3 days.",
+      "timeframeDays": 3,
+      "confidence": 0.7,
       "direction": "long",
       "originFindingId": "FIND-0004",
       "themeId": "THEME-0002",
@@ -40,14 +71,82 @@
   ],
   "hypothesisReviews": [
     {
-      "id": "H-150",
-      "observation": "Promoted AMZN perp-spot basis explosion correction continues to perform strongly. The broader AMZN funding-convergence family holds a 65% win rate (13/20) across tests; H-150 aligns with this reversion pattern and remains a candidate for live consideration once the 20 clean-test threshold is met."
+      "id": "H-534",
+      "observation": "H-534 (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) has 20% win rate over 20 tests, likely due to wide spreads and edge collapse. The heatmap cluster's historical performance (+0.649 over 12 shadows) may not replicate in the current regime. Continue shadow testing but enforce a higher minimum edge (≥3 pts) and tighter spread."
     },
     {
       "id": "H-523",
-      "observation": "BTC PM IV regime-relative compression has delivered mixed results: 1 win, 2 losses across 3 completed shadow tests. The IV compression trigger alone may not reliably predict spot reversion. Adding a momentum confirmation (e.g., btc_spot_change_pct_24h > 0) could filter whipsaws and is worth exploring."
+      "observation": "H-523 (BTC PM IV regime-relative compression) shows 50% win rate over 11 tests, borderline. The last few tests were losses, suggesting IV compression alone is insufficient. Consider adding a confirmation condition such as btc_hl_funding_ann > 0 to filter for funding tailwinds."
     }
   ],
-  "journalEntry": "Tonight's review confirms that the portfolio is stable but leaving significant edge untapped due to shadow gates. The top performers\u2014weekend funding reversion, IV-touch rich NO, and one-touch edge NO\u2014are all operating in shadow and deserve a pathway to live. Failure analysis shows that the biggest drags come from signals already disabled, so current live risk is well contained. The three new shadow hypotheses from ranked research (GOLD one-touch NO, GOLD rich-tail gap short, and MU weekend funding bounce) extend the system's reach into high-confidence, evidence-backed patterns. No parameter changes are required given that stopped signals are already gated and there is no clear need to tweak risk on live families.",
-  "note": "retry FIND-0004 only after ambiguous_thesis exemption"
+  "parameterUpdates": {
+    "macroMomentum24hThresholdPts": 4,
+    "contrarianTrendMarginPct": 0.5,
+    "positiveMomentum24hPct": 1.5,
+    "llmTradeExpiryDays": 14,
+    "momentumLongExpiryDays": 21,
+    "signalRisk": {
+      "PM_IV_GT_OPT_IV": {
+        "targetPct": null,
+        "stopPct": 5
+      },
+      "OPT_IV_GT_PM_IV": {
+        "targetPct": 5,
+        "stopPct": 3.5
+      },
+      "FUNDING_EXTREME_LONG": {
+        "targetPct": 5,
+        "stopPct": 2
+      },
+      "FUNDING_EXTREME_SHORT": {
+        "targetPct": 4,
+        "stopPct": 2
+      },
+      "PM_EV_ABOVE_SPOT": {
+        "targetPct": 4,
+        "stopPct": 4
+      },
+      "PM_EV_BELOW_SPOT": {
+        "targetPct": 3,
+        "stopPct": 3.5
+      },
+      "PC_RATIO_EXTREME_HIGH": {
+        "targetPct": 4,
+        "stopPct": 1.5
+      },
+      "PC_RATIO_EXTREME_LOW": {
+        "targetPct": 5,
+        "stopPct": 1.5
+      },
+      "BASIS_PREMIUM": {
+        "targetPct": 1.5,
+        "stopPct": 1.5
+      },
+      "BASIS_DISCOUNT": {
+        "targetPct": 1.5,
+        "stopPct": 1.5
+      },
+      "MACRO_MOMENTUM_UP": {
+        "targetPct": 3,
+        "stopPct": 3
+      },
+      "MACRO_MOMENTUM_DOWN": {
+        "targetPct": 4,
+        "stopPct": 3
+      },
+      "LLM_HYPOTHESIS": {
+        "targetPct": 3.5,
+        "stopPct": 2.5
+      },
+      "MOMENTUM_LONG": {
+        "targetPct": 6,
+        "stopPct": 3.5
+      },
+      "PROMOTED_HYPOTHESIS": {
+        "targetPct": 4,
+        "stopPct": 2
+      }
+    }
+  },
+  "journalEntry": "Weekend funding reversion remains the backbone of profitability; further asset extensions like MU are worth formal shadow tests. The ONE_TOUCH_HIGH_EDGE_NO live signal has perfect record, but GOLD shadow performance is mixed, requiring stricter edge filtering. The no-bias adjusted gap shadow continues to bleed and should stay in shadow only. PC_RATIO_EXTREME_LOW on AMZN is too unreliable; keep it disabled. No parameter adjustments at this time."
 }

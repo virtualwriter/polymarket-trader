@@ -1,22 +1,22 @@
 {
-  "generatedAt": "2026-07-18T07:06:32Z",
+  "generatedAt": "2026-07-19T07:09:11Z",
   "summary": {
-    "generatedAt": "2026-07-18T07:06:32Z",
+    "generatedAt": "2026-07-19T07:09:11Z",
     "findingCounts": {
-      "open": 17,
+      "open": 16,
       "strengthened": 0,
       "weakened": 0,
-      "negative": 0,
+      "negative": 1,
       "suppressed": 0,
       "total": 17
     },
     "themeCount": 2,
     "topOpportunity": {
       "rank": 1,
-      "id": "FIND-0003",
-      "opportunityScore": 0.7807,
-      "confidenceScore": 0.3182,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|GOLD|heatmap|no",
+      "id": "FIND-0001",
+      "opportunityScore": 0.7552,
+      "confidenceScore": 0.2778,
+      "clusterKey": "NO_BIAS_ADJUSTED_GAP_SHADOW|GOLD|short-rich-tail|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
       "status": "open"
@@ -27,16 +27,6 @@
   "topOpportunities": [
     {
       "rank": 1,
-      "id": "FIND-0003",
-      "opportunityScore": 0.7807,
-      "confidenceScore": 0.3182,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|GOLD|heatmap|no",
-      "themeId": "THEME-0001",
-      "themeSlug": "heatmap_one_touch",
-      "status": "open"
-    },
-    {
-      "rank": 2,
       "id": "FIND-0001",
       "opportunityScore": 0.7552,
       "confidenceScore": 0.2778,
@@ -46,7 +36,7 @@
       "status": "open"
     },
     {
-      "rank": 3,
+      "rank": 2,
       "id": "FIND-0002",
       "opportunityScore": 0.7552,
       "confidenceScore": 0.2778,
@@ -56,7 +46,7 @@
       "status": "open"
     },
     {
-      "rank": 4,
+      "rank": 3,
       "id": "FIND-0004",
       "opportunityScore": 0.741,
       "confidenceScore": 0.4444,
@@ -66,7 +56,7 @@
       "status": "open"
     },
     {
-      "rank": 5,
+      "rank": 4,
       "id": "FIND-0005",
       "opportunityScore": 0.6906,
       "confidenceScore": 0.5,
@@ -76,7 +66,7 @@
       "status": "open"
     },
     {
-      "rank": 6,
+      "rank": 5,
       "id": "FIND-0007",
       "opportunityScore": 0.6746,
       "confidenceScore": 0.4211,
@@ -86,7 +76,7 @@
       "status": "open"
     },
     {
-      "rank": 7,
+      "rank": 6,
       "id": "FIND-0009",
       "opportunityScore": 0.6734,
       "confidenceScore": 0.4286,
@@ -96,7 +86,7 @@
       "status": "open"
     },
     {
-      "rank": 8,
+      "rank": 7,
       "id": "FIND-0008",
       "opportunityScore": 0.6665,
       "confidenceScore": 0.3889,
@@ -106,7 +96,7 @@
       "status": "open"
     },
     {
-      "rank": 9,
+      "rank": 8,
       "id": "FIND-0006",
       "opportunityScore": 0.6571,
       "confidenceScore": 0.4211,
@@ -116,11 +106,21 @@
       "status": "open"
     },
     {
-      "rank": 10,
+      "rank": 9,
       "id": "FIND-0010",
       "opportunityScore": 0.6421,
       "confidenceScore": 0.4286,
       "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|MRVL|weekend_hl_funding_shadow|long",
+      "themeId": "THEME-0002",
+      "themeSlug": "weekend_hl_funding",
+      "status": "open"
+    },
+    {
+      "rank": 10,
+      "id": "FIND-0012",
+      "opportunityScore": 0.6321,
+      "confidenceScore": 0.3684,
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|LITE|weekend_hl_funding_shadow|long",
       "themeId": "THEME-0002",
       "themeSlug": "weekend_hl_funding",
       "status": "open"
@@ -146,26 +146,33 @@
     {
       "originFindingId": "FIND-0003",
       "themeId": "THEME-0001",
-      "description": "Shadow-test: ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap cluster. Enter a short position (sell YES) when a GOLD one-touch YES contract exhibits a sell-YES edge \u2265 1.2pts, yesAsk < 0.25, spread \u2264 0.03, and liquidity \u2265 15000, reflecting rich pricing on low-probability upside targets. Exit when edge compresses below 0.5pts or stop loss hits -100%."
+      "description": "Extend the ONE_TOUCH_HIGH_EDGE_NO signal to GOLD when PM IV is deeply compressed relative to options IV and the one-touch sell-YES edge is elevated, indicating rich YES pricing. Enter a short position (sell YES) on GOLD one-touch NO contracts."
     },
     {
       "originFindingId": "FIND-0001",
       "themeId": "THEME-0001",
-      "description": "Shadow-test: NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD short-rich-tail. Enter short GOLD when the no-bias adjusted gap model signals a rich tail: spot trades >1.5% above its 7-day SMA, PM IV is in the top quartile (30-day percentile > 80), and GLD put/call ratio is in the bottom quartile (30-day percentile < 20), indicating overbought conditions. Exit when gap closes or stop triggers."
+      "description": "Shadow-mined NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD: when funding is extremely negative (tail-short crowd) and PM IV is elevated, sell YES on no-bias adjusted gap contracts to capture mean reversion of the edge."
     },
     {
       "originFindingId": "FIND-0004",
       "themeId": "THEME-0002",
-      "description": "Shadow-test: WEEKEND_HL_FUNDING_REVERSION_LONG on MU. Enter long MU perp when mu_hl_funding_ann < -50% on a Thursday\u2013Saturday evening, capturing the weekend bounce as extreme negative funding normalizes. Exit when funding rises above -10% or on Monday open; stop loss limited to -3.5%."
+      "description": "WEEKEND_HL_FUNDING_REVERSION_LONG on MU: go long MU perp when Hyperliquid funding is deeply negative (< -5%) during weekend hours, expecting funding normalization and a spot bounce."
     }
   ],
-  "negativeFindings": [],
+  "negativeFindings": [
+    {
+      "id": "FIND-0003",
+      "status": "negative",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|GOLD|heatmap|no",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on GOLD (heatmap/no): WR=58% n=12 sumPnl=+0.649"
+    }
+  ],
   "provenance": {
     "scoringVersion": "research_score_v1",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-07-18T07:06:29Z",
-    "opportunitiesGeneratedAt": "2026-07-18T07:06:32Z",
-    "themesGeneratedAt": "2026-07-18T07:06:31Z",
-    "adviceGeneratedAt": "2026-07-18T07:06:29.464Z"
+    "findingsExportGeneratedAt": "2026-07-19T07:09:08Z",
+    "opportunitiesGeneratedAt": "2026-07-19T07:09:10Z",
+    "themesGeneratedAt": "2026-07-19T07:09:09Z",
+    "adviceGeneratedAt": "2026-07-19T07:09:07.827Z"
   }
 }

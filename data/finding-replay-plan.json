@@ -1,26 +1,26 @@
 {
-  "generatedAt": "2026-07-18T07:06:32Z",
+  "generatedAt": "2026-07-19T07:09:11Z",
   "mode": "plan",
   "window": {
-    "start": "2026-07-11",
-    "end": "2026-07-12",
+    "start": "2026-07-18",
+    "end": "2026-07-19",
     "source": "latest_complete_weekend_archives"
   },
   "limitHours": 2,
   "candidateCount": 1,
   "candidates": [
     {
-      "id": "FIND-0003",
+      "id": "FIND-0001",
       "rank": 1,
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on GOLD (heatmap/no): WR=58% n=12 sumPnl=+0.649",
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|GOLD|heatmap|no",
-      "signals": "ONE_TOUCH_HIGH_EDGE_NO",
-      "opportunityScore": 0.7807,
-      "confidenceScore": 0.3182,
+      "title": "Shadow FIND: NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD (short-rich-tail/no): WR=62% n=8 sumPnl=+0.368",
+      "clusterKey": "NO_BIAS_ADJUSTED_GAP_SHADOW|GOLD|short-rich-tail|no",
+      "signals": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+      "opportunityScore": 0.7552,
+      "confidenceScore": 0.2778,
       "status": "open",
-      "sandbox": "/tmp/finding-replay-FIND-0003",
-      "summaryPath": "/tmp/finding-replay-FIND-0003/replay-report.json",
-      "reproducibleCommand": "cd /opt/polymarket-trader && npx tsx scripts/replay-harness.ts --start 2026-07-11 --end 2026-07-12 --sandbox /tmp/finding-replay-FIND-0003 --signals ONE_TOUCH_HIGH_EDGE_NO --limit-hours 2 --keep-going"
+      "sandbox": "/tmp/finding-replay-FIND-0001",
+      "summaryPath": "/tmp/finding-replay-FIND-0001/replay-report.json",
+      "reproducibleCommand": "cd /opt/polymarket-trader && npx tsx scripts/replay-harness.ts --start 2026-07-18 --end 2026-07-19 --sandbox /tmp/finding-replay-FIND-0001 --signals NO_BIAS_ADJUSTED_GAP_SHADOW --limit-hours 2 --keep-going"
     }
   ]
 }
