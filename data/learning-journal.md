@@ -2749,3 +2749,40 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-07-19 22:28 UTC
+
+**Portfolio:** $98.58 total | Cash $91.58 | 7 open | P&L $1.8193 | 62% win rate (482 trades)
+
+**Closed 3 trades:**
+- ✅ ARM long via hyperliquid/hl_perp [HL ARM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0474 (4.7%, market 0.0464, funding 0.0010)
+- ❌ MSTR long via hyperliquid/hl_perp [HL MSTR Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0311 (-3.1%, market -0.0322, funding 0.0011)
+- ✅ GME long via hyperliquid/hl_perp [HL GME Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0035 (0.3%, market 0.0027, funding 0.0008)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 8 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 5.3pp (was -21.3, now -26.6)
+- [anomaly] btc_pm_iv = 21.3 is -2.9 std devs from mean (40.49 ± 6.56)
+- [anomaly] btc_opt_iv_term_spread = -16.92 is -2.3 std devs from mean (-1.51 ± 6.70)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.24 to 0.16. Rolling correlation: 24h=-0.75, 7d=-0.68, 30d=-0.26. Current 24h corr is at 23th pct of last 30 daily 24h-rolling values (range -0.92 to 0.88).
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 579 (327 wins / 252 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+2.45%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.29%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-3.70%)
+
+**LLM analysis:**
+No discretionary closes permitted or warranted. OIL short thesis unchanged (oil_cl_pc_ratio static at 0.3710 despite spot rally, no normalization). COST position approaching expiry with -1.26% loss; DKNG -4.26% and RIVN -5.27% early losses, but all HL positions are mechanical-only. Continue monitoring COST exit, no LLM intervention allowed.
+
+---
+
