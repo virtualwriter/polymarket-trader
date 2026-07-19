@@ -2301,3 +2301,44 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-07-19T07:09:07.827Z, model=deepseek-v4-pro)
+- Hypotheses added: 3 (rejected 0); reviews applied: 2; param updates: none.
+- Strategy review: The WEEKEND_HL_FUNDING_REVERSION_LONG signal remains the standout performer with a 74% win rate and +0.89 total PnL across 181 live trades, while ONE_TOUCH_HIGH_EDGE_NO has a perfect 4/4 live track record and strong shadow PnL, supporting further promotion. FUNDING_EXTREME_SHORT works well on AMZN (79%) but poorly on OIL (38%), and FUNDING_EXTREME_LONG continues to underperform (47% win, negative PnL) especially on AMZN and HYPE, which are correctly disabled. LLM_HYPOTHESIS and NO_BIAS_ADJUSTED_GAP_SHADOW are consistent loss generators with net negative PnL, while the ONE_TOUCH_HIGH_EDGE_NO sh
+- Nightly journal: Weekend funding reversion remains the backbone of profitability; further asset extensions like MU are worth formal shadow tests. The ONE_TOUCH_HIGH_EDGE_NO live signal has perfect record, but GOLD shadow performance is mixed, requiring stricter edge filtering. The no-bias adjusted gap shadow continues to bleed and should stay in shadow only. PC_RATIO_EXTREME_LOW on AMZN is too unreliable; keep it disabled. No parameter adjustments at this time.
+### 2026-07-19 07:28 UTC
+
+**Portfolio:** $98.57 total | Cash $92.57 | 6 open | P&L $1.8083 | 63% win rate (461 trades)
+
+**Closed 1 trades:**
+- ✅ BX long via hyperliquid/hl_perp [HL BX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0053 (0.5%, market 0.0044, funding 0.0009)
+
+**Hypothesis lifecycle:**
+- 💀 Setup family find_0003 KILLED (0% over 20 tests across 2 variants): FIND-linked FIND-0003
+- 🧪 LLM retest queue: 8 active families did not trigger; 0 later families waiting.
+- 🧪 Opened 1 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_pm_iv = 21.2 is -3.1 std devs from mean (40.63 ± 6.37)
+- [anomaly] btc_opt_iv_term_spread = -18.18 is -2.6 std devs from mean (-1.38 ± 6.56)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.25 to 0.24. Rolling correlation: 24h=0.43, 7d=-0.76, 30d=-0.17. Current 24h corr is at 83th pct of last 30 daily 24h-rolling values (range -0.89 to 0.92).
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 577 (327 wins / 250 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.28%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+2.45%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.29%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h since last call; daily budget 2/12; next scheduled 2026-07-19T09:28:13.349Z). Mechanical cycle ran normally._
+
+---
+
