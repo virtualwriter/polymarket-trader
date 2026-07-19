@@ -2545,3 +2545,34 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-19 14:28 UTC
+
+**Portfolio:** $98.64 total | Cash $84.64 | 14 open | P&L $1.8810 | 63% win rate (469 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 8 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_pm_iv = 21.3 is -3.0 std devs from mean (40.56 ± 6.47)
+- [anomaly] btc_opt_iv_term_spread = -18.26 is -2.5 std devs from mean (-1.45 ± 6.64)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.25 to 0.20. Rolling correlation: 24h=0.04, 7d=-0.72, 30d=-0.22. Current 24h corr is at 43th pct of last 30 daily 24h-rolling values (range -0.91 to 0.86).
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 578 (327 wins / 251 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+2.45%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.29%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.10%)
+
+**LLM analysis:**
+The single eligible discretionary close, OIL PC_RATIO_EXTREME_LOW short (T-1784424508954-rhjy), shows no thesis invalidation: oil_cl_pc_ratio remains fixed at 0.371, the extreme low that triggered the entry, and spot has moved only +0.14% from the open. No data quality issues or hard portfolio risk are present, so no LLM close is warranted. All WEEKEND_HL_FUNDING_REVERSION_LONG positions are mechanical-only and cannot be closed by the analyst; they continue to hold within their 24-hour planned expiry window. The signal family's historical performance is strong (74% win rate, +$0.89 total), though per-asset variations (e.g., EBAY at 57%, GME at 40%) warrant monitoring at the nightly research review level.
+
+---
+
