@@ -2443,3 +2443,37 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-19 11:28 UTC
+
+**Portfolio:** $98.61 total | Cash $89.61 | 9 open | P&L $1.8465 | 63% win rate (465 trades)
+
+**Closed 1 trades:**
+- ✅ CRCL long via hyperliquid/hl_perp [HL CRCL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0062 (0.6%, market 0.0061, funding 0.0001)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 8 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_pm_iv = 21.4 is -3.0 std devs from mean (40.59 ± 6.43)
+- [anomaly] btc_opt_iv_term_spread = -18.26 is -2.5 std devs from mean (-1.42 ± 6.61)
+- [correlation_flip] GOLD-OIL correlation shifted from -0.25 to 0.22. Rolling correlation: 24h=0.27, 7d=-0.74, 30d=-0.20. Current 24h corr is at 63th pct of last 30 daily 24h-rolling values (range -0.92 to 0.92).
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 577 (327 wins / 250 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.28%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+2.45%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.29%)
+
+**LLM analysis:**
+No eligible discretionary closes this run. OIL short (PC_RATIO_EXTREME_LOW) is only 10h old, below the 12h minimum; thesis remains intact with CL P/C ratio unchanged at 0.371. All WEEKEND_HL_FUNDING_REVERSION_LONG positions are rule-based and ineligible for LLM closes. RKLB is -1.51% early, but funding reversion typically plays out over the 24h hold; no data-quality or hard-risk breaches. Structural note: Very bearish macro might prolong the time for funding reversion on long trades, but the signal family's historical win rate (74%) and positive average P&L suggest current trades can be left to mechanical exits.
+
+---
+
