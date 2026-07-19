@@ -1,23 +1,10 @@
 {
-  "generatedAt": "2026-07-19T08:28:33.770Z",
+  "generatedAt": "2026-07-19T09:28:11.952Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1784402913294-87we",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "amzn_hl_funding_ann"
-      ],
-      "thesis": "FUNDING_EXTREME_SHORT entry triggered when AMZN HL funding was -26.1% (crowded shorts). Funding has now reversed to +5.48%, crossing back through the -15% entry threshold and beyond zero, completely eliminating the negative-funding tailwind and invalidating the original signal."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_LOW",
@@ -28,7 +15,7 @@
       "confidence": 0.22924936417183767,
       "thesis": "OIL P/C ratio 0.37 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 83.75,
+      "entryPrice": 83.86,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -38,6 +25,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
