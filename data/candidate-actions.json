@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-20T16:28:12.792Z",
+  "generatedAt": "2026-07-20T17:28:15.874Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "BTC",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.6466666666666667,
-      "confidence": 0.34847678966063367,
-      "thesis": "BTC P/C ratio 0.31 — heavy call buying → contrarian short.",
+      "strength": 0.42333333333333334,
+      "confidence": 0.22812655817989932,
+      "thesis": "BTC P/C ratio 0.37 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 65381,
+      "entryPrice": 65460,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -22,9 +22,9 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.1028571428571429,
-      "confidence": 0.05248006216516572,
-      "thesis": "GOLD HL funding 18.6% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.13999999999999996,
+      "confidence": 0.07143119572480885,
+      "thesis": "GOLD HL funding 19.9% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
       "entryPrice": 4015,
       "targetPct": 5,
@@ -42,7 +42,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 65381,
+      "entryPrice": 65460,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -92,44 +92,47 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": -2,
         "byAsset": {
-          "OIL": -1
+          "OIL": -1,
+          "BTC": -1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_LOW": -1
+          "PC_RATIO_EXTREME_LOW": -2
         },
         "byVenue": {
-          "spot": -1
+          "spot": -2
         },
         "byCluster": {
           "commodity": -1,
           "oil_delta": -1,
-          "options_sentiment": -1,
-          "spot_venue": -1
+          "options_sentiment": -2,
+          "spot_venue": -2,
+          "btc_delta": -1,
+          "risk_on": -1
         }
       },
       "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": -2,
         "byAsset": {
           "OIL": -1,
-          "BTC": 0
+          "BTC": -1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_LOW": -1
+          "PC_RATIO_EXTREME_LOW": -2
         },
         "byVenue": {
-          "spot": -1
+          "spot": -2
         },
         "byCluster": {
           "commodity": -1,
           "oil_delta": -1,
-          "options_sentiment": -1,
-          "spot_venue": -1,
-          "btc_delta": 0,
-          "risk_on": 0
+          "options_sentiment": -2,
+          "spot_venue": -2,
+          "btc_delta": -1,
+          "risk_on": -1
         }
       },
       "warnings": []
@@ -148,44 +151,50 @@
         "hyperliquid_venue"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": -2,
         "byAsset": {
-          "OIL": -1
+          "OIL": -1,
+          "BTC": -1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_LOW": -1
+          "PC_RATIO_EXTREME_LOW": -2
         },
         "byVenue": {
-          "spot": -1
+          "spot": -2
         },
         "byCluster": {
           "commodity": -1,
           "oil_delta": -1,
-          "options_sentiment": -1,
-          "spot_venue": -1
+          "options_sentiment": -2,
+          "spot_venue": -2,
+          "btc_delta": -1,
+          "risk_on": -1
         }
       },
       "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": -2,
         "byAsset": {
           "OIL": -1,
+          "BTC": -1,
           "GOLD": 0
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_LOW": -1,
+          "PC_RATIO_EXTREME_LOW": -2,
           "FUNDING_EXTREME_LONG": 0
         },
         "byVenue": {
-          "spot": -1,
+          "spot": -2,
           "hyperliquid": 0
         },
         "byCluster": {
           "commodity": -1,
           "oil_delta": -1,
-          "options_sentiment": -1,
-          "spot_venue": -1,
+          "options_sentiment": -2,
+          "spot_venue": -2,
+          "btc_delta": -1,
+          "risk_on": -1,
           "funding_reversion": 0,
           "gold_delta": 0,
           "hyperliquid_venue": 0
@@ -241,12 +250,31 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 5.99,
-      "hoursToExpiry": 114.01,
+      "hoursOpen": 6.99,
+      "hoursToExpiry": 113.01,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0499,
+      "elapsedHoldPct": 0.0583,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 6.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 7.0h, requires at least 12h."
+    },
+    {
+      "positionId": "T-1784564909204-dfbw",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "btc_spot",
+        "btc_ibit_pc_ratio"
+      ],
+      "hoursOpen": 1,
+      "hoursToExpiry": 119,
+      "plannedHoldHours": 120,
+      "elapsedHoldPct": 0.0083,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     }
   ]
 }
