@@ -3047,3 +3047,37 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-07-20T07:06:45.870Z, model=deepseek-v4-pro)
+- Hypotheses added: 0 (rejected 3); reviews applied: 2; param updates: none.
+- Strategy review: The WEEKEND_HL_FUNDING_REVERSION_LONG signal continues to drive the system's profitability (210 live trades, 74% win, +$1.22 PnL). ONE_TOUCH_HIGH_EDGE_NO remains promising with clean live performance (4/4 wins, +$0.74) and positive shadow PnL despite a 45% win rate. In contrast, the funding-extreme family is failing: FUNDING_EXTREME_LONG has a 47% win rate and negative total return, with severe drag from AMZN and HYPE; FUNDING_EXTREME_SHORT is also flat to negative overall. The P/C ratio signals are stable but offer only marginal edges. The overall portfolio's realized gain of $2.14 and 63% wi
+- Nightly journal: Nightly review confirms WEEKEND_HL_FUNDING_REVERSION_LONG as the primary alpha source. We propose three new shadow tests from ranked findings to broaden its eligible universe (MU, HOOD, COIN). Meanwhile, we reinforce the asset blocks for FUNDING_EXTREME_LONG on AMZN/HYPE and for PC_RATIO_EXTREME_LOW on AMZN, both of which have caused persistent drain. No parameter changes are warranted tonight; the failure clusters are better addressed by asset filtering than by global risk adjustments.
+### 2026-07-20 07:28 UTC
+
+**Portfolio:** $98.90 total | Cash $93.90 | 5 open | P&L $2.1355 | 63% win rate (490 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 8 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -15.7 is -2.1 std devs from mean (-1.59 ± 6.77)
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 583 (330 wins / 253 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+3.23%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+7.84%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.38%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-4.35%)
+
+**LLM analysis:**
+No eligible discretionary closes. The OIL short (PC_RATIO_EXTREME_LOW) is in the money and its evidence metrics (oil_wti_spot down, oil_cl_pc_ratio unchanged) show no round‑trip past invalidation—P/C ratio remains pinned at the extreme low. WEEKEND_HL_FUNDING_REVERSION_LONG positions are all mechanically managed; CBRS is close to target and may hit a mechanical profit exit soon. RIVN is the worst performer at -3.75% but remains within its wide -100% stop rule. No data quality issues or hard portfolio risk breaches observed; macro backdrop stays hawkish but asset moves are contained.
+
+---
+
