@@ -1,5 +1,5 @@
 {
-  "cash": 93.89186122789668,
+  "cash": 92.89186122789668,
   "positions": [
     {
       "id": "WF-1784478493814-RIVN-p5al",
@@ -8,7 +8,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 17.502,
-      "currentPrice": 17.535,
+      "currentPrice": 17.556,
       "entryUnderlyingPrice": 17.502,
       "size": 1,
       "leverage": 5,
@@ -21,9 +21,9 @@
       "instrumentType": "hl_perp",
       "instrumentId": "RIVN",
       "instrumentLabel": "HL RIVN Builder DEX stock perp",
-      "fundingPnlAccrued": 0.0019178521689497715,
+      "fundingPnlAccrued": 0.0014539731735159814,
       "entryConfidence": 0.5,
-      "peakPnlPct": 1.1345346169635764
+      "peakPnlPct": 1.688078153827488
     },
     {
       "id": "WF-1784525290310-EBAY-rm39",
@@ -32,7 +32,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 112.2,
-      "currentPrice": 112.65,
+      "currentPrice": 112.62,
       "entryUnderlyingPrice": 112.2,
       "size": 1,
       "leverage": 5,
@@ -45,7 +45,7 @@
       "instrumentType": "hl_perp",
       "instrumentId": "EBAY",
       "instrumentLabel": "HL EBAY Builder DEX stock perp",
-      "fundingPnlAccrued": 0.0008157905251141551,
+      "fundingPnlAccrued": 0.0007845405251141551,
       "entryConfidence": 0.5,
       "peakPnlPct": 2.086926646094316
     },
@@ -56,7 +56,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 126.97,
-      "currentPrice": 126.72,
+      "currentPrice": 127.04,
       "entryUnderlyingPrice": 126.97,
       "size": 1,
       "leverage": 5,
@@ -69,9 +69,9 @@
       "instrumentType": "hl_perp",
       "instrumentId": "BX",
       "instrumentLabel": "HL BX Builder DEX stock perp",
-      "fundingPnlAccrued": 0.0004175051369863014,
+      "fundingPnlAccrued": 0.0011413858447488585,
       "entryConfidence": 0.5,
-      "peakPnlPct": -0.9057257619910373
+      "peakPnlPct": 0.38979425116783456
     },
     {
       "id": "WF-1784543294073-SKHX-bn7g",
@@ -80,8 +80,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 1234.6,
-      "currentPrice": 1234.6,
-      "currentUnderlyingPrice": 1234.6,
+      "currentPrice": 1238.6,
       "entryUnderlyingPrice": 1234.6,
       "size": 1,
       "leverage": 5,
@@ -95,7 +94,8 @@
       "instrumentId": "SKHX",
       "instrumentLabel": "HL SKHX Builder DEX stock perp",
       "fundingPnlAccrued": 0,
-      "entryConfidence": 0.5
+      "entryConfidence": 0.5,
+      "peakPnlPct": 1.6199578810950916
     },
     {
       "id": "T-1784543327168-cevc",
@@ -104,8 +104,8 @@
       "venue": "spot",
       "direction": "short",
       "entryPrice": 81.44,
-      "currentPrice": 81.44,
-      "currentUnderlyingPrice": 81.44,
+      "currentPrice": 81.63,
+      "currentUnderlyingPrice": 81.63,
       "entryUnderlyingPrice": 81.44,
       "size": 1,
       "leverage": 1,
@@ -117,12 +117,38 @@
       "expiryDate": "2026-07-25T10:28:47.168Z",
       "entryConfidence": 0.23171910240320487,
       "instrumentType": "spot",
-      "instrumentLabel": "OIL spot"
+      "instrumentLabel": "OIL spot",
+      "peakPnlPct": 0.0036836935166995504,
+      "fundingPnlAccrued": 0
+    },
+    {
+      "id": "WF-1784546891113-CBRS-0jmh",
+      "openedAt": "2026-07-20T11:28:11.113Z",
+      "asset": "CBRS",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 175.51,
+      "currentPrice": 175.51,
+      "currentUnderlyingPrice": 175.51,
+      "entryUnderlyingPrice": 175.51,
+      "size": 1,
+      "leverage": 5,
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "hypothesisId": null,
+      "thesis": "[WEEKEND HL FUNDING LIVE] CBRS Builder DEX stock perp funding -68.8% annualized in mid band [-100%, -50%] during US-equity-closed window (Fri 4:00pm ET → Mon 9:30am ET). Live tracked long at 5x; exit when margin P&L >= 3%, funding >= 10%, or held 24h.",
+      "targetPct": 3,
+      "stopPct": 100,
+      "expiryDate": "2026-07-21T11:28:11.113Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "CBRS",
+      "instrumentLabel": "HL CBRS Builder DEX stock perp",
+      "fundingPnlAccrued": 0,
+      "entryConfidence": 0.5
     }
   ],
-  "totalRealizedPnl": 2.1005314564480675,
-  "totalTrades": 493,
-  "winCount": 310,
+  "totalRealizedPnl": 2.1312999999999978,
+  "totalTrades": 494,
+  "winCount": 311,
   "lossCount": 183,
-  "lastUpdated": "2026-07-20T10:28:47.172Z"
+  "lastUpdated": "2026-07-20T11:28:11.446Z"
 }
