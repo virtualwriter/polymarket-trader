@@ -3208,3 +3208,35 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-07-20 12:28 UTC
+
+**Portfolio:** $98.89 total | Cash $93.89 | 5 open | P&L $2.1292 | 63% win rate (495 trades)
+
+**Closed 1 trades:**
+- ❌ SKHX long via hyperliquid/hl_perp [HL SKHX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → breakeven_stop: $-0.0021 (-0.2%, market -0.0024, funding 0.0003)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 8 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -17.68 is -2.4 std devs from mean (-1.63 ± 6.81)
+
+**Blocked signal learning:**
+- Open blocked shadows: 48
+- Resolved blocked shadows: 588 (333 wins / 255 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit target (+3.16%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+6.84%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.09%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-3.85%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h since last call; daily budget 4/12; next scheduled 2026-07-20T14:28:11.983Z). Mechanical cycle ran normally._
+
+---
+
