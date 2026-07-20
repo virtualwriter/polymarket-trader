@@ -449,6 +449,20 @@ def short_label(label: str | None, max_len: int = 120) -> str:
     return question[:max_len]
 
 
+def instrument_label_note(label: str | None, *, asset: str | None = None, max_len: int = 72) -> str:
+    """Omit HL/spot labels that only restate asset+venue; keep Polymarket questions."""
+    if not label:
+        return ""
+    text = short_label(label, max_len=max_len)
+    lower = text.lower()
+    asset_l = (asset or "").lower()
+    if "builder dex" in lower or lower.endswith(" perp") or lower.endswith(" spot"):
+        return ""
+    if asset_l and lower in {asset_l, f"hl {asset_l}", f"{asset_l} spot", f"hl {asset_l} perp"}:
+        return ""
+    return f" [{text}]"
+
+
 def hypothesis_lookup(hypotheses: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
     return {str(hypothesis.get("id")): hypothesis for hypothesis in hypotheses if hypothesis.get("id")}
 
@@ -464,23 +478,22 @@ def setup_signal_label(signal_type: str | None, hypothesis_id: str | None, hypot
 
 def trade_line(row: dict[str, Any], closed: bool, hypotheses_by_id: dict[str, dict[str, Any]]) -> str:
     signal = setup_signal_label(row.get("signal_type"), row.get("hypothesis_id"), hypotheses_by_id)
+    label = instrument_label_note(row.get("instrument_label"), asset=row.get("asset"))
+    venue = row.get("venue") or "?"
+    itype = row.get("instrument_type") or "legacy"
     if closed:
         taint_note = (
             f" | operationally tainted: {OPERATIONALLY_TAINTED_TRADES[row.get('id')]}"
             if row.get("id") in OPERATIONALLY_TAINTED_TRADES else ""
         )
         return (
-            f"- {eastern_hour(row.get('closed_at'))} | CLOSED | {row.get('asset')} "
-            f"{row.get('direction')} via {row.get('venue')}/{row.get('instrument_type') or 'legacy'} "
-            f"({signal}) {row.get('close_reason')}: "
-            f"{money(num(row.get('pnl')))} / {pct(num(row.get('pnl_pct')))} "
-            f"[{short_label(row.get('instrument_label'))}]{taint_note}"
+            f"- {eastern_hour(row.get('closed_at'))} | {row.get('asset')} {row.get('direction')} "
+            f"{venue}/{itype} ({signal}) {row.get('close_reason')}: "
+            f"{money(num(row.get('pnl')))} / {pct(num(row.get('pnl_pct')))}{label}{taint_note}"
         )
     return (
-        f"- {eastern_hour(row.get('opened_at'))} | OPENED | {row.get('asset')} "
-        f"{row.get('direction')} via {row.get('venue')}/{row.get('instrument_type') or 'legacy'} "
-        f"({signal}) @ {row.get('entry_price')} "
-        f"[{short_label(row.get('instrument_label'))}]"
+        f"- {eastern_hour(row.get('opened_at'))} | {row.get('asset')} {row.get('direction')} "
+        f"{venue}/{itype} ({signal}) @ {row.get('entry_price')}{label}"
     )
 
 
@@ -502,35 +515,37 @@ def open_position_pnl(position: dict[str, Any]) -> tuple[float, float]:
 def open_position_line(position: dict[str, Any], hypotheses_by_id: dict[str, dict[str, Any]]) -> str:
     pnl, pnl_pct = open_position_pnl(position)
     signal = setup_signal_label(position.get("signalType"), position.get("hypothesisId"), hypotheses_by_id)
+    label = instrument_label_note(position.get("instrumentLabel"), asset=position.get("asset"))
+    venue = position.get("venue") or "?"
+    itype = position.get("instrumentType") or "legacy"
     return (
-        f"- {eastern_hour(position.get('openedAt'))} | OPEN | {position.get('asset')} "
-        f"{position.get('direction')} via {position.get('venue')}/{position.get('instrumentType') or 'legacy'} "
-        f"({signal}) @ {position.get('entryPrice')} "
-        f"mark {position.get('currentPrice')} | {money(pnl)} / {pct(pnl_pct)} "
-        f"[{short_label(position.get('instrumentLabel'))}]"
+        f"- {eastern_hour(position.get('openedAt'))} | {position.get('asset')} "
+        f"{position.get('direction')} {venue}/{itype} ({signal}) "
+        f"@ {position.get('entryPrice')} → {position.get('currentPrice')} | "
+        f"{money(pnl)} / {pct(pnl_pct)}{label}"
     )
 
 
 def shadow_line(shadow: dict[str, Any], tz: ZoneInfo, resolved: bool) -> str:
+    del tz  # kept for call-site compatibility
     position = shadow.get("position", {})
+    label = instrument_label_note(position.get("instrumentLabel"), asset=shadow.get("asset"))
+    venue = shadow.get("venue") or "?"
+    itype = position.get("instrumentType") or "legacy"
+    signal = shadow.get("signalType") or "?"
     if resolved:
         result = shadow.get("hypotheticalResult", {})
-        learnable = "excluded" if shadow.get("learningExcluded") else "learnable"
         close_trigger = result.get("closeTrigger")
         close_reason = result.get("closeReason")
         close_label = f"{close_reason}/{close_trigger}" if close_trigger else close_reason
         return (
-            f"- {eastern_hour(shadow.get('resolvedAt'))} | RESOLVED | {shadow.get('asset')} "
-            f"{shadow.get('direction')} via {shadow.get('venue')}/{position.get('instrumentType') or 'legacy'} "
-            f"{shadow.get('blockedReason')} ({shadow.get('signalType')}) "
-            f"{close_label}: {money(num(result.get('pnl')))} / {pct(num(result.get('pnlPct')))} "
-            f"[{short_label(position.get('instrumentLabel'))}] ({learnable})"
+            f"- {eastern_hour(shadow.get('resolvedAt'))} | {shadow.get('asset')} "
+            f"{shadow.get('direction')} {venue}/{itype} ({signal}) "
+            f"{close_label}: {money(num(result.get('pnl')))} / {pct(num(result.get('pnlPct')))}{label}"
         )
     return (
-        f"- {eastern_hour(shadow.get('blockedAt'))} | OPENED | {shadow.get('asset')} "
-        f"{shadow.get('direction')} via {shadow.get('venue')}/{position.get('instrumentType') or 'legacy'} "
-        f"{shadow.get('blockedReason')} ({shadow.get('signalType')}) @ {position.get('entryPrice')} "
-        f"[{short_label(position.get('instrumentLabel'))}]"
+        f"- {eastern_hour(shadow.get('blockedAt'))} | {shadow.get('asset')} "
+        f"{shadow.get('direction')} {venue}/{itype} ({signal}) @ {position.get('entryPrice')}{label}"
     )
 
 
@@ -557,11 +572,36 @@ def is_force_closed_one_touch_shadow(shadow: dict[str, Any]) -> bool:
     return "edge_disappeared" in (shadow.get("thesis") or "")
 
 
+def _is_llm_skip_note(text: str) -> bool:
+    stripped = text.strip().strip("_")
+    return stripped.startswith("LLM call skipped")
+
+
+def _is_blocked_count_line(line: str) -> bool:
+    """Hourly open/resolved shadow counters — noise once standing notes exist."""
+    return line.startswith("- Open blocked shadows:") or line.startswith("- Resolved blocked shadows:")
+
+
+def _is_shadow_event_line(line: str) -> bool:
+    return line.startswith("- ✅") or line.startswith("- ❌")
+
+
 def journal_sections_for_window(path: Path, start_utc: datetime, end_utc: datetime, tz: ZoneInfo) -> list[str]:
+    """Compact journal notes for Telegram: dedupe standing blocked-signal bullets,
+    keep unique shadow events once, and only include substantive LLM analyses.
+    """
+    del tz  # window bounds are already UTC
     if not path.exists():
         return []
     text = path.read_text()
-    sections = []
+
+    standing_notes: list[str] = []
+    standing_seen: set[str] = set()
+    event_lines: list[str] = []
+    event_seen: set[str] = set()
+    analyses: list[tuple[str, str]] = []  # (header, body)
+    latest_counts: list[str] = []
+
     chunks = text.split("\n### ")
     for chunk in chunks:
         candidate = chunk.strip()
@@ -576,24 +616,68 @@ def journal_sections_for_window(path: Path, start_utc: datetime, end_utc: dateti
                 break
             except ValueError:
                 continue
-        if parsed and start_utc <= parsed < end_utc:
-            body = "\n".join(candidate.splitlines()[1:]).strip()
-            summary_lines = []
-            capture = False
-            for line in body.splitlines():
-                if line.startswith("**LLM analysis:**") or line.startswith("**Blocked signal learning:**"):
-                    capture = True
-                    summary_lines.append(line)
-                    continue
-                if capture and line.startswith("**") and line.endswith(":**"):
-                    capture = False
-                if capture and line.strip():
-                    if "MONOTONIC_ARB" in line or "monotonic arb" in line.lower():
-                        continue
-                    summary_lines.append(line)
-            if summary_lines and any(not line.startswith("**") for line in summary_lines):
-                sections.append(f"### {first_line}\n" + "\n".join(summary_lines[:24]))
-    return sections
+        if not parsed or not (start_utc <= parsed < end_utc):
+            continue
+
+        body = "\n".join(candidate.splitlines()[1:]).strip()
+        blocked: list[str] = []
+        llm_lines: list[str] = []
+        mode: str | None = None
+        for line in body.splitlines():
+            if line.startswith("**Blocked signal learning:**"):
+                mode = "blocked"
+                continue
+            if line.startswith("**LLM analysis:**"):
+                mode = "llm"
+                continue
+            if mode and line.startswith("**") and line.endswith(":**"):
+                mode = None
+                continue
+            if not line.strip() or mode is None:
+                continue
+            if "MONOTONIC_ARB" in line or "monotonic arb" in line.lower():
+                continue
+            if mode == "blocked":
+                blocked.append(line)
+            elif mode == "llm":
+                llm_lines.append(line)
+
+        hour_counts = [line for line in blocked if _is_blocked_count_line(line)]
+        if hour_counts:
+            latest_counts = hour_counts
+        for line in blocked:
+            if _is_blocked_count_line(line):
+                continue
+            if _is_shadow_event_line(line):
+                if line not in event_seen:
+                    event_seen.add(line)
+                    event_lines.append(line)
+                continue
+            if line not in standing_seen:
+                standing_seen.add(line)
+                standing_notes.append(line)
+
+        llm_text = "\n".join(llm_lines).strip()
+        if llm_text and not _is_llm_skip_note(llm_text):
+            analyses.append((first_line, llm_text))
+
+    out: list[str] = []
+    if standing_notes or latest_counts:
+        out.append("### Standing blocked-signal notes")
+        out.extend(latest_counts)
+        out.extend(standing_notes)
+    if event_lines:
+        out.append("### Shadow events (deduped)")
+        out.extend(event_lines)
+    if analyses:
+        out.append("### LLM analyses")
+        for header, llm_text in analyses:
+            out.append(f"**{header}**")
+            out.append(llm_text)
+            out.append("---")
+        if out[-1] == "---":
+            out.pop()
+    return out
 
 
 def valuation_ts(value: str | None) -> datetime | None:
@@ -775,16 +859,6 @@ def build_report(window: ReportWindow) -> str:
     shadow_realized = sum(num((shadow.get("hypotheticalResult") or {}).get("pnl")) for shadow in resolved_shadows)
     open_unrealized = sum(open_position_pnl(position)[0] for position in open_positions)
 
-    by_hour: dict[str, dict[str, float]] = defaultdict(lambda: {"closed": 0, "closed_pnl": 0, "shadow": 0, "shadow_pnl": 0})
-    for row in closed_trades:
-        key = eastern_hour(row.get("closed_at"))
-        by_hour[key]["closed"] += 1
-        by_hour[key]["closed_pnl"] += num(row.get("pnl"))
-    for shadow in resolved_shadows:
-        key = eastern_hour(shadow.get("resolvedAt"))
-        by_hour[key]["shadow"] += 1
-        by_hour[key]["shadow_pnl"] += num((shadow.get("hypotheticalResult") or {}).get("pnl"))
-
     llm_sections = journal_sections_for_window(DATA_DIR / "learning-journal.md", window.start_utc, window.end_utc, window.tz)
     hypotheses_by_id = hypothesis_lookup(hypotheses)
     hypothesis_status = defaultdict(int)
@@ -802,42 +876,28 @@ def build_report(window: ReportWindow) -> str:
         f"- Real trades opened: {len(opened_real)}",
         f"- Real trades closed: {len(closed_trades)} ({len(counted_closed_trades)} counted) | "
         f"realized P&L {money(realized)} (counted {money(counted_realized)})",
-        f"- Real trade W/L counted today: {daily_wins}/{len(counted_closed_trades)} "
-        f"({daily_losses} losses)",
-        "- Counted ledger excludes data-correction/non-learning/operationally tainted closes.",
-        f"- Duplicate closed-trade rows removed before ledger totals: {duplicate_closed_trade_rows}",
-        f"- Operationally tainted closes today: {len(tainted_closed_trades)}",
-        f"- Current open real positions: {len(open_positions)} | unrealized P&L {money(open_unrealized)}",
-        f"- Shadow trades opened: {len(opened_shadows)}",
-        f"- Shadow trades resolved: {len(resolved_shadows)} | shadow P&L {money(shadow_realized)}",
-        f"- Realized P&L source of truth (de-duped counted ledger): {money(cumulative_counted_realized)} "
-        f"({len(cumulative_counted_trades)} counted, {cumulative_wins}W/{cumulative_losses}L)",
-        f"- Portfolio audit/reference: {money(portfolio_realized)} "
+        f"- Real trade W/L counted today: {daily_wins}W/{daily_losses}L",
+        f"- Open now: {len(open_positions)} | unrealized {money(open_unrealized)}",
+        f"- Shadow: opened {len(opened_shadows)}, resolved {len(resolved_shadows)} | {money(shadow_realized)}",
+        f"- Lifetime counted: {money(cumulative_counted_realized)} "
+        f"({len(cumulative_counted_trades)} trades, {cumulative_wins}W/{cumulative_losses}L)",
+        f"- Portfolio audit: {money(portfolio_realized)} "
         f"({portfolio_trades} trades, {portfolio_wins}W/{portfolio_losses}L)",
-        f"- Monotonic arb (excluded from macro ledger): {money(monotonic_accounting['legitimate'][0])} "
-        f"on {monotonic_accounting['legitimate'][1]} legitimately-managed packages | "
-        f"{money(monotonic_accounting['operational_error'][0])} across "
-        f"{monotonic_accounting['operational_error'][1]} operational-error closes (excluded from strategy record)",
+        f"- Monotonic arb (excl.): legit {money(monotonic_accounting['legitimate'][0])} "
+        f"on {monotonic_accounting['legitimate'][1]} | "
+        f"ops-error {money(monotonic_accounting['operational_error'][0])} "
+        f"on {monotonic_accounting['operational_error'][1]}",
         f"- Hypotheses: {dict(hypothesis_status)} | pending tests {pending_tests}",
         disk_usage_line(),
     ]
+    if duplicate_closed_trade_rows:
+        lines.append(f"- Duplicate closed-trade rows removed: {duplicate_closed_trade_rows}")
+    if tainted_closed_trades:
+        lines.append(f"- Operationally tainted closes today: {len(tainted_closed_trades)}")
     neon_line = neon_parity_line(DATA_DIR / "neon-parity.json", datetime.now(timezone.utc))
     if neon_line:
         lines.append(neon_line)
     lines.extend(["", *nightly_research_loop_lines()])
-    lines.extend([
-        "",
-        "## Hourly Closed P&L",
-    ])
-    if by_hour:
-        for hour_key in sorted(by_hour):
-            row = by_hour[hour_key]
-            lines.append(
-                f"- {hour_key}: real closes {int(row['closed'])} ({money(row['closed_pnl'])}), "
-                f"shadow resolves {int(row['shadow'])} ({money(row['shadow_pnl'])})"
-            )
-    else:
-        lines.append("- No real or shadow closes.")
 
     lines.extend(["", "## Real Trades Opened"])
     lines.extend(trade_line(row, closed=False, hypotheses_by_id=hypotheses_by_id) for row in opened_real) if opened_real else lines.append("- None")
@@ -854,7 +914,10 @@ def build_report(window: ReportWindow) -> str:
     lines.extend(["", "## Shadow Trades Resolved"])
     lines.extend(shadow_line(shadow, window.tz, resolved=True) for shadow in resolved_shadows) if resolved_shadows else lines.append("- None")
 
-    lines.extend(["", *risk_shape_report_lines(closed_trades)])
+    risk_lines = risk_shape_report_lines(closed_trades)
+    # Header + explanatory line only — skip empty replay days.
+    if len(risk_lines) > 2:
+        lines.extend(["", *risk_lines])
 
     lines.extend(["", "## LLM Findings / Learning Notes"])
     if llm_sections:
