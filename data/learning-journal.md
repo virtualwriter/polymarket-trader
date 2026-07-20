@@ -2952,3 +2952,34 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-20 04:28 UTC
+
+**Portfolio:** $98.87 total | Cash $92.87 | 6 open | P&L $2.1061 | 63% win rate (488 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 8 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved narrower by 12.9pp (was -1.1, now -14.0)
+- [anomaly] btc_pm_iv = 21.3 is -2.9 std devs from mean (40.44 ± 6.61)
+- [anomaly] btc_opt_iv_term_spread = -18.96 is -2.6 std devs from mean (-1.56 ± 6.75)
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 581 (329 wins / 252 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-3.70%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+3.23%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+7.84%)
+
+**LLM analysis:**
+Only LLM-eligible close is OIL short (PC_RATIO_EXTREME_LOW). P/C ratio still at 0.371, no normalization toward threshold; thesis not invalidated. Spot price barely moved. No data quality or hard portfolio risk concerns. Five WEEKEND_HL_FUNDING_REVERSION_LONG positions are in mechanical-only territory; CBRS is -4.7% but still early in hold and funding has reversed from -75.6% to -22.8%, suggesting initial reversion, though price didn't follow yet. RIVN is -2.6% at 50% elapsed with funding now +2.17% (sign flipped), which weakens the funding-reversion thesis but is mechanical-only. BX funding improved from -85.9% to -47%, a large move. All funding-reversion trades show sharp funding normalization; if price continues to lag, mechanical stops/targets will manage them.
+
+---
+
