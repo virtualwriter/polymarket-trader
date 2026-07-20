@@ -3143,3 +3143,39 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-20 10:28 UTC
+
+**Portfolio:** $98.89 total | Cash $93.89 | 5 open | P&L $2.1005 | 63% win rate (493 trades)
+
+**Closed 2 trades:**
+- ❌ BIRD long via hyperliquid/hl_perp [HL BIRD Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0099 (-1.0%, market -0.0099, funding 0.0000)
+- ✅ OIL short via spot/spot [OIL spot] (PC_RATIO_EXTREME_LOW) → target: +$0.0308 (3.1%, market 0.0308, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL short @ $81.44 via spot/spot [OIL spot] (PC_RATIO_EXTREME_LOW)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 8 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -17.01 is -2.3 std devs from mean (-1.61 ± 6.80)
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 586 (333 wins / 253 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-4.35%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit target (+3.16%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+6.84%)
+
+**LLM analysis:**
+No discretionary closes permitted: all four open positions (RIVN, EBAY, BX, SKHX) are WEEKEND_HL_FUNDING_REVERSION_LONG, a rule-based signal family where LLM exits are policy-gated. However, there are notable thesis developments: RIVN and EBAY funding has normalized to +5.48% (from -61.6% and -90.1% at open, respectively), which constitutes a clear invalidation of the extreme-negative-funding reversion edge for those names. Conversely, BX funding deepened to -126.8% (from -59.8%), intensifying the thesis, and SKHX just entered with -94.3% funding, so its thesis remains intact. Mechanical scanners will handle these positions via target/stop/expiry; the normalized funding on RIVN/EBAY may trigger exits before targets if price fails to sustain, but we cannot override. Overall portfolio is small, recent closed trades added modestly to realized P&L, and the system's shadow evidence for this signal family remains positive (74% win rate, avg 0.99%). Continue to monitor funding flips and expiry risk, but no LLM action is appropriate at this hour.
+
+---
+
