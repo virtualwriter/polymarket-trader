@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-20T08:28:11.300Z",
+  "generatedAt": "2026-07-20T09:28:10.561Z",
   "dataFreshness": {
-    "valuationRows": 1781,
-    "latestValuationAt": "2026-07-20T08",
-    "macroRows": 1779,
+    "valuationRows": 1782,
+    "latestValuationAt": "2026-07-20T09",
+    "macroRows": 1780,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-20T08"
+    "latestInstrumentSnapshotAt": "2026-07-20T09"
   },
   "portfolio": {
-    "cash": 92.896,
-    "openPositions": 6,
-    "realizedPnl": 2.1355,
-    "totalTrades": 490,
-    "winRatePct": 63.1,
-    "unrealizedPnl": 0.005
+    "cash": 93.8709,
+    "openPositions": 5,
+    "realizedPnl": 2.1104,
+    "totalTrades": 492,
+    "winRatePct": 63,
+    "unrealizedPnl": 0.0296
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 2.47,
-      "currentPrice": 81.58,
-      "underlyingPrice": 81.58,
+      "pnlPct": 2.79,
+      "currentPrice": 81.32,
+      "underlyingPrice": 81.32,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,36 +39,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -2.44,
-      "currentPrice": 17.409,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "WF-1784507296026-CBRS-ywm6",
-      "asset": "CBRS",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 1.46,
-      "currentPrice": 175.69,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "WF-1784514491110-ZM-lsz4",
-      "asset": "ZM",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -2.86,
-      "currentPrice": 91.349,
+      "pnlPct": -0.92,
+      "currentPrice": 17.462,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -81,8 +53,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 1.87,
-      "currentPrice": 112.6,
+      "pnlPct": 2,
+      "currentPrice": 112.63,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -95,8 +67,22 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": -0.91,
+      "currentPrice": 126.74,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1784539690297-BIRD-c04h",
+      "asset": "BIRD",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "pnlPct": 0,
-      "currentPrice": 126.97,
+      "currentPrice": 2.6853,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -244,9 +230,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 52,
-    "resolvedCount": 583,
-    "wouldHaveWon": 330,
+    "openCount": 51,
+    "resolvedCount": 585,
+    "wouldHaveWon": 332,
     "wouldHaveLost": 253,
     "bySignal": [
       {
@@ -298,59 +284,23 @@
         "avgPnlPct": 6.73
       },
       {
+        "signalType": "PC_RATIO_EXTREME_LOW",
+        "blocked": 23,
+        "resolved": 23,
+        "wouldHaveWon": 12,
+        "wouldHaveLost": 11,
+        "avgPnlPct": -0.16
+      },
+      {
         "signalType": "PM_EV_BELOW_SPOT",
         "blocked": 4,
         "resolved": 4,
         "wouldHaveWon": 2,
         "wouldHaveLost": 2,
         "avgPnlPct": 0.07
-      },
-      {
-        "signalType": "PC_RATIO_EXTREME_LOW",
-        "blocked": 23,
-        "resolved": 22,
-        "wouldHaveWon": 11,
-        "wouldHaveLost": 11,
-        "avgPnlPct": -0.31
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 2.45,
-        "resolvedAt": "2026-07-19T07:28:12.891Z",
-        "marketQuality": {
-          "yesBid": 0.551,
-          "yesAsk": 0.559,
-          "yesSpread": 0.008,
-          "liquidity": 54188.45,
-          "flags": []
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 0.29,
-        "resolvedAt": "2026-07-19T07:28:12.891Z",
-        "marketQuality": {
-          "yesBid": 0.3,
-          "yesAsk": 0.301,
-          "yesSpread": 0.001,
-          "liquidity": 91518.91,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -470,6 +420,39 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 0,
+        "resolvedAt": "2026-07-20T09:28:10.282Z",
+        "marketQuality": {
+          "yesBid": 0.05,
+          "yesAsk": 0.06,
+          "yesSpread": 0.01,
+          "liquidity": 77573.9,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "PC_RATIO_EXTREME_LOW",
+        "asset": "OIL",
+        "venue": "spot",
+        "direction": "short",
+        "blockedReason": "short_blocked_by_positive_trend",
+        "outcome": "win",
+        "closeReason": "target",
+        "pnlPct": 3.16,
+        "resolvedAt": "2026-07-20T09:28:10.282Z",
+        "trendMetrics": {
+          "aboveTrendPct": 1.92,
+          "momentumPct": 3.06
+        }
       }
     ],
     "openQualityWarnings": [
@@ -568,6 +551,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.2pt on BTC, spread 1.0c, liquidity 47904. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-wti-hit-in-july-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $65 in July?",
+        "marketQuality": {
+          "yesBid": 0.055,
+          "yesAsk": 0.068,
+          "yesSpread": 0.013,
+          "liquidity": 75058.59,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.6pt on OIL, spread 1.3c, liquidity 75059. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
