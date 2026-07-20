@@ -3435,3 +3435,37 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-07-20 19:28 UTC
+
+**Portfolio:** $98.81 total | Cash $96.81 | 2 open | P&L $2.0706 | 63% win rate (499 trades)
+
+**Closed 1 trades:**
+- ❌ OIL short via spot/spot [OIL spot] (PC_RATIO_EXTREME_LOW) → stop: $-0.0202 (-2.0%, market -0.0202, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 8 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_hl_funding_ann = -18.43 is -3.1 std devs from mean (5.10 ± 7.48)
+- [anomaly] btc_opt_iv_term_spread = -20.11 is -2.7 std devs from mean (-1.70 ± 6.89)
+- [anomaly] btc_opt_iv_90d = 55.9 is 2.1 std devs from mean (40.77 ± 7.20)
+
+**Blocked signal learning:**
+- Open blocked shadows: 46
+- Resolved blocked shadows: 596 (335 wins / 261 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-4.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.04%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+7.94%)
+
+**LLM analysis:**
+Both open positions are still within their 12h minimum hold window, so no discretionary close is permitted. BTC short (PC_RATIO_EXTREME_LOW) profit is +0.51% and the P/C ratio has normalized from 0.306 to 0.418, moving toward invalidation territory but not yet past the entry threshold. If the ratio continues rising and breaches the trigger level once min hold expires, a thesis_invalidated close may be appropriate. Gold short (FUNDING_EXTREME_LONG) funding remains elevated at 26.3%, still well above the 15% entry trigger, so thesis intact. No action taken.
+
+---
+
