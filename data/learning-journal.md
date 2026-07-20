@@ -3272,3 +3272,37 @@ No discretionary closes are available. RIVN, EBAY, BX are mechanical weekend fun
 
 ---
 
+### 2026-07-20 14:28 UTC
+
+**Portfolio:** $98.83 total | Cash $97.83 | 1 open | P&L $2.0706 | 63% win rate (499 trades)
+
+**Closed 3 trades:**
+- ❌ RIVN long via hyperliquid/hl_perp [HL RIVN Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → expiry: $-0.0202 (-2.0%, market -0.0206, funding 0.0003)
+- ✅ EBAY long via hyperliquid/hl_perp [HL EBAY Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → expiry: +$0.0363 (3.6%, market 0.0357, funding 0.0007)
+- ❌ BX long via hyperliquid/hl_perp [HL BX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → expiry: $-0.1323 (-13.2%, market -0.1347, funding 0.0024)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 8 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -16.16 is -2.1 std devs from mean (-1.65 ± 6.83)
+
+**Blocked signal learning:**
+- Open blocked shadows: 48
+- Resolved blocked shadows: 590 (334 wins / 256 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.09%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-3.85%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.32%)
+
+**LLM analysis:**
+OIL short T-1784543327168-cevc (PC_RATIO_EXTREME_LOW) is under the 12-hour min hold for LLM-discretionary close, so no action taken today. The oil_cl_pc_ratio jumped to 0.555 in the last snapshot, breaking out of the extreme-low regime that triggered entry; this is a material normalization, but the trade still must satisfy the minimum hold window before a thesis_invalidated close can be considered. Spot is essentially unchanged, and macro remains very bearish. I will track whether the P/C ratio stays elevated through the next few hours and whether spot drifts against the position; if the ratio remains above invalidation thresholds after 12 hours, a discretionary exit is on the table. For now, let the mechanical stops and targets manage risk.
+
+---
+
