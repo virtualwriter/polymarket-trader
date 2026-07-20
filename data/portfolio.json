@@ -1,5 +1,5 @@
 {
-  "cash": 96.83117294936633,
+  "cash": 95.83117294936633,
   "positions": [
     {
       "id": "T-1784543327168-cevc",
@@ -8,8 +8,8 @@
       "venue": "spot",
       "direction": "short",
       "entryPrice": 81.44,
-      "currentPrice": 81.91,
-      "currentUnderlyingPrice": 81.91,
+      "currentPrice": 82.41,
+      "currentUnderlyingPrice": 82.41,
       "entryUnderlyingPrice": 81.44,
       "size": 1,
       "leverage": 1,
@@ -32,8 +32,8 @@
       "venue": "spot",
       "direction": "short",
       "entryPrice": 65381,
-      "currentPrice": 65460,
-      "currentUnderlyingPrice": 65460,
+      "currentPrice": 65558,
+      "currentUnderlyingPrice": 65558,
       "entryUnderlyingPrice": 65381,
       "size": 1,
       "leverage": 1,
@@ -46,7 +46,31 @@
       "entryConfidence": 0.34847678966063367,
       "instrumentType": "spot",
       "instrumentLabel": "BTC spot",
-      "peakPnlPct": 0.0711215796638167,
+      "peakPnlPct": 0.09712301739037335,
+      "fundingPnlAccrued": 0
+    },
+    {
+      "id": "T-1784572091399-sdm1",
+      "openedAt": "2026-07-20T18:28:11.399Z",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "entryPrice": 4010,
+      "currentPrice": 4010,
+      "currentUnderlyingPrice": 4010,
+      "entryUnderlyingPrice": 4010,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "FUNDING_EXTREME_LONG",
+      "hypothesisId": null,
+      "thesis": "GOLD HL funding 32.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "targetPct": 5,
+      "stopPct": 2,
+      "expiryDate": "2026-07-23T18:28:11.399Z",
+      "entryConfidence": 0.2519042983927954,
+      "instrumentType": "hl_perp",
+      "instrumentId": "GOLD",
+      "instrumentLabel": "HL GOLD perp",
       "fundingPnlAccrued": 0
     }
   ],
@@ -54,5 +78,5 @@
   "totalTrades": 499,
   "winCount": 313,
   "lossCount": 186,
-  "lastUpdated": "2026-07-20T17:28:15.890Z"
+  "lastUpdated": "2026-07-20T18:28:11.403Z"
 }

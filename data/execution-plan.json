@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-20T17:28:15.886Z",
+  "generatedAt": "2026-07-20T18:28:11.396Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,33 +7,33 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "strength": 0.42333333333333334,
-      "confidence": 0.22812655817989932,
-      "thesis": "BTC P/C ratio 0.37 — heavy call buying → contrarian short.",
-      "hypothesisId": null,
-      "entryPrice": 65460,
-      "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 5
-    },
-    {
       "type": "FUNDING_EXTREME_LONG",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.13999999999999996,
-      "confidence": 0.07143119572480885,
-      "thesis": "GOLD HL funding 19.9% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.49371428571428577,
+      "confidence": 0.2519042983927954,
+      "thesis": "GOLD HL funding 32.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4015,
+      "entryPrice": 4010,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 3,
       "leverage": 1
+    },
+    {
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "strength": 0.2666666666666667,
+      "confidence": 0.1437017689322201,
+      "thesis": "BTC P/C ratio 0.42 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 65558,
+      "targetPct": 5,
+      "stopPct": 1.5,
+      "expiryDays": 5
     }
   ],
   "rejectedLlmActions": [],
