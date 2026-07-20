@@ -2856,3 +2856,34 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-20 01:28 UTC
+
+**Portfolio:** $98.82 total | Cash $91.82 | 7 open | P&L $2.0609 | 63% win rate (486 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 8 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_pm_iv = 21.3 is -2.9 std devs from mean (40.46 ± 6.60)
+- [anomaly] btc_opt_iv_term_spread = -19.67 is -2.7 std devs from mean (-1.53 ± 6.73)
+- [anomaly] btc_opt_iv_90d = 55.1 is 2.0 std devs from mean (40.63 ± 7.11)
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 579 (327 wins / 252 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+2.45%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.29%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-3.70%)
+
+**LLM analysis:**
+OIL short (PC_RATIO_EXTREME_LOW) thesis intact: P/C ratio glued at 0.371 with zero hourly movement, spot marginally lower, no invalidation trigger. COST weekend reversion long near expiry at +1.12% – will exit mechanically. RIVN at -3.28% but LLM close disallowed; funding still -65% so thesis remains. Other weekend longs (CBRS, EBAY, BX, HIMS) still within min hold and no concerns. No discretionary closes warranted this hour.
+
+---
+
