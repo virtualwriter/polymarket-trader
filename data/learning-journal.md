@@ -3966,3 +3966,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 4/12; ne
 
 ---
 
+### 2026-07-21 12:28 UTC
+
+**Portfolio:** $98.80 total | Cash $97.80 | 1 open | P&L $2.0371 | 62% win rate (501 trades)
+
+**Closed 1 trades:**
+- ❌ GOLD short via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG) → llm_decision: $-0.0133 (-1.3%, market -0.0135, funding 0.0002)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 9 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -23.88 is -3.1 std devs from mean (-1.89 ± 7.13)
+- [anomaly] btc_opt_iv_90d = 60.2 is 2.6 std devs from mean (40.93 ± 7.35)
+
+**Blocked signal learning:**
+- Open blocked shadows: 45
+- Resolved blocked shadows: 608 (337 wins / 271 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.31%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.08%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.68%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.06%)
+
+**LLM analysis:**
+Gold funding extreme long setup invalidated quickly as annualized funding plummeted from 32.3% to 10.3% within 18 hours, so closing the short. BTC P/C ratio extreme low still holds—despite a bounce from 0.306 to 0.418, the ratio remains in the 3rd percentile of the monthly distribution, so no invalidation yet, though the price drift is unfavorable.
+
+---
+
