@@ -4154,3 +4154,33 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 6/12; ne
 
 ---
 
+### 2026-07-21 18:28 UTC
+
+**Portfolio:** $98.78 total | Cash $98.78 | 0 open | P&L $2.0163 | 62% win rate (502 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 9 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -22.87 is -2.9 std devs from mean (-1.96 ± 7.23)
+- [anomaly] btc_opt_iv_90d = 59.6 is 2.5 std devs from mean (40.99 ± 7.43)
+
+**Blocked signal learning:**
+- Open blocked shadows: 47
+- Resolved blocked shadows: 609 (337 wins / 272 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.08%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.68%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.06%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.05%)
+
+**LLM analysis:**
+No open positions. Allowed action surface confirms zero eligible discretionary closes. Blocking shadow warnings persist for ONE_TOUCH_HIGH_EDGE_NO signals in ETH and BTC, but those positions are not open; we note the continued degraded market quality (wide spreads, low liquidity on far OTM contracts). Funding reversion signals remain enabled but have not promoted new entries at this hour. No further action required.
+
+---
+

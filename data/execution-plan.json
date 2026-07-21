@@ -1,11 +1,26 @@
 {
-  "generatedAt": "2026-07-21T17:28:14.394Z",
+  "generatedAt": "2026-07-21T18:28:27.963Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [],
+  "entrySignals": [
+    {
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "strength": 0.040000000000000036,
+      "confidence": 0.021485932172456243,
+      "thesis": "BTC P/C ratio 0.49 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 66178,
+      "targetPct": 5,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    }
+  ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
