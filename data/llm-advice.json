@@ -1,36 +1,5 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1784564909204-dfbw",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_ibit_pc_ratio"
-        ],
-        "thesis": "PC ratio has normalized from 0.306 to 0.418, moving well above the extreme-low threshold that triggered the contrarian short; the original signal is no longer present."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1784572091399-sdm1",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "gold_hl_funding_ann"
-        ],
-        "thesis": "Funding annualized rate collapsed from 32.3% to 8.6%, indicating that the crowded-long positioning has unwound and the extreme funding signal has fully faded."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    }
-  ],
+  "rejectedCloses": [],
   "skippedTrades": []
 }
