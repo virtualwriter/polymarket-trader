@@ -1,39 +1,21 @@
 {
-  "generatedAt": "2026-07-21T13:28:12.368Z",
+  "generatedAt": "2026-07-21T14:28:11.805Z",
   "dataFreshness": {
-    "valuationRows": 1810,
-    "latestValuationAt": "2026-07-21T13",
-    "macroRows": 1808,
+    "valuationRows": 1811,
+    "latestValuationAt": "2026-07-21T14",
+    "macroRows": 1809,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-21T13"
+    "latestInstrumentSnapshotAt": "2026-07-21T14"
   },
   "portfolio": {
-    "cash": 97.7977,
-    "openPositions": 1,
+    "cash": 98.7769,
+    "openPositions": 0,
     "realizedPnl": 2.0371,
     "totalTrades": 501,
     "winRatePct": 62.5,
-    "unrealizedPnl": -0.0155
+    "unrealizedPnl": 0
   },
-  "openPositions": [
-    {
-      "positionId": "T-1784564909204-dfbw",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -1.55,
-      "currentPrice": 66394,
-      "underlyingPrice": 66394,
-      "targetPct": 3,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "btc_spot",
-        "btc_ibit_pc_ratio"
-      ]
-    }
-  ],
+  "openPositions": [],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -144,10 +126,10 @@
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "enabled": true,
-      "weight": 0.5399,
-      "trades": 22,
+      "weight": 0.5371,
+      "trades": 23,
       "wins": 12,
-      "avgPnlPct": 0.0731,
+      "avgPnlPct": -0.0205,
       "disabledAssets": [
         "AMZN"
       ]
@@ -174,7 +156,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 45,
+    "openCount": 46,
     "resolvedCount": 608,
     "wouldHaveWon": 337,
     "wouldHaveLost": 271,
@@ -229,7 +211,7 @@
       },
       {
         "signalType": "PC_RATIO_EXTREME_LOW",
-        "blocked": 24,
+        "blocked": 25,
         "resolved": 23,
         "wouldHaveWon": 12,
         "wouldHaveLost": 11,
