@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-21T12:28:11.161Z",
+  "generatedAt": "2026-07-21T13:28:12.368Z",
   "dataFreshness": {
-    "valuationRows": 1809,
-    "latestValuationAt": "2026-07-21T12",
-    "macroRows": 1807,
+    "valuationRows": 1810,
+    "latestValuationAt": "2026-07-21T13",
+    "macroRows": 1808,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-21T12"
+    "latestInstrumentSnapshotAt": "2026-07-21T13"
   },
   "portfolio": {
-    "cash": 96.811,
-    "openPositions": 2,
-    "realizedPnl": 2.0504,
-    "totalTrades": 500,
-    "winRatePct": 62.6,
-    "unrealizedPnl": -0.029
+    "cash": 97.7977,
+    "openPositions": 1,
+    "realizedPnl": 2.0371,
+    "totalTrades": 501,
+    "winRatePct": 62.5,
+    "unrealizedPnl": -0.0155
   },
   "openPositions": [
     {
@@ -22,32 +22,15 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -1.57,
-      "currentPrice": 66408,
-      "underlyingPrice": 66408,
+      "pnlPct": -1.55,
+      "currentPrice": 66394,
+      "underlyingPrice": 66394,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "btc_spot",
         "btc_ibit_pc_ratio"
-      ]
-    },
-    {
-      "positionId": "T-1784572091399-sdm1",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -1.33,
-      "currentPrice": 4064,
-      "underlyingPrice": 4064,
-      "targetPct": 6,
-      "stopPct": 2.5,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
       ]
     }
   ],
@@ -73,10 +56,10 @@
     {
       "type": "FUNDING_EXTREME_LONG",
       "enabled": true,
-      "weight": 0.5102,
-      "trades": 31,
+      "weight": 0.504,
+      "trades": 32,
       "wins": 15,
-      "avgPnlPct": -0.5177,
+      "avgPnlPct": -0.5431,
       "disabledAssets": [
         "AMZN",
         "HYPE"
