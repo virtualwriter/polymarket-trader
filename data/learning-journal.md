@@ -3805,3 +3805,42 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; ne
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-07-21T07:07:27.917Z, model=deepseek-v4-pro)
+- Hypotheses added: 3 (rejected 0); reviews applied: 3; param updates: FUNDING_EXTREME_LONG risk: +5/-2 -> +6/-2.5.
+- Strategy review: Weekend Hyperliquid funding reversion long remains the standout: 72% win rate on 218 live trades (+1.12) and strong shadow performance (74% win). ONE_TOUCH_HIGH_EDGE_NO continues to show promise overall (4-for-4 live, +0.74) but recent shadows on BTC/GOLD have compressed losses, revealing asset sensitivity. FUNDING_EXTREME_LONG is a net small loser (-0.52% avg, 47% win) with heavy stop-outs, and the current open GOLD short (FUNDING_EXTREME_LONG) is approaching its stop. PC_RATIO_EXTREME_LOW on AMZN was poor but already disabled; otherwise PC ratios are near breakeven. Shadow NO_BIAS_ADJUSTED_G
+- Nightly journal: Tonight's review highlights that weekend funding reversion remains the most reliable engine, while FUNDING_EXTREME_LONG needs tuning. The 47% win rate with 11 stops in 30 trades suggests that a 2% stop is too tight; widening to 2.5% and aiming for 6% target should improve R:R and give trades more breathing room, especially as GOLD short nears its stop. ONE_TOUCH_HIGH_EDGE_NO performs well on OIL/ETH but recent BTC/GOLD losses show edge threshold must be raised or those assets avoided. Out of ranked research, we proposed new shadow hypotheses for OIL one-touch, GOLD gap short, and MU weekend fu
+### 2026-07-21 07:28 UTC
+
+**Portfolio:** $98.81 total | Cash $96.81 | 2 open | P&L $2.0504 | 63% win rate (500 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 9 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -23.05 is -3.0 std devs from mean (-1.83 ± 7.05)
+- [anomaly] btc_opt_iv_90d = 58.6 is 2.4 std devs from mean (40.87 ± 7.30)
+
+**Blocked signal learning:**
+- Open blocked shadows: 48
+- Resolved blocked shadows: 601 (336 wins / 265 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.04%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.09%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.70%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-2.17%)
+
+**LLM analysis:**
+Both open positions saw their signal-family metrics round-trip past invalidation. BTC's P/C ratio surged 37% off the entry extreme, no longer signaling excessive call-buying. Gold's HL funding plunged 73% in 13 hours, completely normalizing. Exiting both before losses deepen, preserving capital in a macro environment that remains hostile but with no contradictory local signal to hold these shorts.
+
+**LLM close rejections today (2026-07-21, token-burn signal):**
+- Total rejected close instructions: 2
+- Top signal/asset pairs: PC_RATIO_EXTREME_LOW / BTC (1); FUNDING_EXTREME_LONG / GOLD (1)
+
+---
+

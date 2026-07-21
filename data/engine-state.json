@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-21T06:28:18.101Z",
+  "generatedAt": "2026-07-21T07:28:09.919Z",
   "dataFreshness": {
-    "valuationRows": 1803,
-    "latestValuationAt": "2026-07-21T06",
-    "macroRows": 1801,
+    "valuationRows": 1804,
+    "latestValuationAt": "2026-07-21T07",
+    "macroRows": 1802,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-21T06"
+    "latestInstrumentSnapshotAt": "2026-07-21T07"
   },
   "portfolio": {
     "cash": 96.811,
@@ -13,7 +13,7 @@
     "realizedPnl": 2.0504,
     "totalTrades": 500,
     "winRatePct": 62.6,
-    "unrealizedPnl": -0.0214
+    "unrealizedPnl": -0.0227
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.6,
-      "currentPrice": 65771,
-      "underlyingPrice": 65771,
+      "pnlPct": -0.78,
+      "currentPrice": 65889,
+      "underlyingPrice": 65889,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -1.54,
-      "currentPrice": 4073,
-      "underlyingPrice": 4073,
+      "pnlPct": -1.5,
+      "currentPrice": 4071,
+      "underlyingPrice": 4071,
       "targetPct": 5,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -191,7 +191,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 47,
+    "openCount": 48,
     "resolvedCount": 601,
     "wouldHaveWon": 336,
     "wouldHaveLost": 265,
@@ -518,6 +518,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.0pt on BTC, spread 1.0c, liquidity 55065. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-wti-hit-in-july-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $75 in July?",
+        "marketQuality": {
+          "yesBid": 0.33,
+          "yesAsk": 0.34,
+          "yesSpread": 0.01,
+          "liquidity": 16108.29,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.6pt on OIL, spread 1.0c, liquidity 16108. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
@@ -537,8 +553,8 @@
         "stopPct": 3.5
       },
       "FUNDING_EXTREME_LONG": {
-        "targetPct": 5,
-        "stopPct": 2
+        "targetPct": 6,
+        "stopPct": 2.5
       },
       "FUNDING_EXTREME_SHORT": {
         "targetPct": 4,
@@ -593,6 +609,6 @@
         "stopPct": 100
       }
     },
-    "updatedAt": "2026-07-16T07:28:09.043Z"
+    "updatedAt": "2026-07-21T07:28:09.781Z"
   }
 }
