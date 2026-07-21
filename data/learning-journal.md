@@ -3875,3 +3875,34 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 3/12; ne
 
 ---
 
+### 2026-07-21 09:29 UTC
+
+**Portfolio:** $98.81 total | Cash $96.81 | 2 open | P&L $2.0504 | 63% win rate (500 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 9 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -23.46 is -3.1 std devs from mean (-1.85 ± 7.08)
+- [anomaly] btc_opt_iv_90d = 59.5 is 2.5 std devs from mean (40.90 ± 7.32)
+- [anomaly] oil_opt_fwd_90d = 139.4 is 2.4 std devs from mean since 2026-04-28 (79.22 ± 24.97)
+
+**Blocked signal learning:**
+- Open blocked shadows: 47
+- Resolved blocked shadows: 605 (337 wins / 268 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-2.99%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.06%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-38.10%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.31%)
+
+**LLM analysis:**
+Both open shorts are underwater within tolerance. BTC P/C ratio has risen to 0.418 but remains in the 3rd percentile of the 30-day range, so the contrarian short thesis is still valid and no invalidation has occurred. Gold funding dropped as low as 6.01% before recovering to 15.86%, narrowly above the +15% entry threshold; although the extreme-long crowd has partly unwound, the signal metric has not sustained a break below the threshold, so I am leaving the GOLD short for the mechanical exits. The strong historical edge of PC_RATIO_EXTREME_LOW on BTC (7 trades, 86% win) reinforces patience. I note the unusual divergence between hawkish macro and rising risk assets, which could become a risk factor if the rally continues, but no close triggered today.
+
+---
+
