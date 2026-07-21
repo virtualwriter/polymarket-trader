@@ -1,22 +1,22 @@
 {
-  "generatedAt": "2026-07-20T07:06:49Z",
+  "generatedAt": "2026-07-21T07:07:32Z",
   "summary": {
-    "generatedAt": "2026-07-20T07:06:49Z",
+    "generatedAt": "2026-07-21T07:07:32Z",
     "findingCounts": {
       "open": 17,
-      "strengthened": 0,
+      "strengthened": 1,
       "weakened": 0,
       "negative": 1,
       "suppressed": 0,
-      "total": 18
+      "total": 19
     },
     "themeCount": 2,
     "topOpportunity": {
       "rank": 1,
-      "id": "FIND-0018",
-      "opportunityScore": 0.7666,
-      "confidenceScore": 0.3333,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|heatmap|no",
+      "id": "FIND-0019",
+      "opportunityScore": 0.8263,
+      "confidenceScore": 0.3889,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|near-fair|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
       "status": "open"
@@ -27,16 +27,26 @@
   "topOpportunities": [
     {
       "rank": 1,
-      "id": "FIND-0018",
-      "opportunityScore": 0.7666,
-      "confidenceScore": 0.3333,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|heatmap|no",
+      "id": "FIND-0019",
+      "opportunityScore": 0.8263,
+      "confidenceScore": 0.3889,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|near-fair|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
       "status": "open"
     },
     {
       "rank": 2,
+      "id": "FIND-0018",
+      "opportunityScore": 0.8165,
+      "confidenceScore": 0.4286,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|heatmap|no",
+      "themeId": "THEME-0001",
+      "themeSlug": "heatmap_one_touch",
+      "status": "strengthened"
+    },
+    {
+      "rank": 3,
       "id": "FIND-0001",
       "opportunityScore": 0.7552,
       "confidenceScore": 0.2778,
@@ -46,7 +56,7 @@
       "status": "open"
     },
     {
-      "rank": 3,
+      "rank": 4,
       "id": "FIND-0002",
       "opportunityScore": 0.7552,
       "confidenceScore": 0.2778,
@@ -56,7 +66,7 @@
       "status": "open"
     },
     {
-      "rank": 4,
+      "rank": 5,
       "id": "FIND-0004",
       "opportunityScore": 0.741,
       "confidenceScore": 0.4444,
@@ -66,7 +76,7 @@
       "status": "open"
     },
     {
-      "rank": 5,
+      "rank": 6,
       "id": "FIND-0005",
       "opportunityScore": 0.6906,
       "confidenceScore": 0.5,
@@ -76,7 +86,7 @@
       "status": "open"
     },
     {
-      "rank": 6,
+      "rank": 7,
       "id": "FIND-0007",
       "opportunityScore": 0.6746,
       "confidenceScore": 0.4211,
@@ -86,7 +96,7 @@
       "status": "open"
     },
     {
-      "rank": 7,
+      "rank": 8,
       "id": "FIND-0009",
       "opportunityScore": 0.6734,
       "confidenceScore": 0.4286,
@@ -96,7 +106,7 @@
       "status": "open"
     },
     {
-      "rank": 8,
+      "rank": 9,
       "id": "FIND-0008",
       "opportunityScore": 0.6665,
       "confidenceScore": 0.3889,
@@ -106,21 +116,11 @@
       "status": "open"
     },
     {
-      "rank": 9,
+      "rank": 10,
       "id": "FIND-0006",
       "opportunityScore": 0.6571,
       "confidenceScore": 0.4211,
       "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|AAPL|weekend_hl_funding_shadow|long",
-      "themeId": "THEME-0002",
-      "themeSlug": "weekend_hl_funding",
-      "status": "open"
-    },
-    {
-      "rank": 10,
-      "id": "FIND-0010",
-      "opportunityScore": 0.6421,
-      "confidenceScore": 0.4286,
-      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|MRVL|weekend_hl_funding_shadow|long",
       "themeId": "THEME-0002",
       "themeSlug": "weekend_hl_funding",
       "status": "open"
@@ -138,25 +138,25 @@
       "id": "THEME-0001",
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
-      "findingCount": 4,
-      "avgOpportunityScore": 0.7644
+      "findingCount": 5,
+      "avgOpportunityScore": 0.7858
     }
   ],
   "authoredHypotheses": [
     {
+      "originFindingId": "FIND-0018",
+      "themeId": "THEME-0001",
+      "description": "ONE_TOUCH_HIGH_EDGE_NO on OIL heatmap cluster: when sell-YES edge > 2pt on OIL one-touch NO contract and OIL PM IV is elevated (z-score > 0.5), short YES; prediction YES price falls as oil fails to reach extreme strike."
+    },
+    {
+      "originFindingId": "FIND-0001",
+      "themeId": "THEME-0001",
+      "description": "NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD short-rich-tail: enter short GOLD perp when gold_hl_funding_ann < -100% (deeply negative) and gold_gc_spot is above its 30d SMA, anticipating mean reversion lower as funding normalizes."
+    },
+    {
       "originFindingId": "FIND-0004",
       "themeId": "THEME-0002",
-      "description": "Shadow-test: WEEKEND_HL_FUNDING_REVERSION_LONG on MU. Enter long MU perp when mu_hl_funding_ann is in the bottom 15% of its 30-day range (deeply negative) AND mu_spot is within 3% of its 7-day low, aiming for mean reversion as funding normalizes."
-    },
-    {
-      "originFindingId": "FIND-0005",
-      "themeId": "THEME-0002",
-      "description": "Shadow-test: WEEKEND_HL_FUNDING_REVERSION_LONG on HOOD. Enter long HOOD perp when hood_hl_funding_ann is in the bottom 15% of its 30-day range AND hood_spot is within 3% of its 7-day low, expecting a funding normalization rally."
-    },
-    {
-      "originFindingId": "FIND-0007",
-      "themeId": "THEME-0002",
-      "description": "Shadow-test: WEEKEND_HL_FUNDING_REVERSION_LONG on COIN. Enter long COIN perp when coin_hl_funding_ann is in the bottom 15% of its 30-day range AND coin_spot is within 3% of its 7-day low, capturing a mean-reversion bounce as funding normalizes."
+      "description": "WEEKEND_HL_FUNDING_REVERSION_LONG on MU: go long MU perp when mu_hl_funding_ann < -5% (weekend negative funding) and MU spot is within 3% of its 3d low, targeting funding reversion bounce."
     }
   ],
   "negativeFindings": [
@@ -170,9 +170,9 @@
   "provenance": {
     "scoringVersion": "research_score_v1",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-07-20T07:06:46Z",
-    "opportunitiesGeneratedAt": "2026-07-20T07:06:49Z",
-    "themesGeneratedAt": "2026-07-20T07:06:47Z",
-    "adviceGeneratedAt": "2026-07-20T07:06:45.870Z"
+    "findingsExportGeneratedAt": "2026-07-21T07:07:28Z",
+    "opportunitiesGeneratedAt": "2026-07-21T07:07:31Z",
+    "themesGeneratedAt": "2026-07-21T07:07:30Z",
+    "adviceGeneratedAt": "2026-07-21T07:07:27.917Z"
   }
 }

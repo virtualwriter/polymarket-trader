@@ -1,76 +1,99 @@
 {
-  "generatedAt": "2026-07-20T07:06:45.870Z",
+  "generatedAt": "2026-07-21T07:07:27.917Z",
   "provider": "deepseek",
   "model": "deepseek-v4-pro",
-  "strategyReview": "The WEEKEND_HL_FUNDING_REVERSION_LONG signal continues to drive the system's profitability (210 live trades, 74% win, +$1.22 PnL). ONE_TOUCH_HIGH_EDGE_NO remains promising with clean live performance (4/4 wins, +$0.74) and positive shadow PnL despite a 45% win rate. In contrast, the funding-extreme family is failing: FUNDING_EXTREME_LONG has a 47% win rate and negative total return, with severe drag from AMZN and HYPE; FUNDING_EXTREME_SHORT is also flat to negative overall. The P/C ratio signals are stable but offer only marginal edges. The overall portfolio's realized gain of $2.14 and 63% win rate is heavily reliant on the weekend reversion engine.",
+  "strategyReview": "Weekend Hyperliquid funding reversion long remains the standout: 72% win rate on 218 live trades (+1.12) and strong shadow performance (74% win). ONE_TOUCH_HIGH_EDGE_NO continues to show promise overall (4-for-4 live, +0.74) but recent shadows on BTC/GOLD have compressed losses, revealing asset sensitivity. FUNDING_EXTREME_LONG is a net small loser (-0.52% avg, 47% win) with heavy stop-outs, and the current open GOLD short (FUNDING_EXTREME_LONG) is approaching its stop. PC_RATIO_EXTREME_LOW on AMZN was poor but already disabled; otherwise PC ratios are near breakeven. Shadow NO_BIAS_ADJUSTED_GAP signals are broadly negative. The system is generally healthy but needs tighter guardrails on funding extreme longs and one-touch asset selection.",
   "failureClusters": [
     {
-      "theme": "Funding Extreme Long on AMZN & HYPE",
-      "evidence": "FUNDING_EXTREME_LONG on AMZN: 7 trades, 29% win, 5 stops, -$0.11; HYPE: 6 trades, 33% win, 4 stops, -$0.10. These assets do not reliably mean-revert after extreme negative funding.",
-      "recommendation": "Keep AMZN permanently disabled; also disable HYPE for FUNDING_EXTREME_LONG. Consider a regime filter (e.g., spot above 7d SMA) before allowing new entries on any asset."
+      "theme": "FUNDING_EXTREME_LONG – Net Loser with Frequent Stops",
+      "evidence": "31 live trades, 47% win rate, avg PnL -0.52%, 11 stops vs only 3 targets. GOLD short currently underwater -1.54% (T-1784572091399) and nearing its 2% stop. Asset breakdown shows AMZN/HYPE already disabled. Even GOLD's 64% win resulted in just +$0.05 total.",
+      "recommendation": "Tighten entry criteria to only trigger when funding is extremely elevated (e.g., >100% annualized and z-score > 2) and widen stop/target parameters to improve R:R. Consider disabling GOLD until edge proves robust."
     },
     {
-      "theme": "PC Ratio Extreme Low on AMZN",
-      "evidence": "5 live AMZN trades with only 1 win (20%), 3 stops, -$0.11 PnL. The low P/C ratio extremes in AMZN options do not correlate with spot mean reversion under this signal.",
-      "recommendation": "Keep AMZN permanently disabled for PC_RATIO_EXTREME_LOW; maintain the asset-specific block list. Explore the addition of IV confirmation, such as requiring amzn_opt_iv_30d to be in a low percentile, before re-enabling in the future."
+      "theme": "ONE_TOUCH_HIGH_EDGE_NO – BTC/GOLD Compression Losses",
+      "evidence": "Four recent resolved shadows on BTC and GOLD resulted in thesis_compressed_losses (avg -0.82%) despite sell-YES edge of 1.5–2.0pt. OIL and ETH, however, won. Overall shadow record remains positive (104 resolved, +0.85% avg) but BTC/GOLD underperform.",
+      "recommendation": "Exclude BTC and GOLD from ONE_TOUCH_HIGH_EDGE_NO or raise minimum sell-YES edge threshold to at least 2.5pt on those assets. Bucket edge size rather than use as sizing multiplier."
+    },
+    {
+      "theme": "NO_BIAS_ADJUSTED_GAP_SHADOW – Systemic Negative Expectancy",
+      "evidence": "89 resolved shadows, 42% win rate, avg PnL -1.16% with all closed via 'adjusted_no_gap_disappeared'. Representative examples show large losses on BTC and GOLD.",
+      "recommendation": "Discontinue shadow testing of NO_BIAS_ADJUSTED_GAP_SHADOW in its current form unless a refined subset (e.g., only when funding and IV support direction) can be identified. The current signal adds noise."
     }
   ],
   "newHypotheses": [
     {
-      "created": "2026-07-20",
-      "description": "Shadow-test: WEEKEND_HL_FUNDING_REVERSION_LONG on MU. Enter long MU perp when mu_hl_funding_ann is in the bottom 15% of its 30-day range (deeply negative) AND mu_spot is within 3% of its 7-day low, aiming for mean reversion as funding normalizes.",
+      "created": "2026-07-21",
+      "description": "ONE_TOUCH_HIGH_EDGE_NO on OIL heatmap cluster: when sell-YES edge > 2pt on OIL one-touch NO contract and OIL PM IV is elevated (z-score > 0.5), short YES; prediction YES price falls as oil fails to reach extreme strike.",
       "conditions": {
-        "mu_hl_funding_ann_percentile_30d": "< 15",
-        "mu_spot_pct_from_7d_low": "> -3"
+        "sell_yes_edge_pts": "> 2",
+        "oil_pm_iv_zscore_30d": "> 0.5",
+        "oil_wti_spot_pct_vs_24h_sma": "> 0"
       },
-      "prediction": "MU spot will rise 3-5% within 14 days as extreme funding pressure reverses.",
-      "timeframeDays": 14,
-      "confidence": 0.44,
+      "prediction": "YES bid declines by at least 10% within timeframe as underlying fails to breach the strike.",
+      "timeframeDays": 7,
+      "confidence": 0.65,
+      "direction": "short",
+      "originFindingId": "FIND-0018",
+      "themeId": "THEME-0001",
+      "source": "llm"
+    },
+    {
+      "created": "2026-07-21",
+      "description": "NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD short-rich-tail: enter short GOLD perp when gold_hl_funding_ann < -100% (deeply negative) and gold_gc_spot is above its 30d SMA, anticipating mean reversion lower as funding normalizes.",
+      "conditions": {
+        "gold_hl_funding_ann": "< -100",
+        "gold_gc_spot_pct_vs_30d_sma": "> 0"
+      },
+      "prediction": "GOLD spot declines at least 1.5% within 5 days as funding mean-reverts.",
+      "timeframeDays": 5,
+      "confidence": 0.6,
+      "direction": "short",
+      "originFindingId": "FIND-0001",
+      "themeId": "THEME-0001",
+      "source": "llm"
+    },
+    {
+      "created": "2026-07-21",
+      "description": "WEEKEND_HL_FUNDING_REVERSION_LONG on MU: go long MU perp when mu_hl_funding_ann < -5% (weekend negative funding) and MU spot is within 3% of its 3d low, targeting funding reversion bounce.",
+      "conditions": {
+        "mu_hl_funding_ann": "< -5",
+        "mu_spot_pct_from_3d_low": "< 3"
+      },
+      "prediction": "MU perp rises at least 2% within 5 days as funding reverts and spot bounces.",
+      "timeframeDays": 5,
+      "confidence": 0.7,
       "direction": "long",
       "originFindingId": "FIND-0004",
-      "themeId": "THEME-0002",
-      "source": "llm"
-    },
-    {
-      "created": "2026-07-20",
-      "description": "Shadow-test: WEEKEND_HL_FUNDING_REVERSION_LONG on HOOD. Enter long HOOD perp when hood_hl_funding_ann is in the bottom 15% of its 30-day range AND hood_spot is within 3% of its 7-day low, expecting a funding normalization rally.",
-      "conditions": {
-        "hood_hl_funding_ann_percentile_30d": "< 15",
-        "hood_spot_pct_from_7d_low": "> -3"
-      },
-      "prediction": "HOOD spot will appreciate 3-5% within 14 days as the extreme funding corrects.",
-      "timeframeDays": 14,
-      "confidence": 0.5,
-      "direction": "long",
-      "originFindingId": "FIND-0005",
-      "themeId": "THEME-0002",
-      "source": "llm"
-    },
-    {
-      "created": "2026-07-20",
-      "description": "Shadow-test: WEEKEND_HL_FUNDING_REVERSION_LONG on COIN. Enter long COIN perp when coin_hl_funding_ann is in the bottom 15% of its 30-day range AND coin_spot is within 3% of its 7-day low, capturing a mean-reversion bounce as funding normalizes.",
-      "conditions": {
-        "coin_hl_funding_ann_percentile_30d": "< 15",
-        "coin_spot_pct_from_7d_low": "> -3"
-      },
-      "prediction": "COIN spot will rise 3-5% within 14 days after extreme funding subsides.",
-      "timeframeDays": 14,
-      "confidence": 0.42,
-      "direction": "long",
-      "originFindingId": "FIND-0007",
       "themeId": "THEME-0002",
       "source": "llm"
     }
   ],
   "hypothesisReviews": [
     {
+      "id": "H-534",
+      "observation": "20 shadow tests (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) completed with only 4 wins (20% win rate). The GOLD heatmap cluster is ineffective; the edge signal does not translate to profitable spreads. Recommend killing H-534 and its setup family."
+    },
+    {
       "id": "H-523",
-      "observation": "BTC PM IV compression hypothesis (H-523) has an even 50% win rate over 11 tests, which is below the 60% promotion threshold. The pattern may be too sensitive to the chosen percentile threshold; I recommend allowing five more shadow tests and, if win rate still ≤55%, retiring this setup to avoid low-probability live deployment."
+      "observation": "50% win rate over 11 tests for BTC PM IV regime-relative compression. The hypothesis is borderline; added momentum or funding confirmation could improve edge. Continue testing with additional triggers."
     },
     {
       "id": "H-150",
-      "observation": "The promoted AMZN basis correction hypothesis (H-150) logged a single winning shadow test but has not triggered again. The underlying pattern (extreme basis < -0.8% with funding deeply negative) still looks theoretically strong; continue shadow-monitoring and allow any new trigger to enter live once the promotion gate (≥3 wins, >60%) is satisfied."
+      "observation": "AMZN perp-spot basis explosion correction acceleration shows 65% win rate but only 1 completed test. Too early to conclude; more condition-triggered shadow tests needed before any promotion."
     }
   ],
-  "journalEntry": "Nightly review confirms WEEKEND_HL_FUNDING_REVERSION_LONG as the primary alpha source. We propose three new shadow tests from ranked findings to broaden its eligible universe (MU, HOOD, COIN). Meanwhile, we reinforce the asset blocks for FUNDING_EXTREME_LONG on AMZN/HYPE and for PC_RATIO_EXTREME_LOW on AMZN, both of which have caused persistent drain. No parameter changes are warranted tonight; the failure clusters are better addressed by asset filtering than by global risk adjustments."
+  "parameterUpdates": {
+    "macroMomentum24hThresholdPts": 4,
+    "contrarianTrendMarginPct": 0.5,
+    "positiveMomentum24hPct": 1.5,
+    "llmTradeExpiryDays": 14,
+    "momentumLongExpiryDays": 21,
+    "signalRisk": {
+      "FUNDING_EXTREME_LONG": {
+        "targetPct": 6,
+        "stopPct": 2.5
+      }
+    }
+  },
+  "journalEntry": "Tonight's review highlights that weekend funding reversion remains the most reliable engine, while FUNDING_EXTREME_LONG needs tuning. The 47% win rate with 11 stops in 30 trades suggests that a 2% stop is too tight; widening to 2.5% and aiming for 6% target should improve R:R and give trades more breathing room, especially as GOLD short nears its stop. ONE_TOUCH_HIGH_EDGE_NO performs well on OIL/ETH but recent BTC/GOLD losses show edge threshold must be raised or those assets avoided. Out of ranked research, we proposed new shadow hypotheses for OIL one-touch, GOLD gap short, and MU weekend funding long. Killed underperformers like H-534 will be flagged. No other parameter changes; focus on executing current signals with refined entry filters."
 }
