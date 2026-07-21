@@ -3654,3 +3654,33 @@ Both open positions (BTC short on PC_RATIO_EXTREME_LOW, GOLD short on FUNDING_EX
 
 ---
 
+### 2026-07-21 02:28 UTC
+
+**Portfolio:** $98.81 total | Cash $96.81 | 2 open | P&L $2.0504 | 63% win rate (500 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 8 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -20.85 is -2.7 std devs from mean (-1.77 ± 6.98)
+- [anomaly] btc_opt_iv_90d = 56.7 is 2.2 std devs from mean (40.83 ± 7.25)
+
+**Blocked signal learning:**
+- Open blocked shadows: 48
+- Resolved blocked shadows: 598 (335 wins / 263 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.04%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+7.94%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-1.09%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.04%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 1/12; next scheduled 2026-07-21T04:28:10.496Z). Mechanical cycle ran normally._
+
+---
+
