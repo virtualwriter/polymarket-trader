@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-21T23:28:11.023Z",
+  "generatedAt": "2026-07-22T00:28:10.382Z",
   "dataFreshness": {
-    "valuationRows": 1820,
-    "latestValuationAt": "2026-07-21T23",
-    "macroRows": 1818,
+    "valuationRows": 1821,
+    "latestValuationAt": "2026-07-22T00",
+    "macroRows": 1819,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-21T23"
+    "latestInstrumentSnapshotAt": "2026-07-22T00"
   },
   "portfolio": {
     "cash": 98.7769,
@@ -156,7 +156,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 48,
+    "openCount": 51,
     "resolvedCount": 610,
     "wouldHaveWon": 337,
     "wouldHaveLost": 273,
@@ -462,6 +462,38 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.8pt on SPY, spread 2.0c, liquidity 16124. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "GOLD",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $6,000 by end of December?",
+        "marketQuality": {
+          "yesBid": 0.08,
+          "yesAsk": 0.1,
+          "yesSpread": 0.02,
+          "liquidity": 44278.45,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.0pt on GOLD, spread 2.0c, liquidity 44278. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin dip to $25,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.04,
+          "yesAsk": 0.05,
+          "yesSpread": 0.01,
+          "liquidity": 88431.37,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.2pt on BTC, spread 1.0c, liquidity 88431. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
