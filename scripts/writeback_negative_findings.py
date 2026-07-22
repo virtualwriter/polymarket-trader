@@ -42,9 +42,20 @@ def load_json(path: Path) -> Any:
         return json.load(fh)
 
 
-def resolved_test_count(hypothesis: dict[str, Any]) -> int:
+def countable_resolved_tests(hypothesis: dict[str, Any]) -> list[dict[str, Any]]:
+    """Win/loss tests that count toward setup evidence (excludes quarantined/unscorable)."""
     tests = hypothesis.get("tests") or []
-    return sum(1 for t in tests if t.get("outcome") != "pending")
+    return [
+        t
+        for t in tests
+        if isinstance(t, dict)
+        and t.get("outcome") in ("win", "loss")
+        and not t.get("excludedFromSetupStats")
+    ]
+
+
+def resolved_test_count(hypothesis: dict[str, Any]) -> int:
+    return len(countable_resolved_tests(hypothesis))
 
 
 def hypothesis_failed(hypothesis: dict[str, Any]) -> tuple[bool, str]:
@@ -55,8 +66,12 @@ def hypothesis_failed(hypothesis: dict[str, Any]) -> tuple[bool, str]:
     if status == "archived":
         return True, "archived"
 
-    resolved = resolved_test_count(hypothesis)
-    win_rate = float(hypothesis.get("winRate") or 0)
+    countable = countable_resolved_tests(hypothesis)
+    resolved = len(countable)
+    if resolved > 0:
+        win_rate = sum(1 for t in countable if t.get("outcome") == "win") / resolved
+    else:
+        win_rate = float(hypothesis.get("winRate") or 0)
     if resolved >= MIN_RESOLVED_TESTS and win_rate < FAIL_WIN_RATE:
         return True, f"low_win_rate_{win_rate:.2f}_n_{resolved}"
 

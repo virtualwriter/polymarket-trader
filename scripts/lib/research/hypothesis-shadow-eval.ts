@@ -192,70 +192,244 @@ export function num(v: unknown): number | null {
   return null;
 }
 
-export function getAssetPrice(row: SnapshotRow, asset: string): number | null {
-  const map: Record<string, string> = {
-    BTC: "btc_spot", ETH: "eth_spot", HYPE: "hype_spot", GOLD: "gold_gc_spot",
-    AMZN: "amzn_stock", SPY: "spy_spot", SILVER: "silver_spot", SOL: "sol_spot", OIL: "oil_wti_spot",
-  };
-  const v = row[map[asset] ?? ""];
-  return typeof v === "number" && v > 0 ? v : null;
+export interface HypothesisEvalResult {
+  outcome: "win" | "loss";
+  actualMove: string;
+  /** False when the hyp cannot be scored honestly — callers must exclude from setup stats. */
+  scorable: boolean;
+  method: string;
 }
 
-export function inferHypothesisAsset(hypothesis: Hypothesis): string | null {
-  const keys = Object.keys(hypothesis.conditions).join(" ").toLowerCase();
-  const text = `${hypothesis.description} ${hypothesis.prediction} ${keys}`.toLowerCase();
-  if (text.includes("btc") || text.includes("bitcoin")) return "BTC";
-  if (text.includes("hype") || text.includes("hyperliquid")) return "HYPE";
-  if (text.includes("gold")) return "GOLD";
-  if (text.includes("amzn") || text.includes("amazon")) return "AMZN";
-  if (text.includes("oil") || text.includes("brent") || text.includes("wti")) return "OIL";
+export function getAssetPrice(row: SnapshotRow, asset: string): number | null {
+  const upper = asset.toUpperCase();
+  const map: Record<string, string> = {
+    BTC: "btc_spot",
+    ETH: "eth_spot",
+    HYPE: "hype_spot",
+    GOLD: "gold_gc_spot",
+    AMZN: "amzn_stock",
+    SPY: "spy_spot",
+    SILVER: "silver_spot",
+    SOL: "sol_spot",
+    OIL: "oil_wti_spot",
+  };
+  const preferred = map[upper];
+  const candidates = [
+    preferred,
+    `${upper.toLowerCase()}_spot`,
+    `${upper.toLowerCase()}_stock`,
+    `${upper.toLowerCase()}_hl_perp`,
+    `${upper.toLowerCase()}_gc_spot`,
+  ].filter((key): key is string => Boolean(key));
+  for (const key of candidates) {
+    const v = num(row[key]);
+    if (v !== null && v > 0) return v;
+  }
   return null;
 }
 
-export function evaluateHypothesisTest(hypothesis: Hypothesis, startRow: SnapshotRow, endRow: SnapshotRow): { outcome: "win" | "loss"; actualMove: string } {
+/** Annualized funding level keys only — never percentiles / z-scores. */
+export function fundingAnnConditionKey(hypothesis: Hypothesis): string | null {
+  return Object.keys(hypothesis.conditions ?? {}).find((key) => /_hl_funding_ann$/.test(key)) ?? null;
+}
+
+export function inferHypothesisAsset(hypothesis: Hypothesis): string | null {
+  const fromConditions = String(hypothesis.conditions?.asset ?? "").trim().toUpperCase();
+  if (fromConditions && /^[A-Z][A-Z0-9._-]*$/.test(fromConditions)) return fromConditions;
+
+  const text = `${hypothesis.description} ${hypothesis.prediction}`.toLowerCase();
+  if (/\bbtc\b|\bbitcoin\b/.test(text)) return "BTC";
+  if (/\bgold\b|\bxau\b/.test(text)) return "GOLD";
+  if (/\bamzn\b|\bamazon\b/.test(text)) return "AMZN";
+  if (/\boil\b|\bbrent\b|\bwti\b/.test(text)) return "OIL";
+  // HYPE ticker — avoid matching venue word "hyperliquid" alone when another asset is intended
+  if (/\bhype\b/.test(text)) return "HYPE";
+  return null;
+}
+
+/**
+ * Direction for P&L scoring. Explicit hypothesis.direction always wins.
+ * Falls back to prediction language (word-bounded) and signalType hints.
+ * Never treats the substring "down" inside unrelated tokens as bearish by itself;
+ * use "downside" / "decline" / "drop" / "short" instead.
+ */
+export function resolveHypothesisDirection(hypothesis: Hypothesis): "long" | "short" | "neutral" {
+  if (hypothesis.direction === "long" || hypothesis.direction === "short" || hypothesis.direction === "neutral") {
+    return hypothesis.direction;
+  }
+
   const prediction = hypothesis.prediction.toLowerCase();
-  const percentMatch = prediction.match(/>(\d+(?:\.\d+)?)%/);
+  const shortRe =
+    /\b(decline|declines|declining|drop|drops|falling|falls|fall|short|sell-yes|downside)\b|short side|mean reversion lower|revert toward fair/;
+  const longRe =
+    /\b(rally|rise|rises|rising|bounce|long|upside)\b|funding reversion|reversion_long|reversion long/;
+  if (shortRe.test(prediction)) return "short";
+  if (longRe.test(prediction)) return "long";
+
+  const signal = String(hypothesis.conditions?.signalType ?? "").toUpperCase();
+  if (signal.includes("REVERSION_LONG") || signal.endsWith("_LONG") || signal.includes("EXTREME_LONG")) return "long";
+  if (signal.includes("EXTREME_SHORT") || signal.endsWith("_SHORT") || signal.includes("HIGH_EDGE_NO")) return "short";
+  return "neutral";
+}
+
+function scoreDirectionalMove(
+  movePct: number,
+  direction: "long" | "short" | "neutral",
+  thresholdPct: number,
+  asset: string,
+  startPx: number,
+  endPx: number,
+): HypothesisEvalResult {
+  if (direction === "short") {
+    return {
+      outcome: movePct <= -thresholdPct ? "win" : "loss",
+      actualMove: `${asset} moved ${movePct.toFixed(2)}% (${startPx} → ${endPx}) [short needs ≤ -${thresholdPct}%]`,
+      scorable: true,
+      method: "spot_directional_short",
+    };
+  }
+  if (direction === "long") {
+    return {
+      outcome: movePct >= thresholdPct ? "win" : "loss",
+      actualMove: `${asset} moved ${movePct.toFixed(2)}% (${startPx} → ${endPx}) [long needs ≥ +${thresholdPct}%]`,
+      scorable: true,
+      method: "spot_directional_long",
+    };
+  }
+  return {
+    outcome: Math.abs(movePct) >= thresholdPct ? "win" : "loss",
+    actualMove: `${asset} moved ${movePct.toFixed(2)}% (${startPx} → ${endPx}) [neutral abs needs ≥ ${thresholdPct}%]`,
+    scorable: true,
+    method: "spot_abs_move",
+  };
+}
+
+function isPolymarketExpression(hypothesis: Hypothesis): boolean {
+  const venue = String(hypothesis.conditions?.venue ?? "").toLowerCase();
+  const signal = String(hypothesis.conditions?.signalType ?? "").toUpperCase();
+  return venue === "polymarket"
+    || signal.includes("ONE_TOUCH")
+    || signal.includes("NO_BIAS")
+    || signal.includes("PM_");
+}
+
+/**
+ * Score a completed shadow test.
+ *
+ * Rules (scorer v2):
+ * 1. Prefer explicit hypothesis.direction over prediction-string heuristics.
+ * 2. Never default shorts to "underlying must rise".
+ * 3. Funding keys must be *_hl_funding_ann (not percentiles); missing funding falls through.
+ * 4. If direction and asset/price cannot be determined, return scorable=false so callers exclude the test.
+ */
+export function evaluateHypothesisTest(
+  hypothesis: Hypothesis,
+  startRow: SnapshotRow,
+  endRow: SnapshotRow,
+): HypothesisEvalResult {
+  const prediction = hypothesis.prediction.toLowerCase();
+  const direction = resolveHypothesisDirection(hypothesis);
+  const signalType = String(hypothesis.conditions?.signalType ?? "").toUpperCase();
+  const percentMatch = prediction.match(/>\s*(\d+(?:\.\d+)?)%/);
   const thresholdPct = percentMatch ? parseFloat(percentMatch[1]) : 2;
 
-  if (prediction.includes("funding")) {
-    const conditionKey = Object.keys(hypothesis.conditions).find((key) => key.includes("_hl_funding_ann"));
-    if (!conditionKey) return { outcome: "loss", actualMove: "No funding key found" };
-    const start = num(startRow[conditionKey]);
-    const end = num(endRow[conditionKey]);
-    if (start === null || end === null) return { outcome: "loss", actualMove: "Missing funding history" };
-    if (prediction.includes("below")) {
-      const target = prediction.match(/below\s+(\d+(?:\.\d+)?)/);
-      const level = target ? parseFloat(target[1]) : 10;
-      return {
-        outcome: end < level ? "win" : "loss",
-        actualMove: `Funding moved ${start.toFixed(1)}% → ${end.toFixed(1)}%`,
-      };
+  const fundingKey = fundingAnnConditionKey(hypothesis);
+  const wantsFunding = Boolean(fundingKey)
+    || /\bfunding\b/.test(prediction)
+    || signalType.includes("FUNDING");
+
+  if (wantsFunding && fundingKey) {
+    const startFunding = num(startRow[fundingKey]);
+    const endFunding = num(endRow[fundingKey]);
+    if (startFunding !== null && endFunding !== null) {
+      const asset = inferHypothesisAsset(hypothesis);
+      const startPx = asset ? getAssetPrice(startRow, asset) : null;
+      const endPx = asset ? getAssetPrice(endRow, asset) : null;
+      if (asset && startPx !== null && endPx !== null && direction !== "neutral") {
+        const movePct = ((endPx - startPx) / startPx) * 100;
+        const scored = scoreDirectionalMove(movePct, direction, thresholdPct, asset, startPx, endPx);
+        return {
+          ...scored,
+          actualMove: `${scored.actualMove}; funding ${startFunding.toFixed(1)}%→${endFunding.toFixed(1)}%`,
+          method: `${scored.method}+funding_context`,
+        };
+      }
+
+      if (prediction.includes("below")) {
+        const target = prediction.match(/below\s+(\d+(?:\.\d+)?)/);
+        const level = target ? parseFloat(target[1]) : 10;
+        return {
+          outcome: endFunding < level ? "win" : "loss",
+          actualMove: `Funding moved ${startFunding.toFixed(1)}% → ${endFunding.toFixed(1)}% (need < ${level})`,
+          scorable: true,
+          method: "funding_below_level",
+        };
+      }
+
+      // Weekend / funding-reversion longs: funding rising (normalizing) counts as win when no mark.
+      if (direction === "long" || /reversion|normaliz/.test(prediction)) {
+        return {
+          outcome: endFunding > startFunding ? "win" : "loss",
+          actualMove: `Funding moved ${startFunding.toFixed(1)}% → ${endFunding.toFixed(1)}% (long reversion needs increase)`,
+          scorable: true,
+          method: "funding_normalize_up",
+        };
+      }
+      if (direction === "short") {
+        return {
+          outcome: endFunding < startFunding ? "win" : "loss",
+          actualMove: `Funding moved ${startFunding.toFixed(1)}% → ${endFunding.toFixed(1)}% (short needs decrease)`,
+          scorable: true,
+          method: "funding_decrease",
+        };
+      }
     }
+    // Missing funding samples: fall through to underlying — do not hard-lose on percentile keys.
   }
 
   const asset = inferHypothesisAsset(hypothesis);
-  if (!asset) return { outcome: "loss", actualMove: "Could not infer asset" };
-  const startPx = getAssetPrice(startRow, asset);
-  const endPx = getAssetPrice(endRow, asset);
-  if (!startPx || !endPx) return { outcome: "loss", actualMove: "Missing price history" };
-  const movePct = ((endPx - startPx) / startPx) * 100;
-
-  if (prediction.includes("decline") || prediction.includes("drop") || prediction.includes("down")) {
+  if (!asset) {
     return {
-      outcome: movePct <= -thresholdPct ? "win" : "loss",
-      actualMove: `${asset} moved ${movePct.toFixed(2)}% (${startPx} → ${endPx})`,
+      outcome: "loss",
+      actualMove: "UNSCORABLE: could not infer asset (set conditions.asset)",
+      scorable: false,
+      method: "unscorable_asset",
     };
   }
-  if (prediction.includes("move")) {
+
+  const startPx = getAssetPrice(startRow, asset);
+  const endPx = getAssetPrice(endRow, asset);
+  if (startPx === null || endPx === null) {
     return {
-      outcome: Math.abs(movePct) >= thresholdPct ? "win" : "loss",
-      actualMove: `${asset} moved ${movePct.toFixed(2)}% (${startPx} → ${endPx})`,
+      outcome: "loss",
+      actualMove: `UNSCORABLE: missing ${asset} price history`,
+      scorable: false,
+      method: "unscorable_price",
     };
+  }
+  const movePct = ((endPx - startPx) / startPx) * 100;
+
+  if (direction === "long" || direction === "short") {
+    const scored = scoreDirectionalMove(movePct, direction, thresholdPct, asset, startPx, endPx);
+    if (isPolymarketExpression(hypothesis)) {
+      return {
+        ...scored,
+        actualMove: `${scored.actualMove} [underlying proxy for PM/one-touch]`,
+        method: `${scored.method}_pm_underlying_proxy`,
+      };
+    }
+    return scored;
+  }
+
+  if (/\b(move|moves|moved|volatility)\b/.test(prediction)) {
+    return scoreDirectionalMove(movePct, "neutral", thresholdPct, asset, startPx, endPx);
   }
 
   return {
-    outcome: movePct >= thresholdPct ? "win" : "loss",
-    actualMove: `${asset} moved ${movePct.toFixed(2)}% (${startPx} → ${endPx})`,
+    outcome: "loss",
+    actualMove: "UNSCORABLE: missing hypothesis.direction and no directional language in prediction",
+    scorable: false,
+    method: "unscorable_direction",
   };
 }
 

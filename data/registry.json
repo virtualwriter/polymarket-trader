@@ -658,11 +658,11 @@
         "confidence": 0.7,
         "timeframeDays": 3,
         "testStats": {
-          "total": 12,
-          "completed": 11,
-          "wins": 6,
+          "total": 13,
+          "completed": 12,
+          "wins": 7,
           "pending": 1,
-          "winRate": 0.5454545454545454
+          "winRate": 0.5833333333333334
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -20194,7 +20194,7 @@
         "created": "2026-07-16",
         "setupId": "shadow_one_touch_high_edge_no_gold_heatmap_no",
         "setupLabel": "Shadow-mined ONE_TOUCH_HIGH_EDGE_NO GOLD heatmap",
-        "postMortem": "Mined from clean shadows: {\"n\": 12, \"wins\": 7, \"winRate\": 0.5833, \"sumPnl\": 0.6492, \"hasHeatmap\": true, \"sampleIds\": [\"OT-1779348547074-tm2l\", \"OT-1783659557591-81cc\", \"OT-1783659557594-u7s1\", \"OT-1783694116078-dtpj\", \"OT-1783780517241-ssvk\"]} | H-534 (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) has 20% win rate over 20 tests, likely due to wide spreads and edge collapse. The heatmap cluster's historical performance (+0.649 over 12 shadows) may not replicate in the current regime. Continue shadow testing but enforce a higher minimum edge (≥3 pts) and tighter spread."
+        "postMortem": "Mined from clean shadows: {\"n\": 12, \"wins\": 7, \"winRate\": 0.5833, \"sumPnl\": 0.6492, \"hasHeatmap\": true, \"sampleIds\": [\"OT-1779348547074-tm2l\", \"OT-1783659557591-81cc\", \"OT-1783659557594-u7s1\", \"OT-1783694116078-dtpj\", \"OT-1783780517241-ssvk\"]} | H-534 (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) has 20% win rate over 20 tests, likely due to wide spreads and edge collapse. The heatmap cluster's historical performance (+0.649 over 12 shadows) may not replicate in the current regime. Continue shadow testing but enforce a higher minimum edge (≥3 pts) and tighter spread. | 20 shadow tests (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) completed with only 4 wins (20% win rate). The GOLD heatmap cluster is ineffective; the edge signal does not translate to profitable spreads. Recommend killing H-534 and its setup family."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20252,9 +20252,9 @@
         "timeframeDays": 2,
         "testStats": {
           "total": 2,
-          "completed": 1,
+          "completed": 2,
           "wins": 0,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -20320,9 +20320,9 @@
         "timeframeDays": 2,
         "testStats": {
           "total": 2,
-          "completed": 1,
+          "completed": 2,
           "wins": 0,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -20668,15 +20668,17 @@
         "themeId": "THEME-0001",
         "hypothesisIds": [
           "H-541",
-          "H-544"
+          "H-544",
+          "H-547"
         ],
-        "lastLinkedHypothesisId": "H-544",
-        "lastLinkedHypothesisAt": "2026-07-19T07:28:13.096Z"
+        "lastLinkedHypothesisId": "H-547",
+        "lastLinkedHypothesisAt": "2026-07-21T07:28:09.740Z"
       },
       "links": {
         "hypotheses": [
           "H-541",
-          "H-544"
+          "H-544",
+          "H-547"
         ]
       },
       "created": "2026-07-18T03:02:16Z",
@@ -20951,7 +20953,7 @@
       "id": "FIND-0003",
       "type": "finding",
       "evidenceClass": "DERIVED",
-      "status": "negative",
+      "status": "open",
       "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on GOLD (heatmap/no): WR=58% n=12 sumPnl=+0.649",
       "body": {
         "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|GOLD|heatmap|no",
@@ -21209,7 +21211,9 @@
         "lastLinkedHypothesisId": "H-543",
         "lastLinkedHypothesisAt": "2026-07-19T07:28:12.985Z",
         "negativeReason": "Linked hyp H-540 failed (killed, status=killed, winRate=0.00)",
-        "resolvedAt": "2026-07-19T07:09:10Z"
+        "resolvedAt": "2026-07-19T07:09:10Z",
+        "reopenedAt": "2026-07-22T02:38:23Z",
+        "reopenedReason": "Scorer v1 direction bug contaminated linked hyp tests; quarantined and revived ['H-540']"
       },
       "links": {
         "replays": [
@@ -21239,12 +21243,11 @@
           "H-543"
         ],
         "failedHypotheses": [
-          "H-540",
           "H-543"
         ]
       },
       "created": "2026-07-18T03:02:16Z",
-      "source": "writeback_negative_findings_v1"
+      "source": "quarantine_scorer_v1_hypothesis_tests_v1"
     },
     {
       "id": "FIND-0004",
@@ -21260,13 +21263,13 @@
         "bucket": "weekend_hl_funding_shadow",
         "evidence": {
           "n": 8,
-          "winRate": 1.0,
+          "winRate": 1,
           "sumPnl": 0.273
         },
         "mineStats": {
           "n": 8,
           "wins": 8,
-          "winRate": 1.0,
+          "winRate": 1,
           "sumPnl": 0.273,
           "hasHeatmap": false,
           "sampleIds": [
@@ -21508,15 +21511,17 @@
         "themeId": "THEME-0002",
         "hypothesisIds": [
           "H-542",
-          "H-545"
+          "H-545",
+          "H-548"
         ],
-        "lastLinkedHypothesisId": "H-545",
-        "lastLinkedHypothesisAt": "2026-07-19T07:28:13.126Z"
+        "lastLinkedHypothesisId": "H-548",
+        "lastLinkedHypothesisAt": "2026-07-21T07:28:09.766Z"
       },
       "links": {
         "hypotheses": [
           "H-542",
-          "H-545"
+          "H-545",
+          "H-548"
         ]
       },
       "created": "2026-07-18T03:02:16Z",
@@ -25606,9 +25611,18 @@
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
+        ],
+        "hypothesisIds": [
+          "H-546"
+        ],
+        "lastLinkedHypothesisId": "H-546",
+        "lastLinkedHypothesisAt": "2026-07-21T07:28:09.641Z"
+      },
+      "links": {
+        "hypotheses": [
+          "H-546"
         ]
       },
-      "links": {},
       "created": "2026-07-20T07:06:46Z",
       "source": "shadow_miner_v1"
     },
@@ -25694,6 +25708,138 @@
       "links": {},
       "created": "2026-07-21T07:07:28Z",
       "source": "shadow_miner_v1"
+    },
+    {
+      "id": "EXP-0553",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-546: ONE_TOUCH_HIGH_EDGE_NO on OIL heatmap cluster: when sell-YES edge > 2pt on OIL one-touch NO contract and OIL PM IV is elevated (z-score > 0.5), short ...",
+      "body": {
+        "hypothesisId": "H-546",
+        "hypothesisStatus": "active",
+        "description": "ONE_TOUCH_HIGH_EDGE_NO on OIL heatmap cluster: when sell-YES edge > 2pt on OIL one-touch NO contract and OIL PM IV is elevated (z-score > 0.5), short YES; prediction YES price falls as oil fails to reach extreme strike.",
+        "prediction": "YES bid declines by at least 10% within timeframe as underlying fails to breach the strike.",
+        "conditions": {
+          "sell_yes_edge_pts": "> 2",
+          "oil_pm_iv_zscore_30d": "> 0.5",
+          "oil_wti_spot_pct_vs_24h_sma": "> 0"
+        },
+        "confidence": 0.65,
+        "timeframeDays": 7,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-21",
+        "setupId": "find_0018",
+        "setupLabel": "FIND-linked FIND-0018"
+      },
+      "links": {},
+      "created": "2026-07-21T14:10:00Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0554",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-547: NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD short-rich-tail: enter short GOLD perp when gold_hl_funding_ann < -100% (deeply negative) and gold_gc_spot is abov...",
+      "body": {
+        "hypothesisId": "H-547",
+        "hypothesisStatus": "active",
+        "description": "NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD short-rich-tail: enter short GOLD perp when gold_hl_funding_ann < -100% (deeply negative) and gold_gc_spot is above its 30d SMA, anticipating mean reversion lower as funding normalizes.",
+        "prediction": "GOLD spot declines at least 1.5% within 5 days as funding mean-reverts.",
+        "conditions": {
+          "gold_hl_funding_ann": "< -100",
+          "gold_gc_spot_pct_vs_30d_sma": "> 0"
+        },
+        "confidence": 0.6,
+        "timeframeDays": 5,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-21",
+        "setupId": "find_0001",
+        "setupLabel": "FIND-linked FIND-0001"
+      },
+      "links": {},
+      "created": "2026-07-21T14:10:00Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0555",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-548: WEEKEND_HL_FUNDING_REVERSION_LONG on MU: go long MU perp when mu_hl_funding_ann < -5% (weekend negative funding) and MU spot is within 3% of its 3d lo...",
+      "body": {
+        "hypothesisId": "H-548",
+        "hypothesisStatus": "active",
+        "description": "WEEKEND_HL_FUNDING_REVERSION_LONG on MU: go long MU perp when mu_hl_funding_ann < -5% (weekend negative funding) and MU spot is within 3% of its 3d low, targeting funding reversion bounce.",
+        "prediction": "MU perp rises at least 2% within 5 days as funding reverts and spot bounces.",
+        "conditions": {
+          "mu_hl_funding_ann": "< -5",
+          "mu_spot_pct_from_3d_low": "< 3"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 5,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-21",
+        "setupId": "find_0004",
+        "setupLabel": "FIND-linked FIND-0004"
+      },
+      "links": {},
+      "created": "2026-07-21T14:10:00Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "DEC-0024",
+      "type": "decision",
+      "evidenceClass": "VALID",
+      "status": "active",
+      "title": "Hypothesis shadow scorer v2: respect direction; quarantine v1 contamination",
+      "body": {
+        "rationale": "Short FIND-linked hyps were falsely zeroed because scorer v1 ignored direction and required spot up +2%. Fix scoring, quarantine contaminated tests, and re-open FIND-0003 for an honest retest.",
+        "problem": "evaluateHypothesisTest ignored hypothesis.direction and defaulted to long-biased spot moves.",
+        "fix": "Scorer v2 uses explicit direction, conditions.asset, funding level keys only (not percentiles), marks unscorable tests excludedFromSetupStats, and labels PM/one-touch as underlying proxy.",
+        "remediation": "Quarantined contaminated tests; revived H-540; reopened FIND-0003; re-backfilled find_0003 under v2 (6W/14L underlying-proxy).",
+        "artifacts": [
+          "scripts/lib/research/hypothesis-shadow-eval.ts",
+          "scripts/lib/research/hypothesis-shadow-eval.test.ts",
+          "scripts/quarantine_scorer_v1_hypothesis_tests.py",
+          "scripts/backfill-hypothesis-shadow-tests.ts",
+          "scripts/writeback_negative_findings.py"
+        ]
+      },
+      "links": {
+        "relatedRecords": [
+          "FIND-0003",
+          "H-540",
+          "DEC-0020"
+        ]
+      },
+      "created": "2026-07-22T02:39:18Z",
+      "source": "scorer_v2_fix"
     }
   ]
 }

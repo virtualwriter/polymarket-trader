@@ -6078,16 +6078,22 @@ function evaluateHypotheses(
       const endRow = valuationRows[valuationRows.length - 1];
       if (!startRow || !endRow) {
         test.outcome = "loss";
-        test.actualMove = "Missing valuation history";
+        test.actualMove = "UNSCORABLE: missing valuation history";
+        test.excludedFromSetupStats = true;
+        test.exclusionReason = "unscorable_missing_valuation_history";
         continue;
       }
       const result = evaluateHypothesisTest(h, startRow, endRow);
       test.outcome = result.outcome;
-      test.actualMove = result.actualMove;
+      test.actualMove = `${result.actualMove} (method=${result.method})`;
+      if (!result.scorable) {
+        test.excludedFromSetupStats = true;
+        test.exclusionReason = `unscorable_scorer_v2:${result.method}`;
+      }
     }
 
-    // Update win rate
-    const completed = h.tests.filter((t) => t.outcome !== "pending");
+    // Update win rate from countable completed tests only (exclude unscorable / contaminated).
+    const completed = completedHypothesisTests(h);
     if (completed.length > 0) {
       h.winRate = completed.filter((t) => t.outcome === "win").length / completed.length;
     }

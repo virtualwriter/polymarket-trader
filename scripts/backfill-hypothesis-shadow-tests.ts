@@ -33,6 +33,7 @@ interface CliOptions {
   apply: boolean;
   dryRun: boolean;
   maxFamilies: number | null;
+  setupIds: string[] | null;
   targetTests: number;
   hypothesesPath: string;
   valuationsPath: string;
@@ -93,6 +94,7 @@ function parseArgs(argv: string[]): CliOptions {
     apply: false,
     dryRun: false,
     maxFamilies: null,
+    setupIds: null,
     targetTests: HYPOTHESIS_SHADOW_TESTS_REQUIRED,
     hypothesesPath: "data/hypotheses.json",
     valuationsPath: "data/daily-valuations.csv",
@@ -111,7 +113,9 @@ function parseArgs(argv: string[]): CliOptions {
     if (arg === "--apply") opts.apply = true;
     else if (arg === "--dry-run") opts.dryRun = true;
     else if (arg === "--max-families") opts.maxFamilies = Number(next());
-    else if (arg === "--target-tests") opts.targetTests = Number(next());
+    else if (arg === "--setup-ids") {
+      opts.setupIds = next().split(",").map((value) => value.trim()).filter(Boolean);
+    } else if (arg === "--target-tests") opts.targetTests = Number(next());
     else if (arg === "--hypotheses") opts.hypothesesPath = next();
     else if (arg === "--valuations") opts.valuationsPath = next();
     else if (arg === "--relative-value") opts.relativeValuePath = next();
@@ -562,7 +566,12 @@ function resolveEligiblePending(
       if (!startRow) continue;
       const result = evaluateHypothesisTest(hypothesis, startRow, currentRow);
       test.outcome = result.outcome;
-      test.actualMove = `[historical-backfill] ${result.actualMove} (resolved ${currentDate} from ${dayKey(test.date)})`;
+      test.actualMove = `[historical-backfill] ${result.actualMove} (resolved ${currentDate} from ${dayKey(test.date)}; method=${result.method})`;
+      if (!result.scorable) {
+        test.excludedFromSetupStats = true;
+        test.exclusionReason = `unscorable_scorer_v2:${result.method}`;
+        continue;
+      }
       resolved++;
       if (result.outcome === "win") wins++;
       else losses++;
@@ -599,6 +608,7 @@ function backfill(opts: CliOptions): Report {
 
   const families = eligibleFamilies(hypotheses)
     .filter((family) => completedFamilyTests(family).length < opts.targetTests)
+    .filter((family) => opts.setupIds === null || opts.setupIds.includes(family.setupId))
     .sort((a, b) => completedFamilyTests(a).length - completedFamilyTests(b).length || a.setupId.localeCompare(b.setupId));
   const selectedFamilies = opts.maxFamilies === null ? families : families.slice(0, opts.maxFamilies);
 
