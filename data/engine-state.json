@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-22T13:28:22.463Z",
+  "generatedAt": "2026-07-22T14:28:20.846Z",
   "dataFreshness": {
-    "valuationRows": 1834,
-    "latestValuationAt": "2026-07-22T13",
-    "macroRows": 1832,
+    "valuationRows": 1835,
+    "latestValuationAt": "2026-07-22T14",
+    "macroRows": 1833,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-22T13"
+    "latestInstrumentSnapshotAt": "2026-07-22T14"
   },
   "portfolio": {
     "cash": 98.7769,
@@ -157,8 +157,8 @@
   ],
   "blockedSummary": {
     "openCount": 49,
-    "resolvedCount": 619,
-    "wouldHaveWon": 340,
+    "resolvedCount": 620,
+    "wouldHaveWon": 341,
     "wouldHaveLost": 279,
     "bySignal": [
       {
@@ -219,7 +219,7 @@
       },
       {
         "signalType": "PC_RATIO_EXTREME_LOW",
-        "blocked": 25,
+        "blocked": 26,
         "resolved": 24,
         "wouldHaveWon": 12,
         "wouldHaveLost": 12,
@@ -227,26 +227,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 0,
-        "resolvedAt": "2026-07-22T02:28:11.265Z",
-        "marketQuality": {
-          "yesBid": 0.66,
-          "yesAsk": 0.67,
-          "yesSpread": 0.01,
-          "liquidity": 21486.24,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
@@ -377,6 +357,26 @@
           "liquidity": 22932.88,
           "flags": []
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "SPY",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 0,
+        "resolvedAt": "2026-07-22T14:28:20.593Z",
+        "marketQuality": {
+          "yesBid": 0.13,
+          "yesAsk": 0.15,
+          "yesSpread": 0.02,
+          "liquidity": 16123.57,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -427,22 +427,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.4pt on ETH, spread 1.3c, liquidity 49863. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "SPY",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "spx-hit-dec-2026 — NO — Will S&P 500 (SPX) hit $8,600 (HIGH) in December?",
-        "marketQuality": {
-          "yesBid": 0.13,
-          "yesAsk": 0.15,
-          "yesSpread": 0.02,
-          "liquidity": 16123.57,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.8pt on SPY, spread 2.0c, liquidity 16124. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
