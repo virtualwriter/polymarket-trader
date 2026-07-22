@@ -4660,3 +4660,36 @@ No open positions to close. Recent ONE_TOUCH_HIGH_EDGE_NO losses in BTC and GOLD
 
 ---
 
+### 2026-07-22 10:28 UTC
+
+**Portfolio:** $98.78 total | Cash $98.78 | 0 open | P&L $2.0163 | 62% win rate (502 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 13 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 32.6pp (was -23.9, now 8.7)
+- [anomaly] oil_opt_fwd_90d = 6.8 is -2.9 std devs from mean since 2026-04-28 (79.17 ± 25.23)
+- [anomaly] btc_opt_iv_term_spread = -21.62 is -2.6 std devs from mean (-2.14 ± 7.46)
+- [anomaly] btc_opt_iv_90d = 59 is 2.3 std devs from mean (41.16 ± 7.60)
+- [anomaly] oil_opt_iv_30d = 24.4 is -2.3 std devs from mean since 2026-04-28 (53.02 ± 12.66)
+
+**Blocked signal learning:**
+- Open blocked shadows: 49
+- Resolved blocked shadows: 618 (339 wins / 279 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.04%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit stop (-3.24%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+1.69%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.16%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 4/12; next scheduled 2026-07-22T12:28:23.975Z). Mechanical cycle ran normally._
+
+---
+

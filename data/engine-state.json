@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-22T09:28:17.578Z",
+  "generatedAt": "2026-07-22T10:28:23.789Z",
   "dataFreshness": {
-    "valuationRows": 1830,
-    "latestValuationAt": "2026-07-22T09",
-    "macroRows": 1828,
+    "valuationRows": 1831,
+    "latestValuationAt": "2026-07-22T10",
+    "macroRows": 1829,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-22T09"
+    "latestInstrumentSnapshotAt": "2026-07-22T10"
   },
   "portfolio": {
     "cash": 98.7769,
@@ -156,10 +156,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 51,
-    "resolvedCount": 616,
-    "wouldHaveWon": 338,
-    "wouldHaveLost": 278,
+    "openCount": 49,
+    "resolvedCount": 618,
+    "wouldHaveWon": 339,
+    "wouldHaveLost": 279,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -227,44 +227,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.05,
-        "resolvedAt": "2026-07-21T18:28:14.453Z",
-        "marketQuality": {
-          "yesBid": 0.05,
-          "yesAsk": 0.06,
-          "yesSpread": 0.01,
-          "liquidity": 29241.84,
-          "flags": []
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -2.56,
-        "resolvedAt": "2026-07-21T19:28:11.722Z",
-        "marketQuality": {
-          "yesBid": 0.61,
-          "yesAsk": 0.62,
-          "yesSpread": 0.01,
-          "liquidity": 42168.89,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -375,6 +337,46 @@
           "aboveTrendPct": 2.48,
           "momentumPct": 3.75
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 1.69,
+        "resolvedAt": "2026-07-22T10:28:23.548Z",
+        "marketQuality": {
+          "yesBid": 0.41,
+          "yesAsk": 0.42,
+          "yesSpread": 0.01,
+          "liquidity": 18113.02,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.16,
+        "resolvedAt": "2026-07-22T10:28:23.548Z",
+        "marketQuality": {
+          "yesBid": 0.14,
+          "yesAsk": 0.16,
+          "yesSpread": 0.02,
+          "liquidity": 11183.06,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -473,38 +475,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.2pt on BTC, spread 1.0c, liquidity 88431. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-wti-hit-in-july-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $80 in July?",
-        "marketQuality": {
-          "yesBid": 0.41,
-          "yesAsk": 0.42,
-          "yesSpread": 0.01,
-          "liquidity": 18113.02,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.8pt on OIL, spread 1.0c, liquidity 18113. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-wti-hit-in-july-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $75 in July?",
-        "marketQuality": {
-          "yesBid": 0.14,
-          "yesAsk": 0.16,
-          "yesSpread": 0.02,
-          "liquidity": 11183.06,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.3pt on OIL, spread 2.0c, liquidity 11183. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
