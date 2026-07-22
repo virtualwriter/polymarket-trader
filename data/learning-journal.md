@@ -4980,3 +4980,34 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 7/12; ne
 
 ---
 
+### 2026-07-22 20:28 UTC
+
+**Portfolio:** $98.78 total | Cash $97.78 | 1 open | P&L $2.0163 | 62% win rate (502 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 12 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 11.7pp (was -13.8, now -25.5)
+- [anomaly] btc_opt_iv_term_spread = -21.54 is -2.5 std devs from mean (-2.25 ± 7.58)
+- [anomaly] btc_opt_iv_90d = 58.9 is 2.3 std devs from mean (41.25 ± 7.69)
+
+**Blocked signal learning:**
+- Open blocked shadows: 44
+- Resolved blocked shadows: 627 (344 wins / 283 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.93%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.25%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.04%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.04%)
+
+**LLM analysis:**
+The only open position, a BTC short via PC_RATIO_EXTREME_LOW (positionId T-1784734099491-1n20), is seeing its signal evidence weaken: the ibit P/C ratio rose from 0.414 at entry to 0.593 now, a 43% increase that places it at the 96th percentile of the 24-hour range. This could indicate a potential thesis invalidation, but the position is only 5h old and not yet eligible for a discretionary LLM close (minimum 12h hold). I'll flag it for re-evaluation at the next hourly review if the P/C ratio remains elevated.
+
+---
+
