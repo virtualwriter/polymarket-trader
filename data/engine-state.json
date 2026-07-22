@@ -1,21 +1,39 @@
 {
-  "generatedAt": "2026-07-22T15:28:19.296Z",
+  "generatedAt": "2026-07-22T16:28:19.750Z",
   "dataFreshness": {
-    "valuationRows": 1836,
-    "latestValuationAt": "2026-07-22T15",
-    "macroRows": 1834,
+    "valuationRows": 1837,
+    "latestValuationAt": "2026-07-22T16",
+    "macroRows": 1835,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-22T15"
+    "latestInstrumentSnapshotAt": "2026-07-22T16"
   },
   "portfolio": {
-    "cash": 98.7769,
-    "openPositions": 0,
+    "cash": 97.7769,
+    "openPositions": 1,
     "realizedPnl": 2.0163,
     "totalTrades": 502,
     "winRatePct": 62.4,
-    "unrealizedPnl": 0
+    "unrealizedPnl": 0.0022
   },
-  "openPositions": [],
+  "openPositions": [
+    {
+      "positionId": "T-1784734099491-1n20",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "pnlPct": 0.22,
+      "currentPrice": 65934,
+      "underlyingPrice": 65934,
+      "targetPct": 3,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "btc_spot",
+        "btc_ibit_pc_ratio"
+      ]
+    }
+  ],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -156,10 +174,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 49,
-    "resolvedCount": 620,
+    "openCount": 50,
+    "resolvedCount": 621,
     "wouldHaveWon": 341,
-    "wouldHaveLost": 279,
+    "wouldHaveLost": 280,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -227,24 +245,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.05,
-        "resolvedAt": "2026-07-22T04:28:14.955Z",
-        "marketQuality": {
-          "yesBid": 0.05,
-          "yesAsk": 0.06,
-          "yesSpread": 0.01,
-          "liquidity": 32913.47,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -377,6 +377,26 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "polymarket_proxy_short",
+        "outcome": "loss",
+        "closeReason": "stop",
+        "pnlPct": -8,
+        "resolvedAt": "2026-07-22T16:28:19.428Z",
+        "marketQuality": {
+          "yesBid": 0.75,
+          "yesAsk": 0.77,
+          "yesSpread": 0.02,
+          "liquidity": 47123.11,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -459,6 +479,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.2pt on BTC, spread 1.0c, liquidity 88431. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $95,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.16,
+          "yesAsk": 0.18,
+          "yesSpread": 0.02,
+          "liquidity": 17537.62,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.6pt on BTC, spread 2.0c, liquidity 17538. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
