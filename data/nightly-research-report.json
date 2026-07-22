@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-21T07:07:32Z",
+  "generatedAt": "2026-07-22T07:07:37Z",
   "summary": {
-    "generatedAt": "2026-07-21T07:07:32Z",
+    "generatedAt": "2026-07-22T07:07:37Z",
     "findingCounts": {
-      "open": 17,
-      "strengthened": 1,
+      "open": 16,
+      "strengthened": 2,
       "weakened": 0,
       "negative": 1,
       "suppressed": 0,
@@ -13,34 +13,34 @@
     "themeCount": 2,
     "topOpportunity": {
       "rank": 1,
-      "id": "FIND-0019",
-      "opportunityScore": 0.8263,
-      "confidenceScore": 0.3889,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|near-fair|no",
+      "id": "FIND-0018",
+      "opportunityScore": 0.7847,
+      "confidenceScore": 0.4091,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|heatmap|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
-      "status": "open"
+      "status": "strengthened"
     },
-    "authoredHypothesisCount": 3,
+    "authoredHypothesisCount": 0,
     "advicePresent": true
   },
   "topOpportunities": [
     {
       "rank": 1,
-      "id": "FIND-0019",
-      "opportunityScore": 0.8263,
-      "confidenceScore": 0.3889,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|near-fair|no",
+      "id": "FIND-0018",
+      "opportunityScore": 0.7847,
+      "confidenceScore": 0.4091,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|heatmap|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
-      "status": "open"
+      "status": "strengthened"
     },
     {
       "rank": 2,
-      "id": "FIND-0018",
-      "opportunityScore": 0.8165,
-      "confidenceScore": 0.4286,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|heatmap|no",
+      "id": "FIND-0019",
+      "opportunityScore": 0.7829,
+      "confidenceScore": 0.3684,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|near-fair|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
       "status": "strengthened"
@@ -139,26 +139,10 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 5,
-      "avgOpportunityScore": 0.7858
+      "avgOpportunityScore": 0.7697
     }
   ],
-  "authoredHypotheses": [
-    {
-      "originFindingId": "FIND-0018",
-      "themeId": "THEME-0001",
-      "description": "ONE_TOUCH_HIGH_EDGE_NO on OIL heatmap cluster: when sell-YES edge > 2pt on OIL one-touch NO contract and OIL PM IV is elevated (z-score > 0.5), short YES; prediction YES price falls as oil fails to reach extreme strike."
-    },
-    {
-      "originFindingId": "FIND-0001",
-      "themeId": "THEME-0001",
-      "description": "NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD short-rich-tail: enter short GOLD perp when gold_hl_funding_ann < -100% (deeply negative) and gold_gc_spot is above its 30d SMA, anticipating mean reversion lower as funding normalizes."
-    },
-    {
-      "originFindingId": "FIND-0004",
-      "themeId": "THEME-0002",
-      "description": "WEEKEND_HL_FUNDING_REVERSION_LONG on MU: go long MU perp when mu_hl_funding_ann < -5% (weekend negative funding) and MU spot is within 3% of its 3d low, targeting funding reversion bounce."
-    }
-  ],
+  "authoredHypotheses": [],
   "negativeFindings": [
     {
       "id": "FIND-0003",
@@ -170,9 +154,9 @@
   "provenance": {
     "scoringVersion": "research_score_v1",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-07-21T07:07:28Z",
-    "opportunitiesGeneratedAt": "2026-07-21T07:07:31Z",
-    "themesGeneratedAt": "2026-07-21T07:07:30Z",
-    "adviceGeneratedAt": "2026-07-21T07:07:27.917Z"
+    "findingsExportGeneratedAt": "2026-07-22T07:07:33Z",
+    "opportunitiesGeneratedAt": "2026-07-22T07:07:37Z",
+    "themesGeneratedAt": "2026-07-22T07:07:35Z",
+    "adviceGeneratedAt": "2026-07-22T07:07:33.263Z"
   }
 }
