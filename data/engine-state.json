@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-23T00:28:16.041Z",
+  "generatedAt": "2026-07-23T01:28:22.908Z",
   "dataFreshness": {
-    "valuationRows": 1845,
-    "latestValuationAt": "2026-07-23T00",
-    "macroRows": 1843,
+    "valuationRows": 1846,
+    "latestValuationAt": "2026-07-23T01",
+    "macroRows": 1844,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-23T00"
+    "latestInstrumentSnapshotAt": "2026-07-23T01"
   },
   "portfolio": {
     "cash": 97.7769,
@@ -13,7 +13,7 @@
     "realizedPnl": 2.0163,
     "totalTrades": 502,
     "winRatePct": 62.4,
-    "unrealizedPnl": -0.0031
+    "unrealizedPnl": 0.0024
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.31,
-      "currentPrice": 66282,
-      "underlyingPrice": 66282,
+      "pnlPct": 0.24,
+      "currentPrice": 65919,
+      "underlyingPrice": 65919,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -174,10 +174,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 46,
-    "resolvedCount": 627,
+    "openCount": 45,
+    "resolvedCount": 628,
     "wouldHaveWon": 344,
-    "wouldHaveLost": 283,
+    "wouldHaveLost": 284,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -245,26 +245,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "SPY",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 0,
-        "resolvedAt": "2026-07-22T14:28:20.593Z",
-        "marketQuality": {
-          "yesBid": 0.13,
-          "yesAsk": 0.15,
-          "yesSpread": 0.02,
-          "liquidity": 16123.57,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT",
         "asset": "BTC",
@@ -396,6 +376,26 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -3.26,
+        "resolvedAt": "2026-07-23T01:28:22.595Z",
+        "marketQuality": {
+          "yesBid": 0.08,
+          "yesAsk": 0.1,
+          "yesSpread": 0.02,
+          "liquidity": 44278.45,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -446,22 +446,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.4pt on ETH, spread 1.3c, liquidity 49863. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $6,000 by end of December?",
-        "marketQuality": {
-          "yesBid": 0.08,
-          "yesAsk": 0.1,
-          "yesSpread": 0.02,
-          "liquidity": 44278.45,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.0pt on GOLD, spread 2.0c, liquidity 44278. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
