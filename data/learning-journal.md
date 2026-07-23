@@ -5623,3 +5623,37 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 6/12; ne
 
 ---
 
+### 2026-07-23 20:28 UTC
+
+**Portfolio:** $98.78 total | Cash $96.78 | 2 open | P&L $2.0163 | 62% win rate (502 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 13 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 24.0pp (was -4.6, now -28.6)
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 631 (346 wins / 285 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-3.26%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+5.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-10.78%)
+
+**LLM analysis:**
+Closed BTC short (PC_RATIO_EXTREME_LOW) via thesis_invalidated after P/C ratio surged from 0.41 to 0.78 – a textbook round-trip. The GOLD FUNDING_EXTREME_LONG trade saw funding drop from 28% to 10.7%, which would be thesis-weakening if the trade were past its 12 h hold; will re-evaluate after that window. No new hypotheses or parameter changes at this hourly review.
+
+**LLM close rejections today (2026-07-23, token-burn signal):**
+- Total rejected close instructions: 5
+- Top signal/asset pairs: PC_RATIO_EXTREME_LOW / BTC (5)
+- Repeat-offender positions (≥3 rejections today): T-1784734099491-1n20 (5) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+
