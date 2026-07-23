@@ -5339,3 +5339,34 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; ne
 
 ---
 
+### 2026-07-23 09:29 UTC
+
+**Portfolio:** $98.78 total | Cash $97.78 | 1 open | P&L $2.0163 | 62% win rate (502 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 12 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 21.2pp (was -42.9, now -21.7)
+- [anomaly] btc_opt_iv_term_spread = -20.42 is -2.3 std devs from mean (-2.36 ± 7.70)
+- [anomaly] btc_opt_iv_90d = 57.9 is 2.1 std devs from mean (41.35 ± 7.78)
+
+**Blocked signal learning:**
+- Open blocked shadows: 44
+- Resolved blocked shadows: 630 (346 wins / 284 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.04%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-3.26%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+5.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+PC_RATIO_EXTREME_LOW short on BTC: The P/C ratio jumped from 0.41 to 0.593, normalizing the extreme call‑buying froth, but this appears as thesis‑confirming mean reversion, not invalidation—the ratio has not overshot into extreme‑high territory. Price has barely moved, and funding remains positive (no carry‑flip). The IBIT P/C ratio data has been stagnant for several hours, likely a low‑frequency update, not a data‑quality flag. No portfolio‑risk breaches. Maintaining the mechanical stop/target framework; no discretionary close warranted. Observing that the 24h P/C percentile is now 96, so the tail event has been fully unwound—any further significant increase in P/C ratio would warrant re‑evaluation, but the current evidence does not support thesis‑invalidated early close.
+
+---
+
