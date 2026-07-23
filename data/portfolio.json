@@ -1,5 +1,5 @@
 {
-  "cash": 97.77686819704448,
+  "cash": 96.77686819704448,
   "positions": [
     {
       "id": "T-1784734099491-1n20",
@@ -8,8 +8,8 @@
       "venue": "spot",
       "direction": "short",
       "entryPrice": 66077,
-      "currentPrice": 65622,
-      "currentUnderlyingPrice": 65622,
+      "currentPrice": 64970,
+      "currentUnderlyingPrice": 64970,
       "entryUnderlyingPrice": 66077,
       "size": 1,
       "leverage": 1,
@@ -22,7 +22,31 @@
       "entryConfidence": 0.15398251390260298,
       "instrumentType": "spot",
       "instrumentLabel": "BTC spot",
-      "peakPnlPct": 1.1297425730587043,
+      "peakPnlPct": 1.6753181893851115,
+      "fundingPnlAccrued": 0
+    },
+    {
+      "id": "T-1784813331294-r9fe",
+      "openedAt": "2026-07-23T13:28:51.294Z",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "entryPrice": 4057,
+      "currentPrice": 4057,
+      "currentUnderlyingPrice": 4057,
+      "entryUnderlyingPrice": 4057,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "FUNDING_EXTREME_LONG",
+      "hypothesisId": null,
+      "thesis": "GOLD HL funding 28.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "targetPct": 6,
+      "stopPct": 2.5,
+      "expiryDate": "2026-07-26T13:28:51.294Z",
+      "entryConfidence": 0.18835271103437246,
+      "instrumentType": "hl_perp",
+      "instrumentId": "GOLD",
+      "instrumentLabel": "HL GOLD perp",
       "fundingPnlAccrued": 0
     }
   ],
@@ -30,5 +54,5 @@
   "totalTrades": 502,
   "winCount": 313,
   "lossCount": 189,
-  "lastUpdated": "2026-07-23T11:28:21.827Z"
+  "lastUpdated": "2026-07-23T13:28:51.299Z"
 }
