@@ -1,31 +1,15 @@
 {
-  "generatedAt": "2026-07-23T03:28:45.272Z",
+  "generatedAt": "2026-07-23T04:28:13.207Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
   "entrySignals": [],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1784734099491-1n20",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_ibit_pc_ratio"
-        ],
-        "thesis": "PC_RATIO_EXTREME_LOW thesis invalidated: IBIT put/call ratio has risen from 0.41 at entry to 0.59, well beyond the extreme low threshold, indicating call buying dominance has dissipated. Contrarian short signal no longer valid."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
