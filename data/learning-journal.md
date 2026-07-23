@@ -5269,3 +5269,39 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 1/12; ne
 
 ---
 
+### 2026-07-23 06:28 UTC
+
+**Portfolio:** $98.78 total | Cash $97.78 | 1 open | P&L $2.0163 | 62% win rate (502 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 12 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 24.9pp (was -26.9, now -2.0)
+- [anomaly] oil_opt_fwd_90d = 155.9 is 3.0 std devs from mean since 2026-04-28 (79.06 ± 25.88)
+- [anomaly] btc_opt_iv_term_spread = -20.38 is -2.3 std devs from mean (-2.34 ± 7.68)
+- [anomaly] btc_opt_iv_90d = 57.8 is 2.1 std devs from mean (41.34 ± 7.76)
+
+**Blocked signal learning:**
+- Open blocked shadows: 44
+- Resolved blocked shadows: 630 (346 wins / 284 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.04%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-3.26%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+5.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+The BTC PC_RATIO_EXTREME_LOW short entered at P/C 0.414 has seen the P/C ratio climb 43% to 0.593, completely unwinding the extreme call-buying imbalance that triggered the signal. The position is marginally profitable (+0.63%), but the edge has disappeared. Closing early avoids giving back gains while the setup family’s overall win rate remains modest. Tonight’s review should examine whether the entry threshold needs tightening to filter out quick normalizations like this.
+
+**LLM close rejections today (2026-07-23, token-burn signal):**
+- Total rejected close instructions: 2
+- Top signal/asset pairs: PC_RATIO_EXTREME_LOW / BTC (2)
+
+---
+
