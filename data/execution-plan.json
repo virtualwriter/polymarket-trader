@@ -1,31 +1,31 @@
 {
-  "generatedAt": "2026-07-23T16:28:19.118Z",
+  "generatedAt": "2026-07-23T17:28:45.748Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [
+  "entrySignals": [],
+  "rejectedLlmActions": [
     {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.07171428571428576,
-      "confidence": 0.03614413644466936,
-      "thesis": "GOLD HL funding 17.5% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4053,
-      "targetPct": 6,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1784734099491-1n20",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_ibit_pc_ratio"
+        ],
+        "thesis": "PC_RATIO_EXTREME_LOW thesis invalidated: IBIT P/C ratio surged from 0.414 at entry to 0.701, fully normalizing through the extreme-low threshold, removing the contrarian short edge."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
     }
   ],
-  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
   ]
 }
