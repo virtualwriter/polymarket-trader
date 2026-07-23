@@ -5470,3 +5470,32 @@ BTC P/C ratio normalized sharply (0.41 → 0.59), entirely erasing the extreme-l
 
 ---
 
+### 2026-07-23 14:28 UTC
+
+**Portfolio:** $98.78 total | Cash $96.78 | 2 open | P&L $2.0163 | 62% win rate (502 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 12 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -19.14 is -2.2 std devs from mean (-2.40 ± 7.73)
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 630 (346 wins / 284 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.04%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-3.26%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+5.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+BTC PC_RATIO_EXTREME_LOW short is +1.48% and the thesis is not invalidated—IBIT P/C ratio fell further to 0.327, intensifying the contrarian signal. The abrupt drop from 0.593 could be a data update rather than an error, so no data-quality close. GOLD funding short (FUNDING_EXTREME_LONG) is only 1h old and ineligible for discretionary close; funding remains well above threshold and gold price is drifting lower, which aligns with the fade-long thesis. No risk breaches or thesis invalidation for either position.
+
+---
+

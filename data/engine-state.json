@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-23T13:28:16.736Z",
+  "generatedAt": "2026-07-23T14:28:23.859Z",
   "dataFreshness": {
-    "valuationRows": 1855,
-    "latestValuationAt": "2026-07-23T13",
-    "macroRows": 1853,
+    "valuationRows": 1856,
+    "latestValuationAt": "2026-07-23T14",
+    "macroRows": 1854,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-23T13"
+    "latestInstrumentSnapshotAt": "2026-07-23T14"
   },
   "portfolio": {
-    "cash": 97.7769,
-    "openPositions": 1,
+    "cash": 96.7769,
+    "openPositions": 2,
     "realizedPnl": 2.0163,
     "totalTrades": 502,
     "winRatePct": 62.4,
-    "unrealizedPnl": 0.0168
+    "unrealizedPnl": 0.015
   },
   "openPositions": [
     {
@@ -22,15 +22,32 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 1.68,
-      "currentPrice": 64970,
-      "underlyingPrice": 64970,
+      "pnlPct": 1.48,
+      "currentPrice": 65101,
+      "underlyingPrice": 65101,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "btc_spot",
         "btc_ibit_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1784813331294-r9fe",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "pnlPct": 0.02,
+      "currentPrice": 4056,
+      "underlyingPrice": 4056,
+      "targetPct": 6,
+      "stopPct": 2.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
       ]
     }
   ],
@@ -174,7 +191,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 48,
+    "openCount": 50,
     "resolvedCount": 630,
     "wouldHaveWon": 346,
     "wouldHaveLost": 284,
@@ -510,6 +527,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.0pt on BTC, spread 1.0c, liquidity 63233. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
+        "asset": "GOLD",
+        "blockedReason": "polymarket_proxy_short",
+        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $6,000 by end of December?",
+        "marketQuality": {
+          "yesBid": 0.09,
+          "yesAsk": 0.1,
+          "yesSpread": 0.01,
+          "liquidity": 51932.47,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[PM PROXY SHORT SHADOW] Real GOLD short via hyperliquid/hl_perp (FUNDING_EXTREME_LONG). Track buying NO on the comparable Polymarket upside contract."
       }
     ]
   },
