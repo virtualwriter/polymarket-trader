@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T20:28:42.711Z",
+  "generatedAt": "2026-07-23T21:28:14.841Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -21,26 +21,10 @@
       "expiryDays": 5
     }
   ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1784734099491-1n20",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_ibit_pc_ratio"
-        ],
-        "thesis": "PC_RATIO_EXTREME_LOW short thesis is invalidated: the iBit P/C ratio has round-tripped from 0.414 to 0.782, well above the extreme low threshold, signaling the call-buying extreme has fully normalized and the contrarian short premise no longer holds."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
