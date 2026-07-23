@@ -1,9 +1,9 @@
 # Nightly Research Report
 
-_Generated 2026-07-22T07:07:37Z_
+_Generated 2026-07-23T07:07:58Z_
 
 ## 1. Summary
-- FIND records: 19 total (open 16, strengthened 2, weakened 0, negative 1)
+- FIND records: 20 total (open 16, strengthened 2, weakened 0, negative 1)
 - Research themes: 2
 - Top opportunity: #1 FIND-0018 opp=0.7847 conf=0.4091 (ONE_TOUCH_HIGH_EDGE_NO|OIL|heatmap|no)
 
@@ -33,6 +33,6 @@ _Generated 2026-07-22T07:07:37Z_
 - Scoring version: research_score_v1
 - Miner model: shadow_miner_v1
 - Opportunities export: 2026-07-22T07:07:37Z
-- Findings export: 2026-07-22T07:07:33Z
+- Findings export: 2026-07-23T07:07:56Z
 - Themes export: 2026-07-22T07:07:35Z
-- LLM advice: 2026-07-22T07:07:33.263Z
+- LLM advice: 2026-07-23T07:07:56.292Z
