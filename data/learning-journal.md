@@ -5499,3 +5499,37 @@ BTC PC_RATIO_EXTREME_LOW short is +1.48% and the thesis is not invalidated—IBI
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-07-23T14:49:34.287Z, model=deepseek-v4-pro)
+- Hypotheses added: 2 (rejected 1); reviews applied: 3; param updates: none.
+- Strategy review: Live signals remain healthy: ONE_TOUCH_HIGH_EDGE_NO wins 4/4 with +4.49% avg, PC_RATIO_EXTREME_LOW (AMZN disabled) is profitable (+0.14% avg clean), and PC_RATIO_EXTREME_HIGH (BTC disabled) is slightly positive. Weekend HL funding reversion long continues to dominate with 72% win rate and +1.12 total PnL. FUNDING_EXTREME_LONG overall is losing but the GOLD subset (60% win, +0.03 total) is positive; FUNDING_EXTREME_SHORT OIL is weak but AMZN short shines at 73% win. Failure spots include NO_BIAS_ADJUSTED_GAP_SHADOW (42% win, -1.16), polymarket proxy shorts on PC ratio and funding signals (0-20%
+- Nightly journal: Researched top-ranked opportunities from shadow mine. FIND-0018 and FIND-0019 point to OIL one-touch NO edge clusters with tight spreads, so I authored two new hypotheses focusing on sell-YES edge with spread and liquidity filters. FIND-0001 on GOLD no-bias gap short-rich-tail is promising but only 62% win, so I added confirming conditions (funding percentile, SMA). Reviewed H-006, H-215, and H-523 — all showing strong win rates, so they should remain active and continue shadow testing. No compelling reason to adjust risk parameters tonight; PC_RATIO_EXTREME_LOW's losing AMZN trades are alread
+### 2026-07-23 15:28 UTC
+
+**Portfolio:** $98.78 total | Cash $96.78 | 2 open | P&L $2.0163 | 62% win rate (502 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 13 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 10.1pp (was -24.3, now -34.4)
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 630 (346 wins / 284 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.04%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-3.26%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+5.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 5/12; next scheduled 2026-07-23T17:28:21.558Z). Mechanical cycle ran normally._
+
+---
+
