@@ -5918,3 +5918,43 @@ The GOLD FUNDING_EXTREME_LONG short (entry 4057) is closed as thesis invalidated
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-07-24T14:15:36.069Z, model=deepseek-v4-pro)
+- Hypotheses added: 0 (rejected 0); reviews applied: 4; param updates: none.
+- Strategy review: Live signals are profitable overall with 62.4% win rate over 502 trades and positive realized PnL. The ONE_TOUCH_HIGH_EDGE_NO signal has been flawless in live trades (4/4, avg +18.42%) and FUNDING_EXTREME_LONG on GOLD remains healthy (60% win rate). However, many shadow families—especially Polymarket proxy shorts, heatmap/relative-value signals, and OPT_IV_GT_PM_IV_DOWNSIDE—are bleeding capital and failing to validate their edge. Disabled assets (AMZN, HYPE, OIL) have been removed from problematic live signals, which has stopped the bleeding. The largest risk now is that one-touch NO shadow lo
+- Nightly journal: Tonight's review confirms that the live engine is in good health, powered by ONE_TOUCH_HIGH_EDGE_NO (4/4 live wins) and asset-level filtering that removed weak AMZN/HYPE/OIL legs. The biggest research finding is that Polymarket proxy-short shadows and heatmap-based signals are destroying value and should be culled to make room for high-conviction themes. The informed-flow asymmetry study (FIND-0020) has an outstanding 0.9999 opportunity score but currently lacks direct column support; we should prioritize building wallet-flow data pipelines to unlock this. Among active hypotheses, H-523 (BTC P
+### 2026-07-24 14:28 UTC
+
+**Portfolio:** $98.81 total | Cash $97.81 | 1 open | P&L $2.0471 | 62% win rate (503 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 13 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 42.7pp (was 8.8, now -33.9)
+
+**Blocked signal learning:**
+- Open blocked shadows: 54
+- Resolved blocked shadows: 634 (346 wins / 288 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-10.78%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.05%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.50%)
+
+**LLM analysis:**
+GOLD FUNDING_EXTREME_LONG short opened at 28% funding is closing on thesis invalidation. Funding dropped to 7.5% (below 15% trigger) with minimal spot movement, yet the extreme crowding signal has dissipated. While carry remains positive for shorts, the edge has materially weakened. Spot has been resilient near $4,069 and macro could keep a bid under gold. This close follows the allowed thesis_invalidated path precisely, before any mechanical stop is hit.
+
+**LLM close rejections today (2026-07-24, token-burn signal):**
+- Total rejected close instructions: 3
+- Top signal/asset pairs: FUNDING_EXTREME_LONG / GOLD (3)
+- Repeat-offender positions (≥3 rejections today): T-1784813331294-r9fe (3) — consider tightening the prompt or surfacing a hard "mechanical-owned" marker for these.
+
+---
+

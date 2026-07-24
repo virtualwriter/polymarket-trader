@@ -1,11 +1,26 @@
 {
-  "generatedAt": "2026-07-24T14:12:01.266Z",
+  "generatedAt": "2026-07-24T14:28:50.260Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [],
+  "entrySignals": [
+    {
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "short",
+      "strength": 0.28666666666666674,
+      "confidence": 0.15417680348387922,
+      "thesis": "GOLD P/C ratio 0.41 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 4069,
+      "targetPct": 5,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    }
+  ],
   "rejectedLlmActions": [
     {
       "instruction": {
@@ -18,7 +33,7 @@
         "evidenceColumns": [
           "gold_hl_funding_ann"
         ],
-        "thesis": "FUNDING_EXTREME_LONG entry required funding > +15%. Gold HL funding annualized dropped from 28.08% to 8.77%, crossing back below the entry threshold. This negates the extreme-long signal and the short thesis is no longer supported."
+        "thesis": "Funding has normalized from 28.08% to 7.51%, crossing back below the 15% entry threshold. The extreme crowded-long fade setup is no longer supported, despite still-positive carry."
       },
       "reason": "LLM close rejected: position identity fields do not match the requested positionId."
     }
