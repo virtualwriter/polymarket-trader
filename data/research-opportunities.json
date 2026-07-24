@@ -1,147 +1,197 @@
 {
-  "generatedAt": "2026-07-22T07:07:37Z",
-  "scoringVersion": "research_score_v1",
+  "generatedAt": "2026-07-24T14:16:19Z",
+  "scoringVersion": "research_score_v3",
   "topN": 10,
   "opportunities": [
     {
       "rank": 1,
-      "id": "FIND-0018",
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|heatmap|no",
-      "opportunityScore": 0.7847,
-      "confidenceScore": 0.4091,
-      "status": "strengthened",
+      "id": "FIND-0020",
+      "clusterKey": "INFORMED_FLOW|TOUCH|DIRECTION_ASYMMETRY|no",
+      "opportunityScore": 0.9999,
+      "confidenceScore": 0.5715,
+      "status": "open",
       "evidence": {
-        "n": 12,
-        "winRate": 0.75,
-        "sumPnl": 0.2315
+        "n": 222,
+        "winRate": 0.626,
+        "sumPnl": 0.0,
+        "smart_share_dips": 0.0664,
+        "smart_share_highs": 0.0261,
+        "dumb_share_dips": 0.0974,
+        "dumb_share_highs": 0.1833,
+        "persistence_spearman": 0.2162
       },
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on OIL (heatmap/no): WR=75% n=12 sumPnl=+0.232"
+      "title": "Informed flow asymmetry: dip-YES flow is smart money, high-YES flow is dumb money (wallet-level study)"
     },
     {
       "rank": 2,
-      "id": "FIND-0019",
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|near-fair|no",
-      "opportunityScore": 0.7829,
-      "confidenceScore": 0.3684,
-      "status": "strengthened",
+      "id": "FIND-0035",
+      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|ALL|weekend_hl_funding_shadow|long",
+      "opportunityScore": 0.9998,
+      "confidenceScore": 0.6955,
+      "status": "open",
       "evidence": {
-        "n": 9,
-        "winRate": 0.7778,
-        "sumPnl": 0.1454
+        "n": 253,
+        "winRate": 0.7431,
+        "sumPnl": 2.5147,
+        "avgPnl": 0.00994,
+        "pnlStd": 0.0435,
+        "pValue": 0.0,
+        "pnlPValue": 0.00017,
+        "qValue": 0.01139
       },
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on OIL (near-fair/no): WR=78% n=9 sumPnl=+0.145"
+      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on ALL (weekend_hl_funding_shadow/long): WR=74% n=253 sumPnl=+2.515"
     },
     {
       "rank": 3,
+      "id": "FIND-0022",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|strat:s?,e1-3|no",
+      "opportunityScore": 0.9906,
+      "confidenceScore": 0.6523,
+      "status": "open",
+      "evidence": {
+        "n": 10,
+        "winRate": 0.9,
+        "sumPnl": 0.2137,
+        "avgPnl": 0.02137,
+        "pnlStd": 0.02366,
+        "pValue": 0.01074,
+        "pnlPValue": 0.00944,
+        "qValue": 0.224
+      },
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on OIL (strat:s?,e1-3/no): WR=90% n=10 sumPnl=+0.214"
+    },
+    {
+      "rank": 4,
+      "id": "FIND-0021",
+      "clusterKey": "USER_PM_IV_TOUCH_RICH_NO|ALL|strat:dir=above|no",
+      "opportunityScore": 0.99,
+      "confidenceScore": 0.6523,
+      "status": "open",
+      "evidence": {
+        "n": 10,
+        "winRate": 0.9,
+        "sumPnl": 0.9793,
+        "avgPnl": 0.09793,
+        "pnlStd": 0.10983,
+        "pValue": 0.01074,
+        "pnlPValue": 0.01003,
+        "qValue": 0.224
+      },
+      "title": "Shadow FIND: USER_PM_IV_TOUCH_RICH_NO on ALL (strat:dir=above/no): WR=90% n=10 sumPnl=+0.979"
+    },
+    {
+      "rank": 5,
+      "id": "FIND-0024",
+      "clusterKey": "USER_PM_IV_TOUCH_RICH_NO|ALL|strat:dir=above,d<30|no",
+      "opportunityScore": 0.9803,
+      "confidenceScore": 0.6232,
+      "status": "open",
+      "evidence": {
+        "n": 9,
+        "winRate": 0.8889,
+        "sumPnl": 0.8568,
+        "avgPnl": 0.0952,
+        "pnlStd": 0.11613,
+        "pValue": 0.01953,
+        "pnlPValue": 0.01968,
+        "qValue": 0.32964
+      },
+      "title": "Shadow FIND: USER_PM_IV_TOUCH_RICH_NO on ALL (strat:dir=above,d<30/no): WR=89% n=9 sumPnl=+0.857"
+    },
+    {
+      "rank": 6,
+      "id": "FIND-0025",
+      "clusterKey": "USER_PM_IV_TOUCH_RICH_NO|ALL|strat:s?,e3-8|no",
+      "opportunityScore": 0.9361,
+      "confidenceScore": 0.6232,
+      "status": "open",
+      "evidence": {
+        "n": 9,
+        "winRate": 0.8889,
+        "sumPnl": 1.2048,
+        "avgPnl": 0.13387,
+        "pnlStd": 0.23642,
+        "pValue": 0.01953,
+        "pnlPValue": 0.06391,
+        "qValue": 0.61171
+      },
+      "title": "Shadow FIND: USER_PM_IV_TOUCH_RICH_NO on ALL (strat:s?,e3-8/no): WR=89% n=9 sumPnl=+1.205"
+    },
+    {
+      "rank": 7,
+      "id": "FIND-0030",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no",
+      "opportunityScore": 0.8874,
+      "confidenceScore": 0.3926,
+      "status": "open",
+      "evidence": {
+        "n": 13,
+        "winRate": 0.6154,
+        "sumPnl": 0.5424,
+        "avgPnl": 0.04172,
+        "pnlStd": 0.11766,
+        "pValue": 0.29053,
+        "pnlPValue": 0.11261,
+        "qValue": 0.76025
+      },
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ALL (strat:dir=above,e3-8/no): WR=62% n=13 sumPnl=+0.542"
+    },
+    {
+      "rank": 8,
+      "id": "FIND-0026",
+      "clusterKey": "NO_BIAS_ADJUSTED_GAP_SHADOW|ALL|strat:dir=below,d<30|no",
+      "opportunityScore": 0.7776,
+      "confidenceScore": 0.5036,
+      "status": "open",
+      "evidence": {
+        "n": 9,
+        "winRate": 0.7778,
+        "sumPnl": 0.5011,
+        "avgPnl": 0.05568,
+        "pnlStd": 0.20781,
+        "pValue": 0.08984,
+        "pnlPValue": 0.22238,
+        "qValue": 0.99818
+      },
+      "title": "Shadow FIND: NO_BIAS_ADJUSTED_GAP_SHADOW on ALL (strat:dir=below,d<30/no): WR=78% n=9 sumPnl=+0.501"
+    },
+    {
+      "rank": 9,
       "id": "FIND-0001",
       "clusterKey": "NO_BIAS_ADJUSTED_GAP_SHADOW|GOLD|short-rich-tail|no",
-      "opportunityScore": 0.7552,
-      "confidenceScore": 0.2778,
+      "opportunityScore": 0.7757,
+      "confidenceScore": 0.348,
       "status": "open",
       "evidence": {
         "n": 8,
         "winRate": 0.625,
-        "sumPnl": 0.3679
+        "sumPnl": 0.3679,
+        "avgPnl": 0.04599,
+        "pnlStd": 0.16207,
+        "pValue": 0.36328,
+        "pnlPValue": 0.22431,
+        "qValue": 0.99818
       },
       "title": "Shadow FIND: NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD (short-rich-tail/no): WR=62% n=8 sumPnl=+0.368"
     },
     {
-      "rank": 4,
-      "id": "FIND-0002",
-      "clusterKey": "NO_BIAS_ADJUSTED_GAP_SHADOW|GOLD|heatmap|no",
-      "opportunityScore": 0.7552,
-      "confidenceScore": 0.2778,
-      "status": "open",
-      "evidence": {
-        "n": 8,
-        "winRate": 0.625,
-        "sumPnl": 0.3679
-      },
-      "title": "Shadow FIND: NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD (heatmap/no): WR=62% n=8 sumPnl=+0.368"
-    },
-    {
-      "rank": 5,
-      "id": "FIND-0004",
-      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|MU|weekend_hl_funding_shadow|long",
-      "opportunityScore": 0.741,
-      "confidenceScore": 0.4444,
-      "status": "open",
-      "evidence": {
-        "n": 8,
-        "winRate": 1.0,
-        "sumPnl": 0.273
-      },
-      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on MU (weekend_hl_funding_shadow/long): WR=100% n=8 sumPnl=+0.273"
-    },
-    {
-      "rank": 6,
-      "id": "FIND-0005",
-      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|HOOD|weekend_hl_funding_shadow|long",
-      "opportunityScore": 0.6906,
-      "confidenceScore": 0.5,
-      "status": "open",
-      "evidence": {
-        "n": 12,
-        "winRate": 0.9167,
-        "sumPnl": 0.1593
-      },
-      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on HOOD (weekend_hl_funding_shadow/long): WR=92% n=12 sumPnl=+0.159"
-    },
-    {
-      "rank": 7,
-      "id": "FIND-0007",
-      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|COIN|weekend_hl_funding_shadow|long",
-      "opportunityScore": 0.6746,
-      "confidenceScore": 0.4211,
-      "status": "open",
-      "evidence": {
-        "n": 9,
-        "winRate": 0.8889,
-        "sumPnl": 0.1268
-      },
-      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on COIN (weekend_hl_funding_shadow/long): WR=89% n=9 sumPnl=+0.127"
-    },
-    {
-      "rank": 8,
-      "id": "FIND-0009",
-      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|RKLB|weekend_hl_funding_shadow|long",
-      "opportunityScore": 0.6734,
-      "confidenceScore": 0.4286,
-      "status": "open",
-      "evidence": {
-        "n": 11,
-        "winRate": 0.8182,
-        "sumPnl": 0.3078
-      },
-      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on RKLB (weekend_hl_funding_shadow/long): WR=82% n=11 sumPnl=+0.308"
-    },
-    {
-      "rank": 9,
-      "id": "FIND-0008",
-      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|CBRS|weekend_hl_funding_shadow|long",
-      "opportunityScore": 0.6665,
-      "confidenceScore": 0.3889,
-      "status": "open",
-      "evidence": {
-        "n": 8,
-        "winRate": 0.875,
-        "sumPnl": 0.1099
-      },
-      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on CBRS (weekend_hl_funding_shadow/long): WR=88% n=8 sumPnl=+0.110"
-    },
-    {
       "rank": 10,
-      "id": "FIND-0006",
-      "clusterKey": "WEEKEND_HL_FUNDING_REVERSION_LONG|AAPL|weekend_hl_funding_shadow|long",
-      "opportunityScore": 0.6571,
-      "confidenceScore": 0.4211,
-      "status": "open",
+      "id": "FIND-0018",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|heatmap|no",
+      "opportunityScore": 0.7523,
+      "confidenceScore": 0.482,
+      "status": "strengthened",
       "evidence": {
-        "n": 9,
-        "winRate": 0.8889,
-        "sumPnl": 0.0102
+        "n": 16,
+        "winRate": 0.6875,
+        "sumPnl": 0.1505,
+        "avgPnl": 0.00941,
+        "pnlStd": 0.05385,
+        "pValue": 0.10506,
+        "pnlPValue": 0.2477,
+        "qValue": 0.99818
       },
-      "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on AAPL (weekend_hl_funding_shadow/long): WR=89% n=9 sumPnl=+0.010"
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on OIL (heatmap/no): WR=69% n=16 sumPnl=+0.150"
     }
   ]
 }
