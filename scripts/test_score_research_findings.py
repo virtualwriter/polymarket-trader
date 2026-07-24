@@ -112,6 +112,24 @@ def test_deterministic_scores() -> None:
     assert first == second
 
 
+def test_significant_p_value_boosts_opportunity() -> None:
+    insignificant = _sample_body("FLUKE|OIL|edge|no", 8, 0.625, 0.10)
+    insignificant["evidence"]["pValue"] = 0.3633
+    significant = _sample_body("TREND|ALL|strat|no", 43, 0.625, 0.10)
+    significant["evidence"]["pValue"] = 0.0158
+    opp_fluke, _ = compute_scores(insignificant, FIXED_NOW)
+    opp_trend, _ = compute_scores(significant, FIXED_NOW)
+    assert opp_trend > opp_fluke, f"expected significant > fluke: {opp_fluke} vs {opp_trend}"
+
+
+def test_missing_p_value_scores_neutral() -> None:
+    body = _sample_body("LEGACY|OIL|edge|no", 10, 0.70, 0.20)
+    assert "pValue" not in body["evidence"]
+    opportunity, confidence = compute_scores(body, FIXED_NOW)
+    assert 0.0 < opportunity < 1.0
+    assert 0.0 < confidence < 1.0
+
+
 def test_score_history_appended() -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         registry_path = Path(tmpdir) / "registry.json"
@@ -150,6 +168,8 @@ def run_tests() -> None:
     test_higher_wr_positive_pnl_higher_opportunity()
     test_negative_status_excluded_from_opportunities()
     test_deterministic_scores()
+    test_significant_p_value_boosts_opportunity()
+    test_missing_p_value_scores_neutral()
     test_score_history_appended()
     print("ok: test_score_research_findings passed")
 

@@ -51,7 +51,7 @@ from registry import (  # noqa: E402
     write_registry,
 )
 
-SCORING_VERSION = "research_score_v1"
+SCORING_VERSION = "research_score_v2"
 DEFAULT_REGISTRY = default_registry_path()
 DEFAULT_FINDINGS = REPO / "data" / "research-findings.json"
 DEFAULT_OUT = REPO / "data" / "research-opportunities.json"
@@ -92,12 +92,19 @@ def compute_scores(body: dict[str, Any], now: datetime | None = None) -> tuple[f
     mine_stats = body.get("mineStats") or {}
     heatmap_part = 1.0 if mine_stats.get("hasHeatmap") else 0.0
     fresh_part = freshness_score(body.get("lastSeenAt"), now)
+    # Binomial significance vs coin-flip (miner supplies pValue). Raw win-rate
+    # weighting alone lets a 90% WR on n=10 outrank 67% on n=43 even though the
+    # larger sample is the statistically stronger trend. Neutral 0.5 when the
+    # evidence predates pValue support.
+    p_value = evidence.get("pValue")
+    significance_part = _clip(1.0 - float(p_value), 0.0, 1.0) if p_value is not None else 0.5
 
     opportunity = _round_score(
-        0.40 * win_rate
-        + 0.30 * pnl_part
+        0.30 * win_rate
+        + 0.25 * pnl_part
+        + 0.20 * significance_part
         + 0.15 * heatmap_part
-        + 0.15 * fresh_part
+        + 0.10 * fresh_part
     )
     return opportunity, confidence
 

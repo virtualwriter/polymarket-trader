@@ -99,8 +99,8 @@ def mine_findings(
     dry_run: bool,
 ) -> dict:
     shadows = json.loads(blocked_path.read_text())
-    fine, coarse = build_cluster_maps(shadows)
-    candidates = iter_cluster_candidates(fine, coarse, min_wr)[:max_findings]
+    fine, coarse, strata = build_cluster_maps(shadows)
+    candidates = iter_cluster_candidates(fine, coarse, min_wr, strata)[:max_findings]
     git_sha = git_sha_short()
     generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -209,10 +209,12 @@ def main() -> int:
     )
     for row in result["payload"]["findings"]:
         ev = row["evidence"]
+        p = ev.get("pValue")
         print(
             f"  {row['id']} {row['clusterKey']}: "
             f"status={row['status']} n={ev['n']} wr={ev['winRate']:.2f} "
             f"sum={ev['sumPnl']:+.3f}"
+            + (f" p={p:.4f}" if p is not None else "")
         )
     if not args.dry_run:
         print(f"wrote {args.out}")
