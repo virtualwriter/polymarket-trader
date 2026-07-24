@@ -128,36 +128,58 @@ class OneTouchProbabilityTest(unittest.TestCase):
         self.assertIsNotNone(row.options_touch_adjusted_prob)
         self.assertIn("Strike scaled from underlying options proxy.", row.notes)
 
-    def test_cme_sidecar_does_not_replace_primary_cboe_proxy(self) -> None:
+    def test_cme_preferred_over_etf_proxy_when_both_present(self) -> None:
         snapshot = {
             "timestamp": "2026-05-01T00:00:00+00:00",
-            "spots": {"BTC": 100.0},
-            "hyperliquid": {"BTC": {"markPx": 100.0, "fundingAnnualized": 0.02, "openInterestUsd": 1000000}},
+            "spots": {"GOLD": 4700.0},
+            "hyperliquid": {"GOLD": {"markPx": 4700.0, "fundingAnnualized": 0.02, "openInterestUsd": 1000000}},
             "options": {
-                "IBIT": {
-                    "underlyingPrice": 10.0,
+                "GLD": {
+                    "underlyingPrice": 430.0,
                     "source": "CBOE delayed",
                     "chains": [
-                        {"expiration": "2026-05-29T00:00:00+00:00", "strike": 12.0, "impliedVolatility": 0.50, "bid": 0.1, "ask": 0.2},
+                        {
+                            "expiration": "2026-05-29T00:00:00+00:00",
+                            "strike": 458.0,
+                            "impliedVolatility": 0.50,
+                            "bid": 0.1,
+                            "ask": 0.2,
+                            "type": "call",
+                        },
                     ],
                 },
-                "CME_BTC": {
-                    "underlyingPrice": 100.0,
-                    "source": "CME BTC futures options - CME Options Analytics",
+                "CME_GC": {
+                    "underlyingPrice": 4700.0,
+                    "source": "TradingView COMEX GC1! options",
                     "chains": [
-                        {"expiration": "2026-05-29T00:00:00+00:00", "strike": 120.0, "impliedVolatility": 0.80, "bid": 1, "ask": 2},
+                        {
+                            "expiration": "2026-05-29T00:00:00+00:00",
+                            "strike": 5000.0,
+                            "impliedVolatility": 0.30,
+                            "bid": 1,
+                            "ask": 2,
+                            "type": "call",
+                        },
+                        {
+                            "expiration": "2026-05-29T00:00:00+00:00",
+                            "strike": 5000.0,
+                            "impliedVolatility": 0.90,
+                            "bid": 1,
+                            "ask": 2,
+                            "type": "put",
+                        },
                     ],
                 },
             },
             "polymarket": [
                 {
-                    "asset": "BTC",
-                    "slug": "what-price-will-bitcoin-hit-in-may-2026",
+                    "asset": "GOLD",
+                    "slug": "what-price-will-gold-hit-in-may-2026",
                     "contracts": [
                         {
-                            "marketId": "btc-120",
-                            "question": "Will Bitcoin hit $120 in May 2026?",
-                            "strike": 120.0,
+                            "marketId": "gold-5000",
+                            "question": "Will Gold (XAUUSD) hit (HIGH) $5,000 in May?",
+                            "strike": 5000.0,
                             "direction": "above",
                             "yesPrice": 0.2,
                             "bestBid": 0.19,
@@ -178,25 +200,53 @@ class OneTouchProbabilityTest(unittest.TestCase):
 
         self.assertEqual(len(rows), 1)
         row = rows[0]
-        self.assertEqual(row.option_symbol, "IBIT")
-        self.assertEqual(row.iv_resolution, "cboe_snapshot")
-        self.assertAlmostEqual(row.option_iv, 0.50)
-        self.assertEqual(row.cme_option_symbol, "CME_BTC")
-        self.assertEqual(row.cme_iv_resolution, "cme_snapshot")
-        self.assertAlmostEqual(row.cme_option_iv, 0.80)
-        self.assertIsNotNone(row.cme_options_touch_adjusted_prob)
-        self.assertIsNotNone(row.cme_no_gap_pts)
+        self.assertEqual(row.option_symbol, "CME_GC")
+        self.assertIn(row.iv_resolution, {"cme_snapshot", "tv_chain"})
+        # Upside barrier must use call IV, not the inflated same-strike put.
+        self.assertAlmostEqual(row.option_iv, 0.30)
+        self.assertEqual(row.cme_option_symbol, "CME_GC")
+        self.assertAlmostEqual(row.cme_option_iv, 0.30)
 
-        record = report.calibration_record(row, "2026-05-01T00:00:00+00:00")
-        self.assertIsNotNone(record)
-        assert record is not None
-        self.assertEqual(record["asset"], "BTC")
-        self.assertEqual(record["dte_bucket"], "31-90d")
-        self.assertEqual(record["moneyness_bucket"], "15-30%")
-        # Exact barrier model prices this 20%-OTM touch ~17% vs PM 20%, so the
-        # CBOE gap is slightly positive while CME (IV 0.80) stays negative.
-        self.assertEqual(record["source_agreement_bucket"], "cboe_only")
-        self.assertIn("proxy_penalty_pts", record["penalties"])
+    def test_downside_skew_iv_uplifts_dips_only(self) -> None:
+        base = 0.40
+        # ATM dip still gets base uplift.
+        atm = report.downside_skew_iv(base, 100.0, 100.0, "below")
+        self.assertIsNotNone(atm)
+        assert atm is not None
+        self.assertGreater(atm, base)
+        # Deeper OTM dip gets more uplift, capped.
+        deep = report.downside_skew_iv(base, 100.0, 70.0, "below")
+        assert deep is not None
+        self.assertGreater(deep, atm)
+        # Highs unchanged.
+        self.assertEqual(report.downside_skew_iv(base, 100.0, 120.0, "above"), base)
+
+    def test_choose_iv_prefers_direction_matched_option_right(self) -> None:
+        snapshot = {
+            "underlyingPrice": 100.0,
+            "chains": [
+                {"expiration": "2026-07-01", "strike": 110, "impliedVolatility": 0.40, "bid": 1, "ask": 2, "type": "call"},
+                {"expiration": "2026-07-01", "strike": 110, "impliedVolatility": 0.90, "bid": 1, "ask": 2, "type": "put"},
+                {"expiration": "2026-07-01", "strike": 112, "impliedVolatility": 0.42, "bid": 1, "ask": 2, "type": "call"},
+                {"expiration": "2026-07-01", "strike": 112, "impliedVolatility": 0.92, "bid": 1, "ask": 2, "type": "put"},
+            ],
+        }
+        iv_up, _ = report.choose_iv_for_expiry(
+            snapshot,
+            datetime(2026, 7, 1, tzinfo=timezone.utc),
+            110.0,
+            datetime(2026, 5, 1, tzinfo=timezone.utc),
+            direction="above",
+        )
+        iv_down, _ = report.choose_iv_for_expiry(
+            snapshot,
+            datetime(2026, 7, 1, tzinfo=timezone.utc),
+            110.0,
+            datetime(2026, 5, 1, tzinfo=timezone.utc),
+            direction="below",
+        )
+        self.assertAlmostEqual(iv_up, 0.41)
+        self.assertAlmostEqual(iv_down, 0.91)
 
     def test_calibration_jsonl_dedupes_by_timestamp_and_market(self) -> None:
         snapshot = {
@@ -247,12 +297,12 @@ class OneTouchProbabilityTest(unittest.TestCase):
         snapshot = {
             "underlyingPrice": 100.0,
             "chains": [
-                {"expiration": "2026-06-01", "strike": 90, "impliedVolatility": 0.20, "bid": 1, "ask": 2},
-                {"expiration": "2026-06-01", "strike": 100, "impliedVolatility": 0.21, "bid": 1, "ask": 2},
-                {"expiration": "2026-06-01", "strike": 110, "impliedVolatility": 0.22, "bid": 1, "ask": 2},
-                {"expiration": "2026-07-01", "strike": 100, "impliedVolatility": 0.50, "bid": 1, "ask": 2},
-                {"expiration": "2026-07-01", "strike": 105, "impliedVolatility": 0.51, "bid": 1, "ask": 2},
-                {"expiration": "2026-07-01", "strike": 110, "impliedVolatility": 0.52, "bid": 1, "ask": 2},
+                {"expiration": "2026-06-01", "strike": 90, "impliedVolatility": 0.20, "bid": 1, "ask": 2, "type": "call"},
+                {"expiration": "2026-06-01", "strike": 100, "impliedVolatility": 0.21, "bid": 1, "ask": 2, "type": "call"},
+                {"expiration": "2026-06-01", "strike": 110, "impliedVolatility": 0.22, "bid": 1, "ask": 2, "type": "call"},
+                {"expiration": "2026-07-01", "strike": 100, "impliedVolatility": 0.50, "bid": 1, "ask": 2, "type": "call"},
+                {"expiration": "2026-07-01", "strike": 105, "impliedVolatility": 0.51, "bid": 1, "ask": 2, "type": "call"},
+                {"expiration": "2026-07-01", "strike": 110, "impliedVolatility": 0.52, "bid": 1, "ask": 2, "type": "call"},
             ],
         }
         iv, expiry = report.choose_iv_for_expiry(
@@ -260,6 +310,7 @@ class OneTouchProbabilityTest(unittest.TestCase):
             datetime(2026, 7, 1, tzinfo=timezone.utc),
             108.0,
             datetime(2026, 5, 1, tzinfo=timezone.utc),
+            direction="above",
         )
         self.assertEqual(expiry, "2026-07-01")
         self.assertAlmostEqual(iv, (0.50 + 0.51 + 0.52) / 3)

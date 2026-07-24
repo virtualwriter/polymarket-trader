@@ -447,13 +447,46 @@ Previous response:
 ${previousText.slice(0, 12000)}`;
 }
 
+function buildEmptyAdviceRepairPrompt(previousText: string, opportunityCount: number): string {
+  return `Your previous response parsed as valid JSON but was an empty stub: no strategyReview, no newHypotheses, no hypothesisReviews, no failureClusters, and no journalEntry.
+
+The original prompt listed ${opportunityCount} ranked research opportunities. Empty advice is not acceptable when opportunities are present. You MUST return a substantive JSON object that includes at least:
+- a non-empty strategyReview, and
+- up to 3 newHypotheses drawn from those ranked opportunities (or explicitly justify zero hypotheses inside strategyReview while still reviewing/hypothesizing something actionable)
+
+Return ONLY a corrected JSON object that follows the original schema exactly. Do not include markdown, comments, or explanation.
+
+Previous response:
+${previousText.slice(0, 12000)}`;
+}
+
+/** True when advice has any non-empty actionable content beyond an empty shell. */
+export function isSubstantiveNightlyAdvice(advice: NightlyAdvice): boolean {
+  return Boolean(
+    (advice.strategyReview && advice.strategyReview.trim())
+    || (advice.journalEntry && advice.journalEntry.trim())
+    || advice.newHypotheses.length > 0
+    || advice.hypothesisReviews.length > 0
+    || advice.failureClusters.length > 0
+    || advice.parameterUpdates,
+  );
+}
+
+function logLlmResponse(label: string, resp: { text: string; stopReason?: string | null }): void {
+  const text = resp.text ?? "";
+  const preview = text.length > 2000 ? `${text.slice(0, 2000)}…` : text;
+  console.log(
+    `[nightly-llm] ${label}: chars=${text.length} finish_reason=${resp.stopReason ?? "null"} raw=${JSON.stringify(preview)}`,
+  );
+}
+
 /**
  * Async I/O wrapper: resolves the nightly_research route, loads inputs from
  * dataDir (tolerating missing files), calls the LLM with one repair
- * round-trip on parse failure, and atomically writes
- * data/nightly-llm-advice.json. Never throws on LLM/API failure — callers
- * should treat a `{skipped:false, wrote:false}` result as a step failure
- * without crashing the orchestrator.
+ * round-trip on parse failure or empty advice (when opportunities exist),
+ * and atomically writes data/nightly-llm-advice.json. Never throws on
+ * LLM/API failure — callers should treat a `{skipped:false, wrote:false}`
+ * result as a step failure without crashing the orchestrator.
  */
 export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise<RunNightlyLlmStepResult> {
   if (process.env.NIGHTLY_LLM_DISABLE === "1") {
@@ -486,25 +519,56 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
     themes,
     retiredSetupIds: opts.retiredSetupIds ?? [],
   });
-  console.log(`[nightly-llm] prompt: ${prompt.length} chars (provider=${route.provider}, model=${route.model}).`);
+  console.log(`[nightly-llm] prompt: ${prompt.length} chars (provider=${route.provider}, model=${route.model}, opportunities=${opportunities.length}).`);
 
   try {
-    const first = await requestLlmText(route, [{ role: "user", content: prompt }], { maxTokens: 8192 });
+    // deepseek-v4-pro thinking tokens count against max_tokens; 8k truncated
+    // mid-JSON on a normal night. 32k leaves headroom for CoT + full advice.
+    const maxTokens = 32_768;
+    const first = await requestLlmText(route, [{ role: "user", content: prompt }], { maxTokens });
+    logLlmResponse("response#1", first);
+    let lastText = first.text;
     let parsed = parseNightlyAdvice(first.text, { allowedOriginFindingIds });
 
     if (!parsed.advice) {
-      console.log(`[nightly-llm] invalid JSON (${parsed.error}); requesting repair.${first.stopReason ? ` stop_reason=${first.stopReason}` : ""}`);
+      console.log(`[nightly-llm] invalid JSON (${parsed.error}); requesting repair.${first.stopReason ? ` finish_reason=${first.stopReason}` : ""}`);
       const repaired = await requestLlmText(route, [
         { role: "user", content: prompt },
         { role: "assistant", content: first.text },
         { role: "user", content: buildRepairPrompt(parsed.error ?? "unknown parse error", first.text) },
-      ], { maxTokens: 8192 });
+      ], { maxTokens });
+      logLlmResponse("response#2-parse-repair", repaired);
+      lastText = repaired.text;
       parsed = parseNightlyAdvice(repaired.text, { allowedOriginFindingIds });
       if (!parsed.advice) {
-        console.log(`[nightly-llm] repair failed: ${parsed.error}${repaired.stopReason ? ` stop_reason=${repaired.stopReason}` : ""}`);
+        console.log(`[nightly-llm] repair failed: ${parsed.error}${repaired.stopReason ? ` finish_reason=${repaired.stopReason}` : ""}`);
         return { skipped: false, wrote: false, error: parsed.error ?? "unknown parse error" };
       }
       console.log("[nightly-llm] repaired JSON response parsed successfully.");
+    }
+
+    if (opportunities.length > 0 && parsed.advice && !isSubstantiveNightlyAdvice(parsed.advice)) {
+      console.log(
+        `[nightly-llm] empty advice while ${opportunities.length} opportunities present; requesting repair.`,
+      );
+      const repaired = await requestLlmText(route, [
+        { role: "user", content: prompt },
+        { role: "assistant", content: lastText },
+        { role: "user", content: buildEmptyAdviceRepairPrompt(lastText, opportunities.length) },
+      ], { maxTokens });
+      logLlmResponse("response#2-empty-repair", repaired);
+      parsed = parseNightlyAdvice(repaired.text, { allowedOriginFindingIds });
+      if (!parsed.advice) {
+        const err = parsed.error ?? "empty-advice repair produced unparseable JSON";
+        console.log(`[nightly-llm] empty-advice repair failed: ${err}${repaired.stopReason ? ` finish_reason=${repaired.stopReason}` : ""}`);
+        return { skipped: false, wrote: false, error: err };
+      }
+      if (!isSubstantiveNightlyAdvice(parsed.advice)) {
+        const err = `empty advice after repair despite ${opportunities.length} ranked opportunities`;
+        console.log(`[nightly-llm] ${err}`);
+        return { skipped: false, wrote: false, error: err };
+      }
+      console.log("[nightly-llm] empty-advice repair produced substantive advice.");
     }
 
     const outFile = join(opts.dataDir, "nightly-llm-advice.json");
@@ -517,7 +581,7 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
     const tmp = `${outFile}.tmp`;
     writeFileSync(tmp, JSON.stringify(payload, null, 2) + "\n");
     renameSync(tmp, outFile);
-    console.log(`[nightly-llm] wrote ${outFile} (newHypotheses=${parsed.advice.newHypotheses.length}, hypothesisReviews=${parsed.advice.hypothesisReviews.length}, failureClusters=${parsed.advice.failureClusters.length}).`);
+    console.log(`[nightly-llm] wrote ${outFile} (newHypotheses=${parsed.advice!.newHypotheses.length}, hypothesisReviews=${parsed.advice!.hypothesisReviews.length}, failureClusters=${parsed.advice!.failureClusters.length}).`);
     return { skipped: false, wrote: true };
   } catch (e: any) {
     console.log(`[nightly-llm] error: ${e?.message ?? e}`);

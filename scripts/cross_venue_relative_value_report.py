@@ -53,22 +53,27 @@ CALIBRATION_JSONL_PATH = HOSTED_DIR / "calibration" / "no_bias_candidates.jsonl"
 HEATMAP_MAX_INCLUDED_PM_SPREAD = 0.03
 DEFAULT_ARCHIVE_DIR = Path(os.getenv("RELATIVE_VALUE_HISTORY_DIR", str(HOSTED_DIR / "history")))
 VALUATIONS_PATH = DATA_DIR / "daily-valuations.csv"
-MODEL_VERSION = "relative_value_heatmap_v2_one_touch"
+MODEL_VERSION = "relative_value_heatmap_v3_one_touch"
+# Downside crash/skew premium: GBM+put-wing still understates dip touches
+# (calibration: model ~16% vs realized ~33%). Uplift IV for below barriers.
+DIP_IV_BASE_UPLIFT = 0.12
+DIP_IV_OTM_UPLIFT = 0.90
+DIP_IV_UPLIFT_CAP = 0.65
 EASTERN_TIME = ZoneInfo("America/New_York")
 OPTION_EXPIRY_WINDOW_DAYS = 45.0
 OPTION_STRIKE_LOG_WINDOW = 0.35
 
 
 ASSET_TO_OPTION_SYMBOLS = {
-    # Deribit gives direct crypto vol surfaces; ETF proxies remain as fallback
-    # when the live fetch fails or is disabled.
-    "BTC": ["DERIBIT_BTC", "IBIT", "CME_BTC"],
-    "ETH": ["DERIBIT_ETH", "ETHA", "CME_ETH"],
+    # Prefer underlyings that match Polymarket spot units (futures / Deribit).
+    # ETF proxies (GLD/USO/IBIT/ETHA/SPY) remain as fallback only.
+    "BTC": ["DERIBIT_BTC", "CME_BTC", "IBIT"],
+    "ETH": ["DERIBIT_ETH", "CME_ETH", "ETHA"],
     "HYPE": ["PURR"],
-    "GOLD": ["GLD", "CME_GC"],
-    "OIL": ["USO", "CME_CL"],
+    "GOLD": ["CME_GC", "GLD"],
+    "OIL": ["CME_CL", "USO"],
     "AMZN": ["AMZN"],
-    "SPY": ["SPY", "CME_ES"],
+    "SPY": ["CME_ES", "SPY"],
 }
 CBOE_PROXY_OPTION_SYMBOLS = {"IBIT", "ETHA", "GLD", "USO", "SPY", "PURR"}
 CME_OPTION_SYMBOL_BY_ASSET = {
@@ -159,6 +164,8 @@ class RelativeValueRow:
     perp_funding_ann: Optional[float]
     perp_oi_usd: Optional[float]
     perp_basis_pct: Optional[float]
+    smart_flow_net_yes: Optional[float]
+    smart_flow_stance: Optional[float]
     flags: str
     notes: str
 
@@ -429,12 +436,52 @@ def scaled_option_strike(
     return pm_strike
 
 
+def _option_right(item: Dict[str, Any]) -> str:
+    raw = str(item.get("type") or item.get("optionType") or item.get("right") or item.get("callPut") or "").strip().lower()
+    if raw in {"c", "call", "calls"}:
+        return "call"
+    if raw in {"p", "put", "puts"}:
+        return "put"
+    return ""
+
+
+def _preferred_option_right(direction: str) -> str:
+    # Upside barriers → call wing IV; downside barriers → put wing IV.
+    # Mixing ITM puts with OTM calls at the same strike inflates IV badly on CME.
+    if direction == "above":
+        return "call"
+    if direction == "below":
+        return "put"
+    return ""
+
+
+def downside_skew_iv(
+    iv: Optional[float],
+    spot: Optional[float],
+    strike: Optional[float],
+    direction: str,
+) -> Optional[float]:
+    """Raise IV used for downside (dip) touch probs to correct calm-model bias.
+
+    Puts are already preferred for direction=below; this adds an explicit OTM
+    crash premium so far dips are not systematically underpriced vs Polymarket.
+    """
+    if iv is None or iv <= 0 or not spot or not strike or spot <= 0 or strike <= 0:
+        return iv
+    if direction != "below":
+        return iv
+    otm = max(0.0, (spot - strike) / spot)
+    uplift = 1.0 + min(DIP_IV_UPLIFT_CAP, DIP_IV_BASE_UPLIFT + DIP_IV_OTM_UPLIFT * otm)
+    return iv * uplift
+
+
 def choose_iv_for_expiry(
     option_snapshot: Dict[str, Any],
     target_expiry: Optional[datetime],
     target_strike: Optional[float],
     now: Optional[datetime] = None,
     relevant_targets: Optional[List[Tuple[Optional[datetime], Optional[float]]]] = None,
+    direction: str = "",
 ) -> Tuple[Optional[float], str]:
     chains = option_snapshot.get("chains", [])
     underlying = safe_float(option_snapshot.get("underlyingPrice"))
@@ -442,6 +489,7 @@ def choose_iv_for_expiry(
         return None, ""
 
     now = now or datetime.now(timezone.utc)
+    preferred_right = _preferred_option_right(direction)
     target_specs: List[Tuple[float, Optional[float]]] = []
     for expiry, strike in relevant_targets or []:
         if expiry:
@@ -450,7 +498,7 @@ def choose_iv_for_expiry(
             days = 60.0
         target_specs.append((days, strike))
     target_key = "|".join(f"{round(days, 1)}:{round(strike or 0.0, 2)}" for days, strike in target_specs[:80])
-    cache_key = f"_iv_expiry_buckets_{now.date().isoformat()}_{target_key}"
+    cache_key = f"_iv_expiry_buckets_{now.date().isoformat()}_{preferred_right}_{target_key}"
     cached = option_snapshot.get(cache_key)
     if isinstance(cached, dict):
         expiry_buckets = cached
@@ -511,7 +559,13 @@ def choose_iv_for_expiry(
     )
     use_liquid = len(selected_bucket["liquid_rows"]) >= 2
     rows = selected_bucket["liquid_rows"] if use_liquid else selected_bucket["rows"]
-    strikes = selected_bucket["liquid_strikes"] if use_liquid else selected_bucket["strikes"]
+    if preferred_right:
+        typed = [row for row in rows if _option_right(row[1]) == preferred_right]
+        if len(typed) >= 2:
+            rows = typed
+        elif typed:
+            rows = typed
+    strikes = [row[0] for row in rows]
     strike_target = target_strike or underlying
     idx = bisect_left(strikes, strike_target)
     window = rows[max(0, idx - 6):idx + 6]
@@ -999,12 +1053,35 @@ def live_clob_quote_for_market(market: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def load_smart_flow_stance(path: Optional[Path] = None) -> Dict[str, Dict[str, Any]]:
+    """Load market_id -> {net_yes, stance} from flow-study scorer output."""
+    candidates = [
+        path,
+        Path("data/flow-study/smart_flow_stance.json"),
+        Path("/opt/polymarket-trader/data/flow-study/smart_flow_stance.json"),
+    ]
+    for candidate in candidates:
+        if candidate is None or not candidate.exists():
+            continue
+        try:
+            data = json.loads(candidate.read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+        markets = data.get("markets") if isinstance(data, dict) else None
+        if isinstance(markets, dict):
+            return markets
+        if isinstance(data, dict):
+            return data
+    return {}
+
+
 def build_rows(
     snapshot: Dict[str, Any],
     latest_valuations: Optional[Dict[str, str]] = None,
     hyperliquid_overrides: Optional[Dict[str, Dict[str, Optional[float]]]] = None,
     min_liquidity: float = 0.0,
     refresh_live_quotes: bool = False,
+    smart_flow_stance: Optional[Dict[str, Dict[str, Any]]] = None,
 ) -> List[RelativeValueRow]:
     ts = str(snapshot.get("timestamp", ""))
     snap_dt = snapshot_time(snapshot)
@@ -1012,6 +1089,7 @@ def build_rows(
     hyperliquid = snapshot.get("hyperliquid", {})
     latest_valuations = latest_valuations or {}
     hyperliquid_overrides = hyperliquid_overrides or {}
+    smart_flow = smart_flow_stance if smart_flow_stance is not None else load_smart_flow_stance()
     rows: List[RelativeValueRow] = []
     events = snapshot.get("polymarket", [])
     relevant_targets_by_asset: Dict[str, List[Tuple[Optional[datetime], Optional[float]]]] = {}
@@ -1097,6 +1175,7 @@ def build_rows(
                 option_strike,
                 snap_dt,
                 relevant_option_targets,
+                direction,
             ) if option_snapshot else (None, "")
             valuation_iv_key = ""
             if option_iv is None:
@@ -1106,6 +1185,8 @@ def build_rows(
                     option_underlying = option_underlying or spot
                     option_strike = option_strike or strike
             iv_resolution = iv_resolution_for(option_snapshot, valuation_iv_key, option_iv)
+            # Apply downside crash premium after put-wing IV selection.
+            option_iv = downside_skew_iv(option_iv, option_underlying or spot, option_strike or strike, direction)
             range_bounds = parse_settlement_range(question)
             if range_bounds and spot and option_underlying:
                 scaled_low = scaled_option_strike(asset, option_symbol, range_bounds[0], spot, option_underlying)
@@ -1124,8 +1205,10 @@ def build_rows(
                 cme_option_strike,
                 snap_dt,
                 cme_relevant_option_targets,
+                direction,
             ) if cme_option_snapshot else (None, "")
             cme_iv_resolution = iv_resolution_for(cme_option_snapshot, "", cme_option_iv)
+            cme_option_iv = downside_skew_iv(cme_option_iv, cme_option_underlying or spot, cme_option_strike or strike, direction)
             if range_bounds and spot and cme_option_underlying:
                 cme_scaled_low = scaled_option_strike(asset, cme_option_symbol, range_bounds[0], spot, cme_option_underlying)
                 cme_scaled_high = scaled_option_strike(asset, cme_option_symbol, range_bounds[1], spot, cme_option_underlying)
@@ -1242,6 +1325,19 @@ def build_rows(
                 notes.append("No listed options model is used for this asset.")
             if option_symbol and is_one_touch_question(question):
                 notes.append("Hit/reach market uses tested one-touch probability model; incomplete rows fall back to 2x terminal probability.")
+            if direction == "below" and is_one_touch_question(question):
+                notes.append("Dip touch probs use put-wing IV plus downside skew uplift (v3).")
+            mid_key = str(contract.get("marketId", ""))
+            flow = smart_flow.get(mid_key) or {}
+            smart_net = safe_float(flow.get("net_yes"))
+            smart_stance = safe_float(flow.get("stance"))
+            if smart_stance is not None:
+                if smart_stance > 0:
+                    notes.append("Smart-flow stance: smart wallets net long YES.")
+                elif smart_stance < 0:
+                    notes.append("Smart-flow stance: smart wallets net short YES / selling YES.")
+                else:
+                    notes.append("Smart-flow stance: flat / unclassified.")
             if range_bounds:
                 notes.append(f"Settlement bucket modeled as probability between {range_bounds[0]:.0f} and {range_bounds[1]:.0f}.")
             if option_symbol in CBOE_PROXY_OPTION_SYMBOLS:
@@ -1323,6 +1419,8 @@ def build_rows(
                     perp_funding_ann=perp_funding_ann,
                     perp_oi_usd=perp_oi_usd,
                     perp_basis_pct=perp_basis_pct,
+                    smart_flow_net_yes=smart_net,
+                    smart_flow_stance=smart_stance,
                     flags=";".join(flags),
                     notes=" ".join(notes),
                 )

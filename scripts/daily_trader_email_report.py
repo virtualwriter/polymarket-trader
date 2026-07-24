@@ -577,30 +577,18 @@ def _is_llm_skip_note(text: str) -> bool:
     return stripped.startswith("LLM call skipped")
 
 
-def _is_blocked_count_line(line: str) -> bool:
-    """Hourly open/resolved shadow counters — noise once standing notes exist."""
-    return line.startswith("- Open blocked shadows:") or line.startswith("- Resolved blocked shadows:")
-
-
-def _is_shadow_event_line(line: str) -> bool:
-    return line.startswith("- ✅") or line.startswith("- ❌")
-
-
 def journal_sections_for_window(path: Path, start_utc: datetime, end_utc: datetime, tz: ZoneInfo) -> list[str]:
-    """Compact journal notes for Telegram: dedupe standing blocked-signal bullets,
-    keep unique shadow events once, and only include substantive LLM analyses.
+    """Compact journal notes for Telegram: substantive LLM analyses only.
+
+    Lifetime blocked-shadow counters / trend-filter notes and rolling ✅/❌
+    shadow-event bullets are omitted — they are not day P&L and drown the report.
     """
     del tz  # window bounds are already UTC
     if not path.exists():
         return []
     text = path.read_text()
 
-    standing_notes: list[str] = []
-    standing_seen: set[str] = set()
-    event_lines: list[str] = []
-    event_seen: set[str] = set()
     analyses: list[tuple[str, str]] = []  # (header, body)
-    latest_counts: list[str] = []
 
     chunks = text.split("\n### ")
     for chunk in chunks:
@@ -620,13 +608,9 @@ def journal_sections_for_window(path: Path, start_utc: datetime, end_utc: dateti
             continue
 
         body = "\n".join(candidate.splitlines()[1:]).strip()
-        blocked: list[str] = []
         llm_lines: list[str] = []
         mode: str | None = None
         for line in body.splitlines():
-            if line.startswith("**Blocked signal learning:**"):
-                mode = "blocked"
-                continue
             if line.startswith("**LLM analysis:**"):
                 mode = "llm"
                 continue
@@ -637,46 +621,22 @@ def journal_sections_for_window(path: Path, start_utc: datetime, end_utc: dateti
                 continue
             if "MONOTONIC_ARB" in line or "monotonic arb" in line.lower():
                 continue
-            if mode == "blocked":
-                blocked.append(line)
-            elif mode == "llm":
-                llm_lines.append(line)
-
-        hour_counts = [line for line in blocked if _is_blocked_count_line(line)]
-        if hour_counts:
-            latest_counts = hour_counts
-        for line in blocked:
-            if _is_blocked_count_line(line):
-                continue
-            if _is_shadow_event_line(line):
-                if line not in event_seen:
-                    event_seen.add(line)
-                    event_lines.append(line)
-                continue
-            if line not in standing_seen:
-                standing_seen.add(line)
-                standing_notes.append(line)
+            llm_lines.append(line)
 
         llm_text = "\n".join(llm_lines).strip()
         if llm_text and not _is_llm_skip_note(llm_text):
             analyses.append((first_line, llm_text))
 
-    out: list[str] = []
-    if standing_notes or latest_counts:
-        out.append("### Standing blocked-signal notes")
-        out.extend(latest_counts)
-        out.extend(standing_notes)
-    if event_lines:
-        out.append("### Shadow events (deduped)")
-        out.extend(event_lines)
-    if analyses:
-        out.append("### LLM analyses")
-        for header, llm_text in analyses:
-            out.append(f"**{header}**")
-            out.append(llm_text)
-            out.append("---")
-        if out[-1] == "---":
-            out.pop()
+    if not analyses:
+        return []
+
+    out = ["### LLM analyses"]
+    for header, llm_text in analyses:
+        out.append(f"**{header}**")
+        out.append(llm_text)
+        out.append("---")
+    if out[-1] == "---":
+        out.pop()
     return out
 
 

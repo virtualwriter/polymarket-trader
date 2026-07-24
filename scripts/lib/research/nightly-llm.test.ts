@@ -1,13 +1,32 @@
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   buildNightlyResearchPrompt,
+  isSubstantiveNightlyAdvice,
   parseNightlyAdvice,
   runNightlyLlmStep,
   type NightlyHypothesisSummary,
 } from "./nightly-llm.js";
+
+const requestLlmText = vi.hoisted(() => vi.fn());
+vi.mock("../trading/llm-transport.js", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../trading/llm-transport.js")>();
+  return {
+    ...actual,
+    requestLlmText,
+    resolveLlmRoute: (purpose: string) => {
+      if (process.env.NIGHTLY_LLM_DISABLE === "1") return null;
+      if (!process.env.ANTHROPIC_API_KEY && !process.env.DEEPSEEK_API_KEY) return null;
+      return actual.resolveLlmRoute(purpose) ?? {
+        provider: "deepseek" as const,
+        model: "deepseek-v4-pro",
+        apiKey: process.env.DEEPSEEK_API_KEY || process.env.ANTHROPIC_API_KEY || "test-key",
+      };
+    },
+  };
+});
 
 const ENV_KEYS = [
   "ANTHROPIC_API_KEY",
@@ -330,11 +349,34 @@ describe("parseNightlyAdvice", () => {
   });
 });
 
+describe("isSubstantiveNightlyAdvice", () => {
+  it("rejects empty shells and accepts any substantive field", () => {
+    expect(isSubstantiveNightlyAdvice({
+      failureClusters: [],
+      newHypotheses: [],
+      hypothesisReviews: [],
+    })).toBe(false);
+    expect(isSubstantiveNightlyAdvice({
+      strategyReview: "  ",
+      failureClusters: [],
+      newHypotheses: [],
+      hypothesisReviews: [],
+    })).toBe(false);
+    expect(isSubstantiveNightlyAdvice({
+      strategyReview: "review",
+      failureClusters: [],
+      newHypotheses: [],
+      hypothesisReviews: [],
+    })).toBe(true);
+  });
+});
+
 describe("runNightlyLlmStep", () => {
   let dataDir: string;
 
   beforeEach(() => {
     dataDir = mkdtempSync(join(tmpdir(), "nightly-llm-"));
+    requestLlmText.mockReset();
   });
 
   afterEach(() => {
@@ -345,6 +387,7 @@ describe("runNightlyLlmStep", () => {
     const result = await runNightlyLlmStep({ dataDir });
     expect(result).toEqual({ skipped: true, wrote: false });
     expect(existsSync(join(dataDir, "nightly-llm-advice.json"))).toBe(false);
+    expect(requestLlmText).not.toHaveBeenCalled();
   });
 
   it("skips without writing a file when NIGHTLY_LLM_DISABLE=1, even with a key configured", async () => {
@@ -353,5 +396,59 @@ describe("runNightlyLlmStep", () => {
     const result = await runNightlyLlmStep({ dataDir });
     expect(result).toEqual({ skipped: true, wrote: false });
     expect(existsSync(join(dataDir, "nightly-llm-advice.json"))).toBe(false);
+    expect(requestLlmText).not.toHaveBeenCalled();
+  });
+
+  it("retries and fails hard when advice is empty while opportunities exist", async () => {
+    process.env.DEEPSEEK_API_KEY = "test-key";
+    writeFileSync(join(dataDir, "research-opportunities.json"), JSON.stringify({
+      topN: 10,
+      opportunities: [{
+        rank: 1,
+        id: "FIND-0003",
+        clusterKey: "ONE_TOUCH|BTC|heatmap|no",
+        opportunityScore: 0.8,
+        title: "test finding",
+      }],
+    }));
+    const emptyStub = JSON.stringify({
+      strategyReview: "",
+      failureClusters: [],
+      newHypotheses: [],
+      hypothesisReviews: [],
+    });
+    requestLlmText
+      .mockResolvedValueOnce({ text: emptyStub, stopReason: "stop" })
+      .mockResolvedValueOnce({ text: emptyStub, stopReason: "stop" });
+
+    const result = await runNightlyLlmStep({ dataDir });
+    expect(result.skipped).toBe(false);
+    expect(result.wrote).toBe(false);
+    expect(result.error).toMatch(/empty advice after repair/i);
+    expect(requestLlmText).toHaveBeenCalledTimes(2);
+    expect(existsSync(join(dataDir, "nightly-llm-advice.json"))).toBe(false);
+  });
+
+  it("writes after empty-advice repair succeeds", async () => {
+    process.env.DEEPSEEK_API_KEY = "test-key";
+    writeFileSync(join(dataDir, "research-opportunities.json"), JSON.stringify({
+      topN: 10,
+      opportunities: [{ rank: 1, id: "FIND-0003", opportunityScore: 0.8 }],
+    }));
+    const emptyStub = JSON.stringify({ newHypotheses: [], hypothesisReviews: [], failureClusters: [] });
+    const repaired = JSON.stringify({
+      strategyReview: "Highs-only fades remain the best edge.",
+      failureClusters: [],
+      newHypotheses: [],
+      hypothesisReviews: [{ id: "H-001", observation: "still working" }],
+    });
+    requestLlmText
+      .mockResolvedValueOnce({ text: emptyStub, stopReason: "stop" })
+      .mockResolvedValueOnce({ text: repaired, stopReason: "stop" });
+
+    const result = await runNightlyLlmStep({ dataDir });
+    expect(result).toEqual({ skipped: false, wrote: true });
+    expect(requestLlmText).toHaveBeenCalledTimes(2);
+    expect(existsSync(join(dataDir, "nightly-llm-advice.json"))).toBe(true);
   });
 });

@@ -198,7 +198,11 @@ const ONE_TOUCH_HIGH_EDGE_HOLD_DAYS = 14;
 const ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS = 1;
 const ONE_TOUCH_NO_SHADOW_MAX_SPREAD = 0.03;
 const ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY = 5_000;
-const ONE_TOUCH_MODEL_VERSION = "relative_value_heatmap_v2_one_touch";
+const ONE_TOUCH_MODEL_VERSION = "relative_value_heatmap_v3_one_touch";
+/** FIND-0020 / DEC: sell-YES / buy-NO fade only on upside barriers (highs). */
+const ONE_TOUCH_FADE_ALLOWED_DIRECTION: "above" | "below" = "above";
+/** When smart-flow stance is available, require smart wallets not confirming YES. */
+const ONE_TOUCH_REQUIRE_SMART_FLOW_DISAGREE = true;
 const ONE_TOUCH_STRICT_BAD_FLAGS = new Set([
   "wide_pm_spread",
   "low_pm_liquidity",
@@ -841,6 +845,11 @@ interface RelativeValueObservation {
   sourceAgreementBucket: string;
   noBiasCandidatePassed: boolean;
   liquidity: number | null;
+  /** Net YES size from walk-forward smart wallets (positive = smart buying YES). */
+  smartFlowNetYes: number | null;
+  /** -1 smart selling YES / absent-short, 0 unknown/flat, +1 smart buying YES. */
+  smartFlowStance: number | null;
+  sellYesEdgePts?: number | null;
   flags: string;
   rawRow: Record<string, string>;
 }
@@ -1168,11 +1177,19 @@ function readRelativeValueObservations(limit = 30): RelativeValueObservation[] {
         sourceAgreementBucket: row.source_agreement_bucket ?? "",
         noBiasCandidatePassed: String(row.no_bias_candidate_passed ?? "").toLowerCase() === "true",
         liquidity: num(row.liquidity),
+        smartFlowNetYes: num(row.smart_flow_net_yes),
+        smartFlowStance: num(row.smart_flow_stance),
         flags: row.flags ?? "",
         rawRow: row,
       };
     })
     .filter((row): row is RelativeValueObservation => !!row)
+    .map((row) => ({
+      ...row,
+      // Expose for hypothesis condition eval (sell_yes_edge_pts / smart_flow_*).
+      sellYesEdgePts: num(row.rawRow.sell_yes_edge_pts)
+        ?? (row.bestExpression === "sell_yes_or_buy_no" && row.edgePts !== null ? Math.abs(row.edgePts) : null),
+    }))
     .filter((row) => row.bestExpression !== "no-options-model" || row.pmToUnderlyingCapRatio !== null)
     .sort((a, b) => {
       const score = (row: RelativeValueObservation) => Math.max(
@@ -3805,11 +3822,24 @@ function isLineageSuspectRelativeValueRow(row: RelativeValueObservation): boolea
   return LINEAGE_SUSPECT_OPTION_SYMBOLS.has(optionSymbol);
 }
 
+function isUpsideFadeDirection(row: RelativeValueObservation): boolean {
+  return row.direction === ONE_TOUCH_FADE_ALLOWED_DIRECTION;
+}
+
+/** True when smart wallets are not confirming YES (stance <= 0) or stance unknown. */
+function smartFlowAllowsSellYesFade(row: RelativeValueObservation): boolean {
+  if (!ONE_TOUCH_REQUIRE_SMART_FLOW_DISAGREE) return true;
+  if (row.smartFlowStance === null) return true; // unknown: do not hard-block; H-* tests the scored cases
+  return row.smartFlowStance <= 0;
+}
+
 function strictOneTouchHighEdgeEligible(row: RelativeValueObservation): boolean {
   if (row.modelVersion !== ONE_TOUCH_MODEL_VERSION) return false;
   if (!row.marketId || !row.eventSlug) return false;
+  if (!isUpsideFadeDirection(row)) return false;
   if (row.edgePts === null || Math.abs(row.edgePts) < ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE) return false;
   if (row.bestExpression !== "sell_yes_or_buy_no" && row.bestExpression !== "buy_yes") return false;
+  if (row.bestExpression === "sell_yes_or_buy_no" && !smartFlowAllowsSellYesFade(row)) return false;
   if (EXCLUDE_LINEAGE_SUSPECT_SHADOWS && isLineageSuspectRelativeValueRow(row)) return false;
   const flags = relativeValueFlagSet(row);
   const badFlags = row.bestExpression === "buy_yes" ? ONE_TOUCH_BUY_YES_BAD_FLAGS : ONE_TOUCH_STRICT_BAD_FLAGS;
@@ -3821,6 +3851,8 @@ function strictOneTouchHighEdgeEligible(row: RelativeValueObservation): boolean 
 function staleLotteryTicketNoEligible(row: RelativeValueObservation): boolean {
   if (row.modelVersion !== ONE_TOUCH_MODEL_VERSION) return false;
   if (!row.marketId || !row.eventSlug) return false;
+  if (!isUpsideFadeDirection(row)) return false;
+  if (!smartFlowAllowsSellYesFade(row)) return false;
   if (row.bestExpression !== "sell_yes_or_buy_no") return false;
   const yesPrice = row.pmYes;
   if (yesPrice === null) return false;
@@ -3849,7 +3881,10 @@ function sellYesEdgePts(row: RelativeValueObservation): number | null {
 function oneTouchNoShadowEligible(row: RelativeValueObservation): boolean {
   if (row.modelVersion !== ONE_TOUCH_MODEL_VERSION) return false;
   if (!row.marketId || !row.eventSlug) return false;
+  // FIND-0020: dip sell-YES fades fight informed fear flow — highs only.
+  if (!isUpsideFadeDirection(row)) return false;
   if (row.bestExpression !== "sell_yes_or_buy_no") return false;
+  if (!smartFlowAllowsSellYesFade(row)) return false;
   if (EXCLUDE_LINEAGE_SUSPECT_SHADOWS && isLineageSuspectRelativeValueRow(row)) return false;
   const edge = sellYesEdgePts(row);
   if (edge === null || edge < ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS) return false;
@@ -3973,6 +4008,9 @@ function recordOneTouchHighEdgeShadows(
 
 function noBiasAdjustedGapEligible(row: RelativeValueObservation): boolean {
   if (!row.marketId || !row.eventSlug) return false;
+  // Same direction gate: adjusted NO-gap fades are sell-YES / buy-NO.
+  if (!isUpsideFadeDirection(row)) return false;
+  if (!smartFlowAllowsSellYesFade(row)) return false;
   if (!row.noBiasCandidatePassed) return false;
   if (row.adjustedNoGapPts === null || row.adjustedNoGapPts <= 0) return false;
   if (row.pmSpread === null || row.pmSpread > NO_BIAS_ADJUSTED_GAP_MAX_SPREAD) return false;

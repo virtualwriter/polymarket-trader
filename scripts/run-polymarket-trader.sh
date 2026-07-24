@@ -191,6 +191,17 @@ npm ci
 npx tsx scripts/market-scanner.ts --snapshot
 python3 scripts/compact_instrument_snapshots.py
 
+# Refresh smart-wallet YES stance before the heatmap so sell-YES gates and
+# FIND-linked hypotheses can require smart-flow disagreement (FIND-0020).
+if [[ -f data/flow-study/wallet_market_records.jsonl ]]; then
+  python3 scripts/flow_study/export_smart_wallets.py || echo "WARNING: smart wallet export failed"
+fi
+if [[ -f data/flow-study/smart_wallets.json ]]; then
+  if ! timeout "${SMART_FLOW_SCORE_TIMEOUT:-8m}" python3 scripts/flow_study/score_smart_flow.py --fetch-missing; then
+    echo "WARNING: smart-flow scoring timed out or failed; heatmap will omit stance columns."
+  fi
+fi
+
 # Generate static Vercel report from the same snapshot data before the engine
 # reads relative-value/cross_venue_relative_value.csv for live heatmap signals.
 relative_value_args=(--archive-dir "$STATE_DIR/relative-value-history")

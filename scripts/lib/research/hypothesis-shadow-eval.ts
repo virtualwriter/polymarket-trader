@@ -84,6 +84,8 @@ export interface RelativeValueObservation {
   perpOiUsd?: number | null;
   perpBasisPct?: number | null;
   sellYesEdgePts?: number | null;
+  smartFlowNetYes?: number | null;
+  smartFlowStance?: number | null;
   flags: string;
   rawRow?: Record<string, string>;
 }
@@ -862,11 +864,18 @@ function relativeValueConditionValue(
       if (key === "yesAsk") return row.pmAsk;
       if (key === "yesSpread") return row.pmSpread;
       if (key === "liquidity") return row.liquidity;
+      if (key === "smart_flow_stance") return row.smartFlowStance ?? null;
+      if (key === "smart_flow_net_yes") return row.smartFlowNetYes ?? null;
+      // Encode touch direction so hyps can gate highs vs dips numerically.
+      if (key === "touch_direction") return row.direction === "above" ? 1 : row.direction === "below" ? -1 : null;
       return null;
     })
     .filter((value): value is number => value !== null);
   if (key === "yesAsk" || key === "yesSpread") return reduceRelativeValues(values, "min");
-  if (key === "sell_yes_edge_pts" || key === "liquidity") return reduceRelativeValues(values, "max");
+  if (key === "sell_yes_edge_pts" || key === "liquidity" || key === "smart_flow_net_yes") {
+    return reduceRelativeValues(values, "max");
+  }
+  if (key === "smart_flow_stance" || key === "touch_direction") return reduceRelativeValues(values, "max");
   return null;
 }
 
