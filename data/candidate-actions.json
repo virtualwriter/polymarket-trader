@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-07-24T16:28:25.372Z",
+  "generatedAt": "2026-07-24T17:28:19.114Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
     {
       "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "GOLD",
+      "asset": "BTC",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.11666666666666659,
-      "confidence": 0.06274637351088101,
-      "thesis": "GOLD P/C ratio 0.47 — heavy call buying → contrarian short.",
+      "strength": 0.19333333333333333,
+      "confidence": 0.10397970467517433,
+      "thesis": "BTC P/C ratio 0.44 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4077,
+      "entryPrice": 64128,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -21,13 +21,13 @@
   "sizingPreviews": [
     {
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "GOLD",
+      "asset": "BTC",
       "venue": "spot",
       "direction": "short",
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4077,
+      "entryPrice": 64128,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -43,16 +43,16 @@
   ],
   "portfolioExposurePreviews": [
     {
-      "candidateId": "PC_RATIO_EXTREME_LOW:GOLD:0",
-      "asset": "GOLD",
+      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
+      "asset": "BTC",
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
       "candidateSize": 0,
       "riskClusters": [
-        "commodity",
-        "gold_delta",
+        "btc_delta",
         "options_sentiment",
+        "risk_on",
         "spot_venue"
       ],
       "current": {
@@ -78,7 +78,8 @@
         "totalGross": 1,
         "totalNet": -1,
         "byAsset": {
-          "GOLD": -1
+          "GOLD": -1,
+          "BTC": 0
         },
         "bySignalType": {
           "FUNDING_EXTREME_LONG": -1,
@@ -93,7 +94,9 @@
           "funding_reversion": -1,
           "gold_delta": -1,
           "hyperliquid_venue": -1,
+          "btc_delta": 0,
           "options_sentiment": 0,
+          "risk_on": 0,
           "spot_venue": 0
         }
       },
@@ -102,9 +105,9 @@
   ],
   "stagedQuantRules": [
     {
-      "candidateId": "PC_RATIO_EXTREME_LOW:GOLD:0",
+      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "GOLD",
+      "asset": "BTC",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
       "currentFlatSize": 1,
@@ -135,10 +138,10 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 26.99,
-      "hoursToExpiry": 45.01,
+      "hoursOpen": 27.99,
+      "hoursToExpiry": 44.01,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.3749,
+      "elapsedHoldPct": 0.3888,
       "minHoldHours": 12,
       "reason": "Mechanical FUNDING_EXTREME_LONG setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     }

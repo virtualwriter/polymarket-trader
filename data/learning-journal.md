@@ -6015,3 +6015,33 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-24 17:28 UTC
+
+**Portfolio:** $98.80 total | Cash $98.80 | 0 open | P&L $2.0438 | 62% win rate (504 trades)
+
+**Closed 1 trades:**
+- ❌ GOLD short via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG) → llm_decision: $-0.0033 (-0.3%, market -0.0035, funding 0.0001)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 13 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 637 (349 wins / 288 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.50%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+1.51%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+1.70%)
+
+**LLM analysis:**
+GOLD FUNDING_EXTREME_LONG thesis invalidated cleanly: funding crashed from +28% to the baseline 5.48% within 24h of entry, long before any material spot decline. This mirrors the pattern seen in some earlier GOLD fades where the funding spike was very short‑lived and the position’s edge evaporated quickly. The trade was underwater only marginally and exits without a stop hit. This case supports the idea that FUNDING_EXTREME_LONG signals with a sudden, massive funding collapse often fail to deliver follow‑through and that a thesis‑invalidation rule tied to funding crossing back below threshold is valuable. No new hypothesis or parameter change proposed here; will note for the nightly review the potential value of a faster re‑evaluation timer when funding recedes within the first 12‑24 hours.
+
+---
+
