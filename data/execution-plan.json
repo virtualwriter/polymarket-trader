@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-24T01:28:15.406Z",
+  "generatedAt": "2026-07-24T02:28:56.223Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,16 +15,32 @@
       "confidence": 0.036570739317217035,
       "thesis": "GOLD P/C ratio 1.26 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4046,
+      "entryPrice": 4048,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
-  "rejectedLlmActions": [],
+  "rejectedLlmActions": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1784813331294-r9fe",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "gold_hl_funding_ann"
+        ],
+        "thesis": "Extreme positive funding (28% ann) that triggered the short has fully normalized to 9.06%, well below the +15% entry threshold. The condition that created the edge is gone, so the trade is closed early."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+    }
+  ],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
   ]
 }
