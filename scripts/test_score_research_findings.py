@@ -122,12 +122,33 @@ def test_significant_p_value_boosts_opportunity() -> None:
     assert opp_trend > opp_fluke, f"expected significant > fluke: {opp_fluke} vs {opp_trend}"
 
 
-def test_missing_p_value_scores_neutral() -> None:
+def test_scores_are_the_statistics() -> None:
+    # opportunity = 1 - p, confidence = Wilson 95% lower bound. Exact values.
+    body = _sample_body("EXACT|OIL|edge|no", 10, 0.90, 0.50)
+    body["evidence"]["pValue"] = 0.01074  # binomial P(X>=9 | 10, 0.5)
+    opportunity, confidence = compute_scores(body, FIXED_NOW)
+    assert abs(opportunity - (1.0 - 0.01074)) < 1e-4, opportunity
+    assert abs(confidence - 0.6523) < 1e-3, confidence
+
+
+def test_pnl_t_test_takes_precedence_over_binomial() -> None:
+    # High WR but the PnL t-test says the cluster loses money: the alpha
+    # p-value must dominate and push opportunity below 0.5.
+    body = _sample_body("WINSOFTEN_LOSESMONEY|BTC|edge|no", 22, 0.59, -0.21)
+    body["evidence"]["pValue"] = 0.26
+    body["evidence"]["pnlPValue"] = 0.72
+    opportunity, _ = compute_scores(body, FIXED_NOW)
+    assert abs(opportunity - 0.28) < 1e-6, opportunity
+    assert opportunity < 0.5
+
+
+def test_missing_p_value_falls_back_to_binomial() -> None:
     body = _sample_body("LEGACY|OIL|edge|no", 10, 0.70, 0.20)
     assert "pValue" not in body["evidence"]
     opportunity, confidence = compute_scores(body, FIXED_NOW)
-    assert 0.0 < opportunity < 1.0
-    assert 0.0 < confidence < 1.0
+    # Recomputed binomial: P(X>=7 | 10, 0.5) = 0.171875 → opp = 0.828125
+    assert abs(opportunity - 0.8281) < 1e-3, opportunity
+    assert 0.0 < confidence < 0.70
 
 
 def test_score_history_appended() -> None:
@@ -169,7 +190,9 @@ def run_tests() -> None:
     test_negative_status_excluded_from_opportunities()
     test_deterministic_scores()
     test_significant_p_value_boosts_opportunity()
-    test_missing_p_value_scores_neutral()
+    test_scores_are_the_statistics()
+    test_pnl_t_test_takes_precedence_over_binomial()
+    test_missing_p_value_falls_back_to_binomial()
     test_score_history_appended()
     print("ok: test_score_research_findings passed")
 

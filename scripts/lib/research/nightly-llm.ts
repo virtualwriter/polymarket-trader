@@ -123,7 +123,7 @@ export function buildNightlyResearchPrompt(inputs: BuildNightlyResearchPromptInp
 Your job this run is to:
 1. Write a strategyReview: one short paragraph on what is working and what is failing, grounded in the truth state and lessons below.
 2. Identify failureClusters: group recent losing patterns into named themes, each with supporting evidence and a recommendation.
-3. Propose up to 3 newHypotheses from the ranked research opportunities only, and write hypothesisReviews for existing hypotheses you have new observations about.
+3. Propose up to 10 newHypotheses from the ranked research opportunities only, and write hypothesisReviews for existing hypotheses you have new observations about.
 4. Suggest parameterUpdates within the bounds below, only when the evidence supports a change.
 
 CANONICAL ENGINE STATE:
@@ -136,6 +136,7 @@ NIGHTLY LESSONS:
 ${jsonOrUnavailable(inputs.lessons, 1)}
 
 RANKED RESEARCH OPPORTUNITIES:
+Score semantics (research_score_v3, in-sample discovery statistics): opportunityScore = 1 - p where p is the one-sided p-value that the cluster's expected per-trade PnL is positive (Student-t on per-trade PnL when available, else exact binomial on win rate) — e.g. 0.99 means 99% confident the cluster is genuinely profitable in-sample; below 0.5 means it likely loses money. confidenceScore = Wilson 95% lower confidence bound on the win rate — the true win rate is at least this with 95% confidence. evidence.qValue, when present, is the Benjamini-Hochberg false-discovery-rate-adjusted p-value across all clusters tested in the mining run; small qValue means the pattern survives multiple-comparisons correction. These are discovery statistics only — forward shadow tests remain the promotion gate.
 ${opportunityLines}
 
 RESEARCH THEMES SUMMARY:
@@ -154,7 +155,7 @@ IMPORTANT RULES:
 - Each hypothesis MUST be specific and testable with a clear timeframe (1-30 days)
 - Each hypothesis MUST define measurable conditions using column names from the data
 - When RANKED RESEARCH OPPORTUNITIES contains FIND records, every newHypothesis MUST be authored from one of those findings, MUST include originFindingId exactly matching a listed FIND id, and MUST include themeId when the listed finding has one.
-- Do NOT invent unrelated freeform ideas when ranked opportunities exist. Prefer up to 3 hypotheses total; if no ranked opportunities are listed, prefer returning zero newHypotheses.
+- Do NOT invent unrelated freeform ideas when ranked opportunities exist. Prefer up to 10 hypotheses total; if no ranked opportunities are listed, prefer returning zero newHypotheses.
 - Prefer regime-relative conditions over hard-coded price levels so promoted setup families can generalize across BTC/HYPE/GOLD/OIL/AMZN price regimes. Use absolute spot thresholds only when the exact level is essential to the thesis.
 - Supported derived condition keys:
   - <column>_pct_from_<N>h_high / <column>_pct_from_<N>d_high, e.g. btc_spot_pct_from_7d_high > -3
@@ -452,7 +453,7 @@ function buildEmptyAdviceRepairPrompt(previousText: string, opportunityCount: nu
 
 The original prompt listed ${opportunityCount} ranked research opportunities. Empty advice is not acceptable when opportunities are present. You MUST return a substantive JSON object that includes at least:
 - a non-empty strategyReview, and
-- up to 3 newHypotheses drawn from those ranked opportunities (or explicitly justify zero hypotheses inside strategyReview while still reviewing/hypothesizing something actionable)
+- up to 10 newHypotheses drawn from those ranked opportunities (or explicitly justify zero hypotheses inside strategyReview while still reviewing/hypothesizing something actionable)
 
 Return ONLY a corrected JSON object that follows the original schema exactly. Do not include markdown, comments, or explanation.
 

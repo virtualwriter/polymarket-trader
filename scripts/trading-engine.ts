@@ -92,7 +92,9 @@ import { extractLlmJsonObject, requestLlmText, resolveLlmRoute } from "./lib/tra
 import {
   DATA_CONTAMINATED_SETUP_IDS,
   HYPOTHESIS_SHADOW_TESTS_REQUIRED,
+  PROMOTE_SIGNIFICANCE_ALPHA,
   RETIRED_LLM_SETUP_IDS,
+  binomialPValue,
   completedHypothesisTests,
   evaluateHypothesisTest,
   hasRegimeRelativeConditions,
@@ -289,7 +291,7 @@ const SHADOW_MINED_RETEST_ACTIVE_LIMIT = 80;
 const SHADOW_MINED_MAX_PENDING_PER_FAMILY = 4;
 const SHADOW_MINED_ADVICE_FILE = "shadow-mined-hypotheses.json";
 const SHADOW_MINED_ADVICE_INGESTED_FILE = "shadow-mined-hypotheses-ingested.json";
-const SHADOW_MINED_MAX_NEW_PER_INGEST = 8;
+const SHADOW_MINED_MAX_NEW_PER_INGEST = 16;
 const PROMOTE_THRESHOLD = 0.65;
 const PROMOTE_MIN_TESTS = HYPOTHESIS_SHADOW_TESTS_REQUIRED;
 const DEMOTE_THRESHOLD = 0.45;
@@ -6149,8 +6151,17 @@ function evaluateHypotheses(
     if (RETIRED_LLM_SETUP_IDS.has(family.setupId)) continue;
     if (isDataContaminatedSetup(family.setupId)) continue;
 
+    // Promotion is a statistical test, not a raw win-rate screen: the family's
+    // record must be significantly above chance (one-sided binomial), so that
+    // scaling up the number of families under test does not scale up false
+    // promotions. 13/20 (65%) has p=0.13 and no longer passes; sequential
+    // testing (hypothesisSetupNeedsMoreShadowTests) keeps inconclusive
+    // families accumulating evidence instead of freezing at 20.
+    const familyPValue = binomialPValue(family.wins, completedCount);
     const meetsPromotionGate =
-      completedCount >= PROMOTE_MIN_TESTS && family.winRate >= PROMOTE_THRESHOLD;
+      completedCount >= PROMOTE_MIN_TESTS
+      && family.winRate >= PROMOTE_THRESHOLD
+      && familyPValue < PROMOTE_SIGNIFICANCE_ALPHA;
 
     // Enforce on every run: promotions that do not currently meet the gate are
     // demoted. Previously `if (completedCount < PROMOTE_MIN_TESTS) continue`
@@ -6161,7 +6172,9 @@ function evaluateHypotheses(
         if (hypothesis.status !== "promoted" && !hypothesis.promotedToSignal) continue;
         const reason = completedCount < PROMOTE_MIN_TESTS
           ? `Demoted: insufficient evidence (${completedCount}/${PROMOTE_MIN_TESTS} completed family tests; need ≥${(PROMOTE_THRESHOLD * 100).toFixed(0)}% win rate).`
-          : `Demoted: family win rate ${(family.winRate * 100).toFixed(0)}% below promote threshold ${(PROMOTE_THRESHOLD * 100).toFixed(0)}% over ${completedCount} tests.`;
+          : family.winRate < PROMOTE_THRESHOLD
+            ? `Demoted: family win rate ${(family.winRate * 100).toFixed(0)}% below promote threshold ${(PROMOTE_THRESHOLD * 100).toFixed(0)}% over ${completedCount} tests.`
+            : `Demoted: family record ${family.wins}/${completedCount} not statistically significant (binomial p=${familyPValue.toFixed(4)} ≥ α=${PROMOTE_SIGNIFICANCE_ALPHA}); continuing shadow tests.`;
         hypothesis.status = "active";
         hypothesis.promotedToSignal = false;
         hypothesis.postMortem = reason;
@@ -6175,9 +6188,9 @@ function evaluateHypotheses(
           hypothesis.postMortem = hypothesis.postMortem ?? `Setup family killed: ${(family.winRate * 100).toFixed(0)}% win rate over ${completedCount} completed tests across ${family.hypotheses.length} variants.`;
         }
         observations.push(`💀 Setup family ${family.setupId} KILLED (${(family.winRate * 100).toFixed(0)}% over ${completedCount} tests across ${family.hypotheses.length} variants): ${family.setupLabel}`);
-      } else if (completedCount >= PROMOTE_MIN_TESTS && family.winRate < PROMOTE_THRESHOLD) {
+      } else if (completedCount >= PROMOTE_MIN_TESTS) {
         for (const hypothesis of activeFamilyHypotheses) {
-          hypothesis.postMortem = hypothesis.postMortem ?? `Setup family inconclusive after ${completedCount} completed tests: ${(family.winRate * 100).toFixed(0)}% win rate.`;
+          hypothesis.postMortem = hypothesis.postMortem ?? `Setup family inconclusive after ${completedCount} completed tests: ${(family.winRate * 100).toFixed(0)}% win rate (binomial p=${familyPValue.toFixed(4)}).`;
         }
       }
       continue;
@@ -6921,8 +6934,11 @@ function ingestNightlyLlmAdvice(
   ];
 
   // New hypotheses: per-item validation + backlog/retired/quality gates.
-  // Funnel quality (post DEC-0012): fewer, higher-prior ideas only.
-  const NIGHTLY_MAX_NEW_HYPOTHESES = 3;
+  // Raised 3 → 10 once discovery became FDR-controlled (research_score_v3):
+  // intake is now pre-filtered by honest statistics, and the promotion gate
+  // requires binomial significance, so wider intake does not scale up false
+  // promotions — it scales up the number of rigorously-tested candidates.
+  const NIGHTLY_MAX_NEW_HYPOTHESES = 10;
   const NIGHTLY_MIN_HYPOTHESIS_CONFIDENCE = 0.70;
   const NIGHTLY_MIN_DESCRIPTION_CHARS = 40;
   const NIGHTLY_MIN_CONDITION_KEYS = 1;

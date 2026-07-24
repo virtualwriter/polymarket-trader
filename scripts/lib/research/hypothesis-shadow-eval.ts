@@ -94,6 +94,14 @@ const UNDERLYING_CAP_ENTRY_MAX_SPREAD = 0.02;
 const UNDERLYING_CAP_ENTRY_MIN_LIQUIDITY = 1000;
 
 export const HYPOTHESIS_SHADOW_TESTS_REQUIRED = 20;
+/** Sequential testing cap: past the base 20, inconclusive families keep
+ * testing until decisive (significant promote / futility kill) or this cap. */
+export const HYPOTHESIS_SHADOW_TESTS_EXTENDED_CAP = 60;
+/** Nominal one-sided alpha for the promotion binomial test. Deliberately
+ * strict: the gate is re-checked as evidence accumulates (optional stopping),
+ * which inflates the effective false-promotion rate a few-fold above nominal —
+ * 0.01 nominal keeps the effective rate near a conventional 0.05. */
+export const PROMOTE_SIGNIFICANCE_ALPHA = 0.01;
 /** Live retest fan-out for LLM + FIND-linked setup families (~8x prior 25). */
 const HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT = 200;
 /** Max in-flight pending shadow tests per LLM/FIND family (~8x prior 1). */
@@ -702,13 +710,49 @@ export function hypothesisSetupFamilies(hypotheses: Hypothesis[]): HypothesisSet
   });
 }
 
+/** One-sided exact binomial P(X >= wins | n, p). Small p => win rate above chance. */
+export function binomialPValue(wins: number, n: number, p = 0.5): number {
+  if (n <= 0) return 1.0;
+  const clamped = Math.max(0, Math.min(wins, n));
+  // Iterative binomial pmf accumulation avoids factorial overflow.
+  let pmf = Math.pow(1 - p, n);
+  let cdfBelow = 0;
+  for (let k = 0; k < clamped; k++) {
+    cdfBelow += pmf;
+    pmf *= ((n - k) / (k + 1)) * (p / (1 - p));
+  }
+  return Math.min(1, Math.max(0, 1 - cdfBelow));
+}
+
+/** True when the family's completed record is statistically decisive:
+ * promotable (win rate over threshold AND significantly above chance) or
+ * killable (win rate below the futility floor). */
+export function setupFamilyIsDecisive(
+  wins: number,
+  completed: number,
+  promoteThreshold: number,
+  killThreshold: number,
+): boolean {
+  if (completed <= 0) return false;
+  const winRate = wins / completed;
+  if (winRate < killThreshold) return true;
+  return winRate >= promoteThreshold && binomialPValue(wins, completed) < PROMOTE_SIGNIFICANCE_ALPHA;
+}
+
 export function hypothesisSetupNeedsMoreShadowTests(
   family: HypothesisSetupFamily,
   sources: ReadonlySet<string> = new Set(["llm"]),
 ): boolean {
   if (!family.hypotheses.some((hypothesis) => sources.has(hypothesis.source))) return false;
   if (!family.hypotheses.some((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived")) return false;
-  return family.completed.length < HYPOTHESIS_SHADOW_TESTS_REQUIRED;
+  const completed = family.completed.length;
+  if (completed < HYPOTHESIS_SHADOW_TESTS_REQUIRED) return true;
+  if (completed >= HYPOTHESIS_SHADOW_TESTS_EXTENDED_CAP) return false;
+  // Sequential evidence: past the base requirement, keep testing only while
+  // the record is statistically inconclusive — neither significantly above
+  // chance at the promote bar nor below the futility floor. Freezing at
+  // exactly 20 would strand e.g. 13/20 (65%, p=0.13) forever.
+  return !setupFamilyIsDecisive(family.wins, completed, PROMOTE_THRESHOLD, KILL_THRESHOLD);
 }
 
 export function isDataContaminatedSetup(setupId: string): boolean {

@@ -516,6 +516,20 @@ function hasFamilyTestOnDate(family: HypothesisSetupFamily, date: string): boole
   return family.hypotheses.some((hypothesis) => hypothesis.tests.some((test) => dayKey(test.date) === date));
 }
 
+/**
+ * Walk-forward boundary: earliest creation date across the family's variants.
+ * Backfill must never open tests on dates BEFORE the hypothesis existed —
+ * mined/FIND-linked hypotheses were discovered on that history, so replaying
+ * it would be in-sample self-confirmation, not validation. Families with no
+ * parseable creation date get no backfilled opens (conservative).
+ */
+function familyCreatedMs(family: HypothesisSetupFamily): number {
+  const stamps = family.hypotheses
+    .map((hypothesis) => timeMs(dayKey(String(hypothesis.created ?? ""))))
+    .filter((ms) => Number.isFinite(ms) && ms > 0);
+  return stamps.length > 0 ? Math.min(...stamps) : Number.POSITIVE_INFINITY;
+}
+
 function familySnapshot(family: HypothesisSetupFamily, asOfDate: string | null = null) {
   const completed = completedFamilyTests(family);
   const pending = pendingFamilyTests(family)
@@ -625,6 +639,7 @@ function backfill(opts: CliOptions): Report {
 
   for (const family of selectedFamilies) {
     const beforeSnapshot = familySnapshot(family);
+    const walkForwardStartMs = familyCreatedMs(family);
     let opened = 0;
     let resolved = 0;
     let wins = 0;
@@ -641,6 +656,9 @@ function backfill(opts: CliOptions): Report {
       resolved += resolution.resolved;
       wins += resolution.wins;
       losses += resolution.losses;
+
+      // Walk-forward only: no opens before the family's hypotheses existed.
+      if (timeMs(currentDate) < walkForwardStartMs) continue;
 
       let snapshot = familySnapshot(family, currentDate);
       if (snapshot.completed.length >= opts.targetTests) break;

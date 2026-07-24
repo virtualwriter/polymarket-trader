@@ -14,6 +14,8 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
+from lib.alpha_stats import binomial_p_value
+
 REPO = Path(__file__).resolve().parents[1]
 DEFAULT_BLOCKED = REPO / "data" / "blocked-signals.json"
 DEFAULT_OUT = REPO / "data" / "shadow-mined-hypotheses.json"
@@ -184,6 +186,7 @@ def _candidates_from_clusters(
                     "wins": wins,
                     "winRate": round(wr, 4),
                     "sumPnl": round(sum(r["pnl"] or 0 for r in rows), 4),
+                    "pValue": round(binomial_p_value(wins, len(rows)), 5),
                     "hasHeatmap": has_hm,
                     "sampleIds": [r["id"] for r in rows[:5]],
                 },
@@ -221,11 +224,11 @@ def mine(blocked_path: Path, hyps_path: Path, min_wr: float, max_candidates: int
             candidates.append(c)
             seen_setups.add(c["setupId"])
 
-    # Prefer heatmap-backed first, then WR, then n.
+    # Rank by the statistic: binomial significance of the win record, then n.
+    # Raw win-rate sorting favors tiny-n flukes over large significant cohorts.
     candidates.sort(
         key=lambda c: (
-            -int(c["mineStats"]["hasHeatmap"]),
-            -c["mineStats"]["winRate"],
+            c["mineStats"]["pValue"],
             -c["mineStats"]["n"],
         )
     )

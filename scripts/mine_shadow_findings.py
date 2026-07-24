@@ -209,12 +209,14 @@ def main() -> int:
     )
     for row in result["payload"]["findings"]:
         ev = row["evidence"]
-        p = ev.get("pValue")
+        p_alpha = ev.get("pnlPValue")
+        q = ev.get("qValue")
         print(
             f"  {row['id']} {row['clusterKey']}: "
             f"status={row['status']} n={ev['n']} wr={ev['winRate']:.2f} "
             f"sum={ev['sumPnl']:+.3f}"
-            + (f" p={p:.4f}" if p is not None else "")
+            + (f" p_pnl={p_alpha:.4f}" if p_alpha is not None else "")
+            + (f" q={q:.4f}" if q is not None else "")
         )
     if not args.dry_run:
         print(f"wrote {args.out}")

@@ -1,9 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
+  HYPOTHESIS_SHADOW_TESTS_EXTENDED_CAP,
+  binomialPValue,
   evaluateHypothesisTest,
   fundingAnnConditionKey,
+  hypothesisSetupFamilies,
+  hypothesisSetupNeedsMoreShadowTests,
   inferHypothesisAsset,
   resolveHypothesisDirection,
+  setupFamilyIsDecisive,
   type Hypothesis,
   type SnapshotRow,
 } from "./hypothesis-shadow-eval.js";
@@ -166,5 +171,62 @@ describe("evaluateHypothesisTest scorer v2", () => {
     expect(result.scorable).toBe(true);
     expect(result.outcome).toBe("win");
     expect(result.method).toBe("funding_normalize_up");
+  });
+});
+
+describe("binomialPValue", () => {
+  it("matches exact tail probabilities", () => {
+    expect(binomialPValue(9, 10)).toBeCloseTo(11 / 1024, 9);
+    expect(binomialPValue(13, 20)).toBeCloseTo(0.1316, 4);
+    expect(binomialPValue(16, 20)).toBeCloseTo(0.0059, 4);
+    expect(binomialPValue(0, 10)).toBe(1);
+    expect(binomialPValue(0, 0)).toBe(1);
+  });
+});
+
+describe("sequential shadow-test evidence", () => {
+  it("13/20 (old promote boundary) is inconclusive, not decisive", () => {
+    // p = 0.1316 — this record used to promote; now it keeps testing.
+    expect(setupFamilyIsDecisive(13, 20, 0.65, 0.40)).toBe(false);
+  });
+
+  it("16/20 is decisively promotable (p < 0.01 and WR over threshold)", () => {
+    expect(setupFamilyIsDecisive(16, 20, 0.65, 0.40)).toBe(true);
+  });
+
+  it("7/20 (35%) is decisive futility below the kill floor", () => {
+    expect(setupFamilyIsDecisive(7, 20, 0.65, 0.40)).toBe(true);
+  });
+
+  function familyWithRecord(wins: number, losses: number): ReturnType<typeof hypothesisSetupFamilies>[number] {
+    const h = hyp({
+      prediction: "test",
+      conditions: { asset: "BTC" },
+      setupId: "seq_test_family",
+      setupLabel: "Sequential test family",
+    });
+    h.tests = [
+      ...Array.from({ length: wins }, (_, i) => ({ date: `2026-06-${String((i % 28) + 1).padStart(2, "0")}`, triggered: true, outcome: "win" as const, actualMove: "up" })),
+      ...Array.from({ length: losses }, (_, i) => ({ date: `2026-07-${String((i % 28) + 1).padStart(2, "0")}`, triggered: true, outcome: "loss" as const, actualMove: "down" })),
+    ];
+    return hypothesisSetupFamilies([h])[0];
+  }
+
+  it("keeps testing an inconclusive family past 20 completed tests", () => {
+    expect(hypothesisSetupNeedsMoreShadowTests(familyWithRecord(13, 7))).toBe(true);
+  });
+
+  it("stops testing once significantly promotable", () => {
+    expect(hypothesisSetupNeedsMoreShadowTests(familyWithRecord(16, 4))).toBe(false);
+  });
+
+  it("stops testing at the extended cap even when inconclusive", () => {
+    const wins = Math.round(HYPOTHESIS_SHADOW_TESTS_EXTENDED_CAP * 0.55);
+    const losses = HYPOTHESIS_SHADOW_TESTS_EXTENDED_CAP - wins;
+    expect(hypothesisSetupNeedsMoreShadowTests(familyWithRecord(wins, losses))).toBe(false);
+  });
+
+  it("still requires the base 20 tests regardless of early record", () => {
+    expect(hypothesisSetupNeedsMoreShadowTests(familyWithRecord(10, 0))).toBe(true);
   });
 });

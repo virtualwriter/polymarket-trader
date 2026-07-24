@@ -1,27 +1,31 @@
 #!/usr/bin/env python3
 """Score FIND records with dual opportunity/confidence metrics (Phase B).
 
-Scoring version: ``research_score_v1``
+Scoring version: ``research_score_v3`` — principled, zero tuned weights.
 
-Formulas (deterministic, no ML):
-
-confidenceScore in [0, 1]::
-
-    sampleWeight = n / (n + 10)
-    confidenceScore = sampleWeight * winRate
-
-Higher ``n`` and ``winRate`` both monotonically increase confidence.
+Both scores ARE standard statistics, not blends:
 
 opportunityScore in [0, 1]::
 
-    wrPart = winRate
-    pnlPart = (clip(sumPnl, -1, 1) + 1) / 2          # -1→0, 0→0.5, +1→1
-    heatmapPart = 1.0 if mineStats.hasHeatmap else 0.0
-    freshnessPart = max(0, 1 - daysSince(lastSeenAt) / 30)   # 0.5 when missing
-    opportunityScore = clip(
-        0.40 * wrPart + 0.30 * pnlPart + 0.15 * heatmapPart + 0.15 * freshnessPart,
-        0, 1,
-    )
+    opportunityScore = 1 - p_alpha
+
+where ``p_alpha`` is the one-sided p-value for the alpha claim
+"this cluster's expected per-trade PnL is positive". Preference order:
+``evidence.pnlPValue`` (Student-t on per-trade PnL, supplied by the miner),
+else ``evidence.pValue`` (exact binomial on win rate vs. chance), else the
+binomial recomputed from ``n``/``winRate``. Reading: 0.95 means "95%
+confident this cluster is genuinely profitable, in-sample". Money-losing
+clusters land below 0.5 automatically — no PnL veto term needed.
+
+confidenceScore in [0, 1]::
+
+    confidenceScore = Wilson 95% lower confidence bound on winRate
+
+Reading: "we are 95% confident the true win rate is at least this".
+Small samples shrink toward 0 without any hand-tuned sample weight.
+
+These are in-sample discovery statistics; the forward shadow-test gate
+(20 tests per setup family) remains the out-of-sample validator.
 
 Each scoring run appends one ``scoreHistory`` entry per FIND (includes
 ``scoringVersion``). Writes ``data/research-opportunities.json`` ranked by
@@ -42,6 +46,7 @@ SCRIPTS = Path(__file__).resolve().parent
 if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
+from lib.alpha_stats import binomial_p_value, wilson_lower_bound  # noqa: E402
 from registry import (  # noqa: E402
     REGISTRY_VERSION,
     default_registry_path,
@@ -51,7 +56,7 @@ from registry import (  # noqa: E402
     write_registry,
 )
 
-SCORING_VERSION = "research_score_v2"
+SCORING_VERSION = "research_score_v3"
 DEFAULT_REGISTRY = default_registry_path()
 DEFAULT_FINDINGS = REPO / "data" / "research-findings.json"
 DEFAULT_OUT = REPO / "data" / "research-opportunities.json"
@@ -66,46 +71,34 @@ def _round_score(value: float) -> float:
     return round(_clip(value, 0.0, 1.0), SCORE_DECIMALS)
 
 
-def freshness_score(last_seen_at: str | None, now: datetime) -> float:
-    if not last_seen_at:
-        return 0.5
-    try:
-        seen = datetime.fromisoformat(last_seen_at.replace("Z", "+00:00"))
-    except ValueError:
-        return 0.5
-    days = (now - seen).total_seconds() / 86400.0
-    return _round_score(1.0 - days / 30.0)
+def _alpha_p_value(evidence: dict[str, Any]) -> float:
+    """One-sided p-value for 'this cluster is profitable', best available test.
+
+    Prefers the miner's Student-t on per-trade PnL (tests the alpha claim
+    directly), falls back to the miner's exact binomial on win rate, and for
+    legacy evidence recomputes the binomial from n/winRate.
+    """
+    pnl_p = evidence.get("pnlPValue")
+    if pnl_p is not None:
+        return _clip(float(pnl_p), 0.0, 1.0)
+    p_value = evidence.get("pValue")
+    if p_value is not None:
+        return _clip(float(p_value), 0.0, 1.0)
+    n = int(evidence.get("n") or 0)
+    win_rate = float(evidence.get("winRate") or 0)
+    if n <= 0:
+        return 1.0
+    return binomial_p_value(round(win_rate * n), n)
 
 
 def compute_scores(body: dict[str, Any], now: datetime | None = None) -> tuple[float, float]:
     """Return (opportunityScore, confidenceScore) for a FIND body."""
-    now = now or datetime.now(timezone.utc)
     evidence = body.get("evidence") or {}
-    n = float(evidence.get("n") or 0)
+    n = int(evidence.get("n") or 0)
     win_rate = float(evidence.get("winRate") or 0)
-    sum_pnl = float(evidence.get("sumPnl") or 0)
 
-    sample_weight = n / (n + 10.0) if n >= 0 else 0.0
-    confidence = _round_score(sample_weight * win_rate)
-
-    pnl_part = ( _clip(sum_pnl, -1.0, 1.0) + 1.0) / 2.0
-    mine_stats = body.get("mineStats") or {}
-    heatmap_part = 1.0 if mine_stats.get("hasHeatmap") else 0.0
-    fresh_part = freshness_score(body.get("lastSeenAt"), now)
-    # Binomial significance vs coin-flip (miner supplies pValue). Raw win-rate
-    # weighting alone lets a 90% WR on n=10 outrank 67% on n=43 even though the
-    # larger sample is the statistically stronger trend. Neutral 0.5 when the
-    # evidence predates pValue support.
-    p_value = evidence.get("pValue")
-    significance_part = _clip(1.0 - float(p_value), 0.0, 1.0) if p_value is not None else 0.5
-
-    opportunity = _round_score(
-        0.30 * win_rate
-        + 0.25 * pnl_part
-        + 0.20 * significance_part
-        + 0.15 * heatmap_part
-        + 0.10 * fresh_part
-    )
+    opportunity = _round_score(1.0 - _alpha_p_value(evidence))
+    confidence = _round_score(wilson_lower_bound(round(win_rate * n), n))
     return opportunity, confidence
 
 
@@ -166,7 +159,7 @@ def build_opportunities(
     findings: list[dict[str, Any]],
     top_n: int,
 ) -> list[dict[str, Any]]:
-    eligible = [f for f in findings if f.get("status") != "negative"]
+    eligible = [f for f in findings if f.get("status") not in ("negative", "superseded")]
     eligible.sort(
         key=lambda f: (
             f.get("body", {}).get("opportunityScore") or 0.0,
