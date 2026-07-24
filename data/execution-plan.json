@@ -1,34 +1,21 @@
 {
-  "generatedAt": "2026-07-24T17:28:44.957Z",
+  "generatedAt": "2026-07-24T18:28:24.372Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1784813331294-r9fe",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "gold_hl_funding_ann"
-      ],
-      "thesis": "Funding has normalized from 28.1% to 5.48%, well below the +15% entry threshold. The extreme long‑funding edge that justified the fade no longer exists, invalidating the original signal."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "asset": "BTC",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.19333333333333333,
-      "confidence": 0.10397970467517433,
+      "strength": 0.19666666666666666,
+      "confidence": 0.10577245820405663,
       "thesis": "BTC P/C ratio 0.44 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 64128,
+      "entryPrice": 64129,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -38,6 +25,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
