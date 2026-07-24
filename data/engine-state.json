@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-24T18:28:24.178Z",
+  "generatedAt": "2026-07-24T19:28:18.337Z",
   "dataFreshness": {
-    "valuationRows": 1873,
-    "latestValuationAt": "2026-07-24T18",
-    "macroRows": 1871,
+    "valuationRows": 1874,
+    "latestValuationAt": "2026-07-24T19",
+    "macroRows": 1872,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-24T18"
+    "latestInstrumentSnapshotAt": "2026-07-24T19"
   },
   "portfolio": {
     "cash": 98.8043,
@@ -156,9 +156,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 53,
-    "resolvedCount": 637,
-    "wouldHaveWon": 349,
+    "openCount": 52,
+    "resolvedCount": 638,
+    "wouldHaveWon": 350,
     "wouldHaveLost": 288,
     "bySignal": [
       {
@@ -188,10 +188,10 @@
       {
         "signalType": "FUNDING_EXTREME_LONG",
         "blocked": 16,
-        "resolved": 15,
-        "wouldHaveWon": 9,
+        "resolved": 16,
+        "wouldHaveWon": 10,
         "wouldHaveLost": 6,
-        "avgPnlPct": 0.09
+        "avgPnlPct": 0.14
       },
       {
         "signalType": "PM_IV_GT_OPT_IV_DOWNSIDE",
@@ -227,26 +227,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 0,
-        "resolvedAt": "2026-07-23T04:28:12.841Z",
-        "marketQuality": {
-          "yesBid": 0.21,
-          "yesAsk": 0.22,
-          "yesSpread": 0.01,
-          "liquidity": 72997.41,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "OIL",
@@ -379,6 +359,21 @@
           "yesSpread": 0.001,
           "liquidity": 29226.29,
           "flags": []
+        }
+      },
+      {
+        "signalType": "FUNDING_EXTREME_LONG",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "short",
+        "blockedReason": "short_blocked_by_positive_trend",
+        "outcome": "win",
+        "closeReason": "expiry",
+        "pnlPct": 0.87,
+        "resolvedAt": "2026-07-24T19:28:18.081Z",
+        "trendMetrics": {
+          "aboveTrendPct": 0.88,
+          "momentumPct": 1.89
         }
       }
     ],
