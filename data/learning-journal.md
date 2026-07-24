@@ -5881,3 +5881,40 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-24 14:12 UTC
+
+**Portfolio:** $98.81 total | Cash $97.81 | 1 open | P&L $2.0163 | 62% win rate (502 trades)
+
+**Closed 1 trades:**
+- ✅ BTC short via spot/spot [BTC spot] (PC_RATIO_EXTREME_LOW) → target: +$0.0308 (3.1%, market 0.0308, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 13 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 43.3pp (was 8.8, now -34.5)
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 634 (346 wins / 288 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 9/15 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-10.78%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.05%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.50%)
+
+**LLM analysis:**
+The GOLD FUNDING_EXTREME_LONG short (entry 4057) is closed as thesis invalidated. Funding fell from 28.1% annualized to 8.77%, well below the 15% entry trigger, removing the persistent long-side crowding that the trade was designed to fade. Price moved slightly against us (-0.16%) but the signal's own evidence metric has round-tripped. FUNDING_EXTREME_LONG as a family remains low-conviction (47% win rate, -0.54% avg PnL), so early exits on normalization are prudent. No new entries or hypotheses in this review.
+
+**LLM close rejections today (2026-07-24, token-burn signal):**
+- Total rejected close instructions: 2
+- Top signal/asset pairs: FUNDING_EXTREME_LONG / GOLD (2)
+
+---
+

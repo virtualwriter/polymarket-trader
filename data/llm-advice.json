@@ -1,5 +1,21 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [],
+  "rejectedCloses": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1784813331294-r9fe",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "gold_hl_funding_ann"
+        ],
+        "thesis": "FUNDING_EXTREME_LONG entry required funding > +15%. Gold HL funding annualized dropped from 28.08% to 8.77%, crossing back below the entry threshold. This negates the extreme-long signal and the short thesis is no longer supported."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+    }
+  ],
   "skippedTrades": []
 }

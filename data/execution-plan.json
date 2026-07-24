@@ -1,30 +1,31 @@
 {
-  "generatedAt": "2026-07-24T04:28:21.033Z",
+  "generatedAt": "2026-07-24T14:12:01.266Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [
+  "entrySignals": [],
+  "rejectedLlmActions": [
     {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.07124999999999992,
-      "confidence": 0.036570739317217035,
-      "thesis": "GOLD P/C ratio 1.26 — heavy put buying → contrarian long.",
-      "hypothesisId": null,
-      "entryPrice": 4031,
-      "targetPct": 4,
-      "stopPct": 1.5,
-      "expiryDays": 5
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1784813331294-r9fe",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "gold_hl_funding_ann"
+        ],
+        "thesis": "FUNDING_EXTREME_LONG entry required funding > +15%. Gold HL funding annualized dropped from 28.08% to 8.77%, crossing back below the entry threshold. This negates the extreme-long signal and the short thesis is no longer supported."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
     }
   ],
-  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
   ]
 }
