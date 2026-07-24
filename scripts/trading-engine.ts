@@ -636,7 +636,7 @@ interface Hypothesis {
   status: "active" | "promoted" | "archived" | "killed";
   promotedToSignal: boolean;
   postMortem: string | null;
-  source: "llm" | "statistical" | "shadow_mined";
+  source: "llm" | "statistical" | "shadow_mined" | "informed_flow_study_v1";
 }
 
 interface HypothesisSetupFamily {
@@ -6137,7 +6137,10 @@ function evaluateHypotheses(
     }
   }
 
-  const setupFamilies = hypothesisSetupFamilies(hypotheses.filter((hypothesis) => hypothesis.source === "llm"));
+  const setupFamilies = hypothesisSetupFamilies(
+    hypotheses.filter((hypothesis) =>
+      hypothesis.source === "llm" || hypothesis.source === "informed_flow_study_v1"),
+  );
 
   for (const family of setupFamilies) {
     const completedCount = family.completed.length;
@@ -6258,6 +6261,14 @@ function evaluateHypotheses(
     SHADOW_MINED_RETEST_ACTIVE_LIMIT,
     SHADOW_MINED_MAX_PENDING_PER_FAMILY,
     "shadow_mined",
+  );
+  // FIND-0020 / informed-flow hyps (H-549/H-550): own queue so they are not
+  // stuck behind LLM backlog and are not dropped for unknown source.
+  openRetestsForSources(
+    new Set(["informed_flow_study_v1"]),
+    HYPOTHESIS_SETUP_RETEST_ACTIVE_LIMIT,
+    HYPOTHESIS_SETUP_MAX_PENDING_PER_FAMILY,
+    "informed_flow",
   );
 
   return observations;

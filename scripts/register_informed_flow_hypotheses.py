@@ -36,6 +36,11 @@ CLUSTER_KEY = "INFORMED_FLOW|TOUCH|DIRECTION_ASYMMETRY|no"
 H_HIGH_DESC_PREFIX = "Smart-flow disagreement fade on highs"
 H_DIP_DESC_PREFIX = "Residual dip fade only when smart wallets disagree"
 SOURCE = "informed_flow_study_v1"
+# Placeholder text previously seeded as a fake pending test — blocks real opens.
+FAKE_PENDING_PREFIXES = (
+    "Shadow test 1/20 queued for smart-flow disagreement",
+    "Shadow test 1/20 queued for residual dip fade",
+)
 
 
 def git_sha() -> str:
@@ -181,10 +186,39 @@ def upsert_find(registry_path: Path, now: str) -> str:
     return existing["id"]
 
 
+def _is_fake_pending_test(test: dict) -> bool:
+    if test.get("outcome") != "pending":
+        return False
+    move = str(test.get("actualMove") or "")
+    return any(move.startswith(prefix) for prefix in FAKE_PENDING_PREFIXES)
+
+
+def clear_fake_pending_tests(hyps: list) -> list[str]:
+    """Remove registration placeholders that block the engine retest opener."""
+    cleared: list[str] = []
+    for h in hyps:
+        desc = h.get("description") or ""
+        is_target = (
+            h.get("source") == SOURCE
+            or h.get("originFindingId") == "FIND-0020"
+            or desc.startswith(H_HIGH_DESC_PREFIX)
+            or desc.startswith(H_DIP_DESC_PREFIX)
+        )
+        if not is_target:
+            continue
+        tests = h.get("tests") or []
+        kept = [t for t in tests if not _is_fake_pending_test(t)]
+        if len(kept) != len(tests):
+            h["tests"] = kept
+            cleared.append(str(h.get("id", "?")))
+    return cleared
+
+
 def ensure_hypotheses(path: Path, find_id: str, now_date: str) -> None:
     hyps = json.loads(path.read_text()) if path.exists() else []
     existing_ids = {h.get("id") for h in hyps}
     existing_descs = {h.get("description", "") for h in hyps}
+    cleared = clear_fake_pending_tests(hyps)
 
     def next_hid() -> str:
         nums = [int(i.split("-")[1]) for i in existing_ids if isinstance(i, str) and i.startswith("H-")]
@@ -221,14 +255,8 @@ def ensure_hypotheses(path: Path, find_id: str, now_date: str) -> None:
                 "direction": "short",
                 "originFindingId": find_id,
                 "themeId": "THEME-0001",
-                "tests": [
-                    {
-                        "date": now_date,
-                        "triggered": True,
-                        "outcome": "pending",
-                        "actualMove": "Shadow test 1/20 queued for smart-flow disagreement on highs.",
-                    }
-                ],
+                # Empty on purpose: engine opens real pending tests when conditions hit.
+                "tests": [],
                 "winRate": 0,
                 "status": "active",
                 "promotedToSignal": False,
@@ -268,14 +296,7 @@ def ensure_hypotheses(path: Path, find_id: str, now_date: str) -> None:
                 "direction": "short",
                 "originFindingId": find_id,
                 "themeId": "THEME-0001",
-                "tests": [
-                    {
-                        "date": now_date,
-                        "triggered": True,
-                        "outcome": "pending",
-                        "actualMove": "Shadow test 1/20 queued for residual dip fade with smart disagreement.",
-                    }
-                ],
+                "tests": [],
                 "winRate": 0,
                 "status": "active",
                 "promotedToSignal": False,
@@ -287,8 +308,16 @@ def ensure_hypotheses(path: Path, find_id: str, now_date: str) -> None:
         )
         added.append(hid)
 
+    # Ensure existing FIND-linked hyps keep the wired source.
+    for h in hyps:
+        desc = h.get("description") or ""
+        if desc.startswith(H_HIGH_DESC_PREFIX) or desc.startswith(H_DIP_DESC_PREFIX):
+            h["source"] = SOURCE
+            h.setdefault("originFindingId", find_id)
+            h.setdefault("setupId", find_id.lower().replace("-", "_"))
+
     path.write_text(json.dumps(hyps, indent=2) + "\n")
-    print(f"hypotheses: added={added} total={len(hyps)}")
+    print(f"hypotheses: added={added} cleared_fake_pending={cleared} total={len(hyps)}")
 
 
 def ensure_decision(records: list, find_id: str, now: str) -> None:

@@ -27,7 +27,7 @@ export interface Hypothesis {
   status: "active" | "promoted" | "archived" | "killed";
   promotedToSignal: boolean;
   postMortem: string | null;
-  source: "llm" | "statistical" | "shadow_mined";
+  source: "llm" | "statistical" | "shadow_mined" | "informed_flow_study_v1";
 }
 
 export interface HypothesisSetupFamily {

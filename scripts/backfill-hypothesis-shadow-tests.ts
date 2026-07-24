@@ -494,7 +494,7 @@ function backfillConditionsSatisfied(
 }
 
 function eligibleFamilies(hypotheses: Hypothesis[]): HypothesisSetupFamily[] {
-  const eligibleSources = new Set(["llm", "shadow_mined"]);
+  const eligibleSources = new Set(["llm", "shadow_mined", "informed_flow_study_v1"]);
   return hypothesisSetupFamilies(hypotheses.filter((hypothesis) => eligibleSources.has(hypothesis.source) || Boolean(hypothesis.originFindingId)))
     .filter((family) => !RETIRED_LLM_SETUP_IDS.has(family.setupId))
     .filter((family) => !isDataContaminatedSetup(family.setupId))
