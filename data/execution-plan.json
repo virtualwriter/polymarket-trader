@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-23T23:28:38.082Z",
+  "generatedAt": "2026-07-24T01:28:15.406Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -15,32 +15,16 @@
       "confidence": 0.036570739317217035,
       "thesis": "GOLD P/C ratio 1.26 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4051,
+      "entryPrice": 4046,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1784734099491-1n20",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_ibit_pc_ratio"
-        ],
-        "thesis": "Entry based on extremely low P/C ratio (0.41, heavy call buying). IBIT P/C ratio has now surged to 0.782, crossing far above the extreme-low threshold and invalidating the contrarian signal."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
