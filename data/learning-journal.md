@@ -6270,3 +6270,37 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-07-25 03:29 UTC
+
+**Portfolio:** $98.87 total | Cash $92.87 | 6 open | P&L $2.1106 | 63% win rate (507 trades)
+
+**Closed 1 trades:**
+- ✅ SNDK long via hyperliquid/hl_perp [HL SNDK Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0307 (3.1%, market 0.0307, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 12 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -156.36 is -2.2 std devs from mean since 2026-04-28 (-7.26 ± 68.75)
+
+**Blocked signal learning:**
+- Open blocked shadows: 55
+- Resolved blocked shadows: 643 (352 wins / 291 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.11%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.85%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-0.71%)
+
+**LLM analysis:**
+All six open positions (BX, DKNG, ZM, MSFT, COST, ORCL) are WEEKEND_HL_FUNDING_REVERSION_LONG trades with LLM closes disallowed; mechanical exits own the risk. BX is -1.65% and ZM -1.94%, while DKNG and MSFT are slightly positive. The signal family remains healthy (67% live trade win rate, +$1.12 total), but the current drawdown on BX and ZM warrants watching for a potential funding normalization failure. No discretionary action taken.
+
+---
+
