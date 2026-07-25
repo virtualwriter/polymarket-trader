@@ -6394,3 +6394,35 @@ All positions are WEEKEND_HL_FUNDING_REVERSION_LONG and none are eligible for di
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-07-25T07:07:25.673Z, model=deepseek-v4-pro)
+- Hypotheses added: 7 (rejected 0); reviews applied: 3; param updates: FUNDING_EXTREME_LONG risk: +6/-2.5 -> +4.5/-3.5; FUNDING_EXTREME_LONG risk floor: +4.5/-3.5 -> +5/-2.5.
+- Strategy review: The Weekend Hyperliquid funding reversion long signal continues to perform strongly with a 72% win rate and +$1.19 aggregated PnL across 225 trades, making it the system's most reliable edge. The One-Touch NO sell-YES edge signal shows promise with a perfect 4/4 live trades averaging +18.4% PnL, but its shadow record (42% win rate, recent compression losses on OIL/GOLD/BTC) highlights fragility and spread-liquidity risk. Funding Extreme Long and Short signals are underperforming, with Funding Extreme Long delivering a -0.69% average PnL and numerous stop-outs, while PM EV, macro momentum, and 
+- Nightly journal: Nightly review: Weekend funding reversion continues as top performer; CBRS open position at -6.83% is an outlier but the overall win rate remains high, so no change. One-Touch NO live trades are all wins but the recent shadow compression losses (BTC -6.9%, OIL -1.85%) highlight the danger of spread and edge decay; we are proposing stricter edge thresholds via new hypotheses. FUNDING_EXTREME_LONG's chronic stop-outs motivate increasing its stop from 2.5% to 3.5% and reducing target to 4.5%, intending to reduce whipsaw losses while capturing shorter-term reversals. Several shadow hypotheses for 
+### 2026-07-25 07:28 UTC
+
+**Portfolio:** $98.87 total | Cash $94.87 | 4 open | P&L $2.1084 | 62% win rate (511 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 645 (353 wins / 292 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.85%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-0.71%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-6.90%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 3/12; next scheduled 2026-07-25T09:28:17.963Z). Mechanical cycle ran normally._
+
+---
+
