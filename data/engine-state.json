@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-25T20:28:18.554Z",
+  "generatedAt": "2026-07-25T21:28:21.737Z",
   "dataFreshness": {
-    "valuationRows": 1896,
-    "latestValuationAt": "2026-07-25T20",
-    "macroRows": 1894,
+    "valuationRows": 1897,
+    "latestValuationAt": "2026-07-25T21",
+    "macroRows": 1895,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-25T20"
+    "latestInstrumentSnapshotAt": "2026-07-25T21"
   },
   "portfolio": {
     "cash": 93.9044,
@@ -13,7 +13,7 @@
     "realizedPnl": 2.144,
     "totalTrades": 525,
     "winRatePct": 63,
-    "unrealizedPnl": -0.0146
+    "unrealizedPnl": -0.0396
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.52,
-      "currentPrice": 23.154,
+      "pnlPct": 0.73,
+      "currentPrice": 23.164,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -36,8 +36,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -1.56,
-      "currentPrice": 1191.2,
+      "pnlPct": -1.77,
+      "currentPrice": 1190.7,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -50,8 +50,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.42,
-      "currentPrice": 128.58,
+      "pnlPct": -2.87,
+      "currentPrice": 127.95,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -64,8 +64,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0,
-      "currentPrice": 2.4955,
+      "pnlPct": 0.04,
+      "currentPrice": 2.4957,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -78,8 +78,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0,
-      "currentPrice": 110.64,
+      "pnlPct": -0.09,
+      "currentPrice": 110.62,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -227,10 +227,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 51,
-    "resolvedCount": 648,
+    "openCount": 50,
+    "resolvedCount": 649,
     "wouldHaveWon": 355,
-    "wouldHaveLost": 293,
+    "wouldHaveLost": 294,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -298,26 +298,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.11,
-        "resolvedAt": "2026-07-25T01:28:13.801Z",
-        "marketQuality": {
-          "yesBid": 0.011,
-          "yesAsk": 0.024,
-          "yesSpread": 0.013,
-          "liquidity": 19555.83,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "OIL",
@@ -453,9 +433,45 @@
           "liquidity": 84470.68,
           "flags": []
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -2.67,
+        "resolvedAt": "2026-07-25T21:28:21.383Z",
+        "marketQuality": {
+          "yesBid": 0.25,
+          "yesAsk": 0.26,
+          "yesSpread": 0.01,
+          "liquidity": 67972.8,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $5,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.04,
+          "yesAsk": 0.05,
+          "yesSpread": 0.01,
+          "liquidity": 37658.76,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.1pt on ETH, spread 1.0c, liquidity 37659. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -567,22 +583,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.7pt on BTC, spread 1.0c, liquidity 64755. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-in-july-2026 — NO — Will Bitcoin reach $67,500 in July?",
-        "marketQuality": {
-          "yesBid": 0.25,
-          "yesAsk": 0.26,
-          "yesSpread": 0.01,
-          "liquidity": 67972.8,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.0pt on BTC, spread 1.0c, liquidity 67973. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
