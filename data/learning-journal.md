@@ -6822,3 +6822,33 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-25 23:28 UTC
+
+**Portfolio:** $98.88 total | Cash $95.88 | 3 open | P&L $2.1229 | 63% win rate (527 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 19 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 5.9pp (was -7.1, now -13.0)
+
+**Blocked signal learning:**
+- Open blocked shadows: 49
+- Resolved blocked shadows: 650 (356 wins / 294 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.33%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.67%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+All three open WEEKEND_HL_FUNDING_REVERSION_LONG positions (DKNG, LLY, EBAY) are mechanical-only and not eligible for LLM discretionary closes per policy. LLY funding has fully reverted from -53% to +5.48% within 8h, yet the long is -1.57%; this may be an edge case for the nightly review to examine whether early normalization without price follow-through signals thesis exhaustion. EBAY funding improved from -76.5% to -33%, and DKNG funding appears to have returned to positive territory after dipping negative earlier, both consistent with the reversion thesis. No hard risk breaches; cash and P&L stable.
+
+---
+
