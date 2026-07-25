@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-25T11:28:22.065Z",
+  "generatedAt": "2026-07-25T13:28:25.165Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.04302608469317562,
       "thesis": "OIL P/C ratio 0.48 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 89.23,
+      "entryPrice": 89.31,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 89.23,
+      "entryPrice": 89.31,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,42 +56,46 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 5,
-        "totalNet": 5,
+        "totalGross": 10,
+        "totalNet": 10,
         "byAsset": {
-          "MSFT": 5
+          "MSFT": 5,
+          "RKLB": 5
         },
         "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 5
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10
         },
         "byVenue": {
-          "hyperliquid": 5
+          "hyperliquid": 10
         },
         "byCluster": {
-          "funding_reversion": 5,
-          "hyperliquid_venue": 5,
-          "msft_delta": 5
+          "funding_reversion": 10,
+          "hyperliquid_venue": 10,
+          "msft_delta": 5,
+          "rklb_delta": 5
         }
       },
       "afterCandidate": {
-        "totalGross": 5,
-        "totalNet": 5,
+        "totalGross": 10,
+        "totalNet": 10,
         "byAsset": {
           "MSFT": 5,
+          "RKLB": 5,
           "OIL": 0
         },
         "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 5,
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10,
           "PC_RATIO_EXTREME_LOW": 0
         },
         "byVenue": {
-          "hyperliquid": 5,
+          "hyperliquid": 10,
           "spot": 0
         },
         "byCluster": {
-          "funding_reversion": 5,
-          "hyperliquid_venue": 5,
+          "funding_reversion": 10,
+          "hyperliquid_venue": 10,
           "msft_delta": 5,
+          "rklb_delta": 5,
           "commodity": 0,
           "oil_delta": 0,
           "options_sentiment": 0,
@@ -113,7 +117,9 @@
       "enforcedLiveSize": 1,
       "wouldResize": true,
       "edgePts": null,
-      "alerts": [],
+      "alerts": [
+        "cluster exposure 10.00 > alert cap 5.00"
+      ],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
       ]
@@ -129,10 +135,26 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 10,
-      "hoursToExpiry": 14,
+      "hoursOpen": 12,
+      "hoursToExpiry": 12,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.4168,
+      "elapsedHoldPct": 0.5001,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1784986104777-RKLB-mh3e",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "RKLB",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 0,
+      "hoursToExpiry": 24,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
