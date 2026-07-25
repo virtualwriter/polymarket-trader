@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-25T15:28:17.868Z",
+  "generatedAt": "2026-07-25T16:28:21.925Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.04302608469317562,
       "thesis": "OIL P/C ratio 0.48 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 87.12,
+      "entryPrice": 87.31,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 87.12,
+      "entryPrice": 87.31,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,56 +56,52 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 25,
-        "totalNet": 25,
+        "totalGross": 20,
+        "totalNet": 20,
         "byAsset": {
           "RKLB": 5,
           "MRVL": 5,
-          "SNDK": 5,
           "DKNG": 5,
           "LLY": 5
         },
         "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 25
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 20
         },
         "byVenue": {
-          "hyperliquid": 25
+          "hyperliquid": 20
         },
         "byCluster": {
-          "funding_reversion": 25,
-          "hyperliquid_venue": 25,
+          "funding_reversion": 20,
+          "hyperliquid_venue": 20,
           "rklb_delta": 5,
           "mrvl_delta": 5,
-          "sndk_delta": 5,
           "dkng_delta": 5,
           "lly_delta": 5
         }
       },
       "afterCandidate": {
-        "totalGross": 25,
-        "totalNet": 25,
+        "totalGross": 20,
+        "totalNet": 20,
         "byAsset": {
           "RKLB": 5,
           "MRVL": 5,
-          "SNDK": 5,
           "DKNG": 5,
           "LLY": 5,
           "OIL": 0
         },
         "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 25,
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 20,
           "PC_RATIO_EXTREME_LOW": 0
         },
         "byVenue": {
-          "hyperliquid": 25,
+          "hyperliquid": 20,
           "spot": 0
         },
         "byCluster": {
-          "funding_reversion": 25,
-          "hyperliquid_venue": 25,
+          "funding_reversion": 20,
+          "hyperliquid_venue": 20,
           "rklb_delta": 5,
           "mrvl_delta": 5,
-          "sndk_delta": 5,
           "dkng_delta": 5,
           "lly_delta": 5,
           "commodity": 0,
@@ -130,7 +126,7 @@
       "wouldResize": true,
       "edgePts": null,
       "alerts": [
-        "cluster exposure 25.00 > alert cap 5.00"
+        "cluster exposure 20.00 > alert cap 5.00"
       ],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
@@ -147,10 +143,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 2,
-      "hoursToExpiry": 22,
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0833,
+      "elapsedHoldPct": 0.125,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -163,26 +159,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 1,
-      "hoursToExpiry": 23,
+      "hoursOpen": 2,
+      "hoursToExpiry": 22,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0416,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "WF-1784989701159-SNDK-ob6j",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "SNDK",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 1,
-      "hoursToExpiry": 23,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0416,
+      "elapsedHoldPct": 0.0833,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -195,10 +175,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 0,
-      "hoursToExpiry": 24,
+      "hoursOpen": 1,
+      "hoursToExpiry": 23,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0,
+      "elapsedHoldPct": 0.0417,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -211,10 +191,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 0,
-      "hoursToExpiry": 24,
+      "hoursOpen": 1,
+      "hoursToExpiry": 23,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0,
+      "elapsedHoldPct": 0.0417,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
