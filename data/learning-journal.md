@@ -6608,3 +6608,36 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-07-25 15:28 UTC
+
+**Portfolio:** $98.89 total | Cash $93.89 | 5 open | P&L $2.1256 | 63% win rate (522 trades)
+
+**Closed 3 trades:**
+- ✅ MSFT long via hyperliquid/hl_perp [HL MSFT Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0132 (1.3%, market 0.0135, funding -0.0004)
+- ✅ BX long via hyperliquid/hl_perp [HL BX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0230 (2.3%, market 0.0230, funding 0.0000)
+- ✅ SKHX long via hyperliquid/hl_perp [HL SKHX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0096 (1.0%, market 0.0096, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 18 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 648 (355 wins / 293 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.35%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.33%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h since last call; daily budget 5/12; next scheduled 2026-07-25T17:28:17.873Z). Mechanical cycle ran normally._
+
+---
+
