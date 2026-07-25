@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-07-24T14:16:20Z",
+  "generatedAt": "2026-07-25T07:08:11Z",
   "summary": {
-    "generatedAt": "2026-07-24T14:16:20Z",
+    "generatedAt": "2026-07-25T07:08:11Z",
     "findingCounts": {
-      "open": 18,
-      "strengthened": 2,
+      "open": 21,
+      "strengthened": 3,
       "weakened": 0,
       "negative": 1,
       "suppressed": 0,
-      "total": 35
+      "total": 39
     },
     "themeCount": 4,
     "topOpportunity": {
@@ -21,7 +21,7 @@
       "themeSlug": "other_informed_flow",
       "status": "open"
     },
-    "authoredHypothesisCount": 0,
+    "authoredHypothesisCount": 7,
     "advicePresent": true
   },
   "topOpportunities": [
@@ -77,6 +77,16 @@
     },
     {
       "rank": 6,
+      "id": "FIND-0036",
+      "opportunityScore": 0.9788,
+      "confidenceScore": 0.4602,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|GOLD|strat:dir=above,d<30|no",
+      "themeId": "THEME-0001",
+      "themeSlug": "heatmap_one_touch",
+      "status": "open"
+    },
+    {
+      "rank": 7,
       "id": "FIND-0025",
       "opportunityScore": 0.9361,
       "confidenceScore": 0.6232,
@@ -86,7 +96,7 @@
       "status": "open"
     },
     {
-      "rank": 7,
+      "rank": 8,
       "id": "FIND-0030",
       "opportunityScore": 0.8874,
       "confidenceScore": 0.3926,
@@ -96,7 +106,7 @@
       "status": "open"
     },
     {
-      "rank": 8,
+      "rank": 9,
       "id": "FIND-0026",
       "opportunityScore": 0.7776,
       "confidenceScore": 0.5036,
@@ -106,7 +116,7 @@
       "status": "open"
     },
     {
-      "rank": 9,
+      "rank": 10,
       "id": "FIND-0001",
       "opportunityScore": 0.7757,
       "confidenceScore": 0.348,
@@ -114,32 +124,22 @@
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
       "status": "open"
-    },
-    {
-      "rank": 10,
-      "id": "FIND-0018",
-      "opportunityScore": 0.7523,
-      "confidenceScore": 0.482,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|heatmap|no",
-      "themeId": "THEME-0001",
-      "themeSlug": "heatmap_one_touch",
-      "status": "strengthened"
     }
   ],
   "themesOverview": [
+    {
+      "id": "THEME-0001",
+      "slug": "heatmap_one_touch",
+      "title": "Heatmap one-touch / no-bias / relative-value shadows",
+      "findingCount": 18,
+      "avgOpportunityScore": 0.6058
+    },
     {
       "id": "THEME-0002",
       "slug": "weekend_hl_funding",
       "title": "Weekend Hyperliquid funding reversion shadows",
       "findingCount": 15,
       "avgOpportunityScore": 0.7675
-    },
-    {
-      "id": "THEME-0001",
-      "slug": "heatmap_one_touch",
-      "title": "Heatmap one-touch / no-bias / relative-value shadows",
-      "findingCount": 14,
-      "avgOpportunityScore": 0.6214
     },
     {
       "id": "THEME-0004",
@@ -156,7 +156,43 @@
       "avgOpportunityScore": 0.9999
     }
   ],
-  "authoredHypotheses": [],
+  "authoredHypotheses": [
+    {
+      "originFindingId": "FIND-0020",
+      "themeId": "THEME-0003",
+      "description": "Smart-dip vs dumb-highs flow: When smart-wallet share on dip-YES flow exceeds 0.05 and dumb-wallet share on high-YES flow exceeds 0.15, expect the underlying spot to rise within 7 days as informed dip-buying dominates."
+    },
+    {
+      "originFindingId": "FIND-0022",
+      "themeId": "THEME-0001",
+      "description": "Oil one-touch NO edge buy: When sell-YES edge on OIL upside one-touch NO contract is between 1 and 3 points, enter a short position (selling YES on the NO contract) expecting edge to close within 3 days."
+    },
+    {
+      "originFindingId": "FIND-0021",
+      "themeId": "THEME-0004",
+      "description": "PM IV rich NO fade: When PM IV exceeds options IV by at least 10 percentage points (regime-relative) and the market environment indicates rich PM IV (pm_iv_zscore > 1.5), sell the overpriced NO contracts and short the underlying spot."
+    },
+    {
+      "originFindingId": "FIND-0024",
+      "themeId": "THEME-0004",
+      "description": "PM IV rich NO short with near expiry: When PM IV is rich (>10% over options IV) and the contract expires within 30 days, sell NO contracts on the underlying upside touch."
+    },
+    {
+      "originFindingId": "FIND-0025",
+      "themeId": "THEME-0004",
+      "description": "PM IV rich NO short with edge 3-8 pts: When sell-YES edge is between 3 and 8 points on rich PM IV instruments, enter short via selling NO, expecting edge decay."
+    },
+    {
+      "originFindingId": "FIND-0026",
+      "themeId": "THEME-0001",
+      "description": "No-bias gap short with direction below: When the no-bias adjusted gap is positive (sell edge) and the strike is below spot (dir=below) with contract expiry under 30 days, enter short via selling NO."
+    },
+    {
+      "originFindingId": "FIND-0030",
+      "themeId": "THEME-0001",
+      "description": "One-touch NO edge on ALL above strike: When sell-YES edge is positive and direction is above (touch strike above spot) with edge between 3-8 pts, enter short."
+    }
+  ],
   "negativeFindings": [
     {
       "id": "FIND-0003",
@@ -168,9 +204,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-07-24T14:15:36Z",
-    "opportunitiesGeneratedAt": "2026-07-24T14:16:19Z",
-    "themesGeneratedAt": "2026-07-24T14:15:38Z",
-    "adviceGeneratedAt": "2026-07-24T14:15:36.069Z"
+    "findingsExportGeneratedAt": "2026-07-25T07:07:26Z",
+    "opportunitiesGeneratedAt": "2026-07-25T07:08:10Z",
+    "themesGeneratedAt": "2026-07-25T07:07:28Z",
+    "adviceGeneratedAt": "2026-07-25T07:07:25.673Z"
   }
 }

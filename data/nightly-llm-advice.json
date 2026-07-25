@@ -1,116 +1,153 @@
 {
-  "generatedAt": "2026-07-24T14:15:36.069Z",
+  "generatedAt": "2026-07-25T07:07:25.673Z",
   "provider": "deepseek",
   "model": "deepseek-v4-pro",
-  "strategyReview": "Live signals are profitable overall with 62.4% win rate over 502 trades and positive realized PnL. The ONE_TOUCH_HIGH_EDGE_NO signal has been flawless in live trades (4/4, avg +18.42%) and FUNDING_EXTREME_LONG on GOLD remains healthy (60% win rate). However, many shadow families—especially Polymarket proxy shorts, heatmap/relative-value signals, and OPT_IV_GT_PM_IV_DOWNSIDE—are bleeding capital and failing to validate their edge. Disabled assets (AMZN, HYPE, OIL) have been removed from problematic live signals, which has stopped the bleeding. The largest risk now is that one-touch NO shadow losses (e.g., OIL -10.78%) could erode future live deployment if left unmanaged.",
+  "strategyReview": "The Weekend Hyperliquid funding reversion long signal continues to perform strongly with a 72% win rate and +$1.19 aggregated PnL across 225 trades, making it the system's most reliable edge. The One-Touch NO sell-YES edge signal shows promise with a perfect 4/4 live trades averaging +18.4% PnL, but its shadow record (42% win rate, recent compression losses on OIL/GOLD/BTC) highlights fragility and spread-liquidity risk. Funding Extreme Long and Short signals are underperforming, with Funding Extreme Long delivering a -0.69% average PnL and numerous stop-outs, while PM EV, macro momentum, and LLM hypothesis signals remain disabled or contaminated. The emphasis should be on widening the Weekend funding pipeline and conditionally promoting One-Touch NO with robust edge/spread filters.",
   "failureClusters": [
     {
-      "theme": "Polymarket proxy short shadows unprofitable",
-      "evidence": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT has 20% win rate, avg -2.18% PnL (15 shadows). PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT has 0% win rate, avg -7.15% PnL (8 shadows). Both underperform their live perp-short counterparts significantly.",
-      "recommendation": "Pause creation of new proxy-short hypotheses. Investigate whether PM NO contracts decay edge faster than perps or if entry timing needs to be tightened before resuming."
+      "theme": "Funding Extreme Long Stop Cascade",
+      "evidence": "32 live trades with 11 stops, avg PnL -0.69%; AMZN/HYPE specifically produce 29% and 33% win rates, respectively, despite moderate edge in funding extremes.",
+      "recommendation": "Increase stopPct to 3.5% and lower targetPct to 4.5% to reduce stop-outs and capture faster mean-reversion exits, while re-assessing asset eligibility."
     },
     {
-      "theme": "Heatmap and relative-value shadow families fail",
-      "evidence": "NO_BIAS_ADJUSTED_GAP_SHADOW (42% WR, avg -1.30% over 89 shadows), RELATIVE_VALUE_HEATMAP (27% WR, avg -8.09% over 15 shadows), and ONE_TOUCH_HIGH_EDGE_YES_SHADOW (22% WR, avg -25.90% over 9 shadows) have consistently poor performance.",
-      "recommendation": "Retire these families to free research capacity. Re-allocate shadow-test slots to higher-conviction themes like informed flow (FIND-0020) or refined one-touch edge buckets."
+      "theme": "Polymarket One-Touch NO Compression Losses",
+      "evidence": "Recent shadow losses: OIL -1.85%, GOLD -0.71%, BTC -6.9% with 'thesis_compressed_loss'; overall shadow win rate 42% vs 100% live, suggesting edge disappears quickly under wide spreads.",
+      "recommendation": "Require a minimum sell-YES edge of 2pt and spread below 1.5c for shadow promotion; consider a 24h trailing edge exit to avoid compression."
     },
     {
-      "theme": "Large drawdowns in one-touch NO shadow exits",
-      "evidence": "Recent resolved ONE_TOUCH_HIGH_EDGE_NO shadows include OIL -10.78%, GOLD -3.26%, BTC -2.5% and -1.1% on thesis_compressed_loss when the underlying surged toward the barrier. Live trades have been untouched, but shadow-level damage could recur under promotion.",
-      "recommendation": "Introduce an exit rule that closes the shadow (and any future live trade) when the underlying spot moves within a % of the barrier or when the sell-YES edge disappears. This caps tail risk while preserving the core edge."
+      "theme": "PM EV Below Spot Contaminated Weakness",
+      "evidence": "Only 4 live trades, 25% win rate, avg -1.89%; shadows 50% win but tiny PnL; contaminated by historical data.",
+      "recommendation": "Keep disabled; wait for clean retest before any promotion."
     }
   ],
-  "newHypotheses": [],
+  "newHypotheses": [
+    {
+      "created": "2026-07-25",
+      "description": "Smart-dip vs dumb-highs flow: When smart-wallet share on dip-YES flow exceeds 0.05 and dumb-wallet share on high-YES flow exceeds 0.15, expect the underlying spot to rise within 7 days as informed dip-buying dominates.",
+      "conditions": {
+        "smart_share_dips": "> 0.05",
+        "dumb_share_highs": "> 0.15"
+      },
+      "prediction": "Spot price increases by at least 2% over 7 days.",
+      "timeframeDays": 7,
+      "confidence": 0.7,
+      "direction": "long",
+      "originFindingId": "FIND-0020",
+      "themeId": "THEME-0003",
+      "source": "llm"
+    },
+    {
+      "created": "2026-07-25",
+      "description": "Oil one-touch NO edge buy: When sell-YES edge on OIL upside one-touch NO contract is between 1 and 3 points, enter a short position (selling YES on the NO contract) expecting edge to close within 3 days.",
+      "conditions": {
+        "oil_one_touch_sell_yes_edge_pts": "<= 3"
+      },
+      "prediction": "Sell-YES edge closes profitably within 3 days, delivering 0.5-2.0% PnL.",
+      "timeframeDays": 3,
+      "confidence": 0.65,
+      "direction": "short",
+      "originFindingId": "FIND-0022",
+      "themeId": "THEME-0001",
+      "source": "llm"
+    },
+    {
+      "created": "2026-07-25",
+      "description": "PM IV rich NO fade: When PM IV exceeds options IV by at least 10 percentage points (regime-relative) and the market environment indicates rich PM IV (pm_iv_zscore > 1.5), sell the overpriced NO contracts and short the underlying spot.",
+      "conditions": {
+        "pm_iv_gt_opt_iv_pps": ">= 10",
+        "pm_iv_zscore_30d": "> 1.5"
+      },
+      "prediction": "PM IV mean-reverts towards options IV, making the NO sale profitable; underlying spot declines by at least 1.5% within 7 days.",
+      "timeframeDays": 7,
+      "confidence": 0.7,
+      "direction": "short",
+      "originFindingId": "FIND-0021",
+      "themeId": "THEME-0004",
+      "source": "llm"
+    },
+    {
+      "created": "2026-07-25",
+      "description": "PM IV rich NO short with near expiry: When PM IV is rich (>10% over options IV) and the contract expires within 30 days, sell NO contracts on the underlying upside touch.",
+      "conditions": {
+        "pm_iv_gt_opt_iv_pps": ">= 10",
+        "contract_days_to_expiry": "< 30"
+      },
+      "prediction": "The rich PM IV premium erodes as expiry nears, yielding a profitable NO sale.",
+      "timeframeDays": 14,
+      "confidence": 0.68,
+      "direction": "short",
+      "originFindingId": "FIND-0024",
+      "themeId": "THEME-0004",
+      "source": "llm"
+    },
+    {
+      "created": "2026-07-25",
+      "description": "PM IV rich NO short with edge 3-8 pts: When sell-YES edge is between 3 and 8 points on rich PM IV instruments, enter short via selling NO, expecting edge decay.",
+      "conditions": {
+        "sell_yes_edge_pts": "<= 8",
+        "pm_iv_gt_opt_iv_pps": ">= 10"
+      },
+      "prediction": "High edge decays towards zero, generating PnL over 7 days.",
+      "timeframeDays": 7,
+      "confidence": 0.62,
+      "direction": "short",
+      "originFindingId": "FIND-0025",
+      "themeId": "THEME-0004",
+      "source": "llm"
+    },
+    {
+      "created": "2026-07-25",
+      "description": "No-bias gap short with direction below: When the no-bias adjusted gap is positive (sell edge) and the strike is below spot (dir=below) with contract expiry under 30 days, enter short via selling NO.",
+      "conditions": {
+        "no_bias_adjusted_gap": "> 0",
+        "strike_pct_vs_spot": "< 0",
+        "contract_days_to_expiry": "< 30"
+      },
+      "prediction": "The gap closes within 14 days, producing a profit on the NO sale.",
+      "timeframeDays": 14,
+      "confidence": 0.6,
+      "direction": "short",
+      "originFindingId": "FIND-0026",
+      "themeId": "THEME-0001",
+      "source": "llm"
+    },
+    {
+      "created": "2026-07-25",
+      "description": "One-touch NO edge on ALL above strike: When sell-YES edge is positive and direction is above (touch strike above spot) with edge between 3-8 pts, enter short.",
+      "conditions": {
+        "sell_yes_edge_pts": "<= 8",
+        "one_touch_direction": "= above"
+      },
+      "prediction": "The edge dissipates, resulting in a profitable NO contract sale.",
+      "timeframeDays": 7,
+      "confidence": 0.58,
+      "direction": "short",
+      "originFindingId": "FIND-0030",
+      "themeId": "THEME-0001",
+      "source": "llm"
+    }
+  ],
   "hypothesisReviews": [
     {
-      "id": "H-523",
-      "observation": "BTC PM IV regime-relative compression hypothesis continues to post strong results (100% win rate over 16 tests). Conditions are well-defined and backtests are clean. It may be ready for promotion to live status after a final review of sample size and expected throughput."
+      "id": "H-535",
+      "observation": "MU weekend funding normalization has only 33% win rate (1 of 3 resolved shadows), suggesting that MU's funding mean-reversion is inconsistent; consider asset-specific kill if next 2 tests fail."
     },
     {
-      "id": "H-215",
-      "observation": "Oil P/C ratio panic exhaustion reversal has won all 12 shadow tests so far. The thesis (contrarian bounce after extreme P/C) aligns with PC_RATIO_EXTREME_HIGH logic on OIL but with a more aggressive entry. Worth accelerating shadow tests to reach 20 minimum for potential promotion."
+      "id": "H-537",
+      "observation": "AAPL shadow 40% win rate (2 of 5 completed), not meeting promotion threshold; edge may exist only during extreme funding dislocations, tighten entry condition to funding < -20%."
     },
     {
-      "id": "H-259",
-      "observation": "AMZN extreme funding crash below -20% with negative basis has 2 wins out of 2 tests. Sample size is tiny, but the pattern matches live FUNDING_EXTREME_SHORT success on AMZN. Continue shadow testing, but be mindful of AMZN being disabled on the long side — this setup may complement the short side."
-    },
-    {
-      "id": "cross_asset_iv_compression_vol_expansion (multiple H- entries)",
-      "observation": "All hypotheses in the cross-asset IV compression / vol expansion family (H-092, H-104, H-108, H-113, … H-437) have 0% win rate over dozens of tests. This family is consuming significant shadow-test capacity with no evidence of edge. Strongly consider retiring the entire family to reallocate to higher-scoring opportunities."
-    },
-    {
-      "id": "H-001",
-      "observation": "BTC PM IV expansion / reversion (H-001) has fallen to 25% win rate across 18 tests and is well below the promote threshold. Recommend monitoring but no further resource until conditions improve."
+      "id": "H-006",
+      "observation": "Gold PM IV compression vs options IV spike has 3 wins in 3 early tests; given the small sample, continue shadow tests; if next 2 wins, could be promoted as a live signal."
     }
   ],
   "parameterUpdates": {
-    "macroMomentum24hThresholdPts": 4,
-    "contrarianTrendMarginPct": 0.5,
-    "positiveMomentum24hPct": 1.5,
-    "llmTradeExpiryDays": 14,
-    "momentumLongExpiryDays": 21,
     "signalRisk": {
-      "PM_IV_GT_OPT_IV": {
-        "targetPct": null,
-        "stopPct": 5
-      },
-      "OPT_IV_GT_PM_IV": {
-        "targetPct": 5,
-        "stopPct": 3.5
-      },
       "FUNDING_EXTREME_LONG": {
-        "targetPct": 6,
-        "stopPct": 2.5
-      },
-      "FUNDING_EXTREME_SHORT": {
-        "targetPct": 4,
-        "stopPct": 2
-      },
-      "PM_EV_ABOVE_SPOT": {
-        "targetPct": 4,
-        "stopPct": 4
-      },
-      "PM_EV_BELOW_SPOT": {
-        "targetPct": 3,
+        "targetPct": 4.5,
         "stopPct": 3.5
-      },
-      "PC_RATIO_EXTREME_HIGH": {
-        "targetPct": 4,
-        "stopPct": 1.5
-      },
-      "PC_RATIO_EXTREME_LOW": {
-        "targetPct": 5,
-        "stopPct": 1.5
-      },
-      "BASIS_PREMIUM": {
-        "targetPct": 1.5,
-        "stopPct": 1.5
-      },
-      "BASIS_DISCOUNT": {
-        "targetPct": 1.5,
-        "stopPct": 1.5
-      },
-      "MACRO_MOMENTUM_UP": {
-        "targetPct": 3,
-        "stopPct": 3
-      },
-      "MACRO_MOMENTUM_DOWN": {
-        "targetPct": 4,
-        "stopPct": 3
-      },
-      "LLM_HYPOTHESIS": {
-        "targetPct": 3.5,
-        "stopPct": 2.5
-      },
-      "MOMENTUM_LONG": {
-        "targetPct": 6,
-        "stopPct": 3.5
-      },
-      "PROMOTED_HYPOTHESIS": {
-        "targetPct": 4,
-        "stopPct": 2
       }
     }
   },
-  "journalEntry": "Tonight's review confirms that the live engine is in good health, powered by ONE_TOUCH_HIGH_EDGE_NO (4/4 live wins) and asset-level filtering that removed weak AMZN/HYPE/OIL legs. The biggest research finding is that Polymarket proxy-short shadows and heatmap-based signals are destroying value and should be culled to make room for high-conviction themes. The informed-flow asymmetry study (FIND-0020) has an outstanding 0.9999 opportunity score but currently lacks direct column support; we should prioritize building wallet-flow data pipelines to unlock this. Among active hypotheses, H-523 (BTC PM IV regime compression) and H-215 (Oil P/C exhaustion) show 100% win rates and merit accelerated promotion evaluation. The cross_asset_iv_compression_vol_expansion family is a 0% win-rate dead end and should be retired. No parameter changes are warranted tonight; existing risk/reward settings for live signals are matching their performance profiles."
+  "journalEntry": "Nightly review: Weekend funding reversion continues as top performer; CBRS open position at -6.83% is an outlier but the overall win rate remains high, so no change. One-Touch NO live trades are all wins but the recent shadow compression losses (BTC -6.9%, OIL -1.85%) highlight the danger of spread and edge decay; we are proposing stricter edge thresholds via new hypotheses. FUNDING_EXTREME_LONG's chronic stop-outs motivate increasing its stop from 2.5% to 3.5% and reducing target to 4.5%, intending to reduce whipsaw losses while capturing shorter-term reversals. Several shadow hypotheses for individual stocks (MU, AAPL) are underperforming; I've noted them for closer monitoring. No other parameter changes warranted tonight. The new hypotheses from ranked research aim to systematically exploit PM IV touch rich edges and informed flow signals."
 }

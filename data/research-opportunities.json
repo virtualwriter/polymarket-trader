@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-24T14:16:19Z",
+  "generatedAt": "2026-07-25T07:08:10Z",
   "scoringVersion": "research_score_v3",
   "topN": 10,
   "opportunities": [
@@ -37,7 +37,7 @@
         "pnlStd": 0.0435,
         "pValue": 0.0,
         "pnlPValue": 0.00017,
-        "qValue": 0.01139
+        "qValue": 0.01241
       },
       "title": "Shadow FIND: WEEKEND_HL_FUNDING_REVERSION_LONG on ALL (weekend_hl_funding_shadow/long): WR=74% n=253 sumPnl=+2.515"
     },
@@ -56,7 +56,7 @@
         "pnlStd": 0.02366,
         "pValue": 0.01074,
         "pnlPValue": 0.00944,
-        "qValue": 0.224
+        "qValue": 0.24406
       },
       "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on OIL (strat:s?,e1-3/no): WR=90% n=10 sumPnl=+0.214"
     },
@@ -75,7 +75,7 @@
         "pnlStd": 0.10983,
         "pValue": 0.01074,
         "pnlPValue": 0.01003,
-        "qValue": 0.224
+        "qValue": 0.24406
       },
       "title": "Shadow FIND: USER_PM_IV_TOUCH_RICH_NO on ALL (strat:dir=above/no): WR=90% n=10 sumPnl=+0.979"
     },
@@ -94,12 +94,31 @@
         "pnlStd": 0.11613,
         "pValue": 0.01953,
         "pnlPValue": 0.01968,
-        "qValue": 0.32964
+        "qValue": 0.31025
       },
       "title": "Shadow FIND: USER_PM_IV_TOUCH_RICH_NO on ALL (strat:dir=above,d<30/no): WR=89% n=9 sumPnl=+0.857"
     },
     {
       "rank": 6,
+      "id": "FIND-0036",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|GOLD|strat:dir=above,d<30|no",
+      "opportunityScore": 0.9788,
+      "confidenceScore": 0.4602,
+      "status": "open",
+      "evidence": {
+        "n": 8,
+        "winRate": 0.75,
+        "sumPnl": 0.652,
+        "avgPnl": 0.0815,
+        "pnlStd": 0.09313,
+        "pValue": 0.14453,
+        "pnlPValue": 0.02125,
+        "qValue": 0.31025
+      },
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on GOLD (strat:dir=above,d<30/no): WR=75% n=8 sumPnl=+0.652"
+    },
+    {
+      "rank": 7,
       "id": "FIND-0025",
       "clusterKey": "USER_PM_IV_TOUCH_RICH_NO|ALL|strat:s?,e3-8|no",
       "opportunityScore": 0.9361,
@@ -113,12 +132,12 @@
         "pnlStd": 0.23642,
         "pValue": 0.01953,
         "pnlPValue": 0.06391,
-        "qValue": 0.61171
+        "qValue": 0.6288
       },
       "title": "Shadow FIND: USER_PM_IV_TOUCH_RICH_NO on ALL (strat:s?,e3-8/no): WR=89% n=9 sumPnl=+1.205"
     },
     {
-      "rank": 7,
+      "rank": 8,
       "id": "FIND-0030",
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no",
       "opportunityScore": 0.8874,
@@ -132,12 +151,12 @@
         "pnlStd": 0.11766,
         "pValue": 0.29053,
         "pnlPValue": 0.11261,
-        "qValue": 0.76025
+        "qValue": 0.82512
       },
       "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ALL (strat:dir=above,e3-8/no): WR=62% n=13 sumPnl=+0.542"
     },
     {
-      "rank": 8,
+      "rank": 9,
       "id": "FIND-0026",
       "clusterKey": "NO_BIAS_ADJUSTED_GAP_SHADOW|ALL|strat:dir=below,d<30|no",
       "opportunityScore": 0.7776,
@@ -151,12 +170,12 @@
         "pnlStd": 0.20781,
         "pValue": 0.08984,
         "pnlPValue": 0.22238,
-        "qValue": 0.99818
+        "qValue": 0.98335
       },
       "title": "Shadow FIND: NO_BIAS_ADJUSTED_GAP_SHADOW on ALL (strat:dir=below,d<30/no): WR=78% n=9 sumPnl=+0.501"
     },
     {
-      "rank": 9,
+      "rank": 10,
       "id": "FIND-0001",
       "clusterKey": "NO_BIAS_ADJUSTED_GAP_SHADOW|GOLD|short-rich-tail|no",
       "opportunityScore": 0.7757,
@@ -170,28 +189,9 @@
         "pnlStd": 0.16207,
         "pValue": 0.36328,
         "pnlPValue": 0.22431,
-        "qValue": 0.99818
+        "qValue": 0.98335
       },
       "title": "Shadow FIND: NO_BIAS_ADJUSTED_GAP_SHADOW on GOLD (short-rich-tail/no): WR=62% n=8 sumPnl=+0.368"
-    },
-    {
-      "rank": 10,
-      "id": "FIND-0018",
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|heatmap|no",
-      "opportunityScore": 0.7523,
-      "confidenceScore": 0.482,
-      "status": "strengthened",
-      "evidence": {
-        "n": 16,
-        "winRate": 0.6875,
-        "sumPnl": 0.1505,
-        "avgPnl": 0.00941,
-        "pnlStd": 0.05385,
-        "pValue": 0.10506,
-        "pnlPValue": 0.2477,
-        "qValue": 0.99818
-      },
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on OIL (heatmap/no): WR=69% n=16 sumPnl=+0.150"
     }
   ]
 }
