@@ -7194,3 +7194,39 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 3/12; ne
 
 ---
 
+### 2026-07-26 12:28 UTC
+
+**Portfolio:** $98.98 total | Cash $93.98 | 5 open | P&L $2.2216 | 64% win rate (539 trades)
+
+**Closed 2 trades:**
+- ✅ CRCL long via hyperliquid/hl_perp [HL CRCL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0064 (0.6%, market 0.0062, funding 0.0003)
+- ✅ RIVN long via hyperliquid/hl_perp [HL RIVN Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0022 (0.2%, market 0.0019, funding 0.0003)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved narrower by 14.6pp (was 4.8, now -9.8)
+
+**Blocked signal learning:**
+- Open blocked shadows: 48
+- Resolved blocked shadows: 655 (359 wins / 296 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=145 (41W/82L/22flat, 33.3% win-rate, sum $-0.1139, avg -0.08%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=153 (43W/88L/22flat, 32.8% win-rate, sum $-0.1366, avg -0.09%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-7.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.15%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.23%)
+
+**LLM analysis:**
+No discretionary closes allowed; all positions are mechanical WEEKEND_HL_FUNDING_REVERSION_LONG trades. The PM IV collapse in BTC is noteworthy but irrelevant to our stock perp positions. The extreme volatility in HL funding rates (e.g., AMD, SKHX, CBRS) reaffirms the high-spread environment the setup exploits; the newer entries (CBRS, SKHX) opened at very negative funding and are consistent with the signal family’s strong historical track record. LLY is nearing expiry with a small loss, but mechanical exits will handle it. For the nightly research run, it may be worth investigating whether the PM IV anomaly correlates with a broad PM liquidity event that could affect PM-based signals.
+
+---
+
