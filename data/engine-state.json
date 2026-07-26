@@ -1,43 +1,29 @@
 {
-  "generatedAt": "2026-07-26T07:28:13.781Z",
+  "generatedAt": "2026-07-26T08:28:11.614Z",
   "dataFreshness": {
-    "valuationRows": 1906,
-    "latestValuationAt": "2026-07-26T07",
-    "macroRows": 1904,
+    "valuationRows": 1907,
+    "latestValuationAt": "2026-07-26T08",
+    "macroRows": 1905,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-26T07"
+    "latestInstrumentSnapshotAt": "2026-07-26T08"
   },
   "portfolio": {
-    "cash": 89.8658,
+    "cash": 89.8741,
     "openPositions": 9,
-    "realizedPnl": 2.1054,
-    "totalTrades": 529,
-    "winRatePct": 62.9,
-    "unrealizedPnl": -0.0068
+    "realizedPnl": 2.1138,
+    "totalTrades": 530,
+    "winRatePct": 63,
+    "unrealizedPnl": -0.0279
   },
   "openPositions": [
-    {
-      "positionId": "WF-1784993297471-DKNG-a3x2",
-      "asset": "DKNG",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.06,
-      "currentPrice": 23.132,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
     {
       "positionId": "WF-1784993297471-LLY-xtnj",
       "asset": "LLY",
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -1.58,
-      "currentPrice": 1191.2,
+      "pnlPct": -1.74,
+      "currentPrice": 1191.1,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -50,8 +36,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -1.08,
-      "currentPrice": 110.35,
+      "pnlPct": -1.35,
+      "currentPrice": 110.29,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -64,8 +50,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.5,
-      "currentPrice": 63.459,
+      "pnlPct": 0.71,
+      "currentPrice": 63.484,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -78,8 +64,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.3,
-      "currentPrice": 382.76,
+      "pnlPct": -0.04,
+      "currentPrice": 382.49,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -92,8 +78,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.59,
-      "currentPrice": 93.084,
+      "pnlPct": 0.24,
+      "currentPrice": 93.019,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -106,8 +92,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0,
-      "currentPrice": 15.962,
+      "pnlPct": 0.17,
+      "currentPrice": 15.967,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -120,8 +106,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.53,
-      "currentPrice": 63.931,
+      "pnlPct": 0.58,
+      "currentPrice": 63.937,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -134,8 +120,22 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": -1.35,
+      "currentPrice": 263.08,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1785054491435-ZM-izjj",
+      "asset": "ZM",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "pnlPct": 0,
-      "currentPrice": 263.79,
+      "currentPrice": 87.525,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -283,7 +283,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 51,
+    "openCount": 52,
     "resolvedCount": 651,
     "wouldHaveWon": 357,
     "wouldHaveLost": 294,
@@ -511,22 +511,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $2,250 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.65,
-          "yesAsk": 0.66,
-          "yesSpread": 0.01,
-          "liquidity": 13301.8,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.4pt on ETH, spread 1.0c, liquidity 13302. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $110,000 by December 31, 2026?",
@@ -636,6 +620,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.3pt on BTC, spread 1.0c, liquidity 71013. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $70,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.73,
+          "yesAsk": 0.75,
+          "yesSpread": 0.02,
+          "liquidity": 47662.47,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.6pt on BTC, spread 2.0c, liquidity 47662. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
