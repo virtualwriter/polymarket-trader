@@ -658,11 +658,11 @@
         "confidence": 0.7,
         "timeframeDays": 3,
         "testStats": {
-          "total": 18,
-          "completed": 15,
-          "wins": 8,
+          "total": 19,
+          "completed": 16,
+          "wins": 9,
           "pending": 3,
-          "winRate": 0.25
+          "winRate": 0.4
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -799,9 +799,9 @@
         "timeframeDays": 3,
         "testStats": {
           "total": 3,
-          "completed": 2,
+          "completed": 3,
           "wins": 0,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -844,7 +844,7 @@
         "created": "2026-04-04",
         "setupId": "gold_pm_premium_futures_spread_mean_reversion",
         "setupLabel": "Gold PM premium / futures spread mean reversion",
-        "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data. | Gold PM premium/futures spread mean reversion: shadow tests show 100% win rate over 3 tests. The thesis that PM IV compression below 16% while options IV stays above 30% creates reversion is holding. Recent gold spot moved 2.99% (4014 → 4134) per one test, validating the directional reversion. Continue shadow testing to build sample size before considering promotion."
+        "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data. | Gold PM premium/futures spread mean reversion: shadow tests show 100% win rate over 3 tests. The thesis that PM IV compression below 16% while options IV stays above 30% creates reversion is holding. Recent gold spot moved 2.99% (4014 → 4134) per one test, validating the directional reversion. Continue shadow testing to build sample size before considering promotion. | Gold PM IV compression vs options IV spike has 3 wins in 3 early tests; given the small sample, continue shadow tests; if next 2 wins, could be promoted as a live signal."
       },
       "links": {},
       "created": "2026-07-15T19:00:44Z",
@@ -1050,9 +1050,9 @@
         "timeframeDays": 7,
         "testStats": {
           "total": 6,
-          "completed": 5,
+          "completed": 6,
           "wins": 2,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -2208,9 +2208,9 @@
         "timeframeDays": 3,
         "testStats": {
           "total": 73,
-          "completed": 72,
+          "completed": 73,
           "wins": 2,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -2669,11 +2669,11 @@
         "confidence": 0.6,
         "timeframeDays": 1,
         "testStats": {
-          "total": 7,
-          "completed": 6,
+          "total": 8,
+          "completed": 7,
           "wins": 3,
           "pending": 1,
-          "winRate": 0.4
+          "winRate": 0.3333333333333333
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -6658,9 +6658,9 @@
         "timeframeDays": 7,
         "testStats": {
           "total": 8,
-          "completed": 6,
+          "completed": 7,
           "wins": 2,
-          "pending": 2,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -8379,9 +8379,9 @@
         "timeframeDays": 7,
         "testStats": {
           "total": 6,
-          "completed": 5,
+          "completed": 6,
           "wins": 4,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -8628,8 +8628,8 @@
         "confidence": 0.75,
         "timeframeDays": 5,
         "testStats": {
-          "total": 17,
-          "completed": 15,
+          "total": 18,
+          "completed": 16,
           "wins": 0,
           "pending": 2,
           "winRate": 0
@@ -9663,10 +9663,10 @@
         "confidence": 0.8,
         "timeframeDays": 3,
         "testStats": {
-          "total": 4,
+          "total": 5,
           "completed": 4,
           "wins": 0,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -9849,7 +9849,7 @@
         "created": "2026-04-18",
         "setupId": "amzn_perp_spot_funding_convergence",
         "setupLabel": "AMZN perp/spot funding convergence",
-        "postMortem": "Setup family inconclusive after 40 completed tests: 53% win rate. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels."
+        "postMortem": "Setup family inconclusive after 40 completed tests: 53% win rate. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels. | AMZN extreme funding crash below -20% with negative basis has 2 wins out of 2 tests. Sample size is tiny, but the pattern matches live FUNDING_EXTREME_SHORT success on AMZN. Continue shadow testing, but be mindful of AMZN being disabled on the long side — this setup may complement the short side."
       },
       "links": {},
       "created": "2026-07-15T19:00:44Z",
@@ -15176,9 +15176,9 @@
         "timeframeDays": 3,
         "testStats": {
           "total": 4,
-          "completed": 3,
-          "wins": 3,
-          "pending": 1,
+          "completed": 4,
+          "wins": 4,
+          "pending": 0,
           "winRate": 1
         },
         "promotedToSignal": false,
@@ -19318,10 +19318,10 @@
         "timeframeDays": 7,
         "testStats": {
           "total": 16,
-          "completed": 11,
+          "completed": 12,
           "wins": 6,
-          "pending": 5,
-          "winRate": 1
+          "pending": 4,
+          "winRate": 0.5
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -20183,8 +20183,8 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 28,
-          "completed": 26,
+          "total": 29,
+          "completed": 27,
           "wins": 4,
           "pending": 2,
           "winRate": 0
@@ -20217,10 +20217,10 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 3,
+          "total": 4,
           "completed": 3,
           "wins": 1,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0.3333333333333333
         },
         "promotedToSignal": false,
@@ -20228,7 +20228,7 @@
         "created": "2026-07-16",
         "setupId": "shadow_weekend_hl_funding_reversion_long_mu_weekend_hl_funding_shadow_long",
         "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG MU weekend_hl_funding_shadow",
-        "postMortem": "Mined from clean shadows: {\"n\": 8, \"wins\": 8, \"winRate\": 1.0, \"sumPnl\": 0.273, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779665359141-MU-u2e8\", \"WF-1780087728968-MU-flsz\", \"WF-1780140511145-MU-bwzp\", \"WF-1780255715660-MU-lpo9\", \"WF-1780759716467-MU-wbbj\"]}"
+        "postMortem": "Mined from clean shadows: {\"n\": 8, \"wins\": 8, \"winRate\": 1.0, \"sumPnl\": 0.273, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779665359141-MU-u2e8\", \"WF-1780087728968-MU-flsz\", \"WF-1780140511145-MU-bwzp\", \"WF-1780255715660-MU-lpo9\", \"WF-1780759716467-MU-wbbj\"]} | MU weekend funding normalization has only 33% win rate (1 of 3 resolved shadows), suggesting that MU's funding mean-reversion is inconsistent; consider asset-specific kill if next 2 tests fail."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20251,10 +20251,10 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 2,
+          "total": 3,
           "completed": 2,
           "wins": 0,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -20285,10 +20285,10 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 5,
+          "total": 6,
           "completed": 5,
           "wins": 2,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0.4
         },
         "promotedToSignal": false,
@@ -20296,7 +20296,7 @@
         "created": "2026-07-16",
         "setupId": "shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long",
         "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG AAPL weekend_hl_funding_shadow",
-        "postMortem": "Mined from clean shadows: {\"n\": 9, \"wins\": 8, \"winRate\": 0.8889, \"sumPnl\": 0.0102, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779661761704-AAPL-fawa\", \"WF-1780087728967-AAPL-0wbd\", \"WF-1780158509116-AAPL-q73w\", \"WF-1780237715514-AAPL-tmdd\", \"WF-1780266518746-AAPL-thv2\"]}"
+        "postMortem": "Mined from clean shadows: {\"n\": 9, \"wins\": 8, \"winRate\": 0.8889, \"sumPnl\": 0.0102, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779661761704-AAPL-fawa\", \"WF-1780087728967-AAPL-0wbd\", \"WF-1780158509116-AAPL-q73w\", \"WF-1780237715514-AAPL-tmdd\", \"WF-1780266518746-AAPL-thv2\"]} | AAPL shadow 40% win rate (2 of 5 completed), not meeting promotion threshold; edge may exist only during extreme funding dislocations, tighten entry condition to funding < -20%."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20319,10 +20319,10 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 2,
+          "total": 3,
           "completed": 2,
           "wins": 0,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -20353,10 +20353,10 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 7,
+          "total": 8,
           "completed": 6,
           "wins": 2,
-          "pending": 1,
+          "pending": 2,
           "winRate": 0.3333333333333333
         },
         "promotedToSignal": false,
@@ -20461,7 +20461,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -20475,7 +20475,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-18T03:02:16Z",
-        "lastSeenAt": "2026-07-25T07:07:26Z",
+        "lastSeenAt": "2026-07-26T07:07:25Z",
         "opportunityScore": 0.7757,
         "confidenceScore": 0.348,
         "scoreHistory": [
@@ -20625,6 +20625,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.7757,
+            "confidenceScore": 0.348,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.7757,
+            "confidenceScore": 0.348,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.7757,
             "confidenceScore": 0.348,
             "scoringVersion": "research_score_v3"
@@ -20924,6 +20936,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-27T12:29:34.279Z",
+              "end": "2026-06-23T08:28:21.856Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ],
         "themeId": "THEME-0001",
@@ -21155,6 +21188,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.6367,
+            "confidenceScore": 0.348,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.6367,
+            "confidenceScore": 0.348,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.6367,
             "confidenceScore": 0.348,
             "scoringVersion": "research_score_v3"
@@ -21570,6 +21615,18 @@
             "opportunityScore": 0.6128,
             "confidenceScore": 0.356,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.6128,
+            "confidenceScore": 0.356,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.6128,
+            "confidenceScore": 0.356,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -21756,7 +21813,7 @@
         "bucket": "weekend_hl_funding_shadow",
         "evidence": {
           "n": 8,
-          "winRate": 1.0,
+          "winRate": 1,
           "sumPnl": 0.273,
           "avgPnl": 0.03412,
           "pnlStd": 0.0205,
@@ -21767,7 +21824,7 @@
         "mineStats": {
           "n": 8,
           "wins": 8,
-          "winRate": 1.0,
+          "winRate": 1,
           "sumPnl": 0.273,
           "pValue": 0.00391,
           "pnlPValue": 0.00109,
@@ -21961,6 +22018,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.9989,
+            "confidenceScore": 0.7473,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.9989,
+            "confidenceScore": 0.7473,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.9989,
             "confidenceScore": 0.7473,
             "scoringVersion": "research_score_v3"
@@ -22444,6 +22513,18 @@
             "opportunityScore": 0.9973,
             "confidenceScore": 0.6988,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.9973,
+            "confidenceScore": 0.6988,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.9973,
+            "confidenceScore": 0.6988,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -22909,6 +22990,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.5383,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.5383,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.5383,
             "confidenceScore": 0.6232,
             "scoringVersion": "research_score_v3"
@@ -23380,6 +23473,18 @@
             "opportunityScore": 0.9651,
             "confidenceScore": 0.6232,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.9651,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.9651,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -23845,6 +23950,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.9892,
+            "confidenceScore": 0.5889,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.9892,
+            "confidenceScore": 0.5889,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.9892,
             "confidenceScore": 0.5889,
             "scoringVersion": "research_score_v3"
@@ -24316,6 +24433,18 @@
             "opportunityScore": 0.8041,
             "confidenceScore": 0.5729,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.8041,
+            "confidenceScore": 0.5729,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.8041,
+            "confidenceScore": 0.5729,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -24781,6 +24910,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.6984,
+            "confidenceScore": 0.5729,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.6984,
+            "confidenceScore": 0.5729,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.6984,
             "confidenceScore": 0.5729,
             "scoringVersion": "research_score_v3"
@@ -25252,6 +25393,18 @@
             "opportunityScore": 0.553,
             "confidenceScore": 0.5036,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.553,
+            "confidenceScore": 0.5036,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.553,
+            "confidenceScore": 0.5036,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -25717,6 +25870,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.9336,
+            "confidenceScore": 0.5036,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.9336,
+            "confidenceScore": 0.5036,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.9336,
             "confidenceScore": 0.5036,
             "scoringVersion": "research_score_v3"
@@ -26188,6 +26353,18 @@
             "opportunityScore": 0.9667,
             "confidenceScore": 0.4417,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.9667,
+            "confidenceScore": 0.4417,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.9667,
+            "confidenceScore": 0.4417,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -26653,6 +26830,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.5673,
+            "confidenceScore": 0.348,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.5673,
+            "confidenceScore": 0.348,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.5673,
             "confidenceScore": 0.348,
             "scoringVersion": "research_score_v3"
@@ -27124,6 +27313,18 @@
             "opportunityScore": 0.7816,
             "confidenceScore": 0.3926,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.7816,
+            "confidenceScore": 0.3926,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.7816,
+            "confidenceScore": 0.3926,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -27589,6 +27790,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.1088,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.1088,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.1088,
             "confidenceScore": 0.3035,
             "scoringVersion": "research_score_v3"
@@ -28060,6 +28273,18 @@
             "opportunityScore": 0.6103,
             "confidenceScore": 0.3035,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.6103,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.6103,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -28385,7 +28610,8 @@
           "FIND-0036",
           "FIND-0037",
           "FIND-0038",
-          "FIND-0039"
+          "FIND-0039",
+          "FIND-0040"
         ]
       },
       "created": "2026-07-18T03:05:11Z",
@@ -28692,9 +28918,9 @@
         "timeframeDays": 7,
         "testStats": {
           "total": 1,
-          "completed": 0,
+          "completed": 1,
           "wins": 0,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -28902,7 +29128,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -28916,7 +29142,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-20T07:06:46Z",
-        "lastSeenAt": "2026-07-25T07:07:27Z",
+        "lastSeenAt": "2026-07-26T07:07:26Z",
         "opportunityScore": 0.771,
         "confidenceScore": 0.4955,
         "scoreHistory": [
@@ -29024,6 +29250,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.771,
+            "confidenceScore": 0.4955,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.771,
+            "confidenceScore": 0.4955,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.771,
             "confidenceScore": 0.4955,
             "scoringVersion": "research_score_v3"
@@ -29219,6 +29457,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-10T04:59:17.580Z",
+              "end": "2026-07-25T01:28:13.817Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ],
         "hypothesisIds": [
@@ -29292,7 +29551,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -29306,7 +29565,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-21T07:07:28Z",
-        "lastSeenAt": "2026-07-25T07:07:27Z",
+        "lastSeenAt": "2026-07-26T07:07:26Z",
         "opportunityScore": 0.6882,
         "confidenceScore": 0.482,
         "scoreHistory": [
@@ -29402,6 +29661,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.6882,
+            "confidenceScore": 0.482,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.6882,
+            "confidenceScore": 0.482,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.6882,
             "confidenceScore": 0.482,
             "scoringVersion": "research_score_v3"
@@ -29576,6 +29847,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-10T04:59:17.594Z",
+              "end": "2026-07-25T01:28:13.817Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ],
         "hypothesisIds": [
@@ -29736,7 +30028,7 @@
         "evidence": {
           "n": 222,
           "winRate": 0.626,
-          "sumPnl": 0.0,
+          "sumPnl": 0,
           "smart_share_dips": 0.0664,
           "smart_share_highs": 0.0261,
           "dumb_share_dips": 0.0974,
@@ -29845,13 +30137,34 @@
             "opportunityScore": 0.9999,
             "confidenceScore": 0.5715,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.9999,
+            "confidenceScore": 0.5715,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.9999,
+            "confidenceScore": 0.5715,
+            "scoringVersion": "research_score_v3"
           }
         ],
-        "themeId": "THEME-0003"
+        "themeId": "THEME-0003",
+        "hypothesisIds": [
+          "H-553"
+        ],
+        "lastLinkedHypothesisId": "H-553",
+        "lastLinkedHypothesisAt": "2026-07-25T07:28:17.454Z"
       },
       "created": "2026-07-23T14:45:53Z",
       "source": "informed_flow_study_v1",
-      "links": {}
+      "links": {
+        "hypotheses": [
+          "H-553"
+        ]
+      }
     },
     {
       "id": "DEC-0025",
@@ -29939,10 +30252,10 @@
         "confidence": 0.55,
         "timeframeDays": 14,
         "testStats": {
-          "total": 1,
+          "total": 2,
           "completed": 0,
           "wins": 0,
-          "pending": 1,
+          "pending": 2,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -30028,7 +30341,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -30042,7 +30355,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:37Z",
-        "lastSeenAt": "2026-07-25T07:07:26Z",
+        "lastSeenAt": "2026-07-26T07:07:25Z",
         "opportunityScore": 0.99,
         "confidenceScore": 0.6523,
         "scoreHistory": [
@@ -30102,6 +30415,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.99,
+            "confidenceScore": 0.6523,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.99,
+            "confidenceScore": 0.6523,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.99,
             "confidenceScore": 0.6523,
             "scoringVersion": "research_score_v3"
@@ -30192,10 +30517,40 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-18T03:00:00Z",
+              "end": "2026-05-22T21:32:49Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
+        ],
+        "hypothesisIds": [
+          "H-555"
+        ],
+        "lastLinkedHypothesisId": "H-555",
+        "lastLinkedHypothesisAt": "2026-07-25T07:28:17.518Z"
+      },
+      "links": {
+        "hypotheses": [
+          "H-555"
         ]
       },
-      "links": {},
       "created": "2026-07-24T05:07:37Z",
       "source": "shadow_miner_v1"
     },
@@ -30254,7 +30609,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -30268,7 +30623,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:37Z",
-        "lastSeenAt": "2026-07-25T07:07:26Z",
+        "lastSeenAt": "2026-07-26T07:07:25Z",
         "opportunityScore": 0.9906,
         "confidenceScore": 0.6523,
         "scoreHistory": [
@@ -30331,6 +30686,18 @@
             "opportunityScore": 0.9906,
             "confidenceScore": 0.6523,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.9906,
+            "confidenceScore": 0.6523,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.9906,
+            "confidenceScore": 0.6523,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -30418,10 +30785,40 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-10T04:59:17.594Z",
+              "end": "2026-07-22T08:28:25.867Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
+        ],
+        "hypothesisIds": [
+          "H-554"
+        ],
+        "lastLinkedHypothesisId": "H-554",
+        "lastLinkedHypothesisAt": "2026-07-25T07:28:17.487Z"
+      },
+      "links": {
+        "hypotheses": [
+          "H-554"
         ]
       },
-      "links": {},
       "created": "2026-07-24T05:07:37Z",
       "source": "shadow_miner_v1"
     },
@@ -30430,7 +30827,7 @@
       "type": "finding",
       "evidenceClass": "DERIVED",
       "status": "strengthened",
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ALL (strat:dir=above,d<30/no): WR=65% n=48 sumPnl=+0.185",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ALL (strat:dir=above,d<30/no): WR=63% n=49 sumPnl=+0.158",
       "body": {
         "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,d<30|no",
         "asset": "ALL",
@@ -30438,22 +30835,22 @@
         "side": "no",
         "bucket": "strat:dir=above,d<30",
         "evidence": {
-          "n": 48,
-          "winRate": 0.6458,
-          "sumPnl": 0.185,
-          "avgPnl": 0.00385,
-          "pnlStd": 0.12566,
-          "pValue": 0.02973,
-          "pnlPValue": 0.41632,
+          "n": 49,
+          "winRate": 0.6327,
+          "sumPnl": 0.1583,
+          "avgPnl": 0.00323,
+          "pnlStd": 0.12442,
+          "pValue": 0.04272,
+          "pnlPValue": 0.42827,
           "qValue": 0.99818
         },
         "mineStats": {
-          "n": 48,
+          "n": 49,
           "wins": 31,
-          "winRate": 0.6458,
-          "sumPnl": 0.185,
-          "pValue": 0.02973,
-          "pnlPValue": 0.41632,
+          "winRate": 0.6327,
+          "sumPnl": 0.1583,
+          "pValue": 0.04272,
+          "pnlPValue": 0.42827,
           "hasHeatmap": true,
           "sampleIds": [
             "OT-1779348547074-tm2l",
@@ -30476,11 +30873,11 @@
           "generatedBy": "shadow_miner_v1",
           "inputWindow": {
             "start": "2026-05-21T07:29:07.074Z",
-            "end": "2026-07-25T02:29:10.412Z"
+            "end": "2026-07-25T17:28:17.834Z"
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -30494,9 +30891,9 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:37Z",
-        "lastSeenAt": "2026-07-25T07:07:27Z",
-        "opportunityScore": 0.5837,
-        "confidenceScore": 0.5273,
+        "lastSeenAt": "2026-07-26T07:07:26Z",
+        "opportunityScore": 0.5717,
+        "confidenceScore": 0.5152,
         "scoreHistory": [
           {
             "at": "2026-07-24T05:07:41Z",
@@ -30557,6 +30954,18 @@
             "opportunityScore": 0.5837,
             "confidenceScore": 0.5273,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.5717,
+            "confidenceScore": 0.5152,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.5717,
+            "confidenceScore": 0.5152,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -30633,6 +31042,27 @@
             "featureSet": "blocked_signal_shadow_v1",
             "scoringVersion": "shadow_cluster_v1",
             "gitSha": "fcba4e2e",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-21T07:29:07.074Z",
+              "end": "2026-07-25T02:29:10.412Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
             "inputArtifacts": [
               "/opt/polymarket-trader/data/blocked-signals.json"
             ],
@@ -30706,7 +31136,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -30720,7 +31150,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:37Z",
-        "lastSeenAt": "2026-07-25T07:07:26Z",
+        "lastSeenAt": "2026-07-26T07:07:25Z",
         "opportunityScore": 0.9803,
         "confidenceScore": 0.6232,
         "scoreHistory": [
@@ -30783,6 +31213,18 @@
             "opportunityScore": 0.9803,
             "confidenceScore": 0.6232,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.9803,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.9803,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0004",
@@ -30870,10 +31312,40 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-18T03:00:00Z",
+              "end": "2026-05-22T21:32:49Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
+        ],
+        "hypothesisIds": [
+          "H-556"
+        ],
+        "lastLinkedHypothesisId": "H-556",
+        "lastLinkedHypothesisAt": "2026-07-25T07:28:17.550Z"
+      },
+      "links": {
+        "hypotheses": [
+          "H-556"
         ]
       },
-      "links": {},
       "created": "2026-07-24T05:07:37Z",
       "source": "shadow_miner_v1"
     },
@@ -30932,7 +31404,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -30946,7 +31418,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:37Z",
-        "lastSeenAt": "2026-07-25T07:07:26Z",
+        "lastSeenAt": "2026-07-26T07:07:25Z",
         "opportunityScore": 0.9361,
         "confidenceScore": 0.6232,
         "scoreHistory": [
@@ -31009,6 +31481,18 @@
             "opportunityScore": 0.9361,
             "confidenceScore": 0.6232,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.9361,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.9361,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0004",
@@ -31096,10 +31580,40 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-18T03:00:00Z",
+              "end": "2026-05-22T21:32:49Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
+        ],
+        "hypothesisIds": [
+          "H-557"
+        ],
+        "lastLinkedHypothesisId": "H-557",
+        "lastLinkedHypothesisAt": "2026-07-25T07:28:17.583Z"
+      },
+      "links": {
+        "hypotheses": [
+          "H-557"
         ]
       },
-      "links": {},
       "created": "2026-07-24T05:07:37Z",
       "source": "shadow_miner_v1"
     },
@@ -31158,7 +31672,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -31172,7 +31686,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:38Z",
-        "lastSeenAt": "2026-07-25T07:07:26Z",
+        "lastSeenAt": "2026-07-26T07:07:25Z",
         "opportunityScore": 0.7776,
         "confidenceScore": 0.5036,
         "scoreHistory": [
@@ -31232,6 +31746,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.7776,
+            "confidenceScore": 0.5036,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.7776,
+            "confidenceScore": 0.5036,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.7776,
             "confidenceScore": 0.5036,
             "scoringVersion": "research_score_v3"
@@ -31322,10 +31848,40 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-27T23:28:27.415Z",
+              "end": "2026-06-23T08:28:21.856Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
+        ],
+        "hypothesisIds": [
+          "H-558"
+        ],
+        "lastLinkedHypothesisId": "H-558",
+        "lastLinkedHypothesisAt": "2026-07-25T07:28:17.617Z"
+      },
+      "links": {
+        "hypotheses": [
+          "H-558"
         ]
       },
-      "links": {},
       "created": "2026-07-24T05:07:38Z",
       "source": "shadow_miner_v1"
     },
@@ -31384,7 +31940,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -31398,7 +31954,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:38Z",
-        "lastSeenAt": "2026-07-25T07:07:27Z",
+        "lastSeenAt": "2026-07-26T07:07:26Z",
         "opportunityScore": 0.7305,
         "confidenceScore": 0.3983,
         "scoreHistory": [
@@ -31458,6 +32014,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.7305,
+            "confidenceScore": 0.3983,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.7305,
+            "confidenceScore": 0.3983,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.7305,
             "confidenceScore": 0.3983,
             "scoringVersion": "research_score_v3"
@@ -31537,6 +32105,27 @@
             "featureSet": "blocked_signal_shadow_v1",
             "scoringVersion": "shadow_cluster_v1",
             "gitSha": "fcba4e2e",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-06T16:20:58Z",
+              "end": "2026-05-20T15:31:23Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
             "inputArtifacts": [
               "/opt/polymarket-trader/data/blocked-signals.json"
             ],
@@ -31610,7 +32199,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -31624,7 +32213,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:38Z",
-        "lastSeenAt": "2026-07-25T07:07:27Z",
+        "lastSeenAt": "2026-07-26T07:07:26Z",
         "opportunityScore": 0.6761,
         "confidenceScore": 0.3983,
         "scoreHistory": [
@@ -31684,6 +32273,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.6761,
+            "confidenceScore": 0.3983,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.6761,
+            "confidenceScore": 0.3983,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.6761,
             "confidenceScore": 0.3983,
             "scoringVersion": "research_score_v3"
@@ -31774,6 +32375,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-06T16:20:58Z",
+              "end": "2026-05-22T21:28:41Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ]
       },
@@ -31785,8 +32407,8 @@
       "id": "FIND-0029",
       "type": "finding",
       "evidenceClass": "DERIVED",
-      "status": "open",
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on BTC (strat:dir=above,d<30/no): WR=59% n=22 sumPnl=-0.209",
+      "status": "strengthened",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on BTC (strat:dir=above,d<30/no): WR=57% n=23 sumPnl=-0.236",
       "body": {
         "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,d<30|no",
         "asset": "BTC",
@@ -31794,22 +32416,22 @@
         "side": "no",
         "bucket": "strat:dir=above,d<30",
         "evidence": {
-          "n": 22,
-          "winRate": 0.5909,
-          "sumPnl": -0.2091,
-          "avgPnl": -0.0095,
-          "pnlStd": 0.10259,
-          "pValue": 0.26173,
-          "pnlPValue": 0.66583,
+          "n": 23,
+          "winRate": 0.5652,
+          "sumPnl": -0.2358,
+          "avgPnl": -0.01025,
+          "pnlStd": 0.1003,
+          "pValue": 0.33882,
+          "pnlPValue": 0.68558,
           "qValue": 0.99818
         },
         "mineStats": {
-          "n": 22,
+          "n": 23,
           "wins": 13,
-          "winRate": 0.5909,
-          "sumPnl": -0.2091,
-          "pValue": 0.26173,
-          "pnlPValue": 0.66583,
+          "winRate": 0.5652,
+          "sumPnl": -0.2358,
+          "pValue": 0.33882,
+          "pnlPValue": 0.68558,
           "hasHeatmap": true,
           "sampleIds": [
             "OT-1783659557582-vct9",
@@ -31832,11 +32454,11 @@
           "generatedBy": "shadow_miner_v1",
           "inputWindow": {
             "start": "2026-07-10T04:59:17.582Z",
-            "end": "2026-07-21T00:28:09.245Z"
+            "end": "2026-07-25T17:28:17.834Z"
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -31850,9 +32472,9 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:38Z",
-        "lastSeenAt": "2026-07-25T07:07:27Z",
-        "opportunityScore": 0.3342,
-        "confidenceScore": 0.4179,
+        "lastSeenAt": "2026-07-26T07:07:26Z",
+        "opportunityScore": 0.3144,
+        "confidenceScore": 0.3974,
         "scoreHistory": [
           {
             "at": "2026-07-24T05:07:41Z",
@@ -31912,6 +32534,18 @@
             "at": "2026-07-25T07:08:10Z",
             "opportunityScore": 0.3342,
             "confidenceScore": 0.4179,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.3144,
+            "confidenceScore": 0.3974,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.3144,
+            "confidenceScore": 0.3974,
             "scoringVersion": "research_score_v3"
           }
         ],
@@ -31989,6 +32623,27 @@
             "featureSet": "blocked_signal_shadow_v1",
             "scoringVersion": "shadow_cluster_v1",
             "gitSha": "fcba4e2e",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-10T04:59:17.582Z",
+              "end": "2026-07-21T00:28:09.245Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
             "inputArtifacts": [
               "/opt/polymarket-trader/data/blocked-signals.json"
             ],
@@ -32062,7 +32717,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -32076,7 +32731,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:38Z",
-        "lastSeenAt": "2026-07-25T07:07:26Z",
+        "lastSeenAt": "2026-07-26T07:07:25Z",
         "opportunityScore": 0.8874,
         "confidenceScore": 0.3926,
         "scoreHistory": [
@@ -32139,6 +32794,18 @@
             "opportunityScore": 0.8874,
             "confidenceScore": 0.3926,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.8874,
+            "confidenceScore": 0.3926,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.8874,
+            "confidenceScore": 0.3926,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -32226,10 +32893,40 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-23T00:29:15.064Z",
+              "end": "2026-07-23T13:28:16.423Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
+        ],
+        "hypothesisIds": [
+          "H-559"
+        ],
+        "lastLinkedHypothesisId": "H-559",
+        "lastLinkedHypothesisAt": "2026-07-25T07:28:17.649Z"
+      },
+      "links": {
+        "hypotheses": [
+          "H-559"
         ]
       },
-      "links": {},
       "created": "2026-07-24T05:07:38Z",
       "source": "shadow_miner_v1"
     },
@@ -32288,7 +32985,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -32302,7 +32999,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:38Z",
-        "lastSeenAt": "2026-07-25T07:07:27Z",
+        "lastSeenAt": "2026-07-26T07:07:26Z",
         "opportunityScore": 0.6858,
         "confidenceScore": 0.3516,
         "scoreHistory": [
@@ -32365,6 +33062,18 @@
             "opportunityScore": 0.6858,
             "confidenceScore": 0.3516,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.6858,
+            "confidenceScore": 0.3516,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.6858,
+            "confidenceScore": 0.3516,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -32441,6 +33150,27 @@
             "featureSet": "blocked_signal_shadow_v1",
             "scoringVersion": "shadow_cluster_v1",
             "gitSha": "fcba4e2e",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-10T04:59:17.580Z",
+              "end": "2026-07-22T09:28:17.355Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
             "inputArtifacts": [
               "/opt/polymarket-trader/data/blocked-signals.json"
             ],
@@ -32514,7 +33244,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -32528,7 +33258,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:38Z",
-        "lastSeenAt": "2026-07-25T07:07:28Z",
+        "lastSeenAt": "2026-07-26T07:07:26Z",
         "opportunityScore": 0.319,
         "confidenceScore": 0.356,
         "scoreHistory": [
@@ -32588,6 +33318,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.319,
+            "confidenceScore": 0.356,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.319,
+            "confidenceScore": 0.356,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.319,
             "confidenceScore": 0.356,
             "scoringVersion": "research_score_v3"
@@ -32667,6 +33409,27 @@
             "featureSet": "blocked_signal_shadow_v1",
             "scoringVersion": "shadow_cluster_v1",
             "gitSha": "fcba4e2e",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-23T00:29:15.064Z",
+              "end": "2026-07-22T01:28:10.197Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
             "inputArtifacts": [
               "/opt/polymarket-trader/data/blocked-signals.json"
             ],
@@ -32740,7 +33503,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -32754,7 +33517,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:39Z",
-        "lastSeenAt": "2026-07-25T07:07:27Z",
+        "lastSeenAt": "2026-07-26T07:07:26Z",
         "opportunityScore": 0.3769,
         "confidenceScore": 0.3035,
         "scoreHistory": [
@@ -32814,6 +33577,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.3769,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.3769,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.3769,
             "confidenceScore": 0.3035,
             "scoringVersion": "research_score_v3"
@@ -32893,6 +33668,27 @@
             "featureSet": "blocked_signal_shadow_v1",
             "scoringVersion": "shadow_cluster_v1",
             "gitSha": "fcba4e2e",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-27T12:29:34.279Z",
+              "end": "2026-06-28T02:29:02.526Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
             "inputArtifacts": [
               "/opt/polymarket-trader/data/blocked-signals.json"
             ],
@@ -32966,7 +33762,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -32980,7 +33776,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:39Z",
-        "lastSeenAt": "2026-07-25T07:07:28Z",
+        "lastSeenAt": "2026-07-26T07:07:27Z",
         "opportunityScore": 0.3065,
         "confidenceScore": 0.3035,
         "scoreHistory": [
@@ -33040,6 +33836,18 @@
           },
           {
             "at": "2026-07-25T07:08:10Z",
+            "opportunityScore": 0.3065,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.3065,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
             "opportunityScore": 0.3065,
             "confidenceScore": 0.3035,
             "scoringVersion": "research_score_v3"
@@ -33119,6 +33927,27 @@
             "featureSet": "blocked_signal_shadow_v1",
             "scoringVersion": "shadow_cluster_v1",
             "gitSha": "fcba4e2e",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-10T07:35:16.276Z",
+              "end": "2026-07-22T01:28:10.197Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
             "inputArtifacts": [
               "/opt/polymarket-trader/data/blocked-signals.json"
             ],
@@ -33214,7 +34043,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -33228,7 +34057,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:38:04Z",
-        "lastSeenAt": "2026-07-25T07:07:26Z",
+        "lastSeenAt": "2026-07-26T07:07:25Z",
         "opportunityScore": 0.9998,
         "confidenceScore": 0.6955,
         "scoreHistory": [
@@ -33267,6 +34096,18 @@
             "opportunityScore": 0.9998,
             "confidenceScore": 0.6955,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.9998,
+            "confidenceScore": 0.6955,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.9998,
+            "confidenceScore": 0.6955,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0002",
@@ -33301,6 +34142,27 @@
             "featureSet": "blocked_signal_shadow_v1",
             "scoringVersion": "shadow_cluster_v1",
             "gitSha": "fcba4e2e",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-23T21:00:27.332Z",
+              "end": "2026-06-08T02:28:32.667Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
             "inputArtifacts": [
               "/opt/polymarket-trader/data/blocked-signals.json"
             ],
@@ -33443,7 +34305,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -33457,7 +34319,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-25T07:07:26Z",
-        "lastSeenAt": "2026-07-25T07:07:26Z",
+        "lastSeenAt": "2026-07-26T07:07:25Z",
         "opportunityScore": 0.9788,
         "confidenceScore": 0.4602,
         "scoreHistory": [
@@ -33472,9 +34334,44 @@
             "opportunityScore": 0.9788,
             "confidenceScore": 0.4602,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.9788,
+            "confidenceScore": 0.4602,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.9788,
+            "confidenceScore": 0.4602,
+            "scoringVersion": "research_score_v3"
           }
         ],
-        "themeId": "THEME-0001"
+        "themeId": "THEME-0001",
+        "provenanceHistory": [
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-21T07:29:07.074Z",
+              "end": "2026-07-25T02:29:10.412Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          }
+        ]
       },
       "links": {},
       "created": "2026-07-25T07:07:26Z",
@@ -33535,7 +34432,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -33549,7 +34446,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-25T07:07:27Z",
-        "lastSeenAt": "2026-07-25T07:07:27Z",
+        "lastSeenAt": "2026-07-26T07:07:26Z",
         "opportunityScore": 0.6993,
         "confidenceScore": 0.5036,
         "scoreHistory": [
@@ -33564,9 +34461,44 @@
             "opportunityScore": 0.6993,
             "confidenceScore": 0.5036,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.6993,
+            "confidenceScore": 0.5036,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.6993,
+            "confidenceScore": 0.5036,
+            "scoringVersion": "research_score_v3"
           }
         ],
-        "themeId": "THEME-0001"
+        "themeId": "THEME-0001",
+        "provenanceHistory": [
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-18T19:28:09.465Z",
+              "end": "2026-07-25T01:28:13.817Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          }
+        ]
       },
       "links": {},
       "created": "2026-07-25T07:07:27Z",
@@ -33576,8 +34508,8 @@
       "id": "FIND-0038",
       "type": "finding",
       "evidenceClass": "DERIVED",
-      "status": "open",
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on BTC (strat:dir=above,s-1/no): WR=75% n=8 sumPnl=-0.043",
+      "status": "strengthened",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on BTC (strat:dir=above,s-1/no): WR=69% n=13 sumPnl=-0.059",
       "body": {
         "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,s-1|no",
         "asset": "BTC",
@@ -33585,29 +34517,29 @@
         "side": "no",
         "bucket": "strat:dir=above,s-1",
         "evidence": {
-          "n": 8,
-          "winRate": 0.75,
-          "sumPnl": -0.0427,
-          "avgPnl": -0.00534,
-          "pnlStd": 0.03336,
-          "pValue": 0.14453,
-          "pnlPValue": 0.66772,
+          "n": 13,
+          "winRate": 0.6923,
+          "sumPnl": -0.0592,
+          "avgPnl": -0.00455,
+          "pnlStd": 0.02767,
+          "pValue": 0.13342,
+          "pnlPValue": 0.718,
           "qValue": 0.99818
         },
         "mineStats": {
-          "n": 8,
-          "wins": 6,
-          "winRate": 0.75,
-          "sumPnl": -0.0427,
-          "pValue": 0.14453,
-          "pnlPValue": 0.66772,
+          "n": 13,
+          "wins": 9,
+          "winRate": 0.6923,
+          "sumPnl": -0.0592,
+          "pValue": 0.13342,
+          "pnlPValue": 0.718,
           "hasHeatmap": true,
           "sampleIds": [
             "OT-1784766495733-778s",
             "OT-1784777302298-adfc",
+            "OT-1784813296429-21yl",
             "OT-1784860098913-8pst",
-            "OT-1784902291323-n56q",
-            "OT-1784902291324-7xgf"
+            "OT-1784902291321-opvr"
           ],
           "qValue": 0.99818,
           "testsInFamily": 73
@@ -33615,19 +34547,19 @@
         "sampleShadowIds": [
           "OT-1784766495733-778s",
           "OT-1784777302298-adfc",
+          "OT-1784813296429-21yl",
           "OT-1784860098913-8pst",
-          "OT-1784902291323-n56q",
-          "OT-1784902291324-7xgf"
+          "OT-1784902291321-opvr"
         ],
         "provenance": {
           "generatedBy": "shadow_miner_v1",
           "inputWindow": {
             "start": "2026-07-23T00:28:15.733Z",
-            "end": "2026-07-25T03:29:03.857Z"
+            "end": "2026-07-25T17:28:17.834Z"
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -33641,9 +34573,9 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-25T07:07:28Z",
-        "lastSeenAt": "2026-07-25T07:07:28Z",
-        "opportunityScore": 0.3323,
-        "confidenceScore": 0.4602,
+        "lastSeenAt": "2026-07-26T07:07:27Z",
+        "opportunityScore": 0.282,
+        "confidenceScore": 0.4648,
         "scoreHistory": [
           {
             "at": "2026-07-25T07:07:28Z",
@@ -33656,9 +34588,44 @@
             "opportunityScore": 0.3323,
             "confidenceScore": 0.4602,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.282,
+            "confidenceScore": 0.4648,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.282,
+            "confidenceScore": 0.4648,
+            "scoringVersion": "research_score_v3"
           }
         ],
-        "themeId": "THEME-0001"
+        "themeId": "THEME-0001",
+        "provenanceHistory": [
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-23T00:28:15.733Z",
+              "end": "2026-07-25T03:29:03.857Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          }
+        ]
       },
       "links": {},
       "created": "2026-07-25T07:07:28Z",
@@ -33668,8 +34635,8 @@
       "id": "FIND-0039",
       "type": "finding",
       "evidenceClass": "DERIVED",
-      "status": "open",
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ALL (strat:s-1,e1-3/no): WR=57% n=14 sumPnl=-0.155",
+      "status": "strengthened",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ALL (strat:s-1,e1-3/no): WR=58% n=19 sumPnl=-0.172",
       "body": {
         "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s-1,e1-3|no",
         "asset": "ALL",
@@ -33677,29 +34644,29 @@
         "side": "no",
         "bucket": "strat:s-1,e1-3",
         "evidence": {
-          "n": 14,
-          "winRate": 0.5714,
-          "sumPnl": -0.1551,
-          "avgPnl": -0.01108,
-          "pnlStd": 0.03818,
-          "pValue": 0.39526,
-          "pnlPValue": 0.85132,
+          "n": 19,
+          "winRate": 0.5789,
+          "sumPnl": -0.1716,
+          "avgPnl": -0.00903,
+          "pnlStd": 0.0338,
+          "pValue": 0.3238,
+          "pnlPValue": 0.87033,
           "qValue": 0.99818
         },
         "mineStats": {
-          "n": 14,
-          "wins": 8,
-          "winRate": 0.5714,
-          "sumPnl": -0.1551,
-          "pValue": 0.39526,
-          "pnlPValue": 0.85132,
+          "n": 19,
+          "wins": 11,
+          "winRate": 0.5789,
+          "sumPnl": -0.1716,
+          "pValue": 0.3238,
+          "pnlPValue": 0.87033,
           "hasHeatmap": true,
           "sampleIds": [
             "OT-1784766495733-778s",
             "OT-1784777302298-adfc",
+            "OT-1784813296429-21yl",
             "OT-1784816903525-vi9s",
-            "OT-1784860098913-8pst",
-            "OT-1784902291323-n56q"
+            "OT-1784860098913-8pst"
           ],
           "qValue": 0.99818,
           "testsInFamily": 73
@@ -33707,19 +34674,19 @@
         "sampleShadowIds": [
           "OT-1784766495733-778s",
           "OT-1784777302298-adfc",
+          "OT-1784813296429-21yl",
           "OT-1784816903525-vi9s",
-          "OT-1784860098913-8pst",
-          "OT-1784902291323-n56q"
+          "OT-1784860098913-8pst"
         ],
         "provenance": {
           "generatedBy": "shadow_miner_v1",
           "inputWindow": {
             "start": "2026-07-23T00:28:15.733Z",
-            "end": "2026-07-25T03:29:03.857Z"
+            "end": "2026-07-25T17:28:17.834Z"
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "c44fbc45",
+          "gitSha": "75abd60a",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -33733,9 +34700,9 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-25T07:07:28Z",
-        "lastSeenAt": "2026-07-25T07:07:28Z",
-        "opportunityScore": 0.1487,
-        "confidenceScore": 0.3604,
+        "lastSeenAt": "2026-07-26T07:07:27Z",
+        "opportunityScore": 0.1297,
+        "confidenceScore": 0.3945,
         "scoreHistory": [
           {
             "at": "2026-07-25T07:07:28Z",
@@ -33748,12 +34715,377 @@
             "opportunityScore": 0.1487,
             "confidenceScore": 0.3604,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.1297,
+            "confidenceScore": 0.3945,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.1297,
+            "confidenceScore": 0.3945,
+            "scoringVersion": "research_score_v3"
+          }
+        ],
+        "themeId": "THEME-0001",
+        "provenanceHistory": [
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-23T00:28:15.733Z",
+              "end": "2026-07-25T03:29:03.857Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "c44fbc45",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          }
+        ]
+      },
+      "links": {},
+      "created": "2026-07-25T07:07:28Z",
+      "source": "shadow_miner_v1"
+    },
+    {
+      "id": "EXP-0560",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-553: Smart-dip vs dumb-highs flow: When smart-wallet share on dip-YES flow exceeds 0.05 and dumb-wallet share on high-YES flow exceeds 0.15, expect the und...",
+      "body": {
+        "hypothesisId": "H-553",
+        "hypothesisStatus": "active",
+        "description": "Smart-dip vs dumb-highs flow: When smart-wallet share on dip-YES flow exceeds 0.05 and dumb-wallet share on high-YES flow exceeds 0.15, expect the underlying spot to rise within 7 days as informed dip-buying dominates.",
+        "prediction": "Spot price increases by at least 2% over 7 days.",
+        "conditions": {
+          "smart_share_dips": "> 0.05",
+          "dumb_share_highs": "> 0.15"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 7,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-25",
+        "setupId": "find_0020",
+        "setupLabel": "FIND-linked FIND-0020"
+      },
+      "links": {},
+      "created": "2026-07-25T14:10:00Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0561",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-554: Oil one-touch NO edge buy: When sell-YES edge on OIL upside one-touch NO contract is between 1 and 3 points, enter a short position (selling YES on th...",
+      "body": {
+        "hypothesisId": "H-554",
+        "hypothesisStatus": "active",
+        "description": "Oil one-touch NO edge buy: When sell-YES edge on OIL upside one-touch NO contract is between 1 and 3 points, enter a short position (selling YES on the NO contract) expecting edge to close within 3 days.",
+        "prediction": "Sell-YES edge closes profitably within 3 days, delivering 0.5-2.0% PnL.",
+        "conditions": {
+          "oil_one_touch_sell_yes_edge_pts": "<= 3"
+        },
+        "confidence": 0.65,
+        "timeframeDays": 3,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-25",
+        "setupId": "find_0022",
+        "setupLabel": "FIND-linked FIND-0022"
+      },
+      "links": {},
+      "created": "2026-07-25T14:10:00Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0562",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-555: PM IV rich NO fade: When PM IV exceeds options IV by at least 10 percentage points (regime-relative) and the market environment indicates rich PM IV (...",
+      "body": {
+        "hypothesisId": "H-555",
+        "hypothesisStatus": "active",
+        "description": "PM IV rich NO fade: When PM IV exceeds options IV by at least 10 percentage points (regime-relative) and the market environment indicates rich PM IV (pm_iv_zscore > 1.5), sell the overpriced NO contracts and short the underlying spot.",
+        "prediction": "PM IV mean-reverts towards options IV, making the NO sale profitable; underlying spot declines by at least 1.5% within 7 days.",
+        "conditions": {
+          "pm_iv_gt_opt_iv_pps": ">= 10",
+          "pm_iv_zscore_30d": "> 1.5"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 7,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-25",
+        "setupId": "find_0021",
+        "setupLabel": "FIND-linked FIND-0021"
+      },
+      "links": {},
+      "created": "2026-07-25T14:10:00Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0563",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-556: PM IV rich NO short with near expiry: When PM IV is rich (>10% over options IV) and the contract expires within 30 days, sell NO contracts on the unde...",
+      "body": {
+        "hypothesisId": "H-556",
+        "hypothesisStatus": "active",
+        "description": "PM IV rich NO short with near expiry: When PM IV is rich (>10% over options IV) and the contract expires within 30 days, sell NO contracts on the underlying upside touch.",
+        "prediction": "The rich PM IV premium erodes as expiry nears, yielding a profitable NO sale.",
+        "conditions": {
+          "pm_iv_gt_opt_iv_pps": ">= 10",
+          "contract_days_to_expiry": "< 30"
+        },
+        "confidence": 0.68,
+        "timeframeDays": 14,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-25",
+        "setupId": "find_0024",
+        "setupLabel": "FIND-linked FIND-0024"
+      },
+      "links": {},
+      "created": "2026-07-25T14:10:00Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0564",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-557: PM IV rich NO short with edge 3-8 pts: When sell-YES edge is between 3 and 8 points on rich PM IV instruments, enter short via selling NO, expecting e...",
+      "body": {
+        "hypothesisId": "H-557",
+        "hypothesisStatus": "active",
+        "description": "PM IV rich NO short with edge 3-8 pts: When sell-YES edge is between 3 and 8 points on rich PM IV instruments, enter short via selling NO, expecting edge decay.",
+        "prediction": "High edge decays towards zero, generating PnL over 7 days.",
+        "conditions": {
+          "sell_yes_edge_pts": "<= 8",
+          "pm_iv_gt_opt_iv_pps": ">= 10"
+        },
+        "confidence": 0.62,
+        "timeframeDays": 7,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-25",
+        "setupId": "find_0025",
+        "setupLabel": "FIND-linked FIND-0025"
+      },
+      "links": {},
+      "created": "2026-07-25T14:10:00Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0565",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-558: No-bias gap short with direction below: When the no-bias adjusted gap is positive (sell edge) and the strike is below spot (dir=below) with contract e...",
+      "body": {
+        "hypothesisId": "H-558",
+        "hypothesisStatus": "active",
+        "description": "No-bias gap short with direction below: When the no-bias adjusted gap is positive (sell edge) and the strike is below spot (dir=below) with contract expiry under 30 days, enter short via selling NO.",
+        "prediction": "The gap closes within 14 days, producing a profit on the NO sale.",
+        "conditions": {
+          "no_bias_adjusted_gap": "> 0",
+          "strike_pct_vs_spot": "< 0",
+          "contract_days_to_expiry": "< 30"
+        },
+        "confidence": 0.6,
+        "timeframeDays": 14,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-25",
+        "setupId": "find_0026",
+        "setupLabel": "FIND-linked FIND-0026"
+      },
+      "links": {},
+      "created": "2026-07-25T14:10:00Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0566",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-559: One-touch NO edge on ALL above strike: When sell-YES edge is positive and direction is above (touch strike above spot) with edge between 3-8 pts, ente...",
+      "body": {
+        "hypothesisId": "H-559",
+        "hypothesisStatus": "active",
+        "description": "One-touch NO edge on ALL above strike: When sell-YES edge is positive and direction is above (touch strike above spot) with edge between 3-8 pts, enter short.",
+        "prediction": "The edge dissipates, resulting in a profitable NO contract sale.",
+        "conditions": {
+          "sell_yes_edge_pts": "<= 8",
+          "one_touch_direction": "= above"
+        },
+        "confidence": 0.58,
+        "timeframeDays": 7,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-25",
+        "setupId": "find_0030",
+        "setupLabel": "FIND-linked FIND-0030"
+      },
+      "links": {},
+      "created": "2026-07-25T14:10:00Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "FIND-0040",
+      "type": "finding",
+      "evidenceClass": "DERIVED",
+      "status": "open",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ALL (strat:dir=above,s-1/no): WR=55% n=20 sumPnl=-0.183",
+      "body": {
+        "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,s-1|no",
+        "asset": "ALL",
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "side": "no",
+        "bucket": "strat:dir=above,s-1",
+        "evidence": {
+          "n": 20,
+          "winRate": 0.55,
+          "sumPnl": -0.1826,
+          "avgPnl": -0.00913,
+          "pnlStd": 0.0329,
+          "pValue": 0.4119,
+          "pnlPValue": 0.88515,
+          "qValue": 0.99818
+        },
+        "mineStats": {
+          "n": 20,
+          "wins": 11,
+          "winRate": 0.55,
+          "sumPnl": -0.1826,
+          "pValue": 0.4119,
+          "pnlPValue": 0.88515,
+          "hasHeatmap": true,
+          "sampleIds": [
+            "OT-1784766495733-778s",
+            "OT-1784777302298-adfc",
+            "OT-1784813296423-n6v6",
+            "OT-1784813296429-21yl",
+            "OT-1784816903525-vi9s"
+          ],
+          "qValue": 0.99818,
+          "testsInFamily": 73
+        },
+        "sampleShadowIds": [
+          "OT-1784766495733-778s",
+          "OT-1784777302298-adfc",
+          "OT-1784813296423-n6v6",
+          "OT-1784813296429-21yl",
+          "OT-1784816903525-vi9s"
+        ],
+        "provenance": {
+          "generatedBy": "shadow_miner_v1",
+          "inputWindow": {
+            "start": "2026-07-23T00:28:15.733Z",
+            "end": "2026-07-25T17:28:17.834Z"
+          },
+          "featureSet": "blocked_signal_shadow_v1",
+          "scoringVersion": "shadow_cluster_v1",
+          "gitSha": "75abd60a",
+          "inputArtifacts": [
+            "/opt/polymarket-trader/data/blocked-signals.json"
+          ],
+          "filters": {
+            "minWr": 0.55,
+            "minNHeatmap": 8,
+            "minNOther": 8,
+            "excludeLearningExcluded": true,
+            "resolvedOnly": true
+          },
+          "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+        },
+        "detectedAt": "2026-07-26T07:07:27Z",
+        "lastSeenAt": "2026-07-26T07:07:27Z",
+        "opportunityScore": 0.1149,
+        "confidenceScore": 0.3722,
+        "scoreHistory": [
+          {
+            "at": "2026-07-26T07:07:27Z",
+            "opportunityScore": 0.1149,
+            "confidenceScore": 0.3722,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-07-26T07:08:14Z",
+            "opportunityScore": 0.1149,
+            "confidenceScore": 0.3722,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001"
       },
       "links": {},
-      "created": "2026-07-25T07:07:28Z",
+      "created": "2026-07-26T07:07:27Z",
       "source": "shadow_miner_v1"
     }
   ]

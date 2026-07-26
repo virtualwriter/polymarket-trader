@@ -1,64 +1,65 @@
 {
-  "generatedAt": "2026-07-25T07:07:25.673Z",
+  "generatedAt": "2026-07-26T07:07:24.788Z",
   "provider": "deepseek",
   "model": "deepseek-v4-pro",
-  "strategyReview": "The Weekend Hyperliquid funding reversion long signal continues to perform strongly with a 72% win rate and +$1.19 aggregated PnL across 225 trades, making it the system's most reliable edge. The One-Touch NO sell-YES edge signal shows promise with a perfect 4/4 live trades averaging +18.4% PnL, but its shadow record (42% win rate, recent compression losses on OIL/GOLD/BTC) highlights fragility and spread-liquidity risk. Funding Extreme Long and Short signals are underperforming, with Funding Extreme Long delivering a -0.69% average PnL and numerous stop-outs, while PM EV, macro momentum, and LLM hypothesis signals remain disabled or contaminated. The emphasis should be on widening the Weekend funding pipeline and conditionally promoting One-Touch NO with robust edge/spread filters.",
+  "strategyReview": "The core engine is profitable thanks to the reliable Weekend HL Funding Reversion Long signal family (176/243 live wins, +0.47% avg, 188/253 shadow wins, +0.99%) which continues to scale. However, many auxiliary families are bleeding: FUNDING_EXTREME_LONG is -0.69% average on live trades, NO_BIAS_ADJUSTED_GAP shadows lose -1.30%, and several proxy-short shadows are deeply negative. The ONE_TOUCH_HIGH_EDGE_NO signal shows stellar live returns but lacks depth; its shadow population has a marginal 0.09% average PnL and needs cleaner execution filters. The overall portfolio is healthy, but capital is being wasted on low-probability signal families that fail to convert shadow promise into live edge.",
   "failureClusters": [
     {
-      "theme": "Funding Extreme Long Stop Cascade",
-      "evidence": "32 live trades with 11 stops, avg PnL -0.69%; AMZN/HYPE specifically produce 29% and 33% win rates, respectively, despite moderate edge in funding extremes.",
-      "recommendation": "Increase stopPct to 3.5% and lower targetPct to 4.5% to reduce stop-outs and capture faster mean-reversion exits, while re-assessing asset eligibility."
+      "theme": "Polymarket Proxy Short Bleed",
+      "evidence": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT shadows avg -2.18% (3/15 wins), PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT shadows 0% win, -7.15% avg PnL. The mechanism of proxying a perp short through buying NO on upside one-touch contracts is structurally misaligned, and the edge consistently disappears before expiry.",
+      "recommendation": "Disable all polymarket proxy short shadow generation and prevent new hypotheses from these families; reallocating that capital to the live WEEKEND_HL_FUNDING_REVERSION_LONG would improve realized PnL."
     },
     {
-      "theme": "Polymarket One-Touch NO Compression Losses",
-      "evidence": "Recent shadow losses: OIL -1.85%, GOLD -0.71%, BTC -6.9% with 'thesis_compressed_loss'; overall shadow win rate 42% vs 100% live, suggesting edge disappears quickly under wide spreads.",
-      "recommendation": "Require a minimum sell-YES edge of 2pt and spread below 1.5c for shadow promotion; consider a 24h trailing edge exit to avoid compression."
+      "theme": "No-Bias Adjusted Gap Decay",
+      "evidence": "NO_BIAS_ADJUSTED_GAP_SHADOW family shows 37/89 wins (42%), avg -1.30%, with losses dominated by gap disappearance. Even filtered clusters like FIND-0026 (9 shadows, 78% win) show high variance (std 20.78%), suggesting the signal lacks stability and is sensitive to small sample artifacts.",
+      "recommendation": "Halt promotion of any no-bias gap shadows into live signals. Keep the family in exploratory mode but require a minimum of 50 resolved shadows and a profit factor above 1.5 before reconsidering."
     },
     {
-      "theme": "PM EV Below Spot Contaminated Weakness",
-      "evidence": "Only 4 live trades, 25% win rate, avg -1.89%; shadows 50% win but tiny PnL; contaminated by historical data.",
-      "recommendation": "Keep disabled; wait for clean retest before any promotion."
+      "theme": "GOLD One-Touch Heatmap Hypothesis Over-optimism",
+      "evidence": "Both H-534 and H-540 (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap cluster) have 0% win rate over 29 tests each, despite the shadow cluster FIND-0036 showing 75% win over only 8 samples. The high initial promise crashed on out-of-sample shadow tests, indicating severe overfitting.",
+      "recommendation": "Kill H-534 and H-540 immediately. Do not promote any GOLD one-touch heatmap signals until a new, regime-relative cluster emerges with at least 20 resolved tests and a win rate above 55%."
     }
   ],
   "newHypotheses": [
     {
-      "created": "2026-07-25",
-      "description": "Smart-dip vs dumb-highs flow: When smart-wallet share on dip-YES flow exceeds 0.05 and dumb-wallet share on high-YES flow exceeds 0.15, expect the underlying spot to rise within 7 days as informed dip-buying dominates.",
+      "created": "2026-07-26",
+      "description": "Fade dumb money highs: when the share of dumb-wallet YES volume on upside one-touch high contracts exceeds 15% and the smart-wallet share on dip-YES flow is above 5%, sell YES on the high one-touch NO contracts to exploit predictable dumb-money buying into overpriced tails.",
       "conditions": {
-        "smart_share_dips": "> 0.05",
-        "dumb_share_highs": "> 0.15"
+        "dumb_share_highs": "> 0.15",
+        "smart_share_dips": "> 0.05"
       },
-      "prediction": "Spot price increases by at least 2% over 7 days.",
-      "timeframeDays": 7,
-      "confidence": 0.7,
-      "direction": "long",
+      "prediction": "The asset will fail to hit the high barrier within the next 14 days, causing the sold YES to expire worthless.",
+      "timeframeDays": 14,
+      "confidence": 0.6,
+      "direction": "short",
       "originFindingId": "FIND-0020",
       "themeId": "THEME-0003",
       "source": "llm"
     },
     {
-      "created": "2026-07-25",
-      "description": "Oil one-touch NO edge buy: When sell-YES edge on OIL upside one-touch NO contract is between 1 and 3 points, enter a short position (selling YES on the NO contract) expecting edge to close within 3 days.",
+      "created": "2026-07-26",
+      "description": "OIL one-touch NO edge 1-3pt: when the sell-YES edge on OIL upside one-touch NO contracts is between 1 and 3 percentage points, short OIL by selling YES with a defined exit when edge disappears.",
       "conditions": {
-        "oil_one_touch_sell_yes_edge_pts": "<= 3"
+        "sell_yes_edge_pts": "<= 3",
+        "asset": "OIL"
       },
-      "prediction": "Sell-YES edge closes profitably within 3 days, delivering 0.5-2.0% PnL.",
-      "timeframeDays": 3,
-      "confidence": 0.65,
+      "prediction": "The OIL spot price will not reach the one-touch strike within the contract timeframe, and the sold YES will expire OTM or be bought back at a narrower edge.",
+      "timeframeDays": 14,
+      "confidence": 0.7,
       "direction": "short",
       "originFindingId": "FIND-0022",
       "themeId": "THEME-0001",
       "source": "llm"
     },
     {
-      "created": "2026-07-25",
-      "description": "PM IV rich NO fade: When PM IV exceeds options IV by at least 10 percentage points (regime-relative) and the market environment indicates rich PM IV (pm_iv_zscore > 1.5), sell the overpriced NO contracts and short the underlying spot.",
+      "created": "2026-07-26",
+      "description": "Rich PM IV one-touch NO: when the prediction market IV exceeds the 30d options IV by at least 10 percentage points and the one-touch strike is above the current spot price, sell YES on the one-touch NO contract, capturing the IV overpricing.",
       "conditions": {
-        "pm_iv_gt_opt_iv_pps": ">= 10",
-        "pm_iv_zscore_30d": "> 1.5"
+        "pm_iv_minus_opt_iv_30d": "> 10",
+        "touch_direction": "above"
       },
-      "prediction": "PM IV mean-reverts towards options IV, making the NO sale profitable; underlying spot declines by at least 1.5% within 7 days.",
-      "timeframeDays": 7,
+      "prediction": "The PM IV will mean-revert downwards, and the YES price will decay, causing the sold YES to expire worthless or be closed profitably within 7-14 days.",
+      "timeframeDays": 14,
       "confidence": 0.7,
       "direction": "short",
       "originFindingId": "FIND-0021",
@@ -66,88 +67,103 @@
       "source": "llm"
     },
     {
-      "created": "2026-07-25",
-      "description": "PM IV rich NO short with near expiry: When PM IV is rich (>10% over options IV) and the contract expires within 30 days, sell NO contracts on the underlying upside touch.",
+      "created": "2026-07-26",
+      "description": "Rich PM IV near-expiry one-touch NO: refine the rich IV signal to contracts expiring within 30 days, where time decay is strongest; when pm_iv > opt_iv_30d + 10 and days to expiry < 30, sell YES on the one-touch NO.",
       "conditions": {
-        "pm_iv_gt_opt_iv_pps": ">= 10",
-        "contract_days_to_expiry": "< 30"
+        "pm_iv_minus_opt_iv_30d": "> 10",
+        "days_to_expiry": "< 30",
+        "touch_direction": "above"
       },
-      "prediction": "The rich PM IV premium erodes as expiry nears, yielding a profitable NO sale.",
+      "prediction": "The YES price will erode rapidly as expiry approaches and IV normalizes, delivering a profit within the contract's remaining term.",
       "timeframeDays": 14,
-      "confidence": 0.68,
+      "confidence": 0.7,
       "direction": "short",
       "originFindingId": "FIND-0024",
       "themeId": "THEME-0004",
       "source": "llm"
     },
     {
-      "created": "2026-07-25",
-      "description": "PM IV rich NO short with edge 3-8 pts: When sell-YES edge is between 3 and 8 points on rich PM IV instruments, enter short via selling NO, expecting edge decay.",
+      "created": "2026-07-26",
+      "description": "Rich PM IV with edge 3-8 pts: on rich-IV NO contracts where the sell-YES edge is between 3 and 8 percentage points, the signal is especially robust; enter short when pm_iv > opt_iv_30d + 10 and sell_yes_edge_pts ∈ [3,8].",
       "conditions": {
+        "pm_iv_minus_opt_iv_30d": "> 10",
         "sell_yes_edge_pts": "<= 8",
-        "pm_iv_gt_opt_iv_pps": ">= 10"
+        "touch_direction": "above"
       },
-      "prediction": "High edge decays towards zero, generating PnL over 7 days.",
-      "timeframeDays": 7,
-      "confidence": 0.62,
+      "prediction": "The large edge indicates a pricing anomaly that will correct before expiry, yielding a positive return on the sold YES.",
+      "timeframeDays": 14,
+      "confidence": 0.7,
       "direction": "short",
       "originFindingId": "FIND-0025",
       "themeId": "THEME-0004",
       "source": "llm"
     },
     {
-      "created": "2026-07-25",
-      "description": "No-bias gap short with direction below: When the no-bias adjusted gap is positive (sell edge) and the strike is below spot (dir=below) with contract expiry under 30 days, enter short via selling NO.",
+      "created": "2026-07-26",
+      "description": "No-bias gap short with direction below and near expiry: when the no-bias adjusted gap is positive (sell edge) and the one-touch direction is below current spot (i.e. the contract is an above-strike one-touch) AND days to expiry < 30, short by selling YES.",
       "conditions": {
         "no_bias_adjusted_gap": "> 0",
-        "strike_pct_vs_spot": "< 0",
-        "contract_days_to_expiry": "< 30"
+        "touch_direction": "below",
+        "days_to_expiry": "< 30"
       },
-      "prediction": "The gap closes within 14 days, producing a profit on the NO sale.",
+      "prediction": "The gap will close quickly as expiry nears, and the sold YES will lose value, resulting in a profitable short.",
       "timeframeDays": 14,
-      "confidence": 0.6,
+      "confidence": 0.65,
       "direction": "short",
       "originFindingId": "FIND-0026",
       "themeId": "THEME-0001",
       "source": "llm"
     },
     {
-      "created": "2026-07-25",
-      "description": "One-touch NO edge on ALL above strike: When sell-YES edge is positive and direction is above (touch strike above spot) with edge between 3-8 pts, enter short.",
+      "created": "2026-07-26",
+      "description": "ONE_TOUCH_HIGH_EDGE_NO on ALL with above direction and edge 3-8 pts: for any asset, when the one-touch strike is above spot and the sell-YES edge is between 3 and 8 percentage points, enter a short via selling YES.",
       "conditions": {
         "sell_yes_edge_pts": "<= 8",
-        "one_touch_direction": "= above"
+        "touch_direction": "above"
       },
-      "prediction": "The edge dissipates, resulting in a profitable NO contract sale.",
-      "timeframeDays": 7,
-      "confidence": 0.58,
+      "prediction": "The edge will revert and the YES price will deflate within 14 days, generating a profit on the short position.",
+      "timeframeDays": 14,
+      "confidence": 0.65,
       "direction": "short",
       "originFindingId": "FIND-0030",
+      "themeId": "THEME-0001",
+      "source": "llm"
+    },
+    {
+      "created": "2026-07-26",
+      "description": "GOLD one-touch NO with above direction and near expiry: narrow the GOLD one-touch heatmap signal to contracts with days to expiry < 30 and direction above, where the signal has shown promise in shadow mining (FIND-0036).",
+      "conditions": {
+        "asset": "GOLD",
+        "touch_direction": "above",
+        "days_to_expiry": "< 30",
+        "sell_yes_edge_pts": "> 0"
+      },
+      "prediction": "The GOLD YES premium will deflate as expiry approaches, leading to a profitable short via selling the one-touch YES.",
+      "timeframeDays": 14,
+      "confidence": 0.6,
+      "direction": "short",
+      "originFindingId": "FIND-0036",
       "themeId": "THEME-0001",
       "source": "llm"
     }
   ],
   "hypothesisReviews": [
     {
-      "id": "H-535",
-      "observation": "MU weekend funding normalization has only 33% win rate (1 of 3 resolved shadows), suggesting that MU's funding mean-reversion is inconsistent; consider asset-specific kill if next 2 tests fail."
+      "id": "H-534",
+      "observation": "0% win rate over 29 shadow tests on GOLD one-touch NO heatmap cluster, despite a promising shadow mining cluster (FIND-0036) with 75% win rate on only 8 historical samples. The out-of-sample performance collapses completely, indicating severe overfitting. Kill this hypothesis and do not promote."
     },
     {
-      "id": "H-537",
-      "observation": "AAPL shadow 40% win rate (2 of 5 completed), not meeting promotion threshold; edge may exist only during extreme funding dislocations, tighten entry condition to funding < -20%."
+      "id": "H-540",
+      "observation": "0% win rate over 29 tests after reopening; the GOLD one-touch heatmap cluster remains unviable. The signal was quarantined earlier due to a scorer bug, but even under corrected scoring, no edge emerges. Recommend permanent kill and no further variants."
     },
     {
-      "id": "H-006",
-      "observation": "Gold PM IV compression vs options IV spike has 3 wins in 3 early tests; given the small sample, continue shadow tests; if next 2 wins, could be promoted as a live signal."
+      "id": "H-539",
+      "observation": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG on CBRS has 43% win rate over 8 tests. While not yet promotion-worthy, the win rate is positive and in-line with the broader weekend funding reversion family. Continue shadow testing; no action needed yet."
+    },
+    {
+      "id": "H-548",
+      "observation": "WEEKEND_HL_FUNDING_REVERSION_LONG on MU (FIND-0004) has 100% win rate over only 1 test. Too small to conclude, but initial result is promising. More tests required before promotion consideration."
     }
   ],
-  "parameterUpdates": {
-    "signalRisk": {
-      "FUNDING_EXTREME_LONG": {
-        "targetPct": 4.5,
-        "stopPct": 3.5
-      }
-    }
-  },
-  "journalEntry": "Nightly review: Weekend funding reversion continues as top performer; CBRS open position at -6.83% is an outlier but the overall win rate remains high, so no change. One-Touch NO live trades are all wins but the recent shadow compression losses (BTC -6.9%, OIL -1.85%) highlight the danger of spread and edge decay; we are proposing stricter edge thresholds via new hypotheses. FUNDING_EXTREME_LONG's chronic stop-outs motivate increasing its stop from 2.5% to 3.5% and reducing target to 4.5%, intending to reduce whipsaw losses while capturing shorter-term reversals. Several shadow hypotheses for individual stocks (MU, AAPL) are underperforming; I've noted them for closer monitoring. No other parameter changes warranted tonight. The new hypotheses from ranked research aim to systematically exploit PM IV touch rich edges and informed flow signals."
+  "journalEntry": "Tonight's review confirms that the Weekend HL Funding Reversion Long family remains our powerhouse, with consistent live and shadow profitability. The focus must be on scaling this signal and not diluting the portfolio with noisy experiments. The ranked research opportunities from the latest mining run highlight a flow-asymmetry thesis (smart wallets on dips vs. dumb on highs) and a cluster of PM-IV-rich one-touch NO signals, both of which show strong in-sample promise. We've translated these into specific, testable hypotheses. Critically, we flagged three failure clusters: the persistent bleed of polymarket proxy shorts, the decaying no-bias gap shadows, and the disastrous GOLD one-touch heatmap hypotheses H-534 and H-540. Killing those two zombie hypotheses and halting new proxy-short generations should free mental and capital bandwidth. No parameter updates are justified tonight; the current risk settings are acceptable while we improve signal selection. Tomorrow night we should review the open weekend reversion positions for any outlier losers (LLY, EBAY) and consider if there's an asset-specific filter."
 }

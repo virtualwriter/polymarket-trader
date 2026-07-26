@@ -1,9 +1,9 @@
 # Nightly Research Report
 
-_Generated 2026-07-25T07:08:11Z_
+_Generated 2026-07-26T07:08:14Z_
 
 ## 1. Summary
-- FIND records: 39 total (open 21, strengthened 3, weakened 0, negative 1)
+- FIND records: 40 total (open 19, strengthened 6, weakened 0, negative 1)
 - Research themes: 4
 - Top opportunity: #1 FIND-0020 opp=0.9999 conf=0.5715 (INFORMED_FLOW|TOUCH|DIRECTION_ASYMMETRY|no)
 
@@ -20,19 +20,20 @@ _Generated 2026-07-25T07:08:11Z_
 - #10 **FIND-0001** opp=0.7757 conf=0.348 | `NO_BIAS_ADJUSTED_GAP_SHADOW|GOLD|short-rich-tail|no` | theme heatmap_one_touch
 
 ## 3. Themes overview
-- **THEME-0001** (heatmap_one_touch): 18 findings, avg opp 0.6058
+- **THEME-0001** (heatmap_one_touch): 19 findings, avg opp 0.5747
 - **THEME-0002** (weekend_hl_funding): 15 findings, avg opp 0.7675
 - **THEME-0004** (other_user_pm_iv_touch_rich_no): 5 findings, avg opp 0.8626
 - **THEME-0003** (other_informed_flow): 1 findings, avg opp 0.9999
 
 ## 4. Newly authored hypotheses
-- `FIND-0020` / THEME-0003: Smart-dip vs dumb-highs flow: When smart-wallet share on dip-YES flow exceeds 0.05 and dumb-wallet share on high-YES flow exceeds 0.15, expect the underlying spot to rise within 7 days as informed dip-buying dominates.
-- `FIND-0022` / THEME-0001: Oil one-touch NO edge buy: When sell-YES edge on OIL upside one-touch NO contract is between 1 and 3 points, enter a short position (selling YES on the NO contract) expecting edge to close within 3 days.
-- `FIND-0021` / THEME-0004: PM IV rich NO fade: When PM IV exceeds options IV by at least 10 percentage points (regime-relative) and the market environment indicates rich PM IV (pm_iv_zscore > 1.5), sell the overpriced NO contracts and short the underlying spot.
-- `FIND-0024` / THEME-0004: PM IV rich NO short with near expiry: When PM IV is rich (>10% over options IV) and the contract expires within 30 days, sell NO contracts on the underlying upside touch.
-- `FIND-0025` / THEME-0004: PM IV rich NO short with edge 3-8 pts: When sell-YES edge is between 3 and 8 points on rich PM IV instruments, enter short via selling NO, expecting edge decay.
-- `FIND-0026` / THEME-0001: No-bias gap short with direction below: When the no-bias adjusted gap is positive (sell edge) and the strike is below spot (dir=below) with contract expiry under 30 days, enter short via selling NO.
-- `FIND-0030` / THEME-0001: One-touch NO edge on ALL above strike: When sell-YES edge is positive and direction is above (touch strike above spot) with edge between 3-8 pts, enter short.
+- `FIND-0020` / THEME-0003: Fade dumb money highs: when the share of dumb-wallet YES volume on upside one-touch high contracts exceeds 15% and the smart-wallet share on dip-YES flow is above 5%, sell YES on the high one-touch NO contracts to exploit predictable dumb-…
+- `FIND-0022` / THEME-0001: OIL one-touch NO edge 1-3pt: when the sell-YES edge on OIL upside one-touch NO contracts is between 1 and 3 percentage points, short OIL by selling YES with a defined exit when edge disappears.
+- `FIND-0021` / THEME-0004: Rich PM IV one-touch NO: when the prediction market IV exceeds the 30d options IV by at least 10 percentage points and the one-touch strike is above the current spot price, sell YES on the one-touch NO contract, capturing the IV overpricin…
+- `FIND-0024` / THEME-0004: Rich PM IV near-expiry one-touch NO: refine the rich IV signal to contracts expiring within 30 days, where time decay is strongest; when pm_iv > opt_iv_30d + 10 and days to expiry < 30, sell YES on the one-touch NO.
+- `FIND-0025` / THEME-0004: Rich PM IV with edge 3-8 pts: on rich-IV NO contracts where the sell-YES edge is between 3 and 8 percentage points, the signal is especially robust; enter short when pm_iv > opt_iv_30d + 10 and sell_yes_edge_pts ∈ [3,8].
+- `FIND-0026` / THEME-0001: No-bias gap short with direction below and near expiry: when the no-bias adjusted gap is positive (sell edge) and the one-touch direction is below current spot (i.e. the contract is an above-strike one-touch) AND days to expiry < 30, short…
+- `FIND-0030` / THEME-0001: ONE_TOUCH_HIGH_EDGE_NO on ALL with above direction and edge 3-8 pts: for any asset, when the one-touch strike is above spot and the sell-YES edge is between 3 and 8 percentage points, enter a short via selling YES.
+- `FIND-0036` / THEME-0001: GOLD one-touch NO with above direction and near expiry: narrow the GOLD one-touch heatmap signal to contracts with days to expiry < 30 and direction above, where the signal has shown promise in shadow mining (FIND-0036).
 
 ## 5. Negative / suppressed findings
 - **FIND-0003** (negative): `ONE_TOUCH_HIGH_EDGE_NO|GOLD|heatmap|no`
@@ -40,7 +41,7 @@ _Generated 2026-07-25T07:08:11Z_
 ## 6. Provenance
 - Scoring version: research_score_v3
 - Miner model: shadow_miner_v1
-- Opportunities export: 2026-07-25T07:08:10Z
-- Findings export: 2026-07-25T07:07:26Z
-- Themes export: 2026-07-25T07:07:28Z
-- LLM advice: 2026-07-25T07:07:25.673Z
+- Opportunities export: 2026-07-26T07:08:14Z
+- Findings export: 2026-07-26T07:07:25Z
+- Themes export: 2026-07-26T07:07:27Z
+- LLM advice: 2026-07-26T07:07:24.788Z
