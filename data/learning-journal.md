@@ -7298,3 +7298,30 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 4/12; ne
 
 ---
 
+### 2026-07-26 15:28 UTC
+
+**Portfolio:** $98.99 total | Cash $97.99 | 1 open | P&L $2.2285 | 64% win rate (545 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Blocked signal learning:**
+- Open blocked shadows: 46
+- Resolved blocked shadows: 657 (360 wins / 297 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.23%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+14.29%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.13%)
+
+**LLM analysis:**
+The only open position is EBAY long (WF-1785072494857-EBAY-o73b) as a WEEKEND_HL_FUNDING_REVERSION_LONG. It opened 2h ago with funding at -61.6% ann (extreme negative), but at the two-hour mark funding had already normalized to +5.48% ann. This rapid reversion undermines the core thesis of a sustained carry benefit from extreme negative funding, even though the position is slightly in profit (+0.32%). Because LLM closes are not allowed per policy on this rule-based signal and the 12h minimum hold is not yet met, no discretionary close can be taken. I note the structural concern: EBAY funding whipsawed from deep negative to flat/positive within two hours, which historically in this signal family often precedes price action that fails to reach targets. This should be reviewed at the next hourly check and flagged for the nightly research if the mechanical target/stop do not resolve it, as the funding normalization speed might indicate a stale entry threshold or a need to tighten the minimum hold window.
+
+---
+
