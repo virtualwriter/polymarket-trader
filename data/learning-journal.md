@@ -7379,3 +7379,34 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 5/12; ne
 
 ---
 
+### 2026-07-26 18:28 UTC
+
+**Portfolio:** $99.02 total | Cash $97.02 | 2 open | P&L $2.2547 | 64% win rate (547 trades)
+
+**Closed 2 trades:**
+- ✅ BX long via hyperliquid/hl_perp [HL BX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0193 (1.9%, market 0.0193, funding -0.0001)
+- ✅ ZM long via hyperliquid/hl_perp [HL ZM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0069 (0.7%, market 0.0069, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Blocked signal learning:**
+- Open blocked shadows: 46
+- Resolved blocked shadows: 658 (361 wins / 297 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.23%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+14.29%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+No discretionary closes are permitted—both EBAY and TSLA positions are rule-based WEEKEND_HL_FUNDING_REVERSION_LONG trades with LLM closes disabled. EBAY's funding has moved from -61.6% to -19.2% in five hours, a substantial normalization that weakens the immediate carry thesis, but the mechanical exit parameters (target/stop/breakeven/expiry) remain in control. TSLA funding eased from -88.6% to -83.6% and is still firmly negative, so thesis is intact. Continue monitoring; if EBAY funding flips positive or price stalls near breakeven, flag for post-close review of the funding mean-reversion decay assumptions.
+
+---
+
