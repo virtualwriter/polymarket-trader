@@ -19501,7 +19501,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Mined from clean shadows: {\"n\": 12, \"wins\": 7, \"winRate\": 0.5833, \"sumPnl\": 0.6492, \"hasHeatmap\": true, \"sampleIds\": [\"OT-1779348547074-tm2l\", \"OT-1783659557591-81cc\", \"OT-1783659557594-u7s1\", \"OT-1783694116078-dtpj\", \"OT-1783780517241-ssvk\"]} | H-534 (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) has 20% win rate over 20 tests, likely due to wide spreads and edge collapse. The heatmap cluster's historical performance (+0.649 over 12 shadows) may not replicate in the current regime. Continue shadow testing but enforce a higher minimum edge (≥3 pts) and tighter spread. | 20 shadow tests (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) completed with only 4 wins (20% win rate). The GOLD heatmap cluster is ineffective; the edge signal does not translate to profitable spreads. Recommend killing H-534 and its setup family.",
+    "postMortem": "Mined from clean shadows: {\"n\": 12, \"wins\": 7, \"winRate\": 0.5833, \"sumPnl\": 0.6492, \"hasHeatmap\": true, \"sampleIds\": [\"OT-1779348547074-tm2l\", \"OT-1783659557591-81cc\", \"OT-1783659557594-u7s1\", \"OT-1783694116078-dtpj\", \"OT-1783780517241-ssvk\"]} | H-534 (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) has 20% win rate over 20 tests, likely due to wide spreads and edge collapse. The heatmap cluster's historical performance (+0.649 over 12 shadows) may not replicate in the current regime. Continue shadow testing but enforce a higher minimum edge (≥3 pts) and tighter spread. | 20 shadow tests (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) completed with only 4 wins (20% win rate). The GOLD heatmap cluster is ineffective; the edge signal does not translate to profitable spreads. Recommend killing H-534 and its setup family. | 0% win rate over 29 shadow tests on GOLD one-touch NO heatmap cluster, despite a promising shadow mining cluster (FIND-0036) with 75% win rate on only 8 historical samples. The out-of-sample performance collapses completely, indicating severe overfitting. Kill this hypothesis and do not promote.",
     "source": "shadow_mined",
     "setupId": "shadow_one_touch_high_edge_no_gold_heatmap_no",
     "setupLabel": "Shadow-mined ONE_TOUCH_HIGH_EDGE_NO GOLD heatmap"
@@ -19762,7 +19762,7 @@
     "winRate": 0.42857142857142855,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Mined from clean shadows: {\"n\": 8, \"wins\": 7, \"winRate\": 0.875, \"sumPnl\": 0.1099, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1780087728968-CBRS-i1qh\", \"WF-1780097309084-CBRS-cnjn\", \"WF-1780111718103-CBRS-vnni\", \"WF-1780129709984-CBRS-x5h5\", \"WF-1780147713961-CBRS-qr9e\"]}",
+    "postMortem": "Mined from clean shadows: {\"n\": 8, \"wins\": 7, \"winRate\": 0.875, \"sumPnl\": 0.1099, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1780087728968-CBRS-i1qh\", \"WF-1780097309084-CBRS-cnjn\", \"WF-1780111718103-CBRS-vnni\", \"WF-1780129709984-CBRS-x5h5\", \"WF-1780147713961-CBRS-qr9e\"]} | Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG on CBRS has 43% win rate over 8 tests. While not yet promotion-worthy, the win rate is positive and in-line with the broader weekend funding reversion family. Continue shadow testing; no action needed yet.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG CBRS weekend_hl_funding_shadow"
@@ -20077,7 +20077,7 @@
     "winRate": 0.3,
     "status": "killed",
     "promotedToSignal": false,
-    "postMortem": "2026-07-22T02:38:23Z: reopened after scorer-v1 quarantine (scorer_v1_direction_bug_quarantine); prior completed tests excluded from setup stats. Re-test under scorer v2.",
+    "postMortem": "2026-07-22T02:38:23Z: reopened after scorer-v1 quarantine (scorer_v1_direction_bug_quarantine); prior completed tests excluded from setup stats. Re-test under scorer v2. | 0% win rate over 29 tests after reopening; the GOLD one-touch heatmap cluster remains unviable. The signal was quarantined earlier due to a scorer bug, but even under corrected scoring, no edge emerges. Recommend permanent kill and no further variants.",
     "source": "llm",
     "setupId": "find_0003",
     "setupLabel": "FIND-linked FIND-0003"
@@ -20326,7 +20326,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": null,
+    "postMortem": "WEEKEND_HL_FUNDING_REVERSION_LONG on MU (FIND-0004) has 100% win rate over only 1 test. Too small to conclude, but initial result is promising. More tests required before promotion consideration.",
     "source": "llm",
     "setupId": "find_0004",
     "setupLabel": "FIND-linked FIND-0004"
@@ -20683,5 +20683,250 @@
     "source": "llm",
     "setupId": "find_0030",
     "setupLabel": "FIND-linked FIND-0030"
+  },
+  {
+    "id": "H-560",
+    "created": "2026-07-26",
+    "description": "Fade dumb money highs: when the share of dumb-wallet YES volume on upside one-touch high contracts exceeds 15% and the smart-wallet share on dip-YES flow is above 5%, sell YES on the high one-touch NO contracts to exploit predictable dumb-money buying into overpriced tails.",
+    "conditions": {
+      "dumb_share_highs": "> 0.15",
+      "smart_share_dips": "> 0.05"
+    },
+    "prediction": "The asset will fail to hit the high barrier within the next 14 days, causing the sold YES to expire worthless.",
+    "timeframeDays": 14,
+    "confidence": 0.6,
+    "direction": "short",
+    "originFindingId": "FIND-0020",
+    "themeId": "THEME-0003",
+    "tests": [
+      {
+        "date": "2026-07-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0020",
+    "setupLabel": "FIND-linked FIND-0020"
+  },
+  {
+    "id": "H-561",
+    "created": "2026-07-26",
+    "description": "OIL one-touch NO edge 1-3pt: when the sell-YES edge on OIL upside one-touch NO contracts is between 1 and 3 percentage points, short OIL by selling YES with a defined exit when edge disappears.",
+    "conditions": {
+      "sell_yes_edge_pts": "<= 3",
+      "asset": "OIL"
+    },
+    "prediction": "The OIL spot price will not reach the one-touch strike within the contract timeframe, and the sold YES will expire OTM or be bought back at a narrower edge.",
+    "timeframeDays": 14,
+    "confidence": 0.7,
+    "direction": "short",
+    "originFindingId": "FIND-0022",
+    "themeId": "THEME-0001",
+    "tests": [
+      {
+        "date": "2026-07-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0022",
+    "setupLabel": "FIND-linked FIND-0022"
+  },
+  {
+    "id": "H-562",
+    "created": "2026-07-26",
+    "description": "Rich PM IV one-touch NO: when the prediction market IV exceeds the 30d options IV by at least 10 percentage points and the one-touch strike is above the current spot price, sell YES on the one-touch NO contract, capturing the IV overpricing.",
+    "conditions": {
+      "pm_iv_minus_opt_iv_30d": "> 10",
+      "touch_direction": "above"
+    },
+    "prediction": "The PM IV will mean-revert downwards, and the YES price will decay, causing the sold YES to expire worthless or be closed profitably within 7-14 days.",
+    "timeframeDays": 14,
+    "confidence": 0.7,
+    "direction": "short",
+    "originFindingId": "FIND-0021",
+    "themeId": "THEME-0004",
+    "tests": [
+      {
+        "date": "2026-07-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0021",
+    "setupLabel": "FIND-linked FIND-0021"
+  },
+  {
+    "id": "H-563",
+    "created": "2026-07-26",
+    "description": "Rich PM IV near-expiry one-touch NO: refine the rich IV signal to contracts expiring within 30 days, where time decay is strongest; when pm_iv > opt_iv_30d + 10 and days to expiry < 30, sell YES on the one-touch NO.",
+    "conditions": {
+      "pm_iv_minus_opt_iv_30d": "> 10",
+      "days_to_expiry": "< 30",
+      "touch_direction": "above"
+    },
+    "prediction": "The YES price will erode rapidly as expiry approaches and IV normalizes, delivering a profit within the contract's remaining term.",
+    "timeframeDays": 14,
+    "confidence": 0.7,
+    "direction": "short",
+    "originFindingId": "FIND-0024",
+    "themeId": "THEME-0004",
+    "tests": [
+      {
+        "date": "2026-07-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0024",
+    "setupLabel": "FIND-linked FIND-0024"
+  },
+  {
+    "id": "H-564",
+    "created": "2026-07-26",
+    "description": "Rich PM IV with edge 3-8 pts: on rich-IV NO contracts where the sell-YES edge is between 3 and 8 percentage points, the signal is especially robust; enter short when pm_iv > opt_iv_30d + 10 and sell_yes_edge_pts ∈ [3,8].",
+    "conditions": {
+      "pm_iv_minus_opt_iv_30d": "> 10",
+      "sell_yes_edge_pts": "<= 8",
+      "touch_direction": "above"
+    },
+    "prediction": "The large edge indicates a pricing anomaly that will correct before expiry, yielding a positive return on the sold YES.",
+    "timeframeDays": 14,
+    "confidence": 0.7,
+    "direction": "short",
+    "originFindingId": "FIND-0025",
+    "themeId": "THEME-0004",
+    "tests": [
+      {
+        "date": "2026-07-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0025",
+    "setupLabel": "FIND-linked FIND-0025"
+  },
+  {
+    "id": "H-565",
+    "created": "2026-07-26",
+    "description": "No-bias gap short with direction below and near expiry: when the no-bias adjusted gap is positive (sell edge) and the one-touch direction is below current spot (i.e. the contract is an above-strike one-touch) AND days to expiry < 30, short by selling YES.",
+    "conditions": {
+      "no_bias_adjusted_gap": "> 0",
+      "touch_direction": "below",
+      "days_to_expiry": "< 30"
+    },
+    "prediction": "The gap will close quickly as expiry nears, and the sold YES will lose value, resulting in a profitable short.",
+    "timeframeDays": 14,
+    "confidence": 0.65,
+    "direction": "short",
+    "originFindingId": "FIND-0026",
+    "themeId": "THEME-0001",
+    "tests": [
+      {
+        "date": "2026-07-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0026",
+    "setupLabel": "FIND-linked FIND-0026"
+  },
+  {
+    "id": "H-566",
+    "created": "2026-07-26",
+    "description": "ONE_TOUCH_HIGH_EDGE_NO on ALL with above direction and edge 3-8 pts: for any asset, when the one-touch strike is above spot and the sell-YES edge is between 3 and 8 percentage points, enter a short via selling YES.",
+    "conditions": {
+      "sell_yes_edge_pts": "<= 8",
+      "touch_direction": "above"
+    },
+    "prediction": "The edge will revert and the YES price will deflate within 14 days, generating a profit on the short position.",
+    "timeframeDays": 14,
+    "confidence": 0.65,
+    "direction": "short",
+    "originFindingId": "FIND-0030",
+    "themeId": "THEME-0001",
+    "tests": [
+      {
+        "date": "2026-07-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0030",
+    "setupLabel": "FIND-linked FIND-0030"
+  },
+  {
+    "id": "H-567",
+    "created": "2026-07-26",
+    "description": "GOLD one-touch NO with above direction and near expiry: narrow the GOLD one-touch heatmap signal to contracts with days to expiry < 30 and direction above, where the signal has shown promise in shadow mining (FIND-0036).",
+    "conditions": {
+      "asset": "GOLD",
+      "touch_direction": "above",
+      "days_to_expiry": "< 30",
+      "sell_yes_edge_pts": "> 0"
+    },
+    "prediction": "The GOLD YES premium will deflate as expiry approaches, leading to a profitable short via selling the one-touch YES.",
+    "timeframeDays": 14,
+    "confidence": 0.6,
+    "direction": "short",
+    "originFindingId": "FIND-0036",
+    "themeId": "THEME-0001",
+    "tests": [
+      {
+        "date": "2026-07-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0036",
+    "setupLabel": "FIND-linked FIND-0036"
   }
 ]
