@@ -7125,3 +7125,38 @@ All open positions are WEEKEND_HL_FUNDING_REVERSION_LONG and governed by mechani
 
 ---
 
+### 2026-07-26 10:28 UTC
+
+**Portfolio:** $98.94 total | Cash $90.94 | 8 open | P&L $2.1748 | 63% win rate (534 trades)
+
+**Closed 1 trades:**
+- ✅ SKHX long via hyperliquid/hl_perp [HL SKHX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0399 (4.0%, market 0.0399, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -423.47 is -6.0 std devs from mean since 2026-04-28 (-7.69 ± 69.40)
+
+**Blocked signal learning:**
+- Open blocked shadows: 49
+- Resolved blocked shadows: 654 (358 wins / 296 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=144 (40W/82L/22flat, 32.8% win-rate, sum $-0.1262, avg -0.09%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=152 (42W/88L/22flat, 32.3% win-rate, sum $-0.1489, avg -0.10%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expired (+2.06%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-7.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.15%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 3/12; next scheduled 2026-07-26T12:28:11.147Z). Mechanical cycle ran normally._
+
+---
+
