@@ -7501,3 +7501,45 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 7/12; ne
 
 ---
 
+### 2026-07-26 22:28 UTC
+
+**Portfolio:** $99.40 total | Cash $97.40 | 2 open | P&L $2.6378 | 64% win rate (555 trades)
+
+**Closed 7 trades:**
+- ✅ TSLA long via hyperliquid/hl_perp [HL TSLA Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0048 (0.5%, market 0.0041, funding 0.0007)
+- ✅ AMD long via hyperliquid/hl_perp [HL AMD Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0424 (4.2%, market 0.0425, funding -0.0000)
+- ✅ ARM long via hyperliquid/hl_perp [HL ARM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0504 (5.0%, market 0.0504, funding -0.0000)
+- ✅ CBRS long via hyperliquid/hl_perp [HL CBRS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0695 (7.0%, market 0.0696, funding -0.0000)
+- ✅ INTC long via hyperliquid/hl_perp [HL INTC Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0703 (7.0%, market 0.0703, funding -0.0000)
+- ✅ MU long via hyperliquid/hl_perp [HL MU Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0597 (6.0%, market 0.0598, funding -0.0000)
+- ✅ SKHX long via hyperliquid/hl_perp [HL SKHX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0818 (8.2%, market 0.0818, funding -0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 19 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 9.9pp (was -37.0, now -27.1)
+- [anomaly] btc_opt_iv_term_spread = -19.58 is -2.1 std devs from mean (-2.86 ± 7.98)
+- [anomaly] amzn_hl_basis_pct = 1.02 is 2.1 std devs from mean (0.11 ± 0.44)
+
+**Blocked signal learning:**
+- Open blocked shadows: 46
+- Resolved blocked shadows: 659 (361 wins / 298 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+14.29%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-6.56%)
+
+**LLM analysis:**
+No discretionary closes allowed: EBAY is a rule-based weekend funding reversion signal (LLM closes policy-gated), and AMZN is only 3h into a 168h planned hold (min 12h). AMZN FUNDING_EXTREME_SHORT entry was predicated on extremely negative funding (-25.8%); funding has now violently reversed to +46%, indicating the short crowding dissolved entirely and the squeeze likely happened. This is a textbook thesis-invalidation signal, but the trade is too young to close. If funding remains positive and price stalls through the 12h mark, a thesis_invalidated close may be warranted. The broad funding spike across Builder DEX perps (AMD, ARM, INTC, etc.) suggests a systemic unwind — potentially linked to an end-of-session funding rate recalculation or a venue-level event. EBAY funding remains deeply negative (-72%) and the trade is underwater (-2%), but thesis intact; no action required. Nightly research should consider dynamic thesis-invalidation thresholds for FUNDING_EXTREME_SHORT when funding normalizes beyond a certain level before target/stop.
+
+---
+
