@@ -7410,3 +7410,37 @@ No discretionary closes are permitted—both EBAY and TSLA positions are rule-ba
 
 ---
 
+### 2026-07-26 19:28 UTC
+
+**Portfolio:** $99.02 total | Cash $95.02 | 4 open | P&L $2.2547 | 64% win rate (547 trades)
+
+**Opened 1 positions:**
+- AMZN long @ $233.17 via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 19 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = 212.89 is 3.2 std devs from mean since 2026-04-28 (-7.51 ± 69.49)
+
+**Blocked signal learning:**
+- Open blocked shadows: 46
+- Resolved blocked shadows: 658 (361 wins / 297 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.23%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+14.29%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+All three open positions (EBAY, TSLA, DKNG) are WEEKEND_HL_FUNDING_REVERSION_LONG rule-based trades and not eligible for discretionary closes. Funding conditions have partially normalized for TSLA (flipped neutral/positive) but the broader thesis of extreme negative funding reverting is still intact. The TSLA move could be early mean reversion; I'll let the mechanical scanner manage exits. No structural concerns about the signal family—the setup family truth table shows positive expectancy with 73% win rate on 242 live trades. No action taken.
+
+---
+
