@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-26T22:28:17.777Z",
+  "generatedAt": "2026-07-26T23:28:11.694Z",
   "dataFreshness": {
-    "valuationRows": 1921,
-    "latestValuationAt": "2026-07-26T22",
-    "macroRows": 1919,
+    "valuationRows": 1922,
+    "latestValuationAt": "2026-07-26T23",
+    "macroRows": 1920,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-26T22"
+    "latestInstrumentSnapshotAt": "2026-07-26T23"
   },
   "portfolio": {
-    "cash": 97.3982,
-    "openPositions": 2,
-    "realizedPnl": 2.6378,
+    "cash": 96.3982,
+    "openPositions": 3,
+    "realizedPnl": 2.6377,
     "totalTrades": 555,
     "winRatePct": 64.3,
-    "unrealizedPnl": -0.0171
+    "unrealizedPnl": -0.0501
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -2.03,
-      "currentPrice": 109.99,
+      "pnlPct": -5.2,
+      "currentPrice": 109.28,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -36,8 +36,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.32,
-      "currentPrice": 233.92,
+      "pnlPct": 0.19,
+      "currentPrice": 233.63,
       "underlyingPrice": 231.55,
       "targetPct": 4,
       "stopPct": 2,
@@ -47,6 +47,20 @@
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ]
+    },
+    {
+      "positionId": "WF-1785108491496-AAPL-cxms",
+      "asset": "AAPL",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 333.31,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
     }
   ],
   "signalHealth": [
@@ -189,7 +203,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 46,
+    "openCount": 47,
     "resolvedCount": 659,
     "wouldHaveWon": 361,
     "wouldHaveLost": 298,
@@ -501,6 +515,22 @@
           ]
         },
         "thesis": "[PM PROXY SHORT SHADOW] Real GOLD short via hyperliquid/hl_perp (FUNDING_EXTREME_LONG). Track buying NO on the comparable Polymarket upside contract."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-in-july-2026 — NO — Will Ethereum reach $2,100 in July?",
+        "marketQuality": {
+          "yesBid": 0.21,
+          "yesAsk": 0.22,
+          "yesSpread": 0.01,
+          "liquidity": 37469.81,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.2pt on ETH, spread 1.0c, liquidity 37470. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
