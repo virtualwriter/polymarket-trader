@@ -6993,3 +6993,33 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 1/12; ne
 
 ---
 
+### 2026-07-26 06:28 UTC
+
+**Portfolio:** $98.85 total | Cash $89.85 | 9 open | P&L $2.0937 | 63% win rate (528 trades)
+
+**Closed 1 trades:**
+- ❌ CBRS long via hyperliquid/hl_perp [HL CBRS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0292 (-2.9%, market -0.0295, funding 0.0003)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 19 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 651 (357 wins / 294 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.67%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have expired (+2.06%)
+
+**LLM analysis:**
+All nine open positions are WEEKEND_HL_FUNDING_REVERSION_LONG trades with rule-based mechanical exits; no LLM discretionary closes are permitted. The six new trades from the 06:00 scan (CRCL, HIMS, MSFT, MSTR, RIVN, RKLB) reflect deep negative funding and appear consistent with the signal family's historical edge (72% win rate, +$1.19 total realized). The portfolio is now concentrated in 9 concurrent funding reversion longs, which increases correlation risk if a broad funding normalization occurs simultaneously. The older positions (DKNG +0.4%, LLY -1.63%, EBAY -1.12%) are within normal variance and have not triggered any mechanical exit conditions. No structural concerns with the signal family at this time; continue to observe funding carry and price action for signs of thesis invalidation on an individual position basis, but no action is warranted now.
+
+---
+
