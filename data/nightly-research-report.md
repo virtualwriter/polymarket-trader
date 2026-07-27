@@ -1,9 +1,9 @@
 # Nightly Research Report
 
-_Generated 2026-07-26T07:08:14Z_
+_Generated 2026-07-27T07:08:38Z_
 
 ## 1. Summary
-- FIND records: 40 total (open 19, strengthened 6, weakened 0, negative 1)
+- FIND records: 42 total (open 17, strengthened 10, weakened 0, negative 1)
 - Research themes: 4
 - Top opportunity: #1 FIND-0020 opp=0.9999 conf=0.5715 (INFORMED_FLOW|TOUCH|DIRECTION_ASYMMETRY|no)
 
@@ -15,12 +15,12 @@ _Generated 2026-07-26T07:08:14Z_
 - #5 **FIND-0024** opp=0.9803 conf=0.6232 | `USER_PM_IV_TOUCH_RICH_NO|ALL|strat:dir=above,d<30|no` | theme other_user_pm_iv_touch_rich_no
 - #6 **FIND-0036** opp=0.9788 conf=0.4602 | `ONE_TOUCH_HIGH_EDGE_NO|GOLD|strat:dir=above,d<30|no` | theme heatmap_one_touch
 - #7 **FIND-0025** opp=0.9361 conf=0.6232 | `USER_PM_IV_TOUCH_RICH_NO|ALL|strat:s?,e3-8|no` | theme other_user_pm_iv_touch_rich_no
-- #8 **FIND-0030** opp=0.8874 conf=0.3926 | `ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no` | theme heatmap_one_touch
+- #8 **FIND-0030** opp=0.9306 conf=0.4552 | `ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no` | theme heatmap_one_touch
 - #9 **FIND-0026** opp=0.7776 conf=0.5036 | `NO_BIAS_ADJUSTED_GAP_SHADOW|ALL|strat:dir=below,d<30|no` | theme heatmap_one_touch
 - #10 **FIND-0001** opp=0.7757 conf=0.348 | `NO_BIAS_ADJUSTED_GAP_SHADOW|GOLD|short-rich-tail|no` | theme heatmap_one_touch
 
 ## 3. Themes overview
-- **THEME-0001** (heatmap_one_touch): 19 findings, avg opp 0.5747
+- **THEME-0001** (heatmap_one_touch): 21 findings, avg opp 0.5457
 - **THEME-0002** (weekend_hl_funding): 15 findings, avg opp 0.7675
 - **THEME-0004** (other_user_pm_iv_touch_rich_no): 5 findings, avg opp 0.8626
 - **THEME-0003** (other_informed_flow): 1 findings, avg opp 0.9999
@@ -41,7 +41,7 @@ _Generated 2026-07-26T07:08:14Z_
 ## 6. Provenance
 - Scoring version: research_score_v3
 - Miner model: shadow_miner_v1
-- Opportunities export: 2026-07-26T07:08:14Z
-- Findings export: 2026-07-26T07:07:25Z
-- Themes export: 2026-07-26T07:07:27Z
+- Opportunities export: 2026-07-27T07:08:38Z
+- Findings export: 2026-07-27T07:07:46Z
+- Themes export: 2026-07-27T07:07:49Z
 - LLM advice: 2026-07-26T07:07:24.788Z
