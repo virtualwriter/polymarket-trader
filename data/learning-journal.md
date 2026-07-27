@@ -743,3 +743,37 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 6/12; ne
 
 ---
 
+### 2026-07-27 20:28 UTC
+
+**Portfolio:** $98.97 total | Cash $97.97 | 1 open | P&L $2.2255 | 64% win rate (561 trades)
+
+**Closed 1 trades:**
+- ❌ OIL long via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH) → stop: $-0.0200 (-2.0%, market -0.0200, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved wider by 14.1pp (was -7.7, now 6.4)
+
+**Blocked signal learning:**
+- Open blocked shadows: 48
+- Resolved blocked shadows: 666 (365 wins / 301 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 14/26 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.11%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW GOLD short via spot would have expired (+1.71%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-4.17%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+The only open position (BTC short from PC_RATIO_EXTREME_LOW) is only 6h old and well below the 12h min hold, so no discretionary close is permitted. The signal's key evidence column, btc_ibit_pc_ratio, has risen from 0.395 at entry to 0.606, a massive 53% increase that has reversed the extreme low condition. If this level holds or continues, the original thesis (contrarian short on heavy call buying) is clearly invalidated. However, I will wait until after the min hold to evaluate potential thesis_invalidated close. The BTC PM IV surge to 42.3 from 28.1 is an anomaly but not a direct signal evidence metric; it may indicate market stress or data issue worth monitoring. No action taken.
+
+---
+
