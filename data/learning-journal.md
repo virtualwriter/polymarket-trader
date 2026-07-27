@@ -7612,3 +7612,39 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 0/12; ne
 
 ---
 
+### 2026-07-27 02:28 UTC
+
+**Portfolio:** $99.42 total | Cash $98.42 | 1 open | P&L $2.6628 | 64% win rate (557 trades)
+
+**Closed 1 trades:**
+- ❌ EBAY long via hyperliquid/hl_perp [HL EBAY Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0120 (-1.2%, market -0.0154, funding 0.0034)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 19 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 11.7pp (was -27.6, now -15.9)
+- [anomaly] amzn_hl_basis_pct = 1.36 is 2.8 std devs from mean (0.11 ± 0.44)
+- [anomaly] btc_opt_iv_term_spread = -19.49 is -2.1 std devs from mean (-2.88 ± 8.00)
+
+**Blocked signal learning:**
+- Open blocked shadows: 47
+- Resolved blocked shadows: 662 (363 wins / 299 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-6.56%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.27%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.43%)
+
+**LLM analysis:**
+AMZN FUNDING_EXTREME_SHORT long (7h open) has seen funding flip from -25.8% to +5.5% annualized—a full thesis invalidation. The 12h minimum hold blocks a discretionary close now; if funding stays positive/near zero after 12h, a thesis_invalidated exit should be taken. Price drift small (+0.65%) but signal condition evaporated.
+
+---
+
