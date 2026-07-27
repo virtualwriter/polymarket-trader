@@ -115,8 +115,8 @@
       {
         "date": "2026-07-24",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup btc_pm_iv_expansion_reversion shadow test 3/20 opened via H-001 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "BTC moved 0.25% (65064 → 65224) [neutral abs needs ≥ 2%] (method=spot_abs_move)"
       },
       {
         "date": "2026-07-19",
@@ -155,7 +155,7 @@
         "actualMove": "[historical-backfill] Setup btc_pm_iv_expansion_reversion shadow test 9/20 opened via H-001 after historical row satisfied variant conditions."
       }
     ],
-    "winRate": 0.5,
+    "winRate": 0.42857142857142855,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "BTC PM IV still 7.1% below options IV (43.4% vs 48.8%). Gap persisting longer than expected but not widening further. | BTC PM IV gap persists (43.3% vs 48.8%) suggesting structural underpricing rather than temporary arbitrage. May need position sizing adjustment. | Pattern persisting - BTC PM IV gap remains wide at 5.7pp, suggesting structural rather than temporary divergence | Covered by promoted setup family btc_iv_compression_vol_reversion via primary H-234. | Split 2026-05-26 by operator as BTC PM-IV expansion/reversion residual group after hard-coded variants were removed. | BTC PM IV has remained elevated (43.3) and consistently above options IV (36.3), the opposite of the original underpricing thesis. This family appears invalid under current regime and should be considered for demotion or rewritten to capture PM IV *richness* as a contrarian signal instead. | BTC PM IV expansion/reversion hypothesis has zero shadow tests; it may need condition tuning to trigger more often. No current signal. | PM IV now widely above options IV (53.5 vs 37.5/25.7), opposite of the original underpricing arbitrage; thesis needs inversion or retirement. | BTC PM IV compression/reversion hypothesis not triggered recently; will wait for IV in bottom 20% of 30d range. | BTC PM IV expansion/reversion has 50% win rate over 2 variant tests; too few passes to promote, but no kill signal yet. Maintain shadow testing. | BTC PM IV (44.8) now exceeds 30d options IV (40.0), contradicting the original 'underpricing' premise. The hypothesis may need re-specification as a PM IV premium mean-reversion instead of underpricing. | BTC PM IV expansion (44.4%) versus options (39.4%) is notable, but H-001 (btc_pm_iv_expansion_reversion) is only at 33% over 4 tests and has been inactive. The current IV divergence may provide a new shadow-test trigger if conditions realign. | BTC PM IV vs. options IV divergence persists but the signal is disabled; recent BTC P/C drop may indicate options flow normalization ahead of potential vol expansion, but no new tests triggered. | Gold PM IV mechanical collapse at expiry explains the 111.7 pp narrowing with opt‑IV gap; any short‑term mean‑reversion thesis for June contracts is now moot. July‑expiry contracts should be monitored for a fresh IV regime. | BTC PM IV expansion/reversion not triggered; PM IV stayed between 40.7-41.9 with no significant spike, and spot ranged. Conditions for IV expansion signal absent, so no test occurred. | BTC PM IV at 28.7 is -2.5σ below 30d mean (42.1), extreme compression. Historically, such compressions have led to volatility expansion and BTC moves within 5 days. This is consistent with the family's positive track record (60% over 5 tests). | btc_pm_iv_expansion_reversion: PM IV at 29.3% is -2.1σ, deep compression, but BTC spot is not near its 7d high (~62.3k vs ~62.4k) and funding is positive, not conclusively confirming directional vol expansion. Conditions partially met but the setup still needs more shadow tests before promotion. | H-001 (BTC PM IV expansion/reversion) has maintained a 60% win rate over 6 hypothesis tests, with correct direction predictions when PM IV is in the bottom 20% of its 30d range leading to subsequent BTC price declines. The 5 clean completed tests within the parent setup family 'btc_pm_iv_expansion_reversion' (3 wins, avg not given) validate the logic, but the sample is still small. The recent successful predictions were moderately sized moves. Shadow testing via Polymarket NO contracts or spot shorts would be appropriate to measure realized edge. | BTC PM IV expansion reversion shows 60% win-rate over 6 tests, consistent with the underlying thesis. The family is ‘validating’ with a few clean hypothesis tests; continued positive outcomes would support promotion once sample size meets threshold. | BTC PM-IV expansion/reversion hypothesis holds a 60% win rate over 6 tests but remains in limbo with no live trades. The edge is statistically compelling enough to move to a shadow trade phase with a tight stop (e.g., 2%) to gather real-market behaviour under the btc_pm_iv_expansion_reversion family. | BTC PM IV expansion / reversion (H-001) has fallen to 25% win rate across 18 tests and is well below the promote threshold. Recommend monitoring but no further resource until conditions improve.",
@@ -3212,11 +3212,11 @@
       {
         "date": "2026-07-26",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup amzn_perp_spot_funding_convergence shadow test 24/20 opened via H-058 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "Funding moved 5.5% → 5.5% (long reversion needs increase) (method=funding_normalize_up)"
       }
     ],
-    "winRate": 0.42857142857142855,
+    "winRate": 0.375,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "AMZN basis improved from -0.35% to -0.38% - slight setback but funding remains positive at 8.99%. Convergence process ongoing but slower than expected. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels.",
@@ -4450,14 +4450,20 @@
       {
         "date": "2026-07-22",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup amzn_perp_spot_funding_convergence shadow test 5/20 opened via H-099 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "AMZN moved -6.18% (246.8 → 231.55) [long needs ≥ +2%]; funding 5.5%→5.5% (method=spot_directional_long+funding_context)"
       },
       {
         "date": "2026-04-16",
         "triggered": true,
         "outcome": "loss",
         "actualMove": "[historical-backfill] AMZN moved 0.71% (249.53 → 251.3) [long needs ≥ +2%]; funding 5.5%→-5.8% (resolved 2026-04-21 from 2026-04-16; method=spot_directional_long+funding_context)"
+      },
+      {
+        "date": "2026-07-27",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup amzn_perp_spot_funding_convergence shadow test 27/20 opened via H-099 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0,
@@ -8305,8 +8311,10 @@
       {
         "date": "2026-07-22",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup hype_relative_oi_breakout_continuation shadow test 6/20 opened via H-211 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: missing hypothesis.direction and no directional language in prediction (method=unscorable_direction)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:unscorable_direction"
       },
       {
         "date": "2026-05-18",
@@ -8672,8 +8680,10 @@
       {
         "date": "2026-07-22",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup hype_relative_oi_breakout_continuation shadow test 8/20 opened via H-217 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: missing hypothesis.direction and no directional language in prediction (method=unscorable_direction)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:unscorable_direction"
       }
     ],
     "winRate": 0,
@@ -8997,8 +9007,10 @@
       {
         "date": "2026-07-22",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup hype_relative_oi_breakout_continuation shadow test 3/20 opened via H-225 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: missing hypothesis.direction and no directional language in prediction (method=unscorable_direction)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:unscorable_direction"
       },
       {
         "date": "2026-05-15",
@@ -19500,8 +19512,8 @@
       {
         "date": "2026-07-25",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup shadow_one_touch_high_edge_no_gold_heatmap_no shadow test 9/20 opened via H-534 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "GOLD moved 0.89% (4058 → 4094) [short needs ≤ -2%] (method=spot_directional_short)"
       },
       {
         "date": "2026-07-26",
@@ -19551,11 +19563,11 @@
       {
         "date": "2026-07-25",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_weekend_hl_funding_reversion_long_mu_weekend_hl_funding_shadow_long shadow test 4/20 opened via H-535 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "Funding moved 18.2% → 24.5% (long reversion needs increase) (method=funding_normalize_up)"
       }
     ],
-    "winRate": 0.3333333333333333,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Mined from clean shadows: {\"n\": 8, \"wins\": 8, \"winRate\": 1.0, \"sumPnl\": 0.273, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779665359141-MU-u2e8\", \"WF-1780087728968-MU-flsz\", \"WF-1780140511145-MU-bwzp\", \"WF-1780255715660-MU-lpo9\", \"WF-1780759716467-MU-wbbj\"]} | MU weekend funding normalization has only 33% win rate (1 of 3 resolved shadows), suggesting that MU's funding mean-reversion is inconsistent; consider asset-specific kill if next 2 tests fail.",
@@ -19590,8 +19602,8 @@
       {
         "date": "2026-07-25",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_weekend_hl_funding_reversion_long_hood_weekend_hl_funding_shadow_long shadow test 3/20 opened via H-536 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "Funding moved 19.6% → 29.8% (long reversion needs increase) (method=funding_normalize_up)"
       },
       {
         "date": "2026-07-26",
@@ -19600,7 +19612,7 @@
         "actualMove": "[historical-backfill] Setup shadow_weekend_hl_funding_reversion_long_hood_weekend_hl_funding_shadow_long shadow test 4/20 opened via H-536 after historical row satisfied variant conditions."
       }
     ],
-    "winRate": 0,
+    "winRate": 0.3333333333333333,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Mined from clean shadows: {\"n\": 12, \"wins\": 11, \"winRate\": 0.9167, \"sumPnl\": 0.1593, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779661761704-HOOD-66ul\", \"WF-1780158509117-HOOD-8pyf\", \"WF-1780180113914-HOOD-k344\", \"WF-1780223315920-HOOD-j2j0\", \"WF-1780248512606-HOOD-rasn\"]}",
@@ -19698,8 +19710,8 @@
       {
         "date": "2026-07-25",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_weekend_hl_funding_reversion_long_coin_weekend_hl_funding_shadow_long shadow test 3/20 opened via H-538 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "Funding moved -9.3% → 5.5% (long reversion needs increase) (method=funding_normalize_up)"
       },
       {
         "date": "2026-07-26",
@@ -19708,7 +19720,7 @@
         "actualMove": "[historical-backfill] Setup shadow_weekend_hl_funding_reversion_long_coin_weekend_hl_funding_shadow_long shadow test 4/20 opened via H-538 after historical row satisfied variant conditions."
       }
     ],
-    "winRate": 0,
+    "winRate": 0.3333333333333333,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Mined from clean shadows: {\"n\": 9, \"wins\": 8, \"winRate\": 0.8889, \"sumPnl\": 0.1268, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1780090108884-COIN-j1pm\", \"WF-1780115314549-COIN-g0n7\", \"WF-1780180113912-COIN-ctg9\", \"WF-1780205309859-COIN-hei0\", \"WF-1780212512519-COIN-62r1\"]}",
@@ -19773,11 +19785,17 @@
       {
         "date": "2026-07-25",
         "triggered": true,
+        "outcome": "loss",
+        "actualMove": "Funding moved 232.8% → -124.5% (long reversion needs increase) (method=funding_normalize_up)"
+      },
+      {
+        "date": "2026-07-27",
+        "triggered": true,
         "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long shadow test 8/20 opened via H-539 after historical row satisfied variant conditions."
+        "actualMove": "Setup shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long shadow test 9/20 opened via H-539 after current row satisfied variant conditions."
       }
     ],
-    "winRate": 0.42857142857142855,
+    "winRate": 0.375,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Mined from clean shadows: {\"n\": 8, \"wins\": 7, \"winRate\": 0.875, \"sumPnl\": 0.1099, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1780087728968-CBRS-i1qh\", \"WF-1780097309084-CBRS-cnjn\", \"WF-1780111718103-CBRS-vnni\", \"WF-1780129709984-CBRS-x5h5\", \"WF-1780147713961-CBRS-qr9e\"]} | Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG on CBRS has 43% win rate over 8 tests. While not yet promotion-worthy, the win rate is positive and in-line with the broader weekend funding reversion family. Continue shadow testing; no action needed yet.",
