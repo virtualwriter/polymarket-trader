@@ -432,3 +432,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; ne
 
 ---
 
+### 2026-07-27 08:28 UTC
+
+**Portfolio:** $99.43 total | Cash $98.43 | 1 open | P&L $2.6733 | 64% win rate (558 trades)
+
+**Closed 1 trades:**
+- ✅ AMZN long via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT) → llm_decision: +$0.0105 (1.0%, market 0.0106, funding -0.0001)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.76 is 3.7 std devs from mean (0.12 ± 0.45)
+
+**Blocked signal learning:**
+- Open blocked shadows: 48
+- Resolved blocked shadows: 663 (363 wins / 300 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.27%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.43%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.11%)
+
+**LLM analysis:**
+AMZN FUNDING_EXTREME_SHORT long closed after funding rate swung from -25.8% to +15.86%, destroying the crowded-short premise. The trade was up +1.05% at exit. CBRS weekend funding reversion long remains under mechanical-only management; no concerns at this stage.
+
+---
+

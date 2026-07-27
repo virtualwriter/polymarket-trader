@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T07:28:17.689Z",
+  "generatedAt": "2026-07-27T08:28:20.310Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [],
@@ -13,19 +13,23 @@
       "asset": "AMZN",
       "venue": "hyperliquid",
       "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
       "evidenceColumns": [
         "amzn_stock",
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ],
-      "hoursOpen": 12,
-      "hoursToExpiry": 156,
+      "hoursOpen": 13,
+      "hoursToExpiry": 155,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0714,
+      "elapsedHoldPct": 0.0774,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
+      "reason": "Mechanical FUNDING_EXTREME_SHORT setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
     {
       "positionId": "WF-1785133692239-CBRS-4vr8",
@@ -36,10 +40,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 1,
-      "hoursToExpiry": 23,
+      "hoursOpen": 2,
+      "hoursToExpiry": 22,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0417,
+      "elapsedHoldPct": 0.0834,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
