@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-27T11:28:22.682Z",
+  "generatedAt": "2026-07-27T12:28:23.853Z",
   "dataFreshness": {
-    "valuationRows": 1933,
-    "latestValuationAt": "2026-07-27T11",
-    "macroRows": 1931,
+    "valuationRows": 1934,
+    "latestValuationAt": "2026-07-27T12",
+    "macroRows": 1932,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-27T11"
+    "latestInstrumentSnapshotAt": "2026-07-27T12"
   },
   "portfolio": {
-    "cash": 96.4338,
-    "openPositions": 3,
-    "realizedPnl": 2.6733,
-    "totalTrades": 558,
-    "winRatePct": 64.3,
-    "unrealizedPnl": -0.1112
+    "cash": 97.4742,
+    "openPositions": 2,
+    "realizedPnl": 2.7137,
+    "totalTrades": 559,
+    "winRatePct": 64.4,
+    "unrealizedPnl": -0.1286
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -7.11,
-      "currentPrice": 201.75,
+      "pnlPct": -6.38,
+      "currentPrice": 202.05,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -36,22 +36,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -4.01,
-      "currentPrice": 1225.6,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "WF-1785151702270-RIVN-fqut",
-      "asset": "RIVN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0,
-      "currentPrice": 16.209,
+      "pnlPct": -6.47,
+      "currentPrice": 1219.2,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -199,7 +185,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 48,
+    "openCount": 49,
     "resolvedCount": 663,
     "wouldHaveWon": 363,
     "wouldHaveLost": 300,
@@ -430,22 +416,6 @@
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
         "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $5,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.04,
-          "yesAsk": 0.05,
-          "yesSpread": 0.01,
-          "liquidity": 37658.76,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.1pt on ETH, spread 1.0c, liquidity 37659. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $6,500 by December 31, 2026?",
         "marketQuality": {
           "yesBid": 0.017,
@@ -553,6 +523,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.9pt on GOLD, spread 1.0c, liquidity 49040. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $70,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.76,
+          "yesAsk": 0.77,
+          "yesSpread": 0.01,
+          "liquidity": 60890.67,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.4pt on BTC, spread 1.0c, liquidity 60891. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
