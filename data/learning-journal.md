@@ -525,3 +525,33 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 3/12; ne
 
 ---
 
+### 2026-07-27 11:28 UTC
+
+**Portfolio:** $99.43 total | Cash $96.43 | 3 open | P&L $2.6733 | 64% win rate (558 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_opt_iv_term_spread = -19.2 is -2.0 std devs from mean (-2.96 ± 8.07)
+
+**Blocked signal learning:**
+- Open blocked shadows: 48
+- Resolved blocked shadows: 663 (363 wins / 300 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.27%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.43%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.11%)
+
+**LLM analysis:**
+All three open positions (CBRS, SKHX, RIVN) are WEEKEND_HL_FUNDING_REVERSION_LONG trades, and LLM discretionary closes are not permitted per the allowed action surface. CBRS is down -7.1% after 5h, and its funding has flipped from deeply negative to slightly positive (+1.84%), which could be a thesis-weakening signal, though mechanical exits remain in control. SKHX funding has intensified to -214.5%, deepening the carry incentive but also flash risk; P&L is -4.0% early. RIVN just entered at -52% funding and is flat. Overall portfolio risk is contained with $96 cash and 3 small positions. Continue to monitor funding reversals and price action, but no manual action allowed at this time.
+
+---
+
