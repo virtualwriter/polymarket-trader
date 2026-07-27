@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-27T04:28:25.547Z",
+  "generatedAt": "2026-07-27T05:28:17.203Z",
   "dataFreshness": {
-    "valuationRows": 1926,
-    "latestValuationAt": "2026-07-27T04",
-    "macroRows": 1924,
+    "valuationRows": 1927,
+    "latestValuationAt": "2026-07-27T05",
+    "macroRows": 1925,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-27T04"
+    "latestInstrumentSnapshotAt": "2026-07-27T05"
   },
   "portfolio": {
     "cash": 98.4233,
@@ -13,7 +13,7 @@
     "realizedPnl": 2.6628,
     "totalTrades": 557,
     "winRatePct": 64.3,
-    "unrealizedPnl": 0.0063
+    "unrealizedPnl": 0.0076
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.63,
-      "currentPrice": 234.65,
+      "pnlPct": 0.76,
+      "currentPrice": 234.95,
       "underlyingPrice": 231.55,
       "targetPct": 4,
       "stopPct": 2,
@@ -175,7 +175,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 47,
+    "openCount": 48,
     "resolvedCount": 662,
     "wouldHaveWon": 363,
     "wouldHaveLost": 299,
@@ -515,6 +515,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.8pt on BTC, spread 1.0c, liquidity 64527. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-in-july-2026 — NO — Will Ethereum reach $2,100 in July?",
+        "marketQuality": {
+          "yesBid": 0.21,
+          "yesAsk": 0.22,
+          "yesSpread": 0.01,
+          "liquidity": 38769.51,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.2pt on ETH, spread 1.0c, liquidity 38770. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
