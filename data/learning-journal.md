@@ -1091,3 +1091,39 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; ne
 
 ---
 
+### 2026-07-28 08:28 UTC
+
+**Portfolio:** $98.97 total | Cash $97.97 | 1 open | P&L $2.2055 | 64% win rate (562 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 19 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_opt_fwd_90d = 146.8 is 2.6 std devs from mean since 2026-04-28 (79.06 ± 26.52)
+
+**Blocked signal learning:**
+- Open blocked shadows: 49
+- Resolved blocked shadows: 674 (370 wins / 304 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 14/26 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.35%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+6.25%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.19%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.06%)
+
+**LLM analysis:**
+The BTC P/C ratio rose from 0.395 to 0.606 and has sat there for multiple hourly snapshots, indicating a sustained shift away from the extreme call buying that initiated the short. Although the ratio appears frozen (0.606 across many readings), it represents a clear cross-through the original entry threshold; even if the data source updates slowly, the current level invalidates the original signal. The position is +2.32% and near the mechanical target; closing here on thesis_invalidated is consistent and locks in a decent gain. No hard portfolio risk or data-quality close required; the ratio drift itself is sufficient.
+
+**LLM close rejections today (2026-07-28, token-burn signal):**
+- Total rejected close instructions: 2
+- Top signal/asset pairs: PC_RATIO_EXTREME_LOW / BTC (2)
+
+---
+
