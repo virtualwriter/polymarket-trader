@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-28T18:28:16.269Z",
+  "generatedAt": "2026-07-28T19:28:12.198Z",
   "dataFreshness": {
-    "valuationRows": 1959,
-    "latestValuationAt": "2026-07-28T18",
-    "macroRows": 1957,
+    "valuationRows": 1960,
+    "latestValuationAt": "2026-07-28T19",
+    "macroRows": 1958,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-28T18"
+    "latestInstrumentSnapshotAt": "2026-07-28T19"
   },
   "portfolio": {
     "cash": 98.9964,
@@ -157,8 +157,8 @@
   ],
   "blockedSummary": {
     "openCount": 50,
-    "resolvedCount": 676,
-    "wouldHaveWon": 372,
+    "resolvedCount": 677,
+    "wouldHaveWon": 373,
     "wouldHaveLost": 304,
     "bySignal": [
       {
@@ -227,24 +227,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 1.77,
-        "resolvedAt": "2026-07-28T02:28:12.514Z",
-        "marketQuality": {
-          "yesBid": 0.039,
-          "yesAsk": 0.046,
-          "yesSpread": 0.007,
-          "liquidity": 47880.43,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -382,9 +364,45 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 1.3,
+        "resolvedAt": "2026-07-28T19:28:11.968Z",
+        "marketQuality": {
+          "yesBid": 0.23,
+          "yesAsk": 0.26,
+          "yesSpread": 0.03,
+          "liquidity": 11417.53,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $5,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.04,
+          "yesAsk": 0.05,
+          "yesSpread": 0.01,
+          "liquidity": 37658.76,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.1pt on ETH, spread 1.0c, liquidity 37659. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -496,22 +514,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 5.9pt on ETH, spread 2.0c, liquidity 17683. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-wti-hit-in-july-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $85 in July?",
-        "marketQuality": {
-          "yesBid": 0.23,
-          "yesAsk": 0.26,
-          "yesSpread": 0.03,
-          "liquidity": 11417.53,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.9pt on OIL, spread 3.0c, liquidity 11418. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
