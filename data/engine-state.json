@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-28T02:28:12.792Z",
+  "generatedAt": "2026-07-28T03:28:15.897Z",
   "dataFreshness": {
-    "valuationRows": 1946,
-    "latestValuationAt": "2026-07-28T02",
-    "macroRows": 1944,
+    "valuationRows": 1947,
+    "latestValuationAt": "2026-07-28T03",
+    "macroRows": 1945,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-28T02"
+    "latestInstrumentSnapshotAt": "2026-07-28T03"
   },
   "portfolio": {
     "cash": 97.9659,
@@ -13,7 +13,7 @@
     "realizedPnl": 2.2055,
     "totalTrades": 562,
     "winRatePct": 64.1,
-    "unrealizedPnl": 0.027
+    "unrealizedPnl": 0.0263
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 2.7,
-      "currentPrice": 63219,
-      "underlyingPrice": 63219,
+      "pnlPct": 2.63,
+      "currentPrice": 63262,
+      "underlyingPrice": 63262,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -174,7 +174,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 52,
+    "openCount": 53,
     "resolvedCount": 670,
     "wouldHaveWon": 368,
     "wouldHaveLost": 302,
@@ -398,22 +398,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-in-july-2026 — NO — Will Ethereum reach $2,000 in July?",
-        "marketQuality": {
-          "yesBid": 0.63,
-          "yesAsk": 0.65,
-          "yesSpread": 0.02,
-          "liquidity": 23280.43,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.9pt on ETH, spread 2.0c, liquidity 23280. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $6,000 by end of December?",
@@ -523,6 +507,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.1pt on BTC, spread 1.0c, liquidity 69223. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-wti-hit-in-august-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $120 in August?",
+        "marketQuality": {
+          "yesBid": 0.06,
+          "yesAsk": 0.07,
+          "yesSpread": 0.01,
+          "liquidity": 7202.25,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.2pt on OIL, spread 1.0c, liquidity 7202. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
