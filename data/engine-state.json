@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-28T22:28:13.514Z",
+  "generatedAt": "2026-07-28T23:28:20.098Z",
   "dataFreshness": {
-    "valuationRows": 1963,
-    "latestValuationAt": "2026-07-28T22",
-    "macroRows": 1961,
+    "valuationRows": 1964,
+    "latestValuationAt": "2026-07-28T23",
+    "macroRows": 1962,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-28T22"
+    "latestInstrumentSnapshotAt": "2026-07-28T23"
   },
   "portfolio": {
     "cash": 98.9964,
@@ -156,9 +156,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 50,
-    "resolvedCount": 677,
-    "wouldHaveWon": 373,
+    "openCount": 49,
+    "resolvedCount": 678,
+    "wouldHaveWon": 374,
     "wouldHaveLost": 304,
     "bySignal": [
       {
@@ -227,24 +227,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.05,
-        "resolvedAt": "2026-07-28T02:28:12.514Z",
-        "marketQuality": {
-          "yesBid": 0.05,
-          "yesAsk": 0.06,
-          "yesSpread": 0.01,
-          "liquidity": 36759.98,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -383,6 +365,24 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 0.1,
+        "resolvedAt": "2026-07-28T23:28:19.884Z",
+        "marketQuality": {
+          "yesBid": 0.02,
+          "yesAsk": 0.022,
+          "yesSpread": 0.002,
+          "liquidity": 40494.68,
+          "flags": []
         }
       }
     ],

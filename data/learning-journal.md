@@ -1504,3 +1504,35 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 7/12; ne
 
 ---
 
+### 2026-07-28 23:28 UTC
+
+**Portfolio:** $99.00 total | Cash $99.00 | 0 open | P&L $2.2360 | 64% win rate (563 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] amzn_pc_ratio = 0.738 is 2.8 std devs from mean (0.45 ± 0.11)
+- [anomaly] oil_opt_fwd_90d = 6.4 is -2.7 std devs from mean since 2026-04-28 (78.87 ± 26.86)
+
+**Blocked signal learning:**
+- Open blocked shadows: 49
+- Resolved blocked shadows: 678 (374 wins / 304 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 14/26 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+3.45%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+1.30%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.10%)
+
+**LLM analysis:**
+No open positions; ALLOWED ACTION SURFACE confirms zero eligible discretionary closes. The ONE-TOUCH NO shadow signals continue to block with strong edge and win rate (67% on 6 resolved trades, avg +4.5%), while FUNDING_EXTREME_LONG/SHORT signals remain active but no new entries promoted. Oil funding briefly exploded to +185% before normalising, underscoring the spike-risk macro signal. Crypto funding flipped negative across BTC/ETH/SOL at the hour, consistent with the broad risk-off move. Nightly run should reassess FUNDING_EXTREME_SHORT entry thresholds given the hour-end flip, and consider whether the OIL SPIKE RISK signal merits a shadow proxy trade. No immediate action needed.
+
+---
+
