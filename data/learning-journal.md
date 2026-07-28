@@ -1053,3 +1053,41 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 2/12; ne
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-07-28T07:07:13.277Z, model=deepseek-v4-pro)
+- Hypotheses added: 9 (rejected 0); reviews applied: 4; param updates: FUNDING_EXTREME_LONG risk: +5/-2.5 -> +5/-3; FUNDING_EXTREME_SHORT risk: +4/-2 -> +4/-2.5; FUNDING_EXTREME_LONG risk floor: +5/-3 -> +5/-2.5.
+- Strategy review: The ONE_TOUCH_HIGH_EDGE_NO edge remains the standout performer with 4/4 live wins and +0.74 PnL, supported by solid shadow results (76/171, +0.84). PC_RATIO_EXTREME_LOW also continues to deliver (60% win, +0.07), especially on BTC and OIL. The WEEKEND_HL_FUNDING_REVERSION_LONG family is robust with 74% win rate and +1.29 PnL, affirming its eligible-live status. Funding extreme signals (FUNDING_EXTREME_LONG/SHORT) are underperforming, with low win rates and negative aggregate PnL on several assets, highlighting sensitivity to trend regimes. Disabled signals (PM_IV_GT_OPT_IV, OPT_IV_GT_PM_IV, LL
+- Nightly journal: Tonight's review confirms the ONE_TOUCH_HIGH_EDGE_NO and PC_RATIO_EXTREME_LOW signals remain healthy, while funding extreme signals continue to underperform on trend-sensitive assets. I increased FUNDING_EXTREME_LONG stop from 2.5% to 3.0% and FUNDING_EXTREME_SHORT stop from 2.0% to 2.5% to reduce premature stop-outs, given evidence of trend continuations after extreme funding. The shadow pipeline is rich: informed flow (FIND-0020) and edge-filtered one-touch clusters (OIL/GOLD, PM IV rich) all merit new hypotheses. I promoted 9 new hypotheses covering dumb-flow fading, OIL/GOLD one-touch edge
+### 2026-07-28 07:28 UTC
+
+**Portfolio:** $98.97 total | Cash $97.97 | 1 open | P&L $2.2055 | 64% win rate (562 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 19 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 6.8pp (was -14.5, now -21.3)
+- [anomaly] oil_opt_fwd_90d = 6.3 is -2.7 std devs from mean since 2026-04-28 (79.00 ± 26.45)
+
+**Blocked signal learning:**
+- Open blocked shadows: 49
+- Resolved blocked shadows: 674 (370 wins / 304 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 14/26 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.35%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+6.25%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.19%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.06%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; next scheduled 2026-07-28T09:28:21.567Z). Mechanical cycle ran normally._
+
+---
+
