@@ -20,6 +20,7 @@ import {
   completedHypothesisTests,
   evaluateHypothesisCondition,
   evaluateHypothesisTest,
+  hypothesisScoringMode,
   hypothesisSetupFamilies,
   isDataContaminatedSetup,
   pendingHypothesisTests,
@@ -551,6 +552,8 @@ function candidateForDate(
 ): Hypothesis | null {
   return [...family.hypotheses]
     .filter((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived")
+    // Never backfill tests that can only resolve UNSCORABLE.
+    .filter((hypothesis) => hypothesisScoringMode(hypothesis) !== null)
     .sort((a, b) => {
       const completedDelta = completedHypothesisTests(a).length - completedHypothesisTests(b).length;
       if (completedDelta !== 0) return completedDelta;

@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   buildNightlyResearchPrompt,
+  collectStrugglingFamilies,
   isSubstantiveNightlyAdvice,
   parseNightlyAdvice,
   runNightlyLlmStep,
@@ -143,7 +144,7 @@ describe("buildNightlyResearchPrompt", () => {
     expect(prompt).toContain("themeId=THEME-0001");
     expect(prompt).toContain("ONE_TOUCH_HIGH_EDGE_NO|GOLD|heatmap|no");
     expect(prompt).toContain("RESEARCH THEMES SUMMARY");
-    expect(prompt).toContain("every newHypothesis MUST be authored from one of those findings");
+    expect(prompt).toContain("every non-refinement newHypothesis MUST be authored from one of those findings");
   });
 
   it("lists retired setup ids as blocked when provided", () => {
@@ -159,7 +160,7 @@ describe("buildNightlyResearchPrompt", () => {
 
   it("renders active/promoted hypotheses as compact one-liners and excludes killed/archived from that section", () => {
     const hypotheses: NightlyHypothesisSummary[] = [
-      hyp({ id: "H-001", status: "active", description: "A".repeat(150), winRate: 0.6, tests: [1, 2, 3] }),
+      hyp({ id: "H-001", status: "active", description: "A".repeat(150), winRate: 0.6, tests: [{ outcome: "win" }, { outcome: "win" }, { outcome: "loss" }] }),
       hyp({ id: "H-002", status: "promoted", description: "promoted thesis" }),
       hyp({ id: "H-003", status: "archived", description: "should not appear in active section" }),
       hyp({ id: "H-004", status: "killed", description: "killed thesis one", postMortem: "did not pan out" }),
@@ -205,6 +206,44 @@ describe("buildNightlyResearchPrompt", () => {
     expect(prompt).toContain("None");
   });
 
+  it("shows real test outcomes for struggling setup families so the LLM can diagnose WHY", () => {
+    const failingFamily: NightlyHypothesisSummary[] = Array.from({ length: 1 }, () => hyp({
+      id: "H-045",
+      setupId: "amzn_perp_spot_funding_convergence",
+      conditions: { asset: "AMZN", amzn_hl_funding_ann: "< -20" },
+      prediction: "AMZN funding normalizes toward zero",
+      tests: [
+        ...Array.from({ length: 7 }, (_, i) => ({
+          date: `2026-07-${10 + i}`,
+          outcome: i < 3 ? "win" : "loss",
+          actualMove: `Funding moved -35.0% → ${i < 3 ? "-20.0" : "-40.0"}% (long reversion needs increase)`,
+        })),
+        { date: "2026-07-20", outcome: "loss", actualMove: "UNSCORABLE: missing hypothesis.direction and no directional language in prediction", excludedFromSetupStats: true },
+      ],
+    }));
+    const prompt = buildNightlyResearchPrompt({ ...emptyInputs, hypotheses: failingFamily });
+
+    expect(prompt).toContain("STRUGGLING SETUP FAMILIES");
+    expect(prompt).toContain("amzn_perp_spot_funding_convergence — 3/7 scorable tests (43% win)");
+    expect(prompt).toContain("long reversion needs increase");
+    expect(prompt).toContain('"amzn_hl_funding_ann":"< -20"');
+    expect(prompt).toContain("AMZN funding normalizes toward zero");
+    // Diagnosis + refinement instructions are present.
+    expect(prompt).toContain("invalidatedAssumption");
+    expect(prompt).toContain("refinesHypothesisId");
+    expect(prompt).toContain("learnedInvalidAssumptions");
+  });
+
+  it("says no families are struggling when records are healthy", () => {
+    const healthy = [hyp({
+      id: "H-001",
+      setupId: "healthy_family",
+      tests: Array.from({ length: 10 }, () => ({ outcome: "win", actualMove: "won" })),
+    })];
+    const prompt = buildNightlyResearchPrompt({ ...emptyInputs, hypotheses: healthy });
+    expect(prompt).toContain("None currently meet the struggling threshold.");
+  });
+
   it("serializes real truthState/engineState/lessons/learningParams objects", () => {
     const prompt = buildNightlyResearchPrompt({
       truthState: { setupFamilies: [{ setupId: "btc_iv_reversion" }] },
@@ -216,6 +255,45 @@ describe("buildNightlyResearchPrompt", () => {
     expect(prompt).toContain("btc_iv_reversion");
     expect(prompt).toContain("works well");
     expect(prompt).toContain("\"cash\": 42");
+  });
+});
+
+describe("collectStrugglingFamilies", () => {
+  it("flags unscorable-burn families even with few scorable tests", () => {
+    const family = [hyp({
+      id: "H-050",
+      setupId: "burned_family",
+      tests: Array.from({ length: 6 }, () => ({
+        outcome: "loss",
+        actualMove: "UNSCORABLE: missing hypothesis.direction and no directional language in prediction",
+        excludedFromSetupStats: true,
+      })),
+    })];
+    const out = collectStrugglingFamilies(family);
+    expect(out).toHaveLength(1);
+    expect(out[0].unscorableBurned).toBe(6);
+    expect(out[0].completed).toBe(0);
+  });
+
+  it("ignores killed/archived hypotheses and healthy families", () => {
+    const out = collectStrugglingFamilies([
+      hyp({ id: "H-051", status: "killed", setupId: "dead", tests: Array.from({ length: 10 }, () => ({ outcome: "loss" })) }),
+      hyp({ id: "H-052", setupId: "healthy", tests: Array.from({ length: 10 }, () => ({ outcome: "win" })) }),
+    ]);
+    expect(out).toHaveLength(0);
+  });
+
+  it("aggregates variants of the same family and orders evidence chronologically", () => {
+    const out = collectStrugglingFamilies([
+      hyp({ id: "H-060", setupId: "fam", tests: [{ date: "2026-07-02", outcome: "loss", actualMove: "second" }, { date: "2026-07-01", outcome: "win", actualMove: "first" }] }),
+      hyp({ id: "H-061", setupId: "fam", tests: [{ date: "2026-07-03", outcome: "loss", actualMove: "third" }, { date: "2026-07-04", outcome: "loss", actualMove: "fourth" }, { date: "2026-07-05", outcome: "loss", actualMove: "fifth" }] }),
+    ]);
+    expect(out).toHaveLength(1);
+    expect(out[0].completed).toBe(5);
+    expect(out[0].wins).toBe(1);
+    expect(out[0].variantIds).toEqual(["H-060", "H-061"]);
+    expect(out[0].recentOutcomes[0]).toContain("first");
+    expect(out[0].recentOutcomes[4]).toContain("fifth");
   });
 });
 
@@ -281,7 +359,7 @@ describe("parseNightlyAdvice", () => {
     expect(advice!.newHypotheses[0].timeframeDays).toBe(5);
   });
 
-  it("drops hypotheses missing originFindingId", () => {
+  it("drops hypotheses that carry neither originFindingId nor refinesHypothesisId", () => {
     const payload = {
       ...validPayload,
       newHypotheses: [
@@ -293,6 +371,43 @@ describe("parseNightlyAdvice", () => {
     expect(error).toBeNull();
     expect(advice!.newHypotheses).toHaveLength(1);
     expect(advice!.newHypotheses[0].originFindingId).toBe("FIND-0003");
+  });
+
+  it("keeps refinement hypotheses without originFindingId, even when a FIND allowlist is active", () => {
+    const payload = {
+      ...validPayload,
+      newHypotheses: [
+        {
+          ...validPayload.newHypotheses[0],
+          originFindingId: undefined,
+          themeId: undefined,
+          refinesHypothesisId: "H-045",
+          description: "refinement: gate on funding percentile instead of raw level so entries catch turns not pins",
+        },
+      ],
+    };
+    const { advice, error } = parseNightlyAdvice(JSON.stringify(payload), { allowedOriginFindingIds: ["FIND-0003"] });
+    expect(error).toBeNull();
+    expect(advice!.newHypotheses).toHaveLength(1);
+    expect(advice!.newHypotheses[0].refinesHypothesisId).toBe("H-045");
+    expect(advice!.newHypotheses[0].originFindingId).toBeUndefined();
+  });
+
+  it("keeps invalidatedAssumption on hypothesis reviews", () => {
+    const payload = {
+      ...validPayload,
+      hypothesisReviews: [
+        { id: "H-045", observation: "7 of 10 tests show funding pinned negative for weeks", invalidatedAssumption: "Extreme negative AMZN funding does not mean-revert within 7 days." },
+        { id: "H-001", observation: "fine", invalidatedAssumption: "too short" },
+      ],
+    };
+    const { advice, error } = parseNightlyAdvice(JSON.stringify(payload));
+    expect(error).toBeNull();
+    expect(advice!.hypothesisReviews).toHaveLength(2);
+    expect(advice!.hypothesisReviews[0].invalidatedAssumption).toContain("does not mean-revert");
+    // Too-short assumptions are dropped without discarding the review itself.
+    expect(advice!.hypothesisReviews[1].observation).toBe("fine");
+    expect(advice!.hypothesisReviews[1].invalidatedAssumption).toBeUndefined();
   });
 
   it("drops hypotheses whose originFindingId was not in the ranked opportunities set", () => {

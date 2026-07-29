@@ -94,11 +94,13 @@ import {
   HYPOTHESIS_SHADOW_TESTS_REQUIRED,
   PROMOTE_SIGNIFICANCE_ALPHA,
   RETIRED_LLM_SETUP_IDS,
+  appendPostMortemSegment,
   binomialPValue,
   completedHypothesisTests,
   evaluateHypothesisTest,
   hasRegimeRelativeConditions,
   hypothesisConditionsSatisfied,
+  hypothesisScoringMode,
   hypothesisSetupFamilies,
   hypothesisSetupNeedsMoreShadowTests,
   inferHypothesisAsset,
@@ -633,6 +635,10 @@ interface Hypothesis {
   // which falls back to the keyword inferrer.
   direction?: "long" | "short" | "neutral";
   originFindingId?: string;
+  /** Lineage: id of the failing hypothesis this one refines. Refinements are
+   * authored by the nightly LLM from a diagnosed family failure and live in
+   * their own <parentSetup>_rN sub-family. */
+  refinesHypothesisId?: string;
   themeId?: string;
   tests: HypothesisTest[];
   winRate: number;
@@ -952,6 +958,11 @@ interface SetupTruthRecord {
   };
   allowedEvidenceColumns: string[];
   knownInvalidAssumptions: string[];
+  /** Assumptions the nightly LLM explicitly invalidated from test evidence
+   * (persisted in setup-invalid-assumptions.json). Kept separate from
+   * knownInvalidAssumptions so LLM-authored diagnoses never trip the
+   * contaminated_retest status; they exist as durable memory for research. */
+  learnedInvalidAssumptions?: string[];
   representativeExamples: Array<{
     id: string;
     kind: "trade" | "shadow" | "hypothesis";
@@ -6238,6 +6249,7 @@ function evaluateHypotheses(
     let opened = 0;
     let skippedInactive = 0;
     let skippedCond = 0;
+    let skippedUnscorable = 0;
     const familiesNeedingTests = hypothesisSetupFamilies(
       hypotheses.filter((hypothesis) => sources.has(hypothesis.source)),
     ).filter((family) => hypothesisSetupNeedsMoreShadowTests(family, sources));
@@ -6252,8 +6264,18 @@ function evaluateHypotheses(
         continue;
       }
 
-      const candidate = family.hypotheses
+      const scorableVariants = family.hypotheses
         .filter((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived")
+        .filter((hypothesis) => hypothesisScoringMode(hypothesis) !== null);
+      if (scorableVariants.length === 0) {
+        // Every variant would resolve UNSCORABLE (no direction, no funding
+        // thesis, no move language) — opening tests here burns budget without
+        // producing evidence. Surfaced so the nightly LLM can re-author.
+        skippedUnscorable++;
+        continue;
+      }
+
+      const candidate = scorableVariants
         .filter((hypothesis) => pendingHypothesisTests(hypothesis).length === 0)
         .sort((a, b) => completedHypothesisTests(a).length - completedHypothesisTests(b).length || b.confidence - a.confidence)
         .find((hypothesis) => hypothesisConditionsSatisfied(hypothesis, valuationRows, relativeValueRows));
@@ -6278,6 +6300,9 @@ function evaluateHypotheses(
     }
     if (skippedCond > 0 || skippedInactive > 0) {
       observations.push(`🧪 ${label} retest queue: ${skippedCond} active families did not trigger; ${skippedInactive} later families waiting.`);
+    }
+    if (skippedUnscorable > 0) {
+      observations.push(`🧪 ${label} retest queue: ${skippedUnscorable} families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.`);
     }
     openedShadowTests += opened;
     skippedConditionNotMet += skippedCond;
@@ -6447,6 +6472,7 @@ function finalizeTruthRecord(record: SetupTruthRecord): SetupTruthRecord {
 function buildLlmTruthState(hypotheses: Hypothesis[], weights: SignalWeight[], closedTrades: ClosedTrade[], blockedSignals: BlockedSignalShadow[]): LlmTruthState {
   const generatedAt = new Date().toISOString();
   const hypothesesById = new Map(hypotheses.map((hypothesis) => [hypothesis.id, hypothesis]));
+  const learnedAssumptions = readLearnedAssumptions();
   const records = new Map<string, SetupTruthRecord>();
   const getRecord = (setupId: string, setupLabel: string, assetHint?: string): SetupTruthRecord => {
     const existing = records.get(setupId);
@@ -6470,6 +6496,9 @@ function buildLlmTruthState(hypotheses: Hypothesis[], weights: SignalWeight[], c
       knownInvalidAssumptions: DATA_CONTAMINATED_SETUP_IDS.has(setupId)
         ? ["Historical Oil/Gold-derived evidence for this setup family may include contaminated or superseded inputs; use clean post-correction evidence only."]
         : [],
+      learnedInvalidAssumptions: (learnedAssumptions[setupId] ?? []).map(
+        (entry) => `${entry.date} via ${entry.hypothesisId}: ${entry.assumption}`,
+      ),
       representativeExamples: [],
       lastReviewedAt: generatedAt,
     };
@@ -6801,6 +6830,7 @@ const llmNewHypothesisSchema = z.object({
   confidence: z.number().min(0).max(1),
   direction: z.enum(["long", "short", "neutral"]),
   originFindingId: z.string().regex(/^FIND-\d{4}$/).optional(),
+  refinesHypothesisId: z.string().regex(/^H-\d{3,4}$/).optional(),
   themeId: z.string().regex(/^THEME-\d{4}$/).optional(),
   source: z.literal("llm"),
 });
@@ -6882,6 +6912,31 @@ function parseLlmJson(text: string): { result: LlmAnalysisResult | null; error: 
 const NIGHTLY_LLM_ADVICE_FILE = "nightly-llm-advice.json";
 const NIGHTLY_LLM_ADVICE_INGESTED_FILE = "nightly-llm-advice-ingested.json";
 const REGISTRY_FILE = "registry.json";
+const SETUP_LEARNED_ASSUMPTIONS_FILE = "setup-invalid-assumptions.json";
+const LEARNED_ASSUMPTIONS_PER_FAMILY_CAP = 8;
+
+/** Durable memory of assumptions the nightly LLM invalidated per setup family. */
+type LearnedAssumptionStore = Record<string, Array<{ assumption: string; hypothesisId: string; date: string }>>;
+
+function readLearnedAssumptions(): LearnedAssumptionStore {
+  const raw = readJson<LearnedAssumptionStore>(SETUP_LEARNED_ASSUMPTIONS_FILE, {});
+  return raw && typeof raw === "object" ? raw : {};
+}
+
+/** Returns true when the store changed (dedupes case-insensitively, caps per family). */
+function recordLearnedAssumption(
+  store: LearnedAssumptionStore,
+  setupId: string,
+  assumption: string,
+  hypothesisId: string,
+): boolean {
+  const entries = store[setupId] ?? [];
+  const normalized = assumption.trim();
+  if (entries.some((e) => e.assumption.trim().toLowerCase() === normalized.toLowerCase())) return false;
+  entries.push({ assumption: normalized, hypothesisId, date: new Date().toISOString().slice(0, 10) });
+  store[setupId] = entries.slice(-LEARNED_ASSUMPTIONS_PER_FAMILY_CAP);
+  return true;
+}
 
 function stringArray(value: unknown): string[] {
   return Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
@@ -6989,13 +7044,33 @@ function ingestNightlyLlmAdvice(
     }
     const nh = parsed.data;
     const isFindLinked = typeof nh.originFindingId === "string" && nh.originFindingId.length > 0;
-    if (!backlog.complete && !isFindLinked) {
+    // Refinements: hypotheses grounded in a failing family's diagnosed test
+    // evidence rather than a mined FIND. They must cite an existing parent
+    // and get a fresh sub-family so old failures do not bury the new variant.
+    const isRefinement = typeof nh.refinesHypothesisId === "string" && nh.refinesHypothesisId.length > 0;
+    let refinementParent: Hypothesis | null = null;
+    if (isRefinement) {
+      refinementParent = hypotheses.find((h) => h.id === nh.refinesHypothesisId) ?? null;
+      if (!refinementParent) {
+        notes.push(`Nightly advice: refinement cites unknown parent ${nh.refinesHypothesisId}: ${nh.description.slice(0, 60)}`);
+        bumpReject("refines_unknown_parent");
+        continue;
+      }
+      const parentSetup = refinementParent.setupId ?? "";
+      if (RETIRED_LLM_SETUP_IDS.has(parentSetup) || isDataContaminatedSetup(parentSetup)) {
+        notes.push(`Nightly advice: refinement of retired/contaminated family ${parentSetup} rejected: ${nh.description.slice(0, 60)}`);
+        bumpReject("refines_retired_family");
+        continue;
+      }
+    }
+    if (!backlog.complete && !isFindLinked && !isRefinement) {
       deferredForBacklog++;
       bumpReject("backlog");
       continue;
     }
-    // FIND-authored hyps use a softer confidence floor; ranking already selected them.
-    const minConfidence = isFindLinked ? 0.55 : NIGHTLY_MIN_HYPOTHESIS_CONFIDENCE;
+    // FIND-authored and refinement hyps use a softer confidence floor; both
+    // are evidence-grounded (mined statistics / diagnosed test outcomes).
+    const minConfidence = isFindLinked || isRefinement ? 0.55 : NIGHTLY_MIN_HYPOTHESIS_CONFIDENCE;
     if (!(typeof nh.confidence === "number") || nh.confidence < minConfidence) {
       bumpReject("low_confidence");
       continue;
@@ -7027,6 +7102,7 @@ function ingestNightlyLlmAdvice(
       timeframeDays: nh.timeframeDays, confidence: nh.confidence,
       direction: nh.direction,
       originFindingId: nh.originFindingId,
+      refinesHypothesisId: nh.refinesHypothesisId,
       themeId: nh.themeId,
       tests: [{ date: new Date().toISOString().slice(0, 10), triggered: true, outcome: "pending", actualMove: `Shadow test 1/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened for initial validation.` }],
       winRate: 0, status: "active", promotedToSignal: false, postMortem: null,
@@ -7036,10 +7112,19 @@ function ingestNightlyLlmAdvice(
       // Stable per-FIND setup family so classifiers do not dump new research into retired other_mixed.
       hypothesis.setupId = `find_${nh.originFindingId!.replace(/^FIND-/i, "").toLowerCase()}`;
       hypothesis.setupLabel = `FIND-linked ${nh.originFindingId}`;
+    } else if (isRefinement && refinementParent) {
+      // Fresh sub-family (<parent>_rN): the refinement's 20-test record starts
+      // clean instead of being pooled with the failures it is trying to fix,
+      // while the _rN name + refinesHypothesisId keep the lineage auditable.
+      const baseSetup = refinementParent.setupId ?? `refined_${refinementParent.id.toLowerCase()}`;
+      let generation = 2;
+      while (hypotheses.some((h) => h.setupId === `${baseSetup}_r${generation}`)) generation++;
+      hypothesis.setupId = `${baseSetup}_r${generation}`;
+      hypothesis.setupLabel = `Refinement of ${baseSetup} (parent ${refinementParent.id})`;
     } else {
       ensureHypothesisSetupMetadata(hypothesis);
     }
-    if (!isFindLinked && RETIRED_LLM_SETUP_IDS.has(hypothesis.setupId ?? "")) {
+    if (!isFindLinked && !isRefinement && RETIRED_LLM_SETUP_IDS.has(hypothesis.setupId ?? "")) {
       notes.push(`Nightly advice: skipping retired LLM setup hypothesis: ${hypothesis.setupLabel}`);
       bumpReject("retired_setup");
       continue;
@@ -7049,10 +7134,18 @@ function ingestNightlyLlmAdvice(
       bumpReject("contaminated_setup");
       continue;
     }
-    // FIND-linked hyps already carry explicit direction from the opportunity authoring step.
-    if (!isFindLinked && (!inferHypothesisAsset(hypothesis) || !inferHypothesisDirection(hypothesis))) {
+    // FIND-linked and refinement hyps already carry explicit direction from authoring.
+    if (!isFindLinked && !isRefinement && (!inferHypothesisAsset(hypothesis) || !inferHypothesisDirection(hypothesis))) {
       notes.push(`Nightly advice: skipping direction/asset-ambiguous hypothesis: ${nh.description.slice(0, 60)}`);
       bumpReject("ambiguous_thesis");
+      continue;
+    }
+    // Scorability gate: never admit a hypothesis whose tests can only resolve
+    // UNSCORABLE (the amzn_perp_spot_funding_convergence failure mode: 82
+    // tests burned with zero evidence produced).
+    if (hypothesisScoringMode(hypothesis) === null) {
+      notes.push(`Nightly advice: skipping unscorable hypothesis (no direction/funding/move thesis the scorer can grade): ${nh.description.slice(0, 60)}`);
+      bumpReject("unscorable_thesis");
       continue;
     }
     const descKey = nh.description.trim().toLowerCase().slice(0, 80);
@@ -7062,6 +7155,13 @@ function ingestNightlyLlmAdvice(
     }
     hypotheses.push(hypothesis);
     added++;
+    if (isRefinement && refinementParent) {
+      refinementParent.postMortem = appendPostMortemSegment(
+        refinementParent.postMortem,
+        `Refined by ${id} (${hypothesis.created}): ${nh.description.slice(0, 80)}`,
+      );
+      notes.push(`Nightly advice: ${id} refines ${refinementParent.id} → new family ${hypothesis.setupId}.`);
+    }
     if (nh.originFindingId && !MUTATION_DISABLED) {
       const linked = linkFindingToHypothesis(nh.originFindingId, id, nh.themeId);
       if (linked === "linked") notes.push(`Nightly advice: linked ${nh.originFindingId} to ${id}.`);
@@ -7080,17 +7180,30 @@ function ingestNightlyLlmAdvice(
     notes.push(`Nightly advice: rejected ${rejected} hypothesis record(s) (${detail}).`);
   }
 
-  // Hypothesis reviews → postMortem, same as the old hourly path.
+  // Hypothesis reviews → postMortem (capped so stale optimistic narration
+  // cannot anchor the record) + durable per-family invalidated assumptions.
   const rawReviews = Array.isArray(advice.hypothesisReviews) ? advice.hypothesisReviews : [];
   let reviewsApplied = 0;
+  let assumptionsLearned = 0;
+  const learnedAssumptions = readLearnedAssumptions();
   for (const raw of rawReviews) {
     if (!raw || typeof raw !== "object") continue;
-    const review = raw as { id?: unknown; observation?: unknown };
+    const review = raw as { id?: unknown; observation?: unknown; invalidatedAssumption?: unknown };
     if (typeof review.id !== "string" || typeof review.observation !== "string" || !review.observation) continue;
     const h = hypotheses.find((h) => h.id === review.id);
     if (!h) continue;
-    h.postMortem = h.postMortem ? `${h.postMortem} | ${review.observation}` : review.observation;
+    h.postMortem = appendPostMortemSegment(h.postMortem, review.observation);
     reviewsApplied++;
+    const assumption = typeof review.invalidatedAssumption === "string" ? review.invalidatedAssumption.trim() : "";
+    if (assumption.length >= 10 && h.setupId) {
+      if (recordLearnedAssumption(learnedAssumptions, h.setupId, assumption, h.id)) {
+        assumptionsLearned++;
+        notes.push(`Nightly advice: learned invalidated assumption for ${h.setupId}: ${assumption.slice(0, 120)}`);
+      }
+    }
+  }
+  if (assumptionsLearned > 0 && !MUTATION_DISABLED) {
+    writeJson(SETUP_LEARNED_ASSUMPTIONS_FILE, learnedAssumptions);
   }
 
   // Parameter updates: strip locked signal risk, validate, clamp via the
@@ -7111,7 +7224,7 @@ function ingestNightlyLlmAdvice(
   }
   for (const note of paramNotes) notes.push(`Nightly advice param update: ${note}`);
 
-  journalLines.push(`- Hypotheses added: ${added} (rejected ${rejected}); reviews applied: ${reviewsApplied}; param updates: ${paramNotes.length > 0 ? paramNotes.join("; ") : "none"}.`);
+  journalLines.push(`- Hypotheses added: ${added} (rejected ${rejected}); reviews applied: ${reviewsApplied}; invalidated assumptions learned: ${assumptionsLearned}; param updates: ${paramNotes.length > 0 ? paramNotes.join("; ") : "none"}.`);
   if (typeof advice.strategyReview === "string" && advice.strategyReview) {
     journalLines.push(`- Strategy review: ${advice.strategyReview.slice(0, 600)}`);
   }

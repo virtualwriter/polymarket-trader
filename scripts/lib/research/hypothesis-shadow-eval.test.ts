@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
   HYPOTHESIS_SHADOW_TESTS_EXTENDED_CAP,
+  appendPostMortemSegment,
   binomialPValue,
   evaluateHypothesisTest,
   fundingAnnConditionKey,
+  hypothesisScoringMode,
   hypothesisSetupFamilies,
   hypothesisSetupNeedsMoreShadowTests,
   inferHypothesisAsset,
@@ -38,6 +40,68 @@ function hyp(partial: Partial<Hypothesis> & Pick<Hypothesis, "prediction" | "con
 function row(date: string, fields: Record<string, number>): SnapshotRow {
   return { date, ...fields };
 }
+
+describe("hypothesisScoringMode", () => {
+  it("flags the AMZN perp/spot convergence shape as unscorable (no direction, no reversion language)", () => {
+    // Real failure mode: 82 tests burned UNSCORABLE on this family.
+    const h = hyp({
+      prediction: "AMZN stock continues outperforming perp as arbitrage completes and basis stays near zero",
+      conditions: { asset: "AMZN", amzn_hl_funding_ann: "< -20" },
+    });
+    expect(hypothesisScoringMode(h)).toBeNull();
+  });
+
+  it("keeps funding-reversion theses scorable via the funding path even without direction", () => {
+    const h = hyp({
+      prediction: "AMZN funding normalizes toward zero within a week",
+      conditions: { asset: "AMZN", amzn_hl_funding_ann: "< -20" },
+    });
+    expect(hypothesisScoringMode(h)).toBe("funding");
+  });
+
+  it("scores explicit-direction hypotheses directionally", () => {
+    const h = hyp({
+      direction: "short",
+      prediction: "edge compresses toward fair value",
+      conditions: { asset: "GOLD" },
+    });
+    expect(hypothesisScoringMode(h)).toBe("directional");
+  });
+
+  it("scores neutral vol theses via move language", () => {
+    const h = hyp({
+      direction: "neutral",
+      prediction: "BTC moves > 3% in either direction",
+      conditions: { asset: "BTC" },
+    });
+    expect(hypothesisScoringMode(h)).toBe("neutral_move");
+  });
+
+  it("is unscorable when no asset can be inferred", () => {
+    const h = hyp({
+      direction: "long",
+      prediction: "the market rallies",
+      conditions: { liquidity: ">= 100" },
+    });
+    expect(hypothesisScoringMode(h)).toBeNull();
+  });
+});
+
+describe("appendPostMortemSegment", () => {
+  it("appends to empty and existing postMortems", () => {
+    expect(appendPostMortemSegment(null, "first note")).toBe("first note");
+    expect(appendPostMortemSegment("first note", "second note")).toBe("first note | second note");
+  });
+
+  it("caps segments so stale optimistic narration falls off", () => {
+    let pm: string | null = null;
+    for (const note of ["working perfectly", "still great", "hmm mixed", "losing now", "family is failing"]) {
+      pm = appendPostMortemSegment(pm, note);
+    }
+    expect(pm).toBe("still great | hmm mixed | losing now | family is failing");
+    expect(pm).not.toContain("working perfectly");
+  });
+});
 
 describe("resolveHypothesisDirection", () => {
   it("prefers explicit direction over prediction text", () => {

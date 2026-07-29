@@ -24,9 +24,17 @@ export interface NightlyHypothesisSummary {
   status: string;
   description: string;
   winRate: number;
-  tests?: unknown[];
+  tests?: Array<{
+    date?: string;
+    outcome?: string;
+    actualMove?: string;
+    excludedFromSetupStats?: boolean;
+  }>;
   postMortem?: string | null;
   setupId?: string;
+  conditions?: Record<string, string>;
+  prediction?: string;
+  refinesHypothesisId?: string;
 }
 
 export interface NightlyResearchOpportunity {
@@ -99,6 +107,97 @@ function opportunityOneLiner(o: NightlyResearchOpportunity): string {
   return `  ${rank}. ${o.id}${theme} clusterKey=${o.clusterKey ?? "n/a"} opportunityScore=${scoreLabel(o.opportunityScore)} confidenceScore=${scoreLabel(o.confidenceScore)} title=${o.title ?? "untitled"} evidence=${evidence}`;
 }
 
+// ─── Struggling-family failure evidence ─────────────────────────────────────
+// The diagnostic half of the loop was starved: the prompt showed win rates but
+// never the actual test outcomes, so the model could not say WHY a family
+// fails. This section feeds real scorable outcomes for the worst records.
+
+const STRUGGLING_FAMILY_LIMIT = 6;
+const STRUGGLING_FAMILY_MIN_COMPLETED = 5;
+const STRUGGLING_FAMILY_WIN_RATE_BELOW = 0.55;
+const STRUGGLING_FAMILY_EVIDENCE_LINES = 6;
+
+interface FamilyFailureEvidence {
+  setupId: string;
+  variantIds: string[];
+  completed: number;
+  wins: number;
+  winRate: number;
+  unscorableBurned: number;
+  primaryConditions: string;
+  primaryPrediction: string;
+  recentOutcomes: string[];
+}
+
+export function collectStrugglingFamilies(hypotheses: NightlyHypothesisSummary[]): FamilyFailureEvidence[] {
+  const byFamily = new Map<string, NightlyHypothesisSummary[]>();
+  for (const h of hypotheses) {
+    if (h.status !== "active" && h.status !== "promoted") continue;
+    const key = h.setupId ?? `unclassified_${h.id}`;
+    const list = byFamily.get(key) ?? [];
+    list.push(h);
+    byFamily.set(key, list);
+  }
+
+  const families: FamilyFailureEvidence[] = [];
+  for (const [setupId, variants] of byFamily) {
+    let completed = 0;
+    let wins = 0;
+    let unscorableBurned = 0;
+    const scored: Array<{ date: string; outcome: string; actualMove: string }> = [];
+    for (const variant of variants) {
+      for (const test of variant.tests ?? []) {
+        if (!test || test.outcome === "pending") continue;
+        if (test.excludedFromSetupStats) {
+          if (String(test.actualMove ?? "").includes("UNSCORABLE")) unscorableBurned++;
+          continue;
+        }
+        completed++;
+        if (test.outcome === "win") wins++;
+        scored.push({
+          date: String(test.date ?? "?"),
+          outcome: String(test.outcome),
+          actualMove: String(test.actualMove ?? "").slice(0, 130),
+        });
+      }
+    }
+    const winRate = completed > 0 ? wins / completed : 0;
+    const failing = completed >= STRUGGLING_FAMILY_MIN_COMPLETED && winRate < STRUGGLING_FAMILY_WIN_RATE_BELOW;
+    const unscorableHeavy = unscorableBurned >= 5 && completed < STRUGGLING_FAMILY_MIN_COMPLETED;
+    if (!failing && !unscorableHeavy) continue;
+
+    const primary = [...variants].sort((a, b) => (b.tests?.length ?? 0) - (a.tests?.length ?? 0))[0];
+    scored.sort((a, b) => a.date.localeCompare(b.date));
+    families.push({
+      setupId,
+      variantIds: variants.map((v) => v.id),
+      completed,
+      wins,
+      winRate,
+      unscorableBurned,
+      primaryConditions: JSON.stringify(primary.conditions ?? {}),
+      primaryPrediction: (primary.prediction ?? "").slice(0, 140),
+      recentOutcomes: scored.slice(-STRUGGLING_FAMILY_EVIDENCE_LINES).map(
+        (t) => `${t.date} ${t.outcome.toUpperCase()}: ${t.actualMove}`,
+      ),
+    });
+  }
+
+  return families
+    .sort((a, b) => b.completed - a.completed || a.winRate - b.winRate)
+    .slice(0, STRUGGLING_FAMILY_LIMIT);
+}
+
+function strugglingFamilyBlock(f: FamilyFailureEvidence): string {
+  const header = `  ${f.setupId} — ${f.wins}/${f.completed} scorable tests (${Math.round(f.winRate * 100)}% win)`
+    + (f.unscorableBurned > 0 ? `; ${f.unscorableBurned} tests burned UNSCORABLE (variants cannot be scored — needs re-authoring, not more tests)` : "")
+    + ` — variants: ${f.variantIds.slice(0, 8).join(",")}${f.variantIds.length > 8 ? ",..." : ""}`;
+  const conditions = `    primary conditions: ${f.primaryConditions.slice(0, 220)}`;
+  const prediction = `    primary prediction: ${f.primaryPrediction}`;
+  const outcomes = f.recentOutcomes.map((line) => `    ${line}`).join("\n");
+  return [header, conditions, prediction, outcomes].filter(Boolean).join("\n");
+}
+
 function themeOneLiner(t: NightlyResearchThemeSummary): string {
   const findingIds = Array.isArray(t.findingIds) ? t.findingIds.slice(0, 12).join(",") : "";
   const tail = Array.isArray(t.findingIds) && t.findingIds.length > 12 ? ",..." : "";
@@ -118,6 +217,10 @@ export function buildNightlyResearchPrompt(inputs: BuildNightlyResearchPromptInp
 
   const activeLines = activeHypotheses.length > 0 ? activeHypotheses.map(activeHypothesisOneLiner).join("\n") : "  None yet";
   const killedLines = killedRecently.length > 0 ? killedRecently.map(killedHypothesisOneLiner).join("\n") : "  None";
+  const strugglingFamilies = collectStrugglingFamilies(inputs.hypotheses);
+  const strugglingLines = strugglingFamilies.length > 0
+    ? strugglingFamilies.map(strugglingFamilyBlock).join("\n\n")
+    : "  None currently meet the struggling threshold.";
   const opportunityLines = opportunities.length > 0 ? opportunities.map(opportunityOneLiner).join("\n") : "  None available. Prefer returning zero newHypotheses instead of inventing freeform ideas.";
   const themeLines = themes.length > 0 ? themes.map(themeOneLiner).join("\n") : "  None available";
 
@@ -130,8 +233,10 @@ export function buildNightlyResearchPrompt(inputs: BuildNightlyResearchPromptInp
 Your job this run is to:
 1. Write a strategyReview: one short paragraph on what is working and what is failing, grounded in the truth state and lessons below.
 2. Identify failureClusters: group recent losing patterns into named themes, each with supporting evidence and a recommendation.
-3. Propose up to 10 newHypotheses from the ranked research opportunities only, and write hypothesisReviews for existing hypotheses you have new observations about.
-4. Suggest parameterUpdates within the bounds below, only when the evidence supports a change.
+3. Diagnose STRUGGLING SETUP FAMILIES: for each family listed in that section, write a hypothesisReview on its primary variant explaining WHY it fails based on the actual test outcomes shown (name the mechanism — e.g. "funding stays pinned instead of normalizing" — not just the score). When the outcomes invalidate a core assumption of the thesis, set invalidatedAssumption to one sentence naming it; it is persisted per family so future runs never re-propose it.
+4. Where your diagnosis suggests a mechanically better variant, propose a newHypothesis with refinesHypothesisId set to the failing variant's id. A refinement MUST change the conditions or mechanism that caused the diagnosed failure (not merely nudge a threshold), MUST use catalog keys, and MUST include a direction. Refinements do not need an originFindingId.
+5. Propose up to 10 newHypotheses total: FIND-authored ones from the ranked research opportunities, plus refinements per rule 4. Write hypothesisReviews for other existing hypotheses you have new observations about.
+6. Suggest parameterUpdates within the bounds below, only when the evidence supports a change.
 
 CANONICAL ENGINE STATE:
 ${jsonOrUnavailable(inputs.engineState, 1)}
@@ -152,6 +257,9 @@ ${themeLines}
 ACTIVE / PROMOTED HYPOTHESES:
 ${activeLines}
 
+STRUGGLING SETUP FAMILIES (real test outcomes — diagnose WHY these fail, then refine or kill):
+${strugglingLines}
+
 RECENTLY KILLED HYPOTHESES:
 ${killedLines}
 
@@ -163,8 +271,9 @@ ${buildConditionCatalogPromptSection(inputs.valuationColumns ?? [])}
 IMPORTANT RULES:
 - Each hypothesis MUST be specific and testable with a clear timeframe (1-30 days)
 - Each hypothesis MUST define measurable conditions using ONLY keys from the CONDITION KEY CATALOG above, with the exact expression syntax listed there. Conditions with any other key or syntax are rejected at ingest and the hypothesis is never tested — this is the #1 reason past hypotheses silently died.
-- When RANKED RESEARCH OPPORTUNITIES contains FIND records, every newHypothesis MUST be authored from one of those findings, MUST include originFindingId exactly matching a listed FIND id, and MUST include themeId when the listed finding has one.
+- When RANKED RESEARCH OPPORTUNITIES contains FIND records, every non-refinement newHypothesis MUST be authored from one of those findings, MUST include originFindingId exactly matching a listed FIND id, and MUST include themeId when the listed finding has one. Refinement hypotheses (refinesHypothesisId set) are the only exception.
 - Do NOT invent unrelated freeform ideas when ranked opportunities exist. Prefer up to 10 hypotheses total; if no ranked opportunities are listed, prefer returning zero newHypotheses.
+- Never propose a hypothesis whose thesis repeats an entry in a family's learnedInvalidAssumptions (in TRUTH BY SETUP FAMILY); a refinement must directly address the invalidated assumption with a different mechanism.
 - Prefer regime-relative conditions over hard-coded price levels so promoted setup families can generalize across BTC/HYPE/GOLD/OIL/AMZN price regimes. Use absolute spot thresholds only when the exact level is essential to the thesis.
 - For promoted setup-family variants, describe the reusable setup in relative terms such as "within 3% of 7d high", "bottom 15th percentile P/C ratio", "PM IV z-score below -2", or "spot above 24h SMA" instead of "BTC above 78k".
 - Every newHypothesis MUST include a direction field: "long" if the spot/perp price is predicted to go up, "short" if predicted down, "neutral" for vol/IV/spread/basis theses that do NOT carry a directional spot view (e.g. "BTC IV expands as PM IV mean reverts" — the price could go either way). Direction is enforced as the authoritative signal when the hypothesis is later promoted; do NOT rely on the engine to infer direction from prose. If the thesis is contrarian, "long" still means buy spot (e.g. "P/C extreme high → contrarian long" is direction=long, not short).
@@ -198,9 +307,20 @@ Respond with ONLY valid JSON in this exact format:
       "originFindingId": "FIND-0003",
       "themeId": "THEME-0001",
       "source": "llm"
+    },
+    {
+      "created": "YYYY-MM-DD",
+      "description": "refinement: what changes vs the failing variant and why that fixes the diagnosed failure",
+      "conditions": {"column_name": "> value"},
+      "prediction": "specific testable prediction",
+      "timeframeDays": 7,
+      "confidence": 0.6,
+      "direction": "long",
+      "refinesHypothesisId": "H-xxx",
+      "source": "llm"
     }
   ],
-  "hypothesisReviews": [{"id": "H-xxx", "observation": "what happened and why"}],
+  "hypothesisReviews": [{"id": "H-xxx", "observation": "what happened and why, grounded in the test outcomes", "invalidatedAssumption": "optional: one sentence naming the disproven core assumption"}],
   "parameterUpdates": {
     "macroMomentum24hThresholdPts": 4,
     "contrarianTrendMarginPct": 0.5,
@@ -230,15 +350,28 @@ const hypothesisItemSchema = z.object({
   timeframeDays: z.number().int().min(1).max(30),
   confidence: z.number().min(0).max(1),
   direction: z.enum(["long", "short", "neutral"]),
-  originFindingId: z.string().regex(/^FIND-\d{4}$/),
+  originFindingId: z.string().regex(/^FIND-\d{4}$/).optional(),
+  /** Set when this hypothesis is a refinement of a failing variant: it must
+   * change the mechanism that caused the diagnosed failure. Refinements are
+   * exempt from the originFindingId requirement — their evidence base is the
+   * parent family's test record instead of a mined FIND. */
+  refinesHypothesisId: z.string().regex(/^H-\d{3,4}$/).optional(),
   themeId: z.string().regex(/^THEME-\d{4}$/).optional(),
   source: z.literal("llm"),
-});
+}).refine(
+  (h) => Boolean(h.originFindingId) || Boolean(h.refinesHypothesisId),
+  { message: "hypothesis must carry originFindingId (FIND-authored) or refinesHypothesisId (refinement)" },
+);
 export type NightlyAdviceHypothesis = z.infer<typeof hypothesisItemSchema>;
 
 const hypothesisReviewItemSchema = z.object({
   id: z.string().min(1),
   observation: z.string().min(1),
+  /** One sentence naming a core assumption the test evidence invalidated.
+   * Persisted per setup family so future runs do not re-propose it.
+   * Malformed values are stripped pre-validation (see parseNightlyAdvice)
+   * so a bad assumption never discards the whole review. */
+  invalidatedAssumption: z.string().min(10).optional(),
 });
 export type NightlyAdviceHypothesisReview = z.infer<typeof hypothesisReviewItemSchema>;
 
@@ -341,13 +474,29 @@ export function parseNightlyAdvice(
     ? new Set(Array.from(opts.allowedOriginFindingIds))
     : null;
   const newHypotheses = filterValid(hypothesisItemSchema, src.newHypotheses)
-    .filter((h) => !allowedOriginFindingIds || allowedOriginFindingIds.has(h.originFindingId));
+    // Refinements are validated against the parent hypothesis at ingest, not
+    // against the FIND allowlist. FIND-authored hyps must cite a listed FIND.
+    .filter((h) => Boolean(h.refinesHypothesisId)
+      || !allowedOriginFindingIds
+      || (h.originFindingId !== undefined && allowedOriginFindingIds.has(h.originFindingId)));
+
+  // Strip malformed invalidatedAssumption values so they cannot fail the
+  // whole review item during validation.
+  const rawReviews = Array.isArray(src.hypothesisReviews)
+    ? src.hypothesisReviews.map((item) => {
+      if (!item || typeof item !== "object") return item;
+      const value = (item as Record<string, unknown>).invalidatedAssumption;
+      if (value === undefined || (typeof value === "string" && value.trim().length >= 10)) return item;
+      const { invalidatedAssumption: _dropped, ...rest } = item as Record<string, unknown>;
+      return rest;
+    })
+    : src.hypothesisReviews;
 
   const advice: NightlyAdvice = {
     strategyReview: typeof src.strategyReview === "string" && src.strategyReview ? src.strategyReview : undefined,
     failureClusters: filterValid(failureClusterItemSchema, src.failureClusters),
     newHypotheses,
-    hypothesisReviews: filterValid(hypothesisReviewItemSchema, src.hypothesisReviews),
+    hypothesisReviews: filterValid(hypothesisReviewItemSchema, rawReviews),
     parameterUpdates: sanitizeParameterUpdates(src.parameterUpdates),
     journalEntry: typeof src.journalEntry === "string" && src.journalEntry ? src.journalEntry : undefined,
   };

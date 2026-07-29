@@ -21,6 +21,9 @@ export interface Hypothesis {
   confidence: number;
   direction?: "long" | "short" | "neutral";
   originFindingId?: string;
+  /** Lineage: id of the failing hypothesis this one refines (mechanism change
+   * grounded in the parent family's diagnosed failure). */
+  refinesHypothesisId?: string;
   themeId?: string;
   tests: HypothesisTest[];
   winRate: number;
@@ -441,6 +444,58 @@ export function evaluateHypothesisTest(
     scorable: false,
     method: "unscorable_direction",
   };
+}
+
+/**
+ * Intrinsic scorability: can evaluateHypothesisTest EVER produce a scorable
+ * result for this hypothesis, independent of data availability on a given
+ * day? Mirrors the scorer-v2 preamble exactly. Used by the retest openers so
+ * the engine stops spending shadow-test slots on hypotheses whose every
+ * resolution lands in unscorable_direction / unscorable_asset — that burn was
+ * invisible and consumed most of some families' budgets.
+ */
+export function hypothesisScoringMode(
+  hypothesis: Hypothesis,
+): "funding" | "directional" | "neutral_move" | null {
+  const prediction = hypothesis.prediction.toLowerCase();
+  const direction = resolveHypothesisDirection(hypothesis);
+  const signalType = String(hypothesis.conditions?.signalType ?? "").toUpperCase();
+  const fundingKey = fundingAnnConditionKey(hypothesis);
+  const wantsFunding = Boolean(fundingKey)
+    || /\bfunding\b/.test(prediction)
+    || signalType.includes("FUNDING");
+
+  // Funding path scores without direction when the prediction states a level
+  // ("below 10") or a reversion/normalization thesis; directional hyps with a
+  // funding key also resolve on this path.
+  if (wantsFunding && fundingKey
+    && (direction !== "neutral" || prediction.includes("below") || /reversion|normaliz/.test(prediction))) {
+    return "funding";
+  }
+  if (inferHypothesisAsset(hypothesis) === null) return null;
+  if (direction === "long" || direction === "short") return "directional";
+  if (/\b(move|moves|moved|volatility)\b/.test(prediction)) return "neutral_move";
+  return null;
+}
+
+/**
+ * Appends a review observation to a postMortem while capping the segment
+ * count. postMortem was append-only, so months-old optimistic narration
+ * ("working perfectly") permanently anchored the record even after the stats
+ * turned — and truncation showed the LLM the OLDEST text first. Keeping only
+ * the newest segments makes the narrative track the evidence.
+ */
+export function appendPostMortemSegment(
+  existing: string | null | undefined,
+  observation: string,
+  maxSegments = 4,
+): string {
+  const segments = (existing ?? "")
+    .split(" | ")
+    .map((segment) => segment.trim())
+    .filter(Boolean);
+  segments.push(observation.trim());
+  return segments.slice(-maxSegments).join(" | ");
 }
 
 export function completedHypothesisTests(hypothesis: Hypothesis): HypothesisTest[] {
