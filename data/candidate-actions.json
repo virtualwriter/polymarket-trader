@@ -1,123 +1,11 @@
 {
-  "generatedAt": "2026-07-29T22:28:15.117Z",
+  "generatedAt": "2026-07-29T23:28:12.881Z",
   "mechanicalExits": [],
   "signalKillExits": [],
-  "entryCandidates": [
-    {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "short",
-      "strength": 0.3000000000000001,
-      "confidence": 0.16234564495949724,
-      "thesis": "GOLD P/C ratio 0.41 — heavy call buying → contrarian short.",
-      "hypothesisId": null,
-      "entryPrice": 4075,
-      "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 5
-    }
-  ],
-  "sizingPreviews": [
-    {
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "short",
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "reason": "unsupported_signal",
-      "entryPrice": 4075,
-      "probabilitySource": "unsupported",
-      "winProbability": null,
-      "probabilitySampleSize": null,
-      "edgePts": null,
-      "rawKellyFraction": null,
-      "adjustedKellyFraction": null,
-      "cappedKellyFraction": null,
-      "notes": [
-        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
-        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
-      ]
-    }
-  ],
-  "portfolioExposurePreviews": [
-    {
-      "candidateId": "PC_RATIO_EXTREME_LOW:GOLD:0",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "short",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "candidateSize": 0,
-      "riskClusters": [
-        "commodity",
-        "gold_delta",
-        "options_sentiment",
-        "spot_venue"
-      ],
-      "current": {
-        "totalGross": 1,
-        "totalNet": -1,
-        "byAsset": {
-          "GOLD": -1
-        },
-        "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1
-        },
-        "byVenue": {
-          "hyperliquid": -1
-        },
-        "byCluster": {
-          "commodity": -1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": -1,
-        "byAsset": {
-          "GOLD": -1
-        },
-        "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1,
-          "PC_RATIO_EXTREME_LOW": 0
-        },
-        "byVenue": {
-          "hyperliquid": -1,
-          "spot": 0
-        },
-        "byCluster": {
-          "commodity": -1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1,
-          "options_sentiment": 0,
-          "spot_venue": 0
-        }
-      },
-      "warnings": []
-    }
-  ],
-  "stagedQuantRules": [
-    {
-      "candidateId": "PC_RATIO_EXTREME_LOW:GOLD:0",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "GOLD",
-      "mode": "observe_uniform",
-      "liveSizingEnabled": false,
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "enforcedLiveSize": 1,
-      "wouldResize": true,
-      "edgePts": null,
-      "alerts": [],
-      "notes": [
-        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
-      ]
-    }
-  ],
+  "entryCandidates": [],
+  "sizingPreviews": [],
+  "portfolioExposurePreviews": [],
+  "stagedQuantRules": [],
   "llmCloseEligibility": [
     {
       "positionId": "T-1785338895017-voyz",
@@ -131,12 +19,12 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 7,
-      "hoursToExpiry": 65,
+      "hoursOpen": 8,
+      "hoursToExpiry": 64,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.0972,
+      "elapsedHoldPct": 0.1111,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 7.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 8.0h, requires at least 12h."
     }
   ]
 }

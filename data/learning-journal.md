@@ -2144,3 +2144,35 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-29 23:28 UTC
+
+**Portfolio:** $99.00 total | Cash $98.00 | 1 open | P&L $2.2360 | 64% win rate (563 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 15 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 7 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [anomaly] oil_opt_fwd_90d = 152 is 2.7 std devs from mean since 2026-04-28 (78.86 ± 27.51)
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 689 (379 wins / 310 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 14/26 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-3.33%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.17%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.41%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+GOLD short (FUNDING_EXTREME_LONG) is open 8h vs 12h min hold. The signal's own evidence metric (gold_hl_funding_ann) has collapsed from the >15% entry trigger to 5.48%, which would normally invalidate the thesis, but the rule engine blocks an LLM close until 12h. Spot gold has risen +2.04% against the position, though carry has been positive for shorts during the funding spike. The macro backdrop is very hawkish, but gold seems bid as a safe haven. Will re-evaluate at the 12h mark; if funding stays subdued and spot remains elevated, a thesis_invalidated close may become warranted.
+
+---
+
