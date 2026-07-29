@@ -659,10 +659,10 @@
         "timeframeDays": 3,
         "testStats": {
           "total": 21,
-          "completed": 19,
+          "completed": 20,
           "wins": 10,
-          "pending": 2,
-          "winRate": 0.375
+          "pending": 1,
+          "winRate": 0.3333333333333333
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -2138,10 +2138,10 @@
         "timeframeDays": 3,
         "testStats": {
           "total": 8,
-          "completed": 7,
+          "completed": 8,
           "wins": 5,
-          "pending": 1,
-          "winRate": 0.6666666666666666
+          "pending": 0,
+          "winRate": 0.5714285714285714
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -2669,11 +2669,11 @@
         "confidence": 0.6,
         "timeframeDays": 1,
         "testStats": {
-          "total": 11,
-          "completed": 10,
+          "total": 12,
+          "completed": 11,
           "wins": 4,
           "pending": 1,
-          "winRate": 0.3333333333333333
+          "winRate": 0.3
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -4160,9 +4160,9 @@
         "timeframeDays": 3,
         "testStats": {
           "total": 5,
-          "completed": 4,
+          "completed": 5,
           "wins": 1,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -4949,9 +4949,9 @@
         "timeframeDays": 7,
         "testStats": {
           "total": 3,
-          "completed": 2,
+          "completed": 3,
           "wins": 2,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -5376,9 +5376,9 @@
         "timeframeDays": 7,
         "testStats": {
           "total": 16,
-          "completed": 14,
+          "completed": 15,
           "wins": 3,
-          "pending": 2,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -5695,9 +5695,9 @@
         "timeframeDays": 7,
         "testStats": {
           "total": 2,
-          "completed": 1,
+          "completed": 2,
           "wins": 1,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -7053,8 +7053,8 @@
         "confidence": 0.6,
         "timeframeDays": 7,
         "testStats": {
-          "total": 11,
-          "completed": 10,
+          "total": 12,
+          "completed": 11,
           "wins": 1,
           "pending": 1,
           "winRate": 0
@@ -8130,8 +8130,8 @@
         "confidence": 0.7,
         "timeframeDays": 5,
         "testStats": {
-          "total": 16,
-          "completed": 15,
+          "total": 17,
+          "completed": 16,
           "wins": 1,
           "pending": 1,
           "winRate": 0
@@ -8270,10 +8270,10 @@
         "confidence": 0.7,
         "timeframeDays": 5,
         "testStats": {
-          "total": 12,
+          "total": 13,
           "completed": 12,
           "wins": 3,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0.5
         },
         "promotedToSignal": false,
@@ -12299,10 +12299,10 @@
         "confidence": 0.75,
         "timeframeDays": 2,
         "testStats": {
-          "total": 1,
+          "total": 2,
           "completed": 1,
           "wins": 1,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -19318,10 +19318,10 @@
         "timeframeDays": 7,
         "testStats": {
           "total": 16,
-          "completed": 14,
-          "wins": 7,
-          "pending": 2,
-          "winRate": 0.5
+          "completed": 15,
+          "wins": 8,
+          "pending": 1,
+          "winRate": 0.6
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -20183,8 +20183,8 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 32,
-          "completed": 30,
+          "total": 33,
+          "completed": 31,
           "wins": 4,
           "pending": 2,
           "winRate": 0
@@ -20194,7 +20194,7 @@
         "created": "2026-07-16",
         "setupId": "shadow_one_touch_high_edge_no_gold_heatmap_no",
         "setupLabel": "Shadow-mined ONE_TOUCH_HIGH_EDGE_NO GOLD heatmap",
-        "postMortem": "Mined from clean shadows: {\"n\": 12, \"wins\": 7, \"winRate\": 0.5833, \"sumPnl\": 0.6492, \"hasHeatmap\": true, \"sampleIds\": [\"OT-1779348547074-tm2l\", \"OT-1783659557591-81cc\", \"OT-1783659557594-u7s1\", \"OT-1783694116078-dtpj\", \"OT-1783780517241-ssvk\"]} | H-534 (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) has 20% win rate over 20 tests, likely due to wide spreads and edge collapse. The heatmap cluster's historical performance (+0.649 over 12 shadows) may not replicate in the current regime. Continue shadow testing but enforce a higher minimum edge (≥3 pts) and tighter spread. | 20 shadow tests (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) completed with only 4 wins (20% win rate). The GOLD heatmap cluster is ineffective; the edge signal does not translate to profitable spreads. Recommend killing H-534 and its setup family. | 0% win rate over 29 shadow tests on GOLD one-touch NO heatmap cluster, despite a promising shadow mining cluster (FIND-0036) with 75% win rate on only 8 historical samples. The out-of-sample performance collapses completely, indicating severe overfitting. Kill this hypothesis and do not promote."
+        "postMortem": "Mined from clean shadows: {\"n\": 12, \"wins\": 7, \"winRate\": 0.5833, \"sumPnl\": 0.6492, \"hasHeatmap\": true, \"sampleIds\": [\"OT-1779348547074-tm2l\", \"OT-1783659557591-81cc\", \"OT-1783659557594-u7s1\", \"OT-1783694116078-dtpj\", \"OT-1783780517241-ssvk\"]} | H-534 (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) has 20% win rate over 20 tests, likely due to wide spreads and edge collapse. The heatmap cluster's historical performance (+0.649 over 12 shadows) may not replicate in the current regime. Continue shadow testing but enforce a higher minimum edge (≥3 pts) and tighter spread. | 20 shadow tests (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) completed with only 4 wins (20% win rate). The GOLD heatmap cluster is ineffective; the edge signal does not translate to profitable spreads. Recommend killing H-534 and its setup family. | 0% win rate over 29 shadow tests on GOLD one-touch NO heatmap cluster, despite a promising shadow mining cluster (FIND-0036) with 75% win rate on only 8 historical samples. The out-of-sample performance collapses completely, indicating severe overfitting. Kill this hypothesis and do not promote. | GOLD one-touch NO heatmap shadow continues to underperform with 0% win rate over 32 tests after reopening; the discovered in-sample edge does not translate into forward profitability. Recommend kill and no further variants."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20218,10 +20218,10 @@
         "timeframeDays": 2,
         "testStats": {
           "total": 5,
-          "completed": 4,
+          "completed": 5,
           "wins": 2,
-          "pending": 1,
-          "winRate": 0.5
+          "pending": 0,
+          "winRate": 0.4
         },
         "promotedToSignal": false,
         "source": "shadow_mined",
@@ -20262,7 +20262,7 @@
         "created": "2026-07-16",
         "setupId": "shadow_weekend_hl_funding_reversion_long_hood_weekend_hl_funding_shadow_long",
         "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG HOOD weekend_hl_funding_shadow",
-        "postMortem": "Mined from clean shadows: {\"n\": 12, \"wins\": 11, \"winRate\": 0.9167, \"sumPnl\": 0.1593, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779661761704-HOOD-66ul\", \"WF-1780158509117-HOOD-8pyf\", \"WF-1780180113914-HOOD-k344\", \"WF-1780223315920-HOOD-j2j0\", \"WF-1780248512606-HOOD-rasn\"]}"
+        "postMortem": "Mined from clean shadows: {\"n\": 12, \"wins\": 11, \"winRate\": 0.9167, \"sumPnl\": 0.1593, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779661761704-HOOD-66ul\", \"WF-1780158509117-HOOD-8pyf\", \"WF-1780180113914-HOOD-k344\", \"WF-1780223315920-HOOD-j2j0\", \"WF-1780248512606-HOOD-rasn\"]} | HOOD weekend funding reversion long shadow has only 25% win rate (1/4) vs aggregate signal's 74%. The asset may not benefit from the same funding dynamics, possibly due to low liquidity or different perp structure. Continue shadow testing but do not gate the main weekend funding promotion on this weak single-name result."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20285,18 +20285,18 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 8,
-          "completed": 7,
-          "wins": 2,
-          "pending": 1,
-          "winRate": 0.2857142857142857
+          "total": 10,
+          "completed": 8,
+          "wins": 3,
+          "pending": 2,
+          "winRate": 0.375
         },
         "promotedToSignal": false,
         "source": "shadow_mined",
         "created": "2026-07-16",
         "setupId": "shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long",
         "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG AAPL weekend_hl_funding_shadow",
-        "postMortem": "Mined from clean shadows: {\"n\": 9, \"wins\": 8, \"winRate\": 0.8889, \"sumPnl\": 0.0102, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779661761704-AAPL-fawa\", \"WF-1780087728967-AAPL-0wbd\", \"WF-1780158509116-AAPL-q73w\", \"WF-1780237715514-AAPL-tmdd\", \"WF-1780266518746-AAPL-thv2\"]} | AAPL shadow 40% win rate (2 of 5 completed), not meeting promotion threshold; edge may exist only during extreme funding dislocations, tighten entry condition to funding < -20%."
+        "postMortem": "Mined from clean shadows: {\"n\": 9, \"wins\": 8, \"winRate\": 0.8889, \"sumPnl\": 0.0102, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779661761704-AAPL-fawa\", \"WF-1780087728967-AAPL-0wbd\", \"WF-1780158509116-AAPL-q73w\", \"WF-1780237715514-AAPL-tmdd\", \"WF-1780266518746-AAPL-thv2\"]} | AAPL shadow 40% win rate (2 of 5 completed), not meeting promotion threshold; edge may exist only during extreme funding dislocations, tighten entry condition to funding < -20%. | AAPL weekend funding shadow at 38% win rate (3/8) remains below the aggregate; still early but suggests caution. Continue monitoring but do not promote as a standalone signal."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20353,11 +20353,11 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 10,
-          "completed": 8,
-          "wins": 3,
+          "total": 11,
+          "completed": 9,
+          "wins": 4,
           "pending": 2,
-          "winRate": 0.375
+          "winRate": 0.4444444444444444
         },
         "promotedToSignal": false,
         "source": "shadow_mined",
@@ -31072,10 +31072,11 @@
         "hypothesisIds": [
           "H-553",
           "H-560",
-          "H-568"
+          "H-568",
+          "H-577"
         ],
-        "lastLinkedHypothesisId": "H-568",
-        "lastLinkedHypothesisAt": "2026-07-28T07:28:21.082Z"
+        "lastLinkedHypothesisId": "H-577",
+        "lastLinkedHypothesisAt": "2026-07-29T07:28:24.315Z"
       },
       "created": "2026-07-23T14:45:53Z",
       "source": "informed_flow_study_v1",
@@ -31083,7 +31084,8 @@
         "hypotheses": [
           "H-553",
           "H-560",
-          "H-568"
+          "H-568",
+          "H-577"
         ]
       }
     },
@@ -31563,16 +31565,18 @@
         "hypothesisIds": [
           "H-555",
           "H-562",
-          "H-570"
+          "H-570",
+          "H-580"
         ],
-        "lastLinkedHypothesisId": "H-570",
-        "lastLinkedHypothesisAt": "2026-07-28T07:28:21.147Z"
+        "lastLinkedHypothesisId": "H-580",
+        "lastLinkedHypothesisAt": "2026-07-29T07:28:24.446Z"
       },
       "links": {
         "hypotheses": [
           "H-555",
           "H-562",
-          "H-570"
+          "H-570",
+          "H-580"
         ]
       },
       "created": "2026-07-24T05:07:37Z",
@@ -31934,16 +31938,18 @@
         "hypothesisIds": [
           "H-554",
           "H-561",
-          "H-569"
+          "H-569",
+          "H-579"
         ],
-        "lastLinkedHypothesisId": "H-569",
-        "lastLinkedHypothesisAt": "2026-07-28T07:28:21.116Z"
+        "lastLinkedHypothesisId": "H-579",
+        "lastLinkedHypothesisAt": "2026-07-29T07:28:24.398Z"
       },
       "links": {
         "hypotheses": [
           "H-554",
           "H-561",
-          "H-569"
+          "H-569",
+          "H-579"
         ]
       },
       "created": "2026-07-24T05:07:37Z",
@@ -32301,9 +32307,18 @@
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
+        ],
+        "hypothesisIds": [
+          "H-586"
+        ],
+        "lastLinkedHypothesisId": "H-586",
+        "lastLinkedHypothesisAt": "2026-07-29T07:28:24.671Z"
+      },
+      "links": {
+        "hypotheses": [
+          "H-586"
         ]
       },
-      "links": {},
       "created": "2026-07-24T05:07:37Z",
       "source": "shadow_miner_v1"
     },
@@ -32663,16 +32678,18 @@
         "hypothesisIds": [
           "H-556",
           "H-563",
-          "H-571"
+          "H-571",
+          "H-581"
         ],
-        "lastLinkedHypothesisId": "H-571",
-        "lastLinkedHypothesisAt": "2026-07-28T07:28:21.179Z"
+        "lastLinkedHypothesisId": "H-581",
+        "lastLinkedHypothesisAt": "2026-07-29T07:28:24.484Z"
       },
       "links": {
         "hypotheses": [
           "H-556",
           "H-563",
-          "H-571"
+          "H-571",
+          "H-581"
         ]
       },
       "created": "2026-07-24T05:07:37Z",
@@ -33034,16 +33051,18 @@
         "hypothesisIds": [
           "H-557",
           "H-564",
-          "H-573"
+          "H-573",
+          "H-584"
         ],
-        "lastLinkedHypothesisId": "H-573",
-        "lastLinkedHypothesisAt": "2026-07-28T07:28:21.244Z"
+        "lastLinkedHypothesisId": "H-584",
+        "lastLinkedHypothesisAt": "2026-07-29T07:28:24.595Z"
       },
       "links": {
         "hypotheses": [
           "H-557",
           "H-564",
-          "H-573"
+          "H-573",
+          "H-584"
         ]
       },
       "created": "2026-07-24T05:07:37Z",
@@ -34850,16 +34869,18 @@
         "hypothesisIds": [
           "H-559",
           "H-566",
-          "H-574"
+          "H-574",
+          "H-583"
         ],
-        "lastLinkedHypothesisId": "H-574",
-        "lastLinkedHypothesisAt": "2026-07-28T07:28:21.276Z"
+        "lastLinkedHypothesisId": "H-583",
+        "lastLinkedHypothesisAt": "2026-07-29T07:28:24.559Z"
       },
       "links": {
         "hypotheses": [
           "H-559",
           "H-566",
-          "H-574"
+          "H-574",
+          "H-583"
         ]
       },
       "created": "2026-07-24T05:07:38Z",
@@ -36337,7 +36358,7 @@
           "sumPnl": 2.5147,
           "avgPnl": 0.00994,
           "pnlStd": 0.0435,
-          "pValue": 0.0,
+          "pValue": 0,
           "pnlPValue": 0.00017,
           "qValue": 0.01309
         },
@@ -36346,7 +36367,7 @@
           "wins": 188,
           "winRate": 0.7431,
           "sumPnl": 2.5147,
-          "pValue": 0.0,
+          "pValue": 0,
           "pnlPValue": 0.00017,
           "hasHeatmap": false,
           "sampleIds": [
@@ -36605,9 +36626,18 @@
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
+        ],
+        "hypothesisIds": [
+          "H-578"
+        ],
+        "lastLinkedHypothesisId": "H-578",
+        "lastLinkedHypothesisAt": "2026-07-29T07:28:24.360Z"
+      },
+      "links": {
+        "hypotheses": [
+          "H-578"
         ]
       },
-      "links": {},
       "created": "2026-07-24T05:38:04Z",
       "source": "shadow_miner_v1"
     },
@@ -36903,15 +36933,17 @@
         ],
         "hypothesisIds": [
           "H-567",
-          "H-572"
+          "H-572",
+          "H-582"
         ],
-        "lastLinkedHypothesisId": "H-572",
-        "lastLinkedHypothesisAt": "2026-07-28T07:28:21.211Z"
+        "lastLinkedHypothesisId": "H-582",
+        "lastLinkedHypothesisAt": "2026-07-29T07:28:24.522Z"
       },
       "links": {
         "hypotheses": [
           "H-567",
-          "H-572"
+          "H-572",
+          "H-582"
         ]
       },
       "created": "2026-07-25T07:07:26Z",
@@ -38681,9 +38713,18 @@
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
+        ],
+        "hypothesisIds": [
+          "H-585"
+        ],
+        "lastLinkedHypothesisId": "H-585",
+        "lastLinkedHypothesisAt": "2026-07-29T07:28:24.633Z"
+      },
+      "links": {
+        "hypotheses": [
+          "H-585"
         ]
       },
-      "links": {},
       "created": "2026-07-28T07:07:14Z",
       "source": "shadow_miner_v1"
     },
@@ -38960,10 +39001,10 @@
         "confidence": 0.7,
         "timeframeDays": 14,
         "testStats": {
-          "total": 1,
+          "total": 2,
           "completed": 0,
           "wins": 0,
-          "pending": 1,
+          "pending": 2,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -39103,10 +39144,10 @@
         "confidence": 0.65,
         "timeframeDays": 30,
         "testStats": {
-          "total": 1,
+          "total": 2,
           "completed": 0,
           "wins": 0,
-          "pending": 1,
+          "pending": 2,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -39207,10 +39248,10 @@
         "confidence": 0.7,
         "timeframeDays": 30,
         "testStats": {
-          "total": 1,
+          "total": 2,
           "completed": 0,
           "wins": 0,
-          "pending": 1,
+          "pending": 2,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -39257,6 +39298,354 @@
       },
       "links": {},
       "created": "2026-07-28T14:10:00Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0584",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-577: Fade dumb money on upside one-touch NO contracts: when the share of YES volume from dumb wallets on high-strike NO contracts exceeds 0.15, short by se...",
+      "body": {
+        "hypothesisId": "H-577",
+        "hypothesisStatus": "active",
+        "description": "Fade dumb money on upside one-touch NO contracts: when the share of YES volume from dumb wallets on high-strike NO contracts exceeds 0.15, short by selling YES.",
+        "prediction": "The NO contract will mature OTM (not touch) so the sold YES position expires worthless, realized within 14 days on average.",
+        "conditions": {
+          "dumb_wallet_yes_share_high": "> 0.15",
+          "touch_direction": "= 1"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 14,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-29",
+        "setupId": "find_0020",
+        "setupLabel": "FIND-linked FIND-0020"
+      },
+      "links": {},
+      "created": "2026-07-29T14:10:02Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0585",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-578: Weekend Hyperliquid funding reversion long on any asset: when hl_funding_ann is in the bottom 5th percentile of its 30-day range (extremely negative),...",
+      "body": {
+        "hypothesisId": "H-578",
+        "hypothesisStatus": "active",
+        "description": "Weekend Hyperliquid funding reversion long on any asset: when hl_funding_ann is in the bottom 5th percentile of its 30-day range (extremely negative), go long the perp.",
+        "prediction": "Spot/perpetual price will rise as funding normalizes from deeply negative levels, profitable within 7-14 days.",
+        "conditions": {
+          "hl_funding_ann_percentile_30d": "< 5"
+        },
+        "confidence": 0.8,
+        "timeframeDays": 10,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-29",
+        "setupId": "find_0035",
+        "setupLabel": "FIND-linked FIND-0035"
+      },
+      "links": {},
+      "created": "2026-07-29T14:10:02Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0586",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-579: OIL one-touch NO edge with tight edge band: when sell-YES edge on OIL upside one-touch NO contracts is between 1 and 3 percentage points, sell YES.",
+      "body": {
+        "hypothesisId": "H-579",
+        "hypothesisStatus": "active",
+        "description": "OIL one-touch NO edge with tight edge band: when sell-YES edge on OIL upside one-touch NO contracts is between 1 and 3 percentage points, sell YES.",
+        "prediction": "The OIL one-touch NO contracts will settle as NO (not touch) and the sold YES position will expire worthless, generating positive return within 10 days.",
+        "conditions": {
+          "asset": "OIL",
+          "sell_yes_edge_pts": "<= 3",
+          "touch_direction": "= 1"
+        },
+        "confidence": 0.75,
+        "timeframeDays": 10,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-29",
+        "setupId": "find_0022",
+        "setupLabel": "FIND-linked FIND-0022"
+      },
+      "links": {},
+      "created": "2026-07-29T14:10:02Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0587",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-580: Rich PM IV NO fade: when PM IV exceeds 30-day options IV by more than 10 percentage points on any asset's one-touch NO contract with sell-YES edge, se...",
+      "body": {
+        "hypothesisId": "H-580",
+        "hypothesisStatus": "active",
+        "description": "Rich PM IV NO fade: when PM IV exceeds 30-day options IV by more than 10 percentage points on any asset's one-touch NO contract with sell-YES edge, sell YES.",
+        "prediction": "The market is overpricing YES probability due to IV mispricing; the NO contract will mature OTM, capturing the IV-rich premium within 14 days.",
+        "conditions": {
+          "pm_iv - opt_iv_30d": "> 10",
+          "sell_yes_edge_pts": "> 0",
+          "touch_direction": "= 1"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 14,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-29",
+        "setupId": "find_0021",
+        "setupLabel": "FIND-linked FIND-0021"
+      },
+      "links": {},
+      "created": "2026-07-29T14:10:02Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0588",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-581: Rich PM IV near-expiry NO fade: narrow the IV-rich signal to contracts expiring within 30 days to capture faster mean reversion.",
+      "body": {
+        "hypothesisId": "H-581",
+        "hypothesisStatus": "active",
+        "description": "Rich PM IV near-expiry NO fade: narrow the IV-rich signal to contracts expiring within 30 days to capture faster mean reversion.",
+        "prediction": "Short-dated contracts will reprice more aggressively; sold YES positions will become worthless within 10 days as expiry approaches without a touch.",
+        "conditions": {
+          "pm_iv - opt_iv_30d": "> 10",
+          "days_to_expiry": "< 30",
+          "sell_yes_edge_pts": "> 0",
+          "touch_direction": "= 1"
+        },
+        "confidence": 0.72,
+        "timeframeDays": 10,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-29",
+        "setupId": "find_0024",
+        "setupLabel": "FIND-linked FIND-0024"
+      },
+      "links": {},
+      "created": "2026-07-29T14:10:02Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0589",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-582: GOLD one-touch NO edge near expiry: on GOLD upside one-touch NO contracts with positive sell-YES edge and expiry within 30 days, sell YES.",
+      "body": {
+        "hypothesisId": "H-582",
+        "hypothesisStatus": "active",
+        "description": "GOLD one-touch NO edge near expiry: on GOLD upside one-touch NO contracts with positive sell-YES edge and expiry within 30 days, sell YES.",
+        "prediction": "GOLD one-touch NO contracts with near-term expiration and edge will mature OTM, capturing the premium in under 14 days.",
+        "conditions": {
+          "asset": "GOLD",
+          "sell_yes_edge_pts": "> 0",
+          "days_to_expiry": "< 30",
+          "touch_direction": "= 1"
+        },
+        "confidence": 0.65,
+        "timeframeDays": 14,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-29",
+        "setupId": "find_0036",
+        "setupLabel": "FIND-linked FIND-0036"
+      },
+      "links": {},
+      "created": "2026-07-29T14:10:02Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0590",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-583: Broad one-touch NO edge with moderate edge strength: for any asset, when sell-YES edge on upside one-touch NO contracts is between 3 and 8 points, sel...",
+      "body": {
+        "hypothesisId": "H-583",
+        "hypothesisStatus": "active",
+        "description": "Broad one-touch NO edge with moderate edge strength: for any asset, when sell-YES edge on upside one-touch NO contracts is between 3 and 8 points, sell YES.",
+        "prediction": "Contracts with a moderate but non-trivial edge are systematically mispriced; selling YES will be profitable across assets within 14 days on average.",
+        "conditions": {
+          "sell_yes_edge_pts": "<= 8",
+          "touch_direction": "= 1"
+        },
+        "confidence": 0.68,
+        "timeframeDays": 14,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-29",
+        "setupId": "find_0030",
+        "setupLabel": "FIND-linked FIND-0030"
+      },
+      "links": {},
+      "created": "2026-07-29T14:10:02Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0591",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-584: Rich PM IV NO fade with edge 3-8 pts: combine rich PM IV (>10% above options IV) with sell-YES edge between 3 and 8 points, short the one-touch NO.",
+      "body": {
+        "hypothesisId": "H-584",
+        "hypothesisStatus": "active",
+        "description": "Rich PM IV NO fade with edge 3-8 pts: combine rich PM IV (>10% above options IV) with sell-YES edge between 3 and 8 points, short the one-touch NO.",
+        "prediction": "Strong mispricing when IV is rich and edge is moderate; the sold YES will expire OTM within 14 days.",
+        "conditions": {
+          "pm_iv - opt_iv_30d": "> 10",
+          "sell_yes_edge_pts": "<= 8",
+          "touch_direction": "= 1"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 14,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-29",
+        "setupId": "find_0025",
+        "setupLabel": "FIND-linked FIND-0025"
+      },
+      "links": {},
+      "created": "2026-07-29T14:10:02Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0592",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-585: BTC one-touch NO edge with above direction and edge 3-8 pts: when sell-YES edge on BTC upside one-touch NO contracts is between 3 and 8 points, sell YES.",
+      "body": {
+        "hypothesisId": "H-585",
+        "hypothesisStatus": "active",
+        "description": "BTC one-touch NO edge with above direction and edge 3-8 pts: when sell-YES edge on BTC upside one-touch NO contracts is between 3 and 8 points, sell YES.",
+        "prediction": "BTC upside one-touch NO contracts with moderate edge are overpriced; the NO outcome will be realized within 14 days.",
+        "conditions": {
+          "asset": "BTC",
+          "sell_yes_edge_pts": "<= 8",
+          "touch_direction": "= 1"
+        },
+        "confidence": 0.66,
+        "timeframeDays": 14,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-29",
+        "setupId": "find_0043",
+        "setupLabel": "FIND-linked FIND-0043"
+      },
+      "links": {},
+      "created": "2026-07-29T14:10:02Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0593",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-586: One-touch NO edge near expiry across all assets: for any asset with upside one-touch NO contracts expiring within 30 days and positive sell-YES edge, ...",
+      "body": {
+        "hypothesisId": "H-586",
+        "hypothesisStatus": "active",
+        "description": "One-touch NO edge near expiry across all assets: for any asset with upside one-touch NO contracts expiring within 30 days and positive sell-YES edge, sell YES.",
+        "prediction": "Near-expiry contracts with edge consistently mature OTM; this broad rule captures residual mispricing that resolves quickly (within 10 days).",
+        "conditions": {
+          "sell_yes_edge_pts": "> 0",
+          "days_to_expiry": "< 30",
+          "touch_direction": "= 1"
+        },
+        "confidence": 0.6,
+        "timeframeDays": 10,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-07-29",
+        "setupId": "find_0023",
+        "setupLabel": "FIND-linked FIND-0023"
+      },
+      "links": {},
+      "created": "2026-07-29T14:10:02Z",
       "source": "sync_hypotheses_registry"
     }
   ]
