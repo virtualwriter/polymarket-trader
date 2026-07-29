@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-29T13:28:14.348Z",
+  "generatedAt": "2026-07-29T14:28:25.335Z",
   "dataFreshness": {
-    "valuationRows": 1976,
-    "latestValuationAt": "2026-07-29T13",
-    "macroRows": 1974,
+    "valuationRows": 1977,
+    "latestValuationAt": "2026-07-29T14",
+    "macroRows": 1975,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-29T13"
+    "latestInstrumentSnapshotAt": "2026-07-29T14"
   },
   "portfolio": {
     "cash": 98.9964,
@@ -157,9 +157,9 @@
   ],
   "blockedSummary": {
     "openCount": 50,
-    "resolvedCount": 687,
+    "resolvedCount": 688,
     "wouldHaveWon": 378,
-    "wouldHaveLost": 309,
+    "wouldHaveLost": 310,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -227,26 +227,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 1.1,
-        "resolvedAt": "2026-07-29T00:28:12.203Z",
-        "marketQuality": {
-          "yesBid": 0.09,
-          "yesAsk": 0.1,
-          "yesSpread": 0.01,
-          "liquidity": 49040.11,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -376,6 +356,24 @@
           "yesAsk": 0.09,
           "yesSpread": 0.01,
           "liquidity": 81911.11,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -0.41,
+        "resolvedAt": "2026-07-29T14:28:25.083Z",
+        "marketQuality": {
+          "yesBid": 0.027,
+          "yesAsk": 0.035,
+          "yesSpread": 0.008,
+          "liquidity": 45756.49,
           "flags": []
         }
       }
