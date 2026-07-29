@@ -106,6 +106,7 @@ import {
   pendingHypothesisTests,
   ensureHypothesisSetupMetadata,
 } from "./lib/research/hypothesis-shadow-eval.js";
+import { formatConditionIssues, validateHypothesisConditions } from "./lib/research/condition-catalog.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -6934,6 +6935,7 @@ interface NightlyLlmAdviceIngestResult {
 function ingestNightlyLlmAdvice(
   hypotheses: Hypothesis[],
   learningParams: LearningParams,
+  valuationColumns: string[],
 ): NightlyLlmAdviceIngestResult {
   const noop: NightlyLlmAdviceIngestResult = { learningParams, notes: [], journalLines: [] };
   const advice = readJson<Record<string, unknown> | null>(NIGHTLY_LLM_ADVICE_FILE, null);
@@ -7004,6 +7006,18 @@ function ingestNightlyLlmAdvice(
     }
     if (Object.keys(nh.conditions ?? {}).length < NIGHTLY_MIN_CONDITION_KEYS) {
       bumpReject("empty_conditions");
+      continue;
+    }
+    // Condition-catalog gate: every key/expression must be evaluable by the
+    // engine, or the hypothesis would sit forever without opening real tests
+    // (live path returns false on unknown keys; backfill skip-trues them).
+    const conditionIssues = validateHypothesisConditions(nh.conditions, valuationColumns);
+    if (conditionIssues.length > 0) {
+      notes.push(
+        `Nightly advice: rejected unevaluable conditions [${formatConditionIssues(conditionIssues)}] ` +
+          `on: ${nh.description.slice(0, 70)}`,
+      );
+      bumpReject("unevaluable_conditions");
       continue;
     }
     const id = `H-${String(hypotheses.length + 1).padStart(3, "0")}`;
@@ -7127,7 +7141,7 @@ interface ShadowMinedIngestResult {
 
 /** Ingest miner output into hypotheses.json. Bypasses the LLM backlog gate so
  *  heatmap-derived ideas get their own retest queue (source=shadow_mined). */
-function ingestShadowMinedHypotheses(hypotheses: Hypothesis[]): ShadowMinedIngestResult {
+function ingestShadowMinedHypotheses(hypotheses: Hypothesis[], valuationColumns: string[]): ShadowMinedIngestResult {
   const noop: ShadowMinedIngestResult = { notes: [], added: 0 };
   const advice = readJson<Record<string, unknown> | null>(SHADOW_MINED_ADVICE_FILE, null);
   if (!advice || typeof advice !== "object") return noop;
@@ -7168,6 +7182,14 @@ function ingestShadowMinedHypotheses(hypotheses: Hypothesis[]): ShadowMinedInges
       : null;
     if (!description || !prediction || !conditions || Object.keys(conditions).length === 0) {
       bumpReject("schema");
+      continue;
+    }
+    // Same condition-catalog gate as the nightly LLM path: miners must emit
+    // keys the engine can actually evaluate.
+    const conditionIssues = validateHypothesisConditions(conditions, valuationColumns);
+    if (conditionIssues.length > 0) {
+      notes.push(`Shadow-mined ingest: rejected unevaluable conditions [${formatConditionIssues(conditionIssues)}] on: ${description.slice(0, 70)}`);
+      bumpReject("unevaluable_conditions");
       continue;
     }
     if (!Number.isFinite(timeframeDays) || timeframeDays < 1 || timeframeDays > 14) {
@@ -7966,7 +7988,8 @@ async function main() {
   // hypothesis reviews, and parameter updates come from the nightly run's
   // strongest-model analysis, validated and gated by the exact same rules the
   // hourly output used to pass through.
-  const nightlyIngest = ingestNightlyLlmAdvice(hypotheses, learningParams);
+  const valuationColumns = valRows.length > 0 ? Object.keys(valRows[valRows.length - 1]) : [];
+  const nightlyIngest = ingestNightlyLlmAdvice(hypotheses, learningParams, valuationColumns);
   learningParams = nightlyIngest.learningParams;
   for (const note of nightlyIngest.notes) console.log(`  ${note}`);
   if (nightlyIngest.journalLines.length > 0 && !MUTATION_DISABLED) {
@@ -7975,7 +7998,7 @@ async function main() {
 
   // Step 2.7: Ingest shadow-mined hypotheses (heatmap / blocked-signal cohort).
   // Separate source + retest queue so these never wait behind the LLM backlog.
-  const shadowMinedIngest = ingestShadowMinedHypotheses(hypotheses);
+  const shadowMinedIngest = ingestShadowMinedHypotheses(hypotheses, valuationColumns);
   for (const note of shadowMinedIngest.notes) console.log(`  ${note}`);
 
   // Step 3: Evaluate hypotheses

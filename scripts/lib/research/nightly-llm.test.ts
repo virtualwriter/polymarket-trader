@@ -74,14 +74,20 @@ const emptyInputs = {
 };
 
 describe("buildNightlyResearchPrompt", () => {
-  it("includes the supported derived condition keys list", () => {
+  it("includes the strict condition key catalog", () => {
+    const prompt = buildNightlyResearchPrompt({ ...emptyInputs, valuationColumns: ["btc_spot", "btc_pm_iv"] });
+    expect(prompt).toContain("CONDITION KEY CATALOG (STRICT");
+    expect(prompt).toContain("unevaluable_conditions");
+    expect(prompt).toContain("sell_yes_edge_pts");
+    expect(prompt).toContain("days_to_expiry");
+    expect(prompt).toContain("_pct_from_<N>h|d_high");
+    expect(prompt).toContain("btc_spot, btc_pm_iv");
+    expect(prompt).toContain("ONLY keys from the CONDITION KEY CATALOG");
+  });
+
+  it("marks the valuation column list unavailable when columns are missing", () => {
     const prompt = buildNightlyResearchPrompt(emptyInputs);
-    expect(prompt).toContain("Supported derived condition keys:");
-    expect(prompt).toContain("_pct_from_<N>h_high");
-    expect(prompt).toContain("btc_spot_pct_from_7d_high > -3");
-    expect(prompt).toContain("_percentile_<N>h");
-    expect(prompt).toContain("_zscore_<N>h");
-    expect(prompt).toContain("_change_pct_<N>h");
+    expect(prompt).toContain("valuation columns unavailable this run");
   });
 
   it("includes the direction field rule", () => {

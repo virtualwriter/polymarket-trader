@@ -912,15 +912,41 @@ function relativeValueConditionValue(
       if (key === "smart_flow_net_yes") return row.smartFlowNetYes ?? null;
       // Encode touch direction so hyps can gate highs vs dips numerically.
       if (key === "touch_direction") return row.direction === "above" ? 1 : row.direction === "below" ? -1 : null;
+      if (key === "days_to_expiry") return rowDaysToExpiry(row);
+      // Vol points: rv-file IVs are decimals (0.14 = 14%), catalog exposes points.
+      if (key === "pm_iv_minus_opt_iv_pts") {
+        return row.pmIv !== null && row.optionIv !== null ? (row.pmIv - row.optionIv) * 100 : null;
+      }
+      if (key === "adjusted_no_gap_pts") return row.adjustedNoGapPts;
       return null;
     })
     .filter((value): value is number => value !== null);
   if (key === "yesAsk" || key === "yesSpread") return reduceRelativeValues(values, "min");
+  // MIN so "days_to_expiry <= 5" targets the nearest-expiry scoped contract.
+  if (key === "days_to_expiry") return reduceRelativeValues(values, "min");
   if (key === "sell_yes_edge_pts" || key === "liquidity" || key === "smart_flow_net_yes") {
     return reduceRelativeValues(values, "max");
   }
   if (key === "smart_flow_stance" || key === "touch_direction") return reduceRelativeValues(values, "max");
+  if (key === "pm_iv_minus_opt_iv_pts" || key === "adjusted_no_gap_pts") return reduceRelativeValues(values, "max");
   return null;
+}
+
+/** Parses rv timestamps that may be hour-truncated ("2026-07-28T23"). */
+function looseTimeMs(value: string): number | null {
+  if (!value) return null;
+  const normalized = /T\d{2}$/.test(value) ? `${value}:00:00Z` : value;
+  const ms = Date.parse(normalized);
+  return Number.isFinite(ms) ? ms : null;
+}
+
+/** Days from the observation's own timestamp to contract expiry — correct
+ * both live (timestamp ≈ now) and in walk-forward backfill (historic rows). */
+function rowDaysToExpiry(row: RelativeValueObservation): number | null {
+  const expiryMs = looseTimeMs(row.expiry);
+  const observedMs = looseTimeMs(row.timestamp);
+  if (expiryMs === null || observedMs === null) return null;
+  return (expiryMs - observedMs) / 86_400_000;
 }
 
 function hypothesisConditionValue(
@@ -951,6 +977,21 @@ function hypothesisConditionValue(
   return null;
 }
 
+/** Metadata condition keys: scope the hypothesis rather than compare a
+ * numeric value. Kept in sync with the condition catalog and the backfill's
+ * BACKFILL_META_CONDITION_KEYS. */
+export const HYPOTHESIS_METADATA_CONDITION_KEYS = new Set(["asset", "venue", "signalType", "day_of_week"]);
+
+function parseMetadataListExpression(rawExpression: string): string[] {
+  const expression = String(rawExpression).trim();
+  const list = expression.match(/^in\s*\[?(.+?)\]?$/i);
+  const body = list ? list[1] : expression.replace(/^(=|==)\s*/, "");
+  return body
+    .split(/[,|]/)
+    .map((value) => value.trim().replace(/^["']|["']$/g, "").toLowerCase())
+    .filter(Boolean);
+}
+
 export function evaluateHypothesisCondition(
   key: string,
   rawExpression: string,
@@ -960,6 +1001,23 @@ export function evaluateHypothesisCondition(
 ): boolean {
   const latestRow = valuationRows[valuationRows.length - 1];
   const previousRow = valuationRows.length > 1 ? valuationRows[valuationRows.length - 2] : null;
+
+  if (HYPOTHESIS_METADATA_CONDITION_KEYS.has(key)) {
+    // day_of_week is genuinely evaluable from the decision row's date.
+    if (key === "day_of_week") {
+      const dateMs = latestRow ? Date.parse(String(latestRow.date)) : NaN;
+      if (!Number.isFinite(dateMs)) return false;
+      const weekday = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"][new Date(dateMs).getUTCDay()];
+      return parseMetadataListExpression(rawExpression).some((allowed) => allowed.slice(0, 3) === weekday);
+    }
+    // asset / venue / signalType scope which market rows the other keys read
+    // (see conditionAsset); as standalone conditions they always pass. This
+    // mirrors the backfill's metadata handling — previously the live path
+    // returned false for these keys, silently disabling any hypothesis that
+    // carried them.
+    return true;
+  }
+
   const expression = String(rawExpression).trim().toLowerCase().replace(/%/g, "");
   const value = hypothesisConditionValue(key, valuationRows, hypothesis, relativeValueRows);
   const previousValue = key.startsWith("previous_")

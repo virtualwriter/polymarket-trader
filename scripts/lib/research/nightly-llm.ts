@@ -2,6 +2,7 @@ import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import { extractLlmJsonObject, requestLlmText, resolveLlmRoute } from "../trading/llm-transport.js";
+import { buildConditionCatalogPromptSection } from "./condition-catalog.js";
 
 /**
  * Nightly research LLM step (July 2026 infrastructure plan, Phase 5).
@@ -64,6 +65,12 @@ export interface BuildNightlyResearchPromptInputs {
    * silently dropped.
    */
   retiredSetupIds?: string[];
+  /**
+   * daily-valuations.csv header columns. Feeds the CONDITION KEY CATALOG
+   * prompt section so the model only ever sees column names the engine can
+   * actually look up. Ingest re-validates against the same catalog.
+   */
+  valuationColumns?: string[];
 }
 
 function jsonOrUnavailable(value: unknown, indent: number): string {
@@ -151,19 +158,14 @@ ${killedLines}
 CURRENT LEARNABLE PARAMETERS:
 ${jsonOrUnavailable(inputs.learningParams, 2)}
 
+${buildConditionCatalogPromptSection(inputs.valuationColumns ?? [])}
+
 IMPORTANT RULES:
 - Each hypothesis MUST be specific and testable with a clear timeframe (1-30 days)
-- Each hypothesis MUST define measurable conditions using column names from the data
+- Each hypothesis MUST define measurable conditions using ONLY keys from the CONDITION KEY CATALOG above, with the exact expression syntax listed there. Conditions with any other key or syntax are rejected at ingest and the hypothesis is never tested — this is the #1 reason past hypotheses silently died.
 - When RANKED RESEARCH OPPORTUNITIES contains FIND records, every newHypothesis MUST be authored from one of those findings, MUST include originFindingId exactly matching a listed FIND id, and MUST include themeId when the listed finding has one.
 - Do NOT invent unrelated freeform ideas when ranked opportunities exist. Prefer up to 10 hypotheses total; if no ranked opportunities are listed, prefer returning zero newHypotheses.
 - Prefer regime-relative conditions over hard-coded price levels so promoted setup families can generalize across BTC/HYPE/GOLD/OIL/AMZN price regimes. Use absolute spot thresholds only when the exact level is essential to the thesis.
-- Supported derived condition keys:
-  - <column>_pct_from_<N>h_high / <column>_pct_from_<N>d_high, e.g. btc_spot_pct_from_7d_high > -3
-  - <column>_pct_from_<N>h_low / <column>_pct_from_<N>d_low, e.g. btc_spot_pct_from_3d_low > 2
-  - <column>_pct_vs_<N>h_sma / <column>_pct_vs_<N>d_sma, e.g. btc_spot_pct_vs_24h_sma > 0
-  - <column>_percentile_<N>h / <column>_percentile_<N>d, e.g. btc_ibit_pc_ratio_percentile_30d < 15
-  - <column>_zscore_<N>h / <column>_zscore_<N>d, e.g. btc_pm_iv_zscore_30d < -2
-  - <column>_change_pct_<N>h / <column>_change_pct_<N>d, e.g. btc_spot_change_pct_24h > 1.5
 - For promoted setup-family variants, describe the reusable setup in relative terms such as "within 3% of 7d high", "bottom 15th percentile P/C ratio", "PM IV z-score below -2", or "spot above 24h SMA" instead of "BTC above 78k".
 - Every newHypothesis MUST include a direction field: "long" if the spot/perp price is predicted to go up, "short" if predicted down, "neutral" for vol/IV/spread/basis theses that do NOT carry a directional spot view (e.g. "BTC IV expands as PM IV mean reverts" — the price could go either way). Direction is enforced as the authoritative signal when the hypothesis is later promoted; do NOT rely on the engine to infer direction from prose. If the thesis is contrarian, "long" still means buy spot (e.g. "P/C extreme high → contrarian long" is direction=long, not short).
 - Similar hypotheses are grouped into setup families. Promotion/kill decisions happen at the setup-family level, not per wording variant. Prefer reviewing whether the parent setup is working over proposing near-duplicate threshold variants.
@@ -366,6 +368,22 @@ export interface RunNightlyLlmStepResult {
   error?: string;
 }
 
+/** Header columns of daily-valuations.csv — the engine's lookup vocabulary
+ * for direct/derived condition keys. Empty on read failure (the catalog
+ * section then shows an explicit "unavailable" marker instead of lying). */
+function loadValuationColumns(path: string): string[] {
+  if (!existsSync(path)) return [];
+  try {
+    const header = readFileSync(path, "utf8").split("\n", 1)[0] ?? "";
+    return header
+      .split(",")
+      .map((column) => column.trim().replace(/^"|"$/g, ""))
+      .filter((column) => column.length > 0 && column !== "date");
+  } catch {
+    return [];
+  }
+}
+
 function readJsonOrNull(path: string): unknown {
   if (!existsSync(path)) return null;
   try {
@@ -509,6 +527,7 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
   const themes = loadResearchThemesSummary(join(opts.dataDir, "research-themes.json"));
   const opportunities = loadRankedResearchOpportunities(join(opts.dataDir, "research-opportunities.json"), themes);
   const allowedOriginFindingIds = new Set(opportunities.map((o) => o.id));
+  const valuationColumns = loadValuationColumns(join(opts.dataDir, "daily-valuations.csv"));
 
   const prompt = buildNightlyResearchPrompt({
     truthState,
@@ -519,6 +538,7 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
     opportunities,
     themes,
     retiredSetupIds: opts.retiredSetupIds ?? [],
+    valuationColumns,
   });
   console.log(`[nightly-llm] prompt: ${prompt.length} chars (provider=${route.provider}, model=${route.model}, opportunities=${opportunities.length}).`);
 

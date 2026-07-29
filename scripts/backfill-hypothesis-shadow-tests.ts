@@ -28,6 +28,7 @@ import {
   type RelativeValueObservation,
   type SnapshotRow,
 } from "./lib/research/hypothesis-shadow-eval.js";
+import { MARKET_ROW_CONDITION_KEYS, METADATA_CONDITION_KEYS } from "./lib/research/condition-catalog.js";
 
 interface CliOptions {
   apply: boolean;
@@ -377,7 +378,7 @@ function refreshWinRates(hypotheses: Hypothesis[]) {
   }
 }
 
-const BACKFILL_META_CONDITION_KEYS = new Set(["venue", "asset", "signalType", "day_of_week"]);
+const BACKFILL_META_CONDITION_KEYS = METADATA_CONDITION_KEYS;
 const METRIC_KEY_HINT = /(funding|ratio|percentile|pct_|zscore|change|iv|oi|open_interest|volume|price|spread|basis|skew|tail|overround|edge|yes|ask|bid|liquidity|spot|perp|futures|cme|cboe|hl_|pm_|opt_)/i;
 const DERIVED_KEY_PATTERN = /^(.+)_(pct_from_\d+[hd]_(high|low)|pct_vs_\d+[hd]_sma|percentile_\d+[hd]|zscore_\d+[hd]|change_pct_\d+[hd])$/;
 const RELATIVE_VALUE_KEY_PATTERN = /^([a-z]+)_pm_(underlying_cap|settle)_(ratio|edge_pts|yes_sum|overround|tail_yes|skew_yes)_(max|min|avg)(_tight)?$/;
@@ -445,7 +446,7 @@ function conditionKeyHasNumericData(
   if (RELATIVE_VALUE_KEY_PATTERN.test(key)) return relativeValueRows.length > 0;
   const perp = key.match(/^([a-z]+)_hl_(funding_ann|oi|basis_pct)$/);
   if (perp) return relativeValueRows.some((row) => row.asset === perp[1].toUpperCase() && row.rawRow?.perp_funding_ann !== undefined);
-  if (["sell_yes_edge_pts", "yesAsk", "yesSpread", "liquidity"].includes(key)) {
+  if (MARKET_ROW_CONDITION_KEYS.has(key)) {
     const assetExpression = hypothesis.conditions?.asset;
     const assets = assetExpression ? parseListExpression(String(assetExpression)) : null;
     return relativeValueRows.some((row) => !assets || assets.includes(row.asset.toLowerCase()));
