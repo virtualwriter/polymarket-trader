@@ -1942,7 +1942,7 @@ function getHyperliquidFundingFromSnapshot(snapshot: InstrumentSnapshotFile | nu
 // open through the weekend until Monday 9:30am ET (cash open). We
 // evaluate the current wall-clock time in America/New_York so the gate
 // shifts correctly between EST and EDT without hardcoding offsets.
-function isStockPerpFundingWindowOpen(date = new Date()): boolean {
+function nyWeekdayMinutes(date = new Date()): { weekday: string; minutesOfDay: number } {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone: "America/New_York",
     weekday: "short",
@@ -1953,11 +1953,24 @@ function isStockPerpFundingWindowOpen(date = new Date()): boolean {
   const weekday = parts.find((p) => p.type === "weekday")?.value ?? "";
   const hour = Number(parts.find((p) => p.type === "hour")?.value ?? "0");
   const minute = Number(parts.find((p) => p.type === "minute")?.value ?? "0");
-  const minutesOfDay = hour * 60 + minute;
+  return { weekday, minutesOfDay: hour * 60 + minute };
+}
+
+function isStockPerpFundingWindowOpen(date = new Date()): boolean {
+  const { weekday, minutesOfDay } = nyWeekdayMinutes(date);
   if (weekday === "Sat" || weekday === "Sun") return true;
   if (weekday === "Fri" && minutesOfDay >= 16 * 60) return true;
   if (weekday === "Mon" && minutesOfDay < 9 * 60 + 30) return true;
   return false;
+}
+
+/** New weekend-funding entries: Fri 4:00pm ET → Sun 11:59pm ET only.
+ * Hold/exit still uses isStockPerpFundingWindowOpen through Mon 9:30am ET.
+ * Mon pre-open entries (00:00–09:30 ET) were a large negative drag into the
+ * cash open (e.g. CBRS −44%); ban new opens in that slice. */
+function isWeekendFundingEntryAllowed(date = new Date()): boolean {
+  if (!isStockPerpFundingWindowOpen(date)) return false;
+  return nyWeekdayMinutes(date).weekday !== "Mon";
 }
 
 function isLongDatedPolymarketPosition(position: Position): boolean {
@@ -4243,7 +4256,8 @@ function recordStaleLotteryTicketNoShadows(
 }
 
 function weekendHyperliquidFundingCandidates(latestSnapshot: InstrumentSnapshotFile | null): Position[] {
-  if (!latestSnapshot || !isStockPerpFundingWindowOpen()) return [];
+  // Entry gate (no Mon pre-open) — exits still use the full window through Mon 9:30 ET.
+  if (!latestSnapshot || !isWeekendFundingEntryAllowed()) return [];
   const openedAt = new Date().toISOString();
   const openedAtMs = Date.parse(openedAt);
   const expiryDate = new Date(openedAtMs + WEEKEND_HL_FUNDING_MAX_HOLD_HOURS * 60 * 60 * 1000);
@@ -4272,7 +4286,7 @@ function weekendHyperliquidFundingCandidates(latestSnapshot: InstrumentSnapshotF
       leverage: WEEKEND_HL_FUNDING_LEVERAGE,
       signalType: WEEKEND_HL_FUNDING_LIVE_SIGNAL,
       hypothesisId: null,
-      thesis: `[WEEKEND HL FUNDING LIVE] ${asset} Builder DEX stock perp funding ${(fundingAnnualized * 100).toFixed(1)}% annualized in mid band [${(WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT * 100).toFixed(0)}%, ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}%] during US-equity-closed window (Fri 4:00pm ET → Mon 9:30am ET). Live tracked long at ${WEEKEND_HL_FUNDING_LEVERAGE}x; exit when margin P&L >= ${WEEKEND_HL_FUNDING_TARGET_PCT}%, funding >= ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}%, or held ${WEEKEND_HL_FUNDING_MAX_HOLD_HOURS}h.`,
+      thesis: `[WEEKEND HL FUNDING LIVE] ${asset} Builder DEX stock perp funding ${(fundingAnnualized * 100).toFixed(1)}% annualized in mid band [${(WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT * 100).toFixed(0)}%, ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}%] during US-equity-closed entry window (Fri 4:00pm ET → Sun; no Mon pre-open entries). Live tracked long at ${WEEKEND_HL_FUNDING_LEVERAGE}x; exit when margin P&L >= ${WEEKEND_HL_FUNDING_TARGET_PCT}%, funding >= ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}%, Mon 9:30am ET window close, or held ${WEEKEND_HL_FUNDING_MAX_HOLD_HOURS}h.`,
       targetPct: WEEKEND_HL_FUNDING_TARGET_PCT,
       stopPct: 100,
       expiryDate: expiryDate.toISOString(),
@@ -4325,7 +4339,8 @@ function promoteOpenWeekendFundingShadowsToLive(
   blockedSignals: BlockedSignalShadow[],
 ): string[] {
   if (!ENABLE_WEEKEND_HL_FUNDING_LIVE) return [];
-  if (!isStockPerpFundingWindowOpen()) return [];
+  // Same entry ban as fresh opens: do not promote shadows into live on Mon pre-open.
+  if (!isWeekendFundingEntryAllowed()) return [];
   const notes: string[] = [];
   const now = new Date().toISOString();
 

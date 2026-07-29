@@ -583,10 +583,10 @@ function compactOpenShadows(asset?: string): JsonObject[] {
 const STRATEGY_REFERENCE: JsonObject = {
   WEEKEND_HL_FUNDING_REVERSION_LONG: {
     universe: "Hyperliquid Builder DEX stock perps (HYPE_STOCK_BUILDER_ASSETS)",
-    window: "US-equity-closed window only: Fri 4:00pm ET through Mon 9:30am ET (America/New_York). Hourly cron at :27, so first entry is Fri 4:27pm ET.",
-    entry: "Annualized funding in mid band [-100%, -50%] (shorts paying longs). Open LONG at 5x leverage, standard trade size. Band tightened 2026-06-01 after backtest: shallow band (-30%..-50%) was net-negative, deep band (<-100%) flat, mid band +1.07% avg/trade.",
+    window: "Hold/exit window: Fri 4:00pm ET through Mon 9:30am ET (America/New_York). Entry window is narrower: Fri 4:00pm ET through Sunday only — no new entries Monday pre-open (00:00–09:30 ET).",
+    entry: "Annualized funding in mid band [-100%, -50%] (shorts paying longs). Open LONG at 5x leverage, standard trade size. Band tightened 2026-06-01 after backtest: shallow band (-30%..-50%) was net-negative, deep band (<-100%) flat, mid band +1.07% avg/trade. Monday pre-open entries banned 2026-07-28 after gap-into-open analysis (cohort −$0.61; Mon pre-open entries drove most of the drag).",
     exit: "First of: (1) window closes / US market reopens -> close_reason expiry or weekend_window_closed; (2) funding normalizes to >= +10% annualized -> weekend_funding_normalized; (3) margin P&L target +3% hit; (4) max hold 24h expiry. No stop loss (stop set to 100%).",
-    source: "scripts/trading-engine.ts (WEEKEND_HL_FUNDING_* constants, weekendHyperliquidFundingCandidates, weekendHyperliquidFundingExitHit, isStockPerpFundingWindowOpen)",
+    source: "scripts/trading-engine.ts (WEEKEND_HL_FUNDING_* constants, weekendHyperliquidFundingCandidates, weekendHyperliquidFundingExitHit, isStockPerpFundingWindowOpen, isWeekendFundingEntryAllowed)",
   },
   note: "Rules for other signal types live in scripts/trading-engine.ts on this host; they are not included in these artifacts.",
 };
