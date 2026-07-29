@@ -1601,3 +1601,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 0/12; ne
 
 ---
 
+### 2026-07-29 02:28 UTC
+
+**Portfolio:** $99.00 total | Cash $99.00 | 0 open | P&L $2.2360 | 64% win rate (563 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 21 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 8.6pp (was -26.6, now -18.0)
+- [anomaly] amzn_pc_ratio = 0.738 is 2.7 std devs from mean (0.45 ± 0.11)
+- [anomaly] oil_opt_fwd_90d = 149 is 2.6 std devs from mean since 2026-04-28 (78.93 ± 26.92)
+
+**Blocked signal learning:**
+- Open blocked shadows: 49
+- Resolved blocked shadows: 683 (377 wins / 306 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 14/26 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+1.10%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+6.98%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-0.20%)
+
+**LLM analysis:**
+No open positions to review. The system remains flat after a series of ONE_TOUCH_HIGH_EDGE_NO wins. Funding extremes are widespread across assets (BIRD -106%, SKHX +325%, RIVN +110%, etc.) but none have triggered entry promotions under current signal weights and disabled lists. The macro backdrop is risk-off, consistent with recent successful no-edge trades on BTC, ETH, and GOLD. I note the oil spike risk signal and oil's bounce above $82, but without an open position, no action is warranted. Awaiting the nightly run for any hypothesis generation or parameter updates.
+
+---
+
