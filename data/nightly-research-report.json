@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-28T07:08:07Z",
+  "generatedAt": "2026-07-29T07:08:28Z",
   "summary": {
-    "generatedAt": "2026-07-28T07:08:07Z",
+    "generatedAt": "2026-07-29T07:08:28Z",
     "findingCounts": {
-      "open": 18,
-      "strengthened": 12,
+      "open": 14,
+      "strengthened": 16,
       "weakened": 0,
       "negative": 1,
       "suppressed": 0,
@@ -21,7 +21,7 @@
       "themeSlug": "other_informed_flow",
       "status": "open"
     },
-    "authoredHypothesisCount": 9,
+    "authoredHypothesisCount": 10,
     "advicePresent": true
   },
   "topOpportunities": [
@@ -48,12 +48,12 @@
     {
       "rank": 3,
       "id": "FIND-0022",
-      "opportunityScore": 0.9906,
-      "confidenceScore": 0.6523,
+      "opportunityScore": 0.9936,
+      "confidenceScore": 0.6772,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|strat:s?,e1-3|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
-      "status": "open"
+      "status": "strengthened"
     },
     {
       "rank": 4,
@@ -88,8 +88,8 @@
     {
       "rank": 7,
       "id": "FIND-0030",
-      "opportunityScore": 0.9674,
-      "confidenceScore": 0.4731,
+      "opportunityScore": 0.971,
+      "confidenceScore": 0.4873,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -108,18 +108,18 @@
     {
       "rank": 9,
       "id": "FIND-0043",
-      "opportunityScore": 0.9256,
-      "confidenceScore": 0.3983,
+      "opportunityScore": 0.9338,
+      "confidenceScore": 0.4417,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
-      "status": "open"
+      "status": "strengthened"
     },
     {
       "rank": 10,
       "id": "FIND-0023",
-      "opportunityScore": 0.7962,
-      "confidenceScore": 0.5405,
+      "opportunityScore": 0.8151,
+      "confidenceScore": 0.554,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,d<30|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -132,7 +132,7 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 24,
-      "avgOpportunityScore": 0.6569
+      "avgOpportunityScore": 0.6605
     },
     {
       "id": "THEME-0002",
@@ -160,47 +160,52 @@
     {
       "originFindingId": "FIND-0020",
       "themeId": "THEME-0003",
-      "description": "Fade dumb-money highs: when the dumb-wallet share of YES volume on upside one-touch NO contracts exceeds 0.15 while smart-wallet share on dip-YES contracts remains below 0.05, sell the YES side of that upside NO contract as a directional short on the asset."
+      "description": "Fade dumb money on upside one-touch NO contracts: when the share of YES volume from dumb wallets on high-strike NO contracts exceeds 0.15, short by selling YES."
+    },
+    {
+      "originFindingId": "FIND-0035",
+      "themeId": "THEME-0002",
+      "description": "Weekend Hyperliquid funding reversion long on any asset: when hl_funding_ann is in the bottom 5th percentile of its 30-day range (extremely negative), go long the perp."
     },
     {
       "originFindingId": "FIND-0022",
       "themeId": "THEME-0001",
-      "description": "OIL one-touch NO edge with moderate edge strength and near-expiry refinement: when the sell-YES edge on an OIL upside one-touch NO contract is between 1 and 3 points and the contract expires within 30 days, short OIL by selling YES on that contract."
+      "description": "OIL one-touch NO edge with tight edge band: when sell-YES edge on OIL upside one-touch NO contracts is between 1 and 3 percentage points, sell YES."
     },
     {
       "originFindingId": "FIND-0021",
       "themeId": "THEME-0004",
-      "description": "Rich PM IV NO fade on upside touch: when PM IV exceeds the 30-day options IV by at least 10 percentage points on an asset, and an upside one-touch NO contract exists with a positive sell-YES edge, short the asset by selling YES on that contract."
+      "description": "Rich PM IV NO fade: when PM IV exceeds 30-day options IV by more than 10 percentage points on any asset's one-touch NO contract with sell-YES edge, sell YES."
     },
     {
       "originFindingId": "FIND-0024",
       "themeId": "THEME-0004",
-      "description": "Rich PM IV NO fade on upside touch, near-expiry filter: extend the PM IV rich signal (PM IV > opt_iv_30d + 10pp) to contracts expiring within 30 days, selling YES on upside one-touch NO contracts."
+      "description": "Rich PM IV near-expiry NO fade: narrow the IV-rich signal to contracts expiring within 30 days to capture faster mean reversion."
     },
     {
       "originFindingId": "FIND-0036",
       "themeId": "THEME-0001",
-      "description": "GOLD one-touch NO edge with near expiry: on GOLD upside one-touch NO contracts expiring within 30 days, when the sell-YES edge is positive (regardless of size), short GOLD by selling YES."
-    },
-    {
-      "originFindingId": "FIND-0025",
-      "themeId": "THEME-0004",
-      "description": "Rich PM IV with edge 3\u20138 points: when PM IV exceeds options IV by >10pp and the sell-YES edge on an upside one-touch NO contract is between 3 and 8 points, short the asset by selling YES."
+      "description": "GOLD one-touch NO edge near expiry: on GOLD upside one-touch NO contracts with positive sell-YES edge and expiry within 30 days, sell YES."
     },
     {
       "originFindingId": "FIND-0030",
       "themeId": "THEME-0001",
-      "description": "Broad one-touch NO edge on all assets with above-direction and edge 3\u20138 points: for any asset, when the sell-YES edge on an upside one-touch NO contract is between 3 and 8 points, short the asset by selling YES."
+      "description": "Broad one-touch NO edge with moderate edge strength: for any asset, when sell-YES edge on upside one-touch NO contracts is between 3 and 8 points, sell YES."
     },
     {
-      "originFindingId": "FIND-0026",
-      "themeId": "THEME-0001",
-      "description": "No-bias gap long signal on downside touch: when the no-bias adjusted gap is positive (sell edge) on a downside one-touch NO contract expiring within 30 days, go long the underlying asset (spot or perp), as the market is overestimating the probability of a downward touch."
+      "originFindingId": "FIND-0025",
+      "themeId": "THEME-0004",
+      "description": "Rich PM IV NO fade with edge 3-8 pts: combine rich PM IV (>10% above options IV) with sell-YES edge between 3 and 8 points, short the one-touch NO."
     },
     {
-      "originFindingId": "FIND-0001",
+      "originFindingId": "FIND-0043",
       "themeId": "THEME-0001",
-      "description": "GOLD short on extreme negative funding with no-bias gap: when gold funding is deeply negative (< -50% annualized) and the no-bias adjusted gap on a GOLD upside one-touch NO contract is positive, go short GOLD by selling YES on that contract."
+      "description": "BTC one-touch NO edge with above direction and edge 3-8 pts: when sell-YES edge on BTC upside one-touch NO contracts is between 3 and 8 points, sell YES."
+    },
+    {
+      "originFindingId": "FIND-0023",
+      "themeId": "THEME-0001",
+      "description": "One-touch NO edge near expiry across all assets: for any asset with upside one-touch NO contracts expiring within 30 days and positive sell-YES edge, sell YES."
     }
   ],
   "negativeFindings": [
@@ -214,9 +219,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-07-28T07:07:13Z",
-    "opportunitiesGeneratedAt": "2026-07-28T07:08:06Z",
-    "themesGeneratedAt": "2026-07-28T07:07:17Z",
-    "adviceGeneratedAt": "2026-07-28T07:07:13.277Z"
+    "findingsExportGeneratedAt": "2026-07-29T07:07:35Z",
+    "opportunitiesGeneratedAt": "2026-07-29T07:08:28Z",
+    "themesGeneratedAt": "2026-07-29T07:07:38Z",
+    "adviceGeneratedAt": "2026-07-29T07:07:34.954Z"
   }
 }
