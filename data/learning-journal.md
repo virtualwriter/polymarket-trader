@@ -2084,3 +2084,34 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 6/12; ne
 
 ---
 
+### 2026-07-29 20:28 UTC
+
+**Portfolio:** $99.00 total | Cash $98.00 | 1 open | P&L $2.2360 | 64% win rate (563 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 22 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_opt_fwd_90d = 7 is -2.6 std devs from mean since 2026-04-28 (78.80 ± 27.43)
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 689 (379 wins / 310 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 14/26 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-3.33%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.17%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.41%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+GOLD short (T-1785338895017-voyz) is only 5h open against a 12h min hold, so no discretionary close allowed. The funding rate has dropped sharply from 26.5% to 13.6% — now below the +15% entry threshold — but it's too early to declare thesis invalidated. Gold spot rallied +1.8% from entry before pulling back, leaving PnL at -1.0%. The collapse in GLD put/call ratio (0.92→0.41) is notable context, but it's not a signal-family evidence column, so I won’t over-index on it yet. I'll re-assess after the 12h lock expires; if funding stays sub-15% and price remains above the stop level, I may consider a thesis_invalidated close then.
+
+---
+
