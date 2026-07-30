@@ -1,15 +1,56 @@
 {
-  "generatedAt": "2026-07-30T22:28:21.451Z",
+  "generatedAt": "2026-07-30T23:28:37.625Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
-  "entrySignals": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1785407328518-u6to",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "oil_cl_pc_ratio"
+      ],
+      "thesis": "OIL P/C ratio has fully normalized and reversed from 0.378 to 0.777, well above the extreme‑low threshold. The contrarian call‑buying signal is gone; the thesis is invalidated."
+    },
+    {
+      "action": "close",
+      "positionId": "T-1785407328519-59d7",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_gld_pc_ratio"
+      ],
+      "thesis": "GOLD P/C ratio has completely reversed from 0.410 to 0.886, moving from extreme call buying to a high put/call skew. The original extreme‑low signal has fully dissipated, invalidating the thesis."
+    }
+  ],
+  "entrySignals": [
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.3317142857142857,
+      "confidence": 0.16196692730910417,
+      "thesis": "GOLD HL funding 26.6% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4109,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
+    }
+  ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "2 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

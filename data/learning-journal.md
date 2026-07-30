@@ -2782,3 +2782,39 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 8/12; ne
 
 ---
 
+### 2026-07-30 23:28 UTC
+
+**Portfolio:** $98.96 total | Cash $96.96 | 2 open | P&L $2.1960 | 64% win rate (567 trades)
+
+**Closed 2 trades:**
+- ✅ OIL short via spot/spot [OIL spot] (PC_RATIO_EXTREME_LOW) → llm_decision: +$0.0041 (0.4%, market 0.0041, funding 0.0000)
+- ❌ GOLD short via spot/spot [GOLD spot] (PC_RATIO_EXTREME_LOW) → llm_decision: $-0.0076 (-0.8%, market -0.0076, funding 0.0000)
+
+**Opened 1 positions:**
+- GOLD short @ $4109 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 18 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 704 (384 wins / 320 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 14/26 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.11%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-3.70%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.10%)
+
+**LLM analysis:**
+Both OIL and GOLD PC_RATIO_EXTREME_LOW shorts saw their P/C ratios skyrocket within hours—OIL from 0.378 to 0.777 and GOLD from 0.410 to 0.886—while underlying prices barely budged. This is a clear round‑trip past invalidation. Closed both for thesis_invalidated. BTC short is only 9h old and therefore still below the 12h minimum; its P/C ratio also surged from 0.414 to 0.789, but I will only act once the min hold is satisfied. No hard portfolio risk or data‑quality issues observed.
+
+---
+
