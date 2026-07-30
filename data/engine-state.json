@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-30T02:28:18.228Z",
+  "generatedAt": "2026-07-30T03:28:23.097Z",
   "dataFreshness": {
-    "valuationRows": 1987,
-    "latestValuationAt": "2026-07-30T02",
-    "macroRows": 1985,
+    "valuationRows": 1988,
+    "latestValuationAt": "2026-07-30T03",
+    "macroRows": 1986,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-30T02"
+    "latestInstrumentSnapshotAt": "2026-07-30T03"
   },
   "portfolio": {
-    "cash": 97.9964,
-    "openPositions": 1,
+    "cash": 96.9964,
+    "openPositions": 2,
     "realizedPnl": 2.236,
     "totalTrades": 563,
     "winRatePct": 64.1,
-    "unrealizedPnl": -0.0176
+    "unrealizedPnl": -0.0097
   },
   "openPositions": [
     {
@@ -22,15 +22,32 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -1.76,
-      "currentPrice": 4083,
-      "underlyingPrice": 4083,
+      "pnlPct": -1.16,
+      "currentPrice": 4059,
+      "underlyingPrice": 4059,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "gold_gc_spot",
         "gold_hl_funding_ann"
+      ]
+    },
+    {
+      "positionId": "T-1785378517352-vx8w",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "short",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "pnlPct": 0.19,
+      "currentPrice": 83.55,
+      "underlyingPrice": 83.55,
+      "targetPct": 3,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
       ]
     }
   ],
@@ -174,7 +191,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 52,
+    "openCount": 54,
     "resolvedCount": 695,
     "wouldHaveWon": 382,
     "wouldHaveLost": 313,
