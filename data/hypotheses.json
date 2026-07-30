@@ -164,7 +164,7 @@
     "winRate": 0.3,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC PM IV still 7.1% below options IV (43.4% vs 48.8%). Gap persisting longer than expected but not widening further. | BTC PM IV gap persists (43.3% vs 48.8%) suggesting structural underpricing rather than temporary arbitrage. May need position sizing adjustment. | Pattern persisting - BTC PM IV gap remains wide at 5.7pp, suggesting structural rather than temporary divergence | Covered by promoted setup family btc_iv_compression_vol_reversion via primary H-234. | Split 2026-05-26 by operator as BTC PM-IV expansion/reversion residual group after hard-coded variants were removed. | BTC PM IV has remained elevated (43.3) and consistently above options IV (36.3), the opposite of the original underpricing thesis. This family appears invalid under current regime and should be considered for demotion or rewritten to capture PM IV *richness* as a contrarian signal instead. | BTC PM IV expansion/reversion hypothesis has zero shadow tests; it may need condition tuning to trigger more often. No current signal. | PM IV now widely above options IV (53.5 vs 37.5/25.7), opposite of the original underpricing arbitrage; thesis needs inversion or retirement. | BTC PM IV compression/reversion hypothesis not triggered recently; will wait for IV in bottom 20% of 30d range. | BTC PM IV expansion/reversion has 50% win rate over 2 variant tests; too few passes to promote, but no kill signal yet. Maintain shadow testing. | BTC PM IV (44.8) now exceeds 30d options IV (40.0), contradicting the original 'underpricing' premise. The hypothesis may need re-specification as a PM IV premium mean-reversion instead of underpricing. | BTC PM IV expansion (44.4%) versus options (39.4%) is notable, but H-001 (btc_pm_iv_expansion_reversion) is only at 33% over 4 tests and has been inactive. The current IV divergence may provide a new shadow-test trigger if conditions realign. | BTC PM IV vs. options IV divergence persists but the signal is disabled; recent BTC P/C drop may indicate options flow normalization ahead of potential vol expansion, but no new tests triggered. | Gold PM IV mechanical collapse at expiry explains the 111.7 pp narrowing with opt‑IV gap; any short‑term mean‑reversion thesis for June contracts is now moot. July‑expiry contracts should be monitored for a fresh IV regime. | BTC PM IV expansion/reversion not triggered; PM IV stayed between 40.7-41.9 with no significant spike, and spot ranged. Conditions for IV expansion signal absent, so no test occurred. | BTC PM IV at 28.7 is -2.5σ below 30d mean (42.1), extreme compression. Historically, such compressions have led to volatility expansion and BTC moves within 5 days. This is consistent with the family's positive track record (60% over 5 tests). | btc_pm_iv_expansion_reversion: PM IV at 29.3% is -2.1σ, deep compression, but BTC spot is not near its 7d high (~62.3k vs ~62.4k) and funding is positive, not conclusively confirming directional vol expansion. Conditions partially met but the setup still needs more shadow tests before promotion. | H-001 (BTC PM IV expansion/reversion) has maintained a 60% win rate over 6 hypothesis tests, with correct direction predictions when PM IV is in the bottom 20% of its 30d range leading to subsequent BTC price declines. The 5 clean completed tests within the parent setup family 'btc_pm_iv_expansion_reversion' (3 wins, avg not given) validate the logic, but the sample is still small. The recent successful predictions were moderately sized moves. Shadow testing via Polymarket NO contracts or spot shorts would be appropriate to measure realized edge. | BTC PM IV expansion reversion shows 60% win-rate over 6 tests, consistent with the underlying thesis. The family is ‘validating’ with a few clean hypothesis tests; continued positive outcomes would support promotion once sample size meets threshold. | BTC PM-IV expansion/reversion hypothesis holds a 60% win rate over 6 tests but remains in limbo with no live trades. The edge is statistically compelling enough to move to a shadow trade phase with a tight stop (e.g., 2%) to gather real-market behaviour under the btc_pm_iv_expansion_reversion family. | BTC PM IV expansion / reversion (H-001) has fallen to 25% win rate across 18 tests and is well below the promote threshold. Recommend monitoring but no further resource until conditions improve.",
+    "postMortem": "BTC PM-IV expansion/reversion hypothesis holds a 60% win rate over 6 tests but remains in limbo with no live trades. The edge is statistically compelling enough to move to a shadow trade phase with a tight stop (e.g., 2%) to gather real-market behaviour under the btc_pm_iv_expansion_reversion family. | BTC PM IV expansion / reversion (H-001) has fallen to 25% win rate across 18 tests and is well below the promote threshold. Recommend monitoring but no further resource until conditions improve. | Refined by H-587 (2026-07-30): Refinement of BTC PM IV expansion reversion: replace absolute IV thresholds with | BTC PM IV expansion reversion dropped to 30% WR; in recent quiet markets the IV gap persisted without triggering a >2% move. The absolute IV thresholds failed to distinguish truly explosive compression events.",
     "source": "llm",
     "setupId": "btc_pm_iv_expansion_reversion",
     "setupLabel": "BTC PM-IV expansion / reversion"
@@ -3263,7 +3263,7 @@
     "winRate": 0.2727272727272727,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "AMZN basis improved from -0.35% to -0.38% - slight setback but funding remains positive at 8.99%. Convergence process ongoing but slower than expected. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels.",
+    "postMortem": "AMZN basis improved from -0.35% to -0.38% - slight setback but funding remains positive at 8.99%. Convergence process ongoing but slower than expected. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels. | AMZN perp convergence hypothesis with basis > -0.05 and funding >0 repeatedly saw funding stuck at 5.5% for days without decline. The assumption that positive funding naturally reverts to lower levels quickly failed in current regime, leaving the thesis unwound.",
     "source": "llm",
     "setupId": "amzn_perp_spot_funding_convergence",
     "setupLabel": "AMZN perp/spot funding convergence"
@@ -6991,7 +6991,7 @@
     "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Setup family inconclusive after 29 completed tests: 62% win rate. | This BTC IV compression shadow test family continues to show promising structure. Recent variants correctly identified the IV anomaly and spot consolidation. The promoted version (H-523) builds on this foundation and is performing as expected in early hours. | BTC IV compression / vol reversion trade triggered but momentum quickly broke; spot dropped below 24h low and funding turned negative. The regime-relative condition (BTC above short-term trend) held at entry but reversed rapidly. The family needs more shadow tests with tighter confirmation before next live promotion. | BTC IV compression / vol reversion (promoted variant) opened long at 77.6k but BTC has fallen to 76.8k with funding turning negative. The momentum condition (spot gaining vs short-term trend) has broken, and the IV reversion thesis has not yet materialized. The entry timing may benefit from a stricter momentum confirmation gate. | BTC PM IV (36.0) remains in the bottom 20% of its 30d range, spot (76776) within 5% of 7d high, fulfilling IV compression/vol reversion criteria. Spot has softened -1% but consolidation holds; no invalidation yet. | The recent BTC long was triggered when PM IV was compressed into the bottom 20% of its 30‑d range (z‑score –6.5σ) and spot was within 5% of the 7‑d high. That condition still holds, but the trade is on track to hit its 1.5% stop. The thesis isn’t invalidated by the IV metric, but short‑term price action failed to confirm the expected expansion bounce, suggesting the setup may need a wider stop or a longer hold to give the statistical edge time to play out. | Split 2026-05-26 by operator from BTC PM-IV compression family into btc_listed_iv_momentum_confirmation; adjacent listed-IV/momentum/P-C setup must earn its own promotion. | LONG BTC momentum/vol-confirmed breakout has 50% win (8 tests). Recent tests show that while the momentum filter often identifies trending moves, the failure cases occur during sudden volatility shifts or fakeouts. Consider adding a regime filter (e.g., funding alignment) to improve the win rate.",
+    "postMortem": "Split 2026-05-26 by operator from BTC PM-IV compression family into btc_listed_iv_momentum_confirmation; adjacent listed-IV/momentum/P-C setup must earn its own promotion. | LONG BTC momentum/vol-confirmed breakout has 50% win (8 tests). Recent tests show that while the momentum filter often identifies trending moves, the failure cases occur during sudden volatility shifts or fakeouts. Consider adding a regime filter (e.g., funding alignment) to improve the win rate. | Refined by H-590 (2026-07-30): Refinement of BTC listed-IV momentum confirmation: tighten momentum thresholds. | BTC listed-IV momentum confirmation (long) has a 50% scorable WR but the recent sample shows many small losses and only one strong win. The momentum and IV thresholds were too lenient, picking up weak impulses that did not sustain beyond 2%.",
     "source": "llm",
     "setupId": "btc_listed_iv_momentum_confirmation",
     "setupLabel": "BTC listed-IV momentum confirmation"
@@ -19667,7 +19667,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Mined from clean shadows: {\"n\": 12, \"wins\": 7, \"winRate\": 0.5833, \"sumPnl\": 0.6492, \"hasHeatmap\": true, \"sampleIds\": [\"OT-1779348547074-tm2l\", \"OT-1783659557591-81cc\", \"OT-1783659557594-u7s1\", \"OT-1783694116078-dtpj\", \"OT-1783780517241-ssvk\"]} | H-534 (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) has 20% win rate over 20 tests, likely due to wide spreads and edge collapse. The heatmap cluster's historical performance (+0.649 over 12 shadows) may not replicate in the current regime. Continue shadow testing but enforce a higher minimum edge (≥3 pts) and tighter spread. | 20 shadow tests (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) completed with only 4 wins (20% win rate). The GOLD heatmap cluster is ineffective; the edge signal does not translate to profitable spreads. Recommend killing H-534 and its setup family. | 0% win rate over 29 shadow tests on GOLD one-touch NO heatmap cluster, despite a promising shadow mining cluster (FIND-0036) with 75% win rate on only 8 historical samples. The out-of-sample performance collapses completely, indicating severe overfitting. Kill this hypothesis and do not promote. | GOLD one-touch NO heatmap shadow continues to underperform with 0% win rate over 32 tests after reopening; the discovered in-sample edge does not translate into forward profitability. Recommend kill and no further variants.",
+    "postMortem": "20 shadow tests (ONE_TOUCH_HIGH_EDGE_NO on GOLD heatmap) completed with only 4 wins (20% win rate). The GOLD heatmap cluster is ineffective; the edge signal does not translate to profitable spreads. Recommend killing H-534 and its setup family. | 0% win rate over 29 shadow tests on GOLD one-touch NO heatmap cluster, despite a promising shadow mining cluster (FIND-0036) with 75% win rate on only 8 historical samples. The out-of-sample performance collapses completely, indicating severe overfitting. Kill this hypothesis and do not promote. | GOLD one-touch NO heatmap shadow continues to underperform with 0% win rate over 32 tests after reopening; the discovered in-sample edge does not translate into forward profitability. Recommend kill and no further variants. | Gold one-touch heatmap short (cap edge ≥10) produced 0% WR over 12 scorable tests as gold rose. The edge was driven by PM IV compression rather than genuine directional overpricing, so no downside spot move materialised.",
     "source": "shadow_mined",
     "setupId": "shadow_one_touch_high_edge_no_gold_heatmap_no",
     "setupLabel": "Shadow-mined ONE_TOUCH_HIGH_EDGE_NO GOLD heatmap"
@@ -19856,7 +19856,7 @@
     "winRate": 0.3333333333333333,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Mined from clean shadows: {\"n\": 9, \"wins\": 8, \"winRate\": 0.8889, \"sumPnl\": 0.0102, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779661761704-AAPL-fawa\", \"WF-1780087728967-AAPL-0wbd\", \"WF-1780158509116-AAPL-q73w\", \"WF-1780237715514-AAPL-tmdd\", \"WF-1780266518746-AAPL-thv2\"]} | AAPL shadow 40% win rate (2 of 5 completed), not meeting promotion threshold; edge may exist only during extreme funding dislocations, tighten entry condition to funding < -20%. | AAPL weekend funding shadow at 38% win rate (3/8) remains below the aggregate; still early but suggests caution. Continue monitoring but do not promote as a standalone signal.",
+    "postMortem": "AAPL shadow 40% win rate (2 of 5 completed), not meeting promotion threshold; edge may exist only during extreme funding dislocations, tighten entry condition to funding < -20%. | AAPL weekend funding shadow at 38% win rate (3/8) remains below the aggregate; still early but suggests caution. Continue monitoring but do not promote as a standalone signal. | Refined by H-589 (2026-07-30): Refinement of weekend AAPL funding reversion: same pattern – AAPL funding < -10% | AAPL weekend funding reversion (funding < -10) delivered only 33% WR; funding often remained low or drifted lower, erasing the expected bounce. The hypothesis over-relied on mean reversion without confirmation.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG AAPL weekend_hl_funding_shadow"
@@ -19994,7 +19994,7 @@
     "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Mined from clean shadows: {\"n\": 8, \"wins\": 7, \"winRate\": 0.875, \"sumPnl\": 0.1099, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1780087728968-CBRS-i1qh\", \"WF-1780097309084-CBRS-cnjn\", \"WF-1780111718103-CBRS-vnni\", \"WF-1780129709984-CBRS-x5h5\", \"WF-1780147713961-CBRS-qr9e\"]} | Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG on CBRS has 43% win rate over 8 tests. While not yet promotion-worthy, the win rate is positive and in-line with the broader weekend funding reversion family. Continue shadow testing; no action needed yet.",
+    "postMortem": "Mined from clean shadows: {\"n\": 8, \"wins\": 7, \"winRate\": 0.875, \"sumPnl\": 0.1099, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1780087728968-CBRS-i1qh\", \"WF-1780097309084-CBRS-cnjn\", \"WF-1780111718103-CBRS-vnni\", \"WF-1780129709984-CBRS-x5h5\", \"WF-1780147713961-CBRS-qr9e\"]} | Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG on CBRS has 43% win rate over 8 tests. While not yet promotion-worthy, the win rate is positive and in-line with the broader weekend funding reversion family. Continue shadow testing; no action needed yet. | Refined by H-588 (2026-07-30): Refinement of weekend CBRS funding reversion: only go long when CBRS funding is | CBRS weekend funding reversion (funding < -10) only managed 50% WR; losses occurred when funding either stayed negative or moved more negative instead of normalizing. The blind entry captured many continuation moves.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG CBRS weekend_hl_funding_shadow"
@@ -22025,5 +22025,252 @@
     "source": "llm",
     "setupId": "find_0023",
     "setupLabel": "FIND-linked FIND-0023"
+  },
+  {
+    "id": "H-587",
+    "created": "2026-07-30",
+    "description": "Refinement of BTC PM IV expansion reversion: replace absolute IV thresholds with extreme compression percentiles – PM IV in bottom 10% of 30-day range and 90-day options IV in top 10% of its range, signaling a rare cross-market IV crush that should resolve with a large move.",
+    "conditions": {
+      "btc_pm_iv_percentile_30d": "< 10",
+      "btc_opt_iv_90d_percentile_30d": "> 90"
+    },
+    "prediction": "BTC spot moves >2% within 3 days as the extreme IV compression normalises.",
+    "timeframeDays": 3,
+    "confidence": 0.6,
+    "direction": "neutral",
+    "refinesHypothesisId": "H-001",
+    "tests": [
+      {
+        "date": "2026-07-30",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "btc_iv_compression_vol_reversion",
+    "setupLabel": "BTC IV compression / vol reversion"
+  },
+  {
+    "id": "H-588",
+    "created": "2026-07-30",
+    "description": "Refinement of weekend CBRS funding reversion: only go long when CBRS funding is < -10% ON A WEEKEND AND the funding has already begun to rise (change_pct_24h > 0), confirming that the reversion process is underway.",
+    "conditions": {
+      "day_of_week": "in [sat, sun]",
+      "cbrs_hl_funding_ann": "< -10",
+      "cbrs_hl_funding_ann_change_pct_24h": "> 0"
+    },
+    "prediction": "CBRS spot moves >2% within 2 days as funding continues to normalize.",
+    "timeframeDays": 2,
+    "confidence": 0.6,
+    "direction": "long",
+    "refinesHypothesisId": "H-539",
+    "tests": [
+      {
+        "date": "2026-07-30",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "other_mixed",
+    "setupLabel": "Other / mixed"
+  },
+  {
+    "id": "H-589",
+    "created": "2026-07-30",
+    "description": "Refinement of weekend AAPL funding reversion: same pattern – AAPL funding < -10% on a weekend with funding already rising (change_pct_24h > 0), signalling the start of the normalization that should lift spot.",
+    "conditions": {
+      "day_of_week": "in [sat, sun]",
+      "aapl_hl_funding_ann": "< -10",
+      "aapl_hl_funding_ann_change_pct_24h": "> 0"
+    },
+    "prediction": "AAPL spot moves >2% within 2 days as funding reversion continues.",
+    "timeframeDays": 2,
+    "confidence": 0.55,
+    "direction": "long",
+    "refinesHypothesisId": "H-537",
+    "tests": [
+      {
+        "date": "2026-07-30",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "other_mixed",
+    "setupLabel": "Other / mixed"
+  },
+  {
+    "id": "H-590",
+    "created": "2026-07-30",
+    "description": "Refinement of BTC listed-IV momentum confirmation: tighten momentum thresholds. Require spot gain >1.5% in 24h, spot above 0.5% vs 24h SMA, within 3% of 7d high, and 30d IV change >1% (double the original 0.75% and 0% thresholds) to filter for stronger, IV-confirmed breakouts.",
+    "conditions": {
+      "btc_spot_pct_vs_24h_sma": "> 0.5",
+      "btc_spot_pct_from_7d_high": "> -3",
+      "btc_spot_change_pct_24h": "> 1.5",
+      "btc_opt_iv_30d_change_pct_24h": "> 1"
+    },
+    "prediction": "BTC spot continues to gain >2% within 3-7 days on confirmed momentum and IV expansion.",
+    "timeframeDays": 7,
+    "confidence": 0.55,
+    "direction": "long",
+    "refinesHypothesisId": "H-170",
+    "tests": [
+      {
+        "date": "2026-07-30",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "btc_momentum_correlation_breakout",
+    "setupLabel": "BTC momentum / correlation breakout"
+  },
+  {
+    "id": "H-591",
+    "created": "2026-07-30",
+    "description": "Short BTC by selling YES on upside one-touch contracts when smart-money stance is short YES (smart_flow_stance <= -1) and there is at least 1pt of sell-yes edge, following the informed-flow asymmetry FIND (smart selling YES on highs indicates dumb money is overpaying).",
+    "conditions": {
+      "asset": "BTC",
+      "smart_flow_stance": "<= -1",
+      "touch_direction": ">= 1",
+      "sell_yes_edge_pts": ">= 1"
+    },
+    "prediction": "BTC one-touch NO contract price (YES) will decline over the next 7 days as dumb-money enthusiasm fades.",
+    "timeframeDays": 7,
+    "confidence": 0.6,
+    "direction": "short",
+    "originFindingId": "FIND-0020",
+    "themeId": "THEME-0003",
+    "tests": [
+      {
+        "date": "2026-07-30",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0020",
+    "setupLabel": "FIND-linked FIND-0020"
+  },
+  {
+    "id": "H-592",
+    "created": "2026-07-30",
+    "description": "Short OIL by selling YES on upside one-touch NO contracts when sell-yes edge is between 1 and 3 points and the contract expires within 3 days, capturing a tight edge on near-expiry contracts (FIND-0022: 91% WR in discovery).",
+    "conditions": {
+      "asset": "OIL",
+      "touch_direction": ">= 1",
+      "sell_yes_edge_pts": "between 1 and 3",
+      "days_to_expiry": "<= 3"
+    },
+    "prediction": "OIL one-touch NO contracts priced slightly rich decay quickly, yielding profit from selling YES.",
+    "timeframeDays": 7,
+    "confidence": 0.6,
+    "direction": "short",
+    "originFindingId": "FIND-0022",
+    "themeId": "THEME-0001",
+    "tests": [
+      {
+        "date": "2026-07-30",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0022",
+    "setupLabel": "FIND-linked FIND-0022"
+  },
+  {
+    "id": "H-593",
+    "created": "2026-07-30",
+    "description": "Short BTC by selling YES on upside one-touch NO contracts when PM IV exceeds options IV by ≥10 vol points (pm_iv_minus_opt_iv_pts >=10), following the rich PM IV fade cluster (FIND-0021).",
+    "conditions": {
+      "asset": "BTC",
+      "pm_iv_minus_opt_iv_pts": ">= 10",
+      "touch_direction": ">= 1"
+    },
+    "prediction": "BTC NO contracts with rich PM IV are overpriced relative to options market and the YES price will fall within 7 days.",
+    "timeframeDays": 7,
+    "confidence": 0.6,
+    "direction": "short",
+    "originFindingId": "FIND-0021",
+    "themeId": "THEME-0004",
+    "tests": [
+      {
+        "date": "2026-07-30",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0021",
+    "setupLabel": "FIND-linked FIND-0021"
+  },
+  {
+    "id": "H-594",
+    "created": "2026-07-30",
+    "description": "Short GOLD by selling YES on upside one-touch NO contracts when they expire within 30 days, have a visible sell-yes edge, and the direction is above strike, narrowing the profitable gold heatmap (FIND-0036).",
+    "conditions": {
+      "asset": "GOLD",
+      "touch_direction": ">= 1",
+      "days_to_expiry": "<= 30",
+      "sell_yes_edge_pts": ">= 1"
+    },
+    "prediction": "GOLD one-touch NO contracts cheapen as the sell edge erodes near expiration.",
+    "timeframeDays": 14,
+    "confidence": 0.55,
+    "direction": "short",
+    "originFindingId": "FIND-0036",
+    "themeId": "THEME-0001",
+    "tests": [
+      {
+        "date": "2026-07-30",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0036",
+    "setupLabel": "FIND-linked FIND-0036"
   }
 ]

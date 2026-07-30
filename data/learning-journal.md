@@ -2363,3 +2363,40 @@ Gold FUNDING_EXTREME_LONG short thesis intact: funding has intensified from 26.5
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-07-30T07:08:44.779Z, model=deepseek-v4-pro)
+- Hypotheses added: 8 (rejected 2); reviews applied: 6; invalidated assumptions learned: 6; param updates: none.
+- Strategy review: One-touch NO edge (live 4/4, avg +18.4%) and WEEKEND_HL_FUNDING_REVERSION_LONG (live 74% WR, +$1.29) continue to be the strongest performers. PC_RATIO_EXTREME_LOW on BTC and OIL is also solid (70-80% WR). FUNDING_EXTREME_LONG overall is underwater (avg -0.54%, 45% WR) with stops eating small winners. Gold one-touch heatmap shadows (0% WR) and AMZN perp convergence variants (42% scorable WR, many unscorable burns) are clear failure clusters, while BTC PM IV expansion reversion (30% WR) and weekend funding reversion on individual equities (CBRS 50%, AAPL 33%) are below breakeven.
+- Nightly journal: Tonight’s review reinforces that the system’s strongest edges are in time-bound, edge-based one-touch NO sales and the weekend funding reversion on liquid perps. FUNDING_EXTREME_LONG struggles with a 2.5% stop that cuts many green trades; we may need to widen to 3-3.5% once data supports it. AMZN convergence and gold heatmap families need mechanical rethinking, not more threshold searches. The smart-flow asymmetry FIND is promising and deserves its first shadow tests. No parameter changes are made tonight – we will wait for more resolution on the open GOLD short and the weekend reversion shado
+### 2026-07-30 07:28 UTC
+
+**Portfolio:** $98.98 total | Cash $97.98 | 1 open | P&L $2.2157 | 64% win rate (564 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 19 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 12.4pp (was -19.2, now -31.6)
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 698 (383 wins / 315 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 14/26 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.10%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.12%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.05%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.70%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h since last call; daily budget 3/12; next scheduled 2026-07-30T09:28:17.200Z). Mechanical cycle ran normally._
+
+---
+
