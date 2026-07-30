@@ -2238,3 +2238,38 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 0/12; ne
 
 ---
 
+### 2026-07-30 02:28 UTC
+
+**Portfolio:** $99.00 total | Cash $97.00 | 2 open | P&L $2.2360 | 64% win rate (563 trades)
+
+**Opened 1 positions:**
+- OIL short @ $83.71 via spot/spot [OIL spot] (PC_RATIO_EXTREME_LOW)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 16 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 7 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [anomaly] oil_opt_fwd_90d = 7.4 is -2.6 std devs from mean since 2026-04-28 (78.80 ± 27.56)
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 695 (382 wins / 313 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 14/26 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.83%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.20%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+3.70%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.10%)
+
+**LLM analysis:**
+GOLD short (T-1785338895017-voyz) is 11h old, still beneath the 12h minimum for discretionary close. However, funding has round-tripped from +26.5% annualized (extreme) all the way down to 5.48%, well below the +15% entry criterion. Spot has rallied 1.77% against the position. If this persists past the 12h mark, a thesis_invalidated close citing gold_hl_funding_ann would be justified. For now, no action allowed. Note that GOLD FUNDING_EXTREME_LONG live performance is slightly positive ($+0.03 total, 56% win rate), but this individual trade is under pressure. Will reassess at 12h.
+
+---
+
