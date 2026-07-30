@@ -2561,3 +2561,35 @@ Both PC_RATIO_EXTREME_LOW positions (OIL and GOLD) are only 3 hours into their 1
 
 ---
 
+### 2026-07-30 14:28 UTC
+
+**Portfolio:** $98.96 total | Cash $95.96 | 3 open | P&L $2.1995 | 64% win rate (565 trades)
+
+**Opened 1 positions:**
+- BTC short @ $64767 via spot/spot [BTC spot] (PC_RATIO_EXTREME_LOW)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 19 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 701 (384 wins / 317 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 14/26 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.70%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.20%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-4.08%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+Both open short positions (OIL and GOLD) were entered on PC_RATIO_EXTREME_LOW signals. At the latest snapshot (14:00 UTC), OIL's P/C ratio spiked from 0.378 to 1.277 and GOLD's from 0.41 to 0.845, representing a complete reversal of the entry condition. This strongly suggests thesis invalidation, but both positions are only 4 hours old—well within the 12-hour minimum hold for discretionary LLM closes, so no action can be taken now. If the ratios remain elevated beyond the min hold, a thesis_invalidated close should be executed. GOLD spot moved mildly against the position (-0.32%), but no stops were breached. I will continue to monitor the P/C ratios and flag for immediate close once eligible if the reversal holds.
+
+---
+
