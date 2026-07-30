@@ -2622,3 +2622,36 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-07-30 17:28 UTC
+
+**Portfolio:** $98.96 total | Cash $95.96 | 3 open | P&L $2.1995 | 64% win rate (565 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 18 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [anomaly] oil_opt_fwd_90d = 6.2 is -2.6 std devs from mean since 2026-04-28 (78.73 ± 27.68)
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 704 (384 wins / 320 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 14/26 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.11%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-3.70%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.10%)
+
+**LLM analysis:**
+All three open positions are under the 12-hour minimum hold and are not eligible for discretionary close. However, the primary signal-family evidence metrics have round-tripped materially: oil_cl_pc_ratio spiked from 0.38 to 1.32 and now sits at 0.87, gold_gld_pc_ratio moved from 0.41 to 0.56, and btc_ibit_pc_ratio surged from 0.41 to 0.86. By any reasonable invalidation threshold, the extreme-low call-buying thesis appears compromised across OIL, GOLD, and BTC. This suggests the PC_RATIO_EXTREME_LOW signal family may be prone to rapid P/C snapbacks that render the contrarian entry stale well before the planned 120h hold. We should monitor aggressively after the 12h gate and prepare discretionary thesis_invalidated closes if ratios stay elevated. For now, no action allowed.
+
+---
+
