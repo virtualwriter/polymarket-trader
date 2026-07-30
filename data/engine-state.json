@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-30T05:28:23.072Z",
+  "generatedAt": "2026-07-30T06:28:25.322Z",
   "dataFreshness": {
-    "valuationRows": 1989,
-    "latestValuationAt": "2026-07-30T05",
-    "macroRows": 1987,
+    "valuationRows": 1990,
+    "latestValuationAt": "2026-07-30T06",
+    "macroRows": 1988,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-30T05"
+    "latestInstrumentSnapshotAt": "2026-07-30T06"
   },
   "portfolio": {
-    "cash": 96.9964,
-    "openPositions": 2,
+    "cash": 97.9761,
+    "openPositions": 1,
     "realizedPnl": 2.236,
     "totalTrades": 563,
     "winRatePct": 64.1,
-    "unrealizedPnl": -0.0196
+    "unrealizedPnl": -0.0065
   },
   "openPositions": [
     {
@@ -22,32 +22,15 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -0.88,
-      "currentPrice": 4048,
-      "underlyingPrice": 4048,
+      "pnlPct": -0.65,
+      "currentPrice": 4039,
+      "underlyingPrice": 4039,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "gold_gc_spot",
         "gold_hl_funding_ann"
-      ]
-    },
-    {
-      "positionId": "T-1785378517352-vx8w",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "short",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -1.08,
-      "currentPrice": 84.61,
-      "underlyingPrice": 84.61,
-      "targetPct": 3,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_cl_pc_ratio"
       ]
     }
   ],
@@ -161,10 +144,10 @@
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "enabled": true,
-      "weight": 0.5412,
-      "trades": 25,
+      "weight": 0.5407,
+      "trades": 26,
       "wins": 14,
-      "avgPnlPct": 0.2261,
+      "avgPnlPct": 0.1393,
       "disabledAssets": [
         "AMZN"
       ]
@@ -192,9 +175,9 @@
   ],
   "blockedSummary": {
     "openCount": 52,
-    "resolvedCount": 697,
+    "resolvedCount": 698,
     "wouldHaveWon": 383,
-    "wouldHaveLost": 314,
+    "wouldHaveLost": 315,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -262,24 +245,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.05,
-        "resolvedAt": "2026-07-30T01:28:12.335Z",
-        "marketQuality": {
-          "yesBid": 0.05,
-          "yesAsk": 0.06,
-          "yesSpread": 0.01,
-          "liquidity": 21780.37,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
@@ -409,9 +374,45 @@
           "liquidity": 28158.06,
           "flags": []
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.7,
+        "resolvedAt": "2026-07-30T06:28:24.953Z",
+        "marketQuality": {
+          "yesBid": 0.059,
+          "yesAsk": 0.089,
+          "yesSpread": 0.03,
+          "liquidity": 9008.62,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $7,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.03,
+          "yesAsk": 0.05,
+          "yesSpread": 0.02,
+          "liquidity": 37241.66,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.8pt on ETH, spread 2.0c, liquidity 37242. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -523,22 +524,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.1pt on BTC, spread 2.0c, liquidity 34378. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-wti-hit-in-august-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $120 in August?",
-        "marketQuality": {
-          "yesBid": 0.059,
-          "yesAsk": 0.089,
-          "yesSpread": 0.03,
-          "liquidity": 9008.62,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.3pt on OIL, spread 3.0c, liquidity 9009. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
