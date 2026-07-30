@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-30T07:28:17.101Z",
+  "generatedAt": "2026-07-30T08:28:21.274Z",
   "dataFreshness": {
-    "valuationRows": 1991,
-    "latestValuationAt": "2026-07-30T07",
-    "macroRows": 1989,
+    "valuationRows": 1992,
+    "latestValuationAt": "2026-07-30T08",
+    "macroRows": 1990,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-30T07"
+    "latestInstrumentSnapshotAt": "2026-07-30T08"
   },
   "portfolio": {
     "cash": 97.9761,
@@ -13,7 +13,7 @@
     "realizedPnl": 2.2157,
     "totalTrades": 564,
     "winRatePct": 64,
-    "unrealizedPnl": -0.009
+    "unrealizedPnl": -0.014
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -0.9,
-      "currentPrice": 4049,
-      "underlyingPrice": 4049,
+      "pnlPct": -1.4,
+      "currentPrice": 4069,
+      "underlyingPrice": 4069,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -174,10 +174,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 52,
-    "resolvedCount": 698,
+    "openCount": 51,
+    "resolvedCount": 699,
     "wouldHaveWon": 383,
-    "wouldHaveLost": 315,
+    "wouldHaveLost": 316,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -245,24 +245,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.09,
-        "resolvedAt": "2026-07-30T01:28:12.335Z",
-        "marketQuality": {
-          "yesBid": 0.08,
-          "yesAsk": 0.09,
-          "yesSpread": 0.01,
-          "liquidity": 48182.48,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -393,6 +375,24 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.2,
+        "resolvedAt": "2026-07-30T08:28:20.885Z",
+        "marketQuality": {
+          "yesBid": 0.17,
+          "yesAsk": 0.18,
+          "yesSpread": 0.01,
+          "liquidity": 81632.84,
+          "flags": []
         }
       }
     ],
