@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-30T10:28:20.006Z",
+  "generatedAt": "2026-07-30T11:28:25.430Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.2199044136494856,
       "thesis": "OIL P/C ratio 0.38 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 84.37,
+      "entryPrice": 83.55,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -26,7 +26,7 @@
       "confidence": 0.1622245674463419,
       "thesis": "GOLD P/C ratio 0.41 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4078,
+      "entryPrice": 4079,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -41,7 +41,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 84.37,
+      "entryPrice": 83.55,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -62,7 +62,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4078,
+      "entryPrice": 4079,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -91,47 +91,45 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": -2,
         "byAsset": {
+          "OIL": -1,
           "GOLD": -1
         },
         "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1
+          "PC_RATIO_EXTREME_LOW": -2
         },
         "byVenue": {
-          "hyperliquid": -1
+          "spot": -2
         },
         "byCluster": {
-          "commodity": -1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1
+          "commodity": -2,
+          "oil_delta": -1,
+          "options_sentiment": -2,
+          "spot_venue": -2,
+          "gold_delta": -1
         }
       },
       "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": -2,
         "byAsset": {
-          "GOLD": -1,
-          "OIL": 0
+          "OIL": -1,
+          "GOLD": -1
         },
         "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1,
-          "PC_RATIO_EXTREME_LOW": 0
+          "PC_RATIO_EXTREME_LOW": -2
         },
         "byVenue": {
-          "hyperliquid": -1,
-          "spot": 0
+          "spot": -2
         },
         "byCluster": {
-          "commodity": -1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1,
-          "oil_delta": 0,
-          "options_sentiment": 0,
-          "spot_venue": 0
+          "commodity": -2,
+          "oil_delta": -1,
+          "options_sentiment": -2,
+          "spot_venue": -2,
+          "gold_delta": -1
         }
       },
       "warnings": []
@@ -150,45 +148,45 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": -2,
         "byAsset": {
+          "OIL": -1,
           "GOLD": -1
         },
         "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1
+          "PC_RATIO_EXTREME_LOW": -2
         },
         "byVenue": {
-          "hyperliquid": -1
+          "spot": -2
         },
         "byCluster": {
-          "commodity": -1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1
+          "commodity": -2,
+          "oil_delta": -1,
+          "options_sentiment": -2,
+          "spot_venue": -2,
+          "gold_delta": -1
         }
       },
       "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": -2,
         "byAsset": {
+          "OIL": -1,
           "GOLD": -1
         },
         "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1,
-          "PC_RATIO_EXTREME_LOW": 0
+          "PC_RATIO_EXTREME_LOW": -2
         },
         "byVenue": {
-          "hyperliquid": -1,
-          "spot": 0
+          "spot": -2
         },
         "byCluster": {
-          "commodity": -1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1,
-          "options_sentiment": 0,
-          "spot_venue": 0
+          "commodity": -2,
+          "oil_delta": -1,
+          "options_sentiment": -2,
+          "spot_venue": -2,
+          "gold_delta": -1
         }
       },
       "warnings": []
@@ -230,27 +228,42 @@
   ],
   "llmCloseEligibility": [
     {
-      "positionId": "T-1785338895017-voyz",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
+      "positionId": "T-1785407328518-u6to",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "asset": "OIL",
+      "venue": "spot",
       "direction": "short",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
       ],
+      "hoursOpen": 0.99,
+      "hoursToExpiry": 119.01,
+      "plannedHoldHours": 120,
+      "elapsedHoldPct": 0.0083,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+    },
+    {
+      "positionId": "T-1785407328519-59d7",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "short",
+      "allowed": false,
+      "allowedCategories": [],
       "evidenceColumns": [
         "gold_gc_spot",
-        "gold_hl_funding_ann"
+        "gold_gld_pc_ratio"
       ],
-      "hoursOpen": 19,
-      "hoursToExpiry": 53,
-      "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.2639,
+      "hoursOpen": 0.99,
+      "hoursToExpiry": 119.01,
+      "plannedHoldHours": 120,
+      "elapsedHoldPct": 0.0083,
       "minHoldHours": 12,
-      "reason": "Mechanical FUNDING_EXTREME_LONG setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     }
   ]
 }

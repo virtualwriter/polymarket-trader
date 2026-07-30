@@ -1,36 +1,53 @@
 {
-  "generatedAt": "2026-07-30T10:28:19.898Z",
+  "generatedAt": "2026-07-30T11:28:25.336Z",
   "dataFreshness": {
-    "valuationRows": 1993,
-    "latestValuationAt": "2026-07-30T10",
-    "macroRows": 1991,
+    "valuationRows": 1994,
+    "latestValuationAt": "2026-07-30T11",
+    "macroRows": 1992,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-30T10"
+    "latestInstrumentSnapshotAt": "2026-07-30T11"
   },
   "portfolio": {
-    "cash": 97.9761,
-    "openPositions": 1,
-    "realizedPnl": 2.2157,
-    "totalTrades": 564,
-    "winRatePct": 64,
-    "unrealizedPnl": -0.0162
+    "cash": 96.9599,
+    "openPositions": 2,
+    "realizedPnl": 2.1995,
+    "totalTrades": 565,
+    "winRatePct": 63.9,
+    "unrealizedPnl": 0.0095
   },
   "openPositions": [
     {
-      "positionId": "T-1785338895017-voyz",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
+      "positionId": "T-1785407328518-u6to",
+      "asset": "OIL",
+      "venue": "spot",
       "direction": "short",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -1.62,
-      "currentPrice": 4078,
-      "underlyingPrice": 4078,
-      "targetPct": 5,
-      "stopPct": 2.5,
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "pnlPct": 0.97,
+      "currentPrice": 83.55,
+      "underlyingPrice": 83.55,
+      "targetPct": 3,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1785407328519-59d7",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "short",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "pnlPct": -0.02,
+      "currentPrice": 4079,
+      "underlyingPrice": 4079,
+      "targetPct": 3,
+      "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "gold_gc_spot",
-        "gold_hl_funding_ann"
+        "gold_gld_pc_ratio"
       ]
     }
   ],
@@ -56,10 +73,10 @@
     {
       "type": "FUNDING_EXTREME_LONG",
       "enabled": true,
-      "weight": 0.4966,
-      "trades": 33,
+      "weight": 0.4883,
+      "trades": 34,
       "wins": 15,
-      "avgPnlPct": -0.5367,
+      "avgPnlPct": -0.5684,
       "disabledAssets": [
         "AMZN",
         "HYPE"
@@ -174,7 +191,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 50,
+    "openCount": 51,
     "resolvedCount": 700,
     "wouldHaveWon": 383,
     "wouldHaveLost": 317,

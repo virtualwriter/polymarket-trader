@@ -1,23 +1,10 @@
 {
-  "generatedAt": "2026-07-30T10:28:48.515Z",
+  "generatedAt": "2026-07-30T11:28:25.455Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1785338895017-voyz",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "gold_hl_funding_ann"
-      ],
-      "thesis": "Gold funding annualized has dropped from 26.48% at entry to 11.82%, crossing back below the 15% entry threshold and invalidating the extreme-long-crowding thesis. Closing short to limit further risk."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_LOW",
@@ -28,7 +15,7 @@
       "confidence": 0.2199044136494856,
       "thesis": "OIL P/C ratio 0.38 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 84.37,
+      "entryPrice": 83.55,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -42,7 +29,7 @@
       "confidence": 0.1622245674463419,
       "thesis": "GOLD P/C ratio 0.41 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4078,
+      "entryPrice": 4079,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -52,6 +39,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
