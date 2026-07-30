@@ -1,11 +1,38 @@
 {
-  "generatedAt": "2026-07-30T08:28:21.380Z",
+  "generatedAt": "2026-07-30T10:28:48.515Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1785338895017-voyz",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_hl_funding_ann"
+      ],
+      "thesis": "Gold funding annualized has dropped from 26.48% at entry to 11.82%, crossing back below the 15% entry threshold and invalidating the extreme-long-crowding thesis. Closing short to limit further risk."
+    }
+  ],
   "entrySignals": [
+    {
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "short",
+      "strength": 0.4066666666666667,
+      "confidence": 0.2199044136494856,
+      "thesis": "OIL P/C ratio 0.38 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 84.37,
+      "targetPct": 5,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    },
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "asset": "GOLD",
@@ -15,31 +42,16 @@
       "confidence": 0.1622245674463419,
       "thesis": "GOLD P/C ratio 0.41 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4069,
+      "entryPrice": 4078,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
-    },
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.19257142857142853,
-      "confidence": 0.09562778156075083,
-      "thesis": "GOLD HL funding 21.7% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4069,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

@@ -2432,3 +2432,42 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-07-30 10:28 UTC
+
+**Portfolio:** $98.96 total | Cash $96.96 | 2 open | P&L $2.1995 | 64% win rate (565 trades)
+
+**Closed 1 trades:**
+- ❌ GOLD short via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG) → llm_decision: $-0.0162 (-1.6%, market -0.0165, funding 0.0003)
+
+**Opened 2 positions:**
+- OIL short @ $84.37 via spot/spot [OIL spot] (PC_RATIO_EXTREME_LOW)
+- GOLD short @ $4078 via spot/spot [GOLD spot] (PC_RATIO_EXTREME_LOW)
+
+**Signal weight changes:**
+- ⚠ FUNDING_EXTREME_LONG accuracy dropped to 44% over 34 trades. Weight reduced to 0.49.
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 19 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 700 (383 wins / 317 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 14/26 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.05%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.70%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.20%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-4.08%)
+
+**LLM analysis:**
+The GOLD funding extreme short entry from 19h ago has seen its primary signal (funding rate) collapse from +26.5% to +11.8%, slipping well below the +15% trigger and signaling the crowding has dissipated. Spot gold drifted higher, but that alone is not a thesis killer; the funding normalization is. This mirrors earlier patterns where funding extremes faded fast, leaving fading shorts with small losses. Nightly research may want to re-examine the hold period for funding trades when the reversal is rapid and the original edge evaporates before price mean-reverts.
+
+---
+
