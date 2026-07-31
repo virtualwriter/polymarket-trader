@@ -1,5 +1,21 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [],
+  "rejectedCloses": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1785421722864-2q8z",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_ibit_pc_ratio"
+        ],
+        "thesis": "IBIT P/C ratio has surged from 0.414 at entry to 0.789, far beyond the extreme low threshold, meaning the heavy call buying that triggered the contrarian short has dissipated and the signal condition no longer holds."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+    }
+  ],
   "skippedTrades": []
 }

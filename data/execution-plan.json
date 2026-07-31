@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-31T04:28:21.789Z",
+  "generatedAt": "2026-07-31T05:29:09.582Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,21 +11,37 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.48799999999999993,
-      "confidence": 0.2382769266528423,
-      "thesis": "GOLD HL funding 32.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.6077142857142858,
+      "confidence": 0.2967301071373511,
+      "thesis": "GOLD HL funding 36.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4082,
+      "entryPrice": 4085,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
       "leverage": 1
     }
   ],
-  "rejectedLlmActions": [],
+  "rejectedLlmActions": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1785421722864-2q8z",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_ibit_pc_ratio"
+        ],
+        "thesis": "IBIT P/C ratio has surged from 0.414 at entry to 0.789, far beyond the extreme low threshold, meaning the heavy call buying that triggered the contrarian short has dissipated and the signal condition no longer holds."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+    }
+  ],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
   ]
 }

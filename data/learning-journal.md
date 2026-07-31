@@ -2975,3 +2975,39 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-31 05:29 UTC
+
+**Portfolio:** $98.96 total | Cash $96.96 | 2 open | P&L $2.1960 | 64% win rate (567 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 18 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [anomaly] oil_opt_fwd_90d = 147.5 is 2.5 std devs from mean since 2026-04-28 (78.55 ± 28.11)
+
+**Blocked signal learning:**
+- Open blocked shadows: 54
+- Resolved blocked shadows: 708 (386 wins / 322 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 15/27 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-3.85%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.10%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+3.12%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit target (+3.62%)
+
+**LLM analysis:**
+Closed BTC short (PC_RATIO_EXTREME_LOW) early under thesis_invalidated, as the IBIT P/C ratio fully normalized to 0.79, invalidating the extreme low setup. The trade was modestly profitable (+0.70%), consistent with the thesis playing out. GOLD short (FUNDING_EXTREME_LONG, -0.61% from entry with funding at 36.27%) cannot be touched until exceeding the 12-hour minimum hold; funding remains extremely elevated, reinforcing the short thesis, but we will reassess at next review. The macro state continues to be VERY BEARISH, which could pressure GOLD longs if funds unwind, but we must wait.
+
+**LLM close rejections today (2026-07-31, token-burn signal):**
+- Total rejected close instructions: 1
+- Top signal/asset pairs: PC_RATIO_EXTREME_LOW / BTC (1)
+
+---
+
