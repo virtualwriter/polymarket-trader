@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-31T12:28:51.542Z",
+  "generatedAt": "2026-07-31T13:28:16.175Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -11,37 +11,21 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.4605714285714286,
-      "confidence": 0.22488431250842028,
-      "thesis": "GOLD HL funding 31.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.8314285714285715,
+      "confidence": 0.4059636162527935,
+      "thesis": "GOLD HL funding 44.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4055,
+      "entryPrice": 4047,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
       "leverage": 1
     }
   ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1785421722864-2q8z",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_ibit_pc_ratio"
-        ],
-        "thesis": "The PC_RATIO_EXTREME_LOW short entry relied on extreme call buying (P/C ratio 0.414). The ratio has now risen to 0.789, crossing well above the entry threshold and normalizing. The contrarian signal is no longer present, so the thesis is invalidated despite the favorable price move."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
