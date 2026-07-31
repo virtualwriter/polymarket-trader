@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-07-31T20:28:17.731Z",
+  "generatedAt": "2026-07-31T21:28:17.110Z",
   "dataFreshness": {
-    "valuationRows": 2024,
-    "latestValuationAt": "2026-07-31T20",
-    "macroRows": 2022,
+    "valuationRows": 2025,
+    "latestValuationAt": "2026-07-31T21",
+    "macroRows": 2023,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-31T20"
+    "latestInstrumentSnapshotAt": "2026-07-31T21"
   },
   "portfolio": {
-    "cash": 97.9872,
-    "openPositions": 1,
+    "cash": 95.9872,
+    "openPositions": 3,
     "realizedPnl": 2.2267,
     "totalTrades": 568,
     "winRatePct": 63.9,
-    "unrealizedPnl": 0.0145
+    "unrealizedPnl": 0.015
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 1.45,
-      "currentPrice": 4051,
-      "underlyingPrice": 4051,
+      "pnlPct": 1.5,
+      "currentPrice": 4049,
+      "underlyingPrice": 4049,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -32,6 +32,34 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ]
+    },
+    {
+      "positionId": "WF-1785533296765-EBAY-5m6c",
+      "asset": "EBAY",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 113.88,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1785533296765-SKHX-xuik",
+      "asset": "SKHX",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 1084.2,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
     }
   ],
   "signalHealth": [
@@ -174,7 +202,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 56,
+    "openCount": 57,
     "resolvedCount": 714,
     "wouldHaveWon": 387,
     "wouldHaveLost": 327,
@@ -400,22 +428,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $2,500 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.42,
-          "yesAsk": 0.44,
-          "yesSpread": 0.02,
-          "liquidity": 17682.8,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 5.9pt on ETH, spread 2.0c, liquidity 17683. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "OIL",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-price-will-wti-hit-in-july-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $90 in July?",
@@ -525,6 +537,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.2pt on OIL, spread 2.0c, liquidity 5379. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "GOLD",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $5,000 by end of December?",
+        "marketQuality": {
+          "yesBid": 0.24,
+          "yesAsk": 0.25,
+          "yesSpread": 0.01,
+          "liquidity": 15665.72,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 9.6pt after haircuts. CBOE gap 10.6pt, CME gap 10.6pt, source agreement both_positive, spread 1.0c, liquidity 15666. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
