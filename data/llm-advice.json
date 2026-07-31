@@ -1,5 +1,21 @@
 {
   "acceptedCloses": [],
-  "rejectedCloses": [],
+  "rejectedCloses": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1785421722864-2q8z",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_ibit_pc_ratio"
+        ],
+        "thesis": "The PC_RATIO_EXTREME_LOW short entry relied on extreme call buying (P/C ratio 0.414). The ratio has now risen to 0.789, crossing well above the entry threshold and normalizing. The contrarian signal is no longer present, so the thesis is invalidated despite the favorable price move."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+    }
+  ],
   "skippedTrades": []
 }
