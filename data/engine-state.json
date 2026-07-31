@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-07-31T15:28:16.148Z",
+  "generatedAt": "2026-07-31T16:28:21.966Z",
   "dataFreshness": {
-    "valuationRows": 2019,
-    "latestValuationAt": "2026-07-31T15",
-    "macroRows": 2017,
+    "valuationRows": 2020,
+    "latestValuationAt": "2026-07-31T16",
+    "macroRows": 2018,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-07-31T15"
+    "latestInstrumentSnapshotAt": "2026-07-31T16"
   },
   "portfolio": {
     "cash": 97.9872,
@@ -13,7 +13,7 @@
     "realizedPnl": 2.2267,
     "totalTrades": 568,
     "winRatePct": 63.9,
-    "unrealizedPnl": 0.0155
+    "unrealizedPnl": 0.0145
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 1.55,
-      "currentPrice": 4047,
-      "underlyingPrice": 4047,
+      "pnlPct": 1.45,
+      "currentPrice": 4051,
+      "underlyingPrice": 4051,
       "targetPct": 5,
       "stopPct": 2.5,
       "closeReasonIfMechanical": null,
@@ -174,10 +174,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 57,
-    "resolvedCount": 711,
-    "wouldHaveWon": 386,
-    "wouldHaveLost": 325,
+    "openCount": 55,
+    "resolvedCount": 713,
+    "wouldHaveWon": 387,
+    "wouldHaveLost": 326,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -245,46 +245,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.1,
-        "resolvedAt": "2026-07-30T17:28:21.225Z",
-        "marketQuality": {
-          "yesBid": 0.09,
-          "yesAsk": 0.1,
-          "yesSpread": 0.01,
-          "liquidity": 92753.86,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -3.85,
-        "resolvedAt": "2026-07-31T01:28:17.003Z",
-        "marketQuality": {
-          "yesBid": 0.74,
-          "yesAsk": 0.75,
-          "yesSpread": 0.01,
-          "liquidity": 67152.94,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -397,9 +357,63 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 0,
+        "resolvedAt": "2026-07-31T16:28:21.622Z",
+        "marketQuality": {
+          "yesBid": 0.11,
+          "yesAsk": 0.12,
+          "yesSpread": 0.01,
+          "liquidity": 37495.92,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -2.35,
+        "resolvedAt": "2026-07-31T16:28:21.622Z",
+        "marketQuality": {
+          "yesBid": 0.15,
+          "yesAsk": 0.17,
+          "yesSpread": 0.02,
+          "liquidity": 29947.46,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-in-july-2026 — NO — Will Ethereum reach $2,000 in July?",
+        "marketQuality": {
+          "yesBid": 0.63,
+          "yesAsk": 0.65,
+          "yesSpread": 0.02,
+          "liquidity": 23280.43,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.9pt on ETH, spread 2.0c, liquidity 23280. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -511,22 +525,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.3pt on GOLD, spread 2.0c, liquidity 47729. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $3,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.15,
-          "yesAsk": 0.17,
-          "yesSpread": 0.02,
-          "liquidity": 29947.46,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.0pt on ETH, spread 2.0c, liquidity 29947. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
