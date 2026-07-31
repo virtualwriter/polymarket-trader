@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-31T13:28:16.156Z",
+  "generatedAt": "2026-07-31T14:28:25.428Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.8314285714285715,
-      "confidence": 0.4059636162527935,
-      "thesis": "GOLD HL funding 44.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.8185714285714285,
+      "confidence": 0.3996858283725956,
+      "thesis": "GOLD HL funding 43.6% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4047,
+      "entryPrice": 4044,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
@@ -28,7 +28,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4047,
+      "entryPrice": 4044,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -57,25 +57,18 @@
         "hyperliquid_venue"
       ],
       "current": {
-        "totalGross": 2,
-        "totalNet": -2,
+        "totalGross": 1,
+        "totalNet": -1,
         "byAsset": {
-          "BTC": -1,
           "GOLD": -1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_LOW": -1,
           "FUNDING_EXTREME_LONG": -1
         },
         "byVenue": {
-          "spot": -1,
           "hyperliquid": -1
         },
         "byCluster": {
-          "btc_delta": -1,
-          "options_sentiment": -1,
-          "risk_on": -1,
-          "spot_venue": -1,
           "commodity": -1,
           "funding_reversion": -1,
           "gold_delta": -1,
@@ -83,25 +76,18 @@
         }
       },
       "afterCandidate": {
-        "totalGross": 2,
-        "totalNet": -2,
+        "totalGross": 1,
+        "totalNet": -1,
         "byAsset": {
-          "BTC": -1,
           "GOLD": -1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_LOW": -1,
           "FUNDING_EXTREME_LONG": -1
         },
         "byVenue": {
-          "spot": -1,
           "hyperliquid": -1
         },
         "byCluster": {
-          "btc_delta": -1,
-          "options_sentiment": -1,
-          "risk_on": -1,
-          "spot_venue": -1,
           "commodity": -1,
           "funding_reversion": -1,
           "gold_delta": -1,
@@ -131,29 +117,6 @@
   ],
   "llmCloseEligibility": [
     {
-      "positionId": "T-1785421722864-2q8z",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "btc_spot",
-        "btc_ibit_pc_ratio"
-      ],
-      "hoursOpen": 22.99,
-      "hoursToExpiry": 97.01,
-      "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.1916,
-      "minHoldHours": 12,
-      "reason": "Mechanical PC_RATIO_EXTREME_LOW setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    },
-    {
       "positionId": "T-1785454117629-i8b1",
       "signalType": "FUNDING_EXTREME_LONG",
       "asset": "GOLD",
@@ -169,10 +132,10 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 13.99,
-      "hoursToExpiry": 58.01,
+      "hoursOpen": 15,
+      "hoursToExpiry": 57,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.1944,
+      "elapsedHoldPct": 0.2083,
       "minHoldHours": 12,
       "reason": "Mechanical FUNDING_EXTREME_LONG setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     }
