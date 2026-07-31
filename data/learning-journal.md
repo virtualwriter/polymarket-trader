@@ -3076,3 +3076,40 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-07-31 08:29 UTC
+
+**Portfolio:** $98.96 total | Cash $96.96 | 2 open | P&L $2.1960 | 64% win rate (567 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 18 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 2.36 is 5.0 std devs from mean (0.12 ± 0.45)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.71 to 0.31. Rolling correlation: 24h=0.78, 7d=0.64, 30d=0.09. Current 24h corr is at 87th pct of last 30 daily 24h-rolling values (range -0.49 to 0.87).
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 711 (386 wins / 325 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 15/27 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit target (+3.62%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-2.17%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.06%)
+
+**LLM analysis:**
+BTC PC_RATIO_EXTREME_LOW thesis invalidated: P/C ratio round-tripped from 0.41 to 0.79, shifting from extreme low to high territory. Exited at +1.30% before mechanical target. GOLD FUNDING_EXTREME_LONG is progressing well (+1.17%) but funding has normalized below the 15% entry trigger (now 13.6%). Cannot yet close due to 12h min hold; will re-evaluate next hour. Gold funding drop is notable but spot decline confirms the fade; if funding stays low post-12h, thesis may be invalidated, but price action still supports the short.
+
+**LLM close rejections today (2026-07-31, token-burn signal):**
+- Total rejected close instructions: 2
+- Top signal/asset pairs: PC_RATIO_EXTREME_LOW / BTC (2)
+
+---
+
