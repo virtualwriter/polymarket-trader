@@ -1,5 +1,5 @@
 {
-  "cash": 94.02878369695294,
+  "cash": 92.02878369695294,
   "positions": [
     {
       "id": "WF-1785533296765-EBAY-5m6c",
@@ -8,7 +8,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 113.88,
-      "currentPrice": 114,
+      "currentPrice": 113.86,
       "entryUnderlyingPrice": 113.88,
       "size": 1,
       "leverage": 5,
@@ -21,7 +21,7 @@
       "instrumentType": "hl_perp",
       "instrumentId": "EBAY",
       "instrumentLabel": "HL EBAY Builder DEX stock perp",
-      "fundingPnlAccrued": -0.00001054908675799087,
+      "fundingPnlAccrued": -0.00004179908675799087,
       "entryConfidence": 0.5,
       "peakPnlPct": 0.6962438531788321
     },
@@ -32,7 +32,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 94.879,
-      "currentPrice": 95.118,
+      "currentPrice": 94.971,
       "entryUnderlyingPrice": 94.879,
       "size": 1,
       "leverage": 5,
@@ -45,7 +45,7 @@
       "instrumentType": "hl_perp",
       "instrumentId": "ZM",
       "instrumentLabel": "HL ZM Builder DEX stock perp",
-      "fundingPnlAccrued": 0.001220964611872146,
+      "fundingPnlAccrued": 0.0014388647260273973,
       "entryConfidence": 0.5,
       "peakPnlPct": 1.3815954019432835
     },
@@ -56,8 +56,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 127.07,
-      "currentPrice": 127.07,
-      "currentUnderlyingPrice": 127.07,
+      "currentPrice": 127.18,
       "entryUnderlyingPrice": 127.07,
       "size": 1,
       "leverage": 5,
@@ -71,7 +70,8 @@
       "instrumentId": "BX",
       "instrumentLabel": "HL BX Builder DEX stock perp",
       "fundingPnlAccrued": 0,
-      "entryConfidence": 0.5
+      "entryConfidence": 0.5,
+      "peakPnlPct": 0.43283229715909993
     },
     {
       "id": "WF-1785547692146-MSFT-nmis",
@@ -80,8 +80,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 460.58,
-      "currentPrice": 460.58,
-      "currentUnderlyingPrice": 460.58,
+      "currentPrice": 460,
       "entryUnderlyingPrice": 460.58,
       "size": 1,
       "leverage": 5,
@@ -95,7 +94,8 @@
       "instrumentId": "MSFT",
       "instrumentLabel": "HL MSFT Builder DEX stock perp",
       "fundingPnlAccrued": 0,
-      "entryConfidence": 0.5
+      "entryConfidence": 0.5,
+      "peakPnlPct": -0.6296408875765167
     },
     {
       "id": "WF-1785547692146-ORCL-8aa6",
@@ -104,8 +104,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 129.09,
-      "currentPrice": 129.09,
-      "currentUnderlyingPrice": 129.09,
+      "currentPrice": 128.98,
       "entryUnderlyingPrice": 129.09,
       "size": 1,
       "leverage": 5,
@@ -119,6 +118,55 @@
       "instrumentId": "ORCL",
       "instrumentLabel": "HL ORCL Builder DEX stock perp",
       "fundingPnlAccrued": 0,
+      "entryConfidence": 0.5,
+      "peakPnlPct": -0.4260593384460982
+    },
+    {
+      "id": "WF-1785551294293-CBRS-0e2k",
+      "openedAt": "2026-08-01T02:28:14.293Z",
+      "asset": "CBRS",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 195.48,
+      "currentPrice": 195.48,
+      "currentUnderlyingPrice": 195.48,
+      "entryUnderlyingPrice": 195.48,
+      "size": 1,
+      "leverage": 5,
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "hypothesisId": null,
+      "thesis": "[WEEKEND HL FUNDING LIVE] CBRS Builder DEX stock perp funding -52.3% annualized in mid band [-100%, -50%] during US-equity-closed entry window (Fri 4:00pm ET → Sun; no Mon pre-open entries). Live tracked long at 5x; exit when margin P&L >= 3%, funding >= 10%, Mon 9:30am ET window close, or held 24h.",
+      "targetPct": 3,
+      "stopPct": 100,
+      "expiryDate": "2026-08-02T02:28:14.293Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "CBRS",
+      "instrumentLabel": "HL CBRS Builder DEX stock perp",
+      "fundingPnlAccrued": 0,
+      "entryConfidence": 0.5
+    },
+    {
+      "id": "WF-1785551294293-RIVN-yedy",
+      "openedAt": "2026-08-01T02:28:14.293Z",
+      "asset": "RIVN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 15.352,
+      "currentPrice": 15.352,
+      "currentUnderlyingPrice": 15.352,
+      "entryUnderlyingPrice": 15.352,
+      "size": 1,
+      "leverage": 5,
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "hypothesisId": null,
+      "thesis": "[WEEKEND HL FUNDING LIVE] RIVN Builder DEX stock perp funding -66.3% annualized in mid band [-100%, -50%] during US-equity-closed entry window (Fri 4:00pm ET → Sun; no Mon pre-open entries). Live tracked long at 5x; exit when margin P&L >= 3%, funding >= 10%, Mon 9:30am ET window close, or held 24h.",
+      "targetPct": 3,
+      "stopPct": 100,
+      "expiryDate": "2026-08-02T02:28:14.293Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "RIVN",
+      "instrumentLabel": "HL RIVN Builder DEX stock perp",
+      "fundingPnlAccrued": 0,
       "entryConfidence": 0.5
     }
   ],
@@ -126,5 +174,5 @@
   "totalTrades": 570,
   "winCount": 365,
   "lossCount": 205,
-  "lastUpdated": "2026-08-01T01:28:12.567Z"
+  "lastUpdated": "2026-08-01T02:28:14.667Z"
 }
