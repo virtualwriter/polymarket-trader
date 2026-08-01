@@ -4328,3 +4328,44 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 7/12; ne
 
 ---
 
+### 2026-08-01 22:28 UTC
+
+**Portfolio:** $98.73 total | Cash $96.73 | 2 open | P&L $1.9694 | 63% win rate (602 trades)
+
+**Closed 4 trades:**
+- ❌ ZM long via hyperliquid/hl_perp [HL ZM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0265 (-2.7%, market -0.0288, funding 0.0023)
+- ❌ RIVN long via hyperliquid/hl_perp [HL RIVN Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.1175 (-11.7%, market -0.1237, funding 0.0062)
+- ❌ INTC long via hyperliquid/hl_perp [HL INTC Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0281 (-2.8%, market -0.0293, funding 0.0011)
+- ✅ MRVL long via hyperliquid/hl_perp [HL MRVL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0104 (1.0%, market 0.0100, funding 0.0004)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved wider by 9.8pp (was -19.2, now -9.4)
+- [anomaly] oil_hl_funding_ann = -176.33 is -2.5 std devs from mean since 2026-04-28 (-6.88 ± 67.82)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.72 to 0.25. Rolling correlation: 24h=-0.37, 7d=0.63, 30d=0.03. Current 24h corr is at 17th pct of last 30 daily 24h-rolling values (range -0.78 to 0.96).
+- [correlation_flip] GOLD-OIL correlation shifted from 0.19 to -0.26. Rolling correlation: 24h=0.22, 7d=0.05, 30d=-0.48. Current 24h corr is at 70th pct of last 30 daily 24h-rolling values (range -0.93 to 0.81).
+
+**Blocked signal learning:**
+- Open blocked shadows: 63
+- Resolved blocked shadows: 723 (393 wins / 330 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 15/28 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-2.22%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+5.41%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+21.57%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+59.09%)
+
+**LLM analysis:**
+No discretionary closes are allowed this review. DKNG is a mechanical WEEKEND_HL_FUNDING_REVERSION_LONG position with locked exits, and GOLD short (FUNDING_EXTREME_LONG) is only 3h old, well below the 12h minimum hold. The GOLD funding metric has collapsed from 41.96% to 5.48%, which strongly suggests the overcrowded-long thesis has already played out in price – but we cannot act until minhold expires. I will flag for the next review that this trade may become thesis-invalidated once eligible. The DKNG trade is still early and the signal family shows a solid 75% win rate historically; no action needed.
+
+---
+
