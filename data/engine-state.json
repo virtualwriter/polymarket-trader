@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-01T05:28:10.639Z",
+  "generatedAt": "2026-08-01T06:28:25.755Z",
   "dataFreshness": {
-    "valuationRows": 2032,
-    "latestValuationAt": "2026-08-01T05",
-    "macroRows": 2030,
+    "valuationRows": 2033,
+    "latestValuationAt": "2026-08-01T06",
+    "macroRows": 2031,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-01T05"
+    "latestInstrumentSnapshotAt": "2026-08-01T06"
   },
   "portfolio": {
-    "cash": 95.062,
+    "cash": 95.0647,
     "openPositions": 4,
-    "realizedPnl": 2.3014,
-    "totalTrades": 573,
-    "winRatePct": 64.2,
-    "unrealizedPnl": -0.0254
+    "realizedPnl": 2.3041,
+    "totalTrades": 574,
+    "winRatePct": 64.3,
+    "unrealizedPnl": -0.0249
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -1.56,
-      "currentPrice": 113.5,
+      "pnlPct": -2.24,
+      "currentPrice": 113.33,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -36,22 +36,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.15,
-      "currentPrice": 94.859,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "WF-1785547692146-ORCL-8aa6",
-      "asset": "ORCL",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.62,
-      "currentPrice": 128.93,
+      "pnlPct": -0.14,
+      "currentPrice": 94.793,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -64,8 +50,22 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.51,
-      "currentPrice": 195.27,
+      "pnlPct": -0.1,
+      "currentPrice": 195.43,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1785565705356-CRCL-2fmt",
+      "asset": "CRCL",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 61.574,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -213,7 +213,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 60,
+    "openCount": 61,
     "resolvedCount": 716,
     "wouldHaveWon": 388,
     "wouldHaveLost": 328,
@@ -439,22 +439,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $85,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.24,
-          "yesAsk": 0.25,
-          "yesSpread": 0.01,
-          "liquidity": 36970.05,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.6pt on BTC, spread 1.0c, liquidity 36970. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $6,000 by end of December?",
@@ -564,6 +548,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.9pt on BTC, spread 1.0c, liquidity 94585. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-in-august-2026 — NO — Will Ethereum reach $3,000 in August?",
+        "marketQuality": {
+          "yesBid": 0,
+          "yesAsk": 0.24,
+          "yesSpread": 0,
+          "liquidity": 13076.99,
+          "flags": [
+            "missing_bid_ask"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 15.8pt on ETH, spread 0.0c, liquidity 13077. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
