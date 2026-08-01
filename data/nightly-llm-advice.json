@@ -1,101 +1,70 @@
 {
-  "generatedAt": "2026-07-30T07:08:44.779Z",
+  "generatedAt": "2026-08-01T07:09:23.332Z",
   "provider": "deepseek",
   "model": "deepseek-v4-pro",
-  "strategyReview": "One-touch NO edge (live 4/4, avg +18.4%) and WEEKEND_HL_FUNDING_REVERSION_LONG (live 74% WR, +$1.29) continue to be the strongest performers. PC_RATIO_EXTREME_LOW on BTC and OIL is also solid (70-80% WR). FUNDING_EXTREME_LONG overall is underwater (avg -0.54%, 45% WR) with stops eating small winners. Gold one-touch heatmap shadows (0% WR) and AMZN perp convergence variants (42% scorable WR, many unscorable burns) are clear failure clusters, while BTC PM IV expansion reversion (30% WR) and weekend funding reversion on individual equities (CBRS 50%, AAPL 33%) are below breakeven.",
+  "strategyReview": "Weekend Hyperliquid funding reversion long remains the engine's strongest live signal, delivering 75% win rate across 279 trades and consistent realized profits; one-touch NO edge selling on Polymarket has perfect 4/4 live wins and large average returns, while P/C ratio extreme signals maintain healthy win rates. The notable failure mode is forward-testing of recently promoted shadow-mined hypotheses—particularly the GOLD heatmap NO cluster and the AMZN perp/spot convergence family—which are losing in real-time despite strong in-sample statistics, indicating overfit to a short historical window. BTC PM IV expansion/reversion signals have also degraded as absolute IV thresholds lost relevance, underscoring the need for regime-relative conditions. Most cross-asset momentum confirmations (HYPE→BTC) are failing outright, suggesting the risk-on proxy logic is unsound in current market conditions.",
   "failureClusters": [
     {
-      "theme": "Gold one-touch heatmap overfit",
-      "evidence": "H-534 (0% WR on 12 scorable tests) predicts >2% gold decline from underlying-cap edge ≥10 pts, but gold has steadily risen. The edge comes from PM IV compression rather than genuine overpricing.",
-      "recommendation": "Add near-expiry filter (d≤30) and require actual sell-yes edge (sell_yes_edge_pts ≥1) to narrow to contracts where the edge is more likely to decay, and consider a regime filter that avoids strong bullish gold trends."
+      "theme": "Overfit one-touch NO edge clusters on specific assets",
+      "evidence": "GOLD one-touch NO edge heatmap variant H-534 has 0% win rate (0/14 scorable, 0/35 overall), and its shadow parent family averages 44% win with recent GOLD/ETH losses; multiple FIND-derived gold NO hypotheses are failing. ",
+      "recommendation": "Kill the GOLD heatmap family and any hypothesis relying solely on a static underlying-cap edge threshold. Only promote one-touch NO edges when accompanied by regime-relative volatility conditions, smart-flow stance, or confirmatory macro context."
     },
     {
-      "theme": "AMZN funding convergence false signals",
-      "evidence": "H-058 (basis > -0.05, funding >0) predicts stock/perp convergence, but recent tests all show funding stuck at 5.5% with no normalization; 27% WR over 13 scorable tests, plus 82 unscorable burns.",
-      "recommendation": "Add a confirmation that funding is already declining (e.g., amzn_hl_funding_ann_change_pct_24h < -5) to avoid entering before any mean reversion begins."
+      "theme": "AMZN perp/spot convergence thesis invalidated",
+      "evidence": "Primary variant H-005 has 0% win; funding remained pinned at 5.5% rather than normalizing, and 83 tests became unscorable due to unevaluable conditions. The convergence logic did not produce the expected perp/stock move.",
+      "recommendation": "Disable the AMZN convergence family unless a radically different mechanism is proposed—e.g., requiring a large funding decline from an elevated level combined with deeply negative basis. Consider permanent kill."
     },
     {
-      "theme": "BTC PM IV gap volatility fade",
-      "evidence": "H-001 (PM IV <46, options IV >49, ratio <0.92) has dropped to 30% WR. The IV gap persisted during quiet markets and did not deliver >2% moves.",
-      "recommendation": "Switch to percentile-based compression: btc_pm_iv_percentile_30d <10 and btc_opt_iv_90d_percentile_30d >90, targeting extreme relative compression rather than absolute thresholds."
+      "theme": "Static IV thresholds for PM expansion/reversion break down",
+      "evidence": "H-001 (BTC PM IV expansion) win rate collapsed to 30% (3/10) after early wins; cross-asset IV compression cluster 0/8. Fixed thresholds like btc_pm_iv < 46 no longer identify meaningful dislocations.",
+      "recommendation": "Shift to percentile or z-score-based compression (e.g., bottom 20% of 30d range) coupled with directional trend or funding exhaustion filters to isolate genuine volatility expansions."
     },
     {
-      "theme": "Weekend equity funding reversion failure",
-      "evidence": "CBRS (H-539, 50% WR) and AAPL (H-537, 33% WR) both target rapid funding normalization on weekends, but funding often deteriorates further or stays flat, killing the thesis.",
-      "recommendation": "Require funding to already be rising (change_pct_24h >0) alongside the negative threshold, and restrict to weekends to confirm the weekend-specific reversion hypothesis."
+      "theme": "Shadow-mined weekend funding asset variants lack weekend context",
+      "evidence": "H-539 (CBRS) and H-537 (AAPL) show 50% and 45% win rates with high whipsaw; funding oscillated unpredictably without weekend-day filtering. The original shadow mining likely captured temporary regimes.",
+      "recommendation": "Add explicit day_of_week weekend constraints and deeper funding extremes (< -20%) to reduce noise, or rely on the aggregated weekend reversion signal which already operates profitably across many assets."
     }
   ],
   "newHypotheses": [
     {
-      "created": "2026-07-30",
-      "description": "Refinement of AMZN perp convergence: only enter when AMZN basis is near zero ( > -0.05 ), funding is positive AND funding has just started to decline (change_pct_24h < -5), signaling that the period of persistent flat funding is ending.",
+      "created": "2026-08-01",
+      "description": "Refinement of AMZN funding convergence: instead of waiting for near-zero basis after a flip, short AMZN perp when funding is elevated (≥15%) and basis is deeply negative (≤ -0.5%), expecting funding to decline and perp to depreciate.",
       "conditions": {
-        "amzn_hl_basis_pct": "> -0.05",
-        "amzn_hl_funding_ann": "> 0",
-        "amzn_hl_funding_ann_change_pct_24h": "< -5"
+        "asset": "AMZN",
+        "amzn_hl_funding_ann": ">= 15",
+        "amzn_hl_basis_pct": "<= -0.5"
       },
-      "prediction": "AMZN stock continues outperforming perp as funding reverts and basis stays near zero.",
-      "timeframeDays": 7,
-      "confidence": 0.5,
-      "direction": "long",
-      "refinesHypothesisId": "H-058",
-      "source": "llm"
-    },
-    {
-      "created": "2026-07-30",
-      "description": "Refinement of gold one-touch heatmap: only short when the underlying-cap edge is ≥10 pts AND there is an explicit sell-yes edge (sell_yes_edge_pts ≥1) on contracts expiring within 30 days, ensuring the edge is tradeable and near enough to be resolved.",
-      "conditions": {
-        "asset": "GOLD",
-        "gold_pm_underlying_cap_edge_pts_max": ">= 10",
-        "sell_yes_edge_pts": ">= 1",
-        "touch_direction": ">= 1",
-        "days_to_expiry": "<= 30"
-      },
-      "prediction": "GOLD spot declines >2% within 2 days as the near-expiry sell edge decays.",
-      "timeframeDays": 2,
+      "prediction": "AMZN perp price will decline >2% within 5 days as funding normalizes lower.",
+      "timeframeDays": 5,
       "confidence": 0.5,
       "direction": "short",
-      "refinesHypothesisId": "H-534",
+      "refinesHypothesisId": "H-005",
       "source": "llm"
     },
     {
-      "created": "2026-07-30",
-      "description": "Refinement of BTC PM IV expansion reversion: replace absolute IV thresholds with extreme compression percentiles – PM IV in bottom 10% of 30-day range and 90-day options IV in top 10% of its range, signaling a rare cross-market IV crush that should resolve with a large move.",
+      "created": "2026-08-01",
+      "description": "Refinement of CBRS weekend funding reversion shadow: require extreme weekend funding (< -20%) on Saturday or Sunday, isolating the genuine weekend funding crash episodes.",
       "conditions": {
-        "btc_pm_iv_percentile_30d": "< 10",
-        "btc_opt_iv_90d_percentile_30d": "> 90"
+        "asset": "CBRS",
+        "cbrs_hl_funding_ann": "< -20",
+        "day_of_week": "in [sat, sun]"
       },
-      "prediction": "BTC spot moves >2% within 3 days as the extreme IV compression normalises.",
-      "timeframeDays": 3,
-      "confidence": 0.6,
-      "direction": "neutral",
-      "refinesHypothesisId": "H-001",
-      "source": "llm"
-    },
-    {
-      "created": "2026-07-30",
-      "description": "Refinement of weekend CBRS funding reversion: only go long when CBRS funding is < -10% ON A WEEKEND AND the funding has already begun to rise (change_pct_24h > 0), confirming that the reversion process is underway.",
-      "conditions": {
-        "day_of_week": "in [sat, sun]",
-        "cbrs_hl_funding_ann": "< -10",
-        "cbrs_hl_funding_ann_change_pct_24h": "> 0"
-      },
-      "prediction": "CBRS spot moves >2% within 2 days as funding continues to normalize.",
+      "prediction": "CBRS funding will normalize upward within 2 days, and spot price will increase >2%.",
       "timeframeDays": 2,
-      "confidence": 0.6,
+      "confidence": 0.55,
       "direction": "long",
       "refinesHypothesisId": "H-539",
       "source": "llm"
     },
     {
-      "created": "2026-07-30",
-      "description": "Refinement of weekend AAPL funding reversion: same pattern – AAPL funding < -10% on a weekend with funding already rising (change_pct_24h > 0), signalling the start of the normalization that should lift spot.",
+      "created": "2026-08-01",
+      "description": "Refinement of AAPL weekend funding reversion shadow: apply weekend-only filter and deeper funding threshold (< -20%) to capture true weekend funding squeezes.",
       "conditions": {
-        "day_of_week": "in [sat, sun]",
-        "aapl_hl_funding_ann": "< -10",
-        "aapl_hl_funding_ann_change_pct_24h": "> 0"
+        "asset": "AAPL",
+        "aapl_hl_funding_ann": "< -20",
+        "day_of_week": "in [sat, sun]"
       },
-      "prediction": "AAPL spot moves >2% within 2 days as funding reversion continues.",
+      "prediction": "AAPL funding will revert upward within 2 days, leading to >2% spot gain.",
       "timeframeDays": 2,
       "confidence": 0.55,
       "direction": "long",
@@ -103,120 +72,176 @@
       "source": "llm"
     },
     {
-      "created": "2026-07-30",
-      "description": "Refinement of BTC listed-IV momentum confirmation: tighten momentum thresholds. Require spot gain >1.5% in 24h, spot above 0.5% vs 24h SMA, within 3% of 7d high, and 30d IV change >1% (double the original 0.75% and 0% thresholds) to filter for stronger, IV-confirmed breakouts.",
+      "created": "2026-08-01",
+      "description": "Refinement of BTC PM IV expansion: replace absolute IV thresholds with regime-relative compression (PM IV z-score ≤ -1.5) while options IV remains elevated (>40), retaining the thesis that compression leads to spot expansion but adding a regime filter.",
       "conditions": {
-        "btc_spot_pct_vs_24h_sma": "> 0.5",
-        "btc_spot_pct_from_7d_high": "> -3",
-        "btc_spot_change_pct_24h": "> 1.5",
-        "btc_opt_iv_30d_change_pct_24h": "> 1"
+        "btc_pm_iv_zscore_30d": "<= -1.5",
+        "btc_opt_iv_30d": "> 40"
       },
-      "prediction": "BTC spot continues to gain >2% within 3-7 days on confirmed momentum and IV expansion.",
-      "timeframeDays": 7,
-      "confidence": 0.55,
-      "direction": "long",
-      "refinesHypothesisId": "H-170",
+      "prediction": "BTC spot moves >2% in absolute terms within 3 days as compression releases.",
+      "timeframeDays": 3,
+      "confidence": 0.6,
+      "direction": "neutral",
+      "refinesHypothesisId": "H-001",
       "source": "llm"
     },
     {
-      "created": "2026-07-30",
-      "description": "Short BTC by selling YES on upside one-touch contracts when smart-money stance is short YES (smart_flow_stance <= -1) and there is at least 1pt of sell-yes edge, following the informed-flow asymmetry FIND (smart selling YES on highs indicates dumb money is overpaying).",
+      "created": "2026-08-01",
+      "description": "Fade rich PM IV on upside one-touch NO contracts: when PM IV exceeds options IV by ≥10 vol points, short spot via selling YES on those touch-high contracts.",
       "conditions": {
-        "asset": "BTC",
-        "smart_flow_stance": "<= -1",
         "touch_direction": ">= 1",
-        "sell_yes_edge_pts": ">= 1"
+        "pm_iv_minus_opt_iv_pts": ">= 10"
       },
-      "prediction": "BTC one-touch NO contract price (YES) will decline over the next 7 days as dumb-money enthusiasm fades.",
+      "prediction": "Spot price will decline >2% within 7 days as PM IV premium erodes.",
       "timeframeDays": 7,
-      "confidence": 0.6,
-      "direction": "short",
-      "originFindingId": "FIND-0020",
-      "themeId": "THEME-0003",
-      "source": "llm"
-    },
-    {
-      "created": "2026-07-30",
-      "description": "Short OIL by selling YES on upside one-touch NO contracts when sell-yes edge is between 1 and 3 points and the contract expires within 3 days, capturing a tight edge on near-expiry contracts (FIND-0022: 91% WR in discovery).",
-      "conditions": {
-        "asset": "OIL",
-        "touch_direction": ">= 1",
-        "sell_yes_edge_pts": "between 1 and 3",
-        "days_to_expiry": "<= 3"
-      },
-      "prediction": "OIL one-touch NO contracts priced slightly rich decay quickly, yielding profit from selling YES.",
-      "timeframeDays": 7,
-      "confidence": 0.6,
-      "direction": "short",
-      "originFindingId": "FIND-0022",
-      "themeId": "THEME-0001",
-      "source": "llm"
-    },
-    {
-      "created": "2026-07-30",
-      "description": "Short BTC by selling YES on upside one-touch NO contracts when PM IV exceeds options IV by ≥10 vol points (pm_iv_minus_opt_iv_pts >=10), following the rich PM IV fade cluster (FIND-0021).",
-      "conditions": {
-        "asset": "BTC",
-        "pm_iv_minus_opt_iv_pts": ">= 10",
-        "touch_direction": ">= 1"
-      },
-      "prediction": "BTC NO contracts with rich PM IV are overpriced relative to options market and the YES price will fall within 7 days.",
-      "timeframeDays": 7,
-      "confidence": 0.6,
+      "confidence": 0.65,
       "direction": "short",
       "originFindingId": "FIND-0021",
       "themeId": "THEME-0004",
       "source": "llm"
     },
     {
-      "created": "2026-07-30",
-      "description": "Short GOLD by selling YES on upside one-touch NO contracts when they expire within 30 days, have a visible sell-yes edge, and the direction is above strike, narrowing the profitable gold heatmap (FIND-0036).",
+      "created": "2026-08-01",
+      "description": "Rich PM IV near-expiry NO fade: tighten the rich-IV signal to contracts expiring within 30 days, capturing faster mean reversion.",
       "conditions": {
-        "asset": "GOLD",
         "touch_direction": ">= 1",
-        "days_to_expiry": "<= 30",
-        "sell_yes_edge_pts": ">= 1"
+        "pm_iv_minus_opt_iv_pts": ">= 10",
+        "days_to_expiry": "<= 30"
       },
-      "prediction": "GOLD one-touch NO contracts cheapen as the sell edge erodes near expiration.",
-      "timeframeDays": 14,
-      "confidence": 0.55,
+      "prediction": "Spot price declines >2% within 4 days.",
+      "timeframeDays": 4,
+      "confidence": 0.65,
       "direction": "short",
-      "originFindingId": "FIND-0036",
-      "themeId": "THEME-0001",
+      "originFindingId": "FIND-0024",
+      "themeId": "THEME-0004",
+      "source": "llm"
+    },
+    {
+      "created": "2026-08-01",
+      "description": "Smart-flow fade on upside touch: when smart wallets show a short- or flat-stance on YES contracts and there is at least 3pt sell-YES edge, short the spot.",
+      "conditions": {
+        "asset": "in [BTC, ETH]",
+        "touch_direction": ">= 1",
+        "sell_yes_edge_pts": ">= 3",
+        "smart_flow_stance": "<= 0"
+      },
+      "prediction": "Spot price declines >1.5% within 5 days as smart-money positioning dominates.",
+      "timeframeDays": 5,
+      "confidence": 0.6,
+      "direction": "short",
+      "originFindingId": "FIND-0020",
+      "themeId": "THEME-0003",
       "source": "llm"
     }
   ],
   "hypothesisReviews": [
     {
-      "id": "H-058",
-      "observation": "AMZN perp convergence hypothesis with basis > -0.05 and funding >0 repeatedly saw funding stuck at 5.5% for days without decline. The assumption that positive funding naturally reverts to lower levels quickly failed in current regime, leaving the thesis unwound.",
-      "invalidatedAssumption": "AMZN funding rate above zero naturally declines to sub-10% within days, allowing perp convergence."
-    },
-    {
       "id": "H-534",
-      "observation": "Gold one-touch heatmap short (cap edge ≥10) produced 0% WR over 12 scorable tests as gold rose. The edge was driven by PM IV compression rather than genuine directional overpricing, so no downside spot move materialised.",
+      "observation": "All 14 forward tests resulted in gold spot moving less than 2% or in the opposite direction, despite a persistently positive underlying-cap edge. The signal did not translate into directional price moves, likely because gold's short-term moves are driven by macro flows rather than PM contract mispricing.",
       "invalidatedAssumption": "A large underlying-cap edge on gold upside touch contracts reliably predicts a >2% spot decline within 2 days."
     },
     {
-      "id": "H-001",
-      "observation": "BTC PM IV expansion reversion dropped to 30% WR; in recent quiet markets the IV gap persisted without triggering a >2% move. The absolute IV thresholds failed to distinguish truly explosive compression events.",
-      "invalidatedAssumption": "PM IV underpricing options IV by >8% reliably leads to a >2% absolute spot move within 3 days."
+      "id": "H-005",
+      "observation": "Funding rate remained pinned at 5.5% for several days instead of normalizing downward; the basis stayed near zero, removing any incentive for further convergence. The thesis that positive funding with near-zero basis signals impending perp underperformance is disproven.",
+      "invalidatedAssumption": "Positive AMZN funding with near-zero basis portends perp underperformance and basis normalization that completes the arbitrage."
     },
     {
       "id": "H-539",
-      "observation": "CBRS weekend funding reversion (funding < -10) only managed 50% WR; losses occurred when funding either stayed negative or moved more negative instead of normalizing. The blind entry captured many continuation moves.",
-      "invalidatedAssumption": "Extreme negative weekend CBRS funding rapidly normalizes, causing a >2% spot gain."
+      "observation": "CBRS funding exhibited high whipsaw (e.g., 32.9%→76.8% win, then 232.8%→-124.5% loss) without consistent normalization. The hypothesis lacked weekend-day filtering, causing it to trigger on non-weekend episodes where funding behavior differs.",
+      "invalidatedAssumption": "Extreme negative weekend CBRS funding reliably normalizes to less negative levels within 2 days without requiring explicit weekend context."
     },
     {
       "id": "H-537",
-      "observation": "AAPL weekend funding reversion (funding < -10) delivered only 33% WR; funding often remained low or drifted lower, erasing the expected bounce. The hypothesis over-relied on mean reversion without confirmation.",
-      "invalidatedAssumption": "Extreme negative weekend AAPL funding rapidly normalizes, leading to a >2% spot gain."
+      "observation": "AAPL funding similarly oscillated; several tests saw further negative moves. The moderate -10% threshold captured too many noisy episodes, and the absence of a weekend filter diluted the signal's edge.",
+      "invalidatedAssumption": "Extreme negative weekend AAPL funding rapidly normalizes, leading to a >2% spot gain without additional regime conditions."
     },
     {
-      "id": "H-170",
-      "observation": "BTC listed-IV momentum confirmation (long) has a 50% scorable WR but the recent sample shows many small losses and only one strong win. The momentum and IV thresholds were too lenient, picking up weak impulses that did not sustain beyond 2%.",
-      "invalidatedAssumption": "BTC spot gaining vs short-term trend with positive IV change yields >2% further gain within 3-7 days."
+      "id": "H-001",
+      "observation": "After two early wins in late July, the fixed PM IV threshold (<46) became irrelevant as BTC PM IV stayed above that level or the ratio condition did not trigger. The last six tests all failed, indicating the signal captured a temporary regime that no longer exists.",
+      "invalidatedAssumption": "PM IV underpricing options IV by >8% (with absolute PM IV below 46) reliably leads to >2% absolute spot move within 3 days."
+    },
+    {
+      "id": "H-108",
+      "observation": "All attempts at using HYPE OI stability and spot above SMA as confirmation for a BTC long failed, with BTC moving down ~1.6% each time. The risk-on proxy logic does not hold in the current fragmented market environment.",
+      "invalidatedAssumption": "BTC above short-term trend with HYPE spot above SMA and OI stable confirms a >2% BTC long move over 3-7 days."
+    },
+    {
+      "id": "H-551",
+      "observation": "OIL one-touch NO edge heatmap variant continues to perform flawlessly with 100% win rate over 10 shadow tests, confirming that the edge-based signal for OIL is robust and may be ready for promotion when its shadow-test bar clears."
+    },
+    {
+      "id": "H-523",
+      "observation": "BTC PM IV regime-relative compression signal (using percentile-based conditions) is showing promise with a 67% win rate over 16 tests, supporting the shift away from absolute thresholds."
     }
   ],
-  "journalEntry": "Tonight’s review reinforces that the system’s strongest edges are in time-bound, edge-based one-touch NO sales and the weekend funding reversion on liquid perps. FUNDING_EXTREME_LONG struggles with a 2.5% stop that cuts many green trades; we may need to widen to 3-3.5% once data supports it. AMZN convergence and gold heatmap families need mechanical rethinking, not more threshold searches. The smart-flow asymmetry FIND is promising and deserves its first shadow tests. No parameter changes are made tonight – we will wait for more resolution on the open GOLD short and the weekend reversion shadows before tuning risk parameters."
+  "parameterUpdates": {
+    "macroMomentum24hThresholdPts": 4,
+    "contrarianTrendMarginPct": 0.5,
+    "positiveMomentum24hPct": 1.5,
+    "llmTradeExpiryDays": 14,
+    "momentumLongExpiryDays": 21,
+    "signalRisk": {
+      "PM_IV_GT_OPT_IV": {
+        "targetPct": null,
+        "stopPct": 5
+      },
+      "OPT_IV_GT_PM_IV": {
+        "targetPct": 5,
+        "stopPct": 3.5
+      },
+      "FUNDING_EXTREME_LONG": {
+        "targetPct": 4,
+        "stopPct": 2
+      },
+      "FUNDING_EXTREME_SHORT": {
+        "targetPct": 4,
+        "stopPct": 2
+      },
+      "PM_EV_ABOVE_SPOT": {
+        "targetPct": 4,
+        "stopPct": 4
+      },
+      "PM_EV_BELOW_SPOT": {
+        "targetPct": 3,
+        "stopPct": 3.5
+      },
+      "PC_RATIO_EXTREME_HIGH": {
+        "targetPct": 4,
+        "stopPct": 1.5
+      },
+      "PC_RATIO_EXTREME_LOW": {
+        "targetPct": 5,
+        "stopPct": 1.5
+      },
+      "BASIS_PREMIUM": {
+        "targetPct": 1.5,
+        "stopPct": 1.5
+      },
+      "BASIS_DISCOUNT": {
+        "targetPct": 1.5,
+        "stopPct": 1.5
+      },
+      "MACRO_MOMENTUM_UP": {
+        "targetPct": 3,
+        "stopPct": 3
+      },
+      "MACRO_MOMENTUM_DOWN": {
+        "targetPct": 4,
+        "stopPct": 3
+      },
+      "LLM_HYPOTHESIS": {
+        "targetPct": 3.5,
+        "stopPct": 2
+      },
+      "MOMENTUM_LONG": {
+        "targetPct": 6,
+        "stopPct": 3.5
+      },
+      "PROMOTED_HYPOTHESIS": {
+        "targetPct": 4,
+        "stopPct": 2
+      }
+    }
+  },
+  "journalEntry": "Tonight's review reinforces that the weekend funding reversion long and one-touch edge selling on OIL/BTC remain our live anchors. The GOLD heatmap NO cluster is killed, and AMZN convergence is terminal. We are shifting BTC IV signals to z-score-based compression and adding weekend filters to per-asset funding shadows. Six FIND-authored hypotheses enter shadow testing, targeting rich PM IV and smart-flow fade setups. Parameter stop losses tightened for underperforming funding and LLM hypothesis signals to limit drawdowns."
 }

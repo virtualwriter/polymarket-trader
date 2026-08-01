@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-07-31T07:08:26Z",
+  "generatedAt": "2026-08-01T07:10:41Z",
   "summary": {
-    "generatedAt": "2026-07-31T07:08:26Z",
+    "generatedAt": "2026-08-01T07:10:41Z",
     "findingCounts": {
-      "open": 16,
-      "strengthened": 18,
+      "open": 15,
+      "strengthened": 19,
       "weakened": 0,
       "negative": 3,
       "suppressed": 0,
@@ -21,7 +21,7 @@
       "themeSlug": "other_informed_flow",
       "status": "open"
     },
-    "authoredHypothesisCount": 10,
+    "authoredHypothesisCount": 7,
     "advicePresent": true
   },
   "topOpportunities": [
@@ -68,8 +68,8 @@
     {
       "rank": 5,
       "id": "FIND-0022",
-      "opportunityScore": 0.9783,
-      "confidenceScore": 0.5419,
+      "opportunityScore": 0.9698,
+      "confidenceScore": 0.4945,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|strat:s?,e1-3|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -132,7 +132,7 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 29,
-      "avgOpportunityScore": 0.6731
+      "avgOpportunityScore": 0.6661
     },
     {
       "id": "THEME-0002",
@@ -160,52 +160,37 @@
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of AMZN perp convergence: only enter when AMZN basis is near zero ( > -0.05 ), funding is positive AND funding has just started to decline (change_pct_24h < -5), signaling that the period of persistent flat funding is ending."
+      "description": "Refinement of AMZN funding convergence: instead of waiting for near-zero basis after a flip, short AMZN perp when funding is elevated (\u226515%) and basis is deeply negative (\u2264 -0.5%), expecting funding to decline and perp to depreciate."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of gold one-touch heatmap: only short when the underlying-cap edge is \u226510 pts AND there is an explicit sell-yes edge (sell_yes_edge_pts \u22651) on contracts expiring within 30 days, ensuring the edge is tradeable and near enough to be resolved."
+      "description": "Refinement of CBRS weekend funding reversion shadow: require extreme weekend funding (< -20%) on Saturday or Sunday, isolating the genuine weekend funding crash episodes."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of BTC PM IV expansion reversion: replace absolute IV thresholds with extreme compression percentiles \u2013 PM IV in bottom 10% of 30-day range and 90-day options IV in top 10% of its range, signaling a rare cross-market IV crush that should resolve with a large move."
+      "description": "Refinement of AAPL weekend funding reversion shadow: apply weekend-only filter and deeper funding threshold (< -20%) to capture true weekend funding squeezes."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of weekend CBRS funding reversion: only go long when CBRS funding is < -10% ON A WEEKEND AND the funding has already begun to rise (change_pct_24h > 0), confirming that the reversion process is underway."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of weekend AAPL funding reversion: same pattern \u2013 AAPL funding < -10% on a weekend with funding already rising (change_pct_24h > 0), signalling the start of the normalization that should lift spot."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of BTC listed-IV momentum confirmation: tighten momentum thresholds. Require spot gain >1.5% in 24h, spot above 0.5% vs 24h SMA, within 3% of 7d high, and 30d IV change >1% (double the original 0.75% and 0% thresholds) to filter for stronger, IV-confirmed breakouts."
-    },
-    {
-      "originFindingId": "FIND-0020",
-      "themeId": "THEME-0003",
-      "description": "Short BTC by selling YES on upside one-touch contracts when smart-money stance is short YES (smart_flow_stance <= -1) and there is at least 1pt of sell-yes edge, following the informed-flow asymmetry FIND (smart selling YES on highs indicates dumb money is overpaying)."
-    },
-    {
-      "originFindingId": "FIND-0022",
-      "themeId": "THEME-0001",
-      "description": "Short OIL by selling YES on upside one-touch NO contracts when sell-yes edge is between 1 and 3 points and the contract expires within 3 days, capturing a tight edge on near-expiry contracts (FIND-0022: 91% WR in discovery)."
+      "description": "Refinement of BTC PM IV expansion: replace absolute IV thresholds with regime-relative compression (PM IV z-score \u2264 -1.5) while options IV remains elevated (>40), retaining the thesis that compression leads to spot expansion but adding a regime filter."
     },
     {
       "originFindingId": "FIND-0021",
       "themeId": "THEME-0004",
-      "description": "Short BTC by selling YES on upside one-touch NO contracts when PM IV exceeds options IV by \u226510 vol points (pm_iv_minus_opt_iv_pts >=10), following the rich PM IV fade cluster (FIND-0021)."
+      "description": "Fade rich PM IV on upside one-touch NO contracts: when PM IV exceeds options IV by \u226510 vol points, short spot via selling YES on those touch-high contracts."
     },
     {
-      "originFindingId": "FIND-0036",
-      "themeId": "THEME-0001",
-      "description": "Short GOLD by selling YES on upside one-touch NO contracts when they expire within 30 days, have a visible sell-yes edge, and the direction is above strike, narrowing the profitable gold heatmap (FIND-0036)."
+      "originFindingId": "FIND-0024",
+      "themeId": "THEME-0004",
+      "description": "Rich PM IV near-expiry NO fade: tighten the rich-IV signal to contracts expiring within 30 days, capturing faster mean reversion."
+    },
+    {
+      "originFindingId": "FIND-0020",
+      "themeId": "THEME-0003",
+      "description": "Smart-flow fade on upside touch: when smart wallets show a short- or flat-stance on YES contracts and there is at least 3pt sell-YES edge, short the spot."
     }
   ],
   "negativeFindings": [
@@ -231,9 +216,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-07-31T07:07:12Z",
-    "opportunitiesGeneratedAt": "2026-07-31T07:08:26Z",
-    "themesGeneratedAt": "2026-07-31T07:07:16Z",
-    "adviceGeneratedAt": "2026-07-30T07:08:44.779Z"
+    "findingsExportGeneratedAt": "2026-08-01T07:09:23Z",
+    "opportunitiesGeneratedAt": "2026-08-01T07:10:40Z",
+    "themesGeneratedAt": "2026-08-01T07:09:27Z",
+    "adviceGeneratedAt": "2026-08-01T07:09:23.332Z"
   }
 }
