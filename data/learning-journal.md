@@ -3994,3 +3994,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 4/12; ne
 
 ---
 
+### 2026-08-01 12:28 UTC
+
+**Portfolio:** $99.12 total | Cash $89.12 | 10 open | P&L $2.3599 | 64% win rate (580 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [correlation_flip] BTC-GOLD correlation shifted from 0.72 to 0.26. Rolling correlation: 24h=0.39, 7d=0.65, 30d=0.07. Current 24h corr is at 47th pct of last 30 daily 24h-rolling values (range -0.44 to 0.85).
+- [correlation_flip] GOLD-OIL correlation shifted from 0.18 to -0.25. Rolling correlation: 24h=0.10, 7d=0.05, 30d=-0.45. Current 24h corr is at 63th pct of last 30 daily 24h-rolling values (range -0.90 to 0.71).
+
+**Blocked signal learning:**
+- Open blocked shadows: 62
+- Resolved blocked shadows: 721 (391 wins / 330 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 15/28 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-3.30%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-2.22%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+5.41%)
+
+**LLM analysis:**
+Ten weekend funding reversion longs are open; all are under mechanical management with LLM closes not permitted. DKNG at -3.64% is the largest early drawdown but remains within the thesis window – its funding is still deeply negative and no material regime shift observed. Funding rates on several assets (e.g., HOOD, ORCL, COIN) have moved slightly less negative but remain in extreme territory, so thesis is intact. No discretionary close is justified. Macro backdrop is still bearish but the signal-family does not condition on macro, and the setup's clean trade statistics (75% win rate, 0.50% avg PnL) support letting the mechanical rules play out.
+
+---
+
