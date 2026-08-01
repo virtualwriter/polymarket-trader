@@ -1,15 +1,28 @@
 {
-  "generatedAt": "2026-07-31T23:28:16.186Z",
+  "generatedAt": "2026-08-01T00:28:39.500Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1785454117629-i8b1",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_hl_funding_ann"
+      ],
+      "thesis": "GOLD HL funding dropped from extremely elevated 44%+ annualized at entry to 5.48%, below the +15% entry threshold and into neutral territory. The crowded long fade signal has completely normalized; the funding carry advantage for the short is gone. Price has also moved favorably (down from 4109 to 4051), so we secure the gain and exit before potential reversal."
+    }
+  ],
   "entrySignals": [],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
