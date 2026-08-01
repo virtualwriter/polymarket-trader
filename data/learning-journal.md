@@ -3887,3 +3887,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 3/12; ne
 
 ---
 
+### 2026-08-01 09:28 UTC
+
+**Portfolio:** $99.07 total | Cash $90.07 | 9 open | P&L $2.3143 | 64% win rate (577 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [correlation_flip] BTC-GOLD correlation shifted from 0.72 to 0.27. Rolling correlation: 24h=0.68, 7d=0.65, 30d=0.07. Current 24h corr is at 63th pct of last 30 daily 24h-rolling values (range -0.51 to 0.88).
+- [correlation_flip] GOLD-OIL correlation shifted from 0.18 to -0.25. Rolling correlation: 24h=-0.47, 7d=0.07, 30d=-0.44. Current 24h corr is at 40th pct of last 30 daily 24h-rolling values (range -0.96 to 0.66).
+
+**Blocked signal learning:**
+- Open blocked shadows: 63
+- Resolved blocked shadows: 718 (390 wins / 328 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 15/28 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit stop (-2.00%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+1.32%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+18.43%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+All open positions are WEEKEND_HL_FUNDING_REVERSION_LONG under mechanical rule management; LLM closes are not allowed per policy. The signal family maintains a strong historical record (75% win rate, positive total P&L) and extreme negative funding readings (e.g., DKNG −97%, HIMS −93%) reinforce the carry-and-reversion thesis. ZM is underwater −1.37% but still within risk limits and approaching the 12-hour floor; no discretionary intervention. No new entries were promoted this hour. Macro headwinds (hawkish Fed, oil spike risk) are known and do not breach portfolio risk constraints, though they warrant continued monitoring for second-order effects on funding dynamics.
+
+---
+
