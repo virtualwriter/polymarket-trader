@@ -4211,3 +4211,41 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 6/12; ne
 
 ---
 
+### 2026-08-01 19:28 UTC
+
+**Portfolio:** $99.11 total | Cash $84.11 | 15 open | P&L $2.3468 | 64% win rate (589 trades)
+
+**Opened 1 positions:**
+- GOLD short @ $4053 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 10.6pp (was -9.9, now -20.5)
+- [anomaly] gold_opt_iv_30d = 34.7 is 2.7 std devs from mean (24.06 ± 4.00)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.72 to 0.25. Rolling correlation: 24h=0.08, 7d=0.64, 30d=0.05. Current 24h corr is at 37th pct of last 30 daily 24h-rolling values (range -0.59 to 0.94).
+- [correlation_flip] GOLD-OIL correlation shifted from 0.19 to -0.26. Rolling correlation: 24h=-0.31, 7d=0.05, 30d=-0.47. Current 24h corr is at 53th pct of last 30 daily 24h-rolling values (range -0.90 to 0.76).
+
+**Blocked signal learning:**
+- Open blocked shadows: 61
+- Resolved blocked shadows: 723 (393 wins / 330 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 15/28 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-2.22%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+5.41%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+21.57%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+59.09%)
+
+**LLM analysis:**
+All 14 open positions are WEEKEND_HL_FUNDING_REVERSION_LONG trades, which are fully mechanical and do not allow LLM discretionary closes. The signal family's historical performance (75% live win rate, 74% shadow win rate) remains supportive, but real-time PnL is negative for many entries—RIVN -9.4%, SKHX -8.0%, HIMS -4.8%—suggesting adverse drift during the hold window. The VERY BEARISH macro backdrop and falling crypto/tech proxies may be headwinds for mean-reversion timing, but policy gates prevent intervention. I'll note that RIVN is at 45.8% of planned hold and already down significantly; if this asset's funding normalizes early without a price snap, the mechanical target might not be reached, but the scanner will handle it. No action taken.
+
+---
+
