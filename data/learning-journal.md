@@ -3809,3 +3809,42 @@ All four open positions are WEEKEND_HL_FUNDING_REVERSION_LONG trades with purely
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-01T07:09:23.332Z, model=deepseek-v4-pro)
+- Hypotheses added: 3 (rejected 4); reviews applied: 8; invalidated assumptions learned: 5; param updates: FUNDING_EXTREME_LONG risk: +5/-2.5 -> +4/-2; FUNDING_EXTREME_SHORT risk: +4/-2.5 -> +4/-2; LLM_HYPOTHESIS risk: +3.5/-2.5 -> +3.5/-2; FUNDING_EXTREME_LONG risk floor: +4/-2 -> +5/-2.
+- Strategy review: Weekend Hyperliquid funding reversion long remains the engine's strongest live signal, delivering 75% win rate across 279 trades and consistent realized profits; one-touch NO edge selling on Polymarket has perfect 4/4 live wins and large average returns, while P/C ratio extreme signals maintain healthy win rates. The notable failure mode is forward-testing of recently promoted shadow-mined hypotheses—particularly the GOLD heatmap NO cluster and the AMZN perp/spot convergence family—which are losing in real-time despite strong in-sample statistics, indicating overfit to a short historical windo
+- Nightly journal: Tonight's review reinforces that the weekend funding reversion long and one-touch edge selling on OIL/BTC remain our live anchors. The GOLD heatmap NO cluster is killed, and AMZN convergence is terminal. We are shifting BTC IV signals to z-score-based compression and adding weekend filters to per-asset funding shadows. Six FIND-authored hypotheses enter shadow testing, targeting rich PM IV and smart-flow fade setups. Parameter stop losses tightened for underperforming funding and LLM hypothesis signals to limit drawdowns.
+### 2026-08-01 07:28 UTC
+
+**Portfolio:** $99.06 total | Cash $94.06 | 5 open | P&L $2.3041 | 64% win rate (574 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 Opened 1 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [correlation_flip] BTC-GOLD correlation shifted from 0.72 to 0.27. Rolling correlation: 24h=0.77, 7d=0.60, 30d=0.08. Current 24h corr is at 77th pct of last 30 daily 24h-rolling values (range -0.74 to 0.90).
+- [correlation_flip] GOLD-OIL correlation shifted from 0.18 to -0.25. Rolling correlation: 24h=-0.67, 7d=0.03, 30d=-0.44. Current 24h corr is at 27th pct of last 30 daily 24h-rolling values (range -0.97 to 0.64).
+
+**Blocked signal learning:**
+- Open blocked shadows: 61
+- Resolved blocked shadows: 717 (389 wins / 328 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 15/28 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-5.88%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit stop (-2.00%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+1.32%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+18.43%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 3/12; next scheduled 2026-08-01T09:28:16.166Z). Mechanical cycle ran normally._
+
+---
+

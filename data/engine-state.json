@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-01T06:28:25.755Z",
+  "generatedAt": "2026-08-01T07:28:16.065Z",
   "dataFreshness": {
-    "valuationRows": 2033,
-    "latestValuationAt": "2026-08-01T06",
-    "macroRows": 2031,
+    "valuationRows": 2034,
+    "latestValuationAt": "2026-08-01T07",
+    "macroRows": 2032,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-01T06"
+    "latestInstrumentSnapshotAt": "2026-08-01T07"
   },
   "portfolio": {
-    "cash": 95.0647,
-    "openPositions": 4,
+    "cash": 94.0647,
+    "openPositions": 5,
     "realizedPnl": 2.3041,
     "totalTrades": 574,
     "winRatePct": 64.3,
-    "unrealizedPnl": -0.0249
+    "unrealizedPnl": -0.0497
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -2.24,
-      "currentPrice": 113.33,
+      "pnlPct": -3.16,
+      "currentPrice": 113.11,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -36,8 +36,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.14,
-      "currentPrice": 94.793,
+      "pnlPct": 0.23,
+      "currentPrice": 94.853,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -50,8 +50,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.1,
-      "currentPrice": 195.43,
+      "pnlPct": -2.06,
+      "currentPrice": 194.65,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -64,8 +64,22 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0.02,
+      "currentPrice": 61.576,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1785569295678-HOOD-wf73",
+      "asset": "HOOD",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "pnlPct": 0,
-      "currentPrice": 61.574,
+      "currentPrice": 86.088,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -214,8 +228,8 @@
   ],
   "blockedSummary": {
     "openCount": 61,
-    "resolvedCount": 716,
-    "wouldHaveWon": 388,
+    "resolvedCount": 717,
+    "wouldHaveWon": 389,
     "wouldHaveLost": 328,
     "bySignal": [
       {
@@ -284,24 +298,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -2.17,
-        "resolvedAt": "2026-07-31T06:28:28.379Z",
-        "marketQuality": {
-          "yesBid": 0.08,
-          "yesAsk": 0.09,
-          "yesSpread": 0.01,
-          "liquidity": 47193.47,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "OIL",
@@ -434,6 +430,26 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 18.43,
+        "resolvedAt": "2026-08-01T07:28:15.656Z",
+        "marketQuality": {
+          "yesBid": 0,
+          "yesAsk": 0.24,
+          "yesSpread": 0,
+          "liquidity": 13076.99,
+          "flags": [
+            "missing_bid_ask"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -551,19 +567,19 @@
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
+        "asset": "BTC",
         "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-in-august-2026 — NO — Will Ethereum reach $3,000 in August?",
+        "instrumentLabel": "what-price-will-bitcoin-hit-in-august-2026 — NO — Will Bitcoin reach $72,500 in August?",
         "marketQuality": {
-          "yesBid": 0,
-          "yesAsk": 0.24,
-          "yesSpread": 0,
-          "liquidity": 13076.99,
+          "yesBid": 0.13,
+          "yesAsk": 0.14,
+          "yesSpread": 0.01,
+          "liquidity": 6192.75,
           "flags": [
-            "missing_bid_ask"
+            "wide_pm_spread"
           ]
         },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 15.8pt on ETH, spread 0.0c, liquidity 13077. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.7pt on BTC, spread 1.0c, liquidity 6193. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
@@ -584,11 +600,11 @@
       },
       "FUNDING_EXTREME_LONG": {
         "targetPct": 5,
-        "stopPct": 2.5
+        "stopPct": 2
       },
       "FUNDING_EXTREME_SHORT": {
         "targetPct": 4,
-        "stopPct": 2.5
+        "stopPct": 2
       },
       "PM_EV_ABOVE_SPOT": {
         "targetPct": 4,
@@ -624,7 +640,7 @@
       },
       "LLM_HYPOTHESIS": {
         "targetPct": 3.5,
-        "stopPct": 2.5
+        "stopPct": 2
       },
       "MOMENTUM_LONG": {
         "targetPct": 6,
@@ -639,6 +655,6 @@
         "stopPct": 100
       }
     },
-    "updatedAt": "2026-07-28T07:28:21.355Z"
+    "updatedAt": "2026-08-01T07:28:15.765Z"
   }
 }
