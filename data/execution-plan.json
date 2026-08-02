@@ -1,15 +1,29 @@
 {
-  "generatedAt": "2026-08-02T09:28:20.433Z",
+  "generatedAt": "2026-08-02T10:28:42.335Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1785612521131-gz49",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_hl_funding_ann",
+        "gold_gc_spot"
+      ],
+      "thesis": "GOLD short was entered on extreme funding (41.96% annualized). Funding has normalized to 5.48%, well below the entry threshold, extinguishing the signal edge. Spot drifted slightly higher rather than breaking down, further weakening the case. Closing as thesis invalidated before expiry."
+    }
+  ],
   "entrySignals": [],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
