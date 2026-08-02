@@ -5038,3 +5038,45 @@ Both COIN (WF-1785698900916-COIN-71tq) and COST (WF-1785702496230-COST-utx6) are
 
 ---
 
+### 2026-08-02 22:28 UTC
+
+**Portfolio:** $98.95 total | Cash $93.95 | 5 open | P&L $2.1913 | 64% win rate (625 trades)
+
+**Closed 1 trades:**
+- ✅ COIN long via hyperliquid/hl_perp [HL COIN Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0228 (2.3%, market 0.0229, funding -0.0001)
+
+**Opened 1 positions:**
+- GOLD short @ $4069 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 18 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved wider by 11.7pp (was -19.0, now -7.3)
+- [anomaly] amzn_hl_funding_ann = 85.28 is 4.0 std devs from mean (10.87 ± 18.74)
+- [anomaly] amzn_hl_basis_pct = 1.56 is 3.2 std devs from mean (0.12 ± 0.45)
+- [anomaly] gold_hl_funding_ann = 57.29 is 2.7 std devs from mean (8.41 ± 18.27)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.72 to 0.22. Rolling correlation: 24h=0.84, 7d=0.58, 30d=-0.06. Current 24h corr is at 87th pct of last 30 daily 24h-rolling values (range -0.36 to 0.93).
+
+**Blocked signal learning:**
+- Open blocked shadows: 56
+- Resolved blocked shadows: 740 (403 wins / 337 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 15/28 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+12.07%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-3.90%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.45%)
+
+**LLM analysis:**
+All open positions are rule-based exits with LLM closes prohibited. COST funding reverted sharply to -5.85% from -62.4% in under 2 hours—thesis fatigue early, though mechanical target/stop/expiry will handle. Other weekend reversion longs (META -98.8%, MU -60.6%, SKHX -81.9%) remain extreme. Gold funding spike to 57.3% is notable but not actionable within current signal families. No hard risk breaches.
+
+---
+
