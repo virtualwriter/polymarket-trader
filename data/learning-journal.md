@@ -5002,3 +5002,39 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 6/12; ne
 
 ---
 
+### 2026-08-02 20:28 UTC
+
+**Portfolio:** $98.93 total | Cash $96.93 | 2 open | P&L $2.1685 | 64% win rate (624 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 18 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 6.9pp (was -12.1, now -19.0)
+- [anomaly] amzn_hl_basis_pct = 1.21 is 2.5 std devs from mean (0.11 ± 0.45)
+- [anomaly] gold_opt_iv_30d = 33.2 is 2.3 std devs from mean (24.10 ± 4.02)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.72 to 0.22. Rolling correlation: 24h=0.82, 7d=0.58, 30d=-0.05. Current 24h corr is at 80th pct of last 30 daily 24h-rolling values (range -0.37 to 0.92).
+- [correlation_flip] GOLD-OIL correlation shifted from 0.21 to -0.27. Rolling correlation: 24h=-0.91, 7d=0.07, 30d=-0.52. Current 24h corr is at 3th pct of last 30 daily 24h-rolling values (range -0.91 to 0.70).
+
+**Blocked signal learning:**
+- Open blocked shadows: 60
+- Resolved blocked shadows: 736 (401 wins / 335 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 15/28 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.27%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.67%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+3.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+13.16%)
+
+**LLM analysis:**
+Both COIN (WF-1785698900916-COIN-71tq) and COST (WF-1785702496230-COST-utx6) are early in their 24h hold and LLM closes are not allowed per policy. COIN’s extreme negative funding already mean-reverted to positive in a single hour, which removes negative carry benefit but price is only +0.48%; the signal’s mechanical exits will manage. The whipsaw underscores how erratic weekend perp rates are, but the WEEKEND_HL_FUNDING_REVERSION_LONG family has solid live evidence (236/328 wins, avg +0.37%). No hard risk trigger; monitor as planned.
+
+---
+
