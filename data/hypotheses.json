@@ -164,7 +164,7 @@
     "winRate": 0.3,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Refined by H-587 (2026-07-30): Refinement of BTC PM IV expansion reversion: replace absolute IV thresholds with | BTC PM IV expansion reversion dropped to 30% WR; in recent quiet markets the IV gap persisted without triggering a >2% move. The absolute IV thresholds failed to distinguish truly explosive compression events. | Refined by H-597 (2026-08-01): Refinement of BTC PM IV expansion: replace absolute IV thresholds with regime-re | After two early wins in late July, the fixed PM IV threshold (<46) became irrelevant as BTC PM IV stayed above that level or the ratio condition did not trigger. The last six tests all failed, indicating the signal captured a temporary regime that no longer exists.",
+    "postMortem": "BTC PM IV expansion reversion dropped to 30% WR; in recent quiet markets the IV gap persisted without triggering a >2% move. The absolute IV thresholds failed to distinguish truly explosive compression events. | Refined by H-597 (2026-08-01): Refinement of BTC PM IV expansion: replace absolute IV thresholds with regime-re | After two early wins in late July, the fixed PM IV threshold (<46) became irrelevant as BTC PM IV stayed above that level or the ratio condition did not trigger. The last six tests all failed, indicating the signal captured a temporary regime that no longer exists. | The PM IV absolute threshold of 46 and >8% discount to options IV no longer produces reliable >2% absolute moves. Recent tests show moves below 2% or slight declines. Low absolute PM IV combined with a discount no longer guarantees a volatility breakout.",
     "source": "llm",
     "setupId": "btc_pm_iv_expansion_reversion",
     "setupLabel": "BTC PM-IV expansion / reversion"
@@ -374,7 +374,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels. | AMZN perp/spot funding convergence triggered strongly: funding flipped from -34.2% to +16.2% in 7 hours, and basis swung from -0.7% to +0.7%. The convergence thesis validated, though the speed was exceptional. The trade is now +0.30% and still inside the holding period. | AMZN funding sign flip from deeply negative to positive has failed all 4 tests (0% win). The reversal from extreme negative funding often coincides with a spot rally that moves against the intended short trade, making the perp/spot convergence thesis unreliable. | Funding rate remained pinned at 5.5% for several days instead of normalizing downward; the basis stayed near zero, removing any incentive for further convergence. The thesis that positive funding with near-zero basis signals impending perp underperformance is disproven.",
+    "postMortem": "AMZN perp/spot funding convergence triggered strongly: funding flipped from -34.2% to +16.2% in 7 hours, and basis swung from -0.7% to +0.7%. The convergence thesis validated, though the speed was exceptional. The trade is now +0.30% and still inside the holding period. | AMZN funding sign flip from deeply negative to positive has failed all 4 tests (0% win). The reversal from extreme negative funding often coincides with a spot rally that moves against the intended short trade, making the perp/spot convergence thesis unreliable. | Funding rate remained pinned at 5.5% for several days instead of normalizing downward; the basis stayed near zero, removing any incentive for further convergence. The thesis that positive funding with near-zero basis signals impending perp underperformance is disproven. | The AMZN funding convergence hypothesis enters when basis is near zero and funding is slightly positive, but funding stays pinned and does not rise further. The convergence phase is already complete; there is no further upward funding reversion.",
     "source": "llm",
     "setupId": "amzn_perp_spot_funding_convergence",
     "setupLabel": "AMZN perp/spot funding convergence"
@@ -19797,7 +19797,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "0% win rate over 29 shadow tests on GOLD one-touch NO heatmap cluster, despite a promising shadow mining cluster (FIND-0036) with 75% win rate on only 8 historical samples. The out-of-sample performance collapses completely, indicating severe overfitting. Kill this hypothesis and do not promote. | GOLD one-touch NO heatmap shadow continues to underperform with 0% win rate over 32 tests after reopening; the discovered in-sample edge does not translate into forward profitability. Recommend kill and no further variants. | Gold one-touch heatmap short (cap edge ≥10) produced 0% WR over 12 scorable tests as gold rose. The edge was driven by PM IV compression rather than genuine directional overpricing, so no downside spot move materialised. | All 14 forward tests resulted in gold spot moving less than 2% or in the opposite direction, despite a persistently positive underlying-cap edge. The signal did not translate into directional price moves, likely because gold's short-term moves are driven by macro flows rather than PM contract mispricing.",
+    "postMortem": "GOLD one-touch NO heatmap shadow continues to underperform with 0% win rate over 32 tests after reopening; the discovered in-sample edge does not translate into forward profitability. Recommend kill and no further variants. | Gold one-touch heatmap short (cap edge ≥10) produced 0% WR over 12 scorable tests as gold rose. The edge was driven by PM IV compression rather than genuine directional overpricing, so no downside spot move materialised. | All 14 forward tests resulted in gold spot moving less than 2% or in the opposite direction, despite a persistently positive underlying-cap edge. The signal did not translate into directional price moves, likely because gold's short-term moves are driven by macro flows rather than PM contract mispricing. | The underlying cap edge ≥10 pts on gold upside touch NO contracts failed to predict >2% spot declines, with all 15 resolved tests losing. The edge often persisted without spot movement; large edge alone does not drive mean reversion.",
     "source": "shadow_mined",
     "setupId": "shadow_one_touch_high_edge_no_gold_heatmap_no",
     "setupLabel": "Shadow-mined ONE_TOUCH_HIGH_EDGE_NO GOLD heatmap"
@@ -20016,7 +20016,7 @@
     "winRate": 0.45454545454545453,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Refined by H-589 (2026-07-30): Refinement of weekend AAPL funding reversion: same pattern – AAPL funding < -10% | AAPL weekend funding reversion (funding < -10) delivered only 33% WR; funding often remained low or drifted lower, erasing the expected bounce. The hypothesis over-relied on mean reversion without confirmation. | Refined by H-596 (2026-08-01): Refinement of AAPL weekend funding reversion shadow: apply weekend-only filter a | AAPL funding similarly oscillated; several tests saw further negative moves. The moderate -10% threshold captured too many noisy episodes, and the absence of a weekend filter diluted the signal's edge.",
+    "postMortem": "AAPL weekend funding reversion (funding < -10) delivered only 33% WR; funding often remained low or drifted lower, erasing the expected bounce. The hypothesis over-relied on mean reversion without confirmation. | Refined by H-596 (2026-08-01): Refinement of AAPL weekend funding reversion shadow: apply weekend-only filter a | AAPL funding similarly oscillated; several tests saw further negative moves. The moderate -10% threshold captured too many noisy episodes, and the absence of a weekend filter diluted the signal's edge. | AAPL weekend funding reversion shadows perform poorly on weekdays. The edge only materializes when extreme negative funding occurs on weekends; the hypothesis must be restricted to weekend-only.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG AAPL weekend_hl_funding_shadow"
@@ -20172,7 +20172,7 @@
     "winRate": 0.5384615384615384,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Refined by H-588 (2026-07-30): Refinement of weekend CBRS funding reversion: only go long when CBRS funding is | CBRS weekend funding reversion (funding < -10) only managed 50% WR; losses occurred when funding either stayed negative or moved more negative instead of normalizing. The blind entry captured many continuation moves. | Refined by H-595 (2026-08-01): Refinement of CBRS weekend funding reversion shadow: require extreme weekend fun | CBRS funding exhibited high whipsaw (e.g., 32.9%→76.8% win, then 232.8%→-124.5% loss) without consistent normalization. The hypothesis lacked weekend-day filtering, causing it to trigger on non-weekend episodes where funding behavior differs.",
+    "postMortem": "Refined by H-595 (2026-08-01): Refinement of CBRS weekend funding reversion shadow: require extreme weekend fun | CBRS funding exhibited high whipsaw (e.g., 32.9%→76.8% win, then 232.8%→-124.5% loss) without consistent normalization. The hypothesis lacked weekend-day filtering, causing it to trigger on non-weekend episodes where funding behavior differs. | Refined by H-598 (2026-08-02): CBRS weekend funding reversion: only go long CBRS perp when funding is deeply ne | CBRS weekend funding reversion shadow tests show mixed results; weekday signals often produce whipsaw funding moves that fail to normalize. A weekend-only filter (as in H-588) appears necessary to capture reliable reversion.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG CBRS weekend_hl_funding_shadow"
@@ -22627,5 +22627,35 @@
     "source": "llm",
     "setupId": "btc_iv_compression_vol_reversion",
     "setupLabel": "BTC IV compression / vol reversion"
+  },
+  {
+    "id": "H-598",
+    "created": "2026-08-02",
+    "description": "CBRS weekend funding reversion: only go long CBRS perp when funding is deeply negative (< -20%) on a Saturday or Sunday.",
+    "conditions": {
+      "asset": "CBRS",
+      "cbrs_hl_funding_ann": "< -20",
+      "day_of_week": "in [sat, sun]"
+    },
+    "prediction": "CBRS spot will rise >2% within 2 days as deeply negative weekend funding normalizes.",
+    "timeframeDays": 2,
+    "confidence": 0.55,
+    "direction": "long",
+    "refinesHypothesisId": "H-539",
+    "tests": [
+      {
+        "date": "2026-08-02",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "other_mixed",
+    "setupLabel": "Other / mixed"
   }
 ]
