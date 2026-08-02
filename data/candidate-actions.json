@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-02T03:28:18.656Z",
+  "generatedAt": "2026-08-02T04:28:15.382Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [],
@@ -19,17 +19,33 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 7.99,
-      "hoursToExpiry": 64.01,
+      "hoursOpen": 8.99,
+      "hoursToExpiry": 63.01,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.111,
+      "elapsedHoldPct": 0.1249,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 8.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 9.0h, requires at least 12h."
     },
     {
       "positionId": "WF-1785641298187-DKNG-811z",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "asset": "DKNG",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 1,
+      "hoursToExpiry": 23,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0.0416,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1785644894916-CBRS-ybvn",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "CBRS",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
