@@ -1,5 +1,5 @@
 {
-  "cash": 97.80729794684683,
+  "cash": 96.80729794684683,
   "positions": [
     {
       "id": "T-1785612521131-gz49",
@@ -8,8 +8,8 @@
       "venue": "hyperliquid",
       "direction": "short",
       "entryPrice": 4053,
-      "currentPrice": 4064,
-      "currentUnderlyingPrice": 4064,
+      "currentPrice": 4067,
+      "currentUnderlyingPrice": 4067,
       "entryUnderlyingPrice": 4053,
       "size": 1,
       "leverage": 1,
@@ -23,13 +23,37 @@
       "instrumentType": "hl_perp",
       "instrumentId": "GOLD",
       "instrumentLabel": "HL GOLD perp",
-      "fundingPnlAccrued": 0.00004572945205479452,
+      "fundingPnlAccrued": 0.00006078630136986301,
       "peakPnlPct": 0.012336540833950159
+    },
+    {
+      "id": "WF-1785641298187-DKNG-811z",
+      "openedAt": "2026-08-02T03:28:18.187Z",
+      "asset": "DKNG",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 23.384,
+      "currentPrice": 23.384,
+      "currentUnderlyingPrice": 23.384,
+      "entryUnderlyingPrice": 23.384,
+      "size": 1,
+      "leverage": 5,
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "hypothesisId": null,
+      "thesis": "[WEEKEND HL FUNDING LIVE] DKNG Builder DEX stock perp funding -74.7% annualized in mid band [-100%, -50%] during US-equity-closed entry window (Fri 4:00pm ET → Sun; no Mon pre-open entries). Live tracked long at 5x; exit when margin P&L >= 3%, funding >= 10%, Mon 9:30am ET window close, or held 24h.",
+      "targetPct": 3,
+      "stopPct": 100,
+      "expiryDate": "2026-08-03T03:28:18.187Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "DKNG",
+      "instrumentLabel": "HL DKNG Builder DEX stock perp",
+      "fundingPnlAccrued": 0,
+      "entryConfidence": 0.5
     }
   ],
-  "totalRealizedPnl": 2.0466578110845735,
+  "totalRealizedPnl": 2.0466999999999977,
   "totalTrades": 604,
   "winCount": 383,
   "lossCount": 221,
-  "lastUpdated": "2026-08-02T02:28:13.166Z"
+  "lastUpdated": "2026-08-02T03:28:18.681Z"
 }

@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-02T02:28:13.039Z",
+  "generatedAt": "2026-08-02T03:28:18.545Z",
   "dataFreshness": {
-    "valuationRows": 2051,
-    "latestValuationAt": "2026-08-02T02",
-    "macroRows": 2049,
+    "valuationRows": 2052,
+    "latestValuationAt": "2026-08-02T03",
+    "macroRows": 2050,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-02T02"
+    "latestInstrumentSnapshotAt": "2026-08-02T03"
   },
   "portfolio": {
-    "cash": 97.8073,
-    "openPositions": 1,
+    "cash": 96.8073,
+    "openPositions": 2,
     "realizedPnl": 2.0467,
     "totalTrades": 604,
     "winRatePct": 63.4,
-    "unrealizedPnl": -0.0027
+    "unrealizedPnl": -0.0034
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -0.27,
-      "currentPrice": 4064,
-      "underlyingPrice": 4064,
+      "pnlPct": -0.34,
+      "currentPrice": 4067,
+      "underlyingPrice": 4067,
       "targetPct": 5,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -32,6 +32,20 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ]
+    },
+    {
+      "positionId": "WF-1785641298187-DKNG-811z",
+      "asset": "DKNG",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 23.384,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
     }
   ],
   "signalHealth": [
@@ -174,7 +188,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 58,
+    "openCount": 59,
     "resolvedCount": 731,
     "wouldHaveWon": 398,
     "wouldHaveLost": 333,
@@ -405,22 +419,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $110,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.06,
-          "yesAsk": 0.07,
-          "yesSpread": 0.01,
-          "liquidity": 58364.76,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.9pt on BTC, spread 1.0c, liquidity 58365. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $6,000 by end of December?",
@@ -530,6 +528,22 @@
           ]
         },
         "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 9.7pt after haircuts. CBOE gap 10.7pt, CME gap 10.7pt, source agreement both_positive, spread 1.0c, liquidity 20251. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $85,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.21,
+          "yesAsk": 0.22,
+          "yesSpread": 0.01,
+          "liquidity": 47797.63,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.0pt on BTC, spread 1.0c, liquidity 47798. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
