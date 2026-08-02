@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-02T00:28:14.930Z",
+  "generatedAt": "2026-08-02T01:28:16.551Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [],
@@ -7,22 +7,6 @@
   "portfolioExposurePreviews": [],
   "stagedQuantRules": [],
   "llmCloseEligibility": [
-    {
-      "positionId": "WF-1785605301695-DKNG-7dqx",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "DKNG",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 7,
-      "hoursToExpiry": 17,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.2916,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
     {
       "positionId": "T-1785612521131-gz49",
       "signalType": "FUNDING_EXTREME_LONG",
@@ -35,12 +19,28 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 4.99,
-      "hoursToExpiry": 67.01,
+      "hoursOpen": 5.99,
+      "hoursToExpiry": 66.01,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.0693,
+      "elapsedHoldPct": 0.0832,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 6.0h, requires at least 12h."
+    },
+    {
+      "positionId": "WF-1785634096086-SNDK-rqd1",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "SNDK",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 0,
+      "hoursToExpiry": 24,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
   ]
 }

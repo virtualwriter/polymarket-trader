@@ -4403,3 +4403,42 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 0/12; ne
 
 ---
 
+### 2026-08-02 01:28 UTC
+
+**Portfolio:** $98.72 total | Cash $96.72 | 2 open | P&L $1.9606 | 63% win rate (603 trades)
+
+**Closed 1 trades:**
+- ❌ DKNG long via hyperliquid/hl_perp [HL DKNG Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0088 (-0.9%, market -0.0096, funding 0.0008)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 19 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved wider by 8.4pp (was -11.4, now -3.0)
+- [anomaly] oil_hl_funding_ann = -260.5 is -3.7 std devs from mean since 2026-04-28 (-7.09 ± 68.13)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.72 to 0.25. Rolling correlation: 24h=-0.29, 7d=0.62, 30d=0.02. Current 24h corr is at 20th pct of last 30 daily 24h-rolling values (range -0.81 to 0.93).
+- [correlation_flip] GOLD-OIL correlation shifted from 0.19 to -0.26. Rolling correlation: 24h=-0.25, 7d=0.06, 30d=-0.48. Current 24h corr is at 50th pct of last 30 daily 24h-rolling values (range -0.96 to 0.82).
+
+**Blocked signal learning:**
+- Open blocked shadows: 62
+- Resolved blocked shadows: 725 (394 wins / 331 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 15/28 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+21.57%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+59.09%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+11.11%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-8.00%)
+
+**LLM analysis:**
+Gold funding normalized far faster than expected (from 42% ann. to 6% ann.) within the first 6 hours of the position, while gold spot barely budged. This materially weakens the FUNDING_EXTREME_LONG thesis, but the position is still below the 12-hour min hold window, so no discretionary close is allowed yet. Once the min hold elapses, if HL funding remains below the +15% entry threshold, a thesis_invalidated exit should be considered provided no new deterioration in price risk. The weekend HL funding reversion long in SNDK just initiated with highly negative funding and no immediate concerns.
+
+---
+

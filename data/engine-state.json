@@ -1,44 +1,30 @@
 {
-  "generatedAt": "2026-08-02T00:28:14.818Z",
+  "generatedAt": "2026-08-02T01:28:16.443Z",
   "dataFreshness": {
-    "valuationRows": 2049,
-    "latestValuationAt": "2026-08-02T00",
-    "macroRows": 2047,
+    "valuationRows": 2050,
+    "latestValuationAt": "2026-08-02T01",
+    "macroRows": 2048,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-02T00"
+    "latestInstrumentSnapshotAt": "2026-08-02T01"
   },
   "portfolio": {
-    "cash": 96.73,
+    "cash": 96.7212,
     "openPositions": 2,
-    "realizedPnl": 1.9694,
-    "totalTrades": 602,
-    "winRatePct": 63.5,
-    "unrealizedPnl": -0.0075
+    "realizedPnl": 1.9606,
+    "totalTrades": 603,
+    "winRatePct": 63.3,
+    "unrealizedPnl": -0.0017
   },
   "openPositions": [
-    {
-      "positionId": "WF-1785605301695-DKNG-7dqx",
-      "asset": "DKNG",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.68,
-      "currentPrice": 23.42,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
     {
       "positionId": "T-1785612521131-gz49",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -0.07,
-      "currentPrice": 4056,
-      "underlyingPrice": 4056,
+      "pnlPct": -0.17,
+      "currentPrice": 4060,
+      "underlyingPrice": 4060,
       "targetPct": 5,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -46,6 +32,20 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ]
+    },
+    {
+      "positionId": "WF-1785634096086-SNDK-rqd1",
+      "asset": "SNDK",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 1214.3,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
     }
   ],
   "signalHealth": [
@@ -188,10 +188,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 63,
-    "resolvedCount": 724,
+    "openCount": 62,
+    "resolvedCount": 725,
     "wouldHaveWon": 394,
-    "wouldHaveLost": 330,
+    "wouldHaveLost": 331,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -259,26 +259,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 18.43,
-        "resolvedAt": "2026-08-01T07:28:15.656Z",
-        "marketQuality": {
-          "yesBid": 0,
-          "yesAsk": 0.24,
-          "yesSpread": 0,
-          "liquidity": 13076.99,
-          "flags": [
-            "missing_bid_ask"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -428,14 +408,17 @@
           "liquidity": 10838.96,
           "flags": []
         }
-      }
-    ],
-    "openQualityWarnings": [
+      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
         "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-wti-hit-in-august-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $90 in August?",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -8,
+        "resolvedAt": "2026-08-02T01:28:16.066Z",
         "marketQuality": {
           "yesBid": 0.75,
           "yesAsk": 0.77,
@@ -444,8 +427,25 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      }
+    ],
+    "openQualityWarnings": [
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "GOLD",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $5,000 by end of December?",
+        "marketQuality": {
+          "yesBid": 0.24,
+          "yesAsk": 0.25,
+          "yesSpread": 0.01,
+          "liquidity": 15621.56,
+          "flags": [
+            "wide_pm_spread"
+          ]
         },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.2pt on OIL, spread 2.0c, liquidity 5379. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 7.4pt on GOLD, spread 1.0c, liquidity 15622. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
