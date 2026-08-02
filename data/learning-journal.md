@@ -4890,3 +4890,43 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 5/12; ne
 
 ---
 
+### 2026-08-02 17:28 UTC
+
+**Portfolio:** $98.92 total | Cash $97.92 | 1 open | P&L $2.1592 | 64% win rate (623 trades)
+
+**Closed 4 trades:**
+- ✅ DKNG long via hyperliquid/hl_perp [HL DKNG Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0104 (1.0%, market 0.0086, funding 0.0019)
+- ✅ MRVL long via hyperliquid/hl_perp [HL MRVL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0088 (0.9%, market 0.0081, funding 0.0007)
+- ❌ SKHX long via hyperliquid/hl_perp [HL SKHX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0243 (-2.4%, market -0.0258, funding 0.0014)
+- ✅ MSTR long via hyperliquid/hl_perp [HL MSTR Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0027 (0.3%, market 0.0020, funding 0.0007)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 19 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.04 is 2.1 std devs from mean (0.11 ± 0.45)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.72 to 0.23. Rolling correlation: 24h=0.75, 7d=0.59, 30d=-0.03. Current 24h corr is at 73th pct of last 30 daily 24h-rolling values (range -0.35 to 0.85).
+- [correlation_flip] GOLD-OIL correlation shifted from 0.20 to -0.27. Rolling correlation: 24h=-0.94, 7d=0.08, 30d=-0.51. Current 24h corr is at 3th pct of last 30 daily 24h-rolling values (range -0.94 to 0.71).
+
+**Blocked signal learning:**
+- Open blocked shadows: 60
+- Resolved blocked shadows: 736 (401 wins / 335 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 15/28 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.27%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.67%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+3.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+13.16%)
+
+**LLM analysis:**
+Only open position is BIRD WEEKEND_HL_FUNDING_REVERSION_LONG, opened at 17:00 and subject to 12-hour min hold with LLM closes blocked. Funding flipped sharply negative (-55% ann) in the latest snapshot, which aligns with the reversion thesis and provides a carry tailwind for the long. Historical BIRD win rate is 57% with slightly negative cumulative P&L, so this asset deserves close monitoring, but no discretionary action is permitted now. All other signal families are off or blocked; macro extremely bearish but does not override the mechanical weekend funding rule.
+
+---
+
