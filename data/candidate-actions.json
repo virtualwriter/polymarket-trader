@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-03T12:28:15.661Z",
+  "generatedAt": "2026-08-03T13:28:17.745Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.03228571428571426,
-      "confidence": 0.015423827915393882,
-      "thesis": "GOLD HL funding 16.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.16514285714285717,
+      "confidence": 0.07889356225750153,
+      "thesis": "GOLD HL funding 20.8% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4053,
+      "entryPrice": 4037,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
@@ -28,7 +28,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4053,
+      "entryPrice": 4037,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -57,54 +57,46 @@
         "hyperliquid_venue"
       ],
       "current": {
-        "totalGross": 7,
-        "totalNet": 5,
+        "totalGross": 6,
+        "totalNet": 4,
         "byAsset": {
           "GOLD": -1,
-          "AMZN": 1,
           "BIRD": 5
         },
         "bySignalType": {
           "FUNDING_EXTREME_LONG": -1,
-          "FUNDING_EXTREME_SHORT": 1,
           "WEEKEND_HL_FUNDING_REVERSION_LONG": 5
         },
         "byVenue": {
-          "hyperliquid": 5
+          "hyperliquid": 4
         },
         "byCluster": {
           "commodity": -1,
-          "funding_reversion": 5,
+          "funding_reversion": 4,
           "gold_delta": -1,
-          "hyperliquid_venue": 5,
-          "amzn_delta": 1,
-          "risk_on": 1,
+          "hyperliquid_venue": 4,
           "bird_delta": 5
         }
       },
       "afterCandidate": {
-        "totalGross": 7,
-        "totalNet": 5,
+        "totalGross": 6,
+        "totalNet": 4,
         "byAsset": {
           "GOLD": -1,
-          "AMZN": 1,
           "BIRD": 5
         },
         "bySignalType": {
           "FUNDING_EXTREME_LONG": -1,
-          "FUNDING_EXTREME_SHORT": 1,
           "WEEKEND_HL_FUNDING_REVERSION_LONG": 5
         },
         "byVenue": {
-          "hyperliquid": 5
+          "hyperliquid": 4
         },
         "byCluster": {
           "commodity": -1,
-          "funding_reversion": 5,
+          "funding_reversion": 4,
           "gold_delta": -1,
-          "hyperliquid_venue": 5,
-          "amzn_delta": 1,
-          "risk_on": 1,
+          "hyperliquid_venue": 4,
           "bird_delta": 5
         }
       },
@@ -146,36 +138,12 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 13.99,
-      "hoursToExpiry": 58.01,
+      "hoursOpen": 15,
+      "hoursToExpiry": 57,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.1944,
+      "elapsedHoldPct": 0.2083,
       "minHoldHours": 12,
       "reason": "Mechanical FUNDING_EXTREME_LONG setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    },
-    {
-      "positionId": "T-1785713311955-w6z2",
-      "signalType": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "amzn_stock",
-        "amzn_hl_perp",
-        "amzn_hl_funding_ann"
-      ],
-      "hoursOpen": 13,
-      "hoursToExpiry": 155,
-      "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0774,
-      "minHoldHours": 12,
-      "reason": "Mechanical FUNDING_EXTREME_SHORT setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
     {
       "positionId": "WF-1785727697361-BIRD-xhek",
@@ -186,10 +154,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 9,
-      "hoursToExpiry": 15,
+      "hoursOpen": 10,
+      "hoursToExpiry": 14,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.375,
+      "elapsedHoldPct": 0.4167,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }

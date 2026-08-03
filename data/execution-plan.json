@@ -1,34 +1,21 @@
 {
-  "generatedAt": "2026-08-03T12:28:43.023Z",
+  "generatedAt": "2026-08-03T13:28:17.768Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1785713311955-w6z2",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "amzn_hl_funding_ann"
-      ],
-      "thesis": "FUNDING_EXTREME_SHORT entry required funding < -15%; current funding is +5.48%, crossing back through the threshold and invalidating the extreme short crowding thesis."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "FUNDING_EXTREME_LONG",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.03228571428571426,
-      "confidence": 0.015423827915393882,
-      "thesis": "GOLD HL funding 16.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.16514285714285717,
+      "confidence": 0.07889356225750153,
+      "thesis": "GOLD HL funding 20.8% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4053,
+      "entryPrice": 4037,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
@@ -39,6 +26,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
