@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-03T10:28:20.083Z",
+  "generatedAt": "2026-08-03T12:28:15.661Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.248,
-      "confidence": 0.1184768374386009,
-      "thesis": "GOLD HL funding 23.7% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.03228571428571426,
+      "confidence": 0.015423827915393882,
+      "thesis": "GOLD HL funding 16.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4056,
+      "entryPrice": 4053,
       "targetPct": 5,
       "stopPct": 2.5,
       "expiryDays": 3,
@@ -28,7 +28,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4056,
+      "entryPrice": 4053,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -136,18 +136,22 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "allowed": false,
-      "allowedCategories": [],
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
       "evidenceColumns": [
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 12,
-      "hoursToExpiry": 60,
+      "hoursOpen": 13.99,
+      "hoursToExpiry": 58.01,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.1666,
+      "elapsedHoldPct": 0.1944,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 12.0h, requires at least 12h."
+      "reason": "Mechanical FUNDING_EXTREME_LONG setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
     {
       "positionId": "T-1785713311955-w6z2",
@@ -155,19 +159,23 @@
       "asset": "AMZN",
       "venue": "hyperliquid",
       "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
       "evidenceColumns": [
         "amzn_stock",
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ],
-      "hoursOpen": 11,
-      "hoursToExpiry": 157,
+      "hoursOpen": 13,
+      "hoursToExpiry": 155,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0655,
+      "elapsedHoldPct": 0.0774,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 11.0h, requires at least 12h."
+      "reason": "Mechanical FUNDING_EXTREME_SHORT setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
     {
       "positionId": "WF-1785727697361-BIRD-xhek",
@@ -178,10 +186,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 7,
-      "hoursToExpiry": 17,
+      "hoursOpen": 9,
+      "hoursToExpiry": 15,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.2917,
+      "elapsedHoldPct": 0.375,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
