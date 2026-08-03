@@ -1,31 +1,31 @@
 {
-  "generatedAt": "2026-08-03T21:28:37.993Z",
+  "generatedAt": "2026-08-03T22:28:18.864Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [],
-  "rejectedLlmActions": [
+  "entrySignals": [
     {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1785709715177-6145",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "gold_hl_funding_ann"
-        ],
-        "thesis": "Gold HL funding annualized fell from 57.3% at entry to 12.1%, crossing below the +15% entry threshold. The extreme long crowding and associated funding premium have fully normalized, invalidating the short-fade thesis."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.3565714285714286,
+      "confidence": 0.17034457733107594,
+      "thesis": "GOLD HL funding 27.5% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4054,
+      "targetPct": 5,
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
