@@ -5380,3 +5380,45 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-03T07:07:42.794Z, model=deepseek-v4-pro)
+- Hypotheses added: 3 (rejected 6); reviews applied: 7; invalidated assumptions learned: 0; param updates: FUNDING_EXTREME_LONG risk: +5/-2 -> +5/-2.5.
+- Strategy review: Weekend Hyperliquid funding-reversion long continues to be our strongest signal, with 72% live win rate and 0.40% average PnL on 337 trades. One-touch NO sell-YES edge (live) has perfect 4/4 record with outsized gains, and its shadows show +1.28% average PnL over 233 resolved. Funding-extreme signals break even, with long side struggling on AMZN and HYPE. Polymarket IV-touch rich NO shadows perform well (79% win, +2.26 total) and are candidates for promotion. Failing: shadow-mined heatmap/cluster signals (gold one-touch NO heatmap 0/16, no-bias gap shadow 43% win), cross-asset momentum confirm
+- Nightly journal: Tonight we promoted five shadow-discovered one-touch NO edge variants from the mining run into forward testing, alongside a significant pivot in AMZN convergence: the new extreme-negative funding/basis refinement replaces the stale positive-funding thesis. We also addressed failing regime-absolute IV thresholds by switching to z-score compression for BTC PM IV, and added momentum/money-flow guards to the gold heatmap and cross-asset setups. Closed a large one-touch NO shadow block with +12.07% on ETH, and recorded a substantial 12.07% win from a recently resolved shadow. Raised the FUNDING_EXT
+### 2026-08-03 07:28 UTC
+
+**Portfolio:** $99.06 total | Cash $95.06 | 4 open | P&L $2.2969 | 64% win rate (634 trades)
+
+**Closed 1 trades:**
+- ❌ CBRS long via hyperliquid/hl_perp [HL CBRS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → breakeven_stop: $-0.0105 (-1.1%, market -0.0137, funding 0.0032)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 18 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_basis_pct = 1.73 is 3.5 std devs from mean (0.12 ± 0.46)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.72 to 0.21. Rolling correlation: 24h=0.38, 7d=0.55, 30d=-0.15. Current 24h corr is at 33th pct of last 30 daily 24h-rolling values (range -0.82 to 0.93).
+- [correlation_flip] GOLD-OIL correlation shifted from 0.22 to -0.28. Rolling correlation: 24h=0.04, 7d=0.05, 30d=-0.57. Current 24h corr is at 60th pct of last 30 daily 24h-rolling values (range -0.97 to 0.79).
+
+**Blocked signal learning:**
+- Open blocked shadows: 63
+- Resolved blocked shadows: 747 (407 wins / 340 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 15/28 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.56%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-3.33%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-3.90%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.04%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h since last call; daily budget 2/12; next scheduled 2026-08-03T09:28:35.021Z). Mechanical cycle ran normally._
+
+---
+

@@ -164,7 +164,7 @@
     "winRate": 0.3,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC PM IV expansion reversion dropped to 30% WR; in recent quiet markets the IV gap persisted without triggering a >2% move. The absolute IV thresholds failed to distinguish truly explosive compression events. | Refined by H-597 (2026-08-01): Refinement of BTC PM IV expansion: replace absolute IV thresholds with regime-re | After two early wins in late July, the fixed PM IV threshold (<46) became irrelevant as BTC PM IV stayed above that level or the ratio condition did not trigger. The last six tests all failed, indicating the signal captured a temporary regime that no longer exists. | The PM IV absolute threshold of 46 and >8% discount to options IV no longer produces reliable >2% absolute moves. Recent tests show moves below 2% or slight declines. Low absolute PM IV combined with a discount no longer guarantees a volatility breakout.",
+    "postMortem": "Refined by H-597 (2026-08-01): Refinement of BTC PM IV expansion: replace absolute IV thresholds with regime-re | After two early wins in late July, the fixed PM IV threshold (<46) became irrelevant as BTC PM IV stayed above that level or the ratio condition did not trigger. The last six tests all failed, indicating the signal captured a temporary regime that no longer exists. | The PM IV absolute threshold of 46 and >8% discount to options IV no longer produces reliable >2% absolute moves. Recent tests show moves below 2% or slight declines. Low absolute PM IV combined with a discount no longer guarantees a volatility breakout. | BTC PM IV expansion reversion (PM IV < 46, opt IV > 49, ratio < 0.92 predicting >2% abs move in 3 days) produced only 30% win rate. Early wins were driven by genuine breakouts, but later tests show that even when PM IV is low, spot often chopped in a tight range, failing to hit the 2% move. The absolute IV thresholds are not stable across different BTC regimes.",
     "source": "llm",
     "setupId": "btc_pm_iv_expansion_reversion",
     "setupLabel": "BTC PM-IV expansion / reversion"
@@ -374,7 +374,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "AMZN perp/spot funding convergence triggered strongly: funding flipped from -34.2% to +16.2% in 7 hours, and basis swung from -0.7% to +0.7%. The convergence thesis validated, though the speed was exceptional. The trade is now +0.30% and still inside the holding period. | AMZN funding sign flip from deeply negative to positive has failed all 4 tests (0% win). The reversal from extreme negative funding often coincides with a spot rally that moves against the intended short trade, making the perp/spot convergence thesis unreliable. | Funding rate remained pinned at 5.5% for several days instead of normalizing downward; the basis stayed near zero, removing any incentive for further convergence. The thesis that positive funding with near-zero basis signals impending perp underperformance is disproven. | The AMZN funding convergence hypothesis enters when basis is near zero and funding is slightly positive, but funding stays pinned and does not rise further. The convergence phase is already complete; there is no further upward funding reversion.",
+    "postMortem": "AMZN funding sign flip from deeply negative to positive has failed all 4 tests (0% win). The reversal from extreme negative funding often coincides with a spot rally that moves against the intended short trade, making the perp/spot convergence thesis unreliable. | Funding rate remained pinned at 5.5% for several days instead of normalizing downward; the basis stayed near zero, removing any incentive for further convergence. The thesis that positive funding with near-zero basis signals impending perp underperformance is disproven. | The AMZN funding convergence hypothesis enters when basis is near zero and funding is slightly positive, but funding stays pinned and does not rise further. The convergence phase is already complete; there is no further upward funding reversion. | Refined by H-601 (2026-08-03): Refinement of AMZN convergence: instead of going long when funding is positive,",
     "source": "llm",
     "setupId": "amzn_perp_spot_funding_convergence",
     "setupLabel": "AMZN perp/spot funding convergence"
@@ -721,7 +721,7 @@
     "winRate": 0.3333333333333333,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Confirming - BTC moved +0.7% with IV expansion from 48.8% to 49.1%, momentum continuing as expected | BTC momentum-IV correlation confirmed - BTC moved from 66816 to 67341 with IV expanding from 48.8% to 49.1%, supporting 12-24 hour momentum thesis | STRONG VALIDATION - BTC moved from 66931 to 67341 (+0.6%) with IV expansion from 48.8% to 49.1%, momentum sustained for multiple periods as predicted. | CONFIRMING - BTC momentum with IV expansion (49.1% up from 48.8%) during 600+ point rally validates IV-momentum correlation pattern | PARTIALLY VALIDATED - BTC +2.4% move occurred but IV stayed flat at 49.1%. Momentum confirmed by OI expansion instead | Split 2026-05-26 by operator from BTC PM-IV compression family into btc_listed_iv_momentum_confirmation; adjacent listed-IV/momentum/P-C setup must earn its own promotion. | No BTC listed-IV momentum signal triggered; BTC spot is not near a recent 7d high and the options term spread is inverted, contrary to the breakout-confirmation setup.",
+    "postMortem": "PARTIALLY VALIDATED - BTC +2.4% move occurred but IV stayed flat at 49.1%. Momentum confirmed by OI expansion instead | Split 2026-05-26 by operator from BTC PM-IV compression family into btc_listed_iv_momentum_confirmation; adjacent listed-IV/momentum/P-C setup must earn its own promotion. | No BTC listed-IV momentum signal triggered; BTC spot is not near a recent 7d high and the options term spread is inverted, contrary to the breakout-confirmation setup. | BTC listed-IV momentum confirmation variant (btc_spot_pct_vs_24h_sma>0, near 7d high, spot up >0.75% and IV up) returned 43% win. Losses occurred when the spot gain was modest and the IV uptick reflected hedging rather than momentum; no funding context was used, so the signal struggled in range-bound conditions.",
     "source": "llm",
     "setupId": "btc_listed_iv_momentum_confirmation",
     "setupLabel": "BTC listed-IV momentum confirmation"
@@ -4890,7 +4890,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Validated - BTC above 72k (71.8k close) with HYPE above 39.8 (40.19) showing positive correlation restoration, confirming momentum acceleration framework | All attempts at using HYPE OI stability and spot above SMA as confirmation for a BTC long failed, with BTC moving down ~1.6% each time. The risk-on proxy logic does not hold in the current fragmented market environment.",
+    "postMortem": "Validated - BTC above 72k (71.8k close) with HYPE above 39.8 (40.19) showing positive correlation restoration, confirming momentum acceleration framework | All attempts at using HYPE OI stability and spot above SMA as confirmation for a BTC long failed, with BTC moving down ~1.6% each time. The risk-on proxy logic does not hold in the current fragmented market environment. | Cross-asset IV compression vol expansion primary variant (BTC trending with HYPE confirming) resulted in 0/8, all losses (BTC -1.62%). HYPE spot SMA alignment and stable OI did not predict BTC upside; instead, the setup triggered during BTC distribution days where the initial strength faded quickly.",
     "source": "llm",
     "setupId": "cross_asset_iv_compression_vol_expansion",
     "setupLabel": "Cross-asset IV compression / vol expansion"
@@ -5572,7 +5572,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Covered by promoted setup family hype_breakout_oi_surge_momentum via primary H-116. | Split 2026-05-26 by operator into hype_relative_oi_breakout_continuation; this is the promoted/closest HYPE continuation set and no longer shares promotion with adjacent/cross-asset variants.",
+    "postMortem": "Covered by promoted setup family hype_breakout_oi_surge_momentum via primary H-116. | Split 2026-05-26 by operator into hype_relative_oi_breakout_continuation; this is the promoted/closest HYPE continuation set and no longer shares promotion with adjacent/cross-asset variants. | HYPE relative OI breakout continuation (H-128) shows 100% win in 2 tests, with funding normalizing and spot holding. This specific variant captures institutional accumulation phase effectively. Worth letting it run more tests before promotion.",
     "source": "llm",
     "setupId": "hype_relative_oi_breakout_continuation",
     "setupLabel": "HYPE relative OI breakout continuation"
@@ -10470,7 +10470,7 @@
     "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Setup family inconclusive after 40 completed tests: 53% win rate. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels. | AMZN extreme funding crash below -20% with negative basis has 2 wins out of 2 tests. Sample size is tiny, but the pattern matches live FUNDING_EXTREME_SHORT success on AMZN. Continue shadow testing, but be mindful of AMZN being disabled on the long side — this setup may complement the short side. | AMZN extreme funding crash to -20% with negative basis shows two clean wins in two tests, but sample size is too small for any conclusion. Continue shadow testing with strict entry criteria; this signal is not yet ready for promotion.",
+    "postMortem": "Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels. | AMZN extreme funding crash below -20% with negative basis has 2 wins out of 2 tests. Sample size is tiny, but the pattern matches live FUNDING_EXTREME_SHORT success on AMZN. Continue shadow testing, but be mindful of AMZN being disabled on the long side — this setup may complement the short side. | AMZN extreme funding crash to -20% with negative basis shows two clean wins in two tests, but sample size is too small for any conclusion. Continue shadow testing with strict entry criteria; this signal is not yet ready for promotion. | AMZN extreme funding crash below -20% with negative basis variant (H-259) is a bright spot in the convergence family, with 100% win rate in 3 tests. It targets reversion from deeply negative readings and avoids the positive-funding stagnation seen elsewhere. This variant could form the core of a salvaged AMZN signal.",
     "source": "llm",
     "setupId": "amzn_perp_spot_funding_convergence",
     "setupLabel": "AMZN perp/spot funding convergence"
@@ -18972,7 +18972,7 @@
     "winRate": 0.6666666666666666,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "BTC PM IV regime-relative compression: 100% win over 12 tests. The condition that PM IV is in the bottom 20% of its 30d range and at least 2 standard deviations below its mean is predicting spot upward moves. This is likely to become a promotable setup family after more shadow validation. | BTC PM IV regime-relative compression hypothesis continues to post strong results (100% win rate over 16 tests). Conditions are well-defined and backtests are clean. It may be ready for promotion to live status after a final review of sample size and expected throughput. | BTC PM IV regime-relative compression shows 2 wins in 4 hypothesis tests (50%). The thesis holds when PM IV z-score is below -2 and spot is near local highs, but low total win count and a live loss suggest the signal needs additional confirmation (e.g., options IV expansion or short-term momentum reversal) before promotion. | BTC PM IV regime-relative compression signal (using percentile-based conditions) is showing promise with a 67% win rate over 16 tests, supporting the shift away from absolute thresholds.",
+    "postMortem": "BTC PM IV regime-relative compression hypothesis continues to post strong results (100% win rate over 16 tests). Conditions are well-defined and backtests are clean. It may be ready for promotion to live status after a final review of sample size and expected throughput. | BTC PM IV regime-relative compression shows 2 wins in 4 hypothesis tests (50%). The thesis holds when PM IV z-score is below -2 and spot is near local highs, but low total win count and a live loss suggest the signal needs additional confirmation (e.g., options IV expansion or short-term momentum reversal) before promotion. | BTC PM IV regime-relative compression signal (using percentile-based conditions) is showing promise with a 67% win rate over 16 tests, supporting the shift away from absolute thresholds. | BTC PM IV regime-relative compression (H-523) using z-score bottom 20% has 67% win rate over 16 tests, a significant improvement over absolute threshold variants. The regime-relative approach is proving much more reliable and should replace H-001 entirely.",
     "source": "llm"
   },
   {
@@ -19831,7 +19831,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "GOLD one-touch NO heatmap shadow continues to underperform with 0% win rate over 32 tests after reopening; the discovered in-sample edge does not translate into forward profitability. Recommend kill and no further variants. | Gold one-touch heatmap short (cap edge ≥10) produced 0% WR over 12 scorable tests as gold rose. The edge was driven by PM IV compression rather than genuine directional overpricing, so no downside spot move materialised. | All 14 forward tests resulted in gold spot moving less than 2% or in the opposite direction, despite a persistently positive underlying-cap edge. The signal did not translate into directional price moves, likely because gold's short-term moves are driven by macro flows rather than PM contract mispricing. | The underlying cap edge ≥10 pts on gold upside touch NO contracts failed to predict >2% spot declines, with all 15 resolved tests losing. The edge often persisted without spot movement; large edge alone does not drive mean reversion.",
+    "postMortem": "Gold one-touch heatmap short (cap edge ≥10) produced 0% WR over 12 scorable tests as gold rose. The edge was driven by PM IV compression rather than genuine directional overpricing, so no downside spot move materialised. | All 14 forward tests resulted in gold spot moving less than 2% or in the opposite direction, despite a persistently positive underlying-cap edge. The signal did not translate into directional price moves, likely because gold's short-term moves are driven by macro flows rather than PM contract mispricing. | The underlying cap edge ≥10 pts on gold upside touch NO contracts failed to predict >2% spot declines, with all 15 resolved tests losing. The edge often persisted without spot movement; large edge alone does not drive mean reversion. | Primary variant of gold one-touch NO heatmap (gold_pm_underlying_cap_edge_pts_max >= 10 predicting >2% spot decline in 2 days) went 0/16 in forward testing. The large edge came from YES overpricing relative to the underlying cap, but gold spot declined only modestly and never reached the 2% threshold. No accompanying momentum or funding signal was required, so the edge alone did not translate into directional spot moves.",
     "source": "shadow_mined",
     "setupId": "shadow_one_touch_high_edge_no_gold_heatmap_no",
     "setupLabel": "Shadow-mined ONE_TOUCH_HIGH_EDGE_NO GOLD heatmap"
@@ -22739,5 +22739,98 @@
     "source": "llm",
     "setupId": "other_mixed",
     "setupLabel": "Other / mixed"
+  },
+  {
+    "id": "H-599",
+    "created": "2026-08-03",
+    "description": "On BTC only, sell YES on upside one-touch NO contracts when the sell-YES edge is between 3 and 8 points, as BTC-specific liquidity and mean-reversion dynamics amplify edge closure.",
+    "conditions": {
+      "asset": "BTC",
+      "touch_direction": ">= 1",
+      "sell_yes_edge_pts": "between 3 and 8"
+    },
+    "prediction": "YES prices on BTC upside one-touch NO contracts will fall, closing the edge within 7 days.",
+    "timeframeDays": 7,
+    "confidence": 0.6,
+    "direction": "short",
+    "originFindingId": "FIND-0043",
+    "themeId": "THEME-0001",
+    "tests": [
+      {
+        "date": "2026-08-03",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0043",
+    "setupLabel": "FIND-linked FIND-0043"
+  },
+  {
+    "id": "H-600",
+    "created": "2026-08-03",
+    "description": "On GOLD upside one-touch NO contracts expiring within 30 days, take a short position (sell YES) when there is any positive sell-YES edge, targeting quick edge decay near expiry.",
+    "conditions": {
+      "asset": "GOLD",
+      "touch_direction": ">= 1",
+      "days_to_expiry": "<= 30",
+      "sell_yes_edge_pts": ">= 1"
+    },
+    "prediction": "GOLD upside one-touch NO YES prices will decline within 7 days as the edge compresses with approaching expiry.",
+    "timeframeDays": 7,
+    "confidence": 0.6,
+    "direction": "short",
+    "originFindingId": "FIND-0036",
+    "themeId": "THEME-0001",
+    "tests": [
+      {
+        "date": "2026-08-03",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0036",
+    "setupLabel": "FIND-linked FIND-0036"
+  },
+  {
+    "id": "H-601",
+    "created": "2026-08-03",
+    "description": "Refinement of AMZN convergence: instead of going long when funding is positive, go long when funding is deeply negative (< -20%) and basis is also deeply negative (< -0.5%), expecting a strong reversion as the extreme mispricing normalizes.",
+    "conditions": {
+      "asset": "AMZN",
+      "amzn_hl_funding_ann": "< -20",
+      "amzn_hl_basis_pct": "< -0.5"
+    },
+    "prediction": "AMZN spot will rise >2% within 7 days as extreme negative funding and basis mean-revert.",
+    "timeframeDays": 7,
+    "confidence": 0.55,
+    "direction": "long",
+    "refinesHypothesisId": "H-005",
+    "tests": [
+      {
+        "date": "2026-08-03",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": "Setup family inconclusive after 37 completed tests: 43% win rate (binomial p=0.8380).",
+    "source": "llm",
+    "setupId": "amzn_perp_spot_funding_convergence",
+    "setupLabel": "AMZN perp/spot funding convergence"
   }
 ]
