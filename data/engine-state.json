@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-04T10:28:26.776Z",
+  "generatedAt": "2026-08-04T12:28:29.960Z",
   "dataFreshness": {
-    "valuationRows": 2100,
-    "latestValuationAt": "2026-08-04T10",
-    "macroRows": 2098,
+    "valuationRows": 2101,
+    "latestValuationAt": "2026-08-04T12",
+    "macroRows": 2099,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-04T10"
+    "latestInstrumentSnapshotAt": "2026-08-04T12"
   },
   "portfolio": {
     "cash": 98.9791,
@@ -156,10 +156,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 59,
-    "resolvedCount": 767,
+    "openCount": 58,
+    "resolvedCount": 768,
     "wouldHaveWon": 412,
-    "wouldHaveLost": 355,
+    "wouldHaveLost": 356,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -227,31 +227,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "polymarket_proxy_short",
-        "outcome": "loss",
-        "closeReason": "stop",
-        "pnlPct": -3.9,
-        "resolvedAt": "2026-08-04T00:28:16.633Z",
-        "marketQuality": {
-          "yesBid": 0.23,
-          "yesAsk": 0.24,
-          "yesSpread": 0.01,
-          "liquidity": 13921.59,
-          "flags": []
-        },
-        "sourceComparison": {
-          "sourceClosedAt": "2026-08-04T06:28:47.528Z",
-          "sourcePnl": 0.0013,
-          "sourcePnlPct": 0.13,
-          "proxyOutperformed": false,
-          "correlation": "opposite_direction"
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -387,6 +362,24 @@
           "yesAsk": 0.24,
           "yesSpread": 0.01,
           "liquidity": 40662.65,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.12,
+        "resolvedAt": "2026-08-04T12:28:29.537Z",
+        "marketQuality": {
+          "yesBid": 0.11,
+          "yesAsk": 0.12,
+          "yesSpread": 0.01,
+          "liquidity": 46279.58,
           "flags": []
         }
       }
