@@ -6560,3 +6560,37 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-08-04 20:28 UTC
+
+**Portfolio:** $98.98 total | Cash $97.98 | 1 open | P&L $2.2185 | 63% win rate (638 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 17 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [correlation_flip] GOLD-OIL correlation shifted from 0.25 to -0.30. Rolling correlation: 24h=-0.86, 7d=-0.11, 30d=-0.63. Current 24h corr is at 20th pct of last 30 daily 24h-rolling values (range -0.96 to 0.66).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.73 to 0.18. Rolling correlation: 24h=0.68, 7d=0.40, 30d=-0.22. Current 24h corr is at 60th pct of last 30 daily 24h-rolling values (range -0.51 to 0.88).
+
+**Blocked signal learning:**
+- Open blocked shadows: 57
+- Resolved blocked shadows: 772 (412 wins / 360 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/16 blocked trades would have won.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 16/29 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=235 (68W/134L/33flat, 33.7% win-rate, sum $-0.2761, avg -0.12%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-9.37%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.11%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.94%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.08%)
+
+**LLM analysis:**
+The GOLD PC_RATIO_EXTREME_LOW short (T-1785853728670-oc19) is only 6h into a 120h planned hold and still under the 12h minimum for discretionary close; the ALLOWED ACTION SURFACE correctly flags it as ineligible. The signal's evidence metric, gold_gld_pc_ratio, has already moved from 0.316 to 0.629—a rapid normalization back to levels seen before the extreme low print. If this round-trip persists toward prior ranges (e.g., >0.7), it could constitute a thesis_invalidated event after the 12h mark. Spot price has barely moved, so the P&L is flat. No action recommended now; continue to monitor P/C ratio trajectory. For nightly review: consider whether GLD P/C data is prone to sudden spikes from single-block trades and whether a smoother (e.g., 1h EMA) could improve entry timing.
+
+---
+
