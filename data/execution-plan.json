@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-04T14:28:48.667Z",
+  "generatedAt": "2026-08-04T15:28:21.589Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,18 +7,19 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PC_RATIO_EXTREME_LOW",
+      "type": "FUNDING_EXTREME_LONG",
       "asset": "GOLD",
-      "venue": "spot",
+      "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.6133333333333334,
-      "confidence": 0.3332594100199477,
-      "thesis": "GOLD P/C ratio 0.32 — heavy call buying → contrarian short.",
+      "strength": 0.3157142857142857,
+      "confidence": 0.14996072592712723,
+      "thesis": "GOLD HL funding 26.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4086,
+      "entryPrice": 4080,
       "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 5
+      "stopPct": 2.5,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
