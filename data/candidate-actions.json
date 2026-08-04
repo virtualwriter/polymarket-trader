@@ -1,34 +1,10 @@
 {
-  "generatedAt": "2026-08-04T06:28:25.421Z",
+  "generatedAt": "2026-08-04T07:28:15.325Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [],
   "sizingPreviews": [],
   "portfolioExposurePreviews": [],
   "stagedQuantRules": [],
-  "llmCloseEligibility": [
-    {
-      "positionId": "T-1785709715177-6145",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
-      ],
-      "hoursOpen": 32,
-      "hoursToExpiry": 40,
-      "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.4444,
-      "minHoldHours": 12,
-      "reason": "Mechanical FUNDING_EXTREME_LONG setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    }
-  ]
+  "llmCloseEligibility": []
 }
