@@ -1,31 +1,28 @@
 {
-  "generatedAt": "2026-08-04T05:28:16.348Z",
+  "generatedAt": "2026-08-04T06:28:47.525Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
-  "entrySignals": [
+  "llmCloses": [
     {
-      "type": "FUNDING_EXTREME_LONG",
+      "action": "close",
+      "positionId": "T-1785709715177-6145",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.11085714285714283,
-      "confidence": 0.05295969231126398,
-      "thesis": "GOLD HL funding 18.9% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4065,
-      "targetPct": 5,
-      "stopPct": 2.5,
-      "expiryDays": 3,
-      "leverage": 1
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_hl_funding_ann"
+      ],
+      "thesis": "FUNDING_EXTREME_LONG thesis invalidated: gold Hyperliquid funding annualized dropped from entry 57.3% to 6.5%, well below the extreme threshold, indicating crowded long positions have normalized. The short position no longer benefits from excessive carry; the signal's core condition has reversed."
     }
   ],
+  "entrySignals": [],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
