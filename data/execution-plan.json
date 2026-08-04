@@ -1,15 +1,31 @@
 {
-  "generatedAt": "2026-08-04T02:28:16.099Z",
+  "generatedAt": "2026-08-04T03:28:41.695Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
   "entrySignals": [],
-  "rejectedLlmActions": [],
+  "rejectedLlmActions": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1785709715177-6145",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "gold_hl_funding_ann"
+        ],
+        "thesis": "GOLD HL funding annualized dropped from 57.3% to 14.82%, crossing back below the 15% entry trigger threshold. The extreme crowded-long condition has dissipated, invalidating the short fade thesis."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+    }
+  ],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
   ]
 }
