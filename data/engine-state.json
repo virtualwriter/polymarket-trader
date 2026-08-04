@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-04T21:28:16.815Z",
+  "generatedAt": "2026-08-04T22:28:21.124Z",
   "dataFreshness": {
-    "valuationRows": 2109,
-    "latestValuationAt": "2026-08-04T21",
-    "macroRows": 2107,
+    "valuationRows": 2110,
+    "latestValuationAt": "2026-08-04T22",
+    "macroRows": 2108,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-04T21"
+    "latestInstrumentSnapshotAt": "2026-08-04T22"
   },
   "portfolio": {
     "cash": 97.9791,
@@ -13,7 +13,7 @@
     "realizedPnl": 2.2185,
     "totalTrades": 638,
     "winRatePct": 63.5,
-    "unrealizedPnl": -0.0005
+    "unrealizedPnl": 0.0012
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.05,
-      "currentPrice": 4088,
-      "underlyingPrice": 4088,
+      "pnlPct": 0.12,
+      "currentPrice": 4081,
+      "underlyingPrice": 4081,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -174,10 +174,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 56,
-    "resolvedCount": 773,
-    "wouldHaveWon": 412,
-    "wouldHaveLost": 361,
+    "openCount": 55,
+    "resolvedCount": 775,
+    "wouldHaveWon": 413,
+    "wouldHaveLost": 362,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -245,44 +245,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.06,
-        "resolvedAt": "2026-08-04T03:28:13.541Z",
-        "marketQuality": {
-          "yesBid": 0.06,
-          "yesAsk": 0.07,
-          "yesSpread": 0.01,
-          "liquidity": 45167.64,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -2.6,
-        "resolvedAt": "2026-08-04T06:28:24.916Z",
-        "marketQuality": {
-          "yesBid": 0.23,
-          "yesAsk": 0.24,
-          "yesSpread": 0.01,
-          "liquidity": 40662.65,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -392,9 +354,63 @@
           "liquidity": 5546.23,
           "flags": []
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 1.2,
+        "resolvedAt": "2026-08-04T22:28:20.754Z",
+        "marketQuality": {
+          "yesBid": 0.17,
+          "yesAsk": 0.18,
+          "yesSpread": 0.01,
+          "liquidity": 27810.53,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -9.8,
+        "resolvedAt": "2026-08-04T22:28:20.754Z",
+        "marketQuality": {
+          "yesBid": 0.49,
+          "yesAsk": 0.5,
+          "yesSpread": 0.01,
+          "liquidity": 41996.88,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $110,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.06,
+          "yesAsk": 0.07,
+          "yesSpread": 0.01,
+          "liquidity": 58364.76,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.9pt on BTC, spread 1.0c, liquidity 58365. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
@@ -442,22 +458,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.4pt on ETH, spread 2.0c, liquidity 13291. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-in-august-2026 — NO — Will Bitcoin reach $67,500 in August?",
-        "marketQuality": {
-          "yesBid": 0.49,
-          "yesAsk": 0.5,
-          "yesSpread": 0.01,
-          "liquidity": 41996.88,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.5pt on BTC, spread 1.0c, liquidity 41997. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
