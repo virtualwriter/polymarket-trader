@@ -1,39 +1,21 @@
 {
-  "generatedAt": "2026-08-05T05:28:22.403Z",
+  "generatedAt": "2026-08-05T06:28:17.664Z",
   "dataFreshness": {
-    "valuationRows": 2115,
-    "latestValuationAt": "2026-08-05T05",
-    "macroRows": 2113,
+    "valuationRows": 2116,
+    "latestValuationAt": "2026-08-05T06",
+    "macroRows": 2114,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-05T05"
+    "latestInstrumentSnapshotAt": "2026-08-05T06"
   },
   "portfolio": {
-    "cash": 97.9791,
-    "openPositions": 1,
+    "cash": 98.9588,
+    "openPositions": 0,
     "realizedPnl": 2.2185,
     "totalTrades": 638,
     "winRatePct": 63.5,
-    "unrealizedPnl": -0.0135
+    "unrealizedPnl": 0
   },
-  "openPositions": [
-    {
-      "positionId": "T-1785853728670-oc19",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "short",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -1.35,
-      "currentPrice": 4141,
-      "underlyingPrice": 4141,
-      "targetPct": 3,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_gld_pc_ratio"
-      ]
-    }
-  ],
+  "openPositions": [],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -144,12 +126,13 @@
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "enabled": true,
-      "weight": 0.5434,
-      "trades": 29,
+      "weight": 0.5419,
+      "trades": 30,
       "wins": 16,
-      "avgPnlPct": 0.219,
+      "avgPnlPct": 0.1442,
       "disabledAssets": [
-        "AMZN"
+        "AMZN",
+        "GOLD"
       ]
     },
     {
@@ -174,7 +157,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 56,
+    "openCount": 58,
     "resolvedCount": 782,
     "wouldHaveWon": 415,
     "wouldHaveLost": 367,
@@ -405,22 +388,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $5,000 by end of December?",
-        "marketQuality": {
-          "yesBid": 0.24,
-          "yesAsk": 0.25,
-          "yesSpread": 0.01,
-          "liquidity": 15621.56,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 7.4pt on GOLD, spread 1.0c, liquidity 15622. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $100,000 by December 31, 2026?",
@@ -530,6 +497,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.7pt on BTC, spread 1.0c, liquidity 27539. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $2,250 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.54,
+          "yesAsk": 0.57,
+          "yesSpread": 0.03,
+          "liquidity": 8155.62,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.6pt on ETH, spread 3.0c, liquidity 8156. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },

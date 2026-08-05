@@ -228,11 +228,11 @@
   },
   {
     "type": "PC_RATIO_EXTREME_LOW",
-    "weight": 0.5433577337281755,
-    "trades": 29,
+    "weight": 0.5418540736689492,
+    "trades": 30,
     "wins": 16,
-    "avgPnlPct": 0.2190472115406947,
-    "lastTriggered": "2026-07-31T14:06:48.222Z",
+    "avgPnlPct": 0.14419791388728226,
+    "lastTriggered": "2026-08-05T05:47:57.122Z",
     "enabled": true,
     "perAsset": {
       "AMZN": {
@@ -261,16 +261,19 @@
         }
       },
       "GOLD": {
-        "trades": 7,
+        "trades": 8,
         "wins": 3,
-        "avgPnlPct": 0.24248275557578916,
+        "avgPnlPct": -0.04113155362889431,
         "resetAt": "2026-04-30T23:03:00Z",
         "resetReason": "Reset after bad zero gold_gld_pc_ratio; retest Gold P/C signals from corrected data.",
         "priorStats": {
           "trades": 1,
           "wins": 0,
           "avgPnlPct": -1.4560033762397129
-        }
+        },
+        "disabled": true,
+        "disabledAt": "2026-08-05T05:47:57.122Z",
+        "disabledReason": "PC_RATIO_EXTREME_LOW on GOLD disabled after 3/8 wins (38% accuracy)."
       }
     },
     "artifactNote": "2026-04-28: 1 OIL trade removed as DATA_CORRECTION_ARTIFACT (wrong price source — CBOE CL was Colgate-Palmolive, not WTI crude) | 2026-04-30: reset Oil/GOLD PC_RATIO_EXTREME_LOW stats after bad zero P/C inputs; clean stats retain non-contaminated assets only."
