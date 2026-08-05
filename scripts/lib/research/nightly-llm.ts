@@ -289,7 +289,7 @@ IMPORTANT RULES:
   - signalRisk.<signal>.stopPct: 0.5 to 10
 - You may update signalRisk when realized wins are too small, losses are too large, or shadow/blocked learning shows a better payoff shape.
 - Keep signalRisk updates incremental and explain them in journalEntry.
-- Do NOT include parameterUpdates.signalRisk entries for these locked signals; their risk is fixed by their backtest convention and any proposed change will be silently dropped: ONE_TOUCH_HIGH_EDGE_NO.
+- Do NOT include parameterUpdates.signalRisk entries for these locked signals; their risk is fixed by their backtest convention and any proposed change will be silently dropped: ONE_TOUCH_HIGH_EDGE_NO, USER_PM_IV_TOUCH_RICH_NO.
 
 Respond with ONLY valid JSON in this exact format:
 {

@@ -109,6 +109,15 @@ import {
   ensureHypothesisSetupMetadata,
 } from "./lib/research/hypothesis-shadow-eval.js";
 import { formatConditionIssues, validateHypothesisConditions } from "./lib/research/condition-catalog.js";
+import {
+  USER_PM_IV_TOUCH_RICH_NO_HOLD_DAYS,
+  USER_PM_IV_TOUCH_RICH_NO_LIVE_ASSETS,
+  USER_PM_IV_TOUCH_RICH_NO_MAX_SIGNALS_PER_RUN,
+  USER_PM_IV_TOUCH_RICH_NO_SIGNAL,
+  ivTouchRichnessPts,
+  userPmIvTouchRichNoConfidence,
+  userPmIvTouchRichNoEligible,
+} from "./lib/trading/user-pm-iv-touch-rich-no.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -248,6 +257,8 @@ const STALE_LOTTERY_TICKET_NO_BAD_FLAGS = new Set([
   "no_listed_options_mapping",
 ]);
 const ENABLE_ONE_TOUCH_HIGH_EDGE_NO_OPENING = false;
+/** Engine-live enable for USER_PM_IV_TOUCH_RICH_NO (manual IV-touch rich NO → auto scanner). */
+const ENABLE_USER_PM_IV_TOUCH_RICH_NO_LIVE = true;
 const WEEKEND_HL_FUNDING_LIVE_SIGNAL = "WEEKEND_HL_FUNDING_REVERSION_LONG";
 const WEEKEND_HL_FUNDING_SHADOW_REASON = "weekend_hl_funding_shadow";
 const ENABLE_WEEKEND_HL_FUNDING_LIVE = true;
@@ -419,13 +430,18 @@ const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
   MOMENTUM_LONG: { targetPct: 6, stopPct: 3.5 },
   PROMOTED_HYPOTHESIS: { targetPct: 6, stopPct: 3.5 },
   ONE_TOUCH_HIGH_EDGE_NO: { targetPct: null, stopPct: 100 },
+  // Hold-to-expiry style like one-touch / historical manual shadows (stopPct=100).
+  USER_PM_IV_TOUCH_RICH_NO: { targetPct: null, stopPct: 100 },
 };
 // Signals whose risk params are dictated by their backtest convention and must not be
 // retuned by the hourly LLM. The LLM's signalRisk schema caps stopPct at 10, which would
 // silently retighten ONE_TOUCH_HIGH_EDGE_NO (held to expiry, deep drawdowns expected)
 // every run. We strip these entries from parameterUpdates.signalRisk before validation
 // and again before applying, so the LLM cannot rewrite them.
-const LLM_LOCKED_SIGNAL_RISK: ReadonlySet<string> = new Set(["ONE_TOUCH_HIGH_EDGE_NO"]);
+const LLM_LOCKED_SIGNAL_RISK: ReadonlySet<string> = new Set([
+  "ONE_TOUCH_HIGH_EDGE_NO",
+  USER_PM_IV_TOUCH_RICH_NO_SIGNAL,
+]);
 const SPOT_LONG_RISK_BY_ASSET: Record<string, SignalRiskParams> = {
   BTC: { targetPct: 3, stopPct: 1.5 },
   AMZN: { targetPct: 3, stopPct: 1.5 },
@@ -1813,6 +1829,7 @@ function defaultWeights(): SignalWeight[] {
     "PC_RATIO_EXTREME_LOW",
     "LLM_HYPOTHESIS",
     "ONE_TOUCH_HIGH_EDGE_NO",
+    USER_PM_IV_TOUCH_RICH_NO_SIGNAL,
   ];
   return types.map((t) => ({
     type: t,
@@ -1872,8 +1889,8 @@ function applySpotRiskToOpenPositions(portfolio: Portfolio): string[] {
 function applyProductionPolymarketRisk(position: Position): string | null {
   if (position.signalType === "MONOTONIC_ARB") return null;
   if (position.venue !== "polymarket" || (position.instrumentType !== "pm_yes" && position.instrumentType !== "pm_no")) return null;
-  if (position.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO) {
-    const risk = DEFAULT_SIGNAL_RISK[ONE_TOUCH_HIGH_EDGE_SIGNAL_NO];
+  if (position.signalType === ONE_TOUCH_HIGH_EDGE_SIGNAL_NO || position.signalType === USER_PM_IV_TOUCH_RICH_NO_SIGNAL) {
+    const risk = DEFAULT_SIGNAL_RISK[position.signalType] ?? { targetPct: null, stopPct: 100 };
     if (position.targetPct === risk.targetPct && position.stopPct === risk.stopPct) return null;
     const note = `${position.asset} ${position.direction} ${position.instrumentType} ${position.signalType}: ${formatTargetPct(position.targetPct)}/-${position.stopPct} -> ${formatTargetPct(risk.targetPct)}/-${risk.stopPct}`;
     position.targetPct = risk.targetPct;
@@ -2962,9 +2979,10 @@ function signalFamilyEvidenceColumns(position: Position): string[] {
       return uniqueColumns([columns.spot]);
     case "ONE_TOUCH_HIGH_EDGE_NO":
     case "ONE_TOUCH_HIGH_EDGE_YES_SHADOW":
-      // One-touch positions live or die on how spot moves relative to the
-      // touch strike, but the LLM repeatedly reaches for funding and IV as
-      // secondary thesis evidence ("HL funding spiked to +80%, extreme
+    case "USER_PM_IV_TOUCH_RICH_NO":
+      // One-touch / IV-touch positions live or die on how spot moves relative
+      // to the touch strike, but the LLM repeatedly reaches for funding and IV
+      // as secondary thesis evidence ("HL funding spiked to +80%, extreme
       // crowding") with no rolling baseline. Promote pmIv/optIv/funding to
       // evidence columns so they pick up the trajectory + 24h/7d/30d
       // percentile context instead of bare current values.
@@ -4443,6 +4461,89 @@ function recordWeekendHyperliquidFundingShadows(
 }
 
 const ONE_TOUCH_HIGH_EDGE_LIVE_ASSETS = new Set(["BTC", "ETH", "OIL", "SPY"]);
+
+function relativeValueDteDays(row: RelativeValueObservation): number | null {
+  const raw = num(row.rawRow.dte_days);
+  if (raw !== null) return raw;
+  if (!row.expiry) return null;
+  const expiryMs = Date.parse(row.expiry);
+  if (!Number.isFinite(expiryMs)) return null;
+  return (expiryMs - Date.now()) / (1000 * 60 * 60 * 24);
+}
+
+/**
+ * Auto-scan the relative-value heatmap for USER_PM_IV_TOUCH_RICH_NO live
+ * candidates (PM YES rich vs options touch model → buy NO). Replaces the
+ * manual heatmap-button path for live opening while manual shadows can still
+ * be opened separately for research.
+ */
+function generateUserPmIvTouchRichNoSignals(
+  rows: RelativeValueObservation[],
+  weights: SignalWeight[],
+  learningParams: LearningParams,
+  latestSnapshot: InstrumentSnapshotFile | null,
+): Signal[] {
+  if (!ENABLE_USER_PM_IV_TOUCH_RICH_NO_LIVE || !latestSnapshot) return [];
+  const weight = weights.find((w) => w.type === USER_PM_IV_TOUCH_RICH_NO_SIGNAL);
+  if (!weight || !weight.enabled) return [];
+
+  const risk = riskForSignal(learningParams, USER_PM_IV_TOUCH_RICH_NO_SIGNAL);
+  const candidates = rows
+    .map((row) => ({ row, dteDays: relativeValueDteDays(row), richness: ivTouchRichnessPts(row) }))
+    .filter(({ row, dteDays }) => userPmIvTouchRichNoEligible({
+      asset: row.asset,
+      eventSlug: row.eventSlug,
+      marketId: row.marketId,
+      direction: row.direction,
+      bestExpression: row.bestExpression,
+      edgePts: row.edgePts,
+      pmSpread: row.pmSpread,
+      liquidity: row.liquidity,
+      modelProb: row.modelProb,
+      pmYes: row.pmYes,
+      flags: row.flags,
+      dteDays,
+    }))
+    .filter(({ row }) => !weight.perAsset?.[row.asset]?.disabled)
+    .sort((a, b) => (b.richness ?? 0) - (a.richness ?? 0))
+    .slice(0, USER_PM_IV_TOUCH_RICH_NO_MAX_SIGNALS_PER_RUN);
+
+  const signals: Signal[] = [];
+  for (const { row, richness } of candidates) {
+    if (richness === null) continue;
+    const event = latestSnapshot.polymarket.find((candidate) => candidate.slug === row.eventSlug);
+    const contract = event?.contracts.find((candidate) => candidate.marketId === row.marketId);
+    if (!event || !contract) continue;
+    if (!passesPolymarketEntryQualityGate(contract)) continue;
+    const entryPrice = polymarketEntryPrice(contract, "pm_no");
+    if (!passesOneSidedPolymarketEntryPrice(entryPrice)) continue;
+    const underlyingPrice = latestSnapshot.spots[row.asset] ?? row.strike;
+    const modelPct = ((row.modelProb ?? 0) * 100).toFixed(1);
+    const pmPct = ((row.pmYes ?? 0) * 100).toFixed(1);
+
+    signals.push({
+      type: USER_PM_IV_TOUCH_RICH_NO_SIGNAL,
+      asset: row.asset,
+      venue: "polymarket",
+      direction: "short",
+      strength: Math.min(1, richness / 15),
+      confidence: userPmIvTouchRichNoConfidence(richness, weight.weight),
+      thesis: `[IV-TOUCH RICH NO LIVE] PM YES ${pmPct}% vs IV touch model ${modelPct}% (${richness.toFixed(1)}pt rich) on ${row.asset} ${row.direction} ${row.strike}; buy NO / sell YES, hold up to ${USER_PM_IV_TOUCH_RICH_NO_HOLD_DAYS}d or expiry.`,
+      hypothesisId: null,
+      entryPrice: underlyingPrice,
+      targetPct: risk.targetPct,
+      stopPct: risk.stopPct,
+      expiryDays: USER_PM_IV_TOUCH_RICH_NO_HOLD_DAYS,
+      contractHint: {
+        preferredEventSlug: row.eventSlug,
+        forceInstrumentType: "pm_no",
+        forceMarketId: row.marketId,
+        allowDirectionFallback: false,
+      },
+    });
+  }
+  return signals;
+}
 
 function generateOneTouchHighEdgeNoSignals(
   rows: RelativeValueObservation[],
@@ -8049,6 +8150,15 @@ async function main() {
   if (ENABLE_ONE_TOUCH_HIGH_EDGE_NO_OPENING && oneTouchHighEdgeNoLiveSignals.length > 0) {
     console.log(`\n  Generated ${oneTouchHighEdgeNoLiveSignals.length} one-touch high-edge NO live signals (${Array.from(ONE_TOUCH_HIGH_EDGE_LIVE_ASSETS).join("/")}, |edge|>=${ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE}, strict).`);
   }
+  const userPmIvTouchRichNoLiveSignals = generateUserPmIvTouchRichNoSignals(
+    relativeValueRows,
+    weights,
+    learningParams,
+    latestSnapshot,
+  );
+  if (userPmIvTouchRichNoLiveSignals.length > 0) {
+    console.log(`\n  Generated ${userPmIvTouchRichNoLiveSignals.length} IV-touch rich NO live signals (${Array.from(USER_PM_IV_TOUCH_RICH_NO_LIVE_ASSETS).join("/")}, edge>=5pt, DTE<=60).`);
+  }
   // Shadow testing is intentionally decoupled from the live-opening flag:
   // disabling live entries must not stop evidence accumulation (shadow
   // recording silently stopped 2026-05-26 when live opening was turned off,
@@ -8132,6 +8242,7 @@ async function main() {
   const promotedSignals = generatePromotedHypothesisSignals(hypotheses, valRows, latestRow, learningParams, latestSnapshot, blockedSignals, relativeValueRows);
   signals.push(...promotedSignals);
   signals.push(...oneTouchHighEdgeNoLiveSignals);
+  signals.push(...userPmIvTouchRichNoLiveSignals);
   proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   blockedSummary = summarizeBlockedSignals(blockedSignals);
   oneTouchBucketObs = oneTouchBucketObservations(blockedSignals);
