@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-05T00:28:15.177Z",
+  "generatedAt": "2026-08-05T01:28:22.113Z",
   "dataFreshness": {
-    "valuationRows": 2111,
-    "latestValuationAt": "2026-08-05T00",
-    "macroRows": 2109,
+    "valuationRows": 2112,
+    "latestValuationAt": "2026-08-05T01",
+    "macroRows": 2110,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-05T00"
+    "latestInstrumentSnapshotAt": "2026-08-05T01"
   },
   "portfolio": {
     "cash": 97.9791,
@@ -13,7 +13,7 @@
     "realizedPnl": 2.2185,
     "totalTrades": 638,
     "winRatePct": 63.5,
-    "unrealizedPnl": 0.0017
+    "unrealizedPnl": 0.0005
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 0.17,
-      "currentPrice": 4079,
-      "underlyingPrice": 4079,
+      "pnlPct": 0.05,
+      "currentPrice": 4084,
+      "underlyingPrice": 4084,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -175,9 +175,9 @@
   ],
   "blockedSummary": {
     "openCount": 57,
-    "resolvedCount": 777,
+    "resolvedCount": 778,
     "wouldHaveWon": 414,
-    "wouldHaveLost": 363,
+    "wouldHaveLost": 364,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -245,24 +245,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.11,
-        "resolvedAt": "2026-08-04T17:28:21.657Z",
-        "marketQuality": {
-          "yesBid": 0.1,
-          "yesAsk": 0.11,
-          "yesSpread": 0.01,
-          "liquidity": 21421.52,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -396,6 +378,26 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -3.23,
+        "resolvedAt": "2026-08-05T01:28:21.745Z",
+        "marketQuality": {
+          "yesBid": 0.69,
+          "yesAsk": 0.7,
+          "yesSpread": 0.01,
+          "liquidity": 68314.02,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -515,17 +517,17 @@
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
         "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $70,000 by December 31, 2026?",
+        "instrumentLabel": "what-price-will-bitcoin-hit-in-august-2026 — NO — Will Bitcoin reach $67,500 in August?",
         "marketQuality": {
-          "yesBid": 0.69,
-          "yesAsk": 0.7,
-          "yesSpread": 0.01,
-          "liquidity": 68314.02,
+          "yesBid": 0.5,
+          "yesAsk": 0.52,
+          "yesSpread": 0.02,
+          "liquidity": 52753.6,
           "flags": [
             "wide_pm_spread"
           ]
         },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.2pt on BTC, spread 1.0c, liquidity 68314. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.3pt on BTC, spread 2.0c, liquidity 52754. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       }
     ]
   },
