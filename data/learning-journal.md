@@ -651,3 +651,37 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 5/12; ne
 
 ---
 
+### 2026-08-05 15:28 UTC
+
+**Portfolio:** $98.96 total | Cash $98.96 | 0 open | P&L $2.1982 | 63% win rate (639 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 18 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [correlation_flip] GOLD-OIL correlation shifted from 0.27 to -0.30. Rolling correlation: 24h=-0.25, 7d=-0.50, 30d=-0.60. Current 24h corr is at 47th pct of last 30 daily 24h-rolling values (range -0.97 to 0.74).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.74 to 0.19. Rolling correlation: 24h=0.56, 7d=0.41, 30d=-0.15. Current 24h corr is at 57th pct of last 30 daily 24h-rolling values (range -0.82 to 0.93).
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 796 (420 wins / 376 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 16/29 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/17 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=256 (72W/147L/37flat, 32.9% win-rate, sum $-0.6488, avg -0.25%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have hit stop (-2.53%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-2.74%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+No open positions to review. The system is cash-only after a run of closed ONE_TOUCH_HIGH_EDGE_NO trades, some profitable, some showing losses amid wide PM spreads and questionable market quality. Blocked signals continue to highlight edge in BTC and ETH touch markets, but execution quality flags persist. Overnight research should consider whether the shift to deeply negative BTC funding and rising term structure inversion creates new entry conditions for FUNDING_EXTREME_SHORT or IV-based setups, while remaining cautious on the ONE_TOUCH_HIGH_EDGE_NO shadow quality until spread and liquidity improve.
+
+---
+
