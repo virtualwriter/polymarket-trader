@@ -52,9 +52,10 @@ export interface IvTouchRichNoRow {
 }
 
 function flagSet(flags: string): Set<string> {
+  // Engine CSV uses ";" (relativeValueFlagSet); tolerate "|" too.
   return new Set(
     String(flags)
-      .split("|")
+      .split(/[;|]/)
       .map((f) => f.trim())
       .filter(Boolean),
   );
