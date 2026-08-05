@@ -3318,11 +3318,17 @@
       {
         "date": "2026-08-04",
         "triggered": true,
+        "outcome": "loss",
+        "actualMove": "Funding moved 5.5% → 5.5% (long reversion needs increase) (method=funding_normalize_up)"
+      },
+      {
+        "date": "2026-08-05",
+        "triggered": true,
         "outcome": "pending",
-        "actualMove": "Setup amzn_perp_spot_funding_convergence shadow test 44/20 opened via H-058 after current row satisfied variant conditions."
+        "actualMove": "Setup amzn_perp_spot_funding_convergence shadow test 47/20 opened via H-058 after current row satisfied variant conditions."
       }
     ],
-    "winRate": 0.2,
+    "winRate": 0.1875,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "AMZN basis improved from -0.35% to -0.38% - slight setback but funding remains positive at 8.99%. Convergence process ongoing but slower than expected. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels. | AMZN perp convergence hypothesis with basis > -0.05 and funding >0 repeatedly saw funding stuck at 5.5% for days without decline. The assumption that positive funding naturally reverts to lower levels quickly failed in current regime, leaving the thesis unwound.",
@@ -5399,8 +5405,10 @@
       {
         "date": "2026-07-29",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup hype_relative_oi_breakout_continuation shadow test 8/20 opened via H-122 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: missing hypothesis.direction and no directional language in prediction (method=unscorable_direction)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:unscorable_direction"
       }
     ],
     "winRate": 0,
@@ -7066,11 +7074,11 @@
       {
         "date": "2026-07-29",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup btc_listed_iv_momentum_confirmation shadow test 8/20 opened via H-170 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "BTC moved 0.04% (63973 → 63999) [short needs ≤ -2%] (method=spot_directional_short)"
       }
     ],
-    "winRate": 0.5,
+    "winRate": 0.3333333333333333,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Split 2026-05-26 by operator from BTC PM-IV compression family into btc_listed_iv_momentum_confirmation; adjacent listed-IV/momentum/P-C setup must earn its own promotion. | LONG BTC momentum/vol-confirmed breakout has 50% win (8 tests). Recent tests show that while the momentum filter often identifies trending moves, the failure cases occur during sudden volatility shifts or fakeouts. Consider adding a regime filter (e.g., funding alignment) to improve the win rate. | Refined by H-590 (2026-07-30): Refinement of BTC listed-IV momentum confirmation: tighten momentum thresholds. | BTC listed-IV momentum confirmation (long) has a 50% scorable WR but the recent sample shows many small losses and only one strong win. The momentum and IV thresholds were too lenient, picking up weak impulses that did not sustain beyond 2%.",
@@ -7510,8 +7518,10 @@
       {
         "date": "2026-07-29",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup hype_relative_oi_breakout_continuation shadow test 7/20 opened via H-181 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: missing hypothesis.direction and no directional language in prediction (method=unscorable_direction)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:unscorable_direction"
       }
     ],
     "winRate": 0,
@@ -10487,11 +10497,11 @@
       {
         "date": "2026-08-03",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup amzn_perp_spot_funding_convergence shadow test 43/20 opened via H-259 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "Funding moved 5.5% → 5.5% (long reversion needs increase) (method=funding_normalize_up)"
       }
     ],
-    "winRate": 1,
+    "winRate": 0.6666666666666666,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels. | AMZN extreme funding crash below -20% with negative basis has 2 wins out of 2 tests. Sample size is tiny, but the pattern matches live FUNDING_EXTREME_SHORT success on AMZN. Continue shadow testing, but be mindful of AMZN being disabled on the long side — this setup may complement the short side. | AMZN extreme funding crash to -20% with negative basis shows two clean wins in two tests, but sample size is too small for any conclusion. Continue shadow testing with strict entry criteria; this signal is not yet ready for promotion. | AMZN extreme funding crash below -20% with negative basis variant (H-259) is a bright spot in the convergence family, with 100% win rate in 3 tests. It targets reversion from deeply negative readings and avoids the positive-funding stagnation seen elsewhere. This variant could form the core of a salvaged AMZN signal.",
@@ -19538,8 +19548,8 @@
       {
         "date": "2026-08-03",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 3/20 opened via H-532 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "GOLD moved 0.32% (4066 → 4079) [short needs ≤ -2%] (method=spot_directional_short)"
       },
       {
         "date": "2026-08-04",
@@ -19860,8 +19870,8 @@
       {
         "date": "2026-08-03",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup shadow_one_touch_high_edge_no_gold_heatmap_no shadow test 18/20 opened via H-534 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "GOLD moved 0.32% (4066 → 4079) [short needs ≤ -2%] (method=spot_directional_short)"
       },
       {
         "date": "2026-08-04",
@@ -20091,8 +20101,8 @@
       {
         "date": "2026-08-03",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long shadow test 13/20 opened via H-537 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "Funding moved 10.4% → 5.5% (long reversion needs increase) (method=funding_normalize_up)"
       },
       {
         "date": "2026-08-02",
@@ -20101,7 +20111,7 @@
         "actualMove": "Funding moved 5.5% → 5.5% (long reversion needs increase) (method=funding_normalize_up)"
       }
     ],
-    "winRate": 0.46153846153846156,
+    "winRate": 0.42857142857142855,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Refined by H-596 (2026-08-01): Refinement of AAPL weekend funding reversion shadow: apply weekend-only filter a | AAPL funding similarly oscillated; several tests saw further negative moves. The moderate -10% threshold captured too many noisy episodes, and the absence of a weekend filter diluted the signal's edge. | AAPL weekend funding reversion shadows perform poorly on weekdays. The edge only materializes when extreme negative funding occurs on weekends; the hypothesis must be restricted to weekend-only. | AAPL funding below -10% showed similar unreliability — about half the tests failed to normalize within the timeframe, and spot gains did not follow. The pattern suggests that extreme but not oversold funding levels are insufficient triggers.",
@@ -20265,8 +20275,8 @@
       {
         "date": "2026-08-03",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long shadow test 15/20 opened via H-539 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "Funding moved 246.1% → -8.1% (long reversion needs increase) (method=funding_normalize_up)"
       },
       {
         "date": "2026-08-02",
@@ -20275,7 +20285,7 @@
         "actualMove": "Funding moved 213.4% → -1.5% (long reversion needs increase) (method=funding_normalize_up)"
       }
     ],
-    "winRate": 0.5333333333333333,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Refined by H-598 (2026-08-02): CBRS weekend funding reversion: only go long CBRS perp when funding is deeply ne | CBRS weekend funding reversion shadow tests show mixed results; weekday signals often produce whipsaw funding moves that fail to normalize. A weekend-only filter (as in H-588) appears necessary to capture reliable reversion. | Refined by H-607 (2026-08-04): Refinement of H‑539: capture only extreme CBRS funding overshoots — bottom 5th p | CBRS funding below -10% often reverted sharply, producing winning trades, but the primary variant also suffered many losses when funding became even more negative or oscillated wildly, preventing a clean spot bounce. The assumption that any deeply negative funding quickly normalizes is not robust.",
@@ -20867,8 +20877,10 @@
       {
         "date": "2026-07-22",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup find_0020 shadow test 1/20 opened via H-549 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: could not infer asset (set conditions.asset) (method=unscorable_asset)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:unscorable_asset"
       },
       {
         "date": "2026-07-24",
@@ -20996,8 +21008,8 @@
       {
         "date": "2026-07-29",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup find_0018 shadow test 9/20 opened via H-551 after historical row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "OIL moved -7.77% (81.71 → 75.36) [short needs ≤ -2%] (method=spot_directional_short)"
       },
       {
         "date": "2026-07-31",
@@ -21030,7 +21042,7 @@
         "actualMove": "[historical-backfill] Setup find_0018 shadow test 15/20 opened via H-551 after historical row satisfied variant conditions."
       }
     ],
-    "winRate": 0.7142857142857143,
+    "winRate": 0.75,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "OIL one-touch NO edge heatmap variant continues to perform flawlessly with 100% win rate over 10 shadow tests, confirming that the edge-based signal for OIL is robust and may be ready for promotion when its shadow-test bar clears.",
