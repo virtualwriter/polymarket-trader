@@ -1,56 +1,77 @@
 {
-  "generatedAt": "2026-08-04T07:09:36.218Z",
+  "generatedAt": "2026-08-05T07:09:43.792Z",
   "provider": "deepseek",
   "model": "deepseek-v4-pro",
-  "strategyReview": "Live portfolio is heavily concentrated in a single falling GOLD-FUNDING_EXTREME_LONG trade; that signal family is losing money overall. The strongest live signals are ONE_TOUCH_HIGH_EDGE_NO (4/4 wins, +4.5% avg PnL) and PC_RATIO_EXTREME_LOW/HIGH (positive PnL with decent sample). The biggest pocket of expected profit sits in shadow signals — WEEKEND_HL_FUNDING_REVERSION_LONG and USER_PM_IV_TOUCH_RICH_NO show consistent, large edge — yet they remain blocked. Several shadow-mined one‑touch and funding‑reversion variants are decaying, largely because they rely on edge magnitude or funding extremes without regime or expiry context. The AMZN perp‑convergence family is critically ill: most tests are unscorable and the few scorable ones repeatedly invalidate the funding‑normalization assumption. Tonight’s focus is on diagnosing the consistent losers, hardening refinements around extremity and time-to-expiry, and piping fresh discoveries from the wallet‑flow and one‑touch NO edge clusters into shadow tests.",
+  "strategyReview": "The system's shadow pipeline continues to discover strong edges, with WEEKEND_HL_FUNDING_REVERSION_LONG (71% live win rate, +1.26 unit total) and MONOTONIC_ARB (87% win, +0.14) leading live performance. ONE_TOUCH_HIGH_EDGE_NO shows excellent live profitability (4/4 wins, +18.4% avg) and positive shadow PnL, though sample sizes remain small. However, many hypothesis families are failing: the AMZN funding convergence thesis has repeatedly produced losses and unscorable tests, gold one‑touch heatmap shorts never predict declines, and BTC PM‑IV compression no longer reliably triggers large spot moves. Cross‑asset HYPE‑BTC confirmation has also collapsed to 0% win. The critical diagnostic is that several core assumptions about mean‑reversion and cross‑asset confirmation are invalid under current market conditions — funding rates do not normalize as expected, and gold/BTC do not move when 'cheap' edges appear. The weekend funding reversion shadows for CBRS and AAPL remain borderline, with funding volatility often overwhelming the spot‑move prediction.",
   "failureClusters": [
     {
-      "theme": "Funding Extreme Signal Broadly Losing",
-      "evidence": "FUNDING_EXTREME_LONG live: 36 trades, 44% win, avg PnL -0.50%; HYPE and AMZN assets particularly bad (33% and 29% win). FUNDING_EXTREME_SHORT live: only slightly better (+0.0018 total PnL, 59% win) but OIL is a clear loser (38% win, -0.007).",
-      "recommendation": "Tighten funding entry thresholds (e.g. require extreme percentile) or add a confirming flow/P/C condition before letting these signals fire."
+      "theme": "AMZN funding convergence fallacy",
+      "evidence": "40% scorable win rate (16/40) across many variants, plus 83 unscorable burned tests. Recent primary variant H‑005 shows losses when funding declined from 19% to 5.5% instead of rising, invalidating the thesis that positive funding with near‑zero basis leads to perp‑spot convergence.",
+      "recommendation": "Abandon the long‑stock‐on‑positive‑funding thesis. The assumption that funding must rise is disproven; the new refinement should bet on funding decline (short perp) when funding is extremely high and basis is negligible."
     },
     {
-      "theme": "AMZN Perp Convergence Assumptions Broken",
-      "evidence": "Scorable hypothesis tests only 42% win; 83 tests unscorable. Primary condition (basis > -0.05, funding > 0) does not lead to perp underperformance — funding stays pinned at 5.5% and basis does not widen.",
-      "recommendation": "Re‑author the convergence hypothesis to require funding decline already underway (funding_change_pct_24h < 0) and keep basis near zero, so that the arb is demonstrably compressing rather than assumed."
+      "theme": "Gold sell‑YES edge failure",
+      "evidence": "0% win rate (0/18) for primary variant H‑534. The large underlying‑cap edge on gold one‑touch NO contracts never translated into >2% spot declines; gold consistently moved higher or stayed flat, showing the edge is noise, not a timing signal.",
+      "recommendation": "Kill the standalone cap‑edge signal for gold. Any future SHORT on gold must incorporate a bearish trend filter (e.g., gold below its 24h SMA) to avoid fighting the prevailing uptrend."
     },
     {
-      "theme": "Gold One‑Touch Heatmap Edge Not Predictive",
-      "evidence": "All 17 shadow tests of H-534 lost; gold spot barely moved during the 2‑day window despite large underlying‑cap edge (≥10 pts).",
-      "recommendation": "Integrate an expiry filter (days_to_expiry ≤ 30) and moderate edge band (3‑8 pts) based on FIND-0036; kill the raw ≥10 pt edge version."
+      "theme": "BTC PM‑IV compression drift",
+      "evidence": "30% win (3/10) for H‑001, with five consecutive losses where BTC moved less than 2%. The absolute threshold (PM IV < 46, opt IV > 49) failed to capture imminent vol expansions; compression often persisted without a large spot shock.",
+      "recommendation": "Replace absolute IV thresholds with regime‑relative compression (percentile‑based) and consider coupling with a catalyst such as extreme funding or momentum reversal to trigger entry."
     },
     {
-      "theme": "Cross‑Asset BTC Trend Confirmation Fades",
-      "evidence": "Every scorable test in the cross‑asset IV compression / vol expansion family failed — BTC consistently lost ~1.6% vs the long prediction, while HYPE risk‑on conditions were met.",
-      "recommendation": "The signal appears to mark trend exhaustion rather than continuation; either invert direction or require a pull‑back before entry. Without a new mechanism, leave the family disabled."
+      "theme": "Broken HYPE‑BTC cross‑asset confirmation",
+      "evidence": "0% win across all tested variants (0/8 scorable). Even when HYPE was above its 24h SMA and OI stable, BTC consistently failed to gain >2%, often losing 1.6%. The HYPE proxy added no predictive power.",
+      "recommendation": "Remove HYPE from BTC direction‑trade confirmation. Any BTC long signal must stand on its own momentum and trend strength, not on a small‑cap proxy."
+    },
+    {
+      "theme": "Weekend funding reversion losing edge for CBRS/AAPL",
+      "evidence": "CBRS shadow variant (H‑539) 50% win, but losses occurred when funding spiraled further negative (−207%, −8.1%) instead of reverting. AAPL variant (H‑537) 43% win, losses when funding moved from 10.4% back down to 5.5%. The assumption that extreme negative funding always normalizes quickly is no longer reliable.",
+      "recommendation": "Tighten entry to require that funding has already begun to improve (positive 24h change) and, for AAPL, enforce a weekend‑only filter to align with the original thesis."
     }
   ],
   "newHypotheses": [
     {
-      "created": "2026-08-04",
-      "description": "Smart‑money fade: when tracked smart wallets are net short YES (smart_flow_stance ≤ -1) on above‑strike one‑touch contracts, the smart flow expects spot weakness. Tests the dip‑YES smart / high‑YES dumb asymmetry from FIND-0020.",
+      "created": "2026-08-05",
+      "description": "Fade dumb money on upside one‑touch contracts: when tracked smart wallets are net short YES (smart_flow_stance <= -1) and the market offers at least 1pt of sell‑YES edge on an above‑strike touch contract, the non‑smart selling reflects overpricing, predicting a spot decline.",
       "conditions": {
-        "asset": "BTC",
+        "asset": "in [BTC, ETH, OIL, GOLD, AMZN, HYPE]",
+        "sell_yes_edge_pts": ">= 1",
         "touch_direction": ">= 1",
         "smart_flow_stance": "<= -1"
       },
-      "prediction": "BTC spot will decline >2% within 7 days as smart money’s bearish flow on upside touch resolves favorably.",
+      "prediction": "Selling YES (direction short) will be profitable as these overpriced upside barriers fail, with spot declining >2% within 7 days.",
       "timeframeDays": 7,
-      "confidence": 0.7,
+      "confidence": 0.65,
       "direction": "short",
       "originFindingId": "FIND-0020",
       "themeId": "THEME-0003",
       "source": "llm"
     },
     {
-      "created": "2026-08-04",
-      "description": "Broad one‑touch NO edge with moderate mispricing: for any asset with upside touch contracts, enter short (sell YES) when the sell‑YES edge is between 3 and 8 probability points, per FIND-0030 cluster.",
+      "created": "2026-08-05",
+      "description": "When GOLD's GLD put/call ratio drops into the bottom 10% of its 7‑day range (extreme call buying/put selling), the crowded bullish positioning exhausts and a corrective sell‑off follows, contrary to the usual bullish interpretation.",
       "conditions": {
-        "asset": "in [BTC, ETH, GOLD, OIL]",
-        "touch_direction": ">= 1",
-        "sell_yes_edge_pts": "between 3 and 8"
+        "asset": "GOLD",
+        "gold_gld_pc_ratio_percentile_7d": "< 10"
       },
-      "prediction": "The mispricing will compress as the contract approaches expiry, leading to spot decline >2% within 7 days.",
+      "prediction": "GOLD spot will decline >2% within 3 days as the extreme sentiment unwinds.",
+      "timeframeDays": 3,
+      "confidence": 0.65,
+      "direction": "short",
+      "originFindingId": "FIND-0053",
+      "themeId": "THEME-0005",
+      "source": "llm"
+    },
+    {
+      "created": "2026-08-05",
+      "description": "Broad one‑touch NO edge with moderate strength: when the sell‑YES edge on upside one‑touch contracts is between 3 and 8 points, the market is pricing in a directional premium that will not be realized, leading to spot weakness.",
+      "conditions": {
+        "asset": "in [BTC, ETH, OIL, GOLD, AMZN, HYPE]",
+        "sell_yes_edge_pts": "between 3 and 8",
+        "touch_direction": ">= 1"
+      },
+      "prediction": "Selling YES (direction short) will profit as the asset fails to reach the strike, with spot declining >2% within 7 days.",
       "timeframeDays": 7,
       "confidence": 0.65,
       "direction": "short",
@@ -59,81 +80,61 @@
       "source": "llm"
     },
     {
-      "created": "2026-08-04",
-      "description": "Rich PM IV NO fade: when Polymarket implied volatility exceeds listed‑option IV by ≥10 vol points on upside touch contracts, sell YES to fade the fear premium, per FIND-0021 cluster.",
+      "created": "2026-08-05",
+      "description": "When Polymarket implied volatility exceeds the 30‑day listed options IV by ≥10 vol points on an above‑strike one‑touch contract and there is sell‑YES edge present, the prediction‑market premium signals overpricing of the upside barrier, warranting a short spot position.",
       "conditions": {
-        "asset": "BTC",
+        "asset": "in [BTC, ETH, OIL, GOLD, AMZN, HYPE]",
         "pm_iv_minus_opt_iv_pts": ">= 10",
-        "touch_direction": ">= 1"
+        "touch_direction": ">= 1",
+        "sell_yes_edge_pts": ">= 1"
       },
-      "prediction": "BTC spot will decline >2% within 7 days as the IV premium compresses and the NO side regains value.",
+      "prediction": "Spot will decline >2% within 7 days as the IV premium compresses.",
       "timeframeDays": 7,
-      "confidence": 0.7,
+      "confidence": 0.65,
       "direction": "short",
       "originFindingId": "FIND-0021",
       "themeId": "THEME-0004",
       "source": "llm"
     },
     {
-      "created": "2026-08-04",
-      "description": "BTC‑only one‑touch NO edge with moderate strength: sell YES on BTC upside touch contracts when edge between 3‑8 pts, per FIND-0043’s 76% win cluster.",
-      "conditions": {
-        "asset": "BTC",
-        "sell_yes_edge_pts": "between 3 and 8",
-        "touch_direction": ">= 1"
-      },
-      "prediction": "BTC spot will decline >2% within 7 days as the edge compresses toward expiry.",
-      "timeframeDays": 7,
-      "confidence": 0.65,
-      "direction": "short",
-      "originFindingId": "FIND-0043",
-      "themeId": "THEME-0001",
-      "source": "llm"
-    },
-    {
-      "created": "2026-08-04",
-      "description": "Refinement of H‑005: require AMZN funding rate to have already started declining (24h change < 0) while basis remains near zero. This ensures the convergence process is underway, not merely assumed.",
+      "created": "2026-08-05",
+      "description": "Refinement of H‑005: Instead of going long AMZN stock when funding is positive and basis near zero (expecting convergence via funding increase), we go short perp when funding is extremely high (>20%) and basis still near zero, betting that funding mean‑reverts downward and the perp underperforms spot.",
       "conditions": {
         "asset": "AMZN",
-        "amzn_hl_funding_ann": "> 0",
-        "amzn_hl_basis_pct": "> -0.05",
-        "amzn_hl_funding_ann_change_pct_24h": "< 0"
+        "amzn_hl_funding_ann": "> 20",
+        "amzn_hl_basis_pct": "> -0.1"
       },
-      "prediction": "AMZN stock will outperform the perp by >2% within 7 days as funding continues to decline and the perp‑spot basis normalizes.",
-      "timeframeDays": 7,
+      "prediction": "AMZN perp will decline >2% relative to spot within 5 days as funding normalizes.",
+      "timeframeDays": 5,
       "confidence": 0.55,
-      "direction": "long",
+      "direction": "short",
       "refinesHypothesisId": "H-005",
       "source": "llm"
     },
     {
-      "created": "2026-08-04",
-      "description": "Refinement of H‑534: narrow the gold one‑touch edge to moderate levels (3‑8 pts) and require expiry within 30 days, per FIND-0036’s 75% win cluster on near‑expiry gold NO contracts.",
+      "created": "2026-08-05",
+      "description": "Refinement of H‑534: Add a bearish trend filter to the gold one‑touch cap‑edge short, requiring gold spot to be below its 24‑hour SMA. This prevents shorting into a persistent uptrend, which caused all past losses.",
       "conditions": {
         "asset": "GOLD",
-        "gold_pm_underlying_cap_edge_pts_max": "between 3 and 8",
-        "touch_direction": ">= 1",
-        "days_to_expiry": "<= 30"
+        "gold_pm_underlying_cap_edge_pts_max": ">= 10",
+        "gold_gc_spot_pct_vs_24h_sma": "< 0"
       },
-      "prediction": "GOLD spot will decline >2% within 7 days as the moderate edge compresses before expiry.",
-      "timeframeDays": 7,
-      "confidence": 0.6,
+      "prediction": "GOLD spot will decline >2% within 2 days when the cap edge is extreme and the trend is already negative.",
+      "timeframeDays": 2,
+      "confidence": 0.55,
       "direction": "short",
-      "originFindingId": "FIND-0036",
       "refinesHypothesisId": "H-534",
-      "themeId": "THEME-0001",
       "source": "llm"
     },
     {
-      "created": "2026-08-04",
-      "description": "Refinement of H‑539: capture only extreme CBRS funding overshoots — bottom 5th percentile of the last 7 days and below -20% — with evidence of reversal (positive 24h change). Avoids mid‑range noise.",
+      "created": "2026-08-05",
+      "description": "Refinement of H‑539: For CBRS, only go long when funding is deeply negative (< -10%) AND has already begun to rise over the last 24h, indicating the reversal has started rather than hoping for a turn.",
       "conditions": {
         "asset": "CBRS",
-        "cbrs_hl_funding_ann_percentile_7d": "< 5",
-        "cbrs_hl_funding_ann": "< -20",
+        "cbrs_hl_funding_ann": "< -10",
         "cbrs_hl_funding_ann_change_pct_24h": "> 0"
       },
-      "prediction": "CBRS spot will bounce >2% within 2 days as the extreme overshoot normalizes.",
+      "prediction": "CBRS spot will move >2% higher within 2 days as the funding normalization process continues.",
       "timeframeDays": 2,
       "confidence": 0.55,
       "direction": "long",
@@ -141,69 +142,97 @@
       "source": "llm"
     },
     {
-      "created": "2026-08-04",
-      "description": "Refinement of H‑537: apply the same extreme‑overshoot logic to AAPL — bottom 5th percentile funding and below -20% with a positive 24h change to confirm reversal.",
+      "created": "2026-08-05",
+      "description": "Refinement of H‑537: Restrict AAPL weekend funding reversion to weekend days only (Sat/Sun) and require funding to already be improving (positive 24h change). This aligns with the original weekend‑specific thesis and avoids false signals during weekly drift.",
       "conditions": {
         "asset": "AAPL",
-        "aapl_hl_funding_ann_percentile_7d": "< 5",
-        "aapl_hl_funding_ann": "< -20",
+        "aapl_hl_funding_ann": "< -10",
+        "day_of_week": "in [sat, sun]",
         "aapl_hl_funding_ann_change_pct_24h": "> 0"
       },
-      "prediction": "AAPL spot will bounce >2% within 2 days as the extreme overshoot resolves.",
+      "prediction": "AAPL spot will rise >2% within 2 days as weekend funding normalizes.",
       "timeframeDays": 2,
-      "confidence": 0.5,
+      "confidence": 0.55,
       "direction": "long",
       "refinesHypothesisId": "H-537",
       "source": "llm"
     },
     {
-      "created": "2026-08-04",
-      "description": "Refinement of H‑001: convert the IV‑expansion thesis to a bearish directional play — only activate when BTC is already near its 7‑day high, indicating the compression precedes a reversal down rather than a random jump.",
+      "created": "2026-08-05",
+      "description": "Refinement of H‑001: Replace absolute IV thresholds with regime‑relative compression. Enter when BTC PM IV is in the bottom 15% of its 30‑day range and the 90‑day options IV remains elevated (>50), signaling a tension between compressed market pricing and rich listed vol that is more likely to trigger a large spot move than the original fixed thresholds.",
       "conditions": {
         "asset": "BTC",
-        "btc_pm_iv": "< 46",
-        "btc_opt_iv_90d": "> 49",
-        "btc_spot_pct_from_7d_high": "> -3"
+        "btc_pm_iv_percentile_30d": "< 15",
+        "btc_opt_iv_90d": "> 50"
       },
-      "prediction": "BTC will decline >2% within 3 days as the IV compression unwinds in a pullback from the recent high.",
+      "prediction": "BTC spot will make a >2% absolute move within 3 days.",
       "timeframeDays": 3,
-      "confidence": 0.45,
-      "direction": "short",
+      "confidence": 0.55,
+      "direction": "neutral",
       "refinesHypothesisId": "H-001",
+      "source": "llm"
+    },
+    {
+      "created": "2026-08-05",
+      "description": "Refinement of H‑108: Strengthen the BTC‑specific momentum condition by requiring BTC to have already gained >2% over the past 24h, while keeping the HYPE confirmation as a supporting filter. This ensures the trade only fires when BTC itself is breaking out, and HYPE's risk‑on sentiment aligns.",
+      "conditions": {
+        "asset": "BTC",
+        "btc_spot_pct_vs_24h_sma": "> 0",
+        "btc_spot_pct_from_7d_high": "> -4",
+        "hype_spot_pct_vs_24h_sma": "> 0",
+        "hype_hl_oi_change_pct_24h": "> -2",
+        "btc_spot_change_pct_24h": "> 2.0"
+      },
+      "prediction": "Long BTC will continue to rally >2% over the next 3‑7 days.",
+      "timeframeDays": 7,
+      "confidence": 0.55,
+      "direction": "long",
+      "refinesHypothesisId": "H-108",
       "source": "llm"
     }
   ],
   "hypothesisReviews": [
     {
       "id": "H-005",
-      "observation": "The thesis predicted that positive AMZN funding with near‑zero basis would trigger perp underperformance and stock outperformance. In practice funding hovered near 5.5% without declining, basis stayed flat, and the convergence never materialised. Six recent tests all ended without meaningful funding normalization.",
+      "observation": "Recent tests show funding not increasing despite positive basis; funding fell from 19% to 5.5% on 8/2 and stayed flat at 5.5% on 8/3‑4. The assumption that positive funding with near‑zero basis reliably normalizes upward has been disproven — funding frequently mean‑reverts downward instead.",
       "invalidatedAssumption": "Positive AMZN funding with near‑zero basis reliably normalizes and causes perp‑spot convergence."
     },
     {
       "id": "H-534",
-      "observation": "Despite a persistent underlying‑cap edge ≥10 pts on gold one‑touch NO contracts, gold spot neither declined 2% nor showed any directional pressure. The edge remained high for days, indicating it reflects a structural premium rather than an imminent market move.",
+      "observation": "All 18 tests lost, with gold moving up or barely down. The large underlying‑cap edge did not predict spot decline; the dominant trend was up, overwhelming any edge signal.",
       "invalidatedAssumption": "A large underlying‑cap edge on gold one‑touch NO contracts reliably predicts a >2% spot decline within 2 days."
     },
     {
       "id": "H-539",
-      "observation": "CBRS funding below -10% often reverted sharply, producing winning trades, but the primary variant also suffered many losses when funding became even more negative or oscillated wildly, preventing a clean spot bounce. The assumption that any deeply negative funding quickly normalizes is not robust.",
+      "observation": "CBRS funding plunged further negative (e.g., 5.5% → −207.2% on 7/29, 246.1% → −8.1% on 8/3), showing that extreme negative funding can accelerate rather than revert, invalidating the simple reversion thesis.",
       "invalidatedAssumption": "Deeply negative CBRS funding reliably reverts and leads to a >2% spot gain within 2 days without additional extremity or reversal confirmation."
     },
     {
       "id": "H-537",
-      "observation": "AAPL funding below -10% showed similar unreliability — about half the tests failed to normalize within the timeframe, and spot gains did not follow. The pattern suggests that extreme but not oversold funding levels are insufficient triggers.",
+      "observation": "AAPL funding did not persistently normalize; after a bump to 10.4% it fell back to 5.5%, and the associated spot gain never materialised. Late‑block failures show the move is too slow for the 2‑day window.",
       "invalidatedAssumption": "Extreme negative AAPL funding rapidly normalizes and leads to a spot gain without requiring a true tail‑event overshoot."
     },
     {
       "id": "H-001",
-      "observation": "The early wins coincided with a downtrend where IV compression preceded large downward moves. Later tests, under ranging or mildly bearish conditions, consistently missed the 2% absolute‑move target. The hypothesis does not account for market regime — it assumes any compression yields a big move.",
+      "observation": "After two early wins, the pattern produced five consecutive under‑2% moves. The absolute threshold of PM IV < 46 failed to signal near‑term expansion; compression persisted as BTC drifted in a narrow range.",
       "invalidatedAssumption": "BTC PM IV below 46 while options IV remains high guarantees a >2% absolute spot move within 3 days regardless of trend context."
     },
     {
       "id": "H-108",
-      "observation": "All eight scorable tests across the cross‑asset IV‑compression family failed, with BTC declining ~1.6% each time. The HYPE risk‑on confirmation signaled momentum that was already exhausted, turning the thesis into a fade rather than a continuation.",
+      "observation": "All tests lost identically (−1.62%), showing that despite HYPE appearing risk‑on, BTC itself lacked the momentum to break higher. The HYPE proxy added no predictive edge.",
       "invalidatedAssumption": "BTC above short‑term trend with HYPE spot above SMA and OI stable confirms a >2% BTC long move over 3‑7 days."
+    },
+    {
+      "id": "H-523",
+      "observation": "This regime‑relative compression variant (PM IV in bottom 20% of 30d range) is performing well at 67% win, supporting the idea that percentile‑based compression triggers are more reliable than absolute IV thresholds for BTC vol expansion."
     }
   ],
-  "journalEntry": "Tonight’s review identified clear winners (one‑touch NO edge live, weekend funding reversion shadow) and chronic losers (gold heatmap edge, cross‑asset BTC continuation, AMZN convergence). Learned invalid assumptions have been formally recorded for six struggling families, preventing future recycled theses. New hypotheses are strictly catalog‑aligned: four from ranked FINDs (wallet flow asymmetry, one‑touch edge clusters, rich PM IV NO) and five targeted refinements that attack diagnosed failure mechanisms — requiring funding already declining, adding near‑expiry and moderate edge bands, capturing extreme overshoots with reversal confirmation, and conditioning BTC IV expansion on a near‑high reversal context. No parameter changes were warranted tonight; the existing signal‑risk stops are adequately sized."
+  "parameterUpdates": {
+    "signalRisk": {
+      "FUNDING_EXTREME_LONG": {
+        "stopPct": 2
+      }
+    }
+  },
+  "journalEntry": "Tonight's review confirmed that while live weekend funding reversion and one‑touch NO edges remain profitable, the hypothesis pipeline is clogged by invalid core assumptions. The AMZN funding convergence thesis must be inverted: instead of betting on funding increase, the edge is in fading extreme positive funding when basis is near zero. Gold one‑touch shorts cannot fight the broader uptrend without a trend filter. BTC PM‑IV compression should be measured in percentiles, not absolute levels, and cross‑asset HYPE confirmation adds no value. Weekend funding reversion for CBRS/AAPL needs a 'reversal already started' filter. Lowered FUNDING_EXTREME_LONG stop to 2.0% to cap losses on continued mean‑reversion failures. The positive results from H‑523 (regime‑relative compression) underscore the value of percentile‑based conditions. We authored four new FIND‑derived hypotheses from the ranked opportunities, covering informed flow, PC ratio extremes, one‑touch edge bands, and IV richness, and six refinements aimed at fixing the most broken families."
 }
