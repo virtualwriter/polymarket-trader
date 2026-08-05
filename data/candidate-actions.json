@@ -1,8 +1,23 @@
 {
-  "generatedAt": "2026-08-05T21:28:20.358Z",
+  "generatedAt": "2026-08-05T22:28:15.890Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
+    {
+      "type": "FUNDING_EXTREME_SHORT",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "strength": 0.6431428571428571,
+      "confidence": 0.34094110794476595,
+      "thesis": "AMZN HL funding -37.5% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 272.19,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 7,
+      "leverage": 1
+    },
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "asset": "BTC",
@@ -12,13 +27,34 @@
       "confidence": 0.12462643694385835,
       "thesis": "BTC P/C ratio 0.43 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 64645,
+      "entryPrice": 64652,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
   "sizingPreviews": [
+    {
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "reason": "unsupported_signal",
+      "entryPrice": 272.19,
+      "probabilitySource": "unsupported",
+      "winProbability": null,
+      "probabilitySampleSize": null,
+      "edgePts": null,
+      "rawKellyFraction": null,
+      "adjustedKellyFraction": null,
+      "cappedKellyFraction": null,
+      "notes": [
+        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
+        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
+      ]
+    },
     {
       "signalType": "PC_RATIO_EXTREME_LOW",
       "asset": "BTC",
@@ -27,7 +63,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 64645,
+      "entryPrice": 64652,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -43,7 +79,49 @@
   ],
   "portfolioExposurePreviews": [
     {
-      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
+      "candidateId": "FUNDING_EXTREME_SHORT:AMZN:0",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "candidateSize": 0,
+      "riskClusters": [
+        "amzn_delta",
+        "funding_reversion",
+        "hyperliquid_venue",
+        "risk_on"
+      ],
+      "current": {
+        "totalGross": 0,
+        "totalNet": 0,
+        "byAsset": {},
+        "bySignalType": {},
+        "byVenue": {},
+        "byCluster": {}
+      },
+      "afterCandidate": {
+        "totalGross": 0,
+        "totalNet": 0,
+        "byAsset": {
+          "AMZN": 0
+        },
+        "bySignalType": {
+          "FUNDING_EXTREME_SHORT": 0
+        },
+        "byVenue": {
+          "hyperliquid": 0
+        },
+        "byCluster": {
+          "amzn_delta": 0,
+          "funding_reversion": 0,
+          "hyperliquid_venue": 0,
+          "risk_on": 0
+        }
+      },
+      "warnings": []
+    },
+    {
+      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:1",
       "asset": "BTC",
       "venue": "spot",
       "direction": "short",
@@ -87,7 +165,23 @@
   ],
   "stagedQuantRules": [
     {
-      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
+      "candidateId": "FUNDING_EXTREME_SHORT:AMZN:0",
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "asset": "AMZN",
+      "mode": "observe_uniform",
+      "liveSizingEnabled": false,
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "enforcedLiveSize": 1,
+      "wouldResize": true,
+      "edgePts": null,
+      "alerts": [],
+      "notes": [
+        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
+      ]
+    },
+    {
+      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:1",
       "signalType": "PC_RATIO_EXTREME_LOW",
       "asset": "BTC",
       "mode": "observe_uniform",
