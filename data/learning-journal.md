@@ -1178,3 +1178,43 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-06T07:09:58.170Z, model=deepseek-v4-pro)
+- Hypotheses added: 4 (rejected 5); reviews applied: 6; invalidated assumptions learned: 1; param updates: none.
+- Strategy review: The system remains net profitable with a 63.4% overall win rate and realized PnL of +2.20. Weekend funding reversion longs continue to provide consistent, broad equity gains. One-touch NO edge live trades (4/4 wins, +$0.74) are promising but shadow tests on specific clusters (GOLD, BTC, ETH) have deteriorated, and several shadow-mined hypotheses are failing because they rely on large edge readings without trend or day-of-week context. Cross-asset confirmation (HYPE→BTC) is completely broken, and BTC IV expansion reversion is unreliable. PC-ratio signals are mildly profitable but asset-specific
+- Nightly journal: Tonight's review focused on diagnosing failing shadow hypotheses. Gold one-touch edge (H-534) and BTC PM IV expansion (H-001) both collapsed because extreme readings alone do not guarantee directional follow-through; they now require trend filters. Weekend funding shadows for CBRS and AAPL were too generous—tightening the threshold to -20% and enforcing weekend day-of-week should rescue the thesis. Cross-asset HYPE→BTC long is conclusively broken, and BTC listed-IV momentum long is weak; both enter the invalidAssumption ledger so future runs do not resurrect them. Meanwhile, the FIND mining re
+### 2026-08-06 07:28 UTC
+
+**Portfolio:** $98.96 total | Cash $97.96 | 1 open | P&L $2.1982 | 63% win rate (639 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 18 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [anomaly] oil_opt_fwd_90d = 137.7 is 2.1 std devs from mean since 2026-04-28 (78.36 ± 28.91)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.29 to -0.29. Rolling correlation: 24h=-0.66, 7d=-0.69, 30d=-0.55. Current 24h corr is at 30th pct of last 30 daily 24h-rolling values (range -0.90 to 0.72).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.74 to 0.22. Rolling correlation: 24h=0.79, 7d=0.59, 30d=-0.03. Current 24h corr is at 77th pct of last 30 daily 24h-rolling values (range -0.36 to 0.93).
+
+**Blocked signal learning:**
+- Open blocked shadows: 48
+- Resolved blocked shadows: 803 (420 wins / 383 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 16/29 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/17 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=263 (72W/154L/37flat, 31.9% win-rate, sum $-0.8178, avg -0.31%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-2.19%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.05%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.27%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.09%)
+
+**LLM analysis:**
+Performed hourly close review. Only open position is AMZN FUNDING_EXTREME_SHORT long (posId T-1785968907215-vdgf), 9h old, still within the 12h minimum hold. Funding has normalized rapidly: from -37.5% ann at entry to -2.92% ann now, and has even flickered positive in recent hours. This represents a substantial thesis weakening, but we cannot act yet. The position is up a modest +0.50%. If funding remains near zero or flips positive past the 12h mark, a thesis_invalidated close will be warranted. Until then, no action is allowed. No other positions to review. Market context: AMZN stock low volatility, IVs stable, macro bearish, but trade carry remains slightly favorable while funding stays negative. Will reassess at the next review.
+
+---
+
