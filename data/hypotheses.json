@@ -378,7 +378,7 @@
       }
     ],
     "winRate": 0,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "Refined by H-605 (2026-08-04): Refinement of H‑005: require AMZN funding rate to have already started declining | The thesis predicted that positive AMZN funding with near‑zero basis would trigger perp underperformance and stock outperformance. In practice funding hovered near 5.5% without declining, basis stayed flat, and the convergence never materialised. Six recent tests all ended without meaningful funding normalization. | Refined by H-609 (2026-08-05): Refinement of H‑005: Instead of going long AMZN stock when funding is positive a | Recent tests show funding not increasing despite positive basis; funding fell from 19% to 5.5% on 8/2 and stayed flat at 5.5% on 8/3‑4. The assumption that positive funding with near‑zero basis reliably normalizes upward has been disproven — funding frequently mean‑reverts downward instead.",
     "source": "llm",
@@ -422,8 +422,8 @@
       {
         "date": "2026-08-01",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup gold_pm_premium_futures_spread_mean_reversion shadow test 2/20 opened via H-006 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "GOLD moved 5.68% (4051 → 4281) [neutral abs needs ≥ 2%] (method=spot_abs_move)"
       }
     ],
     "winRate": 1,
@@ -1879,7 +1879,7 @@
       }
     ],
     "winRate": 0,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "Setup family inconclusive after 40 completed tests: 53% win rate. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels.",
     "source": "llm",
@@ -2120,12 +2120,12 @@
       {
         "date": "2026-08-03",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup amzn_perp_spot_funding_convergence shadow test 42/20 opened via H-043 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "Funding moved 5.5% → -17.3% (long reversion needs increase) (method=funding_normalize_up)"
       }
     ],
-    "winRate": 0.5,
-    "status": "active",
+    "winRate": 0.4444444444444444,
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "AMZN basis improved dramatically from -0.49% to -0.01%, showing convergence acceleration. Position working perfectly. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels.",
     "source": "llm",
@@ -2775,7 +2775,7 @@
       }
     ],
     "winRate": 0,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "Strong validation - AMZN basis improved to 0.09% showing complete perp-spot convergence after extended negative funding | AMZN basis improved from -0.35% to near-zero confirming perp-spot convergence, with stock rising from 212.43 supporting the thesis | VALIDATED - AMZN basis normalized from extreme negative to +0.31% with stock live, convergence completion confirmed. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels.",
     "source": "llm",
@@ -3324,12 +3324,12 @@
       {
         "date": "2026-08-05",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup amzn_perp_spot_funding_convergence shadow test 47/20 opened via H-058 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "Funding moved 5.5% → -17.3% (long reversion needs increase) (method=funding_normalize_up)"
       }
     ],
-    "winRate": 0.1875,
-    "status": "active",
+    "winRate": 0.17647058823529413,
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "AMZN basis improved from -0.35% to -0.38% - slight setback but funding remains positive at 8.99%. Convergence process ongoing but slower than expected. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels. | AMZN perp convergence hypothesis with basis > -0.05 and funding >0 repeatedly saw funding stuck at 5.5% for days without decline. The assumption that positive funding naturally reverts to lower levels quickly failed in current regime, leaving the thesis unwound.",
     "source": "llm",
@@ -4585,7 +4585,7 @@
       }
     ],
     "winRate": 0.3333333333333333,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "Setup family inconclusive after 40 completed tests: 53% win rate. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels.",
     "source": "llm",
@@ -4645,7 +4645,7 @@
       }
     ],
     "winRate": 0,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "AMZN basis explosion to 1.32% validated - textbook perp-stock divergence during extreme moves, now key to watch for correction within 2-3 days | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels.",
     "source": "llm",
@@ -6291,7 +6291,7 @@
       }
     ],
     "winRate": 0,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "TESTING - AMZN basis explosion to -0.79% with -136% funding represents most extreme dislocation observed, creating textbook systematic correction opportunity. | Extreme conditions met - AMZN basis at -0.79% with -136% funding represents most extreme perp-spot dislocation observed. Systematic correction opportunity created as predicted. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels.",
     "source": "llm",
@@ -6396,7 +6396,7 @@
       }
     ],
     "winRate": 0,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "Demoted: insufficient evidence (1/20 completed family tests; need ≥65% win rate).",
     "source": "llm",
@@ -6514,7 +6514,7 @@
       }
     ],
     "winRate": 0,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "AMZN basis at -1.27% with -83% funding, most extreme dislocation observed. Systematic correction pressure building exactly as hypothesis predicts. | AMZN basis at -0.22% with funding crash to -8.4% confirms extreme correction acceleration pattern - negative funding with negative basis creates systematic correction pressure | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels.",
     "source": "llm",
@@ -7239,6 +7239,12 @@
         "actualMove": "BTC moved 4.98% (70937 → 74471)",
         "excludedFromSetupStats": true,
         "exclusionReason": "scorer_v1_direction_bug_quarantine"
+      },
+      {
+        "date": "2026-08-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup cross_asset_iv_compression_vol_expansion shadow test 18/20 opened via H-175 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0,
@@ -10345,7 +10351,7 @@
       }
     ],
     "winRate": 0,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "AMZN funding crashed further to -62.54% validating extreme positioning thesis. Basis at -0.41% creates perfect systematic correction setup. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels.",
     "source": "llm",
@@ -10432,7 +10438,7 @@
       }
     ],
     "winRate": 0,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "AMZN funding crashed further to -20.6% with basis at -0.57% creating perfect systematic correction setup as predicted | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels.",
     "source": "llm",
@@ -10508,7 +10514,7 @@
       }
     ],
     "winRate": 0.6666666666666666,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels. | AMZN extreme funding crash below -20% with negative basis has 2 wins out of 2 tests. Sample size is tiny, but the pattern matches live FUNDING_EXTREME_SHORT success on AMZN. Continue shadow testing, but be mindful of AMZN being disabled on the long side — this setup may complement the short side. | AMZN extreme funding crash to -20% with negative basis shows two clean wins in two tests, but sample size is too small for any conclusion. Continue shadow testing with strict entry criteria; this signal is not yet ready for promotion. | AMZN extreme funding crash below -20% with negative basis variant (H-259) is a bright spot in the convergence family, with 100% win rate in 3 tests. It targets reversion from deeply negative readings and avoids the positive-funding stagnation seen elsewhere. This variant could form the core of a salvaged AMZN signal.",
     "source": "llm",
@@ -10685,7 +10691,7 @@
       }
     ],
     "winRate": 0,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "Setup family inconclusive after 40 completed tests: 53% win rate. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels.",
     "source": "llm",
@@ -12751,7 +12757,7 @@
       }
     ],
     "winRate": 1,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "AMZN funding spike framework validated - extreme negative funding at -39.2% creates immediate perp underperformance opportunity that should correct rapidly as positioning becomes unsustainable. | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels.",
     "source": "llm",
@@ -15004,8 +15010,8 @@
       {
         "date": "2026-07-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup cross_asset_iv_compression_vol_expansion shadow test 11/20 opened via H-398 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "BTC moved 1.11% (63949 → 64659) [long needs ≥ +2%] (method=spot_directional_long)"
       }
     ],
     "winRate": 0,
@@ -15358,12 +15364,12 @@
       {
         "date": "2026-08-03",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup amzn_perp_spot_funding_convergence shadow test 39/20 opened via H-408 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "Funding moved 5.5% → -17.3% (need < 10) (method=funding_below_level)"
       }
     ],
     "winRate": 1,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "AMZN funding normalized to 15% but still positive - pattern developing as perp positioning remains elevated relative to stock performance, monitoring for correction signal completion | Cleaned 2026-05-26 by operator to keep AMZN basis/funding convergence variants without hard-coded stock levels. | AMZN funding is 50.9% (extreme) but basis is -0.11% (not positive). The original hard-coded 'funding >15%' is satisfied, but the basis condition fails. A relative rewrite would adapt to the regime. | AMZN funding spike above 15% with positive basis fade: AMZN funding spiked to 18.06% at the start of the window and has since fallen to 5.48%, while basis normalized to +0.19%. The thesis correctly identified unsustainable perp positioning, but the fade occurred quickly (within ~5h) and would have required precise timing. This variant may benefit from a tighter entry condition requiring both funding > +3σ and basis > 0.5% to filter noise.",
     "source": "llm",
@@ -19566,8 +19572,8 @@
       {
         "date": "2026-08-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 4/20 opened via H-532 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "GOLD moved 5.37% (4063 → 4281) [short needs ≤ -2%] (method=spot_directional_short)"
       },
       {
         "date": "2026-08-05",
@@ -19894,8 +19900,8 @@
       {
         "date": "2026-08-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup shadow_one_touch_high_edge_no_gold_heatmap_no shadow test 19/20 opened via H-534 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "GOLD moved 5.37% (4063 → 4281) [short needs ≤ -2%] (method=spot_directional_short)"
       },
       {
         "date": "2026-08-05",
@@ -20959,8 +20965,10 @@
       {
         "date": "2026-07-23",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup find_0020 shadow test 2/20 opened via H-550 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: could not infer asset (set conditions.asset) (method=unscorable_asset)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:unscorable_asset"
       },
       {
         "date": "2026-07-25",
@@ -21002,8 +21010,8 @@
       {
         "date": "2026-07-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup find_0018 shadow test 3/20 opened via H-551 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "OIL moved -10.92% (83.98 → 74.81) [short needs ≤ -2%] (method=spot_directional_short)"
       },
       {
         "date": "2026-07-22",
@@ -21084,7 +21092,7 @@
         "actualMove": "[historical-backfill] Setup find_0018 shadow test 16/20 opened via H-551 after historical row satisfied variant conditions."
       }
     ],
-    "winRate": 0.75,
+    "winRate": 0.7777777777777778,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "OIL one-touch NO edge heatmap variant continues to perform flawlessly with 100% win rate over 10 shadow tests, confirming that the edge-based signal for OIL is robust and may be ready for promotion when its shadow-test bar clears.",
@@ -22536,8 +22544,8 @@
       {
         "date": "2026-07-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "loss",
+        "actualMove": "BTC moved 1.11% (63949 → 64659) [long needs ≥ +2%] (method=spot_directional_long)"
       },
       {
         "date": "2026-06-13",
@@ -22580,8 +22588,8 @@
       {
         "date": "2026-07-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "loss",
+        "actualMove": "BTC moved 1.11% (63949 → 64659) [short needs ≤ -2%] (method=spot_directional_short)"
       }
     ],
     "winRate": 0,
@@ -22612,11 +22620,11 @@
       {
         "date": "2026-07-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "win",
+        "actualMove": "OIL moved -10.92% (83.98 → 74.81) [short needs ≤ -2%] (method=spot_directional_short)"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -22643,8 +22651,8 @@
       {
         "date": "2026-07-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "loss",
+        "actualMove": "BTC moved 1.11% (63949 → 64659) [short needs ≤ -2%] (method=spot_directional_short)"
       },
       {
         "date": "2026-07-27",
@@ -22683,7 +22691,7 @@
         "actualMove": "[historical-backfill] Setup find_0021 shadow test 10/20 opened via H-593 after historical row satisfied variant conditions."
       }
     ],
-    "winRate": 1,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -22952,7 +22960,7 @@
       }
     ],
     "winRate": 0,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "Setup family inconclusive after 37 completed tests: 43% win rate (binomial p=0.8380).",
     "source": "llm",
@@ -23082,7 +23090,7 @@
       }
     ],
     "winRate": 0,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "Setup family inconclusive after 38 completed tests: 42% win rate (binomial p=0.8721).",
     "source": "llm",
@@ -23141,11 +23149,11 @@
       {
         "date": "2026-08-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "win",
+        "actualMove": "Funding moved -1.5% → 5.5% (long reversion needs increase) (method=funding_normalize_up)"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -23206,7 +23214,7 @@
       }
     ],
     "winRate": 0,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "Setup family inconclusive after 40 completed tests: 40% win rate (binomial p=0.9231).",
     "source": "llm",
