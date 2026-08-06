@@ -1,43 +1,44 @@
 {
-  "generatedAt": "2026-08-06T13:28:43.420Z",
+  "generatedAt": "2026-08-06T14:28:34.382Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1785968907215-vdgf",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "amzn_hl_funding_ann"
-      ],
-      "thesis": "AMZN funding extreme short has fully normalized: entry funding was -37.5% annualized, now +5.48%, crossing zero far beyond the -15% entry threshold. Shorts are no longer paying longs; the crowded short thesis is invalidated."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "asset": "BTC",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.23000000000000004,
-      "confidence": 0.12462643694385835,
-      "thesis": "BTC P/C ratio 0.43 — heavy call buying → contrarian short.",
+      "strength": 0.7466666666666666,
+      "confidence": 0.4045843750061487,
+      "thesis": "BTC P/C ratio 0.28 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 64193,
+      "entryPrice": 64410,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
+    },
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.36750000000000005,
+      "confidence": 0.1872838202696938,
+      "thesis": "OIL P/C ratio 1.49 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 76.29,
+      "targetPct": 6,
+      "stopPct": 1.5,
+      "expiryDays": 21
     }
   ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

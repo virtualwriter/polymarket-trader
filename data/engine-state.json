@@ -1,40 +1,21 @@
 {
-  "generatedAt": "2026-08-06T13:28:23.290Z",
+  "generatedAt": "2026-08-06T14:28:19.448Z",
   "dataFreshness": {
-    "valuationRows": 2144,
-    "latestValuationAt": "2026-08-06T13",
-    "macroRows": 2142,
+    "valuationRows": 2145,
+    "latestValuationAt": "2026-08-06T14",
+    "macroRows": 2143,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-06T13"
+    "latestInstrumentSnapshotAt": "2026-08-06T14"
   },
   "portfolio": {
-    "cash": 97.9588,
-    "openPositions": 1,
-    "realizedPnl": 2.1982,
-    "totalTrades": 639,
+    "cash": 98.9602,
+    "openPositions": 0,
+    "realizedPnl": 2.1996,
+    "totalTrades": 640,
     "winRatePct": 63.4,
-    "unrealizedPnl": 0.0014
+    "unrealizedPnl": 0
   },
-  "openPositions": [
-    {
-      "positionId": "T-1785968907215-vdgf",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.14,
-      "currentPrice": 272.56,
-      "underlyingPrice": 273.42,
-      "targetPct": 4,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "amzn_stock",
-        "amzn_hl_perp",
-        "amzn_hl_funding_ann"
-      ]
-    }
-  ],
+  "openPositions": [],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -69,10 +50,10 @@
     {
       "type": "FUNDING_EXTREME_SHORT",
       "enabled": true,
-      "weight": 0.5301,
-      "trades": 39,
-      "wins": 22,
-      "avgPnlPct": -0.1637,
+      "weight": 0.5368,
+      "trades": 40,
+      "wins": 23,
+      "avgPnlPct": -0.1561,
       "disabledAssets": [
         "OIL"
       ]
@@ -185,9 +166,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 54,
-    "resolvedCount": 805,
-    "wouldHaveWon": 421,
+    "openCount": 53,
+    "resolvedCount": 806,
+    "wouldHaveWon": 422,
     "wouldHaveLost": 384,
     "bySignal": [
       {
@@ -256,26 +237,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -4.69,
-        "resolvedAt": "2026-08-05T18:28:17.154Z",
-        "marketQuality": {
-          "yesBid": 0.36,
-          "yesAsk": 0.38,
-          "yesSpread": 0.02,
-          "liquidity": 12272.34,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
@@ -406,6 +367,24 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 3.01,
+        "resolvedAt": "2026-08-06T14:28:19.011Z",
+        "marketQuality": {
+          "yesBid": 0.069,
+          "yesAsk": 0.073,
+          "yesSpread": 0.004,
+          "liquidity": 20821.73,
+          "flags": []
         }
       }
     ],
