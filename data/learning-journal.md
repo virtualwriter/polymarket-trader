@@ -1359,3 +1359,40 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-08-06 13:28 UTC
+
+**Portfolio:** $98.96 total | Cash $98.96 | 0 open | P&L $2.1996 | 63% win rate (640 trades)
+
+**Closed 1 trades:**
+- ✅ AMZN long via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT) → llm_decision: +$0.0014 (0.1%, market 0.0014, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 17 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [correlation_flip] GOLD-OIL correlation shifted from 0.30 to -0.29. Rolling correlation: 24h=-0.20, 7d=-0.70, 30d=-0.53. Current 24h corr is at 60th pct of last 30 daily 24h-rolling values (range -0.93 to 0.80).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.74 to 0.22. Rolling correlation: 24h=0.47, 7d=0.65, 30d=-0.00. Current 24h corr is at 50th pct of last 30 daily 24h-rolling values (range -0.78 to 0.96).
+
+**Blocked signal learning:**
+- Open blocked shadows: 54
+- Resolved blocked shadows: 805 (421 wins / 384 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 16/29 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/17 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=265 (72W/155L/38flat, 31.7% win-rate, sum $-0.8327, avg -0.31%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.27%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.09%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.49%)
+
+**LLM analysis:**
+AMZN FUNDING_EXTREME_SHORT position T-1785968907215-vdgf is being closed for thesis invalidation after 15h hold (min 12h met). The entry signal relied on extreme negative funding (-37.5% annualized), indicating heavy short demand where shorts pay longs. Over the past few hours, funding has swung to +5.48%, meaning shorts have fully unwound and longs are now paying shorts. This is not a gradual normalization but a complete reversal, erasing the carry advantage and contradicting the core thesis. The position is at +0.14%, essentially breakeven, so we exit without material P&L to preserve capital for valid signals. The AMZN FUNDING_EXTREME_SHORT family continues to show a high win rate on AMZN specifically (76% across 17 live trades), but this instance's signal-specific driver has clearly vanished.
+
+---
+
