@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-06T15:28:16.403Z",
+  "generatedAt": "2026-08-06T16:28:43.694Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,32 +7,19 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
-      "venue": "spot",
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.30666666666666675,
-      "confidence": 0.16616858259181114,
-      "thesis": "BTC P/C ratio 0.41 — heavy call buying → contrarian short.",
+      "strength": 0.024857142857142835,
+      "confidence": 0.011806862584307744,
+      "thesis": "GOLD HL funding 15.9% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 64737,
+      "entryPrice": 4231,
       "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 5
-    },
-    {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.012500000000000011,
-      "confidence": 0.006370197968356937,
-      "thesis": "OIL P/C ratio 1.21 — heavy put buying → contrarian long.",
-      "hypothesisId": null,
-      "entryPrice": 76.92,
-      "targetPct": 6,
-      "stopPct": 1.5,
-      "expiryDays": 21
+      "stopPct": 2,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
