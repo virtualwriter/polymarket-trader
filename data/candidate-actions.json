@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-07T17:28:18.493Z",
+  "generatedAt": "2026-08-07T18:28:15.248Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,25 +8,11 @@
       "asset": "BTC",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.32333333333333325,
-      "confidence": 0.17519948381962688,
-      "thesis": "BTC P/C ratio 0.40 — heavy call buying → contrarian short.",
+      "strength": 0.19,
+      "confidence": 0.10295227399710036,
+      "thesis": "BTC P/C ratio 0.44 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 64586,
-      "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 5
-    },
-    {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "short",
-      "strength": 0.15666666666666662,
-      "confidence": 0.08489047154146868,
-      "thesis": "OIL P/C ratio 0.45 — heavy call buying → contrarian short.",
-      "hypothesisId": null,
-      "entryPrice": 77.76,
+      "entryPrice": 64795,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -41,28 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 64586,
-      "probabilitySource": "unsupported",
-      "winProbability": null,
-      "probabilitySampleSize": null,
-      "edgePts": null,
-      "rawKellyFraction": null,
-      "adjustedKellyFraction": null,
-      "cappedKellyFraction": null,
-      "notes": [
-        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
-        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
-      ]
-    },
-    {
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "short",
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "reason": "unsupported_signal",
-      "entryPrice": 77.76,
+      "entryPrice": 64795,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -135,65 +100,6 @@
         }
       },
       "warnings": []
-    },
-    {
-      "candidateId": "PC_RATIO_EXTREME_LOW:OIL:1",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "short",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "candidateSize": 0,
-      "riskClusters": [
-        "commodity",
-        "oil_delta",
-        "options_sentiment",
-        "spot_venue"
-      ],
-      "current": {
-        "totalGross": 2,
-        "totalNet": -2,
-        "byAsset": {
-          "BTC": -1,
-          "OIL": -1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_LOW": -2
-        },
-        "byVenue": {
-          "spot": -2
-        },
-        "byCluster": {
-          "btc_delta": -1,
-          "options_sentiment": -2,
-          "risk_on": -1,
-          "spot_venue": -2,
-          "commodity": -1,
-          "oil_delta": -1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 2,
-        "totalNet": -2,
-        "byAsset": {
-          "BTC": -1,
-          "OIL": -1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_LOW": -2
-        },
-        "byVenue": {
-          "spot": -2
-        },
-        "byCluster": {
-          "btc_delta": -1,
-          "options_sentiment": -2,
-          "risk_on": -1,
-          "spot_venue": -2,
-          "commodity": -1,
-          "oil_delta": -1
-        }
-      },
-      "warnings": []
     }
   ],
   "stagedQuantRules": [
@@ -201,22 +107,6 @@
       "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
       "signalType": "PC_RATIO_EXTREME_LOW",
       "asset": "BTC",
-      "mode": "observe_uniform",
-      "liveSizingEnabled": false,
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "enforcedLiveSize": 1,
-      "wouldResize": true,
-      "edgePts": null,
-      "alerts": [],
-      "notes": [
-        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
-      ]
-    },
-    {
-      "candidateId": "PC_RATIO_EXTREME_LOW:OIL:1",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "OIL",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
       "currentFlatSize": 1,
@@ -247,10 +137,10 @@
         "btc_spot",
         "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 27,
-      "hoursToExpiry": 93,
+      "hoursOpen": 27.99,
+      "hoursToExpiry": 92.01,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.225,
+      "elapsedHoldPct": 0.2333,
       "minHoldHours": 12,
       "reason": "Mechanical PC_RATIO_EXTREME_LOW setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
@@ -266,12 +156,12 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 2.99,
-      "hoursToExpiry": 117.01,
+      "hoursOpen": 3.99,
+      "hoursToExpiry": 116.01,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0249,
+      "elapsedHoldPct": 0.0333,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 4.0h, requires at least 12h."
     }
   ]
 }
