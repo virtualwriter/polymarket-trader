@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-07T02:28:22.796Z",
+  "generatedAt": "2026-08-07T03:28:15.687Z",
   "dataFreshness": {
-    "valuationRows": 2156,
-    "latestValuationAt": "2026-08-07T02",
-    "macroRows": 2154,
+    "valuationRows": 2157,
+    "latestValuationAt": "2026-08-07T03",
+    "macroRows": 2155,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-07T02"
+    "latestInstrumentSnapshotAt": "2026-08-07T03"
   },
   "portfolio": {
     "cash": 96.9602,
@@ -13,7 +13,7 @@
     "realizedPnl": 2.1996,
     "totalTrades": 640,
     "winRatePct": 63.4,
-    "unrealizedPnl": 0.024
+    "unrealizedPnl": 0.0242
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 0.18,
-      "currentPrice": 64297,
-      "underlyingPrice": 64297,
+      "pnlPct": 0.17,
+      "currentPrice": 64298,
+      "underlyingPrice": 64298,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 2.23,
-      "currentPrice": 77.99,
-      "underlyingPrice": 77.99,
+      "pnlPct": 2.24,
+      "currentPrice": 78,
+      "underlyingPrice": 78,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -201,10 +201,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 53,
-    "resolvedCount": 823,
+    "openCount": 52,
+    "resolvedCount": 824,
     "wouldHaveWon": 426,
-    "wouldHaveLost": 397,
+    "wouldHaveLost": 398,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -272,24 +272,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.12,
-        "resolvedAt": "2026-08-07T00:28:18.657Z",
-        "marketQuality": {
-          "yesBid": 0.11,
-          "yesAsk": 0.12,
-          "yesSpread": 0.01,
-          "liquidity": 12018.85,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "OIL",
@@ -423,9 +405,45 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.72,
+        "resolvedAt": "2026-08-07T03:28:15.294Z",
+        "marketQuality": {
+          "yesBid": 0.42,
+          "yesAsk": 0.43,
+          "yesSpread": 0.01,
+          "liquidity": 6253.76,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-wti-hit-in-july-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $90 in July?",
+        "marketQuality": {
+          "yesBid": 0.294,
+          "yesAsk": 0.316,
+          "yesSpread": 0.022,
+          "liquidity": 31793.99,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.7pt on OIL, spread 2.2c, liquidity 31794. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -537,22 +555,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 2.7pt on BTC, spread 1.0c, liquidity 92856. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "GOLD",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $5,000 by end of December?",
-        "marketQuality": {
-          "yesBid": 0.42,
-          "yesAsk": 0.43,
-          "yesSpread": 0.01,
-          "liquidity": 6253.76,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 12.8pt after haircuts. CBOE gap 13.8pt, CME gap 13.8pt, source agreement both_positive, spread 1.0c, liquidity 6254. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
