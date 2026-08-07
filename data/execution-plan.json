@@ -1,48 +1,35 @@
 {
-  "generatedAt": "2026-08-07T14:28:41.733Z",
+  "generatedAt": "2026-08-07T15:28:16.280Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1786026514388-060g",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "oil_cl_pc_ratio"
-      ],
-      "thesis": "The PC_RATIO_EXTREME_HIGH signal's key input, the oil CL P/C ratio, has collapsed from the extreme high entry level of 1.49 to 0.35, far below the normalisation threshold. This dramatic reversal invalidates the original contrarian put-buying thesis, so the long position is closed."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "OIL",
+      "asset": "BTC",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.4900000000000001,
-      "confidence": 0.26550849609778515,
-      "thesis": "OIL P/C ratio 0.35 — heavy call buying → contrarian short.",
+      "strength": 0.8033333333333333,
+      "confidence": 0.43528943918072255,
+      "thesis": "BTC P/C ratio 0.26 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 77.58,
+      "entryPrice": 65018,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
     },
     {
       "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
+      "asset": "OIL",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.45333333333333337,
-      "confidence": 0.24564051339659032,
-      "thesis": "BTC P/C ratio 0.36 — heavy call buying → contrarian short.",
+      "strength": 0.19666666666666666,
+      "confidence": 0.10656463448822667,
+      "thesis": "OIL P/C ratio 0.44 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 65158,
+      "entryPrice": 78.05,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -52,6 +39,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
