@@ -1,46 +1,15 @@
 {
-  "generatedAt": "2026-08-07T05:29:06.763Z",
+  "generatedAt": "2026-08-07T06:28:21.131Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
   "entrySignals": [],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1786026514385-otmd",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_ibit_pc_ratio"
-        ],
-        "thesis": "BTC ibit P/C ratio surged from 0.28 to 1.25, fully reversing the extreme low call-buying signal; contrarian short thesis no longer valid."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1786026514388-060g",
-        "asset": "OIL",
-        "venue": "spot",
-        "direction": "short",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "oil_cl_pc_ratio"
-        ],
-        "thesis": "OIL CL P/C ratio dropped from 1.49 to 0.94, normalizing below the extreme put-buying threshold; contrarian long thesis invalidated."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 2 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
