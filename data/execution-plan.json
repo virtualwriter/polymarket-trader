@@ -1,15 +1,57 @@
 {
-  "generatedAt": "2026-08-07T13:28:22.154Z",
+  "generatedAt": "2026-08-07T14:28:41.733Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
-  "entrySignals": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1786026514388-060g",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "oil_cl_pc_ratio"
+      ],
+      "thesis": "The PC_RATIO_EXTREME_HIGH signal's key input, the oil CL P/C ratio, has collapsed from the extreme high entry level of 1.49 to 0.35, far below the normalisation threshold. This dramatic reversal invalidates the original contrarian put-buying thesis, so the long position is closed."
+    }
+  ],
+  "entrySignals": [
+    {
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "short",
+      "strength": 0.4900000000000001,
+      "confidence": 0.26550849609778515,
+      "thesis": "OIL P/C ratio 0.35 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 77.58,
+      "targetPct": 5,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    },
+    {
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "strength": 0.45333333333333337,
+      "confidence": 0.24564051339659032,
+      "thesis": "BTC P/C ratio 0.36 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 65158,
+      "targetPct": 5,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    }
+  ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
