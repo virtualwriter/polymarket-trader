@@ -1,46 +1,15 @@
 {
-  "generatedAt": "2026-08-07T08:29:10.050Z",
+  "generatedAt": "2026-08-07T09:28:19.077Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
   "entrySignals": [],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1786026514385-otmd",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_ibit_pc_ratio"
-        ],
-        "thesis": "BTC P/C ratio has normalized from extreme low (0.276) to 1.252, far beyond the entry threshold. The contrarian short setup is no longer supported."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1786026514388-060g",
-        "asset": "OIL",
-        "venue": "spot",
-        "direction": "short",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "oil_cl_pc_ratio"
-        ],
-        "thesis": "OIL P/C ratio has normalized from extreme high (1.49) to 0.94, below the entry threshold. The contrarian long setup is no longer supported."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 2 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
