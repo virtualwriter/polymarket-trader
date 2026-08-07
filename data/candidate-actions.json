@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-07T16:28:19.920Z",
+  "generatedAt": "2026-08-07T17:28:18.493Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "BTC",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.44333333333333336,
-      "confidence": 0.24022197265990083,
-      "thesis": "BTC P/C ratio 0.37 — heavy call buying → contrarian short.",
+      "strength": 0.32333333333333325,
+      "confidence": 0.17519948381962688,
+      "thesis": "BTC P/C ratio 0.40 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 64859,
+      "entryPrice": 64586,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -22,11 +22,11 @@
       "asset": "OIL",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.2566666666666667,
-      "confidence": 0.13907587890836365,
-      "thesis": "OIL P/C ratio 0.42 — heavy call buying → contrarian short.",
+      "strength": 0.15666666666666662,
+      "confidence": 0.08489047154146868,
+      "thesis": "OIL P/C ratio 0.45 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 78.19,
+      "entryPrice": 77.76,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -41,7 +41,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 64859,
+      "entryPrice": 64586,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -62,7 +62,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 78.19,
+      "entryPrice": 77.76,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -247,10 +247,10 @@
         "btc_spot",
         "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 26,
-      "hoursToExpiry": 94,
+      "hoursOpen": 27,
+      "hoursToExpiry": 93,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.2166,
+      "elapsedHoldPct": 0.225,
       "minHoldHours": 12,
       "reason": "Mechanical PC_RATIO_EXTREME_LOW setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
@@ -266,12 +266,12 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 1.99,
-      "hoursToExpiry": 118.01,
+      "hoursOpen": 2.99,
+      "hoursToExpiry": 117.01,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0166,
+      "elapsedHoldPct": 0.0249,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
     }
   ]
 }
