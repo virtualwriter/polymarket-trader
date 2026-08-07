@@ -1921,3 +1921,42 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 2/12; ne
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-07T07:07:52.395Z, model=deepseek-v4-pro)
+- Hypotheses added: 6 (rejected 3); reviews applied: 8; invalidated assumptions learned: 2; param updates: none.
+- Strategy review: Live performance leans on weekend funding reversion (71% win rate, +$1.26) and one‑touch NO edge (4/4 live wins, +$0.74). Absolute funding long/short signals are marginal or losing, and the old BTC PM‑IV expansion thesis with static thresholds is failing; its regime‑relative successor shows promise. Shadow‑mined families – gold one‑touch heatmap, cross‑asset IV compression, and loose weekend funding triggers on CBRS/AAPL/MU – repeatedly miss because they assume fast mean reversion without trend confirmation or true weekend context.
+- Nightly journal: Tonight’s research focused on killing failing variants and capturing the highest‑confidence FIND opportunities. Static funding and PM‑IV thesis families are now clearly underperforming; the regime‑relative approach and edge‑based one‑touch signals are where live profitability lies. Weekend funding refinements must incorporate explicit {day_of_week} filters to avoid weekday noise. We added seven new hypotheses from top‑ranked FINDs and four structural refinements to the struggling weekend funding shadows. The learnable parameter set is stable; no immediate risk adjustments needed until the live
+### 2026-08-07 07:28 UTC
+
+**Portfolio:** $98.96 total | Cash $96.96 | 2 open | P&L $2.1996 | 63% win rate (640 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 17 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [correlation_flip] GOLD-OIL correlation shifted from 0.32 to -0.27. Rolling correlation: 24h=-0.38, 7d=-0.69, 30d=-0.48. Current 24h corr is at 50th pct of last 30 daily 24h-rolling values (range -0.93 to 0.67).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.75 to 0.24. Rolling correlation: 24h=0.17, 7d=0.70, 30d=0.06. Current 24h corr is at 27th pct of last 30 daily 24h-rolling values (range -0.37 to 0.88).
+
+**Blocked signal learning:**
+- Open blocked shadows: 50
+- Resolved blocked shadows: 828 (429 wins / 399 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 16/29 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/17 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=285 (77W/167L/41flat, 31.6% win-rate, sum $-0.8894, avg -0.31%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.82%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; next scheduled 2026-08-07T09:28:16.939Z). Mechanical cycle ran normally._
+
+---
+
