@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-08-06T07:11:31Z",
+  "generatedAt": "2026-08-07T07:09:23Z",
   "summary": {
-    "generatedAt": "2026-08-06T07:11:31Z",
+    "generatedAt": "2026-08-07T07:09:23Z",
     "findingCounts": {
-      "open": 16,
-      "strengthened": 24,
+      "open": 15,
+      "strengthened": 26,
       "weakened": 0,
       "negative": 3,
       "suppressed": 0,
-      "total": 56
+      "total": 57
     },
     "themeCount": 6,
     "topOpportunity": {
@@ -58,8 +58,8 @@
     {
       "rank": 4,
       "id": "FIND-0043",
-      "opportunityScore": 0.9867,
-      "confidenceScore": 0.5678,
+      "opportunityScore": 0.9877,
+      "confidenceScore": 0.5851,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -68,8 +68,8 @@
     {
       "rank": 5,
       "id": "FIND-0030",
-      "opportunityScore": 0.9858,
-      "confidenceScore": 0.4345,
+      "opportunityScore": 0.986,
+      "confidenceScore": 0.4443,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -108,12 +108,12 @@
     {
       "rank": 9,
       "id": "FIND-0055",
-      "opportunityScore": 0.9619,
-      "confidenceScore": 0.3685,
+      "opportunityScore": 0.965,
+      "confidenceScore": 0.3945,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
-      "status": "open"
+      "status": "strengthened"
     },
     {
       "rank": 10,
@@ -131,8 +131,8 @@
       "id": "THEME-0001",
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
-      "findingCount": 33,
-      "avgOpportunityScore": 0.6608
+      "findingCount": 34,
+      "avgOpportunityScore": 0.6518
     },
     {
       "id": "THEME-0002",
@@ -174,47 +174,47 @@
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-534: Instead of entering short on gold one-touch NO edge alone, add a bearish backdrop \u2014 gold spot below 7d SMA and funding negative \u2014 to confirm downside momentum. Only trigger when gold_pm_underlying_cap_edge_pts_max >= 10 and the trend is bearish."
+      "description": "Refinement of H\u2011534: Add a bearish trend filter to the gold one\u2011touch NO edge short. Only sell\u2011YES when the underlying\u2011cap edge is large AND gold spot is below its 24h SMA, confirming that the edge aligns with a weak trend. This should prevent shorting into a persistent rally."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-539: Restrict CBRS weekend funding reversion to true weekend days (Sat/Sun) and require deeper negative funding (< -20%) to capture genuine overshoots that rapidly revert."
+      "description": "Refinement of H\u2011539: Restrict CBRS weekend funding reversion to true weekends and require extreme funding (<\u201120% annualized). This addresses the failure where non\u2011weekend and mildly negative funding triggers did not normalize."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-537: Limit AAPL funding reversion to weekends only and raise the threshold to < -20% so that only deep overshoots are played, avoiding mild negative readings that fail to revert."
+      "description": "Refinement of H\u2011537: Apply weekend\u2011only filter and deeper funding\u2011extremity threshold (<\u201120%) to AAPL funding reversion. Previous losses came from weekday triggers where funding did not revert quickly."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-001: Replace absolute IV thresholds with regime-relative compression. Enter when BTC PM IV is in the bottom 20% of its 30d range while option IV remains above 49, implying extreme relative cheapness likely to drive a large spot move."
+      "description": "Refinement of H\u2011535: Limit MU weekend funding reversion to weekends and raise the funding threshold to <\u201120%. Losses occurred when funding was only moderately negative on weekdays and failed to mean\u2011revert."
     },
     {
       "originFindingId": "FIND-0020",
       "themeId": "THEME-0003",
-      "description": "Fade dumb-money highs: When smart wallets are net short YES (smart_flow_stance <= -1) on upside one-touch contracts and a sell-YES edge exists, short the underlying. This exploits informed flow asymmetry where rich high-strike YES pricing is driven by retail."
+      "description": "Fade dumb money highs: sell\u2011YES on upside one\u2011touch NO contracts when smart wallets are net short (stance \u2264 -1) and a sell\u2011YES edge \u22652 pts exists. The FIND\u20110020 study shows smart\u2011flow disagreement predicts reversion."
     },
     {
       "originFindingId": "FIND-0053",
       "themeId": "THEME-0005",
-      "description": "GOLD PC ratio extreme low short despite positive trend: When GOLD's GLD put/call ratio falls into the bottom 10% of its 7-day range (extreme call buying) while spot is above the 7-day SMA, short GOLD. The positive-trend filter keeps you out of dead-cat bounces, but the extreme put/call reading signals an impending reversal."
+      "description": "GOLD extreme low put/call ratio short signal. When the 7\u2011day percentile of gold_gld_pc_ratio falls to the bottom 10%, the contrarian short hypothesis wins 100% in the shadow cluster (FIND\u20110053)."
     },
     {
       "originFindingId": "FIND-0021",
       "themeId": "THEME-0004",
-      "description": "Rich PM IV fade on upside one-touch NO: When Polymarket IV exceeds listed options IV by at least 10 vol points and there is an above-strike contract with a sell-YES edge, short the underlying. This bets that rich PM IV overprices YES and the spot will fall."
-    },
-    {
-      "originFindingId": "FIND-0030",
-      "themeId": "THEME-0001",
-      "description": "Broad one-touch NO edge with moderate edge strength: For any asset with above-strike contracts, when the sell-YES edge is between 3 and 8 points, short the underlying. The moderate edge bucket avoids tiny noisy edges and overly extreme readings that may reflect structural pricing issues."
+      "description": "Rich PM IV touch NO fade: when Polymarket IV exceeds the listed\u2011option IV by \u226510 vol points on an upside one\u2011touch contract with a positive sell\u2011YES edge, sell\u2011YES to short the underlying. The FIND\u20110021 cluster shows 90% win rate and +0.98 sum PnL."
     },
     {
       "originFindingId": "FIND-0043",
       "themeId": "THEME-0001",
-      "description": "BTC-specific one-touch NO edge with moderate strength: Narrow the one-touch NO edge signal to BTC only with sell-YES edge 3\u20138 points on above-strike contracts. The mining shows BTC delivered 74% win rate in this bucket, providing a high-confidence subset."
+      "description": "BTC\u2011specific one\u2011touch NO edge with moderate strength: sell\u2011YES on BTC upside touch contracts when the sell\u2011YES edge is between 3 and 8 pts. The FIND\u20110043 cluster returned 75% win rate, +1.97 total PnL in shadow."
+    },
+    {
+      "originFindingId": "FIND-0030",
+      "themeId": "THEME-0001",
+      "description": "Broad one\u2011touch NO edge across all assets with above\u2011strike direction and edge 3\u20118 pts. The FIND\u20110030 shadow has 55% win rate but positive sum PnL after incorporating tight spread constraints (default)."
     }
   ],
   "negativeFindings": [
@@ -240,9 +240,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-08-06T07:09:58Z",
-    "opportunitiesGeneratedAt": "2026-08-06T07:11:30Z",
-    "themesGeneratedAt": "2026-08-06T07:10:03Z",
-    "adviceGeneratedAt": "2026-08-06T07:09:58.170Z"
+    "findingsExportGeneratedAt": "2026-08-07T07:07:52Z",
+    "opportunitiesGeneratedAt": "2026-08-07T07:09:23Z",
+    "themesGeneratedAt": "2026-08-07T07:07:57Z",
+    "adviceGeneratedAt": "2026-08-07T07:07:52.395Z"
   }
 }
