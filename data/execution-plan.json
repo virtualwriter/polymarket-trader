@@ -1,46 +1,15 @@
 {
-  "generatedAt": "2026-08-07T12:28:57.419Z",
+  "generatedAt": "2026-08-07T13:28:22.154Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
   "entrySignals": [],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1786026514385-otmd",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_ibit_pc_ratio"
-        ],
-        "thesis": "The BTC short was entered on extreme low P/C ratio (0.276, heavy call buying). The ratio has surged to 1.252, far beyond the entry threshold and now indicates heavy put buying, invalidating the contrarian short thesis."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1786026514388-060g",
-        "asset": "OIL",
-        "venue": "spot",
-        "direction": "short",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "oil_cl_pc_ratio"
-        ],
-        "thesis": "The oil long was entered on extreme high P/C ratio (1.494, heavy put buying). The ratio has dropped to 0.941, normalizing well below the extreme threshold, invalidating the contrarian long thesis."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 2 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
