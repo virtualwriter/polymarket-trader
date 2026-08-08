@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-07T07:09:23Z",
+  "generatedAt": "2026-08-08T07:08:59Z",
   "summary": {
-    "generatedAt": "2026-08-07T07:09:23Z",
+    "generatedAt": "2026-08-08T07:08:59Z",
     "findingCounts": {
       "open": 15,
       "strengthened": 26,
@@ -132,7 +132,7 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 34,
-      "avgOpportunityScore": 0.6518
+      "avgOpportunityScore": 0.6496
     },
     {
       "id": "THEME-0002",
@@ -172,49 +172,49 @@
   ],
   "authoredHypotheses": [
     {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H\u2011534: Add a bearish trend filter to the gold one\u2011touch NO edge short. Only sell\u2011YES when the underlying\u2011cap edge is large AND gold spot is below its 24h SMA, confirming that the edge aligns with a weak trend. This should prevent shorting into a persistent rally."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H\u2011539: Restrict CBRS weekend funding reversion to true weekends and require extreme funding (<\u201120% annualized). This addresses the failure where non\u2011weekend and mildly negative funding triggers did not normalize."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H\u2011537: Apply weekend\u2011only filter and deeper funding\u2011extremity threshold (<\u201120%) to AAPL funding reversion. Previous losses came from weekday triggers where funding did not revert quickly."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H\u2011535: Limit MU weekend funding reversion to weekends and raise the funding threshold to <\u201120%. Losses occurred when funding was only moderately negative on weekdays and failed to mean\u2011revert."
-    },
-    {
       "originFindingId": "FIND-0020",
       "themeId": "THEME-0003",
-      "description": "Fade dumb money highs: sell\u2011YES on upside one\u2011touch NO contracts when smart wallets are net short (stance \u2264 -1) and a sell\u2011YES edge \u22652 pts exists. The FIND\u20110020 study shows smart\u2011flow disagreement predicts reversion."
+      "description": "Informed\u2011flow fade: when smart wallets are net short YES (smart_flow_stance \u2264 -1) on above\u2011strike one\u2011touch contracts with a positive sell\u2011YES edge, short the asset\u2019s spot. The smart\u2011money selling on dips and high\u2011side YES is a reliable contrarian predictor of spot declines."
     },
     {
       "originFindingId": "FIND-0053",
       "themeId": "THEME-0005",
-      "description": "GOLD extreme low put/call ratio short signal. When the 7\u2011day percentile of gold_gld_pc_ratio falls to the bottom 10%, the contrarian short hypothesis wins 100% in the shadow cluster (FIND\u20110053)."
+      "description": "GOLD put/call extreme low short: when GOLD\u2019s GLD put/call ratio falls into the bottom 10% of its 7\u2011day range (indicative of excessive call buying), short GOLD despite the positive trend. Previous positive\u2011trend filters incorrectly blocked this signal; the extreme low often precedes a corrective pullback."
     },
     {
       "originFindingId": "FIND-0021",
       "themeId": "THEME-0004",
-      "description": "Rich PM IV touch NO fade: when Polymarket IV exceeds the listed\u2011option IV by \u226510 vol points on an upside one\u2011touch contract with a positive sell\u2011YES edge, sell\u2011YES to short the underlying. The FIND\u20110021 cluster shows 90% win rate and +0.98 sum PnL."
+      "description": "PM\u2011IV rich NO fade: when Polymarket IV exceeds listed\u2011option IV by \u226510 vol points on an above\u2011strike one\u2011touch NO contract with a positive sell\u2011YES edge, short the asset. The rich premium on NO contracts points to overpriced downside protection that will compress as spot stabilises or drops modestly."
     },
     {
       "originFindingId": "FIND-0043",
       "themeId": "THEME-0001",
-      "description": "BTC\u2011specific one\u2011touch NO edge with moderate strength: sell\u2011YES on BTC upside touch contracts when the sell\u2011YES edge is between 3 and 8 pts. The FIND\u20110043 cluster returned 75% win rate, +1.97 total PnL in shadow."
+      "description": "BTC one\u2011touch NO edge with moderate strength: when a BTC upside one\u2011touch NO contract offers a sell\u2011YES edge between 3 and 8 percentage points and the contract expires within 30 days, short BTC. This captures the cluster where the edge is large enough to compensate for the risk but not so extreme as to indicate a market dislocation that fails to revert."
     },
     {
-      "originFindingId": "FIND-0030",
-      "themeId": "THEME-0001",
-      "description": "Broad one\u2011touch NO edge across all assets with above\u2011strike direction and edge 3\u20118 pts. The FIND\u20110030 shadow has 55% win rate but positive sum PnL after incorporating tight spread constraints (default)."
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H\u2011534: Only take the gold one\u2011touch NO edge when the underlying spot is in a downtrend (below its 7\u2011day SMA) to avoid fading strong rallies. The cap edge alone is insufficient; a bearish regime context is needed for the mispricing to correct via spot decline."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H\u2011539: Restrict CBRS funding reversion to true weekend days (Saturday and Sunday) and require funding deeper than \u201110% to isolate overshoots that rapidly normalise. This aligns with the strong weekend\u2011only performance seen in the broader WEEKEND_HL_FUNDING_REVERSION_LONG family."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H\u2011537: Apply the same weekend\u2011only filter and a deeper threshold (<\u201115%) to AAPL funding reversion. The evidence shows AAPL funding snap\u2011backs are concentrated on weekends; weekday signals are false reversals that continue the trend."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H\u2011001: Shift from absolute PM\u2011IV thresholds to regime\u2011relative compression (PM IV below its 20th percentile of 30\u2011day range) and add an oversold filter (spot below 7\u2011day SMA) to time the expansion move. This captures genuine cheap\u2011vol regimes poised for breakouts instead of persistent low\u2011vol drifting."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of the cross\u2011asset IV compression long: add a Bitcoin funding extreme short condition (funding < \u201150%) to identify crowded shorts and require HYPE OI growth >3% to confirm genuine risk\u2011on capital inflow. This raises the bar for momentum confirmation significantly."
     }
   ],
   "negativeFindings": [
@@ -240,9 +240,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-08-07T07:07:52Z",
-    "opportunitiesGeneratedAt": "2026-08-07T07:09:23Z",
-    "themesGeneratedAt": "2026-08-07T07:07:57Z",
-    "adviceGeneratedAt": "2026-08-07T07:07:52.395Z"
+    "findingsExportGeneratedAt": "2026-08-08T07:07:28Z",
+    "opportunitiesGeneratedAt": "2026-08-08T07:08:59Z",
+    "themesGeneratedAt": "2026-08-08T07:07:31Z",
+    "adviceGeneratedAt": "2026-08-08T07:07:27.717Z"
   }
 }
