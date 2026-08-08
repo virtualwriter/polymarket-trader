@@ -2726,3 +2726,51 @@ Closed two PC_RATIO_EXTREME_LOW shorts as their P/C ratios normalized decisively
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-08T07:07:27.717Z, model=deepseek-v4-pro)
+- Hypotheses added: 8 (rejected 1); reviews applied: 6; invalidated assumptions learned: 1; param updates: none.
+- Strategy review: The weekend funding reversion long family remains profitable overall (244/343 wins, 71% win rate) but current open positions show deep drawdowns, indicating recent regime stress. The one‑touch sell‑YES edge signal has perfect live execution (4/4 wins) but heavy shadow losses suggest edge signals are noisy and heavily dependent on filtering. Funding‑extreme‑short trades are steady with 61% wins but produce minimal net PnL; the signal has been asset‑specific winning for AMZN but struggling for OIL. The big losers are shadow‑mined variants that omit critical contextual filters (weekday, trend, an
+- Nightly journal: The nightly review confirms that our biggest active risk is open weekend‑funding reversion longs that are deep underwater; while the family historically wins, current conditions are adverse. The key learning is that shadow hypotheses must inherit the filtering logic that made the parent families work — specifically day‑of‑week gates for weekend funding and regime‑relative conditions for volatility and edge signals. We identified that the gold one‑touch NO edge is failing because the edge arises from persistent premiums in a strong trend, so we added a bearish filter. The CBRS/AAPL shadows fail
+### 2026-08-08 07:28 UTC
+
+**Portfolio:** $99.02 total | Cash $90.02 | 9 open | P&L $2.2566 | 63% win rate (648 trades)
+
+**Closed 4 trades:**
+- ❌ BX long via hyperliquid/hl_perp [HL BX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0140 (-1.4%, market -0.0193, funding 0.0054)
+- ✅ RKLB long via hyperliquid/hl_perp [HL RKLB Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0033 (0.3%, market 0.0029, funding 0.0004)
+- ❌ BTC short via spot/spot [BTC spot] (PC_RATIO_EXTREME_LOW) → llm_decision: $-0.0087 (-0.9%, market -0.0087, funding 0.0000)
+- ✅ OIL short via spot/spot [OIL spot] (PC_RATIO_EXTREME_LOW) → llm_decision: +$0.0117 (1.2%, market 0.0117, funding 0.0000)
+
+**Opened 1 positions:**
+- OIL short @ $0.08999999999999997 via polymarket/pm_no [what-price-will-wti-hit-in-august-2026 — NO — Will WTI Crude Oil (WTI) hit (LOW) $75 in August?] (USER_PM_IV_TOUCH_RICH_NO)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 17 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [correlation_flip] GOLD-OIL correlation shifted from 0.35 to -0.24. Rolling correlation: 24h=-0.39, 7d=-0.67, 30d=-0.39. Current 24h corr is at 47th pct of last 30 daily 24h-rolling values (range -0.93 to 0.71).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.75 to 0.27. Rolling correlation: 24h=0.75, 7d=0.88, 30d=0.19. Current 24h corr is at 67th pct of last 30 daily 24h-rolling values (range -0.41 to 0.86).
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 836 (430 wins / 406 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 16/29 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/17 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=293 (77W/174L/42flat, 30.7% win-rate, sum $-1.0367, avg -0.35%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.09%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-3.28%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-3.23%)
+
+**LLM analysis:**
+Closed both PC_RATIO_EXTREME_LOW shorts (BTC and OIL) as their P/C ratios have leapfrogged the entry extremes. Gold FUNDING_EXTREME_SHORT normalized within two hours, but the 12‑hour min hold prevents action—worth watching at next review. Several WEEKEND_HL longs (CBRS, PLTR) are underwater but within the wide 100% stop, and session‑end mean‑reversion could still play out; no reason to override mechanical rules. Macro backdrop remains quiet, keeping risk levels manageable.
+
+---
+

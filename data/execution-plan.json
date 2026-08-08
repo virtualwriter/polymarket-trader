@@ -1,21 +1,46 @@
 {
-  "generatedAt": "2026-08-08T06:29:09.460Z",
+  "generatedAt": "2026-08-08T07:28:57.127Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1786026514385-otmd",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "btc_ibit_pc_ratio"
+      ],
+      "thesis": "BTC P/C ratio has risen from 0.28 at entry to 0.47, well above the extreme‑low entry threshold; heavy call buying has dissipated, invalidating the contrarian short thesis."
+    },
+    {
+      "action": "close",
+      "positionId": "T-1786112921736-q7bi",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "oil_cl_pc_ratio"
+      ],
+      "thesis": "Oil P/C ratio surged from 0.35 to 0.90, fully normalizing away from the extreme low; the original call‑buying extreme signal is gone, invalidating the short thesis."
+    }
+  ],
   "entrySignals": [
     {
       "type": "USER_PM_IV_TOUCH_RICH_NO",
       "asset": "OIL",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6819471533333333,
-      "confidence": 0.34097357666666667,
-      "thesis": "[IV-TOUCH RICH NO LIVE] PM YES 92.5% vs IV touch model 80.8% (10.2pt rich) on OIL below 75; buy NO / sell YES, hold up to 30d or expiry.",
+      "strength": 0.6832336873333333,
+      "confidence": 0.34161684366666667,
+      "thesis": "[IV-TOUCH RICH NO LIVE] PM YES 91.5% vs IV touch model 80.8% (10.2pt rich) on OIL below 75; buy NO / sell YES, hold up to 30d or expiry.",
       "hypothesisId": null,
-      "entryPrice": 76.655,
+      "entryPrice": 76.669,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 30,
@@ -23,6 +48,26 @@
         "preferredEventSlug": "what-price-will-wti-hit-in-august-2026",
         "forceInstrumentType": "pm_no",
         "forceMarketId": "3383654",
+        "allowDirectionFallback": false
+      }
+    },
+    {
+      "type": "USER_PM_IV_TOUCH_RICH_NO",
+      "asset": "OIL",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.44866765599999997,
+      "confidence": 0.22433382799999999,
+      "thesis": "[IV-TOUCH RICH NO LIVE] PM YES 55.5% vs IV touch model 48.3% (6.7pt rich) on OIL below 70; buy NO / sell YES, hold up to 30d or expiry.",
+      "hypothesisId": null,
+      "entryPrice": 76.669,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 30,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-wti-hit-in-august-2026",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "3096415",
         "allowDirectionFallback": false
       }
     },
@@ -35,47 +80,16 @@
       "confidence": 0.055991587612458135,
       "thesis": "BTC P/C ratio 0.47 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 64951,
+      "entryPrice": 64970,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1786026514385-otmd",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_ibit_pc_ratio"
-        ],
-        "thesis": "BTC P/C ratio has normalized from extreme low (0.28) to 0.47, well above the entry threshold, no longer indicating heavy call buying. Contrarian short thesis invalidated."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    },
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1786112921736-q7bi",
-        "asset": "OIL",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "oil_cl_pc_ratio"
-        ],
-        "thesis": "OIL P/C ratio has surged from 0.35 to 0.90, well above extreme low territory, invalidating the contrarian short thesis."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    }
-  ],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 2 rejected; 0 non-close instructions skipped."
+    "2 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
