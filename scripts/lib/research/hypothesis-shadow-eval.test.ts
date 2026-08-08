@@ -54,6 +54,42 @@ function row(date: string, fields: Record<string, number>): SnapshotRow {
   return { date, ...fields };
 }
 
+describe("polymarket underlying-proxy scoring", () => {
+  it("keeps the direction call but records no magnitude", () => {
+    const h = hyp({
+      direction: "short",
+      prediction: "BTC one-touch NO: spot declines > 2% over the window",
+      conditions: { asset: "BTC", venue: "polymarket", signalType: "ONE_TOUCH_HIGH_EDGE_NO" },
+    });
+    const result = evaluateHypothesisTest(
+      h,
+      row("2026-07-01", { btc_spot: 100 }),
+      row("2026-07-08", { btc_spot: 95 }),
+    );
+
+    expect(result.method).toContain("pm_underlying_proxy");
+    expect(result.outcome).toBe("win");
+    expect(result.magnitude).toBeUndefined();
+    expect(result.magnitudeUnit).toBeUndefined();
+  });
+
+  it("still records magnitude for a plain spot thesis", () => {
+    const h = hyp({
+      direction: "short",
+      prediction: "BTC declines > 2% over the window",
+      conditions: { asset: "BTC" },
+    });
+    const result = evaluateHypothesisTest(
+      h,
+      row("2026-07-01", { btc_spot: 100 }),
+      row("2026-07-08", { btc_spot: 95 }),
+    );
+
+    expect(result.method).not.toContain("pm_underlying_proxy");
+    expect(typeof result.magnitude).toBe("number");
+  });
+});
+
 describe("evidenceBackedDirection", () => {
   it("returns the explicit direction the scorer graded on", () => {
     expect(evidenceBackedDirection(hyp({

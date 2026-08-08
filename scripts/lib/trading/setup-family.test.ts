@@ -71,4 +71,51 @@ describe("setup family helpers", () => {
 
     expect(finalizeSetupTruthRecord(record(), { killThreshold: 0.4, promoteThreshold: 0.65 }).status).toBe("exploratory");
   });
+
+  it("promotes a profitable family that never reaches the win-rate bar", () => {
+    // The gated one-touch shape: right 57% of the time, but +5.8%/trade.
+    const finalized = finalizeSetupTruthRecord(record({
+      evidenceSummary: {
+        ...record().evidenceSummary,
+        resolvedShadows: 58,
+        shadowWins: 33,
+        avgShadowPnlPct: 5.81,
+        shadowPnlStdPct: 13,
+      },
+    }), { killThreshold: 0.4, promoteThreshold: 0.65 });
+
+    expect(finalized.status).toBe("eligible_live");
+  });
+
+  it("disables a family that is often right but significantly loses money", () => {
+    const finalized = finalizeSetupTruthRecord(record({
+      evidenceSummary: {
+        ...record().evidenceSummary,
+        resolvedShadows: 60,
+        shadowWins: 42,
+        avgShadowPnlPct: -3.5,
+        shadowPnlStdPct: 6,
+      },
+    }), { killThreshold: 0.4, promoteThreshold: 0.65 });
+
+    expect(finalized.status).toBe("disabled");
+  });
+
+  it("ignores the expectancy route when dispersion is unknown or the sample is small", () => {
+    const noStd = finalizeSetupTruthRecord(record({
+      evidenceSummary: { ...record().evidenceSummary, resolvedShadows: 58, shadowWins: 33, avgShadowPnlPct: 5.81 },
+    }), { killThreshold: 0.4, promoteThreshold: 0.65 });
+    expect(noStd.status).toBe("validating");
+
+    const tooFew = finalizeSetupTruthRecord(record({
+      evidenceSummary: {
+        ...record().evidenceSummary,
+        resolvedShadows: 12,
+        shadowWins: 7,
+        avgShadowPnlPct: 5.81,
+        shadowPnlStdPct: 13,
+      },
+    }), { killThreshold: 0.4, promoteThreshold: 0.65 });
+    expect(tooFew.status).toBe("validating");
+  });
 });

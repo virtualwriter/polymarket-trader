@@ -1,0 +1,146 @@
+/**
+ * Autonomous shadow-to-live promotion.
+ *
+ * A shadow family graduates to live trading on its own realized per-trade P&L
+ * rather than on a human flipping an ENABLE_ constant. The bar is deliberately
+ * expectancy-first: the reason one-touch could never promote under the old
+ * rules is that PROMOTE_THRESHOLD demanded a 65% win rate, and the gated
+ * one-touch cohort makes money at 57% because its winners are far larger than
+ * its losers. Requiring win-rate significance here would rebuild that wall, so
+ * win rate is only a floor against fragile lottery profiles, and the load is
+ * carried by a one-sided t-test on realized edge plus two robustness guards.
+ */
+
+import { binomialPValue, oneSidedTPValue, sampleMoments, wilsonLowerBound } from "../research/alpha-stats.js";
+
+/** Significance required on realized per-trade edge. */
+export const AUTO_PROMOTE_ALPHA = 0.01;
+/** Total resolved shadows a family needs before it can be considered. */
+export const AUTO_PROMOTE_MIN_SHADOWS = 30;
+/**
+ * Shadows that resolved after the family's entry rule was last changed.
+ *
+ * Without this a family could promote on the same data used to choose its
+ * entry threshold, which is circular. Requiring post-gate observations makes
+ * activation genuinely forward-validated.
+ */
+export const AUTO_PROMOTE_MIN_POST_GATE_SHADOWS = 20;
+/** Floor guarding against jackpot-dependent profiles that are fragile live. */
+export const AUTO_PROMOTE_MIN_WIN_RATE = 0.4;
+/** Live size multiplier applied for a family's first live outing. */
+export const AUTO_PROMOTE_INITIAL_SIZE_FRACTION = 0.5;
+/** Live trades before a newly promoted family sizes up to full. */
+export const AUTO_PROMOTE_FULL_SIZE_AFTER_TRADES = 20;
+
+export interface ShadowOutcome {
+  pnlPct: number;
+  win: boolean;
+  /** When the shadow was opened; used for the post-gate cutoff. */
+  openedAt: string;
+}
+
+export interface AutoPromotionEvidence {
+  n: number;
+  wins: number;
+  winRate: number;
+  meanPnlPct: number;
+  stdPnlPct: number;
+  /** One-sided t-test that mean realized edge exceeds zero. */
+  expectancyPValue: number | null;
+  /** Same test with the single best trade removed. */
+  expectancyPValueExBest: number | null;
+  /** Binomial on win rate; reported for context, never required. */
+  winRatePValue: number;
+  winRateLowerBound: number;
+  postGateN: number;
+}
+
+export function summarizeShadowOutcomes(
+  outcomes: readonly ShadowOutcome[],
+  gateInstalledAt: string | null,
+): AutoPromotionEvidence {
+  const pnls = outcomes.map((o) => o.pnlPct).filter((p) => Number.isFinite(p));
+  const wins = outcomes.filter((o) => o.win).length;
+  const { n, mean, std } = sampleMoments(pnls);
+
+  const exBest = [...pnls].sort((a, b) => b - a).slice(1);
+  const exBestMoments = sampleMoments(exBest);
+
+  const cutoff = gateInstalledAt ? new Date(gateInstalledAt).getTime() : null;
+  const postGateN = cutoff === null
+    ? 0
+    : outcomes.filter((o) => new Date(o.openedAt).getTime() >= cutoff).length;
+
+  return {
+    n,
+    wins,
+    winRate: n > 0 ? wins / n : 0,
+    meanPnlPct: mean,
+    stdPnlPct: std,
+    expectancyPValue: oneSidedTPValue(mean, std, n),
+    expectancyPValueExBest: oneSidedTPValue(exBestMoments.mean, exBestMoments.std, exBestMoments.n),
+    winRatePValue: binomialPValue(wins, n),
+    winRateLowerBound: n > 0 ? wilsonLowerBound(wins, n) : 0,
+    postGateN,
+  };
+}
+
+export interface AutoPromotionOptions {
+  alpha?: number;
+  minShadows?: number;
+  minPostGateShadows?: number;
+  minWinRate?: number;
+}
+
+export interface AutoPromotionDecision {
+  promote: boolean;
+  /** Human-readable rationale, recorded in the audit trail either way. */
+  reason: string;
+  evidence: AutoPromotionEvidence;
+}
+
+export function evaluateAutoPromotion(
+  evidence: AutoPromotionEvidence,
+  options: AutoPromotionOptions = {},
+): AutoPromotionDecision {
+  const alpha = options.alpha ?? AUTO_PROMOTE_ALPHA;
+  const minShadows = options.minShadows ?? AUTO_PROMOTE_MIN_SHADOWS;
+  const minPostGate = options.minPostGateShadows ?? AUTO_PROMOTE_MIN_POST_GATE_SHADOWS;
+  const minWinRate = options.minWinRate ?? AUTO_PROMOTE_MIN_WIN_RATE;
+
+  const fail = (reason: string): AutoPromotionDecision => ({ promote: false, reason, evidence });
+
+  if (evidence.n < minShadows) {
+    return fail(`only ${evidence.n} resolved shadows (need ${minShadows})`);
+  }
+  if (evidence.postGateN < minPostGate) {
+    return fail(`only ${evidence.postGateN} shadows resolved since the entry rule last changed (need ${minPostGate} so activation is not judged on the data that set the rule)`);
+  }
+  if (evidence.winRate < minWinRate) {
+    return fail(`win rate ${(evidence.winRate * 100).toFixed(0)}% is below the ${(minWinRate * 100).toFixed(0)}% floor; a profile this jackpot-dependent is fragile live`);
+  }
+  if (evidence.meanPnlPct <= 0) {
+    return fail(`mean realized edge is ${evidence.meanPnlPct.toFixed(2)}%`);
+  }
+  if (evidence.expectancyPValue === null || evidence.expectancyPValue >= alpha) {
+    const p = evidence.expectancyPValue === null ? "n/a" : evidence.expectancyPValue.toFixed(4);
+    return fail(`expectancy not significant (p=${p}, need < ${alpha})`);
+  }
+  if (evidence.expectancyPValueExBest === null || evidence.expectancyPValueExBest >= alpha) {
+    const p = evidence.expectancyPValueExBest === null ? "n/a" : evidence.expectancyPValueExBest.toFixed(4);
+    return fail(`expectancy collapses without its single best trade (p=${p}); the edge rests on one outlier`);
+  }
+
+  return {
+    promote: true,
+    reason: `${evidence.wins}/${evidence.n} shadows (${(evidence.winRate * 100).toFixed(0)}%), mean edge ${evidence.meanPnlPct.toFixed(2)}%/trade, expectancy p=${evidence.expectancyPValue.toFixed(4)} (p=${evidence.expectancyPValueExBest!.toFixed(4)} excluding the best trade), ${evidence.postGateN} of them since the entry rule last changed`,
+    evidence,
+  };
+}
+
+/** Size multiplier for a family that has been promoted but is still proving out live. */
+export function autoPromotedSizeFraction(liveTradesSincePromotion: number): number {
+  return liveTradesSincePromotion >= AUTO_PROMOTE_FULL_SIZE_AFTER_TRADES
+    ? 1
+    : AUTO_PROMOTE_INITIAL_SIZE_FRACTION;
+}

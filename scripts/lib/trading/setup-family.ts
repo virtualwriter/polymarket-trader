@@ -1,3 +1,5 @@
+import { oneSidedTPValue } from "../research/alpha-stats.js";
+
 export interface SetupIdentifier {
   setupId: string;
   setupLabel: string;
@@ -17,6 +19,13 @@ export interface SetupTruthEvidenceSummary {
   shadowWins: number;
   avgShadowPnlPct: number;
   hypothesisTests: number;
+  /**
+   * Sample standard deviations of per-trade P&L. Present only for records built
+   * after expectancy-aware promotion landed; when absent the status falls back
+   * to the win-rate rule alone.
+   */
+  tradePnlStdPct?: number;
+  shadowPnlStdPct?: number;
 }
 
 export interface SetupTruthRecordForStatus {
@@ -30,7 +39,17 @@ export interface SetupTruthRecordForStatus {
 export interface SetupTruthStatusThresholds {
   killThreshold: number;
   promoteThreshold: number;
+  /**
+   * Significance required to call a family eligible on realized edge alone.
+   * Defaults to 0.01 when omitted.
+   */
+  expectancyAlpha?: number;
+  /** Minimum sample before the expectancy route is allowed. */
+  expectancyMinSamples?: number;
 }
+
+const DEFAULT_EXPECTANCY_ALPHA = 0.01;
+const DEFAULT_EXPECTANCY_MIN_SAMPLES = 30;
 
 export function slugifySetupId(label: string): string {
   return label
@@ -86,6 +105,26 @@ export function buildTruthConclusion(record: SetupTruthRecordForStatus): string 
   return `${record.setupLabel} remains exploratory. Clean live trades: ${tradeRate}, avg P&L ${e.avgTradePnlPct.toFixed(2)}%; shadows: ${shadowRate}.`;
 }
 
+/**
+ * True when a family's realized edge is significantly positive.
+ *
+ * The win-rate route alone cannot see a strategy that is right 57% of the time
+ * but makes money because its winners dwarf its losers — the gated one-touch
+ * cohort is exactly that shape, and a 65% win-rate bar would reject it forever.
+ */
+function expectancyIsSignificant(
+  samples: number,
+  meanPct: number,
+  stdPct: number | undefined,
+  thresholds: SetupTruthStatusThresholds,
+): boolean {
+  const alpha = thresholds.expectancyAlpha ?? DEFAULT_EXPECTANCY_ALPHA;
+  const minSamples = thresholds.expectancyMinSamples ?? DEFAULT_EXPECTANCY_MIN_SAMPLES;
+  if (stdPct === undefined || samples < minSamples || meanPct <= 0) return false;
+  const p = oneSidedTPValue(meanPct, stdPct, samples);
+  return p !== null && p < alpha;
+}
+
 export function finalizeSetupTruthRecord<TRecord extends SetupTruthRecordForStatus>(
   record: TRecord,
   thresholds: SetupTruthStatusThresholds,
@@ -93,11 +132,25 @@ export function finalizeSetupTruthRecord<TRecord extends SetupTruthRecordForStat
   const e = record.evidenceSummary;
   const tradeWinRate = e.cleanTrades > 0 ? e.tradeWins / e.cleanTrades : null;
   const shadowWinRate = e.resolvedShadows > 0 ? e.shadowWins / e.resolvedShadows : null;
+  const profitableOnEdge = expectancyIsSignificant(e.cleanTrades, e.avgTradePnlPct, e.tradePnlStdPct, thresholds)
+    || expectancyIsSignificant(e.resolvedShadows, e.avgShadowPnlPct, e.shadowPnlStdPct, thresholds);
+  // Same test mirrored: a family can be nominally right often enough while
+  // still losing money, and that should disable it rather than be ignored.
+  const unprofitableOnEdge = expectancyIsSignificant(e.cleanTrades, -e.avgTradePnlPct, e.tradePnlStdPct, thresholds)
+    || expectancyIsSignificant(e.resolvedShadows, -e.avgShadowPnlPct, e.shadowPnlStdPct, thresholds);
   if (record.knownInvalidAssumptions.length > 0 && e.cleanTrades + e.resolvedShadows < 10) {
     record.status = "contaminated_retest";
-  } else if ((e.cleanTrades >= 5 && tradeWinRate !== null && tradeWinRate < thresholds.killThreshold) || (e.cleanTrades >= 10 && e.avgTradePnlPct < -1)) {
+  } else if (
+    (e.cleanTrades >= 5 && tradeWinRate !== null && tradeWinRate < thresholds.killThreshold)
+    || (e.cleanTrades >= 10 && e.avgTradePnlPct < -1)
+    || unprofitableOnEdge
+  ) {
     record.status = "disabled";
-  } else if ((e.cleanTrades >= 5 && tradeWinRate !== null && tradeWinRate >= thresholds.promoteThreshold && e.avgTradePnlPct > 0) || (e.resolvedShadows >= 10 && shadowWinRate !== null && shadowWinRate >= thresholds.promoteThreshold && e.avgShadowPnlPct > 0)) {
+  } else if (
+    (e.cleanTrades >= 5 && tradeWinRate !== null && tradeWinRate >= thresholds.promoteThreshold && e.avgTradePnlPct > 0)
+    || (e.resolvedShadows >= 10 && shadowWinRate !== null && shadowWinRate >= thresholds.promoteThreshold && e.avgShadowPnlPct > 0)
+    || profitableOnEdge
+  ) {
     record.status = "eligible_live";
   } else if (e.cleanTrades + e.resolvedShadows + e.hypothesisTests >= 5) {
     record.status = "validating";

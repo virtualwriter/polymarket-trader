@@ -483,10 +483,18 @@ export function evaluateHypothesisTest(
   if (direction === "long" || direction === "short") {
     const scored = scoreDirectionalMove(movePct, direction, thresholdPct, asset, startPx, endPx);
     if (isPolymarketExpression(hypothesis)) {
+      // The underlying's percent move gets the direction call roughly right for
+      // a touch contract, but it is not the trade's P&L — a NO contract's
+      // return depends on its entry price and the barrier, not on how far spot
+      // travelled. Keep the win/loss, drop the magnitude, so the expectancy
+      // gate never promotes a Polymarket family on a number measured off the
+      // wrong instrument. Real edge for these comes from the shadow record.
       return {
         ...scored,
-        actualMove: `${scored.actualMove} [underlying proxy for PM/one-touch]`,
+        actualMove: `${scored.actualMove} [underlying proxy for PM/one-touch; magnitude not recorded]`,
         method: `${scored.method}_pm_underlying_proxy`,
+        magnitude: undefined,
+        magnitudeUnit: undefined,
       };
     }
     return scored;
