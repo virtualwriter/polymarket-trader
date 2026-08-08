@@ -2527,3 +2527,49 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-08-08 02:28 UTC
+
+**Portfolio:** $99.03 total | Cash $92.03 | 7 open | P&L $2.2719 | 64% win rate (643 trades)
+
+**Closed 2 trades:**
+- ✅ PLTR long via hyperliquid/hl_perp [HL PLTR Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0493 (4.9%, market 0.0475, funding 0.0017)
+- ✅ MU long via hyperliquid/hl_perp [HL MU Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0061 (0.6%, market 0.0061, funding 0.0000)
+
+**Opened 1 positions:**
+- GOLD long @ $4344 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_SHORT)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 18 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [anomaly] gold_hl_funding_ann = -33.72 is -2.3 std devs from mean (8.64 ± 18.08)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.34 to -0.24. Rolling correlation: 24h=-0.64, 7d=-0.67, 30d=-0.41. Current 24h corr is at 43th pct of last 30 daily 24h-rolling values (range -0.97 to 0.65).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.75 to 0.27. Rolling correlation: 24h=0.88, 7d=0.86, 30d=0.17. Current 24h corr is at 93th pct of last 30 daily 24h-rolling values (range -0.73 to 0.91).
+
+**Blocked signal learning:**
+- Open blocked shadows: 53
+- Resolved blocked shadows: 832 (429 wins / 403 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 16/29 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/17 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=289 (77W/171L/41flat, 31.0% win-rate, sum $-0.9607, avg -0.33%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.12%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.04%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-2.33%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.64%)
+
+**LLM analysis:**
+BTC PC_RATIO_EXTREME_LOW thesis invalidated this hour as the IBIT P/C ratio climbed to 0.469, far outside the call-skew extreme that justified the short. Oil's P/C ratio also spiked to 0.903, but that position is still within its min-hold window, so no action there yet. The weekend funding-reversion longs (BX, HIMS, ORCL, RKLB) are mechanical only; their per-asset win rates remain strong historically, and no structural concerns are flagged. Overall, tonight's close is a clean thesis-driven exit on BTC.
+
+**LLM close rejections today (2026-08-08, token-burn signal):**
+- Total rejected close instructions: 1
+- Top signal/asset pairs: PC_RATIO_EXTREME_LOW / BTC (1)
+
+---
+
