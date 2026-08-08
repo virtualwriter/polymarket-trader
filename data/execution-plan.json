@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-08T05:28:59.945Z",
+  "generatedAt": "2026-08-08T06:29:09.460Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,19 +7,24 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 0.6688571428571427,
-      "confidence": 0.3590757182843972,
-      "thesis": "AMZN HL funding -38.4% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "type": "USER_PM_IV_TOUCH_RICH_NO",
+      "asset": "OIL",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.6819471533333333,
+      "confidence": 0.34097357666666667,
+      "thesis": "[IV-TOUCH RICH NO LIVE] PM YES 92.5% vs IV touch model 80.8% (10.2pt rich) on OIL below 75; buy NO / sell YES, hold up to 30d or expiry.",
       "hypothesisId": null,
-      "entryPrice": 273.88,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
+      "entryPrice": 76.655,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 30,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-wti-hit-in-august-2026",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "3383654",
+        "allowDirectionFallback": false
+      }
     },
     {
       "type": "PC_RATIO_EXTREME_LOW",
@@ -30,7 +35,7 @@
       "confidence": 0.055991587612458135,
       "thesis": "BTC P/C ratio 0.47 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 64988,
+      "entryPrice": 64951,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -48,7 +53,7 @@
         "evidenceColumns": [
           "btc_ibit_pc_ratio"
         ],
-        "thesis": "BTC iBIt P/C ratio has risen from 0.276 at entry to 0.469, crossing well above the extreme low threshold and normalizing; the contrarian short catalyst of heavy call buying is no longer present."
+        "thesis": "BTC P/C ratio has normalized from extreme low (0.28) to 0.47, well above the entry threshold, no longer indicating heavy call buying. Contrarian short thesis invalidated."
       },
       "reason": "LLM close rejected: position identity fields do not match the requested positionId."
     },
@@ -63,7 +68,7 @@
         "evidenceColumns": [
           "oil_cl_pc_ratio"
         ],
-        "thesis": "Oil CL P/C ratio surged from 0.353 to 0.903, completely reversing the extreme call-buying signal; the contrarian short thesis is invalidated despite favorable price action."
+        "thesis": "OIL P/C ratio has surged from 0.35 to 0.90, well above extreme low territory, invalidating the contrarian short thesis."
       },
       "reason": "LLM close rejected: position identity fields do not match the requested positionId."
     }
