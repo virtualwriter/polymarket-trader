@@ -3295,3 +3295,38 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-08-08 23:28 UTC
+
+**Portfolio:** $99.06 total | Cash $90.06 | 9 open | P&L $2.3029 | 63% win rate (661 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 17 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [anomaly] hype_pm_iv = 41.3 is -2.0 std devs from mean (67.38 ± 12.91)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.36 to -0.22. Rolling correlation: 24h=0.03, 7d=-0.64, 30d=-0.36. Current 24h corr is at 67th pct of last 30 daily 24h-rolling values (range -0.97 to 0.74).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.76 to 0.29. Rolling correlation: 24h=-0.44, 7d=0.90, 30d=0.25. Current 24h corr is at 13th pct of last 30 daily 24h-rolling values (range -0.82 to 0.93).
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 838 (431 wins / 407 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 16/29 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/17 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=295 (77W/175L/43flat, 30.6% win-rate, sum $-1.0482, avg -0.36%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-3.28%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-3.23%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.15%)
+
+**LLM analysis:**
+All open positions are rule-based; no discretionary closes permitted this hour. The OIL IV-touch rich NO trade shows +100% unrealized PnL with thesis intact (PM YES at 91.5% vs IV model 80.8%). WEEKEND_HL_FUNDING_REVERSION_LONG trades are within normal risk bounds—DKNG -4% is the worst but still far from stop, and the setup has favorable aggregate win rate and positive expectancy per nightly lessons. Nothing actionable.
+
+---
+
