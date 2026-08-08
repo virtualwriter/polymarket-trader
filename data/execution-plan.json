@@ -1,11 +1,26 @@
 {
-  "generatedAt": "2026-08-08T04:28:24.888Z",
+  "generatedAt": "2026-08-08T05:28:59.945Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
   "entrySignals": [
+    {
+      "type": "FUNDING_EXTREME_SHORT",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "strength": 0.6688571428571427,
+      "confidence": 0.3590757182843972,
+      "thesis": "AMZN HL funding -38.4% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 273.88,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 7,
+      "leverage": 1
+    },
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "asset": "BTC",
@@ -15,16 +30,47 @@
       "confidence": 0.055991587612458135,
       "thesis": "BTC P/C ratio 0.47 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 64971,
+      "entryPrice": 64988,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
     }
   ],
-  "rejectedLlmActions": [],
+  "rejectedLlmActions": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1786026514385-otmd",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "btc_ibit_pc_ratio"
+        ],
+        "thesis": "BTC iBIt P/C ratio has risen from 0.276 at entry to 0.469, crossing well above the extreme low threshold and normalizing; the contrarian short catalyst of heavy call buying is no longer present."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+    },
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1786112921736-q7bi",
+        "asset": "OIL",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "oil_cl_pc_ratio"
+        ],
+        "thesis": "Oil CL P/C ratio surged from 0.353 to 0.903, completely reversing the extreme call-buying signal; the contrarian short thesis is invalidated despite favorable price action."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+    }
+  ],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 2 rejected; 0 non-close instructions skipped."
   ]
 }
