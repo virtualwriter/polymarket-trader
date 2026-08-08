@@ -423,6 +423,9 @@ const LLM_BIG_MOVE_PCT_TRIGGER = Number(process.env.LLM_BIG_MOVE_PCT_TRIGGER ?? 
 const LLM_BACKLOG_RESTOCK_HOURS = Number(process.env.LLM_BACKLOG_RESTOCK_HOURS ?? 24);
 const LLM_STATE_FILE = "llm-state.json";
 
+/** Tail guard for one-touch NO. See DEFAULT_SIGNAL_RISK for the derivation. */
+const ONE_TOUCH_HIGH_EDGE_NO_STOP_PCT = 20;
+
 const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
   PM_IV_GT_OPT_IV: { targetPct: null, stopPct: 5 },
   OPT_IV_GT_PM_IV: { targetPct: 4, stopPct: 4 },
@@ -439,15 +442,22 @@ const DEFAULT_SIGNAL_RISK: Record<string, SignalRiskParams> = {
   LLM_HYPOTHESIS: { targetPct: 3.5, stopPct: 2.5 },
   MOMENTUM_LONG: { targetPct: 6, stopPct: 3.5 },
   PROMOTED_HYPOTHESIS: { targetPct: 6, stopPct: 3.5 },
-  ONE_TOUCH_HIGH_EDGE_NO: { targetPct: null, stopPct: 100 },
-  // Hold-to-expiry style like one-touch / historical manual shadows (stopPct=100).
+  // Upside stays uncapped because the winners come from a contract fully
+  // repricing, but the downside is not left open. -20% sits outside the 95th
+  // percentile of this signal's realized loss distribution (p95 = -14%), so it
+  // only catches tail events: 8 of 329 shadows, including three OIL contracts
+  // entered near 0.5 that rode to expiry for -50%, -58% and -67% and together
+  // cost more than the entire shadow book earned.
+  ONE_TOUCH_HIGH_EDGE_NO: { targetPct: null, stopPct: ONE_TOUCH_HIGH_EDGE_NO_STOP_PCT },
+  // Hold-to-expiry style like historical manual shadows (stopPct=100).
   USER_PM_IV_TOUCH_RICH_NO: { targetPct: null, stopPct: 100 },
 };
 // Signals whose risk params are dictated by their backtest convention and must not be
 // retuned by the hourly LLM. The LLM's signalRisk schema caps stopPct at 10, which would
-// silently retighten ONE_TOUCH_HIGH_EDGE_NO (held to expiry, deep drawdowns expected)
-// every run. We strip these entries from parameterUpdates.signalRisk before validation
-// and again before applying, so the LLM cannot rewrite them.
+// silently retighten these below their intended tail-guard levels every run — for
+// one-touch that would pull the stop inside the normal loss distribution and start
+// cutting trades that routinely recover. We strip these entries from
+// parameterUpdates.signalRisk before validation and again before applying.
 const LLM_LOCKED_SIGNAL_RISK: ReadonlySet<string> = new Set([
   "ONE_TOUCH_HIGH_EDGE_NO",
   USER_PM_IV_TOUCH_RICH_NO_SIGNAL,
@@ -4010,7 +4020,7 @@ function buildOneTouchHighEdgeShadowPosition(
     hypothesisId: null,
     thesis: `[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge ${edge.toFixed(1)}pt on ${row.asset}, spread ${((row.pmSpread ?? 0) * 100).toFixed(1)}c, liquidity ${Math.round(row.liquidity ?? 0)}. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier.`,
     targetPct: null,
-    stopPct: 100,
+    stopPct: ONE_TOUCH_HIGH_EDGE_NO_STOP_PCT,
     expiryDate: expiryDate.toISOString(),
     instrumentType,
     instrumentId: `${event.slug}::${contract.marketId}`,
@@ -4902,8 +4912,21 @@ function resolveBlockedSignalShadows(
       }
     }
 
+    // Shadows opened before the tail guard existed carry an uncapped stop.
+    // Re-stamp them so the guard covers positions already in flight.
+    if (shadow.blockedReason === "one_touch_high_edge_shadow"
+      && shadow.position.stopPct !== ONE_TOUCH_HIGH_EDGE_NO_STOP_PCT) {
+      shadow.position.stopPct = ONE_TOUCH_HIGH_EDGE_NO_STOP_PCT;
+    }
+
+    // Uncapped upside is deliberate here: these theses pay off when a contract
+    // fully reprices, so a take-profit would cut the tail that funds them.
     const expiryOnlyShadow = shadow.blockedReason === "manual_shadow_trade"
       || shadow.blockedReason === "one_touch_high_edge_shadow"
+      || shadow.blockedReason === "stale_lottery_ticket_shadow";
+    // Uncapped downside was not deliberate. One-touch now honors its stop; the
+    // other two keep the hold-to-expiry convention until they have evidence.
+    const stopExemptShadow = shadow.blockedReason === "manual_shadow_trade"
       || shadow.blockedReason === "stale_lottery_ticket_shadow";
     let closeReason: ClosedTrade["closeReason"] | null = null;
     const edgeDisappeared = oneTouchEdgeGapClosed(shadow, relativeValueRows);
@@ -4926,7 +4949,7 @@ function resolveBlockedSignalShadows(
     } else if (!expiryOnlyShadow && shadow.position.targetPct !== null && mark.pnlPct >= shadow.position.targetPct) {
       closeReason = "target";
       closeTrigger = "target_hit";
-    } else if (!expiryOnlyShadow && mark.pnlPct <= -shadow.position.stopPct) {
+    } else if (!stopExemptShadow && mark.pnlPct <= -shadow.position.stopPct) {
       closeReason = "stop";
       closeTrigger = "stop_hit";
     } else if (edgeDisappeared) {
