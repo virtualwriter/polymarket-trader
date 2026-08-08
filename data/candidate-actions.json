@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-08T21:28:20.765Z",
+  "generatedAt": "2026-08-08T22:28:21.668Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.05548829705000102,
       "thesis": "BTC P/C ratio 0.47 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 65012,
+      "entryPrice": 64968,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 65012,
+      "entryPrice": 64968,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,22 +56,23 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 21,
-        "totalNet": 19,
+        "totalGross": 26,
+        "totalNet": 24,
         "byAsset": {
           "OIL": -1,
           "COST": 5,
           "LLY": 5,
           "DKNG": 5,
-          "ZM": 5
+          "ZM": 5,
+          "COIN": 5
         },
         "bySignalType": {
           "USER_PM_IV_TOUCH_RICH_NO": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 20
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 25
         },
         "byVenue": {
           "polymarket": -1,
-          "hyperliquid": 20
+          "hyperliquid": 25
         },
         "byCluster": {
           "commodity": -1,
@@ -79,32 +80,34 @@
           "polymarket_binary": -1,
           "polymarket_venue": -1,
           "cost_delta": 5,
-          "funding_reversion": 20,
-          "hyperliquid_venue": 20,
+          "funding_reversion": 25,
+          "hyperliquid_venue": 25,
           "lly_delta": 5,
           "dkng_delta": 5,
-          "zm_delta": 5
+          "zm_delta": 5,
+          "coin_delta": 5
         }
       },
       "afterCandidate": {
-        "totalGross": 21,
-        "totalNet": 19,
+        "totalGross": 26,
+        "totalNet": 24,
         "byAsset": {
           "OIL": -1,
           "COST": 5,
           "LLY": 5,
           "DKNG": 5,
           "ZM": 5,
+          "COIN": 5,
           "BTC": 0
         },
         "bySignalType": {
           "USER_PM_IV_TOUCH_RICH_NO": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 20,
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 25,
           "PC_RATIO_EXTREME_LOW": 0
         },
         "byVenue": {
           "polymarket": -1,
-          "hyperliquid": 20,
+          "hyperliquid": 25,
           "spot": 0
         },
         "byCluster": {
@@ -113,11 +116,12 @@
           "polymarket_binary": -1,
           "polymarket_venue": -1,
           "cost_delta": 5,
-          "funding_reversion": 20,
-          "hyperliquid_venue": 20,
+          "funding_reversion": 25,
+          "hyperliquid_venue": 25,
           "lly_delta": 5,
           "dkng_delta": 5,
           "zm_delta": 5,
+          "coin_delta": 5,
           "btc_delta": 0,
           "options_sentiment": 0,
           "risk_on": 0,
@@ -140,7 +144,7 @@
       "wouldResize": true,
       "edgePts": null,
       "alerts": [
-        "cluster exposure 20.00 > alert cap 5.00"
+        "cluster exposure 25.00 > alert cap 5.00"
       ],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
@@ -163,10 +167,10 @@
         "oil_opt_iv_90d",
         "oil_hl_funding_ann"
       ],
-      "hoursOpen": 13.99,
-      "hoursToExpiry": 706.01,
+      "hoursOpen": 14.99,
+      "hoursToExpiry": 705.01,
       "plannedHoldHours": 720,
-      "elapsedHoldPct": 0.0194,
+      "elapsedHoldPct": 0.0208,
       "minHoldHours": 72,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -179,10 +183,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 12,
-      "hoursToExpiry": 12,
+      "hoursOpen": 13,
+      "hoursToExpiry": 11,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.5001,
+      "elapsedHoldPct": 0.5417,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -195,10 +199,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 12,
-      "hoursToExpiry": 12,
+      "hoursOpen": 13,
+      "hoursToExpiry": 11,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.5001,
+      "elapsedHoldPct": 0.5417,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -211,10 +215,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 2,
-      "hoursToExpiry": 22,
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0833,
+      "elapsedHoldPct": 0.125,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -222,6 +226,22 @@
       "positionId": "WF-1786224500221-ZM-yax7",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "asset": "ZM",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 1,
+      "hoursToExpiry": 23,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0.0417,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1786228101133-COIN-nbiv",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "COIN",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
