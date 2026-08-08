@@ -1,23 +1,10 @@
 {
-  "generatedAt": "2026-08-08T20:28:56.786Z",
+  "generatedAt": "2026-08-08T20:57:31.133Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1786166939949-0uns",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "amzn_hl_funding_ann"
-      ],
-      "thesis": "AMZN funding has reversed from -38.4% to +5.48%, crossing well beyond the entry threshold of -15% and invalidating the FUNDING_EXTREME_SHORT thesis that shorts were paying longs. Positive funding now means longs pay shorts, removing the carry benefit and signaling a shift in positioning."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_LOW",
@@ -28,7 +15,7 @@
       "confidence": 0.05548829705000102,
       "thesis": "BTC P/C ratio 0.47 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 65024,
+      "entryPrice": 65047,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -38,6 +25,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
