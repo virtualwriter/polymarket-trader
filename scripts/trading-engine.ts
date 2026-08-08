@@ -219,7 +219,20 @@ const ONE_TOUCH_HIGH_EDGE_SIGNAL_YES = "ONE_TOUCH_HIGH_EDGE_YES_SHADOW";
 const ONE_TOUCH_HIGH_EDGE_MIN_ABS_EDGE = 15;
 const ONE_TOUCH_HIGH_EDGE_CONVICTION_EDGE = 20;
 const ONE_TOUCH_HIGH_EDGE_HOLD_DAYS = 14;
+/**
+ * Compression-exit threshold: a position closes once its sell-YES edge decays
+ * below this. Deliberately lower than the entry bar so a trade is given room to
+ * work instead of being closed the moment it slips under the entry gate.
+ */
 const ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS = 1;
+/**
+ * FIND-0020 second clause: fading the highs only pays when the gap is large.
+ * Realized shadow edge is monotonic in this threshold — >=1pt returns +0.45%
+ * per trade (p=0.23), >=2pt +3.02% (p=0.014), >=3pt +5.81% (p=0.0069) — and
+ * the >=3pt cohort holds up across a temporal split and after dropping its
+ * three best trades. The 1-3pt band is the part that does not pay.
+ */
+const ONE_TOUCH_NO_SHADOW_MIN_ENTRY_EDGE_PTS = 3;
 const ONE_TOUCH_NO_SHADOW_MAX_SPREAD = 0.03;
 const ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY = 5_000;
 const ONE_TOUCH_MODEL_VERSION = "relative_value_heatmap_v3_one_touch";
@@ -295,6 +308,7 @@ const BLOCKED_SIGNAL_OBSERVATION_CONFIG = {
   oneTouchHighEdgeSignalNo: ONE_TOUCH_HIGH_EDGE_SIGNAL_NO,
   oneTouchHighEdgeSignalYes: ONE_TOUCH_HIGH_EDGE_SIGNAL_YES,
   oneTouchNoShadowMinSellYesEdgePts: ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS,
+  oneTouchNoShadowMinEntryEdgePts: ONE_TOUCH_NO_SHADOW_MIN_ENTRY_EDGE_PTS,
   oneTouchNoShadowMaxSpread: ONE_TOUCH_NO_SHADOW_MAX_SPREAD,
   oneTouchNoShadowMinLiquidity: ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY,
 };
@@ -3977,7 +3991,7 @@ function oneTouchNoShadowEligible(row: RelativeValueObservation): boolean {
   if (!smartFlowAllowsSellYesFade(row)) return false;
   if (EXCLUDE_LINEAGE_SUSPECT_SHADOWS && isLineageSuspectRelativeValueRow(row)) return false;
   const edge = sellYesEdgePts(row);
-  if (edge === null || edge < ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS) return false;
+  if (edge === null || edge < ONE_TOUCH_NO_SHADOW_MIN_ENTRY_EDGE_PTS) return false;
   if (row.pmSpread === null || row.pmSpread > ONE_TOUCH_NO_SHADOW_MAX_SPREAD) return false;
   if (row.liquidity === null || row.liquidity < ONE_TOUCH_NO_SHADOW_MIN_LIQUIDITY) return false;
   const flags = relativeValueFlagSet(row);
@@ -4018,7 +4032,7 @@ function buildOneTouchHighEdgeShadowPosition(
     leverage: 1,
     signalType,
     hypothesisId: null,
-    thesis: `[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge ${edge.toFixed(1)}pt on ${row.asset}, spread ${((row.pmSpread ?? 0) * 100).toFixed(1)}c, liquidity ${Math.round(row.liquidity ?? 0)}. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier.`,
+    thesis: `[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge ${edge.toFixed(1)}pt on ${row.asset}, spread ${((row.pmSpread ?? 0) * 100).toFixed(1)}c, liquidity ${Math.round(row.liquidity ?? 0)}. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= ${ONE_TOUCH_NO_SHADOW_MIN_ENTRY_EDGE_PTS} at entry (the 1-3pt band does not pay); exit when the edge decays below ${ONE_TOUCH_NO_SHADOW_MIN_SELL_YES_EDGE_PTS}pt so the trade has room to work.`,
     targetPct: null,
     stopPct: ONE_TOUCH_HIGH_EDGE_NO_STOP_PCT,
     expiryDate: expiryDate.toISOString(),
