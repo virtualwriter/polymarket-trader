@@ -18,6 +18,7 @@ import {
   operationallyTaintedTradeIds,
   recomputePortfolioTotalsFromLedger,
 } from "./portfolio-ledger.js";
+import { accumulateSignalPnl, evaluateSignalPnl } from "./lib/trading/signal-pnl-guard.js";
 import {
   applyEntryBookToPackageLegs,
   fetchMarketYesNoBooks,
@@ -107,6 +108,14 @@ import {
   isDataContaminatedSetup,
   pendingHypothesisTests,
   ensureHypothesisSetupMetadata,
+  setupFamilyIsPromotable,
+  setupFamilyIsUnprofitable,
+  setupMagnitudeEvidence,
+  sweepUnscorableHypotheses,
+  estimateTriggerFrequency,
+  isTriggerTooRare,
+  MIN_TRIGGERS_PER_WEEK,
+  type MagnitudeUnit,
 } from "./lib/research/hypothesis-shadow-eval.js";
 import { formatConditionIssues, validateHypothesisConditions } from "./lib/research/condition-catalog.js";
 import {
@@ -588,6 +597,13 @@ interface SignalWeight {
   lastTriggered: string;
   enabled: boolean;
   perAsset: Record<string, PerAssetSignalStats>;
+  /** Forward-only running moments of realized per-trade PnL, powering the
+   * money-based kill switch in addition to the win-rate one. Absent on rows
+   * written before the rule shipped; the test simply stays inactive until
+   * enough trades accumulate. */
+  pnlTrades?: number;
+  pnlSum?: number;
+  pnlSumSq?: number;
 }
 
 interface SignalRiskParams {
@@ -632,6 +648,10 @@ interface HypothesisTest {
   actualMove: string;
   excludedFromSetupStats?: boolean;
   exclusionReason?: string;
+  /** Signed realized edge, so the promotion gate can test expectancy and not
+   * just win rate. Absent on tests resolved before magnitude recording. */
+  magnitude?: number;
+  magnitudeUnit?: MagnitudeUnit;
 }
 
 interface Hypothesis {
@@ -1399,9 +1419,15 @@ function clearPendingScannerClosedTrades() {
 }
 
 function isEngineLearnableClosedTrade(trade: ClosedTrade): boolean {
-  return trade.closeReason !== "data_quality_artifact" &&
-    trade.signalType !== "MONOTONIC_ARB" &&
-    trade.instrumentType !== "pm_package";
+  // Delegates the contamination question to the ledger so the operationally
+  // tainted-ID list is honoured here too. Previously this checked only
+  // data_quality_artifact, so a tainted trade of any other close reason (e.g.
+  // the llm_decision funding trade in the taint list) would have taught the
+  // weights had it still been in the live CSV rather than the archive.
+  if (isLedgerContaminatedTrade(trade)) return false;
+  // Monotonic packages are risk-free at resolution: a structural arb, not a
+  // predictive signal, so it is deliberately excluded from signal learning.
+  return trade.signalType !== "MONOTONIC_ARB" && trade.instrumentType !== "pm_package";
 }
 
 function appendJournal(entry: string) {
@@ -1830,6 +1856,14 @@ function defaultWeights(): SignalWeight[] {
     "LLM_HYPOTHESIS",
     "ONE_TOUCH_HIGH_EDGE_NO",
     USER_PM_IV_TOUCH_RICH_NO_SIGNAL,
+    // Predictive signals that were trading live without any adaptive-weight row,
+    // so their outcomes could never demote them. Weekend funding is the book's
+    // largest PnL contributor and PROMOTED_HYPOTHESIS is the research loop's own
+    // output — both must be observable by the learning system. Entry for these is
+    // rule-owned (see weekendHyperliquidFundingCandidates), so these rows track
+    // and report rather than gate.
+    WEEKEND_HL_FUNDING_LIVE_SIGNAL,
+    "PROMOTED_HYPOTHESIS",
   ];
   return types.map((t) => ({
     type: t,
@@ -5928,12 +5962,17 @@ function updateWeights(weights: SignalWeight[], closedTrades: ClosedTrade[]): st
   for (const trade of closedTrades) {
     const w = weights.find((w) => w.type === trade.signalType);
     if (!w) continue;
+    // Defence in depth: the ledger is the single source of truth for what counts
+    // as real evidence. Filtering here means no call site can teach the weights
+    // from an operational artifact by forgetting to filter first.
+    if (isLedgerContaminatedTrade(trade)) continue;
 
     const isWin = trade.pnl >= 0;
     w.trades++;
     if (isWin) w.wins++;
     w.avgPnlPct = ((w.avgPnlPct * (w.trades - 1)) + trade.pnlPct) / w.trades;
     w.lastTriggered = trade.closedAt;
+    accumulateSignalPnl(w, trade.pnl);
 
     // Per-asset tracking
     if (!w.perAsset[trade.asset]) w.perAsset[trade.asset] = { trades: 0, wins: 0, avgPnlPct: 0 };
@@ -5954,6 +5993,20 @@ function updateWeights(weights: SignalWeight[], closedTrades: ClosedTrade[]): st
     if (w.trades >= 10 && recentAccuracy < KILL_THRESHOLD) {
       w.enabled = false;
       observations.push(`🛑 ${w.type} DISABLED — accuracy ${(recentAccuracy * 100).toFixed(0)}% over ${w.trades} trades is below kill threshold.`);
+    }
+
+    // Money check, independent of win rate: a signal that wins often but loses
+    // more per loss than it makes per win is still a losing signal.
+    const pnlVerdict = evaluateSignalPnl(w);
+    if (pnlVerdict.kill && w.enabled) {
+      w.enabled = false;
+      observations.push(
+        `🛑 ${w.type} DISABLED on PnL — mean $${pnlVerdict.mean.toFixed(5)}/trade over ${pnlVerdict.n} trades is significantly negative (p=${pnlVerdict.pValue!.toFixed(4)}), despite ${(recentAccuracy * 100).toFixed(0)}% win rate.`,
+      );
+    } else if (pnlVerdict.warn && w.enabled) {
+      observations.push(
+        `⚠ ${w.type} trending unprofitable — mean $${pnlVerdict.mean.toFixed(5)}/trade over ${pnlVerdict.n} trades (p=${pnlVerdict.pValue!.toFixed(3)}).`,
+      );
     }
 
     // Per-asset kill switch. This keeps a broken asset/signal pair from
@@ -6232,6 +6285,12 @@ function evaluateHypotheses(
   let skippedInactiveBacklog = 0;
   let skippedConditionNotMet = 0;
 
+  // Reclaim test budget before anything else resolves: tests already queued
+  // against ungradeable variants would otherwise resolve straight into the
+  // UNSCORABLE pile, which historically consumed two thirds of all tests.
+  const unscorableSweep = sweepUnscorableHypotheses(hypotheses);
+  observations.push(...unscorableSweep.notes);
+
   for (const h of hypotheses) {
     ensureHypothesisSetupMetadata(h);
     if (h.status === "killed" || h.status === "archived") continue;
@@ -6254,6 +6313,10 @@ function evaluateHypotheses(
       const result = evaluateHypothesisTest(h, startRow, endRow);
       test.outcome = result.outcome;
       test.actualMove = `${result.actualMove} (method=${result.method})`;
+      if (typeof result.magnitude === "number" && result.magnitudeUnit) {
+        test.magnitude = result.magnitude;
+        test.magnitudeUnit = result.magnitudeUnit;
+      }
       if (!result.scorable) {
         test.excludedFromSetupStats = true;
         test.exclusionReason = `unscorable_scorer_v2:${result.method}`;
@@ -6286,10 +6349,14 @@ function evaluateHypotheses(
     // testing (hypothesisSetupNeedsMoreShadowTests) keeps inconclusive
     // families accumulating evidence instead of freezing at 20.
     const familyPValue = binomialPValue(family.wins, completedCount);
+    // Second bar: being right often is not the same as making money. Once a
+    // family has enough magnitude-bearing tests, its realized edge must also be
+    // significantly positive, which is the only way to reject a setup that wins
+    // frequently but loses more per loss than it gains per win.
+    const familyEdge = setupMagnitudeEvidence(family.completed);
     const meetsPromotionGate =
       completedCount >= PROMOTE_MIN_TESTS
-      && family.winRate >= PROMOTE_THRESHOLD
-      && familyPValue < PROMOTE_SIGNIFICANCE_ALPHA;
+      && setupFamilyIsPromotable(family.wins, completedCount, PROMOTE_THRESHOLD, family.completed);
 
     // Enforce on every run: promotions that do not currently meet the gate are
     // demoted. Previously `if (completedCount < PROMOTE_MIN_TESTS) continue`
@@ -6302,20 +6369,26 @@ function evaluateHypotheses(
           ? `Demoted: insufficient evidence (${completedCount}/${PROMOTE_MIN_TESTS} completed family tests; need ≥${(PROMOTE_THRESHOLD * 100).toFixed(0)}% win rate).`
           : family.winRate < PROMOTE_THRESHOLD
             ? `Demoted: family win rate ${(family.winRate * 100).toFixed(0)}% below promote threshold ${(PROMOTE_THRESHOLD * 100).toFixed(0)}% over ${completedCount} tests.`
-            : `Demoted: family record ${family.wins}/${completedCount} not statistically significant (binomial p=${familyPValue.toFixed(4)} ≥ α=${PROMOTE_SIGNIFICANCE_ALPHA}); continuing shadow tests.`;
+            : familyPValue >= PROMOTE_SIGNIFICANCE_ALPHA
+              ? `Demoted: family record ${family.wins}/${completedCount} not statistically significant (binomial p=${familyPValue.toFixed(4)} ≥ α=${PROMOTE_SIGNIFICANCE_ALPHA}); continuing shadow tests.`
+              : `Demoted: family wins often (${family.wins}/${completedCount}) but realized edge is not significantly positive — mean ${familyEdge.mean.toFixed(3)} ${familyEdge.unit ?? "n/a"} over ${familyEdge.n} tests (t-test p=${familyEdge.pPositive?.toFixed(4) ?? "n/a"} ≥ α=${PROMOTE_SIGNIFICANCE_ALPHA}).`;
         hypothesis.status = "active";
         hypothesis.promotedToSignal = false;
         hypothesis.postMortem = reason;
         observations.push(`📉 ${hypothesis.id} DEMOTED — promotion gate failed (${family.setupId}): ${reason}`);
       }
 
-      if (completedCount >= PROMOTE_MIN_TESTS && family.winRate < KILL_THRESHOLD) {
+      const losesMoney = setupFamilyIsUnprofitable(family.completed);
+      if (completedCount >= PROMOTE_MIN_TESTS && (family.winRate < KILL_THRESHOLD || losesMoney)) {
+        const killReason = family.winRate < KILL_THRESHOLD
+          ? `Setup family killed: ${(family.winRate * 100).toFixed(0)}% win rate over ${completedCount} completed tests across ${family.hypotheses.length} variants.`
+          : `Setup family killed on realized edge: mean ${familyEdge.mean.toFixed(3)} ${familyEdge.unit ?? "n/a"} over ${familyEdge.n} tests is significantly negative (t-test p=${familyEdge.pNegative?.toFixed(4) ?? "n/a"}), despite a ${(family.winRate * 100).toFixed(0)}% win rate.`;
         for (const hypothesis of activeFamilyHypotheses) {
           hypothesis.status = "killed";
           hypothesis.promotedToSignal = false;
-          hypothesis.postMortem = hypothesis.postMortem ?? `Setup family killed: ${(family.winRate * 100).toFixed(0)}% win rate over ${completedCount} completed tests across ${family.hypotheses.length} variants.`;
+          hypothesis.postMortem = hypothesis.postMortem ?? killReason;
         }
-        observations.push(`💀 Setup family ${family.setupId} KILLED (${(family.winRate * 100).toFixed(0)}% over ${completedCount} tests across ${family.hypotheses.length} variants): ${family.setupLabel}`);
+        observations.push(`💀 Setup family ${family.setupId} KILLED (${(family.winRate * 100).toFixed(0)}% over ${completedCount} tests across ${family.hypotheses.length} variants): ${family.setupLabel}${losesMoney && family.winRate >= KILL_THRESHOLD ? " [negative realized edge]" : ""}`);
       } else if (completedCount >= PROMOTE_MIN_TESTS) {
         for (const hypothesis of activeFamilyHypotheses) {
           hypothesis.postMortem = hypothesis.postMortem ?? `Setup family inconclusive after ${completedCount} completed tests: ${(family.winRate * 100).toFixed(0)}% win rate (binomial p=${familyPValue.toFixed(4)}).`;
@@ -7092,6 +7165,8 @@ function ingestNightlyLlmAdvice(
   hypotheses: Hypothesis[],
   learningParams: LearningParams,
   valuationColumns: string[],
+  valuationRows: SnapshotRow[] = [],
+  relativeValueRows: RelativeValueObservation[] = [],
 ): NightlyLlmAdviceIngestResult {
   const noop: NightlyLlmAdviceIngestResult = { learningParams, notes: [], journalLines: [] };
   const advice = readJson<Record<string, unknown> | null>(NIGHTLY_LLM_ADVICE_FILE, null);
@@ -7249,6 +7324,15 @@ function ingestNightlyLlmAdvice(
       bumpReject("unscorable_thesis");
       continue;
     }
+    // Testability gate: an idea whose conditions almost never hold cannot reach
+    // a verdict on any useful horizon, so it silently occupies the active pool
+    // forever. Measure how often it would actually have fired before admitting it.
+    const triggerEstimate = estimateTriggerFrequency(hypothesis, valuationRows, relativeValueRows);
+    if (isTriggerTooRare(triggerEstimate)) {
+      notes.push(`Nightly advice: skipping too-rare hypothesis (~${triggerEstimate.triggersPerWeek.toFixed(2)} triggers/week over ${triggerEstimate.windowDays}d, need ≥${MIN_TRIGGERS_PER_WEEK}): ${nh.description.slice(0, 60)}`);
+      bumpReject("trigger_too_rare");
+      continue;
+    }
     const descKey = nh.description.trim().toLowerCase().slice(0, 80);
     if (hypotheses.some((h) => h.description.trim().toLowerCase().slice(0, 80) === descKey)) {
       bumpReject("duplicate_description");
@@ -7355,7 +7439,12 @@ interface ShadowMinedIngestResult {
 
 /** Ingest miner output into hypotheses.json. Bypasses the LLM backlog gate so
  *  heatmap-derived ideas get their own retest queue (source=shadow_mined). */
-function ingestShadowMinedHypotheses(hypotheses: Hypothesis[], valuationColumns: string[]): ShadowMinedIngestResult {
+function ingestShadowMinedHypotheses(
+  hypotheses: Hypothesis[],
+  valuationColumns: string[],
+  valuationRows: SnapshotRow[] = [],
+  relativeValueRows: RelativeValueObservation[] = [],
+): ShadowMinedIngestResult {
   const noop: ShadowMinedIngestResult = { notes: [], added: 0 };
   const advice = readJson<Record<string, unknown> | null>(SHADOW_MINED_ADVICE_FILE, null);
   if (!advice || typeof advice !== "object") return noop;
@@ -7467,6 +7556,20 @@ function ingestShadowMinedHypotheses(hypotheses: Hypothesis[], valuationColumns:
     }
     if (!inferHypothesisAsset(hypothesis) || !inferHypothesisDirection(hypothesis)) {
       bumpReject("ambiguous_thesis");
+      continue;
+    }
+    // Same scorability gate as the nightly LLM path: a miner can emit a
+    // well-formed hypothesis the scorer still cannot grade (e.g. an asset it
+    // cannot infer), and every test it opens would burn.
+    if (hypothesisScoringMode(hypothesis) === null) {
+      notes.push(`Shadow-mined ingest: skipping unscorable hypothesis (scorer cannot grade it): ${description.slice(0, 70)}`);
+      bumpReject("unscorable_thesis");
+      continue;
+    }
+    const triggerEstimate = estimateTriggerFrequency(hypothesis, valuationRows, relativeValueRows);
+    if (isTriggerTooRare(triggerEstimate)) {
+      notes.push(`Shadow-mined ingest: skipping too-rare hypothesis (~${triggerEstimate.triggersPerWeek.toFixed(2)} triggers/week, need ≥${MIN_TRIGGERS_PER_WEEK}): ${description.slice(0, 70)}`);
+      bumpReject("trigger_too_rare");
       continue;
     }
     hypotheses.push(hypothesis);
@@ -8212,7 +8315,7 @@ async function main() {
   // strongest-model analysis, validated and gated by the exact same rules the
   // hourly output used to pass through.
   const valuationColumns = valRows.length > 0 ? Object.keys(valRows[valRows.length - 1]) : [];
-  const nightlyIngest = ingestNightlyLlmAdvice(hypotheses, learningParams, valuationColumns);
+  const nightlyIngest = ingestNightlyLlmAdvice(hypotheses, learningParams, valuationColumns, valRows, relativeValueRows);
   learningParams = nightlyIngest.learningParams;
   for (const note of nightlyIngest.notes) console.log(`  ${note}`);
   if (nightlyIngest.journalLines.length > 0 && !MUTATION_DISABLED) {
@@ -8221,7 +8324,7 @@ async function main() {
 
   // Step 2.7: Ingest shadow-mined hypotheses (heatmap / blocked-signal cohort).
   // Separate source + retest queue so these never wait behind the LLM backlog.
-  const shadowMinedIngest = ingestShadowMinedHypotheses(hypotheses, valuationColumns);
+  const shadowMinedIngest = ingestShadowMinedHypotheses(hypotheses, valuationColumns, valRows, relativeValueRows);
   for (const note of shadowMinedIngest.notes) console.log(`  ${note}`);
 
   // Step 3: Evaluate hypotheses

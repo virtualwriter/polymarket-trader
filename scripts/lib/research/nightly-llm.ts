@@ -1,8 +1,16 @@
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
-import { extractLlmJsonObject, requestLlmText, resolveLlmRoute } from "../trading/llm-transport.js";
+import { extractLlmJsonObject, requestLlmText, resolveLlmRoute, type LlmMessage } from "../trading/llm-transport.js";
 import { buildConditionCatalogPromptSection } from "./condition-catalog.js";
+import {
+  buildQueryCatalogPromptSection,
+  executeResearchQueries,
+  formatQueryResults,
+  loadResearchDataset,
+  parseDataRequests,
+  type ResearchQuery,
+} from "./research-queries.js";
 
 /**
  * Nightly research LLM step (July 2026 infrastructure plan, Phase 5).
@@ -268,6 +276,8 @@ ${jsonOrUnavailable(inputs.learningParams, 2)}
 
 ${buildConditionCatalogPromptSection(inputs.valuationColumns ?? [])}
 
+${buildQueryCatalogPromptSection()}
+
 IMPORTANT RULES:
 - Each hypothesis MUST be specific and testable with a clear timeframe (1-30 days)
 - Each hypothesis MUST define measurable conditions using ONLY keys from the CONDITION KEY CATALOG above, with the exact expression syntax listed there. Conditions with any other key or syntax are rejected at ingest and the hypothesis is never tested — this is the #1 reason past hypotheses silently died.
@@ -453,6 +463,31 @@ function sanitizeParameterUpdates(raw: unknown): NightlyAdviceParameterUpdates |
  * are individually dropped (see design note above) rather than failing the
  * whole response.
  */
+/**
+ * Reads a retrieval request out of a model response.
+ *
+ * Returns an empty array unless the response is a request for data and nothing
+ * else: a response that already carries advice fields is treated as the answer,
+ * so a model that volunteers `dataRequests` alongside its conclusions is not
+ * sent round the loop again.
+ */
+export function extractDataRequests(text: string): ResearchQuery[] {
+  const jsonText = extractLlmJsonObject(text);
+  if (!jsonText) return [];
+  let raw: unknown;
+  try {
+    raw = JSON.parse(jsonText);
+  } catch {
+    return [];
+  }
+  if (!raw || typeof raw !== "object") return [];
+  const obj = raw as Record<string, unknown>;
+  if (!Array.isArray(obj.dataRequests) || obj.dataRequests.length === 0) return [];
+  const answered = ["strategyReview", "newHypotheses", "hypothesisReviews", "failureClusters", "journalEntry"];
+  if (answered.some((key) => obj[key] !== undefined)) return [];
+  return parseDataRequests(obj.dataRequests);
+}
+
 export function parseNightlyAdvice(
   text: string,
   opts: { allowedOriginFindingIds?: Iterable<string> } = {},
@@ -695,15 +730,37 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
     // deepseek-v4-pro thinking tokens count against max_tokens; 8k truncated
     // mid-JSON on a normal night. 32k leaves headroom for CoT + full advice.
     const maxTokens = 32_768;
-    const first = await requestLlmText(route, [{ role: "user", content: prompt }], { maxTokens });
+    let messages: LlmMessage[] = [{ role: "user", content: prompt }];
+    let first = await requestLlmText(route, messages, { maxTokens });
     logLlmResponse("response#1", first);
+
+    // Retrieval pass: the model may answer with dataRequests instead of advice,
+    // in which case we execute them against the real ledger and let it answer
+    // with evidence in hand rather than only pre-computed aggregates.
+    const requested = extractDataRequests(first.text);
+    if (requested.length > 0) {
+      console.log(`[nightly-llm] model requested ${requested.length} data queries: ${requested.map((q) => q.kind).join(", ")}`);
+      const dataset = loadResearchDataset(opts.dataDir);
+      const results = executeResearchQueries(requested, dataset);
+      for (const r of results) {
+        console.log(`[nightly-llm]   ${r.query.kind}: n=${r.n}${r.error ? ` error=${r.error}` : ""}`);
+      }
+      messages = [
+        ...messages,
+        { role: "assistant", content: first.text },
+        { role: "user", content: formatQueryResults(results) },
+      ];
+      first = await requestLlmText(route, messages, { maxTokens });
+      logLlmResponse("response#1b-after-retrieval", first);
+    }
+
     let lastText = first.text;
     let parsed = parseNightlyAdvice(first.text, { allowedOriginFindingIds });
 
     if (!parsed.advice) {
       console.log(`[nightly-llm] invalid JSON (${parsed.error}); requesting repair.${first.stopReason ? ` finish_reason=${first.stopReason}` : ""}`);
       const repaired = await requestLlmText(route, [
-        { role: "user", content: prompt },
+        ...messages,
         { role: "assistant", content: first.text },
         { role: "user", content: buildRepairPrompt(parsed.error ?? "unknown parse error", first.text) },
       ], { maxTokens });
@@ -722,7 +779,7 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
         `[nightly-llm] empty advice while ${opportunities.length} opportunities present; requesting repair.`,
       );
       const repaired = await requestLlmText(route, [
-        { role: "user", content: prompt },
+        ...messages,
         { role: "assistant", content: lastText },
         { role: "user", content: buildEmptyAdviceRepairPrompt(lastText, opportunities.length) },
       ], { maxTokens });

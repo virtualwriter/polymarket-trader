@@ -1,4 +1,5 @@
 import { slugifySetupId } from "../trading/setup-family.js";
+import { binomialPValue, oneSidedTPValue, sampleMoments } from "./alpha-stats.js";
 
 export interface HypothesisTest {
   date: string;
@@ -7,6 +8,10 @@ export interface HypothesisTest {
   actualMove: string;
   excludedFromSetupStats?: boolean;
   exclusionReason?: string;
+  /** Signed realized edge (see HypothesisEvalResult.magnitude). Absent on tests
+   * resolved before magnitude recording shipped. */
+  magnitude?: number;
+  magnitudeUnit?: MagnitudeUnit;
 }
 
 export interface Hypothesis {
@@ -205,12 +210,25 @@ export function num(v: unknown): number | null {
   return null;
 }
 
+/**
+ * Unit of a scored test's magnitude. The promotion gate may only pool
+ * magnitudes that share a unit — averaging a percent return with a funding-rate
+ * point would produce a meaningless expectation.
+ */
+export type MagnitudeUnit = "pct_return" | "funding_pts";
+
 export interface HypothesisEvalResult {
   outcome: "win" | "loss";
   actualMove: string;
   /** False when the hyp cannot be scored honestly — callers must exclude from setup stats. */
   scorable: boolean;
   method: string;
+  /** Signed realized edge from the hypothesis's own point of view: positive
+   * means the thesis made money. Win/loss alone cannot distinguish a strategy
+   * that wins small and loses big from one that genuinely profits, so the
+   * promotion gate tests this rather than the win rate alone. */
+  magnitude?: number;
+  magnitudeUnit?: MagnitudeUnit;
 }
 
 export function getAssetPrice(row: SnapshotRow, asset: string): number | null {
@@ -299,6 +317,8 @@ function scoreDirectionalMove(
       actualMove: `${asset} moved ${movePct.toFixed(2)}% (${startPx} → ${endPx}) [short needs ≤ -${thresholdPct}%]`,
       scorable: true,
       method: "spot_directional_short",
+      magnitude: -movePct,
+      magnitudeUnit: "pct_return",
     };
   }
   if (direction === "long") {
@@ -307,6 +327,8 @@ function scoreDirectionalMove(
       actualMove: `${asset} moved ${movePct.toFixed(2)}% (${startPx} → ${endPx}) [long needs ≥ +${thresholdPct}%]`,
       scorable: true,
       method: "spot_directional_long",
+      magnitude: movePct,
+      magnitudeUnit: "pct_return",
     };
   }
   return {
@@ -314,6 +336,10 @@ function scoreDirectionalMove(
     actualMove: `${asset} moved ${movePct.toFixed(2)}% (${startPx} → ${endPx}) [neutral abs needs ≥ ${thresholdPct}%]`,
     scorable: true,
     method: "spot_abs_move",
+    // A neutral vol thesis pays off on movement beyond the bar it had to clear,
+    // so the bar stands in for the cost of the position.
+    magnitude: Math.abs(movePct) - thresholdPct,
+    magnitudeUnit: "pct_return",
   };
 }
 
@@ -376,6 +402,8 @@ export function evaluateHypothesisTest(
           actualMove: `Funding moved ${startFunding.toFixed(1)}% → ${endFunding.toFixed(1)}% (need < ${level})`,
           scorable: true,
           method: "funding_below_level",
+          magnitude: level - endFunding,
+          magnitudeUnit: "funding_pts",
         };
       }
 
@@ -386,6 +414,8 @@ export function evaluateHypothesisTest(
           actualMove: `Funding moved ${startFunding.toFixed(1)}% → ${endFunding.toFixed(1)}% (long reversion needs increase)`,
           scorable: true,
           method: "funding_normalize_up",
+          magnitude: endFunding - startFunding,
+          magnitudeUnit: "funding_pts",
         };
       }
       if (direction === "short") {
@@ -394,6 +424,8 @@ export function evaluateHypothesisTest(
           actualMove: `Funding moved ${startFunding.toFixed(1)}% → ${endFunding.toFixed(1)}% (short needs decrease)`,
           scorable: true,
           method: "funding_decrease",
+          magnitude: startFunding - endFunding,
+          magnitudeUnit: "funding_pts",
         };
       }
     }
@@ -476,6 +508,77 @@ export function hypothesisScoringMode(
   if (direction === "long" || direction === "short") return "directional";
   if (/\b(move|moves|moved|volatility)\b/.test(prediction)) return "neutral_move";
   return null;
+}
+
+/** A variant that has burned at least this many tests without ever being
+ * scorable has had ample opportunity; it is retired rather than left to clutter
+ * the active pool. Below the threshold the variant stays active so the nightly
+ * LLM can still see it as struggling and propose a refinement. */
+export const UNSCORABLE_BURN_RETIRE_THRESHOLD = 10;
+
+export interface UnscorableSweepResult {
+  /** Pending tests cancelled because their variant can never be scored. */
+  cancelledTests: number;
+  /** Variants retired after burning past the threshold. */
+  retiredVariants: number;
+  /** Variants left active so the LLM can re-author them. */
+  flaggedForReauthor: number;
+  notes: string[];
+}
+
+/**
+ * Stops the single largest source of wasted test budget: shadow tests queued
+ * against hypotheses the scorer can never grade.
+ *
+ * Two thirds of all tests ever recorded resolved UNSCORABLE. The retest openers
+ * now refuse to open new ones, but tests already queued still resolve into the
+ * void, and long-dead variants still occupy the active pool. This cancels the
+ * queued tests and retires variants that have already burned past the
+ * threshold, while leaving fresher ones visible for refinement.
+ */
+export function sweepUnscorableHypotheses(hypotheses: Hypothesis[]): UnscorableSweepResult {
+  const result: UnscorableSweepResult = {
+    cancelledTests: 0,
+    retiredVariants: 0,
+    flaggedForReauthor: 0,
+    notes: [],
+  };
+
+  for (const hypothesis of hypotheses) {
+    if (hypothesis.status !== "active" && hypothesis.status !== "promoted") continue;
+    if (hypothesisScoringMode(hypothesis) !== null) continue;
+
+    let burned = 0;
+    for (const test of hypothesis.tests) {
+      if (test.outcome === "pending" && !test.excludedFromSetupStats) {
+        test.excludedFromSetupStats = true;
+        test.exclusionReason = "cancelled_unscorable_variant";
+        test.actualMove = "CANCELLED: variant cannot be scored (no direction, funding thesis, or move language); test would resolve UNSCORABLE.";
+        result.cancelledTests++;
+      } else if (test.excludedFromSetupStats && test.outcome !== "pending") {
+        burned++;
+      }
+    }
+
+    if (burned >= UNSCORABLE_BURN_RETIRE_THRESHOLD) {
+      hypothesis.status = "killed";
+      hypothesis.promotedToSignal = false;
+      hypothesis.postMortem = appendPostMortemSegment(
+        hypothesis.postMortem,
+        `Retired unscorable: burned ${burned} tests that could never be graded. The thesis states no direction, no funding reversion, and no move magnitude, so the scorer has nothing to measure. Re-author with an explicit direction or a measurable move before retesting.`,
+      );
+      result.retiredVariants++;
+    } else {
+      result.flaggedForReauthor++;
+    }
+  }
+
+  if (result.cancelledTests > 0 || result.retiredVariants > 0) {
+    result.notes.push(
+      `🧹 Unscorable sweep: cancelled ${result.cancelledTests} queued tests, retired ${result.retiredVariants} burned-out variants, ${result.flaggedForReauthor} left active for re-authoring.`,
+    );
+  }
+  return result;
 }
 
 /**
@@ -765,33 +868,121 @@ export function hypothesisSetupFamilies(hypotheses: Hypothesis[]): HypothesisSet
   });
 }
 
-/** One-sided exact binomial P(X >= wins | n, p). Small p => win rate above chance. */
-export function binomialPValue(wins: number, n: number, p = 0.5): number {
-  if (n <= 0) return 1.0;
-  const clamped = Math.max(0, Math.min(wins, n));
-  // Iterative binomial pmf accumulation avoids factorial overflow.
-  let pmf = Math.pow(1 - p, n);
-  let cdfBelow = 0;
-  for (let k = 0; k < clamped; k++) {
-    cdfBelow += pmf;
-    pmf *= ((n - k) / (k + 1)) * (p / (1 - p));
+// Canonical home is alpha-stats.ts, shared with the Python discovery layer.
+// Re-exported here because the engine and existing tests import it from this module.
+export { binomialPValue } from "./alpha-stats.js";
+
+/** Minimum magnitude-bearing tests before the expectancy test can gate a family.
+ * Below this the family is judged on win rate alone, as it always was. */
+export const MAGNITUDE_EVIDENCE_MIN_TESTS = 10;
+/** A family is blocked when its realized edge is significantly negative at this
+ * level. Deliberately looser than PROMOTE_SIGNIFICANCE_ALPHA: we want to catch
+ * money-losing setups readily, while still demanding strong evidence to promote. */
+export const MAGNITUDE_NEGATIVE_ALPHA = 0.1;
+
+export interface SetupMagnitudeEvidence {
+  /** Number of scored tests contributing a magnitude in a single consistent unit. */
+  n: number;
+  unit: MagnitudeUnit | null;
+  mean: number;
+  /** One-sided p that mean edge > 0. Null when there is too little evidence. */
+  pPositive: number | null;
+  /** One-sided p that mean edge < 0. Null when there is too little evidence. */
+  pNegative: number | null;
+  /** True when the record is strong enough to gate on. */
+  usable: boolean;
+}
+
+/**
+ * Pools the realized edge of a family's scored tests.
+ *
+ * Magnitudes are only pooled when every contributing test shares a unit; a
+ * family mixing percent returns with funding points has no meaningful mean, so
+ * the majority unit wins and the rest are dropped rather than averaged.
+ */
+export function setupMagnitudeEvidence(tests: readonly HypothesisTest[]): SetupMagnitudeEvidence {
+  const byUnit = new Map<MagnitudeUnit, number[]>();
+  for (const test of tests) {
+    if (test.outcome === "pending" || test.excludedFromSetupStats) continue;
+    if (typeof test.magnitude !== "number" || !Number.isFinite(test.magnitude)) continue;
+    if (!test.magnitudeUnit) continue;
+    const list = byUnit.get(test.magnitudeUnit) ?? [];
+    list.push(test.magnitude);
+    byUnit.set(test.magnitudeUnit, list);
   }
-  return Math.min(1, Math.max(0, 1 - cdfBelow));
+
+  let unit: MagnitudeUnit | null = null;
+  let values: number[] = [];
+  for (const [candidate, list] of byUnit) {
+    if (list.length > values.length) {
+      unit = candidate;
+      values = list;
+    }
+  }
+
+  const { n, mean, std } = sampleMoments(values);
+  const pPositive = oneSidedTPValue(mean, std, n);
+  const pNegative = oneSidedTPValue(-mean, std, n);
+  return {
+    n,
+    unit,
+    mean,
+    pPositive,
+    pNegative,
+    usable: n >= MAGNITUDE_EVIDENCE_MIN_TESTS && pPositive !== null,
+  };
+}
+
+/**
+ * True when the family clears BOTH bars: it is right more often than chance
+ * (binomial on win rate) and it actually makes money (one-sided Student-t on
+ * realized edge). The expectancy test only applies once enough magnitude-bearing
+ * tests exist, so families whose tests predate magnitude recording still resolve
+ * on win rate rather than deadlocking.
+ */
+export function setupFamilyIsPromotable(
+  wins: number,
+  completed: number,
+  promoteThreshold: number,
+  tests: readonly HypothesisTest[] = [],
+): boolean {
+  if (completed <= 0) return false;
+  const winRate = wins / completed;
+  if (winRate < promoteThreshold) return false;
+  if (binomialPValue(wins, completed) >= PROMOTE_SIGNIFICANCE_ALPHA) return false;
+
+  const edge = setupMagnitudeEvidence(tests);
+  if (!edge.usable) return true;
+  return edge.pPositive! < PROMOTE_SIGNIFICANCE_ALPHA;
+}
+
+/**
+ * True when a family should be abandoned because its realized edge is
+ * significantly negative, regardless of how often it is nominally "right".
+ * This is the case win rate alone cannot see.
+ */
+export function setupFamilyIsUnprofitable(tests: readonly HypothesisTest[]): boolean {
+  const edge = setupMagnitudeEvidence(tests);
+  if (!edge.usable) return false;
+  return edge.pNegative !== null && edge.pNegative < MAGNITUDE_NEGATIVE_ALPHA;
 }
 
 /** True when the family's completed record is statistically decisive:
- * promotable (win rate over threshold AND significantly above chance) or
- * killable (win rate below the futility floor). */
+ * promotable (win rate over threshold, significantly above chance, and
+ * profitable), or killable (win rate below the futility floor, or realized
+ * edge significantly negative). */
 export function setupFamilyIsDecisive(
   wins: number,
   completed: number,
   promoteThreshold: number,
   killThreshold: number,
+  tests: readonly HypothesisTest[] = [],
 ): boolean {
   if (completed <= 0) return false;
   const winRate = wins / completed;
   if (winRate < killThreshold) return true;
-  return winRate >= promoteThreshold && binomialPValue(wins, completed) < PROMOTE_SIGNIFICANCE_ALPHA;
+  if (setupFamilyIsUnprofitable(tests)) return true;
+  return setupFamilyIsPromotable(wins, completed, promoteThreshold, tests);
 }
 
 export function hypothesisSetupNeedsMoreShadowTests(
@@ -807,7 +998,7 @@ export function hypothesisSetupNeedsMoreShadowTests(
   // the record is statistically inconclusive — neither significantly above
   // chance at the promote bar nor below the futility floor. Freezing at
   // exactly 20 would strand e.g. 13/20 (65%, p=0.13) forever.
-  return !setupFamilyIsDecisive(family.wins, completed, PROMOTE_THRESHOLD, KILL_THRESHOLD);
+  return !setupFamilyIsDecisive(family.wins, completed, PROMOTE_THRESHOLD, KILL_THRESHOLD, family.completed);
 }
 
 export function isDataContaminatedSetup(setupId: string): boolean {
@@ -1139,6 +1330,77 @@ export function hypothesisConditionsSatisfied(
   const entries = Object.entries(hypothesis.conditions ?? {});
   if (entries.length === 0) return false;
   return entries.every(([key, expression]) => evaluateHypothesisCondition(key, String(expression), valuationRows, hypothesis, relativeValueRows));
+}
+
+/** Rows sampled when estimating how often a hypothesis would fire. Roughly a
+ * quarter of hourly history — long enough to span regimes, short enough that
+ * the estimate reflects the market the hypothesis will actually trade. */
+export const TRIGGER_ESTIMATE_WINDOW_ROWS = 720;
+/** Minimum historical rows required before the rarity gate may reject anything. */
+export const TRIGGER_ESTIMATE_MIN_ROWS = 120;
+/**
+ * A hypothesis must plausibly fire this often to be worth a test slot. At 1/week
+ * a family still needs ~20 weeks to reach HYPOTHESIS_SHADOW_TESTS_REQUIRED, so
+ * this is a floor on testability rather than an ambition: below it, the idea
+ * cannot produce a verdict on any useful horizon.
+ */
+export const MIN_TRIGGERS_PER_WEEK = 1.0;
+
+export interface TriggerFrequencyEstimate {
+  rowsEvaluated: number;
+  triggers: number;
+  windowDays: number;
+  triggersPerWeek: number;
+  /** False when history is too short to judge — callers must not reject then. */
+  reliable: boolean;
+}
+
+/**
+ * Estimates how often a hypothesis's conditions would have fired, by replaying
+ * them point-in-time across recent history.
+ *
+ * Note that an unevaluable condition and a never-true condition are the same
+ * event here, and both should be rejected: either way the engine will never
+ * open a test, which is precisely the failure this gate exists to prevent.
+ * Relative-value history is passed whole rather than sliced, which can only
+ * over-estimate the rate — the gate errs toward admitting hypotheses.
+ */
+export function estimateTriggerFrequency(
+  hypothesis: Hypothesis,
+  valuationRows: SnapshotRow[],
+  relativeValueRows: RelativeValueObservation[] = [],
+  windowRows: number = TRIGGER_ESTIMATE_WINDOW_ROWS,
+): TriggerFrequencyEstimate {
+  const start = Math.max(0, valuationRows.length - windowRows);
+  const sampled = valuationRows.slice(start);
+  const rowsEvaluated = sampled.length;
+
+  if (rowsEvaluated < TRIGGER_ESTIMATE_MIN_ROWS) {
+    return { rowsEvaluated, triggers: 0, windowDays: 0, triggersPerWeek: 0, reliable: false };
+  }
+
+  let triggers = 0;
+  for (let i = 0; i < rowsEvaluated; i++) {
+    const history = valuationRows.slice(0, start + i + 1);
+    if (hypothesisConditionsSatisfied(hypothesis, history, relativeValueRows)) triggers++;
+  }
+
+  const days = new Set(sampled.map((row) => String(row.date ?? "").slice(0, 10)).filter(Boolean));
+  const windowDays = days.size > 0 ? days.size : rowsEvaluated / 24;
+  const triggersPerWeek = windowDays > 0 ? (triggers / windowDays) * 7 : 0;
+
+  return { rowsEvaluated, triggers, windowDays, triggersPerWeek, reliable: true };
+}
+
+/**
+ * True when a hypothesis fires too rarely to ever accumulate a verdict.
+ * Half of all active setup families were on track to need six months or more to
+ * reach the promotion bar, because nothing checked testability before admitting
+ * an idea.
+ */
+export function isTriggerTooRare(estimate: TriggerFrequencyEstimate): boolean {
+  if (!estimate.reliable) return false;
+  return estimate.triggersPerWeek < MIN_TRIGGERS_PER_WEEK;
 }
 
 export function hasRegimeRelativeConditions(hypothesis: Hypothesis): boolean {

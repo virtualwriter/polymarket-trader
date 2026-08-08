@@ -585,6 +585,10 @@ function resolveEligiblePending(
       const result = evaluateHypothesisTest(hypothesis, startRow, currentRow);
       test.outcome = result.outcome;
       test.actualMove = `[historical-backfill] ${result.actualMove} (resolved ${currentDate} from ${dayKey(test.date)}; method=${result.method})`;
+      if (typeof result.magnitude === "number" && result.magnitudeUnit) {
+        test.magnitude = result.magnitude;
+        test.magnitudeUnit = result.magnitudeUnit;
+      }
       if (!result.scorable) {
         test.excludedFromSetupStats = true;
         test.exclusionReason = `unscorable_scorer_v2:${result.method}`;

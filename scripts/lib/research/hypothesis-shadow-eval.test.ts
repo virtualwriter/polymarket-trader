@@ -11,7 +11,18 @@ import {
   inferHypothesisAsset,
   resolveHypothesisDirection,
   setupFamilyIsDecisive,
+  setupFamilyIsPromotable,
+  setupFamilyIsUnprofitable,
+  setupMagnitudeEvidence,
+  sweepUnscorableHypotheses,
+  estimateTriggerFrequency,
+  isTriggerTooRare,
+  pendingHypothesisTests,
+  MIN_TRIGGERS_PER_WEEK,
+  UNSCORABLE_BURN_RETIRE_THRESHOLD,
+  PROMOTE_SIGNIFICANCE_ALPHA,
   type Hypothesis,
+  type HypothesisTest,
   type SnapshotRow,
 } from "./hypothesis-shadow-eval.js";
 
@@ -292,5 +303,229 @@ describe("sequential shadow-test evidence", () => {
 
   it("still requires the base 20 tests regardless of early record", () => {
     expect(hypothesisSetupNeedsMoreShadowTests(familyWithRecord(10, 0))).toBe(true);
+  });
+});
+
+describe("realized-edge (magnitude) gate", () => {
+  function test(
+    outcome: "win" | "loss",
+    magnitude?: number,
+    unit: "pct_return" | "funding_pts" = "pct_return",
+    extra: Partial<HypothesisTest> = {},
+  ): HypothesisTest {
+    return {
+      date: "2026-07-01",
+      triggered: true,
+      outcome,
+      actualMove: "x",
+      ...(magnitude === undefined ? {} : { magnitude, magnitudeUnit: unit }),
+      ...extra,
+    };
+  }
+
+  it("reports no usable evidence when tests predate magnitude recording", () => {
+    const evidence = setupMagnitudeEvidence(Array.from({ length: 20 }, () => test("win")));
+    expect(evidence.n).toBe(0);
+    expect(evidence.usable).toBe(false);
+  });
+
+  it("ignores pending and unscorable tests", () => {
+    const tests = [
+      test("win", 5),
+      { ...test("win", 99), outcome: "pending" as const },
+      test("loss", -99, "pct_return", { excludedFromSetupStats: true }),
+    ];
+    const evidence = setupMagnitudeEvidence(tests);
+    expect(evidence.n).toBe(1);
+    expect(evidence.mean).toBeCloseTo(5, 10);
+  });
+
+  it("does not average across incompatible units — majority unit wins", () => {
+    const tests = [
+      ...Array.from({ length: 8 }, () => test("win", 2, "pct_return")),
+      ...Array.from({ length: 3 }, () => test("win", 40, "funding_pts")),
+    ];
+    const evidence = setupMagnitudeEvidence(tests);
+    expect(evidence.unit).toBe("pct_return");
+    expect(evidence.n).toBe(8);
+    expect(evidence.mean).toBeCloseTo(2, 10);
+  });
+
+  it("blocks promotion of a high-win-rate family whose edge is not positive", () => {
+    // 17/20 wins (binomially very significant) but wins are tiny and losses huge.
+    const tests = [
+      ...Array.from({ length: 17 }, () => test("win", 0.2)),
+      ...Array.from({ length: 3 }, () => test("loss", -6)),
+    ];
+    expect(binomialPValue(17, 20)).toBeLessThan(PROMOTE_SIGNIFICANCE_ALPHA);
+    expect(setupFamilyIsPromotable(17, 20, 0.65, tests)).toBe(false);
+    expect(setupFamilyIsUnprofitable(tests)).toBe(true);
+  });
+
+  it("promotes a family that is both significantly right and significantly profitable", () => {
+    const tests = [
+      ...Array.from({ length: 17 }, () => test("win", 3.0)),
+      ...Array.from({ length: 3 }, () => test("loss", -1.0)),
+    ];
+    expect(setupFamilyIsPromotable(17, 20, 0.65, tests)).toBe(true);
+    expect(setupFamilyIsUnprofitable(tests)).toBe(false);
+  });
+
+  it("falls back to win rate when magnitude evidence is too thin to gate on", () => {
+    // Only 4 magnitude-bearing tests: below MAGNITUDE_EVIDENCE_MIN_TESTS.
+    const tests = [
+      ...Array.from({ length: 4 }, () => test("win", -5)),
+      ...Array.from({ length: 16 }, () => test("win")),
+    ];
+    expect(setupMagnitudeEvidence(tests).usable).toBe(false);
+    expect(setupFamilyIsPromotable(17, 20, 0.65, tests)).toBe(true);
+  });
+
+  it("does not flag an unproven family as unprofitable", () => {
+    const tests = Array.from({ length: 20 }, (_, i) => test(i % 2 === 0 ? "win" : "loss", i % 2 === 0 ? 2 : -2));
+    expect(setupFamilyIsUnprofitable(tests)).toBe(false);
+  });
+
+  it("treats a money-losing family as decisive so it stops consuming test budget", () => {
+    const tests = [
+      ...Array.from({ length: 17 }, () => test("win", 0.2)),
+      ...Array.from({ length: 3 }, () => test("loss", -6)),
+    ];
+    expect(setupFamilyIsDecisive(17, 20, 0.65, 0.40, tests)).toBe(true);
+  });
+});
+
+describe("sweepUnscorableHypotheses", () => {
+  function unscorable(id: string, burned: number, pending: number): Hypothesis {
+    const h = hyp({
+      id,
+      // No direction, no funding thesis, no move language => scorer cannot grade.
+      prediction: "AMZN stock continues outperforming perp as arbitrage completes",
+      conditions: { asset: "AMZN" },
+    });
+    h.tests = [
+      ...Array.from({ length: burned }, () => ({
+        date: "2026-06-01", triggered: true, outcome: "loss" as const,
+        actualMove: "UNSCORABLE", excludedFromSetupStats: true, exclusionReason: "unscorable_scorer_v2:unscorable_direction",
+      })),
+      ...Array.from({ length: pending }, () => ({
+        date: "2026-08-01", triggered: true, outcome: "pending" as const, actualMove: "queued",
+      })),
+    ];
+    return h;
+  }
+
+  it("cancels queued tests that could only resolve UNSCORABLE", () => {
+    const h = unscorable("H-900", 0, 3);
+    const result = sweepUnscorableHypotheses([h]);
+    expect(result.cancelledTests).toBe(3);
+    expect(pendingHypothesisTests(h)).toHaveLength(0);
+    expect(h.tests.every((t) => t.exclusionReason === "cancelled_unscorable_variant")).toBe(true);
+  });
+
+  it("retires a variant that has already burned past the threshold", () => {
+    const h = unscorable("H-901", UNSCORABLE_BURN_RETIRE_THRESHOLD, 1);
+    const result = sweepUnscorableHypotheses([h]);
+    expect(result.retiredVariants).toBe(1);
+    expect(h.status).toBe("killed");
+    expect(h.postMortem).toContain("Retired unscorable");
+  });
+
+  it("leaves a lightly-burned variant active so the LLM can re-author it", () => {
+    const h = unscorable("H-902", 2, 1);
+    const result = sweepUnscorableHypotheses([h]);
+    expect(result.flaggedForReauthor).toBe(1);
+    expect(result.retiredVariants).toBe(0);
+    expect(h.status).toBe("active");
+  });
+
+  it("never touches scorable hypotheses", () => {
+    const h = hyp({ id: "H-903", direction: "long", prediction: "BTC rises > 2%", conditions: { asset: "BTC" } });
+    h.tests = [{ date: "2026-08-01", triggered: true, outcome: "pending", actualMove: "queued" }];
+    const result = sweepUnscorableHypotheses([h]);
+    expect(result.cancelledTests).toBe(0);
+    expect(pendingHypothesisTests(h)).toHaveLength(1);
+    expect(h.status).toBe("active");
+  });
+
+  it("is idempotent across repeated engine cycles", () => {
+    const h = unscorable("H-904", 3, 2);
+    const first = sweepUnscorableHypotheses([h]);
+    const second = sweepUnscorableHypotheses([h]);
+    expect(first.cancelledTests).toBe(2);
+    expect(second.cancelledTests).toBe(0);
+  });
+});
+
+describe("trigger-rarity gate", () => {
+  function history(count: number, value: (i: number) => number): SnapshotRow[] {
+    return Array.from({ length: count }, (_, i) => ({
+      date: new Date(Date.UTC(2026, 0, 1) + i * 3600_000).toISOString().slice(0, 19),
+      btc_spot: 100,
+      btc_hl_funding_ann: value(i),
+    }));
+  }
+
+  const frequent = hyp({
+    direction: "long",
+    prediction: "BTC rises > 2%",
+    conditions: { asset: "BTC", btc_hl_funding_ann: "< 0" },
+  });
+
+  it("accepts a condition that fires often", () => {
+    // Negative funding on every row => fires constantly.
+    const estimate = estimateTriggerFrequency(frequent, history(720, () => -30));
+    expect(estimate.reliable).toBe(true);
+    expect(estimate.triggersPerWeek).toBeGreaterThan(MIN_TRIGGERS_PER_WEEK);
+    expect(isTriggerTooRare(estimate)).toBe(false);
+  });
+
+  it("rejects a condition that almost never fires", () => {
+    // Negative funding on 2 rows out of 720 (~30 days) => well under 1/week.
+    const estimate = estimateTriggerFrequency(frequent, history(720, (i) => (i < 2 ? -30 : 30)));
+    expect(estimate.triggers).toBe(2);
+    expect(estimate.triggersPerWeek).toBeLessThan(MIN_TRIGGERS_PER_WEEK);
+    expect(isTriggerTooRare(estimate)).toBe(true);
+  });
+
+  it("treats an unevaluable condition as too rare — it can never open a test", () => {
+    const bogus = hyp({
+      direction: "long",
+      prediction: "BTC rises > 2%",
+      conditions: { asset: "BTC", nonexistent_column_xyz: "> 5" },
+    });
+    const estimate = estimateTriggerFrequency(bogus, history(720, () => -30));
+    expect(estimate.triggers).toBe(0);
+    expect(isTriggerTooRare(estimate)).toBe(true);
+  });
+
+  it("refuses to judge when history is too short (fails open)", () => {
+    const estimate = estimateTriggerFrequency(frequent, history(50, () => 30));
+    expect(estimate.reliable).toBe(false);
+    expect(isTriggerTooRare(estimate)).toBe(false);
+  });
+});
+
+describe("evaluateHypothesisTest records signed magnitude", () => {
+  const start: SnapshotRow = { date: "2026-07-01", btc_spot: 100 };
+  const end: SnapshotRow = { date: "2026-07-08", btc_spot: 105 };
+
+  it("signs a long by the move and a short against it", () => {
+    const long = evaluateHypothesisTest(
+      hyp({ prediction: "BTC rises > 2%", conditions: { asset: "BTC" }, direction: "long" }), start, end);
+    expect(long.magnitude).toBeCloseTo(5, 6);
+    expect(long.magnitudeUnit).toBe("pct_return");
+
+    const short = evaluateHypothesisTest(
+      hyp({ prediction: "BTC falls > 2%", conditions: { asset: "BTC" }, direction: "short" }), start, end);
+    expect(short.magnitude).toBeCloseTo(-5, 6);
+    expect(short.outcome).toBe("loss");
+  });
+
+  it("omits magnitude on unscorable results", () => {
+    const result = evaluateHypothesisTest(
+      hyp({ prediction: "something happens", conditions: { asset: "BTC" } }), start, end);
+    expect(result.scorable).toBe(false);
+    expect(result.magnitude).toBeUndefined();
   });
 });
