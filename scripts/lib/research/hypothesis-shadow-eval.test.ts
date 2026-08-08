@@ -4,6 +4,7 @@ import {
   appendPostMortemSegment,
   binomialPValue,
   evaluateHypothesisTest,
+  evidenceBackedDirection,
   fundingAnnConditionKey,
   hypothesisScoringMode,
   hypothesisSetupFamilies,
@@ -52,6 +53,46 @@ function hyp(partial: Partial<Hypothesis> & Pick<Hypothesis, "prediction" | "con
 function row(date: string, fields: Record<string, number>): SnapshotRow {
   return { date, ...fields };
 }
+
+describe("evidenceBackedDirection", () => {
+  it("returns the explicit direction the scorer graded on", () => {
+    expect(evidenceBackedDirection(hyp({
+      direction: "short",
+      prediction: "gold edge compresses toward fair value",
+      conditions: { asset: "GOLD" },
+    }))).toBe("short");
+  });
+
+  it("returns null for funding-reversion theses that carry no spot view", () => {
+    // Graded by funding_normalize_up: the win meant funding rose, not that
+    // spot did. Trading spot long off that record is unsupported.
+    const h = hyp({
+      prediction: "Gold funding normalizes above -20% within 48-72 hours as extreme positioning unwinds",
+      conditions: { asset: "GOLD", gold_hl_funding_ann: "< -100" },
+    });
+    expect(hypothesisScoringMode(h)).toBe("funding");
+    expect(evidenceBackedDirection(h)).toBeNull();
+  });
+
+  it("returns null when the thesis resolves neutral", () => {
+    expect(evidenceBackedDirection(hyp({
+      prediction: "HYPE continues above 43 within 5-7 days with PM EV following above 44",
+      conditions: { asset: "HYPE" },
+    }))).toBeNull();
+  });
+
+  it("disagrees with bullish prose when the scorer graded the family short", () => {
+    // H-012 shape: prose reads long, scorer resolved short off the signalType,
+    // so every recorded win was measured on BTC falling.
+    const h = hyp({
+      description: "BTC listed IV momentum confirmation",
+      prediction: "Long BTC spot/perp should outperform over 3-7 days on rising downside demand",
+      conditions: { asset: "BTC", signalType: "ONE_TOUCH_HIGH_EDGE_NO" },
+    });
+    expect(resolveHypothesisDirection(h)).toBe("short");
+    expect(evidenceBackedDirection(h)).toBe("short");
+  });
+});
 
 describe("hypothesisScoringMode", () => {
   it("flags the AMZN perp/spot convergence shape as unscorable (no direction, no reversion language)", () => {

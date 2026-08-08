@@ -309,6 +309,26 @@ export function resolveHypothesisDirection(hypothesis: Hypothesis): "long" | "sh
   return "neutral";
 }
 
+/**
+ * The spot direction a hypothesis's own test record actually supports, or null
+ * when the record supports no spot view at all.
+ *
+ * The engine graded every shadow test with resolveHypothesisDirection, but
+ * chose the live trade direction with a separate, broader keyword inferrer.
+ * Where the two disagreed, a family could accumulate a win rate measured on the
+ * asset falling and then be traded long. Nineteen live hypotheses were in that
+ * state, which is a plausible contributor to PROMOTED_HYPOTHESIS running at a
+ * 39.6% live win rate.
+ *
+ * A "neutral" resolution returns null rather than a direction: those tests were
+ * graded on funding normalizing or on absolute movement, neither of which is
+ * evidence that spot goes a particular way.
+ */
+export function evidenceBackedDirection(hypothesis: Hypothesis): "long" | "short" | null {
+  const resolved = resolveHypothesisDirection(hypothesis);
+  return resolved === "neutral" ? null : resolved;
+}
+
 function scoreDirectionalMove(
   movePct: number,
   direction: "long" | "short" | "neutral",

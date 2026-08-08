@@ -99,6 +99,7 @@ import {
   binomialPValue,
   completedHypothesisTests,
   evaluateHypothesisTest,
+  evidenceBackedDirection,
   hasRegimeRelativeConditions,
   hypothesisConditionsSatisfied,
   hypothesisScoringMode,
@@ -6192,7 +6193,10 @@ function meetsLivePromotedGate(family: HypothesisSetupFamily, primary: Hypothesi
   if (family.winRate < LIVE_PROMOTED_MIN_WIN_RATE) return false;
   if (completedHypothesisTests(primary).length < LIVE_PROMOTED_MIN_PRIMARY_TESTS) return false;
   if (!inferHypothesisAsset(primary)) return false;
-  if (!inferHypothesisDirection(primary)) return false;
+  const direction = inferHypothesisDirection(primary);
+  if (!direction) return false;
+  // A family cannot go live on evidence graded in a different direction.
+  if (evidenceBackedDirection(primary) !== direction) return false;
   return true;
 }
 
@@ -6251,6 +6255,13 @@ function generatePromotedHypothesisSignals(
         // explicitly bearish predictions like "BTC continues pullback".
         continue;
       }
+      // Only trade the direction this family's own evidence was graded on.
+      // The keyword inferrer above is broader than the scorer's resolver, so
+      // the two could disagree — and where they did, the win rate justifying
+      // the trade had been measured on the opposite move, or on funding rather
+      // than on spot at all.
+      const evidenceDirection = evidenceBackedDirection(hypothesis);
+      if (evidenceDirection !== direction) continue;
       const entryPrice = getAssetPrice(latestRow, asset);
       if (!entryPrice) continue;
       const signal = finalizeSignal({
