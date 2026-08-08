@@ -2846,3 +2846,42 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-08-08 10:28 UTC
+
+**Portfolio:** $99.02 total | Cash $88.02 | 11 open | P&L $2.2637 | 63% win rate (651 trades)
+
+**Closed 2 trades:**
+- ✅ ORCL long via hyperliquid/hl_perp [HL ORCL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0036 (0.4%, market 0.0038, funding -0.0001)
+- ✅ SKHX long via hyperliquid/hl_perp [HL SKHX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0095 (0.9%, market 0.0094, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 17 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [anomaly] hype_pm_iv = 41.4 is -2.0 std devs from mean (67.51 ± 12.82)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.35 to -0.23. Rolling correlation: 24h=-0.23, 7d=-0.67, 30d=-0.38. Current 24h corr is at 60th pct of last 30 daily 24h-rolling values (range -0.93 to 0.65).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.75 to 0.28. Rolling correlation: 24h=0.28, 7d=0.89, 30d=0.20. Current 24h corr is at 40th pct of last 30 daily 24h-rolling values (range -0.31 to 0.88).
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 837 (431 wins / 406 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 16/29 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/17 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=294 (77W/174L/43flat, 30.7% win-rate, sum $-1.0367, avg -0.35%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.09%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-3.28%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-3.23%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h since last call; daily budget 5/12; next scheduled 2026-08-08T12:28:23.299Z). Mechanical cycle ran normally._
+
+---
+
