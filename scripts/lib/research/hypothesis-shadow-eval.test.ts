@@ -17,6 +17,7 @@ import {
   sweepUnscorableHypotheses,
   estimateTriggerFrequency,
   isTriggerTooRare,
+  conditionsReplayableFromValuationHistory,
   pendingHypothesisTests,
   MIN_TRIGGERS_PER_WEEK,
   UNSCORABLE_BURN_RETIRE_THRESHOLD,
@@ -488,21 +489,73 @@ describe("trigger-rarity gate", () => {
     expect(isTriggerTooRare(estimate)).toBe(true);
   });
 
-  it("treats an unevaluable condition as too rare — it can never open a test", () => {
+  it("abstains on an unevaluable key rather than guessing", () => {
+    // validateHypothesisConditions already rejects unknown keys at ingest, so
+    // this gate does not need to and must not add a second chance to be wrong.
     const bogus = hyp({
       direction: "long",
       prediction: "BTC rises > 2%",
       conditions: { asset: "BTC", nonexistent_column_xyz: "> 5" },
     });
     const estimate = estimateTriggerFrequency(bogus, history(720, () => -30));
-    expect(estimate.triggers).toBe(0);
-    expect(isTriggerTooRare(estimate)).toBe(true);
+    expect(estimate.unreliableReason).toBe("not_replayable");
+    expect(isTriggerTooRare(estimate)).toBe(false);
   });
 
   it("refuses to judge when history is too short (fails open)", () => {
     const estimate = estimateTriggerFrequency(frequent, history(50, () => 30));
     expect(estimate.reliable).toBe(false);
+    expect(estimate.unreliableReason).toBe("insufficient_history");
     expect(isTriggerTooRare(estimate)).toBe(false);
+  });
+
+  it("exempts heatmap conditions, which have no replayable history", () => {
+    // Measured against production data, judging these wrongly scored the most
+    // productive heatmap families at zero triggers.
+    const heatmap = hyp({
+      direction: "short",
+      prediction: "PM YES richness compresses > 2%",
+      conditions: { asset: "GOLD", sell_yes_edge_pts: ">= 5", liquidity: ">= 1000" },
+    });
+    const estimate = estimateTriggerFrequency(heatmap, history(720, () => 30));
+    expect(estimate.reliable).toBe(false);
+    expect(estimate.unreliableReason).toBe("not_replayable");
+    expect(isTriggerTooRare(estimate)).toBe(false);
+  });
+
+  it("exempts relative-value aggregate keys too", () => {
+    const agg = hyp({
+      direction: "short",
+      prediction: "spread compresses > 2%",
+      conditions: { asset: "BTC", btc_pm_underlying_cap_ratio_max: "> 1.05" },
+    });
+    expect(estimateTriggerFrequency(agg, history(720, () => 30)).unreliableReason).toBe("not_replayable");
+  });
+
+  it("still judges pure valuation-column conditions", () => {
+    expect(estimateTriggerFrequency(frequent, history(720, () => -30)).reliable).toBe(true);
+  });
+
+  it("does not judge conditions that are only metadata", () => {
+    const metaOnly = hyp({
+      direction: "long", prediction: "BTC rises > 2%", conditions: { asset: "BTC", venue: "hyperliquid" },
+    });
+    expect(estimateTriggerFrequency(metaOnly, history(720, () => 30)).unreliableReason).toBe("not_replayable");
+  });
+
+  it("accepts derived keys whose base column exists", () => {
+    const derived = hyp({
+      direction: "long", prediction: "BTC rises > 2%",
+      conditions: { asset: "BTC", btc_hl_funding_ann_percentile_30d: "< 20" },
+    });
+    expect(conditionsReplayableFromValuationHistory(derived, history(720, () => 30))).toBe(true);
+  });
+
+  it("rejects a key that resolves to nothing at all", () => {
+    const bogus = hyp({
+      direction: "long", prediction: "BTC rises > 2%", conditions: { asset: "BTC", made_up_key: "> 1" },
+    });
+    expect(conditionsReplayableFromValuationHistory(bogus, history(720, () => 30))).toBe(false);
   });
 });
 

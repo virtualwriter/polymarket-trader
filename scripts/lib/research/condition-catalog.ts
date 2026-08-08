@@ -54,8 +54,8 @@ export const MARKET_ROW_CONDITION_KEYS = new Set([
   "adjusted_no_gap_pts",
 ]);
 
-const DERIVED_KEY_PATTERN = /^(.+)_(pct_from_\d+[hd]_(high|low)|pct_vs_\d+[hd]_sma|percentile_\d+[hd]|zscore_\d+[hd]|change_pct_\d+[hd])$/;
-const RELATIVE_VALUE_AGG_PATTERN = /^([a-z]+)_pm_(underlying_cap|settle)_(ratio|edge_pts|yes_sum|overround|tail_yes|skew_yes)_(max|min|avg)(_tight)?$/;
+export const DERIVED_KEY_PATTERN = /^(.+)_(pct_from_\d+[hd]_(high|low)|pct_vs_\d+[hd]_sma|percentile_\d+[hd]|zscore_\d+[hd]|change_pct_\d+[hd])$/;
+export const RELATIVE_VALUE_AGG_PATTERN = /^([a-z]+)_pm_(underlying_cap|settle)_(ratio|edge_pts|yes_sum|overround|tail_yes|skew_yes)_(max|min|avg)(_tight)?$/;
 const PERP_KEY_PATTERN = /^([a-z0-9]+)_hl_(funding_ann|oi|basis_pct)$/;
 
 export const CONDITION_CATALOG: ConditionCatalogEntry[] = [

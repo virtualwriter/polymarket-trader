@@ -1,5 +1,11 @@
 import { slugifySetupId } from "../trading/setup-family.js";
 import { binomialPValue, oneSidedTPValue, sampleMoments } from "./alpha-stats.js";
+import {
+  DERIVED_KEY_PATTERN,
+  MARKET_ROW_CONDITION_KEYS,
+  METADATA_CONDITION_KEYS,
+  RELATIVE_VALUE_AGG_PATTERN,
+} from "./condition-catalog.js";
 
 export interface HypothesisTest {
   date: string;
@@ -1351,8 +1357,46 @@ export interface TriggerFrequencyEstimate {
   triggers: number;
   windowDays: number;
   triggersPerWeek: number;
-  /** False when history is too short to judge — callers must not reject then. */
+  /** False when the estimate cannot be trusted — callers must not reject then. */
   reliable: boolean;
+  /** Why the estimate is untrustworthy, when it is. */
+  unreliableReason?: "insufficient_history" | "not_replayable";
+}
+
+/**
+ * True when every condition can be replayed against valuation history.
+ *
+ * Market-row and relative-value-aggregate keys read the engine's *current*
+ * Polymarket contract rows, of which only a recent snapshot is retained — there
+ * is no per-hour history to replay them over. Estimating a trigger rate for
+ * those conditions produces a number that looks precise and means nothing, and
+ * measuring it against real families showed it wrongly scoring the most
+ * productive heatmap families at zero. Such hypotheses are therefore exempt
+ * from the rarity gate rather than judged by an estimate that cannot see them.
+ */
+export function conditionsReplayableFromValuationHistory(
+  hypothesis: Hypothesis,
+  valuationRows: SnapshotRow[],
+): boolean {
+  const sample = valuationRows[valuationRows.length - 1];
+  if (!sample) return false;
+  const keys = Object.keys(hypothesis.conditions ?? {});
+  let dataKeys = 0;
+
+  for (const key of keys) {
+    if (METADATA_CONDITION_KEYS.has(key)) continue;
+    if (MARKET_ROW_CONDITION_KEYS.has(key)) return false;
+    if (RELATIVE_VALUE_AGG_PATTERN.test(key)) return false;
+    dataKeys++;
+    if (key in sample) continue;
+    const derived = DERIVED_KEY_PATTERN.exec(key);
+    if (derived && derived[1] in sample) continue;
+    // An unrecognised key cannot be replayed, so it cannot be judged either.
+    return false;
+  }
+  // All-metadata conditions (asset/venue only) hold on every row by construction,
+  // so a rate computed from them says nothing about the thesis.
+  return dataKeys > 0;
 }
 
 /**
@@ -1376,7 +1420,16 @@ export function estimateTriggerFrequency(
   const rowsEvaluated = sampled.length;
 
   if (rowsEvaluated < TRIGGER_ESTIMATE_MIN_ROWS) {
-    return { rowsEvaluated, triggers: 0, windowDays: 0, triggersPerWeek: 0, reliable: false };
+    return {
+      rowsEvaluated, triggers: 0, windowDays: 0, triggersPerWeek: 0,
+      reliable: false, unreliableReason: "insufficient_history",
+    };
+  }
+  if (!conditionsReplayableFromValuationHistory(hypothesis, valuationRows)) {
+    return {
+      rowsEvaluated, triggers: 0, windowDays: 0, triggersPerWeek: 0,
+      reliable: false, unreliableReason: "not_replayable",
+    };
   }
 
   let triggers = 0;
