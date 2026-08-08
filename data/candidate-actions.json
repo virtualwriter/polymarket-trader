@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-08T08:28:17.617Z",
+  "generatedAt": "2026-08-08T09:28:16.740Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "OIL",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.6844797386666667,
-      "confidence": 0.34223986933333334,
+      "strength": 0.6891648906666668,
+      "confidence": 0.3445824453333334,
       "thesis": "[IV-TOUCH RICH NO LIVE] PM YES 92.0% vs IV touch model 80.7% (10.3pt rich) on OIL below 75; buy NO / sell YES, hold up to 30d or expiry.",
       "hypothesisId": null,
-      "entryPrice": 76.674,
+      "entryPrice": 76.681,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 30,
@@ -20,26 +20,6 @@
         "preferredEventSlug": "what-price-will-wti-hit-in-august-2026",
         "forceInstrumentType": "pm_no",
         "forceMarketId": "3383654",
-        "allowDirectionFallback": false
-      }
-    },
-    {
-      "type": "USER_PM_IV_TOUCH_RICH_NO",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "short",
-      "strength": 0.372584894,
-      "confidence": 0.2,
-      "thesis": "[IV-TOUCH RICH NO LIVE] PM YES 55.0% vs IV touch model 48.4% (5.6pt rich) on OIL below 70; buy NO / sell YES, hold up to 30d or expiry.",
-      "hypothesisId": null,
-      "entryPrice": 76.674,
-      "targetPct": null,
-      "stopPct": 100,
-      "expiryDays": 30,
-      "contractHint": {
-        "preferredEventSlug": "what-price-will-wti-hit-in-august-2026",
-        "forceInstrumentType": "pm_no",
-        "forceMarketId": "3096415",
         "allowDirectionFallback": false
       }
     },
@@ -52,7 +32,7 @@
       "confidence": 0.05548829705000102,
       "thesis": "BTC P/C ratio 0.47 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 64936,
+      "entryPrice": 64989,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -67,7 +47,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 64936,
+      "entryPrice": 64989,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -88,28 +68,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 76.674,
-      "probabilitySource": "unsupported",
-      "winProbability": null,
-      "probabilitySampleSize": null,
-      "edgePts": null,
-      "rawKellyFraction": null,
-      "adjustedKellyFraction": null,
-      "cappedKellyFraction": null,
-      "notes": [
-        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
-        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
-      ]
-    },
-    {
-      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "short",
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "reason": "unsupported_signal",
-      "entryPrice": 76.674,
+      "entryPrice": 76.681,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -138,51 +97,8 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 38,
-        "totalNet": 36,
-        "byAsset": {
-          "HIMS": 5,
-          "ORCL": 5,
-          "GOLD": 1,
-          "SKHX": 5,
-          "CBRS": 5,
-          "PLTR": 5,
-          "AMZN": 1,
-          "OIL": -1,
-          "GME": 5,
-          "RIVN": 5
-        },
-        "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 35,
-          "FUNDING_EXTREME_SHORT": 2,
-          "USER_PM_IV_TOUCH_RICH_NO": -1
-        },
-        "byVenue": {
-          "hyperliquid": 37,
-          "polymarket": -1
-        },
-        "byCluster": {
-          "funding_reversion": 37,
-          "hims_delta": 5,
-          "hyperliquid_venue": 37,
-          "orcl_delta": 5,
-          "commodity": 0,
-          "gold_delta": 1,
-          "skhx_delta": 5,
-          "cbrs_delta": 5,
-          "pltr_delta": 5,
-          "amzn_delta": 1,
-          "risk_on": 1,
-          "oil_delta": -1,
-          "polymarket_binary": -1,
-          "polymarket_venue": -1,
-          "gme_delta": 5,
-          "rivn_delta": 5
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 38,
-        "totalNet": 36,
+        "totalGross": 53,
+        "totalNet": 51,
         "byAsset": {
           "HIMS": 5,
           "ORCL": 5,
@@ -194,23 +110,23 @@
           "OIL": -1,
           "GME": 5,
           "RIVN": 5,
-          "BTC": 0
+          "COST": 5,
+          "DKNG": 5,
+          "LLY": 5
         },
         "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 35,
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 50,
           "FUNDING_EXTREME_SHORT": 2,
-          "USER_PM_IV_TOUCH_RICH_NO": -1,
-          "PC_RATIO_EXTREME_LOW": 0
+          "USER_PM_IV_TOUCH_RICH_NO": -1
         },
         "byVenue": {
-          "hyperliquid": 37,
-          "polymarket": -1,
-          "spot": 0
+          "hyperliquid": 52,
+          "polymarket": -1
         },
         "byCluster": {
-          "funding_reversion": 37,
+          "funding_reversion": 52,
           "hims_delta": 5,
-          "hyperliquid_venue": 37,
+          "hyperliquid_venue": 52,
           "orcl_delta": 5,
           "commodity": 0,
           "gold_delta": 1,
@@ -224,6 +140,61 @@
           "polymarket_venue": -1,
           "gme_delta": 5,
           "rivn_delta": 5,
+          "cost_delta": 5,
+          "dkng_delta": 5,
+          "lly_delta": 5
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 53,
+        "totalNet": 51,
+        "byAsset": {
+          "HIMS": 5,
+          "ORCL": 5,
+          "GOLD": 1,
+          "SKHX": 5,
+          "CBRS": 5,
+          "PLTR": 5,
+          "AMZN": 1,
+          "OIL": -1,
+          "GME": 5,
+          "RIVN": 5,
+          "COST": 5,
+          "DKNG": 5,
+          "LLY": 5,
+          "BTC": 0
+        },
+        "bySignalType": {
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 50,
+          "FUNDING_EXTREME_SHORT": 2,
+          "USER_PM_IV_TOUCH_RICH_NO": -1,
+          "PC_RATIO_EXTREME_LOW": 0
+        },
+        "byVenue": {
+          "hyperliquid": 52,
+          "polymarket": -1,
+          "spot": 0
+        },
+        "byCluster": {
+          "funding_reversion": 52,
+          "hims_delta": 5,
+          "hyperliquid_venue": 52,
+          "orcl_delta": 5,
+          "commodity": 0,
+          "gold_delta": 1,
+          "skhx_delta": 5,
+          "cbrs_delta": 5,
+          "pltr_delta": 5,
+          "amzn_delta": 1,
+          "risk_on": 1,
+          "oil_delta": -1,
+          "polymarket_binary": -1,
+          "polymarket_venue": -1,
+          "gme_delta": 5,
+          "rivn_delta": 5,
+          "cost_delta": 5,
+          "dkng_delta": 5,
+          "lly_delta": 5,
           "btc_delta": 0,
           "options_sentiment": 0,
           "spot_venue": 0
@@ -245,8 +216,8 @@
         "polymarket_venue"
       ],
       "current": {
-        "totalGross": 38,
-        "totalNet": 36,
+        "totalGross": 53,
+        "totalNet": 51,
         "byAsset": {
           "HIMS": 5,
           "ORCL": 5,
@@ -257,21 +228,24 @@
           "AMZN": 1,
           "OIL": -1,
           "GME": 5,
-          "RIVN": 5
+          "RIVN": 5,
+          "COST": 5,
+          "DKNG": 5,
+          "LLY": 5
         },
         "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 35,
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 50,
           "FUNDING_EXTREME_SHORT": 2,
           "USER_PM_IV_TOUCH_RICH_NO": -1
         },
         "byVenue": {
-          "hyperliquid": 37,
+          "hyperliquid": 52,
           "polymarket": -1
         },
         "byCluster": {
-          "funding_reversion": 37,
+          "funding_reversion": 52,
           "hims_delta": 5,
-          "hyperliquid_venue": 37,
+          "hyperliquid_venue": 52,
           "orcl_delta": 5,
           "commodity": 0,
           "gold_delta": 1,
@@ -284,12 +258,15 @@
           "polymarket_binary": -1,
           "polymarket_venue": -1,
           "gme_delta": 5,
-          "rivn_delta": 5
+          "rivn_delta": 5,
+          "cost_delta": 5,
+          "dkng_delta": 5,
+          "lly_delta": 5
         }
       },
       "afterCandidate": {
-        "totalGross": 38,
-        "totalNet": 36,
+        "totalGross": 53,
+        "totalNet": 51,
         "byAsset": {
           "HIMS": 5,
           "ORCL": 5,
@@ -300,21 +277,24 @@
           "AMZN": 1,
           "OIL": -1,
           "GME": 5,
-          "RIVN": 5
+          "RIVN": 5,
+          "COST": 5,
+          "DKNG": 5,
+          "LLY": 5
         },
         "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 35,
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 50,
           "FUNDING_EXTREME_SHORT": 2,
           "USER_PM_IV_TOUCH_RICH_NO": -1
         },
         "byVenue": {
-          "hyperliquid": 37,
+          "hyperliquid": 52,
           "polymarket": -1
         },
         "byCluster": {
-          "funding_reversion": 37,
+          "funding_reversion": 52,
           "hims_delta": 5,
-          "hyperliquid_venue": 37,
+          "hyperliquid_venue": 52,
           "orcl_delta": 5,
           "commodity": 0,
           "gold_delta": 1,
@@ -327,108 +307,10 @@
           "polymarket_binary": -1,
           "polymarket_venue": -1,
           "gme_delta": 5,
-          "rivn_delta": 5
-        }
-      },
-      "warnings": []
-    },
-    {
-      "candidateId": "USER_PM_IV_TOUCH_RICH_NO:OIL:2",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "short",
-      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-      "candidateSize": 0,
-      "riskClusters": [
-        "commodity",
-        "oil_delta",
-        "polymarket_binary",
-        "polymarket_venue"
-      ],
-      "current": {
-        "totalGross": 38,
-        "totalNet": 36,
-        "byAsset": {
-          "HIMS": 5,
-          "ORCL": 5,
-          "GOLD": 1,
-          "SKHX": 5,
-          "CBRS": 5,
-          "PLTR": 5,
-          "AMZN": 1,
-          "OIL": -1,
-          "GME": 5,
-          "RIVN": 5
-        },
-        "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 35,
-          "FUNDING_EXTREME_SHORT": 2,
-          "USER_PM_IV_TOUCH_RICH_NO": -1
-        },
-        "byVenue": {
-          "hyperliquid": 37,
-          "polymarket": -1
-        },
-        "byCluster": {
-          "funding_reversion": 37,
-          "hims_delta": 5,
-          "hyperliquid_venue": 37,
-          "orcl_delta": 5,
-          "commodity": 0,
-          "gold_delta": 1,
-          "skhx_delta": 5,
-          "cbrs_delta": 5,
-          "pltr_delta": 5,
-          "amzn_delta": 1,
-          "risk_on": 1,
-          "oil_delta": -1,
-          "polymarket_binary": -1,
-          "polymarket_venue": -1,
-          "gme_delta": 5,
-          "rivn_delta": 5
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 38,
-        "totalNet": 36,
-        "byAsset": {
-          "HIMS": 5,
-          "ORCL": 5,
-          "GOLD": 1,
-          "SKHX": 5,
-          "CBRS": 5,
-          "PLTR": 5,
-          "AMZN": 1,
-          "OIL": -1,
-          "GME": 5,
-          "RIVN": 5
-        },
-        "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 35,
-          "FUNDING_EXTREME_SHORT": 2,
-          "USER_PM_IV_TOUCH_RICH_NO": -1
-        },
-        "byVenue": {
-          "hyperliquid": 37,
-          "polymarket": -1
-        },
-        "byCluster": {
-          "funding_reversion": 37,
-          "hims_delta": 5,
-          "hyperliquid_venue": 37,
-          "orcl_delta": 5,
-          "commodity": 0,
-          "gold_delta": 1,
-          "skhx_delta": 5,
-          "cbrs_delta": 5,
-          "pltr_delta": 5,
-          "amzn_delta": 1,
-          "risk_on": 1,
-          "oil_delta": -1,
-          "polymarket_binary": -1,
-          "polymarket_venue": -1,
-          "gme_delta": 5,
-          "rivn_delta": 5
+          "rivn_delta": 5,
+          "cost_delta": 5,
+          "dkng_delta": 5,
+          "lly_delta": 5
         }
       },
       "warnings": []
@@ -447,7 +329,7 @@
       "wouldResize": true,
       "edgePts": null,
       "alerts": [
-        "cluster exposure 37.00 > alert cap 5.00"
+        "cluster exposure 52.00 > alert cap 5.00"
       ],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
@@ -465,25 +347,7 @@
       "wouldResize": true,
       "edgePts": null,
       "alerts": [
-        "cluster exposure 37.00 > alert cap 5.00"
-      ],
-      "notes": [
-        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
-      ]
-    },
-    {
-      "candidateId": "USER_PM_IV_TOUCH_RICH_NO:OIL:2",
-      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-      "asset": "OIL",
-      "mode": "observe_uniform",
-      "liveSizingEnabled": false,
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "enforcedLiveSize": 1,
-      "wouldResize": true,
-      "edgePts": null,
-      "alerts": [
-        "cluster exposure 37.00 > alert cap 5.00"
+        "cluster exposure 52.00 > alert cap 5.00"
       ],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
@@ -500,10 +364,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 8,
-      "hoursToExpiry": 16,
+      "hoursOpen": 9,
+      "hoursToExpiry": 15,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.3333,
+      "elapsedHoldPct": 0.3749,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -516,10 +380,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 8,
-      "hoursToExpiry": 16,
+      "hoursOpen": 9,
+      "hoursToExpiry": 15,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.3333,
+      "elapsedHoldPct": 0.3749,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -535,12 +399,12 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 5.99,
-      "hoursToExpiry": 162.01,
+      "hoursOpen": 6.99,
+      "hoursToExpiry": 161.01,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0356,
+      "elapsedHoldPct": 0.0416,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 6.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 7.0h, requires at least 12h."
     },
     {
       "positionId": "WF-1786159699191-SKHX-d294",
@@ -551,10 +415,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 5,
-      "hoursToExpiry": 19,
+      "hoursOpen": 6,
+      "hoursToExpiry": 18,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.2083,
+      "elapsedHoldPct": 0.25,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -567,10 +431,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 4,
-      "hoursToExpiry": 20,
+      "hoursOpen": 5,
+      "hoursToExpiry": 19,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.1666,
+      "elapsedHoldPct": 0.2082,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -583,10 +447,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 4,
-      "hoursToExpiry": 20,
+      "hoursOpen": 5,
+      "hoursToExpiry": 19,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.1666,
+      "elapsedHoldPct": 0.2082,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -603,12 +467,12 @@
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ],
-      "hoursOpen": 2.99,
-      "hoursToExpiry": 165.01,
+      "hoursOpen": 3.99,
+      "hoursToExpiry": 164.01,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0178,
+      "elapsedHoldPct": 0.0237,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 4.0h, requires at least 12h."
     },
     {
       "positionId": "T-1786174137131-pym0",
@@ -625,10 +489,10 @@
         "oil_opt_iv_90d",
         "oil_hl_funding_ann"
       ],
-      "hoursOpen": 0.99,
-      "hoursToExpiry": 719.01,
+      "hoursOpen": 1.99,
+      "hoursToExpiry": 718.01,
       "plannedHoldHours": 720,
-      "elapsedHoldPct": 0.0014,
+      "elapsedHoldPct": 0.0028,
       "minHoldHours": 72,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -636,6 +500,38 @@
       "positionId": "WF-1786177697103-GME-43re",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "asset": "GME",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 1,
+      "hoursToExpiry": 23,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0.0417,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1786177697103-RIVN-s172",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "RIVN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 1,
+      "hoursToExpiry": 23,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0.0417,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1786181296245-COST-zgbi",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "COST",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
@@ -649,9 +545,25 @@
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
-      "positionId": "WF-1786177697103-RIVN-s172",
+      "positionId": "WF-1786181296245-DKNG-vrpo",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "RIVN",
+      "asset": "DKNG",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 0,
+      "hoursToExpiry": 24,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1786181296245-LLY-gvl5",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "LLY",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
