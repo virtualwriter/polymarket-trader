@@ -2885,3 +2885,42 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-08-08 11:28 UTC
+
+**Portfolio:** $99.02 total | Cash $90.02 | 9 open | P&L $2.2560 | 63% win rate (653 trades)
+
+**Closed 2 trades:**
+- ❌ CBRS long via hyperliquid/hl_perp [HL CBRS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0118 (-1.2%, market -0.0127, funding 0.0009)
+- ✅ PLTR long via hyperliquid/hl_perp [HL PLTR Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0042 (0.4%, market 0.0038, funding 0.0004)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 17 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [anomaly] hype_pm_iv = 41.5 is -2.0 std devs from mean (67.50 ± 12.83)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.35 to -0.23. Rolling correlation: 24h=-0.17, 7d=-0.67, 30d=-0.38. Current 24h corr is at 60th pct of last 30 daily 24h-rolling values (range -0.91 to 0.70).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.75 to 0.28. Rolling correlation: 24h=0.17, 7d=0.89, 30d=0.21. Current 24h corr is at 40th pct of last 30 daily 24h-rolling values (range -0.26 to 0.92).
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 837 (431 wins / 406 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 16/29 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/17 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=294 (77W/174L/43flat, 30.7% win-rate, sum $-1.0367, avg -0.35%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.09%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-3.28%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-3.23%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+No discretionary closes today. All positions are either rule-based (WEEKEND_HL_FUNDING_REVERSION_LONG, USER_PM_IV_TOUCH_RICH_NO) or still within their 12h min-hold window (GOLD FUNDING_EXTREME_SHORT at 9h, AMZN FUNDING_EXTREME_SHORT at 6h). The funding extreme short theses for GOLD and AMZN have seen significant normalization: GOLD funding swung from -33.7% to +3.6% and AMZN from -38.4% to -7.3%, effectively round-tripping past the entry trigger. This would warrant a thesis_invalidated close once the 12h min-hold expires, but we cannot act now. If funding continues to normalize or flips further, I recommend flagging these for nightly review to assess signal family sensitivity to rapid funding reversals. The weekend HL funding reversion trades are performing inline with expectations (GME +1.45%, DKNG +0.69%) except LLY which is down -2.63% and underperforming, but these are all mechanical exits so no action is taken. The OIL IV-touch rich NO short is +22.2% early in a 720h hold; the thesis remains intact as IV is still elevated and spot is above the touch level. No data quality or hard risk issues observed.
+
+---
+
