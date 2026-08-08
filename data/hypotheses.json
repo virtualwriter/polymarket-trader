@@ -19590,8 +19590,8 @@
       {
         "date": "2026-08-06",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 6/20 opened via H-532 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "GOLD moved 1.75% (4281 → 4356) [short needs ≤ -2%] (method=spot_directional_short)"
       },
       {
         "date": "2026-08-07",
@@ -20064,6 +20064,12 @@
         "triggered": true,
         "outcome": "loss",
         "actualMove": "Funding moved 82.8% → 26.5% (long reversion needs increase) (method=funding_normalize_up)"
+      },
+      {
+        "date": "2026-08-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup shadow_weekend_hl_funding_reversion_long_hood_weekend_hl_funding_shadow_long shadow test 7/20 opened via H-536 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0.3333333333333333,
@@ -20359,11 +20365,17 @@
       {
         "date": "2026-08-06",
         "triggered": true,
+        "outcome": "loss",
+        "actualMove": "Funding moved 5.5% → -13.7% (long reversion needs increase) (method=funding_normalize_up)"
+      },
+      {
+        "date": "2026-08-08",
+        "triggered": true,
         "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long shadow test 18/20 opened via H-539 after historical row satisfied variant conditions."
+        "actualMove": "Setup shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long shadow test 19/20 opened via H-539 after current row satisfied variant conditions."
       }
     ],
-    "winRate": 0.47058823529411764,
+    "winRate": 0.4444444444444444,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Refined by H-614 (2026-08-06): Refinement of H-539: Restrict CBRS weekend funding reversion to true weekend day | CBRS weekend funding reversion shadow tests showed frequent whipsaws and failures when funding was only moderately negative (-10%) and trigger occurred midweek. Funding normalisation often inverted without a sustained spot gain. | Refined by H-619 (2026-08-07): Refinement of H‑539: Restrict CBRS weekend funding reversion to true weekends an | H‑539 yielded mixed results (47% win) because CBRS funding below -10% included many weekday instances where funding failed to normalize. The assumption that any deeply negative funding represents a weekend overshoot is false; many losing cases deepened further or stagnated.",
@@ -21017,8 +21029,10 @@
       {
         "date": "2026-07-25",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup find_0020 shadow test 4/20 opened via H-550 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: could not infer asset (set conditions.asset) (method=unscorable_asset)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:unscorable_asset"
       }
     ],
     "winRate": 0,
@@ -21108,8 +21122,8 @@
       {
         "date": "2026-08-01",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup find_0018 shadow test 12/20 opened via H-551 after historical row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "OIL moved -12.56% (87.4 → 76.42) [short needs ≤ -2%] (method=spot_directional_short)"
       },
       {
         "date": "2026-08-02",
@@ -21148,7 +21162,7 @@
         "actualMove": "[historical-backfill] Setup find_0018 shadow test 19/20 opened via H-551 after historical row satisfied variant conditions."
       }
     ],
-    "winRate": 0.8,
+    "winRate": 0.8181818181818182,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "OIL one-touch NO edge heatmap variant continues to perform flawlessly with 100% win rate over 10 shadow tests, confirming that the edge-based signal for OIL is robust and may be ready for promotion when its shadow-test bar clears. | H‑551 (OIL one‑touch NO edge, 80% win) is showing strong live validation. The signal’s use of edge‑only condition on OIL upside touch contracts is proving robust; worth considering for promotion once the shadow test bar is met.",
@@ -21349,8 +21363,10 @@
       {
         "date": "2026-07-25",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: could not infer asset (set conditions.asset) (method=unscorable_asset)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:unscorable_asset"
       }
     ],
     "winRate": 0,
@@ -21421,8 +21437,10 @@
       {
         "date": "2026-07-25",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: could not infer asset (set conditions.asset) (method=unscorable_asset)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:unscorable_asset"
       }
     ],
     "winRate": 0,
@@ -22243,11 +22261,17 @@
       {
         "date": "2026-07-29",
         "triggered": true,
+        "outcome": "win",
+        "actualMove": "OIL moved -6.47% (81.71 → 76.42) [short needs ≤ -2%] (method=spot_directional_short)"
+      },
+      {
+        "date": "2026-08-08",
+        "triggered": true,
         "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "actualMove": "Setup find_0022 shadow test 10/20 opened via H-579 after current row satisfied variant conditions."
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -22312,8 +22336,10 @@
       {
         "date": "2026-07-29",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: could not infer asset (set conditions.asset) (method=unscorable_asset)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:unscorable_asset"
       }
     ],
     "winRate": 0,
@@ -22498,8 +22524,10 @@
       {
         "date": "2026-07-29",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: could not infer asset (set conditions.asset) (method=unscorable_asset)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:unscorable_asset"
       }
     ],
     "winRate": 0,
@@ -22743,8 +22771,8 @@
       {
         "date": "2026-08-01",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup find_0021 shadow test 7/20 opened via H-593 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "BTC moved 2.96% (62963 → 64826) [short needs ≤ -2%] (method=spot_directional_short)"
       },
       {
         "date": "2026-08-02",
@@ -22765,7 +22793,7 @@
         "actualMove": "[historical-backfill] Setup find_0021 shadow test 10/20 opened via H-593 after historical row satisfied variant conditions."
       }
     ],
-    "winRate": 0.3333333333333333,
+    "winRate": 0.25,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -23265,8 +23293,8 @@
       {
         "date": "2026-08-05",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "loss",
+        "actualMove": "GOLD moved 6.79% (4079 → 4356) [short needs ≤ -2%] (method=spot_directional_short)"
       }
     ],
     "winRate": 0,
@@ -23428,8 +23456,8 @@
       {
         "date": "2026-08-05",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "loss",
+        "actualMove": "BTC moved 1.29% (63999 → 64826) [neutral abs needs ≥ 2%] (method=spot_abs_move)"
       }
     ],
     "winRate": 0,
@@ -23458,8 +23486,8 @@
       {
         "date": "2026-08-06",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "loss",
+        "actualMove": "Funding moved 5.5% → -13.7% (long reversion needs increase) (method=funding_normalize_up)"
       }
     ],
     "winRate": 0,
@@ -23488,8 +23516,8 @@
       {
         "date": "2026-08-06",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "loss",
+        "actualMove": "Funding moved 5.5% → -33.0% (long reversion needs increase) (method=funding_normalize_up)"
       }
     ],
     "winRate": 0,
