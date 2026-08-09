@@ -720,11 +720,13 @@
       {
         "date": "2026-08-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup btc_listed_iv_momentum_confirmation shadow test 10/20 opened via H-012 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "BTC moved 3.31% (62856 → 64936) [short needs ≤ -2%] (method=spot_directional_short)",
+        "magnitude": -3.3091510754741,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0.3333333333333333,
+    "winRate": 0.25,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "PARTIALLY VALIDATED - BTC +2.4% move occurred but IV stayed flat at 49.1%. Momentum confirmed by OI expansion instead | Split 2026-05-26 by operator from BTC PM-IV compression family into btc_listed_iv_momentum_confirmation; adjacent listed-IV/momentum/P-C setup must earn its own promotion. | No BTC listed-IV momentum signal triggered; BTC spot is not near a recent 7d high and the options term spread is inverted, contrary to the breakout-confirmation setup. | BTC listed-IV momentum confirmation variant (btc_spot_pct_vs_24h_sma>0, near 7d high, spot up >0.75% and IV up) returned 43% win. Losses occurred when the spot gain was modest and the IV uptick reflected hedging rather than momentum; no funding context was used, so the signal struggled in range-bound conditions.",
@@ -5082,11 +5084,13 @@
       {
         "date": "2026-08-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup cross_asset_iv_compression_vol_expansion shadow test 15/20 opened via H-113 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "BTC moved 3.31% (62856 → 64936) [long needs ≥ +2%] (method=spot_directional_long)",
+        "magnitude": 3.3091510754741,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Excellent validation - BTC momentum above 71.9k with HYPE funding normalization to 10.95% from -25.6% extremes created consolidated breakout continuation with positive correlation restoration.",
@@ -6896,11 +6900,13 @@
       {
         "date": "2026-08-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup cross_asset_iv_compression_vol_expansion shadow test 16/20 opened via H-166 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "BTC moved 3.31% (62856 → 64936) [long needs ≥ +2%] (method=spot_directional_long)",
+        "magnitude": 3.3091510754741,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Setup family inconclusive after 29 completed tests: 62% win rate.",
@@ -7117,11 +7123,13 @@
       {
         "date": "2026-08-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup cross_asset_iv_compression_vol_expansion shadow test 17/20 opened via H-171 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "BTC moved 3.31% (62856 → 64936) [long needs ≥ +2%] (method=spot_directional_long)",
+        "magnitude": 3.3091510754741,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Setup family inconclusive after 29 completed tests: 62% win rate.",
@@ -8967,8 +8975,10 @@
       {
         "date": "2026-08-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup btc_listed_iv_momentum_confirmation shadow test 9/20 opened via H-218 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "BTC moved 3.31% (62856 → 64936) [short needs ≤ -2%] (method=spot_directional_short)",
+        "magnitude": -3.3091510754741,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-08-06",
@@ -8977,7 +8987,7 @@
         "actualMove": "[historical-backfill] Setup btc_listed_iv_momentum_confirmation shadow test 12/20 opened via H-218 after historical row satisfied variant conditions."
       }
     ],
-    "winRate": 0.5,
+    "winRate": 0.3333333333333333,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Setup family inconclusive after 29 completed tests: 62% win rate. | Split 2026-05-26 by operator from BTC PM-IV compression family into btc_listed_iv_momentum_confirmation; adjacent listed-IV/momentum/P-C setup must earn its own promotion.",
@@ -15266,11 +15276,13 @@
       {
         "date": "2026-08-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup cross_asset_iv_compression_vol_expansion shadow test 12/20 opened via H-406 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "BTC moved 3.31% (62856 → 64936) [long needs ≥ +2%] (method=spot_directional_long)",
+        "magnitude": 3.3091510754741,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "HYPE distribution accelerating with OI at 810M (-15.4% from peak) and funding crash to 10.95% - institutional exit cycle approaching final exhaustion phase, setting up highest-confidence reversal | Strong validation - HYPE funding crashed from positive to -6.24% while OI declined 16%, confirming institutional positioning cycle completion pattern",
@@ -15582,11 +15594,13 @@
       {
         "date": "2026-08-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup cross_asset_iv_compression_vol_expansion shadow test 13/20 opened via H-415 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "BTC moved 3.31% (62856 → 64936) [long needs ≥ +2%] (method=spot_directional_long)",
+        "magnitude": 3.3091510754741,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "CONFIRMED - BTC breakout above 78k with HYPE OI surge from 829M to 851M creates sustained momentum. Framework validates institutional positioning cycle analysis. | BTC breakout above 78k with HYPE OI surge: BTC is at 78,209 (above 78k threshold) and HYPE OI has surged to 1.051B. The funding normalization condition is partially met (BTC funding at +4.13%). This hypothesis is showing early confirmation in the T19 snapshot. The live BTC long benefits from this cross-asset confirmation, though BTC itself has not broken out — it is consolidating near the top of its 14-snapshot range.",
@@ -17161,11 +17175,13 @@
       {
         "date": "2026-08-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup cross_asset_iv_compression_vol_expansion shadow test 14/20 opened via H-464 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "BTC moved 3.31% (62856 → 64936) [long needs ≥ +2%] (method=spot_directional_long)",
+        "magnitude": 3.3091510754741,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "HYPE institutional distribution reached 18% OI decline from 957M to 786M with funding crash to -0.34%. Distribution exhaustion completion confirmed - oversold reversal setup strengthening as smart money exit approaches completion.",
@@ -19596,8 +19612,10 @@
       {
         "date": "2026-08-07",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 7/20 opened via H-532 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "GOLD moved 2.62% (4241 → 4352) [short needs ≤ -2%] (method=spot_directional_short)",
+        "magnitude": -2.6173072388587597,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-08-08",
@@ -20011,11 +20029,13 @@
       {
         "date": "2026-08-07",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_weekend_hl_funding_reversion_long_mu_weekend_hl_funding_shadow_long shadow test 10/20 opened via H-535 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "Funding moved -10.3% → 5.5% (long reversion needs increase) (method=funding_normalize_up)",
+        "magnitude": 15.81,
+        "magnitudeUnit": "funding_pts"
       }
     ],
-    "winRate": 0.4444444444444444,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Mined from clean shadows: {\"n\": 8, \"wins\": 8, \"winRate\": 1.0, \"sumPnl\": 0.273, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779665359141-MU-u2e8\", \"WF-1780087728968-MU-flsz\", \"WF-1780140511145-MU-bwzp\", \"WF-1780255715660-MU-lpo9\", \"WF-1780759716467-MU-wbbj\"]} | MU weekend funding normalization has only 33% win rate (1 of 3 resolved shadows), suggesting that MU's funding mean-reversion is inconsistent; consider asset-specific kill if next 2 tests fail. | Refined by H-621 (2026-08-07): Refinement of H‑535: Limit MU weekend funding reversion to weekends and raise th | H‑535's 44% win rate shows that MU funding < -10% on any day is not a reliable long signal. The winning shadows almost always occurred on weekends; losses happened when funding was negative on weekdays and continued to drift.",
@@ -20185,8 +20205,10 @@
       {
         "date": "2026-08-07",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long shadow test 15/20 opened via H-537 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "Funding moved 3.6% → 5.5% (long reversion needs increase) (method=funding_normalize_up)",
+        "magnitude": 1.8800000000000003,
+        "magnitudeUnit": "funding_pts"
       },
       {
         "date": "2026-08-08",
@@ -20195,7 +20217,7 @@
         "actualMove": "[historical-backfill] Setup shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long shadow test 16/20 opened via H-537 after historical row satisfied variant conditions."
       }
     ],
-    "winRate": 0.42857142857142855,
+    "winRate": 0.4666666666666667,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Refined by H-620 (2026-08-07): Refinement of H‑537: Apply weekend‑only filter and deeper funding‑extremity thre | H‑537 recorded 43% wins. Non‑weekend triggers dominated the losses, as AAPL funding often reversed slower than the 2‑day window. The thesis that extreme negative AAPL funding alone leads to spot recovery is invalid without the weekend‑only context that made shadows profitable. | Refined by H-630 (2026-08-08): Refinement of H‑537: Apply the same weekend‑only filter and a deeper threshold ( | AAPL funding < ‑10 resulted in 43% win rate, similar to CBRS. Winning instances involved true weekend overshoots, while losses happened when funding settled at ~ ‑10% or worsened on weekdays. The missing weekend filter is the root cause.",
@@ -21148,8 +21170,10 @@
       {
         "date": "2026-08-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup find_0018 shadow test 13/20 opened via H-551 after historical row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "OIL moved -10.69% (86.42 → 77.18) [short needs ≤ -2%] (method=spot_directional_short)",
+        "magnitude": 10.691969451515847,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-08-03",
@@ -21188,7 +21212,7 @@
         "actualMove": "[historical-backfill] Setup find_0018 shadow test 20/20 opened via H-551 after historical row satisfied variant conditions."
       }
     ],
-    "winRate": 0.8181818181818182,
+    "winRate": 0.8333333333333334,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "OIL one-touch NO edge heatmap variant continues to perform flawlessly with 100% win rate over 10 shadow tests, confirming that the edge-based signal for OIL is robust and may be ready for promotion when its shadow-test bar clears. | H‑551 (OIL one‑touch NO edge, 80% win) is showing strong live validation. The signal’s use of edge‑only condition on OIL upside touch contracts is proving robust; worth considering for promotion once the shadow test bar is met. | OIL one‑touch NO edge on heatmap cluster continues to perform well in recent tests (82% win, 9/11 last tests), validating the sell‑YES edge on OIL upside contracts as a reliable short signal when edge exceeds 2 pts and direction is above. The setup family remains robust.",
@@ -21538,10 +21562,10 @@
       {
         "date": "2026-07-26",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "CANCELLED: variant cannot be scored (no direction, funding thesis, or move language); test would resolve UNSCORABLE.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: could not infer asset (set conditions.asset) (method=unscorable_asset)",
         "excludedFromSetupStats": true,
-        "exclusionReason": "cancelled_unscorable_variant"
+        "exclusionReason": "unscorable_scorer_v2:unscorable_asset"
       },
       {
         "date": "2026-07-27",
@@ -21583,11 +21607,19 @@
       {
         "date": "2026-07-26",
         "triggered": true,
+        "outcome": "win",
+        "actualMove": "OIL moved -11.16% (86.88 → 77.18) [short needs ≤ -2%] (method=spot_directional_short)",
+        "magnitude": 11.164825046040503,
+        "magnitudeUnit": "pct_return"
+      },
+      {
+        "date": "2026-08-09",
+        "triggered": true,
         "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "actualMove": "Setup find_0022 shadow test 11/20 opened via H-561 after current row satisfied variant conditions."
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -21613,10 +21645,10 @@
       {
         "date": "2026-07-26",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "CANCELLED: variant cannot be scored (no direction, funding thesis, or move language); test would resolve UNSCORABLE.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: could not infer asset (set conditions.asset) (method=unscorable_asset)",
         "excludedFromSetupStats": true,
-        "exclusionReason": "cancelled_unscorable_variant"
+        "exclusionReason": "unscorable_scorer_v2:unscorable_asset"
       }
     ],
     "winRate": 0,
@@ -21651,10 +21683,10 @@
       {
         "date": "2026-07-26",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "CANCELLED: variant cannot be scored (no direction, funding thesis, or move language); test would resolve UNSCORABLE.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: could not infer asset (set conditions.asset) (method=unscorable_asset)",
         "excludedFromSetupStats": true,
-        "exclusionReason": "cancelled_unscorable_variant"
+        "exclusionReason": "unscorable_scorer_v2:unscorable_asset"
       }
     ],
     "winRate": 0,
@@ -21690,10 +21722,10 @@
       {
         "date": "2026-07-26",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "CANCELLED: variant cannot be scored (no direction, funding thesis, or move language); test would resolve UNSCORABLE.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: could not infer asset (set conditions.asset) (method=unscorable_asset)",
         "excludedFromSetupStats": true,
-        "exclusionReason": "cancelled_unscorable_variant"
+        "exclusionReason": "unscorable_scorer_v2:unscorable_asset"
       }
     ],
     "winRate": 0,
@@ -21729,10 +21761,10 @@
       {
         "date": "2026-07-26",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "CANCELLED: variant cannot be scored (no direction, funding thesis, or move language); test would resolve UNSCORABLE.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: could not infer asset (set conditions.asset) (method=unscorable_asset)",
         "excludedFromSetupStats": true,
-        "exclusionReason": "cancelled_unscorable_variant"
+        "exclusionReason": "unscorable_scorer_v2:unscorable_asset"
       },
       {
         "date": "2026-07-27",
@@ -21783,10 +21815,10 @@
       {
         "date": "2026-07-26",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "CANCELLED: variant cannot be scored (no direction, funding thesis, or move language); test would resolve UNSCORABLE.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: could not infer asset (set conditions.asset) (method=unscorable_asset)",
         "excludedFromSetupStats": true,
-        "exclusionReason": "cancelled_unscorable_variant"
+        "exclusionReason": "unscorable_scorer_v2:unscorable_asset"
       }
     ],
     "winRate": 0,
@@ -21822,8 +21854,10 @@
       {
         "date": "2026-07-26",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "loss",
+        "actualMove": "GOLD moved 7.22% (4059 → 4352) [short needs ≤ -2%] (method=spot_directional_short)",
+        "magnitude": -7.218526730721853,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-07-27",
@@ -22851,8 +22885,10 @@
       {
         "date": "2026-08-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup find_0021 shadow test 8/20 opened via H-593 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "BTC moved 3.31% (62856 → 64936) [short needs ≤ -2%] (method=spot_directional_short)",
+        "magnitude": -3.3091510754741,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-08-03",
@@ -22867,7 +22903,7 @@
         "actualMove": "[historical-backfill] Setup find_0021 shadow test 10/20 opened via H-593 after historical row satisfied variant conditions."
       }
     ],
-    "winRate": 0.25,
+    "winRate": 0.2,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -23439,8 +23475,10 @@
       {
         "date": "2026-08-07",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup gold_pm_premium_futures_spread_mean_reversion shadow test 4/20 opened via H-610 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "GOLD moved 2.62% (4241 → 4352) [short needs ≤ -2%] (method=spot_directional_short)",
+        "magnitude": -2.6173072388587597,
+        "magnitudeUnit": "pct_return"
       }
     ],
     "winRate": 0,
@@ -23475,11 +23513,19 @@
       {
         "date": "2026-08-07",
         "triggered": true,
+        "outcome": "win",
+        "actualMove": "Funding moved -162.1% → -70.5% (long reversion needs increase) (method=funding_normalize_up)",
+        "magnitude": 91.55000000000001,
+        "magnitudeUnit": "funding_pts"
+      },
+      {
+        "date": "2026-08-09",
+        "triggered": true,
         "outcome": "pending",
-        "actualMove": "Setup other_mixed shadow test 13/20 opened via H-611 after current row satisfied variant conditions."
+        "actualMove": "Setup other_mixed shadow test 19/20 opened via H-611 after current row satisfied variant conditions."
       }
     ],
-    "winRate": 0,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -23717,11 +23763,13 @@
       {
         "date": "2026-08-07",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "win",
+        "actualMove": "Funding moved -162.1% → -70.5% (long reversion needs increase) (method=funding_normalize_up)",
+        "magnitude": 91.55000000000001,
+        "magnitudeUnit": "funding_pts"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -23746,11 +23794,13 @@
       {
         "date": "2026-08-07",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "win",
+        "actualMove": "Funding moved 3.6% → 5.5% (long reversion needs increase) (method=funding_normalize_up)",
+        "magnitude": 1.8800000000000003,
+        "magnitudeUnit": "funding_pts"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -23775,11 +23825,13 @@
       {
         "date": "2026-08-07",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation."
+        "outcome": "win",
+        "actualMove": "Funding moved -10.3% → 5.5% (long reversion needs increase) (method=funding_normalize_up)",
+        "magnitude": 15.81,
+        "magnitudeUnit": "funding_pts"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
