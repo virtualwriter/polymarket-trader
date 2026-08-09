@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-08T07:05:07.749Z",
+  "generatedAt": "2026-08-09T07:05:07.272Z",
   "lessons": [
     {
       "signalType": "FUNDING_EXTREME_LONG",
@@ -65,34 +65,48 @@
     {
       "signalType": "FUNDING_EXTREME_SHORT",
       "scope": "live",
-      "n": 38,
-      "wins": 23,
-      "winRate": 0.6053,
-      "pnl": 0.0032,
+      "n": 40,
+      "wins": 25,
+      "winRate": 0.625,
+      "pnl": 0.0075,
       "closeTriggerCounts": {
         "target": 8,
         "stop": 5,
-        "llm_decision": 20,
+        "llm_decision": 22,
         "signal_killed": 1,
         "breakeven_stop": 3,
         "expiry": 1
       },
-      "note": "38 live trades, 61% win rate, +$0.00 total"
+      "note": "40 live trades, 63% win rate, +$0.01 total"
     },
     {
       "signalType": "FUNDING_EXTREME_SHORT",
       "scope": "live",
-      "n": 18,
-      "wins": 14,
-      "winRate": 0.7778,
-      "pnl": 0.0778,
+      "n": 19,
+      "wins": 15,
+      "winRate": 0.7895,
+      "pnl": 0.0817,
       "closeTriggerCounts": {
         "target": 2,
         "breakeven_stop": 3,
-        "llm_decision": 13
+        "llm_decision": 14
       },
-      "note": "18 live AMZN trades, 78% win rate, +$0.08 total",
+      "note": "19 live AMZN trades, 79% win rate, +$0.08 total",
       "asset": "AMZN"
+    },
+    {
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "scope": "live",
+      "n": 5,
+      "wins": 4,
+      "winRate": 0.8,
+      "pnl": -0.0035,
+      "closeTriggerCounts": {
+        "expiry": 1,
+        "llm_decision": 4
+      },
+      "note": "5 live GOLD trades, 80% win rate, $-0.00 total",
+      "asset": "GOLD"
     },
     {
       "signalType": "FUNDING_EXTREME_SHORT",
@@ -296,17 +310,17 @@
     {
       "signalType": "PC_RATIO_EXTREME_LOW",
       "scope": "live",
-      "n": 36,
-      "wins": 21,
-      "winRate": 0.5833,
-      "pnl": 0.0894,
+      "n": 38,
+      "wins": 22,
+      "winRate": 0.5789,
+      "pnl": 0.0924,
       "closeTriggerCounts": {
         "stop": 11,
         "target": 12,
         "expiry": 6,
-        "llm_decision": 7
+        "llm_decision": 9
       },
-      "note": "36 live trades, 58% win rate, +$0.09 total"
+      "note": "38 live trades, 58% win rate, +$0.09 total"
     },
     {
       "signalType": "PC_RATIO_EXTREME_LOW",
@@ -326,17 +340,17 @@
     {
       "signalType": "PC_RATIO_EXTREME_LOW",
       "scope": "live",
-      "n": 11,
+      "n": 12,
       "wins": 9,
-      "winRate": 0.8182,
-      "pnl": 0.1504,
+      "winRate": 0.75,
+      "pnl": 0.1417,
       "closeTriggerCounts": {
         "target": 6,
         "expiry": 2,
         "stop": 2,
-        "llm_decision": 1
+        "llm_decision": 2
       },
-      "note": "11 live BTC trades, 82% win rate, +$0.15 total",
+      "note": "12 live BTC trades, 75% win rate, +$0.14 total",
       "asset": "BTC"
     },
     {
@@ -358,16 +372,16 @@
     {
       "signalType": "PC_RATIO_EXTREME_LOW",
       "scope": "live",
-      "n": 11,
-      "wins": 8,
-      "winRate": 0.7273,
-      "pnl": 0.0654,
+      "n": 12,
+      "wins": 9,
+      "winRate": 0.75,
+      "pnl": 0.0771,
       "closeTriggerCounts": {
         "target": 4,
-        "llm_decision": 4,
+        "llm_decision": 5,
         "stop": 3
       },
-      "note": "11 live OIL trades, 73% win rate, +$0.07 total",
+      "note": "12 live OIL trades, 75% win rate, +$0.08 total",
       "asset": "OIL"
     },
     {
@@ -458,18 +472,18 @@
     {
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "scope": "live",
-      "n": 343,
-      "wins": 244,
-      "winRate": 0.7114,
-      "pnl": 1.3117,
+      "n": 363,
+      "wins": 255,
+      "winRate": 0.7025,
+      "pnl": 1.3545,
       "closeTriggerCounts": {
         "expiry": 19,
-        "thesis_validated_profitable": 224,
-        "thesis_compressed_loss": 86,
+        "thesis_validated_profitable": 235,
+        "thesis_compressed_loss": 95,
         "target": 10,
         "breakeven_stop": 4
       },
-      "note": "343 live trades, 71% win rate, +$1.31 total"
+      "note": "363 live trades, 70% win rate, +$1.35 total"
     },
     {
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -531,123 +545,63 @@
     {
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "scope": "live",
-      "n": 18,
-      "wins": 11,
-      "winRate": 0.6111,
-      "pnl": -0.0638,
+      "n": 21,
+      "wins": 12,
+      "winRate": 0.5714,
+      "pnl": -0.078,
       "closeTriggerCounts": {
-        "thesis_compressed_loss": 6,
+        "thesis_compressed_loss": 8,
         "expiry": 2,
-        "thesis_validated_profitable": 10
+        "thesis_validated_profitable": 11
       },
-      "note": "18 live BX trades, 61% win rate, $-0.06 total",
+      "note": "21 live BX trades, 57% win rate, $-0.08 total",
       "asset": "BX"
     },
     {
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "scope": "live",
-      "n": 27,
+      "n": 28,
       "wins": 17,
-      "winRate": 0.6296,
-      "pnl": -0.4191,
+      "winRate": 0.6071,
+      "pnl": -0.4309,
       "closeTriggerCounts": {
         "thesis_validated_profitable": 14,
-        "thesis_compressed_loss": 8,
+        "thesis_compressed_loss": 9,
         "target": 2,
         "breakeven_stop": 2,
         "expiry": 1
       },
-      "note": "27 live CBRS trades, 63% win rate, $-0.42 total",
+      "note": "28 live CBRS trades, 61% win rate, $-0.43 total",
       "asset": "CBRS"
     },
     {
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "scope": "live",
-      "n": 10,
+      "n": 11,
       "wins": 6,
-      "winRate": 0.6,
-      "pnl": 0.0419,
+      "winRate": 0.5455,
+      "pnl": 0.0418,
       "closeTriggerCounts": {
         "thesis_validated_profitable": 6,
-        "thesis_compressed_loss": 4
+        "thesis_compressed_loss": 5
       },
-      "note": "10 live COIN trades, 60% win rate, +$0.04 total",
+      "note": "11 live COIN trades, 55% win rate, +$0.04 total",
       "asset": "COIN"
     },
     {
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "scope": "live",
-      "n": 11,
-      "wins": 8,
-      "winRate": 0.7273,
-      "pnl": 0.041,
+      "n": 12,
+      "wins": 9,
+      "winRate": 0.75,
+      "pnl": 0.0437,
       "closeTriggerCounts": {
         "expiry": 5,
-        "thesis_validated_profitable": 5,
+        "thesis_validated_profitable": 6,
         "thesis_compressed_loss": 1
       },
-      "note": "11 live COST trades, 73% win rate, +$0.04 total",
+      "note": "12 live COST trades, 75% win rate, +$0.04 total",
       "asset": "COST"
-    },
-    {
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "scope": "live",
-      "n": 16,
-      "wins": 14,
-      "winRate": 0.875,
-      "pnl": 0.1346,
-      "closeTriggerCounts": {
-        "thesis_validated_profitable": 14,
-        "thesis_compressed_loss": 2
-      },
-      "note": "16 live CRCL trades, 88% win rate, +$0.13 total",
-      "asset": "CRCL"
-    },
-    {
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "scope": "live",
-      "n": 18,
-      "wins": 12,
-      "winRate": 0.6667,
-      "pnl": 0.1932,
-      "closeTriggerCounts": {
-        "thesis_validated_profitable": 10,
-        "expiry": 1,
-        "thesis_compressed_loss": 5,
-        "target": 2
-      },
-      "note": "18 live DKNG trades, 67% win rate, +$0.19 total",
-      "asset": "DKNG"
-    },
-    {
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "scope": "live",
-      "n": 14,
-      "wins": 10,
-      "winRate": 0.7143,
-      "pnl": 0.0495,
-      "closeTriggerCounts": {
-        "expiry": 3,
-        "thesis_validated_profitable": 7,
-        "thesis_compressed_loss": 4
-      },
-      "note": "14 live EBAY trades, 71% win rate, +$0.05 total",
-      "asset": "EBAY"
-    },
-    {
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "scope": "live",
-      "n": 8,
-      "wins": 5,
-      "winRate": 0.625,
-      "pnl": -0.0019,
-      "closeTriggerCounts": {
-        "expiry": 1,
-        "thesis_compressed_loss": 2,
-        "thesis_validated_profitable": 5
-      },
-      "note": "8 live GME trades, 63% win rate, $-0.00 total",
-      "asset": "GME"
     },
     {
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -655,14 +609,74 @@
       "n": 17,
       "wins": 14,
       "winRate": 0.8235,
-      "pnl": 0.1922,
+      "pnl": 0.1333,
+      "closeTriggerCounts": {
+        "thesis_validated_profitable": 14,
+        "thesis_compressed_loss": 3
+      },
+      "note": "17 live CRCL trades, 82% win rate, +$0.13 total",
+      "asset": "CRCL"
+    },
+    {
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "scope": "live",
+      "n": 20,
+      "wins": 13,
+      "winRate": 0.65,
+      "pnl": 0.2448,
+      "closeTriggerCounts": {
+        "thesis_validated_profitable": 11,
+        "expiry": 1,
+        "thesis_compressed_loss": 6,
+        "target": 2
+      },
+      "note": "20 live DKNG trades, 65% win rate, +$0.24 total",
+      "asset": "DKNG"
+    },
+    {
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "scope": "live",
+      "n": 15,
+      "wins": 11,
+      "winRate": 0.7333,
+      "pnl": 0.0579,
+      "closeTriggerCounts": {
+        "expiry": 3,
+        "thesis_validated_profitable": 8,
+        "thesis_compressed_loss": 4
+      },
+      "note": "15 live EBAY trades, 73% win rate, +$0.06 total",
+      "asset": "EBAY"
+    },
+    {
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "scope": "live",
+      "n": 9,
+      "wins": 6,
+      "winRate": 0.6667,
+      "pnl": 0.0042,
+      "closeTriggerCounts": {
+        "expiry": 1,
+        "thesis_compressed_loss": 2,
+        "thesis_validated_profitable": 6
+      },
+      "note": "9 live GME trades, 67% win rate, +$0.00 total",
+      "asset": "GME"
+    },
+    {
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "scope": "live",
+      "n": 18,
+      "wins": 14,
+      "winRate": 0.7778,
+      "pnl": 0.1828,
       "closeTriggerCounts": {
         "thesis_validated_profitable": 13,
-        "thesis_compressed_loss": 2,
+        "thesis_compressed_loss": 3,
         "breakeven_stop": 1,
         "target": 1
       },
-      "note": "17 live HIMS trades, 82% win rate, +$0.19 total",
+      "note": "18 live HIMS trades, 78% win rate, +$0.18 total",
       "asset": "HIMS"
     },
     {
@@ -681,15 +695,15 @@
     {
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "scope": "live",
-      "n": 9,
-      "wins": 5,
-      "winRate": 0.5556,
-      "pnl": -0.0064,
+      "n": 10,
+      "wins": 6,
+      "winRate": 0.6,
+      "pnl": 0.0012,
       "closeTriggerCounts": {
-        "thesis_validated_profitable": 5,
+        "thesis_validated_profitable": 6,
         "thesis_compressed_loss": 4
       },
-      "note": "9 live LITE trades, 56% win rate, $-0.01 total",
+      "note": "10 live LITE trades, 60% win rate, +$0.00 total",
       "asset": "LITE"
     },
     {
@@ -751,60 +765,73 @@
     {
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "scope": "live",
-      "n": 7,
-      "wins": 6,
-      "winRate": 0.8571,
-      "pnl": 0.0513,
+      "n": 8,
+      "wins": 7,
+      "winRate": 0.875,
+      "pnl": 0.0549,
       "closeTriggerCounts": {
-        "thesis_validated_profitable": 6,
+        "thesis_validated_profitable": 7,
         "thesis_compressed_loss": 1
       },
-      "note": "7 live ORCL trades, 86% win rate, +$0.05 total",
+      "note": "8 live ORCL trades, 88% win rate, +$0.05 total",
       "asset": "ORCL"
     },
     {
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "scope": "live",
-      "n": 12,
+      "n": 5,
+      "wins": 5,
+      "winRate": 1,
+      "pnl": 0.0876,
+      "closeTriggerCounts": {
+        "thesis_validated_profitable": 5
+      },
+      "note": "5 live PLTR trades, 100% win rate, +$0.09 total",
+      "asset": "PLTR"
+    },
+    {
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "scope": "live",
+      "n": 13,
       "wins": 9,
-      "winRate": 0.75,
-      "pnl": -0.0079,
+      "winRate": 0.6923,
+      "pnl": -0.0216,
       "closeTriggerCounts": {
         "thesis_validated_profitable": 7,
         "target": 2,
-        "thesis_compressed_loss": 2,
+        "thesis_compressed_loss": 3,
         "expiry": 1
       },
-      "note": "12 live RIVN trades, 75% win rate, $-0.01 total",
+      "note": "13 live RIVN trades, 69% win rate, $-0.02 total",
       "asset": "RIVN"
     },
     {
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "scope": "live",
-      "n": 19,
-      "wins": 10,
-      "winRate": 0.5263,
-      "pnl": 0.0568,
+      "n": 20,
+      "wins": 11,
+      "winRate": 0.55,
+      "pnl": 0.0601,
       "closeTriggerCounts": {
         "thesis_compressed_loss": 9,
-        "thesis_validated_profitable": 10
+        "thesis_validated_profitable": 11
       },
-      "note": "19 live RKLB trades, 53% win rate, +$0.06 total",
+      "note": "20 live RKLB trades, 55% win rate, +$0.06 total",
       "asset": "RKLB"
     },
     {
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "scope": "live",
-      "n": 22,
-      "wins": 16,
-      "winRate": 0.7273,
-      "pnl": 0.2887,
+      "n": 23,
+      "wins": 17,
+      "winRate": 0.7391,
+      "pnl": 0.2982,
       "closeTriggerCounts": {
-        "thesis_validated_profitable": 16,
+        "thesis_validated_profitable": 17,
         "thesis_compressed_loss": 5,
         "breakeven_stop": 1
       },
-      "note": "22 live SKHX trades, 73% win rate, +$0.29 total",
+      "note": "23 live SKHX trades, 74% win rate, +$0.30 total",
       "asset": "SKHX"
     },
     {
@@ -824,15 +851,15 @@
     {
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "scope": "live",
-      "n": 6,
-      "wins": 2,
-      "winRate": 0.3333,
-      "pnl": -0.0844,
+      "n": 7,
+      "wins": 3,
+      "winRate": 0.4286,
+      "pnl": -0.078,
       "closeTriggerCounts": {
-        "thesis_validated_profitable": 2,
+        "thesis_validated_profitable": 3,
         "thesis_compressed_loss": 4
       },
-      "note": "6 live TSM trades, 33% win rate, $-0.08 total",
+      "note": "7 live TSM trades, 43% win rate, $-0.08 total",
       "asset": "TSM"
     },
     {
@@ -919,15 +946,15 @@
     {
       "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
       "scope": "shadow",
-      "n": 318,
-      "wins": 132,
-      "winRate": 0.4151,
-      "pnl": 1.2069,
+      "n": 320,
+      "wins": 133,
+      "winRate": 0.4156,
+      "pnl": 1.1954,
       "closeTriggerCounts": {
         "thesis_validated_profitable": 1,
-        "observed_gap_closed": 317
+        "observed_gap_closed": 319
       },
-      "note": "318 resolved shadows, 42% win rate, +$1.21 total"
+      "note": "320 resolved shadows, 42% win rate, +$1.20 total"
     },
     {
       "signalType": "ONE_TOUCH_HIGH_EDGE_YES_SHADOW",
