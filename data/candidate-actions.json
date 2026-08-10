@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-10T11:28:16.862Z",
+  "generatedAt": "2026-08-10T12:28:20.743Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [],
@@ -22,36 +22,12 @@
         "oil_opt_iv_90d",
         "oil_hl_funding_ann"
       ],
-      "hoursOpen": 51.99,
-      "hoursToExpiry": 668.01,
+      "hoursOpen": 52.99,
+      "hoursToExpiry": 667.01,
       "plannedHoldHours": 720,
-      "elapsedHoldPct": 0.0722,
+      "elapsedHoldPct": 0.0736,
       "minHoldHours": 72,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "T-1786307323365-1mn7",
-      "signalType": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "amzn_stock",
-        "amzn_hl_perp",
-        "amzn_hl_funding_ann"
-      ],
-      "hoursOpen": 14.99,
-      "hoursToExpiry": 153.01,
-      "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0892,
-      "minHoldHours": 12,
-      "reason": "Mechanical FUNDING_EXTREME_SHORT setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     }
   ]
 }
