@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-10T14:28:20.889Z",
+  "generatedAt": "2026-08-10T15:28:27.142Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "BTC",
       "venue": "spot",
       "direction": "short",
-      "strength": 1,
-      "confidence": 0.5369835198387191,
-      "thesis": "BTC P/C ratio 0.20 — heavy call buying → contrarian short.",
+      "strength": 0.9533333333333335,
+      "confidence": 0.5119242889129122,
+      "thesis": "BTC P/C ratio 0.21 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 64790,
+      "entryPrice": 64352,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 64790,
+      "entryPrice": 64352,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,48 +56,55 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": -1,
-        "byAsset": {
-          "OIL": -1
-        },
-        "bySignalType": {
-          "USER_PM_IV_TOUCH_RICH_NO": -1
-        },
-        "byVenue": {
-          "polymarket": -1
-        },
-        "byCluster": {
-          "commodity": -1,
-          "oil_delta": -1,
-          "polymarket_binary": -1,
-          "polymarket_venue": -1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": -2,
         "byAsset": {
           "OIL": -1,
-          "BTC": 0
+          "BTC": -1
         },
         "bySignalType": {
           "USER_PM_IV_TOUCH_RICH_NO": -1,
-          "PC_RATIO_EXTREME_LOW": 0
+          "PC_RATIO_EXTREME_LOW": -1
         },
         "byVenue": {
           "polymarket": -1,
-          "spot": 0
+          "spot": -1
         },
         "byCluster": {
           "commodity": -1,
           "oil_delta": -1,
           "polymarket_binary": -1,
           "polymarket_venue": -1,
-          "btc_delta": 0,
-          "options_sentiment": 0,
-          "risk_on": 0,
-          "spot_venue": 0
+          "btc_delta": -1,
+          "options_sentiment": -1,
+          "risk_on": -1,
+          "spot_venue": -1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 2,
+        "totalNet": -2,
+        "byAsset": {
+          "OIL": -1,
+          "BTC": -1
+        },
+        "bySignalType": {
+          "USER_PM_IV_TOUCH_RICH_NO": -1,
+          "PC_RATIO_EXTREME_LOW": -1
+        },
+        "byVenue": {
+          "polymarket": -1,
+          "spot": -1
+        },
+        "byCluster": {
+          "commodity": -1,
+          "oil_delta": -1,
+          "polymarket_binary": -1,
+          "polymarket_venue": -1,
+          "btc_delta": -1,
+          "options_sentiment": -1,
+          "risk_on": -1,
+          "spot_venue": -1
         }
       },
       "warnings": []
@@ -137,12 +144,31 @@
         "oil_opt_iv_90d",
         "oil_hl_funding_ann"
       ],
-      "hoursOpen": 54.99,
-      "hoursToExpiry": 665.01,
+      "hoursOpen": 55.99,
+      "hoursToExpiry": 664.01,
       "plannedHoldHours": 720,
-      "elapsedHoldPct": 0.0764,
+      "elapsedHoldPct": 0.0778,
       "minHoldHours": 72,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "T-1786372118963-sqwh",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "btc_spot",
+        "btc_ibit_pc_ratio"
+      ],
+      "hoursOpen": 1,
+      "hoursToExpiry": 119,
+      "plannedHoldHours": 120,
+      "elapsedHoldPct": 0.0083,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     }
   ]
 }
