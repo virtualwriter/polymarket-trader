@@ -4833,3 +4833,43 @@ No discretionary closes are allowed this hour. BTC short (T-1786372118963-sqwh) 
 
 ---
 
+### 2026-08-10 21:28 UTC
+
+**Portfolio:** $99.12 total | Cash $96.12 | 3 open | P&L $2.3646 | 63% win rate (697 trades)
+
+**Opened 1 positions:**
+- GOLD short @ $4398 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 18 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved narrower by 12.3pp (was -11.4, now -23.7)
+- [anomaly] gold_opt_iv_30d = 36.8 is 3.3 std devs from mean (23.98 ± 3.91)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.40 to -0.16. Rolling correlation: 24h=0.76, 7d=-0.23, 30d=-0.32. Current 24h corr is at 97th pct of last 30 daily 24h-rolling values (range -0.89 to 0.76).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.76 to 0.33. Rolling correlation: 24h=-0.72, 7d=0.83, 30d=0.32. Current 24h corr is at 7th pct of last 30 daily 24h-rolling values (range -0.77 to 0.95).
+
+**Blocked signal learning:**
+- Open blocked shadows: 48
+- Resolved blocked shadows: 846 (435 wins / 411 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 16/29 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/18 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=300 (79W/178L/43flat, 30.7% win-rate, sum $-1.0972, avg -0.37%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit target (+3.57%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+5.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.10%)
+- ❌ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expired (-1.12%)
+
+**LLM analysis:**
+Both open positions are not eligible for discretionary LLM close this hour. The OIL IV-touch rich NO (T-1786174137131-pym0) is deep in profit (+378%), with the YES market still 10+ pts rich to the model; the thesis holds, and rule-based exits are mechanical. The BTC PC_RATIO_EXTREME_LOW short (T-1786372118963-sqwh) is only 7h in, so too early to close. However, the signal's core evidence metric (ibit P/C ratio) has reversed from 0.195 at entry to 0.589, fully crossing back through the extreme-low threshold. This likely represents thesis invalidation, but a close must wait until the 12h minimum hold expires. The position is currently +1.1%, so no immediate risk stress. Will flag for review at the next candle if P/C remains elevated. No new entries or mechanical exits needed.
+
+---
+
