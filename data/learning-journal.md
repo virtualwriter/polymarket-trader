@@ -4110,3 +4110,46 @@ No discretionary closes eligible this hour. All positions are either rule-based 
 
 ---
 
+### 2026-08-10 00:28 UTC
+
+**Portfolio:** $99.15 total | Cash $89.15 | 10 open | P&L $2.3885 | 63% win rate (687 trades)
+
+**Closed 5 trades:**
+- ❌ LITE long via hyperliquid/hl_perp [HL LITE Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0065 (-0.7%, market -0.0085, funding 0.0020)
+- ✅ SKHX long via hyperliquid/hl_perp [HL SKHX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0769 (7.7%, market 0.0769, funding -0.0001)
+- ❌ GOOGL long via hyperliquid/hl_perp [HL GOOGL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0327 (-3.3%, market -0.0330, funding 0.0003)
+- ❌ HOOD long via hyperliquid/hl_perp [HL HOOD Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0144 (-1.4%, market -0.0147, funding 0.0003)
+- ✅ SNDK long via hyperliquid/hl_perp [HL SNDK Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0172 (1.7%, market 0.0172, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 17 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 Opened 1 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [correlation_flip] GOLD-OIL correlation shifted from 0.38 to -0.19. Rolling correlation: 24h=-0.59, 7d=-0.57, 30d=-0.34. Current 24h corr is at 33th pct of last 30 daily 24h-rolling values (range -0.96 to 0.74).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.76 to 0.32. Rolling correlation: 24h=0.21, 7d=0.91, 30d=0.30. Current 24h corr is at 33th pct of last 30 daily 24h-rolling values (range -0.81 to 0.93).
+
+**Blocked signal learning:**
+- Open blocked shadows: 48
+- Resolved blocked shadows: 841 (433 wins / 408 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 16/29 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/17 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=297 (78W/176L/43flat, 30.7% win-rate, sum $-1.1117, avg -0.37%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-1.15%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.74%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-6.45%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 0/12; next scheduled 2026-08-10T02:28:29.123Z). Mechanical cycle ran normally._
+
+---
+
