@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-10T21:28:19.461Z",
+  "generatedAt": "2026-08-10T22:28:18.948Z",
   "dataFreshness": {
-    "valuationRows": 2238,
-    "latestValuationAt": "2026-08-10T21",
-    "macroRows": 2236,
+    "valuationRows": 2239,
+    "latestValuationAt": "2026-08-10T22",
+    "macroRows": 2237,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-10T21"
+    "latestInstrumentSnapshotAt": "2026-08-10T22"
   },
   "portfolio": {
-    "cash": 97.1248,
-    "openPositions": 2,
+    "cash": 96.1248,
+    "openPositions": 3,
     "realizedPnl": 2.3646,
     "totalTrades": 697,
     "winRatePct": 63.1,
-    "unrealizedPnl": 3.8442
+    "unrealizedPnl": 4.0686
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "polymarket",
       "direction": "short",
       "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-      "pnlPct": 377.78,
-      "currentPrice": 0.43,
-      "underlyingPrice": 81.841,
+      "pnlPct": 400,
+      "currentPrice": 0.45,
+      "underlyingPrice": 81.621,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -42,15 +42,32 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 1.08,
-      "currentPrice": 64088,
-      "underlyingPrice": 64088,
+      "pnlPct": 1.21,
+      "currentPrice": 64004,
+      "underlyingPrice": 64004,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "btc_spot",
         "btc_ibit_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1786397332673-pqk6",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "pnlPct": 0.09,
+      "currentPrice": 4394,
+      "underlyingPrice": 4394,
+      "targetPct": 5,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
       ]
     }
   ],
@@ -223,9 +240,9 @@
   ],
   "blockedSummary": {
     "openCount": 48,
-    "resolvedCount": 846,
+    "resolvedCount": 847,
     "wouldHaveWon": 435,
-    "wouldHaveLost": 411,
+    "wouldHaveLost": 412,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -293,26 +310,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 2.74,
-        "resolvedAt": "2026-08-09T07:28:17.943Z",
-        "marketQuality": {
-          "yesBid": 0.27,
-          "yesAsk": 0.3,
-          "yesSpread": 0.03,
-          "liquidity": 13108.29,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -444,6 +441,26 @@
         "trendMetrics": {
           "aboveTrendPct": 1.08,
           "momentumPct": 2.52
+        }
+      },
+      {
+        "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "polymarket_proxy_short",
+        "outcome": "loss",
+        "closeReason": "stop",
+        "pnlPct": -7.02,
+        "resolvedAt": "2026-08-10T22:28:18.517Z",
+        "marketQuality": {
+          "yesBid": 0.43,
+          "yesAsk": 0.45,
+          "yesSpread": 0.02,
+          "liquidity": 11965.98,
+          "flags": [
+            "wide_pm_spread"
+          ]
         }
       }
     ],
