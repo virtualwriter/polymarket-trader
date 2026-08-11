@@ -1,5 +1,5 @@
 {
-  "cash": 96.12484654732327,
+  "cash": 95.12484654732327,
   "positions": [
     {
       "id": "T-1786174137131-pym0",
@@ -8,7 +8,7 @@
       "venue": "polymarket",
       "direction": "short",
       "entryPrice": 0.08999999999999997,
-      "currentPrice": 0.45999999999999996,
+      "currentPrice": 0.47,
       "entryUnderlyingPrice": 76.67,
       "size": 1,
       "leverage": 1,
@@ -41,9 +41,9 @@
           }
         ]
       },
-      "peakPnlPct": 411.11111111111126,
+      "peakPnlPct": 422.22222222222234,
       "fundingPnlAccrued": 0,
-      "currentUnderlyingPrice": 81.544
+      "currentUnderlyingPrice": 81.739
     },
     {
       "id": "T-1786372118963-sqwh",
@@ -52,8 +52,8 @@
       "venue": "spot",
       "direction": "short",
       "entryPrice": 64790,
-      "currentPrice": 63959,
-      "currentUnderlyingPrice": 63959,
+      "currentPrice": 63969,
+      "currentUnderlyingPrice": 63969,
       "entryUnderlyingPrice": 64790,
       "size": 1,
       "leverage": 1,
@@ -76,8 +76,8 @@
       "venue": "hyperliquid",
       "direction": "short",
       "entryPrice": 4398,
-      "currentPrice": 4399,
-      "currentUnderlyingPrice": 4399,
+      "currentPrice": 4418,
+      "currentUnderlyingPrice": 4418,
       "entryUnderlyingPrice": 4398,
       "size": 1,
       "leverage": 1,
@@ -91,13 +91,37 @@
       "instrumentType": "hl_perp",
       "instrumentId": "GOLD",
       "instrumentLabel": "HL GOLD perp",
-      "fundingPnlAccrued": 0.000018120890410958902,
+      "fundingPnlAccrued": 0.000058698972602739726,
       "peakPnlPct": 0.18190086402910413
+    },
+    {
+      "id": "T-1786408119564-6fjn",
+      "openedAt": "2026-08-11T00:28:39.564Z",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 276.81,
+      "currentPrice": 276.81,
+      "currentUnderlyingPrice": 277,
+      "entryUnderlyingPrice": 277,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "hypothesisId": null,
+      "thesis": "AMZN HL funding -27.4% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDate": "2026-08-18T00:28:39.564Z",
+      "entryConfidence": 0.19862147139085312,
+      "instrumentType": "hl_perp",
+      "instrumentId": "AMZN",
+      "instrumentLabel": "HL AMZN perp",
+      "fundingPnlAccrued": 0
     }
   ],
   "totalRealizedPnl": 2.3645999999999963,
   "totalTrades": 697,
   "winCount": 440,
   "lossCount": 257,
-  "lastUpdated": "2026-08-10T23:28:15.998Z"
+  "lastUpdated": "2026-08-11T00:28:39.566Z"
 }
