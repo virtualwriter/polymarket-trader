@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-11T17:28:24.885Z",
+  "generatedAt": "2026-08-11T18:28:16.291Z",
   "dataFreshness": {
-    "valuationRows": 2257,
-    "latestValuationAt": "2026-08-11T17",
-    "macroRows": 2255,
+    "valuationRows": 2258,
+    "latestValuationAt": "2026-08-11T18",
+    "macroRows": 2256,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-11T17"
+    "latestInstrumentSnapshotAt": "2026-08-11T18"
   },
   "portfolio": {
     "cash": 97.1296,
@@ -13,7 +13,7 @@
     "realizedPnl": 2.3694,
     "totalTrades": 700,
     "winRatePct": 63.1,
-    "unrealizedPnl": 4.8434
+    "unrealizedPnl": 4.9545
   },
   "openPositions": [
     {
@@ -24,7 +24,7 @@
       "signalType": "USER_PM_IV_TOUCH_RICH_NO",
       "pnlPct": 477.78,
       "currentPrice": 0.52,
-      "underlyingPrice": 82.495,
+      "underlyingPrice": 82.341,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -44,7 +44,7 @@
       "signalType": "USER_PM_IV_TOUCH_RICH_NO",
       "pnlPct": -9.09,
       "currentPrice": 0.1,
-      "underlyingPrice": 1864.5,
+      "underlyingPrice": 1863.1,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -224,7 +224,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 53,
+    "openCount": 54,
     "resolvedCount": 849,
     "wouldHaveWon": 436,
     "wouldHaveLost": 413,
@@ -466,22 +466,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "SPY",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "spx-hit-dec-2026 — NO — Will S&P 500 (SPX) hit $9,300 (HIGH) in December?",
-        "marketQuality": {
-          "yesBid": 0.042,
-          "yesAsk": 0.06,
-          "yesSpread": 0.018,
-          "liquidity": 5603.61,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.7pt on SPY, spread 1.8c, liquidity 5604. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $2,500 by December 31, 2026?",
@@ -591,6 +575,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.0pt on BTC, spread 1.0c, liquidity 44941. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-in-august-2026 — NO — Will Ethereum reach $2,000 in August?",
+        "marketQuality": {
+          "yesBid": 0.49,
+          "yesAsk": 0.5,
+          "yesSpread": 0.01,
+          "liquidity": 29621.74,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.0pt on ETH, spread 1.0c, liquidity 29622. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
