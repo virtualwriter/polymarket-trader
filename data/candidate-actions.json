@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-11T16:28:23.662Z",
+  "generatedAt": "2026-08-11T17:28:25.032Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "ETH",
       "venue": "polymarket",
       "direction": "short",
-      "strength": 0.3515775426666667,
+      "strength": 0.36764487333333334,
       "confidence": 0.2,
-      "thesis": "[IV-TOUCH RICH NO LIVE] PM YES 89.5% vs IV touch model 83.7% (5.3pt rich) on ETH above 1900; buy NO / sell YES, hold up to 30d or expiry.",
+      "thesis": "[IV-TOUCH RICH NO LIVE] PM YES 89.5% vs IV touch model 83.5% (5.5pt rich) on ETH above 1900; buy NO / sell YES, hold up to 30d or expiry.",
       "hypothesisId": null,
-      "entryPrice": 1864.4,
+      "entryPrice": 1864.5,
       "targetPct": null,
       "stopPct": 100,
       "expiryDays": 30,
@@ -33,7 +33,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 1864.4,
+      "entryPrice": 1864.5,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -62,44 +62,47 @@
         "risk_on"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": -2,
         "byAsset": {
-          "OIL": -1
+          "OIL": -1,
+          "ETH": -1
         },
         "bySignalType": {
-          "USER_PM_IV_TOUCH_RICH_NO": -1
+          "USER_PM_IV_TOUCH_RICH_NO": -2
         },
         "byVenue": {
-          "polymarket": -1
+          "polymarket": -2
         },
         "byCluster": {
           "commodity": -1,
           "oil_delta": -1,
-          "polymarket_binary": -1,
-          "polymarket_venue": -1
+          "polymarket_binary": -2,
+          "polymarket_venue": -2,
+          "eth_delta": -1,
+          "risk_on": -1
         }
       },
       "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 2,
+        "totalNet": -2,
         "byAsset": {
           "OIL": -1,
-          "ETH": 0
+          "ETH": -1
         },
         "bySignalType": {
-          "USER_PM_IV_TOUCH_RICH_NO": -1
+          "USER_PM_IV_TOUCH_RICH_NO": -2
         },
         "byVenue": {
-          "polymarket": -1
+          "polymarket": -2
         },
         "byCluster": {
           "commodity": -1,
           "oil_delta": -1,
-          "polymarket_binary": -1,
-          "polymarket_venue": -1,
-          "eth_delta": 0,
-          "risk_on": 0
+          "polymarket_binary": -2,
+          "polymarket_venue": -2,
+          "eth_delta": -1,
+          "risk_on": -1
         }
       },
       "warnings": []
@@ -139,10 +142,31 @@
         "oil_opt_iv_90d",
         "oil_hl_funding_ann"
       ],
-      "hoursOpen": 80.99,
-      "hoursToExpiry": 639.01,
+      "hoursOpen": 81.99,
+      "hoursToExpiry": 638.01,
       "plannedHoldHours": 720,
-      "elapsedHoldPct": 0.1125,
+      "elapsedHoldPct": 0.1139,
+      "minHoldHours": 72,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "T-1786465723472-4gf9",
+      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+      "asset": "ETH",
+      "venue": "polymarket",
+      "direction": "short",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "eth_spot",
+        "eth_opt_iv_30d",
+        "eth_opt_iv_90d",
+        "eth_hl_funding_ann"
+      ],
+      "hoursOpen": 0.99,
+      "hoursToExpiry": 719.01,
+      "plannedHoldHours": 720,
+      "elapsedHoldPct": 0.0014,
       "minHoldHours": 72,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
