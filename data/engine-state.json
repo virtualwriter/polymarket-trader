@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-11T13:28:26.334Z",
+  "generatedAt": "2026-08-11T14:28:16.914Z",
   "dataFreshness": {
-    "valuationRows": 2253,
-    "latestValuationAt": "2026-08-11T13",
-    "macroRows": 2251,
+    "valuationRows": 2254,
+    "latestValuationAt": "2026-08-11T14",
+    "macroRows": 2252,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-11T13"
+    "latestInstrumentSnapshotAt": "2026-08-11T14"
   },
   "portfolio": {
     "cash": 97.1394,
@@ -13,7 +13,7 @@
     "realizedPnl": 2.3792,
     "totalTrades": 699,
     "winRatePct": 63.2,
-    "unrealizedPnl": 4.0581
+    "unrealizedPnl": 4.0458
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "polymarket",
       "direction": "short",
       "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-      "pnlPct": 388.89,
-      "currentPrice": 0.44,
-      "underlyingPrice": 80.928,
+      "pnlPct": 400,
+      "currentPrice": 0.45,
+      "underlyingPrice": 81.415,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -42,9 +42,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.25,
-      "currentPrice": 277.5,
-      "underlyingPrice": 277.3,
+      "pnlPct": -0.98,
+      "currentPrice": 274.09,
+      "underlyingPrice": 275.21,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -223,7 +223,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 49,
+    "openCount": 50,
     "resolvedCount": 849,
     "wouldHaveWon": 436,
     "wouldHaveLost": 413,
@@ -465,22 +465,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-in-july-2026 — NO — Will Ethereum reach $2,000 in July?",
-        "marketQuality": {
-          "yesBid": 0.63,
-          "yesAsk": 0.65,
-          "yesSpread": 0.02,
-          "liquidity": 23280.43,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.9pt on ETH, spread 2.0c, liquidity 23280. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "OIL",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-price-will-wti-hit-in-july-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $90 in July?",
@@ -590,6 +574,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.5pt on BTC, spread 1.0c, liquidity 28193. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $70,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.71,
+          "yesAsk": 0.72,
+          "yesSpread": 0.01,
+          "liquidity": 91087.78,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.2pt on BTC, spread 1.0c, liquidity 91088. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },

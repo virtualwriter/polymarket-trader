@@ -1,15 +1,43 @@
 {
-  "generatedAt": "2026-08-11T13:28:26.484Z",
+  "generatedAt": "2026-08-11T14:28:30.218Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
-  "entrySignals": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1786408119564-6fjn",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "amzn_hl_funding_ann"
+      ],
+      "thesis": "Funding extreme short thesis invalidated: amzn_hl_funding_ann crossed from -27.42% at entry to +5.48%, well beyond zero. The crowded short condition is gone and longs now pay carry, removing the signal edge."
+    }
+  ],
+  "entrySignals": [
+    {
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "strength": 0.2633333333333334,
+      "confidence": 0.1417402657360212,
+      "thesis": "BTC P/C ratio 0.42 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 64036,
+      "targetPct": 5,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    }
+  ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
