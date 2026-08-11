@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-10T07:11:46Z",
+  "generatedAt": "2026-08-11T07:09:16Z",
   "summary": {
-    "generatedAt": "2026-08-10T07:11:46Z",
+    "generatedAt": "2026-08-11T07:09:16Z",
     "findingCounts": {
-      "open": 16,
-      "strengthened": 26,
+      "open": 14,
+      "strengthened": 28,
       "weakened": 0,
       "negative": 4,
       "suppressed": 0,
@@ -21,7 +21,7 @@
       "themeSlug": "other_informed_flow",
       "status": "open"
     },
-    "authoredHypothesisCount": 10,
+    "authoredHypothesisCount": 8,
     "advicePresent": true
   },
   "topOpportunities": [
@@ -48,8 +48,8 @@
     {
       "rank": 3,
       "id": "FIND-0043",
-      "opportunityScore": 0.9877,
-      "confidenceScore": 0.5851,
+      "opportunityScore": 0.9895,
+      "confidenceScore": 0.601,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -58,8 +58,8 @@
     {
       "rank": 4,
       "id": "FIND-0030",
-      "opportunityScore": 0.987,
-      "confidenceScore": 0.4532,
+      "opportunityScore": 0.9887,
+      "confidenceScore": 0.4618,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -68,12 +68,12 @@
     {
       "rank": 5,
       "id": "FIND-0058",
-      "opportunityScore": 0.9809,
-      "confidenceScore": 0.434,
+      "opportunityScore": 0.9837,
+      "confidenceScore": 0.4447,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s?,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
-      "status": "open"
+      "status": "strengthened"
     },
     {
       "rank": 6,
@@ -97,20 +97,20 @@
     },
     {
       "rank": 8,
-      "id": "FIND-0022",
-      "opportunityScore": 0.9653,
-      "confidenceScore": 0.4198,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|strat:s?,e1-3|no",
+      "id": "FIND-0055",
+      "opportunityScore": 0.9703,
+      "confidenceScore": 0.4186,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
       "status": "strengthened"
     },
     {
       "rank": 9,
-      "id": "FIND-0055",
-      "opportunityScore": 0.965,
-      "confidenceScore": 0.3945,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no",
+      "id": "FIND-0022",
+      "opportunityScore": 0.9653,
+      "confidenceScore": 0.4198,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|strat:s?,e1-3|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
       "status": "strengthened"
@@ -132,7 +132,7 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 36,
-      "avgOpportunityScore": 0.6661
+      "avgOpportunityScore": 0.6664
     },
     {
       "id": "THEME-0002",
@@ -153,7 +153,7 @@
       "slug": "funding_extreme",
       "title": "Extreme funding signal shadows",
       "findingCount": 1,
-      "avgOpportunityScore": 0.3033
+      "avgOpportunityScore": 0.2299
     },
     {
       "id": "THEME-0003",
@@ -174,52 +174,42 @@
     {
       "originFindingId": "FIND-0020",
       "themeId": "THEME-0003",
-      "description": "Fade dumb\u2011money highs on upside one\u2011touch contracts. When tracked smart wallets are net short YES (smart_flow_stance \u2264 -1) on above\u2011strike contracts, sell YES (short) because the crowd is overpaying for upside protection."
+      "description": "Smart\u2011money fade: when tracked smart wallets are net short YES (smart_flow_stance \u2264 -1) on upside one\u2011touch NO contracts and a sell\u2011YES edge of at least 3 points exists, enter short (sell YES) expecting spot to decline. In\u2011sample discovery from FIND\u20110020 shows informed flow asymmetry."
     },
     {
       "originFindingId": "FIND-0053",
       "themeId": "THEME-0005",
-      "description": "GOLD put/call ratio extreme low short, ignoring positive trend. When GOLD's GLD put/call ratio falls into the bottom 10% of its 7\u2011day range (extreme call buying), short the spot."
-    },
-    {
-      "originFindingId": "FIND-0021",
-      "themeId": "THEME-0004",
-      "description": "Rich PM IV NO fade on upside touch. When Polymarket IV exceeds listed\u2011option IV by \u2265\u202f10 vol points on any asset's above\u2011strike one\u2011touch contracts, sell YES (short)."
-    },
-    {
-      "originFindingId": "FIND-0043",
-      "themeId": "THEME-0001",
-      "description": "BTC one\u2011touch NO edge with moderate strength. On BTC above\u2011strike contracts only, sell YES when the sell\u2011YES edge is between 3 and 8 pts."
-    },
-    {
-      "originFindingId": "FIND-0024",
-      "themeId": "THEME-0004",
-      "description": "Rich PM IV NO fade near expiry. Combine rich PM IV (\u226510 vol pts above options) with contracts expiring within 30 days on upside touch contracts."
-    },
-    {
-      "originFindingId": "FIND-0036",
-      "themeId": "THEME-0001",
-      "description": "GOLD one\u2011touch NO edge near expiry. On GOLD above\u2011strike contracts expiring within 30 days, sell YES when the edge is \u2265\u202f1 pt."
-    },
-    {
-      "originFindingId": "FIND-0022",
-      "themeId": "THEME-0001",
-      "description": "OIL one\u2011touch NO edge with tight edge band. When the sell\u2011YES edge on OIL upside one\u2011touch contracts is between 1 and 3 pts, sell YES (short)."
+      "description": "GOLD extreme low put/call ratio short: when gold\u2019s GLD put/call ratio is in the bottom 10% of its 7\u2011day range (extreme call buying/exhausted puts), short spot regardless of the prevailing trend. Shadow evidence shows +$0.13 PnL on 8 resolved trades (100% WR) despite being blocked by a positive\u2011trend filter."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H\u2011534: Add a bearish trend filter. Only take the gold cap\u2011edge short when spot is below its 24h SMA, avoiding strong uptrends where high cap\u2011edge reflects genuine bullish demand."
+      "description": "Refinement of H\u2011534: only take the gold one\u2011touch NO short when spot is below the 24h SMA, plus the underlying\u2011cap edge \u226510 pts. This avoids fading strong uptrends where the cap edge reflects bullish momentum."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H\u2011539: Require funding to have already bounced off its 24h low and be in the bottom 5% of the 30d range. This avoids entries while funding is still free\u2011falling and only captures true reversal starts."
+      "description": "Refinement of H\u2011539: restrict CBRS funding reversion to weekends (Sat/Sun) and require funding to be in the extreme low end of its 7\u2011day distribution (percentile <10). This ensures we only act on true weekend\u2011driven overshoots that reliably revert."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H\u2011537: Add deep extreme percentile and oversold spot filter. Only long AAPL when funding is in the bottom 5% of 30d range and the stock is below its 7d SMA, providing a reversion\u2011friendly context."
+      "description": "Refinement of H\u2011537: apply the same weekend\u2011only filter and deeper extremity condition (funding percentile <10) to AAPL funding reversion. This lifts the win rate from 50% by eliminating weekday triggers where the reversion pattern is unreliable."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H\u2011535: limit MU funding reversion to weekends and require funding to be in its 7\u2011day bottom decile. This captures the true overshoots that historically produced sharp reversals."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H\u2011108: tighten BTC momentum requirements \u2013 demand spot be within 2% of its 7\u2011day high and show a positive 24h change, in addition to HYPE staying above its SMA with stable OI. This ensures we only bet on sustained, strong BTC breakouts."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H\u2011001: replace absolute PM\u2011IV thresholds with a regime\u2011relative condition \u2013 PM IV z\u2011score below \u20131.5 on a 30\u2011day window, indicating extreme compression versus its own recent history. This should capture dislocations regardless of the absolute level of IV."
     }
   ],
   "negativeFindings": [
@@ -251,9 +241,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-08-10T07:10:06Z",
-    "opportunitiesGeneratedAt": "2026-08-10T07:11:46Z",
-    "themesGeneratedAt": "2026-08-10T07:10:10Z",
-    "adviceGeneratedAt": "2026-08-09T07:07:28.817Z"
+    "findingsExportGeneratedAt": "2026-08-11T07:07:36Z",
+    "opportunitiesGeneratedAt": "2026-08-11T07:09:16Z",
+    "themesGeneratedAt": "2026-08-11T07:07:40Z",
+    "adviceGeneratedAt": "2026-08-11T07:07:35.758Z"
   }
 }
