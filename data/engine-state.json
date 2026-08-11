@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-11T05:28:15.683Z",
+  "generatedAt": "2026-08-11T06:28:23.988Z",
   "dataFreshness": {
-    "valuationRows": 2245,
-    "latestValuationAt": "2026-08-11T05",
-    "macroRows": 2243,
+    "valuationRows": 2246,
+    "latestValuationAt": "2026-08-11T06",
+    "macroRows": 2244,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-11T05"
+    "latestInstrumentSnapshotAt": "2026-08-11T06"
   },
   "portfolio": {
     "cash": 95.1248,
@@ -13,7 +13,7 @@
     "realizedPnl": 2.3646,
     "totalTrades": 697,
     "winRatePct": 63.1,
-    "unrealizedPnl": 4.239
+    "unrealizedPnl": 4.4104
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "polymarket",
       "direction": "short",
       "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-      "pnlPct": 411.11,
-      "currentPrice": 0.46,
-      "underlyingPrice": 81.864,
+      "pnlPct": 433.33,
+      "currentPrice": 0.48,
+      "underlyingPrice": 82.102,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -42,9 +42,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 1.29,
-      "currentPrice": 63955,
-      "underlyingPrice": 63955,
+      "pnlPct": 1.32,
+      "currentPrice": 63937,
+      "underlyingPrice": 63937,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -59,9 +59,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 0.09,
-      "currentPrice": 4395,
-      "underlyingPrice": 4395,
+      "pnlPct": 0.57,
+      "currentPrice": 4374,
+      "underlyingPrice": 4374,
       "targetPct": 5,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -76,8 +76,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.3,
-      "currentPrice": 277.62,
+      "pnlPct": 0.27,
+      "currentPrice": 277.54,
       "underlyingPrice": 277,
       "targetPct": 4,
       "stopPct": 2,
@@ -257,7 +257,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 48,
+    "openCount": 49,
     "resolvedCount": 848,
     "wouldHaveWon": 435,
     "wouldHaveLost": 413,
@@ -489,22 +489,6 @@
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
         "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $5,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.04,
-          "yesAsk": 0.05,
-          "yesSpread": 0.01,
-          "liquidity": 37658.76,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.1pt on ETH, spread 1.0c, liquidity 37659. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $6,500 by December 31, 2026?",
         "marketQuality": {
           "yesBid": 0.017,
@@ -612,6 +596,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.4pt on BTC, spread 2.0c, liquidity 56096. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "GOLD",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $5,000 by end of December?",
+        "marketQuality": {
+          "yesBid": 0.46,
+          "yesAsk": 0.49,
+          "yesSpread": 0.03,
+          "liquidity": 11902.94,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 6.0pt on GOLD, spread 3.0c, liquidity 11903. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
