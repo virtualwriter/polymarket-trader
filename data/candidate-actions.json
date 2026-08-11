@@ -1,11 +1,128 @@
 {
-  "generatedAt": "2026-08-11T15:28:23.767Z",
+  "generatedAt": "2026-08-11T16:28:23.662Z",
   "mechanicalExits": [],
   "signalKillExits": [],
-  "entryCandidates": [],
-  "sizingPreviews": [],
-  "portfolioExposurePreviews": [],
-  "stagedQuantRules": [],
+  "entryCandidates": [
+    {
+      "type": "USER_PM_IV_TOUCH_RICH_NO",
+      "asset": "ETH",
+      "venue": "polymarket",
+      "direction": "short",
+      "strength": 0.3515775426666667,
+      "confidence": 0.2,
+      "thesis": "[IV-TOUCH RICH NO LIVE] PM YES 89.5% vs IV touch model 83.7% (5.3pt rich) on ETH above 1900; buy NO / sell YES, hold up to 30d or expiry.",
+      "hypothesisId": null,
+      "entryPrice": 1864.4,
+      "targetPct": null,
+      "stopPct": 100,
+      "expiryDays": 30,
+      "contractHint": {
+        "preferredEventSlug": "what-price-will-ethereum-hit-in-august-2026",
+        "forceInstrumentType": "pm_no",
+        "forceMarketId": "3492744",
+        "allowDirectionFallback": false
+      }
+    }
+  ],
+  "sizingPreviews": [
+    {
+      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+      "asset": "ETH",
+      "venue": "polymarket",
+      "direction": "short",
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "reason": "unsupported_signal",
+      "entryPrice": 1864.4,
+      "probabilitySource": "unsupported",
+      "winProbability": null,
+      "probabilitySampleSize": null,
+      "edgePts": null,
+      "rawKellyFraction": null,
+      "adjustedKellyFraction": null,
+      "cappedKellyFraction": null,
+      "notes": [
+        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
+        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
+      ]
+    }
+  ],
+  "portfolioExposurePreviews": [
+    {
+      "candidateId": "USER_PM_IV_TOUCH_RICH_NO:ETH:0",
+      "asset": "ETH",
+      "venue": "polymarket",
+      "direction": "short",
+      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+      "candidateSize": 0,
+      "riskClusters": [
+        "eth_delta",
+        "polymarket_binary",
+        "polymarket_venue",
+        "risk_on"
+      ],
+      "current": {
+        "totalGross": 1,
+        "totalNet": -1,
+        "byAsset": {
+          "OIL": -1
+        },
+        "bySignalType": {
+          "USER_PM_IV_TOUCH_RICH_NO": -1
+        },
+        "byVenue": {
+          "polymarket": -1
+        },
+        "byCluster": {
+          "commodity": -1,
+          "oil_delta": -1,
+          "polymarket_binary": -1,
+          "polymarket_venue": -1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 1,
+        "totalNet": -1,
+        "byAsset": {
+          "OIL": -1,
+          "ETH": 0
+        },
+        "bySignalType": {
+          "USER_PM_IV_TOUCH_RICH_NO": -1
+        },
+        "byVenue": {
+          "polymarket": -1
+        },
+        "byCluster": {
+          "commodity": -1,
+          "oil_delta": -1,
+          "polymarket_binary": -1,
+          "polymarket_venue": -1,
+          "eth_delta": 0,
+          "risk_on": 0
+        }
+      },
+      "warnings": []
+    }
+  ],
+  "stagedQuantRules": [
+    {
+      "candidateId": "USER_PM_IV_TOUCH_RICH_NO:ETH:0",
+      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+      "asset": "ETH",
+      "mode": "observe_uniform",
+      "liveSizingEnabled": false,
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "enforcedLiveSize": 1,
+      "wouldResize": true,
+      "edgePts": null,
+      "alerts": [],
+      "notes": [
+        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
+      ]
+    }
+  ],
   "llmCloseEligibility": [
     {
       "positionId": "T-1786174137131-pym0",
@@ -22,10 +139,10 @@
         "oil_opt_iv_90d",
         "oil_hl_funding_ann"
       ],
-      "hoursOpen": 79.99,
-      "hoursToExpiry": 640.01,
+      "hoursOpen": 80.99,
+      "hoursToExpiry": 639.01,
       "plannedHoldHours": 720,
-      "elapsedHoldPct": 0.1111,
+      "elapsedHoldPct": 0.1125,
       "minHoldHours": 72,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
