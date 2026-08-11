@@ -5158,3 +5158,43 @@ Closed BTC short as btc_ibit_pc_ratio normalized from 0.195 to 0.589, thesis inv
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-11T07:07:35.758Z, model=deepseek-v4-pro)
+- Hypotheses added: 3 (rejected 5); reviews applied: 6; invalidated assumptions learned: 5; param updates: none.
+- Strategy review: Weekend funding reversion continues to deliver consistent profits across a broad set of assets, while the ONE_TOUCH_HIGH_EDGE_NO shadow is profitable but noisy. The main failures are concentrated in shadow-mined gold touch NO variants (edge fails to predict downside during persistent bullish trends), loose funding reversion signals that trigger outside weekends or without extreme funding, and cross-asset momentum confirmations that do not translate into sufficient spot moves. Several hardcoded-threshold hypotheses (e.g., BTC PM‑IV expansion, absolute funding levels) have broken down as regimes
+- Nightly journal: Tonight’s review focused on the persistent underperformance of several shadow‑mined and early hypothesis variants. Gold one‑touch NO edge fails because elevated YES prices in a bull market are not a mispricing but a reflection of real demand — we must add trend filters. Weekend funding reversion hypotheses (CBRS, AAPL, MU) work well only when they are restricted to actual weekends and extreme funding percentiles; loose triggers on weekdays erode performance. The cross‑asset momentum family needs tighter primary momentum conditions so that HYPE’s confirmation is applied only to already strong B
+### 2026-08-11 07:28 UTC
+
+**Portfolio:** $99.14 total | Cash $96.14 | 3 open | P&L $2.3778 | 63% win rate (698 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 17 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [correlation_flip] GOLD-OIL correlation shifted from 0.40 to -0.14. Rolling correlation: 24h=0.70, 7d=0.02, 30d=-0.30. Current 24h corr is at 100th pct of last 30 daily 24h-rolling values (range -0.97 to 0.70).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.77 to 0.33. Rolling correlation: 24h=-0.70, 7d=0.71, 30d=0.30. Current 24h corr is at 10th pct of last 30 daily 24h-rolling values (range -0.77 to 0.91).
+
+**Blocked signal learning:**
+- Open blocked shadows: 49
+- Resolved blocked shadows: 848 (435 wins / 413 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 15/19 shadows would have won, avg P&L 11.78%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 16/29 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/18 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=300 (79W/178L/43flat, 30.7% win-rate, sum $-1.0972, avg -0.37%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-1.10%)
+- ❌ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expired (-1.12%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-7.02%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-11.67%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 3/12; next scheduled 2026-08-11T09:28:25.769Z). Mechanical cycle ran normally._
+
+---
+

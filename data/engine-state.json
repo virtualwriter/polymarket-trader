@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-11T06:28:23.988Z",
+  "generatedAt": "2026-08-11T07:28:25.631Z",
   "dataFreshness": {
-    "valuationRows": 2246,
-    "latestValuationAt": "2026-08-11T06",
-    "macroRows": 2244,
+    "valuationRows": 2247,
+    "latestValuationAt": "2026-08-11T07",
+    "macroRows": 2245,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-11T06"
+    "latestInstrumentSnapshotAt": "2026-08-11T07"
   },
   "portfolio": {
-    "cash": 95.1248,
-    "openPositions": 4,
-    "realizedPnl": 2.3646,
-    "totalTrades": 697,
-    "winRatePct": 63.1,
-    "unrealizedPnl": 4.4104
+    "cash": 96.138,
+    "openPositions": 3,
+    "realizedPnl": 2.3778,
+    "totalTrades": 698,
+    "winRatePct": 63.2,
+    "unrealizedPnl": 4.7314
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "polymarket",
       "direction": "short",
       "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-      "pnlPct": 433.33,
-      "currentPrice": 0.48,
-      "underlyingPrice": 82.102,
+      "pnlPct": 455.56,
+      "currentPrice": 0.5,
+      "underlyingPrice": 83.095,
       "targetPct": null,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
@@ -37,31 +37,14 @@
       ]
     },
     {
-      "positionId": "T-1786372118963-sqwh",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 1.32,
-      "currentPrice": 63937,
-      "underlyingPrice": 63937,
-      "targetPct": 3,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "btc_spot",
-        "btc_ibit_pc_ratio"
-      ]
-    },
-    {
       "positionId": "T-1786397332673-pqk6",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 0.57,
-      "currentPrice": 4374,
-      "underlyingPrice": 4374,
+      "pnlPct": 0.75,
+      "currentPrice": 4366,
+      "underlyingPrice": 4366,
       "targetPct": 5,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -76,8 +59,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.27,
-      "currentPrice": 277.54,
+      "pnlPct": 0.17,
+      "currentPrice": 277.26,
       "underlyingPrice": 277,
       "targetPct": 4,
       "stopPct": 2,
@@ -199,10 +182,10 @@
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "enabled": true,
-      "weight": 0.537,
-      "trades": 32,
-      "wins": 17,
-      "avgPnlPct": 0.1447,
+      "weight": 0.5383,
+      "trades": 33,
+      "wins": 18,
+      "avgPnlPct": 0.1802,
       "disabledAssets": [
         "AMZN",
         "GOLD"
@@ -386,6 +369,13 @@
           "flags": [
             "wide_pm_spread"
           ]
+        },
+        "sourceComparison": {
+          "sourceClosedAt": "2026-08-11T06:29:09.882Z",
+          "sourcePnl": 0.0132,
+          "sourcePnlPct": 1.32,
+          "proxyOutperformed": true,
+          "correlation": "same_direction"
         }
       },
       {
