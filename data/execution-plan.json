@@ -1,47 +1,15 @@
 {
-  "generatedAt": "2026-08-11T03:29:10.730Z",
+  "generatedAt": "2026-08-11T04:28:22.078Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [
-    {
-      "type": "FUNDING_EXTREME_SHORT",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "strength": 0.13685714285714284,
-      "confidence": 0.07660200064107779,
-      "thesis": "AMZN HL funding -19.8% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 277.59,
-      "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
-    }
-  ],
-  "rejectedLlmActions": [
-    {
-      "instruction": {
-        "action": "close",
-        "positionId": "T-1786372118963-sqwh",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "long",
-        "closeReasonCategory": "thesis_invalidated",
-        "evidenceColumns": [
-          "btc_ibit_pc_ratio"
-        ],
-        "thesis": "BTC P/C ratio has round‑tripped from the extreme low (0.195) that triggered the contrarian short to 0.589, well above the entry threshold. The signal’s own input has normalized and crossed into neutral/high territory, invalidating the original call‑buying exhaustion thesis. Position is closed after the 12‑hour minimum hold."
-      },
-      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
-    }
-  ],
+  "entrySignals": [],
+  "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 1 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
