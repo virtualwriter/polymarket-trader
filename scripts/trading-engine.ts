@@ -1472,6 +1472,20 @@ function isEngineLearnableClosedTrade(trade: ClosedTrade): boolean {
   return trade.signalType !== "MONOTONIC_ARB" && trade.instrumentType !== "pm_package";
 }
 
+/**
+ * Whether a closed trade belongs in the ledger, which is a separate question
+ * from whether it should teach the weights.
+ *
+ * Scale-out legs are the case that forces the distinction: the cash is banked and
+ * real, so dropping the row would leave the ledger permanently short of money the
+ * portfolio actually holds, but the leg is half of one decision and must never be
+ * learned from alongside the residual close.
+ */
+function isLedgerPersistableClosedTrade(trade: ClosedTrade): boolean {
+  if (isLedgerContaminatedTrade(trade)) return false;
+  return isEngineLearnableClosedTrade(trade) || isPartialScaleOutReason(trade.closeReason);
+}
+
 function appendJournal(entry: string) {
   const file = join(DATA_DIR, "learning-journal.md");
   if (!existsSync(file)) writeFileSync(file, "# Trading Engine Learning Journal\n\n");
@@ -8435,10 +8449,17 @@ async function main() {
   const latestRow = valRows[valRows.length - 1];
   const latestSnapshot = latestInstrumentSnapshot(instrumentSnapshots);
   const relativeValueRows = readRelativeValueObservations(250);
-  const closedTrades = markToMarket(portfolio, latestRow, instrumentSnapshots, valRows);
-  if (closedTrades.length > 0) {
-    console.log(`\n  Closed ${closedTrades.length} positions:`);
-    for (const t of closedTrades) {
+  // Scale-out legs are kept out of closedTrades on purpose. Everything
+  // downstream — weight updates, promotion evidence, truth state, the journal —
+  // reads that array as "completed trades this cycle", and a leg is neither
+  // completed nor a separate trade. It still goes to the ledger, because the cash
+  // is banked.
+  const markResults = markToMarket(portfolio, latestRow, instrumentSnapshots, valRows);
+  const scaledLegs = markResults.filter((t) => isPartialScaleOutReason(t.closeReason));
+  const closedTrades = markResults.filter((t) => !isPartialScaleOutReason(t.closeReason));
+  if (markResults.length > 0) {
+    console.log(`\n  Closed ${closedTrades.length} positions${scaledLegs.length > 0 ? ` and scaled ${scaledLegs.length}` : ""}:`);
+    for (const t of markResults) {
       const emoji = t.pnl >= 0 ? "✅" : "❌";
       console.log(`    ${emoji} ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} [${t.instrumentLabel ?? "n/a"}] → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
       if (!MUTATION_DISABLED) appendTradeCsv(t);
@@ -8452,13 +8473,14 @@ async function main() {
     const newPendingScannerClosedTradeCandidates = pendingScannerClosedTrades.filter((trade) =>
       !existingClosedTradeIds.has(trade.id) && !currentRunClosedIds.has(trade.id)
     );
-    const newPendingScannerClosedTrades = newPendingScannerClosedTradeCandidates.filter(isEngineLearnableClosedTrade);
+    const newPendingScannerClosedTrades = newPendingScannerClosedTradeCandidates.filter(isLedgerPersistableClosedTrade);
     console.log(`\n  Importing ${newPendingScannerClosedTrades.length}/${pendingScannerClosedTrades.length} minute-scanner closed trades from live state:`);
     for (const t of newPendingScannerClosedTrades) {
       const emoji = t.pnl >= 0 ? "✅" : "❌";
       console.log(`    ${emoji} ${t.asset} ${t.direction} via ${t.venue}/${t.instrumentType ?? "legacy"} [${t.instrumentLabel ?? "n/a"}] → ${t.closeReason}: ${t.pnl >= 0 ? "+" : ""}$${t.pnl.toFixed(4)} (${t.pnlPct.toFixed(1)}%)`);
       if (!MUTATION_DISABLED) appendTradeCsv(t);
-      closedTrades.push(t);
+      // The ledger takes the leg; the learning path only takes completed trades.
+      if (isEngineLearnableClosedTrade(t)) closedTrades.push(t);
     }
   }
 
