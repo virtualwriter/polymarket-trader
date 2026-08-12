@@ -1,5 +1,38 @@
-import { describe, expect, it } from "vitest";
-import { type LedgerTrade, baseTradeId, isContaminatedTrade, mergeScaleOutLegs } from "./portfolio-ledger.js";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import { afterAll, describe, expect, it } from "vitest";
+import {
+  type LedgerTrade,
+  baseTradeId,
+  isContaminatedTrade,
+  mergeScaleOutLegs,
+  recomputePortfolioTotalsFromLedger,
+} from "./portfolio-ledger.js";
+
+const CSV_HEADER = "id,opened_at,closed_at,asset,venue,direction,instrument_type,instrument_id,instrument_label,entry_price,exit_price,size,leverage,pnl,pnl_pct,market_pnl,funding_pnl,signal_type,hypothesis_id,entry_confidence,thesis,close_reason";
+
+const tempDirs: string[] = [];
+afterAll(() => {
+  for (const dir of tempDirs) rmSync(dir, { recursive: true, force: true });
+});
+
+function writeLedgerCsv(rows: string[]): string {
+  const dir = mkdtempSync(join(tmpdir(), "ledger-test-"));
+  tempDirs.push(dir);
+  const path = join(dir, "trades-detailed.csv");
+  writeFileSync(path, [CSV_HEADER, ...rows].join("\n") + "\n");
+  return path;
+}
+
+function csvRow(id: string, size: number, pnl: number, pnlPct: number, closeReason: string): string {
+  return [
+    id, "2026-08-08T07:28:57.131Z", "2026-08-12T05:11:58.864Z", "OIL", "polymarket", "short",
+    "pm_no", "oil-75", '"WTI NO"', 0.09, 0.59, size, 1,
+    pnl.toFixed(4), pnlPct.toFixed(2), pnl.toFixed(4), "0.0000",
+    "USER_PM_IV_TOUCH_RICH_NO", "", "", '"thesis"', closeReason,
+  ].join(",");
+}
 
 function ledgerTrade(overrides: Partial<LedgerTrade> & { id: string }): LedgerTrade {
   return {
@@ -88,6 +121,29 @@ describe("scale-out leg merging", () => {
     const before = rows.reduce((sum, t) => sum + t.pnl, 0);
     const after = mergeScaleOutLegs(rows).reduce((sum, t) => sum + t.pnl, 0);
     expect(after).toBeCloseTo(before, 10);
+  });
+
+  it("counts a scaled trade once when read back off disk", () => {
+    // Round-trips the new close reason through the CSV, so a parse or header
+    // mismatch cannot silently turn one scaled trade into two.
+    const path = writeLedgerCsv([
+      csvRow("T-1#s1", 0.5, 2.7778, 555.56, "profit_scale_out"),
+      csvRow("T-1", 0.5, 3.5389, 707.78, "target"),
+    ]);
+    const totals = recomputePortfolioTotalsFromLedger(path);
+    expect(totals.totalTrades).toBe(1);
+    expect(totals.winCount).toBe(1);
+    expect(totals.lossCount).toBe(0);
+    expect(totals.totalRealizedPnl).toBeCloseTo(6.3167, 4);
+  });
+
+  it("banks an open position's leg into realized P&L without calling it a trade", () => {
+    // The residual is still running, so there is no parent row to merge into.
+    const path = writeLedgerCsv([csvRow("T-1#s1", 0.5, 2.7778, 555.56, "profit_scale_out")]);
+    const totals = recomputePortfolioTotalsFromLedger(path);
+    expect(totals.totalTrades).toBe(0);
+    expect(totals.winCount).toBe(0);
+    expect(totals.totalRealizedPnl).toBeCloseTo(2.7778, 4);
   });
 
   it("handles several legs on one position", () => {
