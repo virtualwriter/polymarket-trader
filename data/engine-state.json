@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-12T20:28:20.887Z",
+  "generatedAt": "2026-08-12T21:28:13.635Z",
   "dataFreshness": {
-    "valuationRows": 2280,
-    "latestValuationAt": "2026-08-12T20",
-    "macroRows": 2278,
+    "valuationRows": 2281,
+    "latestValuationAt": "2026-08-12T21",
+    "macroRows": 2279,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-12T20"
+    "latestInstrumentSnapshotAt": "2026-08-12T21"
   },
   "portfolio": {
     "cash": 104.0412,
@@ -175,7 +175,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 50,
+    "openCount": 51,
     "resolvedCount": 832,
     "wouldHaveWon": 425,
     "wouldHaveLost": 407,
@@ -413,22 +413,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-in-july-2026 — NO — Will Ethereum reach $2,000 in July?",
-        "marketQuality": {
-          "yesBid": 0.63,
-          "yesAsk": 0.65,
-          "yesSpread": 0.02,
-          "liquidity": 23280.43,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.9pt on ETH, spread 2.0c, liquidity 23280. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "OIL",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-price-will-wti-hit-in-july-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $90 in July?",
@@ -538,6 +522,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.1pt on BTC, spread 1.0c, liquidity 70210. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $2,250 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.56,
+          "yesAsk": 0.58,
+          "yesSpread": 0.02,
+          "liquidity": 12561.07,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.2pt on ETH, spread 2.0c, liquidity 12561. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
