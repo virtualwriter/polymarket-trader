@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-12T10:28:19.809Z",
+  "generatedAt": "2026-08-12T11:28:10.915Z",
   "dataFreshness": {
-    "valuationRows": 2272,
-    "latestValuationAt": "2026-08-12T10",
-    "macroRows": 2270,
+    "valuationRows": 2273,
+    "latestValuationAt": "2026-08-12T11",
+    "macroRows": 2271,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-12T10"
+    "latestInstrumentSnapshotAt": "2026-08-12T11"
   },
   "portfolio": {
     "cash": 104.0412,
@@ -175,10 +175,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 51,
-    "resolvedCount": 831,
+    "openCount": 50,
+    "resolvedCount": 832,
     "wouldHaveWon": 425,
-    "wouldHaveLost": 406,
+    "wouldHaveLost": 407,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -246,21 +246,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "FUNDING_EXTREME_LONG",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "blockedReason": "short_blocked_by_positive_trend",
-        "outcome": "loss",
-        "closeReason": "expiry",
-        "pnlPct": -1.12,
-        "resolvedAt": "2026-08-10T21:28:19.011Z",
-        "trendMetrics": {
-          "aboveTrendPct": 1.08,
-          "momentumPct": 2.52
-        }
-      },
       {
         "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
         "asset": "GOLD",
@@ -404,6 +389,24 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -10,
+        "resolvedAt": "2026-08-12T11:28:10.558Z",
+        "marketQuality": {
+          "yesBid": 0.4,
+          "yesAsk": 0.41,
+          "yesSpread": 0.01,
+          "liquidity": 47670.04,
+          "flags": []
         }
       }
     ],
