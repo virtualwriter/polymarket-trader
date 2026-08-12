@@ -338,6 +338,58 @@ def read_csv(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(handle))
 
 
+PARTIAL_CLOSE_REASON = "profit_scale_out"
+
+
+def base_trade_id(trade_id: str) -> str:
+    """Position ID a ledger row belongs to, stripping any scale-out leg suffix."""
+    marker = trade_id.find("#s")
+    return trade_id if marker == -1 else trade_id[:marker]
+
+
+def merge_scale_out_legs(rows: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Fold scale-out legs into the trade they came from.
+
+    A scaled exit writes one row per leg plus a final row for the residual, all
+    sharing a base ID. Counted separately they would inflate the trade count and
+    let one decision contribute twice to the win/loss tally, so the report has to
+    reassemble them exactly as the TypeScript ledger does. A leg whose parent is
+    absent is left alone: that position is still open, and its banked cash is real
+    even though the trade has not finished.
+    """
+    by_id = {row.get("id"): row for row in rows if row.get("id")}
+    legs_by_parent: dict[str, list[dict[str, str]]] = {}
+    for row in rows:
+        if (row.get("close_reason") or "") != PARTIAL_CLOSE_REASON:
+            continue
+        trade_id = row.get("id") or ""
+        parent_id = base_trade_id(trade_id)
+        if parent_id == trade_id or parent_id not in by_id:
+            continue
+        legs_by_parent.setdefault(parent_id, []).append(row)
+    if not legs_by_parent:
+        return rows
+
+    absorbed = {leg["id"] for legs in legs_by_parent.values() for leg in legs}
+    merged: list[dict[str, str]] = []
+    for row in rows:
+        if row.get("id") in absorbed:
+            continue
+        legs = legs_by_parent.get(row.get("id") or "")
+        if not legs:
+            merged.append(row)
+            continue
+        combined = dict(row)
+        size = num(row.get("size")) + sum(num(leg.get("size")) for leg in legs)
+        pnl = num(row.get("pnl")) + sum(num(leg.get("pnl")) for leg in legs)
+        combined["size"] = f"{size}"
+        combined["pnl"] = f"{pnl:.4f}"
+        combined["pnl_pct"] = f"{(pnl / size * 100) if size else num(row.get('pnl_pct')):.2f}"
+        combined["market_pnl"] = f"{num(row.get('market_pnl')) + sum(num(leg.get('market_pnl')) for leg in legs):.4f}"
+        merged.append(combined)
+    return merged
+
+
 def dedupe_closed_trade_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]:
     """Keep each trade ID once, using its earliest recorded close."""
     by_id: dict[str, dict[str, str]] = {}
@@ -356,7 +408,7 @@ def dedupe_closed_trade_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]
         if existing_closed is None or (candidate_closed is not None and candidate_closed < existing_closed):
             by_id[trade_id] = row
     return sorted(
-        [*by_id.values(), *anonymous_rows],
+        merge_scale_out_legs([*by_id.values(), *anonymous_rows]),
         key=lambda row: parse_ts(row.get("closed_at")) or datetime.max.replace(tzinfo=timezone.utc),
     )
 
