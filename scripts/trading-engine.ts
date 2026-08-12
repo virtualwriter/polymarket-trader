@@ -127,6 +127,17 @@ import {
   type MagnitudeUnit,
 } from "./lib/research/hypothesis-shadow-eval.js";
 import { formatConditionIssues, validateHypothesisConditions } from "./lib/research/condition-catalog.js";
+import {
+  PARTIAL_CLOSE_REASON,
+  type ScaleOutRecord,
+  decideBinaryScaleExit,
+  isBinaryContractInstrument,
+  isPartialScaleOutReason,
+  originalPositionSize,
+  scaleOutAmounts,
+  scaleOutTradeId,
+  stopPriceForReference,
+} from "./lib/trading/binary-scale-exit.js";
 
 // ─── Config ──────────────────────────────────────────────────────────────────
 
@@ -530,6 +541,12 @@ interface Position {
   peakPnlPct?: number;
   /** Ex-ante signal confidence frozen at open (DEC-0005). */
   entryConfidence?: number;
+  /** Capital committed at open, retained once scale-outs shrink `size`. */
+  originalSize?: number;
+  /** Scale-out legs already banked on this position. */
+  scaleOuts?: ScaleOutRecord[];
+  /** Price the ratcheting loss stop is measured from after a scale-out. */
+  stopReferencePrice?: number;
 }
 
 interface RealPolymarketLivePackage {
@@ -578,7 +595,8 @@ interface ClosedTrade {
     | "thesis_validated"
     | "thesis_validated_profitable"
     | "thesis_compressed_loss"
-    | "data_quality_artifact";
+    | "data_quality_artifact"
+    | typeof PARTIAL_CLOSE_REASON;
   instrumentType?: string;
   instrumentId?: string;
   instrumentLabel?: string;
@@ -1445,6 +1463,10 @@ function isEngineLearnableClosedTrade(trade: ClosedTrade): boolean {
   // the llm_decision funding trade in the taint list) would have taught the
   // weights had it still been in the live CSV rather than the archive.
   if (isLedgerContaminatedTrade(trade)) return false;
+  // A scale-out leg is half of one decision. The position's final row carries the
+  // blended outcome once cleanLedgerTrades folds the legs in, so learning from the
+  // leg as well would count the same decision twice.
+  if (isPartialScaleOutReason(trade.closeReason)) return false;
   // Monotonic packages are risk-free at resolution: a structural arb, not a
   // predictive signal, so it is deliberately excluded from signal learning.
   return trade.signalType !== "MONOTONIC_ARB" && trade.instrumentType !== "pm_package";
@@ -2856,6 +2878,83 @@ function realizeClosedPosition(
     portfolio.totalTrades++;
     if (mark.pnl >= 0) portfolio.winCount++; else portfolio.lossCount++;
   }
+  return trade;
+}
+
+/**
+ * The scale-out ladder's verdict on a binary position, or null when the ladder
+ * does not govern it.
+ *
+ * An explicit per-trade target defers to the generic cascade: a target set at
+ * open is a deliberate instruction about that trade, and the ladder's job is to
+ * govern the binaries that have no exit plan of their own.
+ */
+function binaryScaleExitAction(
+  position: Position,
+  mark: { currentPrice: number; pnlPct: number },
+): ReturnType<typeof decideBinaryScaleExit> | null {
+  if (!isBinaryContractInstrument(position.instrumentType)) return null;
+  if (position.targetPct !== null && mark.pnlPct >= position.targetPct) return null;
+  return decideBinaryScaleExit({
+    entryPrice: position.entryPrice,
+    currentPrice: mark.currentPrice,
+    scaleOutCount: position.scaleOuts?.length ?? 0,
+    stopReferencePrice: position.stopReferencePrice,
+  });
+}
+
+/**
+ * Banks part of a binary position and leaves the rest running.
+ *
+ * The leg is a ledger row of its own so the cash is auditable, but it is not a
+ * completed trade: totalTrades is left alone and the residual close later carries
+ * the position's verdict, with cleanLedgerTrades folding the rows back together.
+ */
+function realizeScaleOut(
+  portfolio: Portfolio,
+  position: Position,
+  mark: { currentPrice: number; underlyingPrice: number | null },
+  sizeFraction: number,
+  closedAt: string,
+): ClosedTrade {
+  const amounts = scaleOutAmounts(position.entryPrice, position.size, mark.currentPrice, sizeFraction);
+  const trade: ClosedTrade = {
+    id: scaleOutTradeId(position.id, (position.scaleOuts?.length ?? 0) + 1),
+    openedAt: position.openedAt,
+    closedAt,
+    asset: position.asset,
+    venue: position.venue,
+    direction: position.direction,
+    entryPrice: position.entryPrice,
+    exitPrice: mark.currentPrice,
+    size: amounts.sizeClosed,
+    leverage: position.leverage ?? 1,
+    pnl: amounts.pnl,
+    pnlPct: amounts.sizeClosed > 0 ? (amounts.pnl / amounts.sizeClosed) * 100 : 0,
+    marketPnl: amounts.pnl,
+    fundingPnl: 0,
+    signalType: position.signalType,
+    hypothesisId: position.hypothesisId,
+    entryConfidence: position.entryConfidence ?? null,
+    thesis: position.thesis,
+    closeReason: PARTIAL_CLOSE_REASON,
+    instrumentType: position.instrumentType,
+    instrumentId: position.instrumentId,
+    instrumentLabel: position.instrumentLabel,
+  };
+
+  portfolio.cash += amounts.sizeClosed + amounts.pnl;
+  if (!isLedgerContaminatedTrade(trade)) portfolio.totalRealizedPnl += amounts.pnl;
+
+  position.originalSize = originalPositionSize(position);
+  position.size = amounts.remainingSize;
+  position.scaleOuts = [
+    ...(position.scaleOuts ?? []),
+    { at: closedAt, price: mark.currentPrice, sizeClosed: amounts.sizeClosed, pnl: amounts.pnl },
+  ];
+  // The stop now measures from where profit was banked, not from entry.
+  position.stopReferencePrice = mark.currentPrice;
+
   return trade;
 }
 
@@ -5744,14 +5843,26 @@ function markToMarket(
     updatePeakPnl(pos, mark);
 
     let closeReason: ClosedTrade["closeReason"] | null = null;
+    let scaleOutFraction: number | null = null;
     if (weekendHyperliquidFundingExitHit(pos, snapshots)) closeReason = !isStockPerpFundingWindowOpen()
       ? "expiry"
       : mark.pnl >= 0 ? "thesis_validated_profitable" : "thesis_compressed_loss";
-    else closeReason = mechanicalCloseReason(pos, mark);
+    else {
+      const action = binaryScaleExitAction(pos, mark);
+      if (action?.kind === "close") closeReason = action.reason;
+      else if (action?.kind === "scale_out") scaleOutFraction = action.sizeFraction;
+      else closeReason = mechanicalCloseReason(pos, mark);
+    }
 
     if (closeReason) {
       const trade = realizeClosedPosition(portfolio, pos, mark, closeReason, now);
       closed.push(trade);
+    } else if (scaleOutFraction !== null) {
+      closed.push(realizeScaleOut(portfolio, pos, mark, scaleOutFraction, now));
+      pos.currentPrice = mark.currentPrice;
+      pos.currentUnderlyingPrice = mark.underlyingPrice ?? undefined;
+      pos.fundingPnlAccrued = mark.fundingPnl;
+      remaining.push(pos);
     } else {
       pos.currentPrice = mark.currentPrice;
       pos.currentUnderlyingPrice = mark.underlyingPrice ?? undefined;
@@ -5919,6 +6030,8 @@ function updateWeights(weights: SignalWeight[], closedTrades: ClosedTrade[]): st
     // as real evidence. Filtering here means no call site can teach the weights
     // from an operational artifact by forgetting to filter first.
     if (isLedgerContaminatedTrade(trade)) continue;
+    // Scale-out legs are not trades; the residual close speaks for the position.
+    if (isPartialScaleOutReason(trade.closeReason)) continue;
 
     const isWin = trade.pnl >= 0;
     w.trades++;
@@ -6483,6 +6596,12 @@ function mechanicalCloseReason(position: Position, mark: { pnlPct: number } | nu
 
 function positionMarkSummary(position: Position, latestRow: SnapshotRow, snapshots: InstrumentSnapshotFile[]): PositionMarkSummary {
   const mark = markPosition(position, latestRow, snapshots, true);
+  // The ladder can close a binary that the generic cascade would hold, so it has
+  // to be consulted here too or engine state would under-report imminent exits.
+  const ladderAction = mark ? binaryScaleExitAction(position, mark) : null;
+  const mechanicalReason = ladderAction?.kind === "close"
+    ? ladderAction.reason
+    : mechanicalCloseReason(position, mark);
   return {
     positionId: position.id,
     asset: position.asset,
@@ -6494,7 +6613,7 @@ function positionMarkSummary(position: Position, latestRow: SnapshotRow, snapsho
     underlyingPrice: mark?.underlyingPrice ?? null,
     targetPct: position.targetPct,
     stopPct: position.stopPct,
-    closeReasonIfMechanical: mechanicalCloseReason(position, mark),
+    closeReasonIfMechanical: mechanicalReason,
     evidenceColumns: signalFamilyEvidenceColumns(position),
   };
 }

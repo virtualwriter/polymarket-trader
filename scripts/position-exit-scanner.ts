@@ -13,6 +13,18 @@ import {
   isContaminatedTrade as isLedgerContaminatedTrade,
   recomputePortfolioTotalsFromLedger,
 } from "./portfolio-ledger.js";
+import {
+  PARTIAL_CLOSE_REASON,
+  type ScaleOutRecord,
+  blendedRealizedPnl,
+  decideBinaryScaleExit,
+  isBinaryContractInstrument,
+  isPartialScaleOutReason,
+  originalPositionSize,
+  scaleOutAmounts,
+  scaleOutTradeId,
+  stopPriceForReference,
+} from "./lib/trading/binary-scale-exit.js";
 
 const DATA_DIR = join(import.meta.dirname ?? ".", "..", "data");
 const DEFAULT_LIVE_STATE_DIR = join(import.meta.dirname ?? ".", "..", ".runtime");
@@ -28,7 +40,7 @@ const FUNDING_BREAKEVEN_LOCK_PCT = 0.25;
 type Venue = "polymarket" | "hyperliquid" | "spot";
 type Direction = "long" | "short";
 type InstrumentType = "spot" | "hl_perp" | "pm_yes" | "pm_no" | "legacy_asset";
-type CloseReason = "target" | "stop" | "breakeven_stop" | "expiry" | "llm_decision" | "signal_killed";
+type CloseReason = "target" | "stop" | "breakeven_stop" | "expiry" | "llm_decision" | "signal_killed" | typeof PARTIAL_CLOSE_REASON;
 
 interface Position {
   id: string;
@@ -54,6 +66,12 @@ interface Position {
   fundingPnlAccrued?: number;
   peakPnlPct?: number;
   entryConfidence?: number;
+  /** Capital committed at open, retained once scale-outs shrink `size`. */
+  originalSize?: number;
+  /** Scale-out legs already banked on this position. */
+  scaleOuts?: ScaleOutRecord[];
+  /** Price the ratcheting loss stop is measured from after a scale-out. */
+  stopReferencePrice?: number;
 }
 
 interface Portfolio {
@@ -296,6 +314,62 @@ function fundingBreakevenStopHit(position: Position, mark: Mark): boolean {
     && mark.pnlPct <= FUNDING_BREAKEVEN_LOCK_PCT;
 }
 
+/**
+ * Banks part of a binary position and leaves the rest running.
+ *
+ * The leg is written to the ledger under its own suffixed id so the cash is
+ * auditable, but it is not counted as a completed trade — the residual will close
+ * later and cleanLedgerTrades folds the two rows back into one sample.
+ */
+function realizeScaleOut(
+  portfolio: Portfolio,
+  position: Position,
+  mark: Mark,
+  sizeFraction: number,
+  at: string,
+): ClosedTrade {
+  const amounts = scaleOutAmounts(position.entryPrice, position.size, mark.currentPrice, sizeFraction);
+  const legNumber = (position.scaleOuts?.length ?? 0) + 1;
+  const trade: ClosedTrade = {
+    id: scaleOutTradeId(position.id, legNumber),
+    openedAt: position.openedAt,
+    closedAt: at,
+    asset: position.asset,
+    venue: position.venue,
+    direction: position.direction,
+    entryPrice: position.entryPrice,
+    exitPrice: mark.currentPrice,
+    size: amounts.sizeClosed,
+    leverage: position.leverage ?? 1,
+    pnl: amounts.pnl,
+    pnlPct: amounts.sizeClosed > 0 ? (amounts.pnl / amounts.sizeClosed) * 100 : 0,
+    marketPnl: amounts.pnl,
+    fundingPnl: 0,
+    signalType: position.signalType,
+    hypothesisId: position.hypothesisId,
+    thesis: position.thesis,
+    closeReason: PARTIAL_CLOSE_REASON,
+    instrumentType: position.instrumentType,
+    instrumentId: position.instrumentId,
+    instrumentLabel: position.instrumentLabel,
+    entryConfidence: position.entryConfidence ?? null,
+  };
+
+  portfolio.cash += amounts.sizeClosed + amounts.pnl;
+  if (!isLedgerContaminatedTrade(trade)) portfolio.totalRealizedPnl += amounts.pnl;
+
+  position.originalSize = originalPositionSize(position);
+  position.size = amounts.remainingSize;
+  position.scaleOuts = [
+    ...(position.scaleOuts ?? []),
+    { at, price: mark.currentPrice, sizeClosed: amounts.sizeClosed, pnl: amounts.pnl },
+  ];
+  // The stop now measures from where profit was banked, not from entry.
+  position.stopReferencePrice = mark.currentPrice;
+
+  return trade;
+}
+
 function realizeClosedPosition(portfolio: Portfolio, position: Position, mark: Mark, closeReason: CloseReason, closedAt: string): ClosedTrade {
   const trade: ClosedTrade = {
     id: position.id,
@@ -381,8 +455,23 @@ async function main() {
       || position.fundingPnlAccrued !== mark.fundingPnl;
     portfolioChanged = updatePeakPnl(position, mark) || markChanged || portfolioChanged;
 
+    // Binaries are governed by the scale-out ladder: take half at 50% of max
+    // profit, close the rest at 70%, and cut 40% below the ratcheting reference.
+    // An explicit per-trade target still wins, and expiry still settles.
+    const binaryAction = isBinaryContractInstrument(position.instrumentType)
+      ? decideBinaryScaleExit({
+        entryPrice: position.entryPrice,
+        currentPrice: mark.currentPrice,
+        scaleOutCount: position.scaleOuts?.length ?? 0,
+        stopReferencePrice: position.stopReferencePrice,
+      })
+      : { kind: "hold" as const };
+
     let closeReason: CloseReason | null = null;
+    let scaleOutFraction: number | null = null;
     if (position.targetPct !== null && mark.pnlPct >= position.targetPct) closeReason = "target";
+    else if (binaryAction.kind === "close") closeReason = binaryAction.reason;
+    else if (binaryAction.kind === "scale_out") scaleOutFraction = binaryAction.sizeFraction;
     else if (fundingBreakevenStopHit(position, mark)) closeReason = "breakeven_stop";
     else if (mark.pnlPct <= -position.stopPct) closeReason = "stop";
     else if (new Date(position.expiryDate) <= new Date()) closeReason = "expiry";
@@ -395,6 +484,12 @@ async function main() {
       const trade = realizeClosedPosition(portfolio, position, mark, closeReason, now);
       closed.push(trade);
       console.log(`Exit scanner: ${position.asset} ${position.direction} ${closeReason} at ${mark.currentPrice} (${mark.pnlPct.toFixed(2)}%).`);
+    } else if (scaleOutFraction !== null) {
+      const trade = realizeScaleOut(portfolio, position, mark, scaleOutFraction, now);
+      closed.push(trade);
+      portfolioChanged = true;
+      remaining.push(position);
+      console.log(`Exit scanner: ${position.asset} ${position.direction} scaled ${(scaleOutFraction * 100).toFixed(0)}% off at ${mark.currentPrice} (banked ${trade.pnl >= 0 ? "+" : ""}$${trade.pnl.toFixed(4)}); $${position.size.toFixed(4)} left running with stop at ${stopPriceForReference(mark.currentPrice).toFixed(4)}.`);
     } else {
       remaining.push(position);
     }

@@ -8,7 +8,9 @@
  *    artifact close reasons + NON_LEARNING_CLOSE thesis tags),
  *  - dedupe-by-id + artifact-filter of trades-detailed.csv,
  *  - recomputation of portfolio counters (totalRealizedPnl,
- *    totalTrades, winCount, lossCount) from that cleaned ledger.
+ *    totalTrades, winCount, lossCount) from that cleaned ledger,
+ *    where scale-out legs add realized cash without counting as
+ *    separate trades.
  *
  * Imported by trading-engine.ts, position-exit-scanner.ts, and
  * trader-performance-report.ts so all three services share one
@@ -18,6 +20,7 @@
 
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+import { isPartialScaleOutReason } from "./lib/trading/binary-scale-exit.js";
 import { fileURLToPath } from "node:url";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -178,10 +181,66 @@ export function dedupeLedgerTrades(trades: LedgerTrade[]): LedgerTrade[] {
   );
 }
 
+/**
+ * Collapses scale-out legs into the trade they came from.
+ *
+ * A scaled exit writes one row per leg plus a final row for the residual, all
+ * sharing a base id (`T-1#s1` belongs to `T-1`). Left separate, those rows would
+ * each look like an independent trade: the win rate would count one decision
+ * twice and the expectancy t-test would treat two perfectly dependent samples as
+ * two degrees of freedom. Merged, a scaled trade is a single sample whose P&L is
+ * the sum of what every leg actually banked.
+ *
+ * A leg whose parent is absent is left alone, because that position is still
+ * open. Its cash is real and belongs in realized P&L, but it is not a completed
+ * trade, and callers exclude it by close reason.
+ */
+export function mergeScaleOutLegs(trades: LedgerTrade[]): LedgerTrade[] {
+  const byId = new Map(trades.map((t) => [t.id, t]));
+  const legsByParent = new Map<string, LedgerTrade[]>();
+  for (const t of trades) {
+    if (!isPartialScaleOutReason(t.closeReason)) continue;
+    const parentId = baseTradeId(t.id);
+    if (parentId === t.id || !byId.has(parentId)) continue;
+    const legs = legsByParent.get(parentId) ?? [];
+    legs.push(t);
+    legsByParent.set(parentId, legs);
+  }
+  if (legsByParent.size === 0) return trades;
+
+  const merged: LedgerTrade[] = [];
+  const absorbed = new Set([...legsByParent.values()].flat().map((t) => t.id));
+  for (const t of trades) {
+    if (absorbed.has(t.id)) continue;
+    const legs = legsByParent.get(t.id);
+    if (!legs) {
+      merged.push(t);
+      continue;
+    }
+    const size = legs.reduce((sum, leg) => sum + leg.size, t.size);
+    const pnl = legs.reduce((sum, leg) => sum + leg.pnl, t.pnl);
+    merged.push({
+      ...t,
+      size,
+      pnl,
+      pnlPct: size > 0 ? (pnl / size) * 100 : t.pnlPct,
+      marketPnl: legs.reduce((sum, leg) => sum + leg.marketPnl, t.marketPnl),
+      fundingPnl: legs.reduce((sum, leg) => sum + leg.fundingPnl, t.fundingPnl),
+    });
+  }
+  return merged;
+}
+
+/** Position id a ledger row belongs to, stripping any scale-out leg suffix. */
+export function baseTradeId(tradeId: string): string {
+  const marker = tradeId.indexOf("#s");
+  return marker === -1 ? tradeId : tradeId.slice(0, marker);
+}
+
 export function cleanLedgerTrades(csvPath: string = TRADES_CSV): LedgerTrade[] {
   const raw = readLedgerTrades(csvPath);
   const deduped = dedupeLedgerTrades(raw);
-  return deduped.filter((t) => !isContaminatedTrade(t));
+  return mergeScaleOutLegs(deduped.filter((t) => !isContaminatedTrade(t)));
 }
 
 export function recomputePortfolioTotalsFromLedger(
@@ -189,16 +248,23 @@ export function recomputePortfolioTotalsFromLedger(
 ): PortfolioTotals {
   const trades = cleanLedgerTrades(csvPath);
   let totalRealizedPnl = 0;
+  let totalTrades = 0;
   let winCount = 0;
   let lossCount = 0;
   for (const t of trades) {
     const pnl = Number.isFinite(t.pnl) ? t.pnl : 0;
+    // Any leg still carrying this reason belongs to a position that has not
+    // closed yet, since cleanLedgerTrades folds legs into their parent as soon as
+    // one exists. Its cash is banked and real, but the trade is still running, so
+    // it counts toward realized P&L without counting as a completed trade.
     totalRealizedPnl += pnl;
+    if (isPartialScaleOutReason(t.closeReason)) continue;
+    totalTrades++;
     if (pnl >= 0) winCount++;
     else lossCount++;
   }
   return {
-    totalTrades: trades.length,
+    totalTrades,
     winCount,
     lossCount,
     totalRealizedPnl,
