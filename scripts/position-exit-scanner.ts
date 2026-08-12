@@ -504,8 +504,9 @@ async function main() {
     return;
   }
 
+  const scaleOutCount = closed.filter((trade) => isPartialScaleOutReason(trade.closeReason)).length;
   if (DRY_RUN) {
-    console.log(`Exit scanner dry run: would close ${closed.length} positions.`);
+    console.log(`Exit scanner dry run: would close ${closed.length - scaleOutCount} position(s) and scale ${scaleOutCount}.`);
     return;
   }
 
@@ -513,7 +514,7 @@ async function main() {
   portfolio.lastUpdated = now;
   for (const trade of closed) appendPendingClosedTrade(trade);
   writeLivePortfolio(portfolio);
-  console.log(`Exit scanner: closed ${closed.length} positions and saved live portfolio.`);
+  console.log(`Exit scanner: closed ${closed.length - scaleOutCount} position(s), scaled ${scaleOutCount}, and saved live portfolio.`);
 }
 
 main().catch((error) => {
