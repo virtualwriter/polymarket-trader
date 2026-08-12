@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-12T09:28:17.284Z",
+  "generatedAt": "2026-08-12T10:28:19.809Z",
   "dataFreshness": {
-    "valuationRows": 2271,
-    "latestValuationAt": "2026-08-12T09",
-    "macroRows": 2269,
+    "valuationRows": 2272,
+    "latestValuationAt": "2026-08-12T10",
+    "macroRows": 2270,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-12T09"
+    "latestInstrumentSnapshotAt": "2026-08-12T10"
   },
   "portfolio": {
     "cash": 104.0412,
@@ -175,9 +175,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 52,
-    "resolvedCount": 830,
-    "wouldHaveWon": 424,
+    "openCount": 51,
+    "resolvedCount": 831,
+    "wouldHaveWon": 425,
     "wouldHaveLost": 406,
     "bySignal": [
       {
@@ -246,26 +246,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.1,
-        "resolvedAt": "2026-08-10T19:28:16.808Z",
-        "marketQuality": {
-          "yesBid": 0.09,
-          "yesAsk": 0.1,
-          "yesSpread": 0.01,
-          "liquidity": 52236.21,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "FUNDING_EXTREME_LONG",
         "asset": "GOLD",
@@ -405,9 +385,45 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 3.45,
+        "resolvedAt": "2026-08-12T10:28:19.428Z",
+        "marketQuality": {
+          "yesBid": 0.71,
+          "yesAsk": 0.72,
+          "yesSpread": 0.01,
+          "liquidity": 91087.78,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-in-july-2026 — NO — Will Ethereum reach $2,000 in July?",
+        "marketQuality": {
+          "yesBid": 0.63,
+          "yesAsk": 0.65,
+          "yesSpread": 0.02,
+          "liquidity": 23280.43,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.9pt on ETH, spread 2.0c, liquidity 23280. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "OIL",
@@ -503,22 +519,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 6.0pt on GOLD, spread 3.0c, liquidity 11903. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $70,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.71,
-          "yesAsk": 0.72,
-          "yesSpread": 0.01,
-          "liquidity": 91087.78,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.2pt on BTC, spread 1.0c, liquidity 91088. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
