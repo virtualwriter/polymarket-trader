@@ -35,7 +35,7 @@ import {
   buildLeanArtifactEntries,
   buildLlmTruthStateArtifact,
 } from "./lib/trading/artifacts.js";
-import { buildBlockedSignalObservations, summarizeBlockedSignals } from "./lib/trading/blocked-signals.js";
+import { buildBlockedSignalObservations, isLegacyManualShadowForceClose, summarizeBlockedSignals } from "./lib/trading/blocked-signals.js";
 import {
   buildCandidateActionPreviews,
   sizingSignalHistories,
@@ -4749,7 +4749,7 @@ function cancelLegacyOneTouchShadows(blockedSignals: BlockedSignalShadow[]): { c
 //     calibration log as coverage losses, not observed gap closes. (Gap-exit
 //     is that family's designed exit, so only proven coverage losses are
 //     excluded.)
-function excludeGateForceCloseArtifacts(blockedSignals: BlockedSignalShadow[]): { oneTouch: number; noBias: number } {
+function excludeGateForceCloseArtifacts(blockedSignals: BlockedSignalShadow[]): { oneTouch: number; noBias: number; manualShadow: number } {
   let noBiasArtifactIds = new Set<string>();
   try {
     const raw = JSON.parse(readFileSync(join(DATA_DIR, "shadow-measurement-artifacts.json"), "utf-8")) as Record<string, unknown>;
@@ -4760,6 +4760,7 @@ function excludeGateForceCloseArtifacts(blockedSignals: BlockedSignalShadow[]): 
   }
   let oneTouch = 0;
   let noBias = 0;
+  let manualShadow = 0;
   for (const shadow of blockedSignals) {
     if (shadow.status !== "resolved" || shadow.learningExcluded) continue;
     // Prefer the structured closeTrigger (Phase 3); fall back to the legacy
@@ -4783,9 +4784,15 @@ function excludeGateForceCloseArtifacts(blockedSignals: BlockedSignalShadow[]): 
         note: "Closed as adjusted_no_gap_disappeared while the market had no heatmap coverage within +/-2h (verified against the hourly calibration log) — a coverage loss, not an observed gap close. Excluded from learning; resolver now holds through missing rows (fixed 2026-07-10).",
       };
       noBias += 1;
+    } else if (isLegacyManualShadowForceClose(shadow)) {
+      shadow.learningExcluded = {
+        reason: "manual_shadow_gate_force_close_artifact",
+        note: "Closed by the pre-2026-07-10 resolver, which fired on any gate failure or missing heatmap row and realized a mid-flight mark rather than the thesis. Manual shadows have no legitimate edge-compression exit (oneTouchEdgeGapClosed and the NO-bias equivalent both require their own blockedReason), so a thesis_* close on this family can only be that artifact. Excluded from learning to match the one-touch sweep; realized accounting rows stay intact.",
+      };
+      manualShadow += 1;
     }
   }
-  return { oneTouch, noBias };
+  return { oneTouch, noBias, manualShadow };
 }
 
 function cancelOpenRelativeValueHeatmapShadows(blockedSignals: BlockedSignalShadow[]): string[] {
@@ -8372,8 +8379,8 @@ async function main() {
   for (const note of productionPolymarketRiskNotes) console.log(`  Production PM risk shape: ${note}`);
   for (const note of weekendFundingPromotionNotes) console.log(`  Weekend funding promotion: ${note}`);
   for (const note of realPmMirrorNotes) console.log(`  Real PM mirror: ${note}`);
-  if (forceCloseArtifactSweep.oneTouch > 0 || forceCloseArtifactSweep.noBias > 0) {
-    console.log(`  Gate force-close artifact sweep: excluded ${forceCloseArtifactSweep.oneTouch} one-touch NO and ${forceCloseArtifactSweep.noBias} NO-bias resolutions from learning.`);
+  if (forceCloseArtifactSweep.oneTouch > 0 || forceCloseArtifactSweep.noBias > 0 || forceCloseArtifactSweep.manualShadow > 0) {
+    console.log(`  Gate force-close artifact sweep: excluded ${forceCloseArtifactSweep.oneTouch} one-touch NO, ${forceCloseArtifactSweep.noBias} NO-bias and ${forceCloseArtifactSweep.manualShadow} manual-shadow resolutions from learning.`);
   }
   if (lineageSuspectSweep.cancelled.length > 0 || lineageSuspectSweep.retroExcluded > 0) {
     console.log(`  Lineage-suspect sweep: cancelled ${lineageSuspectSweep.cancelled.length} open, learning-excluded ${lineageSuspectSweep.retroExcluded} resolved (HYPE/PURR or *_VALUATION_IV).`);

@@ -24,6 +24,38 @@ type BlockedSignalCloseReason =
   | "thesis_validated_profitable"
   | "thesis_compressed_loss";
 
+export interface LegacyManualForceCloseCandidate {
+  blockedReason: string;
+  hypotheticalResult?: {
+    closeReason: string;
+    closeTrigger?: string;
+  };
+}
+
+/**
+ * True for a manual shadow closed by the pre-2026-07-10 resolver.
+ *
+ * Manual shadows have no legitimate edge-compression exit: oneTouchEdgeGapClosed
+ * and the NO-bias equivalent both early-return unless the shadow carries their
+ * own blockedReason, and the weekend-funding exit is likewise reason-gated. So a
+ * manual shadow holding a thesis_* close can only be a legacy record from the
+ * resolver that fired on any gate failure, realizing a mid-flight mark rather
+ * than the thesis.
+ *
+ * The Phase 3 backfill stamped closeTrigger on every close it could classify.
+ * These are exactly the ones it could not, which is why an absent trigger is
+ * the discriminator rather than a hardcoded date.
+ */
+export function isLegacyManualShadowForceClose(shadow: LegacyManualForceCloseCandidate): boolean {
+  if (shadow.blockedReason !== "manual_shadow_trade") return false;
+  if (shadow.hypotheticalResult === undefined) return false;
+  if (shadow.hypotheticalResult.closeTrigger !== undefined) return false;
+  const reason = shadow.hypotheticalResult.closeReason;
+  return reason === "thesis_validated"
+    || reason === "thesis_validated_profitable"
+    || reason === "thesis_compressed_loss";
+}
+
 export interface BlockedSignalSummaryShadow {
   status: "open" | "resolved" | "cancelled";
   resolvedAt?: string;

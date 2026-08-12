@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildBlockedSignalObservations, summarizeBlockedSignals } from "./blocked-signals.js";
+import { buildBlockedSignalObservations, isLegacyManualShadowForceClose, summarizeBlockedSignals } from "./blocked-signals.js";
 
 const baseShadow = {
   status: "resolved" as const,
@@ -104,5 +104,43 @@ describe("blocked signal observations", () => {
     expect(notes[0]).toContain("sell_yes_edge_pts >= 1");
     expect(notes[0]).toContain("spread <= 3c");
     expect(notes[0]).toContain("liquidity >= 5000");
+  });
+});
+
+describe("legacy manual shadow force-close detection", () => {
+  it("flags a thesis_* close with no structured trigger", () => {
+    for (const closeReason of ["thesis_validated", "thesis_validated_profitable", "thesis_compressed_loss"]) {
+      expect(isLegacyManualShadowForceClose({
+        blockedReason: "manual_shadow_trade",
+        hypotheticalResult: { closeReason },
+      })).toBe(true);
+    }
+  });
+
+  it("spares closes the backfill was able to classify", () => {
+    expect(isLegacyManualShadowForceClose({
+      blockedReason: "manual_shadow_trade",
+      hypotheticalResult: { closeReason: "thesis_validated_profitable", closeTrigger: "observed_gap_closed" },
+    })).toBe(false);
+  });
+
+  it("spares the mechanical exits manual shadows legitimately take", () => {
+    for (const [closeReason, closeTrigger] of [["expiry", "expiry"], ["stop", "stop_hit"], ["target", "target_hit"]]) {
+      expect(isLegacyManualShadowForceClose({
+        blockedReason: "manual_shadow_trade",
+        hypotheticalResult: { closeReason, closeTrigger },
+      })).toBe(false);
+    }
+  });
+
+  it("leaves other shadow families to their own sweeps", () => {
+    expect(isLegacyManualShadowForceClose({
+      blockedReason: "one_touch_high_edge_shadow",
+      hypotheticalResult: { closeReason: "thesis_validated_profitable" },
+    })).toBe(false);
+  });
+
+  it("ignores shadows that have not resolved", () => {
+    expect(isLegacyManualShadowForceClose({ blockedReason: "manual_shadow_trade" })).toBe(false);
   });
 });
