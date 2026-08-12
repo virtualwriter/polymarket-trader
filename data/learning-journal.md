@@ -6034,3 +6034,42 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 5/12; ne
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-12T07:08:07.002Z, model=deepseek-v4-pro)
+- Hypotheses added: 4 (rejected 4); reviews applied: 6; invalidated assumptions learned: 5; param updates: none.
+- Strategy review: Live one-touch NO selling continues to work (4/4 wins, avg +18.4%), weekend HL funding reversion long is solid across stocks (69% win, +1.40 aggregate), and PC ratio extremes show modest but consistent edge. The main failures are in shadow strategies: no-bias adjusted gap shadows lose heavily (–1.21 total), relative value heatmap shadows are large losers, PM proxy shorts (funding and PC ratio) on gold have <20% win rates, and cross-asset BTC momentum relying on HYPE confirmation delivers only 40% win. Several shadow-mined funding-reversion signals (CBRS, AAPL, MU) underperform when entered on 
+- Nightly journal: Tonight we diagnosed six struggling setup families. Gold one‑touch NO with large underlying‑cap edge (H‑534) is a total failure — the edge is not a fade signal. Several shadow‑mined funding reversion signals (CBRS, AAPL, MU) are sub‑50% win under simple <-10% thresholds, so we proposed refinements using trailing 7‑day percentiles to isolate genuine tail events. Cross‑asset BTC momentum with HYPE confirmation (H‑108) and listed‑IV momentum (H‑218) are underperforming, so we created simpler variants stripping away the noisy overlays. From the ranked research findings, we authored two new hypothe
+### 2026-08-12 08:28 UTC
+
+**Portfolio:** $104.04 total | Cash $104.04 | 0 open | P&L $7.2810 | 63% win rate (702 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 17 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [correlation_flip] GOLD-OIL correlation shifted from 0.42 to -0.08. Rolling correlation: 24h=-0.19, 7d=0.66, 30d=-0.26. Current 24h corr is at 57th pct of last 30 daily 24h-rolling values (range -0.97 to 0.77).
+- [correlation_flip] BTC-GOLD correlation shifted from 0.77 to 0.32. Rolling correlation: 24h=0.26, 7d=0.10, 30d=0.24. Current 24h corr is at 37th pct of last 30 daily 24h-rolling values (range -0.79 to 0.91).
+
+**Blocked signal learning:**
+- Open blocked shadows: 52
+- Resolved blocked shadows: 830 (424 wins / 406 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 6/7 shadows would have won, avg P&L 2.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 16/29 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/18 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=304 (82W/179L/43flat, 31.4% win-rate, sum $-1.0720, avg -0.35%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.03%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+15.69%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.49%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-15.69%)
+
+**LLM analysis:**
+No open positions, so no discretionary closes. Noted several market tensions: oil funding deeply negative with spike-risk macro signal, silver up 1.4% in this window, and gold PM one-touch edge still rich (6pt) but not in a trade. The ONE_TOUCH_HIGH_EDGE_NO closed ETH loss (-15.69%) resolved just before this snapshot; its open warnings are all shadow-blocked and should be monitored for promotion review overnight. Cash at $104.04 with a 63% win rate on 702 trades supports the gradual rebuild thesis.
+
+---
+
