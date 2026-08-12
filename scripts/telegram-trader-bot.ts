@@ -588,12 +588,6 @@ const STRATEGY_REFERENCE: JsonObject = {
     exit: "First of: (1) window closes / US market reopens -> close_reason expiry or weekend_window_closed; (2) funding normalizes to >= +10% annualized -> weekend_funding_normalized; (3) margin P&L target +3% hit; (4) max hold 24h expiry. No stop loss (stop set to 100%).",
     source: "scripts/trading-engine.ts (WEEKEND_HL_FUNDING_* constants, weekendHyperliquidFundingCandidates, weekendHyperliquidFundingExitHit, isStockPerpFundingWindowOpen, isWeekendFundingEntryAllowed)",
   },
-  USER_PM_IV_TOUCH_RICH_NO: {
-    universe: "Polymarket one-touch contracts on BTC/ETH/OIL/GOLD/SPY from the relative-value heatmap",
-    entry: "Auto-scan when PM YES is ≥5pts rich vs options touch model (best_expression=sell_yes_or_buy_no), spread ≤3¢, liquidity ≥$1k, DTE ≤60d. Opens SHORT via pm_no. Enabled 2026-08-05 from eligible_live manual-shadow evidence (~76% WR).",
-    exit: "Hold up to 30d or contract expiry; no tight stop (stopPct=100), no upside take-profit cap (targetPct=null) — same hold-to-repricing convention as historical manual shadows.",
-    source: "scripts/lib/trading/user-pm-iv-touch-rich-no.ts + generateUserPmIvTouchRichNoSignals in trading-engine.ts",
-  },
   note: "Rules for other signal types live in scripts/trading-engine.ts on this host; they are not included in these artifacts.",
 };
 

@@ -111,7 +111,6 @@ describe("buildNightlyResearchPrompt", () => {
   it("includes the locked-signal line", () => {
     const prompt = buildNightlyResearchPrompt(emptyInputs);
     expect(prompt).toContain("ONE_TOUCH_HIGH_EDGE_NO");
-    expect(prompt).toContain("USER_PM_IV_TOUCH_RICH_NO");
   });
 
   it("renders ranked research opportunities and theme summaries", () => {
