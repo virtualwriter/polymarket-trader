@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-12T04:28:17.402Z",
+  "generatedAt": "2026-08-12T05:23:02.272Z",
   "dataFreshness": {
     "valuationRows": 2267,
     "latestValuationAt": "2026-08-12T04",
@@ -8,54 +8,14 @@
     "latestInstrumentSnapshotAt": "2026-08-12T04"
   },
   "portfolio": {
-    "cash": 97.1296,
-    "openPositions": 2,
-    "realizedPnl": 2.3694,
-    "totalTrades": 700,
-    "winRatePct": 63.1,
-    "unrealizedPnl": 5.2677
+    "cash": 104.0412,
+    "openPositions": 0,
+    "realizedPnl": 5.2305,
+    "totalTrades": 701,
+    "winRatePct": 63.2,
+    "unrealizedPnl": 0
   },
-  "openPositions": [
-    {
-      "positionId": "T-1786174137131-pym0",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "short",
-      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-      "pnlPct": 566.67,
-      "currentPrice": 0.6,
-      "underlyingPrice": 83.083,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_pm_iv",
-        "oil_opt_iv_30d",
-        "oil_opt_iv_90d",
-        "oil_hl_funding_ann"
-      ]
-    },
-    {
-      "positionId": "T-1786465723472-4gf9",
-      "asset": "ETH",
-      "venue": "polymarket",
-      "direction": "short",
-      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-      "pnlPct": -72.73,
-      "currentPrice": 0.03,
-      "underlyingPrice": 1891,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "eth_spot",
-        "eth_opt_iv_30d",
-        "eth_opt_iv_90d",
-        "eth_hl_funding_ann"
-      ]
-    }
-  ],
+  "openPositions": [],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -193,15 +153,6 @@
       "trades": 6,
       "wins": 4,
       "avgPnlPct": 4.4883,
-      "disabledAssets": []
-    },
-    {
-      "type": "USER_PM_IV_TOUCH_RICH_NO",
-      "enabled": true,
-      "weight": 0.5,
-      "trades": 0,
-      "wins": 0,
-      "avgPnlPct": 0,
       "disabledAssets": []
     },
     {
@@ -664,10 +615,6 @@
       "ONE_TOUCH_HIGH_EDGE_NO": {
         "targetPct": null,
         "stopPct": 20
-      },
-      "USER_PM_IV_TOUCH_RICH_NO": {
-        "targetPct": null,
-        "stopPct": 100
       }
     },
     "updatedAt": "2026-08-05T07:28:19.818Z"
