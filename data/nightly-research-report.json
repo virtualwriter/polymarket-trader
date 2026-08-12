@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-11T07:09:16Z",
+  "generatedAt": "2026-08-12T07:09:53Z",
   "summary": {
-    "generatedAt": "2026-08-11T07:09:16Z",
+    "generatedAt": "2026-08-12T07:09:53Z",
     "findingCounts": {
-      "open": 14,
-      "strengthened": 28,
+      "open": 13,
+      "strengthened": 29,
       "weakened": 0,
       "negative": 4,
       "suppressed": 0,
@@ -48,8 +48,8 @@
     {
       "rank": 3,
       "id": "FIND-0043",
-      "opportunityScore": 0.9895,
-      "confidenceScore": 0.601,
+      "opportunityScore": 0.9935,
+      "confidenceScore": 0.6295,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -58,8 +58,8 @@
     {
       "rank": 4,
       "id": "FIND-0030",
-      "opportunityScore": 0.9887,
-      "confidenceScore": 0.4618,
+      "opportunityScore": 0.9926,
+      "confidenceScore": 0.4783,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -68,8 +68,8 @@
     {
       "rank": 5,
       "id": "FIND-0058",
-      "opportunityScore": 0.9837,
-      "confidenceScore": 0.4447,
+      "opportunityScore": 0.9892,
+      "confidenceScore": 0.455,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s?,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -77,6 +77,16 @@
     },
     {
       "rank": 6,
+      "id": "FIND-0055",
+      "opportunityScore": 0.9806,
+      "confidenceScore": 0.4408,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no",
+      "themeId": "THEME-0001",
+      "themeSlug": "heatmap_one_touch",
+      "status": "strengthened"
+    },
+    {
+      "rank": 7,
       "id": "FIND-0024",
       "opportunityScore": 0.9803,
       "confidenceScore": 0.6232,
@@ -86,7 +96,7 @@
       "status": "open"
     },
     {
-      "rank": 7,
+      "rank": 8,
       "id": "FIND-0036",
       "opportunityScore": 0.9788,
       "confidenceScore": 0.4602,
@@ -94,16 +104,6 @@
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
       "status": "open"
-    },
-    {
-      "rank": 8,
-      "id": "FIND-0055",
-      "opportunityScore": 0.9703,
-      "confidenceScore": 0.4186,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no",
-      "themeId": "THEME-0001",
-      "themeSlug": "heatmap_one_touch",
-      "status": "strengthened"
     },
     {
       "rank": 9,
@@ -132,7 +132,7 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 36,
-      "avgOpportunityScore": 0.6664
+      "avgOpportunityScore": 0.6673
     },
     {
       "id": "THEME-0002",
@@ -172,44 +172,44 @@
   ],
   "authoredHypotheses": [
     {
-      "originFindingId": "FIND-0020",
-      "themeId": "THEME-0003",
-      "description": "Smart\u2011money fade: when tracked smart wallets are net short YES (smart_flow_stance \u2264 -1) on upside one\u2011touch NO contracts and a sell\u2011YES edge of at least 3 points exists, enter short (sell YES) expecting spot to decline. In\u2011sample discovery from FIND\u20110020 shows informed flow asymmetry."
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Fade moderate underlying\u2011cap edge on gold one\u2011touch NO with near\u2011expiry contracts. Restrict to upside barriers, edge between 3 and 8 points, and expiry \u226430 days to avoid the model\u2011miscalibration problem that kills large-edge signals."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "CBRS funding reversion using regime\u2011relative extremity. Replace static < \u201310% with cbrs_hl_funding_ann in the bottom 5% of its trailing 7\u2011day distribution, capturing genuine panic overshoots instead of noisy negative periods."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "AAPL funding reversion using regime\u2011relative extremity. Switch from < \u201310% to aapl_hl_funding_ann_percentile_7d < 5, isolating true tail events where funding is extremely negative relative to recent history."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "MU funding reversion with extreme tail filter. Use mu_hl_funding_ann_percentile_7d < 5 instead of absolute < \u201310%, so the signal only triggers on the most oversold funding prints."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "BTC trend\u2011following without HYPE confirmation. Drop the HYPE overlap conditions; go long BTC when spot is above the 24h SMA and within 3% of the 7\u2011day high."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "BTC spot momentum without IV confirmation. Remove the rising options\u2011IV condition and keep pure momentum: spot above 24h SMA, near 7d high, and 24h gain >0.75%."
     },
     {
       "originFindingId": "FIND-0053",
       "themeId": "THEME-0005",
-      "description": "GOLD extreme low put/call ratio short: when gold\u2019s GLD put/call ratio is in the bottom 10% of its 7\u2011day range (extreme call buying/exhausted puts), short spot regardless of the prevailing trend. Shadow evidence shows +$0.13 PnL on 8 resolved trades (100% WR) despite being blocked by a positive\u2011trend filter."
+      "description": "Short GOLD when put/call ratio falls into the bottom 10% of its 7\u2011day range (extreme call buying). The finding suggests this works even when the engine\u2019s positive\u2011trend block would normally prevent the short."
     },
     {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H\u2011534: only take the gold one\u2011touch NO short when spot is below the 24h SMA, plus the underlying\u2011cap edge \u226510 pts. This avoids fading strong uptrends where the cap edge reflects bullish momentum."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H\u2011539: restrict CBRS funding reversion to weekends (Sat/Sun) and require funding to be in the extreme low end of its 7\u2011day distribution (percentile <10). This ensures we only act on true weekend\u2011driven overshoots that reliably revert."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H\u2011537: apply the same weekend\u2011only filter and deeper extremity condition (funding percentile <10) to AAPL funding reversion. This lifts the win rate from 50% by eliminating weekday triggers where the reversion pattern is unreliable."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H\u2011535: limit MU funding reversion to weekends and require funding to be in its 7\u2011day bottom decile. This captures the true overshoots that historically produced sharp reversals."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H\u2011108: tighten BTC momentum requirements \u2013 demand spot be within 2% of its 7\u2011day high and show a positive 24h change, in addition to HYPE staying above its SMA with stable OI. This ensures we only bet on sustained, strong BTC breakouts."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H\u2011001: replace absolute PM\u2011IV thresholds with a regime\u2011relative condition \u2013 PM IV z\u2011score below \u20131.5 on a 30\u2011day window, indicating extreme compression versus its own recent history. This should capture dislocations regardless of the absolute level of IV."
+      "originFindingId": "FIND-0043",
+      "themeId": "THEME-0001",
+      "description": "BTC\u2011specific one\u2011touch NO edge: when a BTC upside one\u2011touch NO contract offers a sell\u2011YES edge of at least 3 points, short the YES side."
     }
   ],
   "negativeFindings": [
@@ -241,9 +241,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-08-11T07:07:36Z",
-    "opportunitiesGeneratedAt": "2026-08-11T07:09:16Z",
-    "themesGeneratedAt": "2026-08-11T07:07:40Z",
-    "adviceGeneratedAt": "2026-08-11T07:07:35.758Z"
+    "findingsExportGeneratedAt": "2026-08-12T07:08:07Z",
+    "opportunitiesGeneratedAt": "2026-08-12T07:09:53Z",
+    "themesGeneratedAt": "2026-08-12T07:08:11Z",
+    "adviceGeneratedAt": "2026-08-12T07:08:07.002Z"
   }
 }
