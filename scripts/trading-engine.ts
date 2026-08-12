@@ -488,6 +488,12 @@ const SPOT_LONG_RISK_BY_ASSET: Record<string, SignalRiskParams> = {
 };
 const SPOT_SHORT_RISK: SignalRiskParams = { targetPct: 3, stopPct: 2 };
 const PRODUCTION_POLYMARKET_RISK: SignalRiskParams = { targetPct: 5, stopPct: 2 };
+/**
+ * Risk shape for binaries whose exits the scale-out ladder governs: no premium
+ * target and no generic premium stop, because the ladder decides both from
+ * fractions of max profit instead.
+ */
+const LADDER_OWNED_BINARY_RISK: SignalRiskParams = { targetPct: null, stopPct: 100 };
 const FUNDING_BREAKEVEN_ARM_PCT = 1.5;
 const FUNDING_BREAKEVEN_LOCK_PCT = 0.25;
 const FUNDING_EXTENDED_ABS_MOVE_PCT = 8;
@@ -1986,10 +1992,17 @@ function applyProductionPolymarketRisk(position: Position): string | null {
     position.stopPct = risk.stopPct;
     return note;
   }
-  if (position.targetPct === PRODUCTION_POLYMARKET_RISK.targetPct && position.stopPct === PRODUCTION_POLYMARKET_RISK.stopPct) return null;
-  const note = `${position.asset} ${position.direction} ${position.instrumentType} ${position.signalType}: ${formatTargetPct(position.targetPct)}/-${position.stopPct} -> ${formatTargetPct(PRODUCTION_POLYMARKET_RISK.targetPct)}/-${PRODUCTION_POLYMARKET_RISK.stopPct}`;
-  position.targetPct = PRODUCTION_POLYMARKET_RISK.targetPct;
-  position.stopPct = PRODUCTION_POLYMARKET_RISK.stopPct;
+  // The scale-out ladder owns exits for outright binaries, so the generic
+  // production shape must not be stamped over them. A +5%/-2% shape measured on
+  // premium is unreachable in both directions on these contracts: +5% fires long
+  // before half the payoff is captured, and -2% is a fraction of a tick, so the
+  // ladder's rungs and its -40% stop would never be consulted. Leaving target
+  // null and the generic stop wide hands both decisions to the ladder.
+  const risk = LADDER_OWNED_BINARY_RISK;
+  if (position.targetPct === risk.targetPct && position.stopPct === risk.stopPct) return null;
+  const note = `${position.asset} ${position.direction} ${position.instrumentType} ${position.signalType}: ${formatTargetPct(position.targetPct)}/-${position.stopPct} -> ${formatTargetPct(risk.targetPct)}/-${risk.stopPct} (scale-out ladder)`;
+  position.targetPct = risk.targetPct;
+  position.stopPct = risk.stopPct;
   return note;
 }
 
@@ -2899,16 +2912,18 @@ function realizeClosedPosition(
  * The scale-out ladder's verdict on a binary position, or null when the ladder
  * does not govern it.
  *
- * An explicit per-trade target defers to the generic cascade: a target set at
- * open is a deliberate instruction about that trade, and the ladder's job is to
- * govern the binaries that have no exit plan of their own.
+ * The ladder is authoritative on profit-taking for outright binaries and does not
+ * defer to a stored targetPct. Those fields are not per-trade instructions on
+ * these contracts — applyProductionPolymarketRisk rewrites them on every open
+ * position each cycle — so deferring to one meant a generic default silently
+ * outranked the policy. A signal-specific stop still works, because the ladder
+ * holds until -40% and the generic stop is consulted after it.
  */
 function binaryScaleExitAction(
   position: Position,
   mark: { currentPrice: number; pnlPct: number },
 ): ReturnType<typeof decideBinaryScaleExit> | null {
   if (!isBinaryContractInstrument(position.instrumentType)) return null;
-  if (position.targetPct !== null && mark.pnlPct >= position.targetPct) return null;
   return decideBinaryScaleExit({
     entryPrice: position.entryPrice,
     currentPrice: mark.currentPrice,

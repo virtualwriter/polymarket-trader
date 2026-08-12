@@ -457,7 +457,9 @@ async function main() {
 
     // Binaries are governed by the scale-out ladder: take half at 50% of max
     // profit, close the rest at 70%, and cut 40% below the ratcheting reference.
-    // An explicit per-trade target still wins, and expiry still settles.
+    // The ladder outranks the stored premium target, which on these contracts is a
+    // shape the engine rewrites rather than a per-trade instruction. A tighter
+    // signal-specific stop still applies, and expiry still settles.
     const binaryAction = isBinaryContractInstrument(position.instrumentType)
       ? decideBinaryScaleExit({
         entryPrice: position.entryPrice,
@@ -469,9 +471,9 @@ async function main() {
 
     let closeReason: CloseReason | null = null;
     let scaleOutFraction: number | null = null;
-    if (position.targetPct !== null && mark.pnlPct >= position.targetPct) closeReason = "target";
-    else if (binaryAction.kind === "close") closeReason = binaryAction.reason;
+    if (binaryAction.kind === "close") closeReason = binaryAction.reason;
     else if (binaryAction.kind === "scale_out") scaleOutFraction = binaryAction.sizeFraction;
+    else if (position.targetPct !== null && mark.pnlPct >= position.targetPct) closeReason = "target";
     else if (fundingBreakevenStopHit(position, mark)) closeReason = "breakeven_stop";
     else if (mark.pnlPct <= -position.stopPct) closeReason = "stop";
     else if (new Date(position.expiryDate) <= new Date()) closeReason = "expiry";
