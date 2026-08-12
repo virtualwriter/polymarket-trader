@@ -2,9 +2,22 @@
  * USER_PM_IV_TOUCH_RICH_NO — engine-live signal for Polymarket YES priced rich
  * vs the options-derived touch model (buy NO / sell YES).
  *
- * Distilled from resolved manual_shadow_trade evidence (eligible_live in truth
- * state): ~16/21 wins, avg +14% shadow PnL. Live opening uses the same
- * relative-value heatmap rows the heatmap button used, with deterministic gates.
+ * Live opening uses the same relative-value heatmap rows the heatmap button
+ * used, with deterministic gates.
+ *
+ * The "~16/21 wins, avg +14%" shadow record this signal was originally sized on
+ * was contaminated: 12 of those closes came from the pre-2026-07-10 resolver
+ * firing on any gate failure, realizing a mid-flight mark instead of the thesis.
+ * On clean evidence the family is 6/7 at +2.70%, and truth state carries it as
+ * validating rather than eligible_live.
+ *
+ * The gates below do NOT yet encode the direction asymmetry found on
+ * 2026-08-12 across 49 gated entries in the NO-bias candidate log: upside
+ * barriers are overpriced by the market (29.3% priced vs 9.1% realized touch,
+ * +10.6% per trade) while downside barriers are close to calibrated (45.3% vs
+ * 44.4% realized, -24.0% per trade) and the apparent richness there is the
+ * model underpricing touch by ~11pt. Restricting to upside barriers is the open
+ * decision; see setup-invalid-assumptions.json for manual_iv_touch_rich_no.
  */
 
 export const USER_PM_IV_TOUCH_RICH_NO_SIGNAL = "USER_PM_IV_TOUCH_RICH_NO";
