@@ -1,54 +1,10 @@
 {
-  "generatedAt": "2026-08-12T03:28:24.486Z",
+  "generatedAt": "2026-08-12T04:07:25.169Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [],
   "sizingPreviews": [],
   "portfolioExposurePreviews": [],
   "stagedQuantRules": [],
-  "llmCloseEligibility": [
-    {
-      "positionId": "T-1786174137131-pym0",
-      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "short",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_pm_iv",
-        "oil_opt_iv_30d",
-        "oil_opt_iv_90d",
-        "oil_hl_funding_ann"
-      ],
-      "hoursOpen": 91.99,
-      "hoursToExpiry": 628.01,
-      "plannedHoldHours": 720,
-      "elapsedHoldPct": 0.1278,
-      "minHoldHours": 72,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "T-1786465723472-4gf9",
-      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-      "asset": "ETH",
-      "venue": "polymarket",
-      "direction": "short",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "eth_spot",
-        "eth_opt_iv_30d",
-        "eth_opt_iv_90d",
-        "eth_hl_funding_ann"
-      ],
-      "hoursOpen": 10.99,
-      "hoursToExpiry": 709.01,
-      "plannedHoldHours": 720,
-      "elapsedHoldPct": 0.0153,
-      "minHoldHours": 72,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    }
-  ]
+  "llmCloseEligibility": []
 }

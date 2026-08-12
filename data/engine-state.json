@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-12T03:28:24.353Z",
+  "generatedAt": "2026-08-12T04:07:25.048Z",
   "dataFreshness": {
     "valuationRows": 2266,
     "latestValuationAt": "2026-08-12T03",
@@ -8,54 +8,14 @@
     "latestInstrumentSnapshotAt": "2026-08-12T03"
   },
   "portfolio": {
-    "cash": 97.1296,
-    "openPositions": 2,
-    "realizedPnl": 2.3694,
+    "cash": 98.5672,
+    "openPositions": 0,
+    "realizedPnl": 2.3735,
     "totalTrades": 700,
     "winRatePct": 63.1,
-    "unrealizedPnl": 5.404
+    "unrealizedPnl": 0
   },
-  "openPositions": [
-    {
-      "positionId": "T-1786174137131-pym0",
-      "asset": "OIL",
-      "venue": "polymarket",
-      "direction": "short",
-      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-      "pnlPct": 566.67,
-      "currentPrice": 0.6,
-      "underlyingPrice": 83.048,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_pm_iv",
-        "oil_opt_iv_30d",
-        "oil_opt_iv_90d",
-        "oil_hl_funding_ann"
-      ]
-    },
-    {
-      "positionId": "T-1786465723472-4gf9",
-      "asset": "ETH",
-      "venue": "polymarket",
-      "direction": "short",
-      "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-      "pnlPct": -63.64,
-      "currentPrice": 0.04,
-      "underlyingPrice": 1882.8,
-      "targetPct": null,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "eth_spot",
-        "eth_opt_iv_30d",
-        "eth_opt_iv_90d",
-        "eth_hl_funding_ann"
-      ]
-    }
-  ],
+  "openPositions": [],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -225,9 +185,9 @@
   ],
   "blockedSummary": {
     "openCount": 53,
-    "resolvedCount": 850,
-    "wouldHaveWon": 437,
-    "wouldHaveLost": 413,
+    "resolvedCount": 828,
+    "wouldHaveWon": 423,
+    "wouldHaveLost": 405,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -238,20 +198,20 @@
         "avgPnlPct": 0.99
       },
       {
-        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-        "blocked": 29,
-        "resolved": 19,
-        "wouldHaveWon": 15,
-        "wouldHaveLost": 4,
-        "avgPnlPct": 11.78
-      },
-      {
         "signalType": "USER_PM_APR_XAU_TAIL_NO",
         "blocked": 11,
         "resolved": 11,
         "wouldHaveWon": 8,
         "wouldHaveLost": 3,
         "avgPnlPct": 0.7
+      },
+      {
+        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
+        "blocked": 17,
+        "resolved": 7,
+        "wouldHaveWon": 6,
+        "wouldHaveLost": 1,
+        "avgPnlPct": 2.7
       },
       {
         "signalType": "PC_RATIO_EXTREME_LOW",
