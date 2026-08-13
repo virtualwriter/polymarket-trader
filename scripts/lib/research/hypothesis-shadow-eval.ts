@@ -4,6 +4,7 @@ import {
   DERIVED_KEY_PATTERN,
   MARKET_ROW_CONDITION_KEYS,
   METADATA_CONDITION_KEYS,
+  PM_CONTRACT_PRICING_KEYS,
   RELATIVE_VALUE_AGG_PATTERN,
 } from "./condition-catalog.js";
 
@@ -372,10 +373,15 @@ function scoreDirectionalMove(
 export function isPolymarketExpression(hypothesis: Hypothesis): boolean {
   const venue = String(hypothesis.conditions?.venue ?? "").toLowerCase();
   const signal = String(hypothesis.conditions?.signalType ?? "").toUpperCase();
-  return venue === "polymarket"
+  if (venue === "polymarket"
     || signal.includes("ONE_TOUCH")
     || signal.includes("NO_BIAS")
-    || signal.includes("PM_");
+    || signal.includes("PM_")) return true;
+  // Venue and signalType are optional, and the research hypotheses that trade
+  // contracts most explicitly set neither — they name the contract's price
+  // instead. Reading the conditions catches those: 22 FIND-derived theses were
+  // misread as spot theses because only the two optional fields were checked.
+  return Object.keys(hypothesis.conditions ?? {}).some((key) => PM_CONTRACT_PRICING_KEYS.has(key));
 }
 
 /**

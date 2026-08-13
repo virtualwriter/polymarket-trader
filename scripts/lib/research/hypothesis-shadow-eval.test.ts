@@ -551,11 +551,29 @@ describe("sweepUnscorableHypotheses", () => {
       { asset: "BTC", signalType: "ONE_TOUCH_HIGH_EDGE_NO" },
       { asset: "BTC", signalType: "NO_BIAS_ADJUSTED_GAP" },
       { asset: "BTC", signalType: "PM_IV_GT_OPT_IV" },
+      // The FIND-derived theses set neither venue nor signalType; they name the
+      // contract's own price instead.
+      { touch_direction: "= 1", sell_yes_edge_pts: ">= 8", liquidity: ">= 5000" },
+      { pm_iv_minus_opt_iv_pts: ">= 10", days_to_expiry: "< 30" },
+      { adjusted_no_gap_pts: "> 0" },
+      { yesAsk: "<= 0.2" },
     ];
     for (const conditions of contract) {
       expect(isPolymarketExpression(hyp({ prediction: "x", conditions }))).toBe(true);
     }
-    expect(isPolymarketExpression(hyp({ prediction: "x", conditions: { asset: "BTC", venue: "hyperliquid" } }))).toBe(false);
+  });
+
+  it("does not mistake a perp thesis for a contract thesis", () => {
+    const spot: Record<string, string>[] = [
+      { asset: "BTC", venue: "hyperliquid" },
+      // Liquidity, expiry and flow stance can scope a perp trade just as well.
+      { asset: "BTC", liquidity: ">= 5000", days_to_expiry: "< 30" },
+      { asset: "BTC", smart_flow_stance: "< 0" },
+      { asset: "BTC", btc_hl_funding_ann: "<= -50" },
+    ];
+    for (const conditions of spot) {
+      expect(isPolymarketExpression(hyp({ prediction: "x", conditions }))).toBe(false);
+    }
   });
 
   it("never touches scorable hypotheses", () => {

@@ -54,6 +54,25 @@ export const MARKET_ROW_CONDITION_KEYS = new Set([
   "adjusted_no_gap_pts",
 ]);
 
+/**
+ * The subset of market-row keys that price the binary itself.
+ *
+ * A thesis conditioned on one of these is a thesis about a Polymarket contract,
+ * not about spot: they describe the contract's own quote, its edge against a
+ * model, or which side of spot its barrier sits on. The rest of
+ * MARKET_ROW_CONDITION_KEYS is deliberately excluded — liquidity, days to
+ * expiry and flow stance can just as easily scope a perp or spot trade, so
+ * treating them as contract markers would misread those theses.
+ */
+export const PM_CONTRACT_PRICING_KEYS = new Set([
+  "sell_yes_edge_pts",
+  "adjusted_no_gap_pts",
+  "pm_iv_minus_opt_iv_pts",
+  "touch_direction",
+  "yesAsk",
+  "yesSpread",
+]);
+
 export const DERIVED_KEY_PATTERN = /^(.+)_(pct_from_\d+[hd]_(high|low)|pct_vs_\d+[hd]_sma|percentile_\d+[hd]|zscore_\d+[hd]|change_pct_\d+[hd])$/;
 export const RELATIVE_VALUE_AGG_PATTERN = /^([a-z]+)_pm_(underlying_cap|settle)_(ratio|edge_pts|yes_sum|overround|tail_yes|skew_yes)_(max|min|avg)(_tight)?$/;
 const PERP_KEY_PATTERN = /^([a-z0-9]+)_hl_(funding_ann|oi|basis_pct)$/;
