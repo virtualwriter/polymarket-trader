@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-12T07:09:53Z",
+  "generatedAt": "2026-08-13T07:10:54Z",
   "summary": {
-    "generatedAt": "2026-08-12T07:09:53Z",
+    "generatedAt": "2026-08-13T07:10:54Z",
     "findingCounts": {
-      "open": 13,
-      "strengthened": 29,
+      "open": 12,
+      "strengthened": 30,
       "weakened": 0,
       "negative": 4,
       "suppressed": 0,
@@ -21,7 +21,7 @@
       "themeSlug": "other_informed_flow",
       "status": "open"
     },
-    "authoredHypothesisCount": 8,
+    "authoredHypothesisCount": 6,
     "advicePresent": true
   },
   "topOpportunities": [
@@ -48,8 +48,8 @@
     {
       "rank": 3,
       "id": "FIND-0043",
-      "opportunityScore": 0.9935,
-      "confidenceScore": 0.6295,
+      "opportunityScore": 0.9912,
+      "confidenceScore": 0.612,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -58,8 +58,8 @@
     {
       "rank": 4,
       "id": "FIND-0030",
-      "opportunityScore": 0.9926,
-      "confidenceScore": 0.4783,
+      "opportunityScore": 0.9842,
+      "confidenceScore": 0.4687,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -67,26 +67,6 @@
     },
     {
       "rank": 5,
-      "id": "FIND-0058",
-      "opportunityScore": 0.9892,
-      "confidenceScore": 0.455,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s?,e3-8|no",
-      "themeId": "THEME-0001",
-      "themeSlug": "heatmap_one_touch",
-      "status": "strengthened"
-    },
-    {
-      "rank": 6,
-      "id": "FIND-0055",
-      "opportunityScore": 0.9806,
-      "confidenceScore": 0.4408,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no",
-      "themeId": "THEME-0001",
-      "themeSlug": "heatmap_one_touch",
-      "status": "strengthened"
-    },
-    {
-      "rank": 7,
       "id": "FIND-0024",
       "opportunityScore": 0.9803,
       "confidenceScore": 0.6232,
@@ -96,7 +76,7 @@
       "status": "open"
     },
     {
-      "rank": 8,
+      "rank": 6,
       "id": "FIND-0036",
       "opportunityScore": 0.9788,
       "confidenceScore": 0.4602,
@@ -104,6 +84,26 @@
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
       "status": "open"
+    },
+    {
+      "rank": 7,
+      "id": "FIND-0058",
+      "opportunityScore": 0.9727,
+      "confidenceScore": 0.4345,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s?,e3-8|no",
+      "themeId": "THEME-0001",
+      "themeSlug": "heatmap_one_touch",
+      "status": "strengthened"
+    },
+    {
+      "rank": 8,
+      "id": "FIND-0055",
+      "opportunityScore": 0.9716,
+      "confidenceScore": 0.4179,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no",
+      "themeId": "THEME-0001",
+      "themeSlug": "heatmap_one_touch",
+      "status": "strengthened"
     },
     {
       "rank": 9,
@@ -132,7 +132,7 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 36,
-      "avgOpportunityScore": 0.6673
+      "avgOpportunityScore": 0.6583
     },
     {
       "id": "THEME-0002",
@@ -172,44 +172,34 @@
   ],
   "authoredHypotheses": [
     {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Fade moderate underlying\u2011cap edge on gold one\u2011touch NO with near\u2011expiry contracts. Restrict to upside barriers, edge between 3 and 8 points, and expiry \u226430 days to avoid the model\u2011miscalibration problem that kills large-edge signals."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "CBRS funding reversion using regime\u2011relative extremity. Replace static < \u201310% with cbrs_hl_funding_ann in the bottom 5% of its trailing 7\u2011day distribution, capturing genuine panic overshoots instead of noisy negative periods."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "AAPL funding reversion using regime\u2011relative extremity. Switch from < \u201310% to aapl_hl_funding_ann_percentile_7d < 5, isolating true tail events where funding is extremely negative relative to recent history."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "MU funding reversion with extreme tail filter. Use mu_hl_funding_ann_percentile_7d < 5 instead of absolute < \u201310%, so the signal only triggers on the most oversold funding prints."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "BTC trend\u2011following without HYPE confirmation. Drop the HYPE overlap conditions; go long BTC when spot is above the 24h SMA and within 3% of the 7\u2011day high."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "BTC spot momentum without IV confirmation. Remove the rising options\u2011IV condition and keep pure momentum: spot above 24h SMA, near 7d high, and 24h gain >0.75%."
-    },
-    {
       "originFindingId": "FIND-0053",
       "themeId": "THEME-0005",
-      "description": "Short GOLD when put/call ratio falls into the bottom 10% of its 7\u2011day range (extreme call buying). The finding suggests this works even when the engine\u2019s positive\u2011trend block would normally prevent the short."
+      "description": "Short GOLD when GLD put/call ratio is in the bottom 10% of its 7-day range AND spot remains above its 24h SMA, matching the FIND-0053 shadow cluster where the positive-trend block was short. This is a fade of call crowding in a still-uptrending tape."
     },
     {
-      "originFindingId": "FIND-0043",
-      "themeId": "THEME-0001",
-      "description": "BTC\u2011specific one\u2011touch NO edge: when a BTC upside one\u2011touch NO contract offers a sell\u2011YES edge of at least 3 points, short the YES side."
+      "originFindingId": "FIND-0024",
+      "themeId": "THEME-0004",
+      "description": "Sell YES on rich PM-IV upside touch contracts expiring within 30 days, when PM IV is at least 10 vol points above listed option IV and there is at least 3 points of sell-YES edge. This is the near-expiry, above-strike richness cluster from FIND-0024."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-539: only go long CBRS on weekend days when CBRS funding is in the bottom 10% of its 7-day distribution. This fixes the failing trigger that also fired after funding had already normalized to +5.5% or was in a non-extreme state."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-537: only go long AAPL on weekend days when AAPL funding is in the bottom 10% of its 7-day distribution, instead of a flat < -10% that caught post-normalization states around +5.5% and +10.4%."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-108: replace HYPE spot/OI cross-asset confirmation with BTC PM IV compression. This tests the same trend continuation without relying on the coincident HYPE risk-on signal that failed out-of-sample."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-170: buy BTC on a modest 24h pullback rather than after a 24h gain, while keeping the 24h SMA/7d high context and rising listed IV confirmation. This addresses the extension-chasing mechanism behind the 25% win rate."
     }
   ],
   "negativeFindings": [
@@ -241,9 +231,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-08-12T07:08:07Z",
-    "opportunitiesGeneratedAt": "2026-08-12T07:09:53Z",
-    "themesGeneratedAt": "2026-08-12T07:08:11Z",
-    "adviceGeneratedAt": "2026-08-12T07:08:07.002Z"
+    "findingsExportGeneratedAt": "2026-08-13T07:09:21Z",
+    "opportunitiesGeneratedAt": "2026-08-13T07:10:53Z",
+    "themesGeneratedAt": "2026-08-13T07:09:24Z",
+    "adviceGeneratedAt": "2026-08-13T07:09:21.014Z"
   }
 }
