@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-13T13:28:20.256Z",
+  "generatedAt": "2026-08-13T14:28:16.548Z",
   "dataFreshness": {
-    "valuationRows": 2294,
-    "latestValuationAt": "2026-08-13T13",
-    "macroRows": 2292,
+    "valuationRows": 2295,
+    "latestValuationAt": "2026-08-13T14",
+    "macroRows": 2293,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-13T13"
+    "latestInstrumentSnapshotAt": "2026-08-13T14"
   },
   "portfolio": {
     "cash": 104.0412,
@@ -175,10 +175,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 53,
-    "resolvedCount": 833,
-    "wouldHaveWon": 425,
-    "wouldHaveLost": 408,
+    "openCount": 50,
+    "resolvedCount": 836,
+    "wouldHaveWon": 427,
+    "wouldHaveLost": 409,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -207,10 +207,10 @@
       {
         "signalType": "PC_RATIO_EXTREME_LOW",
         "blocked": 30,
-        "resolved": 29,
-        "wouldHaveWon": 16,
+        "resolved": 30,
+        "wouldHaveWon": 17,
         "wouldHaveLost": 13,
-        "avgPnlPct": -0.03
+        "avgPnlPct": 0.08
       },
       {
         "signalType": "FUNDING_EXTREME_LONG",
@@ -246,64 +246,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -11.67,
-        "resolvedAt": "2026-08-11T02:28:16.605Z",
-        "marketQuality": {
-          "yesBid": 0.4,
-          "yesAsk": 0.42,
-          "yesSpread": 0.02,
-          "liquidity": 6843.76,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 1.03,
-        "resolvedAt": "2026-08-11T09:28:16.983Z",
-        "marketQuality": {
-          "yesBid": 0.029,
-          "yesAsk": 0.031,
-          "yesSpread": 0.002,
-          "liquidity": 56397.02,
-          "flags": []
-        }
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 15.69,
-        "resolvedAt": "2026-08-12T02:28:15.589Z",
-        "marketQuality": {
-          "yesBid": 0.49,
-          "yesAsk": 0.5,
-          "yesSpread": 0.01,
-          "liquidity": 28192.69,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -401,14 +343,17 @@
             "wide_pm_spread"
           ]
         }
-      }
-    ],
-    "openQualityWarnings": [
+      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "SPY",
+        "venue": "polymarket",
+        "direction": "short",
         "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "spx-hit-dec-2026 — NO — Will S&P 500 (SPX) hit $9,300 (HIGH) in December?",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.67,
+        "resolvedAt": "2026-08-13T14:28:16.151Z",
         "marketQuality": {
           "yesBid": 0.042,
           "yesAsk": 0.06,
@@ -417,8 +362,76 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "PC_RATIO_EXTREME_LOW",
+        "asset": "OIL",
+        "venue": "spot",
+        "direction": "short",
+        "blockedReason": "short_blocked_by_positive_trend",
+        "outcome": "win",
+        "closeReason": "target",
+        "pnlPct": 3.21,
+        "resolvedAt": "2026-08-13T14:28:16.151Z",
+        "trendMetrics": {
+          "aboveTrendPct": 0.64,
+          "momentumPct": 1.64
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 3.28,
+        "resolvedAt": "2026-08-13T14:28:16.151Z",
+        "marketQuality": {
+          "yesBid": 0.39,
+          "yesAsk": 0.4,
+          "yesSpread": 0.01,
+          "liquidity": 39510.91,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
+      }
+    ],
+    "openQualityWarnings": [
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-wti-hit-in-july-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $90 in July?",
+        "marketQuality": {
+          "yesBid": 0.294,
+          "yesAsk": 0.316,
+          "yesSpread": 0.022,
+          "liquidity": 31793.99,
+          "flags": [
+            "wide_pm_spread"
+          ]
         },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.7pt on SPY, spread 1.8c, liquidity 5604. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.7pt on OIL, spread 2.2c, liquidity 31794. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $110,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.06,
+          "yesAsk": 0.07,
+          "yesSpread": 0.01,
+          "liquidity": 58364.76,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.9pt on BTC, spread 1.0c, liquidity 58365. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
@@ -499,22 +512,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.2pt on ETH, spread 2.0c, liquidity 12561. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-in-august-2026 — NO — Will Bitcoin reach $67,500 in August?",
-        "marketQuality": {
-          "yesBid": 0.39,
-          "yesAsk": 0.4,
-          "yesSpread": 0.01,
-          "liquidity": 39510.91,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.2pt on BTC, spread 1.0c, liquidity 39511. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
