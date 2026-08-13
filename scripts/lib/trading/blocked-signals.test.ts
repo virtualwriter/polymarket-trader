@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildBlockedSignalObservations, isLegacyManualShadowForceClose, summarizeBlockedSignals } from "./blocked-signals.js";
+import { buildBlockedSignalObservations, isLegacyManualShadowForceClose, settleDelistedBinaryShadow, summarizeBlockedSignals } from "./blocked-signals.js";
 
 const baseShadow = {
   status: "resolved" as const,
@@ -142,5 +142,62 @@ describe("legacy manual shadow force-close detection", () => {
 
   it("ignores shadows that have not resolved", () => {
     expect(isLegacyManualShadowForceClose({ blockedReason: "manual_shadow_trade" })).toBe(false);
+  });
+});
+
+describe("settleDelistedBinaryShadow", () => {
+  const now = new Date("2026-08-13T00:00:00.000Z");
+  const expired = {
+    instrumentType: "pm_no",
+    expiryDate: "2026-07-31T23:59:59.999Z",
+    entryPrice: 0.37,
+    currentPrice: 0.999,
+    size: 1,
+  };
+
+  it("settles an expired binary at its last observed mark", () => {
+    const mark = settleDelistedBinaryShadow(expired, now);
+    expect(mark).not.toBeNull();
+    // 1/0.37 shares each gaining 0.629 of a dollar.
+    expect(mark?.pnl).toBeCloseTo(1.7, 6);
+    expect(mark?.pnlPct).toBeCloseTo(170, 6);
+    expect(mark?.currentPrice).toBe(0.999);
+    expect(mark?.fundingPnl).toBe(0);
+  });
+
+  it("settles a total loss at zero", () => {
+    const mark = settleDelistedBinaryShadow({ ...expired, entryPrice: 0.44, currentPrice: 0 }, now);
+    expect(mark?.pnl).toBeCloseTo(-1, 6);
+    expect(mark?.pnlPct).toBeCloseTo(-100, 6);
+  });
+
+  it("leaves positions that have not expired alone", () => {
+    expect(settleDelistedBinaryShadow({ ...expired, expiryDate: "2026-09-01T00:00:00.000Z" }, now)).toBeNull();
+  });
+
+  it("only settles single-sided binaries", () => {
+    expect(settleDelistedBinaryShadow({ ...expired, instrumentType: "pm_package" }, now)).toBeNull();
+    expect(settleDelistedBinaryShadow({ ...expired, instrumentType: "hl_perp" }, now)).toBeNull();
+    expect(settleDelistedBinaryShadow({ ...expired, instrumentType: undefined }, now)).toBeNull();
+  });
+
+  it("settles a YES contract on the same basis", () => {
+    expect(settleDelistedBinaryShadow({ ...expired, instrumentType: "pm_yes" }, now)).not.toBeNull();
+  });
+
+  it("refuses to guess when there is no last mark", () => {
+    expect(settleDelistedBinaryShadow({ ...expired, currentPrice: undefined }, now)).toBeNull();
+    expect(settleDelistedBinaryShadow({ ...expired, currentPrice: Number.NaN }, now)).toBeNull();
+  });
+
+  it("rejects prices and sizes outside the tradable range", () => {
+    expect(settleDelistedBinaryShadow({ ...expired, currentPrice: 1.4 }, now)).toBeNull();
+    expect(settleDelistedBinaryShadow({ ...expired, currentPrice: -0.1 }, now)).toBeNull();
+    expect(settleDelistedBinaryShadow({ ...expired, entryPrice: 0 }, now)).toBeNull();
+    expect(settleDelistedBinaryShadow({ ...expired, size: 0 }, now)).toBeNull();
+  });
+
+  it("rejects an unparseable expiry rather than settling", () => {
+    expect(settleDelistedBinaryShadow({ ...expired, expiryDate: "not-a-date" }, now)).toBeNull();
   });
 });

@@ -56,6 +56,63 @@ export function isLegacyManualShadowForceClose(shadow: LegacyManualForceCloseCan
     || reason === "thesis_compressed_loss";
 }
 
+export interface DelistedBinaryPosition {
+  instrumentType?: string;
+  expiryDate: string;
+  entryPrice: number;
+  currentPrice?: number;
+  size: number;
+}
+
+export interface BinarySettlementMark {
+  currentPrice: number;
+  marketPnl: number;
+  fundingPnl: number;
+  pnl: number;
+  pnlPct: number;
+}
+
+/**
+ * Terminal settlement for a single-sided binary whose market has left the feed.
+ *
+ * Once a Polymarket binary resolves it stops appearing in the snapshot, so the
+ * live mark returns nothing. The resolver treated that as "no information yet"
+ * and skipped the shadow, which meant a resolved market left its shadow open
+ * forever and its outcome never reached the learner. Six shadows were in that
+ * state, three of them in the very cohort whose promotion is gated on resolved
+ * shadow count.
+ *
+ * Settlement uses the last observed mark. That is the market's own probability
+ * of settling at 1, so it is the unbiased estimate of the terminal value when
+ * the terminal value itself is unobservable — and in practice these marks have
+ * already converged, because a binary's price is pinned to 0 or 1 as it
+ * expires. Requiring expiry to have passed keeps this away from live positions,
+ * where a missing mark really does mean stale data rather than resolution.
+ */
+export function settleDelistedBinaryShadow(
+  position: DelistedBinaryPosition,
+  now: Date,
+): BinarySettlementMark | null {
+  if (position.instrumentType !== "pm_yes" && position.instrumentType !== "pm_no") return null;
+  const expiry = new Date(position.expiryDate);
+  if (Number.isNaN(expiry.getTime()) || expiry > now) return null;
+
+  const { entryPrice, currentPrice, size } = position;
+  if (!Number.isFinite(entryPrice) || entryPrice <= 0 || entryPrice > 1) return null;
+  if (currentPrice === undefined || !Number.isFinite(currentPrice)) return null;
+  if (currentPrice < 0 || currentPrice > 1) return null;
+  if (!Number.isFinite(size) || size <= 0) return null;
+
+  const marketPnl = (size / entryPrice) * (currentPrice - entryPrice);
+  return {
+    currentPrice,
+    marketPnl,
+    fundingPnl: 0,
+    pnl: marketPnl,
+    pnlPct: (marketPnl / size) * 100,
+  };
+}
+
 export interface BlockedSignalSummaryShadow {
   status: "open" | "resolved" | "cancelled";
   resolvedAt?: string;

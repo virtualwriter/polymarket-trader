@@ -35,7 +35,7 @@ import {
   buildLeanArtifactEntries,
   buildLlmTruthStateArtifact,
 } from "./lib/trading/artifacts.js";
-import { buildBlockedSignalObservations, isLegacyManualShadowForceClose, summarizeBlockedSignals } from "./lib/trading/blocked-signals.js";
+import { buildBlockedSignalObservations, isLegacyManualShadowForceClose, settleDelistedBinaryShadow, summarizeBlockedSignals } from "./lib/trading/blocked-signals.js";
 import {
   buildCandidateActionPreviews,
   sizingSignalHistories,
@@ -4947,6 +4947,7 @@ function resolveBlockedSignalShadows(
   for (const shadow of blockedSignals) {
     if (shadow.status === "resolved") continue;
     let mark = markPosition(shadow.position, latestRow, snapshots, true);
+    let settledFromLastMark = false;
     if (!mark) {
       // PM package contracts may no longer be in the live snapshot once the
       // market resolves. Fall back to terminal settlement so expired packages
@@ -4955,6 +4956,15 @@ function resolveBlockedSignalShadows(
         const settled = settleMonotonicArbPackage(shadow.position, valRows);
         if (settled) {
           mark = { currentPrice: settled.price, underlyingPrice: settled.underlyingPrice, marketPnl: settled.marketPnl, fundingPnl: 0, pnl: settled.pnl, pnlPct: settled.pnlPct };
+        }
+      }
+      // Single-sided binaries leave the feed on resolution too, and without
+      // this they stayed open forever instead of reaching the learner.
+      if (!mark) {
+        const settled = settleDelistedBinaryShadow(shadow.position, new Date());
+        if (settled) {
+          mark = { ...settled, underlyingPrice: shadow.position.currentUnderlyingPrice ?? null };
+          settledFromLastMark = true;
         }
       }
       if (!mark) continue;
@@ -5020,6 +5030,9 @@ function resolveBlockedSignalShadows(
     } else if (new Date(shadow.position.expiryDate) <= new Date()) {
       closeReason = "expiry";
       closeTrigger = "expiry";
+      if (settledFromLastMark) {
+        closeNote = "Market had left the snapshot feed on resolution; settled at the last observed mark.";
+      }
     }
 
     shadow.position.currentPrice = mark.currentPrice;
@@ -6529,6 +6542,7 @@ function evaluateHypotheses(
     let skippedInactive = 0;
     let skippedCond = 0;
     let skippedUnscorable = 0;
+    const unscorableSetupIds: string[] = [];
     const familiesNeedingTests = hypothesisSetupFamilies(
       hypotheses.filter((hypothesis) => sources.has(hypothesis.source)),
     ).filter((family) => hypothesisSetupNeedsMoreShadowTests(family, sources));
@@ -6551,6 +6565,7 @@ function evaluateHypotheses(
         // thesis, no move language) — opening tests here burns budget without
         // producing evidence. Surfaced so the nightly LLM can re-author.
         skippedUnscorable++;
+        unscorableSetupIds.push(family.setupId);
         continue;
       }
 
@@ -6581,7 +6596,9 @@ function evaluateHypotheses(
       observations.push(`🧪 ${label} retest queue: ${skippedCond} active families did not trigger; ${skippedInactive} later families waiting.`);
     }
     if (skippedUnscorable > 0) {
-      observations.push(`🧪 ${label} retest queue: ${skippedUnscorable} families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.`);
+      // Named, because an unattributed count gave the nightly LLM nothing to
+      // act on and these families sat skipped run after run.
+      observations.push(`🧪 ${label} retest queue: ${skippedUnscorable} families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring: ${unscorableSetupIds.join(", ")}.`);
     }
     openedShadowTests += opened;
     skippedConditionNotMet += skippedCond;
