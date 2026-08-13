@@ -400,3 +400,43 @@ No open positions, so no discretionary close review was required. Noted BTC IV t
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-13T07:09:21.014Z, model=deepseek-v4-pro)
+- Hypotheses added: 1 (rejected 5); reviews applied: 6; invalidated assumptions learned: 5; param updates: none.
+- Strategy review: The standout is weekend HL funding reversion long: clean live trades are 271/391 (69%) with average +0.36% and shadows are 188/253 with average +0.99%; one-touch NO sell-YES edge and manual PM-IV rich-NO are also small but positive. The main damage is coming from shadow-mined spot-prediction families and Polymarket proxy shorts: gold cap/no-bias tail shorts are 0% on scorable tests, CBRS/AAPL fixed-threshold funding reversions whipsaw near post-normalization states, BTC cross-asset/listed-IV momentum confirmations are late/coincident, and PM proxy short clusters are leaking because they transl
+- Nightly journal: Tonight's main lesson is that rich PM contract edges are not automatically spot-directional signals: GOLD cap/no-bias tail shorts all failed because the richness persisted while spot rallied. Fixed funding thresholds were too loose and fired after normalization; refinements now require weekend timing plus a 7-day funding percentile tail. BTC momentum confirmations are also late: HYPE and listed-IV confirmations chased extension, so refinements replace HYPE with BTC PM IV compression and shift the IV-momentum entry to a 24h pullback. PM proxy shorts remain dangerous when the source signal disag
+### 2026-08-13 08:28 UTC
+
+**Portfolio:** $104.04 total | Cash $104.04 | 0 open | P&L $7.2810 | 63% win rate (702 trades)
+
+**Hypothesis lifecycle:**
+- 💀 Setup family btc_momentum_correlation_breakout KILLED (25% over 20 tests across 3 variants): BTC momentum / correlation breakout
+- 🧪 LLM retest queue: 16 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [correlation_flip] BTC-GOLD correlation shifted from 0.77 to 0.30. Rolling correlation: 24h=-0.08, 7d=-0.44, 30d=0.17. Current 24h corr is at 27th pct of last 30 daily 24h-rolling values (range -0.78 to 0.93).
+- [correlation_flip] GOLD-OIL correlation shifted from 0.43 to -0.03. Rolling correlation: 24h=-0.14, 7d=0.76, 30d=-0.24. Current 24h corr is at 57th pct of last 30 daily 24h-rolling values (range -0.96 to 0.82).
+
+**Blocked signal learning:**
+- Open blocked shadows: 54
+- Resolved blocked shadows: 832 (425 wins / 407 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 6/7 shadows would have won, avg P&L 2.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 16/29 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/18 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=306 (83W/180L/43flat, 31.6% win-rate, sum $-1.1375, avg -0.37%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.49%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-15.69%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+3.45%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-10.00%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; next scheduled 2026-08-13T10:28:17.117Z). Mechanical cycle ran normally._
+
+---
+

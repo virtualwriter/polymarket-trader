@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-13T06:28:17.824Z",
+  "generatedAt": "2026-08-13T08:28:17.014Z",
   "dataFreshness": {
-    "valuationRows": 2289,
-    "latestValuationAt": "2026-08-13T06",
-    "macroRows": 2287,
+    "valuationRows": 2290,
+    "latestValuationAt": "2026-08-13T08",
+    "macroRows": 2288,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-13T06"
+    "latestInstrumentSnapshotAt": "2026-08-13T08"
   },
   "portfolio": {
     "cash": 104.0412,
@@ -175,7 +175,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 51,
+    "openCount": 54,
     "resolvedCount": 832,
     "wouldHaveWon": 425,
     "wouldHaveLost": 407,
@@ -413,54 +413,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-wti-hit-in-july-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $90 in July?",
-        "marketQuality": {
-          "yesBid": 0.294,
-          "yesAsk": 0.316,
-          "yesSpread": 0.022,
-          "liquidity": 31793.99,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.7pt on OIL, spread 2.2c, liquidity 31794. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $110,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.06,
-          "yesAsk": 0.07,
-          "yesSpread": 0.01,
-          "liquidity": 58364.76,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.9pt on BTC, spread 1.0c, liquidity 58365. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "SPY",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "spx-hit-dec-2026 — NO — Will S&P 500 (SPX) hit $9,300 (HIGH) in December?",
-        "marketQuality": {
-          "yesBid": 0.042,
-          "yesAsk": 0.06,
-          "yesSpread": 0.018,
-          "liquidity": 5603.61,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.7pt on SPY, spread 1.8c, liquidity 5604. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $2,500 by December 31, 2026?",
@@ -538,6 +490,54 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.2pt on ETH, spread 2.0c, liquidity 12561. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-in-august-2026 — NO — Will Bitcoin reach $67,500 in August?",
+        "marketQuality": {
+          "yesBid": 0.39,
+          "yesAsk": 0.4,
+          "yesSpread": 0.01,
+          "liquidity": 39510.91,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.2pt on BTC, spread 1.0c, liquidity 39511. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "GOLD",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $6,000 by end of December?",
+        "marketQuality": {
+          "yesBid": 0.1,
+          "yesAsk": 0.12,
+          "yesSpread": 0.02,
+          "liquidity": 30807.08,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.1pt on GOLD, spread 2.0c, liquidity 30807. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "GOLD",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $5,000 by end of December?",
+        "marketQuality": {
+          "yesBid": 0.47,
+          "yesAsk": 0.48,
+          "yesSpread": 0.01,
+          "liquidity": 8156.19,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 9.3pt after haircuts. CBOE gap 10.3pt, CME gap 10.3pt, source agreement both_positive, spread 1.0c, liquidity 8156. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
