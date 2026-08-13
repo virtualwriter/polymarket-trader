@@ -1,119 +1,11 @@
 {
-  "generatedAt": "2026-08-13T18:28:14.463Z",
+  "generatedAt": "2026-08-13T19:28:19.439Z",
   "mechanicalExits": [],
   "signalKillExits": [],
-  "entryCandidates": [
-    {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "strength": 0.11333333333333326,
-      "confidence": 0.06100213968385716,
-      "thesis": "BTC P/C ratio 0.47 — heavy call buying → contrarian short.",
-      "hypothesisId": null,
-      "entryPrice": 63133,
-      "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 5
-    }
-  ],
-  "sizingPreviews": [
-    {
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "reason": "unsupported_signal",
-      "entryPrice": 63133,
-      "probabilitySource": "unsupported",
-      "winProbability": null,
-      "probabilitySampleSize": null,
-      "edgePts": null,
-      "rawKellyFraction": null,
-      "adjustedKellyFraction": null,
-      "cappedKellyFraction": null,
-      "notes": [
-        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
-        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
-      ]
-    }
-  ],
-  "portfolioExposurePreviews": [
-    {
-      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "candidateSize": 0,
-      "riskClusters": [
-        "btc_delta",
-        "options_sentiment",
-        "risk_on",
-        "spot_venue"
-      ],
-      "current": {
-        "totalGross": 1,
-        "totalNet": -1,
-        "byAsset": {
-          "BTC": -1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_LOW": -1
-        },
-        "byVenue": {
-          "spot": -1
-        },
-        "byCluster": {
-          "btc_delta": -1,
-          "options_sentiment": -1,
-          "risk_on": -1,
-          "spot_venue": -1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": -1,
-        "byAsset": {
-          "BTC": -1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_LOW": -1
-        },
-        "byVenue": {
-          "spot": -1
-        },
-        "byCluster": {
-          "btc_delta": -1,
-          "options_sentiment": -1,
-          "risk_on": -1,
-          "spot_venue": -1
-        }
-      },
-      "warnings": []
-    }
-  ],
-  "stagedQuantRules": [
-    {
-      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
-      "mode": "observe_uniform",
-      "liveSizingEnabled": false,
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "enforcedLiveSize": 1,
-      "wouldResize": true,
-      "edgePts": null,
-      "alerts": [],
-      "notes": [
-        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
-      ]
-    }
-  ],
+  "entryCandidates": [],
+  "sizingPreviews": [],
+  "portfolioExposurePreviews": [],
+  "stagedQuantRules": [],
   "llmCloseEligibility": [
     {
       "positionId": "T-1786631312170-egh9",
@@ -127,12 +19,12 @@
         "btc_spot",
         "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 4,
-      "hoursToExpiry": 116,
+      "hoursOpen": 5,
+      "hoursToExpiry": 115,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0333,
+      "elapsedHoldPct": 0.0416,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 4.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
     }
   ]
 }
