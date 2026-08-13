@@ -16,6 +16,7 @@ import {
   setupFamilyIsUnprofitable,
   setupMagnitudeEvidence,
   sweepUnscorableHypotheses,
+  isPolymarketExpression,
   estimateTriggerFrequency,
   isTriggerTooRare,
   conditionsReplayableFromValuationHistory,
@@ -509,12 +510,52 @@ describe("sweepUnscorableHypotheses", () => {
     expect(h.postMortem).toContain("Retired unscorable");
   });
 
-  it("leaves a lightly-burned variant active so the LLM can re-author it", () => {
+  it("leaves a recent lightly-burned variant active so the LLM can re-author it", () => {
     const h = unscorable("H-902", 2, 1);
-    const result = sweepUnscorableHypotheses([h]);
+    // Two days after it was authored: still inside the re-authoring window.
+    const result = sweepUnscorableHypotheses([h], new Date("2026-07-03T00:00:00.000Z"));
     expect(result.flaggedForReauthor).toBe(1);
     expect(result.retiredVariants).toBe(0);
     expect(h.status).toBe("active");
+  });
+
+  it("names the families it kept, so the note is actionable", () => {
+    const h = unscorable("H-902b", 2, 1);
+    h.setupId = "gold_pm_premium_futures_spread_mean_reversion";
+    const result = sweepUnscorableHypotheses([h], new Date("2026-07-03T00:00:00.000Z"));
+    expect(result.retainedSetupIds).toEqual(["gold_pm_premium_futures_spread_mean_reversion"]);
+  });
+
+  it("retires a variant abandoned past the re-authoring window", () => {
+    const h = unscorable("H-905", 2, 1);
+    const result = sweepUnscorableHypotheses([h], new Date("2026-08-01T00:00:00.000Z"));
+    expect(result.retiredVariants).toBe(1);
+    expect(h.status).toBe("killed");
+    // The cancelled test must leave the pending queue, or it holds a family
+    // slot forever and never counts toward the burn total.
+    expect(pendingHypothesisTests(h)).toHaveLength(0);
+  });
+
+  it("keeps a Polymarket-contract variant instead of retiring it", () => {
+    const h = unscorable("H-906", 2, 1);
+    h.conditions = { ...h.conditions, venue: "polymarket" };
+    const result = sweepUnscorableHypotheses([h], new Date("2026-08-01T00:00:00.000Z"));
+    expect(result.awaitingContractScorer).toBe(1);
+    expect(result.retiredVariants).toBe(0);
+    expect(h.status).toBe("active");
+  });
+
+  it("recognizes the contract families the spot scorer cannot grade", () => {
+    const contract: Record<string, string>[] = [
+      { asset: "BTC", venue: "polymarket" },
+      { asset: "BTC", signalType: "ONE_TOUCH_HIGH_EDGE_NO" },
+      { asset: "BTC", signalType: "NO_BIAS_ADJUSTED_GAP" },
+      { asset: "BTC", signalType: "PM_IV_GT_OPT_IV" },
+    ];
+    for (const conditions of contract) {
+      expect(isPolymarketExpression(hyp({ prediction: "x", conditions }))).toBe(true);
+    }
+    expect(isPolymarketExpression(hyp({ prediction: "x", conditions: { asset: "BTC", venue: "hyperliquid" } }))).toBe(false);
   });
 
   it("never touches scorable hypotheses", () => {

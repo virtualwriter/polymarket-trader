@@ -42,9 +42,9 @@ describe("toTimestamptz", () => {
 });
 
 describe("tradeToUpsertParams", () => {
-  it("produces params in the correct order with length 20", () => {
+  it("produces params in the correct order with length 21", () => {
     const params = tradeToUpsertParams(baseTrade());
-    expect(params).toHaveLength(20);
+    expect(params).toHaveLength(21);
     expect(params).toEqual([
       "T1",
       "2026-07-01T00:00:00.000Z",
@@ -63,6 +63,7 @@ describe("tradeToUpsertParams", () => {
       9,
       1,
       "monotonic-arb",
+      null,
       null,
       "test thesis",
       "target",

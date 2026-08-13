@@ -21,8 +21,18 @@ export const AUTO_PROMOTE_MIN_SHADOWS = 30;
  * Shadows that resolved after the family's entry rule was last changed.
  *
  * Without this a family could promote on the same data used to choose its
- * entry threshold, which is circular. Requiring post-gate observations makes
- * activation genuinely forward-validated.
+ * entry threshold, which is circular.
+ *
+ * What this count does and does not buy, worked through on the cohort that
+ * motivated it (one-touch NO, +4.95% mean at 16.69 sd): twenty post-gate
+ * samples have 80% power to detect a mean worse than about -9%, so they screen
+ * for a reversal or a blow-up, not for a mild fade. Confirming an edge that
+ * size against that dispersion takes roughly 114 samples at this alpha. So the
+ * post-gate count is the out-of-sample sanity check, and the significance test
+ * below — which pools every resolved shadow, post-gate ones included — is what
+ * actually establishes the edge. Raising this constant would not substitute for
+ * that pooled test, and lowering it would remove the only guard against a rule
+ * that has already stopped working.
  */
 export const AUTO_PROMOTE_MIN_POST_GATE_SHADOWS = 20;
 /** Floor guarding against jackpot-dependent profiles that are fragile live. */

@@ -369,7 +369,7 @@ function scoreDirectionalMove(
   };
 }
 
-function isPolymarketExpression(hypothesis: Hypothesis): boolean {
+export function isPolymarketExpression(hypothesis: Hypothesis): boolean {
   const venue = String(hypothesis.conditions?.venue ?? "").toLowerCase();
   const signal = String(hypothesis.conditions?.signalType ?? "").toUpperCase();
   return venue === "polymarket"
@@ -550,6 +550,17 @@ export function hypothesisScoringMode(
  * LLM can still see it as struggling and propose a refinement. */
 export const UNSCORABLE_BURN_RETIRE_THRESHOLD = 10;
 
+/**
+ * How long an unscorable variant stays active waiting to be re-authored.
+ *
+ * The burn threshold alone became unreachable once the retest opener started
+ * skipping unscorable families: no new tests means no new burns, so a variant
+ * stalled below the threshold sat in the active pool permanently — 40 of 179
+ * were in that state. The nightly LLM runs daily and now sees these families by
+ * name, so a week is several real chances to fix one before it is retired.
+ */
+export const UNSCORABLE_REAUTHOR_GRACE_DAYS = 7;
+
 export interface UnscorableSweepResult {
   /** Pending tests cancelled because their variant can never be scored. */
   cancelledTests: number;
@@ -557,6 +568,14 @@ export interface UnscorableSweepResult {
   retiredVariants: number;
   /** Variants left active so the LLM can re-author them. */
   flaggedForReauthor: number;
+  /**
+   * Variants left active because the scorer, not the thesis, is the problem:
+   * they express a Polymarket contract trade, which no amount of re-wording
+   * turns into a spot move the scorer can grade.
+   */
+  awaitingContractScorer: number;
+  /** Setup families holding retained variants, so the note is actionable. */
+  retainedSetupIds: string[];
   notes: string[];
 }
 
@@ -570,31 +589,64 @@ export interface UnscorableSweepResult {
  * queued tests and retires variants that have already burned past the
  * threshold, while leaving fresher ones visible for refinement.
  */
-export function sweepUnscorableHypotheses(hypotheses: Hypothesis[]): UnscorableSweepResult {
+export function sweepUnscorableHypotheses(
+  hypotheses: Hypothesis[],
+  now: Date = new Date(),
+): UnscorableSweepResult {
   const result: UnscorableSweepResult = {
     cancelledTests: 0,
     retiredVariants: 0,
     flaggedForReauthor: 0,
+    awaitingContractScorer: 0,
+    retainedSetupIds: [],
     notes: [],
   };
+  const retained = new Set<string>();
 
   for (const hypothesis of hypotheses) {
     if (hypothesis.status !== "active" && hypothesis.status !== "promoted") continue;
     if (hypothesisScoringMode(hypothesis) !== null) continue;
 
     let burned = 0;
+    let pending = 0;
     for (const test of hypothesis.tests) {
       if (test.outcome === "pending" && !test.excludedFromSetupStats) {
         test.excludedFromSetupStats = true;
         test.exclusionReason = "cancelled_unscorable_variant";
         test.actualMove = "CANCELLED: variant cannot be scored (no direction, funding thesis, or move language); test would resolve UNSCORABLE.";
+        // A cancelled test has to leave "pending", or it holds a slot in the
+        // family's pending cap forever and never counts toward the burn total
+        // that retires the variant. It carries excludedFromSetupStats, so the
+        // terminal outcome never reaches a win rate.
+        test.outcome = "loss";
         result.cancelledTests++;
+        burned++;
       } else if (test.excludedFromSetupStats && test.outcome !== "pending") {
         burned++;
+      } else if (test.outcome === "pending") {
+        pending++;
       }
     }
 
-    if (burned >= UNSCORABLE_BURN_RETIRE_THRESHOLD) {
+    // A Polymarket contract thesis is not badly written — the scorer only
+    // grades spot moves and funding, so a contract trade has no gradeable
+    // form. Retiring these would discard real research to fix a scorer gap,
+    // and their live evidence comes from the shadow record instead.
+    if (isPolymarketExpression(hypothesis)) {
+      result.awaitingContractScorer++;
+      if (hypothesis.setupId) retained.add(hypothesis.setupId);
+      continue;
+    }
+
+    // Inert once nothing is queued: the retest opener refuses to open tests for
+    // an unscorable variant, so its burn count can never grow and it would
+    // otherwise sit in the active pool permanently. The grace window still
+    // gives a freshly authored variant time to be corrected first.
+    const created = new Date(hypothesis.created).getTime();
+    const graceExpired = Number.isFinite(created)
+      && now.getTime() - created > UNSCORABLE_REAUTHOR_GRACE_DAYS * 86_400_000;
+    const inert = hypothesis.tests.length > 0 && pending === 0 && graceExpired;
+    if (burned >= UNSCORABLE_BURN_RETIRE_THRESHOLD || inert) {
       hypothesis.status = "killed";
       hypothesis.promotedToSignal = false;
       hypothesis.postMortem = appendPostMortemSegment(
@@ -604,12 +656,19 @@ export function sweepUnscorableHypotheses(hypotheses: Hypothesis[]): UnscorableS
       result.retiredVariants++;
     } else {
       result.flaggedForReauthor++;
+      if (hypothesis.setupId) retained.add(hypothesis.setupId);
     }
   }
 
+  result.retainedSetupIds = [...retained].sort();
   if (result.cancelledTests > 0 || result.retiredVariants > 0) {
     result.notes.push(
       `🧹 Unscorable sweep: cancelled ${result.cancelledTests} queued tests, retired ${result.retiredVariants} burned-out variants, ${result.flaggedForReauthor} left active for re-authoring.`,
+    );
+  }
+  if (result.awaitingContractScorer > 0) {
+    result.notes.push(
+      `🧹 ${result.awaitingContractScorer} Polymarket-contract variants cannot be graded by the spot scorer and were kept, not retired: ${result.retainedSetupIds.join(", ")}.`,
     );
   }
   return result;

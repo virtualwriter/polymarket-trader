@@ -17,7 +17,7 @@ vi.mock("../trading/llm-transport.js", async (importOriginal) => {
   return {
     ...actual,
     requestLlmText,
-    resolveLlmRoute: (purpose: string) => {
+    resolveLlmRoute: (purpose: Parameters<typeof actual.resolveLlmRoute>[0]) => {
       if (process.env.NIGHTLY_LLM_DISABLE === "1") return null;
       if (!process.env.ANTHROPIC_API_KEY && !process.env.DEEPSEEK_API_KEY) return null;
       return actual.resolveLlmRoute(purpose) ?? {

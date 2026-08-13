@@ -219,8 +219,9 @@ function main() {
       console.log(`REPAIR ${hypothesis.id} (${hypothesis.originFindingId ?? hypothesis.source}, ${completed} completed tests)`);
       for (const change of changes) console.log(`  - ${change}`);
       if (APPLY) {
-        (hypothesis as Record<string, unknown>).conditionsBeforeRepair = hypothesis.conditions;
-        (hypothesis as Record<string, unknown>).conditionsRepairedAt = now;
+        const audit = hypothesis as unknown as Record<string, unknown>;
+        audit.conditionsBeforeRepair = hypothesis.conditions;
+        audit.conditionsRepairedAt = now;
         hypothesis.conditions = conditions;
       }
     } else {
