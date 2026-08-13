@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-13T16:28:24.866Z",
+  "generatedAt": "2026-08-13T18:28:14.354Z",
   "dataFreshness": {
-    "valuationRows": 2297,
-    "latestValuationAt": "2026-08-13T16",
-    "macroRows": 2295,
+    "valuationRows": 2298,
+    "latestValuationAt": "2026-08-13T18",
+    "macroRows": 2296,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-13T16"
+    "latestInstrumentSnapshotAt": "2026-08-13T18"
   },
   "portfolio": {
     "cash": 103.0412,
@@ -13,7 +13,7 @@
     "realizedPnl": 7.281,
     "totalTrades": 702,
     "winRatePct": 63.1,
-    "unrealizedPnl": 0.0044
+    "unrealizedPnl": 0.01
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 0.44,
-      "currentPrice": 63492,
-      "underlyingPrice": 63492,
+      "pnlPct": 1,
+      "currentPrice": 63133,
+      "underlyingPrice": 63133,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -193,7 +193,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 50,
+    "openCount": 51,
     "resolvedCount": 837,
     "wouldHaveWon": 427,
     "wouldHaveLost": 410,
@@ -419,22 +419,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-wti-hit-in-july-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $90 in July?",
-        "marketQuality": {
-          "yesBid": 0.294,
-          "yesAsk": 0.316,
-          "yesSpread": 0.022,
-          "liquidity": 31793.99,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.7pt on OIL, spread 2.2c, liquidity 31794. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $110,000 by December 31, 2026?",
@@ -544,6 +528,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.1pt on GOLD, spread 2.0c, liquidity 30807. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $70,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.66,
+          "yesAsk": 0.68,
+          "yesSpread": 0.02,
+          "liquidity": 70916.53,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.1pt on BTC, spread 2.0c, liquidity 70917. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },

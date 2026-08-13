@@ -682,3 +682,38 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-08-13 18:28 UTC
+
+**Portfolio:** $104.04 total | Cash $103.04 | 1 open | P&L $7.2810 | 63% win rate (702 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 16 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 5.6pp (was -11.0, now -5.4)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.77 to 0.30. Rolling correlation: 24h=-0.13, 7d=-0.46, 30d=0.15. Current 24h corr is at 17th pct of last 30 daily 24h-rolling values (range -0.74 to 0.90).
+- [correlation_flip] GOLD-OIL correlation shifted from 0.44 to -0.02. Rolling correlation: 24h=0.54, 7d=0.73, 30d=-0.25. Current 24h corr is at 83th pct of last 30 daily 24h-rolling values (range -0.97 to 0.70).
+
+**Blocked signal learning:**
+- Open blocked shadows: 51
+- Resolved blocked shadows: 837 (427 wins / 410 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 6/7 shadows would have won, avg P&L 2.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 17/30 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 10/18 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=308 (84W/181L/43flat, 31.7% win-rate, sum $-1.1214, avg -0.36%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO SPY short via polymarket would have edge compressed but trade lost money (-1.67%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW OIL short via spot would have hit target (+3.21%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+3.28%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-3.12%)
+
+**LLM analysis:**
+Reviewed open BTC short T-1786631312170-egh9. P&L is +1.00% and the position is well within mechanical risk/target bounds, but it is only 4h into a 120h planned hold and below the 12h discretionary-close minimum. Notably, btc_ibit_pc_ratio has round-tripped from 0.242 at entry to 0.466, which is the kind of evidence that could support thesis_invalidated once the position becomes eligible for LLM close. BTC spot is also down 1% since open, so price action remains supportive for now. No close instruction issued; will monitor P/C normalization and price behavior after the 12h minimum hold.
+
+---
+
