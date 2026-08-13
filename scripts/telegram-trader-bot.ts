@@ -1313,9 +1313,35 @@ async function telegramCall<T>(token: string, method: string, payload: JsonObjec
   return await response.json() as T;
 }
 
+/**
+ * Split a report into Telegram-sized messages, preferring line boundaries.
+ *
+ * Slicing blindly at the character limit ends a message mid-sentence, which
+ * reads as a truncated or failed model response even though the remainder
+ * arrives in the next message. Backing off to the last newline costs a little
+ * capacity per message and removes that false alarm. The half-limit floor keeps
+ * a single very long line from degenerating into tiny chunks.
+ */
+export function chunkTelegramMessage(text: string, limit = MAX_TELEGRAM_MESSAGE): string[] {
+  if (text.length === 0) return ["(empty)"];
+  const chunks: string[] = [];
+  let cursor = 0;
+  while (cursor < text.length) {
+    if (text.length - cursor <= limit) {
+      chunks.push(text.slice(cursor));
+      break;
+    }
+    const window = text.slice(cursor, cursor + limit);
+    const breakAt = window.lastIndexOf("\n");
+    const take = breakAt >= limit / 2 ? breakAt + 1 : limit;
+    chunks.push(text.slice(cursor, cursor + take));
+    cursor += take;
+  }
+  return chunks;
+}
+
 async function sendTelegram(token: string, chatId: string, text: string): Promise<void> {
-  for (let i = 0; i < text.length || i === 0; i += MAX_TELEGRAM_MESSAGE) {
-    const chunk = text.slice(i, i + MAX_TELEGRAM_MESSAGE) || "(empty)";
+  for (const chunk of chunkTelegramMessage(text)) {
     await telegramCall(token, "sendMessage", {
       chat_id: chatId,
       text: chunk,
