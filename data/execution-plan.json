@@ -1,15 +1,28 @@
 {
-  "generatedAt": "2026-08-14T06:28:16.346Z",
+  "generatedAt": "2026-08-14T08:28:54.782Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1786631312170-egh9",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "btc_ibit_pc_ratio"
+      ],
+      "thesis": "PC_RATIO_EXTREME_LOW entry triggered on BTC IBIT P/C ratio of 0.24. Latest reading is 0.584, round-tripped back above the extreme-low threshold, so the contrarian short's signal input has invalidated."
+    }
+  ],
   "entrySignals": [],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

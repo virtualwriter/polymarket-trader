@@ -1236,3 +1236,41 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 3/12; ne
 
 ---
 
+### 2026-08-14 08:28 UTC
+
+**Portfolio:** $104.06 total | Cash $104.06 | 0 open | P&L $7.2972 | 63% win rate (703 trades)
+
+**Closed 1 trades:**
+- ✅ BTC short via spot/spot [BTC spot] (PC_RATIO_EXTREME_LOW) → llm_decision: +$0.0162 (1.6%, market 0.0162, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧹 26 Polymarket-contract variants cannot be graded by the spot scorer and were kept, not retired: find_0020, find_0021, find_0023, find_0024, find_0025, find_0026, find_0030.
+- 🧪 LLM retest queue: 16 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring: find_0024, find_0025, find_0026, find_0030, find_0023.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring: find_0020.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved narrower by 5.6pp (was 11.3, now 5.7)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.78 to 0.29. Rolling correlation: 24h=0.42, 7d=-0.37, 30d=0.12. Current 24h corr is at 40th pct of last 30 daily 24h-rolling values (range -0.77 to 0.95).
+- [correlation_flip] GOLD-OIL correlation shifted from 0.45 to -0.01. Rolling correlation: 24h=0.31, 7d=0.63, 30d=-0.26. Current 24h corr is at 83th pct of last 30 daily 24h-rolling values (range -0.90 to 0.81).
+
+**Blocked signal learning:**
+- Open blocked shadows: 47
+- Resolved blocked shadows: 846 (433 wins / 413 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 17/30 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have hit stop (-100.00%)
+- ✅ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expired (+2.20%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-3.45%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-1.72%)
+
+**LLM analysis:**
+Reviewed open BTC short. The position is +1.62% and nearing its +3% target, but the close decision is thesis-driven rather than profit-taking: BTC IBIT P/C ratio normalized from 0.242 to 0.584, reversing the extreme-low call-buying setup that justified the short. Mechanical target/stop remain in place, but thesis_invalidated discretion is now eligible after the 12h minimum hold.
+
+---
+
