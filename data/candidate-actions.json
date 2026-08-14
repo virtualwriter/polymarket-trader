@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-14T14:28:17.714Z",
+  "generatedAt": "2026-08-14T15:28:15.607Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,26 +8,12 @@
       "asset": "OIL",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.20666666666666667,
-      "confidence": 0.11187684592174336,
-      "thesis": "OIL P/C ratio 0.44 — heavy call buying → contrarian short.",
+      "strength": 0.3266666666666666,
+      "confidence": 0.17683759516662656,
+      "thesis": "OIL P/C ratio 0.40 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 80.65,
+      "entryPrice": 81.06,
       "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 5
-    },
-    {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "strength": 0.18750000000000017,
-      "confidence": 0.09528252409655097,
-      "thesis": "GOLD P/C ratio 1.35 — heavy put buying → contrarian long.",
-      "hypothesisId": null,
-      "entryPrice": 4392,
-      "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
     }
@@ -41,28 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 80.65,
-      "probabilitySource": "unsupported",
-      "winProbability": null,
-      "probabilitySampleSize": null,
-      "edgePts": null,
-      "rawKellyFraction": null,
-      "adjustedKellyFraction": null,
-      "cappedKellyFraction": null,
-      "notes": [
-        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
-        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
-      ]
-    },
-    {
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "reason": "unsupported_signal",
-      "entryPrice": 4392,
+      "entryPrice": 81.06,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -118,48 +83,6 @@
         }
       },
       "warnings": []
-    },
-    {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:GOLD:1",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "candidateSize": 0,
-      "riskClusters": [
-        "commodity",
-        "gold_delta",
-        "options_sentiment",
-        "spot_venue"
-      ],
-      "current": {
-        "totalGross": 0,
-        "totalNet": 0,
-        "byAsset": {},
-        "bySignalType": {},
-        "byVenue": {},
-        "byCluster": {}
-      },
-      "afterCandidate": {
-        "totalGross": 0,
-        "totalNet": 0,
-        "byAsset": {
-          "GOLD": 0
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 0
-        },
-        "byVenue": {
-          "spot": 0
-        },
-        "byCluster": {
-          "commodity": 0,
-          "gold_delta": 0,
-          "options_sentiment": 0,
-          "spot_venue": 0
-        }
-      },
-      "warnings": []
     }
   ],
   "stagedQuantRules": [
@@ -167,22 +90,6 @@
       "candidateId": "PC_RATIO_EXTREME_LOW:OIL:0",
       "signalType": "PC_RATIO_EXTREME_LOW",
       "asset": "OIL",
-      "mode": "observe_uniform",
-      "liveSizingEnabled": false,
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "enforcedLiveSize": 1,
-      "wouldResize": true,
-      "edgePts": null,
-      "alerts": [],
-      "notes": [
-        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
-      ]
-    },
-    {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:GOLD:1",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "GOLD",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
       "currentFlatSize": 1,
