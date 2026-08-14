@@ -1,34 +1,10 @@
 {
-  "generatedAt": "2026-08-14T08:28:12.265Z",
+  "generatedAt": "2026-08-14T09:28:19.555Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [],
   "sizingPreviews": [],
   "portfolioExposurePreviews": [],
   "stagedQuantRules": [],
-  "llmCloseEligibility": [
-    {
-      "positionId": "T-1786631312170-egh9",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "btc_spot",
-        "btc_ibit_pc_ratio"
-      ],
-      "hoursOpen": 17.99,
-      "hoursToExpiry": 102.01,
-      "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.15,
-      "minHoldHours": 12,
-      "reason": "Mechanical PC_RATIO_EXTREME_LOW setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    }
-  ]
+  "llmCloseEligibility": []
 }
