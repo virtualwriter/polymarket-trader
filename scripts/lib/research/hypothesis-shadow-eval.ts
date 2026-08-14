@@ -1445,6 +1445,68 @@ export const TRIGGER_ESTIMATE_MIN_ROWS = 120;
  */
 export const MIN_TRIGGERS_PER_WEEK = 1.0;
 
+/**
+ * Longest test horizon an idea may claim.
+ *
+ * A pending test resolves only after timeframeDays elapses, and a variant is
+ * never given a second concurrent test, because overlapping windows on the same
+ * conditions are near-duplicate observations rather than independent evidence.
+ * So the horizon, not the trigger rate, sets how fast a family accumulates: one
+ * test per variant per horizon. At the old 14- and 30-day horizons a family
+ * needed most of a year to reach a verdict.
+ */
+export const MAX_TEST_HORIZON_DAYS = 7;
+
+/**
+ * Longest acceptable wait for a family to reach a verdict, in weeks.
+ *
+ * One quarter. Every admitted idea has to be capable of being decided inside a
+ * research cycle, or it occupies a family slot indefinitely without ever
+ * producing an answer — which is what left 25 families holding a median of six
+ * completed tests and none of them at the 20 the promotion gate requires.
+ */
+export const MAX_WEEKS_TO_VERDICT = 13;
+
+export interface VerdictTimeEstimate {
+  /** Independent tests the family can accumulate per week. */
+  testsPerWeek: number;
+  /** Weeks to reach HYPOTHESIS_SHADOW_TESTS_REQUIRED, Infinity if never. */
+  weeksToVerdict: number;
+  /** Which constraint binds: the horizon or how often conditions hold. */
+  boundBy: "horizon" | "trigger_rate";
+}
+
+/**
+ * How long this idea would take to earn a verdict.
+ *
+ * Accumulation is limited by two independent things and takes the worse of
+ * them: conditions have to actually hold (triggersPerWeek), and each variant
+ * yields at most one test per horizon (siblingVariants * 7 / timeframeDays).
+ * Counting sibling variants is what lets a slower thesis still qualify by being
+ * expressed several ways, which is the honest route to more samples — distinct
+ * conditions produce distinct observations, where concurrent tests on one
+ * variant would not.
+ */
+export function estimateWeeksToVerdict(
+  timeframeDays: number,
+  triggersPerWeek: number,
+  siblingVariants = 1,
+): VerdictTimeEstimate {
+  const horizon = Math.max(timeframeDays, 0.5);
+  const variants = Math.max(siblingVariants, 1);
+  const horizonCapacity = (variants * 7) / horizon;
+  const testsPerWeek = Math.min(horizonCapacity, Math.max(triggersPerWeek, 0));
+  return {
+    testsPerWeek,
+    weeksToVerdict: testsPerWeek > 0 ? HYPOTHESIS_SHADOW_TESTS_REQUIRED / testsPerWeek : Number.POSITIVE_INFINITY,
+    boundBy: horizonCapacity <= triggersPerWeek ? "horizon" : "trigger_rate",
+  };
+}
+
+export function isTooSlowToVerdict(estimate: VerdictTimeEstimate): boolean {
+  return estimate.weeksToVerdict > MAX_WEEKS_TO_VERDICT;
+}
+
 export interface TriggerFrequencyEstimate {
   rowsEvaluated: number;
   triggers: number;

@@ -4,6 +4,11 @@ import { z } from "zod";
 import { extractLlmJsonObject, requestLlmText, resolveLlmRoute, type LlmMessage } from "../trading/llm-transport.js";
 import { buildConditionCatalogPromptSection } from "./condition-catalog.js";
 import {
+  HYPOTHESIS_SHADOW_TESTS_REQUIRED,
+  MAX_TEST_HORIZON_DAYS,
+  MAX_WEEKS_TO_VERDICT,
+} from "./hypothesis-shadow-eval.js";
+import {
   buildQueryCatalogPromptSection,
   executeResearchQueries,
   formatQueryResults,
@@ -301,6 +306,14 @@ IMPORTANT RULES:
 - Keep signalRisk updates incremental and explain them in journalEntry.
 - Do NOT include parameterUpdates.signalRisk entries for these locked signals; their risk is fixed by their backtest convention and any proposed change will be silently dropped: ONE_TOUCH_HIGH_EDGE_NO.
 
+TESTABILITY — an idea that cannot be decided quickly is worth less than a weaker idea that can:
+- timeframeDays must be ${MAX_TEST_HORIZON_DAYS} or less. Longer horizons are rejected on ingest, not queued.
+- Prefer 2-3 days. A variant yields at most one test per horizon, because overlapping tests on the same conditions are repeat observations of one event rather than independent evidence. So a 2-day thesis gathers evidence 3.5x faster than a 7-day one.
+- A family needs ${HYPOTHESIS_SHADOW_TESTS_REQUIRED} completed tests to be judged, and must reach that within ${MAX_WEEKS_TO_VERDICT} weeks or it is rejected. A brand-new single-variant idea therefore needs a horizon of about 4 days or less.
+- To make a slower thesis viable, propose it as several variants of the SAME setupId with genuinely different conditions. Different conditions produce independent observations, so they add real evidence and shorten the family's time to a verdict.
+- Scale the move threshold to the horizon. A 2% move over 14 days is not the same claim as 2% over 2 days; shortening the window without shrinking the threshold turns a sound thesis into a losing one.
+- Favour conditions that hold often. A condition that fires a few times a month cannot reach ${HYPOTHESIS_SHADOW_TESTS_REQUIRED} tests no matter how short the horizon.
+
 Respond with ONLY valid JSON in this exact format:
 {
   "strategyReview": "1 short paragraph on what is working and what is failing",
@@ -311,7 +324,7 @@ Respond with ONLY valid JSON in this exact format:
       "description": "clear description of pattern",
       "conditions": {"column_name": "> value"},
       "prediction": "specific testable prediction",
-      "timeframeDays": 7,
+      "timeframeDays": 3,
       "confidence": 0.6,
       "direction": "long",
       "originFindingId": "FIND-0003",
@@ -323,7 +336,7 @@ Respond with ONLY valid JSON in this exact format:
       "description": "refinement: what changes vs the failing variant and why that fixes the diagnosed failure",
       "conditions": {"column_name": "> value"},
       "prediction": "specific testable prediction",
-      "timeframeDays": 7,
+      "timeframeDays": 3,
       "confidence": 0.6,
       "direction": "long",
       "refinesHypothesisId": "H-xxx",

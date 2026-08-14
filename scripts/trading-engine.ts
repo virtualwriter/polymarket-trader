@@ -123,7 +123,12 @@ import {
   sweepUnscorableHypotheses,
   estimateTriggerFrequency,
   isTriggerTooRare,
+  MAX_TEST_HORIZON_DAYS,
+  MAX_WEEKS_TO_VERDICT,
   MIN_TRIGGERS_PER_WEEK,
+  estimateWeeksToVerdict,
+  isTooSlowToVerdict,
+  type TriggerFrequencyEstimate,
   type MagnitudeUnit,
 } from "./lib/research/hypothesis-shadow-eval.js";
 import { formatConditionIssues, validateHypothesisConditions } from "./lib/research/condition-catalog.js";
@@ -6732,6 +6737,43 @@ function oneTouchShadowPassesFindGate(shadow: BlockedSignalShadow): boolean {
   return Number.isFinite(edge) && edge >= ONE_TOUCH_NO_SHADOW_MIN_ENTRY_EDGE_PTS;
 }
 
+/**
+ * Why this candidate cannot earn a verdict in time, or null if it can.
+ *
+ * Both ingest paths need the same answer, and both need it after the rarity
+ * gate: a rare trigger and a long horizon are separate reasons an idea never
+ * resolves, and the second was unguarded. Sibling variants count toward the
+ * family's rate, so expressing a slower thesis several ways is a legitimate way
+ * to qualify — unlike stacking concurrent tests on one variant, which would
+ * only produce overlapping observations of the same event.
+ */
+function verdictTimeRejection(
+  candidate: Hypothesis,
+  triggerEstimate: TriggerFrequencyEstimate,
+  existing: Hypothesis[],
+): string | null {
+  if (candidate.timeframeDays > MAX_TEST_HORIZON_DAYS) {
+    return `horizon too long (${candidate.timeframeDays}d test window, cap ${MAX_TEST_HORIZON_DAYS}d — re-author with a shorter horizon and a correspondingly smaller move threshold)`;
+  }
+  // A non-replayable trigger rate is unknown rather than zero, so the horizon
+  // capacity alone has to carry the estimate; assuming it never fires would
+  // reject every contract thesis on missing data.
+  const triggersPerWeek = triggerEstimate.unreliableReason
+    ? Number.POSITIVE_INFINITY
+    : triggerEstimate.triggersPerWeek;
+  const siblings = candidate.setupId
+    ? existing.filter((h) =>
+      h.setupId === candidate.setupId
+      && h.status !== "killed"
+      && h.status !== "archived").length + 1
+    : 1;
+  const estimate = estimateWeeksToVerdict(candidate.timeframeDays, triggersPerWeek, siblings);
+  if (isTooSlowToVerdict(estimate)) {
+    return `too slow to a verdict (~${estimate.weeksToVerdict.toFixed(0)} weeks at ${estimate.testsPerWeek.toFixed(1)} tests/week across ${siblings} variant(s), bound by ${estimate.boundBy}, cap ${MAX_WEEKS_TO_VERDICT} weeks)`;
+  }
+  return null;
+}
+
 function setupIdForShadow(shadow: BlockedSignalShadow): { setupId: string; setupLabel: string } {
   if (shadow.blockedReason === "one_touch_high_edge_shadow") {
     // Split the gated cohort into its own family. Pooled with the ungated
@@ -7637,6 +7679,12 @@ function ingestNightlyLlmAdvice(
       bumpReject("trigger_too_rare");
       continue;
     }
+    const slowReason = verdictTimeRejection(hypothesis, triggerEstimate, hypotheses);
+    if (slowReason) {
+      notes.push(`Nightly advice: skipping ${slowReason}: ${nh.description.slice(0, 60)}`);
+      bumpReject(slowReason.startsWith("horizon") ? "horizon_too_long" : "verdict_too_slow");
+      continue;
+    }
     const descKey = nh.description.trim().toLowerCase().slice(0, 80);
     if (hypotheses.some((h) => h.description.trim().toLowerCase().slice(0, 80) === descKey)) {
       bumpReject("duplicate_description");
@@ -7874,6 +7922,12 @@ function ingestShadowMinedHypotheses(
     if (isTriggerTooRare(triggerEstimate)) {
       notes.push(`Shadow-mined ingest: skipping too-rare hypothesis (~${triggerEstimate.triggersPerWeek.toFixed(2)} triggers/week, need ≥${MIN_TRIGGERS_PER_WEEK}): ${description.slice(0, 70)}`);
       bumpReject("trigger_too_rare");
+      continue;
+    }
+    const slowReason = verdictTimeRejection(hypothesis, triggerEstimate, hypotheses);
+    if (slowReason) {
+      notes.push(`Shadow-mined ingest: skipping ${slowReason}: ${description.slice(0, 70)}`);
+      bumpReject(slowReason.startsWith("horizon") ? "horizon_too_long" : "verdict_too_slow");
       continue;
     }
     hypotheses.push(hypothesis);

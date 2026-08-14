@@ -17,6 +17,10 @@ import {
   setupMagnitudeEvidence,
   sweepUnscorableHypotheses,
   isPolymarketExpression,
+  estimateWeeksToVerdict,
+  isTooSlowToVerdict,
+  MAX_TEST_HORIZON_DAYS,
+  MAX_WEEKS_TO_VERDICT,
   estimateTriggerFrequency,
   isTriggerTooRare,
   conditionsReplayableFromValuationHistory,
@@ -716,5 +720,51 @@ describe("evaluateHypothesisTest records signed magnitude", () => {
       hyp({ prediction: "something happens", conditions: { asset: "BTC" } }), start, end);
     expect(result.scorable).toBe(false);
     expect(result.magnitude).toBeUndefined();
+  });
+});
+
+describe("time-to-verdict gate", () => {
+  it("takes the worse of the horizon and the trigger rate", () => {
+    // Fires constantly, but a 7-day horizon still yields one test per week.
+    const horizonBound = estimateWeeksToVerdict(7, 134, 1);
+    expect(horizonBound.testsPerWeek).toBeCloseTo(1, 6);
+    expect(horizonBound.boundBy).toBe("horizon");
+    expect(horizonBound.weeksToVerdict).toBeCloseTo(20, 6);
+
+    // Short horizon, but the conditions almost never hold.
+    const triggerBound = estimateWeeksToVerdict(2, 0.5, 1);
+    expect(triggerBound.testsPerWeek).toBeCloseTo(0.5, 6);
+    expect(triggerBound.boundBy).toBe("trigger_rate");
+  });
+
+  it("rejects a single-variant idea at the horizon cap", () => {
+    expect(isTooSlowToVerdict(estimateWeeksToVerdict(7, 100, 1))).toBe(true);
+  });
+
+  it("admits the 2-3 day horizons the prompt asks for", () => {
+    for (const days of [2, 3]) {
+      expect(isTooSlowToVerdict(estimateWeeksToVerdict(days, 100, 1))).toBe(false);
+    }
+  });
+
+  it("lets sibling variants rescue a slower thesis", () => {
+    // Same 7-day thesis: hopeless alone, decidable expressed three ways.
+    expect(isTooSlowToVerdict(estimateWeeksToVerdict(7, 100, 1))).toBe(true);
+    expect(isTooSlowToVerdict(estimateWeeksToVerdict(7, 100, 3))).toBe(false);
+  });
+
+  it("never reaches a verdict when conditions never fire", () => {
+    const estimate = estimateWeeksToVerdict(2, 0, 1);
+    expect(estimate.weeksToVerdict).toBe(Number.POSITIVE_INFINITY);
+    expect(isTooSlowToVerdict(estimate)).toBe(true);
+  });
+
+  it("keeps the cap consistent with what a capped horizon can deliver", () => {
+    // A single variant at the horizon cap must need a shorter window, which is
+    // the arithmetic that makes the prompt's "about 4 days" guidance true.
+    expect(isTooSlowToVerdict(estimateWeeksToVerdict(4, 100, 1))).toBe(false);
+    expect(isTooSlowToVerdict(estimateWeeksToVerdict(5, 100, 1))).toBe(true);
+    expect(MAX_TEST_HORIZON_DAYS).toBe(7);
+    expect(MAX_WEEKS_TO_VERDICT).toBe(13);
   });
 });
