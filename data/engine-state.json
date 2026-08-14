@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-14T12:28:18.844Z",
+  "generatedAt": "2026-08-14T13:28:20.018Z",
   "dataFreshness": {
-    "valuationRows": 2314,
-    "latestValuationAt": "2026-08-14T12",
-    "macroRows": 2312,
+    "valuationRows": 2315,
+    "latestValuationAt": "2026-08-14T13",
+    "macroRows": 2313,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-14T12"
+    "latestInstrumentSnapshotAt": "2026-08-14T13"
   },
   "portfolio": {
     "cash": 104.0575,
@@ -175,9 +175,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 47,
-    "resolvedCount": 846,
-    "wouldHaveWon": 433,
+    "openCount": 46,
+    "resolvedCount": 847,
+    "wouldHaveWon": 434,
     "wouldHaveLost": 413,
     "bySignal": [
       {
@@ -246,35 +246,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "USER_PM_IV_TOUCH_RICH_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "manual_shadow_trade",
-        "outcome": "win",
-        "closeReason": "expiry",
-        "pnlPct": 9.78,
-        "resolvedAt": "2026-08-13T22:58:40.435Z",
-        "marketQuality": {
-          "quoteSource": "live_clob",
-          "quotedAt": "2026-05-22T21:32:17Z",
-          "gammaUpdatedAt": "2026-05-22T21:17:34.363429Z",
-          "clobTimestamp": "1779485530095",
-          "yesBid": 0.09,
-          "yesAsk": 0.1,
-          "yesSpread": 0.01,
-          "yesBidSize": 6242.5,
-          "yesAskSize": 9558.35,
-          "noBid": 0.9,
-          "noAsk": 0.91,
-          "noSpread": 0.01,
-          "noBidSize": 9558.35,
-          "noAskSize": 6242.5,
-          "liquidity": 117211.32,
-          "flags": []
-        }
-      },
       {
         "signalType": "USER_PM_IV_TOUCH_RICH_NO",
         "asset": "OIL",
@@ -416,9 +387,45 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 14.93,
+        "resolvedAt": "2026-08-14T13:28:19.656Z",
+        "marketQuality": {
+          "yesBid": 0.33,
+          "yesAsk": 0.34,
+          "yesSpread": 0.01,
+          "liquidity": 31876.5,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $75,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.51,
+          "yesAsk": 0.53,
+          "yesSpread": 0.02,
+          "liquidity": 56095.92,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.4pt on BTC, spread 2.0c, liquidity 56096. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
@@ -498,22 +505,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.1pt on BTC, spread 2.0c, liquidity 70917. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-in-august-2026 — NO — Will Bitcoin reach $67,500 in August?",
-        "marketQuality": {
-          "yesBid": 0.33,
-          "yesAsk": 0.34,
-          "yesSpread": 0.01,
-          "liquidity": 31876.5,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.3pt on BTC, spread 1.0c, liquidity 31877. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
