@@ -2191,3 +2191,42 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-08-15 15:28 UTC
+
+**Portfolio:** $104.18 total | Cash $99.18 | 5 open | P&L $7.4173 | 63% win rate (715 trades)
+
+**Closed 2 trades:**
+- ❌ RKLB long via hyperliquid/hl_perp [HL RKLB Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0033 (-0.3%, market -0.0033, funding -0.0000)
+- ✅ HIMS long via hyperliquid/hl_perp [HL HIMS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0109 (1.1%, market 0.0096, funding 0.0013)
+
+**Hypothesis lifecycle:**
+- 🧹 26 Polymarket-contract variants cannot be graded by the spot scorer and were kept, not retired: find_0020, find_0021, find_0023, find_0024, find_0025, find_0026, find_0030.
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 16 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring: find_0024, find_0025, find_0026, find_0030, find_0023.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring: find_0020.
+
+**Statistical observations:**
+- [correlation_flip] BTC-GOLD correlation shifted from 0.78 to 0.27. Rolling correlation: 24h=-0.20, 7d=-0.50, 30d=0.01. Current 24h corr is at 23th pct of last 30 daily 24h-rolling values (range -0.78 to 0.93).
+- [correlation_flip] GOLD-OIL correlation shifted from 0.47 to 0.02. Rolling correlation: 24h=-0.54, 7d=0.68, 30d=-0.29. Current 24h corr is at 30th pct of last 30 daily 24h-rolling values (range -0.96 to 0.82).
+
+**Blocked signal learning:**
+- Open blocked shadows: 44
+- Resolved blocked shadows: 851 (438 wins / 413 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 17/30 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+14.29%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+7.84%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+5.13%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.43%)
+
+**LLM analysis:**
+No discretionary closes taken. OIL short is the only LLM-eligible position, but oil_cl_pc_ratio has only ticked up from 0.402 to 0.420 (+4.5%) and remains near the low end of its 7d/30d range, so thesis-invalidation is not met. Weekend HL funding reversion longs are mechanical-exit policy-gated; DKNG is underwater at -2.7% but no LLM close is permitted and its stop is wide, so journal-only monitoring for now.
+
+---
+
