@@ -1,5 +1,5 @@
 {
-  "cash": 99.09536242164445,
+  "cash": 98.09536242164445,
   "positions": [
     {
       "id": "T-1786721295639-u9x9",
@@ -8,8 +8,8 @@
       "venue": "spot",
       "direction": "short",
       "entryPrice": 81.06,
-      "currentPrice": 81.38,
-      "currentUnderlyingPrice": 81.38,
+      "currentPrice": 81.29,
+      "currentUnderlyingPrice": 81.29,
       "entryUnderlyingPrice": 81.06,
       "size": 1,
       "leverage": 1,
@@ -32,7 +32,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 103.64,
-      "currentPrice": 103.54,
+      "currentPrice": 103.62,
       "entryUnderlyingPrice": 103.64,
       "size": 1,
       "leverage": 5,
@@ -45,9 +45,9 @@
       "instrumentType": "hl_perp",
       "instrumentId": "EBAY",
       "instrumentLabel": "HL EBAY Builder DEX stock perp",
-      "fundingPnlAccrued": 0,
+      "fundingPnlAccrued": 0.000051118721461187213,
       "entryConfidence": 0.5,
-      "peakPnlPct": -0.48243921265917755
+      "peakPnlPct": -0.09137597038570307
     },
     {
       "id": "WF-1786760904766-INTC-jzd2",
@@ -56,8 +56,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 102.47,
-      "currentPrice": 102.47,
-      "currentUnderlyingPrice": 102.47,
+      "currentPrice": 102.42,
       "entryUnderlyingPrice": 102.47,
       "size": 1,
       "leverage": 5,
@@ -71,7 +70,8 @@
       "instrumentId": "INTC",
       "instrumentLabel": "HL INTC Builder DEX stock perp",
       "fundingPnlAccrued": 0,
-      "entryConfidence": 0.5
+      "entryConfidence": 0.5,
+      "peakPnlPct": -0.24397384600369454
     },
     {
       "id": "WF-1786760904767-LITE-59gi",
@@ -80,8 +80,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 920.45,
-      "currentPrice": 920.45,
-      "currentUnderlyingPrice": 920.45,
+      "currentPrice": 919.86,
       "entryUnderlyingPrice": 920.45,
       "size": 1,
       "leverage": 5,
@@ -95,7 +94,8 @@
       "instrumentId": "LITE",
       "instrumentLabel": "HL LITE Builder DEX stock perp",
       "fundingPnlAccrued": 0,
-      "entryConfidence": 0.5
+      "entryConfidence": 0.5,
+      "peakPnlPct": -0.3204954098538931
     },
     {
       "id": "WF-1786760904767-RIVN-bjf6",
@@ -104,8 +104,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 15.343,
-      "currentPrice": 15.343,
-      "currentUnderlyingPrice": 15.343,
+      "currentPrice": 15.374,
       "entryUnderlyingPrice": 15.343,
       "size": 1,
       "leverage": 5,
@@ -119,12 +118,37 @@
       "instrumentId": "RIVN",
       "instrumentLabel": "HL RIVN Builder DEX stock perp",
       "fundingPnlAccrued": 0,
+      "entryConfidence": 0.5,
+      "peakPnlPct": 1.0102326793977898
+    },
+    {
+      "id": "WF-1786764501799-COST-bs40",
+      "openedAt": "2026-08-15T03:28:21.799Z",
+      "asset": "COST",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 958.56,
+      "currentPrice": 958.56,
+      "currentUnderlyingPrice": 958.56,
+      "entryUnderlyingPrice": 958.56,
+      "size": 1,
+      "leverage": 5,
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "hypothesisId": null,
+      "thesis": "[WEEKEND HL FUNDING LIVE] COST Builder DEX stock perp funding -93.7% annualized in mid band [-100%, -50%] during US-equity-closed entry window (Fri 4:00pm ET → Sun; no Mon pre-open entries). Live tracked long at 5x; exit when margin P&L >= 3%, funding >= 10%, Mon 9:30am ET window close, or held 24h.",
+      "targetPct": 3,
+      "stopPct": 100,
+      "expiryDate": "2026-08-16T03:28:21.799Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "COST",
+      "instrumentLabel": "HL COST Builder DEX stock perp",
+      "fundingPnlAccrued": 0,
       "entryConfidence": 0.5
     }
   ],
-  "totalRealizedPnl": 7.335099124390931,
+  "totalRealizedPnl": 7.335099999999997,
   "totalTrades": 705,
   "winCount": 446,
   "lossCount": 259,
-  "lastUpdated": "2026-08-15T02:28:47.946Z"
+  "lastUpdated": "2026-08-15T03:28:22.366Z"
 }

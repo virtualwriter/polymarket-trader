@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-15T02:28:25.314Z",
+  "generatedAt": "2026-08-15T03:28:22.335Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.144357220544185,
       "thesis": "OIL P/C ratio 0.42 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 81.38,
+      "entryPrice": 81.29,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 81.38,
+      "entryPrice": 81.29,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,22 +56,23 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 21,
-        "totalNet": 19,
+        "totalGross": 26,
+        "totalNet": 24,
         "byAsset": {
           "OIL": -1,
           "EBAY": 5,
           "INTC": 5,
           "LITE": 5,
-          "RIVN": 5
+          "RIVN": 5,
+          "COST": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 20
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 25
         },
         "byVenue": {
           "spot": -1,
-          "hyperliquid": 20
+          "hyperliquid": 25
         },
         "byCluster": {
           "commodity": -1,
@@ -79,30 +80,32 @@
           "options_sentiment": -1,
           "spot_venue": -1,
           "ebay_delta": 5,
-          "funding_reversion": 20,
-          "hyperliquid_venue": 20,
+          "funding_reversion": 25,
+          "hyperliquid_venue": 25,
           "intc_delta": 5,
           "lite_delta": 5,
-          "rivn_delta": 5
+          "rivn_delta": 5,
+          "cost_delta": 5
         }
       },
       "afterCandidate": {
-        "totalGross": 21,
-        "totalNet": 19,
+        "totalGross": 26,
+        "totalNet": 24,
         "byAsset": {
           "OIL": -1,
           "EBAY": 5,
           "INTC": 5,
           "LITE": 5,
-          "RIVN": 5
+          "RIVN": 5,
+          "COST": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 20
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 25
         },
         "byVenue": {
           "spot": -1,
-          "hyperliquid": 20
+          "hyperliquid": 25
         },
         "byCluster": {
           "commodity": -1,
@@ -110,11 +113,12 @@
           "options_sentiment": -1,
           "spot_venue": -1,
           "ebay_delta": 5,
-          "funding_reversion": 20,
-          "hyperliquid_venue": 20,
+          "funding_reversion": 25,
+          "hyperliquid_venue": 25,
           "intc_delta": 5,
           "lite_delta": 5,
-          "rivn_delta": 5
+          "rivn_delta": 5,
+          "cost_delta": 5
         }
       },
       "warnings": []
@@ -133,7 +137,7 @@
       "wouldResize": true,
       "edgePts": null,
       "alerts": [
-        "cluster exposure 20.00 > alert cap 5.00"
+        "cluster exposure 25.00 > alert cap 5.00"
       ],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
@@ -147,18 +151,22 @@
       "asset": "OIL",
       "venue": "spot",
       "direction": "short",
-      "allowed": false,
-      "allowedCategories": [],
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
       "evidenceColumns": [
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 11,
-      "hoursToExpiry": 109,
+      "hoursOpen": 12,
+      "hoursToExpiry": 108,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0917,
+      "elapsedHoldPct": 0.1,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 11.0h, requires at least 12h."
+      "reason": "Mechanical PC_RATIO_EXTREME_LOW setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
     {
       "positionId": "WF-1786757297221-EBAY-e6te",
@@ -169,10 +177,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 1,
-      "hoursToExpiry": 23,
+      "hoursOpen": 2,
+      "hoursToExpiry": 22,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0418,
+      "elapsedHoldPct": 0.0834,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -185,10 +193,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 0,
-      "hoursToExpiry": 24,
+      "hoursOpen": 1,
+      "hoursToExpiry": 23,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0,
+      "elapsedHoldPct": 0.0416,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -201,10 +209,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 0,
-      "hoursToExpiry": 24,
+      "hoursOpen": 1,
+      "hoursToExpiry": 23,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0,
+      "elapsedHoldPct": 0.0416,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -212,6 +220,22 @@
       "positionId": "WF-1786760904767-RIVN-bjf6",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "asset": "RIVN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 1,
+      "hoursToExpiry": 23,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0.0416,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1786764501799-COST-bs40",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "COST",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
