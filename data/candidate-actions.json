@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-15T09:28:21.318Z",
+  "generatedAt": "2026-08-15T10:28:18.527Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.144357220544185,
       "thesis": "OIL P/C ratio 0.42 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 80.81,
+      "entryPrice": 80.66,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 80.81,
+      "entryPrice": 80.66,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -61,9 +61,9 @@
         "byAsset": {
           "OIL": -1,
           "EBAY": 5,
-          "RIVN": 5,
           "BX": 5,
-          "DKNG": 5
+          "DKNG": 5,
+          "RKLB": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
@@ -81,9 +81,9 @@
           "ebay_delta": 5,
           "funding_reversion": 20,
           "hyperliquid_venue": 20,
-          "rivn_delta": 5,
           "bx_delta": 5,
-          "dkng_delta": 5
+          "dkng_delta": 5,
+          "rklb_delta": 5
         }
       },
       "afterCandidate": {
@@ -92,9 +92,9 @@
         "byAsset": {
           "OIL": -1,
           "EBAY": 5,
-          "RIVN": 5,
           "BX": 5,
-          "DKNG": 5
+          "DKNG": 5,
+          "RKLB": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
@@ -112,9 +112,9 @@
           "ebay_delta": 5,
           "funding_reversion": 20,
           "hyperliquid_venue": 20,
-          "rivn_delta": 5,
           "bx_delta": 5,
-          "dkng_delta": 5
+          "dkng_delta": 5,
+          "rklb_delta": 5
         }
       },
       "warnings": []
@@ -157,10 +157,10 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 18,
-      "hoursToExpiry": 102,
+      "hoursOpen": 19,
+      "hoursToExpiry": 101,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.15,
+      "elapsedHoldPct": 0.1583,
       "minHoldHours": 12,
       "reason": "Mechanical PC_RATIO_EXTREME_LOW setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
@@ -173,26 +173,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 3,
-      "hoursToExpiry": 21,
+      "hoursOpen": 4,
+      "hoursToExpiry": 20,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.1249,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "WF-1786775309009-RIVN-uw2u",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "RIVN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 3,
-      "hoursToExpiry": 21,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.1249,
+      "elapsedHoldPct": 0.1665,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -205,10 +189,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 2,
-      "hoursToExpiry": 22,
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0834,
+      "elapsedHoldPct": 0.125,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -221,10 +205,26 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 2,
-      "hoursToExpiry": 22,
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0834,
+      "elapsedHoldPct": 0.125,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1786789698022-RKLB-kilw",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "RKLB",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 0,
+      "hoursToExpiry": 24,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
