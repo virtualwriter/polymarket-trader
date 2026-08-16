@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-16T01:28:25.616Z",
+  "generatedAt": "2026-08-16T02:28:22.200Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.144357220544185,
       "thesis": "OIL P/C ratio 0.42 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 81.23,
+      "entryPrice": 81.4,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 81.23,
+      "entryPrice": 81.4,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -65,8 +65,8 @@
           "COST": 5,
           "BIRD": 5,
           "BX": 5,
-          "LITE": 5,
-          "EBAY": 5
+          "EBAY": 5,
+          "GME": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
@@ -88,8 +88,8 @@
           "cost_delta": 5,
           "bird_delta": 5,
           "bx_delta": 5,
-          "lite_delta": 5,
-          "ebay_delta": 5
+          "ebay_delta": 5,
+          "gme_delta": 5
         }
       },
       "afterCandidate": {
@@ -102,8 +102,8 @@
           "COST": 5,
           "BIRD": 5,
           "BX": 5,
-          "LITE": 5,
-          "EBAY": 5
+          "EBAY": 5,
+          "GME": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
@@ -125,8 +125,8 @@
           "cost_delta": 5,
           "bird_delta": 5,
           "bx_delta": 5,
-          "lite_delta": 5,
-          "ebay_delta": 5
+          "ebay_delta": 5,
+          "gme_delta": 5
         }
       },
       "warnings": []
@@ -169,10 +169,10 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 34,
-      "hoursToExpiry": 86,
+      "hoursOpen": 35,
+      "hoursToExpiry": 85,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.2834,
+      "elapsedHoldPct": 0.2917,
       "minHoldHours": 12,
       "reason": "Mechanical PC_RATIO_EXTREME_LOW setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
@@ -185,10 +185,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 18,
-      "hoursToExpiry": 6,
+      "hoursOpen": 19,
+      "hoursToExpiry": 5,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.7501,
+      "elapsedHoldPct": 0.7917,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -201,10 +201,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 13,
-      "hoursToExpiry": 11,
+      "hoursOpen": 14,
+      "hoursToExpiry": 10,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.5418,
+      "elapsedHoldPct": 0.5835,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -217,10 +217,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 11,
-      "hoursToExpiry": 13,
+      "hoursOpen": 12,
+      "hoursToExpiry": 12,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.4585,
+      "elapsedHoldPct": 0.5001,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -233,10 +233,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 2,
-      "hoursToExpiry": 22,
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0834,
+      "elapsedHoldPct": 0.125,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -249,26 +249,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 2,
-      "hoursToExpiry": 22,
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0834,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "WF-1786836503393-LITE-u4ob",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "LITE",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 2,
-      "hoursToExpiry": 22,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0834,
+      "elapsedHoldPct": 0.125,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -276,6 +260,22 @@
       "positionId": "WF-1786843705041-EBAY-rd4s",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "asset": "EBAY",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 1,
+      "hoursToExpiry": 23,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0.0416,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1786847301621-GME-qk9a",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "GME",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
