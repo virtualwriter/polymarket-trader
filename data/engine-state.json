@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-16T19:28:17.403Z",
+  "generatedAt": "2026-08-16T20:28:16.225Z",
   "dataFreshness": {
-    "valuationRows": 2362,
-    "latestValuationAt": "2026-08-16T19",
-    "macroRows": 2360,
+    "valuationRows": 2363,
+    "latestValuationAt": "2026-08-16T20",
+    "macroRows": 2361,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-16T19"
+    "latestInstrumentSnapshotAt": "2026-08-16T20"
   },
   "portfolio": {
-    "cash": 99.2546,
+    "cash": 99.2337,
     "openPositions": 5,
-    "realizedPnl": 7.4945,
-    "totalTrades": 731,
-    "winRatePct": 63.9,
-    "unrealizedPnl": -0.0377
+    "realizedPnl": 7.4736,
+    "totalTrades": 733,
+    "winRatePct": 63.8,
+    "unrealizedPnl": -0.0115
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.57,
-      "currentPrice": 81.52,
-      "underlyingPrice": 81.52,
+      "pnlPct": -0.53,
+      "currentPrice": 81.49,
+      "underlyingPrice": 81.49,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -32,34 +32,6 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ]
-    },
-    {
-      "positionId": "WF-1786868900906-HIMS-q54g",
-      "asset": "HIMS",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -2.27,
-      "currentPrice": 28.417,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "WF-1786876099361-ARM-3vfv",
-      "asset": "ARM",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.26,
-      "currentPrice": 278.29,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
     },
     {
       "positionId": "WF-1786890492112-ZM-gh11",
@@ -81,8 +53,36 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.13,
-      "currentPrice": 81.415,
+      "pnlPct": -0.08,
+      "currentPrice": 81.422,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1786912095785-EBAY-ybk5",
+      "asset": "EBAY",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 104.35,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1786912095785-SKHX-zv8b",
+      "asset": "SKHX",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 1175.7,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -232,10 +232,10 @@
     {
       "type": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "enabled": true,
-      "weight": 0.6701,
-      "trades": 66,
-      "wins": 45,
-      "avgPnlPct": 0.397,
+      "weight": 0.6712,
+      "trades": 68,
+      "wins": 46,
+      "avgPnlPct": 0.3546,
       "disabledAssets": []
     },
     {
