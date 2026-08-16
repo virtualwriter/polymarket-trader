@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-16T11:28:21.306Z",
+  "generatedAt": "2026-08-16T13:28:13.041Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.144357220544185,
       "thesis": "OIL P/C ratio 0.42 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 81.21,
+      "entryPrice": 81.19,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 81.21,
+      "entryPrice": 81.19,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -60,12 +60,12 @@
         "totalNet": 29,
         "byAsset": {
           "OIL": -1,
-          "GOOGL": 5,
           "COST": 5,
           "HIMS": 5,
           "ARM": 5,
           "SKHX": 5,
-          "RIVN": 5
+          "CBRS": 5,
+          "MU": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
@@ -80,14 +80,14 @@
           "oil_delta": -1,
           "options_sentiment": -1,
           "spot_venue": -1,
-          "funding_reversion": 30,
-          "googl_delta": 5,
-          "hyperliquid_venue": 30,
           "cost_delta": 5,
+          "funding_reversion": 30,
+          "hyperliquid_venue": 30,
           "hims_delta": 5,
           "arm_delta": 5,
           "skhx_delta": 5,
-          "rivn_delta": 5
+          "cbrs_delta": 5,
+          "mu_delta": 5
         }
       },
       "afterCandidate": {
@@ -95,12 +95,12 @@
         "totalNet": 29,
         "byAsset": {
           "OIL": -1,
-          "GOOGL": 5,
           "COST": 5,
           "HIMS": 5,
           "ARM": 5,
           "SKHX": 5,
-          "RIVN": 5
+          "CBRS": 5,
+          "MU": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
@@ -115,14 +115,14 @@
           "oil_delta": -1,
           "options_sentiment": -1,
           "spot_venue": -1,
-          "funding_reversion": 30,
-          "googl_delta": 5,
-          "hyperliquid_venue": 30,
           "cost_delta": 5,
+          "funding_reversion": 30,
+          "hyperliquid_venue": 30,
           "hims_delta": 5,
           "arm_delta": 5,
           "skhx_delta": 5,
-          "rivn_delta": 5
+          "cbrs_delta": 5,
+          "mu_delta": 5
         }
       },
       "warnings": []
@@ -165,28 +165,12 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 44,
-      "hoursToExpiry": 76,
+      "hoursOpen": 46,
+      "hoursToExpiry": 74,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.3667,
+      "elapsedHoldPct": 0.3833,
       "minHoldHours": 12,
       "reason": "Mechanical PC_RATIO_EXTREME_LOW setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    },
-    {
-      "positionId": "WF-1786796892109-GOOGL-mi8z",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "GOOGL",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 23,
-      "hoursToExpiry": 1,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.9584,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
       "positionId": "WF-1786804093809-COST-be7e",
@@ -197,10 +181,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 21,
-      "hoursToExpiry": 3,
+      "hoursOpen": 23,
+      "hoursToExpiry": 1,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.8751,
+      "elapsedHoldPct": 0.9583,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -213,10 +197,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 3,
-      "hoursToExpiry": 21,
+      "hoursOpen": 5,
+      "hoursToExpiry": 19,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.125,
+      "elapsedHoldPct": 0.2082,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -229,10 +213,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 1,
-      "hoursToExpiry": 23,
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0417,
+      "elapsedHoldPct": 0.1249,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -245,17 +229,33 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 1,
-      "hoursToExpiry": 23,
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0417,
+      "elapsedHoldPct": 0.1249,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
-      "positionId": "WF-1786879700848-RIVN-1juo",
+      "positionId": "WF-1786886892566-CBRS-25v5",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "RIVN",
+      "asset": "CBRS",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 0,
+      "hoursToExpiry": 24,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1786886892566-MU-gj5m",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "MU",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
