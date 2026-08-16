@@ -2959,3 +2959,44 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-08-16 15:28 UTC
+
+**Portfolio:** $104.24 total | Cash $100.24 | 4 open | P&L $7.4819 | 64% win rate (730 trades)
+
+**Closed 4 trades:**
+- ✅ COST long via hyperliquid/hl_perp [HL COST Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → expiry: +$0.0039 (0.4%, market 0.0021, funding 0.0018)
+- ❌ SKHX long via hyperliquid/hl_perp [HL SKHX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0100 (-1.0%, market -0.0106, funding 0.0006)
+- ✅ CBRS long via hyperliquid/hl_perp [HL CBRS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0248 (2.5%, market 0.0249, funding -0.0000)
+- ✅ MU long via hyperliquid/hl_perp [HL MU Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0039 (0.4%, market 0.0039, funding -0.0000)
+
+**Hypothesis lifecycle:**
+- 🧹 26 Polymarket-contract variants cannot be graded by the spot scorer and were kept, not retired: find_0020, find_0021, find_0023, find_0024, find_0025, find_0026, find_0030.
+- 🧪 LLM retest queue: 17 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 5 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring: find_0024, find_0025, find_0026, find_0030, find_0023.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring: find_0020.
+
+**Statistical observations:**
+- [anomaly] gold_opt_iv_30d = 33.6 is 2.4 std devs from mean (24.00 ± 3.98)
+- [correlation_flip] BTC-GOLD correlation shifted from 0.79 to 0.25. Rolling correlation: 24h=0.08, 7d=-0.43, 30d=-0.06. Current 24h corr is at 37th pct of last 30 daily 24h-rolling values (range -0.77 to 0.95).
+- [correlation_flip] GOLD-OIL correlation shifted from 0.49 to 0.05. Rolling correlation: 24h=0.36, 7d=0.64, 30d=-0.33. Current 24h corr is at 83th pct of last 30 daily 24h-rolling values (range -0.90 to 0.81).
+
+**Blocked signal learning:**
+- Open blocked shadows: 44
+- Resolved blocked shadows: 854 (440 wins / 414 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 17/30 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.43%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.50%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-7.27%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+3.57%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h since last call; daily budget 5/12; next scheduled 2026-08-16T17:28:12.978Z). Mechanical cycle ran normally._
+
+---
+
