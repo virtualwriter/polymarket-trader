@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-17T14:28:20.685Z",
+  "generatedAt": "2026-08-17T15:28:21.018Z",
   "dataFreshness": {
-    "valuationRows": 2379,
-    "latestValuationAt": "2026-08-17T14",
-    "macroRows": 2377,
+    "valuationRows": 2380,
+    "latestValuationAt": "2026-08-17T15",
+    "macroRows": 2378,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-17T14"
+    "latestInstrumentSnapshotAt": "2026-08-17T15"
   },
   "portfolio": {
     "cash": 104.1288,
@@ -175,10 +175,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 40,
-    "resolvedCount": 859,
+    "openCount": 39,
+    "resolvedCount": 860,
     "wouldHaveWon": 443,
-    "wouldHaveLost": 416,
+    "wouldHaveLost": 417,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -246,26 +246,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 2.5,
-        "resolvedAt": "2026-08-16T04:28:19.896Z",
-        "marketQuality": {
-          "yesBid": 0.6,
-          "yesAsk": 0.61,
-          "yesSpread": 0.01,
-          "liquidity": 28269.15,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
         "asset": "GOLD",
@@ -402,6 +382,24 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -11.11,
+        "resolvedAt": "2026-08-17T15:28:20.582Z",
+        "marketQuality": {
+          "yesBid": 0.46,
+          "yesAsk": 0.47,
+          "yesSpread": 0.01,
+          "liquidity": 31204.82,
+          "flags": []
         }
       }
     ],
