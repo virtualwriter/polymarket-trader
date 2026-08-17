@@ -1,15 +1,28 @@
 {
-  "generatedAt": "2026-08-17T00:28:14.965Z",
+  "generatedAt": "2026-08-17T01:28:49.324Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1786721295639-u9x9",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "oil_cl_pc_ratio"
+      ],
+      "thesis": "OIL short entered on oil_cl_pc_ratio 0.4020 extreme low; the ratio has round-tripped to 0.5550 (+38%), normalizing well back through the extreme-low entry trigger and invalidating the contrarian short thesis."
+    }
+  ],
   "entrySignals": [],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
