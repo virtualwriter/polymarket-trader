@@ -3472,3 +3472,45 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; ne
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-17T07:09:40.187Z, model=deepseek-v4-pro)
+- Hypotheses added: 4 (rejected 5); reviews applied: 6; invalidated assumptions learned: 3; param updates: none.
+- Strategy review: The system is currently carried by weekend Hyperliquid funding reversion: 299/428 live wins (69.9%) and 188/253 shadow wins, and by strict upside-barrier one-touch NO fade with edge gating (51/82 shadow wins, +5.75%). The main failures are concentrated in gold/PM-richness fades, broad one-touch edge shadows, PM proxy shorts, and cross-asset HYPE/BTC confirmation longs; these are producing near-zero to negative win rates and frequent losses against the underlying trend. Generic funding-extreme long and LLM/deep PM proxy variants also remain negative or breakeven and should not be expanded witho
+- Nightly journal: Tonight's focus was killing or heavily gating the gold/PM-rich up-fade family and the HYPE/BTC confirmation family. Gold upside NO/no-bias and near-expiry rich shorts all failed because they fought a persistent bid; refinements now require spot below the 24h SMA and negative 24h change, which changes the mechanism from unconditional fade to trend-aligned fade. CBRS funding reversion was refined to require an already-started funding reversion and true weekend context. New FIND-sourced hypotheses focus on tight-spread, liquid, gated one-touch NO edges and smart-flow fade rather than broad heatma
+### 2026-08-17 07:28 UTC
+
+**Portfolio:** $104.22 total | Cash $102.22 | 2 open | P&L $7.4608 | 64% win rate (742 trades)
+
+**Closed 1 trades:**
+- ✅ GME long via hyperliquid/hl_perp [HL GME Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0077 (0.8%, market 0.0075, funding 0.0002)
+
+**Hypothesis lifecycle:**
+- 🧹 26 Polymarket-contract variants cannot be graded by the spot scorer and were kept, not retired: find_0020, find_0021, find_0023, find_0024, find_0025, find_0026, find_0030.
+- 🧪 LLM retest queue: 18 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 4 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring: find_0025, find_0026, find_0030, find_0023.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring: find_0020.
+
+**Statistical observations:**
+- [correlation_flip] BTC-GOLD correlation shifted from 0.79 to 0.24. Rolling correlation: 24h=0.60, 7d=-0.36, 30d=-0.14. Current 24h corr is at 63th pct of last 30 daily 24h-rolling values (range -0.70 to 0.82).
+- [correlation_flip] GOLD-OIL correlation shifted from 0.50 to 0.06. Rolling correlation: 24h=0.03, 7d=0.61, 30d=-0.36. Current 24h corr is at 63th pct of last 30 daily 24h-rolling values (range -0.93 to 0.71).
+
+**Blocked signal learning:**
+- Open blocked shadows: 40
+- Resolved blocked shadows: 859 (443 wins / 416 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PC_RATIO_EXTREME_LOW trend filter may be too strict: 17/30 blocked trades would have won.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.27%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+2.94%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have hit stop (-28.26%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have hit stop (-40.74%)
+
+**LLM analysis:**
+No LLM closes permitted this run: both ZM and EBAY are policy-gated mechanical WEEKEND_HL_FUNDING_REVERSION_LONG positions. ZM is at -5.24% and its funding has normalized toward zero (-1.37% ann vs -59.4% entry), which weakens its carry thesis, but the mechanical scanner owns this exit. EBAY is only 5h into its hold and funding is more negative (-195% ann), so thesis is intact despite -4.73% PnL. Signal-family evidence remains favorable overall; no hard risk breach.
+
+---
+
