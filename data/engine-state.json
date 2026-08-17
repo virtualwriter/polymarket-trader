@@ -1,46 +1,29 @@
 {
-  "generatedAt": "2026-08-17T01:28:16.212Z",
+  "generatedAt": "2026-08-17T02:28:22.765Z",
   "dataFreshness": {
-    "valuationRows": 2368,
-    "latestValuationAt": "2026-08-17T01",
-    "macroRows": 2366,
+    "valuationRows": 2369,
+    "latestValuationAt": "2026-08-17T02",
+    "macroRows": 2367,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-17T01"
+    "latestInstrumentSnapshotAt": "2026-08-17T02"
   },
   "portfolio": {
-    "cash": 100.2066,
+    "cash": 100.2024,
     "openPositions": 4,
-    "realizedPnl": 7.4465,
-    "totalTrades": 739,
-    "winRatePct": 63.7,
-    "unrealizedPnl": -0.0458
+    "realizedPnl": 7.4423,
+    "totalTrades": 740,
+    "winRatePct": 63.6,
+    "unrealizedPnl": -0.0323
   },
   "openPositions": [
-    {
-      "positionId": "T-1786721295639-u9x9",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "short",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.42,
-      "currentPrice": 81.4,
-      "underlyingPrice": 81.4,
-      "targetPct": 3,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_cl_pc_ratio"
-      ]
-    },
     {
       "positionId": "WF-1786890492112-ZM-gh11",
       "asset": "ZM",
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -4.35,
-      "currentPrice": 106.19,
+      "pnlPct": -3.96,
+      "currentPrice": 106.26,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -53,8 +36,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.19,
-      "currentPrice": 18.708,
+      "pnlPct": 0.73,
+      "currentPrice": 18.727,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -69,6 +52,20 @@
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "pnlPct": 0,
       "currentPrice": 144.48,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1786933702345-EBAY-ecrb",
+      "asset": "EBAY",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 104.3,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -186,10 +183,10 @@
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "enabled": true,
-      "weight": 0.5413,
-      "trades": 34,
+      "weight": 0.5416,
+      "trades": 35,
       "wins": 19,
-      "avgPnlPct": 0.2227,
+      "avgPnlPct": 0.2043,
       "disabledAssets": [
         "AMZN",
         "GOLD"

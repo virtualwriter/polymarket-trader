@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-17T01:28:16.333Z",
+  "generatedAt": "2026-08-17T02:28:22.874Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [],
@@ -7,29 +7,6 @@
   "portfolioExposurePreviews": [],
   "stagedQuantRules": [],
   "llmCloseEligibility": [
-    {
-      "positionId": "T-1786721295639-u9x9",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "short",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_cl_pc_ratio"
-      ],
-      "hoursOpen": 58,
-      "hoursToExpiry": 62,
-      "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.4833,
-      "minHoldHours": 12,
-      "reason": "Mechanical PC_RATIO_EXTREME_LOW setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    },
     {
       "positionId": "WF-1786890492112-ZM-gh11",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -39,10 +16,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 11,
-      "hoursToExpiry": 13,
+      "hoursOpen": 12,
+      "hoursToExpiry": 12,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.4584,
+      "elapsedHoldPct": 0.5001,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -50,6 +27,22 @@
       "positionId": "WF-1786926494381-GME-ij7a",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "asset": "GME",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 2,
+      "hoursToExpiry": 22,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0.0834,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1786930095783-BX-5ow9",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "BX",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
@@ -63,9 +56,9 @@
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
-      "positionId": "WF-1786930095783-BX-5ow9",
+      "positionId": "WF-1786933702345-EBAY-ecrb",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "BX",
+      "asset": "EBAY",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
