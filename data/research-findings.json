@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-16T07:10:11Z",
+  "generatedAt": "2026-08-17T07:09:40Z",
   "model": "shadow_miner_v1",
   "findings": [
     {
@@ -14,7 +14,7 @@
         "pnlStd": 0.0435,
         "pValue": 0.0,
         "pnlPValue": 0.00017,
-        "qValue": 0.01632
+        "qValue": 0.01649
       },
       "provenance": {
         "generatedBy": "shadow_miner_v1",
@@ -24,7 +24,7 @@
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -50,7 +50,7 @@
         "pnlStd": 0.01046,
         "pValue": 0.00391,
         "pnlPValue": 0.00144,
-        "qValue": 0.06912
+        "qValue": 0.06984
       },
       "provenance": {
         "generatedBy": "shadow_miner_v1",
@@ -60,7 +60,7 @@
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -79,60 +79,24 @@
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,e3-8|no",
       "status": "strengthened",
       "evidence": {
-        "n": 33,
-        "winRate": 0.7879,
-        "sumPnl": 2.5402,
-        "avgPnl": 0.07698,
-        "pnlStd": 0.15059,
-        "pValue": 0.00066,
-        "pnlPValue": 0.00305,
-        "qValue": 0.0976
+        "n": 36,
+        "winRate": 0.7778,
+        "sumPnl": 2.3227,
+        "avgPnl": 0.06452,
+        "pnlStd": 0.15614,
+        "pValue": 0.0006,
+        "pnlPValue": 0.00907,
+        "qValue": 0.29326
       },
       "provenance": {
         "generatedBy": "shadow_miner_v1",
         "inputWindow": {
           "start": "2026-07-10T04:59:17.582Z",
-          "end": "2026-08-16T01:28:25.035Z"
+          "end": "2026-08-17T00:28:14.376Z"
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
-        "inputArtifacts": [
-          "/opt/polymarket-trader/data/blocked-signals.json"
-        ],
-        "filters": {
-          "minWr": 0.55,
-          "minNHeatmap": 8,
-          "minNOther": 8,
-          "excludeLearningExcluded": true,
-          "resolvedOnly": true
-        },
-        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
-      }
-    },
-    {
-      "id": "FIND-0058",
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s?,e3-8|no",
-      "status": "strengthened",
-      "evidence": {
-        "n": 56,
-        "winRate": 0.5893,
-        "sumPnl": 2.355,
-        "avgPnl": 0.04205,
-        "pnlStd": 0.12351,
-        "pValue": 0.1144,
-        "pnlPValue": 0.00683,
-        "qValue": 0.16392
-      },
-      "provenance": {
-        "generatedBy": "shadow_miner_v1",
-        "inputWindow": {
-          "start": "2026-05-23T00:29:15.064Z",
-          "end": "2026-08-16T01:28:25.035Z"
-        },
-        "featureSet": "blocked_signal_shadow_v1",
-        "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -151,24 +115,24 @@
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no",
       "status": "strengthened",
       "evidence": {
-        "n": 71,
-        "winRate": 0.6197,
-        "sumPnl": 4.6847,
-        "avgPnl": 0.06598,
-        "pnlStd": 0.2325,
-        "pValue": 0.02841,
-        "pnlPValue": 0.00974,
-        "qValue": 0.18701
+        "n": 76,
+        "winRate": 0.6316,
+        "sumPnl": 4.5418,
+        "avgPnl": 0.05976,
+        "pnlStd": 0.22824,
+        "pValue": 0.01431,
+        "pnlPValue": 0.01264,
+        "qValue": 0.30652
       },
       "provenance": {
         "generatedBy": "shadow_miner_v1",
         "inputWindow": {
           "start": "2026-05-23T00:29:15.064Z",
-          "end": "2026-08-16T01:28:25.035Z"
+          "end": "2026-08-17T00:28:14.376Z"
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -183,28 +147,28 @@
       }
     },
     {
-      "id": "FIND-0055",
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no",
+      "id": "FIND-0058",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s?,e3-8|no",
       "status": "strengthened",
       "evidence": {
-        "n": 27,
-        "winRate": 0.6296,
-        "sumPnl": 1.7138,
-        "avgPnl": 0.06347,
-        "pnlStd": 0.14435,
-        "pValue": 0.12389,
-        "pnlPValue": 0.01536,
-        "qValue": 0.24576
+        "n": 59,
+        "winRate": 0.5932,
+        "sumPnl": 2.147,
+        "avgPnl": 0.03639,
+        "pnlStd": 0.12751,
+        "pValue": 0.09626,
+        "pnlPValue": 0.0162,
+        "qValue": 0.31428
       },
       "provenance": {
         "generatedBy": "shadow_miner_v1",
         "inputWindow": {
-          "start": "2026-07-10T04:59:17.582Z",
-          "end": "2026-08-16T01:28:25.035Z"
+          "start": "2026-05-23T00:29:15.064Z",
+          "end": "2026-08-17T00:28:14.376Z"
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -230,7 +194,7 @@
         "pnlStd": 0.09313,
         "pValue": 0.14453,
         "pnlPValue": 0.02125,
-        "qValue": 0.29143
+        "qValue": 0.34354
       },
       "provenance": {
         "generatedBy": "shadow_miner_v1",
@@ -240,7 +204,43 @@
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
+        "inputArtifacts": [
+          "/opt/polymarket-trader/data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0055",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no",
+      "status": "strengthened",
+      "evidence": {
+        "n": 28,
+        "winRate": 0.6071,
+        "sumPnl": 1.4312,
+        "avgPnl": 0.05111,
+        "pnlStd": 0.15602,
+        "pValue": 0.17246,
+        "pnlPValue": 0.04721,
+        "qValue": 0.62019
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-07-10T04:59:17.582Z",
+          "end": "2026-08-17T00:28:14.376Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -259,14 +259,14 @@
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s-1,e3-8|no",
       "status": "strengthened",
       "evidence": {
-        "n": 12,
-        "winRate": 0.8333,
-        "sumPnl": 0.7922,
-        "avgPnl": 0.06602,
-        "pnlStd": 0.14108,
-        "pValue": 0.01929,
-        "pnlPValue": 0.06666,
-        "qValue": 0.71104
+        "n": 14,
+        "winRate": 0.8571,
+        "sumPnl": 0.8573,
+        "avgPnl": 0.06124,
+        "pnlStd": 0.13035,
+        "pValue": 0.00647,
+        "pnlPValue": 0.05115,
+        "qValue": 0.62019
       },
       "provenance": {
         "generatedBy": "shadow_miner_v1",
@@ -276,7 +276,79 @@
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
+        "inputArtifacts": [
+          "/opt/polymarket-trader/data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0047",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s-1,e3-8|no",
+      "status": "strengthened",
+      "evidence": {
+        "n": 28,
+        "winRate": 0.5714,
+        "sumPnl": 2.4178,
+        "avgPnl": 0.08635,
+        "pnlStd": 0.33097,
+        "pValue": 0.28579,
+        "pnlPValue": 0.08937,
+        "qValue": 0.73484
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-07-23T00:28:15.727Z",
+          "end": "2026-08-14T08:28:11.817Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "bb0cdd25",
+        "inputArtifacts": [
+          "/opt/polymarket-trader/data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0061",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|strat:dir=above,e3-8|no",
+      "status": "strengthened",
+      "evidence": {
+        "n": 11,
+        "winRate": 0.8182,
+        "sumPnl": 1.9692,
+        "avgPnl": 0.17902,
+        "pnlStd": 0.51082,
+        "pValue": 0.03271,
+        "pnlPValue": 0.13605,
+        "qValue": 0.73484
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-23T00:29:15.064Z",
+          "end": "2026-08-14T21:28:15.767Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -302,7 +374,7 @@
         "pnlStd": 0.56124,
         "pValue": 0.08984,
         "pnlPValue": 0.14437,
-        "qValue": 0.73938
+        "qValue": 0.73484
       },
       "provenance": {
         "generatedBy": "shadow_miner_v1",
@@ -312,7 +384,7 @@
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -338,7 +410,7 @@
         "pnlStd": 0.06644,
         "pValue": 0.14453,
         "pnlPValue": 0.14708,
-        "qValue": 0.73938
+        "qValue": 0.73484
       },
       "provenance": {
         "generatedBy": "shadow_miner_v1",
@@ -348,7 +420,7 @@
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -363,28 +435,28 @@
       }
     },
     {
-      "id": "FIND-0061",
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|strat:dir=above,e3-8|no",
+      "id": "FIND-0059",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|strat:s?,e3-8|no",
       "status": "strengthened",
       "evidence": {
-        "n": 9,
-        "winRate": 0.7778,
-        "sumPnl": 1.8946,
-        "avgPnl": 0.21051,
-        "pnlStd": 0.56567,
-        "pValue": 0.08984,
-        "pnlPValue": 0.14832,
-        "qValue": 0.73938
+        "n": 12,
+        "winRate": 0.75,
+        "sumPnl": 0.2885,
+        "avgPnl": 0.02404,
+        "pnlStd": 0.07745,
+        "pValue": 0.073,
+        "pnlPValue": 0.15264,
+        "qValue": 0.73484
       },
       "provenance": {
         "generatedBy": "shadow_miner_v1",
         "inputWindow": {
           "start": "2026-05-23T00:29:15.064Z",
-          "end": "2026-08-14T08:28:11.812Z"
+          "end": "2026-08-14T21:28:15.767Z"
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -410,7 +482,7 @@
         "pnlStd": 0.13756,
         "pValue": 0.27441,
         "pnlPValue": 0.22181,
-        "qValue": 0.73938
+        "qValue": 0.73484
       },
       "provenance": {
         "generatedBy": "shadow_miner_v1",
@@ -420,7 +492,7 @@
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -446,7 +518,7 @@
         "pnlStd": 0.20781,
         "pValue": 0.08984,
         "pnlPValue": 0.22238,
-        "qValue": 0.73938
+        "qValue": 0.73484
       },
       "provenance": {
         "generatedBy": "shadow_miner_v1",
@@ -456,43 +528,7 @@
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
-        "inputArtifacts": [
-          "/opt/polymarket-trader/data/blocked-signals.json"
-        ],
-        "filters": {
-          "minWr": 0.55,
-          "minNHeatmap": 8,
-          "minNOther": 8,
-          "excludeLearningExcluded": true,
-          "resolvedOnly": true
-        },
-        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
-      }
-    },
-    {
-      "id": "FIND-0059",
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|strat:s?,e3-8|no",
-      "status": "strengthened",
-      "evidence": {
-        "n": 10,
-        "winRate": 0.7,
-        "sumPnl": 0.2139,
-        "avgPnl": 0.02139,
-        "pnlStd": 0.08508,
-        "pValue": 0.17188,
-        "pnlPValue": 0.22352,
-        "qValue": 0.73938
-      },
-      "provenance": {
-        "generatedBy": "shadow_miner_v1",
-        "inputWindow": {
-          "start": "2026-05-23T00:29:15.064Z",
-          "end": "2026-08-14T08:28:11.812Z"
-        },
-        "featureSet": "blocked_signal_shadow_v1",
-        "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -511,24 +547,60 @@
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|strat:dir=above|no",
       "status": "strengthened",
       "evidence": {
-        "n": 54,
-        "winRate": 0.5741,
-        "sumPnl": 1.3252,
-        "avgPnl": 0.02454,
-        "pnlStd": 0.25956,
-        "pValue": 0.17045,
-        "pnlPValue": 0.24511,
-        "qValue": 0.73938
+        "n": 56,
+        "winRate": 0.5893,
+        "sumPnl": 1.3998,
+        "avgPnl": 0.025,
+        "pnlStd": 0.25482,
+        "pValue": 0.1144,
+        "pnlPValue": 0.23301,
+        "qValue": 0.73484
       },
       "provenance": {
         "generatedBy": "shadow_miner_v1",
         "inputWindow": {
           "start": "2026-05-23T00:29:15.064Z",
-          "end": "2026-08-14T08:28:11.812Z"
+          "end": "2026-08-14T21:28:15.767Z"
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
+        "inputArtifacts": [
+          "/opt/polymarket-trader/data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0052",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|heatmap|no",
+      "status": "strengthened",
+      "evidence": {
+        "n": 63,
+        "winRate": 0.5556,
+        "sumPnl": 1.3901,
+        "avgPnl": 0.02207,
+        "pnlStd": 0.24021,
+        "pValue": 0.22498,
+        "pnlPValue": 0.23434,
+        "qValue": 0.73484
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-23T00:29:15.064Z",
+          "end": "2026-08-14T21:28:15.767Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -554,7 +626,7 @@
         "pnlStd": 0.32947,
         "pValue": 0.24343,
         "pnlPValue": 0.27413,
-        "qValue": 0.78186
+        "qValue": 0.78208
       },
       "provenance": {
         "generatedBy": "shadow_miner_v1",
@@ -564,7 +636,7 @@
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -590,7 +662,7 @@
         "pnlStd": 0.05157,
         "pValue": 0.37695,
         "pnlPValue": 0.3142,
-        "qValue": 0.78186
+        "qValue": 0.82371
       },
       "provenance": {
         "generatedBy": "shadow_miner_v1",
@@ -600,7 +672,43 @@
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
+        "inputArtifacts": [
+          "/opt/polymarket-trader/data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0051",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|strat:dir=above,d90+|no",
+      "status": "strengthened",
+      "evidence": {
+        "n": 21,
+        "winRate": 0.5714,
+        "sumPnl": 0.0503,
+        "avgPnl": 0.0024,
+        "pnlStd": 0.05404,
+        "pValue": 0.33181,
+        "pnlPValue": 0.42055,
+        "qValue": 0.88681
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-23T00:29:15.064Z",
+          "end": "2026-08-14T21:28:15.767Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -636,7 +744,7 @@
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],
@@ -672,7 +780,43 @@
         },
         "featureSet": "blocked_signal_shadow_v1",
         "scoringVersion": "shadow_cluster_v1",
-        "gitSha": "1caaf6f4",
+        "gitSha": "bb0cdd25",
+        "inputArtifacts": [
+          "/opt/polymarket-trader/data/blocked-signals.json"
+        ],
+        "filters": {
+          "minWr": 0.55,
+          "minNHeatmap": 8,
+          "minNOther": 8,
+          "excludeLearningExcluded": true,
+          "resolvedOnly": true
+        },
+        "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+      }
+    },
+    {
+      "id": "FIND-0041",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|strat:dir=above,s?|no",
+      "status": "strengthened",
+      "evidence": {
+        "n": 47,
+        "winRate": 0.5532,
+        "sumPnl": -0.5133,
+        "avgPnl": -0.01092,
+        "pnlStd": 0.12107,
+        "pValue": 0.28003,
+        "pnlPValue": 0.73033,
+        "qValue": 0.99997
+      },
+      "provenance": {
+        "generatedBy": "shadow_miner_v1",
+        "inputWindow": {
+          "start": "2026-05-23T00:29:15.064Z",
+          "end": "2026-08-14T21:28:15.767Z"
+        },
+        "featureSet": "blocked_signal_shadow_v1",
+        "scoringVersion": "shadow_cluster_v1",
+        "gitSha": "bb0cdd25",
         "inputArtifacts": [
           "/opt/polymarket-trader/data/blocked-signals.json"
         ],

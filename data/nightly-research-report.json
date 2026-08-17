@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-16T07:12:23Z",
+  "generatedAt": "2026-08-17T07:12:15Z",
   "summary": {
-    "generatedAt": "2026-08-16T07:12:23Z",
+    "generatedAt": "2026-08-17T07:12:15Z",
     "findingCounts": {
       "open": 12,
       "strengthened": 32,
@@ -21,7 +21,7 @@
       "themeSlug": "other_informed_flow",
       "status": "open"
     },
-    "authoredHypothesisCount": 6,
+    "authoredHypothesisCount": 9,
     "advicePresent": true
   },
   "topOpportunities": [
@@ -48,8 +48,8 @@
     {
       "rank": 3,
       "id": "FIND-0043",
-      "opportunityScore": 0.997,
-      "confidenceScore": 0.6514,
+      "opportunityScore": 0.9909,
+      "confidenceScore": 0.6467,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -57,36 +57,26 @@
     },
     {
       "rank": 4,
-      "id": "FIND-0058",
-      "opportunityScore": 0.9932,
-      "confidenceScore": 0.4795,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s?,e3-8|no",
-      "themeId": "THEME-0001",
-      "themeSlug": "heatmap_one_touch",
-      "status": "strengthened"
-    },
-    {
-      "rank": 5,
       "id": "FIND-0030",
-      "opportunityScore": 0.9903,
-      "confidenceScore": 0.5222,
+      "opportunityScore": 0.9874,
+      "confidenceScore": 0.5375,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
       "status": "strengthened"
     },
     {
-      "rank": 6,
-      "id": "FIND-0055",
-      "opportunityScore": 0.9846,
-      "confidenceScore": 0.4716,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no",
+      "rank": 5,
+      "id": "FIND-0058",
+      "opportunityScore": 0.9838,
+      "confidenceScore": 0.4862,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s?,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
       "status": "strengthened"
     },
     {
-      "rank": 7,
+      "rank": 6,
       "id": "FIND-0024",
       "opportunityScore": 0.9803,
       "confidenceScore": 0.6232,
@@ -96,7 +86,7 @@
       "status": "open"
     },
     {
-      "rank": 8,
+      "rank": 7,
       "id": "FIND-0036",
       "opportunityScore": 0.9788,
       "confidenceScore": 0.4602,
@@ -106,7 +96,7 @@
       "status": "open"
     },
     {
-      "rank": 9,
+      "rank": 8,
       "id": "FIND-0022",
       "opportunityScore": 0.9653,
       "confidenceScore": 0.4198,
@@ -116,14 +106,24 @@
       "status": "strengthened"
     },
     {
+      "rank": 9,
+      "id": "FIND-0055",
+      "opportunityScore": 0.9528,
+      "confidenceScore": 0.4524,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no",
+      "themeId": "THEME-0001",
+      "themeSlug": "heatmap_one_touch",
+      "status": "strengthened"
+    },
+    {
       "rank": 10,
-      "id": "FIND-0025",
-      "opportunityScore": 0.9361,
-      "confidenceScore": 0.6232,
-      "clusterKey": "USER_PM_IV_TOUCH_RICH_NO|ALL|strat:s?,e3-8|no",
-      "themeId": "THEME-0004",
-      "themeSlug": "other_user_pm_iv_touch_rich_no",
-      "status": "open"
+      "id": "FIND-0054",
+      "opportunityScore": 0.9488,
+      "confidenceScore": 0.6471,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s-1,e3-8|no",
+      "themeId": "THEME-0001",
+      "themeSlug": "heatmap_one_touch",
+      "status": "strengthened"
     }
   ],
   "themesOverview": [
@@ -132,7 +132,7 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 38,
-      "avgOpportunityScore": 0.6972
+      "avgOpportunityScore": 0.7028
     },
     {
       "id": "THEME-0002",
@@ -174,32 +174,47 @@
     {
       "originFindingId": "FIND-0053",
       "themeId": "THEME-0005",
-      "description": "Short GOLD when GLD put/call ratio is in the bottom 10% of its 7-day range AND spot remains above its 24h SMA, matching the FIND-0053 shadow cluster where the positive-trend block was short. This is a fade of call crowding in a still-uptrending tape."
+      "description": "Short GOLD spot when GLD put/call ratio is in the bottom 10% of its 7-day range while spot is still above its 24h SMA. This captures extremely crowded call-buying versus a still-positive short-term trend, a setup that was previously blocked but won in shadow mining."
+    },
+    {
+      "originFindingId": "FIND-0043",
+      "themeId": "THEME-0001",
+      "description": "Short BTC upside one-touch NO premium by selling YES when at least one BTC above-strike contract offers 3-8 points of sell-YES edge, with tight spread and sufficient liquidity. This isolates the high-conviction edge band and avoids wide/dead quotes."
+    },
+    {
+      "originFindingId": "FIND-0020",
+      "themeId": "THEME-0003",
+      "description": "Sell overpriced above-strike YES touch premium on BTC when tracked smart wallets are net short YES and at least one contract offers at least 3 points of sell-YES edge. Requiring tight spread reduces quote noise."
     },
     {
       "originFindingId": "FIND-0024",
       "themeId": "THEME-0004",
-      "description": "Sell YES on rich PM-IV upside touch contracts expiring within 30 days, when PM IV is at least 10 vol points above listed option IV and there is at least 3 points of sell-YES edge. This is the near-expiry, above-strike richness cluster from FIND-0024."
+      "description": "Sell YES on above-strike rich PM-IV one-touch contracts expiring within 30 days when PM IV is at least 10 vol points above listed option IV and spread is tight."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-539: only go long CBRS on weekend days when CBRS funding is in the bottom 10% of its 7-day distribution. This fixes the failing trigger that also fired after funding had already normalized to +5.5% or was in a non-extreme state."
+      "description": "Refinement of H-539: only enter after extreme negative CBRS funding has already started reverting over the prior 24h, and restrict to true weekends. This avoids entries that caught funding deepening further or staying pinned."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-537: only go long AAPL on weekend days when AAPL funding is in the bottom 10% of its 7-day distribution, instead of a flat < -10% that caught post-normalization states around +5.5% and +10.4%."
+      "description": "Refinement of H-534: do not short rich gold upside NO edge unless gold spot is below its 24h SMA and 24h spot change is negative. This directly fixes the failure mechanism where the rich edge reflected a bullish trend rather than a fadeable premium."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-108: replace HYPE spot/OI cross-asset confirmation with BTC PM IV compression. This tests the same trend continuation without relying on the coincident HYPE risk-on signal that failed out-of-sample."
+      "description": "Refinement of H-532: only short the large no-bias adjusted gap on GOLD tail NO when spot is below its 24h SMA and 24h spot change is negative. This changes the mechanism from unconditional fade to trend-aligned fade."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-170: buy BTC on a modest 24h pullback rather than after a 24h gain, while keeping the 24h SMA/7d high context and rising listed IV confirmation. This addresses the extension-chasing mechanism behind the 25% win rate."
+      "description": "Refinement of H-567: only take the near-expiry GOLD upside one-touch NO short when gold spot is below its 24h SMA and 24h spot change is negative. This prevents the repeated failure of shorting rich upside YES premium into strong gold up-moves."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-108: keep HYPE risk-on confirmation but also require BTC itself to have positive 24h price change and be close to the 7-day high. This avoids the failure where HYPE conditions held while BTC was already rolling over."
     }
   ],
   "negativeFindings": [
@@ -231,9 +246,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-08-16T07:10:11Z",
-    "opportunitiesGeneratedAt": "2026-08-16T07:12:23Z",
-    "themesGeneratedAt": "2026-08-16T07:10:16Z",
-    "adviceGeneratedAt": "2026-08-13T07:09:21.014Z"
+    "findingsExportGeneratedAt": "2026-08-17T07:09:40Z",
+    "opportunitiesGeneratedAt": "2026-08-17T07:12:15Z",
+    "themesGeneratedAt": "2026-08-17T07:09:45Z",
+    "adviceGeneratedAt": "2026-08-17T07:09:40.187Z"
   }
 }
