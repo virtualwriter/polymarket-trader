@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-18T18:28:50.452Z",
+  "generatedAt": "2026-08-18T19:28:22.106Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
@@ -7,18 +7,19 @@
   "llmCloses": [],
   "entrySignals": [
     {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
-      "venue": "spot",
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.0733333333333334,
-      "confidence": 0.039714928873631844,
-      "thesis": "BTC P/C ratio 0.48 — heavy call buying → contrarian short.",
+      "strength": 0.01085714285714288,
+      "confidence": 0.00515489594468307,
+      "thesis": "GOLD HL funding 15.4% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 64763,
+      "entryPrice": 4356,
       "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 5
+      "stopPct": 2,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
