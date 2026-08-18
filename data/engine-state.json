@@ -1,21 +1,39 @@
 {
-  "generatedAt": "2026-08-18T14:28:26.078Z",
+  "generatedAt": "2026-08-18T15:28:23.619Z",
   "dataFreshness": {
-    "valuationRows": 2402,
-    "latestValuationAt": "2026-08-18T14",
-    "macroRows": 2400,
+    "valuationRows": 2403,
+    "latestValuationAt": "2026-08-18T15",
+    "macroRows": 2401,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-18T14"
+    "latestInstrumentSnapshotAt": "2026-08-18T15"
   },
   "portfolio": {
-    "cash": 104.1288,
-    "openPositions": 0,
+    "cash": 103.1288,
+    "openPositions": 1,
     "realizedPnl": 7.3688,
     "totalTrades": 744,
     "winRatePct": 63.6,
-    "unrealizedPnl": 0
+    "unrealizedPnl": -0.0073
   },
-  "openPositions": [],
+  "openPositions": [
+    {
+      "positionId": "T-1787063322301-hz7g",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "short",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "pnlPct": -0.73,
+      "currentPrice": 84.67,
+      "underlyingPrice": 84.67,
+      "targetPct": 3,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
+      ]
+    }
+  ],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
