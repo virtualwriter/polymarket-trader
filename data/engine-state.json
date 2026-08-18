@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-18T20:28:31.159Z",
+  "generatedAt": "2026-08-18T21:29:14.742Z",
   "dataFreshness": {
-    "valuationRows": 2408,
-    "latestValuationAt": "2026-08-18T20",
-    "macroRows": 2406,
+    "valuationRows": 2409,
+    "latestValuationAt": "2026-08-18T21",
+    "macroRows": 2407,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-18T20"
+    "latestInstrumentSnapshotAt": "2026-08-18T21"
   },
   "portfolio": {
     "cash": 103.1288,
@@ -13,7 +13,7 @@
     "realizedPnl": 7.3688,
     "totalTrades": 744,
     "winRatePct": 63.6,
-    "unrealizedPnl": -0.0023
+    "unrealizedPnl": -0.0037
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.23,
-      "currentPrice": 84.25,
-      "underlyingPrice": 84.25,
+      "pnlPct": -0.37,
+      "currentPrice": 84.37,
+      "underlyingPrice": 84.37,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -193,7 +193,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 35,
+    "openCount": 36,
     "resolvedCount": 869,
     "wouldHaveWon": 452,
     "wouldHaveLost": 417,
@@ -497,6 +497,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.6pt on ETH, spread 1.0c, liquidity 16791. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "GOLD",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $5,000 by end of December?",
+        "marketQuality": {
+          "yesBid": 0.48,
+          "yesAsk": 0.5,
+          "yesSpread": 0.02,
+          "liquidity": 11478.07,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 12.9pt on GOLD, spread 2.0c, liquidity 11478. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
