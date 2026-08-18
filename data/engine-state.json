@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-18T21:29:14.742Z",
+  "generatedAt": "2026-08-18T22:29:21.156Z",
   "dataFreshness": {
-    "valuationRows": 2409,
-    "latestValuationAt": "2026-08-18T21",
-    "macroRows": 2407,
+    "valuationRows": 2410,
+    "latestValuationAt": "2026-08-18T22",
+    "macroRows": 2408,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-18T21"
+    "latestInstrumentSnapshotAt": "2026-08-18T22"
   },
   "portfolio": {
-    "cash": 103.1288,
-    "openPositions": 1,
+    "cash": 102.1288,
+    "openPositions": 2,
     "realizedPnl": 7.3688,
     "totalTrades": 744,
     "winRatePct": 63.6,
-    "unrealizedPnl": -0.0037
+    "unrealizedPnl": -0.0028
   },
   "openPositions": [
     {
@@ -22,15 +22,32 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.37,
-      "currentPrice": 84.37,
-      "underlyingPrice": 84.37,
+      "pnlPct": -0.44,
+      "currentPrice": 84.43,
+      "underlyingPrice": 84.43,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "oil_wti_spot",
         "oil_cl_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1787088576287-ika7",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "pnlPct": 0.16,
+      "currentPrice": 4337,
+      "underlyingPrice": 4337,
+      "targetPct": 5,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
       ]
     }
   ],
@@ -194,9 +211,9 @@
   ],
   "blockedSummary": {
     "openCount": 36,
-    "resolvedCount": 869,
+    "resolvedCount": 870,
     "wouldHaveWon": 452,
-    "wouldHaveLost": 417,
+    "wouldHaveLost": 418,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -264,24 +281,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 2.41,
-        "resolvedAt": "2026-08-17T23:28:16.974Z",
-        "marketQuality": {
-          "yesBid": 0.17,
-          "yesAsk": 0.18,
-          "yesSpread": 0.01,
-          "liquidity": 29614.21,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -411,6 +410,26 @@
           "yesAsk": 0.1,
           "yesSpread": 0.01,
           "liquidity": 50866.07,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
+      },
+      {
+        "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "polymarket_proxy_short",
+        "outcome": "loss",
+        "closeReason": "stop",
+        "pnlPct": -3.85,
+        "resolvedAt": "2026-08-18T22:29:20.396Z",
+        "marketQuality": {
+          "yesBid": 0.48,
+          "yesAsk": 0.5,
+          "yesSpread": 0.02,
+          "liquidity": 11478.07,
           "flags": [
             "wide_pm_spread"
           ]
