@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-18T01:28:24.274Z",
+  "generatedAt": "2026-08-18T02:28:21.272Z",
   "dataFreshness": {
-    "valuationRows": 2389,
-    "latestValuationAt": "2026-08-18T01",
-    "macroRows": 2387,
+    "valuationRows": 2390,
+    "latestValuationAt": "2026-08-18T02",
+    "macroRows": 2388,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-18T01"
+    "latestInstrumentSnapshotAt": "2026-08-18T02"
   },
   "portfolio": {
     "cash": 104.1288,
@@ -176,8 +176,8 @@
   ],
   "blockedSummary": {
     "openCount": 40,
-    "resolvedCount": 862,
-    "wouldHaveWon": 445,
+    "resolvedCount": 863,
+    "wouldHaveWon": 446,
     "wouldHaveLost": 417,
     "bySignal": [
       {
@@ -246,24 +246,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 5.19,
-        "resolvedAt": "2026-08-16T18:28:10.611Z",
-        "marketQuality": {
-          "yesBid": 0.23,
-          "yesAsk": 0.24,
-          "yesSpread": 0.01,
-          "liquidity": 20657.4,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -399,6 +381,26 @@
           "liquidity": 29614.21,
           "flags": []
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 6.25,
+        "resolvedAt": "2026-08-18T02:28:20.822Z",
+        "marketQuality": {
+          "yesBid": 0.36,
+          "yesAsk": 0.37,
+          "yesSpread": 0.01,
+          "liquidity": 43932.7,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -500,19 +502,19 @@
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
+        "asset": "ETH",
         "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-in-august-2026 — NO — Will Bitcoin reach $67,500 in August?",
+        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $2,250 by December 31, 2026?",
         "marketQuality": {
-          "yesBid": 0.36,
-          "yesAsk": 0.37,
+          "yesBid": 0.57,
+          "yesAsk": 0.58,
           "yesSpread": 0.01,
-          "liquidity": 43932.7,
+          "liquidity": 16790.83,
           "flags": [
             "wide_pm_spread"
           ]
         },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.0pt on BTC, spread 1.0c, liquidity 43933. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.6pt on ETH, spread 1.0c, liquidity 16791. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
