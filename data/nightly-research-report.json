@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-08-18T07:14:03Z",
+  "generatedAt": "2026-08-19T07:10:17Z",
   "summary": {
-    "generatedAt": "2026-08-18T07:14:03Z",
+    "generatedAt": "2026-08-19T07:10:17Z",
     "findingCounts": {
       "open": 11,
-      "strengthened": 32,
+      "strengthened": 31,
       "weakened": 0,
-      "negative": 5,
+      "negative": 6,
       "suppressed": 0,
       "total": 61
     },
@@ -21,7 +21,7 @@
       "themeSlug": "other_informed_flow",
       "status": "open"
     },
-    "authoredHypothesisCount": 4,
+    "authoredHypothesisCount": 8,
     "advicePresent": true
   },
   "topOpportunities": [
@@ -68,8 +68,8 @@
     {
       "rank": 5,
       "id": "FIND-0030",
-      "opportunityScore": 0.9764,
-      "confidenceScore": 0.5385,
+      "opportunityScore": 0.9775,
+      "confidenceScore": 0.5632,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -77,16 +77,6 @@
     },
     {
       "rank": 6,
-      "id": "FIND-0022",
-      "opportunityScore": 0.9653,
-      "confidenceScore": 0.4198,
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|strat:s?,e1-3|no",
-      "themeId": "THEME-0001",
-      "themeSlug": "heatmap_one_touch",
-      "status": "strengthened"
-    },
-    {
-      "rank": 7,
       "id": "FIND-0055",
       "opportunityScore": 0.9595,
       "confidenceScore": 0.4683,
@@ -96,7 +86,7 @@
       "status": "strengthened"
     },
     {
-      "rank": 8,
+      "rank": 7,
       "id": "FIND-0054",
       "opportunityScore": 0.9488,
       "confidenceScore": 0.6471,
@@ -106,17 +96,17 @@
       "status": "strengthened"
     },
     {
-      "rank": 9,
+      "rank": 8,
       "id": "FIND-0058",
-      "opportunityScore": 0.9429,
-      "confidenceScore": 0.491,
+      "opportunityScore": 0.9473,
+      "confidenceScore": 0.5243,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s?,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
       "status": "strengthened"
     },
     {
-      "rank": 10,
+      "rank": 9,
       "id": "FIND-0025",
       "opportunityScore": 0.9361,
       "confidenceScore": 0.6232,
@@ -124,6 +114,16 @@
       "themeId": "THEME-0004",
       "themeSlug": "other_user_pm_iv_touch_rich_no",
       "status": "open"
+    },
+    {
+      "rank": 10,
+      "id": "FIND-0047",
+      "opportunityScore": 0.9106,
+      "confidenceScore": 0.4181,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s-1,e3-8|no",
+      "themeId": "THEME-0001",
+      "themeSlug": "heatmap_one_touch",
+      "status": "strengthened"
     }
   ],
   "themesOverview": [
@@ -132,7 +132,7 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 38,
-      "avgOpportunityScore": 0.6987
+      "avgOpportunityScore": 0.7071
     },
     {
       "id": "THEME-0002",
@@ -172,24 +172,44 @@
   ],
   "authoredHypotheses": [
     {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-539: only trade the CBRS deeply negative funding reversion when it is a weekend event and funding is already turning upward, instead of a standalone threshold that fires mid-cycle."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-108: invert the failed risk-on confirmation into a crowded-long exhaustion flag. When BTC is near its 7d high and HYPE spot is above its 24h SMA, require BTC funding to be in the top decile of its 7-day range before fading."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-647: do not fade rich OIL above-strike YES premium on IV richness alone. Require tracked smart wallets to be net short YES, so the fade is aligned with informed flow and avoids fighting a real OIL rally."
+    },
+    {
       "originFindingId": "FIND-0020",
       "themeId": "THEME-0003",
-      "description": "From FIND-0020: when smart-wallet stance is net long YES on below-strike one-touch contracts (dip-YES), the smart money is expressing an informed downside view. Follow that flow by going short spot."
+      "description": "Fade rich above-strike one-touch YES premiums when smart wallets are net short YES and sell edge is at least 3 points; high-YES flow is likely dumb money."
     },
     {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-539: only go long CBRS funding reversion when the funding reading is in the bottom 10% of its trailing 7-day distribution, it is a true weekend, and the 24h funding change is already positive. This targets funding that has actually started to normalize rather than a raw sub-zero threshold."
+      "originFindingId": "FIND-0053",
+      "themeId": "THEME-0005",
+      "description": "Contrarian GOLD short when GLD put/call ratio is bottom-decile of its 7-day range while spot remains above its 24h SMA; the extreme call buying marks a local reversal/pinning setup."
     },
     {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-108: the HYPE-confirmation setup has acted as late-cycle exhaustion rather than continuation. Invert the mechanism: when BTC is above its 24h SMA, within 4% of the 7d high, HYPE is above its SMA, HYPE OI is not collapsing, and BTC perp funding is positive, fade the crowded long setup."
+      "originFindingId": "FIND-0043",
+      "themeId": "THEME-0001",
+      "description": "BTC-specific one-touch NO fade on above-strike contracts when sell-YES edge is between 3 and 8 points and the market spread is tight."
     },
     {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-567: restrict GOLD above-strike near-expiry one-touch YES selling to cases where the edge is at least 3 points AND spot is below the 24h SMA, avoiding the strong upward-drift episodes that caused repeated failures."
+      "originFindingId": "FIND-0030",
+      "themeId": "THEME-0001",
+      "description": "Broad one-touch NO edge across major assets: sell YES on above-strike one-touch contracts when at least one has a 3-8 point sell edge and tight spread."
+    },
+    {
+      "originFindingId": "FIND-0025",
+      "themeId": "THEME-0004",
+      "description": "PM-IV rich one-touch NO fade: on above-strike contracts, when PM IV is at least 10 vol points rich to listed options and sell-YES edge is between 3 and 8 points, sell YES."
     }
   ],
   "negativeFindings": [
@@ -212,6 +232,12 @@
       "title": "Shadow FIND: USER_PM_IV_TOUCH_RICH_NO on ALL (strat:dir=above/no): WR=90% n=10 sumPnl=+0.979"
     },
     {
+      "id": "FIND-0022",
+      "status": "negative",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|strat:s?,e1-3|no",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on OIL (strat:s?,e1-3/no): WR=61% n=18 sumPnl=+0.227"
+    },
+    {
       "id": "FIND-0024",
       "status": "negative",
       "clusterKey": "USER_PM_IV_TOUCH_RICH_NO|ALL|strat:dir=above,d<30|no",
@@ -227,9 +253,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-08-18T07:09:58Z",
-    "opportunitiesGeneratedAt": "2026-08-18T07:14:03Z",
-    "themesGeneratedAt": "2026-08-18T07:10:04Z",
-    "adviceGeneratedAt": "2026-08-18T07:09:58.294Z"
+    "findingsExportGeneratedAt": "2026-08-19T07:09:30Z",
+    "opportunitiesGeneratedAt": "2026-08-19T07:10:17Z",
+    "themesGeneratedAt": "2026-08-19T07:09:36Z",
+    "adviceGeneratedAt": "2026-08-19T07:09:30.425Z"
   }
 }
