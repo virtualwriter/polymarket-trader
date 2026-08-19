@@ -1,10 +1,107 @@
 {
-  "generatedAt": "2026-08-19T17:32:49.446Z",
+  "generatedAt": "2026-08-19T19:28:17.002Z",
   "mechanicalExits": [],
   "signalKillExits": [],
-  "entryCandidates": [],
-  "sizingPreviews": [],
-  "portfolioExposurePreviews": [],
-  "stagedQuantRules": [],
+  "entryCandidates": [
+    {
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "short",
+      "strength": 0.0366666666666667,
+      "confidence": 0.019638703491034942,
+      "thesis": "OIL P/C ratio 0.49 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 84.07,
+      "targetPct": 5,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    }
+  ],
+  "sizingPreviews": [
+    {
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "short",
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "reason": "unsupported_signal",
+      "entryPrice": 84.07,
+      "probabilitySource": "unsupported",
+      "winProbability": null,
+      "probabilitySampleSize": null,
+      "edgePts": null,
+      "rawKellyFraction": null,
+      "adjustedKellyFraction": null,
+      "cappedKellyFraction": null,
+      "notes": [
+        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
+        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
+      ]
+    }
+  ],
+  "portfolioExposurePreviews": [
+    {
+      "candidateId": "PC_RATIO_EXTREME_LOW:OIL:0",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "short",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "candidateSize": 0,
+      "riskClusters": [
+        "commodity",
+        "oil_delta",
+        "options_sentiment",
+        "spot_venue"
+      ],
+      "current": {
+        "totalGross": 0,
+        "totalNet": 0,
+        "byAsset": {},
+        "bySignalType": {},
+        "byVenue": {},
+        "byCluster": {}
+      },
+      "afterCandidate": {
+        "totalGross": 0,
+        "totalNet": 0,
+        "byAsset": {
+          "OIL": 0
+        },
+        "bySignalType": {
+          "PC_RATIO_EXTREME_LOW": 0
+        },
+        "byVenue": {
+          "spot": 0
+        },
+        "byCluster": {
+          "commodity": 0,
+          "oil_delta": 0,
+          "options_sentiment": 0,
+          "spot_venue": 0
+        }
+      },
+      "warnings": []
+    }
+  ],
+  "stagedQuantRules": [
+    {
+      "candidateId": "PC_RATIO_EXTREME_LOW:OIL:0",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "asset": "OIL",
+      "mode": "observe_uniform",
+      "liveSizingEnabled": false,
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "enforcedLiveSize": 1,
+      "wouldResize": true,
+      "edgePts": null,
+      "alerts": [],
+      "notes": [
+        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
+      ]
+    }
+  ],
   "llmCloseEligibility": []
 }
