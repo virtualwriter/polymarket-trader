@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-19T02:29:12.048Z",
+  "generatedAt": "2026-08-19T03:29:17.472Z",
   "dataFreshness": {
-    "valuationRows": 2413,
-    "latestValuationAt": "2026-08-19T02",
-    "macroRows": 2411,
+    "valuationRows": 2414,
+    "latestValuationAt": "2026-08-19T03",
+    "macroRows": 2412,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-19T02"
+    "latestInstrumentSnapshotAt": "2026-08-19T03"
   },
   "portfolio": {
     "cash": 102.1288,
@@ -13,7 +13,7 @@
     "realizedPnl": 7.3688,
     "totalTrades": 744,
     "winRatePct": 63.6,
-    "unrealizedPnl": -0.014
+    "unrealizedPnl": -0.0128
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.99,
-      "currentPrice": 84.89,
-      "underlyingPrice": 84.89,
+      "pnlPct": -0.94,
+      "currentPrice": 84.85,
+      "underlyingPrice": 84.85,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -0.41,
-      "currentPrice": 4362,
-      "underlyingPrice": 4362,
+      "pnlPct": -0.34,
+      "currentPrice": 4359,
+      "underlyingPrice": 4359,
       "targetPct": 5,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -210,7 +210,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 36,
+    "openCount": 37,
     "resolvedCount": 870,
     "wouldHaveWon": 452,
     "wouldHaveLost": 418,
@@ -532,6 +532,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 12.9pt on GOLD, spread 2.0c, liquidity 11478. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "GOLD",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $5,000 by end of December?",
+        "marketQuality": {
+          "yesBid": 0.49,
+          "yesAsk": 0.5,
+          "yesSpread": 0.01,
+          "liquidity": 14607.97,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 14.8pt after haircuts. CBOE gap 15.8pt, CME gap 15.8pt, source agreement both_positive, spread 1.0c, liquidity 14608. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
