@@ -1,28 +1,30 @@
 {
-  "generatedAt": "2026-08-19T13:29:24.890Z",
+  "generatedAt": "2026-08-19T14:28:33.829Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
+  "llmCloses": [],
+  "entrySignals": [
     {
-      "action": "close",
-      "positionId": "T-1787063322301-hz7g",
-      "asset": "OIL",
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "BTC",
       "venue": "spot",
       "direction": "short",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "oil_cl_pc_ratio"
-      ],
-      "thesis": "PC_RATIO_EXTREME_LOW short was predicated on an extreme call-buying contrarian fade. OIL C/P ratio has round-tripped from 0.4110 at entry to 0.6520, well beyond the low-extreme threshold, so the signal input has normalized and the original thesis is invalidated."
+      "strength": 0.7633333333333333,
+      "confidence": 0.4118174148852115,
+      "thesis": "BTC P/C ratio 0.27 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 65344,
+      "targetPct": 5,
+      "stopPct": 1.5,
+      "expiryDays": 5
     }
   ],
-  "entrySignals": [],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
