@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-19T09:28:24.827Z",
+  "generatedAt": "2026-08-19T10:28:17.668Z",
   "dataFreshness": {
-    "valuationRows": 2419,
-    "latestValuationAt": "2026-08-19T09",
-    "macroRows": 2417,
+    "valuationRows": 2420,
+    "latestValuationAt": "2026-08-19T10",
+    "macroRows": 2418,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-19T09"
+    "latestInstrumentSnapshotAt": "2026-08-19T10"
   },
   "portfolio": {
     "cash": 102.1288,
@@ -13,7 +13,7 @@
     "realizedPnl": 7.3688,
     "totalTrades": 744,
     "winRatePct": 63.6,
-    "unrealizedPnl": -0.0143
+    "unrealizedPnl": -0.0173
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -1.14,
-      "currentPrice": 85.02,
-      "underlyingPrice": 85.02,
+      "pnlPct": -1.17,
+      "currentPrice": 85.04,
+      "underlyingPrice": 85.04,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -0.29,
-      "currentPrice": 4357,
-      "underlyingPrice": 4357,
+      "pnlPct": -0.56,
+      "currentPrice": 4369,
+      "underlyingPrice": 4369,
       "targetPct": 5,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -210,10 +210,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 37,
-    "resolvedCount": 870,
+    "openCount": 36,
+    "resolvedCount": 871,
     "wouldHaveWon": 452,
-    "wouldHaveLost": 418,
+    "wouldHaveLost": 419,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -281,26 +281,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 6.25,
-        "resolvedAt": "2026-08-18T02:28:20.822Z",
-        "marketQuality": {
-          "yesBid": 0.36,
-          "yesAsk": 0.37,
-          "yesSpread": 0.01,
-          "liquidity": 43932.7,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -434,6 +414,26 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "stop",
+        "pnlPct": -34.88,
+        "resolvedAt": "2026-08-19T10:28:17.211Z",
+        "marketQuality": {
+          "yesBid": 0.57,
+          "yesAsk": 0.58,
+          "yesSpread": 0.01,
+          "liquidity": 16790.83,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -500,22 +500,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.1pt on GOLD, spread 2.0c, liquidity 30807. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $2,250 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.57,
-          "yesAsk": 0.58,
-          "yesSpread": 0.01,
-          "liquidity": 16790.83,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.6pt on ETH, spread 1.0c, liquidity 16791. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",

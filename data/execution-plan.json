@@ -1,15 +1,48 @@
 {
-  "generatedAt": "2026-08-19T09:28:24.997Z",
+  "generatedAt": "2026-08-19T10:29:09.206Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
   "entrySignals": [],
-  "rejectedLlmActions": [],
+  "rejectedLlmActions": [
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1787063322301-hz7g",
+        "asset": "OIL",
+        "venue": "spot",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "oil_cl_pc_ratio",
+          "oil_wti_spot"
+        ],
+        "thesis": "OIL P/C ratio normalized from 0.411 at entry to 0.652, crossing back above the extreme-low trigger zone while spot rose +1.17% against the short. The heavy call-buying contrarian setup no longer holds."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+    },
+    {
+      "instruction": {
+        "action": "close",
+        "positionId": "T-1787088576287-ika7",
+        "asset": "GOLD",
+        "venue": "hyperliquid",
+        "direction": "long",
+        "closeReasonCategory": "thesis_invalidated",
+        "evidenceColumns": [
+          "gold_hl_funding_ann",
+          "gold_gc_spot"
+        ],
+        "thesis": "GOLD HL funding collapsed from 55.95% annualized at entry to 6.98%, crossing back below the >15% crowded-long entry trigger while gold spot firmed +0.58%. The funding-extreme fade thesis is invalidated."
+      },
+      "reason": "LLM close rejected: position identity fields do not match the requested positionId."
+    }
+  ],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 2 rejected; 0 non-close instructions skipped."
   ]
 }
