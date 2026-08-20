@@ -1,6 +1,6 @@
 # Nightly Research Report
 
-_Generated 2026-08-19T07:10:17Z_
+_Generated 2026-08-20T07:10:54Z_
 
 ## 1. Summary
 - FIND records: 61 total (open 11, strengthened 31, weakened 0, negative 6)
@@ -12,15 +12,15 @@ _Generated 2026-08-19T07:10:17Z_
 - #2 **FIND-0053** opp=0.9986 conf=0.7473 | `PC_RATIO_EXTREME_LOW|GOLD|short_blocked_by_positive_trend|short` | theme other_pc_ratio_extreme_low
 - #3 **FIND-0043** opp=0.9924 conf=0.6553 | `ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,e3-8|no` | theme heatmap_one_touch
 - #4 **FIND-0036** opp=0.9788 conf=0.4602 | `ONE_TOUCH_HIGH_EDGE_NO|GOLD|strat:dir=above,d<30|no` | theme heatmap_one_touch
-- #5 **FIND-0030** opp=0.9775 conf=0.5632 | `ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no` | theme heatmap_one_touch
-- #6 **FIND-0055** opp=0.9595 conf=0.4683 | `ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no` | theme heatmap_one_touch
-- #7 **FIND-0054** opp=0.9488 conf=0.6471 | `ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s-1,e3-8|no` | theme heatmap_one_touch
-- #8 **FIND-0058** opp=0.9473 conf=0.5243 | `ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s?,e3-8|no` | theme heatmap_one_touch
-- #9 **FIND-0025** opp=0.9361 conf=0.6232 | `USER_PM_IV_TOUCH_RICH_NO|ALL|strat:s?,e3-8|no` | theme other_user_pm_iv_touch_rich_no
-- #10 **FIND-0047** opp=0.9106 conf=0.4181 | `ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s-1,e3-8|no` | theme heatmap_one_touch
+- #5 **FIND-0055** opp=0.9595 conf=0.4683 | `ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no` | theme heatmap_one_touch
+- #6 **FIND-0054** opp=0.9488 conf=0.6471 | `ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s-1,e3-8|no` | theme heatmap_one_touch
+- #7 **FIND-0030** opp=0.9384 conf=0.5495 | `ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no` | theme heatmap_one_touch
+- #8 **FIND-0025** opp=0.9361 conf=0.6232 | `USER_PM_IV_TOUCH_RICH_NO|ALL|strat:s?,e3-8|no` | theme other_user_pm_iv_touch_rich_no
+- #9 **FIND-0047** opp=0.9108 conf=0.4185 | `ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s-1,e3-8|no` | theme heatmap_one_touch
+- #10 **FIND-0046** opp=0.8564 conf=0.3926 | `ONE_TOUCH_HIGH_EDGE_NO|OIL|strat:dir=above,s?|no` | theme heatmap_one_touch
 
 ## 3. Themes overview
-- **THEME-0001** (heatmap_one_touch): 38 findings, avg opp 0.7071
+- **THEME-0001** (heatmap_one_touch): 38 findings, avg opp 0.6534
 - **THEME-0002** (weekend_hl_funding): 15 findings, avg opp 0.7675
 - **THEME-0004** (other_user_pm_iv_touch_rich_no): 5 findings, avg opp 0.8626
 - **THEME-0006** (funding_extreme): 1 findings, avg opp 0.3986
@@ -48,7 +48,7 @@ _Generated 2026-08-19T07:10:17Z_
 ## 6. Provenance
 - Scoring version: research_score_v3
 - Miner model: shadow_miner_v1
-- Opportunities export: 2026-08-19T07:10:17Z
-- Findings export: 2026-08-19T07:09:30Z
-- Themes export: 2026-08-19T07:09:36Z
+- Opportunities export: 2026-08-20T07:10:53Z
+- Findings export: 2026-08-20T07:10:13Z
+- Themes export: 2026-08-20T07:10:19Z
 - LLM advice: 2026-08-19T07:09:30.425Z
