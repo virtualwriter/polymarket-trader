@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-20T16:28:21.792Z",
+  "generatedAt": "2026-08-20T17:28:21.938Z",
   "dataFreshness": {
-    "valuationRows": 2447,
-    "latestValuationAt": "2026-08-20T16",
-    "macroRows": 2445,
+    "valuationRows": 2448,
+    "latestValuationAt": "2026-08-20T17",
+    "macroRows": 2446,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-20T16"
+    "latestInstrumentSnapshotAt": "2026-08-20T17"
   },
   "portfolio": {
     "cash": 104.0829,
@@ -176,9 +176,9 @@
   ],
   "blockedSummary": {
     "openCount": 30,
-    "resolvedCount": 890,
+    "resolvedCount": 891,
     "wouldHaveWon": 458,
-    "wouldHaveLost": 432,
+    "wouldHaveLost": 433,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -229,43 +229,23 @@
         "avgPnlPct": 6.73
       },
       {
-        "signalType": "PC_RATIO_EXTREME_LOW",
-        "blocked": 34,
-        "resolved": 33,
-        "wouldHaveWon": 17,
-        "wouldHaveLost": 16,
-        "avgPnlPct": -0.13
-      },
-      {
         "signalType": "PM_EV_BELOW_SPOT",
         "blocked": 4,
         "resolved": 4,
         "wouldHaveWon": 2,
         "wouldHaveLost": 2,
         "avgPnlPct": 0.07
+      },
+      {
+        "signalType": "PC_RATIO_EXTREME_LOW",
+        "blocked": 35,
+        "resolved": 34,
+        "wouldHaveWon": 17,
+        "wouldHaveLost": 17,
+        "avgPnlPct": -0.19
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 1.14,
-        "resolvedAt": "2026-08-20T02:28:24.003Z",
-        "marketQuality": {
-          "yesBid": 0.12,
-          "yesAsk": 0.13,
-          "yesSpread": 0.01,
-          "liquidity": 49912.18,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "PC_RATIO_EXTREME_LOW",
         "asset": "BTC",
@@ -395,6 +375,21 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "PC_RATIO_EXTREME_LOW",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "short",
+        "blockedReason": "short_blocked_by_positive_trend",
+        "outcome": "loss",
+        "closeReason": "stop",
+        "pnlPct": -2.07,
+        "resolvedAt": "2026-08-20T17:28:21.470Z",
+        "trendMetrics": {
+          "aboveTrendPct": 5.14,
+          "momentumPct": 10.95
         }
       }
     ],
