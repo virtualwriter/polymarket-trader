@@ -857,3 +857,44 @@ No discretionary closes are permitted this run. OIL short is only 6h old, below 
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-21T20:36:30.082Z, model=deepseek-v4-pro)
+- Hypotheses added: 3 (rejected 3); reviews applied: 6; invalidated assumptions learned: 3; param updates: none.
+- Strategy review: The core live edge remains in weekend Hyperliquid funding reversion (70% live, 74% shadow) and selected PC-ratio mean-reversion pockets in BTC/OIL, while Polymarket one-touch live executions are small and uneven. The main bleed is from gold upside one-touch/rich-tail/near-expiry premium fades, which are failing because gold is trending up and the rich YES premium is informed risk pricing. Cross-asset BTC chasing at range highs and raw funding-threshold mining variants are also burning tests. Tonight shifts gold premium signals from fade to trend-confirmation, tightens CBRS weekend context, and
+- Nightly journal: No parameter changes tonight: the dominant problems are condition/mechanism mismatches rather than risk sizing. The weekend funding reversion live edge is still the cleanest profit engine, while gold one-touch/tail premium fades are now classified as invalid mean-reversion theses and are being inverted to trend-following refinements. I kept new finding-authored hypotheses to two non-duplicative angles and otherwise focused on refining failing primary variants with materially different mechanisms.
+### 2026-08-21 22:28 UTC
+
+**Portfolio:** $104.08 total | Cash $102.08 | 2 open | P&L $7.3229 | 63% win rate (747 trades)
+
+**Hypothesis lifecycle:**
+- 🧹 22 Polymarket-contract variants cannot be graded by the spot scorer and were kept, not retired: find_0020, find_0021, find_0023, find_0025, find_0026, find_0030.
+- 🧪 LLM retest queue: 17 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 4 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring: find_0025, find_0026, find_0030, find_0023.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring: find_0020.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved narrower by 9.6pp (was 1.7, now -7.9)
+- [anomaly] hype_hl_funding_ann = 72.31 is 4.4 std devs from mean (9.80 ± 14.27)
+- [anomaly] oil_opt_iv_30d = 9.3 is -3.2 std devs from mean since 2026-04-28 (52.58 ± 13.43)
+- [anomaly] oil_opt_fwd_90d = 5.8 is -2.6 std devs from mean since 2026-04-28 (78.25 ± 28.06)
+- [anomaly] hype_hl_oi = 1839452103 is 2.5 std devs from mean (1255255131.98 ± 230450968.95)
+
+**Blocked signal learning:**
+- Open blocked shadows: 15
+- Resolved blocked shadows: 915 (471 wins / 444 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-30.36%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.22%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+4.17%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h since last call; daily budget 7/12; next scheduled 2026-08-22T00:28:20.688Z). Mechanical cycle ran normally._
+
+---
+
