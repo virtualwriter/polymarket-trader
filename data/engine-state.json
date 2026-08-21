@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-21T07:28:25.054Z",
+  "generatedAt": "2026-08-21T08:28:27.563Z",
   "dataFreshness": {
-    "valuationRows": 2460,
-    "latestValuationAt": "2026-08-21T07",
-    "macroRows": 2458,
+    "valuationRows": 2461,
+    "latestValuationAt": "2026-08-21T08",
+    "macroRows": 2459,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-21T07"
+    "latestInstrumentSnapshotAt": "2026-08-21T08"
   },
   "portfolio": {
     "cash": 104.0829,
@@ -176,9 +176,9 @@
   ],
   "blockedSummary": {
     "openCount": 15,
-    "resolvedCount": 910,
+    "resolvedCount": 911,
     "wouldHaveWon": 468,
-    "wouldHaveLost": 442,
+    "wouldHaveLost": 443,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -237,30 +237,15 @@
         "avgPnlPct": 0.07
       },
       {
-        "signalType": "PC_RATIO_EXTREME_LOW",
-        "blocked": 36,
-        "resolved": 35,
-        "wouldHaveWon": 17,
-        "wouldHaveLost": 18,
-        "avgPnlPct": -0.27
+        "signalType": "PROMOTED_HYPOTHESIS",
+        "blocked": 1,
+        "resolved": 1,
+        "wouldHaveWon": 0,
+        "wouldHaveLost": 1,
+        "avgPnlPct": -3.65
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "PC_RATIO_EXTREME_LOW",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "short",
-        "blockedReason": "short_blocked_by_positive_trend",
-        "outcome": "loss",
-        "closeReason": "stop",
-        "pnlPct": -2.81,
-        "resolvedAt": "2026-08-21T02:28:22.409Z",
-        "trendMetrics": {
-          "aboveTrendPct": 3.46,
-          "momentumPct": 7.27
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -389,6 +374,21 @@
           "yesSpread": 0.01,
           "liquidity": 37545.85,
           "flags": []
+        }
+      },
+      {
+        "signalType": "PC_RATIO_EXTREME_LOW",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "short",
+        "blockedReason": "short_blocked_by_positive_trend",
+        "outcome": "loss",
+        "closeReason": "stop",
+        "pnlPct": -3.07,
+        "resolvedAt": "2026-08-21T08:28:27.088Z",
+        "trendMetrics": {
+          "aboveTrendPct": 4.35,
+          "momentumPct": 7.67
         }
       }
     ],
