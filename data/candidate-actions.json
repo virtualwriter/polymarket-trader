@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-21T19:28:16.917Z",
+  "generatedAt": "2026-08-21T19:54:23.627Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "OIL",
       "venue": "spot",
       "direction": "short",
-      "strength": 0.44000000000000006,
-      "confidence": 0.2356644418924191,
-      "thesis": "OIL P/C ratio 0.37 — heavy call buying → contrarian short.",
+      "strength": 0.38666666666666666,
+      "confidence": 0.2070990549963683,
+      "thesis": "OIL P/C ratio 0.38 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 86.78,
+      "entryPrice": 86.7,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 86.78,
+      "entryPrice": 86.7,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,41 +56,30 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": -1,
-        "byAsset": {
-          "OIL": -1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_LOW": -1
-        },
-        "byVenue": {
-          "spot": -1
-        },
-        "byCluster": {
-          "commodity": -1,
-          "oil_delta": -1,
-          "options_sentiment": -1,
-          "spot_venue": -1
-        }
+        "totalGross": 0,
+        "totalNet": 0,
+        "byAsset": {},
+        "bySignalType": {},
+        "byVenue": {},
+        "byCluster": {}
       },
       "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": -1,
+        "totalGross": 0,
+        "totalNet": 0,
         "byAsset": {
-          "OIL": -1
+          "OIL": 0
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_LOW": -1
+          "PC_RATIO_EXTREME_LOW": 0
         },
         "byVenue": {
-          "spot": -1
+          "spot": 0
         },
         "byCluster": {
-          "commodity": -1,
-          "oil_delta": -1,
-          "options_sentiment": -1,
-          "spot_venue": -1
+          "commodity": 0,
+          "oil_delta": 0,
+          "options_sentiment": 0,
+          "spot_venue": 0
         }
       },
       "warnings": []
@@ -114,25 +103,5 @@
       ]
     }
   ],
-  "llmCloseEligibility": [
-    {
-      "positionId": "T-1787322517848-hc2z",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "short",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_cl_pc_ratio"
-      ],
-      "hoursOpen": 4.99,
-      "hoursToExpiry": 115.01,
-      "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0416,
-      "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
-    }
-  ]
+  "llmCloseEligibility": []
 }
