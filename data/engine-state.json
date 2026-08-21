@@ -1,21 +1,53 @@
 {
-  "generatedAt": "2026-08-21T19:54:23.499Z",
+  "generatedAt": "2026-08-21T20:28:20.512Z",
   "dataFreshness": {
-    "valuationRows": 2471,
-    "latestValuationAt": "2026-08-21T19",
-    "macroRows": 2469,
+    "valuationRows": 2472,
+    "latestValuationAt": "2026-08-21T20",
+    "macroRows": 2470,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-21T19"
+    "latestInstrumentSnapshotAt": "2026-08-21T20"
   },
   "portfolio": {
-    "cash": 98.5672,
-    "openPositions": 0,
+    "cash": 102.0829,
+    "openPositions": 2,
     "realizedPnl": 7.3229,
     "totalTrades": 747,
     "winRatePct": 63.3,
-    "unrealizedPnl": 0
+    "unrealizedPnl": -0.0046
   },
-  "openPositions": [],
+  "openPositions": [
+    {
+      "positionId": "T-1787322517848-hc2z",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "short",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "pnlPct": -0.46,
+      "currentPrice": 86.83,
+      "underlyingPrice": 86.83,
+      "targetPct": 3,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "WF-1787344100066-BX-ur97",
+      "asset": "BX",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 143.3,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    }
+  ],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
