@@ -3129,9 +3129,14 @@ function macroCompositeShiftPts(rows: SnapshotRow[], lookbackHours: number): { s
   // jumps reached 59 points in reconstructed history and are indistinguishable
   // from real momentum, so a change in coverage means the two readings are not
   // the same quantity and the difference is not a move.
+  // A missing coverage value marks a row written before the composite was
+  // repaired, when it was a frozen constant of a different construction. The
+  // step from that era to the live series is a definitional change worth ~6
+  // points, so it has to be refused too, not just genuine coverage changes.
   const latestCoverage = num(latest.macro_coverage);
   const previousCoverage = lookbackRow ? num(lookbackRow.macro_coverage) : null;
-  if (latestCoverage !== null && previousCoverage !== null && latestCoverage !== previousCoverage) return null;
+  if (latestCoverage === null || previousCoverage === null) return null;
+  if (latestCoverage !== previousCoverage) return null;
 
   return {
     shift: latestComposite - previousComposite,
