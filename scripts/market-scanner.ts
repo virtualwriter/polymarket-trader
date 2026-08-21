@@ -15,6 +15,7 @@
 import { execFileSync } from "node:child_process";
 import { join } from "node:path";
 import { appendScannerCsvRow, appendScannerJsonl, buildScannerHyperliquidSnapshot, buildScannerMacroCsvRow, buildScannerValuationCsvRow, roundNullable, scannerHyperliquidFundingColumns } from "./lib/scanner/output.js";
+import { blendMacroComponents, btcRiskOnScore, fedRiskOnScore, isSettledLadder, oilRiskOnScore, pTouchNearestUntouched } from "./lib/scanner/macro-score.js";
 import { enrichStrikesFromClob } from "./polymarket-clob-book.js";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
@@ -1806,10 +1807,14 @@ interface CategoryEvent {
 
 interface MacroScore {
   fed: { score: number; expectedCuts: number; pAtLeastOneCut: number; medianFirstCut: string; signal: string };
-  iran: { score: number; pDealByYE: number; pCeasefire: number | null; pNuclearTest: number; signal: string };
-  oil: { score: number; pSettleAboveCurrent: number; pSpike120: number; brentWtiSpread: number; signal: string };
-  composite: number;
+  iran: { score: number | null; pDealByYE: number; pCeasefire: number | null; pNuclearTest: number; signal: string };
+  oil: { score: number | null; pSettleAboveCurrent: number | null; pSpike120: number; brentWtiSpread: number; signal: string };
+  btc: { score: number | null; signal: string };
+  composite: number | null;
   label: string;
+  /** Share of nominal component weight that had a live reading. */
+  coverage: number;
+  droppedComponents: string[];
 }
 
 function computeMacroScore(
@@ -1817,6 +1822,7 @@ function computeMacroScore(
   pm: any[],
   hl: Record<string, any>,
   opts: Record<string, OptionsSnapshot>,
+  btcOutperform: CategoryEvent[] = [],
 ): MacroScore {
   // ── Fed Score (0-100, 100 = very dovish/bullish) ──
   const fedCuts = macro.find((e) => e.slug === "how-many-fed-rate-cuts-in-2026");
@@ -1855,14 +1861,12 @@ function computeMacroScore(
     medianFirstCut = median?.month ?? sorted[sorted.length - 1]?.month ?? "Unknown";
   }
 
-  // Score: base is P(≥1 cut), adjusted for timing
-  const pCutBySept = fedTiming?.markets.find((m) => /september/i.test(m.question))?.yesPrice ?? 0;
-  let fedScore = pAtLeastOneCut * 80;
-  if (pCutBySept > 0.5) fedScore += 10;
-  else if (pCutBySept < 0.3) fedScore -= 10;
-  if (expectedCuts >= 2) fedScore += 10;
-  else if (expectedCuts < 1) fedScore -= 5;
-  fedScore = Math.max(0, Math.min(100, fedScore));
+  // Only an *open* September contract carries information. The closed ones
+  // price a date that has passed, and reading their 0 as "the market doubts a
+  // September cut" applied a permanent penalty larger than the entire base.
+  const septMarket = fedTiming?.markets.find((m) => /september/i.test(m.question) && !m.closed);
+  const pCutBySept = septMarket ? septMarket.yesPrice : null;
+  const fedScore = fedRiskOnScore({ pAtLeastOneCut, pCutBySept, expectedCuts });
 
   const fedSignal =
     fedScore >= 70 ? "DOVISH" : fedScore >= 50 ? "MODERATELY HAWKISH" : fedScore >= 30 ? "HAWKISH" : "VERY HAWKISH";
@@ -1872,81 +1876,95 @@ function computeMacroScore(
   const iranNuke = macro.find((e) => e.slug === "iran-nuclear-test-before-2027");
   const iranCeasefire = macro.find((e) => e.slug === "us-x-iran-ceasefire-by");
 
-  const pDealByYE = iranDealYE?.markets[0]?.yesPrice ?? 0;
-  const pNuclearTest = iranNuke?.markets[0]?.yesPrice ?? 0;
+  // Both Iran events resolved in 2026 — the nuclear-deal market settled YES at
+  // 1.00. A resolved market is a constant, not a neutral reading, so scoring
+  // from it froze this component at its 97 ceiling. Require an open contract.
+  const openDeal = iranDealYE?.markets.find((m) => !m.closed);
+  const pDealByYE = openDeal?.yesPrice ?? 0;
+  const pNuclearTest = iranNuke?.markets.find((m) => !m.closed)?.yesPrice ?? 0;
   const ceasefirePrices = iranCeasefire?.markets
+    .filter((m) => !m.closed)
     .map((m) => m.yesPrice)
     .filter((p) => Number.isFinite(p) && p >= 0 && p <= 1) ?? [];
   const pCeasefire = ceasefirePrices.length > 0 ? Math.max(...ceasefirePrices) : null;
   const peaceAgreementInput = pCeasefire ?? pDealByYE;
 
-  let iranScore = ((pDealByYE + peaceAgreementInput) / 2) * 100;
-  iranScore -= pNuclearTest * 60;
-  iranScore = Math.max(0, Math.min(100, iranScore));
+  let iranScore: number | null = null;
+  if (openDeal || pCeasefire !== null) {
+    iranScore = Math.max(0, Math.min(100, ((pDealByYE + peaceAgreementInput) / 2) * 100 - pNuclearTest * 60));
+  }
 
-  const iranSignal =
-    iranScore >= 60 ? "PEACE LIKELY" : iranScore >= 40 ? "UNCERTAIN" : iranScore >= 20 ? "SKEPTICAL" : "ESCALATION RISK";
+  const iranSignal = iranScore === null
+    ? "NO LIVE MARKET"
+    : iranScore >= 60 ? "PEACE LIKELY" : iranScore >= 40 ? "UNCERTAIN" : iranScore >= 20 ? "SKEPTICAL" : "ESCALATION RISK";
 
   // ── Oil Score (0-100, 100 = declining oil/bullish) ──
-  const clSettle = pm.find(
-    (ev: any) => ev.slug === "cl-settle-jun-2026" || ev.title?.toLowerCase().includes("settle at in june"),
-  );
-  const clHit = pm.find(
-    (ev: any) => ev.slug === "cl-hit-jun-2026" || ev.title?.toLowerCase().includes("hit__ by end of june"),
-  );
-
-  let pSettleAboveCurrent = 0.5;
-  if (clSettle) {
-    const strikes = (clSettle.strikes ?? clSettle.markets ?? []) as any[];
-    const highStrikes = strikes.filter(
-      (s: any) => (s.direction === "above" || s.dir === "above") && (s.strike ?? s.price ?? 0) >= 80,
-    );
-    if (highStrikes.length > 0) {
-      pSettleAboveCurrent = Math.max(...highStrikes.map((s: any) => s.yesPrice ?? s.yes ?? 0));
-    }
-  }
-
-  let pSpike120 = 0;
-  if (clHit) {
-    const strikes = (clHit.strikes ?? clHit.markets ?? []) as any[];
-    const s120 = strikes.find(
-      (s: any) => Math.abs((s.strike ?? s.price ?? 0) - 120) < 0.01 && (s.direction === "above" || s.dir === "above"),
-    );
-    if (s120) pSpike120 = s120.yesPrice ?? s120.yes ?? 0;
-  }
-
   const wtiSpot = hl["OIL (CL)"]?.markPx ?? 0;
   const brentPerp = hl["BRENT OIL"]?.markPx ?? 0;
   const brentWtiSpread = brentPerp && wtiSpot ? brentPerp - wtiSpot : 0;
 
-  // P(settle below current) as base, spike and spread as penalties
-  let oilScore = (1 - pSettleAboveCurrent) * 100;
-  oilScore -= pSpike120 * 20;
-  oilScore -= Math.max(0, (brentWtiSpread - 5) / 25) * 10;
-  oilScore = Math.max(0, Math.min(100, oilScore));
+  // Match on the crude slug only. The previous fallback matched the title
+  // fragment "settle at in june", which names no asset, and gold's June
+  // settlement sits earlier in the fetch list — so oil scored off gold's
+  // resolved ladder and read a pinned 1.00 as certainty that oil rises.
+  // These are the auto-rolling current/next-month ladders, so unlike the
+  // hard-coded jun-2026 events they do not silently expire.
+  const oilLadderEvent = pm.find((ev: any) => {
+    const slug = String(ev?.slug ?? "");
+    return (/^what-price-will-(cl|wti)-hit-in-/.test(slug) || slug.startsWith("cl-hit-"))
+      && !isSettledLadder((ev.strikes ?? ev.markets ?? []) as any[]);
+  });
+  const oilLadder = (oilLadderEvent?.strikes ?? oilLadderEvent?.markets ?? []) as any[];
 
-  const oilSignal =
-    oilScore >= 60 ? "DECLINING" : oilScore >= 40 ? "STABLE" : oilScore >= 20 ? "ELEVATED" : "SPIKE RISK";
+  const oilScore = oilLadder.length > 0 ? oilRiskOnScore(oilLadder, wtiSpot) : null;
+  const upsideTouch = oilLadder.length > 0 ? pTouchNearestUntouched(oilLadder, wtiSpot, "above") : null;
+  const pSettleAboveCurrent = upsideTouch ? upsideTouch.probability : null;
 
-  // ── Composite (Fed 40%, Oil 40%, Iran 20%) ──
-  const composite = Math.round(fedScore * 0.4 + oilScore * 0.4 + iranScore * 0.2);
-  const label =
-    composite >= 80
-      ? "VERY BULLISH"
-      : composite >= 60
-        ? "BULLISH"
-        : composite >= 45
-          ? "NEUTRAL"
-          : composite >= 30
-            ? "BEARISH"
-            : "VERY BEARISH";
+  const spike120 = oilLadder.find((s: any) =>
+    Math.abs((s.strike ?? s.price ?? 0) - 120) < 0.01 && (s.direction === "above" || s.dir === "above"));
+  const pSpike120 = spike120 ? (spike120.yesPrice ?? spike120.yes ?? 0) : 0;
+
+  const oilSignal = oilScore === null
+    ? "NO LIVE MARKET"
+    : oilScore >= 60 ? "DECLINING" : oilScore >= 40 ? "STABLE" : oilScore >= 20 ? "ELEVATED" : "SPIKE RISK";
+
+  // ── BTC risk appetite ──
+  const btcOutperformPct = (keyword: string): number | null => {
+    for (const event of btcOutperform) {
+      const market = event.markets.find((m) => m.question.toLowerCase().includes(keyword) && !m.closed);
+      if (market) return market.yesPrice * 100;
+    }
+    return null;
+  };
+  const btcScore = btcRiskOnScore([btcOutperformPct("s&p 500"), btcOutperformPct("gold")]);
+  const btcSignal = btcScore === null
+    ? "NO LIVE MARKET"
+    : btcScore >= 60 ? "RISK ON" : btcScore >= 40 ? "MIXED" : "RISK OFF";
+
+  // ── Composite ──
+  // BTC carries the largest share because the only signals this composite
+  // drives are long/short BTC. The previous weighting was Fed 40 / Oil 40 /
+  // Iran 20, so the decision to be long Bitcoin rested entirely on Fed policy
+  // and Middle East geopolitics with no crypto input at all.
+  const blend = blendMacroComponents([
+    { name: "btc", score: btcScore, weight: 0.40 },
+    { name: "fed", score: fedScore, weight: 0.30 },
+    { name: "oil", score: oilScore, weight: 0.20 },
+    { name: "iran", score: iranScore, weight: 0.10 },
+  ]);
 
   return {
     fed: { score: Math.round(fedScore), expectedCuts, pAtLeastOneCut, medianFirstCut, signal: fedSignal },
-    iran: { score: Math.round(iranScore), pDealByYE, pCeasefire, pNuclearTest, signal: iranSignal },
-    oil: { score: Math.round(oilScore), pSettleAboveCurrent, pSpike120, brentWtiSpread, signal: oilSignal },
-    composite,
-    label,
+    iran: { score: iranScore === null ? null : Math.round(iranScore), pDealByYE, pCeasefire, pNuclearTest, signal: iranSignal },
+    oil: { score: oilScore === null ? null : Math.round(oilScore), pSettleAboveCurrent, pSpike120, brentWtiSpread, signal: oilSignal },
+    btc: { score: btcScore === null ? null : Math.round(btcScore), signal: btcSignal },
+    // Null, not 0: a composite of 0 reads as VERY BEARISH and would be acted
+    // on, which is the failure this rewrite exists to remove. The engine's
+    // shift calculation returns null on a missing value and emits no signal.
+    composite: blend?.composite ?? null,
+    label: blend?.label ?? "NO LIVE MARKET",
+    coverage: blend?.coverage ?? 0,
+    droppedComponents: blend?.dropped ?? ["btc", "fed", "oil", "iran"],
   };
 }
 
@@ -1962,24 +1980,32 @@ function displayMacroScore(ms: MacroScore) {
   console.log(`  MACRO SCORE`);
   console.log(`${"═".repeat(70)}`);
   console.log();
-  console.log(`  ┌─ COMPOSITE:  ${ms.composite}/100  [${ms.label}]`);
-  console.log(`  │  ${gauge(ms.composite)}  ${ms.composite}`);
+  const optional = (score: number | null) => score === null ? "  n/a" : `${gauge(score)}  ${score}/100`;
+  const pct = (value: number | null) => value === null ? "n/a" : `${(value * 100).toFixed(1)}%`;
+
+  console.log(`  ┌─ COMPOSITE:  ${ms.composite ?? "n/a"}/100  [${ms.label}]`);
+  console.log(`  │  ${ms.composite === null ? "(no live component)" : `${gauge(ms.composite)}  ${ms.composite}`}`);
+  console.log(`  │`);
+  console.log(`  │  BTC RISK-ON     ${optional(ms.btc.score)}  ${ms.btc.signal}`);
   console.log(`  │`);
   console.log(`  │  FED POLICY      ${gauge(ms.fed.score)}  ${ms.fed.score}/100  ${ms.fed.signal}`);
   console.log(`  │    P(≥1 cut):     ${(ms.fed.pAtLeastOneCut * 100).toFixed(1)}%`);
   console.log(`  │    Expected cuts: ${ms.fed.expectedCuts.toFixed(1)}`);
   console.log(`  │    Median 1st:    ${ms.fed.medianFirstCut}`);
   console.log(`  │`);
-  console.log(`  │  IRAN / PEACE    ${gauge(ms.iran.score)}  ${ms.iran.score}/100  ${ms.iran.signal}`);
-  console.log(`  │    P(deal 2026):  ${(ms.iran.pDealByYE * 100).toFixed(1)}%`);
-  console.log(`  │    P(nuke test):  ${(ms.iran.pNuclearTest * 100).toFixed(1)}%`);
+  console.log(`  │  IRAN / PEACE    ${optional(ms.iran.score)}  ${ms.iran.signal}`);
+  console.log(`  │    P(deal 2026):  ${pct(ms.iran.pDealByYE)}`);
+  console.log(`  │    P(nuke test):  ${pct(ms.iran.pNuclearTest)}`);
   console.log(`  │`);
-  console.log(`  │  OIL             ${gauge(ms.oil.score)}  ${ms.oil.score}/100  ${ms.oil.signal}`);
-  console.log(`  │    P(CL>$84 Jun): ${(ms.oil.pSettleAboveCurrent * 100).toFixed(1)}%`);
-  console.log(`  │    P(CL>$120):    ${(ms.oil.pSpike120 * 100).toFixed(1)}%`);
+  console.log(`  │  OIL             ${optional(ms.oil.score)}  ${ms.oil.signal}`);
+  console.log(`  │    P(touch up):   ${pct(ms.oil.pSettleAboveCurrent)}`);
+  console.log(`  │    P(CL>$120):    ${pct(ms.oil.pSpike120)}`);
   console.log(`  │    Brent-WTI:     $${ms.oil.brentWtiSpread.toFixed(1)} spread`);
   console.log(`  │`);
-  console.log(`  │  Weights: Fed 40% · Oil 40% · Iran 20%`);
+  console.log(`  │  Weights: BTC 40% · Fed 30% · Oil 20% · Iran 10%`);
+  if (ms.droppedComponents.length > 0) {
+    console.log(`  │  Dropped (no live market): ${ms.droppedComponents.join(", ")} — coverage ${(ms.coverage * 100).toFixed(0)}%`);
+  }
   console.log(`  │  Iran: Deal ${(ms.iran.pDealByYE * 100).toFixed(1)}% | Ceasefire ${ms.iran.pCeasefire === null ? "n/a" : `${(ms.iran.pCeasefire * 100).toFixed(1)}%`} | Nuke test ${(ms.iran.pNuclearTest * 100).toFixed(1)}%`);
   console.log(`  │  Scale: 80+ Very Bullish │ 60-80 Bullish │ 45-60 Neutral │ 30-45 Bearish │ <30 Very Bearish`);
   console.log(`  └────────────────────────────────────────────`);
@@ -2137,7 +2163,7 @@ const VALUATION_HEADERS = [
 
 const MACRO_HEADERS = [
   "date",
-  "macro_composite", "macro_label",
+  "macro_composite", "macro_label", "macro_coverage",
   "fed_score", "fed_signal", "fed_p_at_least_one_cut", "fed_expected_cuts", "fed_median_first_cut",
   "iran_score", "iran_signal", "iran_p_deal_ye", "iran_p_ceasefire", "iran_p_nuke_test",
   "oil_macro_score", "oil_signal", "oil_p_settle_above_current", "oil_p_spike_120", "oil_brent_wti_spread",
@@ -2295,7 +2321,7 @@ function writeSnapshot(
   }));
 
   // ── Macro row ──
-  const ms = computeMacroScore(macro, pm, hl, opts);
+  const ms = computeMacroScore(macro, pm, hl, opts, btcOutperform);
 
   appendCsvRow(MACRO_CSV, MACRO_HEADERS, buildScannerMacroCsvRow({
     date: today,

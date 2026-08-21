@@ -155,8 +155,11 @@ export function buildScannerHyperliquidSnapshot(
 }
 
 export interface ScannerMacroScore {
-  composite: number;
+  /** Null when no component had a live market; never 0 as a placeholder. */
+  composite: number | null;
   label: string;
+  /** Share of nominal component weight that was live, 0-1. */
+  coverage: number;
   fed: {
     score: number;
     signal: string;
@@ -165,16 +168,16 @@ export interface ScannerMacroScore {
     medianFirstCut: string | null;
   };
   iran: {
-    score: number;
+    score: number | null;
     signal: string;
     pDealByYE: number;
     pCeasefire: number | null;
     pNuclearTest: number;
   };
   oil: {
-    score: number;
+    score: number | null;
     signal: string;
-    pSettleAboveCurrent: number;
+    pSettleAboveCurrent: number | null;
     pSpike120: number;
     brentWtiSpread: number | null;
   };
@@ -217,6 +220,10 @@ export function buildScannerMacroCsvRow(inputs: {
     date,
     macro_composite: ms.composite,
     macro_label: ms.label,
+    // Persisted so a momentum reading can refuse to compare two composites
+    // built from different component sets. Renormalising over a changed set
+    // shifts the level, which is indistinguishable from a real move otherwise.
+    macro_coverage: roundNullable(ms.coverage * 100, 0),
     fed_score: ms.fed.score,
     fed_signal: ms.fed.signal,
     fed_p_at_least_one_cut: roundNullable(ms.fed.pAtLeastOneCut * 100, 1),
@@ -229,7 +236,9 @@ export function buildScannerMacroCsvRow(inputs: {
     iran_p_nuke_test: roundNullable(ms.iran.pNuclearTest * 100, 1),
     oil_macro_score: ms.oil.score,
     oil_signal: ms.oil.signal,
-    oil_p_settle_above_current: roundNullable(ms.oil.pSettleAboveCurrent * 100, 1),
+    oil_p_settle_above_current: ms.oil.pSettleAboveCurrent === null
+      ? null
+      : roundNullable(ms.oil.pSettleAboveCurrent * 100, 1),
     oil_p_spike_120: roundNullable(ms.oil.pSpike120 * 100, 1),
     oil_brent_wti_spread: roundNullable(ms.oil.brentWtiSpread, 1),
     btc_outperform_sp500: btcOutperformProbability("s&p 500"),

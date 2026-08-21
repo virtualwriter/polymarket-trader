@@ -3124,6 +3124,15 @@ function macroCompositeShiftPts(rows: SnapshotRow[], lookbackHours: number): { s
   const previousComposite = lookbackRow ? num(lookbackRow.macro_composite) : null;
   if (previousComposite === null) return null;
 
+  // The composite renormalises over whichever components have a live market, so
+  // a component appearing or disappearing shifts the level on its own. Those
+  // jumps reached 59 points in reconstructed history and are indistinguishable
+  // from real momentum, so a change in coverage means the two readings are not
+  // the same quantity and the difference is not a move.
+  const latestCoverage = num(latest.macro_coverage);
+  const previousCoverage = lookbackRow ? num(lookbackRow.macro_coverage) : null;
+  if (latestCoverage !== null && previousCoverage !== null && latestCoverage !== previousCoverage) return null;
+
   return {
     shift: latestComposite - previousComposite,
     previous: previousComposite,
@@ -3163,7 +3172,7 @@ function openPositionContextColumns(asset: string): string[] {
   const columns = assetPromptColumns(asset);
   return uniqueColumns([
     columns.spot, columns.hlPerp, columns.pmEv, columns.pmIv, columns.optIv30, columns.optIv90, columns.funding, columns.pcRatio,
-    "macro_composite", "fed_score",
+    "macro_composite", "macro_coverage", "fed_score",
   ]);
 }
 
@@ -3184,7 +3193,7 @@ function signalFamilyEvidenceColumns(position: Position): string[] {
       return uniqueColumns([columns.spot, columns.pmEv]);
     case "MACRO_MOMENTUM_UP":
     case "MACRO_MOMENTUM_DOWN":
-      return uniqueColumns([columns.spot, "macro_composite", "fed_score"]);
+      return uniqueColumns([columns.spot, "macro_composite", "macro_coverage", "fed_score"]);
     case "MOMENTUM_LONG":
       return uniqueColumns([columns.spot]);
     case "ONE_TOUCH_HIGH_EDGE_NO":

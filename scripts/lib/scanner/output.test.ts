@@ -8,6 +8,7 @@ describe("scanner output helpers", () => {
       macroScore: {
         composite: 1.2,
         label: "risk_on",
+        coverage: 1,
         fed: {
           score: 2,
           signal: "dovish",
