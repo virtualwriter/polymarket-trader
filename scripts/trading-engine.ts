@@ -403,6 +403,26 @@ const LIVE_SIGNAL_ALLOWLIST = new Set([
   "FUNDING_EXTREME_SHORT",
   "FUNDING_EXTREME_LONG",
 ]);
+/**
+ * Signals that generate and are recorded as shadows, but never trade live.
+ *
+ * Every signal in the live allowlist is either a mean-reversion fade or an
+ * upside-barrier sale, so the book could only ever be short a rally — BTC ran
+ * 22% in a week and the engine produced exactly one BTC opinion, a short. These
+ * three are the only signal types that can express "this is trending up, be
+ * long", and all three were switched off together by the 2026-05-18 production
+ * allowlist rather than by their records: MACRO_MOMENTUM_UP was disabled at 1
+ * trade, 1 win, +3.24%.
+ *
+ * Shadowing them costs nothing and starts the evidence clock, which is the only
+ * way they can ever earn live status. They are pulled out of the signal list
+ * before the execution plan is built, so there is no path by which they trade.
+ */
+const SHADOW_ONLY_SIGNAL_ALLOWLIST = new Set([
+  "MACRO_MOMENTUM_UP",
+  "PM_EV_ABOVE_SPOT",
+  "BASIS_DISCOUNT",
+]);
 // Second human gate on top of evaluateHypotheses family promotion
 // (≥ PROMOTE_MIN_TESTS completed family tests and ≥ PROMOTE_THRESHOLD win rate).
 // Empty as of 2026-07-15: H-521 was force-listed despite its family having only
@@ -1951,7 +1971,11 @@ function weightForSignalAsset(
   asset: string,
 ): SignalWeight | null {
   const weight = weightMap.get(signalType);
-  if (!weight || !weight.enabled) return null;
+  if (!weight) return null;
+  // Observation-only types stay `enabled: false`, which is honest — they are
+  // not live. They still have to clear this lookup, or no shadow is ever
+  // generated and they can never accumulate the evidence to earn live status.
+  if (!weight.enabled && !SHADOW_ONLY_SIGNAL_ALLOWLIST.has(signalType)) return null;
   if (weight.perAsset?.[asset]?.disabled) return null;
   return weight;
 }
@@ -5267,7 +5291,11 @@ function generateSignals(
   const latest = rows[rows.length - 1];
   const signals: Signal[] = [];
   const weightMap = new Map(weights
-    .filter((w) => w.enabled && LIVE_SIGNAL_ALLOWLIST.has(w.type))
+    .filter((w) => (w.enabled && LIVE_SIGNAL_ALLOWLIST.has(w.type))
+      // Observation-only types are deliberately admitted while disabled: the
+      // generator has to run for a shadow to exist at all, and the live path
+      // strips them before the execution plan.
+      || SHADOW_ONLY_SIGNAL_ALLOWLIST.has(w.type))
     .map((w) => [w.type, w]));
 
   const assets = [
@@ -7270,6 +7298,81 @@ function recordUnpromotedLlmEntryShadows(
   return recorded;
 }
 
+/**
+ * Removes observation-only signals from the live list, recording each as a
+ * shadow so the idea is measured instead of discarded.
+ *
+ * Mutates `signals` rather than returning a filtered copy, because the array is
+ * handed to the candidate-action builder and the execution plan further down;
+ * stripping here is what guarantees these never reach either.
+ */
+function recordObservationOnlySignalShadows(
+  signals: Signal[],
+  rows: SnapshotRow[],
+  learningParams: LearningParams,
+  latestRow: SnapshotRow,
+  latestSnapshot: InstrumentSnapshotFile | null,
+  blockedSignals: BlockedSignalShadow[],
+): string[] {
+  const diverted = signals.filter((signal) => SHADOW_ONLY_SIGNAL_ALLOWLIST.has(signal.type));
+  if (diverted.length === 0) return [];
+  for (let i = signals.length - 1; i >= 0; i--) {
+    if (SHADOW_ONLY_SIGNAL_ALLOWLIST.has(signals[i].type)) signals.splice(i, 1);
+  }
+
+  const recorded: string[] = [];
+  for (const signal of diverted) {
+    const key = blockedSignalKey(signal);
+    if (blockedSignals.some((shadow) =>
+      shadow.status === "open"
+      && blockedSignalKey({
+        type: shadow.signalType,
+        asset: shadow.asset,
+        venue: shadow.venue,
+        direction: shadow.direction,
+      }) === key
+    )) continue;
+
+    const position = buildPositionFromSignal(signal, latestRow, latestSnapshot);
+    if (!position) continue;
+    applyConservativePolymarketEntry(position, latestSnapshot);
+
+    const blockedAt = new Date().toISOString();
+    position.id = `OB-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    position.openedAt = blockedAt;
+
+    const metrics = assetTrendMetrics(rows, signal.asset, LOOKBACK_HOURS);
+    blockedSignals.push({
+      id: position.id,
+      status: "open",
+      blockedAt,
+      blockedReason: "live_entry_not_promoted",
+      signalType: signal.type,
+      asset: signal.asset,
+      venue: signal.venue,
+      direction: signal.direction,
+      confidence: Number(signal.confidence.toFixed(4)),
+      thesis: signal.thesis,
+      trendMetrics: metrics ? {
+        aboveTrendPct: Number(metrics.aboveTrendPct.toFixed(2)),
+        momentumPct: Number(metrics.momentumPct.toFixed(2)),
+      } : undefined,
+      marketQuality: polymarketMarketQuality(position, latestSnapshot),
+      learningParamsSnapshot: {
+        macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+        contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
+        positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
+        llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
+        momentumLongExpiryDays: learningParams.momentumLongExpiryDays,
+        signalRisk: learningParams.signalRisk,
+      },
+      position,
+    });
+    recorded.push(`${signal.asset} ${signal.direction} (${signal.type})`);
+  }
+  return recorded;
+}
+
 function buildExecutionPlan(candidateActions: CandidateActions, gatedAdvice: GatedLlmAdvice, signals: Signal[]): ExecutionPlan {
   return buildExecutionPlanArtifact({
     candidateActions,
@@ -8710,6 +8813,11 @@ async function main() {
   const promotedSignals = generatePromotedHypothesisSignals(hypotheses, valRows, latestRow, learningParams, latestSnapshot, blockedSignals, relativeValueRows);
   signals.push(...promotedSignals);
   signals.push(...oneTouchHighEdgeNoLiveSignals);
+  // Strip observation-only signals before anything downstream can trade them.
+  const observationShadows = recordObservationOnlySignalShadows(signals, valRows, learningParams, latestRow, latestSnapshot, blockedSignals);
+  if (observationShadows.length > 0) {
+    console.log(`\n  Recorded ${observationShadows.length} observation-only signal shadows (never live): ${observationShadows.join(", ")}`);
+  }
   proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
   blockedSummary = summarizeBlockedSignals(blockedSignals);
   oneTouchBucketObs = oneTouchBucketObservations(blockedSignals);
