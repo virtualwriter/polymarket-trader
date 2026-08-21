@@ -1,11 +1,26 @@
 {
-  "generatedAt": "2026-08-21T13:28:24.751Z",
+  "generatedAt": "2026-08-21T14:28:37.844Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [],
+  "entrySignals": [
+    {
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "short",
+      "strength": 0.8066666666666666,
+      "confidence": 0.43205147680276834,
+      "thesis": "OIL P/C ratio 0.26 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 86.43,
+      "targetPct": 5,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    }
+  ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
