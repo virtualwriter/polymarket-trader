@@ -1,7 +1,7 @@
 import { existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
-import { extractLlmJsonObject, requestLlmText, resolveLlmRoute, type LlmMessage } from "../trading/llm-transport.js";
+import { extractLlmJsonObject, requestLlmText, resolveLlmRoute, type LlmMessage, type LlmRoute, type LlmTextResponse } from "../trading/llm-transport.js";
 import { buildConditionCatalogPromptSection } from "./condition-catalog.js";
 import {
   HYPOTHESIS_SHADOW_TESTS_REQUIRED,
@@ -688,11 +688,44 @@ export function isSubstantiveNightlyAdvice(advice: NightlyAdvice): boolean {
   );
 }
 
-function logLlmResponse(label: string, resp: { text: string; stopReason?: string | null }): void {
+/**
+ * Per-call budget for the nightly authoring model.
+ *
+ * The shared default is 300s, sized for the hourly trader where a hung call
+ * delays a trading decision. This call is a batch job with nothing waiting on
+ * it, and it asks a reasoning model for up to 32k tokens where chain-of-thought
+ * counts against the same budget. It timed out on 2026-08-20 and 2026-08-21 and
+ * authored nothing for two nights, having succeeded on 08-19 — so 300s is close
+ * to the real generation time and gives no headroom. Aborting on total elapsed
+ * time kills productive generation rather than a stall, so the budget has to be
+ * generous enough that only a genuine hang trips it.
+ */
+const NIGHTLY_LLM_TIMEOUT_MS = Number(process.env.NIGHTLY_LLM_TIMEOUT_MS ?? 900_000);
+
+/** Times a nightly call so the budget can be tuned from evidence, not guesses. */
+async function timedNightlyLlmCall(
+  label: string,
+  route: LlmRoute,
+  messages: LlmMessage[],
+  maxTokens: number,
+): Promise<LlmTextResponse> {
+  const startedAt = Date.now();
+  try {
+    const resp = await requestLlmText(route, messages, { maxTokens, timeoutMs: NIGHTLY_LLM_TIMEOUT_MS });
+    logLlmResponse(label, resp, Date.now() - startedAt);
+    return resp;
+  } catch (e: any) {
+    console.log(`[nightly-llm] ${label}: failed after ${((Date.now() - startedAt) / 1000).toFixed(0)}s of a ${(NIGHTLY_LLM_TIMEOUT_MS / 1000).toFixed(0)}s budget — ${e?.message ?? e}`);
+    throw e;
+  }
+}
+
+function logLlmResponse(label: string, resp: { text: string; stopReason?: string | null }, elapsedMs?: number): void {
   const text = resp.text ?? "";
   const preview = text.length > 2000 ? `${text.slice(0, 2000)}…` : text;
+  const timing = elapsedMs === undefined ? "" : ` elapsed=${(elapsedMs / 1000).toFixed(0)}s`;
   console.log(
-    `[nightly-llm] ${label}: chars=${text.length} finish_reason=${resp.stopReason ?? "null"} raw=${JSON.stringify(preview)}`,
+    `[nightly-llm] ${label}: chars=${text.length} finish_reason=${resp.stopReason ?? "null"}${timing} raw=${JSON.stringify(preview)}`,
   );
 }
 
@@ -744,8 +777,7 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
     // mid-JSON on a normal night. 32k leaves headroom for CoT + full advice.
     const maxTokens = 32_768;
     let messages: LlmMessage[] = [{ role: "user", content: prompt }];
-    let first = await requestLlmText(route, messages, { maxTokens });
-    logLlmResponse("response#1", first);
+    let first = await timedNightlyLlmCall("response#1", route, messages, maxTokens);
 
     // Retrieval pass: the model may answer with dataRequests instead of advice,
     // in which case we execute them against the real ledger and let it answer
@@ -763,8 +795,7 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
         { role: "assistant", content: first.text },
         { role: "user", content: formatQueryResults(results) },
       ];
-      first = await requestLlmText(route, messages, { maxTokens });
-      logLlmResponse("response#1b-after-retrieval", first);
+      first = await timedNightlyLlmCall("response#1b-after-retrieval", route, messages, maxTokens);
     }
 
     let lastText = first.text;
@@ -772,12 +803,11 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
 
     if (!parsed.advice) {
       console.log(`[nightly-llm] invalid JSON (${parsed.error}); requesting repair.${first.stopReason ? ` finish_reason=${first.stopReason}` : ""}`);
-      const repaired = await requestLlmText(route, [
+      const repaired = await timedNightlyLlmCall("response#2-parse-repair", route, [
         ...messages,
         { role: "assistant", content: first.text },
         { role: "user", content: buildRepairPrompt(parsed.error ?? "unknown parse error", first.text) },
-      ], { maxTokens });
-      logLlmResponse("response#2-parse-repair", repaired);
+      ], maxTokens);
       lastText = repaired.text;
       parsed = parseNightlyAdvice(repaired.text, { allowedOriginFindingIds });
       if (!parsed.advice) {
@@ -791,12 +821,11 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
       console.log(
         `[nightly-llm] empty advice while ${opportunities.length} opportunities present; requesting repair.`,
       );
-      const repaired = await requestLlmText(route, [
+      const repaired = await timedNightlyLlmCall("response#2-empty-repair", route, [
         ...messages,
         { role: "assistant", content: lastText },
         { role: "user", content: buildEmptyAdviceRepairPrompt(lastText, opportunities.length) },
-      ], { maxTokens });
-      logLlmResponse("response#2-empty-repair", repaired);
+      ], maxTokens);
       parsed = parseNightlyAdvice(repaired.text, { allowedOriginFindingIds });
       if (!parsed.advice) {
         const err = parsed.error ?? "empty-advice repair produced unparseable JSON";

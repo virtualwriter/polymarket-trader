@@ -129,8 +129,12 @@ if ! timeout "${CALIBRATION_COMPACT_TIMEOUT:-10m}" python3 scripts/compact_no_bi
   echo "WARNING: calibration compaction failed; continuing."
 fi
 
+# 45m, not 15m: this step contains up to three sequential reasoning-model calls
+# that each now carry a 15m budget. The old 15m ceiling would abort the step
+# before the first call could use its own budget, so raising one without the
+# other would change nothing.
 nightly_research_exit=0
-if ! timeout "${NIGHTLY_RESEARCH_TIMEOUT:-15m}" npx tsx scripts/nightly-research.ts; then
+if ! timeout "${NIGHTLY_RESEARCH_TIMEOUT:-45m}" npx tsx scripts/nightly-research.ts; then
   echo "WARNING: nightly research failed; continuing to commit earlier artifacts."
   nightly_research_exit=1
 fi

@@ -102,6 +102,16 @@ export interface RelativeValueObservation {
   smartFlowNetYes?: number | null;
   smartFlowStance?: number | null;
   flags: string;
+  /**
+   * Whether the source row carried a perp funding column at all, as distinct
+   * from carrying it empty.
+   *
+   * This is the only question any consumer ever asked of `rawRow`, which cost
+   * 68 retained string properties per observation to answer — enough to push
+   * the nightly backfill into its heap ceiling. Producers that still attach
+   * `rawRow` stay supported by the fallback at the call site.
+   */
+  hasPerpFunding?: boolean;
   rawRow?: Record<string, string>;
 }
 

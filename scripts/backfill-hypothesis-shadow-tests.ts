@@ -171,16 +171,35 @@ function num(v: unknown): number | null {
 }
 
 function readCsvFile(path: string): Record<string, string>[] {
+  return mapCsvFile(path, (row) => ({ ...row }));
+}
+
+/**
+ * Parses a CSV and keeps only what the projection returns.
+ *
+ * The row object handed to `project` is reused across rows and must not be
+ * retained. Building an array of per-row records first and mapping afterwards
+ * holds two full copies of the file in memory at once, which is what put this
+ * job at 475MB against a 488MB ceiling; peak memory here is one row plus the
+ * projected output. Parsed line text is released as it is consumed.
+ */
+function mapCsvFile<T>(path: string, project: (row: Record<string, string>) => T | null): T[] {
   if (!existsSync(path)) return [];
   const raw = readFileSync(path, "utf-8").trim();
   if (!raw) return [];
   const lines = raw.split(/\r?\n/);
   if (lines.length < 2) return [];
   const headers = parseCsvLine(lines[0] ?? "");
-  return lines.slice(1).map((line) => {
-    const values = parseCsvLine(line);
-    return Object.fromEntries(headers.map((header, idx) => [header, values[idx] ?? ""]));
-  });
+  const out: T[] = [];
+  const row: Record<string, string> = {};
+  for (let i = 1; i < lines.length; i++) {
+    const values = parseCsvLine(lines[i] ?? "");
+    for (let c = 0; c < headers.length; c++) row[headers[c]] = values[c] ?? "";
+    const projected = project(row);
+    if (projected !== null) out.push(projected);
+    lines[i] = "";
+  }
+  return out;
 }
 
 
@@ -280,22 +299,20 @@ function relativeValueInputPaths(path: string): string[] {
 }
 
 function readValuationRows(path: string): SnapshotRow[] {
-  return readCsvFile(path)
-    .map((raw) => {
-      const row: SnapshotRow = { date: raw.date ?? "" };
-      for (const [key, value] of Object.entries(raw)) {
-        row[key] = value !== "" && !Number.isNaN(Number(value)) ? Number(value) : value;
-      }
-      return row;
-    })
-    .filter((row) => row.date.length > 0)
-    .sort((a, b) => timeMs(String(a.date)) - timeMs(String(b.date)));
+  return mapCsvFile(path, (raw) => {
+    if (!raw.date) return null;
+    const row: SnapshotRow = { date: raw.date };
+    for (const [key, value] of Object.entries(raw)) {
+      row[key] = value !== "" && !Number.isNaN(Number(value)) ? Number(value) : value;
+    }
+    return row;
+  }).sort((a, b) => timeMs(String(a.date)) - timeMs(String(b.date)));
 }
 
 function readRelativeValueRows(path: string): RelativeValueObservation[] {
-  return relativeValueInputPaths(path)
-    .flatMap((inputPath) => readCsvFile(inputPath))
-    .map((row): RelativeValueObservation | null => {
+  const out: RelativeValueObservation[] = [];
+  for (const inputPath of relativeValueInputPaths(path)) {
+    out.push(...mapCsvFile(inputPath, (row): RelativeValueObservation | null => {
       const edgePts = num(row.edge_score);
       const strike = num(row.strike);
       const direction = row.direction === "above" || row.direction === "below" ? row.direction : null;
@@ -340,11 +357,11 @@ function readRelativeValueRows(path: string): RelativeValueObservation[] {
         perpBasisPct: num(row.perp_basis_pct),
         sellYesEdgePts: num(row.sell_yes_edge_pts),
         flags: row.flags ?? "",
-        rawRow: row,
+        hasPerpFunding: row.perp_funding_ann !== undefined,
       };
-    })
-    .filter((row): row is RelativeValueObservation => row !== null)
-    .sort((a, b) => timeMs(a.timestamp) - timeMs(b.timestamp));
+    }));
+  }
+  return out.sort((a, b) => timeMs(a.timestamp) - timeMs(b.timestamp));
 }
 
 function timeMs(ts: string): number {
@@ -446,7 +463,11 @@ function conditionKeyHasNumericData(
   if (derived) return valuationRows.some((row) => num(row[derived[1]]) !== null);
   if (RELATIVE_VALUE_KEY_PATTERN.test(key)) return relativeValueRows.length > 0;
   const perp = key.match(/^([a-z]+)_hl_(funding_ann|oi|basis_pct)$/);
-  if (perp) return relativeValueRows.some((row) => row.asset === perp[1].toUpperCase() && row.rawRow?.perp_funding_ann !== undefined);
+  if (perp) {
+    return relativeValueRows.some((row) =>
+      row.asset === perp[1].toUpperCase()
+      && (row.hasPerpFunding ?? row.rawRow?.perp_funding_ann !== undefined));
+  }
   if (MARKET_ROW_CONDITION_KEYS.has(key)) {
     const assetExpression = hypothesis.conditions?.asset;
     const assets = assetExpression ? parseListExpression(String(assetExpression)) : null;
