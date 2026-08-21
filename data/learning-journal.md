@@ -468,3 +468,39 @@ No open positions, so no discretionary closes are warranted this hour. Recent ON
 
 ---
 
+### 2026-08-21 10:28 UTC
+
+**Portfolio:** $104.08 total | Cash $104.08 | 0 open | P&L $7.3229 | 63% win rate (747 trades)
+
+**Hypothesis lifecycle:**
+- 🧹 22 Polymarket-contract variants cannot be graded by the spot scorer and were kept, not retired: find_0020, find_0021, find_0023, find_0025, find_0026, find_0030.
+- 🧪 LLM retest queue: 17 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 4 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring: find_0025, find_0026, find_0030, find_0023.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring: find_0020.
+
+**Statistical observations:**
+- [anomaly] oil_opt_iv_30d = 8.4 is -3.4 std devs from mean since 2026-04-28 (52.78 ± 13.12)
+- [anomaly] hype_hl_funding_ann = 52.07 is 3.0 std devs from mean (9.66 ± 14.04)
+- [anomaly] oil_opt_fwd_90d = 6.1 is -2.6 std devs from mean since 2026-04-28 (78.13 ± 27.72)
+- [anomaly] btc_opt_iv_90d = 59.1 is 2.4 std devs from mean (40.84 ± 7.61)
+- [anomaly] hype_hl_oi = 1768019829 is 2.3 std devs from mean (1252868925.76 ± 228175566.40)
+
+**Blocked signal learning:**
+- Open blocked shadows: 17
+- Resolved blocked shadows: 911 (468 wins / 443 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-0.10%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.08%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-3.07%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 2.0h since last call; daily budget 3/12; next scheduled 2026-08-21T12:28:12.932Z). Mechanical cycle ran normally._
+
+---
+
