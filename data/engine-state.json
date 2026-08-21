@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-21T03:28:27.413Z",
+  "generatedAt": "2026-08-21T04:28:24.071Z",
   "dataFreshness": {
-    "valuationRows": 2456,
-    "latestValuationAt": "2026-08-21T03",
-    "macroRows": 2454,
+    "valuationRows": 2457,
+    "latestValuationAt": "2026-08-21T04",
+    "macroRows": 2455,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-21T03"
+    "latestInstrumentSnapshotAt": "2026-08-21T04"
   },
   "portfolio": {
     "cash": 104.0829,
@@ -175,10 +175,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 19,
-    "resolvedCount": 905,
+    "openCount": 18,
+    "resolvedCount": 906,
     "wouldHaveWon": 468,
-    "wouldHaveLost": 437,
+    "wouldHaveLost": 438,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -246,24 +246,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "expiry",
-        "pnlPct": 1.77,
-        "resolvedAt": "2026-08-21T02:28:22.409Z",
-        "marketQuality": {
-          "yesBid": 0.041,
-          "yesAsk": 0.043,
-          "yesSpread": 0.002,
-          "liquidity": 48938.97,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -391,6 +373,24 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -0.1,
+        "resolvedAt": "2026-08-21T04:28:23.601Z",
+        "marketQuality": {
+          "yesBid": 0.019,
+          "yesAsk": 0.02,
+          "yesSpread": 0.001,
+          "liquidity": 71618.71,
+          "flags": []
         }
       }
     ],
