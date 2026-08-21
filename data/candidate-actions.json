@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-21T22:28:20.684Z",
+  "generatedAt": "2026-08-21T23:28:14.113Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.12140289430821591,
       "thesis": "OIL P/C ratio 0.43 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 86.78,
+      "entryPrice": 86.75,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 86.78,
+      "entryPrice": 86.75,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,19 +56,20 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 6,
-        "totalNet": 4,
+        "totalGross": 11,
+        "totalNet": 9,
         "byAsset": {
           "OIL": -1,
-          "BX": 5
+          "BX": 5,
+          "ZM": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 5
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10
         },
         "byVenue": {
           "spot": -1,
-          "hyperliquid": 5
+          "hyperliquid": 10
         },
         "byCluster": {
           "commodity": -1,
@@ -76,24 +77,26 @@
           "options_sentiment": -1,
           "spot_venue": -1,
           "bx_delta": 5,
-          "funding_reversion": 5,
-          "hyperliquid_venue": 5
+          "funding_reversion": 10,
+          "hyperliquid_venue": 10,
+          "zm_delta": 5
         }
       },
       "afterCandidate": {
-        "totalGross": 6,
-        "totalNet": 4,
+        "totalGross": 11,
+        "totalNet": 9,
         "byAsset": {
           "OIL": -1,
-          "BX": 5
+          "BX": 5,
+          "ZM": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 5
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10
         },
         "byVenue": {
           "spot": -1,
-          "hyperliquid": 5
+          "hyperliquid": 10
         },
         "byCluster": {
           "commodity": -1,
@@ -101,8 +104,9 @@
           "options_sentiment": -1,
           "spot_venue": -1,
           "bx_delta": 5,
-          "funding_reversion": 5,
-          "hyperliquid_venue": 5
+          "funding_reversion": 10,
+          "hyperliquid_venue": 10,
+          "zm_delta": 5
         }
       },
       "warnings": []
@@ -120,7 +124,9 @@
       "enforcedLiveSize": 1,
       "wouldResize": true,
       "edgePts": null,
-      "alerts": [],
+      "alerts": [
+        "cluster exposure 10.00 > alert cap 5.00"
+      ],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
       ]
@@ -139,12 +145,12 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 8,
-      "hoursToExpiry": 112,
+      "hoursOpen": 8.99,
+      "hoursToExpiry": 111.01,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0666,
+      "elapsedHoldPct": 0.0749,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 8.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 9.0h, requires at least 12h."
     },
     {
       "positionId": "WF-1787344100066-BX-ur97",
@@ -155,10 +161,26 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 2,
-      "hoursToExpiry": 22,
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0833,
+      "elapsedHoldPct": 0.1249,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1787354893663-ZM-mnuo",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "ZM",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 0,
+      "hoursToExpiry": 24,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
