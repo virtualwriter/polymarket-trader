@@ -1622,3 +1622,42 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-08-22 20:28 UTC
+
+**Portfolio:** $103.88 total | Cash $98.88 | 5 open | P&L $7.1157 | 63% win rate (778 trades)
+
+**Closed 3 trades:**
+- ✅ BABA long via hyperliquid/hl_perp [HL BABA Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0012 (0.1%, market 0.0008, funding 0.0004)
+- ❌ BX long via hyperliquid/hl_perp [HL BX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0084 (-0.8%, market -0.0097, funding 0.0013)
+- ✅ COST long via hyperliquid/hl_perp [HL COST Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0072 (0.7%, market 0.0072, funding -0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 23 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_funding_ann = 60.43 is 3.5 std devs from mean (9.95 ± 14.60)
+- [anomaly] hype_hl_oi = 1958386465 is 3.0 std devs from mean (1260149776.89 ± 236288491.41)
+- [anomaly] btc_hl_funding_ann = 23.6 is 2.6 std devs from mean (5.59 ± 7.04)
+- [anomaly] hype_pm_ev = 76.91 is 2.2 std devs from mean (58.79 ± 8.19)
+- [anomaly] hype_spot = 79.683 is 2.2 std devs from mean (58.30 ± 9.86)
+
+**Blocked signal learning:**
+- Open blocked shadows: 15
+- Resolved blocked shadows: 923 (476 wins / 447 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+19.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h since last call; daily budget 7/12; next scheduled 2026-08-22T22:28:12.825Z). Mechanical cycle ran normally._
+
+---
+
