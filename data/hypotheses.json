@@ -1540,7 +1540,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Gold P/C collapse with PM settlement EV > 4800 did not predict spot rally toward PM levels. Spot failed to converge and shorts were repeatedly caught by small up moves or failed to reach -2%, suggesting the PM settlement premium persisted instead of forcing spot. | The gold P/C collapse with PM settlement EV above spot did not resolve into a rally; outcomes were -0.82%, -1.11%, +0.18%, +1.04%. The signal did not produce the expected directional move toward PM settlement levels within the horizon. | The gold PM premium/futures spread mean-reversion setup is 2/17 in contaminated retest, with hard-coded 4800 PM settlement levels and GLD P/C below 0.65 not forecasting a spot rally; spot instead fell slightly or stayed below PM levels. | The low gold put/call ratio and elevated PM settlement EV did not produce the expected 7-day spot edge; the family is 3/22 and gold kept grinding higher through fade attempts. The condition set marked persistent bullish positioning, not a reversal setup.",
+    "postMortem": "The gold P/C collapse with PM settlement EV above spot did not resolve into a rally; outcomes were -0.82%, -1.11%, +0.18%, +1.04%. The signal did not produce the expected directional move toward PM settlement levels within the horizon. | The gold PM premium/futures spread mean-reversion setup is 2/17 in contaminated retest, with hard-coded 4800 PM settlement levels and GLD P/C below 0.65 not forecasting a spot rally; spot instead fell slightly or stayed below PM levels. | The low gold put/call ratio and elevated PM settlement EV did not produce the expected 7-day spot edge; the family is 3/22 and gold kept grinding higher through fade attempts. The condition set marked persistent bullish positioning, not a reversal setup. | The family's short variants lost as gold spot rose 1.8–5.1% after the P/C collapse and PM settlement EV >4800 trigger. Rich settlement EV was not a fadeable overbought anchor; gold continued to drift higher.",
     "source": "llm",
     "setupId": "gold_pm_premium_futures_spread_mean_reversion",
     "setupLabel": "Gold PM premium / futures spread mean reversion"
@@ -4952,7 +4952,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "HYPE risk-on confirmation repeatedly triggered near local BTC tops. Loss examples show BTC falling 1.69% to 3.47% while HYPE above-SMA/stable-OI conditions remained true, meaning HYPE participation was not a continuation signal. | The HYPE confirmation long fires after BTC is already near the 7d high. Recorded tests show BTC immediately fell -2.93% and -3.47%, or stalled below +2%. Stable HYPE OI was a late-cycle byproduct rather than a continuation predictor. | The cross-asset momentum confirmation variant repeatedly went long BTC near its 7-day high when HYPE was above its 24h SMA, but BTC fell -2.93% and -3.47% in multiple tests. HYPE participation was a crowded trend marker rather than a continuation edge. | The condition set buys BTC already above the 24h SMA, within 4% of the 7d high, and HYPE above its SMA with stable OI; recent tests are 7/23 and show repeated 2-3.5% BTC drops after entry, with a single 9.66% win masking mostly chasing losses.",
+    "postMortem": "The HYPE confirmation long fires after BTC is already near the 7d high. Recorded tests show BTC immediately fell -2.93% and -3.47%, or stalled below +2%. Stable HYPE OI was a late-cycle byproduct rather than a continuation predictor. | The cross-asset momentum confirmation variant repeatedly went long BTC near its 7-day high when HYPE was above its 24h SMA, but BTC fell -2.93% and -3.47% in multiple tests. HYPE participation was a crowded trend marker rather than a continuation edge. | The condition set buys BTC already above the 24h SMA, within 4% of the 7d high, and HYPE above its SMA with stable OI; recent tests are 7/23 and show repeated 2-3.5% BTC drops after entry, with a single 9.66% win masking mostly chasing losses. | BTC lost -2.9% to -3.5% while HYPE was above its 24h SMA; HYPE risk-on participation did not confirm durable BTC momentum.",
     "source": "llm",
     "setupId": "cross_asset_iv_compression_vol_expansion",
     "setupLabel": "Cross-asset IV compression / vol expansion"
@@ -19931,7 +19931,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "0/15 scorable. The large no-bias gap was not a mispriced premium; it often stayed rich as gold held a bid. Most losses showed gold up 0.18% to 0.92%, with only one -1.11% move, never the required -2%. | The no-bias adjusted gap on rich GOLD tail NO contracts was traded as a spot short. The recorded gold moves were small or against the trade: +0.25%, -0.82%, -1.11%, +0.92%, +0.18%, +1.07%. The gap was not an exhaustion trigger. | The no-bias adjusted gap gold short-rich-tail variant went 0/17, with GOLD moving essentially flat to higher after the gap condition. The no-bias gap stayed pinned while spot trended against the short. | 0/19 scorable tests. The rich tail no-bias gap threshold >= 12.3 also failed as gold rallied through the fade window, including 4380 to 4510 and 4519 to 4623. The gap is trend strength, not a mean-reversion sell signal.",
+    "postMortem": "The no-bias adjusted gap on rich GOLD tail NO contracts was traded as a spot short. The recorded gold moves were small or against the trade: +0.25%, -0.82%, -1.11%, +0.92%, +0.18%, +1.07%. The gap was not an exhaustion trigger. | The no-bias adjusted gap gold short-rich-tail variant went 0/17, with GOLD moving essentially flat to higher after the gap condition. The no-bias gap stayed pinned while spot trended against the short. | 0/19 scorable tests. The rich tail no-bias gap threshold >= 12.3 also failed as gold rallied through the fade window, including 4380 to 4510 and 4519 to 4623. The gap is trend strength, not a mean-reversion sell signal. | H-532 failed every scorable test. Gold spot was flat or rose after the rich tail NO gap, so the no-bias adjusted gap did not predict bearish continuation.",
     "source": "shadow_mined",
     "setupId": "shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no",
     "setupLabel": "Shadow-mined NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short-rich-tail"
@@ -20259,7 +20259,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Large GOLD underlying-cap edge on above-strike NO contracts was supposed to predict a >2% spot decline. Instead gold chopped or ripped: -1.15%, +0.37%, +5.37%, +3.97%. The NO premium reflected upside drift risk rather than rich pricing that would mean-revert lower. | 0/20 gold one-touch heatmap tests won. Instead of declining after a large underlying-cap edge, GOLD rose 5.37% and 3.97% in representative tests, showing the richness reflected real bullish touch demand and spot momentum. | Refined by H-652 (2026-08-21): Refinement of H-534: flip the contrarian short into a trend-following long. High | 0/20 scorable tests. Gold cap-edge >= 10 was followed by gold rallying rather than the predicted >2% decline; spot often rose 0.2-5.4% over the test window, so the edge was a by-product of strong upside demand, not overpriced NO premium to fade.",
+    "postMortem": "0/20 gold one-touch heatmap tests won. Instead of declining after a large underlying-cap edge, GOLD rose 5.37% and 3.97% in representative tests, showing the richness reflected real bullish touch demand and spot momentum. | Refined by H-652 (2026-08-21): Refinement of H-534: flip the contrarian short into a trend-following long. High | 0/20 scorable tests. Gold cap-edge >= 10 was followed by gold rallying rather than the predicted >2% decline; spot often rose 0.2-5.4% over the test window, so the edge was a by-product of strong upside demand, not overpriced NO premium to fade. | H-534 failed every scorable test. Gold spot rose up to 5.4% after the one-touch cap-edge trigger, showing the edge reflected structural premium rather than directional bearish flow.",
     "source": "shadow_mined",
     "setupId": "shadow_one_touch_high_edge_no_gold_heatmap_no",
     "setupLabel": "Shadow-mined ONE_TOUCH_HIGH_EDGE_NO GOLD heatmap"
@@ -20880,7 +20880,7 @@
     "winRate": 0.48,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "CBRS < -10% did not reliably normalize in 2 days. Loss examples include funding falling from -8.1% to -162.1% and from 5.5% to -67.0%, while wins came only when reversion had already started (e.g. -67.0% to 2.3%). The entry was catching falling funding rather than a reversion. | The tests score funding_normalize_up after entering on cbrs_hl_funding_ann < -10, but funding frequently continued lower or moved sideways: 5.5% -> -13.7%, 5.5% -> -67.0%, 2.3% -> 1.3%. The raw threshold identifies a low level, not an exhaustion point, and the setup lacks weekend or recovery confirmation. | H-539 fired on standalone CBRS funding below -10 and produced 11/23 wins. The losing examples show funding moving 5.5% to -13.7%, or only small positive moves, not the expected weekend normalization; the threshold is too low to separate genuine weekend overshoots from ordinary noise. | The mined variant took any cbrs_hl_funding_ann < -10 reading as a reversion trigger; test outcomes show noisy oscillation: -13.7 to +5.5 win, +5.5 to -67 loss, -67 to +2.3 win, +2.3 to +1.3 loss, +1.3 to +2.3 win, +2.3 to -13.4 loss. Raw threshold without weekend or recovery confirmation selected high-noise entries.",
+    "postMortem": "The tests score funding_normalize_up after entering on cbrs_hl_funding_ann < -10, but funding frequently continued lower or moved sideways: 5.5% -> -13.7%, 5.5% -> -67.0%, 2.3% -> 1.3%. The raw threshold identifies a low level, not an exhaustion point, and the setup lacks weekend or recovery confirmation. | H-539 fired on standalone CBRS funding below -10 and produced 11/23 wins. The losing examples show funding moving 5.5% to -13.7%, or only small positive moves, not the expected weekend normalization; the threshold is too low to separate genuine weekend overshoots from ordinary noise. | The mined variant took any cbrs_hl_funding_ann < -10 reading as a reversion trigger; test outcomes show noisy oscillation: -13.7 to +5.5 win, +5.5 to -67 loss, -67 to +2.3 win, +2.3 to +1.3 loss, +1.3 to +2.3 win, +2.3 to -13.4 loss. Raw threshold without weekend or recovery confirmation selected high-noise entries. | The single cbrs_hl_funding_ann < -10 threshold fires in both directions; examples include 2.3 → -13.4 (loss) and -13.4 → -4.3 (win). It captures ordinary negative funding oscillation, not extreme positioning.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG CBRS weekend_hl_funding_shadow"
@@ -21699,7 +21699,7 @@
     "winRate": 0.5789473684210527,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "OIL one-touch NO edge heatmap variant continues to perform flawlessly with 100% win rate over 10 shadow tests, confirming that the edge-based signal for OIL is robust and may be ready for promotion when its shadow-test bar clears. | H‑551 (OIL one‑touch NO edge, 80% win) is showing strong live validation. The signal’s use of edge‑only condition on OIL upside touch contracts is proving robust; worth considering for promotion once the shadow test bar is met. | OIL one‑touch NO edge on heatmap cluster continues to perform well in recent tests (82% win, 9/11 last tests), validating the sell‑YES edge on OIL upside contracts as a reliable short signal when edge exceeds 2 pts and direction is above. The setup family remains robust.",
+    "postMortem": "H‑551 (OIL one‑touch NO edge, 80% win) is showing strong live validation. The signal’s use of edge‑only condition on OIL upside touch contracts is proving robust; worth considering for promotion once the shadow test bar is met. | OIL one‑touch NO edge on heatmap cluster continues to perform well in recent tests (82% win, 9/11 last tests), validating the sell‑YES edge on OIL upside contracts as a reliable short signal when edge exceeds 2 pts and direction is above. The setup family remains robust. | Refined by H-654 (2026-08-22): Refinement of H-551: Require short-dated OIL one-touch contracts, a stronger sel | The >2pt sell-YES edge on OIL above-strike contracts repeatedly lost in rising tape; OIL spot rose 2.8–10.0%, pushing YES prices up rather than decaying.",
     "source": "llm",
     "setupId": "find_0018",
     "setupLabel": "FIND-linked FIND-0018",
@@ -26499,5 +26499,71 @@
     "source": "llm",
     "setupId": "gold_pm_premium_futures_spread_mean_reversion",
     "setupLabel": "Gold PM premium / futures spread mean reversion"
+  },
+  {
+    "id": "H-654",
+    "created": "2026-08-22",
+    "description": "Refinement of H-551: Require short-dated OIL one-touch contracts, a stronger sell-YES edge, and OIL spot below the 24h SMA, so the NO premium fade is powered by expiry decay and not fighting persistent upside drift.",
+    "conditions": {
+      "asset": "OIL",
+      "touch_direction": ">= 1",
+      "sell_yes_edge_pts": ">= 3",
+      "days_to_expiry": "<= 5",
+      "oil_wti_spot_pct_vs_24h_sma": "< 0"
+    },
+    "prediction": "OIL NO position gains as short-dated rich YES premium decays when spot is not trending higher.",
+    "timeframeDays": 3,
+    "confidence": 0.55,
+    "direction": "short",
+    "refinesHypothesisId": "H-551",
+    "tests": [
+      {
+        "date": "2026-08-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "oil_pm_spot_divergence_mean_reversion",
+    "setupLabel": "Oil PM-spot divergence / mean reversion"
+  },
+  {
+    "id": "H-655",
+    "created": "2026-08-22",
+    "description": "BTC one-touch NO premium fade: sell YES on above-strike BTC contracts when sell-YES edge is 3-8 points, spread is tight, liquidity is large, and nearest expiry is within 14 days.",
+    "conditions": {
+      "asset": "BTC",
+      "touch_direction": ">= 1",
+      "sell_yes_edge_pts": "between 3 and 8",
+      "yesSpread": "<= 0.01",
+      "liquidity": ">= 20000",
+      "days_to_expiry": "<= 14"
+    },
+    "prediction": "The YES price will decline / NO position profits within 3 days as the edge corrects.",
+    "timeframeDays": 3,
+    "confidence": 0.6,
+    "direction": "short",
+    "originFindingId": "FIND-0054",
+    "themeId": "THEME-0001",
+    "tests": [
+      {
+        "date": "2026-08-22",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0054",
+    "setupLabel": "FIND-linked FIND-0054"
   }
 ]

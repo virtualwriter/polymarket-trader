@@ -1192,3 +1192,43 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-22T07:10:25.782Z, model=deepseek-v4-pro)
+- Hypotheses added: 2 (rejected 4); reviews applied: 6; invalidated assumptions learned: 2; param updates: none.
+- Strategy review: The live book is still dominated by WEEKEND_HL_FUNDING_REVERSION_LONG: clean live family evidence is strong at 305/439 wins (avg +0.33%) and shadows 188/253 (avg +0.99%), but the no-stop design is now showing concentrated mark-to-market bleed in names such as COIN -9.85% and HOOD -5.05%. ONE_TOUCH_HIGH_EDGE_NO remains the best small-sample live edge (4/4, +0.74), with the newer ≥3pt edge gate still shadow-validating. The main failures are contrarian/rich-premium fades on gold and oil, plus HYPE-confirmed BTC momentum, all of which fire into already-moving markets and treat risk premium as misp
+- Nightly journal: Tonight's main lesson is that several shadow-mined contrarian signals were actually trend-compensation: gold cap-edge/nobias shorts, gold P/C collapse shorts, and OIL sell-YES fades all lost in rising tape. I persisted invalidation marks on the failing gold cap-edge families and refined CBRS, gold P/C, HYPE/BTC, and OIL variants with regime-relative conditions. I also added a stop to WEEKEND_HL_FUNDING_REVERSION_LONG because the current no-stop design allowed COIN/HOOD-sized mark-to-market bleed; that change should be watched to confirm it improves realized payoff without degrading the edge.
+### 2026-08-22 08:28 UTC
+
+**Portfolio:** $104.08 total | Cash $90.08 | 14 open | P&L $7.3204 | 63% win rate (756 trades)
+
+**Closed 2 trades:**
+- ❌ BIRD long via hyperliquid/hl_perp [HL BIRD Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0018 (-0.2%, market -0.0099, funding 0.0081)
+- ❌ DKNG long via hyperliquid/hl_perp [HL DKNG Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0021 (-0.2%, market -0.0040, funding 0.0019)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1859194336 is 2.6 std devs from mean (1257588066.63 ± 233278767.91)
+- [anomaly] hype_pm_ev = 75.27 is 2.0 std devs from mean (58.72 ± 8.13)
+
+**Blocked signal learning:**
+- Open blocked shadows: 17
+- Resolved blocked shadows: 917 (472 wins / 445 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+4.17%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.17%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+No discretionary closes this run: all open positions are either policy-gated rule-based WEEKEND_HL_FUNDING_REVERSION_LONG trades or below min-hold for LLM close (AMZN FUNDING_EXTREME_SHORT at ~7h). Monitoring adverse drift in COIN (-11.6%) and HOOD (-6.0%) within mechanical hold window. AMZN funding normalized from -35.8% to -16.7% and perp price is soft, but the position is still below 12h min-hold and funding has not clearly crossed back through the -15% entry threshold; I will revisit after min-hold if normalization continues materially.
+
+---
+
