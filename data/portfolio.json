@@ -1,5 +1,5 @@
 {
-  "cash": 101.08285906577915,
+  "cash": 99.08285906577915,
   "positions": [
     {
       "id": "T-1787322517848-hc2z",
@@ -8,8 +8,8 @@
       "venue": "spot",
       "direction": "short",
       "entryPrice": 86.43,
-      "currentPrice": 86.75,
-      "currentUnderlyingPrice": 86.75,
+      "currentPrice": 86.67,
+      "currentUnderlyingPrice": 86.67,
       "entryUnderlyingPrice": 86.43,
       "size": 1,
       "leverage": 1,
@@ -45,9 +45,9 @@
       "instrumentType": "hl_perp",
       "instrumentId": "BX",
       "instrumentLabel": "HL BX Builder DEX stock perp",
-      "fundingPnlAccrued": 0.0007763972602739726,
+      "fundingPnlAccrued": 0.0009403904109589041,
       "entryConfidence": 0.5,
-      "peakPnlPct": 0.8103682675486099
+      "peakPnlPct": 0.8267675826171029
     },
     {
       "id": "WF-1787354893663-ZM-mnuo",
@@ -56,8 +56,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 107.8,
-      "currentPrice": 107.8,
-      "currentUnderlyingPrice": 107.8,
+      "currentPrice": 107.49,
       "entryUnderlyingPrice": 107.8,
       "size": 1,
       "leverage": 5,
@@ -71,6 +70,55 @@
       "instrumentId": "ZM",
       "instrumentLabel": "HL ZM Builder DEX stock perp",
       "fundingPnlAccrued": 0,
+      "entryConfidence": 0.5,
+      "peakPnlPct": -1.4378478664193055
+    },
+    {
+      "id": "WF-1787358495579-HIMS-zbbf",
+      "openedAt": "2026-08-22T00:28:15.579Z",
+      "asset": "HIMS",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 33.665,
+      "currentPrice": 33.665,
+      "currentUnderlyingPrice": 33.665,
+      "entryUnderlyingPrice": 33.665,
+      "size": 1,
+      "leverage": 5,
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "hypothesisId": null,
+      "thesis": "[WEEKEND HL FUNDING LIVE] HIMS Builder DEX stock perp funding -95.8% annualized in mid band [-100%, -50%] during US-equity-closed entry window (Fri 4:00pm ET → Sun; no Mon pre-open entries). Live tracked long at 5x; exit when margin P&L >= 3%, funding >= 10%, Mon 9:30am ET window close, or held 24h.",
+      "targetPct": 3,
+      "stopPct": 100,
+      "expiryDate": "2026-08-23T00:28:15.579Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "HIMS",
+      "instrumentLabel": "HL HIMS Builder DEX stock perp",
+      "fundingPnlAccrued": 0,
+      "entryConfidence": 0.5
+    },
+    {
+      "id": "WF-1787358495579-TSLA-j8cf",
+      "openedAt": "2026-08-22T00:28:15.579Z",
+      "asset": "TSLA",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 362.93,
+      "currentPrice": 362.93,
+      "currentUnderlyingPrice": 362.93,
+      "entryUnderlyingPrice": 362.93,
+      "size": 1,
+      "leverage": 5,
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "hypothesisId": null,
+      "thesis": "[WEEKEND HL FUNDING LIVE] TSLA Builder DEX stock perp funding -65.7% annualized in mid band [-100%, -50%] during US-equity-closed entry window (Fri 4:00pm ET → Sun; no Mon pre-open entries). Live tracked long at 5x; exit when margin P&L >= 3%, funding >= 10%, Mon 9:30am ET window close, or held 24h.",
+      "targetPct": 3,
+      "stopPct": 100,
+      "expiryDate": "2026-08-23T00:28:15.579Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "TSLA",
+      "instrumentLabel": "HL TSLA Builder DEX stock perp",
+      "fundingPnlAccrued": 0,
       "entryConfidence": 0.5
     }
   ],
@@ -78,5 +126,5 @@
   "totalTrades": 747,
   "winCount": 473,
   "lossCount": 274,
-  "lastUpdated": "2026-08-21T23:28:41.706Z"
+  "lastUpdated": "2026-08-22T00:28:16.116Z"
 }

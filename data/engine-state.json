@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-21T23:28:14.016Z",
+  "generatedAt": "2026-08-22T00:28:15.981Z",
   "dataFreshness": {
-    "valuationRows": 2474,
-    "latestValuationAt": "2026-08-21T23",
-    "macroRows": 2472,
+    "valuationRows": 2475,
+    "latestValuationAt": "2026-08-22T00",
+    "macroRows": 2473,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-21T23"
+    "latestInstrumentSnapshotAt": "2026-08-22T00"
   },
   "portfolio": {
-    "cash": 101.0829,
-    "openPositions": 3,
+    "cash": 99.0829,
+    "openPositions": 5,
     "realizedPnl": 7.3229,
     "totalTrades": 747,
     "winRatePct": 63.3,
-    "unrealizedPnl": 0.0044
+    "unrealizedPnl": -0.0089
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.37,
-      "currentPrice": 86.75,
-      "underlyingPrice": 86.75,
+      "pnlPct": -0.28,
+      "currentPrice": 86.67,
+      "underlyingPrice": 86.67,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,7 +39,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.81,
+      "pnlPct": 0.83,
       "currentPrice": 143.51,
       "underlyingPrice": null,
       "targetPct": 3,
@@ -53,8 +53,36 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": -1.44,
+      "currentPrice": 107.49,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1787358495579-HIMS-zbbf",
+      "asset": "HIMS",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "pnlPct": 0,
-      "currentPrice": 107.8,
+      "currentPrice": 33.665,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1787358495579-TSLA-j8cf",
+      "asset": "TSLA",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 362.93,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -221,7 +249,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 15,
+    "openCount": 16,
     "resolvedCount": 915,
     "wouldHaveWon": 471,
     "wouldHaveLost": 444,
@@ -454,6 +482,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.4pt on ETH, spread 1.3c, liquidity 49863. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $3,500 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.31,
+          "yesAsk": 0.32,
+          "yesSpread": 0.01,
+          "liquidity": 47148.67,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.5pt on ETH, spread 1.0c, liquidity 47149. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
