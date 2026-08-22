@@ -1547,3 +1547,40 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-08-22 18:28 UTC
+
+**Portfolio:** $103.84 total | Cash $92.84 | 11 open | P&L $7.0843 | 63% win rate (771 trades)
+
+**Closed 3 trades:**
+- ❌ MRVL long via hyperliquid/hl_perp [HL MRVL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0098 (-1.0%, market -0.0106, funding 0.0008)
+- ✅ ARM long via hyperliquid/hl_perp [HL ARM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0055 (0.6%, market 0.0052, funding 0.0003)
+- ✅ HIMS long via hyperliquid/hl_perp [HL HIMS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0098 (1.0%, market 0.0098, funding -0.0001)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 23 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1941322749 is 2.9 std devs from mean (1259598493.44 ± 235582181.87)
+- [anomaly] hype_pm_ev = 76.54 is 2.2 std devs from mean (58.78 ± 8.17)
+- [anomaly] hype_spot = 79.358 is 2.1 std devs from mean (58.28 ± 9.85)
+
+**Blocked signal learning:**
+- Open blocked shadows: 15
+- Resolved blocked shadows: 922 (476 wins / 446 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.14%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+19.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+No discretionary closes emitted: all 11 open positions are either WEEKEND_HL_FUNDING_REVERSION_LONG holds with mechanical exits policy-gated, or the BTC FUNDING_EXTREME_LONG short is under its 12-hour minimum (2.4h open). Note BTC HL funding has cooled to 14.38% from the 23.03% entry snapshot, crossing back below the +15% trigger; this may become a thesis-invalidated candidate once min hold is met, but it is not actionable this run. Weekend HL reversion positions remain mostly flat to modestly positive; DKNG and EBAY lead at +1.25% and +1.00%. No hypothesis or parameter changes proposed here.
+
+---
+
