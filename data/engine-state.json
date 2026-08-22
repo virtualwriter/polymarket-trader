@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-22T01:29:58.750Z",
+  "generatedAt": "2026-08-22T02:28:24.285Z",
   "dataFreshness": {
-    "valuationRows": 2476,
-    "latestValuationAt": "2026-08-22T01",
-    "macroRows": 2474,
+    "valuationRows": 2477,
+    "latestValuationAt": "2026-08-22T02",
+    "macroRows": 2475,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-22T01"
+    "latestInstrumentSnapshotAt": "2026-08-22T02"
   },
   "portfolio": {
-    "cash": 97.0829,
-    "openPositions": 7,
-    "realizedPnl": 7.3229,
-    "totalTrades": 747,
-    "winRatePct": 63.3,
-    "unrealizedPnl": -0.0058
+    "cash": 98.1063,
+    "openPositions": 6,
+    "realizedPnl": 7.3463,
+    "totalTrades": 749,
+    "winRatePct": 63.4,
+    "unrealizedPnl": -0.0178
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.2,
-      "currentPrice": 86.6,
-      "underlyingPrice": 86.6,
+      "pnlPct": -0.09,
+      "currentPrice": 86.51,
+      "underlyingPrice": 86.51,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -34,27 +34,13 @@
       ]
     },
     {
-      "positionId": "WF-1787344100066-BX-ur97",
-      "asset": "BX",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.78,
-      "currentPrice": 143.49,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
       "positionId": "WF-1787354893663-ZM-mnuo",
       "asset": "ZM",
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -1.53,
-      "currentPrice": 107.45,
+      "pnlPct": -1.74,
+      "currentPrice": 107.39,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -67,8 +53,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.22,
-      "currentPrice": 33.65,
+      "pnlPct": -0.85,
+      "currentPrice": 33.606,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -81,8 +67,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.59,
-      "currentPrice": 363.36,
+      "pnlPct": 0.3,
+      "currentPrice": 363.15,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -95,8 +81,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0,
-      "currentPrice": 72.762,
+      "pnlPct": 0.54,
+      "currentPrice": 72.84,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -104,18 +90,22 @@
       "evidenceColumns": []
     },
     {
-      "positionId": "WF-1787362198357-SNDK-2gu5",
-      "asset": "SNDK",
+      "positionId": "T-1787362222642-lciw",
+      "asset": "AMZN",
       "venue": "hyperliquid",
       "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0,
-      "currentPrice": 1594.6,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "pnlPct": 0.06,
+      "currentPrice": 259.44,
+      "underlyingPrice": 259.59,
+      "targetPct": 4,
+      "stopPct": 2,
       "closeReasonIfMechanical": null,
-      "evidenceColumns": []
+      "evidenceColumns": [
+        "amzn_stock",
+        "amzn_hl_perp",
+        "amzn_hl_funding_ann"
+      ]
     }
   ],
   "signalHealth": [
@@ -260,10 +250,10 @@
     {
       "type": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "enabled": true,
-      "weight": 0.6667,
-      "trades": 78,
-      "wins": 51,
-      "avgPnlPct": 0.1799,
+      "weight": 0.665,
+      "trades": 80,
+      "wins": 53,
+      "avgPnlPct": 0.2047,
       "disabledAssets": []
     },
     {
