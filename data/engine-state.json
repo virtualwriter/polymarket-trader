@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-22T12:28:15.826Z",
+  "generatedAt": "2026-08-22T13:28:23.626Z",
   "dataFreshness": {
-    "valuationRows": 2486,
-    "latestValuationAt": "2026-08-22T12",
-    "macroRows": 2484,
+    "valuationRows": 2487,
+    "latestValuationAt": "2026-08-22T13",
+    "macroRows": 2485,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-22T12"
+    "latestInstrumentSnapshotAt": "2026-08-22T13"
   },
   "portfolio": {
-    "cash": 95.8571,
-    "openPositions": 8,
+    "cash": 94.8571,
+    "openPositions": 9,
     "realizedPnl": 7.0971,
     "totalTrades": 766,
     "winRatePct": 62.8,
-    "unrealizedPnl": -0.0512
+    "unrealizedPnl": -0.0683
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -1.46,
-      "currentPrice": 361.79,
+      "pnlPct": -1.59,
+      "currentPrice": 361.7,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -36,8 +36,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -0.33,
-      "currentPrice": 258.38,
+      "pnlPct": -0.31,
+      "currentPrice": 258.43,
       "underlyingPrice": 259.59,
       "targetPct": 4,
       "stopPct": 2,
@@ -54,8 +54,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -1.09,
-      "currentPrice": 234.84,
+      "pnlPct": -1.97,
+      "currentPrice": 234.43,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -68,8 +68,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.89,
-      "currentPrice": 258.38,
+      "pnlPct": -0.8,
+      "currentPrice": 258.43,
       "underlyingPrice": 259.59,
       "targetPct": 3,
       "stopPct": 100,
@@ -84,8 +84,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.71,
-      "currentPrice": 119.29,
+      "pnlPct": -0.88,
+      "currentPrice": 119.25,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -112,8 +112,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.07,
-      "currentPrice": 107.99,
+      "pnlPct": -0.12,
+      "currentPrice": 107.95,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -126,8 +126,22 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.04,
-      "currentPrice": 240.25,
+      "pnlPct": -0.5,
+      "currentPrice": 240.03,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1787405303202-CRCL-0y07",
+      "asset": "CRCL",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 87.436,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -294,9 +308,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 18,
-    "resolvedCount": 918,
-    "wouldHaveWon": 473,
+    "openCount": 17,
+    "resolvedCount": 919,
+    "wouldHaveWon": 474,
     "wouldHaveLost": 445,
     "bySignal": [
       {
@@ -365,21 +379,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "PC_RATIO_EXTREME_LOW",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "short",
-        "blockedReason": "short_blocked_by_positive_trend",
-        "outcome": "loss",
-        "closeReason": "stop",
-        "pnlPct": -3.07,
-        "resolvedAt": "2026-08-21T08:28:27.088Z",
-        "trendMetrics": {
-          "aboveTrendPct": 4.35,
-          "momentumPct": 7.67
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -510,6 +509,26 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 1.14,
+        "resolvedAt": "2026-08-22T13:28:23.173Z",
+        "marketQuality": {
+          "yesBid": 0.12,
+          "yesAsk": 0.13,
+          "yesSpread": 0.01,
+          "liquidity": 36979.11,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -544,22 +563,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.4pt on ETH, spread 2.0c, liquidity 32391. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $4,500 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.12,
-          "yesAsk": 0.13,
-          "yesSpread": 0.01,
-          "liquidity": 36979.11,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.2pt on ETH, spread 1.0c, liquidity 36979. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
