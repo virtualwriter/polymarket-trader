@@ -969,3 +969,40 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-08-22 01:30 UTC
+
+**Portfolio:** $104.08 total | Cash $96.08 | 8 open | P&L $7.3229 | 63% win rate (747 trades)
+
+**Opened 1 positions:**
+- AMZN long @ $259.28 via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT)
+
+**Hypothesis lifecycle:**
+- 🧹 22 Polymarket-contract variants cannot be graded by the spot scorer and were kept, not retired: find_0020, find_0021, find_0023, find_0025, find_0026, find_0030.
+- 🧪 LLM retest queue: 17 active families did not trigger; 0 later families waiting.
+- 🧪 LLM retest queue: 4 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring: find_0025, find_0026, find_0030, find_0023.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 families skipped — no scorable variant (missing direction / funding thesis / move language); needs re-authoring: find_0020.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 31.5pp (was 24.3, now -7.2)
+- [anomaly] amzn_hl_funding_ann = -35.82 is -2.6 std devs from mean (9.75 ± 17.76)
+- [anomaly] hype_hl_oi = 1842579946 is 2.5 std devs from mean (1255962591.30 ± 231203850.53)
+
+**Blocked signal learning:**
+- Open blocked shadows: 16
+- Resolved blocked shadows: 915 (471 wins / 444 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-30.36%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.22%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+4.17%)
+
+**LLM analysis:**
+No discretionary closes emitted this run. OIL PC_RATIO_EXTREME_LOW is ineligible until the 12h mark: open 11.0h, and its P/C ratio has already round-tripped from 0.258 to 0.432 (+67%), which would normally be thesis-invalidation evidence, so I will reassess next hour. All WEEKEND_HL_FUNDING_REVERSION_LONG positions are policy-gated mechanical exits and cannot be LLM-closed. ZM is -1.53% early in its hold, but stops are mechanical. No hard portfolio risk breach observed.
+
+---
+
