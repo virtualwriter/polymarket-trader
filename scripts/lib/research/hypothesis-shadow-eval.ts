@@ -548,7 +548,14 @@ export function deriveContractEntry(
   const candidates = rows.filter((row) =>
     (asset === null || row.asset === asset)
     && row.pmYes !== null
-    && (wantDirection === null || row.direction === wantDirection));
+    && (wantDirection === null || row.direction === wantDirection)
+    // Thresholds have to be applied contract by contract. The condition
+    // evaluator reduces each metric across every scoped contract with a max,
+    // so "edge >= 8 and spread <= 0.015" passes as long as *some* contract is
+    // wide and *some other* one is tight. Taking the max-edge row out of that
+    // set picked a 98.9c NO whose whole upside was 1.1%, and four theses with
+    // different conditions all landed on the same contract.
+    && contractRowSatisfiesConditions(hypothesis, row));
   if (candidates.length === 0) return null;
 
   const entry = candidates.reduce((best, row) => {
@@ -566,6 +573,56 @@ export function deriveContractEntry(
     entryPrice: sidePrice(entry.pmYes as number, side),
     side,
   };
+}
+
+/** One contract's value for a condition key, or null if the key is not one. */
+function contractRowMetric(key: string, row: RelativeValueObservation): number | null {
+  switch (key) {
+    case "sell_yes_edge_pts": return row.sellYesEdgePts ?? null;
+    case "yesAsk": return row.pmAsk;
+    case "yesSpread": return row.pmSpread;
+    case "liquidity": return row.liquidity;
+    case "smart_flow_stance": return row.smartFlowStance ?? null;
+    case "smart_flow_net_yes": return row.smartFlowNetYes ?? null;
+    case "touch_direction": return row.direction === "above" ? 1 : row.direction === "below" ? -1 : null;
+    case "days_to_expiry": return rowDaysToExpiry(row);
+    case "adjusted_no_gap_pts": return row.adjustedNoGapPts;
+    case "pm_iv_minus_opt_iv_pts":
+      return row.pmIv !== null && row.optionIv !== null ? (row.pmIv - row.optionIv) * 100 : null;
+    default: return null;
+  }
+}
+
+/** Comparison and range expressions, evaluated against a single value. */
+function satisfiesNumericExpression(value: number, rawExpression: string): boolean {
+  const expression = String(rawExpression).trim().toLowerCase().replace(/%/g, "");
+
+  const between = expression.match(/^between\s+(-?\d+(?:\.\d+)?)\s+and\s+(-?\d+(?:\.\d+)?)/);
+  if (between) return value >= Number(between[1]) && value <= Number(between[2]);
+
+  const comparison = expression.match(/^([<>]=?|=|==)\s*(-?\d+(?:\.\d+)?)/);
+  if (!comparison) return true; // Shapes this cannot read do not veto a contract.
+  const threshold = Number(comparison[2]);
+  switch (comparison[1]) {
+    case ">": return value > threshold;
+    case ">=": return value >= threshold;
+    case "<": return value < threshold;
+    case "<=": return value <= threshold;
+    default: return value === threshold;
+  }
+}
+
+/** Whether one contract meets every contract-level threshold the thesis names. */
+function contractRowSatisfiesConditions(
+  hypothesis: Hypothesis,
+  row: RelativeValueObservation,
+): boolean {
+  for (const [key, expression] of Object.entries(hypothesis.conditions ?? {})) {
+    const value = contractRowMetric(key, row);
+    if (value === null) continue;
+    if (!satisfiesNumericExpression(value, String(expression))) return false;
+  }
+  return true;
 }
 
 /** The `touch_direction` gate as a side, so entry selection honours it. */

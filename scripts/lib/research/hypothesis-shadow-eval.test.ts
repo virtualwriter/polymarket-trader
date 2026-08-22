@@ -80,7 +80,7 @@ function contractRow(
     pmYes: partial.pmYes,
     pmBid: null,
     pmAsk: null,
-    pmSpread: null,
+    pmSpread: partial.pmSpread ?? null,
     modelProb: null,
     underlyingCapYes: null,
     pmToUnderlyingCapRatio: null,
@@ -306,6 +306,28 @@ describe("polymarket contract scoring", () => {
     expect(entry?.marketId).toBe("high");
     expect(entry?.side).toBe("no");
     expect(entry?.entryPrice).toBeCloseTo(0.8, 6);
+  });
+
+  it("applies thresholds per contract, not reduced across all of them", () => {
+    const h = hyp({
+      direction: "short",
+      prediction: "BTC one-touch NO sale is profitable",
+      conditions: { asset: "BTC", sell_yes_edge_pts: ">= 8", yesSpread: "<= 0.015" },
+    });
+    // The wide-edge contract is also wide-spread. Reducing each metric across
+    // the set passes both conditions, but no single contract meets both, and
+    // the tight one does not clear the edge bar either.
+    const entry = deriveContractEntry(h, [
+      contractRow({ marketId: "wide", pmYes: 0.02, sellYesEdgePts: 12, pmSpread: 0.06 }),
+      contractRow({ marketId: "tight", pmYes: 0.30, sellYesEdgePts: 3, pmSpread: 0.01 }),
+    ]);
+    expect(entry).toBeNull();
+
+    const ok = deriveContractEntry(h, [
+      contractRow({ marketId: "wide", pmYes: 0.02, sellYesEdgePts: 12, pmSpread: 0.06 }),
+      contractRow({ marketId: "both", pmYes: 0.28, sellYesEdgePts: 9, pmSpread: 0.01 }),
+    ]);
+    expect(ok?.marketId).toBe("both");
   });
 
   it("honours a touch_direction gate when choosing the contract", () => {
