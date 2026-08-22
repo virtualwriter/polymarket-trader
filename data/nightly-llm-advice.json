@@ -1,90 +1,70 @@
 {
-  "generatedAt": "2026-08-21T20:36:30.082Z",
+  "generatedAt": "2026-08-22T07:10:25.782Z",
   "provider": "deepseek",
   "model": "deepseek-v4-pro",
-  "strategyReview": "The core live edge remains in weekend Hyperliquid funding reversion (70% live, 74% shadow) and selected PC-ratio mean-reversion pockets in BTC/OIL, while Polymarket one-touch live executions are small and uneven. The main bleed is from gold upside one-touch/rich-tail/near-expiry premium fades, which are failing because gold is trending up and the rich YES premium is informed risk pricing. Cross-asset BTC chasing at range highs and raw funding-threshold mining variants are also burning tests. Tonight shifts gold premium signals from fade to trend-confirmation, tightens CBRS weekend context, and avoids near-duplicate one-touch threshold variants.",
+  "strategyReview": "The live book is still dominated by WEEKEND_HL_FUNDING_REVERSION_LONG: clean live family evidence is strong at 305/439 wins (avg +0.33%) and shadows 188/253 (avg +0.99%), but the no-stop design is now showing concentrated mark-to-market bleed in names such as COIN -9.85% and HOOD -5.05%. ONE_TOUCH_HIGH_EDGE_NO remains the best small-sample live edge (4/4, +0.74), with the newer ≥3pt edge gate still shadow-validating. The main failures are contrarian/rich-premium fades on gold and oil, plus HYPE-confirmed BTC momentum, all of which fire into already-moving markets and treat risk premium as mispricing.",
   "failureClusters": [
     {
-      "theme": "Gold rich-premium fade",
-      "evidence": "H-534 0/20, H-532 0/19, find_0036 0/18, and gold_pm_premium family 3/22; gold repeatedly rose 0.2-7.4% through what the model called overpriced upside/tail YES premiums.",
-      "recommendation": "Stop shorting gold premium/spot on cap-edge, no-bias gap, or near-expiry edge alone. Either retire the fade or invert it to trend-following long with uptrend confirmation."
+      "theme": "Gold cap-edge/nobias short signals are bullish drift, not overpricing",
+      "evidence": "H-532 and H-534 each failed 0/20. After rich gold tail NO cap-edge triggers, gold spot was mostly flat or rose 1.8–5.4%, so the sell-YES edge did not predict a >2% decline within 2 days.",
+      "recommendation": "Kill the gold underlying-cap short family and mark the cap-edge assumption invalid. Do not flip to long on the same raw trigger without a separate trend-confirmation mechanism."
     },
     {
-      "theme": "BTC chase at range highs",
-      "evidence": "cross_asset_iv_compression_vol_expansion family is 30% winners; repeated -2.9%/-3.5% BTC moves after entering when above the 24h SMA and near the 7d high with HYPE risk-on.",
-      "recommendation": "Add reset/pullback entry conditions instead of chasing strength; HYPE risk-on is not a standalone trend-confirmation edge."
+      "theme": "Unconditional CBRS funding threshold captures oscillation, not tail stress",
+      "evidence": "H-539's cbrs_hl_funding_ann < -10 produced mixed outcomes (2.3→-13.4 loss, -13.4→-4.3 win) and the family is only 12/25 scorable wins.",
+      "recommendation": "Require true weekend context and an extreme z-score/percentile event rather than a static -10 threshold; consider waiting for stabilization or only using tail events."
     },
     {
-      "theme": "Unfiltered funding threshold mining",
-      "evidence": "CBRS H-539 is 46% winners under cbrs_hl_funding_ann < -10; funding oscillated -13.7 to +5.5 to -67 to +2.3 to -13.4, showing ordinary weekday noise rather than weekend reversion.",
-      "recommendation": "Require true weekend sessions plus extreme bottom-decile funding before retesting the weekend reversion family."
+      "theme": "HYPE/BTC cross-asset confirmation arrives too late",
+      "evidence": "The cross-asset family is 7/23 scorable; BTC dropped -2.9% to -3.5% while HYPE remained above its 24h SMA, showing HYPE risk-on was coincident beta rather than a durable BTC signal.",
+      "recommendation": "Do not use HYPE risk-on as a default BTC confirmation. If used, require HYPE not already extended and require OI expansion rather than merely not collapsing."
     },
     {
-      "theme": "One-touch NO low-edge bleed",
-      "evidence": "Recent BTC/ETH one-touch NO losses clustered at yesAsk ~0.02-0.08 with compressed edges and an ETH stop of -53.66%; base one-touch shadows average -0.82%.",
-      "recommendation": "Keep edge minima, spread and liquidity gates; do not promote low-premium compressed contracts."
+      "theme": "OIL one-touch NO edge shorts fight upside drift",
+      "evidence": "find_0018 losses show OIL rising 2.8–10.0% after sell-YES edge triggers; the family is only 11/21 and the losers are much larger than the wins.",
+      "recommendation": "Only sell short-dated OIL NO premium when spot is below the 24h SMA and the edge is strong enough to pay for theta/edge decay, not as an unconditional fade."
     }
   ],
   "newHypotheses": [
     {
-      "created": "2026-08-21",
-      "description": "From FIND-0020: smart wallets buying dip-YES on below-strike one-touch contracts predicts underlying recovery. Enter long when the touch-low side shows smart flow long YES.",
-      "conditions": {
-        "asset": "in [BTC, ETH, OIL, GOLD]",
-        "touch_direction": "<= -1",
-        "smart_flow_stance": ">= 1"
-      },
-      "prediction": "Underlying spot/perp rises >2% within 3 days as smart-money dip buying resolves upward.",
-      "timeframeDays": 3,
-      "confidence": 0.62,
-      "direction": "long",
-      "originFindingId": "FIND-0020",
-      "themeId": "THEME-0003",
-      "source": "llm"
-    },
-    {
-      "created": "2026-08-21",
-      "description": "From FIND-0043: narrow BTC one-touch NO premium fade to liquid tight-spread above-strike contracts with moderate sell-YES edge. This removes wide-spread/illiquid executions that have dragged the base one-touch shadows.",
-      "conditions": {
-        "asset": "BTC",
-        "touch_direction": ">= 1",
-        "sell_yes_edge_pts": "between 3 and 8",
-        "yesSpread": "<= 0.03",
-        "liquidity": ">= 10000"
-      },
-      "prediction": "Selling YES on BTC upside one-touch NO contracts with 3-8 pts edge in liquid/tight markets produces positive premium decay within 3 days.",
-      "timeframeDays": 3,
-      "confidence": 0.6,
-      "direction": "short",
-      "originFindingId": "FIND-0043",
-      "themeId": "THEME-0001",
-      "source": "llm"
-    },
-    {
-      "created": "2026-08-21",
-      "description": "Refinement of H-539: restrict CBRS funding reversion to true weekend sessions and require an extreme bottom-decile reading rather than any -10% weekday dip. This directly addresses the failure mechanism that raw threshold captured noisy weekday funding oscillations.",
+      "created": "2026-08-22",
+      "description": "Refinement of H-539: Restrict CBRS long to true weekend days and require funding in an extreme negative 7d z-score tail (< -2), so the signal fires on genuine weekend funding stress rather than routine negative oscillation.",
       "conditions": {
         "day_of_week": "in [sat, sun]",
-        "cbrs_hl_funding_ann": "<= -20",
-        "cbrs_hl_funding_ann_percentile_7d": "<= 10"
+        "cbrs_hl_funding_ann_zscore_7d": "< -2"
       },
-      "prediction": "CBRS funding normalizes upward and CBRS spot/perp gains >2% within 3 days from a true weekend extreme.",
-      "timeframeDays": 3,
+      "prediction": "CBRS spot will gain >2% within 2 days as extreme weekend funding normalizes.",
+      "timeframeDays": 2,
       "confidence": 0.55,
       "direction": "long",
       "refinesHypothesisId": "H-539",
       "source": "llm"
     },
     {
-      "created": "2026-08-21",
-      "description": "Refinement of H-108: replace late-chasing entry with a reset entry. Buy BTC only when it has pulled back into the lower 40% of its 7d range and is not extended above the 24h SMA, while HYPE risk appetite remains intact.",
+      "created": "2026-08-22",
+      "description": "Refinement of H-024: Do not fade gold P/C collapse/rich settlement EV as a standalone overbought signal. Take the short only when gold spot is already below its 24h SMA and settlement EV is rolling over, so the trade aligns with actual near-term deterioration rather than fighting a rally.",
       "conditions": {
-        "btc_spot_percentile_7d": "<= 40",
-        "btc_spot_pct_vs_24h_sma": "<= 0",
-        "hype_spot_pct_vs_24h_sma": "> 0",
-        "hype_hl_oi_change_pct_24h": "> -2"
+        "gold_gld_pc_ratio_percentile_7d": "< 10",
+        "gold_gc_spot_pct_vs_24h_sma": "< 0",
+        "gold_pm_settle_ev_change_pct_24h": "< 0"
       },
-      "prediction": "BTC spot/perp rebounds >2% within 3 days as HYPE risk-on confirmation persists through a BTC reset.",
+      "prediction": "Gold spot will decline >2% within 3 days when extreme put/call lows are confirmed by falling spot and settlement EV.",
+      "timeframeDays": 3,
+      "confidence": 0.5,
+      "direction": "short",
+      "refinesHypothesisId": "H-024",
+      "source": "llm"
+    },
+    {
+      "created": "2026-08-22",
+      "description": "Refinement of H-108: Preserve the BTC trend confirmation idea but require HYPE to be below the top of its 7d range and expanding OI, so HYPE is a fresh risk-on signal rather than late-stage FOMO confirmation.",
+      "conditions": {
+        "btc_spot_pct_vs_24h_sma": "> 0",
+        "hype_spot_pct_vs_24h_sma": "> 0",
+        "hype_spot_percentile_7d": "< 80",
+        "hype_hl_oi_change_pct_24h": "> 2"
+      },
+      "prediction": "BTC spot will gain >2% within 3 days when HYPE confirms risk-on from a non-overextended condition.",
       "timeframeDays": 3,
       "confidence": 0.5,
       "direction": "long",
@@ -92,70 +72,103 @@
       "source": "llm"
     },
     {
-      "created": "2026-08-21",
-      "description": "Refinement of H-534: flip the contrarian short into a trend-following long. High gold upside one-touch cap-edge has repeatedly marked follow-through buying, not an overpriced fade; require spot above its 24h SMA to stay with the trend.",
+      "created": "2026-08-22",
+      "description": "Refinement of H-551: Require short-dated OIL one-touch contracts, a stronger sell-YES edge, and OIL spot below the 24h SMA, so the NO premium fade is powered by expiry decay and not fighting persistent upside drift.",
       "conditions": {
-        "asset": "GOLD",
-        "gold_pm_underlying_cap_edge_pts_max": ">= 10",
-        "gold_gc_spot_pct_vs_24h_sma": "> 0",
-        "touch_direction": ">= 1"
+        "asset": "OIL",
+        "touch_direction": ">= 1",
+        "sell_yes_edge_pts": ">= 3",
+        "days_to_expiry": "<= 5",
+        "oil_wti_spot_pct_vs_24h_sma": "< 0"
       },
-      "prediction": "GOLD spot/perp rises >2% within 3 days when rich upside one-touch NO premium coincides with an uptrend.",
+      "prediction": "OIL NO position gains as short-dated rich YES premium decays when spot is not trending higher.",
       "timeframeDays": 3,
-      "confidence": 0.6,
-      "direction": "long",
-      "refinesHypothesisId": "H-534",
+      "confidence": 0.55,
+      "direction": "short",
+      "refinesHypothesisId": "H-551",
       "source": "llm"
     },
     {
-      "created": "2026-08-21",
-      "description": "Refinement of H-567: do not sell GOLD near-expiry upside NO premium when edge appears; treat that edge as a trend signal and go long underlying when GOLD is above its 24h SMA. This reverses the failed premium-decay mechanism.",
+      "created": "2026-08-22",
+      "description": "BTC one-touch NO premium fade: sell YES on above-strike BTC contracts when sell-YES edge is 3-8 points, spread is tight, liquidity is large, and nearest expiry is within 14 days.",
       "conditions": {
-        "asset": "GOLD",
-        "sell_yes_edge_pts": ">= 1",
-        "days_to_expiry": "< 30",
+        "asset": "BTC",
         "touch_direction": ">= 1",
-        "gold_gc_spot_pct_vs_24h_sma": "> 0"
+        "sell_yes_edge_pts": "between 3 and 8",
+        "yesSpread": "<= 0.01",
+        "liquidity": ">= 20000",
+        "days_to_expiry": "<= 14"
       },
-      "prediction": "GOLD spot/perp rises >2% within 3 days as near-expiry upside NO edge marks informed bullish demand.",
+      "prediction": "The YES price will decline / NO position profits within 3 days as the edge corrects.",
       "timeframeDays": 3,
-      "confidence": 0.55,
+      "confidence": 0.6,
+      "direction": "short",
+      "originFindingId": "FIND-0054",
+      "themeId": "THEME-0001",
+      "source": "llm"
+    },
+    {
+      "created": "2026-08-22",
+      "description": "Smart-money dip-YES asymmetry: on BTC downside one-touch contracts only, when smart flow is net long YES and the YES ask is still cheap, go long spot/perp because smart money is positioning against overpriced downside.",
+      "conditions": {
+        "asset": "BTC",
+        "touch_direction": "<= -1",
+        "smart_flow_stance": ">= 1",
+        "yesAsk": "<= 0.35"
+      },
+      "prediction": "BTC spot will rally >2% within 3 days when smart wallets are net long YES on downside one-touch contracts.",
+      "timeframeDays": 3,
+      "confidence": 0.5,
       "direction": "long",
-      "refinesHypothesisId": "H-567",
+      "originFindingId": "FIND-0020",
+      "themeId": "THEME-0003",
       "source": "llm"
     }
   ],
   "hypothesisReviews": [
     {
       "id": "H-539",
-      "observation": "The mined variant took any cbrs_hl_funding_ann < -10 reading as a reversion trigger; test outcomes show noisy oscillation: -13.7 to +5.5 win, +5.5 to -67 loss, -67 to +2.3 win, +2.3 to +1.3 loss, +1.3 to +2.3 win, +2.3 to -13.4 loss. Raw threshold without weekend or recovery confirmation selected high-noise entries.",
+      "observation": "The single cbrs_hl_funding_ann < -10 threshold fires in both directions; examples include 2.3 → -13.4 (loss) and -13.4 → -4.3 (win). It captures ordinary negative funding oscillation, not extreme positioning.",
       "invalidatedAssumption": "A standalone CBRS funding reading below -10% reliably normalizes and forces a >2% spot gain within 2 days."
     },
     {
+      "id": "H-024",
+      "observation": "The family's short variants lost as gold spot rose 1.8–5.1% after the P/C collapse and PM settlement EV >4800 trigger. Rich settlement EV was not a fadeable overbought anchor; gold continued to drift higher.",
+      "invalidatedAssumption": "Extreme low gold GLD put/call with PM settlement EV above 4800 is a fadeable overbought condition rather than a mark of continued upside drift."
+    },
+    {
       "id": "H-108",
-      "observation": "The condition set buys BTC already above the 24h SMA, within 4% of the 7d high, and HYPE above its SMA with stable OI; recent tests are 7/23 and show repeated 2-3.5% BTC drops after entry, with a single 9.66% win masking mostly chasing losses.",
+      "observation": "BTC lost -2.9% to -3.5% while HYPE was above its 24h SMA; HYPE risk-on participation did not confirm durable BTC momentum.",
       "invalidatedAssumption": "HYPE risk-on participation confirms durable BTC momentum rather than marking late-stage FOMO/overextension."
     },
     {
-      "id": "H-024",
-      "observation": "The low gold put/call ratio and elevated PM settlement EV did not produce the expected 7-day spot edge; the family is 3/22 and gold kept grinding higher through fade attempts. The condition set marked persistent bullish positioning, not a reversal setup.",
-      "invalidatedAssumption": "Gold P/C ratio collapse below 0.65 with PM settlement EV above spot predicts a sustainable spot rally toward PM levels within 7 days."
-    },
-    {
-      "id": "H-534",
-      "observation": "0/20 scorable tests. Gold cap-edge >= 10 was followed by gold rallying rather than the predicted >2% decline; spot often rose 0.2-5.4% over the test window, so the edge was a by-product of strong upside demand, not overpriced NO premium to fade.",
-      "invalidatedAssumption": "A large underlying-cap edge on gold upside one-touch NO contracts reliably predicts a >2% spot decline within 2 days."
+      "id": "H-551",
+      "observation": "The >2pt sell-YES edge on OIL above-strike contracts repeatedly lost in rising tape; OIL spot rose 2.8–10.0%, pushing YES prices up rather than decaying.",
+      "invalidatedAssumption": "Sell-YES edge >2pt on OIL above-strike one-touch contracts is a pure pricing error rather than compensation for upside drift."
     },
     {
       "id": "H-532",
-      "observation": "0/19 scorable tests. The rich tail no-bias gap threshold >= 12.3 also failed as gold rallied through the fade window, including 4380 to 4510 and 4519 to 4623. The gap is trend strength, not a mean-reversion sell signal.",
+      "observation": "H-532 failed every scorable test. Gold spot was flat or rose after the rich tail NO gap, so the no-bias adjusted gap did not predict bearish continuation.",
       "invalidatedAssumption": "A large no-bias adjusted gap on rich GOLD tail NO contracts reliably predicts a >2% spot decline within 2 days."
     },
     {
-      "id": "H-567",
-      "observation": "0/18 scorable tests. Near-expiry GOLD upside one-touch NO edge did not decay safely; gold rallies of 0.7-7.4% repeatedly hit or threatened the upside barriers, showing the YES premium was informed directional pricing rather than stale overpricing.",
-      "invalidatedAssumption": "Positive sell-YES edge on near-expiry GOLD upside one-touch contracts indicates overpriced premium that will mature OTM, rather than a directional risk premium for a gold uptrend."
+      "id": "H-534",
+      "observation": "H-534 failed every scorable test. Gold spot rose up to 5.4% after the one-touch cap-edge trigger, showing the edge reflected structural premium rather than directional bearish flow.",
+      "invalidatedAssumption": "A large underlying-cap edge on gold upside one-touch NO contracts reliably predicts a >2% spot decline within 2 days."
     }
   ],
-  "journalEntry": "No parameter changes tonight: the dominant problems are condition/mechanism mismatches rather than risk sizing. The weekend funding reversion live edge is still the cleanest profit engine, while gold one-touch/tail premium fades are now classified as invalid mean-reversion theses and are being inverted to trend-following refinements. I kept new finding-authored hypotheses to two non-duplicative angles and otherwise focused on refining failing primary variants with materially different mechanisms."
+  "parameterUpdates": {
+    "macroMomentum24hThresholdPts": 4,
+    "contrarianTrendMarginPct": 0.5,
+    "positiveMomentum24hPct": 1.5,
+    "llmTradeExpiryDays": 14,
+    "momentumLongExpiryDays": 21,
+    "signalRisk": {
+      "WEEKEND_HL_FUNDING_REVERSION_LONG": {
+        "targetPct": 3,
+        "stopPct": 5
+      }
+    }
+  },
+  "journalEntry": "Tonight's main lesson is that several shadow-mined contrarian signals were actually trend-compensation: gold cap-edge/nobias shorts, gold P/C collapse shorts, and OIL sell-YES fades all lost in rising tape. I persisted invalidation marks on the failing gold cap-edge families and refined CBRS, gold P/C, HYPE/BTC, and OIL variants with regime-relative conditions. I also added a stop to WEEKEND_HL_FUNDING_REVERSION_LONG because the current no-stop design allowed COIN/HOOD-sized mark-to-market bleed; that change should be watched to confirm it improves realized payoff without degrading the edge."
 }
