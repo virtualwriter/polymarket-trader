@@ -1408,3 +1408,37 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-08-22 15:28 UTC
+
+**Portfolio:** $103.85 total | Cash $90.85 | 13 open | P&L $7.0932 | 63% win rate (767 trades)
+
+**Closed 1 trades:**
+- ❌ AMZN long via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT) → llm_decision: $-0.0039 (-0.4%, market -0.0040, funding 0.0002)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1891079494 is 2.7 std devs from mean (1259069093.28 ± 234935754.77)
+- [anomaly] hype_pm_ev = 75.73 is 2.1 std devs from mean (58.76 ± 8.16)
+
+**Blocked signal learning:**
+- Open blocked shadows: 17
+- Resolved blocked shadows: 919 (474 wins / 445 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.17%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+2.70%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.14%)
+
+**LLM analysis:**
+Closed the eligible AMZN FUNDING_EXTREME_SHORT long after its funding input normalized materially from -35.8% to +5.48%, crossing the entry threshold and flipping sign. All other open positions are WEEKEND_HL_FUNDING_REVERSION_LONG and are policy-gated to mechanical exits; several are early and underwater, so no discretionary closes are emitted there. Worth flagging for nightly review: the weekend funding-reversion cohort is large and correlated, and current unrealized P&L is being dragged by the newer entries.
+
+---
+
