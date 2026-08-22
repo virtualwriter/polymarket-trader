@@ -1082,3 +1082,40 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-08-22 04:29 UTC
+
+**Portfolio:** $104.11 total | Cash $95.11 | 9 open | P&L $7.3542 | 63% win rate (752 trades)
+
+**Closed 1 trades:**
+- ❌ OIL short via spot/spot [OIL spot] (PC_RATIO_EXTREME_LOW) → llm_decision: $-0.0022 (-0.2%, market -0.0022, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 Opened 2 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 3 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1972803310 is 3.1 std devs from mean (1256818803.73 ± 232369285.24)
+- [anomaly] hype_spot = 81.821 is 2.4 std devs from mean (58.19 ± 9.78)
+- [anomaly] hype_pm_ev = 76.8 is 2.2 std devs from mean (58.70 ± 8.12)
+
+**Blocked signal learning:**
+- Open blocked shadows: 15
+- Resolved blocked shadows: 917 (472 wins / 445 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+4.17%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.17%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+Closed OIL PC_RATIO_EXTREME_LOW short on thesis invalidation: oil_cl_pc_ratio rose from 0.258 to 0.432 (+67%), indicating the entry P/C extreme has normalized. No other positions eligible: WEEKEND_HL_FUNDING_REVERSION_LONG positions are mechanical-only, and AMZN is too new for discretionary close. Context-only warning: oil 30d IV spiked sharply and macro oil spike risk remains elevated, but that is not used as close evidence here.
+
+---
+
