@@ -47,6 +47,15 @@ export interface ShadowOutcome {
   win: boolean;
   /** When the shadow was opened; used for the post-gate cutoff. */
   openedAt: string;
+  /**
+   * Price paid for the side held, 0..1.
+   *
+   * For a binary this is the market's own probability that the trade wins, so
+   * the average of it across a cohort is the win rate to expect with no edge —
+   * the correct null for the win-rate test. A coin-flip null flatters a book of
+   * cheap-NO premium sales, where most trades are supposed to win.
+   */
+  entryPrice?: number;
 }
 
 export interface AutoPromotionEvidence {
@@ -59,10 +68,16 @@ export interface AutoPromotionEvidence {
   expectancyPValue: number | null;
   /** Same test with the single best trade removed. */
   expectancyPValueExBest: number | null;
-  /** Binomial on win rate; reported for context, never required. */
+  /** Binomial on win rate against `impliedWinRate`; context, never required. */
   winRatePValue: number;
   winRateLowerBound: number;
   postGateN: number;
+  /**
+   * Mean entry price, i.e. the win rate the market itself implies for this
+   * cohort. Null when no entry prices were recorded, in which case the win-rate
+   * test falls back to a coin flip and means much less.
+   */
+  impliedWinRate: number | null;
 }
 
 export function summarizeShadowOutcomes(
@@ -81,6 +96,13 @@ export function summarizeShadowOutcomes(
     ? 0
     : outcomes.filter((o) => new Date(o.openedAt).getTime() >= cutoff).length;
 
+  const entryPrices = outcomes
+    .map((o) => o.entryPrice)
+    .filter((p): p is number => typeof p === "number" && Number.isFinite(p) && p > 0 && p < 1);
+  const impliedWinRate = entryPrices.length > 0
+    ? entryPrices.reduce((a, b) => a + b, 0) / entryPrices.length
+    : null;
+
   return {
     n,
     wins,
@@ -89,9 +111,10 @@ export function summarizeShadowOutcomes(
     stdPnlPct: std,
     expectancyPValue: oneSidedTPValue(mean, std, n),
     expectancyPValueExBest: oneSidedTPValue(exBestMoments.mean, exBestMoments.std, exBestMoments.n),
-    winRatePValue: binomialPValue(wins, n),
+    winRatePValue: binomialPValue(wins, n, impliedWinRate ?? 0.5),
     winRateLowerBound: n > 0 ? wilsonLowerBound(wins, n) : 0,
     postGateN,
+    impliedWinRate,
   };
 }
 

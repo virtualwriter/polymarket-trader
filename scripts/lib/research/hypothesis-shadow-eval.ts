@@ -19,6 +19,9 @@ export interface HypothesisTest {
    * resolved before magnitude recording shipped. */
   magnitude?: number;
   magnitudeUnit?: MagnitudeUnit;
+  /** The contract a Polymarket thesis entered, recorded at open so the trade
+   * can be marked on its own instrument when the horizon comes due. */
+  contractEntry?: ContractEntryStamp;
 }
 
 export interface Hypothesis {
@@ -391,7 +394,191 @@ export function isPolymarketExpression(hypothesis: Hypothesis): boolean {
   // contracts most explicitly set neither — they name the contract's price
   // instead. Reading the conditions catches those: 22 FIND-derived theses were
   // misread as spot theses because only the two optional fields were checked.
-  return Object.keys(hypothesis.conditions ?? {}).some((key) => PM_CONTRACT_PRICING_KEYS.has(key));
+  return Object.keys(hypothesis.conditions ?? {}).some(isPolymarketContractConditionKey);
+}
+
+/**
+ * Whether a single condition key prices a Polymarket contract.
+ *
+ * Bare keys are matched directly, but the shadow miner writes the same metrics
+ * scoped to an asset — `gold_pm_underlying_cap_edge_pts_max` is a contract
+ * price against a model, not a fact about gold spot. Matching only the bare set
+ * left the two mined gold one-touch families reading as spot theses, so the
+ * spot scorer graded 40 contract trials on whether gold fell 2% and recorded
+ * 0 wins from 40. Those aggregates already have a pattern in the catalog; this
+ * consults it rather than restating the list.
+ */
+function isPolymarketContractConditionKey(key: string): boolean {
+  if (PM_CONTRACT_PRICING_KEYS.has(key)) return true;
+  if (RELATIVE_VALUE_AGG_PATTERN.test(key)) return true;
+  // `btc_sell_yes_edge_pts` is the same claim as `sell_yes_edge_pts`.
+  return [...PM_CONTRACT_PRICING_KEYS].some((bare) => key.endsWith(`_${bare}`));
+}
+
+/**
+ * The contract quotes a Polymarket thesis is actually about, at entry and exit.
+ *
+ * Supplied by callers that already load relative-value observations, so the
+ * contract scorer can mark the trade on its own instrument instead of guessing
+ * from spot.
+ */
+export interface ContractScoringContext {
+  /** Observations at the trigger, for choosing the entry contract. */
+  entryRows?: RelativeValueObservation[];
+  /** Observations at the horizon end, for marking that contract's exit. */
+  exitRows: RelativeValueObservation[];
+  /**
+   * The contract recorded when the test opened.
+   *
+   * Preferred over `entryRows`: it is what the trade actually entered, whereas
+   * re-deriving the entry from a historical snapshot can pick a different
+   * contract if the day's quotes shifted.
+   */
+  entryStamp?: ContractEntryStamp;
+}
+
+/** The contract and price a Polymarket test entered, recorded at open. */
+export interface ContractEntryStamp {
+  marketId: string;
+  eventSlug: string;
+  asset: string;
+  direction: "above" | "below";
+  strike: number;
+  /** Price of the side held, not the YES quote. */
+  entryPrice: number;
+  side: "yes" | "no";
+}
+
+/**
+ * Which side of the contract the thesis takes.
+ *
+ * These theses are overwhelmingly premium sales — "sell the one-touch YES",
+ * "the NO sale is profitable" — which is a long NO position. A hypothesis
+ * direction of `short` means short the contract, not short the underlying.
+ */
+function contractSide(hypothesis: Hypothesis): "yes" | "no" {
+  const prediction = hypothesis.prediction.toLowerCase();
+  if (/\b(buy|long)\s+(the\s+)?yes\b/.test(prediction)) return "yes";
+  if (/\b(sell|short|fade)\b/.test(prediction) || /\bno\s+(sale|side|outcome)\b/.test(prediction)) return "no";
+  return resolveHypothesisDirection(hypothesis) === "long" ? "yes" : "no";
+}
+
+/** Converts a quoted YES probability into the price of the side held. */
+function sidePrice(yesPrice: number, side: "yes" | "no"): number {
+  return side === "yes" ? yesPrice : 1 - yesPrice;
+}
+
+/**
+ * Scores a Polymarket thesis on the contract's own P&L.
+ *
+ * The underlying's percent move gets a touch contract's direction roughly
+ * right and its economics entirely wrong: a NO sold at 8c returns +1150% if
+ * the barrier is never reached and -100% if it is, in neither case in
+ * proportion to how far spot travelled. Grading these on a 2% spot move
+ * recorded 0 wins from 40 trials on two mined gold one-touch families whose
+ * live shadow cohort was winning 62% of the time on the same setup.
+ *
+ * Entry is the contract that realised the condition's own reduction — the
+ * conditions take a max over sell-YES edge, and the live shadow opener enters
+ * that same best-edge row — and exit is that contract's later quote.
+ */
+export function evaluatePolymarketContractTest(
+  hypothesis: Hypothesis,
+  ctx: ContractScoringContext,
+): HypothesisEvalResult {
+  const stamp = ctx.entryStamp ?? deriveContractEntry(hypothesis, ctx.entryRows ?? []);
+  if (!stamp) {
+    const asset = conditionAsset(hypothesis) ?? inferHypothesisAsset(hypothesis);
+    return {
+      outcome: "loss",
+      actualMove: `UNSCORABLE: no ${asset ?? "matching"} contract quote at trigger`,
+      scorable: false,
+      method: "contract_entry_unavailable",
+    };
+  }
+
+  const exit = ctx.exitRows.find((row) => row.marketId === stamp.marketId && row.pmYes !== null);
+  if (!exit) {
+    return {
+      outcome: "loss",
+      actualMove: `UNSCORABLE: contract ${stamp.marketId || "?"} has no exit quote at the horizon`,
+      scorable: false,
+      method: "contract_exit_unavailable",
+    };
+  }
+  if (stamp.entryPrice <= 0) {
+    return {
+      outcome: "loss",
+      actualMove: `UNSCORABLE: contract ${stamp.marketId} entry price ${stamp.entryPrice.toFixed(4)} is not tradeable`,
+      scorable: false,
+      method: "contract_entry_unpriced",
+    };
+  }
+
+  const exitPrice = sidePrice(exit.pmYes as number, stamp.side);
+  const pnlPct = ((exitPrice - stamp.entryPrice) / stamp.entryPrice) * 100;
+  return {
+    outcome: pnlPct > 0 ? "win" : "loss",
+    actualMove: `${stamp.side.toUpperCase()} on ${stamp.asset} ${stamp.direction} ${stamp.strike}`
+      + ` ${stamp.entryPrice.toFixed(3)} → ${exitPrice.toFixed(3)} (${pnlPct >= 0 ? "+" : ""}${pnlPct.toFixed(1)}% on the contract)`,
+    scorable: true,
+    method: "pm_contract_pnl",
+    magnitude: pnlPct,
+    magnitudeUnit: "pct_return",
+  };
+}
+
+/**
+ * Picks the contract a Polymarket thesis is about from a set of quotes.
+ *
+ * Max sell-YES edge is the entry the conditions describe — they reduce over
+ * scoped contracts with a max — and it is the row the live shadow opener
+ * enters, so evidence and execution name the same contract. Without an edge
+ * reading it falls back to the widest premium, which is the same trade
+ * expressed by price.
+ */
+export function deriveContractEntry(
+  hypothesis: Hypothesis,
+  rows: RelativeValueObservation[],
+): ContractEntryStamp | null {
+  const asset = conditionAsset(hypothesis) ?? inferHypothesisAsset(hypothesis);
+  const side = contractSide(hypothesis);
+  const wantDirection = touchDirectionConstraint(hypothesis);
+
+  const candidates = rows.filter((row) =>
+    (asset === null || row.asset === asset)
+    && row.pmYes !== null
+    && (wantDirection === null || row.direction === wantDirection));
+  if (candidates.length === 0) return null;
+
+  const entry = candidates.reduce((best, row) => {
+    const rank = (candidate: RelativeValueObservation): number =>
+      candidate.sellYesEdgePts ?? (side === "no" ? (candidate.pmYes ?? 0) : -(candidate.pmYes ?? 0));
+    return rank(row) > rank(best) ? row : best;
+  });
+
+  return {
+    marketId: entry.marketId,
+    eventSlug: entry.eventSlug,
+    asset: entry.asset,
+    direction: entry.direction,
+    strike: entry.strike,
+    entryPrice: sidePrice(entry.pmYes as number, side),
+    side,
+  };
+}
+
+/** The `touch_direction` gate as a side, so entry selection honours it. */
+function touchDirectionConstraint(hypothesis: Hypothesis): "above" | "below" | null {
+  const raw = hypothesis.conditions?.touch_direction;
+  if (raw === undefined || raw === null) return null;
+  const text = String(raw).toLowerCase();
+  if (text.includes("above")) return "above";
+  if (text.includes("below")) return "below";
+  // Encoded numerically by relativeValueConditionValue: 1 above, -1 below.
+  if (/(^|[^-\d])1(\D|$)/.test(text) && !text.includes("-1")) return "above";
+  if (text.includes("-1")) return "below";
+  return null;
 }
 
 /**
@@ -402,8 +589,30 @@ export function isPolymarketExpression(hypothesis: Hypothesis): boolean {
  * 2. Never default shorts to "underlying must rise".
  * 3. Funding keys must be *_hl_funding_ann (not percentiles); missing funding falls through.
  * 4. If direction and asset/price cannot be determined, return scorable=false so callers exclude the test.
+ * 5. Polymarket-contract theses are scored on the contract, never on spot.
  */
 export function evaluateHypothesisTest(
+  hypothesis: Hypothesis,
+  startRow: SnapshotRow,
+  endRow: SnapshotRow,
+  contractCtx?: ContractScoringContext,
+): HypothesisEvalResult {
+  // Contract theses are settled on the contract or not at all. Falling through
+  // to the spot path would resume grading a premium sale by how far the
+  // underlying moved, which is the measurement this guard exists to stop.
+  if (isPolymarketExpression(hypothesis)) {
+    if (contractCtx) return evaluatePolymarketContractTest(hypothesis, contractCtx);
+    return {
+      outcome: "loss",
+      actualMove: "UNSCORABLE: Polymarket-contract thesis needs contract quotes, not a spot move",
+      scorable: false,
+      method: "awaiting_contract_scorer",
+    };
+  }
+  return evaluateSpotHypothesisTest(hypothesis, startRow, endRow);
+}
+
+function evaluateSpotHypothesisTest(
   hypothesis: Hypothesis,
   startRow: SnapshotRow,
   endRow: SnapshotRow,
@@ -497,23 +706,7 @@ export function evaluateHypothesisTest(
   const movePct = ((endPx - startPx) / startPx) * 100;
 
   if (direction === "long" || direction === "short") {
-    const scored = scoreDirectionalMove(movePct, direction, thresholdPct, asset, startPx, endPx);
-    if (isPolymarketExpression(hypothesis)) {
-      // The underlying's percent move gets the direction call roughly right for
-      // a touch contract, but it is not the trade's P&L — a NO contract's
-      // return depends on its entry price and the barrier, not on how far spot
-      // travelled. Keep the win/loss, drop the magnitude, so the expectancy
-      // gate never promotes a Polymarket family on a number measured off the
-      // wrong instrument. Real edge for these comes from the shadow record.
-      return {
-        ...scored,
-        actualMove: `${scored.actualMove} [underlying proxy for PM/one-touch; magnitude not recorded]`,
-        method: `${scored.method}_pm_underlying_proxy`,
-        magnitude: undefined,
-        magnitudeUnit: undefined,
-      };
-    }
-    return scored;
+    return scoreDirectionalMove(movePct, direction, thresholdPct, asset, startPx, endPx);
   }
 
   if (/\b(move|moves|moved|volatility)\b/.test(prediction)) {
@@ -538,7 +731,11 @@ export function evaluateHypothesisTest(
  */
 export function hypothesisScoringMode(
   hypothesis: Hypothesis,
-): "funding" | "directional" | "neutral_move" | null {
+): "funding" | "directional" | "neutral_move" | "contract" | null {
+  // Contract theses are scorable, just not by the spot path — reporting them as
+  // unscorable would have the sweep retire the mined one-touch families that
+  // the shadow ledger shows working.
+  if (isPolymarketExpression(hypothesis)) return "contract";
   const prediction = hypothesis.prediction.toLowerCase();
   const direction = resolveHypothesisDirection(hypothesis);
   const signalType = String(hypothesis.conditions?.signalType ?? "").toUpperCase();
@@ -584,12 +781,6 @@ export interface UnscorableSweepResult {
   retiredVariants: number;
   /** Variants left active so the LLM can re-author them. */
   flaggedForReauthor: number;
-  /**
-   * Variants left active because the scorer, not the thesis, is the problem:
-   * they express a Polymarket contract trade, which no amount of re-wording
-   * turns into a spot move the scorer can grade.
-   */
-  awaitingContractScorer: number;
   /** Setup families holding retained variants, so the note is actionable. */
   retainedSetupIds: string[];
   notes: string[];
@@ -613,7 +804,6 @@ export function sweepUnscorableHypotheses(
     cancelledTests: 0,
     retiredVariants: 0,
     flaggedForReauthor: 0,
-    awaitingContractScorer: 0,
     retainedSetupIds: [],
     notes: [],
   };
@@ -621,6 +811,8 @@ export function sweepUnscorableHypotheses(
 
   for (const hypothesis of hypotheses) {
     if (hypothesis.status !== "active" && hypothesis.status !== "promoted") continue;
+    // Contract theses report mode "contract" and so never reach this sweep;
+    // they are graded on the contract, which is what used to be missing.
     if (hypothesisScoringMode(hypothesis) !== null) continue;
 
     let burned = 0;
@@ -642,16 +834,6 @@ export function sweepUnscorableHypotheses(
       } else if (test.outcome === "pending") {
         pending++;
       }
-    }
-
-    // A Polymarket contract thesis is not badly written — the scorer only
-    // grades spot moves and funding, so a contract trade has no gradeable
-    // form. Retiring these would discard real research to fix a scorer gap,
-    // and their live evidence comes from the shadow record instead.
-    if (isPolymarketExpression(hypothesis)) {
-      result.awaitingContractScorer++;
-      if (hypothesis.setupId) retained.add(hypothesis.setupId);
-      continue;
     }
 
     // Inert once nothing is queued: the retest opener refuses to open tests for
@@ -680,11 +862,6 @@ export function sweepUnscorableHypotheses(
   if (result.cancelledTests > 0 || result.retiredVariants > 0) {
     result.notes.push(
       `🧹 Unscorable sweep: cancelled ${result.cancelledTests} queued tests, retired ${result.retiredVariants} burned-out variants, ${result.flaggedForReauthor} left active for re-authoring.`,
-    );
-  }
-  if (result.awaitingContractScorer > 0) {
-    result.notes.push(
-      `🧹 ${result.awaitingContractScorer} Polymarket-contract variants cannot be graded by the spot scorer and were kept, not retired: ${result.retainedSetupIds.join(", ")}.`,
     );
   }
   return result;
@@ -1043,22 +1220,153 @@ export function setupMagnitudeEvidence(tests: readonly HypothesisTest[]): SetupM
 }
 
 /**
+ * Distinct start-days a measured base rate must cover.
+ *
+ * The replay steps hourly, which gives a stable point estimate but heavily
+ * overlapping windows — 700 hourly samples drawn from three weeks are nowhere
+ * near 700 independent observations. Requiring distinct days instead means the
+ * guard measures how much history backs the estimate rather than how finely it
+ * was sampled. Asset price columns only start partway through the valuation
+ * file, so early windows are unscorable and this bites.
+ */
+export const BASE_RATE_MIN_DAYS = 20;
+
+export interface EmpiricalBaseRate {
+  /** Unconditional win frequency of this hypothesis's own success criterion. */
+  baseRate: number;
+  /** Scorable windows the estimate is built from. */
+  n: number;
+  /** Distinct calendar days those windows start on. */
+  days: number;
+}
+
+/**
+ * The share of the time this hypothesis's success criterion is met by chance.
+ *
+ * A 50% null asks "is this better than a coin flip", which is the wrong
+ * question for almost every thesis here. "GOLD declines >2% in 2 days" is not
+ * a coin flip — it happens roughly a quarter of the time — so a family right
+ * 40% of the time was being recorded as a failure when it was in fact well
+ * ahead of chance. Five families with 18 or more completed tests sat below the
+ * 50% bar while clearing a measured one.
+ *
+ * The estimate replays the family's own scorer over every historical window of
+ * its own horizon, ignoring whether the conditions fired. That is exactly the
+ * null the significance test wants — the criterion's frequency for an entry
+ * chosen without the signal — and it is measured with the same code that
+ * grades the real tests, so no separate set of assumptions can drift from it.
+ *
+ * This cuts both ways by design. A thesis whose criterion is usually true (a
+ * barrier that is usually not touched) gets a null well above 50% and has to
+ * clear a correspondingly higher bar than it used to.
+ */
+export function empiricalBaseRate(
+  hypothesis: Hypothesis,
+  valuationRows: readonly SnapshotRow[],
+): EmpiricalBaseRate | null {
+  // Contract theses are graded on an instrument these rows do not contain;
+  // replaying them here would measure a spot move and call it a base rate.
+  if (isPolymarketExpression(hypothesis)) return null;
+  const horizon = Math.max(1, Math.round(hypothesis.timeframeDays || 1));
+  if (valuationRows.length <= horizon) return null;
+
+  // Timestamps are parsed with looseTimeMs because valuation dates are
+  // hour-truncated ("2026-08-21T20"), which Date.parse rejects outright — a
+  // strict parse silently measured zero windows for every family.
+  const stamps = valuationRows.map((row) => looseTimeMs(String(row.date ?? "")));
+  const horizonMs = horizon * 86_400_000;
+
+  let wins = 0;
+  let scorable = 0;
+  const days = new Set<string>();
+  // Two pointers, not a nested scan: the rows are hourly and time-ordered, so
+  // the exit index only moves forward. A rescan per start index is quadratic
+  // and this runs for every family on every engine pass.
+  let exit = 0;
+  for (let i = 0; i < valuationRows.length; i++) {
+    const startMs = stamps[i];
+    if (startMs === null) continue;
+    if (exit < i + 1) exit = i + 1;
+    while (exit < valuationRows.length
+      && (stamps[exit] === null || (stamps[exit] as number) < startMs + horizonMs)) {
+      exit++;
+    }
+    if (exit >= valuationRows.length) break;
+    const result = evaluateSpotHypothesisTest(hypothesis, valuationRows[i], valuationRows[exit]);
+    if (!result.scorable) continue;
+    scorable++;
+    days.add(String(valuationRows[i].date ?? "").slice(0, 10));
+    if (result.outcome === "win") wins++;
+  }
+  if (days.size < BASE_RATE_MIN_DAYS) return null;
+  return { baseRate: wins / scorable, n: scorable, days: days.size };
+}
+
+/**
+ * How far a win rate must exceed its base rate to count as an edge worth
+ * trading, as a ratio.
+ *
+ * Statistical significance alone can certify an edge too small to survive
+ * costs, so a size requirement sits alongside it. Expressed as a ratio because
+ * a fixed number of points means different things at different base rates:
+ * five points over a 15% base rate is a third more winners, five points over
+ * 60% is barely a nudge.
+ */
+export const PROMOTE_MIN_LIFT = 1.25;
+
+/**
+ * Win rate this far below the base rate marks a thesis as worse than no signal.
+ *
+ * The old floor killed anything under 40% outright, which condemned a family
+ * winning 40% of the time on a criterion that comes up 33% of the time by
+ * chance — a genuine edge, discarded for failing to beat a number that had
+ * nothing to do with it.
+ */
+export const KILL_MAX_LIFT = 0.85;
+
+/**
+ * The win rate a family must reach to be promotable.
+ *
+ * Relative to the base rate when one was measured; the absolute floor is only
+ * for families whose criterion could not be replayed, where there is nothing
+ * to be relative to.
+ */
+export function promoteWinRateFloor(nullWinRate: number | null, absoluteFloor: number): number {
+  if (nullWinRate === null) return absoluteFloor;
+  // The additive term keeps a near-zero base rate from making the bar trivial:
+  // 1.25x a 2% base rate is 2.5%, which any noise clears.
+  return Math.min(0.95, Math.max(nullWinRate * PROMOTE_MIN_LIFT, nullWinRate + 0.05));
+}
+
+/** The win rate below which a family is abandoned. Mirrors the promote floor. */
+export function killWinRateFloor(nullWinRate: number | null, absoluteFloor: number): number {
+  if (nullWinRate === null) return absoluteFloor;
+  return Math.max(0, nullWinRate * KILL_MAX_LIFT);
+}
+
+/**
  * True when the family clears BOTH bars: it is right more often than chance
  * (binomial on win rate) and it actually makes money (one-sided Student-t on
  * realized edge). The expectancy test only applies once enough magnitude-bearing
  * tests exist, so families whose tests predate magnitude recording still resolve
  * on win rate rather than deadlocking.
+ *
+ * `nullWinRate` is the frequency the criterion is met without the signal — see
+ * empiricalBaseRate. Pass null when it could not be measured, which falls back
+ * to a coin-flip test against the absolute floor; a measured value is always
+ * preferable and is what makes the win-rate bar mean anything.
  */
 export function setupFamilyIsPromotable(
   wins: number,
   completed: number,
   promoteThreshold: number,
   tests: readonly HypothesisTest[] = [],
+  nullWinRate: number | null = null,
 ): boolean {
   if (completed <= 0) return false;
   const winRate = wins / completed;
-  if (winRate < promoteThreshold) return false;
-  if (binomialPValue(wins, completed) >= PROMOTE_SIGNIFICANCE_ALPHA) return false;
+  if (winRate < promoteWinRateFloor(nullWinRate, promoteThreshold)) return false;
+  if (binomialPValue(wins, completed, nullWinRate ?? 0.5) >= PROMOTE_SIGNIFICANCE_ALPHA) return false;
 
   const edge = setupMagnitudeEvidence(tests);
   if (!edge.usable) return true;
@@ -1086,17 +1394,19 @@ export function setupFamilyIsDecisive(
   promoteThreshold: number,
   killThreshold: number,
   tests: readonly HypothesisTest[] = [],
+  nullWinRate: number | null = null,
 ): boolean {
   if (completed <= 0) return false;
   const winRate = wins / completed;
-  if (winRate < killThreshold) return true;
+  if (winRate < killWinRateFloor(nullWinRate, killThreshold)) return true;
   if (setupFamilyIsUnprofitable(tests)) return true;
-  return setupFamilyIsPromotable(wins, completed, promoteThreshold, tests);
+  return setupFamilyIsPromotable(wins, completed, promoteThreshold, tests, nullWinRate);
 }
 
 export function hypothesisSetupNeedsMoreShadowTests(
   family: HypothesisSetupFamily,
   sources: ReadonlySet<string> = new Set(["llm"]),
+  nullWinRate: number | null = null,
 ): boolean {
   if (!family.hypotheses.some((hypothesis) => sources.has(hypothesis.source))) return false;
   if (!family.hypotheses.some((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived")) return false;
@@ -1107,7 +1417,7 @@ export function hypothesisSetupNeedsMoreShadowTests(
   // the record is statistically inconclusive — neither significantly above
   // chance at the promote bar nor below the futility floor. Freezing at
   // exactly 20 would strand e.g. 13/20 (65%, p=0.13) forever.
-  return !setupFamilyIsDecisive(family.wins, completed, PROMOTE_THRESHOLD, KILL_THRESHOLD, family.completed);
+  return !setupFamilyIsDecisive(family.wins, completed, PROMOTE_THRESHOLD, KILL_THRESHOLD, family.completed, nullWinRate);
 }
 
 export function isDataContaminatedSetup(setupId: string): boolean {

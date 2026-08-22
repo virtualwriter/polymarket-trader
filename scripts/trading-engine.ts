@@ -106,8 +106,11 @@ import {
   appendPostMortemSegment,
   binomialPValue,
   completedHypothesisTests,
+  deriveContractEntry,
+  empiricalBaseRate,
   evaluateHypothesisTest,
   evidenceBackedDirection,
+  isPolymarketExpression,
   hasRegimeRelativeConditions,
   hypothesisConditionsSatisfied,
   hypothesisScoringMode,
@@ -129,6 +132,7 @@ import {
   estimateWeeksToVerdict,
   isTooSlowToVerdict,
   type TriggerFrequencyEstimate,
+  type ContractEntryStamp,
   type MagnitudeUnit,
 } from "./lib/research/hypothesis-shadow-eval.js";
 import { formatConditionIssues, validateHypothesisConditions } from "./lib/research/condition-catalog.js";
@@ -707,6 +711,35 @@ interface LlmAnalysisResult {
   journalEntry: string;
 }
 
+/** Single-sided binaries, whose price is a probability rather than a level. */
+function isBinaryInstrument(instrumentType: string | undefined): boolean {
+  return instrumentType === "pm_yes" || instrumentType === "pm_no";
+}
+
+/**
+ * Base rates keyed by setup id, because the estimate replays every historical
+ * window for every family and the gate loop asks repeatedly within a run.
+ */
+const familyBaseRateCache = new Map<string, number | null>();
+
+/**
+ * The unconditional frequency of a family's success criterion.
+ *
+ * Measured from the variant with the most completed tests, which is the one the
+ * family's record is mostly made of. Falls back to a coin flip when the
+ * criterion cannot be replayed — contract theses, or too few windows — so the
+ * gate is never loosened by a number that was not actually measured.
+ */
+function familyBaseRate(family: HypothesisSetupFamily, valuationRows: SnapshotRow[]): number | null {
+  if (familyBaseRateCache.has(family.setupId)) return familyBaseRateCache.get(family.setupId)!;
+
+  const representative = [...family.hypotheses]
+    .sort((a, b) => completedHypothesisTests(b).length - completedHypothesisTests(a).length)[0];
+  const measured = representative ? empiricalBaseRate(representative, valuationRows) : null;
+  familyBaseRateCache.set(family.setupId, measured?.baseRate ?? null);
+  return measured?.baseRate ?? null;
+}
+
 interface HypothesisTest {
   date: string;
   triggered: boolean;
@@ -718,6 +751,13 @@ interface HypothesisTest {
    * just win rate. Absent on tests resolved before magnitude recording. */
   magnitude?: number;
   magnitudeUnit?: MagnitudeUnit;
+  /** The contract a Polymarket thesis entered, stamped at open.
+   *
+   * The engine only holds the current relative-value snapshot, so by the time a
+   * test comes due its entry quote is long gone. Recording it here is what lets
+   * the trade be marked on its own instrument days later instead of falling
+   * back to the underlying's move. */
+  contractEntry?: ContractEntryStamp;
 }
 
 interface Hypothesis {
@@ -6475,7 +6515,10 @@ function evaluateHypotheses(
         test.exclusionReason = "unscorable_missing_valuation_history";
         continue;
       }
-      const result = evaluateHypothesisTest(h, startRow, endRow);
+      const result = evaluateHypothesisTest(h, startRow, endRow, {
+        exitRows: relativeValueRows,
+        entryStamp: test.contractEntry,
+      });
       test.outcome = result.outcome;
       test.actualMove = `${result.actualMove} (method=${result.method})`;
       if (typeof result.magnitude === "number" && result.magnitudeUnit) {
@@ -6513,7 +6556,11 @@ function evaluateHypotheses(
     // promotions. 13/20 (65%) has p=0.13 and no longer passes; sequential
     // testing (hypothesisSetupNeedsMoreShadowTests) keeps inconclusive
     // families accumulating evidence instead of freezing at 20.
-    const familyPValue = binomialPValue(family.wins, completedCount);
+    // Measured against the criterion's own unconditional frequency, not a coin
+    // flip: "GOLD falls 2% in 2 days" is not a 50/50 proposition, and grading
+    // it as one recorded families well ahead of chance as failures.
+    const familyNull = familyBaseRate(family, valuationRows);
+    const familyPValue = binomialPValue(family.wins, completedCount, familyNull ?? 0.5);
     // Second bar: being right often is not the same as making money. Once a
     // family has enough magnitude-bearing tests, its realized edge must also be
     // significantly positive, which is the only way to reject a setup that wins
@@ -6521,7 +6568,7 @@ function evaluateHypotheses(
     const familyEdge = setupMagnitudeEvidence(family.completed);
     const meetsPromotionGate =
       completedCount >= PROMOTE_MIN_TESTS
-      && setupFamilyIsPromotable(family.wins, completedCount, PROMOTE_THRESHOLD, family.completed);
+      && setupFamilyIsPromotable(family.wins, completedCount, PROMOTE_THRESHOLD, family.completed, familyNull);
 
     // Enforce on every run: promotions that do not currently meet the gate are
     // demoted. Previously `if (completedCount < PROMOTE_MIN_TESTS) continue`
@@ -6627,11 +6674,17 @@ function evaluateHypotheses(
       }
 
       const nextTestNumber = family.completed.length + family.pending.length + 1;
+      // Contract theses are marked on the instrument they entered, and only
+      // today's quotes are in hand, so the entry is recorded now or lost.
+      const contractEntry = isPolymarketExpression(candidate)
+        ? deriveContractEntry(candidate, relativeValueRows) ?? undefined
+        : undefined;
       candidate.tests.push({
         date: latestDate,
         triggered: true,
         outcome: "pending",
         actualMove: `Setup ${family.setupId} shadow test ${nextTestNumber}/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened via ${candidate.id} after current row satisfied variant conditions.`,
+        contractEntry,
       });
       opened++;
     }
@@ -6920,6 +6973,11 @@ function evaluateAutoPromotions(
       pnlPct: shadow.hypotheticalResult.pnlPct,
       win: shadow.hypotheticalResult.outcome === "win",
       openedAt: shadow.position?.openedAt ?? shadow.blockedAt ?? now,
+      // Only meaningful for binaries, where price is a probability. Perp and
+      // spot shadows leave it unset and fall back to a coin-flip null.
+      entryPrice: isBinaryInstrument(shadow.position?.instrumentType)
+        ? shadow.position?.entryPrice
+        : undefined,
     };
     const existing = outcomesBySetup.get(setupId);
     if (existing) existing.push(outcome);

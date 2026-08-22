@@ -3,6 +3,8 @@ import {
   HYPOTHESIS_SHADOW_TESTS_EXTENDED_CAP,
   appendPostMortemSegment,
   binomialPValue,
+  deriveContractEntry,
+  empiricalBaseRate,
   evaluateHypothesisTest,
   evidenceBackedDirection,
   fundingAnnConditionKey,
@@ -12,6 +14,7 @@ import {
   inferHypothesisAsset,
   resolveHypothesisDirection,
   setupFamilyIsDecisive,
+  promoteWinRateFloor,
   setupFamilyIsPromotable,
   setupFamilyIsUnprofitable,
   setupMagnitudeEvidence,
@@ -30,6 +33,7 @@ import {
   PROMOTE_SIGNIFICANCE_ALPHA,
   type Hypothesis,
   type HypothesisTest,
+  type RelativeValueObservation,
   type SnapshotRow,
 } from "./hypothesis-shadow-eval.js";
 
@@ -59,11 +63,175 @@ function row(date: string, fields: Record<string, number>): SnapshotRow {
   return { date, ...fields };
 }
 
-describe("polymarket underlying-proxy scoring", () => {
-  it("keeps the direction call but records no magnitude", () => {
+function contractRow(
+  partial: Partial<RelativeValueObservation> & { marketId: string; pmYes: number },
+): RelativeValueObservation {
+  return {
+    timestamp: partial.timestamp ?? "2026-07-01T00:00:00Z",
+    modelVersion: "",
+    asset: partial.asset ?? "BTC",
+    eventSlug: partial.eventSlug ?? "slug",
+    marketId: partial.marketId,
+    question: "",
+    contractMonth: "",
+    direction: partial.direction ?? "above",
+    strike: partial.strike ?? 120_000,
+    expiry: partial.expiry ?? "2026-08-01T00:00:00Z",
+    pmYes: partial.pmYes,
+    pmBid: null,
+    pmAsk: null,
+    pmSpread: null,
+    modelProb: null,
+    underlyingCapYes: null,
+    pmToUnderlyingCapRatio: null,
+    underlyingCapSignal: "",
+    settlementYesSum: null,
+    settlementOverround: null,
+    settlementTailYes: null,
+    settlementSkewYes: null,
+    edgePts: null,
+    bestExpression: "",
+    optionIv: null,
+    pmIv: null,
+    cboeNoGapPts: null,
+    cmeNoGapPts: null,
+    adjustedNoGapPts: null,
+    sourceAgreementBucket: "",
+    noBiasCandidatePassed: false,
+    liquidity: partial.liquidity ?? 10_000,
+    perpFundingAnn: null,
+    perpOiUsd: null,
+    perpBasisPct: null,
+    sellYesEdgePts: partial.sellYesEdgePts ?? null,
+    flags: "",
+  };
+}
+
+describe("empiricalBaseRate", () => {
+  /** `days` daily rows where the asset drifts by `dailyPct` each step. */
+  function drift(days: number, dailyPct: number): SnapshotRow[] {
+    const rows: SnapshotRow[] = [];
+    let price = 100;
+    for (let i = 0; i < days; i++) {
+      const date = new Date(Date.UTC(2026, 0, 1 + i)).toISOString().slice(0, 10);
+      rows.push(row(date, { btc_spot: price }));
+      price *= 1 + dailyPct / 100;
+    }
+    return rows;
+  }
+
+  it("measures a criterion that is almost always true as a high null", () => {
+    // Rising 3%/day makes "BTC gains > 2% in 1 day" true in every window, so a
+    // family winning 60% of the time is well BELOW chance, not above it.
+    const h = hyp({
+      direction: "long",
+      prediction: "BTC gains > 2% within 1 day",
+      conditions: { asset: "BTC" },
+      timeframeDays: 1,
+    });
+    const measured = empiricalBaseRate(h, drift(80, 3));
+    expect(measured).not.toBeNull();
+    expect(measured!.baseRate).toBeCloseTo(1, 6);
+    expect(measured!.days).toBeGreaterThanOrEqual(20);
+  });
+
+  it("measures a criterion that never fires as a null of zero", () => {
+    const h = hyp({
+      direction: "long",
+      prediction: "BTC gains > 2% within 1 day",
+      conditions: { asset: "BTC" },
+      timeframeDays: 1,
+    });
+    const measured = empiricalBaseRate(h, drift(80, 0.1));
+    expect(measured!.baseRate).toBe(0);
+  });
+
+  it("returns null rather than guessing when there are too few windows", () => {
+    const h = hyp({
+      direction: "long",
+      prediction: "BTC gains > 2% within 1 day",
+      conditions: { asset: "BTC" },
+      timeframeDays: 1,
+    });
+    expect(empiricalBaseRate(h, drift(5, 3))).toBeNull();
+  });
+
+  it("measures hour-truncated timestamps, the format the engine actually stores", () => {
+    // daily-valuations.csv writes "2026-08-21T20", which Date.parse rejects.
+    // A strict parse made this silently return null for every family, which is
+    // indistinguishable from the feature not being wired at all.
+    const rows: SnapshotRow[] = [];
+    let price = 100;
+    for (let h = 0; h < 30 * 24; h++) {
+      const day = 1 + Math.floor(h / 24);
+      const hour = String(h % 24).padStart(2, "0");
+      rows.push(row(`2026-01-${String(day).padStart(2, "0")}T${hour}`, { btc_spot: price }));
+      price *= 1.005;
+    }
+    const h = hyp({
+      direction: "long",
+      prediction: "BTC gains > 2% within 1 day",
+      conditions: { asset: "BTC" },
+      timeframeDays: 1,
+    });
+    const measured = empiricalBaseRate(h, rows);
+    expect(measured).not.toBeNull();
+    expect(measured!.days).toBeGreaterThanOrEqual(20);
+    // +0.5%/hour compounds past 2% within a day in every window.
+    expect(measured!.baseRate).toBeCloseTo(1, 6);
+  });
+
+  it("declines to measure a contract thesis from spot rows", () => {
     const h = hyp({
       direction: "short",
-      prediction: "BTC one-touch NO: spot declines > 2% over the window",
+      prediction: "the NO sale is profitable",
+      conditions: { asset: "BTC", sell_yes_edge_pts: ">= 3" },
+      timeframeDays: 1,
+    });
+    expect(empiricalBaseRate(h, drift(80, 3))).toBeNull();
+  });
+});
+
+describe("setupFamilyIsPromotable against a measured null", () => {
+  it("promotes a record that beats a low base rate but not a coin flip", () => {
+    // 18/40 = 45%: never significant against 50%, clearly so against 25%.
+    expect(setupFamilyIsPromotable(18, 40, 0.4, [], 0.5)).toBe(false);
+    expect(setupFamilyIsPromotable(18, 40, 0.4, [], 0.25)).toBe(true);
+  });
+
+  it("refuses a record that only looks good against a coin flip", () => {
+    // 70/113 = 61.9%. Against a base rate of 45% that is a 1.38x lift and
+    // significant. Against 72% — the win rate implied by the prices actually
+    // paid — the same record is well below what doing nothing would produce.
+    expect(setupFamilyIsPromotable(70, 113, 0.4, [], 0.45)).toBe(true);
+    expect(setupFamilyIsPromotable(70, 113, 0.4, [], 0.72)).toBe(false);
+  });
+
+  it("requires the edge to be large, not merely detectable", () => {
+    // 61.9% over a 50% base rate is a 1.24x lift: statistically clear on 113
+    // samples, but under the size bar, so it does not promote on win rate.
+    expect(binomialPValue(70, 113, 0.5)).toBeLessThan(PROMOTE_SIGNIFICANCE_ALPHA);
+    expect(setupFamilyIsPromotable(70, 113, 0.4, [], 0.5)).toBe(false);
+  });
+
+  it("keeps the absolute floor when the base rate could not be measured", () => {
+    expect(promoteWinRateFloor(null, 0.65)).toBe(0.65);
+    expect(setupFamilyIsPromotable(70, 113, 0.65, [], null)).toBe(false);
+  });
+
+  it("stops killing families that beat their own base rate", () => {
+    // 40% used to be an automatic kill. Against a criterion that comes up 33%
+    // of the time by chance, 40% is an edge, so it is no longer decisive.
+    expect(setupFamilyIsDecisive(17, 43, 0.65, 0.4, [], 0.33)).toBe(false);
+    expect(setupFamilyIsDecisive(17, 43, 0.65, 0.4, [], null)).toBe(true);
+  });
+});
+
+describe("polymarket contract scoring", () => {
+  it("refuses to grade a contract thesis on the underlying's move", () => {
+    const h = hyp({
+      direction: "short",
+      prediction: "BTC one-touch NO: the NO sale is profitable over the window",
       conditions: { asset: "BTC", venue: "polymarket", signalType: "ONE_TOUCH_HIGH_EDGE_NO" },
     });
     const result = evaluateHypothesisTest(
@@ -72,10 +240,85 @@ describe("polymarket underlying-proxy scoring", () => {
       row("2026-07-08", { btc_spot: 95 }),
     );
 
-    expect(result.method).toContain("pm_underlying_proxy");
+    // Spot fell 5%, which the old proxy recorded as a win. Without a contract
+    // quote there is no honest verdict to give.
+    expect(result.method).toBe("awaiting_contract_scorer");
+    expect(result.scorable).toBe(false);
+  });
+
+  it("scores a NO sale on the contract's own P&L", () => {
+    const h = hyp({
+      direction: "short",
+      prediction: "BTC one-touch NO: the NO sale is profitable over the window",
+      conditions: { asset: "BTC", venue: "polymarket", sell_yes_edge_pts: ">= 3" },
+    });
+    const result = evaluateHypothesisTest(
+      h,
+      row("2026-07-01", { btc_spot: 100 }),
+      row("2026-07-08", { btc_spot: 95 }),
+      {
+        // NO bought at 1 - 0.30 = 0.70, marked later at 1 - 0.10 = 0.90.
+        entryRows: [contractRow({ marketId: "m1", pmYes: 0.30, sellYesEdgePts: 6 })],
+        exitRows: [contractRow({ marketId: "m1", pmYes: 0.10 })],
+      },
+    );
+
+    expect(result.scorable).toBe(true);
+    expect(result.method).toBe("pm_contract_pnl");
     expect(result.outcome).toBe("win");
-    expect(result.magnitude).toBeUndefined();
-    expect(result.magnitudeUnit).toBeUndefined();
+    expect(result.magnitudeUnit).toBe("pct_return");
+    expect(result.magnitude).toBeCloseTo(28.5714, 3);
+  });
+
+  it("records a loss when the contract moves against the position", () => {
+    const h = hyp({
+      direction: "short",
+      prediction: "GOLD one-touch: selling the YES premium is profitable",
+      conditions: { asset: "GOLD", sell_yes_edge_pts: ">= 3" },
+    });
+    const result = evaluateHypothesisTest(
+      h,
+      row("2026-07-01", { gold_gc_spot: 4000 }),
+      row("2026-07-08", { gold_gc_spot: 3900 }),
+      {
+        // Spot fell, which the proxy would call a win, but the barrier
+        // repriced against the NO: 0.80 -> 0.40.
+        entryRows: [contractRow({ marketId: "g1", asset: "GOLD", pmYes: 0.20, sellYesEdgePts: 5 })],
+        exitRows: [contractRow({ marketId: "g1", asset: "GOLD", pmYes: 0.60 })],
+      },
+    );
+
+    expect(result.scorable).toBe(true);
+    expect(result.outcome).toBe("loss");
+    expect(result.magnitude).toBeCloseTo(-50, 6);
+  });
+
+  it("picks the max sell-YES-edge contract, matching the shadow opener", () => {
+    const h = hyp({
+      direction: "short",
+      prediction: "BTC one-touch NO sale is profitable",
+      conditions: { asset: "BTC", sell_yes_edge_pts: ">= 3" },
+    });
+    const entry = deriveContractEntry(h, [
+      contractRow({ marketId: "low", pmYes: 0.4, sellYesEdgePts: 2 }),
+      contractRow({ marketId: "high", pmYes: 0.2, sellYesEdgePts: 9 }),
+    ]);
+    expect(entry?.marketId).toBe("high");
+    expect(entry?.side).toBe("no");
+    expect(entry?.entryPrice).toBeCloseTo(0.8, 6);
+  });
+
+  it("honours a touch_direction gate when choosing the contract", () => {
+    const h = hyp({
+      direction: "short",
+      prediction: "BTC one-touch NO sale is profitable",
+      conditions: { asset: "BTC", touch_direction: "= -1", sell_yes_edge_pts: ">= 3" },
+    });
+    const entry = deriveContractEntry(h, [
+      contractRow({ marketId: "above", pmYes: 0.2, sellYesEdgePts: 9, direction: "above" }),
+      contractRow({ marketId: "below", pmYes: 0.3, sellYesEdgePts: 4, direction: "below" }),
+    ]);
+    expect(entry?.marketId).toBe("below");
   });
 
   it("still records magnitude for a plain spot thesis", () => {
@@ -250,17 +493,15 @@ describe("fundingAnnConditionKey", () => {
 });
 
 describe("evaluateHypothesisTest scorer v2", () => {
-  it("scores short GOLD as win when spot falls (H-540 class bug)", () => {
+  it("scores a short spot thesis as win when spot falls (H-540 class bug)", () => {
+    // The original bug defaulted shorts to needing the underlying to RISE. The
+    // fixture was a one-touch contract thesis, which is no longer graded on
+    // spot at all, so the guard now uses a genuine spot short.
     const h = hyp({
       id: "H-540",
       direction: "short",
-      prediction:
-        "GOLD one-touch YES contracts with rich sell-YES edge will revert toward fair value, generating positive PnL on the short side",
-      conditions: {
-        venue: "polymarket",
-        asset: "GOLD",
-        signalType: "ONE_TOUCH_HIGH_EDGE_NO",
-      },
+      prediction: "GOLD spot declines > 2% over the window",
+      conditions: { asset: "GOLD", gold_gc_spot_pct_vs_24h_sma: "> 0" },
     });
     const start = row("2026-05-26", { gold_gc_spot: 4509 });
     const end = row("2026-06-09", { gold_gc_spot: 4254 });
@@ -540,12 +781,14 @@ describe("sweepUnscorableHypotheses", () => {
     expect(pendingHypothesisTests(h)).toHaveLength(0);
   });
 
-  it("keeps a Polymarket-contract variant instead of retiring it", () => {
+  it("leaves a Polymarket-contract variant untouched: it is contract-scored", () => {
     const h = unscorable("H-906", 2, 1);
     h.conditions = { ...h.conditions, venue: "polymarket" };
     const result = sweepUnscorableHypotheses([h], new Date("2026-08-01T00:00:00.000Z"));
-    expect(result.awaitingContractScorer).toBe(1);
+    // Contract theses are scorable now, so the unscorable sweep never sees
+    // them and cannot retire the mined one-touch research.
     expect(result.retiredVariants).toBe(0);
+    expect(result.cancelledTests).toBe(0);
     expect(h.status).toBe("active");
   });
 

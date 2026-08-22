@@ -586,11 +586,30 @@ function candidateForDate(
     .find((hypothesis) => backfillConditionsSatisfied(hypothesis, valuationHistory, relativeHistory, stats)) ?? null;
 }
 
+/**
+ * Groups observations by calendar day so a contract thesis can be marked on the
+ * contract it actually entered rather than on the underlying's move.
+ */
+function indexRelativeRowsByDate(
+  rows: RelativeValueObservation[],
+): Map<string, RelativeValueObservation[]> {
+  const byDate = new Map<string, RelativeValueObservation[]>();
+  for (const row of rows) {
+    const key = dayKey(row.timestamp);
+    if (!key) continue;
+    const bucket = byDate.get(key);
+    if (bucket) bucket.push(row);
+    else byDate.set(key, [row]);
+  }
+  return byDate;
+}
+
 function resolveEligiblePending(
   family: HypothesisSetupFamily,
   rowsByDate: Map<string, SnapshotRow>,
   currentDate: string,
   currentRow: SnapshotRow,
+  relativeByDate: Map<string, RelativeValueObservation[]>,
 ): { resolved: number; wins: number; losses: number } {
   let resolved = 0;
   let wins = 0;
@@ -603,7 +622,14 @@ function resolveEligiblePending(
       if (currentMs < addDaysMs(test.date, hypothesis.timeframeDays)) continue;
       const startRow = rowsByDate.get(dayKey(test.date));
       if (!startRow) continue;
-      const result = evaluateHypothesisTest(hypothesis, startRow, currentRow);
+      const entryRows = relativeByDate.get(dayKey(test.date)) ?? [];
+      const exitRows = relativeByDate.get(dayKey(currentDate)) ?? [];
+      // A stamped entry beats re-deriving one from the archive: it is the
+      // contract the test actually opened on, not the best match on the day.
+      const contractCtx = exitRows.length > 0 && (test.contractEntry || entryRows.length > 0)
+        ? { entryRows, exitRows, entryStamp: test.contractEntry }
+        : undefined;
+      const result = evaluateHypothesisTest(hypothesis, startRow, currentRow, contractCtx);
       test.outcome = result.outcome;
       test.actualMove = `[historical-backfill] ${result.actualMove} (resolved ${currentDate} from ${dayKey(test.date)}; method=${result.method})`;
       if (typeof result.magnitude === "number" && result.magnitudeUnit) {
@@ -634,6 +660,7 @@ function backfill(opts: CliOptions): Report {
     readHlFundingHistory(hlFundingHistoryPath),
   );
   const relativeRows = readRelativeValueRows(relativeValuePath);
+  const relativeByDate = indexRelativeRowsByDate(relativeRows);
 
   if (valuationRows.length === 0) throw new Error(`No valuation rows loaded from ${valuationsPath}`);
 
@@ -681,7 +708,7 @@ function backfill(opts: CliOptions): Report {
       const valuationHistory = valuationRows.filter((row) => timeMs(String(row.date)) <= cutoffMs);
       const relativeHistory = relativeRowsThrough(relativeRows, cutoffMs);
 
-      const resolution = resolveEligiblePending(family, rowsByDate, currentDate, currentRow);
+      const resolution = resolveEligiblePending(family, rowsByDate, currentDate, currentRow, relativeByDate);
       resolved += resolution.resolved;
       wins += resolution.wins;
       losses += resolution.losses;
