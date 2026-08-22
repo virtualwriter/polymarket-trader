@@ -1302,3 +1302,36 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-08-22 11:28 UTC
+
+**Portfolio:** $104.04 total | Cash $89.04 | 15 open | P&L $7.2774 | 63% win rate (759 trades)
+
+**Closed 1 trades:**
+- ❌ RIVN long via hyperliquid/hl_perp [HL RIVN Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0570 (-5.7%, market -0.0583, funding 0.0013)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1853181260 is 2.5 std devs from mean (1258310538.44 ± 234061921.72)
+
+**Blocked signal learning:**
+- Open blocked shadows: 18
+- Resolved blocked shadows: 918 (473 wins / 445 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+4.17%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.17%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+2.70%)
+
+**LLM analysis:**
+Close review at 11:00 UTC: no LLM-eligible closes are available. T-1787362222642-lciw (AMZN FUNDING_EXTREME_SHORT) is below its 12h minimum open and therefore cannot be closed discretionarily, but its signal input amzn_hl_funding_ann has moved from -35.8% to +1.6%, crossing back through the -15% entry threshold; if this persists past min hold, it will be a clear thesis_invalidated candidate. Weekend HL funding reversion positions are mechanical-only; COIN (-16.3%) and HOOD (-8.2%) are notable adverse movers, but no action is permitted. Macro remains very bearish/hawkish with oil spike risk, so I will continue monitoring for hard portfolio risk.
+
+---
+
