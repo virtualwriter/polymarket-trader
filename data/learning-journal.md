@@ -1728,3 +1728,37 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-08-22 23:29 UTC
+
+**Portfolio:** $103.88 total | Cash $95.88 | 8 open | P&L $7.1157 | 63% win rate (778 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 23 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1956772304 is 2.9 std devs from mean (1260985418.09 ± 237369618.61)
+- [anomaly] hype_hl_funding_ann = 52.93 is 2.9 std devs from mean (9.99 ± 14.66)
+- [anomaly] hype_pm_ev = 76.98 is 2.2 std devs from mean (58.81 ± 8.21)
+- [anomaly] hype_spot = 79.0815 is 2.1 std devs from mean (58.32 ± 9.89)
+- [anomaly] btc_hl_funding_ann = 20.28 is 2.1 std devs from mean (5.61 ± 7.06)
+
+**Blocked signal learning:**
+- Open blocked shadows: 15
+- Resolved blocked shadows: 923 (476 wins / 447 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+19.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+
+**LLM analysis:**
+No eligible discretionary closes this run: all WEEKEND_HL_FUNDING_REVERSION_LONG positions are policy-gated mechanical-only, and the BTC FUNDING_EXTREME_LONG short is only 7.5h open versus the 12h LLM minimum. BTC funding has softened from ~23% to ~20.3% but remains above the +15% entry threshold, so no thesis invalidation; price drift is mildly favorable to the short. Structural observation: AMZN funding reverted sharply from -88.7% to +5.5% while its position is flat, which is a useful signal-family data point even though no LLM close is permitted. No hard risk or data-quality issues requiring action.
+
+---
+
