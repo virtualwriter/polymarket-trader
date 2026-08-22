@@ -1119,3 +1119,38 @@ Closed OIL PC_RATIO_EXTREME_LOW short on thesis invalidation: oil_cl_pc_ratio ro
 
 ---
 
+### 2026-08-22 05:28 UTC
+
+**Portfolio:** $104.11 total | Cash $89.11 | 15 open | P&L $7.3542 | 63% win rate (752 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 19 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_funding_ann = -88.72 is -5.5 std devs from mean (9.70 ± 17.86)
+- [anomaly] hype_hl_funding_ann = 80.51 is 4.8 std devs from mean (9.89 ± 14.56)
+- [anomaly] gold_hl_funding_ann = -42.74 is -3.0 std devs from mean (8.34 ± 17.10)
+- [anomaly] hype_hl_oi = 1907350863 is 2.8 std devs from mean (1257081538.81 ± 232689762.86)
+- [anomaly] hype_spot = 78.923 is 2.1 std devs from mean (58.20 ± 9.79)
+
+**Blocked signal learning:**
+- Open blocked shadows: 16
+- Resolved blocked shadows: 917 (472 wins / 445 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+4.17%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.17%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+Reviewed 15 open positions. ALLOWED ACTION SURFACE shows no LLM-eligible closes: all WEEKEND_HL_FUNDING_REVERSION_LONG positions are mechanical-only, and the AMZN FUNDING_EXTREME_SHORT position is only about 4h open versus a 12h minimum hold. Largest open stress is COIN WEEKEND_HL_FUNDING_REVERSION_LONG at -11.05% shortly after entry, followed by BIRD -4.84% and HOOD -3.46%; these remain under scanner control with -100% stops, so no close was emitted. Broad negative HL funding intensified into 05:00 across equities, which is thesis continuation for the funding-reversion family, but immediate mark-to-market is adverse; will monitor for continued risk-off or forced liquidation pressure.
+
+---
+
