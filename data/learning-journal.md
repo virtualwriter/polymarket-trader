@@ -1694,3 +1694,37 @@ No discretionary closes taken: all weekend HL funding reversion positions are po
 
 ---
 
+### 2026-08-22 22:28 UTC
+
+**Portfolio:** $103.88 total | Cash $95.88 | 8 open | P&L $7.1157 | 63% win rate (778 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 23 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_funding_ann = 67.04 is 3.9 std devs from mean (9.97 ± 14.64)
+- [anomaly] hype_hl_oi = 1968432709 is 3.0 std devs from mean (1260705985.61 ± 237007300.62)
+- [anomaly] btc_hl_funding_ann = 24.81 is 2.7 std devs from mean (5.60 ± 7.06)
+- [anomaly] hype_pm_ev = 77.24 is 2.2 std devs from mean (58.80 ± 8.20)
+- [anomaly] hype_spot = 79.636 is 2.2 std devs from mean (58.31 ± 9.88)
+
+**Blocked signal learning:**
+- Open blocked shadows: 15
+- Resolved blocked shadows: 923 (476 wins / 447 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+19.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h since last call; daily budget 8/12; next scheduled 2026-08-23T00:28:18.129Z). Mechanical cycle ran normally._
+
+---
+
