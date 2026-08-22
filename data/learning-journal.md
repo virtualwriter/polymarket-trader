@@ -1511,3 +1511,39 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 0.8h 
 
 ---
 
+### 2026-08-22 16:28 UTC
+
+**Portfolio:** $103.84 total | Cash $90.84 | 13 open | P&L $7.0788 | 63% win rate (768 trades)
+
+**Closed 1 trades:**
+- ❌ TSLA long via hyperliquid/hl_perp [HL TSLA Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0144 (-1.4%, market -0.0154, funding 0.0010)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 22 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1892904238 is 2.7 std devs from mean (1259324157.73 ± 235232228.72)
+- [anomaly] btc_hl_funding_ann = 23.03 is 2.5 std devs from mean (5.57 ± 7.03)
+- [anomaly] hype_pm_ev = 75.76 is 2.1 std devs from mean (58.77 ± 8.17)
+
+**Blocked signal learning:**
+- Open blocked shadows: 17
+- Resolved blocked shadows: 920 (474 wins / 446 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+2.70%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.14%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.88%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h since last call; daily budget 6/12; next scheduled 2026-08-22T18:28:18.370Z). Mechanical cycle ran normally._
+
+---
+
