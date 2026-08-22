@@ -314,6 +314,17 @@ TESTABILITY — an idea that cannot be decided quickly is worth less than a weak
 - Scale the move threshold to the horizon. A 2% move over 14 days is not the same claim as 2% over 2 days; shortening the window without shrinking the threshold turns a sound thesis into a losing one.
 - Favour conditions that hold often. A condition that fires a few times a month cannot reach ${HYPOTHESIS_SHADOW_TESTS_REQUIRED} tests no matter how short the horizon.
 
+WHICH INSTRUMENT A THESIS IS GRADED ON — get this wrong and the verdict is meaningless:
+- A thesis whose conditions name contract pricing (sell_yes_edge_pts, yesAsk, yesSpread, touch_direction, pm_iv_minus_opt_iv_pts, adjusted_no_gap_pts, or an asset-scoped form like gold_pm_underlying_cap_edge_pts_max) is graded on that CONTRACT's profit and loss: entry price versus the later quote of the side held.
+- So its prediction must be about the contract, e.g. "the NO sale is profitable as the touch premium deflates". Do NOT write a spot-move prediction for a contract thesis. Predictions of the form "GOLD spot will decline >2%" were previously attached to one-touch premium sales, which recorded 0 wins from 20 while the same trade won 62% of the time measured on the contract. The trade was never a bet on spot travelling 2%.
+- Conversely, a spot or perp thesis is graded on the underlying's percent move over the horizon, so it needs a direction and a move threshold.
+- Contract thresholds are applied contract by contract, so state a combination that one real contract can satisfy at once. Asking for a wide edge and a tight spread together is fine; asking for a wide edge and a near-settled price is not.
+
+WHAT COUNTS AS CHANCE — the bar is the criterion's own frequency, not 50%:
+- A family is judged against how often its success criterion is met without any signal, measured by replaying the criterion over history. "Declines >2% in 2 days" happens about 15-33% of the time depending on the asset, so a family winning 40% of the time may be well ahead of chance, and one winning 60% on a criterion that is usually true may be behind it.
+- Promotion needs the win rate to beat that base rate by 1.25x AND be statistically significant. Do not aim for a high absolute win rate; aim for a large gap between the win rate and what the criterion does unconditionally.
+- For binary contracts the price paid IS the market's own win probability. Selling NO at 70c that wins 65% of the time is a losing strategy, not a 65% winner.
+
 Respond with ONLY valid JSON in this exact format:
 {
   "strategyReview": "1 short paragraph on what is working and what is failing",
