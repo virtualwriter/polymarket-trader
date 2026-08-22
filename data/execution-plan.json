@@ -1,24 +1,26 @@
 {
-  "generatedAt": "2026-08-22T15:28:49.250Z",
+  "generatedAt": "2026-08-22T16:01:21.236Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1787362222642-lciw",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "amzn_hl_funding_ann"
-      ],
-      "thesis": "AMZN HL funding normalized from -35.8% annualized at entry to +5.48%, crossing back through the -15% entry threshold and flipping positive. The crowded-short funding extreme that justified the long has fully round-tripped, so the signal input no longer supports the position."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "BTC",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.3525714285714286,
+      "confidence": 0.16669748479768756,
+      "thesis": "BTC HL funding 27.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 77052,
+      "targetPct": 5,
+      "stopPct": 2,
+      "expiryDays": 3,
+      "leverage": 1
+    },
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "asset": "OIL",
@@ -28,31 +30,16 @@
       "confidence": 0.12019246016198351,
       "thesis": "OIL P/C ratio 0.43 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 86.39,
+      "entryPrice": 86.41,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
-    },
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "BTC",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.03885714285714284,
-      "confidence": 0.018371845974461506,
-      "thesis": "BTC HL funding 16.4% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 77050,
-      "targetPct": 5,
-      "stopPct": 2,
-      "expiryDays": 3,
-      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
