@@ -2450,3 +2450,40 @@ Reviewed six open weekend HL funding-reversion longs; no LLM discretionary close
 
 ---
 
+### 2026-08-23 22:28 UTC
+
+**Portfolio:** $103.88 total | Cash $88.88 | 15 open | P&L $7.1229 | 63% win rate (803 trades)
+
+**Opened 1 positions:**
+- AMZN long @ $257.84 via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 21 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] GOLD PM-Options IV gap moved wider by 11.3pp (was -23.7, now -12.4)
+- [anomaly] amzn_hl_funding_ann = -146.76 is -8.6 std devs from mean (9.52 ± 18.08)
+- [anomaly] hype_hl_funding_ann = 73.41 is 4.3 std devs from mean (10.07 ± 14.70)
+- [anomaly] hype_hl_oi = 2054256962 is 3.2 std devs from mean (1266462040.37 ± 244660166.28)
+- [anomaly] btc_hl_funding_ann = 27.98 is 3.1 std devs from mean (5.69 ± 7.11)
+
+**Blocked signal learning:**
+- Open blocked shadows: 16
+- Resolved blocked shadows: 925 (477 wins / 448 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-0.86%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h since last call; daily budget 9/12; next scheduled 2026-08-24T00:28:24.969Z). Mechanical cycle ran normally._
+
+---
+
