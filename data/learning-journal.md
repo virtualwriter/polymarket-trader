@@ -1900,3 +1900,41 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 1/12; ne
 
 ---
 
+### 2026-08-23 05:29 UTC
+
+**Portfolio:** $103.99 total | Cash $94.99 | 9 open | P&L $7.2329 | 63% win rate (784 trades)
+
+**Closed 2 trades:**
+- ✅ HIMS long via hyperliquid/hl_perp [HL HIMS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0213 (2.1%, market 0.0213, funding 0.0000)
+- ✅ BTC short via hyperliquid/hl_perp [HL BTC perp] (FUNDING_EXTREME_LONG) → llm_decision: +$0.0101 (1.0%, market 0.0098, funding 0.0003)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 21 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved wider by 5.3pp (was 0.1, now 5.4)
+- [anomaly] hype_hl_oi = 1951799326 is 2.9 std devs from mean (1262394645.54 ± 239212864.68)
+- [anomaly] hype_pm_ev = 76.63 is 2.2 std devs from mean (58.85 ± 8.24)
+- [anomaly] hype_spot = 78.533 is 2.0 std devs from mean (58.36 ± 9.92)
+
+**Blocked signal learning:**
+- Open blocked shadows: 18
+- Resolved blocked shadows: 923 (476 wins / 447 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+19.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+
+**LLM analysis:**
+Reviewed open positions. Only BTC short T-1787414481244-693c was eligible for discretionary close. Funding normalized from 23.0% to 10.95%, below the +15% entry trigger, so a thesis_invalidated close was issued while the position is slightly green. All WEEKEND_HL_FUNDING_REVERSION_LONG positions are policy-gated and remain under mechanical exit control; MSTR and BABA are showing early stress but cannot be closed here.
+
+---
+
