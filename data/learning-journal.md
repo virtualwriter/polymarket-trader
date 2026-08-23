@@ -2026,3 +2026,40 @@ No discretionary closes are eligible this run. All four WEEKEND_HL_FUNDING_REVER
 
 ---
 
+### 2026-08-23 09:28 UTC
+
+**Portfolio:** $103.76 total | Cash $100.76 | 3 open | P&L $6.9987 | 63% win rate (793 trades)
+
+**Closed 2 trades:**
+- ❌ BABA long via hyperliquid/hl_perp [HL BABA Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.1268 (-12.7%, market -0.1302, funding 0.0034)
+- ❌ MSTR long via hyperliquid/hl_perp [HL MSTR Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0852 (-8.5%, market -0.0900, funding 0.0048)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 21 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1961532016 is 2.9 std devs from mean (1263225138.47 ± 240266963.99)
+- [anomaly] btc_hl_funding_ann = 22.95 is 2.4 std devs from mean (5.65 ± 7.09)
+- [anomaly] hype_pm_ev = 76.53 is 2.1 std devs from mean (58.87 ± 8.25)
+- [anomaly] hype_spot = 79.0732 is 2.1 std devs from mean (58.39 ± 9.94)
+
+**Blocked signal learning:**
+- Open blocked shadows: 18
+- Resolved blocked shadows: 923 (476 wins / 447 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+19.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+
+**LLM analysis:**
+No discretionary closes allowed this run: EBAY and HIMS are policy-gated mechanical WEEKEND_HL_FUNDING_REVERSION_LONG trades, and AMZN FUNDING_EXTREME_SHORT is only 3h old, below the 12h LLM min hold. Notable for later review: AMZN funding has round-tripped from -26.7% at entry to +5.48%, which would look like thesis invalidation, but it is too early to act. EBAY remains steeply negative on funding but is -1.05% underwater; no LLM close permitted. HIMS is +1.51% with mechanical breakeven armed, so I will let the scanner manage it.
+
+---
+
