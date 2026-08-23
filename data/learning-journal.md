@@ -2375,3 +2375,41 @@ Closed AMZN FUNDING_EXTREME_SHORT long as thesis_invalidated after the 12h minim
 
 ---
 
+### 2026-08-23 20:28 UTC
+
+**Portfolio:** $103.84 total | Cash $98.84 | 5 open | P&L $7.0798 | 63% win rate (802 trades)
+
+**Closed 3 trades:**
+- ✅ TSM long via hyperliquid/hl_perp [HL TSM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0087 (0.9%, market 0.0087, funding 0.0000)
+- ✅ HIMS long via hyperliquid/hl_perp [HL HIMS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0091 (0.9%, market 0.0081, funding 0.0010)
+- ✅ ZM long via hyperliquid/hl_perp [HL ZM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → signal_killed: +$0.0000 (0.0%, market 0.0000, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 21 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 9.2pp (was -19.0, now -28.2)
+- [anomaly] hype_hl_oi = 2018128632 is 3.1 std devs from mean (1265840610.14 ± 243765508.00)
+- [anomaly] hype_pm_ev = 77.9 is 2.3 std devs from mean (58.94 ± 8.31)
+- [anomaly] hype_spot = 81 is 2.3 std devs from mean (58.47 ± 10.01)
+
+**Blocked signal learning:**
+- Open blocked shadows: 17
+- Resolved blocked shadows: 924 (477 wins / 447 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+19.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.41%)
+
+**LLM analysis:**
+Reviewed all five open WEEKEND_HL_FUNDING_REVERSION_LONG positions; every position is policy-gated as mechanical-only, so no discretionary close instructions were emitted. BIRD is near +3% target and COIN is close behind, with breakeven arms armed; mechanical scanner should handle routine exits. BABA and DKNG are slightly negative but early in planned hold, and SNDK just opened with funding still near -50.2% annualized, consistent with the signal family. Continue watching for any normalization of funding toward zero or hard portfolio-risk deterioration.
+
+---
+

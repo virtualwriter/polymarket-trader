@@ -1,28 +1,31 @@
 {
-  "generatedAt": "2026-08-23T19:28:49.900Z",
+  "generatedAt": "2026-08-23T20:28:46.769Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
+  "llmCloses": [],
+  "entrySignals": [
     {
-      "action": "close",
-      "positionId": "T-1787466502826-amtr",
+      "type": "FUNDING_EXTREME_SHORT",
       "asset": "AMZN",
       "venue": "hyperliquid",
       "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "amzn_hl_funding_ann"
-      ],
-      "thesis": "AMZN FUNDING_EXTREME_SHORT long thesis is invalidated: amzn_hl_funding_ann has round-tripped from -26.67% at entry to +5.48%, crossing back through the -15% entry threshold and flipping sign. Negative funding carry no longer supports the long."
+      "strength": 0.12857142857142856,
+      "confidence": 0.07322006590475666,
+      "thesis": "AMZN HL funding -19.5% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 259.08,
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDays": 7,
+      "leverage": 1
     }
   ],
-  "entrySignals": [],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
