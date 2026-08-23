@@ -2487,3 +2487,49 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-08-23 23:28 UTC
+
+**Portfolio:** $104.04 total | Cash $99.04 | 5 open | P&L $7.2807 | 64% win rate (813 trades)
+
+**Closed 10 trades:**
+- ✅ BABA long via hyperliquid/hl_perp [HL BABA Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0007 (0.1%, market 0.0004, funding 0.0003)
+- ✅ SNDK long via hyperliquid/hl_perp [HL SNDK Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0218 (2.2%, market 0.0217, funding 0.0002)
+- ✅ MU long via hyperliquid/hl_perp [HL MU Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0085 (0.8%, market 0.0083, funding 0.0002)
+- ✅ SKHX long via hyperliquid/hl_perp [HL SKHX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → target: +$0.0338 (3.4%, market 0.0333, funding 0.0005)
+- ✅ AAPL long via hyperliquid/hl_perp [HL AAPL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0134 (1.3%, market 0.0134, funding 0.0000)
+- ✅ ARM long via hyperliquid/hl_perp [HL ARM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0318 (3.2%, market 0.0318, funding 0.0000)
+- ✅ LLY long via hyperliquid/hl_perp [HL LLY Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0100 (1.0%, market 0.0100, funding 0.0000)
+- ✅ META long via hyperliquid/hl_perp [HL META Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0123 (1.2%, market 0.0123, funding 0.0000)
+- ✅ MRVL long via hyperliquid/hl_perp [HL MRVL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0105 (1.1%, market 0.0105, funding 0.0000)
+- ✅ TSLA long via hyperliquid/hl_perp [HL TSLA Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0150 (1.5%, market 0.0150, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 21 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 5.3pp (was -26.3, now -21.0)
+- [anomaly] hype_hl_oi = 2077217197 is 3.3 std devs from mean (1266784921.75 ± 245145736.06)
+- [anomaly] hype_spot = 82.8189 is 2.4 std devs from mean (58.49 ± 10.03)
+- [anomaly] hype_pm_ev = 78.73 is 2.4 std devs from mean (58.96 ± 8.34)
+- [anomaly] btc_hl_funding_ann = 21.11 is 2.2 std devs from mean (5.69 ± 7.12)
+
+**Blocked signal learning:**
+- Open blocked shadows: 16
+- Resolved blocked shadows: 925 (477 wins / 448 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-0.86%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h since last call; daily budget 9/12; next scheduled 2026-08-24T01:28:32.308Z). Mechanical cycle ran normally._
+
+---
+
