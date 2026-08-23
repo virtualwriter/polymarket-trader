@@ -1762,3 +1762,45 @@ No eligible discretionary closes this run: all WEEKEND_HL_FUNDING_REVERSION_LONG
 
 ---
 
+### 2026-08-23 01:28 UTC
+
+**Portfolio:** $103.96 total | Cash $98.96 | 5 open | P&L $7.2016 | 63% win rate (782 trades)
+
+**Closed 4 trades:**
+- ✅ BIRD long via hyperliquid/hl_perp [HL BIRD Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0153 (1.5%, market 0.0142, funding 0.0012)
+- ✅ COIN long via hyperliquid/hl_perp [HL COIN Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0275 (2.8%, market 0.0276, funding -0.0001)
+- ✅ HIMS long via hyperliquid/hl_perp [HL HIMS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0142 (1.4%, market 0.0131, funding 0.0010)
+- ✅ MSTR long via hyperliquid/hl_perp [HL MSTR Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0288 (2.9%, market 0.0288, funding -0.0000)
+
+**Hypothesis lifecycle:**
+- 💀 Setup family find_0053 KILLED (0% over 21 tests across 10 variants): FIND-linked FIND-0053
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 21 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 2023555788 is 3.2 std devs from mean (1261291425.46 ± 237812918.63)
+- [anomaly] btc_hl_funding_ann = 27.85 is 3.1 std devs from mean (5.62 ± 7.08)
+- [anomaly] hype_hl_funding_ann = 47.49 is 2.6 std devs from mean (10.00 ± 14.67)
+- [anomaly] hype_pm_ev = 77.78 is 2.3 std devs from mean (58.82 ± 8.21)
+- [anomaly] hype_spot = 80.864 is 2.3 std devs from mean (58.33 ± 9.89)
+
+**Blocked signal learning:**
+- Open blocked shadows: 17
+- Resolved blocked shadows: 923 (476 wins / 447 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+19.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h since last call; daily budget 0/12; next scheduled 2026-08-23T03:28:26.193Z). Mechanical cycle ran normally._
+
+---
+
