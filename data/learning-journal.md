@@ -1804,3 +1804,35 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-08-23 02:28 UTC
+
+**Portfolio:** $103.96 total | Cash $96.96 | 7 open | P&L $7.2015 | 63% win rate (782 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 22 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1966689746 is 3.0 std devs from mean (1261574377.05 ± 238184408.12)
+- [anomaly] hype_pm_ev = 76.9 is 2.2 std devs from mean (58.83 ± 8.22)
+- [anomaly] hype_spot = 78.9331 is 2.1 std devs from mean (58.34 ± 9.90)
+
+**Blocked signal learning:**
+- Open blocked shadows: 17
+- Resolved blocked shadows: 923 (476 wins / 447 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+19.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+
+**LLM analysis:**
+Reviewed all 7 open positions; no discretionary closes are eligible this run. All WEEKEND_HL_FUNDING_REVERSION_LONG positions are policy-gated to mechanical exits only, and the BTC FUNDING_EXTREME_LONG short is under the 12h minimum hold requirement at 10.5h. BTC funding remains above the +15% entry trigger despite cooling to ~18.5%, so no thesis invalidation appears present yet; AMZN funding has normalized sharply but that position is also mechanical-only and near expiry. No action taken.
+
+---
+
