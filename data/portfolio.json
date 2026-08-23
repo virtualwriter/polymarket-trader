@@ -1,5 +1,5 @@
 {
-  "cash": 101.78479338879723,
+  "cash": 100.78479338879723,
   "positions": [
     {
       "id": "T-1787466502826-amtr",
@@ -8,7 +8,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 258.46,
-      "currentPrice": 258.84,
+      "currentPrice": 259.01,
       "currentUnderlyingPrice": 259.59,
       "entryUnderlyingPrice": 259.59,
       "size": 1,
@@ -23,8 +23,8 @@
       "instrumentType": "hl_perp",
       "instrumentId": "AMZN",
       "instrumentLabel": "HL AMZN perp",
-      "fundingPnlAccrued": -0.000012499999999999999,
-      "peakPnlPct": 0.20056667375997783
+      "fundingPnlAccrued": -0.00001875,
+      "peakPnlPct": 0.21154888570765745
     },
     {
       "id": "WF-1787480900442-BIRD-piqd",
@@ -33,8 +33,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 2.383,
-      "currentPrice": 2.383,
-      "currentUnderlyingPrice": 2.383,
+      "currentPrice": 2.3833,
       "entryUnderlyingPrice": 2.383,
       "size": 1,
       "leverage": 5,
@@ -48,12 +47,37 @@
       "instrumentId": "BIRD",
       "instrumentLabel": "HL BIRD Builder DEX stock perp",
       "fundingPnlAccrued": 0,
+      "entryConfidence": 0.5,
+      "peakPnlPct": 0.06294586655480255
+    },
+    {
+      "id": "WF-1787484502839-DKNG-zdea",
+      "openedAt": "2026-08-23T11:28:22.839Z",
+      "asset": "DKNG",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 26.039,
+      "currentPrice": 26.039,
+      "currentUnderlyingPrice": 26.039,
+      "entryUnderlyingPrice": 26.039,
+      "size": 1,
+      "leverage": 5,
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "hypothesisId": null,
+      "thesis": "[WEEKEND HL FUNDING LIVE] DKNG Builder DEX stock perp funding -59.4% annualized in mid band [-100%, -50%] during US-equity-closed entry window (Fri 4:00pm ET → Sun; no Mon pre-open entries). Live tracked long at 5x; exit when margin P&L >= 3%, funding >= 10%, Mon 9:30am ET window close, or held 24h.",
+      "targetPct": 3,
+      "stopPct": 100,
+      "expiryDate": "2026-08-24T11:28:22.839Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "DKNG",
+      "instrumentLabel": "HL DKNG Builder DEX stock perp",
+      "fundingPnlAccrued": 0,
       "entryConfidence": 0.5
     }
   ],
-  "totalRealizedPnl": 7.024758644557531,
+  "totalRealizedPnl": 7.024699999999995,
   "totalTrades": 795,
   "winCount": 499,
   "lossCount": 296,
-  "lastUpdated": "2026-08-23T10:28:21.286Z"
+  "lastUpdated": "2026-08-23T11:28:23.708Z"
 }

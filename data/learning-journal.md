@@ -2100,3 +2100,36 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 4/12; ne
 
 ---
 
+### 2026-08-23 11:28 UTC
+
+**Portfolio:** $103.78 total | Cash $100.78 | 3 open | P&L $7.0247 | 63% win rate (795 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 21 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1982059458 is 3.0 std devs from mean (1263792384.49 ± 241006579.02)
+- [anomaly] hype_pm_ev = 77.03 is 2.2 std devs from mean (58.88 ± 8.27)
+- [anomaly] hype_spot = 80.06 is 2.2 std devs from mean (58.40 ± 9.95)
+- [anomaly] gold_opt_iv_30d = 32.3 is 2.1 std devs from mean (24.00 ± 3.96)
+
+**Blocked signal learning:**
+- Open blocked shadows: 18
+- Resolved blocked shadows: 923 (476 wins / 447 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+19.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 2.0h since last call; daily budget 4/12; next scheduled 2026-08-23T13:28:23.678Z). Mechanical cycle ran normally._
+
+---
+
