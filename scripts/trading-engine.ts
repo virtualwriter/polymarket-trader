@@ -6976,7 +6976,10 @@ function evaluateAutoPromotions(
     const { setupId } = setupIdForShadow(shadow);
     const outcome: ShadowOutcome = {
       pnlPct: shadow.hypotheticalResult.pnlPct,
-      win: shadow.hypotheticalResult.outcome === "win",
+      // Strictly positive, not the stored label: that label treats a flat exit
+      // as a win, and flat exits are common here because the dominant exit is
+      // edge compression rather than a barrier resolving.
+      win: shadow.hypotheticalResult.pnlPct > 0,
       openedAt: shadow.position?.openedAt ?? shadow.blockedAt ?? now,
       // Only meaningful for binaries, where price is a probability. Perp and
       // spot shadows leave it unset and fall back to a coin-flip null.

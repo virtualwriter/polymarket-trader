@@ -44,6 +44,13 @@ export const AUTO_PROMOTE_FULL_SIZE_AFTER_TRADES = 20;
 
 export interface ShadowOutcome {
   pnlPct: number;
+  /**
+   * Whether the trade made money, which is not the same as its recorded
+   * outcome label: that label calls a P&L of exactly zero a win, and 13 of
+   * this cohort's 117 shadows exited flat. Counting scratches as wins reported
+   * 62.4% where the strict rate was 51.3%, which is the difference between a
+   * cohort that looks like an edge and one that looks like a coin flip.
+   */
   win: boolean;
   /** When the shadow was opened; used for the post-gate cutoff. */
   openedAt: string;
