@@ -170,7 +170,7 @@
     "winRate": 0.3,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Early wins captured genuine IV‑driven expansions, but after 23 July the low PM‑IV conditions persisted while spot moved less than 2%, showing that cheap volatility alone is insufficient. The absolute 46/49 thresholds were regime‑stale and did not account for fading implied vol. | BTC PM‑IV expansion reversion lost 7 of 10 recent tests, with spot moves frequently failing to reach 2% absolute. The IV spread proved to be a weak volatility predictor in calm markets, and multiple refinements that tightened thresholds did not rescue it. | Refined by H-638 (2026-08-11): Refinement of H‑001: replace absolute PM‑IV thresholds with a regime‑relative co | The absolute IV thresholds (PM IV <46, opt IV >49) are no longer effective in the current lower‑IV environment; many triggers produced sub‑2% spot moves, indicating the regime has shifted.",
+    "postMortem": "BTC PM‑IV expansion reversion lost 7 of 10 recent tests, with spot moves frequently failing to reach 2% absolute. The IV spread proved to be a weak volatility predictor in calm markets, and multiple refinements that tightened thresholds did not rescue it. | Refined by H-638 (2026-08-11): Refinement of H‑001: replace absolute PM‑IV thresholds with a regime‑relative co | The absolute IV thresholds (PM IV <46, opt IV >49) are no longer effective in the current lower‑IV environment; many triggers produced sub‑2% spot moves, indicating the regime has shifted. | Only 3/10 passed. The two wins came from large down moves, while eight entries produced absolute moves <2%. PM IV below 46 vs options IV above 49 is a persistent structural discount, not a short-horizon timing condition; it can stay pinned while BTC drifts.",
     "source": "llm",
     "setupId": "btc_pm_iv_expansion_reversion",
     "setupLabel": "BTC PM-IV expansion / reversion"
@@ -4958,7 +4958,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "The HYPE confirmation long fires after BTC is already near the 7d high. Recorded tests show BTC immediately fell -2.93% and -3.47%, or stalled below +2%. Stable HYPE OI was a late-cycle byproduct rather than a continuation predictor. | The cross-asset momentum confirmation variant repeatedly went long BTC near its 7-day high when HYPE was above its 24h SMA, but BTC fell -2.93% and -3.47% in multiple tests. HYPE participation was a crowded trend marker rather than a continuation edge. | The condition set buys BTC already above the 24h SMA, within 4% of the 7d high, and HYPE above its SMA with stable OI; recent tests are 7/23 and show repeated 2-3.5% BTC drops after entry, with a single 9.66% win masking mostly chasing losses. | BTC lost -2.9% to -3.5% while HYPE was above its 24h SMA; HYPE risk-on participation did not confirm durable BTC momentum.",
+    "postMortem": "The cross-asset momentum confirmation variant repeatedly went long BTC near its 7-day high when HYPE was above its 24h SMA, but BTC fell -2.93% and -3.47% in multiple tests. HYPE participation was a crowded trend marker rather than a continuation edge. | The condition set buys BTC already above the 24h SMA, within 4% of the 7d high, and HYPE above its SMA with stable OI; recent tests are 7/23 and show repeated 2-3.5% BTC drops after entry, with a single 9.66% win masking mostly chasing losses. | BTC lost -2.9% to -3.5% while HYPE was above its 24h SMA; HYPE risk-on participation did not confirm durable BTC momentum. | H-108's family is 36% over scorable tests, with wins only in two violent BTC breaks (+9.66%, +22.67%). HYPE risk-on did not discriminate; losses occurred with BTC -3.47%, +0.70%, and flat near the 7d high.",
     "source": "llm",
     "setupId": "cross_asset_iv_compression_vol_expansion",
     "setupLabel": "Cross-asset IV compression / vol expansion"
@@ -7149,7 +7149,7 @@
     "winRate": 0.25,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "The long variant of BTC listed-IV momentum only produced 3 wins in 8 tests; many entries stalled or reversed. Spot gain with positive IV change is insufficient to guarantee a 2% follow‑through. | Listed‑IV momentum confirmation lost 7 of 10 recent tests, as rising option‑implied demand did not prevent trend reversals. Spot failed to sustain upside when macro or positioning shifted, invalidating the confirmation thesis. | H‑170 and related BTC listed‑IV momentum hypotheses required both spot momentum and rising options IV. With 27% win rate, the IV filter materially hurts performance. Rising IV often reflects hedging demand that coincides with, not predicts, further rally, and the signal triggers at exits rather than starts of moves. | Long BTC after spot is already above the 24h SMA, near the 7d high, and up more than 0.75% in 24 hours enters near short-term extension. Rising options IV then behaves as a late confirmation or premium signal rather than a predictor of follow-through.",
+    "postMortem": "Listed‑IV momentum confirmation lost 7 of 10 recent tests, as rising option‑implied demand did not prevent trend reversals. Spot failed to sustain upside when macro or positioning shifted, invalidating the confirmation thesis. | H‑170 and related BTC listed‑IV momentum hypotheses required both spot momentum and rising options IV. With 27% win rate, the IV filter materially hurts performance. Rising IV often reflects hedging demand that coincides with, not predicts, further rally, and the signal triggers at exits rather than starts of moves. | Long BTC after spot is already above the 24h SMA, near the 7d high, and up more than 0.75% in 24 hours enters near short-term extension. Rising options IV then behaves as a late confirmation or premium signal rather than a predictor of follow-through. | Family is 4/13. The long prediction is contradicted by several test rows graded as spot_directional_short that lost on BTC +3.31%; remaining long observations show choppy 0.04%-0.75% moves that do not clear +2%. Rising option IV during spot strength is hedging/call-chasing, not continuation confirmation.",
     "source": "llm",
     "setupId": "btc_listed_iv_momentum_confirmation",
     "setupLabel": "BTC listed-IV momentum confirmation"
@@ -20654,7 +20654,7 @@
     "winRate": 0.35714285714285715,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Refined by H-621 (2026-08-07): Refinement of H‑535: Limit MU weekend funding reversion to weekends and raise th | H‑535's 44% win rate shows that MU funding < -10% on any day is not a reliable long signal. The winning shadows almost always occurred on weekends; losses happened when funding was negative on weekdays and continued to drift. | Most tests showed MU funding < –10% without a corresponding >2% spot rally within 2 days; instead spot often drifted or declined further. | MU funding below –10% led to mixed results (45% win). Like other single‑stock funding signals, the threshold lacks differentiation between routine dips and true excesses.",
+    "postMortem": "H‑535's 44% win rate shows that MU funding < -10% on any day is not a reliable long signal. The winning shadows almost always occurred on weekends; losses happened when funding was negative on weekdays and continued to drift. | Most tests showed MU funding < –10% without a corresponding >2% spot rally within 2 days; instead spot often drifted or declined further. | MU funding below –10% led to mixed results (45% win). Like other single‑stock funding signals, the threshold lacks differentiation between routine dips and true excesses. | MU funding < -10% produced 5/14, with many entries at 5.5% that never reverted: 5.5 → -10.3, 5.5 → 5.5, 5.5 → 4.4. The threshold is not isolating true extreme stress and often catches a default 5.5% reading.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_mu_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG MU weekend_hl_funding_shadow"
@@ -20969,7 +20969,7 @@
     "winRate": 0.3333333333333333,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Mined from clean shadows: {\"n\": 9, \"wins\": 8, \"winRate\": 0.8889, \"sumPnl\": 0.1268, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1780090108884-COIN-j1pm\", \"WF-1780115314549-COIN-g0n7\", \"WF-1780180113912-COIN-ctg9\", \"WF-1780205309859-COIN-hei0\", \"WF-1780212512519-COIN-62r1\"]}",
+    "postMortem": "Mined from clean shadows: {\"n\": 9, \"wins\": 8, \"winRate\": 0.8889, \"sumPnl\": 0.1268, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1780090108884-COIN-j1pm\", \"WF-1780115314549-COIN-g0n7\", \"WF-1780180113912-COIN-ctg9\", \"WF-1780205309859-COIN-hei0\", \"WF-1780212512519-COIN-62r1\"]} | COIN funding < -10% produced 3/9; failures include 5.5 → 5.5, 29.1 → 20.6, and 9.7 → 5.5. The condition frequently enters when funding has already normalized or is decaying from positive levels, so there is no funding stress to unwind.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_coin_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG COIN weekend_hl_funding_shadow"
@@ -21160,7 +21160,7 @@
     "winRate": 0.48,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "The tests score funding_normalize_up after entering on cbrs_hl_funding_ann < -10, but funding frequently continued lower or moved sideways: 5.5% -> -13.7%, 5.5% -> -67.0%, 2.3% -> 1.3%. The raw threshold identifies a low level, not an exhaustion point, and the setup lacks weekend or recovery confirmation. | H-539 fired on standalone CBRS funding below -10 and produced 11/23 wins. The losing examples show funding moving 5.5% to -13.7%, or only small positive moves, not the expected weekend normalization; the threshold is too low to separate genuine weekend overshoots from ordinary noise. | The mined variant took any cbrs_hl_funding_ann < -10 reading as a reversion trigger; test outcomes show noisy oscillation: -13.7 to +5.5 win, +5.5 to -67 loss, -67 to +2.3 win, +2.3 to +1.3 loss, +1.3 to +2.3 win, +2.3 to -13.4 loss. Raw threshold without weekend or recovery confirmation selected high-noise entries. | The single cbrs_hl_funding_ann < -10 threshold fires in both directions; examples include 2.3 → -13.4 (loss) and -13.4 → -4.3 (win). It captures ordinary negative funding oscillation, not extreme positioning.",
+    "postMortem": "H-539 fired on standalone CBRS funding below -10 and produced 11/23 wins. The losing examples show funding moving 5.5% to -13.7%, or only small positive moves, not the expected weekend normalization; the threshold is too low to separate genuine weekend overshoots from ordinary noise. | The mined variant took any cbrs_hl_funding_ann < -10 reading as a reversion trigger; test outcomes show noisy oscillation: -13.7 to +5.5 win, +5.5 to -67 loss, -67 to +2.3 win, +2.3 to +1.3 loss, +1.3 to +2.3 win, +2.3 to -13.4 loss. Raw threshold without weekend or recovery confirmation selected high-noise entries. | The single cbrs_hl_funding_ann < -10 threshold fires in both directions; examples include 2.3 → -13.4 (loss) and -13.4 → -4.3 (win). It captures ordinary negative funding oscillation, not extreme positioning. | CBRS funding < -10% produced 12/25 but several losses show no normalization: 5.5% → -67.0%, 2.3% → -13.4%, 5.5% → 5.5%. The condition is firing on stale/default/non-weekend readings where funding stays pinned or re-crashes.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG CBRS weekend_hl_funding_shadow"
@@ -21682,7 +21682,7 @@
       }
     ],
     "winRate": 0.3157894736842105,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "2026-07-22T02:38:23Z: reopened after scorer-v1 quarantine (scorer_v1_direction_bug_quarantine); prior completed tests excluded from setup stats. Re-test under scorer v2. | 0% win rate over 29 tests after reopening; the GOLD one-touch heatmap cluster remains unviable. The signal was quarantined earlier due to a scorer bug, but even under corrected scoring, no edge emerges. Recommend permanent kill and no further variants. | Discarded 20 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer.",
     "source": "llm",
@@ -27704,5 +27704,162 @@
     "source": "llm",
     "setupId": "find_0054",
     "setupLabel": "FIND-linked FIND-0054"
+  },
+  {
+    "id": "H-656",
+    "created": "2026-08-23",
+    "description": "Fade dumb-money high-YES flow: on above-strike one-touch contracts, when smart wallets are net short YES and the contract offers a positive sell-YES edge, sell the rich YES side because high-barrier flow is dumb-money chasing premium, not smart directional demand.",
+    "conditions": {
+      "touch_direction": ">= 1",
+      "smart_flow_net_yes": "< 0",
+      "sell_yes_edge_pts": ">= 1",
+      "yesSpread": "<= 0.03"
+    },
+    "prediction": "The YES side of above-strike one-touch contracts is overpriced and the sell-YES position will be profitable over 3 days as premium decays.",
+    "timeframeDays": 3,
+    "confidence": 0.65,
+    "direction": "short",
+    "originFindingId": "FIND-0020",
+    "themeId": "THEME-0003",
+    "tests": [
+      {
+        "date": "2026-08-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0020",
+    "setupLabel": "FIND-linked FIND-0020"
+  },
+  {
+    "id": "H-657",
+    "created": "2026-08-23",
+    "description": "When GOLD's GLD put/call ratio is in the bottom 15% of its 7-day range while GOLD spot remains above its 24h SMA, extreme call-buying/put-selling marks an exhaustion high rather than durable upside demand. Short the spot/perp high.",
+    "conditions": {
+      "asset": "GOLD",
+      "gold_gld_pc_ratio_percentile_7d": "<= 15",
+      "gold_gc_spot_pct_vs_24h_sma": "> 0"
+    },
+    "prediction": "GOLD spot will decline more than 2% within 3 days.",
+    "timeframeDays": 3,
+    "confidence": 0.7,
+    "direction": "short",
+    "originFindingId": "FIND-0053",
+    "themeId": "THEME-0005",
+    "tests": [
+      {
+        "date": "2026-08-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "killed",
+    "promotedToSignal": false,
+    "postMortem": "Setup family killed: 0% win rate over 21 completed tests across 11 variants.",
+    "source": "llm",
+    "setupId": "find_0053",
+    "setupLabel": "FIND-linked FIND-0053"
+  },
+  {
+    "id": "H-658",
+    "created": "2026-08-23",
+    "description": "On BTC above-strike one-touch contracts, sell YES when at least one scoped contract offers a 3-8 point sell-YES edge. This is a contract premium fade, not a spot-move call: overpriced YES premium decays as the high barrier stays unchallenged.",
+    "conditions": {
+      "asset": "BTC",
+      "touch_direction": ">= 1",
+      "sell_yes_edge_pts": "between 3 and 8"
+    },
+    "prediction": "Selling YES on BTC above-strike one-touch contracts is profitable over 3 days as premium decompresses.",
+    "timeframeDays": 3,
+    "confidence": 0.6,
+    "direction": "short",
+    "originFindingId": "FIND-0043",
+    "themeId": "THEME-0001",
+    "tests": [
+      {
+        "date": "2026-08-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0043",
+    "setupLabel": "FIND-linked FIND-0043"
+  },
+  {
+    "id": "H-659",
+    "created": "2026-08-23",
+    "description": "Sell YES on PM-IV-rich above-strike one-touch contracts when PM IV is at least 10 vol points above listed options IV and a 3-8 point sell-YES edge exists. The richness is a PM premium error, not compensation for strong spot drift.",
+    "conditions": {
+      "touch_direction": ">= 1",
+      "pm_iv_minus_opt_iv_pts": ">= 10",
+      "sell_yes_edge_pts": "between 3 and 8"
+    },
+    "prediction": "The sell-YES contract position is profitable over 3 days as rich PM IV and touch premium deflate.",
+    "timeframeDays": 3,
+    "confidence": 0.6,
+    "direction": "short",
+    "originFindingId": "FIND-0025",
+    "themeId": "THEME-0004",
+    "tests": [
+      {
+        "date": "2026-08-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0025",
+    "setupLabel": "FIND-linked FIND-0025"
+  },
+  {
+    "id": "H-660",
+    "created": "2026-08-23",
+    "description": "Broad one-touch premium fade: on any above-strike one-touch contract with a 3-8 point sell-YES edge, tight spread, and liquidity, sell YES. This is the broadest version of the above-strike edge family and must be graded on contract premium decay.",
+    "conditions": {
+      "touch_direction": ">= 1",
+      "sell_yes_edge_pts": "between 3 and 8",
+      "yesSpread": "<= 0.03",
+      "liquidity": ">= 5000"
+    },
+    "prediction": "Selling YES on above-strike one-touch contracts is profitable over 3 days as excess premium decays.",
+    "timeframeDays": 3,
+    "confidence": 0.55,
+    "direction": "short",
+    "originFindingId": "FIND-0030",
+    "themeId": "THEME-0001",
+    "tests": [
+      {
+        "date": "2026-08-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0030",
+    "setupLabel": "FIND-linked FIND-0030"
   }
 ]

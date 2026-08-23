@@ -1976,3 +1976,53 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-23T07:09:50.930Z, model=deepseek-v4-pro)
+- Hypotheses added: 5 (rejected 5); reviews applied: 6; invalidated assumptions learned: 5; param updates: FUNDING_EXTREME_LONG risk: +5/-2 -> +5/-1.5.
+- Strategy review: Working: WEEKEND_HL_FUNDING_REVERSION_LONG remains the main live edge (321/467 live wins, +0.29% avg; 188/253 shadow wins), monotonic arb is steady, USER_PM_IV_TOUCH_RICH_NO shadows are 9/10, and ONE_TOUCH_HIGH_EDGE_NO live is 4/4 on contract P&L. Failing: the open WEEKEND funding reversion book is currently red (BABA -9.8%, MSTR -10.2%), FUNDING_EXTREME_LONG/SHORT are near scratch, PM-proxy short shadows are destructive, and single-asset weekend funding reversion variants (MU/COIN/CBRS) are not showing reliable funding normalization.
+- Nightly journal: Tonight's review strengthens the case that the only robust live edges are weekend HL funding reversion, monotonic arb, and contract-level rich-NO/touch fades. PM-proxy short shadows continue to fail because they grade contract P&L on spot-directional theses. Single-asset weekend funding reversion variants need true weekend and relative funding extremity filters, not standalone -10% thresholds. The BTC momentum/IV confirmation families are late or mis-graded and should be refined toward either funding-conditioned continuation or stalled-momentum fade. I lowered FUNDING_EXTREME_LONG stop to 1.5%
+### 2026-08-23 08:28 UTC
+
+**Portfolio:** $103.97 total | Cash $98.97 | 5 open | P&L $7.2107 | 63% win rate (791 trades)
+
+**Closed 6 trades:**
+- ❌ ZM long via hyperliquid/hl_perp [HL ZM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0029 (-0.3%, market -0.0069, funding 0.0040)
+- ❌ MRVL long via hyperliquid/hl_perp [HL MRVL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0050 (-0.5%, market -0.0055, funding 0.0006)
+- ❌ CRCL long via hyperliquid/hl_perp [HL CRCL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0164 (-1.6%, market -0.0183, funding 0.0019)
+- ✅ DKNG long via hyperliquid/hl_perp [HL DKNG Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0043 (0.4%, market 0.0019, funding 0.0024)
+- ❌ CBRS long via hyperliquid/hl_perp [HL CBRS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0107 (-1.1%, market -0.0121, funding 0.0014)
+- ✅ MU long via hyperliquid/hl_perp [HL MU Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0127 (1.3%, market 0.0127, funding 0.0000)
+
+**Signal weight changes:**
+- 🛑 WEEKEND_HL_FUNDING_REVERSION_LONG on ZM DISABLED — 1/5 wins is below per-asset kill threshold.
+
+**Hypothesis lifecycle:**
+- 💀 Setup family find_0003 KILLED (30% over 20 tests across 2 variants): FIND-linked FIND-0003
+- 💀 Setup family find_0053 KILLED (0% over 21 tests across 11 variants): FIND-linked FIND-0053
+- 🧪 LLM retest queue: 21 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1967701874 is 2.9 std devs from mean (1262945592.08 ± 239908391.78)
+- [anomaly] hype_pm_ev = 76.51 is 2.1 std devs from mean (58.86 ± 8.25)
+- [anomaly] hype_spot = 78.991 is 2.1 std devs from mean (58.38 ± 9.93)
+
+**Blocked signal learning:**
+- Open blocked shadows: 18
+- Resolved blocked shadows: 923 (476 wins / 447 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+19.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+
+**LLM analysis:**
+No discretionary closes are eligible this run. All four WEEKEND_HL_FUNDING_REVERSION_LONG positions are policy-gated mechanical exits, so BABA (-14.1%) and MSTR (-12.7%) must be left to their target/stop/expiry mechanics despite large unrealized losses. The AMZN FUNDING_EXTREME_SHORT is only 2h old and below its 12h minimum hold; its funding input has already round-tripped from -26.7% to +5.48%, which is notable thesis weakening, but no action is allowed yet. HIMS opened at the latest snapshot with no edge to review. Structural concern to revisit in nightly research: this weekend funding-reversion cohort is carrying several double-digit mark-to-market losses even though the family has positive historical win rates.
+
+---
+
