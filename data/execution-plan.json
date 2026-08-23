@@ -1,34 +1,21 @@
 {
-  "generatedAt": "2026-08-23T05:29:01.655Z",
+  "generatedAt": "2026-08-23T06:28:22.820Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1787414481244-693c",
-      "asset": "BTC",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "btc_hl_funding_ann"
-      ],
-      "thesis": "BTC HL funding annualized fell from 23.03% at entry to 10.95%, crossing back below the +15% entry threshold. The crowded-long funding extreme that justified the fade is no longer present."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "FUNDING_EXTREME_SHORT",
       "asset": "AMZN",
       "venue": "hyperliquid",
       "direction": "long",
-      "strength": 0.16771428571428573,
-      "confidence": 0.09499454014469759,
-      "thesis": "AMZN HL funding -20.9% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.33342857142857146,
+      "confidence": 0.1888562663524056,
+      "thesis": "AMZN HL funding -26.7% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 258.66,
+      "entryPrice": 258.46,
       "targetPct": 4,
       "stopPct": 2,
       "expiryDays": 7,
@@ -39,6 +26,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
