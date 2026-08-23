@@ -1,11 +1,27 @@
 {
-  "generatedAt": "2026-08-23T11:28:23.701Z",
+  "generatedAt": "2026-08-23T13:28:42.858Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [],
+  "entrySignals": [
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "BTC",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.13200000000000003,
+      "confidence": 0.06245370525125763,
+      "thesis": "BTC HL funding 19.6% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 77610,
+      "targetPct": 5,
+      "stopPct": 1.5,
+      "expiryDays": 3,
+      "leverage": 1
+    }
+  ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [

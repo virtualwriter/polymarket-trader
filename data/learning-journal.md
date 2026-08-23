@@ -2133,3 +2133,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 4/12; ne
 
 ---
 
+### 2026-08-23 13:28 UTC
+
+**Portfolio:** $103.78 total | Cash $98.78 | 5 open | P&L $7.0247 | 63% win rate (795 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 21 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1986930365 is 3.0 std devs from mean (1264081408.47 ± 241391542.34)
+- [anomaly] hype_pm_ev = 77.29 is 2.2 std devs from mean (58.89 ± 8.27)
+- [anomaly] hype_spot = 80.2415 is 2.2 std devs from mean (58.41 ± 9.96)
+- [anomaly] hype_hl_funding_ann = 39.41 is 2.0 std devs from mean (10.02 ± 14.66)
+
+**Blocked signal learning:**
+- Open blocked shadows: 17
+- Resolved blocked shadows: 924 (477 wins / 447 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+19.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.41%)
+
+**LLM analysis:**
+Reviewed all 5 open positions. AMZN FUNDING_EXTREME_SHORT is not yet eligible for discretionary close because it is only 7h into a 12h minimum hold, but its signal-family funding evidence has already normalized from -26.67% to +5.48% annualized, crossing back through the entry threshold. If funding remains positive at the 12h mark, a thesis_invalidated close looks appropriate. BIRD, DKNG, PLTR, and TSM are WEEKEND_HL_FUNDING_REVERSION_LONG positions with rule-based exits only; no action taken. Macro remains VERY BEARISH with hawkish Fed and oil spike risk, but no hard portfolio risk breach was observed.
+
+---
+

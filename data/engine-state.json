@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-23T11:28:23.548Z",
+  "generatedAt": "2026-08-23T13:28:21.428Z",
   "dataFreshness": {
-    "valuationRows": 2505,
-    "latestValuationAt": "2026-08-23T11",
-    "macroRows": 2503,
+    "valuationRows": 2506,
+    "latestValuationAt": "2026-08-23T13",
+    "macroRows": 2504,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-23T11"
+    "latestInstrumentSnapshotAt": "2026-08-23T13"
   },
   "portfolio": {
-    "cash": 100.7848,
-    "openPositions": 3,
+    "cash": 98.7848,
+    "openPositions": 5,
     "realizedPnl": 7.0247,
     "totalTrades": 795,
     "winRatePct": 62.8,
-    "unrealizedPnl": 0.0027
+    "unrealizedPnl": 0.0077
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.21,
-      "currentPrice": 259.01,
+      "pnlPct": 0.28,
+      "currentPrice": 259.18,
       "underlyingPrice": 259.59,
       "targetPct": 4,
       "stopPct": 2,
@@ -40,8 +40,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.06,
-      "currentPrice": 2.3833,
+      "pnlPct": 0.22,
+      "currentPrice": 2.3831,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -54,8 +54,36 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0.27,
+      "currentPrice": 26.053,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1787491700767-PLTR-8mzp",
+      "asset": "PLTR",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "pnlPct": 0,
-      "currentPrice": 26.039,
+      "currentPrice": 179.68,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1787491700767-TSM-qs9q",
+      "asset": "TSM",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 419.77,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -224,9 +252,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 18,
-    "resolvedCount": 923,
-    "wouldHaveWon": 476,
+    "openCount": 17,
+    "resolvedCount": 924,
+    "wouldHaveWon": 477,
     "wouldHaveLost": 447,
     "bySignal": [
       {
@@ -295,21 +323,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "PC_RATIO_EXTREME_LOW",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "short",
-        "blockedReason": "short_blocked_by_positive_trend",
-        "outcome": "loss",
-        "closeReason": "stop",
-        "pnlPct": -2.17,
-        "resolvedAt": "2026-08-22T03:28:23.571Z",
-        "trendMetrics": {
-          "aboveTrendPct": 5.11,
-          "momentumPct": 8.16
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -452,6 +465,24 @@
           "yesAsk": 0.69,
           "yesSpread": 0.01,
           "liquidity": 34141.97,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 2.41,
+        "resolvedAt": "2026-08-23T13:28:20.740Z",
+        "marketQuality": {
+          "yesBid": 0.17,
+          "yesAsk": 0.18,
+          "yesSpread": 0.01,
+          "liquidity": 56730.99,
           "flags": []
         }
       }
