@@ -6666,7 +6666,12 @@ function evaluateHypotheses(
       const candidate = scorableVariants
         .filter((hypothesis) => pendingHypothesisTests(hypothesis).length === 0)
         .sort((a, b) => completedHypothesisTests(a).length - completedHypothesisTests(b).length || b.confidence - a.confidence)
-        .find((hypothesis) => hypothesisConditionsSatisfied(hypothesis, valuationRows, relativeValueRows));
+        .find((hypothesis) => hypothesisConditionsSatisfied(hypothesis, valuationRows, relativeValueRows)
+          // A contract thesis with no nameable contract right now would resolve
+          // unscorable whatever happens, because the entry it would be marked
+          // against does not exist. The family's conditions can be satisfied in
+          // the reduced sense while no single contract meets them all.
+          && (!isPolymarketExpression(hypothesis) || deriveContractEntry(hypothesis, relativeValueRows) !== null));
 
       if (!candidate) {
         skippedCond++;
