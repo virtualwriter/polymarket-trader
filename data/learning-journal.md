@@ -2063,3 +2063,40 @@ No discretionary closes allowed this run: EBAY and HIMS are policy-gated mechani
 
 ---
 
+### 2026-08-23 10:28 UTC
+
+**Portfolio:** $103.78 total | Cash $101.78 | 2 open | P&L $7.0248 | 63% win rate (795 trades)
+
+**Closed 2 trades:**
+- ✅ EBAY long via hyperliquid/hl_perp [HL EBAY Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0041 (0.4%, market -0.0014, funding 0.0055)
+- ✅ HIMS long via hyperliquid/hl_perp [HL HIMS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0219 (2.2%, market 0.0220, funding -0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 21 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1963073130 is 2.9 std devs from mean (1263505077.67 ± 240626181.49)
+- [anomaly] gold_opt_iv_30d = 32.6 is 2.2 std devs from mean (24.00 ± 3.96)
+- [anomaly] hype_pm_ev = 76.63 is 2.1 std devs from mean (58.88 ± 8.26)
+- [anomaly] hype_spot = 79.168 is 2.1 std devs from mean (58.40 ± 9.94)
+
+**Blocked signal learning:**
+- Open blocked shadows: 18
+- Resolved blocked shadows: 923 (476 wins / 447 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+19.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 4/12; next scheduled 2026-08-23T12:28:21.253Z). Mechanical cycle ran normally._
+
+---
+
