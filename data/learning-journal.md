@@ -2239,3 +2239,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 5/12; ne
 
 ---
 
+### 2026-08-23 16:28 UTC
+
+**Portfolio:** $103.82 total | Cash $98.82 | 5 open | P&L $7.0584 | 63% win rate (798 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 21 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 9.3pp (was -7.4, now -16.7)
+- [anomaly] hype_hl_oi = 1988463192 is 3.0 std devs from mean (1264944728.21 ± 242532229.68)
+- [anomaly] hype_pm_ev = 77.38 is 2.2 std devs from mean (58.91 ± 8.29)
+- [anomaly] hype_spot = 80.249 is 2.2 std devs from mean (58.44 ± 9.98)
+
+**Blocked signal learning:**
+- Open blocked shadows: 17
+- Resolved blocked shadows: 924 (477 wins / 447 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+19.05%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.41%)
+
+**LLM analysis:**
+Reviewed all five open positions. AMZN FUNDING_EXTREME_SHORT long shows funding normalized from -26.67% to +4.97% annualized, crossing back through the entry threshold and beyond; that is thesis-invalidated evidence, but the position is only 10.0h into a 12h minimum hold, so no close is permitted this run. The four WEEKEND_HL_FUNDING_REVERSION_LONG positions (BIRD, TSM, HIMS, COIN) are mechanical-only and not LLM close eligible. No hard portfolio risk or data-quality breach observed.
+
+---
+
