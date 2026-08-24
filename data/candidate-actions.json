@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-23T23:28:32.305Z",
+  "generatedAt": "2026-08-24T01:28:27.167Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "BTC",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.17457142857142854,
-      "confidence": 0.08259570110068917,
-      "thesis": "BTC HL funding 21.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.18514285714285716,
+      "confidence": 0.08759740476799771,
+      "thesis": "BTC HL funding 21.5% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 77637,
+      "entryPrice": 77332,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 3,
@@ -28,7 +28,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 77637,
+      "entryPrice": 77332,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -60,11 +60,11 @@
         "totalGross": 21,
         "totalNet": 21,
         "byAsset": {
-          "BIRD": 5,
           "DKNG": 5,
           "GOOGL": 5,
           "ORCL": 5,
-          "AMZN": 1
+          "AMZN": 1,
+          "BX": 5
         },
         "bySignalType": {
           "WEEKEND_HL_FUNDING_REVERSION_LONG": 20,
@@ -74,25 +74,25 @@
           "hyperliquid": 21
         },
         "byCluster": {
-          "bird_delta": 5,
+          "dkng_delta": 5,
           "funding_reversion": 21,
           "hyperliquid_venue": 21,
-          "dkng_delta": 5,
           "googl_delta": 5,
           "orcl_delta": 5,
           "amzn_delta": 1,
-          "risk_on": 1
+          "risk_on": 1,
+          "bx_delta": 5
         }
       },
       "afterCandidate": {
         "totalGross": 21,
         "totalNet": 21,
         "byAsset": {
-          "BIRD": 5,
           "DKNG": 5,
           "GOOGL": 5,
           "ORCL": 5,
           "AMZN": 1,
+          "BX": 5,
           "BTC": 0
         },
         "bySignalType": {
@@ -104,14 +104,14 @@
           "hyperliquid": 21
         },
         "byCluster": {
-          "bird_delta": 5,
+          "dkng_delta": 5,
           "funding_reversion": 21,
           "hyperliquid_venue": 21,
-          "dkng_delta": 5,
           "googl_delta": 5,
           "orcl_delta": 5,
           "amzn_delta": 1,
           "risk_on": 1,
+          "bx_delta": 5,
           "btc_delta": 0
         }
       },
@@ -145,22 +145,6 @@
   ],
   "llmCloseEligibility": [
     {
-      "positionId": "WF-1787480900442-BIRD-piqd",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "BIRD",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 13,
-      "hoursToExpiry": 11,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.5418,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
       "positionId": "WF-1787509695910-DKNG-pwto",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "asset": "DKNG",
@@ -169,10 +153,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 5,
-      "hoursToExpiry": 19,
+      "hoursOpen": 7,
+      "hoursToExpiry": 17,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.2085,
+      "elapsedHoldPct": 0.2918,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -185,10 +169,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 1,
-      "hoursToExpiry": 23,
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0418,
+      "elapsedHoldPct": 0.125,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -201,10 +185,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 1,
-      "hoursToExpiry": 23,
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0418,
+      "elapsedHoldPct": 0.125,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -221,12 +205,28 @@
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ],
-      "hoursOpen": 1,
-      "hoursToExpiry": 167,
+      "hoursOpen": 3,
+      "hoursToExpiry": 165,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.006,
+      "elapsedHoldPct": 0.0179,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
+    },
+    {
+      "positionId": "WF-1787534906269-BX-wide",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "BX",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 0,
+      "hoursToExpiry": 24,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
   ]
 }
