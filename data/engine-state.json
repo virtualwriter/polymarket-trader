@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-24T08:28:25.437Z",
+  "generatedAt": "2026-08-24T09:29:16.423Z",
   "dataFreshness": {
-    "valuationRows": 2523,
-    "latestValuationAt": "2026-08-24T08",
-    "macroRows": 2521,
+    "valuationRows": 2524,
+    "latestValuationAt": "2026-08-24T09",
+    "macroRows": 2522,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-24T08"
+    "latestInstrumentSnapshotAt": "2026-08-24T09"
   },
   "portfolio": {
-    "cash": 101.0919,
-    "openPositions": 3,
-    "realizedPnl": 7.3315,
-    "totalTrades": 818,
-    "winRatePct": 63.6,
-    "unrealizedPnl": -0.0404
+    "cash": 102.0874,
+    "openPositions": 2,
+    "realizedPnl": 7.327,
+    "totalTrades": 819,
+    "winRatePct": 63.5,
+    "unrealizedPnl": -0.0081
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -1.66,
-      "currentPrice": 343.04,
+      "pnlPct": -1.05,
+      "currentPrice": 343.46,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -36,9 +36,9 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.02,
-      "currentPrice": 257.94,
-      "underlyingPrice": 259.59,
+      "pnlPct": 0.24,
+      "currentPrice": 258.51,
+      "underlyingPrice": 258.42,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -47,20 +47,6 @@
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ]
-    },
-    {
-      "positionId": "WF-1787542106961-EBAY-dexb",
-      "asset": "EBAY",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -2.4,
-      "currentPrice": 103.81,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
     }
   ],
   "signalHealth": [
@@ -205,10 +191,10 @@
     {
       "type": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "enabled": true,
-      "weight": 0.6582,
-      "trades": 145,
+      "weight": 0.6581,
+      "trades": 146,
       "wins": 96,
-      "avgPnlPct": 0.0979,
+      "avgPnlPct": 0.0941,
       "disabledAssets": [
         "ZM"
       ]
@@ -224,10 +210,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 18,
-    "resolvedCount": 925,
+    "openCount": 17,
+    "resolvedCount": 926,
     "wouldHaveWon": 477,
-    "wouldHaveLost": 448,
+    "wouldHaveLost": 449,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -295,26 +281,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 2.7,
-        "resolvedAt": "2026-08-22T11:28:23.875Z",
-        "marketQuality": {
-          "yesBid": 0.26,
-          "yesAsk": 0.29,
-          "yesSpread": 0.03,
-          "liquidity": 68251.63,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -456,6 +422,24 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -1.05,
+        "resolvedAt": "2026-08-24T09:29:15.185Z",
+        "marketQuality": {
+          "yesBid": 0.05,
+          "yesAsk": 0.06,
+          "yesSpread": 0.01,
+          "liquidity": 107258.6,
+          "flags": []
         }
       }
     ],

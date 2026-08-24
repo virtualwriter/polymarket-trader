@@ -1,141 +1,11 @@
 {
-  "generatedAt": "2026-08-24T08:28:25.586Z",
+  "generatedAt": "2026-08-24T09:29:16.631Z",
   "mechanicalExits": [],
   "signalKillExits": [],
-  "entryCandidates": [
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.06000000000000004,
-      "confidence": 0.028388047841480753,
-      "thesis": "GOLD HL funding 17.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4636,
-      "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 3,
-      "leverage": 1
-    }
-  ],
-  "sizingPreviews": [
-    {
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "reason": "unsupported_signal",
-      "entryPrice": 4636,
-      "probabilitySource": "unsupported",
-      "winProbability": null,
-      "probabilitySampleSize": null,
-      "edgePts": null,
-      "rawKellyFraction": null,
-      "adjustedKellyFraction": null,
-      "cappedKellyFraction": null,
-      "notes": [
-        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
-        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
-      ]
-    }
-  ],
-  "portfolioExposurePreviews": [
-    {
-      "candidateId": "FUNDING_EXTREME_LONG:GOLD:0",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "candidateSize": 0,
-      "riskClusters": [
-        "commodity",
-        "funding_reversion",
-        "gold_delta",
-        "hyperliquid_venue"
-      ],
-      "current": {
-        "totalGross": 11,
-        "totalNet": 11,
-        "byAsset": {
-          "GOOGL": 5,
-          "AMZN": 1,
-          "EBAY": 5
-        },
-        "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10,
-          "FUNDING_EXTREME_SHORT": 1
-        },
-        "byVenue": {
-          "hyperliquid": 11
-        },
-        "byCluster": {
-          "funding_reversion": 11,
-          "googl_delta": 5,
-          "hyperliquid_venue": 11,
-          "amzn_delta": 1,
-          "risk_on": 1,
-          "ebay_delta": 5
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 11,
-        "totalNet": 11,
-        "byAsset": {
-          "GOOGL": 5,
-          "AMZN": 1,
-          "EBAY": 5,
-          "GOLD": 0
-        },
-        "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10,
-          "FUNDING_EXTREME_SHORT": 1,
-          "FUNDING_EXTREME_LONG": 0
-        },
-        "byVenue": {
-          "hyperliquid": 11
-        },
-        "byCluster": {
-          "funding_reversion": 11,
-          "googl_delta": 5,
-          "hyperliquid_venue": 11,
-          "amzn_delta": 1,
-          "risk_on": 1,
-          "ebay_delta": 5,
-          "commodity": 0,
-          "gold_delta": 0
-        }
-      },
-      "warnings": [
-        "funding_reversion cluster exposure 11.0000 exceeds preview threshold 5.0000.",
-        "hyperliquid_venue cluster exposure 11.0000 exceeds preview threshold 5.0000."
-      ]
-    }
-  ],
-  "stagedQuantRules": [
-    {
-      "candidateId": "FUNDING_EXTREME_LONG:GOLD:0",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "mode": "observe_uniform",
-      "liveSizingEnabled": false,
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "enforcedLiveSize": 1,
-      "wouldResize": true,
-      "edgePts": null,
-      "alerts": [
-        "cluster exposure 11.00 > alert cap 5.00",
-        "funding_reversion cluster exposure 11.0000 exceeds preview threshold 5.0000.",
-        "hyperliquid_venue cluster exposure 11.0000 exceeds preview threshold 5.0000."
-      ],
-      "notes": [
-        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
-      ]
-    }
-  ],
+  "entryCandidates": [],
+  "sizingPreviews": [],
+  "portfolioExposurePreviews": [],
+  "stagedQuantRules": [],
   "llmCloseEligibility": [
     {
       "positionId": "WF-1787524104108-GOOGL-gsy6",
@@ -146,10 +16,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 10,
-      "hoursToExpiry": 14,
+      "hoursOpen": 11.01,
+      "hoursToExpiry": 12.99,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.4167,
+      "elapsedHoldPct": 0.4589,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -166,28 +36,12 @@
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ],
-      "hoursOpen": 10,
-      "hoursToExpiry": 158,
+      "hoursOpen": 11.01,
+      "hoursToExpiry": 156.99,
       "plannedHoldHours": 168,
-      "elapsedHoldPct": 0.0595,
+      "elapsedHoldPct": 0.0656,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 10.0h, requires at least 12h."
-    },
-    {
-      "positionId": "WF-1787542106961-EBAY-dexb",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "EBAY",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 5,
-      "hoursToExpiry": 19,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.2083,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+      "reason": "Too new for discretionary LLM close: open 11.0h, requires at least 12h."
     }
   ]
 }

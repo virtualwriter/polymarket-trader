@@ -2822,3 +2822,39 @@ No discretionary closes this run. GOOGL and EBAY are mechanical-only WEEKEND_HL_
 
 ---
 
+### 2026-08-24 09:29 UTC
+
+**Portfolio:** $104.09 total | Cash $102.09 | 2 open | P&L $7.3270 | 63% win rate (819 trades)
+
+**Closed 1 trades:**
+- ❌ EBAY long via hyperliquid/hl_perp [HL EBAY Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0045 (-0.4%, market -0.0077, funding 0.0032)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_opt_iv_30d = 8.8 is -3.2 std devs from mean since 2026-04-28 (52.21 ± 13.67)
+- [anomaly] oil_opt_fwd_90d = 156.9 is 2.8 std devs from mean since 2026-04-28 (78.41 ± 28.04)
+- [anomaly] hype_hl_oi = 1929964202 is 2.7 std devs from mean (1269358565.69 ± 248465134.87)
+- [anomaly] hype_pm_ev = 76.31 is 2.1 std devs from mean (59.02 ± 8.39)
+
+**Blocked signal learning:**
+- Open blocked shadows: 17
+- Resolved blocked shadows: 926 (477 wins / 449 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-0.86%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.05%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 4/12; next scheduled 2026-08-24T11:29:16.641Z). Mechanical cycle ran normally._
+
+---
+
