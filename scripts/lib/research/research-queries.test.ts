@@ -3,6 +3,7 @@ import {
   MAX_DATA_REQUESTS,
   MAX_SAMPLE_ROWS,
   buildQueryCatalogPromptSection,
+  dedupeNonOverlappingPanelRows,
   executeResearchQueries,
   executeResearchQuery,
   formatQueryResults,
@@ -46,6 +47,7 @@ const dataset: ResearchDataset = {
     { id: "H-2", setupId: "family_b", tests: [{ date: "2026-07-05", outcome: "win", magnitude: 0.5, magnitudeUnit: "pct_return" }] },
   ],
   valuationRows: Array.from({ length: 300 }, (_, i) => ({ date: `row-${i}`, btc_spot: String(100 + i), blank_col: "" })),
+  panelRows: [],
 };
 
 describe("parseDataRequests", () => {
@@ -55,10 +57,12 @@ describe("parseDataRequests", () => {
       { kind: "shadows", asset: "BTC" },
       { kind: "hypothesis_tests", setupId: "family_a", includeUnscorable: true },
       { kind: "market_stats", column: "btc_spot", windowRows: 90 },
+      { kind: "panel", side: "no", horizonDays: 7, asset: "BTC", where: [{ column: "sell_yes_edge_pts", gte: 5 }] },
       { kind: "drop_table_users" },
       { kind: "market_stats" },
+      { kind: "panel", side: "maybe", horizonDays: 5 },
     ]);
-    expect(queries.map((q) => q.kind)).toEqual(["trades", "shadows", "hypothesis_tests", "market_stats"]);
+    expect(queries.map((q) => q.kind)).toEqual(["trades", "shadows", "hypothesis_tests", "market_stats", "panel"]);
   });
 
   it("caps the number of requests", () => {
@@ -75,6 +79,24 @@ describe("parseDataRequests", () => {
   it("drops an invalid groupBy rather than passing it through", () => {
     const [q] = parseDataRequests([{ kind: "trades", groupBy: "; DROP" }]);
     expect((q as { groupBy?: string }).groupBy).toBeUndefined();
+  });
+
+  it("caps panel where-clauses at four", () => {
+    const [q] = parseDataRequests([{
+      kind: "panel",
+      side: "yes",
+      horizonDays: 3,
+      where: [
+        { column: "a", gte: 1 },
+        { column: "b", gte: 2 },
+        { column: "c", gte: 3 },
+        { column: "d", gte: 4 },
+        { column: "e", gte: 5 },
+      ],
+    }]);
+    expect(q.kind).toBe("panel");
+    if (q.kind !== "panel") throw new Error("expected panel");
+    expect(q.where).toHaveLength(4);
   });
 });
 
@@ -159,6 +181,63 @@ describe("market_stats query", () => {
   });
 });
 
+describe("panel query", () => {
+  const panelRows = [
+    {
+      entry_date: "2026-07-01", asset: "BTC", market_id: "M1", direction: "above",
+      sell_yes_edge_pts: "6", outcome_quality_7d: "clean", yes_pnl_pct_7d: "-2", no_pnl_pct_7d: "4",
+    },
+    {
+      entry_date: "2026-07-02", asset: "BTC", market_id: "M1", direction: "above",
+      sell_yes_edge_pts: "7", outcome_quality_7d: "clean", yes_pnl_pct_7d: "-1", no_pnl_pct_7d: "3",
+    },
+    {
+      entry_date: "2026-07-10", asset: "BTC", market_id: "M1", direction: "above",
+      sell_yes_edge_pts: "8", outcome_quality_7d: "clean", yes_pnl_pct_7d: "-3", no_pnl_pct_7d: "-1",
+    },
+    {
+      entry_date: "2026-07-01", asset: "BTC", market_id: "M2", direction: "below",
+      sell_yes_edge_pts: "2", outcome_quality_7d: "clean", yes_pnl_pct_7d: "1", no_pnl_pct_7d: "-1",
+    },
+    {
+      entry_date: "2026-07-01", asset: "ETH", market_id: "M3", direction: "above",
+      sell_yes_edge_pts: "6", outcome_quality_7d: "ambiguous_disappearance", yes_pnl_pct_7d: "9", no_pnl_pct_7d: "9",
+    },
+  ];
+  const panelDataset: ResearchDataset = { ...dataset, panelRows };
+
+  it("reports missing panel data gracefully", () => {
+    const result = executeResearchQuery(
+      { kind: "panel", side: "no", horizonDays: 7 },
+      dataset,
+    );
+    expect(result.error).toContain("missing or empty");
+  });
+
+  it("computes win rate, base rate, and de-duplicates overlapping contract entries", () => {
+    const result = executeResearchQuery({
+      kind: "panel",
+      side: "no",
+      horizonDays: 7,
+      asset: "BTC",
+      where: [{ column: "sell_yes_edge_pts", gte: 5 }],
+    }, panelDataset);
+
+    expect(result.n).toBe(2);
+    expect(result.summary.wins).toBe(1);
+    expect(result.summary.winRate).toBe(0.5);
+    expect(result.summary.meanPnlPct).toBeCloseTo(1.5, 4);
+    expect(result.summary.baseRate).toBeCloseTo(1 / 3, 4);
+    expect(result.summary.baseN).toBe(3);
+  });
+
+  it("dedupes per contract with spacing >= horizonDays", () => {
+    const deduped = dedupeNonOverlappingPanelRows(panelRows, 7);
+    const m1Dates = deduped.filter((r) => r.market_id === "M1").map((r) => r.entry_date);
+    expect(m1Dates).toEqual(["2026-07-01", "2026-07-10"]);
+  });
+});
+
 describe("batch execution and formatting", () => {
   it("never throws on a bad query and caps the batch", () => {
     const queries = Array.from({ length: 20 }, () => ({ kind: "market_stats", column: "nope" }) as const);
@@ -176,7 +255,7 @@ describe("batch execution and formatting", () => {
 
   it("documents every executable kind in the prompt catalog", () => {
     const catalog = buildQueryCatalogPromptSection();
-    for (const kind of ["trades", "shadows", "hypothesis_tests", "market_stats"]) {
+    for (const kind of ["trades", "shadows", "hypothesis_tests", "market_stats", "panel"]) {
       expect(catalog).toContain(`"${kind}"`);
     }
   });

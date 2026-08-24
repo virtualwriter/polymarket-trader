@@ -39,6 +39,7 @@ THEME_TITLES: dict[str, str] = {
     "heatmap_one_touch": "Heatmap one-touch / no-bias / relative-value shadows",
     "weekend_hl_funding": "Weekend Hyperliquid funding reversion shadows",
     "funding_extreme": "Extreme funding signal shadows",
+    "outcome_panel": "Outcome-panel mined (unconditioned contract history)",
 }
 
 
@@ -57,6 +58,8 @@ def parse_cluster_key(cluster_key: str) -> tuple[str, str, str, str]:
 def theme_slug_for_signal(signal_type: str) -> tuple[str, str]:
     """Return (theme_slug, family) for a signal type."""
     sig = signal_type.upper()
+    if sig.startswith("PANEL_"):
+        return "outcome_panel", "outcome_panel"
     if any(token in sig for token in ("ONE_TOUCH", "NO_BIAS", "RELATIVE_VALUE")):
         return "heatmap_one_touch", "heatmap_one_touch"
     if "WEEKEND_HL_FUNDING" in sig:

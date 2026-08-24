@@ -26,6 +26,9 @@ fi
 
 NIGHTLY_FILES=(
   data/calibration-buckets-summary.json
+  data/hl-funding-history.csv
+  data/panel-mine-report.json
+  data/research-panel-meta.json
   data/lessons.json
   data/nightly-llm-advice.json
   data/nightly-research-report.json
@@ -127,6 +130,24 @@ if ! timeout "${CALIBRATION_REPORT_TIMEOUT:-5m}" python3 scripts/calibration_eve
 fi
 if ! timeout "${CALIBRATION_COMPACT_TIMEOUT:-10m}" python3 scripts/compact_no_bias_calibration.py --apply; then
   echo "WARNING: calibration compaction failed; continuing."
+fi
+
+# Refresh HL funding history in merge mode so history accumulates past the
+# API's own lookback (the old overwrite behavior capped the file at ~30 days).
+if ! timeout "${FUNDING_HISTORY_TIMEOUT:-5m}" python3 scripts/backfill_hl_funding_history.py --days 7 --merge; then
+  echo "WARNING: HL funding history refresh failed; continuing."
+fi
+
+# Build the outcome panel (every archived contract-day with forward returns)
+# and mine it into FIND records BEFORE the LLM step, so tonight's authoring
+# sees panel opportunities rather than waiting a day.
+if ! timeout "${OUTCOME_PANEL_TIMEOUT:-10m}" python3 scripts/build_outcome_panel.py \
+    --history-dir "$STATE_DIR/relative-value-history" \
+    --history-dir relative-value/history; then
+  echo "WARNING: build_outcome_panel.py failed; continuing."
+fi
+if ! timeout "${PANEL_MINE_TIMEOUT:-5m}" python3 scripts/mine_panel_findings.py; then
+  echo "WARNING: mine_panel_findings.py failed; continuing."
 fi
 
 # 45m, not 15m: this step contains up to three sequential reasoning-model calls

@@ -56,7 +56,21 @@ export type ResearchQuery =
     kind: "market_stats";
     column: string;
     windowRows?: number;
+  }
+  | {
+    kind: "panel";
+    side: "no" | "yes";
+    horizonDays: 3 | 7;
+    asset?: string;
+    where?: PanelWhereClause[];
   };
+
+export interface PanelWhereClause {
+  column: string;
+  gte?: number;
+  lte?: number;
+  eq?: number | string;
+}
 
 export interface QueryGroupResult {
   key: string;
@@ -83,6 +97,7 @@ export interface ResearchDataset {
   shadows: ShadowRecord[];
   hypotheses: HypothesisRecord[];
   valuationRows: Record<string, string>[];
+  panelRows: Record<string, string>[];
 }
 
 export interface ShadowRecord {
@@ -127,13 +142,14 @@ function readJsonArray<T>(path: string): T[] {
   }
 }
 
-function readCsvRows(path: string, maxRows: number): Record<string, string>[] {
+function readCsvRows(path: string, maxRows?: number): Record<string, string>[] {
   if (!existsSync(path)) return [];
   const lines = readFileSync(path, "utf-8").split("\n").filter((l) => l.trim());
   const header = lines.shift();
   if (!header) return [];
   const cols = header.split(",").map((c) => c.trim().replace(/^"|"$/g, ""));
-  return lines.slice(-maxRows).map((line) => {
+  const body = maxRows === undefined ? lines : lines.slice(-maxRows);
+  return body.map((line) => {
     const cells = line.split(",");
     return Object.fromEntries(cols.map((c, i) => [c, (cells[i] ?? "").trim()]));
   });
@@ -145,6 +161,7 @@ export function loadResearchDataset(dataDir: string, maxValuationRows = 2400): R
     shadows: readJsonArray<ShadowRecord>(join(dataDir, "blocked-signals.json")),
     hypotheses: readJsonArray<HypothesisRecord>(join(dataDir, "hypotheses.json")),
     valuationRows: readCsvRows(join(dataDir, "daily-valuations.csv"), maxValuationRows),
+    panelRows: readCsvRows(join(dataDir, "research-panel.csv")),
   };
 }
 
@@ -152,6 +169,30 @@ export function loadResearchDataset(dataDir: string, maxValuationRows = 2400): R
 
 function str(v: unknown): string | undefined {
   return typeof v === "string" && v.trim() ? v.trim() : undefined;
+}
+
+const MINEABLE_OUTCOME_QUALITIES = new Set(["clean", "terminal_yes", "terminal_no"]);
+const MAX_PANEL_WHERE_CLAUSES = 4;
+
+function parsePanelWhere(raw: unknown): PanelWhereClause[] {
+  if (!Array.isArray(raw)) return [];
+  const clauses: PanelWhereClause[] = [];
+  for (const item of raw.slice(0, MAX_PANEL_WHERE_CLAUSES)) {
+    if (!item || typeof item !== "object") continue;
+    const w = item as Record<string, unknown>;
+    const column = str(w.column);
+    if (!column) continue;
+    const clause: PanelWhereClause = { column };
+    if (typeof w.gte === "number" && Number.isFinite(w.gte)) clause.gte = w.gte;
+    if (typeof w.lte === "number" && Number.isFinite(w.lte)) clause.lte = w.lte;
+    if (typeof w.eq === "number" && Number.isFinite(w.eq)) {
+      clause.eq = w.eq;
+    } else if (typeof w.eq === "string" && w.eq.trim()) {
+      clause.eq = w.eq.trim();
+    }
+    clauses.push(clause);
+  }
+  return clauses;
 }
 
 /**
@@ -196,6 +237,17 @@ export function parseDataRequests(raw: unknown): ResearchQuery[] {
       if (!column) continue;
       const windowRows = Number(q.windowRows);
       queries.push({ kind, column, windowRows: Number.isFinite(windowRows) ? windowRows : undefined });
+    } else if (kind === "panel") {
+      const side = q.side === "yes" || q.side === "no" ? q.side : undefined;
+      const horizonDays = q.horizonDays === 3 || q.horizonDays === 7 ? q.horizonDays : undefined;
+      if (!side || !horizonDays) continue;
+      queries.push({
+        kind,
+        side,
+        horizonDays,
+        asset: str(q.asset),
+        where: parsePanelWhere(q.where),
+      });
     }
   }
   return queries;
@@ -261,6 +313,108 @@ function group(rows: Scored[]): QueryGroupResult[] {
 
 function monthOf(value: string | undefined): string {
   return String(value ?? "").slice(0, 7) || "unknown";
+}
+
+function isMineablePanelRow(row: Record<string, string>, horizonDays: number): boolean {
+  const quality = String(row[`outcome_quality_${horizonDays}d`] ?? "").trim().toLowerCase();
+  return MINEABLE_OUTCOME_QUALITIES.has(quality);
+}
+
+function panelPnlPct(row: Record<string, string>, side: "yes" | "no", horizonDays: number): number | null {
+  const raw = String(row[`${side}_pnl_pct_${horizonDays}d`] ?? "").trim();
+  if (!raw) return null;
+  const value = Number(raw);
+  return Number.isFinite(value) ? value : null;
+}
+
+function matchesPanelWhere(row: Record<string, string>, clause: PanelWhereClause): boolean {
+  const raw = String(row[clause.column] ?? "").trim();
+  if (!raw) return false;
+  const numericFilter = clause.gte !== undefined || clause.lte !== undefined
+    || (clause.eq !== undefined && typeof clause.eq === "number");
+  if (numericFilter) {
+    const value = Number(raw);
+    if (!Number.isFinite(value)) return false;
+    if (clause.gte !== undefined && value < clause.gte) return false;
+    if (clause.lte !== undefined && value > clause.lte) return false;
+    if (clause.eq !== undefined && typeof clause.eq === "number" && value !== clause.eq) return false;
+    return true;
+  }
+  if (clause.eq !== undefined && typeof clause.eq === "string") {
+    return raw === clause.eq;
+  }
+  return true;
+}
+
+/** Greedy per-contract spacing so forward windows do not overlap. */
+export function dedupeNonOverlappingPanelRows(
+  rows: Record<string, string>[],
+  horizonDays: number,
+): Record<string, string>[] {
+  const byContract = new Map<string, Record<string, string>[]>();
+  for (const row of rows) {
+    const marketId = String(row.market_id ?? "");
+    const list = byContract.get(marketId) ?? [];
+    list.push(row);
+    byContract.set(marketId, list);
+  }
+  const kept: Record<string, string>[] = [];
+  for (const contractRows of byContract.values()) {
+    contractRows.sort((a, b) => String(a.entry_date).localeCompare(String(b.entry_date)));
+    let lastDayMs: number | null = null;
+    for (const row of contractRows) {
+      const dayMs = Date.parse(`${String(row.entry_date ?? "").slice(0, 10)}T00:00:00Z`);
+      if (!Number.isFinite(dayMs)) continue;
+      if (lastDayMs === null || (dayMs - lastDayMs) / 86_400_000 >= horizonDays) {
+        kept.push(row);
+        lastDayMs = dayMs;
+      }
+    }
+  }
+  kept.sort((a, b) => {
+    const byDate = String(a.entry_date).localeCompare(String(b.entry_date));
+    return byDate !== 0 ? byDate : String(a.market_id).localeCompare(String(b.market_id));
+  });
+  return kept;
+}
+
+function filterPanelRows(
+  rows: Record<string, string>[],
+  query: Extract<ResearchQuery, { kind: "panel" }>,
+): Record<string, string>[] {
+  return rows.filter((row) =>
+    isMineablePanelRow(row, query.horizonDays)
+    && matches(row.asset, query.asset)
+    && (query.where ?? []).every((clause) => matchesPanelWhere(row, clause)));
+}
+
+function summarizePanelPnls(pnls: number[]): Record<string, unknown> {
+  const wins = pnls.filter((p) => p > 0).length;
+  const { mean, std } = sampleMoments(pnls);
+  return {
+    n: pnls.length,
+    wins,
+    losses: pnls.length - wins,
+    winRate: pnls.length ? Number((wins / pnls.length).toFixed(4)) : 0,
+    meanPnlPct: Number(mean.toFixed(4)),
+    stdPnlPct: Number(std.toFixed(4)),
+  };
+}
+
+function panelSampleRows(
+  rows: Record<string, string>[],
+  side: "yes" | "no",
+  horizonDays: number,
+): Record<string, unknown>[] {
+  return rows.slice(-MAX_SAMPLE_ROWS).map((row) => ({
+    entry_date: row.entry_date,
+    asset: row.asset,
+    market_id: row.market_id,
+    direction: row.direction,
+    pnlPct: panelPnlPct(row, side, horizonDays),
+    sell_yes_edge_pts: row.sell_yes_edge_pts ?? null,
+    dte_days: row.dte_days ?? null,
+  }));
 }
 
 export function executeResearchQuery(query: ResearchQuery, data: ResearchDataset): QueryResult {
@@ -374,6 +528,49 @@ export function executeResearchQuery(query: ResearchQuery, data: ResearchDataset
     };
   }
 
+  if (query.kind === "panel") {
+    if (data.panelRows.length === 0) {
+      return {
+        query,
+        n: 0,
+        summary: {},
+        error: "research-panel.csv is missing or empty",
+      };
+    }
+    const baseRows = dedupeNonOverlappingPanelRows(
+      filterPanelRows(data.panelRows, { ...query, where: [] }),
+      query.horizonDays,
+    );
+    const basePnls = baseRows
+      .map((row) => panelPnlPct(row, query.side, query.horizonDays))
+      .filter((v): v is number => v !== null);
+    const baseRate = basePnls.length
+      ? Number((basePnls.filter((p) => p > 0).length / basePnls.length).toFixed(4))
+      : 0;
+
+    const matchedRows = dedupeNonOverlappingPanelRows(
+      filterPanelRows(data.panelRows, query),
+      query.horizonDays,
+    );
+    const pnls = matchedRows
+      .map((row) => panelPnlPct(row, query.side, query.horizonDays))
+      .filter((v): v is number => v !== null);
+
+    return {
+      query,
+      n: pnls.length,
+      summary: {
+        ...summarizePanelPnls(pnls),
+        baseRate,
+        baseN: basePnls.length,
+        side: query.side,
+        horizonDays: query.horizonDays,
+        asset: query.asset ?? "ALL",
+      },
+      samples: panelSampleRows(matchedRows, query.side, query.horizonDays),
+    };
+  }
+
   const windowRows = Math.max(1, Math.min(query.windowRows ?? 720, data.valuationRows.length));
   const slice = data.valuationRows.slice(-windowRows);
   // Number("") is 0, so empty cells must be rejected before conversion or a
@@ -431,8 +628,10 @@ Available query kinds:
       Individual shadow-test outcomes, including the signed realized edge (magnitude) per test.
   - {"kind":"market_stats", "column":"<valuation column>", "windowRows"?:720}
       Distribution of a market-data column over recent history (mean, std, percentiles).
+  - {"kind":"panel", "side":"yes"|"no", "horizonDays":3|7, "asset"?, "where"?:[{"column":"<panel column>", "gte"?, "lte"?, "eq"?}]}
+      Historical forward returns from the outcome panel (all listed contracts, not just shadow trades). Use this to pre-check a hypothesis idea — e.g. "when sell_yes_edge_pts >= 5 on BTC NO 7d, what was win rate vs the unfiltered base rate?" Rows must have mineable outcome_quality; entries are de-duplicated per contract so forward windows do not overlap. At most 4 where-clauses.
 
-Every result includes n, win rate, Wilson 95% lower bound, total and mean PnL, a one-sided t-test p-value that mean PnL is positive, optional group breakdowns, and up to ${MAX_SAMPLE_ROWS} example rows.
+Every result includes n, win rate, Wilson 95% lower bound, total and mean PnL, a one-sided t-test p-value that mean PnL is positive, optional group breakdowns, and up to ${MAX_SAMPLE_ROWS} example rows. Panel results also include meanPnlPct, stdPnlPct, and baseRate (win rate of all mineable rows for the same asset/side/horizon without where-filters).
 If you do not need extra evidence, skip this and answer directly.`;
 }
 

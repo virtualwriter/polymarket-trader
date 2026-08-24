@@ -19,13 +19,30 @@ Z_ONE_SIDED_95 = 1.6448536269514722
 
 
 def binomial_p_value(wins: int, n: int, p: float = 0.5) -> float:
-    """One-sided exact binomial P(X >= wins | n, p)."""
+    """One-sided exact binomial P(X >= wins | n, p).
+
+    Terms are summed in log-space (lgamma binomial coefficients), so the
+    computation stays exact for panel-scale n where math.comb overflows
+    float conversion.
+    """
     if n <= 0:
         return 1.0
     wins = max(0, min(wins, n))
+    if wins == 0:
+        return 1.0
+    if p <= 0.0:
+        return 0.0
+    if p >= 1.0:
+        return 1.0
+    log_p = math.log(p)
+    log_q = math.log(1.0 - p)
     total = 0.0
     for k in range(wins, n + 1):
-        total += math.comb(n, k) * (p ** k) * ((1 - p) ** (n - k))
+        log_term = (
+            math.lgamma(n + 1) - math.lgamma(k + 1) - math.lgamma(n - k + 1)
+            + k * log_p + (n - k) * log_q
+        )
+        total += math.exp(log_term)
     return min(1.0, total)
 
 

@@ -167,7 +167,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--days", type=int, default=90, help="Lookback days to fetch (default: 90).")
     parser.add_argument("--coins", help="Comma-separated labels or coins, e.g. MU,HOOD,xyz:AAPL,BTC,GOLD.")
     parser.add_argument("--out", default="data/hl-funding-history.csv", help="Output CSV path.")
+    parser.add_argument(
+        "--merge",
+        action="store_true",
+        help="Union fetched rows with the existing CSV instead of overwriting it. "
+        "Keyed by (timestamp, coin); lets history accumulate past the API's "
+        "own lookback so long-window research features stay computable.",
+    )
     return parser.parse_args()
+
+
+def load_existing_rows(path: Path) -> list[dict]:
+    if not path.is_file():
+        return []
+    with path.open(newline="") as f:
+        return list(csv.DictReader(f))
 
 
 def main() -> None:
@@ -191,6 +205,16 @@ def main() -> None:
             continue
         rows.extend(coin_rows)
         print(f"{item.label} ({item.coin}): {len(coin_rows)} rows")
+
+    if args.merge:
+        merged: dict[tuple[str, str], dict] = {
+            (row["timestamp"], row["coin"]): row for row in load_existing_rows(out_path)
+        }
+        fetched = len(rows)
+        for row in rows:
+            merged[(row["timestamp"], row["coin"])] = row
+        rows = list(merged.values())
+        print(f"merge: {fetched} fetched + existing -> {len(rows)} total rows")
 
     rows.sort(key=lambda row: (row["timestamp"], row["label"], row["coin"]))
     with out_path.open("w", newline="") as f:
