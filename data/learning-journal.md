@@ -2963,3 +2963,44 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-08-24 14:28 UTC
+
+**Portfolio:** $104.16 total | Cash $102.16 | 2 open | P&L $7.3987 | 64% win rate (821 trades)
+
+**Closed 1 trades:**
+- ✅ GOOGL long via hyperliquid/hl_perp [HL GOOGL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → expiry: +$0.0664 (6.6%, market 0.0667, funding -0.0002)
+
+**Opened 2 positions:**
+- OIL short @ $85 via spot/spot [OIL spot] (PC_RATIO_EXTREME_LOW)
+- GOLD short @ $4675 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_hl_funding_ann = 36.47 is 4.3 std devs from mean (5.76 ± 7.18)
+- [anomaly] oil_opt_iv_30d = 8.4 is -3.2 std devs from mean since 2026-04-28 (52.13 ± 13.79)
+- [anomaly] hype_hl_oi = 1964522947 is 2.8 std devs from mean (1270471010.20 ± 249834373.85)
+- [anomaly] oil_opt_fwd_90d = 5.8 is -2.6 std devs from mean since 2026-04-28 (78.23 ± 28.23)
+- [anomaly] hype_pm_ev = 76.73 is 2.1 std devs from mean (59.05 ± 8.41)
+
+**Blocked signal learning:**
+- Open blocked shadows: 16
+- Resolved blocked shadows: 929 (477 wins / 452 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/20 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.05%)
+- ❌ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expired (-1.01%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.62%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-6.25%)
+
+**LLM analysis:**
+No open positions to review and LLM close eligibility is empty, so no discretionary close actions were taken. BTC looks extended short-term with funding and OI expansion against a very bearish macro backdrop; I would flag elevated BTC funding and the flattening/inverting IV term structure as worth monitoring in the nightly run. ONE_TOUCH_HIGH_EDGE_NO ETH shadow warnings remain visible, but there is no active position to manage.
+
+---
+
