@@ -368,6 +368,9 @@ def upsert_finding(
         "sampleShadowIds",
         "opportunityScore",
         "confidenceScore",
+        "suggestedConditions",
+        "horizonDays",
+        "catalogCovered",
     )
     for field in optional_fields:
         if field in body:
