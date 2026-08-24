@@ -2748,3 +2748,41 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; ne
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-24T07:11:15.195Z, model=deepseek-v4-pro)
+- Hypotheses added: 4 (rejected 4); reviews applied: 6; invalidated assumptions learned: 2; param updates: none.
+- Strategy review: Live performance is still being carried by the weekend funding-reversion complex (345/497 live wins, 69%; +$1.49 net) and the live one-touch NO edge (4/4 wins), while manual IV-touch rich NO shadows remain excellent (9/10). The bleeding is concentrated in PM proxy-short shadows, LLM/macro/PM-EV signals, and in shadow-mined variants that trigger on stale or non-extreme funding or grade contract-edge trades on spot moves; the portfolio is roughly flat/open with small unrealized losses and should not broaden until these clusters are re-authored or killed.
+- Nightly journal: Tonight I focused on the six struggling families. The largest structural fix is re-authoring H-534 and similar contract-edge signals to be graded on contract PnL rather than a >2% spot move. Weekend funding variants need true weekend gates plus regime-relative funding percentile, not fixed -10% thresholds. The cross-asset and listed-IV BTC long variants are late-stage chasers at 7d highs; I set invalidated assumptions and proposed pullback/reset refinements. PM proxy-short shadows remain toxic and should not be promoted. No parameter updates were made because the current risk table is not clea
+### 2026-08-24 07:28 UTC
+
+**Portfolio:** $104.10 total | Cash $100.10 | 4 open | P&L $7.3446 | 64% win rate (817 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_opt_iv_30d = 8.4 is -3.2 std devs from mean since 2026-04-28 (52.25 ± 13.62)
+- [anomaly] hype_hl_oi = 2000152051 is 3.0 std devs from mean (1268842174.69 ± 247886828.81)
+- [anomaly] hype_pm_ev = 77.14 is 2.2 std devs from mean (59.01 ± 8.38)
+- [anomaly] hype_spot = 80.026 is 2.1 std devs from mean (58.56 ± 10.08)
+
+**Blocked signal learning:**
+- Open blocked shadows: 17
+- Resolved blocked shadows: 925 (477 wins / 448 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-0.86%)
+
+**LLM analysis:**
+No discretionary closes are eligible this hour: all four open positions have allowed=false in the action surface. AMZN FUNDING_EXTREME_SHORT thesis has materially weakened — HL funding annualized round-tripped from -146.8% at entry to +9.0%, crossing back through the -15% threshold — but the position is only 9h old and below the 12h minimum hold, so no close instruction is emitted; I will revisit next hour if funding remains normalized. The weekend HL funding reversion longs (GOOGL, CBRS, EBAY) are underwater but policy-gated to mechanical exits, so no action there.
+
+---
+
