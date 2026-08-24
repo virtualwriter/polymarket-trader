@@ -127,30 +127,11 @@ def conditions_for_bucket_parts(
 
 
 def render_condition(conditions: dict[str, Any] | None) -> str:
+    """Conditions are stored in the engine's own expression grammar, so the
+    rendered title doubles as copy-paste-ready hypothesis conditions."""
     if not conditions:
         return "(panel-only features; no catalog mapping)"
-    parts = []
-    for key, expr in conditions.items():
-        if isinstance(expr, dict):
-            lo = expr.get("gte")
-            hi = expr.get("lt")
-            if lo is not None and hi is not None:
-                parts.append(f"{lo}<={key}<{hi}")
-            elif lo is not None:
-                parts.append(f"{key}>={lo}")
-            elif hi is not None:
-                parts.append(f"{key}<{hi}")
-            elif "gt" in expr:
-                parts.append(f"{key}>{expr['gt']}")
-            elif "eq" in expr:
-                parts.append(f"{key}={expr['eq']}")
-            else:
-                parts.append(f"{key}?{expr}")
-        elif isinstance(expr, list):
-            parts.append(f"{key} in [{','.join(str(x) for x in expr)}]")
-        else:
-            parts.append(f"{key}={expr}")
-    return " AND ".join(parts)
+    return " AND ".join(f"{key} {expr}" for key, expr in conditions.items())
 
 
 def mine_panel(

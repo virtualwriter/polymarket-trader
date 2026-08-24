@@ -419,13 +419,21 @@ class PanelFeature:
         return self.bucketer(row.get(self.column))
 
 
+def _fmt(x: float) -> str:
+    return str(int(x)) if float(x).is_integer() else str(x)
+
+
 def _range_condition(key: str, low: float | None, high: float | None) -> dict[str, Any]:
-    expr: dict[str, Any] = {}
+    """Render a [low, high) bucket in the engine's own expression grammar
+    (see satisfiesNumericExpression in hypothesis-shadow-eval.ts), so the LLM
+    can copy conditions verbatim into an evaluable hypothesis."""
+    if low is not None and high is not None:
+        return {key: f"between {_fmt(low)} and {_fmt(high)}"}
     if low is not None:
-        expr["gte"] = low
+        return {key: f">= {_fmt(low)}"}
     if high is not None:
-        expr["lt"] = high
-    return {key: expr}
+        return {key: f"< {_fmt(high)}"}
+    return {key: ""}
 
 
 def _make_numeric_feature(
@@ -488,7 +496,9 @@ def panel_features() -> list[PanelFeature]:
             "direction",
             _direction_bucket,
             "touch_direction",
-            lambda b: {"touch_direction": b.split("=", 1)[1]} if "=" in b else None,
+            # Catalog encodes direction numerically: above=+1, below=-1.
+            lambda b: {"touch_direction": ">= 1"} if b == "dir=above"
+            else ({"touch_direction": "<= -1"} if b == "dir=below" else None),
         ),
         _make_numeric_feature(
             "edge", "sell_yes_edge_pts", [1.0, 3.0, 8.0], ["e<1", "e1-3", "e3-8", "e8+"],
@@ -539,16 +549,16 @@ def panel_features() -> list[PanelFeature]:
 
 
 def _stance_condition(bucket: str):
-    mapping = {"s-1": {"lt": 0}, "s+1": {"gt": 0}, "s0": {"eq": 0}}
+    mapping = {"s-1": "<= -1", "s+1": ">= 1", "s0": "= 0"}
     expr = mapping.get(bucket)
     return {"smart_flow_stance": expr} if expr else None
 
 
 def _dow_condition(bucket: str):
     if bucket == "weekend":
-        return {"day_of_week": ["saturday", "sunday"]}
+        return {"day_of_week": "in [sat, sun]"}
     if bucket == "weekday":
-        return {"day_of_week": ["monday", "tuesday", "wednesday", "thursday", "friday"]}
+        return {"day_of_week": "in [mon, tue, wed, thu, fri]"}
     return None
 
 

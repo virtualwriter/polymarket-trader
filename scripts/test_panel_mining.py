@@ -230,14 +230,28 @@ class MinePanelTest(unittest.TestCase):
 
 
 class ConditionRenderingTest(unittest.TestCase):
-    def test_bucket_conditions_merge_into_catalog_keys(self) -> None:
+    def test_bucket_conditions_use_engine_expression_grammar(self) -> None:
         features = {f.name: f for f in panel_features()}
         conditions, covered = miner.conditions_for_bucket_parts(
             features, [("dir", "dir=above"), ("edge", "e3-8")]
         )
         self.assertTrue(covered)
-        self.assertEqual(conditions["touch_direction"], "above")
-        self.assertEqual(conditions["sell_yes_edge_pts"], {"gte": 3.0, "lt": 8.0})
+        # Exactly the syntax satisfiesNumericExpression parses and the
+        # condition catalog documents (touch_direction: above=+1).
+        self.assertEqual(conditions["touch_direction"], ">= 1")
+        self.assertEqual(conditions["sell_yes_edge_pts"], "between 3 and 8")
+
+    def test_open_ended_and_metadata_buckets(self) -> None:
+        features = {f.name: f for f in panel_features()}
+        conditions, _ = miner.conditions_for_bucket_parts(features, [("edge", "e8+")])
+        self.assertEqual(conditions["sell_yes_edge_pts"], ">= 8")
+        conditions, _ = miner.conditions_for_bucket_parts(features, [("edge", "e<1")])
+        self.assertEqual(conditions["sell_yes_edge_pts"], "< 1")
+        conditions, covered = miner.conditions_for_bucket_parts(features, [("dow", "weekend")])
+        self.assertTrue(covered)
+        self.assertEqual(conditions["day_of_week"], "in [sat, sun]")
+        conditions, _ = miner.conditions_for_bucket_parts(features, [("stance", "s-1")])
+        self.assertEqual(conditions["smart_flow_stance"], "<= -1")
 
     def test_panel_only_features_are_flagged_uncovered(self) -> None:
         features = {f.name: f for f in panel_features()}
@@ -245,14 +259,13 @@ class ConditionRenderingTest(unittest.TestCase):
             features, [("dir", "dir=above"), ("fund", "f<-10")]
         )
         self.assertFalse(covered)
-        self.assertEqual(conditions, {"touch_direction": "above"})
+        self.assertEqual(conditions, {"touch_direction": ">= 1"})
 
-    def test_render_condition_is_human_readable(self) -> None:
+    def test_render_condition_is_copy_pasteable(self) -> None:
         text = miner.render_condition(
-            {"touch_direction": "above", "sell_yes_edge_pts": {"gte": 3.0, "lt": 8.0}}
+            {"touch_direction": ">= 1", "sell_yes_edge_pts": "between 3 and 8"}
         )
-        self.assertIn("touch_direction=above", text)
-        self.assertIn("3.0<=sell_yes_edge_pts<8.0", text)
+        self.assertEqual(text, "touch_direction >= 1 AND sell_yes_edge_pts between 3 and 8")
 
 
 if __name__ == "__main__":
