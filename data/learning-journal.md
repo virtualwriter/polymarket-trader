@@ -3070,3 +3070,34 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 6/12; ne
 
 ---
 
+### 2026-08-24 17:28 UTC
+
+**Portfolio:** $104.16 total | Cash $102.16 | 2 open | P&L $7.3987 | 64% win rate (821 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_opt_iv_30d = 7.3 is -3.2 std devs from mean since 2026-04-28 (52.07 ± 13.87)
+- [anomaly] hype_hl_oi = 1896879943 is 2.5 std devs from mean (1271267269.74 ± 250754473.66)
+- [anomaly] hype_pm_ev = 76.04 is 2.0 std devs from mean (59.07 ± 8.43)
+
+**Blocked signal learning:**
+- Open blocked shadows: 19
+- Resolved blocked shadows: 930 (477 wins / 453 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expired (-1.01%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.62%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-6.25%)
+- ❌ Blocked: FUNDING_EXTREME_LONG BTC short via hyperliquid would have hit stop (-1.83%)
+
+**LLM analysis:**
+No discretionary closes allowed this hour: both open positions are under the 12h LLM close minimum. OIL short evidence has materially round-tripped (CL P/C ratio from 0.344 to 1.197, now 24h/7d percentile 100), which would be a thesis_invalidated candidate once eligible, but it is only ~3h old so no action. GOLD short funding also collapsed from 26.53% to 5.48%, below the +15% entry threshold, while spot is down 0.71%; this also looks like a thesis-invalidation candidate once the position reaches 12h, but again no action now. Monitoring both into the next hourly close-review window.
+
+---
+

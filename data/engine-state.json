@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-24T16:28:26.245Z",
+  "generatedAt": "2026-08-24T17:28:20.652Z",
   "dataFreshness": {
-    "valuationRows": 2530,
-    "latestValuationAt": "2026-08-24T16",
-    "macroRows": 2528,
+    "valuationRows": 2531,
+    "latestValuationAt": "2026-08-24T17",
+    "macroRows": 2529,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-24T16"
+    "latestInstrumentSnapshotAt": "2026-08-24T17"
   },
   "portfolio": {
     "cash": 102.1591,
@@ -13,7 +13,7 @@
     "realizedPnl": 7.3987,
     "totalTrades": 821,
     "winRatePct": 63.6,
-    "unrealizedPnl": 0.0021
+    "unrealizedPnl": 0.0084
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.12,
-      "currentPrice": 85.1,
-      "underlyingPrice": 85.1,
+      "pnlPct": 0.13,
+      "currentPrice": 84.89,
+      "underlyingPrice": 84.89,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 0.32,
-      "currentPrice": 4660,
-      "underlyingPrice": 4660,
+      "pnlPct": 0.71,
+      "currentPrice": 4642,
+      "underlyingPrice": 4642,
       "targetPct": 5,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -212,7 +212,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 17,
+    "openCount": 19,
     "resolvedCount": 930,
     "wouldHaveWon": 477,
     "wouldHaveLost": 453,
@@ -474,6 +474,38 @@
           ]
         },
         "thesis": "[PM PROXY SHORT SHADOW] Real GOLD short via hyperliquid/hl_perp (FUNDING_EXTREME_LONG). Track buying NO on the comparable Polymarket upside contract."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $3,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.55,
+          "yesAsk": 0.56,
+          "yesSpread": 0.01,
+          "liquidity": 43213.87,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.6pt on ETH, spread 1.0c, liquidity 43214. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $4,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.18,
+          "yesAsk": 0.2,
+          "yesSpread": 0.02,
+          "liquidity": 63428.84,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.8pt on ETH, spread 2.0c, liquidity 63429. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
