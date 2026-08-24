@@ -2858,3 +2858,40 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 4/12; ne
 
 ---
 
+### 2026-08-24 11:28 UTC
+
+**Portfolio:** $104.09 total | Cash $103.09 | 1 open | P&L $7.3323 | 64% win rate (820 trades)
+
+**Closed 1 trades:**
+- ✅ AMZN long via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT) → llm_decision: +$0.0053 (0.5%, market 0.0055, funding -0.0002)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_opt_iv_30d = 7.1 is -3.3 std devs from mean since 2026-04-28 (52.19 ± 13.70)
+- [anomaly] hype_hl_oi = 1946130540 is 2.7 std devs from mean (1269627019.47 ± 248781118.46)
+- [anomaly] oil_opt_fwd_90d = 6.3 is -2.6 std devs from mean since 2026-04-28 (78.36 ± 28.09)
+- [anomaly] hype_pm_ev = 76.56 is 2.1 std devs from mean (59.03 ± 8.40)
+- [anomaly] hype_spot = 79.181 is 2.0 std devs from mean (58.58 ± 10.10)
+
+**Blocked signal learning:**
+- Open blocked shadows: 14
+- Resolved blocked shadows: 929 (477 wins / 452 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/20 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.05%)
+- ❌ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expired (-1.01%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.62%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-6.25%)
+
+**LLM analysis:**
+Reviewed open positions. GOOGL (WEEKEND_HL_FUNDING_REVERSION_LONG) is not LLM-close eligible and remains mechanically managed; no close emitted. AMZN FUNDING_EXTREME_SHORT funding has normalized from -146.8% to +5.48%, crossing the -15% entry threshold and invalidating the crowded-short thesis; closing under thesis_invalidated. No other discretionary actions.
+
+---
+
