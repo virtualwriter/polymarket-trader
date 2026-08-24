@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-24T11:28:22.975Z",
+  "generatedAt": "2026-08-24T12:28:26.819Z",
   "dataFreshness": {
-    "valuationRows": 2525,
-    "latestValuationAt": "2026-08-24T11",
-    "macroRows": 2523,
+    "valuationRows": 2526,
+    "latestValuationAt": "2026-08-24T12",
+    "macroRows": 2524,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-24T11"
+    "latestInstrumentSnapshotAt": "2026-08-24T12"
   },
   "portfolio": {
-    "cash": 102.0874,
-    "openPositions": 2,
-    "realizedPnl": 7.327,
-    "totalTrades": 819,
+    "cash": 103.0927,
+    "openPositions": 1,
+    "realizedPnl": 7.3323,
+    "totalTrades": 820,
     "winRatePct": 63.5,
-    "unrealizedPnl": -0.0021
+    "unrealizedPnl": 0.0006
   },
   "openPositions": [
     {
@@ -22,31 +22,13 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.73,
-      "currentPrice": 343.68,
+      "pnlPct": 0.06,
+      "currentPrice": 344.23,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
       "evidenceColumns": []
-    },
-    {
-      "positionId": "T-1787524105013-comr",
-      "asset": "AMZN",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.53,
-      "currentPrice": 259.25,
-      "underlyingPrice": 258.61,
-      "targetPct": 4,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "amzn_stock",
-        "amzn_hl_perp",
-        "amzn_hl_funding_ann"
-      ]
     }
   ],
   "signalHealth": [
@@ -83,10 +65,10 @@
     {
       "type": "FUNDING_EXTREME_SHORT",
       "enabled": true,
-      "weight": 0.5695,
-      "trades": 46,
-      "wins": 27,
-      "avgPnlPct": -0.1385,
+      "weight": 0.5734,
+      "trades": 47,
+      "wins": 28,
+      "avgPnlPct": -0.1243,
       "disabledAssets": [
         "OIL"
       ]
@@ -210,7 +192,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 14,
+    "openCount": 15,
     "resolvedCount": 929,
     "wouldHaveWon": 477,
     "wouldHaveLost": 452,
@@ -241,7 +223,7 @@
       },
       {
         "signalType": "FUNDING_EXTREME_LONG",
-        "blocked": 20,
+        "blocked": 21,
         "resolved": 20,
         "wouldHaveWon": 11,
         "wouldHaveLost": 9,
