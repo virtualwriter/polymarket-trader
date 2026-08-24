@@ -1,11 +1,26 @@
 {
-  "generatedAt": "2026-08-24T17:28:37.791Z",
+  "generatedAt": "2026-08-24T18:28:46.160Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [],
+  "entrySignals": [
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.15125,
+      "confidence": 0.07686123610455105,
+      "thesis": "OIL P/C ratio 1.32 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 84.98,
+      "targetPct": 4,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    }
+  ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
