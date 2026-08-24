@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-23T07:11:42Z",
+  "generatedAt": "2026-08-24T07:12:52Z",
   "summary": {
-    "generatedAt": "2026-08-23T07:11:42Z",
+    "generatedAt": "2026-08-24T07:12:52Z",
     "findingCounts": {
-      "open": 11,
-      "strengthened": 32,
+      "open": 10,
+      "strengthened": 33,
       "weakened": 0,
       "negative": 8,
       "suppressed": 0,
@@ -21,7 +21,7 @@
       "themeSlug": "other_informed_flow",
       "status": "open"
     },
-    "authoredHypothesisCount": 10,
+    "authoredHypothesisCount": 8,
     "advicePresent": true
   },
   "topOpportunities": [
@@ -78,8 +78,8 @@
     {
       "rank": 6,
       "id": "FIND-0047",
-      "opportunityScore": 0.9101,
-      "confidenceScore": 0.4721,
+      "opportunityScore": 0.9116,
+      "confidenceScore": 0.4702,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s-1,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -88,8 +88,8 @@
     {
       "rank": 7,
       "id": "FIND-0030",
-      "opportunityScore": 0.8675,
-      "confidenceScore": 0.571,
+      "opportunityScore": 0.8689,
+      "confidenceScore": 0.5691,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -98,8 +98,8 @@
     {
       "rank": 8,
       "id": "FIND-0048",
-      "opportunityScore": 0.8598,
-      "confidenceScore": 0.5452,
+      "opportunityScore": 0.8626,
+      "confidenceScore": 0.5287,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|strat:dir=above,s-1|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -132,7 +132,7 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 41,
-      "avgOpportunityScore": 0.6378
+      "avgOpportunityScore": 0.6384
     },
     {
       "id": "THEME-0002",
@@ -172,54 +172,44 @@
   ],
   "authoredHypotheses": [
     {
-      "originFindingId": "FIND-0020",
-      "themeId": "THEME-0003",
-      "description": "Fade dumb-money high-YES flow: on above-strike one-touch contracts, when smart wallets are net short YES and the contract offers a positive sell-YES edge, sell the rich YES side because high-barrier flow is dumb-money chasing premium, not smart directional demand."
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement: restrict CBRS funding reversion to true weekends and require the funding rate to be in the bottom percentile of its own 7d range, rather than using a fixed -10% threshold that fires after normalization has already occurred."
     },
     {
-      "originFindingId": "FIND-0053",
-      "themeId": "THEME-0005",
-      "description": "When GOLD's GLD put/call ratio is in the bottom 15% of its 7-day range while GOLD spot remains above its 24h SMA, extreme call-buying/put-selling marks an exhaustion high rather than durable upside demand. Short the spot/perp high."
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement: restrict AAPL funding reversion to weekends and use a regime-relative funding percentile instead of the fixed -10% threshold, avoiding the many triggers where funding was already positive or barely dislocated."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement: restrict MU funding reversion to true weekend hours and require funding in the bottom percentile of its 7d range. The original -10% condition fired on flat or positive funding readings and gave no normalization edge."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement: re-author GOLD one-touch rich-NO as a contract premium fade instead of a spot-decline prediction. Grade on selling YES / holding NO when the GOLD above-strike underlying-cap edge is at least 10pts and spreads are tight."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement: change the BTC/HYPE confirmation from near-high chase to pullback reset. Require BTC below its 24h SMA and at least 4% off the 7d high while HYPE remains above its 24h SMA with stable OI, so HYPE strength is relative leadership rather than late-stage risk-on echo."
     },
     {
       "originFindingId": "FIND-0043",
       "themeId": "THEME-0001",
-      "description": "On BTC above-strike one-touch contracts, sell YES when at least one scoped contract offers a 3-8 point sell-YES edge. This is a contract premium fade, not a spot-move call: overpriced YES premium decays as the high barrier stays unchallenged."
+      "description": "Fade BTC one-touch YES premium on above-strike contracts with moderate 3-8pt sell-YES edge and tight quoted spread."
+    },
+    {
+      "originFindingId": "FIND-0054",
+      "themeId": "THEME-0001",
+      "description": "Near-expiry refinement of the BTC one-touch NO edge: same 3-8pt moderate sell-YES edge and tight spread, but only on contracts expiring within 7 days."
     },
     {
       "originFindingId": "FIND-0025",
       "themeId": "THEME-0004",
-      "description": "Sell YES on PM-IV-rich above-strike one-touch contracts when PM IV is at least 10 vol points above listed options IV and a 3-8 point sell-YES edge exists. The richness is a PM premium error, not compensation for strong spot drift."
-    },
-    {
-      "originFindingId": "FIND-0030",
-      "themeId": "THEME-0001",
-      "description": "Broad one-touch premium fade: on any above-strike one-touch contract with a 3-8 point sell-YES edge, tight spread, and liquidity, sell YES. This is the broadest version of the above-strike edge family and must be graded on contract premium decay."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-108: replace HYPE risk-on confirmation, which fires late after the BTC move, with a filter that BTC perp funding is not already in the top quintile of its 7-day range. This avoids chasing late-stage overextended momentum."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-170: instead of longing momentum when options IV rises, lean short when BTC is only above its 24h SMA but more than 4% below its 7d high with options IV still rising. The IV bid is hedging/distribution, not breakout confirmation."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-539: require CBRS funding below -10% on true weekend days AND in the bottom 10% of its 7-day range. The original failed because standalone < -10% included stale/default 5.5 and weekday noise; this isolates genuine weekend funding stress."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-535: restrict to weekend days and extreme current funding vs its own 7-day range, not just below -10%. The original fired on stale 5.5 readings and weekday noise; this isolates true weekend funding dislocations."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-538: require COIN funding below -20% on true weekend days and in the bottom 10% of its 7-day range. The original's < -10% threshold captured default 5.5 and non-weekend readings that never normalized."
+      "description": "PM-IV rich one-touch NO fade: on above-strike contracts where Polymarket IV is at least 10 vol points above listed-option IV and the sell-YES edge is moderate (3-8pts), sell YES / hold NO with a tight spread gate."
     }
   ],
   "negativeFindings": [
@@ -275,9 +265,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-08-23T07:09:51Z",
-    "opportunitiesGeneratedAt": "2026-08-23T07:11:41Z",
-    "themesGeneratedAt": "2026-08-23T07:09:57Z",
-    "adviceGeneratedAt": "2026-08-23T07:09:50.930Z"
+    "findingsExportGeneratedAt": "2026-08-24T07:11:15Z",
+    "opportunitiesGeneratedAt": "2026-08-24T07:12:52Z",
+    "themesGeneratedAt": "2026-08-24T07:11:22Z",
+    "adviceGeneratedAt": "2026-08-24T07:11:15.195Z"
   }
 }

@@ -669,7 +669,7 @@
         "created": "2026-04-03",
         "setupId": "btc_pm_iv_expansion_reversion",
         "setupLabel": "BTC PM-IV expansion / reversion",
-        "postMortem": "Early wins captured genuine IV‑driven expansions, but after 23 July the low PM‑IV conditions persisted while spot moved less than 2%, showing that cheap volatility alone is insufficient. The absolute 46/49 thresholds were regime‑stale and did not account for fading implied vol. | BTC PM‑IV expansion reversion lost 7 of 10 recent tests, with spot moves frequently failing to reach 2% absolute. The IV spread proved to be a weak volatility predictor in calm markets, and multiple refinements that tightened thresholds did not rescue it. | Refined by H-638 (2026-08-11): Refinement of H‑001: replace absolute PM‑IV thresholds with a regime‑relative co | The absolute IV thresholds (PM IV <46, opt IV >49) are no longer effective in the current lower‑IV environment; many triggers produced sub‑2% spot moves, indicating the regime has shifted."
+        "postMortem": "BTC PM‑IV expansion reversion lost 7 of 10 recent tests, with spot moves frequently failing to reach 2% absolute. The IV spread proved to be a weak volatility predictor in calm markets, and multiple refinements that tightened thresholds did not rescue it. | Refined by H-638 (2026-08-11): Refinement of H‑001: replace absolute PM‑IV thresholds with a regime‑relative co | The absolute IV thresholds (PM IV <46, opt IV >49) are no longer effective in the current lower‑IV environment; many triggers produced sub‑2% spot moves, indicating the regime has shifted. | Only 3/10 passed. The two wins came from large down moves, while eight entries produced absolute moves <2%. PM IV below 46 vs options IV above 49 is a persistent structural discount, not a short-horizon timing condition; it can stay pinned while BTC drifts."
       },
       "links": {},
       "created": "2026-07-15T19:00:44Z",
@@ -833,10 +833,10 @@
         "confidence": 0.65,
         "timeframeDays": 5,
         "testStats": {
-          "total": 6,
+          "total": 7,
           "completed": 6,
           "wins": 3,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0.75
         },
         "promotedToSignal": false,
@@ -4455,7 +4455,7 @@
         "created": "2026-04-09",
         "setupId": "cross_asset_iv_compression_vol_expansion",
         "setupLabel": "Cross-asset IV compression / vol expansion",
-        "postMortem": "The HYPE confirmation long fires after BTC is already near the 7d high. Recorded tests show BTC immediately fell -2.93% and -3.47%, or stalled below +2%. Stable HYPE OI was a late-cycle byproduct rather than a continuation predictor. | The cross-asset momentum confirmation variant repeatedly went long BTC near its 7-day high when HYPE was above its 24h SMA, but BTC fell -2.93% and -3.47% in multiple tests. HYPE participation was a crowded trend marker rather than a continuation edge. | The condition set buys BTC already above the 24h SMA, within 4% of the 7d high, and HYPE above its SMA with stable OI; recent tests are 7/23 and show repeated 2-3.5% BTC drops after entry, with a single 9.66% win masking mostly chasing losses. | BTC lost -2.9% to -3.5% while HYPE was above its 24h SMA; HYPE risk-on participation did not confirm durable BTC momentum."
+        "postMortem": "The cross-asset momentum confirmation variant repeatedly went long BTC near its 7-day high when HYPE was above its 24h SMA, but BTC fell -2.93% and -3.47% in multiple tests. HYPE participation was a crowded trend marker rather than a continuation edge. | The condition set buys BTC already above the 24h SMA, within 4% of the 7d high, and HYPE above its SMA with stable OI; recent tests are 7/23 and show repeated 2-3.5% BTC drops after entry, with a single 9.66% win masking mostly chasing losses. | BTC lost -2.9% to -3.5% while HYPE was above its 24h SMA; HYPE risk-on participation did not confirm durable BTC momentum. | H-108's family is 36% over scorable tests, with wins only in two violent BTC breaks (+9.66%, +22.67%). HYPE risk-on did not discriminate; losses occurred with BTC -3.47%, +0.70%, and flat near the 7d high."
       },
       "links": {},
       "created": "2026-07-15T19:00:44Z",
@@ -6668,7 +6668,7 @@
         "created": "2026-04-13",
         "setupId": "btc_listed_iv_momentum_confirmation",
         "setupLabel": "BTC listed-IV momentum confirmation",
-        "postMortem": "The long variant of BTC listed-IV momentum only produced 3 wins in 8 tests; many entries stalled or reversed. Spot gain with positive IV change is insufficient to guarantee a 2% follow‑through. | Listed‑IV momentum confirmation lost 7 of 10 recent tests, as rising option‑implied demand did not prevent trend reversals. Spot failed to sustain upside when macro or positioning shifted, invalidating the confirmation thesis. | H‑170 and related BTC listed‑IV momentum hypotheses required both spot momentum and rising options IV. With 27% win rate, the IV filter materially hurts performance. Rising IV often reflects hedging demand that coincides with, not predicts, further rally, and the signal triggers at exits rather than starts of moves. | Long BTC after spot is already above the 24h SMA, near the 7d high, and up more than 0.75% in 24 hours enters near short-term extension. Rising options IV then behaves as a late confirmation or premium signal rather than a predictor of follow-through."
+        "postMortem": "Listed‑IV momentum confirmation lost 7 of 10 recent tests, as rising option‑implied demand did not prevent trend reversals. Spot failed to sustain upside when macro or positioning shifted, invalidating the confirmation thesis. | H‑170 and related BTC listed‑IV momentum hypotheses required both spot momentum and rising options IV. With 27% win rate, the IV filter materially hurts performance. Rising IV often reflects hedging demand that coincides with, not predicts, further rally, and the signal triggers at exits rather than starts of moves. | Long BTC after spot is already above the 24h SMA, near the 7d high, and up more than 0.75% in 24 hours enters near short-term extension. Rising options IV then behaves as a late confirmation or premium signal rather than a predictor of follow-through. | Family is 4/13. The long prediction is contradicted by several test rows graded as spot_directional_short that lost on BTC +3.31%; remaining long observations show choppy 0.04%-0.75% moves that do not clear +2%. Rising option IV during spot strength is hedging/call-chasing, not continuation confirmation."
       },
       "links": {},
       "created": "2026-07-15T19:00:44Z",
@@ -13847,10 +13847,10 @@
         "timeframeDays": 7,
         "testStats": {
           "total": 2,
-          "completed": 1,
-          "wins": 0,
-          "pending": 1,
-          "winRate": 0
+          "completed": 2,
+          "wins": 1,
+          "pending": 0,
+          "winRate": 1
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -14600,10 +14600,10 @@
         "timeframeDays": 7,
         "testStats": {
           "total": 2,
-          "completed": 1,
-          "wins": 1,
-          "pending": 1,
-          "winRate": 0
+          "completed": 2,
+          "wins": 2,
+          "pending": 0,
+          "winRate": 1
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -20115,10 +20115,10 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 21,
-          "completed": 21,
+          "total": 24,
+          "completed": 22,
           "wins": 0,
-          "pending": 0,
+          "pending": 2,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -20126,7 +20126,7 @@
         "created": "2026-07-16",
         "setupId": "shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no",
         "setupLabel": "Shadow-mined NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short-rich-tail",
-        "postMortem": "The no-bias adjusted gap on rich GOLD tail NO contracts was traded as a spot short. The recorded gold moves were small or against the trade: +0.25%, -0.82%, -1.11%, +0.92%, +0.18%, +1.07%. The gap was not an exhaustion trigger. | The no-bias adjusted gap gold short-rich-tail variant went 0/17, with GOLD moving essentially flat to higher after the gap condition. The no-bias gap stayed pinned while spot trended against the short. | 0/19 scorable tests. The rich tail no-bias gap threshold >= 12.3 also failed as gold rallied through the fade window, including 4380 to 4510 and 4519 to 4623. The gap is trend strength, not a mean-reversion sell signal. | H-532 failed every scorable test. Gold spot was flat or rose after the rich tail NO gap, so the no-bias adjusted gap did not predict bearish continuation."
+        "postMortem": "The no-bias adjusted gap gold short-rich-tail variant went 0/17, with GOLD moving essentially flat to higher after the gap condition. The no-bias gap stayed pinned while spot trended against the short. | 0/19 scorable tests. The rich tail no-bias gap threshold >= 12.3 also failed as gold rallied through the fade window, including 4380 to 4510 and 4519 to 4623. The gap is trend strength, not a mean-reversion sell signal. | H-532 failed every scorable test. Gold spot was flat or rose after the rich tail NO gap, so the no-bias adjusted gap did not predict bearish continuation. | Discarded 20 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20183,18 +20183,18 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 40,
-          "completed": 40,
-          "wins": 4,
-          "pending": 0,
-          "winRate": 0
+          "total": 58,
+          "completed": 56,
+          "wins": 6,
+          "pending": 2,
+          "winRate": 0.15384615384615385
         },
         "promotedToSignal": false,
         "source": "shadow_mined",
         "created": "2026-07-16",
         "setupId": "shadow_one_touch_high_edge_no_gold_heatmap_no",
         "setupLabel": "Shadow-mined ONE_TOUCH_HIGH_EDGE_NO GOLD heatmap",
-        "postMortem": "0/20 gold one-touch heatmap tests won. Instead of declining after a large underlying-cap edge, GOLD rose 5.37% and 3.97% in representative tests, showing the richness reflected real bullish touch demand and spot momentum. | Refined by H-652 (2026-08-21): Refinement of H-534: flip the contrarian short into a trend-following long. High | 0/20 scorable tests. Gold cap-edge >= 10 was followed by gold rallying rather than the predicted >2% decline; spot often rose 0.2-5.4% over the test window, so the edge was a by-product of strong upside demand, not overpriced NO premium to fade. | H-534 failed every scorable test. Gold spot rose up to 5.4% after the one-touch cap-edge trigger, showing the edge reflected structural premium rather than directional bearish flow."
+        "postMortem": "Refined by H-652 (2026-08-21): Refinement of H-534: flip the contrarian short into a trend-following long. High | 0/20 scorable tests. Gold cap-edge >= 10 was followed by gold rallying rather than the predicted >2% decline; spot often rose 0.2-5.4% over the test window, so the edge was a by-product of strong upside demand, not overpriced NO premium to fade. | H-534 failed every scorable test. Gold spot rose up to 5.4% after the one-touch cap-edge trigger, showing the edge reflected structural premium rather than directional bearish flow. | Discarded 20 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20217,10 +20217,10 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 15,
+          "total": 16,
           "completed": 14,
           "wins": 5,
-          "pending": 1,
+          "pending": 2,
           "winRate": 0.35714285714285715
         },
         "promotedToSignal": false,
@@ -20228,7 +20228,7 @@
         "created": "2026-07-16",
         "setupId": "shadow_weekend_hl_funding_reversion_long_mu_weekend_hl_funding_shadow_long",
         "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG MU weekend_hl_funding_shadow",
-        "postMortem": "Refined by H-621 (2026-08-07): Refinement of H‑535: Limit MU weekend funding reversion to weekends and raise th | H‑535's 44% win rate shows that MU funding < -10% on any day is not a reliable long signal. The winning shadows almost always occurred on weekends; losses happened when funding was negative on weekdays and continued to drift. | Most tests showed MU funding < –10% without a corresponding >2% spot rally within 2 days; instead spot often drifted or declined further. | MU funding below –10% led to mixed results (45% win). Like other single‑stock funding signals, the threshold lacks differentiation between routine dips and true excesses."
+        "postMortem": "H‑535's 44% win rate shows that MU funding < -10% on any day is not a reliable long signal. The winning shadows almost always occurred on weekends; losses happened when funding was negative on weekdays and continued to drift. | Most tests showed MU funding < –10% without a corresponding >2% spot rally within 2 days; instead spot often drifted or declined further. | MU funding below –10% led to mixed results (45% win). Like other single‑stock funding signals, the threshold lacks differentiation between routine dips and true excesses. | MU funding < -10% produced 5/14, with many entries at 5.5% that never reverted: 5.5 → -10.3, 5.5 → 5.5, 5.5 → 4.4. The threshold is not isolating true extreme stress and often catches a default 5.5% reading."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20319,10 +20319,10 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 10,
+          "total": 11,
           "completed": 9,
           "wins": 3,
-          "pending": 1,
+          "pending": 2,
           "winRate": 0.3333333333333333
         },
         "promotedToSignal": false,
@@ -20330,7 +20330,7 @@
         "created": "2026-07-16",
         "setupId": "shadow_weekend_hl_funding_reversion_long_coin_weekend_hl_funding_shadow_long",
         "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG COIN weekend_hl_funding_shadow",
-        "postMortem": "Mined from clean shadows: {\"n\": 9, \"wins\": 8, \"winRate\": 0.8889, \"sumPnl\": 0.1268, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1780090108884-COIN-j1pm\", \"WF-1780115314549-COIN-g0n7\", \"WF-1780180113912-COIN-ctg9\", \"WF-1780205309859-COIN-hei0\", \"WF-1780212512519-COIN-62r1\"]}"
+        "postMortem": "Mined from clean shadows: {\"n\": 9, \"wins\": 8, \"winRate\": 0.8889, \"sumPnl\": 0.1268, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1780090108884-COIN-j1pm\", \"WF-1780115314549-COIN-g0n7\", \"WF-1780180113912-COIN-ctg9\", \"WF-1780205309859-COIN-hei0\", \"WF-1780212512519-COIN-62r1\"]} | COIN funding < -10% produced 3/9; failures include 5.5 → 5.5, 29.1 → 20.6, and 9.7 → 5.5. The condition frequently enters when funding has already normalized or is decaying from positive levels, so there is no funding stress to unwind."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20364,7 +20364,7 @@
         "created": "2026-07-16",
         "setupId": "shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long",
         "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG CBRS weekend_hl_funding_shadow",
-        "postMortem": "The tests score funding_normalize_up after entering on cbrs_hl_funding_ann < -10, but funding frequently continued lower or moved sideways: 5.5% -> -13.7%, 5.5% -> -67.0%, 2.3% -> 1.3%. The raw threshold identifies a low level, not an exhaustion point, and the setup lacks weekend or recovery confirmation. | H-539 fired on standalone CBRS funding below -10 and produced 11/23 wins. The losing examples show funding moving 5.5% to -13.7%, or only small positive moves, not the expected weekend normalization; the threshold is too low to separate genuine weekend overshoots from ordinary noise. | The mined variant took any cbrs_hl_funding_ann < -10 reading as a reversion trigger; test outcomes show noisy oscillation: -13.7 to +5.5 win, +5.5 to -67 loss, -67 to +2.3 win, +2.3 to +1.3 loss, +1.3 to +2.3 win, +2.3 to -13.4 loss. Raw threshold without weekend or recovery confirmation selected high-noise entries. | The single cbrs_hl_funding_ann < -10 threshold fires in both directions; examples include 2.3 → -13.4 (loss) and -13.4 → -4.3 (win). It captures ordinary negative funding oscillation, not extreme positioning."
+        "postMortem": "H-539 fired on standalone CBRS funding below -10 and produced 11/23 wins. The losing examples show funding moving 5.5% to -13.7%, or only small positive moves, not the expected weekend normalization; the threshold is too low to separate genuine weekend overshoots from ordinary noise. | The mined variant took any cbrs_hl_funding_ann < -10 reading as a reversion trigger; test outcomes show noisy oscillation: -13.7 to +5.5 win, +5.5 to -67 loss, -67 to +2.3 win, +2.3 to +1.3 loss, +1.3 to +2.3 win, +2.3 to -13.4 loss. Raw threshold without weekend or recovery confirmation selected high-noise entries. | The single cbrs_hl_funding_ann < -10 threshold fires in both directions; examples include 2.3 → -13.4 (loss) and -13.4 → -4.3 (win). It captures ordinary negative funding oscillation, not extreme positioning. | CBRS funding < -10% produced 12/25 but several losses show no normalization: 5.5% → -67.0%, 2.3% → -13.4%, 5.5% → 5.5%. The condition is firing on stale/default/non-weekend readings where funding stays pinned or re-crashes."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20461,7 +20461,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -20475,7 +20475,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-18T03:02:16Z",
-        "lastSeenAt": "2026-08-23T07:09:54Z",
+        "lastSeenAt": "2026-08-24T07:11:18Z",
         "opportunityScore": 0.7663,
         "confidenceScore": 0.356,
         "scoreHistory": [
@@ -20973,6 +20973,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.7663,
+            "confidenceScore": 0.356,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.7663,
+            "confidenceScore": 0.356,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.7663,
             "confidenceScore": 0.356,
             "scoringVersion": "research_score_v3"
@@ -21881,6 +21893,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-27T12:29:34.279Z",
+              "end": "2026-08-19T03:29:16.743Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ],
         "themeId": "THEME-0001",
@@ -22471,6 +22504,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.7446,
+            "confidenceScore": 0.356,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.7446,
+            "confidenceScore": 0.356,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.7446,
             "confidenceScore": 0.356,
             "scoringVersion": "research_score_v3"
@@ -23381,6 +23426,18 @@
             "opportunityScore": 0.6128,
             "confidenceScore": 0.356,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.6128,
+            "confidenceScore": 0.356,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.6128,
+            "confidenceScore": 0.356,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -24120,6 +24177,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.9989,
+            "confidenceScore": 0.7473,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9989,
+            "confidenceScore": 0.7473,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.9989,
             "confidenceScore": 0.7473,
             "scoringVersion": "research_score_v3"
@@ -24957,6 +25026,18 @@
             "opportunityScore": 0.9973,
             "confidenceScore": 0.6988,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9973,
+            "confidenceScore": 0.6988,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.9973,
+            "confidenceScore": 0.6988,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -25770,6 +25851,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.5383,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.5383,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.5383,
             "confidenceScore": 0.6232,
             "scoringVersion": "research_score_v3"
@@ -26589,6 +26682,18 @@
             "opportunityScore": 0.9651,
             "confidenceScore": 0.6232,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9651,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.9651,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -27402,6 +27507,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.9892,
+            "confidenceScore": 0.5889,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9892,
+            "confidenceScore": 0.5889,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.9892,
             "confidenceScore": 0.5889,
             "scoringVersion": "research_score_v3"
@@ -28221,6 +28338,18 @@
             "opportunityScore": 0.8041,
             "confidenceScore": 0.5729,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.8041,
+            "confidenceScore": 0.5729,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.8041,
+            "confidenceScore": 0.5729,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -29034,6 +29163,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.6984,
+            "confidenceScore": 0.5729,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.6984,
+            "confidenceScore": 0.5729,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.6984,
             "confidenceScore": 0.5729,
             "scoringVersion": "research_score_v3"
@@ -29853,6 +29994,18 @@
             "opportunityScore": 0.553,
             "confidenceScore": 0.5036,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.553,
+            "confidenceScore": 0.5036,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.553,
+            "confidenceScore": 0.5036,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -30666,6 +30819,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.9336,
+            "confidenceScore": 0.5036,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9336,
+            "confidenceScore": 0.5036,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.9336,
             "confidenceScore": 0.5036,
             "scoringVersion": "research_score_v3"
@@ -31485,6 +31650,18 @@
             "opportunityScore": 0.9667,
             "confidenceScore": 0.4417,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9667,
+            "confidenceScore": 0.4417,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.9667,
+            "confidenceScore": 0.4417,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -32298,6 +32475,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.5673,
+            "confidenceScore": 0.348,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.5673,
+            "confidenceScore": 0.348,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.5673,
             "confidenceScore": 0.348,
             "scoringVersion": "research_score_v3"
@@ -33117,6 +33306,18 @@
             "opportunityScore": 0.7816,
             "confidenceScore": 0.3926,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.7816,
+            "confidenceScore": 0.3926,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.7816,
+            "confidenceScore": 0.3926,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -33930,6 +34131,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.1088,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.1088,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.1088,
             "confidenceScore": 0.3035,
             "scoringVersion": "research_score_v3"
@@ -34749,6 +34962,18 @@
             "opportunityScore": 0.6103,
             "confidenceScore": 0.3035,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.6103,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.6103,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "provenanceHistory": [
@@ -35367,18 +35592,18 @@
         "confidence": 0.65,
         "timeframeDays": 14,
         "testStats": {
-          "total": 41,
-          "completed": 40,
-          "wins": 6,
+          "total": 61,
+          "completed": 60,
+          "wins": 12,
           "pending": 1,
-          "winRate": 0.3
+          "winRate": 0.3157894736842105
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-07-17",
         "setupId": "find_0003",
         "setupLabel": "FIND-linked FIND-0003",
-        "postMortem": "2026-07-22T02:38:23Z: reopened after scorer-v1 quarantine (scorer_v1_direction_bug_quarantine); prior completed tests excluded from setup stats. Re-test under scorer v2. | 0% win rate over 29 tests after reopening; the GOLD one-touch heatmap cluster remains unviable. The signal was quarantined earlier due to a scorer bug, but even under corrected scoring, no edge emerges. Recommend permanent kill and no further variants."
+        "postMortem": "2026-07-22T02:38:23Z: reopened after scorer-v1 quarantine (scorer_v1_direction_bug_quarantine); prior completed tests excluded from setup stats. Re-test under scorer v2. | 0% win rate over 29 tests after reopening; the GOLD one-touch heatmap cluster remains unviable. The signal was quarantined earlier due to a scorer bug, but even under corrected scoring, no edge emerges. Recommend permanent kill and no further variants. | Discarded 20 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-19T14:10:00Z",
@@ -35474,9 +35699,9 @@
         "timeframeDays": 14,
         "testStats": {
           "total": 1,
-          "completed": 0,
+          "completed": 1,
           "wins": 0,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -36085,6 +36310,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.8554,
+            "confidenceScore": 0.4338,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.8554,
+            "confidenceScore": 0.4338,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.8554,
             "confidenceScore": 0.4338,
             "scoringVersion": "research_score_v3"
@@ -37003,6 +37240,18 @@
             "opportunityScore": 0.6273,
             "confidenceScore": 0.3989,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.6273,
+            "confidenceScore": 0.3989,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.6273,
+            "confidenceScore": 0.3989,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -37367,7 +37616,7 @@
         "created": "2026-07-21",
         "setupId": "find_0018",
         "setupLabel": "FIND-linked FIND-0018",
-        "postMortem": "Setup family inconclusive after 20 completed tests: 55% win rate (binomial p=0.4119)."
+        "postMortem": "Setup family inconclusive after 20 completed tests: 55% win rate (binomial p=0.4119). | Discarded 2 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-21T14:10:00Z",
@@ -37940,6 +38189,18 @@
             "opportunityScore": 0.9999,
             "confidenceScore": 0.5715,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9999,
+            "confidenceScore": 0.5715,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.9999,
+            "confidenceScore": 0.5715,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0003",
@@ -37951,10 +38212,11 @@
           "H-591",
           "H-602",
           "H-624",
-          "H-646"
+          "H-646",
+          "H-656"
         ],
-        "lastLinkedHypothesisId": "H-646",
-        "lastLinkedHypothesisAt": "2026-08-17T07:28:17.808Z"
+        "lastLinkedHypothesisId": "H-656",
+        "lastLinkedHypothesisAt": "2026-08-23T08:28:24.280Z"
       },
       "created": "2026-07-23T14:45:53Z",
       "source": "informed_flow_study_v1",
@@ -37967,7 +38229,8 @@
           "H-591",
           "H-602",
           "H-624",
-          "H-646"
+          "H-646",
+          "H-656"
         ]
       }
     },
@@ -38570,6 +38833,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.99,
+            "confidenceScore": 0.6523,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.99,
+            "confidenceScore": 0.6523,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.99,
             "confidenceScore": 0.6523,
             "scoringVersion": "research_score_v3"
@@ -39531,6 +39806,18 @@
             "opportunityScore": 0.9653,
             "confidenceScore": 0.4198,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9653,
+            "confidenceScore": 0.4198,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.9653,
+            "confidenceScore": 0.4198,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -40381,6 +40668,18 @@
             "opportunityScore": 0.5328,
             "confidenceScore": 0.4791,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.5328,
+            "confidenceScore": 0.4791,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.5328,
+            "confidenceScore": 0.4791,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -41213,6 +41512,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.9803,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9803,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.9803,
             "confidenceScore": 0.6232,
             "scoringVersion": "research_score_v3"
@@ -42173,6 +42484,18 @@
             "opportunityScore": 0.9361,
             "confidenceScore": 0.6232,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9361,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.9361,
+            "confidenceScore": 0.6232,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0004",
@@ -42623,17 +42946,19 @@
           "H-557",
           "H-564",
           "H-573",
-          "H-584"
+          "H-584",
+          "H-659"
         ],
-        "lastLinkedHypothesisId": "H-584",
-        "lastLinkedHypothesisAt": "2026-07-29T07:28:24.595Z"
+        "lastLinkedHypothesisId": "H-659",
+        "lastLinkedHypothesisAt": "2026-08-23T08:28:24.562Z"
       },
       "links": {
         "hypotheses": [
           "H-557",
           "H-564",
           "H-573",
-          "H-584"
+          "H-584",
+          "H-659"
         ]
       },
       "created": "2026-07-24T05:07:37Z",
@@ -42694,7 +43019,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -42708,7 +43033,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:38Z",
-        "lastSeenAt": "2026-08-23T07:09:54Z",
+        "lastSeenAt": "2026-08-24T07:11:18Z",
         "opportunityScore": 0.7776,
         "confidenceScore": 0.5036,
         "scoreHistory": [
@@ -43116,6 +43441,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.7776,
+            "confidenceScore": 0.5036,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.7776,
+            "confidenceScore": 0.5036,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.7776,
             "confidenceScore": 0.5036,
             "scoringVersion": "research_score_v3"
@@ -43815,6 +44152,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-27T23:28:27.415Z",
+              "end": "2026-06-23T08:28:21.856Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ],
         "hypothesisIds": [
@@ -44312,6 +44670,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.7305,
+            "confidenceScore": 0.3983,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.7305,
+            "confidenceScore": 0.3983,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.7305,
             "confidenceScore": 0.3983,
             "scoringVersion": "research_score_v3"
@@ -45246,6 +45616,18 @@
             "opportunityScore": 0.6761,
             "confidenceScore": 0.3983,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.6761,
+            "confidenceScore": 0.3983,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.6761,
+            "confidenceScore": 0.3983,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0004",
@@ -46177,6 +46559,18 @@
             "opportunityScore": 0.5632,
             "confidenceScore": 0.4336,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.5632,
+            "confidenceScore": 0.4336,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.5632,
+            "confidenceScore": 0.4336,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -46486,7 +46880,7 @@
       "type": "finding",
       "evidenceClass": "DERIVED",
       "status": "strengthened",
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ALL (strat:dir=above,e3-8/no): WR=65% n=116 sumPnl=+2.550",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ALL (strat:dir=above,e3-8/no): WR=64% n=118 sumPnl=+2.566",
       "body": {
         "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no",
         "asset": "ALL",
@@ -46494,22 +46888,22 @@
         "side": "no",
         "bucket": "strat:dir=above,e3-8",
         "evidence": {
-          "n": 116,
-          "winRate": 0.6466,
-          "sumPnl": 2.5503,
-          "avgPnl": 0.02199,
-          "pnlStd": 0.21141,
-          "pValue": 0.00102,
-          "pnlPValue": 0.13252,
+          "n": 118,
+          "winRate": 0.6441,
+          "sumPnl": 2.5658,
+          "avgPnl": 0.02174,
+          "pnlStd": 0.20962,
+          "pValue": 0.00112,
+          "pnlPValue": 0.13106,
           "qValue": 0.86518
         },
         "mineStats": {
-          "n": 116,
-          "wins": 75,
-          "winRate": 0.6466,
-          "sumPnl": 2.5503,
-          "pValue": 0.00102,
-          "pnlPValue": 0.13252,
+          "n": 118,
+          "wins": 76,
+          "winRate": 0.6441,
+          "sumPnl": 2.5658,
+          "pValue": 0.00112,
+          "pnlPValue": 0.13106,
           "hasHeatmap": true,
           "sampleIds": [
             "OT-1779496155064-cmyy",
@@ -46532,11 +46926,11 @@
           "generatedBy": "shadow_miner_v1",
           "inputWindow": {
             "start": "2026-05-23T00:29:15.064Z",
-            "end": "2026-08-22T10:28:15.514Z"
+            "end": "2026-08-23T01:28:25.297Z"
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -46550,9 +46944,9 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:38Z",
-        "lastSeenAt": "2026-08-23T07:09:52Z",
-        "opportunityScore": 0.8675,
-        "confidenceScore": 0.571,
+        "lastSeenAt": "2026-08-24T07:11:17Z",
+        "opportunityScore": 0.8689,
+        "confidenceScore": 0.5691,
         "scoreHistory": [
           {
             "at": "2026-07-24T05:07:41Z",
@@ -46960,6 +47354,18 @@
             "at": "2026-08-23T07:11:41Z",
             "opportunityScore": 0.8675,
             "confidenceScore": 0.571,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.8689,
+            "confidenceScore": 0.5691,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.8689,
+            "confidenceScore": 0.5691,
             "scoringVersion": "research_score_v3"
           }
         ],
@@ -47657,23 +48063,46 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-23T00:29:15.064Z",
+              "end": "2026-08-22T10:28:15.514Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ],
         "hypothesisIds": [
           "H-559",
           "H-566",
           "H-574",
-          "H-583"
+          "H-583",
+          "H-660"
         ],
-        "lastLinkedHypothesisId": "H-583",
-        "lastLinkedHypothesisAt": "2026-07-29T07:28:24.559Z"
+        "lastLinkedHypothesisId": "H-660",
+        "lastLinkedHypothesisAt": "2026-08-23T08:28:24.632Z"
       },
       "links": {
         "hypotheses": [
           "H-559",
           "H-566",
           "H-574",
-          "H-583"
+          "H-583",
+          "H-660"
         ]
       },
       "created": "2026-07-24T05:07:38Z",
@@ -47734,7 +48163,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -47748,7 +48177,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:38Z",
-        "lastSeenAt": "2026-08-23T07:09:54Z",
+        "lastSeenAt": "2026-08-24T07:11:19Z",
         "opportunityScore": 0.6858,
         "confidenceScore": 0.3516,
         "scoreHistory": [
@@ -48156,6 +48585,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.6858,
+            "confidenceScore": 0.3516,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.6858,
+            "confidenceScore": 0.3516,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.6858,
             "confidenceScore": 0.3516,
             "scoringVersion": "research_score_v3"
@@ -48855,6 +49296,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-10T04:59:17.580Z",
+              "end": "2026-07-22T09:28:17.355Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ]
       },
@@ -48867,7 +49329,7 @@
       "type": "finding",
       "evidenceClass": "DERIVED",
       "status": "strengthened",
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ETH (strat:dir=above/no): WR=61% n=84 sumPnl=-0.171",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ETH (strat:dir=above/no): WR=60% n=86 sumPnl=-0.155",
       "body": {
         "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|strat:dir=above|no",
         "asset": "ETH",
@@ -48875,22 +49337,22 @@
         "side": "no",
         "bucket": "strat:dir=above",
         "evidence": {
-          "n": 84,
-          "winRate": 0.6071,
-          "sumPnl": -0.1708,
-          "avgPnl": -0.00203,
-          "pnlStd": 0.23045,
-          "pValue": 0.03149,
-          "pnlPValue": 0.53213,
+          "n": 86,
+          "winRate": 0.6047,
+          "sumPnl": -0.1553,
+          "avgPnl": -0.00181,
+          "pnlStd": 0.22774,
+          "pValue": 0.03308,
+          "pnlPValue": 0.52922,
           "qValue": 0.99991
         },
         "mineStats": {
-          "n": 84,
-          "wins": 51,
-          "winRate": 0.6071,
-          "sumPnl": -0.1708,
-          "pValue": 0.03149,
-          "pnlPValue": 0.53213,
+          "n": 86,
+          "wins": 52,
+          "winRate": 0.6047,
+          "sumPnl": -0.1553,
+          "pValue": 0.03308,
+          "pnlPValue": 0.52922,
           "hasHeatmap": true,
           "sampleIds": [
             "OT-1779496155064-cmyy",
@@ -48913,11 +49375,11 @@
           "generatedBy": "shadow_miner_v1",
           "inputWindow": {
             "start": "2026-05-23T00:29:15.064Z",
-            "end": "2026-08-22T10:28:15.514Z"
+            "end": "2026-08-23T01:28:25.297Z"
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -48931,9 +49393,9 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:38Z",
-        "lastSeenAt": "2026-08-23T07:09:55Z",
-        "opportunityScore": 0.4679,
-        "confidenceScore": 0.5175,
+        "lastSeenAt": "2026-08-24T07:11:20Z",
+        "opportunityScore": 0.4708,
+        "confidenceScore": 0.516,
         "scoreHistory": [
           {
             "at": "2026-07-24T05:07:41Z",
@@ -49341,6 +49803,18 @@
             "at": "2026-08-23T07:11:41Z",
             "opportunityScore": 0.4679,
             "confidenceScore": 0.5175,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.4708,
+            "confidenceScore": 0.516,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.4708,
+            "confidenceScore": 0.516,
             "scoringVersion": "research_score_v3"
           }
         ],
@@ -50038,6 +50512,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-23T00:29:15.064Z",
+              "end": "2026-08-22T10:28:15.514Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ]
       },
@@ -50100,7 +50595,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -50114,7 +50609,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:39Z",
-        "lastSeenAt": "2026-08-23T07:09:56Z",
+        "lastSeenAt": "2026-08-24T07:11:21Z",
         "opportunityScore": 0.3769,
         "confidenceScore": 0.3035,
         "scoreHistory": [
@@ -50522,6 +51017,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.3769,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.3769,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.3769,
             "confidenceScore": 0.3035,
             "scoringVersion": "research_score_v3"
@@ -51221,6 +51728,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-27T12:29:34.279Z",
+              "end": "2026-06-28T02:29:02.526Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ]
       },
@@ -51283,7 +51811,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -51297,7 +51825,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:07:39Z",
-        "lastSeenAt": "2026-08-23T07:09:54Z",
+        "lastSeenAt": "2026-08-24T07:11:19Z",
         "opportunityScore": 0.7099,
         "confidenceScore": 0.4336,
         "scoreHistory": [
@@ -51705,6 +52233,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.7099,
+            "confidenceScore": 0.4336,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.7099,
+            "confidenceScore": 0.4336,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.7099,
             "confidenceScore": 0.4336,
             "scoringVersion": "research_score_v3"
@@ -52383,6 +52923,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-10T07:35:16.276Z",
+              "end": "2026-08-17T16:28:26.106Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ]
       },
@@ -52467,7 +53028,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -52481,7 +53042,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-24T05:38:04Z",
-        "lastSeenAt": "2026-08-23T07:09:51Z",
+        "lastSeenAt": "2026-08-24T07:11:15Z",
         "opportunityScore": 0.9998,
         "confidenceScore": 0.6955,
         "scoreHistory": [
@@ -52865,6 +53426,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.9998,
+            "confidenceScore": 0.6955,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9998,
+            "confidenceScore": 0.6955,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.9998,
             "confidenceScore": 0.6955,
             "scoringVersion": "research_score_v3"
@@ -53522,6 +54095,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-23T21:00:27.332Z",
+              "end": "2026-06-08T02:28:32.667Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ],
         "hypothesisIds": [
@@ -53563,18 +54157,18 @@
         "confidence": 0.6,
         "timeframeDays": 7,
         "testStats": {
-          "total": 20,
-          "completed": 19,
-          "wins": 11,
-          "pending": 1,
-          "winRate": 0.5789473684210527
+          "total": 33,
+          "completed": 26,
+          "wins": 12,
+          "pending": 7,
+          "winRate": 1
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-07-23",
         "setupId": "find_0018",
         "setupLabel": "FIND-linked FIND-0018",
-        "postMortem": "H‑551 (OIL one‑touch NO edge, 80% win) is showing strong live validation. The signal’s use of edge‑only condition on OIL upside touch contracts is proving robust; worth considering for promotion once the shadow test bar is met. | OIL one‑touch NO edge on heatmap cluster continues to perform well in recent tests (82% win, 9/11 last tests), validating the sell‑YES edge on OIL upside contracts as a reliable short signal when edge exceeds 2 pts and direction is above. The setup family remains robust. | Refined by H-654 (2026-08-22): Refinement of H-551: Require short-dated OIL one-touch contracts, a stronger sel | The >2pt sell-YES edge on OIL above-strike contracts repeatedly lost in rising tape; OIL spot rose 2.8–10.0%, pushing YES prices up rather than decaying."
+        "postMortem": "OIL one‑touch NO edge on heatmap cluster continues to perform well in recent tests (82% win, 9/11 last tests), validating the sell‑YES edge on OIL upside contracts as a reliable short signal when edge exceeds 2 pts and direction is above. The setup family remains robust. | Refined by H-654 (2026-08-22): Refinement of H-551: Require short-dated OIL one-touch contracts, a stronger sel | The >2pt sell-YES edge on OIL above-strike contracts repeatedly lost in rising tape; OIL spot rose 2.8–10.0%, pushing YES prices up rather than decaying. | Discarded 19 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-24T14:10:03Z",
@@ -53602,13 +54196,14 @@
           "completed": 1,
           "wins": 1,
           "pending": 0,
-          "winRate": 1
+          "winRate": 0
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-07-23",
         "setupId": "find_0019",
-        "setupLabel": "FIND-linked FIND-0019"
+        "setupLabel": "FIND-linked FIND-0019",
+        "postMortem": "Discarded 1 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-24T14:10:03Z",
@@ -53669,7 +54264,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -53683,7 +54278,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-25T07:07:26Z",
-        "lastSeenAt": "2026-08-23T07:09:52Z",
+        "lastSeenAt": "2026-08-24T07:11:16Z",
         "opportunityScore": 0.9788,
         "confidenceScore": 0.4602,
         "scoreHistory": [
@@ -54043,6 +54638,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.9788,
+            "confidenceScore": 0.4602,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9788,
+            "confidenceScore": 0.4602,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.9788,
             "confidenceScore": 0.4602,
             "scoringVersion": "research_score_v3"
@@ -54658,6 +55265,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-21T07:29:07.074Z",
+              "end": "2026-07-25T02:29:10.412Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ],
         "hypothesisIds": [
@@ -55126,6 +55754,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.8374,
+            "confidenceScore": 0.3974,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.8374,
+            "confidenceScore": 0.3974,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.8374,
             "confidenceScore": 0.3974,
             "scoringVersion": "research_score_v3"
@@ -55718,6 +56358,18 @@
             "opportunityScore": 0.7874,
             "confidenceScore": 0.4445,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.7874,
+            "confidenceScore": 0.4445,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.7874,
+            "confidenceScore": 0.4445,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -56307,6 +56959,18 @@
             "opportunityScore": 0.3942,
             "confidenceScore": 0.4196,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.3942,
+            "confidenceScore": 0.4196,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.3942,
+            "confidenceScore": 0.4196,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -56419,13 +57083,14 @@
           "completed": 9,
           "wins": 3,
           "pending": 1,
-          "winRate": 0.3333333333333333
+          "winRate": 0
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-07-25",
         "setupId": "find_0022",
-        "setupLabel": "FIND-linked FIND-0022"
+        "setupLabel": "FIND-linked FIND-0022",
+        "postMortem": "Discarded 9 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-25T14:10:00Z",
@@ -56450,10 +57115,10 @@
         "confidence": 0.7,
         "timeframeDays": 7,
         "testStats": {
-          "total": 1,
+          "total": 2,
           "completed": 1,
           "wins": 0,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -56561,8 +57226,8 @@
         "confidence": 0.6,
         "timeframeDays": 14,
         "testStats": {
-          "total": 25,
-          "completed": 11,
+          "total": 26,
+          "completed": 12,
           "wins": 0,
           "pending": 14,
           "winRate": 0
@@ -57034,6 +57699,18 @@
             "opportunityScore": 0.7893,
             "confidenceScore": 0.4444,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.7893,
+            "confidenceScore": 0.4444,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.7893,
+            "confidenceScore": 0.4444,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -57162,17 +57839,18 @@
         "confidence": 0.7,
         "timeframeDays": 14,
         "testStats": {
-          "total": 2,
-          "completed": 1,
+          "total": 3,
+          "completed": 2,
           "wins": 1,
           "pending": 1,
-          "winRate": 1
+          "winRate": 0
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-07-26",
         "setupId": "find_0022",
-        "setupLabel": "FIND-linked FIND-0022"
+        "setupLabel": "FIND-linked FIND-0022",
+        "postMortem": "Discarded 1 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-26T14:10:07Z",
@@ -57197,10 +57875,10 @@
         "confidence": 0.7,
         "timeframeDays": 14,
         "testStats": {
-          "total": 1,
+          "total": 2,
           "completed": 1,
           "wins": 0,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -57364,11 +58042,11 @@
       "id": "EXP-0574",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "retired",
+      "status": "running",
       "title": "H-567: GOLD one-touch NO with above direction and near expiry: narrow the GOLD one-touch heatmap signal to contracts with days to expiry < 30 and direction a...",
       "body": {
         "hypothesisId": "H-567",
-        "hypothesisStatus": "killed",
+        "hypothesisStatus": "active",
         "description": "GOLD one-touch NO with above direction and near expiry: narrow the GOLD one-touch heatmap signal to contracts with days to expiry < 30 and direction above, where the signal has shown promise in shadow mining (FIND-0036).",
         "prediction": "The GOLD YES premium will deflate as expiry approaches, leading to a profitable short via selling the one-touch YES.",
         "conditions": {
@@ -57380,10 +58058,10 @@
         "confidence": 0.6,
         "timeframeDays": 14,
         "testStats": {
-          "total": 4,
+          "total": 6,
           "completed": 4,
           "wins": 0,
-          "pending": 0,
+          "pending": 2,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -57391,7 +58069,7 @@
         "created": "2026-07-26",
         "setupId": "find_0036",
         "setupLabel": "FIND-linked FIND-0036",
-        "postMortem": "Near-expiry did not save the GOLD upside one-touch short. Spot rallied strongly after entries (+6.71%, +8.74%, +7.35%) before any meaningful premium decay could help, indicating the edge was a trend premium rather than time decay. | Selling near-expiry GOLD above-strike YES on any positive sell_yes_edge_pts failed because the edge was not noise: gold moved +8.74% and +7.35% in the worst tests. Premium decay was swamped by real upside drift toward/through the barriers. | Refined by H-653 (2026-08-21): Refinement of H-567: do not sell GOLD near-expiry upside NO premium when edge ap | 0/18 scorable tests. Near-expiry GOLD upside one-touch NO edge did not decay safely; gold rallies of 0.7-7.4% repeatedly hit or threatened the upside barriers, showing the YES premium was informed directional pricing rather than stale overpricing."
+        "postMortem": "Selling near-expiry GOLD above-strike YES on any positive sell_yes_edge_pts failed because the edge was not noise: gold moved +8.74% and +7.35% in the worst tests. Premium decay was swamped by real upside drift toward/through the barriers. | Refined by H-653 (2026-08-21): Refinement of H-567: do not sell GOLD near-expiry upside NO premium when edge ap | 0/18 scorable tests. Near-expiry GOLD upside one-touch NO edge did not decay safely; gold rallies of 0.7-7.4% repeatedly hit or threatened the upside barriers, showing the YES premium was informed directional pricing rather than stale overpricing. | Discarded 4 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-26T14:10:07Z",
@@ -57452,7 +58130,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -57466,7 +58144,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-27T07:07:49Z",
-        "lastSeenAt": "2026-08-23T07:09:57Z",
+        "lastSeenAt": "2026-08-24T07:11:21Z",
         "opportunityScore": 0.0444,
         "confidenceScore": 0.4739,
         "scoreHistory": [
@@ -57802,6 +58480,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.0444,
+            "confidenceScore": 0.4739,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.0444,
+            "confidenceScore": 0.4739,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.0444,
             "confidenceScore": 0.4739,
             "scoringVersion": "research_score_v3"
@@ -58154,6 +58844,27 @@
             "featureSet": "blocked_signal_shadow_v1",
             "scoringVersion": "shadow_cluster_v1",
             "gitSha": "3e2e2603",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-23T00:29:15.064Z",
+              "end": "2026-08-22T10:28:15.514Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
             "inputArtifacts": [
               "/opt/polymarket-trader/data/blocked-signals.json"
             ],
@@ -58580,6 +59291,18 @@
             "opportunityScore": 0.2203,
             "confidenceScore": 0.4336,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.2203,
+            "confidenceScore": 0.4336,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.2203,
+            "confidenceScore": 0.4336,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -58855,7 +59578,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -58869,7 +59592,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-28T07:07:14Z",
-        "lastSeenAt": "2026-08-23T07:09:51Z",
+        "lastSeenAt": "2026-08-24T07:11:16Z",
         "opportunityScore": 0.9926,
         "confidenceScore": 0.6711,
         "scoreHistory": [
@@ -59193,6 +59916,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.9926,
+            "confidenceScore": 0.6711,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9926,
+            "confidenceScore": 0.6711,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.9926,
             "confidenceScore": 0.6711,
             "scoringVersion": "research_score_v3"
@@ -59745,6 +60480,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-23T00:29:15.064Z",
+              "end": "2026-08-19T22:28:19.134Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ],
         "hypothesisIds": [
@@ -59758,10 +60514,11 @@
           "H-642",
           "H-645",
           "H-650",
-          "H-651"
+          "H-651",
+          "H-658"
         ],
-        "lastLinkedHypothesisId": "H-651",
-        "lastLinkedHypothesisAt": "2026-08-21T22:28:20.343Z"
+        "lastLinkedHypothesisId": "H-658",
+        "lastLinkedHypothesisAt": "2026-08-23T08:28:24.482Z"
       },
       "links": {
         "hypotheses": [
@@ -59775,7 +60532,8 @@
           "H-642",
           "H-645",
           "H-650",
-          "H-651"
+          "H-651",
+          "H-658"
         ]
       },
       "created": "2026-07-28T07:07:14Z",
@@ -60174,6 +60932,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.6669,
+            "confidenceScore": 0.3934,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.6669,
+            "confidenceScore": 0.3934,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.6669,
             "confidenceScore": 0.3934,
             "scoringVersion": "research_score_v3"
@@ -60709,6 +61479,18 @@
             "opportunityScore": 0.0416,
             "confidenceScore": 0.402,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.0416,
+            "confidenceScore": 0.402,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.0416,
+            "confidenceScore": 0.402,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -60858,10 +61640,10 @@
         "confidence": 0.75,
         "timeframeDays": 21,
         "testStats": {
-          "total": 1,
+          "total": 3,
           "completed": 1,
           "wins": 0,
-          "pending": 0,
+          "pending": 2,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -61096,7 +61878,8 @@
         "source": "llm",
         "created": "2026-07-28",
         "setupId": "find_0001",
-        "setupLabel": "FIND-linked FIND-0001"
+        "setupLabel": "FIND-linked FIND-0001",
+        "postMortem": "Discarded 1 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-28T14:10:00Z",
@@ -61195,13 +61978,14 @@
           "completed": 2,
           "wins": 1,
           "pending": 1,
-          "winRate": 0.5
+          "winRate": 0
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-07-29",
         "setupId": "find_0022",
-        "setupLabel": "FIND-linked FIND-0022"
+        "setupLabel": "FIND-linked FIND-0022",
+        "postMortem": "Discarded 2 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-29T14:10:02Z",
@@ -61227,10 +62011,10 @@
         "confidence": 0.7,
         "timeframeDays": 14,
         "testStats": {
-          "total": 1,
+          "total": 2,
           "completed": 1,
           "wins": 0,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -61286,11 +62070,11 @@
       "id": "EXP-0589",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "retired",
+      "status": "running",
       "title": "H-582: GOLD one-touch NO edge near expiry: on GOLD upside one-touch NO contracts with positive sell-YES edge and expiry within 30 days, sell YES.",
       "body": {
         "hypothesisId": "H-582",
-        "hypothesisStatus": "killed",
+        "hypothesisStatus": "active",
         "description": "GOLD one-touch NO edge near expiry: on GOLD upside one-touch NO contracts with positive sell-YES edge and expiry within 30 days, sell YES.",
         "prediction": "GOLD one-touch NO contracts with near-term expiration and edge will mature OTM, capturing the premium in under 14 days.",
         "conditions": {
@@ -61302,10 +62086,10 @@
         "confidence": 0.65,
         "timeframeDays": 14,
         "testStats": {
-          "total": 5,
+          "total": 6,
           "completed": 4,
           "wins": 0,
-          "pending": 1,
+          "pending": 2,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -61313,7 +62097,7 @@
         "created": "2026-07-29",
         "setupId": "find_0036",
         "setupLabel": "FIND-linked FIND-0036",
-        "postMortem": "Setup family killed: 0% win rate over 20 completed tests across 7 variants."
+        "postMortem": "Setup family killed: 0% win rate over 20 completed tests across 7 variants. | Discarded 4 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-29T14:10:02Z",
@@ -61420,7 +62204,8 @@
         "source": "llm",
         "created": "2026-07-29",
         "setupId": "find_0043",
-        "setupLabel": "FIND-linked FIND-0043"
+        "setupLabel": "FIND-linked FIND-0043",
+        "postMortem": "Discarded 1 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-29T14:10:02Z",
@@ -61445,8 +62230,8 @@
         "confidence": 0.6,
         "timeframeDays": 10,
         "testStats": {
-          "total": 25,
-          "completed": 15,
+          "total": 26,
+          "completed": 16,
           "wins": 0,
           "pending": 10,
           "winRate": 0
@@ -61834,6 +62619,18 @@
             "opportunityScore": 0.8564,
             "confidenceScore": 0.3926,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.8564,
+            "confidenceScore": 0.3926,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.8564,
+            "confidenceScore": 0.3926,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -61912,7 +62709,7 @@
       "type": "finding",
       "evidenceClass": "DERIVED",
       "status": "strengthened",
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ALL (strat:s-1,e3-8/no): WR=61% n=38 sumPnl=+2.406",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ALL (strat:s-1,e3-8/no): WR=60% n=40 sumPnl=+2.422",
       "body": {
         "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s-1,e3-8|no",
         "asset": "ALL",
@@ -61920,22 +62717,22 @@
         "side": "no",
         "bucket": "strat:s-1,e3-8",
         "evidence": {
-          "n": 38,
-          "winRate": 0.6053,
-          "sumPnl": 2.4062,
-          "avgPnl": 0.06332,
-          "pnlStd": 0.28547,
-          "pValue": 0.12794,
-          "pnlPValue": 0.08988,
+          "n": 40,
+          "winRate": 0.6,
+          "sumPnl": 2.4217,
+          "avgPnl": 0.06054,
+          "pnlStd": 0.27835,
+          "pValue": 0.13409,
+          "pnlPValue": 0.08839,
           "qValue": 0.84262
         },
         "mineStats": {
-          "n": 38,
-          "wins": 23,
-          "winRate": 0.6053,
-          "sumPnl": 2.4062,
-          "pValue": 0.12794,
-          "pnlPValue": 0.08988,
+          "n": 40,
+          "wins": 24,
+          "winRate": 0.6,
+          "sumPnl": 2.4217,
+          "pValue": 0.13409,
+          "pnlPValue": 0.08839,
           "hasHeatmap": true,
           "sampleIds": [
             "OT-1784766495727-say6",
@@ -61958,11 +62755,11 @@
           "generatedBy": "shadow_miner_v1",
           "inputWindow": {
             "start": "2026-07-23T00:28:15.727Z",
-            "end": "2026-08-22T08:28:19.073Z"
+            "end": "2026-08-23T01:28:25.297Z"
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -61976,9 +62773,9 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-30T07:08:46Z",
-        "lastSeenAt": "2026-08-23T07:09:52Z",
-        "opportunityScore": 0.9101,
-        "confidenceScore": 0.4721,
+        "lastSeenAt": "2026-08-24T07:11:17Z",
+        "opportunityScore": 0.9116,
+        "confidenceScore": 0.4702,
         "scoreHistory": [
           {
             "at": "2026-07-30T07:08:49Z",
@@ -62278,6 +63075,18 @@
             "at": "2026-08-23T07:11:41Z",
             "opportunityScore": 0.9101,
             "confidenceScore": 0.4721,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9116,
+            "confidenceScore": 0.4702,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.9116,
+            "confidenceScore": 0.4702,
             "scoringVersion": "research_score_v3"
           }
         ],
@@ -62492,6 +63301,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-23T00:28:15.727Z",
+              "end": "2026-08-22T08:28:19.073Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ]
       },
@@ -62504,7 +63334,7 @@
       "type": "finding",
       "evidenceClass": "DERIVED",
       "status": "strengthened",
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ETH (strat:dir=above,s-1/no): WR=75% n=16 sumPnl=+1.901",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ETH (strat:dir=above,s-1/no): WR=72% n=18 sumPnl=+1.917",
       "body": {
         "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|strat:dir=above,s-1|no",
         "asset": "ETH",
@@ -62512,22 +63342,22 @@
         "side": "no",
         "bucket": "strat:dir=above,s-1",
         "evidence": {
-          "n": 16,
-          "winRate": 0.75,
-          "sumPnl": 1.9012,
-          "avgPnl": 0.11883,
-          "pnlStd": 0.4244,
-          "pValue": 0.03841,
-          "pnlPValue": 0.14017,
+          "n": 18,
+          "winRate": 0.7222,
+          "sumPnl": 1.9167,
+          "avgPnl": 0.10648,
+          "pnlStd": 0.4003,
+          "pValue": 0.04813,
+          "pnlPValue": 0.13738,
           "qValue": 0.86518
         },
         "mineStats": {
-          "n": 16,
-          "wins": 12,
-          "winRate": 0.75,
-          "sumPnl": 1.9012,
-          "pValue": 0.03841,
-          "pnlPValue": 0.14017,
+          "n": 18,
+          "wins": 13,
+          "winRate": 0.7222,
+          "sumPnl": 1.9167,
+          "pValue": 0.04813,
+          "pnlPValue": 0.13738,
           "hasHeatmap": true,
           "sampleIds": [
             "OT-1785086894513-9xod",
@@ -62550,11 +63380,11 @@
           "generatedBy": "shadow_miner_v1",
           "inputWindow": {
             "start": "2026-07-26T17:28:14.513Z",
-            "end": "2026-08-22T08:28:19.073Z"
+            "end": "2026-08-23T01:28:25.297Z"
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -62568,9 +63398,9 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-30T07:08:46Z",
-        "lastSeenAt": "2026-08-23T07:09:53Z",
-        "opportunityScore": 0.8598,
-        "confidenceScore": 0.5452,
+        "lastSeenAt": "2026-08-24T07:11:17Z",
+        "opportunityScore": 0.8626,
+        "confidenceScore": 0.5287,
         "scoreHistory": [
           {
             "at": "2026-07-30T07:08:49Z",
@@ -62870,6 +63700,18 @@
             "at": "2026-08-23T07:11:41Z",
             "opportunityScore": 0.8598,
             "confidenceScore": 0.5452,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.8626,
+            "confidenceScore": 0.5287,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.8626,
+            "confidenceScore": 0.5287,
             "scoringVersion": "research_score_v3"
           }
         ],
@@ -63378,6 +64220,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-26T17:28:14.513Z",
+              "end": "2026-08-22T08:28:19.073Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ]
       },
@@ -63757,6 +64620,18 @@
             "opportunityScore": 0.5012,
             "confidenceScore": 0.3722,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.5012,
+            "confidenceScore": 0.3722,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.5012,
+            "confidenceScore": 0.3722,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -63877,7 +64752,7 @@
       "type": "finding",
       "evidenceClass": "DERIVED",
       "status": "strengthened",
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ETH (near-fair/no): WR=56% n=84 sumPnl=-0.136",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ETH (near-fair/no): WR=56% n=86 sumPnl=-0.120",
       "body": {
         "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|near-fair|no",
         "asset": "ETH",
@@ -63885,22 +64760,22 @@
         "side": "no",
         "bucket": "near-fair",
         "evidence": {
-          "n": 84,
-          "winRate": 0.5595,
-          "sumPnl": -0.1359,
-          "avgPnl": -0.00162,
-          "pnlStd": 0.22268,
-          "pValue": 0.16307,
-          "pnlPValue": 0.52646,
+          "n": 86,
+          "winRate": 0.5581,
+          "sumPnl": -0.1204,
+          "avgPnl": -0.0014,
+          "pnlStd": 0.22007,
+          "pValue": 0.16592,
+          "pnlPValue": 0.52345,
           "qValue": 0.99991
         },
         "mineStats": {
-          "n": 84,
-          "wins": 47,
-          "winRate": 0.5595,
-          "sumPnl": -0.1359,
-          "pValue": 0.16307,
-          "pnlPValue": 0.52646,
+          "n": 86,
+          "wins": 48,
+          "winRate": 0.5581,
+          "sumPnl": -0.1204,
+          "pValue": 0.16592,
+          "pnlPValue": 0.52345,
           "hasHeatmap": true,
           "sampleIds": [
             "OT-1779496155064-8t4y",
@@ -63923,11 +64798,11 @@
           "generatedBy": "shadow_miner_v1",
           "inputWindow": {
             "start": "2026-05-23T00:29:15.064Z",
-            "end": "2026-08-22T10:28:15.514Z"
+            "end": "2026-08-23T01:28:25.297Z"
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -63941,9 +64816,9 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-07-30T07:08:48Z",
-        "lastSeenAt": "2026-08-23T07:09:55Z",
-        "opportunityScore": 0.4735,
-        "confidenceScore": 0.47,
+        "lastSeenAt": "2026-08-24T07:11:20Z",
+        "opportunityScore": 0.4766,
+        "confidenceScore": 0.4696,
         "scoreHistory": [
           {
             "at": "2026-07-30T07:08:49Z",
@@ -64244,6 +65119,18 @@
             "opportunityScore": 0.4735,
             "confidenceScore": 0.47,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.4766,
+            "confidenceScore": 0.4696,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.4766,
+            "confidenceScore": 0.4696,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -64383,6 +65270,27 @@
             "featureSet": "blocked_signal_shadow_v1",
             "scoringVersion": "shadow_cluster_v1",
             "gitSha": "3e2e2603",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-23T00:29:15.064Z",
+              "end": "2026-08-22T10:28:15.514Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
             "inputArtifacts": [
               "/opt/polymarket-trader/data/blocked-signals.json"
             ],
@@ -64572,7 +65480,8 @@
         "source": "llm",
         "created": "2026-07-30",
         "setupId": "find_0020",
-        "setupLabel": "FIND-linked FIND-0020"
+        "setupLabel": "FIND-linked FIND-0020",
+        "postMortem": "Discarded 1 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-30T14:10:07Z",
@@ -64602,13 +65511,14 @@
           "completed": 1,
           "wins": 1,
           "pending": 0,
-          "winRate": 1
+          "winRate": 0
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-07-30",
         "setupId": "find_0022",
-        "setupLabel": "FIND-linked FIND-0022"
+        "setupLabel": "FIND-linked FIND-0022",
+        "postMortem": "Discarded 1 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-30T14:10:07Z",
@@ -64637,13 +65547,14 @@
           "completed": 8,
           "wins": 1,
           "pending": 1,
-          "winRate": 0.125
+          "winRate": 0
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-07-30",
         "setupId": "find_0021",
-        "setupLabel": "FIND-linked FIND-0021"
+        "setupLabel": "FIND-linked FIND-0021",
+        "postMortem": "Discarded 8 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-30T14:10:07Z",
@@ -64653,11 +65564,11 @@
       "id": "EXP-0601",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "retired",
+      "status": "running",
       "title": "H-594: Short GOLD by selling YES on upside one-touch NO contracts when they expire within 30 days, have a visible sell-yes edge, and the direction is above s...",
       "body": {
         "hypothesisId": "H-594",
-        "hypothesisStatus": "killed",
+        "hypothesisStatus": "active",
         "description": "Short GOLD by selling YES on upside one-touch NO contracts when they expire within 30 days, have a visible sell-yes edge, and the direction is above strike, narrowing the profitable gold heatmap (FIND-0036).",
         "prediction": "GOLD one-touch NO contracts cheapen as the sell edge erodes near expiration.",
         "conditions": {
@@ -64680,7 +65591,7 @@
         "created": "2026-07-30",
         "setupId": "find_0036",
         "setupLabel": "FIND-linked FIND-0036",
-        "postMortem": "Setup family killed: 0% win rate over 20 completed tests across 7 variants."
+        "postMortem": "Setup family killed: 0% win rate over 20 completed tests across 7 variants. | Discarded 3 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-07-30T14:10:07Z",
@@ -64830,7 +65741,7 @@
       "type": "finding",
       "evidenceClass": "DERIVED",
       "status": "strengthened",
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ETH (strat:dir=above,d90+/no): WR=62% n=47 sumPnl=-1.431",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ETH (strat:dir=above,d90+/no): WR=61% n=49 sumPnl=-1.415",
       "body": {
         "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|strat:dir=above,d90+|no",
         "asset": "ETH",
@@ -64838,22 +65749,22 @@
         "side": "no",
         "bucket": "strat:dir=above,d90+",
         "evidence": {
-          "n": 47,
-          "winRate": 0.617,
-          "sumPnl": -1.4309,
-          "avgPnl": -0.03044,
-          "pnlStd": 0.13221,
-          "pValue": 0.07193,
-          "pnlPValue": 0.93937,
+          "n": 49,
+          "winRate": 0.6122,
+          "sumPnl": -1.4154,
+          "avgPnl": -0.02889,
+          "pnlStd": 0.12969,
+          "pValue": 0.0762,
+          "pnlPValue": 0.93723,
           "qValue": 0.99991
         },
         "mineStats": {
-          "n": 47,
-          "wins": 29,
-          "winRate": 0.617,
-          "sumPnl": -1.4309,
-          "pValue": 0.07193,
-          "pnlPValue": 0.93937,
+          "n": 49,
+          "wins": 30,
+          "winRate": 0.6122,
+          "sumPnl": -1.4154,
+          "pValue": 0.0762,
+          "pnlPValue": 0.93723,
           "hasHeatmap": true,
           "sampleIds": [
             "OT-1779496155064-cmyy",
@@ -64876,11 +65787,11 @@
           "generatedBy": "shadow_miner_v1",
           "inputWindow": {
             "start": "2026-05-23T00:29:15.064Z",
-            "end": "2026-08-22T10:28:15.514Z"
+            "end": "2026-08-23T01:28:25.297Z"
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -64894,9 +65805,9 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-08-03T07:07:45Z",
-        "lastSeenAt": "2026-08-23T07:09:57Z",
-        "opportunityScore": 0.0606,
-        "confidenceScore": 0.4971,
+        "lastSeenAt": "2026-08-24T07:11:21Z",
+        "opportunityScore": 0.0628,
+        "confidenceScore": 0.4948,
         "scoreHistory": [
           {
             "at": "2026-08-03T07:07:47Z",
@@ -65148,6 +66059,18 @@
             "at": "2026-08-23T07:11:41Z",
             "opportunityScore": 0.0606,
             "confidenceScore": 0.4971,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.0628,
+            "confidenceScore": 0.4948,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.0628,
+            "confidenceScore": 0.4948,
             "scoringVersion": "research_score_v3"
           }
         ],
@@ -65320,6 +66243,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-23T00:29:15.064Z",
+              "end": "2026-08-22T10:28:15.514Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ]
       },
@@ -65332,7 +66276,7 @@
       "type": "finding",
       "evidenceClass": "DERIVED",
       "status": "strengthened",
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ETH (heatmap/no): WR=58% n=91 sumPnl=-0.180",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ETH (heatmap/no): WR=58% n=93 sumPnl=-0.165",
       "body": {
         "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|heatmap|no",
         "asset": "ETH",
@@ -65340,22 +66284,22 @@
         "side": "no",
         "bucket": "heatmap",
         "evidence": {
-          "n": 91,
-          "winRate": 0.5824,
-          "sumPnl": -0.1805,
-          "avgPnl": -0.00198,
-          "pnlStd": 0.22135,
-          "pValue": 0.0709,
-          "pnlPValue": 0.53397,
+          "n": 93,
+          "winRate": 0.5806,
+          "sumPnl": -0.165,
+          "avgPnl": -0.00177,
+          "pnlStd": 0.21895,
+          "pValue": 0.07309,
+          "pnlPValue": 0.53106,
           "qValue": 0.99991
         },
         "mineStats": {
-          "n": 91,
-          "wins": 53,
-          "winRate": 0.5824,
-          "sumPnl": -0.1805,
-          "pValue": 0.0709,
-          "pnlPValue": 0.53397,
+          "n": 93,
+          "wins": 54,
+          "winRate": 0.5806,
+          "sumPnl": -0.165,
+          "pValue": 0.07309,
+          "pnlPValue": 0.53106,
           "hasHeatmap": true,
           "sampleIds": [
             "OT-1779496155064-cmyy",
@@ -65378,11 +66322,11 @@
           "generatedBy": "shadow_miner_v1",
           "inputWindow": {
             "start": "2026-05-23T00:29:15.064Z",
-            "end": "2026-08-22T10:28:15.514Z"
+            "end": "2026-08-23T01:28:25.297Z"
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -65396,9 +66340,9 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-08-03T07:07:46Z",
-        "lastSeenAt": "2026-08-23T07:09:56Z",
-        "opportunityScore": 0.466,
-        "confidenceScore": 0.4962,
+        "lastSeenAt": "2026-08-24T07:11:20Z",
+        "opportunityScore": 0.4689,
+        "confidenceScore": 0.4954,
         "scoreHistory": [
           {
             "at": "2026-08-03T07:07:47Z",
@@ -65650,6 +66594,18 @@
             "at": "2026-08-23T07:11:41Z",
             "opportunityScore": 0.466,
             "confidenceScore": 0.4962,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.4689,
+            "confidenceScore": 0.4954,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.4689,
+            "confidenceScore": 0.4954,
             "scoringVersion": "research_score_v3"
           }
         ],
@@ -65843,6 +66799,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-23T00:29:15.064Z",
+              "end": "2026-08-22T10:28:15.514Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ]
       },
@@ -65873,13 +66850,14 @@
           "completed": 2,
           "wins": 1,
           "pending": 0,
-          "winRate": 0.5
+          "winRate": 0
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-08-03",
         "setupId": "find_0043",
-        "setupLabel": "FIND-linked FIND-0043"
+        "setupLabel": "FIND-linked FIND-0043",
+        "postMortem": "Discarded 2 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-03T14:10:04Z",
@@ -65889,11 +66867,11 @@
       "id": "EXP-0607",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "retired",
+      "status": "running",
       "title": "H-600: On GOLD upside one-touch NO contracts expiring within 30 days, take a short position (sell YES) when there is any positive sell-YES edge, targeting qu...",
       "body": {
         "hypothesisId": "H-600",
-        "hypothesisStatus": "killed",
+        "hypothesisStatus": "active",
         "description": "On GOLD upside one-touch NO contracts expiring within 30 days, take a short position (sell YES) when there is any positive sell-YES edge, targeting quick edge decay near expiry.",
         "prediction": "GOLD upside one-touch NO YES prices will decline within 7 days as the edge compresses with approaching expiry.",
         "conditions": {
@@ -65905,10 +66883,10 @@
         "confidence": 0.6,
         "timeframeDays": 7,
         "testStats": {
-          "total": 4,
-          "completed": 4,
+          "total": 7,
+          "completed": 6,
           "wins": 0,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -65916,7 +66894,7 @@
         "created": "2026-08-03",
         "setupId": "find_0036",
         "setupLabel": "FIND-linked FIND-0036",
-        "postMortem": "Setup family killed: 0% win rate over 20 completed tests across 7 variants."
+        "postMortem": "Setup family killed: 0% win rate over 20 completed tests across 7 variants. | Discarded 4 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-03T14:10:04Z",
@@ -66013,7 +66991,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -66027,7 +67005,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-08-04T07:09:36Z",
-        "lastSeenAt": "2026-08-23T07:09:51Z",
+        "lastSeenAt": "2026-08-24T07:11:15Z",
         "opportunityScore": 0.9986,
         "confidenceScore": 0.7473,
         "scoreHistory": [
@@ -66267,6 +67245,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.9986,
+            "confidenceScore": 0.7473,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9986,
+            "confidenceScore": 0.7473,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.9986,
             "confidenceScore": 0.7473,
             "scoringVersion": "research_score_v3"
@@ -66672,6 +67662,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-04-30T12:27:53.147Z",
+              "end": "2026-07-29T23:28:12.726Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ],
         "hypothesisIds": [
@@ -66683,10 +67694,11 @@
           "H-641",
           "H-643",
           "H-644",
-          "H-649"
+          "H-649",
+          "H-657"
         ],
-        "lastLinkedHypothesisId": "H-649",
-        "lastLinkedHypothesisAt": "2026-08-19T07:28:27.917Z",
+        "lastLinkedHypothesisId": "H-657",
+        "lastLinkedHypothesisAt": "2026-08-23T08:28:24.416Z",
         "negativeReason": "Linked hyp H-608 failed (killed, status=killed, winRate=0.00)",
         "resolvedAt": "2026-08-23T07:11:41Z"
       },
@@ -66701,7 +67713,8 @@
           "H-643",
           "H-644",
           "H-649",
-          "H-608"
+          "H-608",
+          "H-657"
         ],
         "failedHypotheses": [
           "H-608",
@@ -66713,7 +67726,8 @@
           "H-641",
           "H-643",
           "H-644",
-          "H-649"
+          "H-649",
+          "H-657"
         ]
       },
       "created": "2026-08-04T07:09:36Z",
@@ -66766,7 +67780,8 @@
         "source": "llm",
         "created": "2026-08-04",
         "setupId": "find_0020",
-        "setupLabel": "FIND-linked FIND-0020"
+        "setupLabel": "FIND-linked FIND-0020",
+        "postMortem": "Discarded 1 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-04T14:10:04Z",
@@ -66791,17 +67806,18 @@
         "confidence": 0.7,
         "timeframeDays": 7,
         "testStats": {
-          "total": 12,
-          "completed": 11,
+          "total": 13,
+          "completed": 12,
           "wins": 3,
           "pending": 1,
-          "winRate": 0.2727272727272727
+          "winRate": 0
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-08-04",
         "setupId": "find_0021",
-        "setupLabel": "FIND-linked FIND-0021"
+        "setupLabel": "FIND-linked FIND-0021",
+        "postMortem": "Discarded 11 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-04T14:10:04Z",
@@ -66836,7 +67852,8 @@
         "source": "llm",
         "created": "2026-08-04",
         "setupId": "find_0043",
-        "setupLabel": "FIND-linked FIND-0043"
+        "setupLabel": "FIND-linked FIND-0043",
+        "postMortem": "Discarded 2 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-04T14:10:04Z",
@@ -66883,11 +67900,11 @@
       "id": "EXP-0613",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "retired",
+      "status": "running",
       "title": "H-606: Refinement of H‑534: narrow the gold one‑touch edge to moderate levels (3‑8 pts) and require expiry within 30 days, per FIND-0036’s 75% win cluster on...",
       "body": {
         "hypothesisId": "H-606",
-        "hypothesisStatus": "killed",
+        "hypothesisStatus": "active",
         "description": "Refinement of H‑534: narrow the gold one‑touch edge to moderate levels (3‑8 pts) and require expiry within 30 days, per FIND-0036’s 75% win cluster on near‑expiry gold NO contracts.",
         "prediction": "GOLD spot will decline >2% within 7 days as the moderate edge compresses before expiry.",
         "conditions": {
@@ -66910,7 +67927,7 @@
         "created": "2026-08-04",
         "setupId": "find_0036",
         "setupLabel": "FIND-linked FIND-0036",
-        "postMortem": "Setup family killed: 0% win rate over 20 completed tests across 7 variants."
+        "postMortem": "Setup family killed: 0% win rate over 20 completed tests across 7 variants. | Discarded 1 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-04T14:10:04Z",
@@ -67007,7 +68024,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -67021,7 +68038,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-08-05T07:09:45Z",
-        "lastSeenAt": "2026-08-23T07:09:52Z",
+        "lastSeenAt": "2026-08-24T07:11:16Z",
         "opportunityScore": 0.9489,
         "confidenceScore": 0.6664,
         "scoreHistory": [
@@ -67249,6 +68266,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.9489,
+            "confidenceScore": 0.6664,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9489,
+            "confidenceScore": 0.6664,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.9489,
             "confidenceScore": 0.6664,
             "scoringVersion": "research_score_v3"
@@ -67633,6 +68662,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-27T00:28:18.568Z",
+              "end": "2026-08-19T22:28:19.134Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ],
         "hypothesisIds": [
@@ -67704,7 +68754,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -67718,7 +68768,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-08-06T07:09:59Z",
-        "lastSeenAt": "2026-08-23T07:09:52Z",
+        "lastSeenAt": "2026-08-24T07:11:16Z",
         "opportunityScore": 0.9611,
         "confidenceScore": 0.4833,
         "scoreHistory": [
@@ -67934,6 +68984,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.9611,
+            "confidenceScore": 0.4833,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.9611,
+            "confidenceScore": 0.4833,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.9611,
             "confidenceScore": 0.4833,
             "scoringVersion": "research_score_v3"
@@ -68297,6 +69359,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-23T00:29:15.064Z",
+              "end": "2026-08-18T01:28:23.835Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ]
       },
@@ -68359,7 +69442,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -68373,7 +69456,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-08-06T07:10:02Z",
-        "lastSeenAt": "2026-08-23T07:09:56Z",
+        "lastSeenAt": "2026-08-24T07:11:20Z",
         "opportunityScore": 0.3986,
         "confidenceScore": 0.4417,
         "scoreHistory": [
@@ -68589,6 +69672,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.3986,
+            "confidenceScore": 0.4417,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.3986,
+            "confidenceScore": 0.4417,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.3986,
             "confidenceScore": 0.4417,
             "scoringVersion": "research_score_v3"
@@ -68952,6 +70047,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-04-30T12:27:53.146Z",
+              "end": "2026-08-11T00:28:17.581Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ]
       },
@@ -68981,11 +70097,11 @@
       "id": "EXP-0615",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "running",
+      "status": "retired",
       "title": "H-608: When GOLD's GLD put/call ratio drops into the bottom 10% of its 7‑day range (extreme call buying/put selling), the crowded bullish positioning exhaust...",
       "body": {
         "hypothesisId": "H-608",
-        "hypothesisStatus": "active",
+        "hypothesisStatus": "killed",
         "description": "When GOLD's GLD put/call ratio drops into the bottom 10% of its 7‑day range (extreme call buying/put selling), the crowded bullish positioning exhausts and a corrective sell‑off follows, contrary to the usual bullish interpretation.",
         "prediction": "GOLD spot will decline >2% within 3 days as the extreme sentiment unwinds.",
         "conditions": {
@@ -69005,7 +70121,8 @@
         "source": "llm",
         "created": "2026-08-05",
         "setupId": "find_0053",
-        "setupLabel": "FIND-linked FIND-0053"
+        "setupLabel": "FIND-linked FIND-0053",
+        "postMortem": "Setup family killed: 0% win rate over 21 completed tests across 10 variants."
       },
       "links": {},
       "created": "2026-08-06T14:10:09Z",
@@ -69066,17 +70183,18 @@
         "confidence": 0.55,
         "timeframeDays": 2,
         "testStats": {
-          "total": 7,
+          "total": 8,
           "completed": 7,
           "wins": 0,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-08-05",
         "setupId": "gold_pm_premium_futures_spread_mean_reversion",
-        "setupLabel": "Gold PM premium / futures spread mean reversion"
+        "setupLabel": "Gold PM premium / futures spread mean reversion",
+        "postMortem": "Discarded 7 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-06T14:10:09Z",
@@ -69101,11 +70219,11 @@
         "confidence": 0.55,
         "timeframeDays": 2,
         "testStats": {
-          "total": 8,
-          "completed": 7,
-          "wins": 4,
+          "total": 9,
+          "completed": 8,
+          "wins": 5,
           "pending": 1,
-          "winRate": 0.5714285714285714
+          "winRate": 0.625
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -69262,11 +70380,11 @@
       "id": "EXP-0623",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "running",
+      "status": "retired",
       "title": "H-616: GOLD PC ratio extreme low short despite positive trend: When GOLD's GLD put/call ratio falls into the bottom 10% of its 7-day range (extreme call buyi...",
       "body": {
         "hypothesisId": "H-616",
-        "hypothesisStatus": "active",
+        "hypothesisStatus": "killed",
         "description": "GOLD PC ratio extreme low short despite positive trend: When GOLD's GLD put/call ratio falls into the bottom 10% of its 7-day range (extreme call buying) while spot is above the 7-day SMA, short GOLD. The positive-trend filter keeps you out of dead-cat bounces, but the extreme put/call reading signals an impending reversal.",
         "prediction": "GOLD spot will decline >2% within 7 days.",
         "conditions": {
@@ -69287,7 +70405,8 @@
         "source": "llm",
         "created": "2026-08-06",
         "setupId": "find_0053",
-        "setupLabel": "FIND-linked FIND-0053"
+        "setupLabel": "FIND-linked FIND-0053",
+        "postMortem": "Setup family killed: 0% win rate over 21 completed tests across 10 variants."
       },
       "links": {},
       "created": "2026-08-06T14:10:09Z",
@@ -69322,7 +70441,8 @@
         "source": "llm",
         "created": "2026-08-06",
         "setupId": "find_0043",
-        "setupLabel": "FIND-linked FIND-0043"
+        "setupLabel": "FIND-linked FIND-0043",
+        "postMortem": "Discarded 2 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-06T14:10:09Z",
@@ -69604,6 +70724,18 @@
             "opportunityScore": 0.2877,
             "confidenceScore": 0.3035,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.2877,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.2877,
+            "confidenceScore": 0.3035,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -69759,17 +70891,18 @@
         "confidence": 0.55,
         "timeframeDays": 5,
         "testStats": {
-          "total": 3,
+          "total": 4,
           "completed": 3,
           "wins": 0,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-08-07",
         "setupId": "gold_pm_premium_futures_spread_mean_reversion",
-        "setupLabel": "Gold PM premium / futures spread mean reversion"
+        "setupLabel": "Gold PM premium / futures spread mean reversion",
+        "postMortem": "Discarded 3 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-07T14:10:08Z",
@@ -69881,11 +71014,11 @@
       "id": "EXP-0629",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "running",
+      "status": "retired",
       "title": "H-622: GOLD extreme low put/call ratio short signal. When the 7‑day percentile of gold_gld_pc_ratio falls to the bottom 10%, the contrarian short hypothesis ...",
       "body": {
         "hypothesisId": "H-622",
-        "hypothesisStatus": "active",
+        "hypothesisStatus": "killed",
         "description": "GOLD extreme low put/call ratio short signal. When the 7‑day percentile of gold_gld_pc_ratio falls to the bottom 10%, the contrarian short hypothesis wins 100% in the shadow cluster (FIND‑0053).",
         "prediction": "GOLD spot will decline >2% within 5 days following an extreme drop in put/call ratio (extreme call buying).",
         "conditions": {
@@ -69896,16 +71029,17 @@
         "timeframeDays": 5,
         "testStats": {
           "total": 3,
-          "completed": 2,
+          "completed": 3,
           "wins": 0,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-08-07",
         "setupId": "find_0053",
-        "setupLabel": "FIND-linked FIND-0053"
+        "setupLabel": "FIND-linked FIND-0053",
+        "postMortem": "Setup family killed: 0% win rate over 21 completed tests across 10 variants."
       },
       "links": {},
       "created": "2026-08-07T14:10:08Z",
@@ -69940,7 +71074,8 @@
         "source": "llm",
         "created": "2026-08-07",
         "setupId": "find_0043",
-        "setupLabel": "FIND-linked FIND-0043"
+        "setupLabel": "FIND-linked FIND-0043",
+        "postMortem": "Discarded 2 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-07T14:10:08Z",
@@ -69986,11 +71121,11 @@
       "id": "EXP-0632",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "running",
+      "status": "retired",
       "title": "H-625: GOLD put/call extreme low short: when GOLD’s GLD put/call ratio falls into the bottom 10% of its 7‑day range (indicative of excessive call buying), sh...",
       "body": {
         "hypothesisId": "H-625",
-        "hypothesisStatus": "active",
+        "hypothesisStatus": "killed",
         "description": "GOLD put/call extreme low short: when GOLD’s GLD put/call ratio falls into the bottom 10% of its 7‑day range (indicative of excessive call buying), short GOLD despite the positive trend. Previous positive‑trend filters incorrectly blocked this signal; the extreme low often precedes a corrective pullback.",
         "prediction": "GOLD spot will decline >2% within 3 days",
         "conditions": {
@@ -70010,7 +71145,8 @@
         "source": "llm",
         "created": "2026-08-08",
         "setupId": "find_0053",
-        "setupLabel": "FIND-linked FIND-0053"
+        "setupLabel": "FIND-linked FIND-0053",
+        "postMortem": "Setup family killed: 0% win rate over 21 completed tests across 10 variants."
       },
       "links": {},
       "created": "2026-08-08T14:10:04Z",
@@ -70081,7 +71217,8 @@
         "source": "llm",
         "created": "2026-08-08",
         "setupId": "find_0043",
-        "setupLabel": "FIND-linked FIND-0043"
+        "setupLabel": "FIND-linked FIND-0043",
+        "postMortem": "Discarded 2 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-08T14:10:04Z",
@@ -70116,7 +71253,8 @@
         "source": "llm",
         "created": "2026-08-08",
         "setupId": "gold_pm_premium_futures_spread_mean_reversion",
-        "setupLabel": "Gold PM premium / futures spread mean reversion"
+        "setupLabel": "Gold PM premium / futures spread mean reversion",
+        "postMortem": "Discarded 3 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-08T14:10:04Z",
@@ -70232,11 +71370,11 @@
       "id": "EXP-0639",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "running",
+      "status": "retired",
       "title": "H-632: GOLD put/call ratio extreme low short, ignoring positive trend. When GOLD's GLD put/call ratio falls into the bottom 10% of its 7‑day range (extreme c...",
       "body": {
         "hypothesisId": "H-632",
-        "hypothesisStatus": "active",
+        "hypothesisStatus": "killed",
         "description": "GOLD put/call ratio extreme low short, ignoring positive trend. When GOLD's GLD put/call ratio falls into the bottom 10% of its 7‑day range (extreme call buying), short the spot.",
         "prediction": "GOLD spot declines >2% within 3 days.",
         "conditions": {
@@ -70256,7 +71394,8 @@
         "source": "llm",
         "created": "2026-08-09",
         "setupId": "find_0053",
-        "setupLabel": "FIND-linked FIND-0053"
+        "setupLabel": "FIND-linked FIND-0053",
+        "postMortem": "Setup family killed: 0% win rate over 21 completed tests across 10 variants."
       },
       "links": {},
       "created": "2026-08-09T14:10:01Z",
@@ -70291,7 +71430,8 @@
         "source": "llm",
         "created": "2026-08-09",
         "setupId": "find_0043",
-        "setupLabel": "FIND-linked FIND-0043"
+        "setupLabel": "FIND-linked FIND-0043",
+        "postMortem": "Discarded 2 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-09T14:10:01Z",
@@ -70301,11 +71441,11 @@
       "id": "EXP-0641",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "retired",
+      "status": "running",
       "title": "H-634: GOLD one‑touch NO edge near expiry. On GOLD above‑strike contracts expiring within 30 days, sell YES when the edge is ≥ 1 pt.",
       "body": {
         "hypothesisId": "H-634",
-        "hypothesisStatus": "killed",
+        "hypothesisStatus": "active",
         "description": "GOLD one‑touch NO edge near expiry. On GOLD above‑strike contracts expiring within 30 days, sell YES when the edge is ≥ 1 pt.",
         "prediction": "GOLD spot declines >2% within 2 days.",
         "conditions": {
@@ -70317,10 +71457,10 @@
         "confidence": 0.65,
         "timeframeDays": 2,
         "testStats": {
-          "total": 4,
-          "completed": 4,
+          "total": 8,
+          "completed": 7,
           "wins": 0,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -70328,7 +71468,7 @@
         "created": "2026-08-09",
         "setupId": "find_0036",
         "setupLabel": "FIND-linked FIND-0036",
-        "postMortem": "Setup family killed: 0% win rate over 20 completed tests across 7 variants."
+        "postMortem": "Setup family killed: 0% win rate over 20 completed tests across 7 variants. | Discarded 4 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-09T14:10:01Z",
@@ -70363,7 +71503,8 @@
         "source": "llm",
         "created": "2026-08-09",
         "setupId": "find_0022",
-        "setupLabel": "FIND-linked FIND-0022"
+        "setupLabel": "FIND-linked FIND-0022",
+        "postMortem": "Discarded 4 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-09T14:10:01Z",
@@ -70424,7 +71565,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -70438,7 +71579,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-08-10T07:10:07Z",
-        "lastSeenAt": "2026-08-23T07:09:55Z",
+        "lastSeenAt": "2026-08-24T07:11:19Z",
         "opportunityScore": 0.5462,
         "confidenceScore": 0.531,
         "scoreHistory": [
@@ -70606,6 +71747,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.5462,
+            "confidenceScore": 0.531,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.5462,
+            "confidenceScore": 0.531,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.5462,
             "confidenceScore": 0.531,
             "scoringVersion": "research_score_v3"
@@ -70885,6 +72038,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-23T00:29:15.064Z",
+              "end": "2026-08-22T10:28:15.514Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ]
       },
@@ -70947,7 +72121,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -70961,7 +72135,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-08-10T07:10:08Z",
-        "lastSeenAt": "2026-08-23T07:09:56Z",
+        "lastSeenAt": "2026-08-24T07:11:21Z",
         "opportunityScore": 0.0881,
         "confidenceScore": 0.5109,
         "scoreHistory": [
@@ -71129,6 +72303,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.0881,
+            "confidenceScore": 0.5109,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.0881,
+            "confidenceScore": 0.5109,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.0881,
             "confidenceScore": 0.5109,
             "scoringVersion": "research_score_v3"
@@ -71408,6 +72594,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-23T00:29:15.064Z",
+              "end": "2026-08-22T10:28:15.514Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ]
       },
@@ -71419,11 +72626,11 @@
       "id": "EXP-0643",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "running",
+      "status": "retired",
       "title": "H-636: GOLD extreme low put/call ratio short: when gold’s GLD put/call ratio is in the bottom 10% of its 7‑day range (extreme call buying/exhausted puts), sh...",
       "body": {
         "hypothesisId": "H-636",
-        "hypothesisStatus": "active",
+        "hypothesisStatus": "killed",
         "description": "GOLD extreme low put/call ratio short: when gold’s GLD put/call ratio is in the bottom 10% of its 7‑day range (extreme call buying/exhausted puts), short spot regardless of the prevailing trend. Shadow evidence shows +$0.13 PnL on 8 resolved trades (100% WR) despite being blocked by a positive‑trend filter.",
         "prediction": "GOLD spot will decline >2% within 7 days as excessive call positioning unwinds.",
         "conditions": {
@@ -71443,7 +72650,8 @@
         "source": "llm",
         "created": "2026-08-11",
         "setupId": "find_0053",
-        "setupLabel": "FIND-linked FIND-0053"
+        "setupLabel": "FIND-linked FIND-0053",
+        "postMortem": "Setup family killed: 0% win rate over 21 completed tests across 10 variants."
       },
       "links": {},
       "created": "2026-08-11T14:10:00Z",
@@ -71467,17 +72675,18 @@
         "confidence": 0.55,
         "timeframeDays": 2,
         "testStats": {
-          "total": 4,
+          "total": 5,
           "completed": 4,
           "wins": 0,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-08-11",
         "setupId": "gold_pm_premium_futures_spread_mean_reversion",
-        "setupLabel": "Gold PM premium / futures spread mean reversion"
+        "setupLabel": "Gold PM premium / futures spread mean reversion",
+        "postMortem": "Discarded 4 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-11T14:10:00Z",
@@ -71547,7 +72756,8 @@
         "source": "llm",
         "created": "2026-08-12",
         "setupId": "gold_pm_premium_futures_spread_mean_reversion",
-        "setupLabel": "Gold PM premium / futures spread mean reversion"
+        "setupLabel": "Gold PM premium / futures spread mean reversion",
+        "postMortem": "Discarded 2 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-12T14:10:04Z",
@@ -71593,11 +72803,11 @@
       "id": "EXP-0648",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "running",
+      "status": "retired",
       "title": "H-641: Short GOLD when put/call ratio falls into the bottom 10% of its 7‑day range (extreme call buying). The finding suggests this works even when the engin...",
       "body": {
         "hypothesisId": "H-641",
-        "hypothesisStatus": "active",
+        "hypothesisStatus": "killed",
         "description": "Short GOLD when put/call ratio falls into the bottom 10% of its 7‑day range (extreme call buying). The finding suggests this works even when the engine’s positive‑trend block would normally prevent the short.",
         "prediction": "GOLD spot declines >2% within 5 days.",
         "conditions": {
@@ -71608,16 +72818,17 @@
         "timeframeDays": 5,
         "testStats": {
           "total": 2,
-          "completed": 1,
+          "completed": 2,
           "wins": 0,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-08-12",
         "setupId": "find_0053",
-        "setupLabel": "FIND-linked FIND-0053"
+        "setupLabel": "FIND-linked FIND-0053",
+        "postMortem": "Setup family killed: 0% win rate over 21 completed tests across 10 variants."
       },
       "links": {},
       "created": "2026-08-12T14:10:04Z",
@@ -71642,10 +72853,10 @@
         "confidence": 0.7,
         "timeframeDays": 30,
         "testStats": {
-          "total": 6,
+          "total": 13,
           "completed": 0,
           "wins": 0,
-          "pending": 6,
+          "pending": 13,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -71662,11 +72873,11 @@
       "id": "EXP-0650",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "running",
+      "status": "retired",
       "title": "H-643: Short GOLD when GLD put/call ratio is in the bottom 10% of its 7-day range AND spot remains above its 24h SMA, matching the FIND-0053 shadow cluster w...",
       "body": {
         "hypothesisId": "H-643",
-        "hypothesisStatus": "active",
+        "hypothesisStatus": "killed",
         "description": "Short GOLD when GLD put/call ratio is in the bottom 10% of its 7-day range AND spot remains above its 24h SMA, matching the FIND-0053 shadow cluster where the positive-trend block was short. This is a fade of call crowding in a still-uptrending tape.",
         "prediction": "GOLD spot/perp declines at least 2% within 2 days after the extreme call-crowding signal.",
         "conditions": {
@@ -71687,7 +72898,8 @@
         "source": "llm",
         "created": "2026-08-13",
         "setupId": "find_0053",
-        "setupLabel": "FIND-linked FIND-0053"
+        "setupLabel": "FIND-linked FIND-0053",
+        "postMortem": "Setup family killed: 0% win rate over 21 completed tests across 10 variants."
       },
       "links": {},
       "created": "2026-08-13T14:10:00Z",
@@ -71748,7 +72960,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -71762,7 +72974,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-08-14T07:10:14Z",
-        "lastSeenAt": "2026-08-23T07:09:53Z",
+        "lastSeenAt": "2026-08-24T07:11:17Z",
         "opportunityScore": 0.8529,
         "confidenceScore": 0.4602,
         "scoreHistory": [
@@ -71882,6 +73094,18 @@
           },
           {
             "at": "2026-08-23T07:11:41Z",
+            "opportunityScore": 0.8529,
+            "confidenceScore": 0.4602,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.8529,
+            "confidenceScore": 0.4602,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
             "opportunityScore": 0.8529,
             "confidenceScore": 0.4602,
             "scoringVersion": "research_score_v3"
@@ -72077,6 +73301,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-26T17:28:14.513Z",
+              "end": "2026-07-30T00:28:17.536Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ]
       },
@@ -72089,7 +73334,7 @@
       "type": "finding",
       "evidenceClass": "DERIVED",
       "status": "strengthened",
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ETH (strat:dir=above,e3-8/no): WR=68% n=38 sumPnl=+0.393",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ETH (strat:dir=above,e3-8/no): WR=68% n=40 sumPnl=+0.409",
       "body": {
         "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|strat:dir=above,e3-8|no",
         "asset": "ETH",
@@ -72097,22 +73342,22 @@
         "side": "no",
         "bucket": "strat:dir=above,e3-8",
         "evidence": {
-          "n": 38,
-          "winRate": 0.6842,
-          "sumPnl": 0.3934,
-          "avgPnl": 0.01035,
-          "pnlStd": 0.31877,
-          "pValue": 0.01678,
-          "pnlPValue": 0.42121,
+          "n": 40,
+          "winRate": 0.675,
+          "sumPnl": 0.4089,
+          "avgPnl": 0.01022,
+          "pnlStd": 0.31051,
+          "pValue": 0.01924,
+          "pnlPValue": 0.41807,
           "qValue": 0.99991
         },
         "mineStats": {
-          "n": 38,
-          "wins": 26,
-          "winRate": 0.6842,
-          "sumPnl": 0.3934,
-          "pValue": 0.01678,
-          "pnlPValue": 0.42121,
+          "n": 40,
+          "wins": 27,
+          "winRate": 0.675,
+          "sumPnl": 0.4089,
+          "pValue": 0.01924,
+          "pnlPValue": 0.41807,
           "hasHeatmap": true,
           "sampleIds": [
             "OT-1779496155064-cmyy",
@@ -72135,11 +73380,11 @@
           "generatedBy": "shadow_miner_v1",
           "inputWindow": {
             "start": "2026-05-23T00:29:15.064Z",
-            "end": "2026-08-22T10:28:15.514Z"
+            "end": "2026-08-23T01:28:25.297Z"
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -72153,9 +73398,9 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-08-14T07:10:14Z",
-        "lastSeenAt": "2026-08-23T07:09:55Z",
-        "opportunityScore": 0.5788,
-        "confidenceScore": 0.5515,
+        "lastSeenAt": "2026-08-24T07:11:19Z",
+        "opportunityScore": 0.5819,
+        "confidenceScore": 0.5455,
         "scoreHistory": [
           {
             "at": "2026-08-14T07:10:16Z",
@@ -72275,6 +73520,18 @@
             "at": "2026-08-23T07:11:41Z",
             "opportunityScore": 0.5788,
             "confidenceScore": 0.5515,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.5819,
+            "confidenceScore": 0.5455,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.5819,
+            "confidenceScore": 0.5455,
             "scoringVersion": "research_score_v3"
           }
         ],
@@ -72468,6 +73725,27 @@
               "resolvedOnly": true
             },
             "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-05-23T00:29:15.064Z",
+              "end": "2026-08-22T10:28:15.514Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
           }
         ]
       },
@@ -72479,11 +73757,11 @@
       "id": "EXP-0651",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "running",
+      "status": "retired",
       "title": "H-644: Short GOLD spot when GLD put/call ratio is in the bottom 10% of its 7-day range while spot is still above its 24h SMA. This captures extremely crowded...",
       "body": {
         "hypothesisId": "H-644",
-        "hypothesisStatus": "active",
+        "hypothesisStatus": "killed",
         "description": "Short GOLD spot when GLD put/call ratio is in the bottom 10% of its 7-day range while spot is still above its 24h SMA. This captures extremely crowded call-buying versus a still-positive short-term trend, a setup that was previously blocked but won in shadow mining.",
         "prediction": "GOLD spot will fall more than 2% within 3 days.",
         "conditions": {
@@ -72503,7 +73781,8 @@
         "source": "llm",
         "created": "2026-08-17",
         "setupId": "find_0053",
-        "setupLabel": "FIND-linked FIND-0053"
+        "setupLabel": "FIND-linked FIND-0053",
+        "postMortem": "Setup family killed: 0% win rate over 21 completed tests across 10 variants."
       },
       "links": {},
       "created": "2026-08-17T14:10:09Z",
@@ -72540,7 +73819,8 @@
         "source": "llm",
         "created": "2026-08-17",
         "setupId": "find_0043",
-        "setupLabel": "FIND-linked FIND-0043"
+        "setupLabel": "FIND-linked FIND-0043",
+        "postMortem": "Discarded 1 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-17T14:10:09Z",
@@ -72577,7 +73857,8 @@
         "source": "llm",
         "created": "2026-08-17",
         "setupId": "find_0020",
-        "setupLabel": "FIND-linked FIND-0020"
+        "setupLabel": "FIND-linked FIND-0020",
+        "postMortem": "Discarded 1 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-17T14:10:09Z",
@@ -72587,11 +73868,11 @@
       "id": "EXP-0654",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "retired",
+      "status": "running",
       "title": "H-647: Sell YES on above-strike rich PM-IV one-touch contracts expiring within 30 days when PM IV is at least 10 vol points above listed option IV and spread...",
       "body": {
         "hypothesisId": "H-647",
-        "hypothesisStatus": "killed",
+        "hypothesisStatus": "active",
         "description": "Sell YES on above-strike rich PM-IV one-touch contracts expiring within 30 days when PM IV is at least 10 vol points above listed option IV and spread is tight.",
         "prediction": "The YES premium on OIL above-strike one-touch contracts decays within 3 days without spot making the barrier.",
         "conditions": {
@@ -72604,18 +73885,18 @@
         "confidence": 0.6,
         "timeframeDays": 3,
         "testStats": {
-          "total": 20,
-          "completed": 20,
+          "total": 26,
+          "completed": 23,
           "wins": 5,
-          "pending": 0,
-          "winRate": 0.25
+          "pending": 3,
+          "winRate": 0
         },
         "promotedToSignal": false,
         "source": "llm",
         "created": "2026-08-17",
         "setupId": "find_0024",
         "setupLabel": "FIND-linked FIND-0024",
-        "postMortem": "Refined by H-648 (2026-08-19): Refinement of H-647: do not fade rich OIL above-strike YES premium on IV richnes | find_0024 scored only 5/19 and burned tests on spot proxies. OIL rose 4.30% through the supposed overpriced premium window, indicating that rich PM IV near expiry was marking a real directional move, not dumb YES demand."
+        "postMortem": "Refined by H-648 (2026-08-19): Refinement of H-647: do not fade rich OIL above-strike YES premium on IV richnes | find_0024 scored only 5/19 and burned tests on spot proxies. OIL rose 4.30% through the supposed overpriced premium window, indicating that rich PM IV near expiry was marking a real directional move, not dumb YES demand. | Discarded 20 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-17T14:10:09Z",
@@ -72653,7 +73934,8 @@
         "source": "llm",
         "created": "2026-08-19",
         "setupId": "oil_iv_statistical_breakdown_arbitrage",
-        "setupLabel": "Oil IV/statistical breakdown arbitrage"
+        "setupLabel": "Oil IV/statistical breakdown arbitrage",
+        "postMortem": "Discarded 1 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-19T14:10:08Z",
@@ -72663,11 +73945,11 @@
       "id": "EXP-0656",
       "type": "experiment",
       "evidenceClass": "HYPOTHESIS",
-      "status": "running",
+      "status": "retired",
       "title": "H-649: Contrarian GOLD short when GLD put/call ratio is bottom-decile of its 7-day range while spot remains above its 24h SMA; the extreme call buying marks ...",
       "body": {
         "hypothesisId": "H-649",
-        "hypothesisStatus": "active",
+        "hypothesisStatus": "killed",
         "description": "Contrarian GOLD short when GLD put/call ratio is bottom-decile of its 7-day range while spot remains above its 24h SMA; the extreme call buying marks a local reversal/pinning setup.",
         "prediction": "GOLD spot declines more than 2% within 3 days as extreme call positioning unwinds.",
         "conditions": {
@@ -72688,7 +73970,8 @@
         "source": "llm",
         "created": "2026-08-19",
         "setupId": "find_0053",
-        "setupLabel": "FIND-linked FIND-0053"
+        "setupLabel": "FIND-linked FIND-0053",
+        "postMortem": "Setup family killed: 0% win rate over 21 completed tests across 10 variants."
       },
       "links": {},
       "created": "2026-08-19T14:10:08Z",
@@ -72724,7 +74007,8 @@
         "source": "llm",
         "created": "2026-08-19",
         "setupId": "find_0043",
-        "setupLabel": "FIND-linked FIND-0043"
+        "setupLabel": "FIND-linked FIND-0043",
+        "postMortem": "Discarded 1 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer."
       },
       "links": {},
       "created": "2026-08-19T14:10:08Z",
@@ -72785,7 +74069,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -72799,7 +74083,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-08-22T07:10:28Z",
-        "lastSeenAt": "2026-08-23T07:09:54Z",
+        "lastSeenAt": "2026-08-24T07:11:18Z",
         "opportunityScore": 0.8046,
         "confidenceScore": 0.3926,
         "scoreHistory": [
@@ -72826,6 +74110,18 @@
             "opportunityScore": 0.8046,
             "confidenceScore": 0.3926,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.8046,
+            "confidenceScore": 0.3926,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.8046,
+            "confidenceScore": 0.3926,
+            "scoringVersion": "research_score_v3"
           }
         ],
         "themeId": "THEME-0001",
@@ -72839,6 +74135,27 @@
             "featureSet": "blocked_signal_shadow_v1",
             "scoringVersion": "shadow_cluster_v1",
             "gitSha": "3e2e2603",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          },
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-28T03:28:15.626Z",
+              "end": "2026-08-22T09:28:19.377Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
             "inputArtifacts": [
               "/opt/polymarket-trader/data/blocked-signals.json"
             ],
@@ -73097,7 +74414,7 @@
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -73111,7 +74428,7 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-08-23T07:09:53Z",
-        "lastSeenAt": "2026-08-23T07:09:53Z",
+        "lastSeenAt": "2026-08-24T07:11:18Z",
         "opportunityScore": 0.8242,
         "confidenceScore": 0.3685,
         "scoreHistory": [
@@ -73126,9 +74443,44 @@
             "opportunityScore": 0.8242,
             "confidenceScore": 0.3685,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.8242,
+            "confidenceScore": 0.3685,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.8242,
+            "confidenceScore": 0.3685,
+            "scoringVersion": "research_score_v3"
           }
         ],
-        "themeId": "THEME-0001"
+        "themeId": "THEME-0001",
+        "provenanceHistory": [
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-20T18:28:11.049Z",
+              "end": "2026-08-22T09:28:19.377Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          }
+        ]
       },
       "links": {},
       "created": "2026-08-23T07:09:53Z",
@@ -73138,8 +74490,8 @@
       "id": "FIND-0064",
       "type": "finding",
       "evidenceClass": "DERIVED",
-      "status": "open",
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ETH (strat:s-1,e3-8/no): WR=75% n=8 sumPnl=+1.688",
+      "status": "strengthened",
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ETH (strat:s-1,e3-8/no): WR=70% n=10 sumPnl=+1.704",
       "body": {
         "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|strat:s-1,e3-8|no",
         "asset": "ETH",
@@ -73147,22 +74499,22 @@
         "side": "no",
         "bucket": "strat:s-1,e3-8",
         "evidence": {
-          "n": 8,
-          "winRate": 0.75,
-          "sumPnl": 1.6881,
-          "avgPnl": 0.21101,
-          "pnlStd": 0.60176,
-          "pValue": 0.14453,
-          "pnlPValue": 0.17716,
+          "n": 10,
+          "winRate": 0.7,
+          "sumPnl": 1.7036,
+          "avgPnl": 0.17036,
+          "pnlStd": 0.53763,
+          "pValue": 0.17188,
+          "pnlPValue": 0.17125,
           "qValue": 0.86704
         },
         "mineStats": {
-          "n": 8,
-          "wins": 6,
-          "winRate": 0.75,
-          "sumPnl": 1.6881,
-          "pValue": 0.14453,
-          "pnlPValue": 0.17716,
+          "n": 10,
+          "wins": 7,
+          "winRate": 0.7,
+          "sumPnl": 1.7036,
+          "pValue": 0.17188,
+          "pnlPValue": 0.17125,
           "hasHeatmap": true,
           "sampleIds": [
             "OT-1785112098567-a4uv",
@@ -73185,11 +74537,11 @@
           "generatedBy": "shadow_miner_v1",
           "inputWindow": {
             "start": "2026-07-27T00:28:18.567Z",
-            "end": "2026-08-22T08:28:19.073Z"
+            "end": "2026-08-23T01:28:25.297Z"
           },
           "featureSet": "blocked_signal_shadow_v1",
           "scoringVersion": "shadow_cluster_v1",
-          "gitSha": "52bb4655",
+          "gitSha": "b09eb9b1",
           "inputArtifacts": [
             "/opt/polymarket-trader/data/blocked-signals.json"
           ],
@@ -73203,9 +74555,9 @@
           "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
         },
         "detectedAt": "2026-08-23T07:09:53Z",
-        "lastSeenAt": "2026-08-23T07:09:53Z",
-        "opportunityScore": 0.8228,
-        "confidenceScore": 0.4602,
+        "lastSeenAt": "2026-08-24T07:11:17Z",
+        "opportunityScore": 0.8287,
+        "confidenceScore": 0.4417,
         "scoreHistory": [
           {
             "at": "2026-08-23T07:09:57Z",
@@ -73218,13 +74570,226 @@
             "opportunityScore": 0.8228,
             "confidenceScore": 0.4602,
             "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:11:21Z",
+            "opportunityScore": 0.8287,
+            "confidenceScore": 0.4417,
+            "scoringVersion": "research_score_v3"
+          },
+          {
+            "at": "2026-08-24T07:12:52Z",
+            "opportunityScore": 0.8287,
+            "confidenceScore": 0.4417,
+            "scoringVersion": "research_score_v3"
           }
         ],
-        "themeId": "THEME-0001"
+        "themeId": "THEME-0001",
+        "provenanceHistory": [
+          {
+            "generatedBy": "shadow_miner_v1",
+            "inputWindow": {
+              "start": "2026-07-27T00:28:18.567Z",
+              "end": "2026-08-22T08:28:19.073Z"
+            },
+            "featureSet": "blocked_signal_shadow_v1",
+            "scoringVersion": "shadow_cluster_v1",
+            "gitSha": "52bb4655",
+            "inputArtifacts": [
+              "/opt/polymarket-trader/data/blocked-signals.json"
+            ],
+            "filters": {
+              "minWr": 0.55,
+              "minNHeatmap": 8,
+              "minNOther": 8,
+              "excludeLearningExcluded": true,
+              "resolvedOnly": true
+            },
+            "reproducibleCommand": "python3 scripts/mine_shadow_findings.py --blocked /opt/polymarket-trader/data/blocked-signals.json --registry data/registry.json --out data/research-findings.json --min-wr 0.55"
+          }
+        ]
       },
       "links": {},
       "created": "2026-08-23T07:09:53Z",
       "source": "shadow_miner_v1"
+    },
+    {
+      "id": "EXP-0663",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-656: Fade dumb-money high-YES flow: on above-strike one-touch contracts, when smart wallets are net short YES and the contract offers a positive sell-YES e...",
+      "body": {
+        "hypothesisId": "H-656",
+        "hypothesisStatus": "active",
+        "description": "Fade dumb-money high-YES flow: on above-strike one-touch contracts, when smart wallets are net short YES and the contract offers a positive sell-YES edge, sell the rich YES side because high-barrier flow is dumb-money chasing premium, not smart directional demand.",
+        "prediction": "The YES side of above-strike one-touch contracts is overpriced and the sell-YES position will be profitable over 3 days as premium decays.",
+        "conditions": {
+          "touch_direction": ">= 1",
+          "smart_flow_net_yes": "< 0",
+          "sell_yes_edge_pts": ">= 1",
+          "yesSpread": "<= 0.03"
+        },
+        "confidence": 0.65,
+        "timeframeDays": 3,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-08-23",
+        "setupId": "find_0020",
+        "setupLabel": "FIND-linked FIND-0020"
+      },
+      "links": {},
+      "created": "2026-08-23T14:10:05Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0664",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "retired",
+      "title": "H-657: When GOLD's GLD put/call ratio is in the bottom 15% of its 7-day range while GOLD spot remains above its 24h SMA, extreme call-buying/put-selling mark...",
+      "body": {
+        "hypothesisId": "H-657",
+        "hypothesisStatus": "killed",
+        "description": "When GOLD's GLD put/call ratio is in the bottom 15% of its 7-day range while GOLD spot remains above its 24h SMA, extreme call-buying/put-selling marks an exhaustion high rather than durable upside demand. Short the spot/perp high.",
+        "prediction": "GOLD spot will decline more than 2% within 3 days.",
+        "conditions": {
+          "asset": "GOLD",
+          "gold_gld_pc_ratio_percentile_7d": "<= 15",
+          "gold_gc_spot_pct_vs_24h_sma": "> 0"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 3,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-08-23",
+        "setupId": "find_0053",
+        "setupLabel": "FIND-linked FIND-0053",
+        "postMortem": "Setup family killed: 0% win rate over 21 completed tests across 11 variants."
+      },
+      "links": {},
+      "created": "2026-08-23T14:10:05Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0665",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-658: On BTC above-strike one-touch contracts, sell YES when at least one scoped contract offers a 3-8 point sell-YES edge. This is a contract premium fade,...",
+      "body": {
+        "hypothesisId": "H-658",
+        "hypothesisStatus": "active",
+        "description": "On BTC above-strike one-touch contracts, sell YES when at least one scoped contract offers a 3-8 point sell-YES edge. This is a contract premium fade, not a spot-move call: overpriced YES premium decays as the high barrier stays unchallenged.",
+        "prediction": "Selling YES on BTC above-strike one-touch contracts is profitable over 3 days as premium decompresses.",
+        "conditions": {
+          "asset": "BTC",
+          "touch_direction": ">= 1",
+          "sell_yes_edge_pts": "between 3 and 8"
+        },
+        "confidence": 0.6,
+        "timeframeDays": 3,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-08-23",
+        "setupId": "find_0043",
+        "setupLabel": "FIND-linked FIND-0043"
+      },
+      "links": {},
+      "created": "2026-08-23T14:10:05Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0666",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-659: Sell YES on PM-IV-rich above-strike one-touch contracts when PM IV is at least 10 vol points above listed options IV and a 3-8 point sell-YES edge exi...",
+      "body": {
+        "hypothesisId": "H-659",
+        "hypothesisStatus": "active",
+        "description": "Sell YES on PM-IV-rich above-strike one-touch contracts when PM IV is at least 10 vol points above listed options IV and a 3-8 point sell-YES edge exists. The richness is a PM premium error, not compensation for strong spot drift.",
+        "prediction": "The sell-YES contract position is profitable over 3 days as rich PM IV and touch premium deflate.",
+        "conditions": {
+          "touch_direction": ">= 1",
+          "pm_iv_minus_opt_iv_pts": ">= 10",
+          "sell_yes_edge_pts": "between 3 and 8"
+        },
+        "confidence": 0.6,
+        "timeframeDays": 3,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-08-23",
+        "setupId": "find_0025",
+        "setupLabel": "FIND-linked FIND-0025"
+      },
+      "links": {},
+      "created": "2026-08-23T14:10:05Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0667",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-660: Broad one-touch premium fade: on any above-strike one-touch contract with a 3-8 point sell-YES edge, tight spread, and liquidity, sell YES. This is th...",
+      "body": {
+        "hypothesisId": "H-660",
+        "hypothesisStatus": "active",
+        "description": "Broad one-touch premium fade: on any above-strike one-touch contract with a 3-8 point sell-YES edge, tight spread, and liquidity, sell YES. This is the broadest version of the above-strike edge family and must be graded on contract premium decay.",
+        "prediction": "Selling YES on above-strike one-touch contracts is profitable over 3 days as excess premium decays.",
+        "conditions": {
+          "touch_direction": ">= 1",
+          "sell_yes_edge_pts": "between 3 and 8",
+          "yesSpread": "<= 0.03",
+          "liquidity": ">= 5000"
+        },
+        "confidence": 0.55,
+        "timeframeDays": 3,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-08-23",
+        "setupId": "find_0030",
+        "setupLabel": "FIND-linked FIND-0030"
+      },
+      "links": {},
+      "created": "2026-08-23T14:10:05Z",
+      "source": "sync_hypotheses_registry"
     }
   ]
 }
