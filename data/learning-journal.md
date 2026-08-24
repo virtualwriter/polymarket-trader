@@ -3192,3 +3192,34 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 8/12; ne
 
 ---
 
+### 2026-08-24 21:28 UTC
+
+**Portfolio:** $104.16 total | Cash $102.16 | 2 open | P&L $7.3987 | 64% win rate (821 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 34.1pp (was 26.2, now -7.9)
+- [anomaly] hype_hl_funding_ann = 63.38 is 3.6 std devs from mean (10.15 ± 14.75)
+- [anomaly] hype_hl_oi = 1901267856 is 2.5 std devs from mean (1272235688.76 ± 251736155.19)
+
+**Blocked signal learning:**
+- Open blocked shadows: 20
+- Resolved blocked shadows: 930 (477 wins / 453 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: FUNDING_EXTREME_LONG GOLD short via hyperliquid would have expired (-1.01%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.62%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-6.25%)
+- ❌ Blocked: FUNDING_EXTREME_LONG BTC short via hyperliquid would have hit stop (-1.83%)
+
+**LLM analysis:**
+Reviewed both open positions. OIL short is only 7h old, so discretionary close is not yet allowed; note oil_cl_pc_ratio has normalized from 0.344 at entry to 1.192, which would be thesis-invalidation evidence once the 12h min hold is met. GOLD short is also only 7h old; gold_hl_funding_ann has normalized from 26.53% to 5.48%, below the +15% entry trigger, which would likewise be thesis-invalidation evidence after 12h. No hard portfolio risk or data-quality breach observed, and mechanical stops/targets remain in force. Re-evaluate both at the 12h mark.
+
+---
+
