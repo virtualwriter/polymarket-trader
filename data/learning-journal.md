@@ -2572,3 +2572,42 @@ No eligible discretionary closes this cycle. The four WEEKEND_HL_FUNDING_REVERSI
 
 ---
 
+### 2026-08-24 02:28 UTC
+
+**Portfolio:** $104.09 total | Cash $100.09 | 4 open | P&L $7.3286 | 64% win rate (816 trades)
+
+**Closed 2 trades:**
+- ❌ ORCL long via hyperliquid/hl_perp [HL ORCL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → breakeven_stop: $-0.0090 (-0.9%, market -0.0089, funding -0.0001)
+- ✅ BX long via hyperliquid/hl_perp [HL BX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0132 (1.3%, market 0.0132, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 39.4pp (was -13.9, now 25.5)
+- [anomaly] oil_opt_iv_30d = 8.3 is -3.3 std devs from mean since 2026-04-28 (52.34 ± 13.48)
+- [anomaly] hype_hl_oi = 2022725980 is 3.1 std devs from mean (1267383546.73 ± 245964480.25)
+- [anomaly] hype_pm_ev = 77.95 is 2.3 std devs from mean (58.97 ± 8.35)
+- [anomaly] hype_spot = 81.077 is 2.2 std devs from mean (58.51 ± 10.05)
+
+**Blocked signal learning:**
+- Open blocked shadows: 16
+- Resolved blocked shadows: 925 (477 wins / 448 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-0.86%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 1/12; next scheduled 2026-08-24T04:28:34.569Z). Mechanical cycle ran normally._
+
+---
+
