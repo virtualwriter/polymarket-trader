@@ -2644,3 +2644,37 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 1/12; ne
 
 ---
 
+### 2026-08-24 04:28 UTC
+
+**Portfolio:** $104.09 total | Cash $99.09 | 5 open | P&L $7.3285 | 64% win rate (816 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 21 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_opt_iv_30d = 9.1 is -3.2 std devs from mean since 2026-04-28 (52.30 ± 13.53)
+- [anomaly] hype_hl_oi = 2011992860 is 3.0 std devs from mean (1267968800.61 ± 246740458.66)
+- [anomaly] oil_opt_fwd_90d = 5.9 is -2.6 std devs from mean since 2026-04-28 (78.25 ± 27.87)
+- [anomaly] hype_pm_ev = 77.28 is 2.2 std devs from mean (58.99 ± 8.36)
+- [anomaly] hype_spot = 80.275 is 2.2 std devs from mean (58.53 ± 10.06)
+
+**Blocked signal learning:**
+- Open blocked shadows: 16
+- Resolved blocked shadows: 925 (477 wins / 448 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- FUNDING_EXTREME_LONG trend filter may be too strict: 11/19 blocked trades would have won.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-0.86%)
+
+**LLM analysis:**
+No discretionary closes are eligible this run: all WEEKEND_HL_FUNDING_REVERSION_LONG positions are policy-gated to mechanical exits, and AMZN FUNDING_EXTREME_SHORT is only 6.0h into a 12h minimum hold. AMZN funding has round-tripped from -146.8% annualized to +15.7% since entry, which is material thesis invalidation evidence, but no close may be emitted until the 12h min hold passes; revisit next hourly run if funding remains normalized. CBRS is underwater -3.4% shortly after open, but it is mechanical-only and has no eligible LLM close. No hard portfolio risk or data quality issues observed.
+
+---
+
