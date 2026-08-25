@@ -1,36 +1,38 @@
 {
-  "generatedAt": "2026-08-25T16:38:11.643532+00:00",
-  "model": "deepseek-v4-pro",
-  "note": "Re-feed of the two panel hypotheses rejected 2026-08-25 by the serial verdict gate, after concurrent-contract-entry fix.",
+  "generatedAt": "2026-08-25T18:19:13.875671+00:00",
+  "model": "operator-seed",
+  "note": "Seed hypotheses from the near-dated NO-edge FINDs registered by the deepened panel mine (Edge-1 standing priority).",
   "newHypotheses": [
     {
       "created": "2026-08-25",
-      "description": "Outcome-panel NO edge: when any listed contract offers a sell-YES edge below 1pt and the cheapest YES ask is in the 35-65c band, buy NO / sell YES across all assets for 7 days. The panel shows the premium is systematically too high and decays over a 7d window.",
+      "description": "Outcome-panel NO edge, near-dated: mid-priced band (YES ask 35-65c) with under 30 days to expiry, buy NO and hold 7 days; panel shows 71% wins (n=77) vs pool base, BH q=0.08 with holdout confirmation.",
+      "prediction": "Buying NO / selling YES on these near-dated mid-priced contracts is profitable over 7 days.",
       "conditions": {
-        "sell_yes_edge_pts": "< 1",
-        "yesAsk": "between 0.35 and 0.65"
+        "yesAsk": "between 0.35 and 0.65",
+        "days_to_expiry": "< 30"
       },
-      "prediction": "Buying NO / selling YES on these contracts is profitable over 7 days.",
       "timeframeDays": 7,
-      "confidence": 0.65,
+      "confidence": 0.7,
       "direction": "neutral",
-      "originFindingId": "FIND-0065",
-      "themeId": "THEME-0007",
-      "source": "llm"
+      "originFindingId": "FIND-0069",
+      "themeId": "outcome_panel",
+      "source": "nightly_llm"
     },
     {
       "created": "2026-08-25",
-      "description": "Outcome-panel NO edge: when the cheapest YES ask is in the 35-65c band across all assets, buy NO / sell YES for 7 days. This is the broader panel condition behind FIND-0066 and has a positive holdout.",
-      "conditions": {
-        "yesAsk": "between 0.35 and 0.65"
-      },
+      "description": "Outcome-panel NO edge, sharpest cut: sub-point sell-YES model edge, mid-priced band, under 30 days to expiry; panel shows 78% wins (n=51), the strongest localized cell of the YES-overpricing edge.",
       "prediction": "Buying NO / selling YES on these contracts is profitable over 7 days.",
+      "conditions": {
+        "sell_yes_edge_pts": "< 1",
+        "yesAsk": "between 0.35 and 0.65",
+        "days_to_expiry": "< 30"
+      },
       "timeframeDays": 7,
-      "confidence": 0.62,
+      "confidence": 0.72,
       "direction": "neutral",
-      "originFindingId": "FIND-0066",
-      "themeId": "THEME-0007",
-      "source": "llm"
+      "originFindingId": "FIND-0070",
+      "themeId": "outcome_panel",
+      "source": "nightly_llm"
     }
   ],
   "hypothesisReviews": [],
