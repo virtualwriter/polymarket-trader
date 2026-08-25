@@ -3425,3 +3425,37 @@ Reviewed both open positions for discretionary closes. OIL P/C ratio round-tripp
 
 ---
 
+### 2026-08-25 05:28 UTC
+
+**Portfolio:** $104.16 total | Cash $104.16 | 0 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 21 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 140 is 4.5 std devs from mean (79.89 ± 13.36)
+- [anomaly] hype_pm_ev = 96.02 is 4.3 std devs from mean (59.16 ± 8.54)
+- [anomaly] hype_pm_iv = 111.9 is 3.3 std devs from mean (64.72 ± 14.40)
+- [anomaly] btc_med_min = 68362 is 3.2 std devs from mean (52673.98 ± 4929.97)
+- [anomaly] hype_hl_oi = 1998142053 is 2.9 std devs from mean (1274135641.57 ± 253980239.65)
+
+**Blocked signal learning:**
+- Open blocked shadows: 19
+- Resolved blocked shadows: 934 (477 wins / 457 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=376 (117W/206L/53flat, 36.2% win-rate, sum $-0.3076, avg -0.08%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-22.30%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-2.22%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-17.99%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-2.30%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 2/12; next scheduled 2026-08-25T07:28:31.553Z). Mechanical cycle ran normally._
+
+---
+

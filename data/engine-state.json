@@ -1,56 +1,21 @@
 {
-  "generatedAt": "2026-08-25T04:28:27.117Z",
+  "generatedAt": "2026-08-25T05:28:31.417Z",
   "dataFreshness": {
-    "valuationRows": 2541,
-    "latestValuationAt": "2026-08-25T04",
-    "macroRows": 2539,
+    "valuationRows": 2542,
+    "latestValuationAt": "2026-08-25T05",
+    "macroRows": 2540,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-25T04"
+    "latestInstrumentSnapshotAt": "2026-08-25T05"
   },
   "portfolio": {
-    "cash": 102.1591,
-    "openPositions": 2,
-    "realizedPnl": 7.3987,
-    "totalTrades": 821,
-    "winRatePct": 63.6,
-    "unrealizedPnl": 0.0058
+    "cash": 104.1649,
+    "openPositions": 0,
+    "realizedPnl": 7.4045,
+    "totalTrades": 823,
+    "winRatePct": 63.5,
+    "unrealizedPnl": 0
   },
-  "openPositions": [
-    {
-      "positionId": "T-1787581720856-xcge",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "short",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.33,
-      "currentPrice": 85.28,
-      "underlyingPrice": 85.28,
-      "targetPct": 3,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_cl_pc_ratio"
-      ]
-    },
-    {
-      "positionId": "T-1787581720857-vb7g",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 0.91,
-      "currentPrice": 4633,
-      "underlyingPrice": 4633,
-      "targetPct": 5,
-      "stopPct": 1.5,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
-      ]
-    }
-  ],
+  "openPositions": [],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -73,10 +38,10 @@
     {
       "type": "FUNDING_EXTREME_LONG",
       "enabled": true,
-      "weight": 0.4731,
-      "trades": 40,
-      "wins": 19,
-      "avgPnlPct": -0.4769,
+      "weight": 0.4753,
+      "trades": 41,
+      "wins": 20,
+      "avgPnlPct": -0.4432,
       "disabledAssets": [
         "AMZN",
         "HYPE"
@@ -161,12 +126,13 @@
     {
       "type": "PC_RATIO_EXTREME_LOW",
       "enabled": true,
-      "weight": 0.5303,
-      "trades": 38,
+      "weight": 0.5238,
+      "trades": 39,
       "wins": 19,
-      "avgPnlPct": 0.119,
+      "avgPnlPct": 0.1075,
       "disabledAssets": [
         "AMZN",
+        "OIL",
         "GOLD"
       ]
     },
@@ -212,7 +178,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 18,
+    "openCount": 19,
     "resolvedCount": 934,
     "wouldHaveWon": 477,
     "wouldHaveLost": 457,
@@ -425,6 +391,13 @@
           "flags": [
             "wide_pm_spread"
           ]
+        },
+        "sourceComparison": {
+          "sourceClosedAt": "2026-08-25T04:29:57.367Z",
+          "sourcePnl": 0.0091,
+          "sourcePnlPct": 0.91,
+          "proxyOutperformed": false,
+          "correlation": "opposite_direction"
         }
       }
     ],
