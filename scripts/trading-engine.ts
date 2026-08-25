@@ -6902,6 +6902,31 @@ function verdictTimeRejection(
   return null;
 }
 
+/**
+ * Stamps a new hypothesis's initial validation test with the contract it
+ * enters, or removes the test when no contract is nameable right now.
+ *
+ * An unstamped test on a contract thesis can only grade UNSCORABLE — the
+ * instrument it entered was never recorded — so it would burn a pending slot
+ * for a full horizon and return no evidence. When nothing is eligible at
+ * ingest, the retest opener stamps a test as soon as a contract appears.
+ * Spot theses pass through untouched.
+ */
+function stampInitialContractTest(
+  hypothesis: Hypothesis,
+  relativeValueRows: RelativeValueObservation[],
+): void {
+  if (!isPolymarketExpression(hypothesis)) return;
+  const stamp = deriveContractEntry(hypothesis, relativeValueRows);
+  if (stamp) {
+    for (const test of hypothesis.tests) {
+      if (test.outcome === "pending") test.contractEntry = stamp;
+    }
+  } else {
+    hypothesis.tests = hypothesis.tests.filter((test) => test.outcome !== "pending");
+  }
+}
+
 function setupIdForShadow(shadow: BlockedSignalShadow): { setupId: string; setupLabel: string } {
   if (shadow.blockedReason === "one_touch_high_edge_shadow") {
     // Split the gated cohort into its own family. Pooled with the ungated
@@ -7901,6 +7926,7 @@ function ingestNightlyLlmAdvice(
       bumpReject("duplicate_description");
       continue;
     }
+    stampInitialContractTest(hypothesis, relativeValueRows);
     hypotheses.push(hypothesis);
     added++;
     if (isRefinement && refinementParent) {
@@ -8141,6 +8167,7 @@ function ingestShadowMinedHypotheses(
       bumpReject(slowReason.startsWith("horizon") ? "horizon_too_long" : "verdict_too_slow");
       continue;
     }
+    stampInitialContractTest(hypothesis, relativeValueRows);
     hypotheses.push(hypothesis);
     added++;
     notes.push(`Shadow-mined hypothesis ${id} (${hypothesis.setupId}): ${description.slice(0, 80)}`);
