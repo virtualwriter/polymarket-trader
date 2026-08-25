@@ -23954,6 +23954,21 @@
         "triggered": true,
         "outcome": "pending",
         "actualMove": "Setup find_0022 shadow test 18/20 opened via H-579 after current row satisfied variant conditions."
+      },
+      {
+        "date": "2026-08-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup find_0022 shadow test 6/20 opened via H-579 after current row satisfied variant conditions.",
+        "contractEntry": {
+          "marketId": "3096407",
+          "eventSlug": "what-price-will-wti-hit-in-august-2026",
+          "asset": "OIL",
+          "direction": "above",
+          "strike": 150,
+          "entryPrice": 0.9975,
+          "side": "no"
+        }
       }
     ],
     "winRate": 0,
@@ -24160,6 +24175,21 @@
         "triggered": true,
         "outcome": "pending",
         "actualMove": "Setup find_0030 shadow test 1/20 opened via H-583 after current row satisfied variant conditions."
+      },
+      {
+        "date": "2026-08-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup find_0030 shadow test 6/20 opened via H-583 after current row satisfied variant conditions.",
+        "contractEntry": {
+          "marketId": "1294367",
+          "eventSlug": "what-will-gold-gc-hit-by-end-of-december",
+          "asset": "GOLD",
+          "direction": "above",
+          "strike": 7000,
+          "entryPrice": 0.925,
+          "side": "no"
+        }
       }
     ],
     "winRate": 0,
@@ -28329,5 +28359,64 @@
     "source": "llm",
     "setupId": "gold_pm_premium_futures_spread_mean_reversion",
     "setupLabel": "Gold PM premium / futures spread mean reversion"
+  },
+  {
+    "id": "H-666",
+    "created": "2026-08-25",
+    "description": "Outcome-panel NO edge: when any listed contract offers a sell-YES edge below 1pt and the cheapest YES ask is in the 35-65c band, buy NO / sell YES across all assets for 7 days. The panel shows the premium is systematically too high and decays over a 7d window.",
+    "conditions": {
+      "sell_yes_edge_pts": "< 1",
+      "yesAsk": "between 0.35 and 0.65"
+    },
+    "prediction": "Buying NO / selling YES on these contracts is profitable over 7 days.",
+    "timeframeDays": 7,
+    "confidence": 0.65,
+    "direction": "neutral",
+    "originFindingId": "FIND-0065",
+    "themeId": "THEME-0007",
+    "tests": [
+      {
+        "date": "2026-08-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0065",
+    "setupLabel": "FIND-linked FIND-0065"
+  },
+  {
+    "id": "H-667",
+    "created": "2026-08-25",
+    "description": "Outcome-panel NO edge: when the cheapest YES ask is in the 35-65c band across all assets, buy NO / sell YES for 7 days. This is the broader panel condition behind FIND-0066 and has a positive holdout.",
+    "conditions": {
+      "yesAsk": "between 0.35 and 0.65"
+    },
+    "prediction": "Buying NO / selling YES on these contracts is profitable over 7 days.",
+    "timeframeDays": 7,
+    "confidence": 0.62,
+    "direction": "neutral",
+    "originFindingId": "FIND-0066",
+    "themeId": "THEME-0007",
+    "tests": [
+      {
+        "date": "2026-08-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0066",
+    "setupLabel": "FIND-linked FIND-0066"
   }
 ]
