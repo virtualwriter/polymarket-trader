@@ -4,6 +4,7 @@ import {
   MAX_SAMPLE_ROWS,
   buildQueryCatalogPromptSection,
   dedupeNonOverlappingPanelRows,
+  dedupeNonOverlappingSpotPanelRows,
   executeResearchQueries,
   executeResearchQuery,
   formatQueryResults,
@@ -48,6 +49,7 @@ const dataset: ResearchDataset = {
   ],
   valuationRows: Array.from({ length: 300 }, (_, i) => ({ date: `row-${i}`, btc_spot: String(100 + i), blank_col: "" })),
   panelRows: [],
+  spotPanelRows: [],
 };
 
 describe("parseDataRequests", () => {
@@ -58,11 +60,13 @@ describe("parseDataRequests", () => {
       { kind: "hypothesis_tests", setupId: "family_a", includeUnscorable: true },
       { kind: "market_stats", column: "btc_spot", windowRows: 90 },
       { kind: "panel", side: "no", horizonDays: 7, asset: "BTC", where: [{ column: "sell_yes_edge_pts", gte: 5 }] },
+      { kind: "spot_panel", side: "long", horizonDays: 3, asset: "BTC", where: [{ column: "ret_24h_pct", lte: -2 }] },
       { kind: "drop_table_users" },
       { kind: "market_stats" },
       { kind: "panel", side: "maybe", horizonDays: 5 },
+      { kind: "spot_panel", side: "up", horizonDays: 2 },
     ]);
-    expect(queries.map((q) => q.kind)).toEqual(["trades", "shadows", "hypothesis_tests", "market_stats", "panel"]);
+    expect(queries.map((q) => q.kind)).toEqual(["trades", "shadows", "hypothesis_tests", "market_stats", "panel", "spot_panel"]);
   });
 
   it("caps the number of requests", () => {
@@ -238,6 +242,59 @@ describe("panel query", () => {
   });
 });
 
+describe("spot_panel query", () => {
+  const spotPanelRows = [
+    // BTC daily entries; move_pct_3d is the LONG view.
+    { entry_date: "2026-07-01", asset: "BTC", ret_24h_pct: "-3", outcome_quality_3d: "clean", move_pct_3d: "2.0" },
+    { entry_date: "2026-07-02", asset: "BTC", ret_24h_pct: "-2.5", outcome_quality_3d: "clean", move_pct_3d: "1.5" },
+    { entry_date: "2026-07-04", asset: "BTC", ret_24h_pct: "1", outcome_quality_3d: "clean", move_pct_3d: "-0.5" },
+    { entry_date: "2026-07-07", asset: "BTC", ret_24h_pct: "-4", outcome_quality_3d: "clean", move_pct_3d: "0.2" },
+    // Stale window (closed market) must be excluded from everything.
+    { entry_date: "2026-07-10", asset: "GOLD", ret_24h_pct: "-3", outcome_quality_3d: "stale", move_pct_3d: "0" },
+    { entry_date: "2026-07-10", asset: "GOLD", ret_24h_pct: "0.5", outcome_quality_3d: "clean", move_pct_3d: "1.2" },
+  ];
+  const spotDataset: ResearchDataset = { ...dataset, spotPanelRows };
+
+  it("reports missing spot panel data gracefully", () => {
+    const result = executeResearchQuery({ kind: "spot_panel", side: "long", horizonDays: 3 }, dataset);
+    expect(result.error).toContain("missing or empty");
+  });
+
+  it("computes exam win rates against the horizon threshold and base pool", () => {
+    const result = executeResearchQuery({
+      kind: "spot_panel",
+      side: "long",
+      horizonDays: 3,
+      asset: "BTC",
+      where: [{ column: "ret_24h_pct", lte: -2 }],
+    }, spotDataset);
+
+    // Non-overlapping BTC entries matching ret<=-2: 07-01 and 07-07.
+    expect(result.n).toBe(2);
+    // Exam at 3d is >= 1.0%: only the 07-01 entry (+2.0%) clears it.
+    expect(result.summary.examThresholdPct).toBe(1.0);
+    expect(result.summary.examWinRate).toBe(0.5);
+    // Base pool: BTC deduped entries 07-01 (+2.0) and 07-04 (-0.5) plus 07-07 (+0.2).
+    expect(result.summary.baseN).toBe(3);
+    expect(result.summary.baseExamWinRate).toBeCloseTo(1 / 3, 4);
+  });
+
+  it("negates the move for the short side", () => {
+    const result = executeResearchQuery({
+      kind: "spot_panel", side: "short", horizonDays: 3, asset: "BTC",
+    }, spotDataset);
+    expect(result.summary.meanPnlPct).toBeLessThan(0);
+  });
+
+  it("dedupes per asset with spacing >= horizonDays", () => {
+    const deduped = dedupeNonOverlappingSpotPanelRows(
+      spotPanelRows.filter((r) => r.asset === "BTC"),
+      3,
+    );
+    expect(deduped.map((r) => r.entry_date)).toEqual(["2026-07-01", "2026-07-04", "2026-07-07"]);
+  });
+});
+
 describe("batch execution and formatting", () => {
   it("never throws on a bad query and caps the batch", () => {
     const queries = Array.from({ length: 20 }, () => ({ kind: "market_stats", column: "nope" }) as const);
@@ -255,7 +312,7 @@ describe("batch execution and formatting", () => {
 
   it("documents every executable kind in the prompt catalog", () => {
     const catalog = buildQueryCatalogPromptSection();
-    for (const kind of ["trades", "shadows", "hypothesis_tests", "market_stats", "panel"]) {
+    for (const kind of ["trades", "shadows", "hypothesis_tests", "market_stats", "panel", "spot_panel"]) {
       expect(catalog).toContain(`"${kind}"`);
     }
   });

@@ -63,6 +63,13 @@ export type ResearchQuery =
     horizonDays: 3 | 7;
     asset?: string;
     where?: PanelWhereClause[];
+  }
+  | {
+    kind: "spot_panel";
+    side: "long" | "short";
+    horizonDays: 1 | 3 | 7;
+    asset?: string;
+    where?: PanelWhereClause[];
   };
 
 export interface PanelWhereClause {
@@ -98,6 +105,7 @@ export interface ResearchDataset {
   hypotheses: HypothesisRecord[];
   valuationRows: Record<string, string>[];
   panelRows: Record<string, string>[];
+  spotPanelRows: Record<string, string>[];
 }
 
 export interface ShadowRecord {
@@ -162,6 +170,7 @@ export function loadResearchDataset(dataDir: string, maxValuationRows = 2400): R
     hypotheses: readJsonArray<HypothesisRecord>(join(dataDir, "hypotheses.json")),
     valuationRows: readCsvRows(join(dataDir, "daily-valuations.csv"), maxValuationRows),
     panelRows: readCsvRows(join(dataDir, "research-panel.csv")),
+    spotPanelRows: readCsvRows(join(dataDir, "research-spot-panel.csv")),
   };
 }
 
@@ -172,7 +181,15 @@ function str(v: unknown): string | undefined {
 }
 
 const MINEABLE_OUTCOME_QUALITIES = new Set(["clean", "terminal_yes", "terminal_no"]);
+const SPOT_MINEABLE_OUTCOME_QUALITIES = new Set(["clean"]);
 const MAX_PANEL_WHERE_CLAUSES = 4;
+
+/**
+ * The exam the spot scorer grades: a win is a move of at least this many
+ * percent in the thesis direction over the horizon. Keep in lockstep with
+ * SPOT_EXAM_THRESHOLD_PCT in scripts/lib/spot_panel_common.py.
+ */
+export const SPOT_EXAM_THRESHOLD_PCT: Record<number, number> = { 1: 0.5, 3: 1.0, 7: 2.0 };
 
 function parsePanelWhere(raw: unknown): PanelWhereClause[] {
   if (!Array.isArray(raw)) return [];
@@ -240,6 +257,19 @@ export function parseDataRequests(raw: unknown): ResearchQuery[] {
     } else if (kind === "panel") {
       const side = q.side === "yes" || q.side === "no" ? q.side : undefined;
       const horizonDays = q.horizonDays === 3 || q.horizonDays === 7 ? q.horizonDays : undefined;
+      if (!side || !horizonDays) continue;
+      queries.push({
+        kind,
+        side,
+        horizonDays,
+        asset: str(q.asset),
+        where: parsePanelWhere(q.where),
+      });
+    } else if (kind === "spot_panel") {
+      const side = q.side === "long" || q.side === "short" ? q.side : undefined;
+      const horizonDays = q.horizonDays === 1 || q.horizonDays === 3 || q.horizonDays === 7
+        ? q.horizonDays
+        : undefined;
       if (!side || !horizonDays) continue;
       queries.push({
         kind,
@@ -417,6 +447,69 @@ function panelSampleRows(
   }));
 }
 
+// ─── Spot panel (asset-day forward returns) ─────────────────────────────────
+
+function spotPanelPnlPct(
+  row: Record<string, string>,
+  side: "long" | "short",
+  horizonDays: number,
+): number | null {
+  const raw = String(row[`move_pct_${horizonDays}d`] ?? "").trim();
+  if (!raw) return null;
+  const value = Number(raw);
+  if (!Number.isFinite(value)) return null;
+  return side === "long" ? value : -value;
+}
+
+/** Greedy per-asset spacing so forward windows do not overlap. */
+export function dedupeNonOverlappingSpotPanelRows(
+  rows: Record<string, string>[],
+  horizonDays: number,
+): Record<string, string>[] {
+  const byAsset = new Map<string, Record<string, string>[]>();
+  for (const row of rows) {
+    const asset = String(row.asset ?? "");
+    const list = byAsset.get(asset) ?? [];
+    list.push(row);
+    byAsset.set(asset, list);
+  }
+  const kept: Record<string, string>[] = [];
+  for (const assetRows of byAsset.values()) {
+    assetRows.sort((a, b) => String(a.entry_date).localeCompare(String(b.entry_date)));
+    let lastDayMs: number | null = null;
+    for (const row of assetRows) {
+      const dayMs = Date.parse(`${String(row.entry_date ?? "").slice(0, 10)}T00:00:00Z`);
+      if (!Number.isFinite(dayMs)) continue;
+      if (lastDayMs === null || (dayMs - lastDayMs) / 86_400_000 >= horizonDays) {
+        kept.push(row);
+        lastDayMs = dayMs;
+      }
+    }
+  }
+  kept.sort((a, b) => {
+    const byDate = String(a.entry_date).localeCompare(String(b.entry_date));
+    return byDate !== 0 ? byDate : String(a.asset).localeCompare(String(b.asset));
+  });
+  return kept;
+}
+
+function filterSpotPanelRows(
+  rows: Record<string, string>[],
+  query: Extract<ResearchQuery, { kind: "spot_panel" }>,
+): Record<string, string>[] {
+  return rows.filter((row) => {
+    const quality = String(row[`outcome_quality_${query.horizonDays}d`] ?? "").trim().toLowerCase();
+    return SPOT_MINEABLE_OUTCOME_QUALITIES.has(quality)
+      && matches(row.asset, query.asset)
+      && (query.where ?? []).every((clause) => matchesPanelWhere(row, clause));
+  });
+}
+
+function examWinRate(pnls: number[], thresholdPct: number): number {
+  if (pnls.length === 0) return 0;
+  return Number((pnls.filter((p) => p >= thresholdPct).length / pnls.length).toFixed(4));
+}
+
 export function executeResearchQuery(query: ResearchQuery, data: ResearchDataset): QueryResult {
   if (query.kind === "trades") {
     const rows = data.trades.filter((t) =>
@@ -571,6 +664,58 @@ export function executeResearchQuery(query: ResearchQuery, data: ResearchDataset
     };
   }
 
+  if (query.kind === "spot_panel") {
+    if (data.spotPanelRows.length === 0) {
+      return {
+        query,
+        n: 0,
+        summary: {},
+        error: "research-spot-panel.csv is missing or empty",
+      };
+    }
+    const threshold = SPOT_EXAM_THRESHOLD_PCT[query.horizonDays] ?? 2;
+    const baseRows = dedupeNonOverlappingSpotPanelRows(
+      filterSpotPanelRows(data.spotPanelRows, { ...query, where: [] }),
+      query.horizonDays,
+    );
+    const basePnls = baseRows
+      .map((row) => spotPanelPnlPct(row, query.side, query.horizonDays))
+      .filter((v): v is number => v !== null);
+
+    const matchedRows = dedupeNonOverlappingSpotPanelRows(
+      filterSpotPanelRows(data.spotPanelRows, query),
+      query.horizonDays,
+    );
+    const pnls = matchedRows
+      .map((row) => spotPanelPnlPct(row, query.side, query.horizonDays))
+      .filter((v): v is number => v !== null);
+
+    return {
+      query,
+      n: pnls.length,
+      summary: {
+        ...summarizePanelPnls(pnls),
+        // The exam the engine's spot scorer actually grades: a win is a move
+        // of >= examThresholdPct in the thesis direction over the horizon.
+        examThresholdPct: threshold,
+        examWinRate: examWinRate(pnls, threshold),
+        baseExamWinRate: examWinRate(basePnls, threshold),
+        baseN: basePnls.length,
+        side: query.side,
+        horizonDays: query.horizonDays,
+        asset: query.asset ?? "ALL",
+      },
+      samples: matchedRows.slice(-MAX_SAMPLE_ROWS).map((row) => ({
+        entry_date: row.entry_date,
+        asset: row.asset,
+        pnlPct: spotPanelPnlPct(row, query.side, query.horizonDays),
+        fund_ann: row.fund_ann ?? null,
+        ret_24h_pct: row.ret_24h_pct ?? null,
+        pct_vs_30d_sma: row.pct_vs_30d_sma ?? null,
+      })),
+    };
+  }
+
   const windowRows = Math.max(1, Math.min(query.windowRows ?? 720, data.valuationRows.length));
   const slice = data.valuationRows.slice(-windowRows);
   // Number("") is 0, so empty cells must be rejected before conversion or a
@@ -630,8 +775,10 @@ Available query kinds:
       Distribution of a market-data column over recent history (mean, std, percentiles).
   - {"kind":"panel", "side":"yes"|"no", "horizonDays":3|7, "asset"?, "where"?:[{"column":"<panel column>", "gte"?, "lte"?, "eq"?}]}
       Historical forward returns from the outcome panel (all listed contracts, not just shadow trades). Use this to pre-check a hypothesis idea — e.g. "when sell_yes_edge_pts >= 5 on BTC NO 7d, what was win rate vs the unfiltered base rate?" Rows must have mineable outcome_quality; entries are de-duplicated per contract so forward windows do not overlap. At most 4 where-clauses.
+  - {"kind":"spot_panel", "side":"long"|"short", "horizonDays":1|3|7, "asset"?:"BTC|ETH|SOL|HYPE|GOLD|SILVER|OIL|AMZN|SPY", "where"?:[{"column":"<spot panel column>", "gte"?, "lte"?, "eq"?}]}
+      Historical forward SPOT returns per asset-day (the non-Polymarket panel). Use this to pre-check a spot/perp thesis — e.g. "long BTC 3d when ret_24h_pct <= -2, how often did it beat the exam threshold vs base?" Columns: price, fund_ann, fund_z30, ret_24h_pct, pct_from_7d_high, pct_vs_30d_sma, pc_ratio, pc_pctile_30d, iv_term_spread_pts, realized_vol_30d_pct, day_of_week, is_weekend, macro_composite. Stale windows (closed markets) are excluded; entries de-duplicated per asset so forward windows do not overlap.
 
-Every result includes n, win rate, Wilson 95% lower bound, total and mean PnL, a one-sided t-test p-value that mean PnL is positive, optional group breakdowns, and up to ${MAX_SAMPLE_ROWS} example rows. Panel results also include meanPnlPct, stdPnlPct, and baseRate (win rate of all mineable rows for the same asset/side/horizon without where-filters).
+Every result includes n, win rate, Wilson 95% lower bound, total and mean PnL, a one-sided t-test p-value that mean PnL is positive, optional group breakdowns, and up to ${MAX_SAMPLE_ROWS} example rows. Panel results also include meanPnlPct, stdPnlPct, and baseRate (win rate of all mineable rows for the same asset/side/horizon without where-filters). Spot-panel results additionally include examThresholdPct (the move the engine's scorer requires for a win at that horizon: 0.5%/1d, 1%/3d, 2%/7d), examWinRate and baseExamWinRate — compare those two to judge real edge on the exam the test will actually sit.
 If you do not need extra evidence, skip this and answer directly.`;
 }
 

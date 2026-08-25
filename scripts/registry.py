@@ -369,6 +369,7 @@ def upsert_finding(
         "opportunityScore",
         "confidenceScore",
         "suggestedConditions",
+        "suggestedPrediction",
         "horizonDays",
         "catalogCovered",
     )

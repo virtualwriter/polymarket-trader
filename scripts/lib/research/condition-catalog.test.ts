@@ -247,6 +247,34 @@ describe("validateHypothesisConditions rejects the known-bad keys from the July 
   });
 });
 
+describe("spot-panel miner conditions validate against the catalog", () => {
+  // Representative condition sets exactly as mine_spot_panel_findings.py
+  // emits them (see SpotFeature.condition_for in spot_panel_common.py).
+  // If the catalog grammar or derived-key pattern ever changes shape, this
+  // fails before a nightly run can register unauthorable FINDs.
+  const SPOT_COLUMNS = [
+    ...VALUATION_COLUMNS,
+    "gold_gc_spot", "oil_hl_funding_ann", "btc_hl_funding_ann",
+    "btc_opt_iv_term_spread", "amzn_pc_ratio",
+  ];
+
+  it("accepts derived, funding, metadata and term-spread conditions", () => {
+    const conditionSets: Record<string, string>[] = [
+      { asset: "BTC", btc_spot_change_pct_24h: "between -2 and 0", day_of_week: "in [sat, sun]" },
+      { asset: "GOLD", gold_gc_spot_pct_from_7d_high: "< -5" },
+      { asset: "OIL", oil_hl_funding_ann: "between 0 and 20", day_of_week: "in [mon, tue, wed, thu, fri]" },
+      { asset: "BTC", btc_hl_funding_ann_zscore_30d: "< -1.5" },
+      { asset: "AMZN", amzn_pc_ratio_percentile_30d: ">= 80" },
+      { asset: "BTC", btc_opt_iv_term_spread: ">= 5" },
+      { asset: "GOLD", gold_gc_spot_pct_vs_30d_sma: "between -3 and 0" },
+    ];
+    for (const conditions of conditionSets) {
+      const issues = validateHypothesisConditions(conditions, SPOT_COLUMNS);
+      expect(issues, JSON.stringify(conditions)).toEqual([]);
+    }
+  });
+});
+
 describe("alias table stays inside the catalog", () => {
   it("every alias target is an evaluable catalog key", () => {
     for (const target of Object.values(CONDITION_KEY_ALIASES)) {

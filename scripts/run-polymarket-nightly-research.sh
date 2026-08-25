@@ -29,6 +29,8 @@ NIGHTLY_FILES=(
   data/hl-funding-history.csv
   data/panel-mine-report.json
   data/research-panel-meta.json
+  data/spot-panel-mine-report.json
+  data/research-spot-panel-meta.json
   data/lessons.json
   data/nightly-llm-advice.json
   data/nightly-research-report.json
@@ -148,6 +150,15 @@ if ! timeout "${OUTCOME_PANEL_TIMEOUT:-10m}" python3 scripts/build_outcome_panel
 fi
 if ! timeout "${PANEL_MINE_TIMEOUT:-5m}" python3 scripts/mine_panel_findings.py; then
   echo "WARNING: mine_panel_findings.py failed; continuing."
+fi
+
+# Build and mine the spot/perp outcome panel (asset-day forward spot returns)
+# — the non-Polymarket counterpart, also BEFORE the LLM step.
+if ! timeout "${SPOT_PANEL_TIMEOUT:-5m}" python3 scripts/build_spot_panel.py; then
+  echo "WARNING: build_spot_panel.py failed; continuing."
+fi
+if ! timeout "${SPOT_PANEL_MINE_TIMEOUT:-5m}" python3 scripts/mine_spot_panel_findings.py; then
+  echo "WARNING: mine_spot_panel_findings.py failed; continuing."
 fi
 
 # 45m, not 15m: this step contains up to three sequential reasoning-model calls
