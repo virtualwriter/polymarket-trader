@@ -54139,7 +54139,7 @@
           "sumPnl": 2.5147,
           "avgPnl": 0.00994,
           "pnlStd": 0.0435,
-          "pValue": 0.0,
+          "pValue": 0,
           "pnlPValue": 0.00017,
           "qValue": 0.017
         },
@@ -54148,7 +54148,7 @@
           "wins": 188,
           "winRate": 0.7431,
           "sumPnl": 2.5147,
-          "pValue": 0.0,
+          "pValue": 0,
           "pnlPValue": 0.00017,
           "hasHeatmap": false,
           "sampleIds": [
@@ -65939,7 +65939,7 @@
           "n": 20,
           "winRate": 0.55,
           "sumPnl": 0.0005,
-          "avgPnl": 3e-05,
+          "avgPnl": 0.00003,
           "pnlStd": 0.03604,
           "pValue": 0.4119,
           "pnlPValue": 0.49878,
@@ -68787,7 +68787,7 @@
         "bucket": "short_blocked_by_positive_trend",
         "evidence": {
           "n": 8,
-          "winRate": 1.0,
+          "winRate": 1,
           "sumPnl": 0.1325,
           "avgPnl": 0.01656,
           "pnlStd": 0.01046,
@@ -68798,7 +68798,7 @@
         "mineStats": {
           "n": 8,
           "wins": 8,
-          "winRate": 1.0,
+          "winRate": 1,
           "sumPnl": 0.1325,
           "pValue": 0.00391,
           "pnlPValue": 0.00144,
@@ -77364,7 +77364,7 @@
           "sumPnl": 19.5618,
           "avgPnl": 0.18809,
           "pValue": 0.002769,
-          "pnlPValue": 3.6e-05,
+          "pnlPValue": 0.000036,
           "qValue": 0.031752,
           "baseRate": 0.5059,
           "holdoutN": 33,
@@ -77379,7 +77379,7 @@
             "meanPnlPct": 19.3051,
             "stdPnlPct": 38.5579,
             "sumPnlPct": 1370.6656,
-            "tPValue": 3.6e-05,
+            "tPValue": 0.000036,
             "binomPValue": 0.002769,
             "baseRate": 0.5059
           },
@@ -77434,36 +77434,36 @@
         },
         "detectedAt": "2026-08-24T16:32:31Z",
         "lastSeenAt": "2026-08-24T16:36:36Z",
-        "opportunityScore": 1.0,
+        "opportunityScore": 1,
         "confidenceScore": 0.5741,
         "scoreHistory": [
           {
             "at": "2026-08-24T16:32:32Z",
-            "opportunityScore": 1.0,
+            "opportunityScore": 1,
             "confidenceScore": 0.5741,
             "scoringVersion": "research_score_v3"
           },
           {
             "at": "2026-08-24T16:35:42Z",
-            "opportunityScore": 1.0,
+            "opportunityScore": 1,
             "confidenceScore": 0.5741,
             "scoringVersion": "research_score_v3"
           },
           {
             "at": "2026-08-24T16:36:36Z",
-            "opportunityScore": 1.0,
+            "opportunityScore": 1,
             "confidenceScore": 0.5741,
             "scoringVersion": "research_score_v3"
           },
           {
             "at": "2026-08-25T07:11:00Z",
-            "opportunityScore": 1.0,
+            "opportunityScore": 1,
             "confidenceScore": 0.5741,
             "scoringVersion": "research_score_v3"
           },
           {
             "at": "2026-08-25T07:12:43Z",
-            "opportunityScore": 1.0,
+            "opportunityScore": 1,
             "confidenceScore": 0.5741,
             "scoringVersion": "research_score_v3"
           }
@@ -77514,9 +77514,18 @@
             },
             "reproducibleCommand": "python3 scripts/mine_panel_findings.py --panel /opt/polymarket-trader/data/research-panel.csv"
           }
+        ],
+        "hypothesisIds": [
+          "H-666"
+        ],
+        "lastLinkedHypothesisId": "H-666",
+        "lastLinkedHypothesisAt": "2026-08-25T16:40:00.659Z"
+      },
+      "links": {
+        "hypotheses": [
+          "H-666"
         ]
       },
-      "links": {},
       "created": "2026-08-24T16:32:31Z",
       "source": "panel_miner_v1"
     },
@@ -77687,9 +77696,18 @@
             },
             "reproducibleCommand": "python3 scripts/mine_panel_findings.py --panel /opt/polymarket-trader/data/research-panel.csv"
           }
+        ],
+        "hypothesisIds": [
+          "H-667"
+        ],
+        "lastLinkedHypothesisId": "H-667",
+        "lastLinkedHypothesisAt": "2026-08-25T16:40:00.747Z"
+      },
+      "links": {
+        "hypotheses": [
+          "H-667"
         ]
       },
-      "links": {},
       "created": "2026-08-24T16:32:31Z",
       "source": "panel_miner_v1"
     },
