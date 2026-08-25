@@ -529,33 +529,61 @@ export function evaluatePolymarketContractTest(
 }
 
 /**
+ * Every quote row a Polymarket thesis could enter right now.
+ *
+ * Thresholds have to be applied contract by contract. The condition evaluator
+ * reduces each metric across every scoped contract with a max, so "edge >= 8
+ * and spread <= 0.015" passes as long as *some* contract is wide and *some
+ * other* one is tight. Taking the max-edge row out of that set picked a 98.9c
+ * NO whose whole upside was 1.1%, and four theses with different conditions
+ * all landed on the same contract.
+ */
+function eligibleContractRows(
+  hypothesis: Hypothesis,
+  rows: RelativeValueObservation[],
+): RelativeValueObservation[] {
+  const asset = conditionAsset(hypothesis) ?? inferHypothesisAsset(hypothesis);
+  const wantDirection = touchDirectionConstraint(hypothesis);
+  return rows.filter((row) =>
+    (asset === null || row.asset === asset)
+    && row.pmYes !== null
+    && (wantDirection === null || row.direction === wantDirection)
+    && contractRowSatisfiesConditions(hypothesis, row));
+}
+
+/**
+ * How many distinct contracts satisfy this thesis's conditions right now.
+ *
+ * This is the honest input to concurrent-test capacity: a mid-priced-pool
+ * thesis may have a dozen nameable entries at once, while a narrow one-touch
+ * thesis may have one. Zero for non-contract theses.
+ */
+export function distinctEligibleContracts(
+  hypothesis: Hypothesis,
+  rows: RelativeValueObservation[],
+): number {
+  if (!isPolymarketExpression(hypothesis)) return 0;
+  return new Set(eligibleContractRows(hypothesis, rows).map((row) => row.marketId)).size;
+}
+
+/**
  * Picks the contract a Polymarket thesis is about from a set of quotes.
  *
  * Max sell-YES edge is the entry the conditions describe — they reduce over
  * scoped contracts with a max — and it is the row the live shadow opener
  * enters, so evidence and execution name the same contract. Without an edge
  * reading it falls back to the widest premium, which is the same trade
- * expressed by price.
+ * expressed by price. Markets in excludeMarketIds are skipped so concurrent
+ * tests on one variant land on distinct contracts.
  */
 export function deriveContractEntry(
   hypothesis: Hypothesis,
   rows: RelativeValueObservation[],
+  excludeMarketIds?: ReadonlySet<string>,
 ): ContractEntryStamp | null {
-  const asset = conditionAsset(hypothesis) ?? inferHypothesisAsset(hypothesis);
   const side = contractSide(hypothesis);
-  const wantDirection = touchDirectionConstraint(hypothesis);
-
-  const candidates = rows.filter((row) =>
-    (asset === null || row.asset === asset)
-    && row.pmYes !== null
-    && (wantDirection === null || row.direction === wantDirection)
-    // Thresholds have to be applied contract by contract. The condition
-    // evaluator reduces each metric across every scoped contract with a max,
-    // so "edge >= 8 and spread <= 0.015" passes as long as *some* contract is
-    // wide and *some other* one is tight. Taking the max-edge row out of that
-    // set picked a 98.9c NO whose whole upside was 1.1%, and four theses with
-    // different conditions all landed on the same contract.
-    && contractRowSatisfiesConditions(hypothesis, row));
+  const candidates = eligibleContractRows(hypothesis, rows)
+    .filter((row) => !excludeMarketIds?.has(row.marketId));
   if (candidates.length === 0) return null;
 
   const entry = candidates.reduce((best, row) => {
@@ -1844,6 +1872,22 @@ export const MAX_TEST_HORIZON_DAYS = 7;
  */
 export const MAX_WEEKS_TO_VERDICT = 13;
 
+/**
+ * Max concurrent pending tests one Polymarket-contract variant may hold.
+ *
+ * A contract thesis names a specific instrument per test, so simultaneous
+ * tests on *distinct* contracts are distinct observations — different strikes,
+ * expiries, and events — unlike a spot thesis, where two overlapping tests
+ * would grade the same price path twice. Without this, a 7-day contract
+ * horizon caps a single-variant family at 1 test/week and 20 required tests
+ * can never fit inside MAX_WEEKS_TO_VERDICT; the outcome-panel NO-edge
+ * hypotheses were rejected at ingest for exactly that arithmetic. Four matches
+ * the shadow-mined per-family allowance; the outcomes remain correlated
+ * through market-wide beta, which is the same compromise sibling variants
+ * already accept.
+ */
+export const PM_CONTRACT_MAX_PENDING_PER_VARIANT = 4;
+
 export interface VerdictTimeEstimate {
   /** Independent tests the family can accumulate per week. */
   testsPerWeek: number;
@@ -1858,20 +1902,24 @@ export interface VerdictTimeEstimate {
  *
  * Accumulation is limited by two independent things and takes the worse of
  * them: conditions have to actually hold (triggersPerWeek), and each variant
- * yields at most one test per horizon (siblingVariants * 7 / timeframeDays).
- * Counting sibling variants is what lets a slower thesis still qualify by being
- * expressed several ways, which is the honest route to more samples — distinct
- * conditions produce distinct observations, where concurrent tests on one
- * variant would not.
+ * yields at most concurrentPerVariant tests per horizon. Counting sibling
+ * variants is what lets a slower thesis still qualify by being expressed
+ * several ways, which is the honest route to more samples — distinct
+ * conditions produce distinct observations. Contract theses get the same
+ * credit through concurrentPerVariant, because their concurrent tests enter
+ * distinct instruments; spot theses must leave it at 1, since overlapping
+ * tests there would grade the same price path twice.
  */
 export function estimateWeeksToVerdict(
   timeframeDays: number,
   triggersPerWeek: number,
   siblingVariants = 1,
+  concurrentPerVariant = 1,
 ): VerdictTimeEstimate {
   const horizon = Math.max(timeframeDays, 0.5);
   const variants = Math.max(siblingVariants, 1);
-  const horizonCapacity = (variants * 7) / horizon;
+  const concurrent = Math.max(concurrentPerVariant, 1);
+  const horizonCapacity = (variants * concurrent * 7) / horizon;
   const testsPerWeek = Math.min(horizonCapacity, Math.max(triggersPerWeek, 0));
   return {
     testsPerWeek,

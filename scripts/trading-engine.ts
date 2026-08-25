@@ -107,6 +107,7 @@ import {
   binomialPValue,
   completedHypothesisTests,
   deriveContractEntry,
+  distinctEligibleContracts,
   empiricalBaseRate,
   evaluateHypothesisTest,
   evidenceBackedDirection,
@@ -129,6 +130,7 @@ import {
   MAX_TEST_HORIZON_DAYS,
   MAX_WEEKS_TO_VERDICT,
   MIN_TRIGGERS_PER_WEEK,
+  PM_CONTRACT_MAX_PENDING_PER_VARIANT,
   estimateWeeksToVerdict,
   isTooSlowToVerdict,
   type TriggerFrequencyEstimate,
@@ -6663,15 +6665,30 @@ function evaluateHypotheses(
         continue;
       }
 
+      // Contract variants may hold several concurrent tests, but each must
+      // enter a contract no pending family test already holds — concurrent
+      // observations only count when they are of distinct instruments. Spot
+      // variants stay serial: overlapping tests would grade one price path
+      // twice.
+      const pendingMarketIds = new Set(
+        family.pending
+          .map((test) => test.contractEntry?.marketId)
+          .filter((id): id is string => Boolean(id)),
+      );
       const candidate = scorableVariants
-        .filter((hypothesis) => pendingHypothesisTests(hypothesis).length === 0)
+        .filter((hypothesis) => {
+          const pendingCount = pendingHypothesisTests(hypothesis).length;
+          return isPolymarketExpression(hypothesis)
+            ? pendingCount < PM_CONTRACT_MAX_PENDING_PER_VARIANT
+            : pendingCount === 0;
+        })
         .sort((a, b) => completedHypothesisTests(a).length - completedHypothesisTests(b).length || b.confidence - a.confidence)
         .find((hypothesis) => hypothesisConditionsSatisfied(hypothesis, valuationRows, relativeValueRows)
           // A contract thesis with no nameable contract right now would resolve
           // unscorable whatever happens, because the entry it would be marked
           // against does not exist. The family's conditions can be satisfied in
           // the reduced sense while no single contract meets them all.
-          && (!isPolymarketExpression(hypothesis) || deriveContractEntry(hypothesis, relativeValueRows) !== null));
+          && (!isPolymarketExpression(hypothesis) || deriveContractEntry(hypothesis, relativeValueRows, pendingMarketIds) !== null));
 
       if (!candidate) {
         skippedCond++;
@@ -6682,7 +6699,7 @@ function evaluateHypotheses(
       // Contract theses are marked on the instrument they entered, and only
       // today's quotes are in hand, so the entry is recorded now or lost.
       const contractEntry = isPolymarketExpression(candidate)
-        ? deriveContractEntry(candidate, relativeValueRows) ?? undefined
+        ? deriveContractEntry(candidate, relativeValueRows, pendingMarketIds) ?? undefined
         : undefined;
       candidate.tests.push({
         date: latestDate,
@@ -6844,13 +6861,18 @@ function oneTouchShadowPassesFindGate(shadow: BlockedSignalShadow): boolean {
  * gate: a rare trigger and a long horizon are separate reasons an idea never
  * resolves, and the second was unguarded. Sibling variants count toward the
  * family's rate, so expressing a slower thesis several ways is a legitimate way
- * to qualify — unlike stacking concurrent tests on one variant, which would
- * only produce overlapping observations of the same event.
+ * to qualify. Contract theses also earn concurrency credit: each of their
+ * tests enters a distinct instrument, so simultaneous tests are distinct
+ * observations — measured against today's quotes rather than assumed, so a
+ * narrow thesis with one nameable contract gets no unearned speedup. Spot
+ * theses stay serial, because overlapping tests there would grade the same
+ * price path twice.
  */
 function verdictTimeRejection(
   candidate: Hypothesis,
   triggerEstimate: TriggerFrequencyEstimate,
   existing: Hypothesis[],
+  relativeValueRows: RelativeValueObservation[],
 ): string | null {
   if (candidate.timeframeDays > MAX_TEST_HORIZON_DAYS) {
     return `horizon too long (${candidate.timeframeDays}d test window, cap ${MAX_TEST_HORIZON_DAYS}d — re-author with a shorter horizon and a correspondingly smaller move threshold)`;
@@ -6867,9 +6889,15 @@ function verdictTimeRejection(
       && h.status !== "killed"
       && h.status !== "archived").length + 1
     : 1;
-  const estimate = estimateWeeksToVerdict(candidate.timeframeDays, triggersPerWeek, siblings);
+  const concurrent = isPolymarketExpression(candidate)
+    ? Math.min(
+      Math.max(distinctEligibleContracts(candidate, relativeValueRows), 1),
+      PM_CONTRACT_MAX_PENDING_PER_VARIANT,
+    )
+    : 1;
+  const estimate = estimateWeeksToVerdict(candidate.timeframeDays, triggersPerWeek, siblings, concurrent);
   if (isTooSlowToVerdict(estimate)) {
-    return `too slow to a verdict (~${estimate.weeksToVerdict.toFixed(0)} weeks at ${estimate.testsPerWeek.toFixed(1)} tests/week across ${siblings} variant(s), bound by ${estimate.boundBy}, cap ${MAX_WEEKS_TO_VERDICT} weeks)`;
+    return `too slow to a verdict (~${estimate.weeksToVerdict.toFixed(0)} weeks at ${estimate.testsPerWeek.toFixed(1)} tests/week across ${siblings} variant(s) x ${concurrent} concurrent entr${concurrent === 1 ? "y" : "ies"}, bound by ${estimate.boundBy}, cap ${MAX_WEEKS_TO_VERDICT} weeks)`;
   }
   return null;
 }
@@ -7862,7 +7890,7 @@ function ingestNightlyLlmAdvice(
       bumpReject("trigger_too_rare");
       continue;
     }
-    const slowReason = verdictTimeRejection(hypothesis, triggerEstimate, hypotheses);
+    const slowReason = verdictTimeRejection(hypothesis, triggerEstimate, hypotheses, relativeValueRows);
     if (slowReason) {
       notes.push(`Nightly advice: skipping ${slowReason}: ${nh.description.slice(0, 60)}`);
       bumpReject(slowReason.startsWith("horizon") ? "horizon_too_long" : "verdict_too_slow");
@@ -8107,7 +8135,7 @@ function ingestShadowMinedHypotheses(
       bumpReject("trigger_too_rare");
       continue;
     }
-    const slowReason = verdictTimeRejection(hypothesis, triggerEstimate, hypotheses);
+    const slowReason = verdictTimeRejection(hypothesis, triggerEstimate, hypotheses, relativeValueRows);
     if (slowReason) {
       notes.push(`Shadow-mined ingest: skipping ${slowReason}: ${description.slice(0, 70)}`);
       bumpReject(slowReason.startsWith("horizon") ? "horizon_too_long" : "verdict_too_slow");

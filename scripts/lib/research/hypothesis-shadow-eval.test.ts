@@ -4,6 +4,8 @@ import {
   appendPostMortemSegment,
   binomialPValue,
   deriveContractEntry,
+  distinctEligibleContracts,
+  PM_CONTRACT_MAX_PENDING_PER_VARIANT,
   empiricalBaseRate,
   evaluateHypothesisTest,
   evidenceBackedDirection,
@@ -328,6 +330,42 @@ describe("polymarket contract scoring", () => {
       contractRow({ marketId: "both", pmYes: 0.28, sellYesEdgePts: 9, pmSpread: 0.01 }),
     ]);
     expect(ok?.marketId).toBe("both");
+  });
+
+  it("skips excluded markets so concurrent tests land on distinct contracts", () => {
+    const h = hyp({
+      direction: "short",
+      prediction: "BTC one-touch NO sale is profitable",
+      conditions: { asset: "BTC", sell_yes_edge_pts: ">= 3" },
+    });
+    const rows = [
+      contractRow({ marketId: "best", pmYes: 0.2, sellYesEdgePts: 9 }),
+      contractRow({ marketId: "second", pmYes: 0.3, sellYesEdgePts: 5 }),
+    ];
+    expect(deriveContractEntry(h, rows)?.marketId).toBe("best");
+    expect(deriveContractEntry(h, rows, new Set(["best"]))?.marketId).toBe("second");
+    expect(deriveContractEntry(h, rows, new Set(["best", "second"]))).toBeNull();
+  });
+
+  it("counts distinct eligible contracts for concurrency, zero for spot theses", () => {
+    const contract = hyp({
+      direction: "short",
+      prediction: "BTC one-touch NO sale is profitable",
+      conditions: { asset: "BTC", sell_yes_edge_pts: ">= 3" },
+    });
+    const rows = [
+      contractRow({ marketId: "a", pmYes: 0.2, sellYesEdgePts: 9 }),
+      contractRow({ marketId: "b", pmYes: 0.3, sellYesEdgePts: 5 }),
+      contractRow({ marketId: "thin", pmYes: 0.4, sellYesEdgePts: 1 }),
+    ];
+    expect(distinctEligibleContracts(contract, rows)).toBe(2);
+
+    const spot = hyp({
+      direction: "short",
+      prediction: "BTC declines > 2% over the window",
+      conditions: { asset: "BTC" },
+    });
+    expect(distinctEligibleContracts(spot, rows)).toBe(0);
   });
 
   it("honours a touch_direction gate when choosing the contract", () => {
@@ -1016,6 +1054,21 @@ describe("time-to-verdict gate", () => {
     // Same 7-day thesis: hopeless alone, decidable expressed three ways.
     expect(isTooSlowToVerdict(estimateWeeksToVerdict(7, 100, 1))).toBe(true);
     expect(isTooSlowToVerdict(estimateWeeksToVerdict(7, 100, 3))).toBe(false);
+  });
+
+  it("lets concurrent contract entries rescue a slower contract thesis", () => {
+    // The panel NO-edge shape: 7-day horizon, single variant, but several
+    // distinct contracts eligible at once. Serially it needs 20 weeks;
+    // with concurrent entries it fits inside the cap.
+    expect(isTooSlowToVerdict(estimateWeeksToVerdict(7, 100, 1, 1))).toBe(true);
+    const concurrent = estimateWeeksToVerdict(7, 100, 1, PM_CONTRACT_MAX_PENDING_PER_VARIANT);
+    expect(concurrent.testsPerWeek).toBeCloseTo(4, 6);
+    expect(isTooSlowToVerdict(concurrent)).toBe(false);
+    // Concurrency multiplies horizon capacity, not the trigger rate: a thesis
+    // that rarely fires stays bound by how often it fires.
+    const rare = estimateWeeksToVerdict(7, 0.5, 1, PM_CONTRACT_MAX_PENDING_PER_VARIANT);
+    expect(rare.testsPerWeek).toBeCloseTo(0.5, 6);
+    expect(rare.boundBy).toBe("trigger_rate");
   });
 
   it("never reaches a verdict when conditions never fire", () => {
