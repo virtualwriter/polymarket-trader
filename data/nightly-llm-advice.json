@@ -1,35 +1,7 @@
 {
-  "generatedAt": "2026-08-25T07:10:54.292Z",
-  "provider": "deepseek",
+  "generatedAt": "2026-08-25T16:38:11.643532+00:00",
   "model": "deepseek-v4-pro",
-  "strategyReview": "What is working: clean live WEEKEND_HL_FUNDING_REVERSION_LONG remains the workhorse (346/500 live wins, +0.31% avg; 188/253 shadows), monotonic arb is eligible live, and manual IV-touch rich NO continues to show strong per-trade value. What is failing: one-touch/cap-edge shadow variants are being mis-graded as spot-decline calls or are bleeding via wide-spread ETH/BTC premium shorts; single-threshold funding reversion shadows (CBRS/MU/AAPL) are whipsawing; HYPE-based BTC confirmation and listed-IV momentum confirmation are now clearly invalid; and countertrend funding shorts into positive trends continue to stop out.",
-  "failureClusters": [
-    {
-      "theme": "One-touch NO mis-graded as spot calls",
-      "evidence": "H-534 is 2/14 with 4 unscorable tests; recent ONE_TOUCH_HIGH_EDGE_NO shadow/live losses include -22.3%, -17.99%, -9.62% on ETH and -6.25% on BTC, while the traded edge is really in contract premium, not a >2% spot decline.",
-      "recommendation": "Re-author gold/ETH/BTC cap-edge and one-touch NO theses as contract PnL over 2-3 days, not spot-move predictions; keep edge-size gates and avoid spotting a spot-direction target."
-    },
-    {
-      "theme": "Single-threshold funding reversion whipsaws",
-      "evidence": "CBRS shadow 46%, MU 31%, AAPL 53%; many losses show funding pinned near 5.5% or dropping from positive, indicating plain < -10 entries are not true stress regimes.",
-      "recommendation": "Require true weekend timing, extreme percentile within the asset's recent 7d range, and preferably already-positive 24h funding change before taking any funding-reversion long."
-    },
-    {
-      "theme": "HYPE confirmation and listed-IV confirmation are false signals",
-      "evidence": "cross_asset_iv_compression_vol_expansion is 9/25 and btc_listed_iv_momentum_confirmation is 4/16; truth records list both assumptions as learned-invalid, with wins concentrated in a few strong trend days rather than a durable edge.",
-      "recommendation": "Stop authoring HYPE-confirms-BTC-long and rising-listed-IV-confirms-BTC-long variants; retire or disable these confirmation approaches pending a fundamentally different mechanism."
-    },
-    {
-      "theme": "Countertrend funding shorts into positive trend",
-      "evidence": "Recent FUNDING_EXTREME_LONG shorts GOLD -1.01% and BTC -1.83% stopped, both with short_blocked_by_positive_trend and above-trend/momentum metrics positive; signal is 49% win and -0.44% avg.",
-      "recommendation": "Strengthen positive-trend filters before any funding-extreme short, and consider expanding disabledAssets to remove assets where trend consistently negates the funding signal."
-    },
-    {
-      "theme": "Polymarket proxy shorts diverge from Hyperliquid signal",
-      "evidence": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD lost -2.3% while the source comparison closed +0.91% and was labeled opposite_direction; family shadows are 3/22, -2.85% avg.",
-      "recommendation": "Do not use Polymarket proxy shorts as a substitute for Hyperliquid funding mean reversion; the PM contract does not track the funding source move closely enough."
-    }
-  ],
+  "note": "Re-feed of the two panel hypotheses rejected 2026-08-25 by the serial verdict gate, after concurrent-contract-entry fix.",
   "newHypotheses": [
     {
       "created": "2026-08-25",
@@ -59,88 +31,8 @@
       "originFindingId": "FIND-0066",
       "themeId": "THEME-0007",
       "source": "llm"
-    },
-    {
-      "created": "2026-08-25",
-      "description": "Refinement of H-539: require the CBRS funding stress to occur on a genuine weekend and be extreme relative to the recent 7d range, and require funding to already be rising off its low. This avoids the whipsaw 2.3% -> -13.4% and 5.5% pinned prints that made a plain sub -10 entry fail.",
-      "conditions": {
-        "asset": "CBRS",
-        "day_of_week": "in [sat, sun]",
-        "cbrs_hl_funding_ann": "< -20",
-        "cbrs_hl_funding_ann_percentile_7d": "< 15",
-        "cbrs_hl_funding_ann_change_pct_24h": "> 0"
-      },
-      "prediction": "CBRS perp spot gains >2% within 2 days when weekend funding is in the bottom 15% of its 7d range and already reversing higher.",
-      "timeframeDays": 2,
-      "confidence": 0.55,
-      "direction": "long",
-      "refinesHypothesisId": "H-539",
-      "source": "llm"
-    },
-    {
-      "created": "2026-08-25",
-      "description": "Re-author the gold one-touch cap-edge signal as a contract-premium fade rather than a spot-decline call. The prior H-534 demanded GOLD spot fall >2% in 2 days, but the tradeable edge was in the NO contract price, which moved only a few cents around 0.93-0.945; contract PnL should be evaluated directly.",
-      "conditions": {
-        "asset": "GOLD",
-        "touch_direction": ">= 1",
-        "gold_pm_underlying_cap_edge_pts_max": ">= 10"
-      },
-      "prediction": "Short YES / long NO on these gold upside one-touch contracts is profitable over 3 days as overpriced YES premium deflates.",
-      "timeframeDays": 3,
-      "confidence": 0.55,
-      "direction": "short",
-      "refinesHypothesisId": "H-534",
-      "source": "llm"
-    },
-    {
-      "created": "2026-08-25",
-      "description": "Refinement of H-537: restrict AAPL funding reversion to true weekend days and require the funding print to be in the bottom 15% of the recent 7d range, not merely below -10. This removes the any-day 10.4% -> 5.5% and 11.2% -> 5.5% non-stress losses.",
-      "conditions": {
-        "asset": "AAPL",
-        "day_of_week": "in [sat, sun]",
-        "aapl_hl_funding_ann": "< -20",
-        "aapl_hl_funding_ann_percentile_7d": "< 15",
-        "aapl_hl_funding_ann_change_pct_24h": "> 0"
-      },
-      "prediction": "AAPL perp gains >2% within 2 days when weekend funding is in the bottom 15% of its 7d range and already reversing higher.",
-      "timeframeDays": 2,
-      "confidence": 0.55,
-      "direction": "long",
-      "refinesHypothesisId": "H-537",
-      "source": "llm"
     }
   ],
-  "hypothesisReviews": [
-    {
-      "id": "H-539",
-      "observation": "12/26 scorable tests and only 46% wins; plain CBRS funding < -10 does not identify a reliable normalization regime. Losses show funding flattening or re-dropping rather than normalizing.",
-      "invalidatedAssumption": "A standalone CBRS funding reading below -10% reliably normalizes and forces a >2% spot gain within 2 days."
-    },
-    {
-      "id": "H-537",
-      "observation": "10/19 scorable tests; the any-day threshold allows prints around 5.5% or mildly positive readings that never represented weekend funding stress, so the entry is not a reversion setup.",
-      "invalidatedAssumption": "AAPL funding below -10% on any day rapidly normalizes and yields a >2% spot gain."
-    },
-    {
-      "id": "H-535",
-      "observation": "5/16 scorable tests; MU funding < -10 is too weak a condition and often catches pinned/choppy funding around 5.5%, not a genuine immediate normalization opportunity.",
-      "invalidatedAssumption": "Extreme negative MU funding (< -10%) outside true weekend hours rapidly normalizes and produces >2% spot gain."
-    },
-    {
-      "id": "H-534",
-      "observation": "2/14 scorable and 4 unscorable; the hypothesis was scored on the wrong instrument. The cap edge is a rich-NO contract observation, so using spot decline >2% as success produced noise while the contract prices moved only a few cents.",
-      "invalidatedAssumption": "A large underlying-cap edge on gold upside one-touch NO contracts reliably predicts a >2% spot decline within 2 days."
-    },
-    {
-      "id": "H-170",
-      "observation": "4/16 scorable and 25% win; rising listed IV alongside spot momentum did not lead to further BTC gains. Several resolved examples were effectively short/mean-reverting outcomes, showing IV expansion was more hedging demand than continuation signal.",
-      "invalidatedAssumption": "Spot momentum confirmed by rising options IV leads to further >2% BTC gains within 3-7 days."
-    },
-    {
-      "id": "H-108",
-      "observation": "9/25 scorable and only 36% win; HYPE above SMA with stable OI did not produce durable BTC continuation and was repeatedly recorded as learned-invalid. The setup only won during a few large trend days, not as a repeatable filter.",
-      "invalidatedAssumption": "HYPE spot above SMA with stable OI is an independent confirmation of durable BTC upside rather than a late-stage risk-on echo."
-    }
-  ],
-  "journalEntry": "Tonight's main cleanup is instrument and regime discipline. The one-touch/cap-edge families are not spot-directional trades; they are contract premium fades and must be authored and judged on contract PnL. Funding reversion shadows need true weekend timing and relative extremity, not flat funding thresholds. HYPE-confirms-BTC and listed-IV-confirms-BTC now have enough negative evidence to stop authoring close variants. Ranked panel findings FIND-0065/0066 are the strongest new contract-NO discoveries and should be shadow-tested cleanly. No risk parameter changes are warranted on current evidence."
+  "hypothesisReviews": [],
+  "failureClusters": []
 }
