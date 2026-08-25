@@ -3282,3 +3282,37 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 9/12; ne
 
 ---
 
+### 2026-08-25 01:28 UTC
+
+**Portfolio:** $104.16 total | Cash $102.16 | 2 open | P&L $7.3987 | 64% win rate (821 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 19 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 1949224614 is 2.7 std devs from mean (1273002467.90 ± 252571992.44)
+- [anomaly] hype_hl_funding_ann = 48.07 is 2.6 std devs from mean (10.17 ± 14.76)
+- [anomaly] hype_pm_ev = 76.76 is 2.1 std devs from mean (59.12 ± 8.47)
+- [anomaly] hype_spot = 79.558 is 2.1 std devs from mean (58.68 ± 10.18)
+
+**Blocked signal learning:**
+- Open blocked shadows: 20
+- Resolved blocked shadows: 931 (477 wins / 454 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=374 (117W/204L/53flat, 36.4% win-rate, sum $-0.1055, avg -0.03%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-9.62%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-6.25%)
+- ❌ Blocked: FUNDING_EXTREME_LONG BTC short via hyperliquid would have hit stop (-1.83%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-22.30%)
+
+**LLM analysis:**
+No discretionary closes taken: both open positions are 11h old, below the 12h minimum hold. OIL PC_RATIO_EXTREME_LOW shows strong thesis-invalidation evidence (oil_cl_pc_ratio 0.344 -> 1.192, normalizing well past the entry threshold), but close is not yet eligible. GOLD FUNDING_EXTREME_LONG also shows funding normalization (gold_hl_funding_ann 26.53% -> 5.48%), suggesting the crowded-long fade thesis has weakened, but it is also below min hold. Monitor both at the next review once the 12h gate passes; leave mechanical target/stop/expiry handling intact.
+
+---
+
