@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-25T02:28:19.503Z",
+  "generatedAt": "2026-08-25T03:28:22.200Z",
   "dataFreshness": {
-    "valuationRows": 2539,
-    "latestValuationAt": "2026-08-25T02",
-    "macroRows": 2537,
+    "valuationRows": 2540,
+    "latestValuationAt": "2026-08-25T03",
+    "macroRows": 2538,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-25T02"
+    "latestInstrumentSnapshotAt": "2026-08-25T03"
   },
   "portfolio": {
     "cash": 102.1591,
@@ -13,7 +13,7 @@
     "realizedPnl": 7.3987,
     "totalTrades": 821,
     "winRatePct": 63.6,
-    "unrealizedPnl": -0.0049
+    "unrealizedPnl": 0.0035
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": -0.88,
-      "currentPrice": 85.75,
-      "underlyingPrice": 85.75,
+      "pnlPct": -0.41,
+      "currentPrice": 85.35,
+      "underlyingPrice": 85.35,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 0.4,
-      "currentPrice": 4657,
-      "underlyingPrice": 4657,
+      "pnlPct": 0.76,
+      "currentPrice": 4640,
+      "underlyingPrice": 4640,
       "targetPct": 5,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -212,10 +212,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 18,
-    "resolvedCount": 933,
+    "openCount": 17,
+    "resolvedCount": 934,
     "wouldHaveWon": 477,
-    "wouldHaveLost": 456,
+    "wouldHaveLost": 457,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -283,24 +283,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -1.05,
-        "resolvedAt": "2026-08-24T09:29:15.185Z",
-        "marketQuality": {
-          "yesBid": 0.05,
-          "yesAsk": 0.06,
-          "yesSpread": 0.01,
-          "liquidity": 107258.6,
-          "flags": []
-        }
-      },
       {
         "signalType": "FUNDING_EXTREME_LONG",
         "asset": "GOLD",
@@ -424,6 +406,26 @@
           "liquidity": 61977.1,
           "flags": []
         }
+      },
+      {
+        "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "polymarket_proxy_short",
+        "outcome": "loss",
+        "closeReason": "stop",
+        "pnlPct": -2.3,
+        "resolvedAt": "2026-08-25T03:28:21.334Z",
+        "marketQuality": {
+          "yesBid": 0.13,
+          "yesAsk": 0.14,
+          "yesSpread": 0.01,
+          "liquidity": 38971.66,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -458,22 +460,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 5.1pt on ETH, spread 1.0c, liquidity 80596. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
-        "asset": "GOLD",
-        "blockedReason": "polymarket_proxy_short",
-        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $6,000 by end of December?",
-        "marketQuality": {
-          "yesBid": 0.13,
-          "yesAsk": 0.14,
-          "yesSpread": 0.01,
-          "liquidity": 38971.66,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[PM PROXY SHORT SHADOW] Real GOLD short via hyperliquid/hl_perp (FUNDING_EXTREME_LONG). Track buying NO on the comparable Polymarket upside contract."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
