@@ -20057,6 +20057,21 @@
         "triggered": true,
         "outcome": "pending",
         "actualMove": "[historical-backfill] Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 4/20 opened via H-532 after historical row satisfied variant conditions."
+      },
+      {
+        "date": "2026-08-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 5/20 opened via H-532 after current row satisfied variant conditions.",
+        "contractEntry": {
+          "marketId": "1294368",
+          "eventSlug": "what-will-gold-gc-hit-by-end-of-december",
+          "asset": "GOLD",
+          "direction": "above",
+          "strike": 6000,
+          "entryPrice": 0.795,
+          "side": "no"
+        }
       }
     ],
     "winRate": 0,
@@ -20590,6 +20605,21 @@
         "triggered": true,
         "outcome": "pending",
         "actualMove": "[historical-backfill] Setup shadow_one_touch_high_edge_no_gold_heatmap_no shadow test 16/20 opened via H-534 after historical row satisfied variant conditions."
+      },
+      {
+        "date": "2026-08-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup shadow_one_touch_high_edge_no_gold_heatmap_no shadow test 17/20 opened via H-534 after current row satisfied variant conditions.",
+        "contractEntry": {
+          "marketId": "1294368",
+          "eventSlug": "what-will-gold-gc-hit-by-end-of-december",
+          "asset": "GOLD",
+          "direction": "above",
+          "strike": 6000,
+          "entryPrice": 0.795,
+          "side": "no"
+        }
       }
     ],
     "winRate": 0.14285714285714285,
@@ -28282,6 +28312,21 @@
         "triggered": true,
         "outcome": "pending",
         "actualMove": "Shadow test 1/20 opened for initial validation."
+      },
+      {
+        "date": "2026-08-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup gold_pm_premium_futures_spread_mean_reversion shadow test 14/20 opened via H-661 after current row satisfied variant conditions.",
+        "contractEntry": {
+          "marketId": "1294368",
+          "eventSlug": "what-will-gold-gc-hit-by-end-of-december",
+          "asset": "GOLD",
+          "direction": "above",
+          "strike": 6000,
+          "entryPrice": 0.795,
+          "side": "no"
+        }
       }
     ],
     "winRate": 0,
@@ -28496,5 +28541,82 @@
     "source": "llm",
     "setupId": "find_0066",
     "setupLabel": "FIND-linked FIND-0066"
+  },
+  {
+    "id": "H-668",
+    "created": "2026-08-25",
+    "description": "Outcome-panel NO edge, near-dated: mid-priced band (YES ask 35-65c) with under 30 days to expiry, buy NO and hold 7 days; panel shows 71% wins (n=77) vs pool base with holdout confirmation.",
+    "conditions": {
+      "yesAsk": "between 0.35 and 0.65",
+      "days_to_expiry": "< 30"
+    },
+    "prediction": "Buying NO / selling YES on these near-dated mid-priced contracts is profitable over 7 days.",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "direction": "neutral",
+    "originFindingId": "FIND-0069",
+    "tests": [
+      {
+        "date": "2026-08-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "contractEntry": {
+          "marketId": "3257386",
+          "eventSlug": "what-price-will-ethereum-hit-in-august-2026",
+          "asset": "ETH",
+          "direction": "above",
+          "strike": 2600,
+          "entryPrice": 0.47050000000000003,
+          "side": "no"
+        }
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0069",
+    "setupLabel": "FIND-linked FIND-0069"
+  },
+  {
+    "id": "H-669",
+    "created": "2026-08-25",
+    "description": "Outcome-panel NO edge, sharpest cut: sub-point sell-YES model edge, mid-priced band, under 30 days to expiry; panel shows 78% wins (n=51), the strongest localized cell of the YES-overpricing edge.",
+    "conditions": {
+      "sell_yes_edge_pts": "< 1",
+      "yesAsk": "between 0.35 and 0.65",
+      "days_to_expiry": "< 30"
+    },
+    "prediction": "Buying NO / selling YES on these contracts is profitable over 7 days.",
+    "timeframeDays": 7,
+    "confidence": 0.72,
+    "direction": "neutral",
+    "originFindingId": "FIND-0070",
+    "tests": [
+      {
+        "date": "2026-08-25",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "contractEntry": {
+          "marketId": "3257386",
+          "eventSlug": "what-price-will-ethereum-hit-in-august-2026",
+          "asset": "ETH",
+          "direction": "above",
+          "strike": 2600,
+          "entryPrice": 0.47050000000000003,
+          "side": "no"
+        }
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0070",
+    "setupLabel": "FIND-linked FIND-0070"
   }
 ]
