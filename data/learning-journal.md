@@ -3600,3 +3600,38 @@ No open positions to review and the ALLOWED_ACTION_SURFACE contains no close can
 
 ---
 
+### 2026-08-25 12:28 UTC
+
+**Portfolio:** $104.16 total | Cash $104.16 | 0 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 19 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 94.48 is 4.1 std devs from mean (59.24 ± 8.69)
+- [anomaly] hype_med_min = 72.6 is 3.3 std devs from mean (35.94 ± 11.16)
+- [anomaly] btc_med_min = 67794 is 3.0 std devs from mean (52696.94 ± 4954.74)
+- [anomaly] hype_hl_oi = 1953213202 is 2.6 std devs from mean (1275575612.50 ± 255799517.98)
+- [anomaly] hype_spot = 79.464 is 2.0 std devs from mean (58.76 ± 10.25)
+
+**Blocked signal learning:**
+- Open blocked shadows: 21
+- Resolved blocked shadows: 935 (478 wins / 457 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=377 (118W/206L/53flat, 36.4% win-rate, sum $-0.1561, avg -0.04%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-2.22%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-17.99%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-2.30%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+15.15%)
+
+**LLM analysis:**
+No open positions to close and ALLOWED_ACTION_SURFACE is empty, so no discretionary actions taken. Reviewed blocked one-touch ETH quality warnings as context only. Watching broad crypto weakness and narrowing BTC IV term spread as relevant regime context for upcoming entries; no nightly-level changes proposed here.
+
+---
+
