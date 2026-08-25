@@ -3889,3 +3889,38 @@ _LLM call skipped (no trigger fired; 1.8h since last call; daily budget 7/12; ne
 
 ---
 
+### 2026-08-25 19:28 UTC
+
+**Portfolio:** $104.16 total | Cash $104.16 | 0 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 21 active families did not trigger; 0 later families waiting.
+- 🧪 Opened 2 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 131.1 is 3.7 std devs from mean (80.08 ± 13.69)
+- [anomaly] hype_pm_ev = 90.67 is 3.6 std devs from mean (59.31 ± 8.82)
+- [anomaly] hype_med_min = 73.5 is 3.3 std devs from mean (36.02 ± 11.29)
+- [anomaly] btc_med_min = 68375 is 3.1 std devs from mean (52733.48 ± 5005.74)
+- [anomaly] hype_hl_oi = 2062265952 is 3.0 std devs from mean (1277319115.29 ± 258014356.74)
+
+**Blocked signal learning:**
+- Open blocked shadows: 22
+- Resolved blocked shadows: 937 (479 wins / 458 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=377 (118W/206L/53flat, 36.4% win-rate, sum $-0.1561, avg -0.04%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-2.30%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+15.15%)
+- ❌ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit stop (-2.20%)
+- ✅ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit target (+4.58%)
+
+**LLM analysis:**
+No open positions, so no discretionary closes are eligible this run. Portfolio remains flat with $104.16 cash and $7.40 realized P&L. Market backdrop is still bearish/hawkish, and HYPE PM IV and median-max jumped sharply at 19:00, which may indicate a data or volatility event worth watching for future promoted entries. One-touch ETH open quality warnings persist, but with no live exposure there is no action to take.
+
+---
+
