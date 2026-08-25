@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-25T06:28:27.784Z",
+  "generatedAt": "2026-08-25T07:28:26.180Z",
   "dataFreshness": {
-    "valuationRows": 2543,
-    "latestValuationAt": "2026-08-25T06",
-    "macroRows": 2541,
+    "valuationRows": 2544,
+    "latestValuationAt": "2026-08-25T07",
+    "macroRows": 2542,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-25T06"
+    "latestInstrumentSnapshotAt": "2026-08-25T07"
   },
   "portfolio": {
     "cash": 104.1649,
@@ -178,9 +178,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 19,
-    "resolvedCount": 934,
-    "wouldHaveWon": 477,
+    "openCount": 18,
+    "resolvedCount": 935,
+    "wouldHaveWon": 478,
     "wouldHaveLost": 457,
     "bySignal": [
       {
@@ -249,21 +249,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "FUNDING_EXTREME_LONG",
-        "asset": "GOLD",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "blockedReason": "short_blocked_by_positive_trend",
-        "outcome": "loss",
-        "closeReason": "expiry",
-        "pnlPct": -1.01,
-        "resolvedAt": "2026-08-24T11:28:22.118Z",
-        "trendMetrics": {
-          "aboveTrendPct": 1.55,
-          "momentumPct": 2.47
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -398,6 +383,24 @@
           "sourcePnlPct": 0.91,
           "proxyOutperformed": false,
           "correlation": "opposite_direction"
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 15.15,
+        "resolvedAt": "2026-08-25T07:28:25.390Z",
+        "marketQuality": {
+          "yesBid": 0.34,
+          "yesAsk": 0.35,
+          "yesSpread": 0.01,
+          "liquidity": 31208.12,
+          "flags": []
         }
       }
     ],
