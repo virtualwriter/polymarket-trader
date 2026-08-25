@@ -1,15 +1,40 @@
 {
-  "generatedAt": "2026-08-25T03:28:22.386Z",
+  "generatedAt": "2026-08-25T04:29:57.358Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1787581720856-xcge",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "oil_cl_pc_ratio"
+      ],
+      "thesis": "Entry was a PC_RATIO_EXTREME_LOW contrarian short on oil_cl_pc_ratio 0.344. The ratio has risen to 1.192, crossing back through the extreme-low threshold and beyond, invalidating the signal."
+    },
+    {
+      "action": "close",
+      "positionId": "T-1787581720857-vb7g",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_hl_funding_ann"
+      ],
+      "thesis": "Entry was a FUNDING_EXTREME_LONG short on gold HL funding 26.53% annualized. Funding has fallen to 10.34%, below the +15% entry trigger, so the crowded-long extreme has normalized."
+    }
+  ],
   "entrySignals": [],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "2 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

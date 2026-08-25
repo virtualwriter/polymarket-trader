@@ -37,11 +37,11 @@
   },
   {
     "type": "FUNDING_EXTREME_LONG",
-    "weight": 0.4731341306913456,
-    "trades": 40,
-    "wins": 19,
-    "avgPnlPct": -0.4769441100613018,
-    "lastTriggered": "2026-08-23T05:29:01.658Z",
+    "weight": 0.4753347427949608,
+    "trades": 41,
+    "wins": 20,
+    "avgPnlPct": -0.4431538713704643,
+    "lastTriggered": "2026-08-25T04:29:57.367Z",
     "enabled": true,
     "perAsset": {
       "OIL": {
@@ -50,9 +50,9 @@
         "avgPnlPct": -0.2987110807204145
       },
       "GOLD": {
-        "trades": 23,
-        "wins": 12,
-        "avgPnlPct": 0.013300051871672497
+        "trades": 24,
+        "wins": 13,
+        "avgPnlPct": 0.05059820288797919
       },
       "AMZN": {
         "trades": 6,
@@ -76,9 +76,9 @@
         "avgPnlPct": 1.0058565141046893
       }
     },
-    "pnlTrades": 3,
-    "pnlSum": -0.010346981576634882,
-    "pnlSumSq": 0.0005783027987028894
+    "pnlTrades": 4,
+    "pnlSum": -0.0012624248140045494,
+    "pnlSumSq": 0.0006608319702763419
   },
   {
     "type": "FUNDING_EXTREME_SHORT",
@@ -239,11 +239,11 @@
   },
   {
     "type": "PC_RATIO_EXTREME_LOW",
-    "weight": 0.5302608536558095,
-    "trades": 38,
+    "weight": 0.5237986486843612,
+    "trades": 39,
     "wins": 19,
-    "avgPnlPct": 0.11899454288359401,
-    "lastTriggered": "2026-08-22T04:29:10.041Z",
+    "avgPnlPct": 0.10749694525309458,
+    "lastTriggered": "2026-08-25T04:29:57.367Z",
     "enabled": true,
     "perAsset": {
       "AMZN": {
@@ -260,16 +260,19 @@
         "avgPnlPct": 1.0052410482910281
       },
       "OIL": {
-        "trades": 10,
+        "trades": 11,
         "wins": 4,
-        "avgPnlPct": 0.06231433114522396,
+        "avgPnlPct": 0.026702867886032346,
         "resetAt": "2026-04-30T23:03:00Z",
         "resetReason": "Reset after bad zero oil_cl_pc_ratio and CL/WTI source correction; retest Oil P/C signals from corrected data.",
         "priorStats": {
           "trades": 5,
           "wins": 5,
           "avgPnlPct": 1.217187796531509
-        }
+        },
+        "disabled": true,
+        "disabledAt": "2026-08-25T04:29:57.367Z",
+        "disabledReason": "PC_RATIO_EXTREME_LOW on OIL disabled after 4/11 wins (36% accuracy)."
       },
       "GOLD": {
         "trades": 8,
@@ -288,9 +291,9 @@
       }
     },
     "artifactNote": "2026-04-28: 1 OIL trade removed as DATA_CORRECTION_ARTIFACT (wrong price source — CBOE CL was Colgate-Palmolive, not WTI crude) | 2026-04-30: reset Oil/GOLD PC_RATIO_EXTREME_LOW stats after bad zero P/C inputs; clean stats retain non-contaminated assets only.",
-    "pnlTrades": 6,
-    "pnlSum": -0.0010769730184908856,
-    "pnlSumSq": 0.0008897327197697038
+    "pnlTrades": 7,
+    "pnlSum": -0.004371090665549722,
+    "pnlSumSq": 0.0009005839308423682
   },
   {
     "type": "LLM_HYPOTHESIS",

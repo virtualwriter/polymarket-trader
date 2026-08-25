@@ -3383,3 +3383,45 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 1/12; ne
 
 ---
 
+### 2026-08-25 04:29 UTC
+
+**Portfolio:** $104.16 total | Cash $104.16 | 0 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Closed 2 trades:**
+- ❌ OIL short via spot/spot [OIL spot] (PC_RATIO_EXTREME_LOW) → llm_decision: $-0.0033 (-0.3%, market -0.0033, funding 0.0000)
+- ✅ GOLD short via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG) → llm_decision: +$0.0091 (0.9%, market 0.0090, funding 0.0001)
+
+**Signal weight changes:**
+- 🛑 PC_RATIO_EXTREME_LOW on OIL DISABLED — 4/11 wins is below per-asset kill threshold.
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved narrower by 10.6pp (was -0.1, now -10.7)
+- [anomaly] hype_med_max = 200 is 9.0 std devs from mean (79.87 ± 13.31)
+- [anomaly] hype_pm_iv = 189.9 is 8.7 std devs from mean (64.70 ± 14.37)
+- [anomaly] hype_pm_ev = 96.62 is 4.4 std devs from mean (59.15 ± 8.51)
+- [anomaly] btc_med_min = 68214 is 3.2 std devs from mean (52667.80 ± 4921.09)
+
+**Blocked signal learning:**
+- Open blocked shadows: 18
+- Resolved blocked shadows: 934 (477 wins / 457 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=376 (117W/206L/53flat, 36.2% win-rate, sum $-0.3076, avg -0.08%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-22.30%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-2.22%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-17.99%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-2.30%)
+
+**LLM analysis:**
+Reviewed both open positions for discretionary closes. OIL P/C ratio round-tripped from 0.344 to 1.192, invalidating the extreme-low contrarian setup. GOLD HL funding fell from 26.5% to 10.34%, below the +15% trigger, invalidating the funding-extreme-long fade. Both are thesis-invalidated closes, not mechanical profit-taking, and both positions are past the 12h minimum hold. No hard portfolio risk or data-quality breach was identified.
+
+---
+
