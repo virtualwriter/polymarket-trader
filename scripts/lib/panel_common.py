@@ -575,8 +575,22 @@ PANEL_PAIR_STRATIFICATIONS: tuple[tuple[str, str], ...] = (
     ("edge", "dte"),
     ("edge", "price"),
     ("price", "dte"),
+    ("price", "liq"),
+    ("price", "spread"),
     ("fund", "dow"),
     ("macro", "dir"),
+)
+
+# Triple stratifications localize the established YES-overpricing edge (the
+# one live trading, the shadow cohort, and the pooled panel all agree on).
+# Raw panel cuts show the edge concentrates sharply by expiry — mid-priced
+# NOs run 66-85% wins under 30 DTE and fade to coin-flip beyond 90 — so the
+# miner needs cells fine enough to emit those as formal, holdout-confirmed
+# FINDs. Kept to a curated trio: every triple multiplies the BH test family.
+PANEL_TRIPLE_STRATIFICATIONS: tuple[tuple[str, str, str], ...] = (
+    ("edge", "price", "dte"),
+    ("dir", "price", "dte"),
+    ("price", "dte", "liq"),
 )
 
 

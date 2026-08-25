@@ -423,11 +423,17 @@ const LIVE_SIGNAL_ALLOWLIST = new Set([
  * Shadowing them costs nothing and starts the evidence clock, which is the only
  * way they can ever earn live status. They are pulled out of the signal list
  * before the execution plan is built, so there is no path by which they trade.
+ *
+ * PM_IV_GT_OPT_IV is here for the opposite reason: it expresses the house's
+ * one three-way-proven edge (Polymarket YES overpricing) and went 3-for-5 at
+ * +9.8%/trade live before the 2026-05-18 allowlist removed it — a record too
+ * thin to re-enable on, but exactly the kind that shadow evidence can settle.
  */
 const SHADOW_ONLY_SIGNAL_ALLOWLIST = new Set([
   "MACRO_MOMENTUM_UP",
   "PM_EV_ABOVE_SPOT",
   "BASIS_DISCOUNT",
+  "PM_IV_GT_OPT_IV",
 ]);
 // Second human gate on top of evaluateHypotheses family promotion
 // (≥ PROMOTE_MIN_TESTS completed family tests and ≥ PROMOTE_THRESHOLD win rate).
@@ -6980,6 +6986,14 @@ const AUTO_PROMOTABLE_FAMILIES: AutoPromotableFamily[] = [
     // Date the >=3pt entry threshold shipped.
     gateInstalledAt: "2026-08-08T00:00:00Z",
   },
+  {
+    setupId: "pm_iv_gt_opt_iv",
+    signalType: "PM_IV_GT_OPT_IV",
+    label: "PM IV rich vs options IV — sell Polymarket premium (YES-overpricing edge)",
+    // Date the signal re-entered SHADOW_ONLY collection; its 2026 Apr-May
+    // record (3/5, +9.8%/trade) predates this and is not out-of-sample.
+    gateInstalledAt: "2026-08-25T00:00:00Z",
+  },
 ];
 
 interface AutoPromotionStateEntry {
@@ -7446,11 +7460,17 @@ function recordObservationOnlySignalShadows(
   latestRow: SnapshotRow,
   latestSnapshot: InstrumentSnapshotFile | null,
   blockedSignals: BlockedSignalShadow[],
+  // Shadow-only types whose auto-promotion family has since promoted stay in
+  // the live signal list instead of being diverted — that is the entire point
+  // of collecting their shadows.
+  promotedSignalTypes: ReadonlySet<string> = new Set(),
 ): string[] {
-  const diverted = signals.filter((signal) => SHADOW_ONLY_SIGNAL_ALLOWLIST.has(signal.type));
+  const shadowOnly = (type: string): boolean =>
+    SHADOW_ONLY_SIGNAL_ALLOWLIST.has(type) && !promotedSignalTypes.has(type);
+  const diverted = signals.filter((signal) => shadowOnly(signal.type));
   if (diverted.length === 0) return [];
   for (let i = signals.length - 1; i >= 0; i--) {
-    if (SHADOW_ONLY_SIGNAL_ALLOWLIST.has(signals[i].type)) signals.splice(i, 1);
+    if (shadowOnly(signals[i].type)) signals.splice(i, 1);
   }
 
   const recorded: string[] = [];
@@ -8949,7 +8969,12 @@ async function main() {
   signals.push(...promotedSignals);
   signals.push(...oneTouchHighEdgeNoLiveSignals);
   // Strip observation-only signals before anything downstream can trade them.
-  const observationShadows = recordObservationOnlySignalShadows(signals, valRows, learningParams, latestRow, latestSnapshot, blockedSignals);
+  const autoPromotedLiveTypes = new Set(
+    Object.values(autoPromotions.families)
+      .filter((family) => family.promoted)
+      .map((family) => family.signalType),
+  );
+  const observationShadows = recordObservationOnlySignalShadows(signals, valRows, learningParams, latestRow, latestSnapshot, blockedSignals, autoPromotedLiveTypes);
   if (observationShadows.length > 0) {
     console.log(`\n  Recorded ${observationShadows.length} observation-only signal shadows (never live): ${observationShadows.join(", ")}`);
   }

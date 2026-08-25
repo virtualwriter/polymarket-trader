@@ -37,6 +37,7 @@ from lib.alpha_stats import binomial_p_value, bh_qvalues, one_sided_t_pvalue  # 
 from lib.panel_common import (  # noqa: E402
     MINEABLE_QUALITIES,
     PANEL_PAIR_STRATIFICATIONS,
+    PANEL_TRIPLE_STRATIFICATIONS,
     PANEL_VERSION,
     dedupe_non_overlapping,
     fnum,
@@ -190,6 +191,8 @@ def mine_panel(
                 strat_specs.append(((f.name,), f.name))
             for pair in PANEL_PAIR_STRATIFICATIONS:
                 strat_specs.append((pair, "+".join(pair)))
+            for triple in PANEL_TRIPLE_STRATIFICATIONS:
+                strat_specs.append((triple, "+".join(triple)))
 
             for dims, _label in strat_specs:
                 disc_cells: dict[tuple[str, str], list[tuple[dict, float]]] = defaultdict(list)
