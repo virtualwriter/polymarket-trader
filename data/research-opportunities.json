@@ -1,10 +1,32 @@
 {
-  "generatedAt": "2026-08-24T07:12:52Z",
+  "generatedAt": "2026-08-25T07:12:43Z",
   "scoringVersion": "research_score_v3",
   "topN": 10,
   "opportunities": [
     {
       "rank": 1,
+      "id": "FIND-0065",
+      "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65|no",
+      "opportunityScore": 1.0,
+      "confidenceScore": 0.5741,
+      "status": "open",
+      "evidence": {
+        "n": 104,
+        "winRate": 0.6538,
+        "sumPnl": 19.5618,
+        "avgPnl": 0.18809,
+        "pValue": 0.002769,
+        "pnlPValue": 3.6e-05,
+        "qValue": 0.031752,
+        "baseRate": 0.5059,
+        "holdoutN": 33,
+        "holdoutMeanPnlPct": 17.743,
+        "holdoutTPValue": 0.020236
+      },
+      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: sell_yes_edge_pts < 1 AND yesAsk between 0.35 and 0.65 | WR=68% (base 51%) n=71 avg=+19.31%/trade q=0.0318 | holdout n=33 avg=+17.74%"
+    },
+    {
+      "rank": 2,
       "id": "FIND-0020",
       "clusterKey": "INFORMED_FLOW|TOUCH|DIRECTION_ASYMMETRY|no",
       "opportunityScore": 0.9999,
@@ -23,26 +45,48 @@
       "title": "Informed flow asymmetry: dip-YES flow is smart money, high-YES flow is dumb money (wallet-level study)"
     },
     {
-      "rank": 2,
-      "id": "FIND-0043",
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,e3-8|no",
-      "opportunityScore": 0.9926,
-      "confidenceScore": 0.6711,
-      "status": "strengthened",
+      "rank": 3,
+      "id": "FIND-0066",
+      "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65|no",
+      "opportunityScore": 0.9998,
+      "confidenceScore": 0.5297,
+      "status": "open",
       "evidence": {
-        "n": 39,
-        "winRate": 0.7949,
-        "sumPnl": 2.4007,
-        "avgPnl": 0.06156,
-        "pnlStd": 0.1504,
-        "pValue": 0.00015,
-        "pnlPValue": 0.00736,
-        "qValue": 0.24533
+        "n": 174,
+        "winRate": 0.592,
+        "sumPnl": 24.5641,
+        "avgPnl": 0.14117,
+        "pValue": 0.017845,
+        "pnlPValue": 0.000157,
+        "qValue": 0.092316,
+        "baseRate": 0.5059,
+        "holdoutN": 48,
+        "holdoutMeanPnlPct": 15.6682,
+        "holdoutTPValue": 0.013412
       },
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on BTC (strat:dir=above,e3-8/no): WR=79% n=39 sumPnl=+2.401"
+      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: yesAsk between 0.35 and 0.65 | WR=60% (base 51%) n=126 avg=+13.53%/trade q=0.0923 | holdout n=48 avg=+15.67%"
     },
     {
-      "rank": 3,
+      "rank": 4,
+      "id": "FIND-0043",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,e3-8|no",
+      "opportunityScore": 0.991,
+      "confidenceScore": 0.651,
+      "status": "strengthened",
+      "evidence": {
+        "n": 40,
+        "winRate": 0.775,
+        "sumPnl": 2.3382,
+        "avgPnl": 0.05845,
+        "pnlStd": 0.14975,
+        "pValue": 0.00034,
+        "pnlPValue": 0.00902,
+        "qValue": 0.30067
+      },
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on BTC (strat:dir=above,e3-8/no): WR=78% n=40 sumPnl=+2.338"
+    },
+    {
+      "rank": 5,
       "id": "FIND-0055",
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no",
       "opportunityScore": 0.9611,
@@ -61,26 +105,7 @@
       "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on BTC (strat:s?,e3-8/no): WR=63% n=30 sumPnl=+1.509"
     },
     {
-      "rank": 4,
-      "id": "FIND-0054",
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s-1,e3-8|no",
-      "opportunityScore": 0.9489,
-      "confidenceScore": 0.6664,
-      "status": "strengthened",
-      "evidence": {
-        "n": 15,
-        "winRate": 0.8667,
-        "sumPnl": 0.8573,
-        "avgPnl": 0.05715,
-        "pnlStd": 0.1266,
-        "pValue": 0.00369,
-        "pnlPValue": 0.05114,
-        "qValue": 0.84262
-      },
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on BTC (strat:s-1,e3-8/no): WR=87% n=15 sumPnl=+0.857"
-    },
-    {
-      "rank": 5,
+      "rank": 6,
       "id": "FIND-0025",
       "clusterKey": "USER_PM_IV_TOUCH_RICH_NO|ALL|strat:s?,e3-8|no",
       "opportunityScore": 0.9361,
@@ -99,45 +124,45 @@
       "title": "Shadow FIND: USER_PM_IV_TOUCH_RICH_NO on ALL (strat:s?,e3-8/no): WR=89% n=9 sumPnl=+1.205"
     },
     {
-      "rank": 6,
-      "id": "FIND-0047",
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s-1,e3-8|no",
-      "opportunityScore": 0.9116,
-      "confidenceScore": 0.4702,
+      "rank": 7,
+      "id": "FIND-0054",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s-1,e3-8|no",
+      "opportunityScore": 0.9323,
+      "confidenceScore": 0.6121,
       "status": "strengthened",
       "evidence": {
-        "n": 40,
-        "winRate": 0.6,
-        "sumPnl": 2.4217,
-        "avgPnl": 0.06054,
-        "pnlStd": 0.27835,
-        "pValue": 0.13409,
-        "pnlPValue": 0.08839,
+        "n": 16,
+        "winRate": 0.8125,
+        "sumPnl": 0.7948,
+        "avgPnl": 0.04968,
+        "pnlStd": 0.12591,
+        "pValue": 0.01064,
+        "pnlPValue": 0.0677,
         "qValue": 0.84262
       },
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ALL (strat:s-1,e3-8/no): WR=60% n=40 sumPnl=+2.422"
-    },
-    {
-      "rank": 7,
-      "id": "FIND-0030",
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:dir=above,e3-8|no",
-      "opportunityScore": 0.8689,
-      "confidenceScore": 0.5691,
-      "status": "strengthened",
-      "evidence": {
-        "n": 118,
-        "winRate": 0.6441,
-        "sumPnl": 2.5658,
-        "avgPnl": 0.02174,
-        "pnlStd": 0.20962,
-        "pValue": 0.00112,
-        "pnlPValue": 0.13106,
-        "qValue": 0.86518
-      },
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ALL (strat:dir=above,e3-8/no): WR=64% n=118 sumPnl=+2.566"
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on BTC (strat:s-1,e3-8/no): WR=81% n=16 sumPnl=+0.795"
     },
     {
       "rank": 8,
+      "id": "FIND-0047",
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ALL|strat:s-1,e3-8|no",
+      "opportunityScore": 0.9057,
+      "confidenceScore": 0.4574,
+      "status": "strengthened",
+      "evidence": {
+        "n": 41,
+        "winRate": 0.5854,
+        "sumPnl": 2.3592,
+        "avgPnl": 0.05754,
+        "pnlStd": 0.27552,
+        "pValue": 0.17444,
+        "pnlPValue": 0.09434,
+        "qValue": 0.84262
+      },
+      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ALL (strat:s-1,e3-8/no): WR=59% n=41 sumPnl=+2.359"
+    },
+    {
+      "rank": 9,
       "id": "FIND-0048",
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|ETH|strat:dir=above,s-1|no",
       "opportunityScore": 0.8626,
@@ -151,12 +176,12 @@
         "pnlStd": 0.4003,
         "pValue": 0.04813,
         "pnlPValue": 0.13738,
-        "qValue": 0.86518
+        "qValue": 0.87557
       },
       "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on ETH (strat:dir=above,s-1/no): WR=72% n=18 sumPnl=+1.917"
     },
     {
-      "rank": 9,
+      "rank": 10,
       "id": "FIND-0046",
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|strat:dir=above,s?|no",
       "opportunityScore": 0.8564,
@@ -173,25 +198,6 @@
         "qValue": 0.54542
       },
       "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on OIL (strat:dir=above,s?/no): WR=60% n=15 sumPnl=+1.079"
-    },
-    {
-      "rank": 10,
-      "id": "FIND-0018",
-      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|OIL|heatmap|no",
-      "opportunityScore": 0.8554,
-      "confidenceScore": 0.4338,
-      "status": "strengthened",
-      "evidence": {
-        "n": 33,
-        "winRate": 0.5758,
-        "sumPnl": 1.0772,
-        "avgPnl": 0.03264,
-        "pnlStd": 0.17397,
-        "pValue": 0.24343,
-        "pnlPValue": 0.14457,
-        "qValue": 0.54542
-      },
-      "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on OIL (heatmap/no): WR=58% n=33 sumPnl=+1.077"
     }
   ]
 }
