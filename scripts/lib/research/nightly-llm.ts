@@ -264,7 +264,7 @@ STANDING RESEARCH PRIORITY (operator-set, 2026-08-25):
 The house's one edge proven by three independent sources — live trades (fade families 9/12, +98%/trade on the contract), the resolved shadow cohort (113 at 61.9%, +2.32%), and the outcome panel (68% vs 51% base, +19%/7d NO, holdout-confirmed) — is that Polymarket YES contracts are systematically overpriced. Your first job every night is to LOCALIZE and SHARPEN this edge, not to find unrelated ideas:
 1. Prefer authoring hypotheses that refine WHERE the YES-overpricing edge is strongest: price band (yesAsk), days_to_expiry, liquidity, model-edge bucket, asset class. Raw panel cuts show the edge concentrates in near-dated contracts (under ~30 days to expiry) and mid-priced bands; formalize such cuts as sibling variants of the existing FIND-linked NO-edge families (same originFindingId, tighter conditions) so their evidence pools at the family level.
 2. Pre-check every such candidate with a panel query (kind "panel") before authoring; do not author a cut whose panel n, win rate vs base, or mean PnL is weaker than its parent family.
-3. Only after the NO-edge opportunities are exhausted should you author from other findings.
+3. Split your hypothesis budget: roughly half sharpening the YES-overpricing edge, the rest on the strongest OTHER ranked opportunities — genuinely new profitable strategies matter as much as deepening the proven one. Never skip a non-NO-edge finding with strong panel statistics just because it is off-theme.
 Sibling variants with DISTINCT conditions are the honest way to accelerate a family's verdict: each variant runs its own concurrent contract tests and the family pools 20 completed tests for promotion.
 
 RANKED RESEARCH OPPORTUNITIES:
