@@ -4233,3 +4233,42 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 2/12; ne
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-26T07:12:22.017Z, model=deepseek-v4-pro)
+- Hypotheses added: 7 (rejected 2); reviews applied: 8; invalidated assumptions learned: 2; param updates: none.
+- Strategy review: Working: WEEKEND_HL_FUNDING_REVERSION_LONG is the proven live workhorse (346/500 live wins, +0.31% avg, blocked shadows 188/253 at +0.99%), and gated/manual NO-fade variants are strong when framed as contract premium decays. Failing: broad one-touch/no-bias shadow fades, PM proxy shorts, funding-extreme live trades, and most cross-asset/listed-IV momentum confirmations are negative or coin-flip. The most actionable edge is the outcome-panel NO cut localized to mid-price, near-dated, low-edge contracts.
+- Nightly journal: Tonight focused on localizing the proven YES-overpricing edge instead of chasing broad shadow themes. I authored sibling NO variants from FIND-0065/0066/0067/0068/0069/0070 and an informed-flow variant, and re-authored H-534 as a contract premium fade rather than a gold spot-decline call. I also refined H-539 to require weekend and bottom-decile funding. The struggling families are diagnosed and their invalid assumptions recorded: HYPE confirmation of BTC, listed-IV BTC momentum, weak per-asset funding thresholds, and the gold underlying-cap spot-decline premise are all invalidated. No paramet
+### 2026-08-26 07:28 UTC
+
+**Portfolio:** $104.16 total | Cash $104.16 | 0 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 23 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 5.6pp (was -8.2, now -2.6)
+- [anomaly] hype_pm_ev = 89.66 is 3.4 std devs from mean (59.43 ± 9.00)
+- [anomaly] hype_med_min = 73.3 is 3.2 std devs from mean (36.17 ± 11.51)
+- [anomaly] btc_med_min = 68605 is 3.1 std devs from mean (52796.13 ± 5095.10)
+- [anomaly] hype_hl_oi = 2056082842 is 3.0 std devs from mean (1280202340.02 ± 261600806.69)
+
+**Blocked signal learning:**
+- Open blocked shadows: 23
+- Resolved blocked shadows: 941 (480 wins / 461 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=377 (118W/206L/53flat, 36.4% win-rate, sum $-0.1561, avg -0.04%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: MACRO_MOMENTUM_UP BTC long via spot would have hit stop (-1.83%)
+- ❌ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit stop (-4.94%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-1.27%)
+- ✅ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit target (+4.07%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; next scheduled 2026-08-26T09:28:24.965Z). Mechanical cycle ran normally._
+
+---
+
