@@ -1,38 +1,208 @@
 {
-  "generatedAt": "2026-08-25T18:28:11.765776+00:00",
-  "model": "operator-seed",
-  "note": "Seed hypotheses from near-dated NO-edge FINDs (Edge-1 standing priority); refeed after schema fix.",
+  "generatedAt": "2026-08-26T07:12:22.017Z",
+  "provider": "deepseek",
+  "model": "deepseek-v4-pro",
+  "strategyReview": "Working: WEEKEND_HL_FUNDING_REVERSION_LONG is the proven live workhorse (346/500 live wins, +0.31% avg, blocked shadows 188/253 at +0.99%), and gated/manual NO-fade variants are strong when framed as contract premium decays. Failing: broad one-touch/no-bias shadow fades, PM proxy shorts, funding-extreme live trades, and most cross-asset/listed-IV momentum confirmations are negative or coin-flip. The most actionable edge is the outcome-panel NO cut localized to mid-price, near-dated, low-edge contracts.",
+  "failureClusters": [
+    {
+      "theme": "PM directional proxy shorts invert or lag the source signal",
+      "evidence": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT is 3/22 shadows with avg -2.85%; PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT is 1/16 avg -6.12%; OPT_IV_GT_PM_IV_DOWNSIDE is 2/16 avg -9.95%. One recent GOLD proxy short lost -2.3% while the source closed +0.91% and was marked 'opposite_direction'.",
+      "recommendation": "Stop translating spot/funding/positioning signals into Polymarket directional proxy shorts. Keep Polymarket exposure only for contract-native YES/NO premium edges."
+    },
+    {
+      "theme": "Un-gated YES/NO edge fades are too broad",
+      "evidence": "Broad ONE_TOUCH_HIGH_EDGE_NO shadows are only 108/280 with avg -0.82%; NO_BIAS_ADJUSTED_GAP_SHADOW is 39/99 avg -1.41%; RELATIVE_VALUE_HEATMAP is 4/15 avg -8.09%. The gated one-touch NO variant (above-strike, edge 3-8, tighter conditions) is 80/132 avg +1.58%.",
+      "recommendation": "Kill broad underlying-cap/no-bias spot-decline variants. Author only contract-native NO fades with explicit gates: above direction, moderate edge, mid price, near expiry, and contract PnL prediction."
+    },
+    {
+      "theme": "HYPE-based BTC confirmation is late risk-on echo",
+      "evidence": "cross_asset_iv_compression_vol_expansion is 9/25 scorable (36%) and btc_listed_iv_momentum_confirmation is 4/17 (24%). BTC long entries frequently occur near 7d highs, and HYPE-above-SMA/stable-OI does not separate durable move from late FOMO.",
+      "recommendation": "Do not treat HYPE participation as independent BTC confirmation. Prefer BTC-native signals or contract/panel edges; otherwise retire the family."
+    },
+    {
+      "theme": "Per-asset weekend funding reversion variants fire on non-events and score the wrong variable",
+      "evidence": "MU 5/16, CBRS 13/27, and AAPL 10/19 scorable wins. Tests often show funding_normalize_up outcomes rather than the stated spot >2% prediction, and entries appear near neutral or stale 5.5% funding rather than true negative extremes.",
+      "recommendation": "Require true weekend and bottom-decile funding extreme if pursuing these variants; otherwise defer to the parent WEEKEND_HL_FUNDING_REVERSION_LONG signal instead of isolated per-asset thresholds."
+    }
+  ],
   "newHypotheses": [
     {
-      "created": "2026-08-25",
-      "description": "Outcome-panel NO edge, near-dated: mid-priced band (YES ask 35-65c) with under 30 days to expiry, buy NO and hold 7 days; panel shows 71% wins (n=77) vs pool base with holdout confirmation.",
-      "prediction": "Buying NO / selling YES on these near-dated mid-priced contracts is profitable over 7 days.",
+      "created": "2026-08-26",
+      "description": "Outcome-panel NO edge sharpened: buy NO / sell YES across all assets when the best sell-YES edge is below 1 point and the lowest YES ask is in the mid 35-65c band.",
+      "conditions": {
+        "sell_yes_edge_pts": "< 1",
+        "yesAsk": "between 0.35 and 0.65"
+      },
+      "prediction": "The NO position is profitable over 7 days as YES premium deflates; no spot direction is required.",
+      "timeframeDays": 7,
+      "confidence": 0.9,
+      "direction": "neutral",
+      "originFindingId": "FIND-0065",
+      "themeId": "THEME-0007",
+      "source": "llm"
+    },
+    {
+      "created": "2026-08-26",
+      "description": "Outcome-panel NO edge with tight-spread filter: buy NO / sell YES when the lowest YES ask is 35-65c and the tightest YES spread is under 2c.",
+      "conditions": {
+        "yesAsk": "between 0.35 and 0.65",
+        "yesSpread": "< 0.02"
+      },
+      "prediction": "The NO position is profitable over 7 days as overpriced YES premium decays; no spot direction is required.",
+      "timeframeDays": 7,
+      "confidence": 0.85,
+      "direction": "neutral",
+      "originFindingId": "FIND-0067",
+      "themeId": "THEME-0007",
+      "source": "llm"
+    },
+    {
+      "created": "2026-08-26",
+      "description": "Outcome-panel NO edge with near-dated filter: buy NO / sell YES when YES ask is 35-65c and the nearest contract expires in under 30 days.",
       "conditions": {
         "yesAsk": "between 0.35 and 0.65",
         "days_to_expiry": "< 30"
       },
+      "prediction": "The NO position is profitable over 7 days as near-dated YES premium decays; no spot direction is required.",
       "timeframeDays": 7,
-      "confidence": 0.7,
+      "confidence": 0.85,
       "direction": "neutral",
       "originFindingId": "FIND-0069",
+      "themeId": "THEME-0007",
       "source": "llm"
     },
     {
-      "created": "2026-08-25",
-      "description": "Outcome-panel NO edge, sharpest cut: sub-point sell-YES model edge, mid-priced band, under 30 days to expiry; panel shows 78% wins (n=51), the strongest localized cell of the YES-overpricing edge.",
-      "prediction": "Buying NO / selling YES on these contracts is profitable over 7 days.",
+      "created": "2026-08-26",
+      "description": "Sharpest outcome-panel NO cut: buy NO / sell YES when sell-YES edge is below 1 point, YES ask is 35-65c, and the nearest contract expires in under 30 days.",
       "conditions": {
         "sell_yes_edge_pts": "< 1",
         "yesAsk": "between 0.35 and 0.65",
         "days_to_expiry": "< 30"
       },
+      "prediction": "The NO position is profitable over 7 days as the combination of low model edge and near-dated mid-price premium decays; no spot direction is required.",
       "timeframeDays": 7,
-      "confidence": 0.72,
+      "confidence": 0.95,
       "direction": "neutral",
       "originFindingId": "FIND-0070",
+      "themeId": "THEME-0007",
+      "source": "llm"
+    },
+    {
+      "created": "2026-08-26",
+      "description": "Outcome-panel NO edge broad mid-price variant: buy NO / sell YES when the lowest YES ask is 35-65c.",
+      "conditions": {
+        "yesAsk": "between 0.35 and 0.65"
+      },
+      "prediction": "The NO position is profitable over 7 days as mid-priced YES premium decays; no spot direction is required.",
+      "timeframeDays": 7,
+      "confidence": 0.8,
+      "direction": "neutral",
+      "originFindingId": "FIND-0066",
+      "themeId": "THEME-0007",
+      "source": "llm"
+    },
+    {
+      "created": "2026-08-26",
+      "description": "Outcome-panel NO edge on above-strike contracts: buy NO / sell YES when touch direction is above-strike and YES ask is 35-65c.",
+      "conditions": {
+        "touch_direction": ">= 1",
+        "yesAsk": "between 0.35 and 0.65"
+      },
+      "prediction": "The NO position on above-strike one-touch contracts is profitable over 7 days as YES premium decays; no spot direction is required.",
+      "timeframeDays": 7,
+      "confidence": 0.75,
+      "direction": "neutral",
+      "originFindingId": "FIND-0068",
+      "themeId": "THEME-0007",
+      "source": "llm"
+    },
+    {
+      "created": "2026-08-26",
+      "description": "Informed-flow asymmetry fade from FIND-0020: sell above-strike YES premium when tracked smart wallets are net short YES while flow is skewed to high-side YES buying.",
+      "conditions": {
+        "touch_direction": ">= 1",
+        "smart_flow_stance": "<= -1"
+      },
+      "prediction": "Buying NO on these above-strike contracts is profitable over 7 days as high-side YES premium fades; no spot direction is required.",
+      "timeframeDays": 7,
+      "confidence": 0.7,
+      "direction": "neutral",
+      "originFindingId": "FIND-0020",
+      "themeId": "THEME-0003",
+      "source": "llm"
+    },
+    {
+      "created": "2026-08-26",
+      "description": "Refinement of H-534: replace gold underlying-cap-edge spot-decline trade with a contract-native NO fade. This tests the premium decay that is actually observed, not a >2% gold spot move.",
+      "conditions": {
+        "asset": "GOLD",
+        "touch_direction": ">= 1",
+        "sell_yes_edge_pts": "between 3 and 8",
+        "yesAsk": "between 0.35 and 0.65",
+        "days_to_expiry": "< 30"
+      },
+      "prediction": "Buying NO / selling YES on eligible GOLD above-strike one-touch contracts is profitable over 7 days as the YES premium decays; no GOLD spot move is required.",
+      "timeframeDays": 7,
+      "confidence": 0.7,
+      "direction": "neutral",
+      "refinesHypothesisId": "H-534",
+      "source": "llm"
+    },
+    {
+      "created": "2026-08-26",
+      "description": "Refinement of H-539: restrict CBRS funding reversion to true weekends and require bottom-decile recent funding rather than any weekday print below -10%, avoiding stale/neutral funding entries.",
+      "conditions": {
+        "asset": "CBRS",
+        "day_of_week": "in [sat, sun]",
+        "cbrs_hl_funding_ann_percentile_24h": "< 10"
+      },
+      "prediction": "CBRS perp will gain >2% within 2 days after a true weekend funding overshoot, as crowded shorts normalize into spot/perp strength.",
+      "timeframeDays": 2,
+      "confidence": 0.55,
+      "direction": "long",
+      "refinesHypothesisId": "H-539",
       "source": "llm"
     }
   ],
-  "hypothesisReviews": [],
-  "failureClusters": []
+  "hypothesisReviews": [
+    {
+      "id": "H-539",
+      "observation": "CBRS family is 13/27 scorable (48%), and the example tests are scored as funding_normalize_up rather than the stated CBRS spot >2% move. Entries appear near neutral or stale funding levels, so the < -10 condition is not isolating a real crowded-short extreme.",
+      "invalidatedAssumption": "A standalone CBRS funding reading below -10% reliably normalizes and forces a >2% spot gain within 2 days."
+    },
+    {
+      "id": "H-108",
+      "observation": "Cross-asset IV compression/vol expansion is 9/25 scorable (36%). HYPE above SMA with stable OI enters BTC near 7d highs, and the wins are explosive but too rare; HYPE risk-on is not independent confirmation of durable BTC upside.",
+      "invalidatedAssumption": "HYPE spot above SMA with stable OI confirms durable BTC upside rather than late-stage FOMO/overextension."
+    },
+    {
+      "id": "H-537",
+      "observation": "AAPL variant is 10/19 scorable (53%) but outcomes score funding normalization instead of AAPL spot >2%. The < -10 threshold admits non-extreme weekday prints and does not identify genuine short-positioning stress.",
+      "invalidatedAssumption": "AAPL funding below -10% on any day rapidly normalizes and yields a >2% spot gain."
+    },
+    {
+      "id": "H-170",
+      "observation": "BTC listed-IV momentum confirmation is 4/17 scorable (24%). The tests are direction-confused and the premise of spot momentum plus rising options IV producing further >2% BTC gains is not holding; the family should be killed or re-written as a contract/IV event, not a spot continuation.",
+      "invalidatedAssumption": "Spot momentum confirmed by rising options IV reliably leads to further >2% BTC gains within 3-7 days."
+    },
+    {
+      "id": "H-535",
+      "observation": "MU variant is 5/16 scorable (31%) and frequently shows 5.5% or positive funding readings, suggesting entries fire on stale/default data rather than a true < -10% extreme. The intended mechanism is not actually being tested, so more threshold variants are unlikely to help.",
+      "invalidatedAssumption": "Extreme negative MU funding (< -10%) outside true weekend hours reliably normalizes and produces >2% spot gain."
+    },
+    {
+      "id": "H-534",
+      "observation": "Gold one-touch cap-edge variant is 2/14 scorable (14%) with 5 unscorable. The primary prediction was a >2% GOLD spot decline, but examples are scored on contract PnL and the NO contract often barely moves. The underlying-cap edge did not translate into either spot follow-through or consistent contract PnL.",
+      "invalidatedAssumption": "A large underlying-cap edge on gold upside one-touch NO contracts reliably predicts a >2% spot decline within 2 days."
+    },
+    {
+      "id": "H-521",
+      "observation": "HYPE relative OI breakout continuation remains viable in its own family: 12 active tests at 75% win and the setup-family has 19/45 live trades with positive average PnL. Keep it as a HYPE-specific continuation signal, not as a cross-asset BTC confirmation."
+    },
+    {
+      "id": "H-551",
+      "observation": "OIL one-touch NO heatmap cluster is the correct contract-native framing: 35 tests at 100% win in active hypotheses. Continue treating it as a gated OIL NO premium fade rather than a spot-decline call."
+    }
+  ],
+  "journalEntry": "Tonight focused on localizing the proven YES-overpricing edge instead of chasing broad shadow themes. I authored sibling NO variants from FIND-0065/0066/0067/0068/0069/0070 and an informed-flow variant, and re-authored H-534 as a contract premium fade rather than a gold spot-decline call. I also refined H-539 to require weekend and bottom-decile funding. The struggling families are diagnosed and their invalid assumptions recorded: HYPE confirmation of BTC, listed-IV BTC momentum, weak per-asset funding thresholds, and the gold underlying-cap spot-decline premise are all invalidated. No parameter changes were made because live risk/reward evidence was mixed and did not clearly support shifting stops or targets. Immediate kill candidates are broad PM proxy shorts, no-bias gap spot predictions, and stale MU/AAPL/CBRS per-asset threshold variants."
 }

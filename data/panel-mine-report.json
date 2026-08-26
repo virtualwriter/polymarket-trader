@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-08-26T07:05:34Z",
+  "model": "panel_miner_v1",
+  "panel": "/opt/polymarket-trader/data/research-panel.csv",
+  "testsRun": 2286,
+  "candidates": 6,
+  "registered": [
+    {
+      "id": "FIND-0065",
+      "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65|no",
+      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: sell_yes_edge_pts < 1 AND yesAsk between 0.35 and 0.65 | WR=68% (base 51%) n=72 avg=+19.06%/trade q=0.0118 | holdout n=34 avg=+20.78%"
+    },
+    {
+      "id": "FIND-0067",
+      "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65,sp<2|no",
+      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: yesAsk between 0.35 and 0.65 AND yesSpread < 0.02 | WR=63% (base 51%) n=82 avg=+18.44%/trade q=0.0269 | holdout n=32 avg=+25.11%"
+    },
+    {
+      "id": "FIND-0066",
+      "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65|no",
+      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: yesAsk between 0.35 and 0.65 | WR=60% (base 51%) n=128 avg=+13.33%/trade q=0.0396 | holdout n=49 avg=+17.13%"
+    },
+    {
+      "id": "FIND-0068",
+      "clusterKey": "PANEL_NO_7D|ALL|strat:dir=above,p35-65|no",
+      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: touch_direction >= 1 AND yesAsk between 0.35 and 0.65 | WR=63% (base 51%) n=67 avg=+18.68%/trade q=0.0597 | holdout n=25 avg=+5.77%"
+    },
+    {
+      "id": "FIND-0069",
+      "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65,d<30|no",
+      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: yesAsk between 0.35 and 0.65 AND days_to_expiry < 30 | WR=69% (base 51%) n=59 avg=+24.21%/trade q=0.0823 | holdout n=19 avg=+35.27%"
+    },
+    {
+      "id": "FIND-0070",
+      "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65,d<30|no",
+      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: sell_yes_edge_pts < 1 AND yesAsk between 0.35 and 0.65 AND days_to_expiry < 30 | WR=80% (base 51%) n=35 avg=+29.67%/trade q=0.0823 | holdout n=17 avg=+35.54%"
+    }
+  ],
+  "created": 0,
+  "updated": 6,
+  "coverageGaps": []
+}

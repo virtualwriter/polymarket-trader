@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-25T18:18:11Z",
+  "generatedAt": "2026-08-26T07:14:25Z",
   "scoringVersion": "research_score_v3",
   "topN": 10,
   "opportunities": [
@@ -8,25 +8,47 @@
       "id": "FIND-0065",
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65|no",
       "opportunityScore": 1.0,
-      "confidenceScore": 0.5741,
-      "status": "open",
+      "confidenceScore": 0.5816,
+      "status": "strengthened",
       "evidence": {
-        "n": 104,
-        "winRate": 0.6538,
-        "sumPnl": 19.5618,
-        "avgPnl": 0.18809,
-        "pValue": 0.002769,
+        "n": 106,
+        "winRate": 0.6604,
+        "sumPnl": 20.787,
+        "avgPnl": 0.1961,
+        "pValue": 0.002146,
         "pnlPValue": 3.6e-05,
-        "qValue": 0.013632,
-        "baseRate": 0.5059,
-        "holdoutN": 33,
-        "holdoutMeanPnlPct": 17.743,
-        "holdoutTPValue": 0.020236
+        "qValue": 0.011757,
+        "baseRate": 0.507,
+        "holdoutN": 34,
+        "holdoutMeanPnlPct": 20.7801,
+        "holdoutTPValue": 0.008369
       },
-      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: sell_yes_edge_pts < 1 AND yesAsk between 0.35 and 0.65 | WR=68% (base 51%) n=71 avg=+19.31%/trade q=0.0136 | holdout n=33 avg=+17.74%"
+      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: sell_yes_edge_pts < 1 AND yesAsk between 0.35 and 0.65 | WR=68% (base 51%) n=72 avg=+19.06%/trade q=0.0118 | holdout n=34 avg=+20.78%"
     },
     {
       "rank": 2,
+      "id": "FIND-0067",
+      "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65,sp<2|no",
+      "opportunityScore": 0.9999,
+      "confidenceScore": 0.5729,
+      "status": "strengthened",
+      "evidence": {
+        "n": 114,
+        "winRate": 0.6491,
+        "sumPnl": 23.1603,
+        "avgPnl": 0.20316,
+        "pValue": 0.013785,
+        "pnlPValue": 9.4e-05,
+        "qValue": 0.02686,
+        "baseRate": 0.507,
+        "holdoutN": 32,
+        "holdoutMeanPnlPct": 25.1136,
+        "holdoutTPValue": 0.003882
+      },
+      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: yesAsk between 0.35 and 0.65 AND yesSpread < 0.02 | WR=63% (base 51%) n=82 avg=+18.44%/trade q=0.0269 | holdout n=32 avg=+25.11%"
+    },
+    {
+      "rank": 3,
       "id": "FIND-0020",
       "clusterKey": "INFORMED_FLOW|TOUCH|DIRECTION_ASYMMETRY|no",
       "opportunityScore": 0.9999,
@@ -45,114 +67,92 @@
       "title": "Informed flow asymmetry: dip-YES flow is smart money, high-YES flow is dumb money (wallet-level study)"
     },
     {
-      "rank": 3,
-      "id": "FIND-0067",
-      "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65,sp<2|no",
-      "opportunityScore": 0.9999,
-      "confidenceScore": 0.5694,
-      "status": "open",
-      "evidence": {
-        "n": 113,
-        "winRate": 0.646,
-        "sumPnl": 22.6372,
-        "avgPnl": 0.20033,
-        "pValue": 0.009358,
-        "pnlPValue": 9.3e-05,
-        "qValue": 0.026412,
-        "baseRate": 0.5059,
-        "holdoutN": 32,
-        "holdoutMeanPnlPct": 23.479,
-        "holdoutTPValue": 0.006057
-      },
-      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: yesAsk between 0.35 and 0.65 AND yesSpread < 0.02 | WR=64% (base 51%) n=81 avg=+18.67%/trade q=0.0264 | holdout n=32 avg=+23.48%"
-    },
-    {
       "rank": 4,
       "id": "FIND-0066",
       "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65|no",
       "opportunityScore": 0.9998,
-      "confidenceScore": 0.5297,
-      "status": "open",
+      "confidenceScore": 0.5315,
+      "status": "strengthened",
       "evidence": {
-        "n": 174,
-        "winRate": 0.592,
-        "sumPnl": 24.5641,
-        "avgPnl": 0.14117,
-        "pValue": 0.017845,
-        "pnlPValue": 0.000157,
-        "qValue": 0.039634,
-        "baseRate": 0.5059,
-        "holdoutN": 48,
-        "holdoutMeanPnlPct": 15.6682,
-        "holdoutTPValue": 0.013412
+        "n": 177,
+        "winRate": 0.5932,
+        "sumPnl": 25.45,
+        "avgPnl": 0.14379,
+        "pValue": 0.019823,
+        "pnlPValue": 0.000156,
+        "qValue": 0.039624,
+        "baseRate": 0.507,
+        "holdoutN": 49,
+        "holdoutMeanPnlPct": 17.1255,
+        "holdoutTPValue": 0.008367
       },
-      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: yesAsk between 0.35 and 0.65 | WR=60% (base 51%) n=126 avg=+13.53%/trade q=0.0396 | holdout n=48 avg=+15.67%"
+      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: yesAsk between 0.35 and 0.65 | WR=60% (base 51%) n=128 avg=+13.33%/trade q=0.0396 | holdout n=49 avg=+17.13%"
     },
     {
       "rank": 5,
       "id": "FIND-0068",
       "clusterKey": "PANEL_NO_7D|ALL|strat:dir=above,p35-65|no",
       "opportunityScore": 0.9997,
-      "confidenceScore": 0.5072,
-      "status": "open",
+      "confidenceScore": 0.5012,
+      "status": "strengthened",
       "evidence": {
-        "n": 91,
-        "winRate": 0.5934,
-        "sumPnl": 14.3002,
-        "avgPnl": 0.15714,
-        "pValue": 0.028921,
-        "pnlPValue": 0.000262,
-        "qValue": 0.059526,
-        "baseRate": 0.5059,
-        "holdoutN": 26,
-        "holdoutMeanPnlPct": 6.911,
-        "holdoutTPValue": 0.257885
+        "n": 92,
+        "winRate": 0.587,
+        "sumPnl": 13.9609,
+        "avgPnl": 0.15175,
+        "pValue": 0.032346,
+        "pnlPValue": 0.000261,
+        "qValue": 0.059665,
+        "baseRate": 0.507,
+        "holdoutN": 25,
+        "holdoutMeanPnlPct": 5.7696,
+        "holdoutTPValue": 0.30285
       },
-      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: touch_direction >= 1 AND yesAsk between 0.35 and 0.65 | WR=63% (base 51%) n=65 avg=+19.24%/trade q=0.0595 | holdout n=26 avg=+6.91%"
+      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: touch_direction >= 1 AND yesAsk between 0.35 and 0.65 | WR=63% (base 51%) n=67 avg=+18.68%/trade q=0.0597 | holdout n=25 avg=+5.77%"
     },
     {
       "rank": 6,
       "id": "FIND-0070",
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65,d<30|no",
       "opportunityScore": 0.9996,
-      "confidenceScore": 0.6766,
-      "status": "open",
+      "confidenceScore": 0.6823,
+      "status": "strengthened",
       "evidence": {
-        "n": 51,
-        "winRate": 0.7843,
-        "sumPnl": 15.9036,
-        "avgPnl": 0.31183,
-        "pValue": 0.000327,
+        "n": 52,
+        "winRate": 0.7885,
+        "sumPnl": 16.4267,
+        "avgPnl": 0.3159,
+        "pValue": 0.000342,
         "pnlPValue": 0.000432,
-        "qValue": 0.081792,
-        "baseRate": 0.5059,
-        "holdoutN": 16,
-        "holdoutMeanPnlPct": 34.4918,
-        "holdoutTPValue": 0.013332
+        "qValue": 0.082296,
+        "baseRate": 0.507,
+        "holdoutN": 17,
+        "holdoutMeanPnlPct": 35.5398,
+        "holdoutTPValue": 0.008101
       },
-      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: sell_yes_edge_pts < 1 AND yesAsk between 0.35 and 0.65 AND days_to_expiry < 30 | WR=80% (base 51%) n=35 avg=+29.67%/trade q=0.0818 | holdout n=16 avg=+34.49%"
+      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: sell_yes_edge_pts < 1 AND yesAsk between 0.35 and 0.65 AND days_to_expiry < 30 | WR=80% (base 51%) n=35 avg=+29.67%/trade q=0.0823 | holdout n=17 avg=+35.54%"
     },
     {
       "rank": 7,
       "id": "FIND-0069",
       "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65,d<30|no",
       "opportunityScore": 0.9996,
-      "confidenceScore": 0.6235,
-      "status": "open",
+      "confidenceScore": 0.6279,
+      "status": "strengthened",
       "evidence": {
-        "n": 77,
-        "winRate": 0.7143,
-        "sumPnl": 20.4636,
-        "avgPnl": 0.26576,
-        "pValue": 0.002519,
+        "n": 78,
+        "winRate": 0.7179,
+        "sumPnl": 20.9867,
+        "avgPnl": 0.26906,
+        "pValue": 0.002649,
         "pnlPValue": 0.000409,
-        "qValue": 0.081792,
-        "baseRate": 0.5059,
-        "holdoutN": 18,
-        "holdoutMeanPnlPct": 34.3199,
-        "holdoutTPValue": 0.007061
+        "qValue": 0.082296,
+        "baseRate": 0.507,
+        "holdoutN": 19,
+        "holdoutMeanPnlPct": 35.2666,
+        "holdoutTPValue": 0.004181
       },
-      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: yesAsk between 0.35 and 0.65 AND days_to_expiry < 30 | WR=69% (base 51%) n=59 avg=+24.21%/trade q=0.0818 | holdout n=18 avg=+34.32%"
+      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: yesAsk between 0.35 and 0.65 AND days_to_expiry < 30 | WR=69% (base 51%) n=59 avg=+24.21%/trade q=0.0823 | holdout n=19 avg=+35.27%"
     },
     {
       "rank": 8,
@@ -169,7 +169,7 @@
         "pnlStd": 0.14975,
         "pValue": 0.00034,
         "pnlPValue": 0.00902,
-        "qValue": 0.30067
+        "qValue": 0.30969
       },
       "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on BTC (strat:dir=above,e3-8/no): WR=78% n=40 sumPnl=+2.338"
     },
@@ -188,7 +188,7 @@
         "pnlStd": 0.15071,
         "pValue": 0.10024,
         "pnlPValue": 0.0389,
-        "qValue": 0.778
+        "qValue": 0.76174
       },
       "title": "Shadow FIND: ONE_TOUCH_HIGH_EDGE_NO on BTC (strat:s?,e3-8/no): WR=63% n=30 sumPnl=+1.509"
     },
