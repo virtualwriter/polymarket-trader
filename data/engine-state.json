@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-26T05:28:23.915Z",
+  "generatedAt": "2026-08-26T06:28:32.582Z",
   "dataFreshness": {
-    "valuationRows": 2561,
-    "latestValuationAt": "2026-08-26T05",
-    "macroRows": 2559,
+    "valuationRows": 2562,
+    "latestValuationAt": "2026-08-26T06",
+    "macroRows": 2560,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-26T05"
+    "latestInstrumentSnapshotAt": "2026-08-26T06"
   },
   "portfolio": {
     "cash": 104.1649,
@@ -178,9 +178,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 22,
-    "resolvedCount": 940,
-    "wouldHaveWon": 479,
+    "openCount": 23,
+    "resolvedCount": 941,
+    "wouldHaveWon": 480,
     "wouldHaveLost": 461,
     "bySignal": [
       {
@@ -240,33 +240,15 @@
         "avgPnlPct": 0.07
       },
       {
-        "signalType": "PROMOTED_HYPOTHESIS",
-        "blocked": 1,
-        "resolved": 1,
-        "wouldHaveWon": 0,
-        "wouldHaveLost": 1,
-        "avgPnlPct": -3.65
+        "signalType": "PM_EV_ABOVE_SPOT",
+        "blocked": 5,
+        "resolved": 4,
+        "wouldHaveWon": 2,
+        "wouldHaveLost": 2,
+        "avgPnlPct": 0.38
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -17.99,
-        "resolvedAt": "2026-08-25T02:28:18.782Z",
-        "marketQuality": {
-          "yesBid": 0.672,
-          "yesAsk": 0.676,
-          "yesSpread": 0.004,
-          "liquidity": 61977.1,
-          "flags": []
-        }
-      },
       {
         "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
         "asset": "GOLD",
@@ -390,6 +372,21 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "PM_EV_ABOVE_SPOT",
+        "asset": "HYPE",
+        "venue": "spot",
+        "direction": "long",
+        "blockedReason": "live_entry_not_promoted",
+        "outcome": "win",
+        "closeReason": "target",
+        "pnlPct": 4.07,
+        "resolvedAt": "2026-08-26T06:28:31.868Z",
+        "trendMetrics": {
+          "aboveTrendPct": -2.15,
+          "momentumPct": 0.88
         }
       }
     ],
