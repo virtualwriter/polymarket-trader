@@ -4306,3 +4306,37 @@ No open positions at 08 UTC. BTC looks rangebound near $79k while crypto funding
 
 ---
 
+### 2026-08-26 09:28 UTC
+
+**Portfolio:** $104.16 total | Cash $104.16 | 0 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 23 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_med_min = 73.2 is 3.2 std devs from mean (36.20 ± 11.55)
+- [anomaly] btc_med_min = 68523 is 3.1 std devs from mean (52808.44 ± 5112.12)
+- [anomaly] hype_pm_ev = 86.44 is 3.0 std devs from mean (59.45 ± 9.03)
+- [anomaly] hype_hl_oi = 2036442627 is 2.9 std devs from mean (1280799484.77 ± 262369662.37)
+- [anomaly] hype_spot = 81.503 is 2.2 std devs from mean (58.92 ± 10.38)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 941 (480 wins / 461 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=377 (118W/206L/53flat, 36.4% win-rate, sum $-0.1561, avg -0.04%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: MACRO_MOMENTUM_UP BTC long via spot would have hit stop (-1.83%)
+- ❌ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit stop (-4.94%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-1.27%)
+- ✅ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit target (+4.07%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 3/12; next scheduled 2026-08-26T11:28:20.007Z). Mechanical cycle ran normally._
+
+---
+
