@@ -4580,3 +4580,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 5/12; ne
 
 ---
 
+### 2026-08-26 17:28 UTC
+
+**Portfolio:** $104.16 total | Cash $104.16 | 0 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 25 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_med_min = 73 is 3.1 std devs from mean (36.31 ± 11.71)
+- [anomaly] btc_med_min = 68587 is 3.0 std devs from mean (52857.99 ± 5180.57)
+- [anomaly] hype_pm_ev = 85.29 is 2.8 std devs from mean (59.54 ± 9.14)
+- [anomaly] hype_hl_oi = 2012187270 is 2.7 std devs from mean (1283134265.65 ± 265277365.99)
+- [anomaly] hype_spot = 80.863 is 2.1 std devs from mean (58.99 ± 10.44)
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 947 (485 wins / 462 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+36.12%)
+- ❌ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit stop (-2.14%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+6.50%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+42.86%)
+
+**LLM analysis:**
+No open positions or eligible discretionary closes at this review. Cash $104.16, realized P&L $7.40. ONE_TOUCH_HIGH_EDGE_NO continues to perform (4/6 wins, avg 4.49%) with several ETH/GOLD shadow warnings still open; note only, no action since no positions.
+
+---
+
