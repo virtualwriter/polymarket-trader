@@ -4272,3 +4272,37 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; ne
 
 ---
 
+### 2026-08-26 08:28 UTC
+
+**Portfolio:** $104.16 total | Cash $104.16 | 0 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 23 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 89.66 is 3.4 std devs from mean (59.44 ± 9.01)
+- [anomaly] hype_med_min = 73.3 is 3.2 std devs from mean (36.18 ± 11.53)
+- [anomaly] btc_med_min = 68605 is 3.1 std devs from mean (52802.30 ± 5103.68)
+- [anomaly] hype_hl_oi = 2053249746 is 2.9 std devs from mean (1280504311.66 ± 261995413.81)
+- [anomaly] hype_spot = 82.259 is 2.3 std devs from mean (58.91 ± 10.37)
+
+**Blocked signal learning:**
+- Open blocked shadows: 23
+- Resolved blocked shadows: 941 (480 wins / 461 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=377 (118W/206L/53flat, 36.4% win-rate, sum $-0.1561, avg -0.04%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: MACRO_MOMENTUM_UP BTC long via spot would have hit stop (-1.83%)
+- ❌ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit stop (-4.94%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-1.27%)
+- ✅ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit target (+4.07%)
+
+**LLM analysis:**
+No open positions at 08 UTC. BTC looks rangebound near $79k while crypto funding stays elevated and macro conditions remain bearish. No discretionary actions taken. Noting for nightly research only: several ETH/GOLD one-touch NO shadow edges remain wide, but any entry promotion review belongs to the nightly run, not this close-review pass.
+
+---
+
