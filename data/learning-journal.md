@@ -4712,3 +4712,36 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 7/12; ne
 
 ---
 
+### 2026-08-26 21:28 UTC
+
+**Portfolio:** $104.16 total | Cash $104.16 | 0 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 25 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_med_min = 74.2 is 3.2 std devs from mean (36.37 ± 11.80)
+- [anomaly] btc_med_min = 68587 is 3.0 std devs from mean (52882.57 ± 5213.89)
+- [anomaly] hype_hl_oi = 2052259891 is 2.9 std devs from mean (1284286810.18 ± 266676350.39)
+- [anomaly] hype_pm_ev = 85.52 is 2.8 std devs from mean (59.58 ± 9.19)
+- [anomaly] hype_spot = 81.759 is 2.2 std devs from mean (59.02 ± 10.47)
+
+**Blocked signal learning:**
+- Open blocked shadows: 21
+- Resolved blocked shadows: 950 (487 wins / 463 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+42.86%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.44%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-24.64%)
+
+**LLM analysis:**
+No open positions, so there are no eligible discretionary closes this run. The recent ONE_TOUCH_HIGH_EDGE_NO ETH shadow stop (-24.64%) highlights that even high-win-rate one-touch NO trades can produce outsized single-trade losses when stops trigger. Open quality warnings still show wide PM spreads in ETH/GOLD one-touch NO markets, but with flat exposure and no eligible closes, no action is taken.
+
+---
+
