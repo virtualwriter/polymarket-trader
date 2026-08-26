@@ -16,13 +16,16 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, statSync, writeFileSy
 import { dirname, resolve } from "node:path";
 import {
   HYPOTHESIS_SHADOW_TESTS_REQUIRED,
+  PM_CONTRACT_MAX_PENDING_PER_VARIANT,
   RETIRED_LLM_SETUP_IDS,
   completedHypothesisTests,
+  deriveContractEntry,
   evaluateHypothesisCondition,
   evaluateHypothesisTest,
   hypothesisScoringMode,
   hypothesisSetupFamilies,
   isDataContaminatedSetup,
+  isPolymarketExpression,
   pendingHypothesisTests,
   type Hypothesis,
   type HypothesisSetupFamily,
@@ -56,6 +59,8 @@ interface FamilyBackfillSummary {
   wins: number;
   losses: number;
   skippedOpenDates: number;
+  skippedNoContract: number;
+  trimmedPending: number;
   unfilledReason: string | null;
 }
 
@@ -575,6 +580,19 @@ function candidateForDate(
     .filter((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived")
     // Never backfill tests that can only resolve UNSCORABLE.
     .filter((hypothesis) => hypothesisScoringMode(hypothesis) !== null)
+    // Mirror the live opener's concurrency rules. A spot variant with a test
+    // already pending would grade the same price path twice; a contract
+    // variant may hold a few concurrent tests, but only on distinct
+    // instruments (enforced by the entry stamp at open). Without this rule a
+    // long-timeframe thesis accrues one overlapping test per walk-forward day
+    // — pseudo-replicated evidence the verdict gate would then count as
+    // independent samples.
+    .filter((hypothesis) => {
+      const pendingCount = pendingHypothesisTests(hypothesis).length;
+      return isPolymarketExpression(hypothesis)
+        ? pendingCount < PM_CONTRACT_MAX_PENDING_PER_VARIANT
+        : pendingCount === 0;
+    })
     .sort((a, b) => {
       const completedDelta = completedHypothesisTests(a).length - completedHypothesisTests(b).length;
       if (completedDelta !== 0) return completedDelta;
@@ -701,6 +719,25 @@ function backfill(opts: CliOptions): Report {
     let wins = 0;
     let losses = 0;
     let skippedOpenDates = 0;
+    let skippedNoContract = 0;
+
+    // Earlier backfills had no concurrency rule and opened one pending test
+    // per walk-forward day, so long-timeframe theses accrued queues of
+    // overlapping tests on (mostly) the same instrument. Trim each variant
+    // back to the live opener's caps before this run, keeping the oldest
+    // pendings — they are closest to maturity. The removed tests carry no
+    // outcome, so no evidence is lost.
+    let trimmedPending = 0;
+    for (const hypothesis of family.hypotheses) {
+      const cap = isPolymarketExpression(hypothesis) ? PM_CONTRACT_MAX_PENDING_PER_VARIANT : 1;
+      const pending = hypothesis.tests
+        .filter((test) => test.outcome === "pending")
+        .sort((a, b) => timeMs(a.date) - timeMs(b.date));
+      if (pending.length <= cap) continue;
+      const excess = new Set(pending.slice(cap));
+      hypothesis.tests = hypothesis.tests.filter((test) => !excess.has(test));
+      trimmedPending += excess.size;
+    }
 
     for (const currentRow of decisionRows) {
       const currentDate = dayKey(String(currentRow.date));
@@ -729,11 +766,35 @@ function backfill(opts: CliOptions): Report {
 
       snapshot = familySnapshot(family, currentDate);
       if (snapshot.completed.length + snapshot.pending.length >= opts.targetTests) continue;
+      // A contract thesis is marked on the instrument it entered, so the
+      // entry is stamped from that day's archived quotes — excluding
+      // contracts the family already holds pending, exactly like the live
+      // opener — or the test is not opened at all. An unstamped open would
+      // either resolve on a re-derived entry the family already occupies, or
+      // not resolve honestly at all.
+      let contractEntry;
+      if (isPolymarketExpression(candidate)) {
+        const pendingMarketIds = new Set(
+          pendingFamilyTests(family)
+            .map((test) => test.contractEntry?.marketId)
+            .filter((id): id is string => Boolean(id)),
+        );
+        contractEntry = deriveContractEntry(
+          candidate,
+          relativeByDate.get(currentDate) ?? [],
+          pendingMarketIds,
+        ) ?? undefined;
+        if (!contractEntry) {
+          skippedNoContract++;
+          continue;
+        }
+      }
       candidate.tests.push({
         date: currentDate,
         triggered: true,
         outcome: "pending",
         actualMove: `[historical-backfill] Setup ${family.setupId} shadow test ${snapshot.completed.length + snapshot.pending.length + 1}/${opts.targetTests} opened via ${candidate.id} after historical row satisfied variant conditions.`,
+        contractEntry,
       });
       opened++;
     }
@@ -764,6 +825,8 @@ function backfill(opts: CliOptions): Report {
       wins,
       losses,
       skippedOpenDates,
+      skippedNoContract,
+      trimmedPending,
       unfilledReason,
     });
   }
