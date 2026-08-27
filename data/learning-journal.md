@@ -5054,3 +5054,38 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 3/12; ne
 
 ---
 
+### 2026-08-27 09:28 UTC
+
+**Portfolio:** $104.16 total | Cash $104.16 | 0 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 24 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 2129474577 is 3.1 std devs from mean (1287415168.72 ± 270850522.56)
+- [anomaly] btc_med_min = 68171 is 2.9 std devs from mean (52943.29 ± 5294.18)
+- [anomaly] hype_pm_ev = 85.34 is 2.8 std devs from mean (59.68 ± 9.31)
+- [anomaly] hype_med_min = 64.8 is 2.4 std devs from mean (36.50 ± 11.95)
+- [anomaly] hype_spot = 82.939 is 2.3 std devs from mean (59.11 ± 10.54)
+
+**Blocked signal learning:**
+- Open blocked shadows: 19
+- Resolved blocked shadows: 957 (490 wins / 467 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=390 (126W/211L/53flat, 37.4% win-rate, sum $-0.5863, avg -0.15%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+4.88%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-22.22%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-62.96%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have hit stop (-35.53%)
+
+**LLM analysis:**
+No open positions and no eligible discretionary closes this run. Noted the recent ONE_TOUCH_HIGH_EDGE_NO stop-outs in ETH and BTC despite the current spot rally; open ETH and GOLD one-touch short warnings remain active but are not tradeable under the current action surface. Watching BTC IV term spread inversion and elevated crypto funding, but no action taken.
+
+---
+
