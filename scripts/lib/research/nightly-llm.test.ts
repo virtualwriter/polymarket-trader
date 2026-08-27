@@ -86,6 +86,24 @@ describe("buildNightlyResearchPrompt", () => {
     expect(prompt).toContain("ONLY keys from the CONDITION KEY CATALOG");
   });
 
+  it("shows prior ingest rejections so the model does not resubmit them unchanged", () => {
+    const prompt = buildNightlyResearchPrompt({
+      ...emptyInputs,
+      priorRejections: {
+        ingestedAt: "2026-08-27T07:28:00Z",
+        lines: ["Nightly advice: skipping too-rare hypothesis (~0.00 triggers/week over 35d, need ≥1): Refinement of H-539"],
+      },
+    });
+    expect(prompt).toContain("YOUR PREVIOUS RUN'S INGEST REJECTIONS (2026-08-27T07:28:00Z)");
+    expect(prompt).toContain("Refinement of H-539");
+    expect(prompt).toContain("Do NOT resubmit the same idea unchanged");
+  });
+
+  it("omits the prior-rejection section when there are none", () => {
+    const prompt = buildNightlyResearchPrompt({ ...emptyInputs, priorRejections: null });
+    expect(prompt).not.toContain("PREVIOUS RUN'S INGEST REJECTIONS");
+  });
+
   it("marks the valuation column list unavailable when columns are missing", () => {
     const prompt = buildNightlyResearchPrompt(emptyInputs);
     expect(prompt).toContain("valuation columns unavailable this run");

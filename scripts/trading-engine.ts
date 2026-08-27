@@ -7973,6 +7973,18 @@ function ingestNightlyLlmAdvice(
     const detail = Object.entries(rejectReasons).map(([k, v]) => `${k}=${v}`).join(", ");
     notes.push(`Nightly advice: rejected ${rejected} hypothesis record(s) (${detail}).`);
   }
+  // Persist this run's ingest rejections so the next authoring prompt can show
+  // the LLM which of its ideas died and why. Without this feedback the LLM
+  // re-authors the same doomed refinements night after night (observed:
+  // identical H-534/H-539 refinements rejected two runs straight).
+  if (!MUTATION_DISABLED) {
+    writeJson("nightly-advice-rejections.json", {
+      ingestedAt: new Date().toISOString(),
+      rejected,
+      rejectReasons,
+      lines: notes.filter((note) => note.includes("skipping") || note.includes("rejected")),
+    });
+  }
 
   // Hypothesis reviews → postMortem (capped so stale optimistic narration
   // cannot anchor the record) + durable per-family invalidated assumptions.

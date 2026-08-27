@@ -92,6 +92,12 @@ export interface BuildNightlyResearchPromptInputs {
    * actually look up. Ingest re-validates against the same catalog.
    */
   valuationColumns?: string[];
+  /**
+   * Ingest rejection lines from the previous run (nightly-advice-rejections.json).
+   * Shown so the model does not re-author the same rejected idea unchanged —
+   * without this it resubmitted identical doomed refinements night after night.
+   */
+  priorRejections?: { ingestedAt?: string; lines?: string[] } | null;
 }
 
 function jsonOrUnavailable(value: unknown, indent: number): string {
@@ -241,6 +247,18 @@ export function buildNightlyResearchPrompt(inputs: BuildNightlyResearchPromptInp
     ? `Retired LLM setup families are blocked from live trading and new hypothesis creation: ${retiredSetupIds.join(", ")}. Do not recreate these broad families under a new name; propose only narrower replacement variants with distinct measurable inputs.`
     : "No setup families are currently retired.";
 
+  const priorRejectionLines = (inputs.priorRejections?.lines ?? []).filter((line) => typeof line === "string" && line.length > 0);
+  const priorRejectionSection = priorRejectionLines.length > 0
+    ? `YOUR PREVIOUS RUN'S INGEST REJECTIONS (${inputs.priorRejections?.ingestedAt ?? "unknown time"}):
+These hypotheses you authored last run were REJECTED at ingest for the stated reasons. Do NOT resubmit the same idea unchanged — fix the stated cause or drop it:
+- "too slow to a verdict": shorten timeframeDays, or author 2-3 sibling variants with DISTINCT conditions and the same originFindingId so their tests run concurrently and pool at the family level.
+- "too-rare": the conditions almost never hold in the recent window; loosen the narrowest threshold or drop the idea.
+- "retired/contaminated family": the family is permanently closed; do not refine it again under any phrasing.
+${priorRejectionLines.map((line) => `  ${line}`).join("\n")}
+
+`
+    : "";
+
   return `You are the nightly research analyst for a quantitative paper trading system. The hourly engine only does mechanical execution and close review; you own learning — reviewing what is working, generating and reviewing hypotheses, and tuning learnable parameters. Nothing you propose executes a trade directly: new entries happen only once a hypothesis clears its shadow-test bar and is promoted to a live signal, and even then only through the hourly engine's own gates.
 
 Your job this run is to:
@@ -285,7 +303,7 @@ ${strugglingLines}
 RECENTLY KILLED HYPOTHESES:
 ${killedLines}
 
-CURRENT LEARNABLE PARAMETERS:
+${priorRejectionSection}CURRENT LEARNABLE PARAMETERS:
 ${jsonOrUnavailable(inputs.learningParams, 2)}
 
 ${buildConditionCatalogPromptSection(inputs.valuationColumns ?? [])}
@@ -778,6 +796,9 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
   const opportunities = loadRankedResearchOpportunities(join(opts.dataDir, "research-opportunities.json"), themes);
   const allowedOriginFindingIds = new Set(opportunities.map((o) => o.id));
   const valuationColumns = loadValuationColumns(join(opts.dataDir, "daily-valuations.csv"));
+  const priorRejections = readJsonOrNull(join(opts.dataDir, "nightly-advice-rejections.json")) as
+    | { ingestedAt?: string; lines?: string[] }
+    | null;
 
   const prompt = buildNightlyResearchPrompt({
     truthState,
@@ -789,6 +810,7 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
     themes,
     retiredSetupIds: opts.retiredSetupIds ?? [],
     valuationColumns,
+    priorRejections,
   });
   console.log(`[nightly-llm] prompt: ${prompt.length} chars (provider=${route.provider}, model=${route.model}, opportunities=${opportunities.length}).`);
 
