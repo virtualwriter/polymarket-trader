@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-27T01:28:27.319Z",
+  "generatedAt": "2026-08-27T02:28:19.310Z",
   "dataFreshness": {
-    "valuationRows": 2580,
-    "latestValuationAt": "2026-08-27T01",
-    "macroRows": 2578,
+    "valuationRows": 2581,
+    "latestValuationAt": "2026-08-27T02",
+    "macroRows": 2579,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-27T01"
+    "latestInstrumentSnapshotAt": "2026-08-27T02"
   },
   "portfolio": {
     "cash": 104.1649,
@@ -178,9 +178,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 21,
-    "resolvedCount": 953,
-    "wouldHaveWon": 489,
+    "openCount": 20,
+    "resolvedCount": 954,
+    "wouldHaveWon": 490,
     "wouldHaveLost": 464,
     "bySignal": [
       {
@@ -249,24 +249,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 6.5,
-        "resolvedAt": "2026-08-26T17:28:18.957Z",
-        "marketQuality": {
-          "yesBid": 0.2,
-          "yesAsk": 0.201,
-          "yesSpread": 0.001,
-          "liquidity": 51488.02,
-          "flags": []
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -402,6 +384,26 @@
           "liquidity": 40737.12,
           "flags": []
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 4.88,
+        "resolvedAt": "2026-08-27T02:28:18.511Z",
+        "marketQuality": {
+          "yesBid": 0.18,
+          "yesAsk": 0.2,
+          "yesSpread": 0.02,
+          "liquidity": 31685.41,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -436,22 +438,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.0pt on ETH, spread 2.0c, liquidity 40780. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $6,000 by end of December?",
-        "marketQuality": {
-          "yesBid": 0.18,
-          "yesAsk": 0.2,
-          "yesSpread": 0.02,
-          "liquidity": 31685.41,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 5.8pt on GOLD, spread 2.0c, liquidity 31685. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
