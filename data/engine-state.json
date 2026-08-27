@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-27T20:28:59.152Z",
+  "generatedAt": "2026-08-27T21:28:39.568Z",
   "dataFreshness": {
-    "valuationRows": 2597,
-    "latestValuationAt": "2026-08-27T20",
-    "macroRows": 2595,
+    "valuationRows": 2598,
+    "latestValuationAt": "2026-08-27T21",
+    "macroRows": 2596,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-27T20"
+    "latestInstrumentSnapshotAt": "2026-08-27T21"
   },
   "portfolio": {
     "cash": 103.1649,
@@ -13,7 +13,7 @@
     "realizedPnl": 7.4045,
     "totalTrades": 823,
     "winRatePct": 63.5,
-    "unrealizedPnl": 0.0055
+    "unrealizedPnl": 0.0048
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": 0.55,
-      "currentPrice": 4599,
-      "underlyingPrice": 4599,
+      "pnlPct": 0.48,
+      "currentPrice": 4596,
+      "underlyingPrice": 4596,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -196,7 +196,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 23,
+    "openCount": 24,
     "resolvedCount": 959,
     "wouldHaveWon": 490,
     "wouldHaveLost": 469,
@@ -499,6 +499,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.2pt on ETH, spread 1.0c, liquidity 39622. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-wti-hit-in-august-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $90 in August?",
+        "marketQuality": {
+          "yesBid": 0.069,
+          "yesAsk": 0.089,
+          "yesSpread": 0.02,
+          "liquidity": 31200.86,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.0pt on OIL, spread 2.0c, liquidity 31201. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
