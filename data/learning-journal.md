@@ -4945,3 +4945,37 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; ne
 
 ---
 
+### 2026-08-27 06:28 UTC
+
+**Portfolio:** $104.16 total | Cash $104.16 | 0 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 25 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_med_min = 68696 is 3.0 std devs from mean (52925.35 ± 5271.02)
+- [anomaly] hype_hl_oi = 2079920030 is 2.9 std devs from mean (1286464903.15 ± 269568980.71)
+- [anomaly] hype_pm_ev = 85.11 is 2.7 std devs from mean (59.65 ± 9.28)
+- [anomaly] hype_med_min = 67.7 is 2.6 std devs from mean (36.47 ± 11.91)
+- [anomaly] amzn_hl_basis_pct = -0.97 is -2.5 std devs from mean (0.10 ± 0.43)
+
+**Blocked signal learning:**
+- Open blocked shadows: 20
+- Resolved blocked shadows: 954 (490 wins / 464 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.25%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-2.63%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.80%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+4.88%)
+
+**LLM analysis:**
+No open positions and the allowed action surface lists zero eligible closes. Context only: BTC funding remains elevated, HYPE PM IV is elevated, and macro headwinds persist. No discretionary actions taken.
+
+---
+
