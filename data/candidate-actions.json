@@ -1,34 +1,33 @@
 {
-  "generatedAt": "2026-08-27T13:28:34.080Z",
+  "generatedAt": "2026-08-27T14:28:40.110Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
     {
-      "type": "FUNDING_EXTREME_SHORT",
+      "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "GOLD",
-      "venue": "hyperliquid",
+      "venue": "spot",
       "direction": "long",
-      "strength": 0.14199999999999996,
-      "confidence": 0.08142673246093754,
-      "thesis": "GOLD HL funding -20.0% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 1,
+      "confidence": 0.5081734618482714,
+      "thesis": "GOLD P/C ratio 3.49 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4589,
+      "entryPrice": 4574,
       "targetPct": 4,
-      "stopPct": 2,
-      "expiryDays": 7,
-      "leverage": 1
+      "stopPct": 1.5,
+      "expiryDays": 5
     }
   ],
   "sizingPreviews": [
     {
-      "signalType": "FUNDING_EXTREME_SHORT",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
       "asset": "GOLD",
-      "venue": "hyperliquid",
+      "venue": "spot",
       "direction": "long",
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4589,
+      "entryPrice": 4574,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -44,17 +43,17 @@
   ],
   "portfolioExposurePreviews": [
     {
-      "candidateId": "FUNDING_EXTREME_SHORT:GOLD:0",
+      "candidateId": "PC_RATIO_EXTREME_HIGH:GOLD:0",
       "asset": "GOLD",
-      "venue": "hyperliquid",
+      "venue": "spot",
       "direction": "long",
-      "signalType": "FUNDING_EXTREME_SHORT",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
       "candidateSize": 0,
       "riskClusters": [
         "commodity",
-        "funding_reversion",
         "gold_delta",
-        "hyperliquid_venue"
+        "options_sentiment",
+        "spot_venue"
       ],
       "current": {
         "totalGross": 0,
@@ -71,16 +70,16 @@
           "GOLD": 0
         },
         "bySignalType": {
-          "FUNDING_EXTREME_SHORT": 0
+          "PC_RATIO_EXTREME_HIGH": 0
         },
         "byVenue": {
-          "hyperliquid": 0
+          "spot": 0
         },
         "byCluster": {
           "commodity": 0,
-          "funding_reversion": 0,
           "gold_delta": 0,
-          "hyperliquid_venue": 0
+          "options_sentiment": 0,
+          "spot_venue": 0
         }
       },
       "warnings": []
@@ -88,8 +87,8 @@
   ],
   "stagedQuantRules": [
     {
-      "candidateId": "FUNDING_EXTREME_SHORT:GOLD:0",
-      "signalType": "FUNDING_EXTREME_SHORT",
+      "candidateId": "PC_RATIO_EXTREME_HIGH:GOLD:0",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
       "asset": "GOLD",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
