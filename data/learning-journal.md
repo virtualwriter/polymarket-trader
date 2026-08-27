@@ -5264,3 +5264,39 @@ No open positions to review for discretionary close, and llmCloseEligibility is 
 
 ---
 
+### 2026-08-27 15:28 UTC
+
+**Portfolio:** $104.16 total | Cash $103.16 | 1 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 24 active families did not trigger; 0 later families waiting.
+- 🧪 Opened 1 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 2216553415 is 3.4 std devs from mean (1289422541.29 ± 273727286.03)
+- [anomaly] hype_pm_ev = 89.19 is 3.1 std devs from mean (59.74 ± 9.39)
+- [anomaly] gold_gld_pc_ratio = 1.912 is 2.8 std devs from mean (0.73 ± 0.42)
+- [anomaly] btc_med_min = 67317 is 2.7 std devs from mean (52977.70 ± 5336.04)
+- [anomaly] hype_spot = 85.188 is 2.5 std devs from mean (59.17 ± 10.60)
+
+**Blocked signal learning:**
+- Open blocked shadows: 22
+- Resolved blocked shadows: 958 (490 wins / 468 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=390 (126W/211L/53flat, 37.4% win-rate, sum $-0.5863, avg -0.15%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-22.22%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-62.96%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have hit stop (-35.53%)
+- ❌ Blocked: FUNDING_EXTREME_LONG BTC short via hyperliquid would have expired (-0.81%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 7/12; next scheduled 2026-08-27T17:28:30.590Z). Mechanical cycle ran normally._
+
+---
+

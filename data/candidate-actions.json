@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-27T14:28:40.110Z",
+  "generatedAt": "2026-08-27T15:28:30.548Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "GOLD",
       "venue": "spot",
       "direction": "long",
-      "strength": 1,
-      "confidence": 0.5081734618482714,
-      "thesis": "GOLD P/C ratio 3.49 — heavy put buying → contrarian long.",
+      "strength": 0.8899999999999999,
+      "confidence": 0.4522743810449615,
+      "thesis": "GOLD P/C ratio 1.91 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4574,
+      "entryPrice": 4590,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4574,
+      "entryPrice": 4590,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,30 +56,41 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 0,
-        "totalNet": 0,
-        "byAsset": {},
-        "bySignalType": {},
-        "byVenue": {},
-        "byCluster": {}
-      },
-      "afterCandidate": {
-        "totalGross": 0,
-        "totalNet": 0,
+        "totalGross": 1,
+        "totalNet": 1,
         "byAsset": {
-          "GOLD": 0
+          "GOLD": 1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 0
+          "PC_RATIO_EXTREME_HIGH": 1
         },
         "byVenue": {
-          "spot": 0
+          "spot": 1
         },
         "byCluster": {
-          "commodity": 0,
-          "gold_delta": 0,
-          "options_sentiment": 0,
-          "spot_venue": 0
+          "commodity": 1,
+          "gold_delta": 1,
+          "options_sentiment": 1,
+          "spot_venue": 1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 1,
+        "totalNet": 1,
+        "byAsset": {
+          "GOLD": 1
+        },
+        "bySignalType": {
+          "PC_RATIO_EXTREME_HIGH": 1
+        },
+        "byVenue": {
+          "spot": 1
+        },
+        "byCluster": {
+          "commodity": 1,
+          "gold_delta": 1,
+          "options_sentiment": 1,
+          "spot_venue": 1
         }
       },
       "warnings": []
@@ -103,5 +114,25 @@
       ]
     }
   ],
-  "llmCloseEligibility": []
+  "llmCloseEligibility": [
+    {
+      "positionId": "T-1787840939429-68i9",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_gld_pc_ratio"
+      ],
+      "hoursOpen": 0.99,
+      "hoursToExpiry": 119.01,
+      "plannedHoldHours": 120,
+      "elapsedHoldPct": 0.0083,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
+    }
+  ]
 }
