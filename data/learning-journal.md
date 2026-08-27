@@ -4979,3 +4979,43 @@ No open positions and the allowed action surface lists zero eligible closes. Con
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-27T07:13:20.494Z, model=deepseek-v4-pro)
+- Hypotheses added: 2 (rejected 3); reviews applied: 8; invalidated assumptions learned: 3; param updates: none.
+- Strategy review: What is working: the house's YES-overpricing edge continues to show up in contract-aligned one-touch NO trades (clean live ONE_TOUCH_HIGH_EDGE_NO 4/4, +18.4%/trade; gated FIND-0020 shadow 90/144, +2.0% avg; USER_PM_IV_TOUCH_RICH_NO shadow 9/10, +5.9% avg), weekend funding reversion is live-eligible (346/500 live, +0.31% avg; 188/253 shadows, +0.99% avg), and monotonic arb is live-eligible. What is failing: spot-direction hypotheses attached to contract/PM edge signals, shallow funding thresholds, HYPE/listed-IV momentum confirmation, and most Polymarket proxy-short families are burning capital
+- Nightly journal: This run focused on diagnosing the struggling families rather than adding many new variants. The strongest lesson is still contract-vs-spot alignment: one-touch NO premium edges work when graded on the contract, but repeatedly fail when the prediction demands a spot move. Shallow funding thresholds also need weekend and reversal gates. No parameter updates were made because the current evidence does not cleanly support changing risk or timing settings.
+### 2026-08-27 07:28 UTC
+
+**Portfolio:** $104.16 total | Cash $104.16 | 0 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 25 active families did not trigger; 0 later families waiting.
+- 🧪 Opened 2 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_med_min = 68696 is 3.0 std devs from mean (52931.46 ± 5279.13)
+- [anomaly] hype_hl_oi = 2086319834 is 3.0 std devs from mean (1286774804.33 ± 269976036.98)
+- [anomaly] hype_pm_ev = 85.17 is 2.7 std devs from mean (59.66 ± 9.29)
+- [anomaly] hype_med_min = 67.7 is 2.6 std devs from mean (36.48 ± 11.93)
+- [anomaly] amzn_hl_basis_pct = -0.93 is -2.4 std devs from mean (0.10 ± 0.43)
+
+**Blocked signal learning:**
+- Open blocked shadows: 20
+- Resolved blocked shadows: 954 (490 wins / 464 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.25%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have edge compressed but trade lost money (-2.63%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.80%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+4.88%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 3/12; next scheduled 2026-08-27T09:28:24.643Z). Mechanical cycle ran normally._
+
+---
+
