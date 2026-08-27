@@ -5405,3 +5405,38 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-08-27 20:28 UTC
+
+**Portfolio:** $104.16 total | Cash $103.16 | 1 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 25 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_hl_oi = 2179946292 is 3.2 std devs from mean (1290827018.98 ± 275840722.59)
+- [anomaly] hype_pm_ev = 90.25 is 3.2 std devs from mean (59.78 ± 9.46)
+- [anomaly] gold_hl_funding_ann = -37.04 is -2.7 std devs from mean (8.17 ± 16.83)
+- [anomaly] btc_med_min = 67159 is 2.6 std devs from mean (52999.44 ± 5360.53)
+- [anomaly] hype_spot = 85.323 is 2.5 std devs from mean (59.21 ± 10.64)
+
+**Blocked signal learning:**
+- Open blocked shadows: 23
+- Resolved blocked shadows: 959 (490 wins / 469 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=390 (126W/211L/53flat, 37.4% win-rate, sum $-0.5863, avg -0.15%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=424 (140W/228L/56flat, 38.0% win-rate, sum $-0.2798, avg -0.07%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-62.96%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have hit stop (-35.53%)
+- ❌ Blocked: FUNDING_EXTREME_LONG BTC short via hyperliquid would have expired (-0.81%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have hit stop (-37.50%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h since last call; daily budget 8/12; next scheduled 2026-08-27T22:28:59.284Z). Mechanical cycle ran normally._
+
+---
+
