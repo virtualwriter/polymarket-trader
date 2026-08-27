@@ -4778,3 +4778,37 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 8/12; ne
 
 ---
 
+### 2026-08-27 00:28 UTC
+
+**Portfolio:** $104.16 total | Cash $104.16 | 0 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 4 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 24 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_med_min = 73.1 is 3.1 std devs from mean (36.40 ± 11.84)
+- [anomaly] hype_hl_oi = 2095723231 is 3.0 std devs from mean (1284920527.81 ± 267540111.66)
+- [anomaly] btc_med_min = 68488 is 3.0 std devs from mean (52894.73 ± 5230.08)
+- [anomaly] hype_pm_ev = 85.57 is 2.8 std devs from mean (59.60 ± 9.22)
+- [anomaly] hype_spot = 81.865 is 2.2 std devs from mean (59.04 ± 10.49)
+
+**Blocked signal learning:**
+- Open blocked shadows: 23
+- Resolved blocked shadows: 951 (488 wins / 463 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.44%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-24.64%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.25%)
+
+**LLM analysis:**
+Close-review run with zero open positions and an empty allowed action surface. Reviewed shadow one-touch warnings but no live exposure exists. No discretionary close instructions warranted.
+
+---
+
