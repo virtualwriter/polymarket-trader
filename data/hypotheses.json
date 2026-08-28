@@ -19159,6 +19159,12 @@
         "actualMove": "HYPE moved 14.56% (74.062 → 84.849) [long needs ≥ +2%] (method=spot_directional_long)",
         "magnitude": 14.56482406632282,
         "magnitudeUnit": "pct_return"
+      },
+      {
+        "date": "2026-08-23",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "[historical-backfill] Setup hype_relative_oi_breakout_continuation shadow test 11/20 opened via H-521 after historical row satisfied variant conditions."
       }
     ],
     "winRate": 0.7777777777777778,
@@ -23992,8 +23998,10 @@
       {
         "date": "2026-07-29",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup find_0036 shadow test 5/20 opened via H-572 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "[historical-backfill] UNSCORABLE: contract 2677831 has no exit quote at the horizon (resolved 2026-08-28 from 2026-07-29; method=contract_exit_unavailable)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_exit_unavailable"
       },
       {
         "date": "2026-08-01",
@@ -27574,6 +27582,12 @@
         "actualMove": "BTC moved 1.37% (79928 → 81020) [neutral abs needs ≥ 2%] (method=spot_abs_move)",
         "magnitude": -0.6337703933540186,
         "magnitudeUnit": "pct_return"
+      },
+      {
+        "date": "2026-08-26",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "[historical-backfill] Setup btc_iv_compression_vol_reversion shadow test 8/20 opened via H-638 after historical row satisfied variant conditions."
       }
     ],
     "winRate": 0,
