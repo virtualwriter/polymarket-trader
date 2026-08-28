@@ -6052,3 +6052,36 @@ No open positions, so no discretionary close review is actionable this run. Noti
 
 ---
 
+### 2026-08-28 17:28 UTC
+
+**Portfolio:** $104.20 total | Cash $104.20 | 0 open | P&L $7.4369 | 64% win rate (825 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 25 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved wider by 9.9pp (was -20.3, now -10.4)
+- [anomaly] hype_pm_ev = 88.5 is 2.9 std devs from mean (59.99 ± 9.74)
+- [anomaly] btc_med_min = 68690 is 2.8 std devs from mean (53099.39 ± 5475.23)
+- [anomaly] hype_hl_oi = 2080855128 is 2.8 std devs from mean (1296569003.82 ± 283407675.75)
+- [anomaly] hype_med_min = 63.1 is 2.2 std devs from mean (36.79 ± 12.21)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 970 (497 wins / 473 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+30.42%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+4.68%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit target (+4.74%)
+- ❌ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit stop (-2.64%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 6/12; next scheduled 2026-08-28T19:28:33.948Z). Mechanical cycle ran normally._
+
+---
+
