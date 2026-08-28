@@ -6118,3 +6118,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 6/12; ne
 
 ---
 
+### 2026-08-28 19:28 UTC
+
+**Portfolio:** $104.20 total | Cash $104.20 | 0 open | P&L $7.4369 | 64% win rate (825 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 25 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_med_min = 68721 is 2.8 std devs from mean (53111.39 ± 5490.29)
+- [anomaly] hype_pm_ev = 87.54 is 2.8 std devs from mean (60.01 ± 9.76)
+- [anomaly] hype_hl_oi = 1954072110 is 2.3 std devs from mean (1297087424.82 ± 283918299.20)
+- [anomaly] hype_med_min = 63.2 is 2.2 std devs from mean (36.81 ± 12.23)
+- [anomaly] hype_med_max = 110.8 is 2.1 std devs from mean (80.74 ± 14.16)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 970 (497 wins / 473 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+30.42%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+4.68%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit target (+4.74%)
+- ❌ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit stop (-2.64%)
+
+**LLM analysis:**
+No open positions to review and the ALLOWED ACTION SURFACE is empty, so no discretionary close actions this run. Market remains macro-bearish and Fed-hawkish; BTC is chopping near $77.7k with positive funding, while HYPE funding has flipped negative and HYPE OI is declining. Continue monitoring the shadow ONE_TOUCH_HIGH_EDGE_NO warnings, but there is no live position requiring action.
+
+---
+
