@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-27T07:15:29Z",
+  "generatedAt": "2026-08-28T07:12:33Z",
   "summary": {
-    "generatedAt": "2026-08-27T07:15:29Z",
+    "generatedAt": "2026-08-28T07:12:33Z",
     "findingCounts": {
       "open": 9,
       "strengthened": 40,
@@ -21,7 +21,7 @@
       "themeSlug": "outcome_panel",
       "status": "strengthened"
     },
-    "authoredHypothesisCount": 5,
+    "authoredHypothesisCount": 4,
     "advicePresent": true
   },
   "topOpportunities": [
@@ -98,8 +98,8 @@
     {
       "rank": 8,
       "id": "FIND-0043",
-      "opportunityScore": 0.9975,
-      "confidenceScore": 0.673,
+      "opportunityScore": 0.9905,
+      "confidenceScore": 0.6548,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -108,8 +108,8 @@
     {
       "rank": 9,
       "id": "FIND-0055",
-      "opportunityScore": 0.9889,
-      "confidenceScore": 0.5109,
+      "opportunityScore": 0.9638,
+      "confidenceScore": 0.4932,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -132,7 +132,7 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 41,
-      "avgOpportunityScore": 0.6309
+      "avgOpportunityScore": 0.6057
     },
     {
       "id": "THEME-0002",
@@ -181,27 +181,22 @@
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-534: treat GOLD above-strike one-touch NO as a contract premium fade, not a spot decline call. Require moderate underlying-cap edge, above-strike contracts, mid-priced YES ask, and near-dated expiry so the contract has room to decay without needing GOLD spot to crash."
+      "description": "Refinement of H-534: replace the spot-decline prediction with a contract premium fade on moderate GOLD above-strike one-touch sell-YES edge, near-dated contracts only."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-539: require true weekend timing, a deeper CBRS funding low, and a rising 24h funding change to avoid flat or worsening funding readings."
+      "description": "Refinement of H-539: require CBRS funding to be in a relative extreme and already turning higher, avoiding the flat/default reads and continued deterioration that caused losses under the static < -10 rule."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-108: remove the HYPE confirmation that was echoing late-stage BTC risk-on. Instead require BTC trend strength plus a non-extended PM IV regime and non-extreme funding."
+      "description": "Refinement of H-535: replace static MU funding < -10 with a relative extreme that has started turning up; this filters entries at stale 5.5% prints and requires actual normalization to have begun."
     },
     {
-      "originFindingId": "FIND-0020",
-      "themeId": "THEME-0003",
-      "description": "Informed-flow asymmetry faded on near-dated mid-priced above-strike BTC one-touch contracts: when tracked smart wallets are net short YES, the dumb-money YES premium is overpriced and should decay."
-    },
-    {
-      "originFindingId": "FIND-0043",
-      "themeId": "THEME-0001",
-      "description": "BTC-specific one-touch NO premium fade with moderate sell-YES edge, above-strike contracts, tight spread, and meaningful liquidity to avoid stale or wide quotes."
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-537: require AAPL funding to be in the lower tail and turning higher, rather than any print below -10%; this avoids losses from flat/default funding readings and focuses on genuine reversion starts."
     }
   ],
   "negativeFindings": [
@@ -257,9 +252,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-08-27T07:13:20Z",
-    "opportunitiesGeneratedAt": "2026-08-27T07:15:29Z",
-    "themesGeneratedAt": "2026-08-27T07:13:28Z",
-    "adviceGeneratedAt": "2026-08-27T07:13:20.494Z"
+    "findingsExportGeneratedAt": "2026-08-28T07:10:24Z",
+    "opportunitiesGeneratedAt": "2026-08-28T07:12:33Z",
+    "themesGeneratedAt": "2026-08-28T07:10:30Z",
+    "adviceGeneratedAt": "2026-08-28T07:10:23.633Z"
   }
 }
