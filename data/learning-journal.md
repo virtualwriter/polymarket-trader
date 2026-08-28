@@ -6217,3 +6217,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 7/12; ne
 
 ---
 
+### 2026-08-28 22:28 UTC
+
+**Portfolio:** $104.20 total | Cash $103.20 | 1 open | P&L $7.4369 | 64% win rate (825 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 25 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 87.66 is 2.8 std devs from mean (60.04 ± 9.80)
+- [anomaly] btc_med_min = 68500 is 2.8 std devs from mean (53129.23 ± 5512.34)
+- [anomaly] hype_hl_oi = 1966904853 is 2.4 std devs from mean (1297838347.08 ± 284619804.91)
+- [anomaly] hype_med_min = 63.1 is 2.1 std devs from mean (36.84 ± 12.25)
+- [anomaly] hype_med_max = 110.7 is 2.1 std devs from mean (80.78 ± 14.19)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 971 (498 wins / 473 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+4.68%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit target (+4.74%)
+- ❌ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit stop (-2.64%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+7.14%)
+
+**LLM analysis:**
+No discretionary closes are permitted this run. The only open position, BX WEEKEND_HL_FUNDING_REVERSION_LONG, is policy-gated mechanical (allowed=false), is only about 1h into a 24h hold, and is roughly flat at +0.11%. BX funding became more negative since entry (-78.8% to about -101%), which is thesis continuation for a long, not a close reason. No hard portfolio risk or data-quality issue; leave the trade to mechanical target/stop/expiry.
+
+---
+
