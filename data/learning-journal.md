@@ -6015,3 +6015,40 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 5/12; ne
 
 ---
 
+### 2026-08-28 16:28 UTC
+
+**Portfolio:** $104.20 total | Cash $104.20 | 0 open | P&L $7.4065 | 64% win rate (824 trades)
+
+**Closed 1 trades:**
+- ✅ BTC short via spot/spot [BTC spot] (PC_RATIO_EXTREME_LOW) → target: +$0.0304 (3.0%, market 0.0304, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 24 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved narrower by 11.5pp (was -8.8, now -20.3)
+- [anomaly] hype_pm_ev = 88.31 is 2.9 std devs from mean (59.98 ± 9.72)
+- [anomaly] btc_med_min = 68854 is 2.9 std devs from mean (53093.42 ± 5467.77)
+- [anomaly] hype_hl_oi = 2047408663 is 2.7 std devs from mean (1296268511.05 ± 283045794.85)
+- [anomaly] btc_opt_iv_30d = 49.5 is 2.6 std devs from mean (38.05 ± 4.45)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 970 (497 wins / 473 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+30.42%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+4.68%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit target (+4.74%)
+- ❌ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit stop (-2.64%)
+
+**LLM analysis:**
+No open positions, so no discretionary close review is actionable this run. Noting the late-session BTC vol spike and macro risk-off tilt as context for future entries. One-touch NO shadow warnings remain visible in open quality warnings, but none are live positions.
+
+---
+
