@@ -5581,3 +5581,43 @@ Reviewed the open GOLD long PC_RATIO_EXTREME_HIGH position (T-1787840939429-68i9
 
 ---
 
+### 2026-08-28 02:28 UTC
+
+**Portfolio:** $104.16 total | Cash $102.16 | 2 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Opened 1 positions:**
+- BTC short @ $80024 via spot/spot [BTC spot] (PC_RATIO_EXTREME_LOW)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 25 active families did not trigger; 0 later families waiting.
+- 🧪 Opened 3 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 89.86 is 3.1 std devs from mean (59.84 ± 9.54)
+- [anomaly] hype_hl_oi = 2123209198 is 3.0 std devs from mean (1292491995.69 ± 278172342.99)
+- [anomaly] btc_med_min = 67273 is 2.6 std devs from mean (53026.67 ± 5391.14)
+- [anomaly] hype_med_max = 112.7 is 2.3 std devs from mean (80.57 ± 14.01)
+- [anomaly] hype_spot = 83.616 is 2.3 std devs from mean (59.26 ± 10.69)
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 961 (491 wins / 470 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=390 (126W/211L/53flat, 37.4% win-rate, sum $-0.5863, avg -0.15%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=424 (140W/228L/56flat, 38.0% win-rate, sum $-0.2798, avg -0.07%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: FUNDING_EXTREME_LONG BTC short via hyperliquid would have expired (-0.81%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have hit stop (-37.50%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.06%)
+- ✅ Blocked: MACRO_MOMENTUM_UP BTC long via spot would have hit target (+3.40%)
+
+**LLM analysis:**
+Reviewed the open GOLD long (PC_RATIO_EXTREME_HIGH). The signal-family input has round-tripped: gold_gld_pc_ratio fell from 3.494 at entry to 0.934 (-73.3%), which is well past normalizing and would normally support thesis_invalidated. However, ALLOWED ACTION SURFACE marks this position allowed=false because it is still just under the 12h minimum discretionary-close hold (11.99h), so no close instruction is emitted. Position PnL is +0.15%, within noise. Re-review next hourly snapshot; if P/C remains normalized and the position becomes eligible, a thesis_invalidated close should be considered.
+
+---
+
