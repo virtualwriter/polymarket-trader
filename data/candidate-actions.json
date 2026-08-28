@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-28T06:28:40.310Z",
+  "generatedAt": "2026-08-28T07:28:25.885Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.1693615630746101,
       "thesis": "BTC P/C ratio 0.40 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 79804,
+      "entryPrice": 79749,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 79804,
+      "entryPrice": 79749,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,49 +56,41 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 2,
-        "totalNet": 0,
+        "totalGross": 1,
+        "totalNet": -1,
         "byAsset": {
-          "GOLD": 1,
           "BTC": -1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 1,
           "PC_RATIO_EXTREME_LOW": -1
         },
         "byVenue": {
-          "spot": 0
+          "spot": -1
         },
         "byCluster": {
-          "commodity": 1,
-          "gold_delta": 1,
-          "options_sentiment": 0,
-          "spot_venue": 0,
           "btc_delta": -1,
-          "risk_on": -1
+          "options_sentiment": -1,
+          "risk_on": -1,
+          "spot_venue": -1
         }
       },
       "afterCandidate": {
-        "totalGross": 2,
-        "totalNet": 0,
+        "totalGross": 1,
+        "totalNet": -1,
         "byAsset": {
-          "GOLD": 1,
           "BTC": -1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 1,
           "PC_RATIO_EXTREME_LOW": -1
         },
         "byVenue": {
-          "spot": 0
+          "spot": -1
         },
         "byCluster": {
-          "commodity": 1,
-          "gold_delta": 1,
-          "options_sentiment": 0,
-          "spot_venue": 0,
           "btc_delta": -1,
-          "risk_on": -1
+          "options_sentiment": -1,
+          "risk_on": -1,
+          "spot_venue": -1
         }
       },
       "warnings": []
@@ -124,29 +116,6 @@
   ],
   "llmCloseEligibility": [
     {
-      "positionId": "T-1787840939429-68i9",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_gld_pc_ratio"
-      ],
-      "hoursOpen": 15.99,
-      "hoursToExpiry": 104.01,
-      "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.1333,
-      "minHoldHours": 12,
-      "reason": "Mechanical PC_RATIO_EXTREME_HIGH setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    },
-    {
       "positionId": "T-1787884133755-08tt",
       "signalType": "PC_RATIO_EXTREME_LOW",
       "asset": "BTC",
@@ -158,12 +127,12 @@
         "btc_spot",
         "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 4,
-      "hoursToExpiry": 116,
+      "hoursOpen": 4.99,
+      "hoursToExpiry": 115.01,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0333,
+      "elapsedHoldPct": 0.0416,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 4.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
     }
   ]
 }

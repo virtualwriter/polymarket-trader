@@ -4984,7 +4984,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "9/25 scorable tests and multiple losses such as BTC -3.47% after trigger show near-high BTC plus HYPE above SMA and stable OI is not an independent continuation signal. HYPE strength is coincident with late-stage risk-on rallies rather than evidence of durable BTC upside. | 9/25 scorable and only 36% win; HYPE above SMA with stable OI did not produce durable BTC continuation and was repeatedly recorded as learned-invalid. The setup only won during a few large trend days, not as a repeatable filter. | Cross-asset IV compression/vol expansion is 9/25 scorable (36%). HYPE above SMA with stable OI enters BTC near 7d highs, and the wins are explosive but too rare; HYPE risk-on is not independent confirmation of durable BTC upside. | H-108-style BTC/HYPE confirmation produced only 36% family wins. HYPE spot above SMA with stable OI fired during the same broad risk-on tape and did not provide independent confirmation, leading to losses when BTC was already extended or reversed.",
+    "postMortem": "9/25 scorable and only 36% win; HYPE above SMA with stable OI did not produce durable BTC continuation and was repeatedly recorded as learned-invalid. The setup only won during a few large trend days, not as a repeatable filter. | Cross-asset IV compression/vol expansion is 9/25 scorable (36%). HYPE above SMA with stable OI enters BTC near 7d highs, and the wins are explosive but too rare; HYPE risk-on is not independent confirmation of durable BTC upside. | H-108-style BTC/HYPE confirmation produced only 36% family wins. HYPE spot above SMA with stable OI fired during the same broad risk-on tape and did not provide independent confirmation, leading to losses when BTC was already extended or reversed. | The cross-asset HYPE confirmation family is 9/25 (36% win). Wins cluster in already strong BTC trend windows, while many losses show HYPE risk-on participation fails to add timing value and behaves as a lagging echo.",
     "source": "llm",
     "setupId": "cross_asset_iv_compression_vol_expansion",
     "setupLabel": "Cross-asset IV compression / vol expansion"
@@ -7185,7 +7185,7 @@
     "winRate": 0.16666666666666666,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "4/13 scorable tests show rising option IV after BTC spot is already strong does not produce reliable >2% follow-through; many observations stall or reverse. The IV rise is a coincident volatility repricing near highs, not a forward momentum confirmation. | 4/16 scorable and 25% win; rising listed IV alongside spot momentum did not lead to further BTC gains. Several resolved examples were effectively short/mean-reverting outcomes, showing IV expansion was more hedging demand than continuation signal. | BTC listed-IV momentum confirmation is 4/17 scorable (24%). The tests are direction-confused and the premise of spot momentum plus rising options IV producing further >2% BTC gains is not holding; the family should be killed or re-written as a contract/IV event, not a spot continuation. | The BTC listed-IV momentum family is at 4/17 wins. Its tests were effectively short BTC and lost on +24.08% and +21.59% moves. Rising option IV was not a bearish timing signal; it appeared in strong uptrends and upside demand.",
+    "postMortem": "4/16 scorable and 25% win; rising listed IV alongside spot momentum did not lead to further BTC gains. Several resolved examples were effectively short/mean-reverting outcomes, showing IV expansion was more hedging demand than continuation signal. | BTC listed-IV momentum confirmation is 4/17 scorable (24%). The tests are direction-confused and the premise of spot momentum plus rising options IV producing further >2% BTC gains is not holding; the family should be killed or re-written as a contract/IV event, not a spot continuation. | The BTC listed-IV momentum family is at 4/17 wins. Its tests were effectively short BTC and lost on +24.08% and +21.59% moves. Rising option IV was not a bearish timing signal; it appeared in strong uptrends and upside demand. | The BTC listed-IV momentum family is 4/18 (22% win). Rising 30d options IV alongside positive spot momentum repeatedly failed to deliver >2% continuation, and some variants scored as shorts during large rally losses.",
     "source": "llm",
     "setupId": "btc_listed_iv_momentum_confirmation",
     "setupLabel": "BTC listed-IV momentum confirmation"
@@ -20839,7 +20839,7 @@
     "winRate": 0.1875,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Refined by H-665 (2026-08-25): Re-author the gold one-touch cap-edge signal as a contract-premium fade rather t | 2/14 scorable and 4 unscorable; the hypothesis was scored on the wrong instrument. The cap edge is a rich-NO contract observation, so using spot decline >2% as success produced noise while the contract prices moved only a few cents. | Gold one-touch cap-edge variant is 2/14 scorable (14%) with 5 unscorable. The primary prediction was a >2% GOLD spot decline, but examples are scored on contract PnL and the NO contract often barely moves. The underlying-cap edge did not translate into either spot follow-through or consistent contract PnL. | H-534 is 3/16 scorable with 6 unscorable tests because the primary prediction was for GOLD spot to decline >2%, while the evidence was collected on NO contract prices. Tail strikes like GOLD above 7000 NO near 0.94 barely moved; the winner was a closer above-6000 NO from 0.795 to 0.865. This is a contract premium fade, not spot direction.",
+    "postMortem": "Gold one-touch cap-edge variant is 2/14 scorable (14%) with 5 unscorable. The primary prediction was a >2% GOLD spot decline, but examples are scored on contract PnL and the NO contract often barely moves. The underlying-cap edge did not translate into either spot follow-through or consistent contract PnL. | H-534 is 3/16 scorable with 6 unscorable tests because the primary prediction was for GOLD spot to decline >2%, while the evidence was collected on NO contract prices. Tail strikes like GOLD above 7000 NO near 0.94 barely moved; the winner was a closer above-6000 NO from 0.795 to 0.865. This is a contract premium fade, not spot direction. | Refined by H-679 (2026-08-28): Refinement of H-534: replace the spot-decline prediction with a contract premium | The GOLD one-touch high-edge NO family is 3/16 scorable with 7 unscorable tests. The scorable examples are contract pnl moves, not GOLD spot moves, confirming the primary prediction was written against the wrong instrument.",
     "source": "shadow_mined",
     "setupId": "shadow_one_touch_high_edge_no_gold_heatmap_no",
     "setupLabel": "Shadow-mined ONE_TOUCH_HIGH_EDGE_NO GOLD heatmap"
@@ -20970,7 +20970,7 @@
     "winRate": 0.3125,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "MU < -10 degrades because most triggers occur outside true weekend dislocations and funding is often already at or above 5.5%; the evaluated moves are flat or mildly lower instead of a strong reversion from an extreme. | 5/16 scorable tests; MU funding < -10 is too weak a condition and often catches pinned/choppy funding around 5.5%, not a genuine immediate normalization opportunity. | MU variant is 5/16 scorable (31%) and frequently shows 5.5% or positive funding readings, suggesting entries fire on stale/default data rather than a true < -10% extreme. The intended mechanism is not actually being tested, so more threshold variants are unlikely to help. | MU funding < -10 produced only 31% wins. Most failures occurred because funding remained flat at 5.5% or moved from 29.1% to 3.4%, so the condition captured non-extreme or already-normalizing readings rather than deep weekend stress.",
+    "postMortem": "5/16 scorable tests; MU funding < -10 is too weak a condition and often catches pinned/choppy funding around 5.5%, not a genuine immediate normalization opportunity. | MU variant is 5/16 scorable (31%) and frequently shows 5.5% or positive funding readings, suggesting entries fire on stale/default data rather than a true < -10% extreme. The intended mechanism is not actually being tested, so more threshold variants are unlikely to help. | MU funding < -10 produced only 31% wins. Most failures occurred because funding remained flat at 5.5% or moved from 29.1% to 3.4%, so the condition captured non-extreme or already-normalizing readings rather than deep weekend stress. | MU shadow tests are 5/16 (31% win). Many losses start and finish at the same 5.5% funding value, meaning the signal fired on a flat/default print rather than a tradable stress event.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_mu_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG MU weekend_hl_funding_shadow"
@@ -21210,7 +21210,7 @@
     "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "AAPL threshold < -10 triggers at readings that are already positive or modest, including 10.4% and 11.2%, and the measured move is often just back to a central 5.5% value. Only true deep weekend dislocations reverted with any consistency. | 10/19 scorable tests; the any-day threshold allows prints around 5.5% or mildly positive readings that never represented weekend funding stress, so the entry is not a reversion setup. | AAPL variant is 10/19 scorable (53%) but outcomes score funding normalization instead of AAPL spot >2%. The < -10 threshold admits non-extreme weekday prints and does not identify genuine short-positioning stress. | AAPL funding < -10 was too shallow and not weekend-only. Outcomes show readings pinned at 5.5% or moving from 11.2% to 5.5%, meaning the signal captured normalized funding rather than extreme weekend stress. At 50% wins the edge is not separable from the base rate.",
+    "postMortem": "AAPL variant is 10/19 scorable (53%) but outcomes score funding normalization instead of AAPL spot >2%. The < -10 threshold admits non-extreme weekday prints and does not identify genuine short-positioning stress. | AAPL funding < -10 was too shallow and not weekend-only. Outcomes show readings pinned at 5.5% or moving from 11.2% to 5.5%, meaning the signal captured normalized funding rather than extreme weekend stress. At 50% wins the edge is not separable from the base rate. | Refined by H-681 (2026-08-28): Refinement of H-537: require AAPL funding to be in the lower tail and turning hi | AAPL shadow tests are 10/20 (50% win). The losses include multiple starts and ends at 5.5% or starts at 11.2% reverting to 5.5%, showing the static < -10 trigger is too blunt and often captures neutral/default funding states.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG AAPL weekend_hl_funding_shadow"
@@ -21522,7 +21522,7 @@
     "winRate": 0.4642857142857143,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "The 12/26 scorable tests show the condition cbrs_hl_funding_ann < -10 fires after funding has already normalized or while it is oscillating, for example 2.3% to 1.3% and -4.3% to -33.8%, so the expected snap-back is not present. It is a noisy threshold on a mean-reverting series, not a stable deep-dislocation signal. | 12/26 scorable tests and only 46% wins; plain CBRS funding < -10 does not identify a reliable normalization regime. Losses show funding flattening or re-dropping rather than normalizing. | CBRS family is 13/27 scorable (48%), and the example tests are scored as funding_normalize_up rather than the stated CBRS spot >2% move. Entries appear near neutral or stale funding levels, so the < -10 condition is not isolating a real crowded-short extreme. | H-539's raw condition only required CBRS funding < -10. Test outcomes show flat or worsening funding readings (2.3→1.3, -4.3→-33.8) and wins only when funding was deeply negative and reversed (-33.8→9.0). It was not weekend-gated and entered too early.",
+    "postMortem": "CBRS family is 13/27 scorable (48%), and the example tests are scored as funding_normalize_up rather than the stated CBRS spot >2% move. Entries appear near neutral or stale funding levels, so the < -10 condition is not isolating a real crowded-short extreme. | H-539's raw condition only required CBRS funding < -10. Test outcomes show flat or worsening funding readings (2.3→1.3, -4.3→-33.8) and wins only when funding was deeply negative and reversed (-33.8→9.0). It was not weekend-gated and entered too early. | Refined by H-680 (2026-08-28): Refinement of H-539: require CBRS funding to be in a relative extreme and alread | The CBRS shadow family is 13/28 scorable (46% win), and losses show funding either stuck at 5.5% or continuing lower after the < -10 trigger; only a few genuine reversion starts produced wins.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG CBRS weekend_hl_funding_shadow"
@@ -29572,5 +29572,105 @@
     "source": "llm",
     "setupId": "find_0043",
     "setupLabel": "FIND-linked FIND-0043"
+  },
+  {
+    "id": "H-679",
+    "created": "2026-08-28",
+    "description": "Refinement of H-534: replace the spot-decline prediction with a contract premium fade on moderate GOLD above-strike one-touch sell-YES edge, near-dated contracts only.",
+    "conditions": {
+      "asset": "GOLD",
+      "touch_direction": ">= 1",
+      "days_to_expiry": "< 30",
+      "gold_pm_underlying_cap_edge_pts_max": "between 3 and 8"
+    },
+    "prediction": "Selling YES / buying NO on the scoped GOLD above-strike one-touch contracts is profitable over 3 days as the rich touch premium decays.",
+    "timeframeDays": 3,
+    "confidence": 0.6,
+    "direction": "neutral",
+    "refinesHypothesisId": "H-534",
+    "tests": [
+      {
+        "date": "2026-08-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "contractEntry": {
+          "marketId": "3096357",
+          "eventSlug": "what-price-will-xauusd-hit-in-august-2026",
+          "asset": "GOLD",
+          "direction": "above",
+          "strike": 4700,
+          "entryPrice": 0.7765,
+          "side": "no"
+        }
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "gold_pm_premium_futures_spread_mean_reversion",
+    "setupLabel": "Gold PM premium / futures spread mean reversion"
+  },
+  {
+    "id": "H-680",
+    "created": "2026-08-28",
+    "description": "Refinement of H-539: require CBRS funding to be in a relative extreme and already turning higher, avoiding the flat/default reads and continued deterioration that caused losses under the static < -10 rule.",
+    "conditions": {
+      "asset": "CBRS",
+      "cbrs_hl_funding_ann_zscore_30d": "< -1.5",
+      "cbrs_hl_funding_ann_change_pct_24h": "> 0"
+    },
+    "prediction": "CBRS spot/perp will move >2% within 3 days as deeply stretched funding begins to normalize.",
+    "timeframeDays": 3,
+    "confidence": 0.55,
+    "direction": "long",
+    "refinesHypothesisId": "H-539",
+    "tests": [
+      {
+        "date": "2026-08-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "other_mixed",
+    "setupLabel": "Other / mixed"
+  },
+  {
+    "id": "H-681",
+    "created": "2026-08-28",
+    "description": "Refinement of H-537: require AAPL funding to be in the lower tail and turning higher, rather than any print below -10%; this avoids losses from flat/default funding readings and focuses on genuine reversion starts.",
+    "conditions": {
+      "asset": "AAPL",
+      "aapl_hl_funding_ann_zscore_30d": "< -1.5",
+      "aapl_hl_funding_ann_change_pct_24h": "> 0"
+    },
+    "prediction": "AAPL spot/perp will move >2% within 3 days as stretched funding begins to normalize.",
+    "timeframeDays": 3,
+    "confidence": 0.55,
+    "direction": "long",
+    "refinesHypothesisId": "H-537",
+    "tests": [
+      {
+        "date": "2026-08-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "other_mixed",
+    "setupLabel": "Other / mixed"
   }
 ]

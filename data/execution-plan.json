@@ -1,23 +1,10 @@
 {
-  "generatedAt": "2026-08-28T06:29:50.456Z",
+  "generatedAt": "2026-08-28T07:28:25.900Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1787840939429-68i9",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "gold_gld_pc_ratio"
-      ],
-      "thesis": "Gold P/C ratio round-tripped from 3.494 at entry to 0.934, normalizing back through the extreme-high threshold and beyond; the heavy put-buying contrarian long thesis is invalidated."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_LOW",
@@ -28,7 +15,7 @@
       "confidence": 0.1693615630746101,
       "thesis": "BTC P/C ratio 0.40 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 79804,
+      "entryPrice": 79749,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -38,6 +25,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

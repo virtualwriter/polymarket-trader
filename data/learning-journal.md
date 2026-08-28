@@ -5730,3 +5730,43 @@ Closed the GOLD long after its signal input collapsed from 3.494 to 0.934, which
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-28T07:10:23.633Z, model=deepseek-v4-pro)
+- Hypotheses added: 3 (rejected 1); reviews applied: 6; invalidated assumptions learned: 6; param updates: none.
+- Strategy review: The house edge is real but needs localization: live Polymarket NO/sell-YES trades are working when gated tightly, the outcome panel shows YES-overpricing remains strongest in near-dated mid-priced contracts, and Weekend HL funding reversion long is still the largest eligible live family. The main failures are broad or mis-specified shadows: one-touch NO fades are being tested against spot-move predictions instead of contract premium decay, single-ticker weekend funding shadows are using a static -10% threshold that fires on flat/default funding prints, and HYPE/IV 'confirmation' longs are late
+- Nightly journal: Tonight's review confirms the priority should be localization, not new broad signals. The panel findings continue to show the YES-overpricing edge is concentrated in mid-priced, near-dated, tight-spread contracts; broad one-touch shadows lose largely because they are not gated or are graded on the wrong instrument. The weekend funding parent remains strong, but ticker-level shadow variants using static -10% thresholds are failing. Several momentum confirmation families are now definitively invalidated and should not be re-proposed. Refinements this run focus on rewriting the GOLD one-touch edg
+### 2026-08-28 07:28 UTC
+
+**Portfolio:** $104.17 total | Cash $103.17 | 1 open | P&L $7.4065 | 64% win rate (824 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 89.45 is 3.1 std devs from mean (59.89 ± 9.60)
+- [anomaly] hype_hl_oi = 2133382108 is 3.0 std devs from mean (1293775573.99 ± 279876807.96)
+- [anomaly] btc_med_min = 67262 is 2.6 std devs from mean (53048.51 ± 5415.68)
+- [anomaly] hype_spot = 83.55 is 2.3 std devs from mean (59.29 ± 10.72)
+- [anomaly] hype_med_min = 63.4 is 2.2 std devs from mean (36.70 ± 12.13)
+
+**Blocked signal learning:**
+- Open blocked shadows: 30
+- Resolved blocked shadows: 963 (491 wins / 472 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=390 (126W/211L/53flat, 37.4% win-rate, sum $-0.5863, avg -0.15%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=425 (140W/229L/56flat, 37.9% win-rate, sum $-0.3173, avg -0.07%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.06%)
+- ✅ Blocked: MACRO_MOMENTUM_UP BTC long via spot would have hit target (+3.40%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-4.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-3.75%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 3/12; next scheduled 2026-08-28T09:28:25.891Z). Mechanical cycle ran normally._
+
+---
+
