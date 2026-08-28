@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-08-28T13:28:22.456Z",
+  "generatedAt": "2026-08-28T14:28:24.059Z",
   "dataFreshness": {
-    "valuationRows": 2612,
-    "latestValuationAt": "2026-08-28T13",
-    "macroRows": 2610,
+    "valuationRows": 2613,
+    "latestValuationAt": "2026-08-28T14",
+    "macroRows": 2611,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-28T13"
+    "latestInstrumentSnapshotAt": "2026-08-28T14"
   },
   "portfolio": {
     "cash": 103.1669,
@@ -13,7 +13,7 @@
     "realizedPnl": 7.4065,
     "totalTrades": 824,
     "winRatePct": 63.6,
-    "unrealizedPnl": 0.011
+    "unrealizedPnl": 0.0173
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 1.1,
-      "currentPrice": 79147,
-      "underlyingPrice": 79147,
+      "pnlPct": 1.73,
+      "currentPrice": 78642,
+      "underlyingPrice": 78642,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -196,9 +196,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 29,
-    "resolvedCount": 964,
-    "wouldHaveWon": 492,
+    "openCount": 27,
+    "resolvedCount": 966,
+    "wouldHaveWon": 494,
     "wouldHaveLost": 472,
     "bySignal": [
       {
@@ -267,41 +267,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "stop",
-        "pnlPct": -35.53,
-        "resolvedAt": "2026-08-27T09:28:24.602Z",
-        "marketQuality": {
-          "yesBid": 0.333,
-          "yesAsk": 0.344,
-          "yesSpread": 0.011,
-          "liquidity": 41659.76,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
-      {
-        "signalType": "FUNDING_EXTREME_LONG",
-        "asset": "BTC",
-        "venue": "hyperliquid",
-        "direction": "short",
-        "blockedReason": "short_blocked_by_positive_trend",
-        "outcome": "loss",
-        "closeReason": "expiry",
-        "pnlPct": -0.81,
-        "resolvedAt": "2026-08-27T15:28:29.528Z",
-        "trendMetrics": {
-          "aboveTrendPct": 2.84,
-          "momentumPct": 3.53
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "OIL",
@@ -408,6 +373,44 @@
           "yesSpread": 0.001,
           "liquidity": 77089.72,
           "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 7.62,
+        "resolvedAt": "2026-08-28T14:28:23.208Z",
+        "marketQuality": {
+          "yesBid": 0.095,
+          "yesAsk": 0.096,
+          "yesSpread": 0.001,
+          "liquidity": 44952.44,
+          "flags": []
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 22,
+        "resolvedAt": "2026-08-28T14:28:23.208Z",
+        "marketQuality": {
+          "yesBid": 0.5,
+          "yesAsk": 0.52,
+          "yesSpread": 0.02,
+          "liquidity": 6098.46,
+          "flags": [
+            "wide_pm_spread"
+          ]
         }
       }
     ],
@@ -523,22 +526,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.8pt on ETH, spread 1.0c, liquidity 46337. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-wti-hit-in-august-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $85 in August?",
-        "marketQuality": {
-          "yesBid": 0.5,
-          "yesAsk": 0.52,
-          "yesSpread": 0.02,
-          "liquidity": 6098.46,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.8pt on OIL, spread 2.0c, liquidity 6098. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
