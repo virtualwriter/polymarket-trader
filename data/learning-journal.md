@@ -5770,3 +5770,39 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-08-28 08:28 UTC
+
+**Portfolio:** $104.17 total | Cash $103.17 | 1 open | P&L $7.4065 | 64% win rate (824 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 25 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 89.73 is 3.1 std devs from mean (59.90 ± 9.62)
+- [anomaly] hype_hl_oi = 2151037340 is 3.1 std devs from mean (1294104910.05 ± 280326869.55)
+- [anomaly] btc_med_min = 67262 is 2.6 std devs from mean (53053.97 ± 5421.80)
+- [anomaly] hype_spot = 84.287 is 2.3 std devs from mean (59.30 ± 10.73)
+- [anomaly] hype_med_min = 63.4 is 2.2 std devs from mean (36.71 ± 12.14)
+
+**Blocked signal learning:**
+- Open blocked shadows: 30
+- Resolved blocked shadows: 963 (491 wins / 472 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=390 (126W/211L/53flat, 37.4% win-rate, sum $-0.5863, avg -0.15%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=425 (140W/229L/56flat, 37.9% win-rate, sum $-0.3173, avg -0.07%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.06%)
+- ✅ Blocked: MACRO_MOMENTUM_UP BTC long via spot would have hit target (+3.40%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-4.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-3.75%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h since last call; daily budget 3/12; next scheduled 2026-08-28T10:28:23.194Z). Mechanical cycle ran normally._
+
+---
+
