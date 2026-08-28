@@ -5545,3 +5545,39 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-08-28 01:28 UTC
+
+**Portfolio:** $104.16 total | Cash $103.16 | 1 open | P&L $7.4045 | 64% win rate (823 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 7 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 20 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 7 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 90.16 is 3.2 std devs from mean (59.83 ± 9.52)
+- [anomaly] hype_hl_oi = 2161514664 is 3.1 std devs from mean (1292172119.99 ± 277747762.72)
+- [anomaly] btc_med_min = 66979 is 2.6 std devs from mean (53021.18 ± 5384.93)
+- [anomaly] hype_spot = 84.849 is 2.4 std devs from mean (59.25 ± 10.68)
+- [anomaly] hype_med_min = 63.3 is 2.2 std devs from mean (36.65 ± 12.08)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 961 (491 wins / 470 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch edge_bucket="near-fair" n=390 (126W/211L/53flat, 37.4% win-rate, sum $-0.5863, avg -0.15%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- one-touch abs_edge_bin="abs_edge<15" n=424 (140W/228L/56flat, 38.0% win-rate, sum $-0.2798, avg -0.07%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: FUNDING_EXTREME_LONG BTC short via hyperliquid would have expired (-0.81%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have hit stop (-37.50%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.06%)
+- ✅ Blocked: MACRO_MOMENTUM_UP BTC long via spot would have hit target (+3.40%)
+
+**LLM analysis:**
+Reviewed the open GOLD long PC_RATIO_EXTREME_HIGH position (T-1787840939429-68i9). No discretionary close action taken: open 11.0h against a 12h minimum hold. However, the entry evidence has clearly round-tripped — gold_gld_pc_ratio collapsed from 3.494 at open to 0.934, normalizing well below the contrarian trigger while gold spot is only +0.20%. This looks like thesis invalidation, but it must wait until the position is eligible; will re-evaluate next hour.
+
+---
+
