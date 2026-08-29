@@ -1,43 +1,29 @@
 {
-  "generatedAt": "2026-08-29T06:28:24.256Z",
+  "generatedAt": "2026-08-29T07:28:27.630Z",
   "dataFreshness": {
-    "valuationRows": 2628,
-    "latestValuationAt": "2026-08-29T06",
-    "macroRows": 2626,
+    "valuationRows": 2629,
+    "latestValuationAt": "2026-08-29T07",
+    "macroRows": 2627,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-29T06"
+    "latestInstrumentSnapshotAt": "2026-08-29T07"
   },
   "portfolio": {
-    "cash": 99.2474,
+    "cash": 99.246,
     "openPositions": 5,
-    "realizedPnl": 7.487,
-    "totalTrades": 830,
-    "winRatePct": 63.9,
-    "unrealizedPnl": -0.0042
+    "realizedPnl": 7.4856,
+    "totalTrades": 831,
+    "winRatePct": 63.8,
+    "unrealizedPnl": 0.0166
   },
   "openPositions": [
-    {
-      "positionId": "WF-1787966900671-LLY-l7bv",
-      "asset": "LLY",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.7,
-      "currentPrice": 1169,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
     {
       "positionId": "T-1787966934090-kzgn",
       "asset": "AMZN",
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.18,
-      "currentPrice": 265.92,
+      "pnlPct": 0.34,
+      "currentPrice": 266.35,
       "underlyingPrice": 266.16,
       "targetPct": 4,
       "stopPct": 2,
@@ -54,8 +40,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.1,
-      "currentPrice": 25.502,
+      "pnlPct": -0.38,
+      "currentPrice": 25.475,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -68,8 +54,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0,
-      "currentPrice": 177.69,
+      "pnlPct": 0.68,
+      "currentPrice": 177.93,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -82,8 +68,22 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 1.02,
+      "currentPrice": 127.42,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1787988506197-EBAY-kk6a",
+      "asset": "EBAY",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "pnlPct": 0,
-      "currentPrice": 127.16,
+      "currentPrice": 106.31,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -234,10 +234,10 @@
     {
       "type": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "enabled": true,
-      "weight": 0.6634,
-      "trades": 152,
+      "weight": 0.6639,
+      "trades": 153,
       "wins": 102,
-      "avgPnlPct": 0.1671,
+      "avgPnlPct": 0.1651,
       "disabledAssets": [
         "ZM"
       ]
@@ -603,7 +603,7 @@
       },
       "FUNDING_EXTREME_LONG": {
         "targetPct": 5,
-        "stopPct": 1.5
+        "stopPct": 2
       },
       "FUNDING_EXTREME_SHORT": {
         "targetPct": 4,
@@ -658,6 +658,6 @@
         "stopPct": 20
       }
     },
-    "updatedAt": "2026-08-23T08:28:24.821Z"
+    "updatedAt": "2026-08-29T07:28:27.098Z"
   }
 }

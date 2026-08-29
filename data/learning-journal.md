@@ -6537,3 +6537,45 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; ne
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-29T07:10:40.698Z, model=deepseek-v4-pro)
+- Hypotheses added: 7 (rejected 3); reviews applied: 6; invalidated assumptions learned: 2; param updates: FUNDING_EXTREME_LONG risk: +5/-1.5 -> +5/-2.
+- Strategy review: The live book is carried by the proven weekend Hyperliquid funding-reversion family (351/505 live wins, 69.5%, +0.31% avg; 188/253 shadow wins) and the small but excellent one-touch NO live sample (4/4, +18.42% avg). The main failures are in families that take a single static funding reading as a timing signal, use HYPE/listed-IV as directional confirmation, or express a contract-premium edge as a spot move. Those are leaking P&L through unscorable or mismatched tests, and several have already accumulated learned invalid assumptions that must not be repeated.
+- Nightly journal: Tonight's key lesson is that most struggling families are not just weak; they are mechanically mismatched. The funding reversion failures are static-trigger/timing failures, while the contract premium failures are prediction-instrument mismatches. I am sharpening the house YES-overpricing edge with five panel-derived NO variants and making five targeted refinements: weekend-tail timing for CBRS/AAPL, BTC-owned IV compression instead of HYPE confirmation, contract premium fade for gold one-touch, and neutral absolute-move for BTC listed-IV momentum. I also slightly widened FUNDING_EXTREME_LONG 
+### 2026-08-29 07:28 UTC
+
+**Portfolio:** $104.25 total | Cash $99.25 | 5 open | P&L $7.4856 | 64% win rate (831 trades)
+
+**Closed 1 trades:**
+- ❌ LLY long via hyperliquid/hl_perp [HL LLY Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0014 (-0.1%, market -0.0017, funding 0.0003)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 87.33 is 2.7 std devs from mean (60.14 ± 9.92)
+- [anomaly] btc_med_min = 68205 is 2.7 std devs from mean (53181.44 ± 5574.41)
+- [anomaly] hype_hl_oi = 1964984376 is 2.3 std devs from mean (1300187377.52 ± 286941534.47)
+- [anomaly] hype_med_min = 63.8 is 2.2 std devs from mean (36.93 ± 12.33)
+- [anomaly] hype_med_max = 110.3 is 2.1 std devs from mean (80.88 ± 14.27)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 973 (499 wins / 474 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit stop (-2.64%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+7.14%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+29.17%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-4.88%)
+
+**LLM analysis:**
+No discretionary closes emitted: ALLOWED ACTION SURFACE has all open positions allowed=false. AMZN FUNDING_EXTREME_SHORT funding has normalized violently from -43.5% to +42.5%, which would be thesis-invalidating evidence, but the position is only ~6h into a 12h min hold, so no close instruction is permitted yet; flag for the next hourly review. The four WEEKEND_HL_FUNDING_REVERSION_LONG positions are mechanical-only exits and should continue under their target/stop/expiry rules.
+
+---
+

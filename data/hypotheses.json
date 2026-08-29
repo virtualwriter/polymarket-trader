@@ -4984,7 +4984,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "9/25 scorable and only 36% win; HYPE above SMA with stable OI did not produce durable BTC continuation and was repeatedly recorded as learned-invalid. The setup only won during a few large trend days, not as a repeatable filter. | Cross-asset IV compression/vol expansion is 9/25 scorable (36%). HYPE above SMA with stable OI enters BTC near 7d highs, and the wins are explosive but too rare; HYPE risk-on is not independent confirmation of durable BTC upside. | H-108-style BTC/HYPE confirmation produced only 36% family wins. HYPE spot above SMA with stable OI fired during the same broad risk-on tape and did not provide independent confirmation, leading to losses when BTC was already extended or reversed. | The cross-asset HYPE confirmation family is 9/25 (36% win). Wins cluster in already strong BTC trend windows, while many losses show HYPE risk-on participation fails to add timing value and behaves as a lagging echo.",
+    "postMortem": "Cross-asset IV compression/vol expansion is 9/25 scorable (36%). HYPE above SMA with stable OI enters BTC near 7d highs, and the wins are explosive but too rare; HYPE risk-on is not independent confirmation of durable BTC upside. | H-108-style BTC/HYPE confirmation produced only 36% family wins. HYPE spot above SMA with stable OI fired during the same broad risk-on tape and did not provide independent confirmation, leading to losses when BTC was already extended or reversed. | The cross-asset HYPE confirmation family is 9/25 (36% win). Wins cluster in already strong BTC trend windows, while many losses show HYPE risk-on participation fails to add timing value and behaves as a lagging echo. | HYPE risk-on confirmation did not provide independent directional signal; the BTC outcomes were large beta moves in both directions. The family has accumulated multiple learned invalid assumptions that HYPE confirms durable BTC upside.",
     "source": "llm",
     "setupId": "cross_asset_iv_compression_vol_expansion",
     "setupLabel": "Cross-asset IV compression / vol expansion"
@@ -7185,7 +7185,7 @@
     "winRate": 0.16666666666666666,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "4/16 scorable and 25% win; rising listed IV alongside spot momentum did not lead to further BTC gains. Several resolved examples were effectively short/mean-reverting outcomes, showing IV expansion was more hedging demand than continuation signal. | BTC listed-IV momentum confirmation is 4/17 scorable (24%). The tests are direction-confused and the premise of spot momentum plus rising options IV producing further >2% BTC gains is not holding; the family should be killed or re-written as a contract/IV event, not a spot continuation. | The BTC listed-IV momentum family is at 4/17 wins. Its tests were effectively short BTC and lost on +24.08% and +21.59% moves. Rising option IV was not a bearish timing signal; it appeared in strong uptrends and upside demand. | The BTC listed-IV momentum family is 4/18 (22% win). Rising 30d options IV alongside positive spot momentum repeatedly failed to deliver >2% continuation, and some variants scored as shorts during large rally losses.",
+    "postMortem": "The BTC listed-IV momentum family is at 4/17 wins. Its tests were effectively short BTC and lost on +24.08% and +21.59% moves. Rising option IV was not a bearish timing signal; it appeared in strong uptrends and upside demand. | The BTC listed-IV momentum family is 4/18 (22% win). Rising 30d options IV alongside positive spot momentum repeatedly failed to deliver >2% continuation, and some variants scored as shorts during large rally losses. | Refined by H-688 (2026-08-29): Refinement of H-170: convert the rising-listed-IV momentum setup from a directio | Rising listed IV did not confirm further directional BTC gains; the family is 4/18 and shows large adverse moves when graded directionally. The signal is better treated as volatility expansion than as a long-call.",
     "source": "llm",
     "setupId": "btc_listed_iv_momentum_confirmation",
     "setupLabel": "BTC listed-IV momentum confirmation"
@@ -20941,7 +20941,7 @@
     "winRate": 0.2631578947368421,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "Gold one-touch cap-edge variant is 2/14 scorable (14%) with 5 unscorable. The primary prediction was a >2% GOLD spot decline, but examples are scored on contract PnL and the NO contract often barely moves. The underlying-cap edge did not translate into either spot follow-through or consistent contract PnL. | H-534 is 3/16 scorable with 6 unscorable tests because the primary prediction was for GOLD spot to decline >2%, while the evidence was collected on NO contract prices. Tail strikes like GOLD above 7000 NO near 0.94 barely moved; the winner was a closer above-6000 NO from 0.795 to 0.865. This is a contract premium fade, not spot direction. | Refined by H-679 (2026-08-28): Refinement of H-534: replace the spot-decline prediction with a contract premium | The GOLD one-touch high-edge NO family is 3/16 scorable with 7 unscorable tests. The scorable examples are contract pnl moves, not GOLD spot moves, confirming the primary prediction was written against the wrong instrument.",
+    "postMortem": "Refined by H-679 (2026-08-28): Refinement of H-534: replace the spot-decline prediction with a contract premium | The GOLD one-touch high-edge NO family is 3/16 scorable with 7 unscorable tests. The scorable examples are contract pnl moves, not GOLD spot moves, confirming the primary prediction was written against the wrong instrument. | Refined by H-687 (2026-08-29): Refinement of H-534: re-author the gold one-touch cap-edge signal as a contract | The gold one-touch edge is a contract premium phenomenon, not a spot-decline signal. Wins appear as modest NO-contract ticks, losses are flat, and 7 tests were unscorable because the spot-decline prediction did not match the contract instrument.",
     "source": "shadow_mined",
     "setupId": "shadow_one_touch_high_edge_no_gold_heatmap_no",
     "setupLabel": "Shadow-mined ONE_TOUCH_HIGH_EDGE_NO GOLD heatmap"
@@ -21072,7 +21072,7 @@
     "winRate": 0.3125,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "5/16 scorable tests; MU funding < -10 is too weak a condition and often catches pinned/choppy funding around 5.5%, not a genuine immediate normalization opportunity. | MU variant is 5/16 scorable (31%) and frequently shows 5.5% or positive funding readings, suggesting entries fire on stale/default data rather than a true < -10% extreme. The intended mechanism is not actually being tested, so more threshold variants are unlikely to help. | MU funding < -10 produced only 31% wins. Most failures occurred because funding remained flat at 5.5% or moved from 29.1% to 3.4%, so the condition captured non-extreme or already-normalizing readings rather than deep weekend stress. | MU shadow tests are 5/16 (31% win). Many losses start and finish at the same 5.5% funding value, meaning the signal fired on a flat/default print rather than a tradable stress event.",
+    "postMortem": "MU variant is 5/16 scorable (31%) and frequently shows 5.5% or positive funding readings, suggesting entries fire on stale/default data rather than a true < -10% extreme. The intended mechanism is not actually being tested, so more threshold variants are unlikely to help. | MU funding < -10 produced only 31% wins. Most failures occurred because funding remained flat at 5.5% or moved from 29.1% to 3.4%, so the condition captured non-extreme or already-normalizing readings rather than deep weekend stress. | MU shadow tests are 5/16 (31% win). Many losses start and finish at the same 5.5% funding value, meaning the signal fired on a flat/default print rather than a tradable stress event. | MU < -10 mostly captures pinned +5.5% funding rows and lacks true weekend timing; the previous lower-tail refinement was rejected as too rare, so this variant should not be re-proposed in that form.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_mu_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG MU weekend_hl_funding_shadow"
@@ -21314,7 +21314,7 @@
     "winRate": 0.47619047619047616,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "AAPL variant is 10/19 scorable (53%) but outcomes score funding normalization instead of AAPL spot >2%. The < -10 threshold admits non-extreme weekday prints and does not identify genuine short-positioning stress. | AAPL funding < -10 was too shallow and not weekend-only. Outcomes show readings pinned at 5.5% or moving from 11.2% to 5.5%, meaning the signal captured normalized funding rather than extreme weekend stress. At 50% wins the edge is not separable from the base rate. | Refined by H-681 (2026-08-28): Refinement of H-537: require AAPL funding to be in the lower tail and turning hi | AAPL shadow tests are 10/20 (50% win). The losses include multiple starts and ends at 5.5% or starts at 11.2% reverting to 5.5%, showing the static < -10 trigger is too blunt and often captures neutral/default funding states.",
+    "postMortem": "AAPL funding < -10 was too shallow and not weekend-only. Outcomes show readings pinned at 5.5% or moving from 11.2% to 5.5%, meaning the signal captured normalized funding rather than extreme weekend stress. At 50% wins the edge is not separable from the base rate. | Refined by H-681 (2026-08-28): Refinement of H-537: require AAPL funding to be in the lower tail and turning hi | AAPL shadow tests are 10/20 (50% win). The losses include multiple starts and ends at 5.5% or starts at 11.2% reverting to 5.5%, showing the static < -10 trigger is too blunt and often captures neutral/default funding states. | AAPL < -10 fires on non-weekend and stale rows; losses show funding already at +5.5% or flattening near +0.6%. The static level does not isolate the overstretched weekend funding state the original shadow mined.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG AAPL weekend_hl_funding_shadow"
@@ -21632,7 +21632,7 @@
     "winRate": 0.4642857142857143,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "CBRS family is 13/27 scorable (48%), and the example tests are scored as funding_normalize_up rather than the stated CBRS spot >2% move. Entries appear near neutral or stale funding levels, so the < -10 condition is not isolating a real crowded-short extreme. | H-539's raw condition only required CBRS funding < -10. Test outcomes show flat or worsening funding readings (2.3→1.3, -4.3→-33.8) and wins only when funding was deeply negative and reversed (-33.8→9.0). It was not weekend-gated and entered too early. | Refined by H-680 (2026-08-28): Refinement of H-539: require CBRS funding to be in a relative extreme and alread | The CBRS shadow family is 13/28 scorable (46% win), and losses show funding either stuck at 5.5% or continuing lower after the < -10 trigger; only a few genuine reversion starts produced wins.",
+    "postMortem": "H-539's raw condition only required CBRS funding < -10. Test outcomes show flat or worsening funding readings (2.3→1.3, -4.3→-33.8) and wins only when funding was deeply negative and reversed (-33.8→9.0). It was not weekend-gated and entered too early. | Refined by H-680 (2026-08-28): Refinement of H-539: require CBRS funding to be in a relative extreme and alread | The CBRS shadow family is 13/28 scorable (46% win), and losses show funding either stuck at 5.5% or continuing lower after the < -10 trigger; only a few genuine reversion starts produced wins. | The any-day standalone CBRS < -10 trigger catches many rows after funding has already normalized or pinned at +5.5%. Wins only cluster when funding is deeply negative and then inflects upward, so the condition lacks timing.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG CBRS weekend_hl_funding_shadow"
@@ -28846,6 +28846,21 @@
           "entryPrice": 0.775,
           "side": "no"
         }
+      },
+      {
+        "date": "2026-08-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup find_0054 shadow test 6/20 opened via H-655 after current row satisfied variant conditions.",
+        "contractEntry": {
+          "marketId": "3257336",
+          "eventSlug": "what-price-will-bitcoin-hit-in-august-2026",
+          "asset": "BTC",
+          "direction": "above",
+          "strike": 82500,
+          "entryPrice": 0.9505,
+          "side": "no"
+        }
       }
     ],
     "winRate": 0,
@@ -29910,5 +29925,256 @@
     "source": "llm",
     "setupId": "other_mixed",
     "setupLabel": "Other / mixed"
+  },
+  {
+    "id": "H-682",
+    "created": "2026-08-29",
+    "description": "Outcome-panel NO edge: buy NO/sell YES across all assets when the best sell-YES model edge is below 1 point and the lowest YES ask is in the mid-price 35-65c band.",
+    "conditions": {
+      "sell_yes_edge_pts": "< 1",
+      "yesAsk": "between 0.35 and 0.65"
+    },
+    "prediction": "Buying NO / selling YES on scoped Polymarket contracts is profitable over 7 days as YES overpricing decays; this is a contract P&L thesis, not a spot-direction call.",
+    "timeframeDays": 7,
+    "confidence": 0.68,
+    "direction": "neutral",
+    "originFindingId": "FIND-0065",
+    "themeId": "THEME-0007",
+    "tests": [
+      {
+        "date": "2026-08-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "contractEntry": {
+          "marketId": "2467206",
+          "eventSlug": "what-price-will-bitcoin-hit-before-2027",
+          "asset": "BTC",
+          "direction": "above",
+          "strike": 95000,
+          "entryPrice": 0.655,
+          "side": "no"
+        }
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0065",
+    "setupLabel": "FIND-linked FIND-0065"
+  },
+  {
+    "id": "H-683",
+    "created": "2026-08-29",
+    "description": "Sharpest outcome-panel NO cut: buy NO/sell YES across all assets when sell-YES edge is below 1 point, the lowest YES ask is 35-65c, and the nearest contract expires within 30 days.",
+    "conditions": {
+      "sell_yes_edge_pts": "< 1",
+      "yesAsk": "between 0.35 and 0.65",
+      "days_to_expiry": "< 30"
+    },
+    "prediction": "Buying NO / selling YES on near-dated scoped Polymarket contracts is profitable over 7 days as the YES-overpricing edge is strongest near expiry; this is a contract P&L thesis.",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "direction": "neutral",
+    "originFindingId": "FIND-0070",
+    "themeId": "THEME-0007",
+    "tests": [],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0070",
+    "setupLabel": "FIND-linked FIND-0070"
+  },
+  {
+    "id": "H-684",
+    "created": "2026-08-29",
+    "description": "Outcome-panel NO edge with tight-spread filter: buy NO/sell YES across all assets when the lowest YES ask is 35-65c and the tightest YES spread is below 2c.",
+    "conditions": {
+      "yesAsk": "between 0.35 and 0.65",
+      "yesSpread": "< 0.02"
+    },
+    "prediction": "Buying NO / selling YES on liquid tight-spread Polymarket contracts is profitable over 7 days as the mid-price YES premium decays; this is a contract P&L thesis.",
+    "timeframeDays": 7,
+    "confidence": 0.66,
+    "direction": "neutral",
+    "originFindingId": "FIND-0067",
+    "themeId": "THEME-0007",
+    "tests": [
+      {
+        "date": "2026-08-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "contractEntry": {
+          "marketId": "3224927",
+          "eventSlug": "what-will-gold-gc-hit-by-end-of-december",
+          "asset": "GOLD",
+          "direction": "above",
+          "strike": 5000,
+          "entryPrice": 0.395,
+          "side": "no"
+        }
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0067",
+    "setupLabel": "FIND-linked FIND-0067"
+  },
+  {
+    "id": "H-685",
+    "created": "2026-08-29",
+    "description": "Outcome-panel NO edge with near-dated filter: buy NO/sell YES across all assets when the lowest YES ask is 35-65c and the nearest contract expires within 30 days.",
+    "conditions": {
+      "yesAsk": "between 0.35 and 0.65",
+      "days_to_expiry": "< 30"
+    },
+    "prediction": "Buying NO / selling YES on near-dated mid-priced Polymarket contracts is profitable over 7 days as the YES premium decays faster near expiry; this is a contract P&L thesis.",
+    "timeframeDays": 7,
+    "confidence": 0.67,
+    "direction": "neutral",
+    "originFindingId": "FIND-0069",
+    "themeId": "THEME-0007",
+    "tests": [
+      {
+        "date": "2026-08-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "contractEntry": {
+          "marketId": "3810130",
+          "eventSlug": "what-price-will-ethereum-hit-in-august-2026",
+          "asset": "ETH",
+          "direction": "below",
+          "strike": 2400,
+          "entryPrice": 0.42500000000000004,
+          "side": "no"
+        }
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0069",
+    "setupLabel": "FIND-linked FIND-0069"
+  },
+  {
+    "id": "H-686",
+    "created": "2026-08-29",
+    "description": "Outcome-panel NO edge on above-strike contracts: buy NO/sell YES when one-touch direction is above-strike and the lowest YES ask is in the 35-65c mid-price band.",
+    "conditions": {
+      "touch_direction": ">= 1",
+      "yesAsk": "between 0.35 and 0.65"
+    },
+    "prediction": "Buying NO / selling YES on above-strike mid-priced Polymarket one-touch contracts is profitable over 7 days as the upside YES premium decays; this is a contract P&L thesis, not a spot call.",
+    "timeframeDays": 7,
+    "confidence": 0.64,
+    "direction": "neutral",
+    "originFindingId": "FIND-0068",
+    "themeId": "THEME-0007",
+    "tests": [
+      {
+        "date": "2026-08-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "contractEntry": {
+          "marketId": "3224927",
+          "eventSlug": "what-will-gold-gc-hit-by-end-of-december",
+          "asset": "GOLD",
+          "direction": "above",
+          "strike": 5000,
+          "entryPrice": 0.395,
+          "side": "no"
+        }
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0068",
+    "setupLabel": "FIND-linked FIND-0068"
+  },
+  {
+    "id": "H-687",
+    "created": "2026-08-29",
+    "description": "Refinement of H-534: re-author the gold one-touch cap-edge signal as a contract premium fade instead of a spot-decline prediction. The original burned 7 unscorable tests because the engine grades contract P&L, not GOLD spot movement; keep the large cap-edge trigger but predict YES/NO premium decay.",
+    "conditions": {
+      "asset": "GOLD",
+      "gold_pm_underlying_cap_edge_pts_max": ">= 10",
+      "touch_direction": ">= 1",
+      "days_to_expiry": "<= 30"
+    },
+    "prediction": "Selling YES / buying NO on scoped GOLD above-strike one-touch contracts is profitable over 3 days as stale cap premium decays; this is a contract P&L thesis, not a GOLD spot-decline call.",
+    "timeframeDays": 3,
+    "confidence": 0.62,
+    "direction": "neutral",
+    "refinesHypothesisId": "H-534",
+    "tests": [
+      {
+        "date": "2026-08-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "contractEntry": {
+          "marketId": "3954335",
+          "eventSlug": "what-price-will-xauusd-hit-in-august-2026",
+          "asset": "GOLD",
+          "direction": "above",
+          "strike": 5000,
+          "entryPrice": 0.9955,
+          "side": "no"
+        }
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "gold_pm_premium_futures_spread_mean_reversion",
+    "setupLabel": "Gold PM premium / futures spread mean reversion"
+  },
+  {
+    "id": "H-688",
+    "created": "2026-08-29",
+    "description": "Refinement of H-170: convert the rising-listed-IV momentum setup from a directional long thesis to a neutral absolute-move thesis. The family failed because rising IV did not confirm further BTC gains; the same conditions did, however, often precede large moves in either direction.",
+    "conditions": {
+      "btc_spot_pct_vs_24h_sma": "> 0",
+      "btc_spot_pct_from_7d_high": "> -4",
+      "btc_spot_change_pct_24h": "> 0.75",
+      "btc_opt_iv_30d_change_pct_24h": "> 0"
+    },
+    "prediction": "BTC spot will realize an absolute move > 2% within 3 days when spot momentum is confirmed by rising listed option IV; this is a volatility/absolute-move thesis, not a directional long or short.",
+    "timeframeDays": 3,
+    "confidence": 0.57,
+    "direction": "neutral",
+    "refinesHypothesisId": "H-170",
+    "tests": [
+      {
+        "date": "2026-08-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation."
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "btc_iv_compression_vol_reversion",
+    "setupLabel": "BTC IV compression / vol reversion"
   }
 ]
