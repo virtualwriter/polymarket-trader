@@ -1,43 +1,29 @@
 {
-  "generatedAt": "2026-08-29T03:28:27.278Z",
+  "generatedAt": "2026-08-29T04:28:20.891Z",
   "dataFreshness": {
-    "valuationRows": 2625,
-    "latestValuationAt": "2026-08-29T03",
-    "macroRows": 2623,
+    "valuationRows": 2626,
+    "latestValuationAt": "2026-08-29T04",
+    "macroRows": 2624,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-29T03"
+    "latestInstrumentSnapshotAt": "2026-08-29T04"
   },
   "portfolio": {
-    "cash": 101.2331,
-    "openPositions": 3,
-    "realizedPnl": 7.4727,
-    "totalTrades": 829,
-    "winRatePct": 63.8,
-    "unrealizedPnl": 0.0044
+    "cash": 102.2474,
+    "openPositions": 2,
+    "realizedPnl": 7.487,
+    "totalTrades": 830,
+    "winRatePct": 63.9,
+    "unrealizedPnl": -0.0056
   },
   "openPositions": [
-    {
-      "positionId": "WF-1787966900671-HIMS-los2",
-      "asset": "HIMS",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.82,
-      "currentPrice": 28.869,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
     {
       "positionId": "WF-1787966900671-LLY-l7bv",
       "asset": "LLY",
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.52,
-      "currentPrice": 1169.5,
+      "pnlPct": -0.72,
+      "currentPrice": 1169,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -50,8 +36,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0.14,
-      "currentPrice": 265.79,
+      "pnlPct": 0.15,
+      "currentPrice": 265.84,
       "underlyingPrice": 266.16,
       "targetPct": 4,
       "stopPct": 2,
@@ -206,10 +192,10 @@
     {
       "type": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "enabled": true,
-      "weight": 0.662,
-      "trades": 151,
-      "wins": 101,
-      "avgPnlPct": 0.1587,
+      "weight": 0.6634,
+      "trades": 152,
+      "wins": 102,
+      "avgPnlPct": 0.1671,
       "disabledAssets": [
         "ZM"
       ]
@@ -225,7 +211,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 24,
+    "openCount": 25,
     "resolvedCount": 973,
     "wouldHaveWon": 499,
     "wouldHaveLost": 474,
@@ -539,6 +525,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 9.8pt on BTC, spread 2.0c, liquidity 22297. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "GOLD",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $5,000 by end of December?",
+        "marketQuality": {
+          "yesBid": 0.6,
+          "yesAsk": 0.61,
+          "yesSpread": 0.01,
+          "liquidity": 21862.82,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 13.5pt after haircuts. CBOE gap 14.5pt, CME gap 14.5pt, source agreement both_positive, spread 1.0c, liquidity 21863. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
