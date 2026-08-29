@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-28T07:12:33Z",
+  "generatedAt": "2026-08-29T07:12:56Z",
   "summary": {
-    "generatedAt": "2026-08-28T07:12:33Z",
+    "generatedAt": "2026-08-29T07:12:56Z",
     "findingCounts": {
       "open": 9,
       "strengthened": 40,
@@ -15,13 +15,13 @@
       "rank": 1,
       "id": "FIND-0065",
       "opportunityScore": 1.0,
-      "confidenceScore": 0.5852,
+      "confidenceScore": 0.5888,
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
       "status": "strengthened"
     },
-    "authoredHypothesisCount": 4,
+    "authoredHypothesisCount": 10,
     "advicePresent": true
   },
   "topOpportunities": [
@@ -29,7 +29,7 @@
       "rank": 1,
       "id": "FIND-0065",
       "opportunityScore": 1.0,
-      "confidenceScore": 0.5852,
+      "confidenceScore": 0.5888,
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -39,7 +39,7 @@
       "rank": 2,
       "id": "FIND-0067",
       "opportunityScore": 0.9999,
-      "confidenceScore": 0.5798,
+      "confidenceScore": 0.5831,
       "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65,sp<2|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -59,7 +59,7 @@
       "rank": 4,
       "id": "FIND-0066",
       "opportunityScore": 0.9999,
-      "confidenceScore": 0.5365,
+      "confidenceScore": 0.5389,
       "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -69,7 +69,7 @@
       "rank": 5,
       "id": "FIND-0070",
       "opportunityScore": 0.9998,
-      "confidenceScore": 0.6878,
+      "confidenceScore": 0.6931,
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65,d<30|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -79,7 +79,7 @@
       "rank": 6,
       "id": "FIND-0069",
       "opportunityScore": 0.9998,
-      "confidenceScore": 0.6365,
+      "confidenceScore": 0.6407,
       "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65,d<30|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -98,8 +98,8 @@
     {
       "rank": 8,
       "id": "FIND-0043",
-      "opportunityScore": 0.9905,
-      "confidenceScore": 0.6548,
+      "opportunityScore": 0.9958,
+      "confidenceScore": 0.6748,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -108,8 +108,8 @@
     {
       "rank": 9,
       "id": "FIND-0055",
-      "opportunityScore": 0.9638,
-      "confidenceScore": 0.4932,
+      "opportunityScore": 0.9831,
+      "confidenceScore": 0.5298,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -132,7 +132,7 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 41,
-      "avgOpportunityScore": 0.6057
+      "avgOpportunityScore": 0.6146
     },
     {
       "id": "THEME-0002",
@@ -179,24 +179,54 @@
   ],
   "authoredHypotheses": [
     {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-534: replace the spot-decline prediction with a contract premium fade on moderate GOLD above-strike one-touch sell-YES edge, near-dated contracts only."
+      "originFindingId": "FIND-0065",
+      "themeId": "THEME-0007",
+      "description": "Outcome-panel NO edge: buy NO/sell YES across all assets when the best sell-YES model edge is below 1 point and the lowest YES ask is in the mid-price 35-65c band."
+    },
+    {
+      "originFindingId": "FIND-0070",
+      "themeId": "THEME-0007",
+      "description": "Sharpest outcome-panel NO cut: buy NO/sell YES across all assets when sell-YES edge is below 1 point, the lowest YES ask is 35-65c, and the nearest contract expires within 30 days."
+    },
+    {
+      "originFindingId": "FIND-0067",
+      "themeId": "THEME-0007",
+      "description": "Outcome-panel NO edge with tight-spread filter: buy NO/sell YES across all assets when the lowest YES ask is 35-65c and the tightest YES spread is below 2c."
+    },
+    {
+      "originFindingId": "FIND-0069",
+      "themeId": "THEME-0007",
+      "description": "Outcome-panel NO edge with near-dated filter: buy NO/sell YES across all assets when the lowest YES ask is 35-65c and the nearest contract expires within 30 days."
+    },
+    {
+      "originFindingId": "FIND-0068",
+      "themeId": "THEME-0007",
+      "description": "Outcome-panel NO edge on above-strike contracts: buy NO/sell YES when one-touch direction is above-strike and the lowest YES ask is in the 35-65c mid-price band."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-539: require CBRS funding to be in a relative extreme and already turning higher, avoiding the flat/default reads and continued deterioration that caused losses under the static < -10 rule."
+      "description": "Refinement of H-539: replace any-day static CBRS funding < -10 with a true-weekend lower-tail trigger. The original failed on pinned +5.5% and already-normalized funding rows; this enters only when weekend funding is both deeply negative and in the lower 7d tail."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-535: replace static MU funding < -10 with a relative extreme that has started turning up; this filters entries at stale 5.5% prints and requires actual normalization to have begun."
+      "description": "Refinement of H-108: drop HYPE risk-on confirmation and replace it with BTC-owned PM IV compression. HYPE is a coincident BTC beta echo, not an independent signal; compressed BTC PM IV gives a cleaner volatility-expansion setup for continued BTC upside."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-537: require AAPL funding to be in the lower tail and turning higher, rather than any print below -10%; this avoids losses from flat/default funding readings and focuses on genuine reversion starts."
+      "description": "Refinement of H-537: restrict AAPL funding reversion to true weekends and require a lower-tail percentile. The original failed on stale funding rows after normalization had already occurred; this enters only when weekend funding is deeply negative and stretched within its own recent range."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-534: re-author the gold one-touch cap-edge signal as a contract premium fade instead of a spot-decline prediction. The original burned 7 unscorable tests because the engine grades contract P&L, not GOLD spot movement; keep the large cap-edge trigger but predict YES/NO premium decay."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-170: convert the rising-listed-IV momentum setup from a directional long thesis to a neutral absolute-move thesis. The family failed because rising IV did not confirm further BTC gains; the same conditions did, however, often precede large moves in either direction."
     }
   ],
   "negativeFindings": [
@@ -252,9 +282,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-08-28T07:10:24Z",
-    "opportunitiesGeneratedAt": "2026-08-28T07:12:33Z",
-    "themesGeneratedAt": "2026-08-28T07:10:30Z",
-    "adviceGeneratedAt": "2026-08-28T07:10:23.633Z"
+    "findingsExportGeneratedAt": "2026-08-29T07:10:41Z",
+    "opportunitiesGeneratedAt": "2026-08-29T07:12:56Z",
+    "themesGeneratedAt": "2026-08-29T07:10:47Z",
+    "adviceGeneratedAt": "2026-08-29T07:10:40.698Z"
   }
 }

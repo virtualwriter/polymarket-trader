@@ -1,8 +1,8 @@
 # NO-bias calibration: event-level report
 
-- Rows in log: 5790 | unique markets: 620
-- Resolved markets (real UMA labels): 328 usable, 253 still open
-- Gate-passed markets: resolved 16, still open 14
+- Rows in log: 6157 | unique markets: 629
+- Resolved markets (real UMA labels): 328 usable, 262 still open
+- Gate-passed markets: resolved 16, still open 15
 
 ## Promotion bar: 16 / 200 resolved gate-passed events
 Progress: 8.0%. NO-bias stays shadow-only until the bar is met with positive expectancy.
