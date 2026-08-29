@@ -6975,3 +6975,39 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 7/12; ne
 
 ---
 
+### 2026-08-29 22:28 UTC
+
+**Portfolio:** $104.30 total | Cash $101.30 | 3 open | P&L $7.5429 | 64% win rate (844 trades)
+
+**Closed 1 trades:**
+- ✅ COST long via hyperliquid/hl_perp [HL COST Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0162 (1.6%, market 0.0150, funding 0.0012)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 87.99 is 2.8 std devs from mean (60.26 ± 10.07)
+- [anomaly] btc_med_min = 67188 is 2.5 std devs from mean (53248.26 ± 5648.89)
+- [anomaly] hype_hl_oi = 2003268648 is 2.4 std devs from mean (1303233912.71 ± 289817892.35)
+- [anomaly] hype_spot = 83.192 is 2.2 std devs from mean (59.59 ± 10.95)
+- [anomaly] hype_med_min = 63.5 is 2.1 std devs from mean (37.05 ± 12.43)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 975 (500 wins / 475 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+29.17%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-4.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+34.15%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.50%)
+
+**LLM analysis:**
+Reviewed all three open WEEKEND_HL_FUNDING_REVERSION_LONG positions. All are policy-gated mechanical exits and LLM closes are not allowed, so no discretionary close instructions emitted. AMZN is the main watch item: its HL funding annualized rate has normalized from roughly -94.9% toward +5.48%, which weakens the funding-reversion thesis, but the position is still within its mechanical target/stop/expiry path. CBRS is approaching target at +1.63% with breakeven arm armed; BIRD is only ~1h old and flat. Macro is very bearish but not a hard portfolio risk trigger for these small perp positions.
+
+---
+
