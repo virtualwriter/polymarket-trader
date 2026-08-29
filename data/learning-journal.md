@@ -6905,3 +6905,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 6/12; ne
 
 ---
 
+### 2026-08-29 19:28 UTC
+
+**Portfolio:** $104.30 total | Cash $99.30 | 5 open | P&L $7.5410 | 64% win rate (841 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 87.65 is 2.7 std devs from mean (60.24 ± 10.04)
+- [anomaly] btc_med_min = 67188 is 2.5 std devs from mean (53237.66 ± 5637.90)
+- [anomaly] hype_hl_oi = 1994756631 is 2.4 std devs from mean (1302707020.28 ± 289295871.69)
+- [anomaly] hype_med_min = 63.6 is 2.1 std devs from mean (37.03 ± 12.41)
+- [anomaly] hype_spot = 82.953 is 2.1 std devs from mean (59.57 ± 10.94)
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 974 (500 wins / 474 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+7.14%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+29.17%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-4.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+34.15%)
+
+**LLM analysis:**
+No discretionary closes permitted: all five open positions are rule-based WEEKEND_HL_FUNDING_REVERSION_LONG and ALLOWED ACTION SURFACE marks allowed=false for every positionId. Main concern is DKNG—open 14h, PnL -3.1%, and funding has normalized from deeply negative to +5.48% annualized in the latest snapshot, which weakens the negative-funding reversion thesis. AMZN funding also normalized from -94.9% to +5.48%, but price is flat/slightly positive. COST, HIMS, and CBRS are too early to judge. Mechanical target/stop/breakeven/expiry should continue to own exits. Nightly research may want to examine whether funding normalization/flip before min hold is a useful early-exit or disqualifier for weekend HL funding reversion longs, but no changes here.
+
+---
+
