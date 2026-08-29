@@ -1,29 +1,29 @@
 {
-  "generatedAt": "2026-08-28T23:28:22.725Z",
+  "generatedAt": "2026-08-29T00:28:18.184Z",
   "dataFreshness": {
-    "valuationRows": 2621,
-    "latestValuationAt": "2026-08-28T23",
-    "macroRows": 2619,
+    "valuationRows": 2622,
+    "latestValuationAt": "2026-08-29T00",
+    "macroRows": 2620,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-28T23"
+    "latestInstrumentSnapshotAt": "2026-08-29T00"
   },
   "portfolio": {
-    "cash": 103.1973,
+    "cash": 103.2137,
     "openPositions": 1,
-    "realizedPnl": 7.4369,
-    "totalTrades": 825,
-    "winRatePct": 63.6,
-    "unrealizedPnl": 0.0122
+    "realizedPnl": 7.4533,
+    "totalTrades": 826,
+    "winRatePct": 63.7,
+    "unrealizedPnl": 0
   },
   "openPositions": [
     {
-      "positionId": "WF-1787952507629-BX-cvn1",
-      "asset": "BX",
+      "positionId": "WF-1787963297421-CBRS-nqmz",
+      "asset": "CBRS",
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 1.22,
-      "currentPrice": 142.65,
+      "pnlPct": 0,
+      "currentPrice": 177.91,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -174,10 +174,10 @@
     {
       "type": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "enabled": true,
-      "weight": 0.6584,
-      "trades": 147,
-      "wins": 97,
-      "avgPnlPct": 0.1387,
+      "weight": 0.659,
+      "trades": 148,
+      "wins": 98,
+      "avgPnlPct": 0.1489,
       "disabledAssets": [
         "ZM"
       ]
@@ -193,7 +193,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 25,
+    "openCount": 26,
     "resolvedCount": 971,
     "wouldHaveWon": 498,
     "wouldHaveLost": 473,
@@ -519,6 +519,22 @@
           ]
         },
         "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 11.2pt after haircuts. CBOE gap 12.2pt, CME gap 12.2pt, source agreement both_positive, spread 1.0c, liquidity 21184. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-in-august-2026 — NO — Will Bitcoin reach $80,000 in August?",
+        "marketQuality": {
+          "yesBid": 0.32,
+          "yesAsk": 0.34,
+          "yesSpread": 0.02,
+          "liquidity": 22296.65,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 9.8pt on BTC, spread 2.0c, liquidity 22297. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
