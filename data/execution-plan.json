@@ -1,11 +1,27 @@
 {
-  "generatedAt": "2026-08-29T00:28:18.354Z",
+  "generatedAt": "2026-08-29T01:28:54.082Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
   "llmCloses": [],
-  "entrySignals": [],
+  "entrySignals": [
+    {
+      "type": "FUNDING_EXTREME_SHORT",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "strength": 0.8142857142857143,
+      "confidence": 0.4669339789007486,
+      "thesis": "AMZN HL funding -43.5% annualized — crowded shorts. Buy. (Entry trigger: funding < -15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 265.43,
+      "targetPct": 6,
+      "stopPct": 2,
+      "expiryDays": 21,
+      "leverage": 1
+    }
+  ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [

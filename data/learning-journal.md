@@ -6321,3 +6321,44 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 0/12; ne
 
 ---
 
+### 2026-08-29 01:28 UTC
+
+**Portfolio:** $104.23 total | Cash $101.23 | 3 open | P&L $7.4727 | 64% win rate (828 trades)
+
+**Closed 2 trades:**
+- ✅ CBRS long via hyperliquid/hl_perp [HL CBRS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0194 (1.9%, market 0.0194, funding 0.0000)
+- ✅ ZM long via hyperliquid/hl_perp [HL ZM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → signal_killed: +$0.0000 (0.0%, market 0.0000, funding 0.0000)
+
+**Opened 1 positions:**
+- AMZN long @ $265.43 via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 Opened 1 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_funding_ann = -43.5 is -3.0 std devs from mean (9.44 ± 17.77)
+- [anomaly] hype_pm_ev = 87.68 is 2.8 std devs from mean (60.07 ± 9.84)
+- [anomaly] btc_med_min = 68375 is 2.8 std devs from mean (53146.63 ± 5533.09)
+- [anomaly] hype_hl_oi = 1970137789 is 2.4 std devs from mean (1298620957.77 ± 285394099.91)
+- [anomaly] hype_med_min = 63.4 is 2.2 std devs from mean (36.87 ± 12.28)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 972 (499 wins / 473 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit target (+4.74%)
+- ❌ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit stop (-2.64%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+7.14%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+29.17%)
+
+**LLM analysis:**
+Reviewed open positions: HIMS and LLY are both 0.0h old with no PnL, and both are policy-gated as mechanical-only exits, so no discretionary close action is permitted. Funding remains deeply negative for both names (HIMS -91.7%, LLY -72.5%), which is thesis-continuation rather than weakening. Macro is very bearish/hawkish, but that is not a hard portfolio risk breach for these small perp positions. I will monitor for any rapid funding normalization toward zero or sign flip as potential thesis weakening, but no close is warranted now.
+
+---
+
