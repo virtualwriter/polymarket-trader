@@ -6724,3 +6724,37 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 4/12; ne
 
 ---
 
+### 2026-08-29 13:28 UTC
+
+**Portfolio:** $104.28 total | Cash $97.28 | 7 open | P&L $7.5223 | 64% win rate (835 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 Opened 1 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_funding_ann = -94.9 is -5.8 std devs from mean (9.40 ± 17.87)
+- [anomaly] hype_pm_ev = 87.64 is 2.8 std devs from mean (60.19 ± 9.98)
+- [anomaly] btc_med_min = 68125 is 2.7 std devs from mean (53209.98 ± 5607.35)
+- [anomaly] hype_hl_oi = 1941145581 is 2.2 std devs from mean (1301404550.35 ± 288022203.32)
+- [anomaly] hype_med_min = 63.7 is 2.2 std devs from mean (36.98 ± 12.37)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 974 (500 wins / 474 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+7.14%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+29.17%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-4.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+34.15%)
+
+**LLM analysis:**
+No discretionary closes are eligible this run: the AMZN FUNDING_EXTREME_SHORT position is just under its 12-hour minimum hold, and all WEEKEND_HL_FUNDING_REVERSION_LONG positions are policy-gated to mechanical exits. AMZN funding moved more negative (-43.5% to -94.9%), which is thesis continuation/intensification rather than invalidation. COST is near target at +1.93% with breakeven armed, but rule-based profit-taking is rejected. DKNG is underwater at -3.14%; I note structural concern about weekend reversion slippage in this name, but no action is permitted here.
+
+---
+
