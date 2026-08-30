@@ -7652,3 +7652,36 @@ Reviewed 5 open positions: no eligible discretionary closes. All four WEEKEND_HL
 
 ---
 
+### 2026-08-30 19:28 UTC
+
+**Portfolio:** $104.38 total | Cash $99.38 | 5 open | P&L $7.6172 | 65% win rate (857 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 88.35 is 2.7 std devs from mean (60.46 ± 10.29)
+- [anomaly] hype_hl_oi = 2032350963 is 2.5 std devs from mean (1308316805.98 ± 294923271.03)
+- [anomaly] btc_med_min = 67391 is 2.4 std devs from mean (53349.08 ± 5752.61)
+- [anomaly] hype_med_max = 113.5 is 2.2 std devs from mean (81.21 ± 14.51)
+- [anomaly] hype_spot = 83.028 is 2.1 std devs from mean (59.76 ± 11.10)
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 980 (501 wins / 479 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have hit stop (-23.53%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+16.28%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-4.88%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 2.0h since last call; daily budget 7/12; next scheduled 2026-08-30T21:28:21.215Z). Mechanical cycle ran normally._
+
+---
+
