@@ -7790,3 +7790,37 @@ No discretionary closes taken: all 15 open positions are either policy-gated mec
 
 ---
 
+### 2026-08-30 23:28 UTC
+
+**Portfolio:** $104.38 total | Cash $89.38 | 15 open | P&L $7.6148 | 64% win rate (858 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 87.27 is 2.6 std devs from mean (60.50 ± 10.34)
+- [anomaly] btc_med_min = 67444 is 2.4 std devs from mean (53370.28 ± 5774.18)
+- [anomaly] hype_med_max = 113 is 2.2 std devs from mean (81.26 ± 14.56)
+- [anomaly] hype_hl_oi = 1922763401 is 2.1 std devs from mean (1309315090.08 ± 295825337.96)
+- [anomaly] hype_med_min = 63 is 2.0 std devs from mean (37.28 ± 12.62)
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 982 (501 wins / 481 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=438 (148W/233L/57flat, 38.8% win-rate, sum $-0.3151, avg -0.07%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-4.88%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have hit stop (-98.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-9.30%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 10/12; next scheduled 2026-08-31T01:28:27.046Z). Mechanical cycle ran normally._
+
+---
+
