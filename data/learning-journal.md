@@ -7372,3 +7372,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 3/12; ne
 
 ---
 
+### 2026-08-30 10:28 UTC
+
+**Portfolio:** $104.36 total | Cash $102.36 | 2 open | P&L $7.5985 | 64% win rate (853 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 87.68 is 2.7 std devs from mean (60.37 ± 10.20)
+- [anomaly] btc_med_min = 67391 is 2.5 std devs from mean (53306.70 ± 5709.32)
+- [anomaly] hype_hl_oi = 2015330080 is 2.4 std devs from mean (1306164748.35 ± 292753716.94)
+- [anomaly] hype_spot = 83.551 is 2.2 std devs from mean (59.69 ± 11.04)
+- [anomaly] hype_med_min = 63.5 is 2.1 std devs from mean (37.16 ± 12.52)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 976 (500 wins / 476 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-4.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+34.15%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.50%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-4.88%)
+
+**LLM analysis:**
+Reviewed COST and DKNG weekend funding reversion longs. Both are policy-gated mechanical exits with LLM close not allowed, so no discretionary close was emitted. COST is +1.16% and acting fine price-wise, but its entry funding extreme has normalized to slightly positive carry, which is near thesis weakening for this family; DKNG is roughly flat and still has negative funding, closer to thesis continuation. No action taken due policy; if COST continues with normalized funding and stalls below target, the mechanical scanner should handle exit.
+
+---
+
