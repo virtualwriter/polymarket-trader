@@ -7475,3 +7475,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 4/12; ne
 
 ---
 
+### 2026-08-30 13:29 UTC
+
+**Portfolio:** $104.36 total | Cash $101.36 | 3 open | P&L $7.5985 | 64% win rate (854 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 87.67 is 2.7 std devs from mean (60.41 ± 10.23)
+- [anomaly] btc_med_min = 67333 is 2.4 std devs from mean (53322.64 ± 5725.70)
+- [anomaly] hype_hl_oi = 2022341892 is 2.4 std devs from mean (1306965663.35 ± 293554068.46)
+- [anomaly] hype_spot = 83.699 is 2.2 std devs from mean (59.72 ± 11.06)
+- [anomaly] hype_med_min = 63.5 is 2.1 std devs from mean (37.19 ± 12.55)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 976 (500 wins / 476 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-4.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+34.15%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.50%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-4.88%)
+
+**LLM analysis:**
+No discretionary closes this run: all three open positions (COST, DKNG, CBRS) are WEEKEND_HL_FUNDING_REVERSION_LONG with LLM close policy set to allowed=false; mechanical targets/stops/expiry own exits. Notable thesis-softening observations for monitoring only: DKNG funding normalized from about -83% at open to +2%, CBRS from -63% at open to +5%, and COST partially normalized from -93% to -46%. These are not close instructions, as rule-based closes are policy-gated.
+
+---
+
