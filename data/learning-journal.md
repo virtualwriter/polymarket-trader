@@ -7685,3 +7685,37 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 7/12; ne
 
 ---
 
+### 2026-08-30 20:28 UTC
+
+**Portfolio:** $104.38 total | Cash $98.38 | 6 open | P&L $7.6172 | 65% win rate (857 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = 288.6 is 4.3 std devs from mean since 2026-04-28 (-8.82 ± 69.24)
+- [anomaly] hype_pm_ev = 88.04 is 2.7 std devs from mean (60.47 ± 10.31)
+- [anomaly] btc_med_min = 67391 is 2.4 std devs from mean (53354.37 ± 5757.98)
+- [anomaly] hype_hl_oi = 2016835508 is 2.4 std devs from mean (1308583467.14 ± 295187843.64)
+- [anomaly] hype_med_max = 113.2 is 2.2 std devs from mean (81.22 ± 14.53)
+
+**Blocked signal learning:**
+- Open blocked shadows: 23
+- Resolved blocked shadows: 981 (501 wins / 480 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=437 (148W/232L/57flat, 38.9% win-rate, sum $-0.2221, avg -0.05%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+16.28%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-4.88%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have hit stop (-98.41%)
+
+**LLM analysis:**
+No eligible discretionary closes this run: all six open positions are either policy-gated mechanical exits or below the 12h LLM min-hold. Notable to revisit: GOLD short (FUNDING_EXTREME_LONG) has seen its signal input round-trip hard—gold_hl_funding_ann went from +27.1% at entry to -12.2% now, crossing back through the entry threshold and beyond—but the position is only ~6h old, so no thesis_invalidated close is permitted yet. If this funding normalization persists past the 12h min-hold, it will be a clean candidate for discretionary thesis-invalidated exit. Weekend HL funding-reversion longs remain mechanical and show no hard risk breach.
+
+---
+
