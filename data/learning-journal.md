@@ -7120,3 +7120,37 @@ No discretionary closes taken: all three open positions are WEEKEND_HL_FUNDING_R
 
 ---
 
+### 2026-08-30 02:28 UTC
+
+**Portfolio:** $104.30 total | Cash $101.30 | 3 open | P&L $7.5378 | 64% win rate (847 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 87.12 is 2.7 std devs from mean (60.30 ± 10.11)
+- [anomaly] btc_med_min = 67283 is 2.5 std devs from mean (53269.46 ± 5670.80)
+- [anomaly] hype_hl_oi = 2007933807 is 2.4 std devs from mean (1304302636.32 ± 290895463.84)
+- [anomaly] hype_spot = 83.145 is 2.1 std devs from mean (59.63 ± 10.98)
+- [anomaly] hype_med_min = 63.5 is 2.1 std devs from mean (37.09 ± 12.46)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 975 (500 wins / 475 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+29.17%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-4.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+34.15%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.50%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 1/12; next scheduled 2026-08-30T04:28:27.594Z). Mechanical cycle ran normally._
+
+---
+
