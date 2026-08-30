@@ -7619,3 +7619,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 6/12; ne
 
 ---
 
+### 2026-08-30 17:28 UTC
+
+**Portfolio:** $104.38 total | Cash $99.38 | 5 open | P&L $7.6172 | 65% win rate (857 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 88.25 is 2.7 std devs from mean (60.45 ± 10.28)
+- [anomaly] hype_hl_oi = 2028421533 is 2.4 std devs from mean (1308044100.08 ± 294643808.30)
+- [anomaly] btc_med_min = 67391 is 2.4 std devs from mean (53343.79 ± 5747.24)
+- [anomaly] hype_med_max = 113.6 is 2.2 std devs from mean (81.20 ± 14.50)
+- [anomaly] hype_med_min = 63.5 is 2.1 std devs from mean (37.23 ± 12.58)
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 980 (501 wins / 479 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have hit stop (-23.53%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+16.28%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-4.88%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+
+**LLM analysis:**
+Reviewed 5 open positions: no eligible discretionary closes. All four WEEKEND_HL_FUNDING_REVERSION_LONG positions are mechanical-only and policy-gated. The GOLD FUNDING_EXTREME_LONG short is only 3h into a 72h hold and below the 12h LLM minimum hold. Gold HL funding has round-tripped from +27.1% at entry to +5.5% with spot unchanged at 4480; this is a thesis-invalidation candidate to reassess once the position clears its min hold. No hard portfolio risk or data-quality issues observed.
+
+---
+
