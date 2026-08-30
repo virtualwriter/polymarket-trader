@@ -1,16 +1,162 @@
 {
-  "generatedAt": "2026-08-30T13:28:22.455Z",
+  "generatedAt": "2026-08-30T14:28:22.079Z",
   "mechanicalExits": [],
   "signalKillExits": [],
-  "entryCandidates": [],
-  "sizingPreviews": [],
-  "portfolioExposurePreviews": [],
-  "stagedQuantRules": [],
+  "entryCandidates": [
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.346,
+      "confidence": 0.16446582100705642,
+      "thesis": "GOLD HL funding 27.1% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4480,
+      "targetPct": 5,
+      "stopPct": 2,
+      "expiryDays": 3,
+      "leverage": 1
+    }
+  ],
+  "sizingPreviews": [
+    {
+      "signalType": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "reason": "unsupported_signal",
+      "entryPrice": 4480,
+      "probabilitySource": "unsupported",
+      "winProbability": null,
+      "probabilitySampleSize": null,
+      "edgePts": null,
+      "rawKellyFraction": null,
+      "adjustedKellyFraction": null,
+      "cappedKellyFraction": null,
+      "notes": [
+        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
+        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
+      ]
+    }
+  ],
+  "portfolioExposurePreviews": [
+    {
+      "candidateId": "FUNDING_EXTREME_LONG:GOLD:0",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "candidateSize": 0,
+      "riskClusters": [
+        "commodity",
+        "funding_reversion",
+        "gold_delta",
+        "hyperliquid_venue"
+      ],
+      "current": {
+        "totalGross": 20,
+        "totalNet": 20,
+        "byAsset": {
+          "COST": 5,
+          "DKNG": 5,
+          "CBRS": 5,
+          "GME": 5
+        },
+        "bySignalType": {
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 20
+        },
+        "byVenue": {
+          "hyperliquid": 20
+        },
+        "byCluster": {
+          "cost_delta": 5,
+          "funding_reversion": 20,
+          "hyperliquid_venue": 20,
+          "dkng_delta": 5,
+          "cbrs_delta": 5,
+          "gme_delta": 5
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 20,
+        "totalNet": 20,
+        "byAsset": {
+          "COST": 5,
+          "DKNG": 5,
+          "CBRS": 5,
+          "GME": 5,
+          "GOLD": 0
+        },
+        "bySignalType": {
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 20,
+          "FUNDING_EXTREME_LONG": 0
+        },
+        "byVenue": {
+          "hyperliquid": 20
+        },
+        "byCluster": {
+          "cost_delta": 5,
+          "funding_reversion": 20,
+          "hyperliquid_venue": 20,
+          "dkng_delta": 5,
+          "cbrs_delta": 5,
+          "gme_delta": 5,
+          "commodity": 0,
+          "gold_delta": 0
+        }
+      },
+      "warnings": [
+        "funding_reversion cluster exposure 20.0000 exceeds preview threshold 5.0000.",
+        "hyperliquid_venue cluster exposure 20.0000 exceeds preview threshold 5.0000."
+      ]
+    }
+  ],
+  "stagedQuantRules": [
+    {
+      "candidateId": "FUNDING_EXTREME_LONG:GOLD:0",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "mode": "observe_uniform",
+      "liveSizingEnabled": false,
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "enforcedLiveSize": 1,
+      "wouldResize": true,
+      "edgePts": null,
+      "alerts": [
+        "cluster exposure 20.00 > alert cap 5.00",
+        "funding_reversion cluster exposure 20.0000 exceeds preview threshold 5.0000.",
+        "hyperliquid_venue cluster exposure 20.0000 exceeds preview threshold 5.0000."
+      ],
+      "notes": [
+        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
+      ]
+    }
+  ],
   "llmCloseEligibility": [
     {
       "positionId": "WF-1788078501144-COST-1azr",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "asset": "COST",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 6,
+      "hoursToExpiry": 18,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0.25,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1788082104075-DKNG-mis3",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "DKNG",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
@@ -24,22 +170,6 @@
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
-      "positionId": "WF-1788082104075-DKNG-mis3",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "DKNG",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 4,
-      "hoursToExpiry": 20,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.1666,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
       "positionId": "WF-1788092900460-CBRS-p2l2",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "asset": "CBRS",
@@ -48,10 +178,26 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 1,
-      "hoursToExpiry": 23,
+      "hoursOpen": 2,
+      "hoursToExpiry": 22,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0417,
+      "elapsedHoldPct": 0.0834,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1788100101096-GME-tbdb",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "GME",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 0,
+      "hoursToExpiry": 24,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }

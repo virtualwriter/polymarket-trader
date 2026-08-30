@@ -7508,3 +7508,42 @@ No discretionary closes this run: all three open positions (COST, DKNG, CBRS) ar
 
 ---
 
+### 2026-08-30 14:28 UTC
+
+**Portfolio:** $104.36 total | Cash $99.36 | 5 open | P&L $7.5985 | 64% win rate (855 trades)
+
+**Closed 1 trades:**
+- ✅ ZM long via hyperliquid/hl_perp [HL ZM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → signal_killed: +$0.0000 (0.0%, market 0.0000, funding 0.0000)
+
+**Opened 1 positions:**
+- GOLD short @ $4480 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 87.8 is 2.7 std devs from mean (60.42 ± 10.24)
+- [anomaly] btc_med_min = 67333 is 2.4 std devs from mean (53327.92 ± 5731.08)
+- [anomaly] hype_hl_oi = 2021628724 is 2.4 std devs from mean (1307235144.14 ± 293826500.67)
+- [anomaly] hype_spot = 83.793 is 2.2 std devs from mean (59.73 ± 11.07)
+- [anomaly] hype_med_min = 63.5 is 2.1 std devs from mean (37.20 ± 12.55)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 977 (500 wins / 477 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+34.15%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.50%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-4.88%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have hit stop (-23.53%)
+
+**LLM analysis:**
+Reviewed 4 open positions: COST, DKNG, CBRS, and GME. All are WEEKEND_HL_FUNDING_REVERSION_LONG and are policy-gated to mechanical exits; LLM closes are not allowed for any of them. No hard portfolio risk or data-quality flags observed. DKNG is slightly negative at -0.88% but still well within its hold window; CBRS is +0.73% and GME just opened. No discretionary action taken.
+
+---
+

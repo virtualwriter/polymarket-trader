@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-08-30T13:28:22.302Z",
+  "generatedAt": "2026-08-30T14:28:21.921Z",
   "dataFreshness": {
-    "valuationRows": 2655,
-    "latestValuationAt": "2026-08-30T13",
-    "macroRows": 2653,
+    "valuationRows": 2656,
+    "latestValuationAt": "2026-08-30T14",
+    "macroRows": 2654,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-30T13"
+    "latestInstrumentSnapshotAt": "2026-08-30T14"
   },
   "portfolio": {
-    "cash": 101.359,
-    "openPositions": 3,
+    "cash": 100.359,
+    "openPositions": 4,
     "realizedPnl": 7.5985,
-    "totalTrades": 854,
+    "totalTrades": 855,
     "winRatePct": 64.4,
-    "unrealizedPnl": -0.0026
+    "unrealizedPnl": -0.0023
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.34,
-      "currentPrice": 953.69,
+      "pnlPct": -0.08,
+      "currentPrice": 954.14,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -36,8 +36,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.34,
-      "currentPrice": 25.264,
+      "pnlPct": -0.88,
+      "currentPrice": 25.237,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -50,8 +50,22 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.42,
-      "currentPrice": 178.17,
+      "pnlPct": 0.73,
+      "currentPrice": 178.28,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1788100101096-GME-tbdb",
+      "asset": "GME",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 18.206,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -202,10 +216,10 @@
     {
       "type": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "enabled": true,
-      "weight": 0.6837,
-      "trades": 175,
-      "wins": 121,
-      "avgPnlPct": 0.208,
+      "weight": 0.6851,
+      "trades": 176,
+      "wins": 122,
+      "avgPnlPct": 0.2068,
       "disabledAssets": [
         "ZM"
       ]
@@ -222,9 +236,9 @@
   ],
   "blockedSummary": {
     "openCount": 25,
-    "resolvedCount": 976,
+    "resolvedCount": 977,
     "wouldHaveWon": 500,
-    "wouldHaveLost": 476,
+    "wouldHaveLost": 477,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -292,21 +306,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "PC_RATIO_EXTREME_LOW",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "short",
-        "blockedReason": "short_blocked_by_positive_trend",
-        "outcome": "win",
-        "closeReason": "target",
-        "pnlPct": 4.74,
-        "resolvedAt": "2026-08-28T16:28:43.069Z",
-        "trendMetrics": {
-          "aboveTrendPct": 1.66,
-          "momentumPct": 2.76
-        }
-      },
       {
         "signalType": "PM_EV_ABOVE_SPOT",
         "asset": "HYPE",
@@ -439,6 +438,26 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "stop",
+        "pnlPct": -23.53,
+        "resolvedAt": "2026-08-30T14:28:21.063Z",
+        "marketQuality": {
+          "yesBid": 0.32,
+          "yesAsk": 0.34,
+          "yesSpread": 0.02,
+          "liquidity": 22296.65,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -524,22 +543,6 @@
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "BTC",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-bitcoin-hit-in-august-2026 — NO — Will Bitcoin reach $80,000 in August?",
-        "marketQuality": {
-          "yesBid": 0.32,
-          "yesAsk": 0.34,
-          "yesSpread": 0.02,
-          "liquidity": 22296.65,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 9.8pt on BTC, spread 2.0c, liquidity 22297. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "OIL",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-price-will-wti-hit-in-august-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $85 in August?",
@@ -569,6 +572,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.4pt on ETH, spread 2.0c, liquidity 38572. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-in-august-2026 — NO — Will Bitcoin reach $80,000 in August?",
+        "marketQuality": {
+          "yesBid": 0.46,
+          "yesAsk": 0.48,
+          "yesSpread": 0.02,
+          "liquidity": 26506.69,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 27.6pt on BTC, spread 2.0c, liquidity 26507. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
