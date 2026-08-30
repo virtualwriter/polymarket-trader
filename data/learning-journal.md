@@ -7262,3 +7262,44 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; ne
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-30T07:10:19.261Z, model=deepseek-v4-pro)
+- Hypotheses added: 7 (rejected 2); reviews applied: 6; invalidated assumptions learned: 3; param updates: none.
+- Strategy review: The proven edges remain Polymarket YES overpricing (panel NO cuts and one-touch NO premium fade) and weekend Hyperliquid funding reversion long, which is live-eligible with 367/525 wins and strong shadow support. The main failures are directional re-authorings of contract trades as spot-move bets (especially GOLD one-touch NO), static funding thresholds that do not require reversion to have started, and HYPE/listed-IV momentum confirmation setups that enter late and lose more often than their base rates.
+- Nightly journal: Tonight's main lesson is that one-touch and panel NO edges must be stated as contract P&L theses, not spot-direction predictions. The GOLD one-touch family was mis-measured by exactly this error. Static funding thresholds for CBRS/AAPL/MU are also failing because they ignore whether normalization has actually begun; refinements now require deeply negative funding with a positive 24h change. The outcome-panel NO edge remains the strongest research input, so I kept most new hypothesis spend on sharpening YES-overpricing in mid-priced, near-dated, tight/liquid contracts. No risk parameters were c
+### 2026-08-30 07:28 UTC
+
+**Portfolio:** $104.36 total | Cash $104.36 | 0 open | P&L $7.5985 | 64% win rate (852 trades)
+
+**Closed 1 trades:**
+- ✅ ZM long via hyperliquid/hl_perp [HL ZM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → signal_killed: +$0.0000 (0.0%, market 0.0000, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 87.58 is 2.7 std devs from mean (60.34 ± 10.16)
+- [anomaly] btc_med_min = 67283 is 2.5 std devs from mean (53290.77 ± 5692.90)
+- [anomaly] hype_hl_oi = 2006217863 is 2.4 std devs from mean (1305364716.67 ± 291953737.83)
+- [anomaly] hype_spot = 83.169 is 2.1 std devs from mean (59.66 ± 11.01)
+- [anomaly] hype_med_min = 63.5 is 2.1 std devs from mean (37.13 ± 12.50)
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 975 (500 wins / 475 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+29.17%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-4.88%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+34.15%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.50%)
+
+**LLM analysis:**
+No open positions, so there are no discretionary close candidates this run. Portfolio is fully in cash at $104.36. Open one-touch NO shadow quality warnings remain visible in BTC/ETH/OIL/GOLD and a NO_BIAS_ADJUSTED_GAP_SHADOW in GOLD, but these are blocked/policy-gated and not actionable by me here.
+
+---
+

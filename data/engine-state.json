@@ -1,17 +1,17 @@
 {
-  "generatedAt": "2026-08-30T06:28:26.639Z",
+  "generatedAt": "2026-08-30T07:28:20.180Z",
   "dataFreshness": {
-    "valuationRows": 2648,
-    "latestValuationAt": "2026-08-30T06",
-    "macroRows": 2646,
+    "valuationRows": 2649,
+    "latestValuationAt": "2026-08-30T07",
+    "macroRows": 2647,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-30T06"
+    "latestInstrumentSnapshotAt": "2026-08-30T07"
   },
   "portfolio": {
     "cash": 104.359,
     "openPositions": 0,
     "realizedPnl": 7.5985,
-    "totalTrades": 851,
+    "totalTrades": 852,
     "winRatePct": 64.3,
     "unrealizedPnl": 0
   },
@@ -159,10 +159,10 @@
     {
       "type": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "enabled": true,
-      "weight": 0.6798,
-      "trades": 172,
-      "wins": 118,
-      "avgPnlPct": 0.2116,
+      "weight": 0.681,
+      "trades": 173,
+      "wins": 119,
+      "avgPnlPct": 0.2104,
       "disabledAssets": [
         "ZM"
       ]
@@ -178,7 +178,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 25,
+    "openCount": 26,
     "resolvedCount": 975,
     "wouldHaveWon": 500,
     "wouldHaveLost": 475,
@@ -399,22 +399,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $6,500 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.017,
-          "yesAsk": 0.03,
-          "yesSpread": 0.013,
-          "liquidity": 49863.46,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.4pt on ETH, spread 1.3c, liquidity 49863. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $5,000 by end of December?",
@@ -524,6 +508,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.4pt on ETH, spread 2.0c, liquidity 38572. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "GOLD",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $5,000 by end of December?",
+        "marketQuality": {
+          "yesBid": 0.59,
+          "yesAsk": 0.6,
+          "yesSpread": 0.01,
+          "liquidity": 21796.16,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 12.6pt after haircuts. CBOE gap 13.6pt, CME gap 13.6pt, source agreement both_positive, spread 1.0c, liquidity 21796. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
