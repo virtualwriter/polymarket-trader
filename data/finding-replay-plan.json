@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-08-29T07:12:56Z",
+  "generatedAt": "2026-08-30T07:12:34Z",
   "mode": "plan",
   "window": {
-    "start": "2026-08-22",
-    "end": "2026-08-23",
+    "start": "2026-08-29",
+    "end": "2026-08-30",
     "source": "latest_complete_weekend_archives"
   },
   "limitHours": 2,
@@ -12,15 +12,15 @@
     {
       "id": "FIND-0065",
       "rank": 1,
-      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: sell_yes_edge_pts < 1 AND yesAsk between 0.35 and 0.65 | WR=68% (base 51%) n=74 avg=+19.70%/trade q=0.0083 | holdout n=34 avg=+21.11%",
+      "title": "Panel FIND: buy NO (sell YES) 7d ALL | conditions: sell_yes_edge_pts < 1 AND yesAsk between 0.35 and 0.65 | WR=68% (base 51%) n=74 avg=+19.70%/trade q=0.0080 | holdout n=35 avg=+24.11%",
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65|no",
       "signals": "PANEL_NO_7D",
       "opportunityScore": 1.0,
-      "confidenceScore": 0.5888,
+      "confidenceScore": 0.5923,
       "status": "strengthened",
       "sandbox": "/tmp/finding-replay-FIND-0065",
       "summaryPath": "/tmp/finding-replay-FIND-0065/replay-report.json",
-      "reproducibleCommand": "cd /opt/polymarket-trader && npx tsx scripts/replay-harness.ts --start 2026-08-22 --end 2026-08-23 --sandbox /tmp/finding-replay-FIND-0065 --signals PANEL_NO_7D --limit-hours 2 --keep-going"
+      "reproducibleCommand": "cd /opt/polymarket-trader && npx tsx scripts/replay-harness.ts --start 2026-08-29 --end 2026-08-30 --sandbox /tmp/finding-replay-FIND-0065 --signals PANEL_NO_7D --limit-hours 2 --keep-going"
     }
   ]
 }
