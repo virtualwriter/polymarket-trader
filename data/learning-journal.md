@@ -7982,3 +7982,45 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 1/12; ne
 
 ---
 
+### 2026-08-31 04:29 UTC
+
+**Portfolio:** $103.49 total | Cash $97.49 | 6 open | P&L $6.7260 | 64% win rate (872 trades)
+
+**Closed 3 trades:**
+- ❌ AMD long via hyperliquid/hl_perp [HL AMD Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0520 (-5.2%, market -0.0526, funding 0.0006)
+- ✅ BX long via hyperliquid/hl_perp [HL BX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0055 (0.5%, market 0.0042, funding 0.0012)
+- ✅ GOLD short via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG) → llm_decision: +$0.0139 (1.4%, market 0.0138, funding 0.0000)
+
+**Signal weight changes:**
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00276/trade over 191 trades (p=0.135).
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00272/trade over 192 trades (p=0.137).
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 86.73 is 2.5 std devs from mean (60.55 ± 10.39)
+- [anomaly] btc_med_min = 67889 is 2.5 std devs from mean (53397.25 ± 5802.22)
+- [anomaly] hype_med_max = 112.3 is 2.1 std devs from mean (81.32 ± 14.61)
+- [anomaly] hype_med_min = 63.2 is 2.0 std devs from mean (37.33 ± 12.65)
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 983 (501 wins / 482 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=438 (148W/233L/57flat, 38.8% win-rate, sum $-0.3151, avg -0.07%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have hit stop (-98.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-9.30%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.50%)
+
+**LLM analysis:**
+Closed the eligible GOLD FUNDING_EXTREME_LONG short on thesis invalidation: gold_hl_funding_ann normalized from 27.1% to 5.48%, below the +15% signal threshold, while PnL was +1.4%. Weekend HL funding reversion longs (AMZN, CBRS, INTC, AAPL, MRVL, EBAY) are mechanical-only and currently negative; no LLM closes permitted for them. Macro backdrop remains risk-off/hawkish but no hard portfolio risk breach was triggered.
+
+---
+
