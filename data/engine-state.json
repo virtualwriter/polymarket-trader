@@ -1,46 +1,29 @@
 {
-  "generatedAt": "2026-08-31T04:28:20.398Z",
+  "generatedAt": "2026-08-31T05:28:22.370Z",
   "dataFreshness": {
-    "valuationRows": 2669,
-    "latestValuationAt": "2026-08-31T04",
-    "macroRows": 2667,
+    "valuationRows": 2670,
+    "latestValuationAt": "2026-08-31T05",
+    "macroRows": 2668,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-08-31T04"
+    "latestInstrumentSnapshotAt": "2026-08-31T05"
   },
   "portfolio": {
-    "cash": 96.4726,
-    "openPositions": 7,
-    "realizedPnl": 6.7121,
-    "totalTrades": 871,
-    "winRatePct": 63.9,
-    "unrealizedPnl": -0.1427
+    "cash": 99.5488,
+    "openPositions": 4,
+    "realizedPnl": 6.7883,
+    "totalTrades": 874,
+    "winRatePct": 64.1,
+    "unrealizedPnl": -0.0084
   },
   "openPositions": [
-    {
-      "positionId": "T-1788100119900-gc2c",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 1.39,
-      "currentPrice": 4418,
-      "underlyingPrice": 4418,
-      "targetPct": 5,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
-      ]
-    },
     {
       "positionId": "WF-1788125304709-AMZN-rzqs",
       "asset": "AMZN",
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -2.86,
-      "currentPrice": 265.21,
+      "pnlPct": -0.46,
+      "currentPrice": 266.49,
       "underlyingPrice": 266.16,
       "targetPct": 3,
       "stopPct": 100,
@@ -50,27 +33,13 @@
       ]
     },
     {
-      "positionId": "WF-1788125304709-CBRS-8r14",
-      "asset": "CBRS",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -3.13,
-      "currentPrice": 176.65,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
       "positionId": "WF-1788125304709-INTC-k3vb",
       "asset": "INTC",
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -5.26,
-      "currentPrice": 89.094,
+      "pnlPct": 0.76,
+      "currentPrice": 90.178,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -83,22 +52,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -1.51,
-      "currentPrice": 319.32,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "WF-1788136099141-MRVL-sdlc",
-      "asset": "MRVL",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -2.58,
-      "currentPrice": 213,
+      "pnlPct": -1.01,
+      "currentPrice": 319.64,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -111,8 +66,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.33,
-      "currentPrice": 105.75,
+      "pnlPct": -0.12,
+      "currentPrice": 105.79,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -142,10 +97,10 @@
     {
       "type": "FUNDING_EXTREME_LONG",
       "enabled": true,
-      "weight": 0.4753,
-      "trades": 41,
-      "wins": 20,
-      "avgPnlPct": -0.4432,
+      "weight": 0.479,
+      "trades": 42,
+      "wins": 21,
+      "avgPnlPct": -0.3995,
       "disabledAssets": [
         "AMZN",
         "HYPE"
@@ -263,10 +218,10 @@
     {
       "type": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "enabled": true,
-      "weight": 0.6751,
-      "trades": 192,
-      "wins": 128,
-      "avgPnlPct": -0.2721,
+      "weight": 0.6735,
+      "trades": 194,
+      "wins": 130,
+      "avgPnlPct": -0.2372,
       "disabledAssets": [
         "ZM"
       ]
@@ -431,6 +386,13 @@
           "flags": [
             "wide_pm_spread"
           ]
+        },
+        "sourceComparison": {
+          "sourceClosedAt": "2026-08-31T04:29:12.406Z",
+          "sourcePnl": 0.0139,
+          "sourcePnlPct": 1.39,
+          "proxyOutperformed": false,
+          "correlation": "opposite_direction"
         }
       },
       {
