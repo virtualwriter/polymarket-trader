@@ -1,10 +1,107 @@
 {
-  "generatedAt": "2026-08-31T14:28:28.416Z",
+  "generatedAt": "2026-08-31T15:28:22.583Z",
   "mechanicalExits": [],
   "signalKillExits": [],
-  "entryCandidates": [],
-  "sizingPreviews": [],
-  "portfolioExposurePreviews": [],
-  "stagedQuantRules": [],
+  "entryCandidates": [
+    {
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "strength": 0.18666666666666665,
+      "confidence": 0.09710938559125197,
+      "thesis": "BTC P/C ratio 0.44 — heavy call buying → contrarian short.",
+      "hypothesisId": null,
+      "entryPrice": 78337,
+      "targetPct": 5,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    }
+  ],
+  "sizingPreviews": [
+    {
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "reason": "unsupported_signal",
+      "entryPrice": 78337,
+      "probabilitySource": "unsupported",
+      "winProbability": null,
+      "probabilitySampleSize": null,
+      "edgePts": null,
+      "rawKellyFraction": null,
+      "adjustedKellyFraction": null,
+      "cappedKellyFraction": null,
+      "notes": [
+        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
+        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
+      ]
+    }
+  ],
+  "portfolioExposurePreviews": [
+    {
+      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "candidateSize": 0,
+      "riskClusters": [
+        "btc_delta",
+        "options_sentiment",
+        "risk_on",
+        "spot_venue"
+      ],
+      "current": {
+        "totalGross": 0,
+        "totalNet": 0,
+        "byAsset": {},
+        "bySignalType": {},
+        "byVenue": {},
+        "byCluster": {}
+      },
+      "afterCandidate": {
+        "totalGross": 0,
+        "totalNet": 0,
+        "byAsset": {
+          "BTC": 0
+        },
+        "bySignalType": {
+          "PC_RATIO_EXTREME_LOW": 0
+        },
+        "byVenue": {
+          "spot": 0
+        },
+        "byCluster": {
+          "btc_delta": 0,
+          "options_sentiment": 0,
+          "risk_on": 0,
+          "spot_venue": 0
+        }
+      },
+      "warnings": []
+    }
+  ],
+  "stagedQuantRules": [
+    {
+      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "asset": "BTC",
+      "mode": "observe_uniform",
+      "liveSizingEnabled": false,
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "enforcedLiveSize": 1,
+      "wouldResize": true,
+      "edgePts": null,
+      "alerts": [],
+      "notes": [
+        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
+      ]
+    }
+  ],
   "llmCloseEligibility": []
 }
