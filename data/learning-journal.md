@@ -836,3 +836,38 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 7/12; ne
 
 ---
 
+### 2026-08-31 22:28 UTC
+
+**Portfolio:** $103.39 total | Cash $103.39 | 0 open | P&L $6.6293 | 64% win rate (878 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 Opened 1 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 88.58 is 2.6 std devs from mean (60.70 ± 10.56)
+- [anomaly] hype_hl_oi = 2022025005 is 2.4 std devs from mean (1313996797.44 ± 299643201.66)
+- [anomaly] hype_spot = 84.766 is 2.2 std devs from mean (59.96 ± 11.24)
+- [anomaly] btc_med_min = 66447 is 2.2 std devs from mean (53475.39 ± 5879.05)
+- [anomaly] hype_med_max = 112.3 is 2.1 std devs from mean (81.49 ± 14.75)
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 986 (504 wins / 482 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=440 (150W/233L/57flat, 39.2% win-rate, sum $-0.2314, avg -0.05%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.50%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.25%)
+- ✅ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit target (+4.04%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+6.12%)
+
+**LLM analysis:**
+No open positions and no eligible discretionary closes this run. Notable market conditions: BTC and HYPE PM EV premiums persist while BTC IV term structure normalizes, macro remains bearish/hawkish, and funding remains elevated in BTC/HYPE. One-touch shadow warnings remain visible but are blocked/policy-gated and not actionable for entry here.
+
+---
+
