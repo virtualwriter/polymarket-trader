@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-08-30T07:12:34Z",
+  "generatedAt": "2026-08-31T07:13:20Z",
   "summary": {
-    "generatedAt": "2026-08-30T07:12:34Z",
+    "generatedAt": "2026-08-31T07:13:20Z",
     "findingCounts": {
       "open": 10,
       "strengthened": 40,
@@ -14,21 +14,21 @@
     "topOpportunity": {
       "rank": 1,
       "id": "FIND-0065",
-      "opportunityScore": 1.0,
+      "opportunityScore": 0.9999,
       "confidenceScore": 0.5923,
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
       "status": "strengthened"
     },
-    "authoredHypothesisCount": 9,
+    "authoredHypothesisCount": 7,
     "advicePresent": true
   },
   "topOpportunities": [
     {
       "rank": 1,
       "id": "FIND-0065",
-      "opportunityScore": 1.0,
+      "opportunityScore": 0.9999,
       "confidenceScore": 0.5923,
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65|no",
       "themeId": "THEME-0007",
@@ -57,16 +57,6 @@
     },
     {
       "rank": 4,
-      "id": "FIND-0066",
-      "opportunityScore": 0.9999,
-      "confidenceScore": 0.5437,
-      "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65|no",
-      "themeId": "THEME-0007",
-      "themeSlug": "outcome_panel",
-      "status": "strengthened"
-    },
-    {
-      "rank": 5,
       "id": "FIND-0070",
       "opportunityScore": 0.9998,
       "confidenceScore": 0.6982,
@@ -76,11 +66,21 @@
       "status": "strengthened"
     },
     {
-      "rank": 6,
+      "rank": 5,
       "id": "FIND-0069",
       "opportunityScore": 0.9998,
       "confidenceScore": 0.6448,
       "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65,d<30|no",
+      "themeId": "THEME-0007",
+      "themeSlug": "outcome_panel",
+      "status": "strengthened"
+    },
+    {
+      "rank": 6,
+      "id": "FIND-0066",
+      "opportunityScore": 0.9998,
+      "confidenceScore": 0.5437,
+      "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
       "status": "strengthened"
@@ -132,7 +132,7 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 42,
-      "avgOpportunityScore": 0.6227
+      "avgOpportunityScore": 0.6213
     },
     {
       "id": "THEME-0002",
@@ -146,7 +146,7 @@
       "slug": "outcome_panel",
       "title": "Outcome-panel mined (unconditioned contract history)",
       "findingCount": 6,
-      "avgOpportunityScore": 0.9999
+      "avgOpportunityScore": 0.9998
     },
     {
       "id": "THEME-0004",
@@ -181,47 +181,37 @@
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-534: re-author the GOLD one-touch high-edge signal as a contract premium fade instead of a spot-decline prediction. The prior variant was unscorable/understated because the trade is long NO and profits from YES premium compression, not from a 2% spot fall."
+      "description": "Refinement of H-534: re-author the GOLD one-touch cap-edge signal as a contract premium fade instead of a spot-decline trade. Require moderate underlying-cap edge, near-dated contract, and tight spread."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-539: require confirmation that deeply negative CBRS funding has already begun normalizing rather than entering on a static reading below -10 alone."
+      "description": "Refinement of H-108: drop HYPE confirmation and require BTC's own short-term momentum to be constructive but not overcrowded, with room below the 7d high and non-stretched funding."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-537: require AAPL funding to be both deeply negative and already turning higher, avoiding flat/non-extreme readings that repeatedly failed."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-535: require MU funding to be both deeply negative and already turning higher, avoiding flat 5.5% observations that failed to generate spot upside."
-    },
-    {
-      "originFindingId": "FIND-0070",
-      "themeId": "THEME-0007",
-      "description": "Sharpest outcome-panel NO edge with a tight-spread guard: sub-point sell-YES model edge, mid-priced YES ask, under 30 days to expiry, and at least one contract trading near 3c spread or tighter."
-    },
-    {
-      "originFindingId": "FIND-0065",
-      "themeId": "THEME-0007",
-      "description": "Outcome-panel NO edge: sub-point sell-YES model edge in the mid-priced band, with minimum liquidity to avoid untradeable thin prints."
-    },
-    {
-      "originFindingId": "FIND-0069",
-      "themeId": "THEME-0007",
-      "description": "Outcome-panel NO edge, near-dated variant: mid-priced YES ask and under 30 days to expiry, with a minimum liquidity guard."
+      "description": "Refinement of H-170: convert rising-IV momentum from a directional long into a neutral absolute-move thesis, because rising listed IV predicts volatility expansion/uncertainty rather than sustained bullish continuation."
     },
     {
       "originFindingId": "FIND-0043",
       "themeId": "THEME-0001",
-      "description": "BTC-specific one-touch NO premium fade: above-strike BTC contracts with moderate 3-8pt sell-YES edge and tight spread. Contract P&L, not spot direction."
+      "description": "BTC-specific one-touch NO premium fade: moderate 3-8pt sell-YES edge on above-strike BTC contracts with a tight spread. Author from ranked shadow FIND-0043."
     },
     {
-      "originFindingId": "FIND-0025",
-      "themeId": "THEME-0004",
-      "description": "PM-IV-rich one-touch NO premium fade: above-strike contracts where PM IV is rich to listed options IV, sell-YES edge is moderate, and spreads are tight. Contract P&L, not spot direction."
+      "originFindingId": "FIND-0065",
+      "themeId": "THEME-0007",
+      "description": "Outcome-panel NO edge sharpened with tight spread: sub-point sell-YES edge, mid-priced YES ask, and tight spread. Author from FIND-0065."
+    },
+    {
+      "originFindingId": "FIND-0070",
+      "themeId": "THEME-0007",
+      "description": "Sharpest outcome-panel NO cut with liquidity guard: sub-point sell-YES edge, mid-priced band, near-dated, and minimum liquidity. Author from FIND-0070."
+    },
+    {
+      "originFindingId": "FIND-0069",
+      "themeId": "THEME-0007",
+      "description": "Outcome-panel NO edge, near-dated mid-price band: buy NO / sell YES when YES ask is 35-65c and nearest expiry is under 30 days. Author from FIND-0069."
     }
   ],
   "negativeFindings": [
@@ -277,9 +267,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-08-30T07:10:19Z",
-    "opportunitiesGeneratedAt": "2026-08-30T07:12:34Z",
-    "themesGeneratedAt": "2026-08-30T07:10:27Z",
-    "adviceGeneratedAt": "2026-08-30T07:10:19.261Z"
+    "findingsExportGeneratedAt": "2026-08-31T07:11:04Z",
+    "opportunitiesGeneratedAt": "2026-08-31T07:13:20Z",
+    "themesGeneratedAt": "2026-08-31T07:11:12Z",
+    "adviceGeneratedAt": "2026-08-31T07:11:04.481Z"
   }
 }
