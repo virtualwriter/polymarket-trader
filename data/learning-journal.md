@@ -623,3 +623,45 @@ No discretionary closes are allowed this run: both AMZN and AAPL are policy-gate
 
 ---
 
+### 2026-08-31 14:28 UTC
+
+**Portfolio:** $103.39 total | Cash $103.39 | 0 open | P&L $6.6293 | 64% win rate (878 trades)
+
+**Closed 2 trades:**
+- ❌ AMZN long via hyperliquid/hl_perp [HL AMZN Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → expiry: $-0.1267 (-12.7%, market -0.1263, funding -0.0004)
+- ❌ AAPL long via hyperliquid/hl_perp [HL AAPL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → expiry: $-0.0721 (-7.2%, market -0.0718, funding -0.0003)
+
+**Signal weight changes:**
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00278/trade over 197 trades (p=0.136).
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00313/trade over 198 trades (p=0.109).
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] amzn_pc_ratio = 0.798 is 3.2 std devs from mean (0.46 ± 0.10)
+- [anomaly] hype_pm_ev = 87.52 is 2.6 std devs from mean (60.64 ± 10.49)
+- [anomaly] btc_med_min = 67660 is 2.4 std devs from mean (53445.21 ± 5850.93)
+- [anomaly] hype_med_max = 112.3 is 2.1 std devs from mean (81.42 ± 14.69)
+- [anomaly] hype_hl_oi = 1920366322 is 2.0 std devs from mean (1312481499.46 ± 298262745.58)
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 983 (501 wins / 482 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=438 (148W/233L/57flat, 38.8% win-rate, sum $-0.3151, avg -0.07%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have hit stop (-98.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-9.30%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.50%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 5/12; next scheduled 2026-08-31T16:28:28.421Z). Mechanical cycle ran normally._
+
+---
+
