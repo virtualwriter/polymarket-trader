@@ -400,3 +400,49 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; ne
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-08-31T07:11:04.481Z, model=deepseek-v4-pro)
+- Hypotheses added: 4 (rejected 3); reviews applied: 7; invalidated assumptions learned: 5; param updates: none.
+- Strategy review: What is working: contract-level premium fades remain the strongest edge — manual PM-IV rich NO live 2/3 +351.7% avg and 9/10 shadows, one-touch live 4/4 +18.4%, PM_IV_GT_OPT_IV clean 3/5 +9.8%, and monotonic arb 33/38. What is failing: many contract trades are still being scored as spot-direction bets, which turns a profitable premium fade into a 0-win spot family; proxy shorts are bleeding; weekend funding threshold-only reversions are unstable; and HYPE/rising-IV confirmation signals are firing late after large BTC rallies rather than before them.
+- Nightly journal: Tonight's main lesson is re-framing: contract premium edges must be tested as contract P&L, not spot calls. H-534 and several one-touch families burned tests because the prediction was a >2% spot move rather than premium decay. Weekend funding thresholds need a weekend/turn/percentile filter; existing active refinements already encode that, so no new threshold variants were authored. Proxy shorts remain weak and should stay in shadow. The new hypotheses prioritize neutral NO/YES premium fades from outcome-panel findings and one-touch BTC/GOLD refinements, plus neutral absolute-move fixes for f
+### 2026-08-31 07:28 UTC
+
+**Portfolio:** $103.59 total | Cash $100.59 | 3 open | P&L $6.8249 | 64% win rate (875 trades)
+
+**Closed 1 trades:**
+- ✅ INTC long via hyperliquid/hl_perp [HL INTC Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → target: +$0.0366 (3.7%, market 0.0348, funding 0.0018)
+
+**Signal weight changes:**
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00217/trade over 195 trades (p=0.190).
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 86.83 is 2.5 std devs from mean (60.58 ± 10.43)
+- [anomaly] btc_med_min = 67667 is 2.4 std devs from mean (53413.25 ± 5818.53)
+- [anomaly] hype_med_max = 112.3 is 2.1 std devs from mean (81.35 ± 14.63)
+- [anomaly] hype_med_min = 63.2 is 2.0 std devs from mean (37.36 ± 12.68)
+- [anomaly] hype_hl_oi = 1916636710 is 2.0 std devs from mean (1311094563.94 ± 297158822.80)
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 983 (501 wins / 482 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=438 (148W/233L/57flat, 38.8% win-rate, sum $-0.3151, avg -0.07%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have hit stop (-98.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-9.30%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.50%)
+
+**LLM analysis:**
+No discretionary closes permitted this run. AMZN funding has normalized from -55.9% to +5.48% since entry, materially weakening that trade's carry thesis; however this is context-only and policy-gated mechanical exit remains in control. AAPL is the weakest open position at -2.07% but below min hold and has no LLM close eligibility; EBAY is early. Continue monitoring mechanical target/stop/expiry exits. Structural note: weekend HL funding reversion family remains positive in shadows but live avg PnL is slightly negative; review AMZN/AAPL/EBAY behavior if these current entries fail.
+
+---
+
