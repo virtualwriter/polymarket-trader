@@ -33,6 +33,9 @@ import {
   MIN_TRIGGERS_PER_WEEK,
   UNSCORABLE_BURN_RETIRE_THRESHOLD,
   PROMOTE_SIGNIFICANCE_ALPHA,
+  PROMOTION_GROUPS,
+  dedupePooledGroupTests,
+  promotionGroupForSetup,
   type Hypothesis,
   type HypothesisTest,
   type RelativeValueObservation,
@@ -630,6 +633,88 @@ describe("evaluateHypothesisTest scorer v2", () => {
     expect(result.scorable).toBe(true);
     expect(result.outcome).toBe("win");
     expect(result.method).toBe("funding_normalize_up");
+  });
+});
+
+describe("promotion groups", () => {
+  const stampedTest = (
+    date: string,
+    outcome: "win" | "loss",
+    marketId: string,
+  ): HypothesisTest => ({
+    date,
+    triggered: true,
+    outcome,
+    actualMove: "test",
+    magnitude: outcome === "win" ? 5 : -5,
+    magnitudeUnit: "pct_return",
+    contractEntry: {
+      marketId,
+      eventSlug: "e",
+      asset: "BTC",
+      direction: "above",
+      strike: 1,
+      entryPrice: 0.5,
+      side: "no",
+    },
+  });
+
+  it("maps member setupIds to their group and others to null", () => {
+    expect(promotionGroupForSetup("find_0043")?.groupId).toBe("btc_one_touch_moderate_edge_no");
+    expect(promotionGroupForSetup("find_0070")?.groupId).toBe("panel_mid_band_no");
+    expect(promotionGroupForSetup("find_0022")).toBeNull();
+    expect(promotionGroupForSetup(undefined)).toBeNull();
+    // Group membership must be disjoint: a setup in two groups would have its
+    // evidence counted twice.
+    const all = PROMOTION_GROUPS.flatMap((g) => g.setupIds);
+    expect(new Set(all).size).toBe(all.length);
+  });
+
+  it("pools completed tests across members and counts a shared contract-window once", () => {
+    const a = hyp({
+      id: "H-A", setupId: "find_0043", timeframeDays: 7,
+      prediction: "contract pnl", conditions: { asset: "BTC" },
+    });
+    const b = hyp({
+      id: "H-B", setupId: "find_0054", timeframeDays: 3,
+      prediction: "contract pnl", conditions: { asset: "BTC" },
+    });
+    // Same contract, overlapping windows -> one observation (earliest kept).
+    a.tests = [stampedTest("2026-08-20", "win", "M1"), stampedTest("2026-08-20", "win", "M2")];
+    b.tests = [stampedTest("2026-08-22", "loss", "M1"), stampedTest("2026-08-21", "win", "M3")];
+    const pooled = dedupePooledGroupTests([a, b]);
+    expect(pooled).toHaveLength(3);
+    const m1 = pooled.filter((t) => t.contractEntry?.marketId === "M1");
+    expect(m1).toHaveLength(1);
+    expect(m1[0].outcome).toBe("win"); // the earlier-opened test is the one kept
+  });
+
+  it("keeps same-contract tests whose windows do not overlap", () => {
+    const a = hyp({
+      id: "H-A", setupId: "find_0065", timeframeDays: 3,
+      prediction: "contract pnl", conditions: { yesAsk: "between 0.35 and 0.65" },
+    });
+    a.tests = [stampedTest("2026-08-01", "win", "M1"), stampedTest("2026-08-20", "loss", "M1")];
+    expect(dedupePooledGroupTests([a])).toHaveLength(2);
+  });
+
+  it("ignores killed members and excluded or pending tests", () => {
+    const a = hyp({
+      id: "H-A", setupId: "find_0066", timeframeDays: 7,
+      prediction: "contract pnl", conditions: { yesAsk: "between 0.35 and 0.65" },
+    });
+    a.tests = [
+      stampedTest("2026-08-20", "win", "M1"),
+      { ...stampedTest("2026-08-21", "win", "M2"), excludedFromSetupStats: true },
+      { ...stampedTest("2026-08-22", "win", "M3"), outcome: "pending" as const },
+    ];
+    const killed = hyp({
+      id: "H-K", setupId: "find_0067", timeframeDays: 7,
+      prediction: "contract pnl", conditions: { yesAsk: "between 0.35 and 0.65" },
+    });
+    killed.status = "killed";
+    killed.tests = [stampedTest("2026-08-23", "win", "M4")];
+    expect(dedupePooledGroupTests([a, killed])).toHaveLength(1);
   });
 });
 

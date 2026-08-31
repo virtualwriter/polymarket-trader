@@ -1430,6 +1430,75 @@ export function killWinRateFloor(nullWinRate: number | null, absoluteFloor: numb
 }
 
 /**
+ * Sibling FIND families that are cuts of ONE tradable edge. Members keep their
+ * own setupIds — test opening, throughput caps, and per-family kills are
+ * unchanged — but the promotion gate reads their evidence POOLED (deduped so a
+ * contract-window tested under two family names counts once). Rationale: six
+ * nested cuts of the mid-band NO edge are one shot on goal, not six; pooling
+ * is how the shared thesis reaches 20 tests in weeks instead of a month while
+ * each cut keeps localizing where the edge is strongest.
+ */
+export interface PromotionGroup {
+  groupId: string;
+  label: string;
+  setupIds: readonly string[];
+}
+
+export const PROMOTION_GROUPS: readonly PromotionGroup[] = [
+  {
+    groupId: "btc_one_touch_moderate_edge_no",
+    label: "BTC one-touch NO fade, moderate sell-YES edge (FIND-0043 + FIND-0054)",
+    setupIds: ["find_0043", "find_0054"],
+  },
+  {
+    groupId: "panel_mid_band_no",
+    label: "Panel mid-band NO edge, YES ask 35-65c (FIND-0065..FIND-0070)",
+    setupIds: ["find_0065", "find_0066", "find_0067", "find_0068", "find_0069", "find_0070"],
+  },
+];
+
+export function promotionGroupForSetup(setupId: string | undefined): PromotionGroup | null {
+  if (!setupId) return null;
+  return PROMOTION_GROUPS.find((group) => group.setupIds.includes(setupId)) ?? null;
+}
+
+/**
+ * Pools completed, non-excluded tests across a group's member hypotheses,
+ * counting each contract-window once: tests stamped with the same marketId
+ * whose [open, open+timeframe] windows overlap are one observation, and the
+ * earliest-opened test is the one kept. Unstamped tests (legacy spot-graded)
+ * pass through untouched.
+ */
+export function dedupePooledGroupTests(members: readonly Hypothesis[]): HypothesisTest[] {
+  const entries: { test: HypothesisTest; start: number; end: number }[] = [];
+  for (const hypothesis of members) {
+    if (hypothesis.status === "killed" || hypothesis.status === "archived") continue;
+    const horizonMs = Math.max(1, hypothesis.timeframeDays) * 86_400_000;
+    for (const test of completedHypothesisTests(hypothesis)) {
+      const start = Date.parse(test.date);
+      if (!Number.isFinite(start)) continue;
+      entries.push({ test, start, end: start + horizonMs });
+    }
+  }
+  entries.sort((a, b) => a.start - b.start);
+  const keptWindows = new Map<string, { start: number; end: number }[]>();
+  const out: HypothesisTest[] = [];
+  for (const entry of entries) {
+    const marketId = entry.test.contractEntry?.marketId;
+    if (!marketId) {
+      out.push(entry.test);
+      continue;
+    }
+    const windows = keptWindows.get(marketId) ?? [];
+    if (windows.some((w) => entry.start <= w.end && w.start <= entry.end)) continue;
+    windows.push({ start: entry.start, end: entry.end });
+    keptWindows.set(marketId, windows);
+    out.push(entry.test);
+  }
+  return out;
+}
+
+/**
  * True when the family clears BOTH bars: it is right more often than chance
  * (binomial on win rate) and it actually makes money (one-sided Student-t on
  * realized edge). The expectancy test only applies once enough magnitude-bearing

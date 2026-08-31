@@ -131,8 +131,12 @@ import {
   MAX_WEEKS_TO_VERDICT,
   MIN_TRIGGERS_PER_WEEK,
   PM_CONTRACT_MAX_PENDING_PER_VARIANT,
+  PROMOTION_GROUPS,
+  dedupePooledGroupTests,
+  promotionGroupForSetup,
   estimateWeeksToVerdict,
   isTooSlowToVerdict,
+  type PromotionGroup,
   type TriggerFrequencyEstimate,
   type ContractEntryStamp,
   type MagnitudeUnit,
@@ -6551,6 +6555,42 @@ function evaluateHypotheses(
       hypothesis.source === "llm" || hypothesis.source === "informed_flow_study_v1"),
   );
 
+  // Promotion groups: sibling FIND families that are cuts of one edge share a
+  // pooled record at the gate. Opening stays per-family (throughput is
+  // unchanged); only the promotion decision reads pooled evidence, deduped so
+  // one contract-window graded under two family names counts once. The group
+  // promotes a single primary variant — the best cut trades live, the rest
+  // keep testing to localize the edge.
+  interface GroupGateStats {
+    group: PromotionGroup;
+    pooled: HypothesisTest[];
+    wins: number;
+    count: number;
+    winRate: number;
+    nullRate: number | null;
+    primarySetupId: string;
+  }
+  const groupGateStats = new Map<string, GroupGateStats>();
+  for (const group of PROMOTION_GROUPS) {
+    const memberFamilies = setupFamilies.filter((family) =>
+      group.setupIds.includes(family.setupId)
+      && !RETIRED_LLM_SETUP_IDS.has(family.setupId)
+      && !isDataContaminatedSetup(family.setupId));
+    if (memberFamilies.length === 0) continue;
+    const pooled = dedupePooledGroupTests(memberFamilies.flatMap((family) => family.hypotheses));
+    const wins = pooled.filter((test) => test.outcome === "win").length;
+    const representative = [...memberFamilies].sort((a, b) => b.completed.length - a.completed.length)[0];
+    groupGateStats.set(group.groupId, {
+      group,
+      pooled,
+      wins,
+      count: pooled.length,
+      winRate: pooled.length > 0 ? wins / pooled.length : 0,
+      nullRate: familyBaseRate(representative, valuationRows),
+      primarySetupId: representative.setupId,
+    });
+  }
+
   for (const family of setupFamilies) {
     const completedCount = family.completed.length;
     const activeFamilyHypotheses = family.hypotheses.filter((hypothesis) => hypothesis.status !== "killed" && hypothesis.status !== "archived");
@@ -6567,16 +6607,27 @@ function evaluateHypotheses(
     // Measured against the criterion's own unconditional frequency, not a coin
     // flip: "GOLD falls 2% in 2 days" is not a 50/50 proposition, and grading
     // it as one recorded families well ahead of chance as failures.
-    const familyNull = familyBaseRate(family, valuationRows);
-    const familyPValue = binomialPValue(family.wins, completedCount, familyNull ?? 0.5);
+    // Grouped families are judged on the group's pooled record; standalone
+    // families on their own. Kills stay on the family's OWN record either way,
+    // so a genuinely bad cut cannot ride a good group, and a good group is not
+    // killed for one cut's small-sample noise.
+    const promotionGroup = promotionGroupForSetup(family.setupId);
+    const groupStats = promotionGroup ? groupGateStats.get(promotionGroup.groupId) : undefined;
+    const gateTests = groupStats ? groupStats.pooled : family.completed;
+    const gateWins = groupStats ? groupStats.wins : family.wins;
+    const gateCount = groupStats ? groupStats.count : completedCount;
+    const gateWinRate = gateCount > 0 ? gateWins / gateCount : 0;
+    const gateScope = groupStats ? `group ${groupStats.group.groupId}` : "family";
+    const familyNull = groupStats ? groupStats.nullRate : familyBaseRate(family, valuationRows);
+    const familyPValue = binomialPValue(gateWins, gateCount, familyNull ?? 0.5);
     // Second bar: being right often is not the same as making money. Once a
     // family has enough magnitude-bearing tests, its realized edge must also be
     // significantly positive, which is the only way to reject a setup that wins
     // frequently but loses more per loss than it gains per win.
-    const familyEdge = setupMagnitudeEvidence(family.completed);
+    const familyEdge = setupMagnitudeEvidence(gateTests);
     const meetsPromotionGate =
-      completedCount >= PROMOTE_MIN_TESTS
-      && setupFamilyIsPromotable(family.wins, completedCount, PROMOTE_THRESHOLD, family.completed, familyNull);
+      gateCount >= PROMOTE_MIN_TESTS
+      && setupFamilyIsPromotable(gateWins, gateCount, PROMOTE_THRESHOLD, gateTests, familyNull);
 
     // Enforce on every run: promotions that do not currently meet the gate are
     // demoted. Previously `if (completedCount < PROMOTE_MIN_TESTS) continue`
@@ -6585,34 +6636,50 @@ function evaluateHypotheses(
     if (!meetsPromotionGate) {
       for (const hypothesis of activeFamilyHypotheses) {
         if (hypothesis.status !== "promoted" && !hypothesis.promotedToSignal) continue;
-        const reason = completedCount < PROMOTE_MIN_TESTS
-          ? `Demoted: insufficient evidence (${completedCount}/${PROMOTE_MIN_TESTS} completed family tests; need ≥${(PROMOTE_THRESHOLD * 100).toFixed(0)}% win rate).`
-          : family.winRate < PROMOTE_THRESHOLD
-            ? `Demoted: family win rate ${(family.winRate * 100).toFixed(0)}% below promote threshold ${(PROMOTE_THRESHOLD * 100).toFixed(0)}% over ${completedCount} tests.`
+        const reason = gateCount < PROMOTE_MIN_TESTS
+          ? `Demoted: insufficient evidence (${gateCount}/${PROMOTE_MIN_TESTS} completed ${gateScope} tests; need ≥${(PROMOTE_THRESHOLD * 100).toFixed(0)}% win rate).`
+          : gateWinRate < PROMOTE_THRESHOLD
+            ? `Demoted: ${gateScope} win rate ${(gateWinRate * 100).toFixed(0)}% below promote threshold ${(PROMOTE_THRESHOLD * 100).toFixed(0)}% over ${gateCount} tests.`
             : familyPValue >= PROMOTE_SIGNIFICANCE_ALPHA
-              ? `Demoted: family record ${family.wins}/${completedCount} not statistically significant (binomial p=${familyPValue.toFixed(4)} ≥ α=${PROMOTE_SIGNIFICANCE_ALPHA}); continuing shadow tests.`
-              : `Demoted: family wins often (${family.wins}/${completedCount}) but realized edge is not significantly positive — mean ${familyEdge.mean.toFixed(3)} ${familyEdge.unit ?? "n/a"} over ${familyEdge.n} tests (t-test p=${familyEdge.pPositive?.toFixed(4) ?? "n/a"} ≥ α=${PROMOTE_SIGNIFICANCE_ALPHA}).`;
+              ? `Demoted: ${gateScope} record ${gateWins}/${gateCount} not statistically significant (binomial p=${familyPValue.toFixed(4)} ≥ α=${PROMOTE_SIGNIFICANCE_ALPHA}); continuing shadow tests.`
+              : `Demoted: ${gateScope} wins often (${gateWins}/${gateCount}) but realized edge is not significantly positive — mean ${familyEdge.mean.toFixed(3)} ${familyEdge.unit ?? "n/a"} over ${familyEdge.n} tests (t-test p=${familyEdge.pPositive?.toFixed(4) ?? "n/a"} ≥ α=${PROMOTE_SIGNIFICANCE_ALPHA}).`;
         hypothesis.status = "active";
         hypothesis.promotedToSignal = false;
         hypothesis.postMortem = reason;
         observations.push(`📉 ${hypothesis.id} DEMOTED — promotion gate failed (${family.setupId}): ${reason}`);
       }
 
+      // Kills read the family's OWN record even inside a promotion group: a
+      // decisively bad cut dies on its own evidence, never on the group's.
+      const ownEdge = setupMagnitudeEvidence(family.completed);
       const losesMoney = setupFamilyIsUnprofitable(family.completed);
       if (completedCount >= PROMOTE_MIN_TESTS && (family.winRate < KILL_THRESHOLD || losesMoney)) {
         const killReason = family.winRate < KILL_THRESHOLD
           ? `Setup family killed: ${(family.winRate * 100).toFixed(0)}% win rate over ${completedCount} completed tests across ${family.hypotheses.length} variants.`
-          : `Setup family killed on realized edge: mean ${familyEdge.mean.toFixed(3)} ${familyEdge.unit ?? "n/a"} over ${familyEdge.n} tests is significantly negative (t-test p=${familyEdge.pNegative?.toFixed(4) ?? "n/a"}), despite a ${(family.winRate * 100).toFixed(0)}% win rate.`;
+          : `Setup family killed on realized edge: mean ${ownEdge.mean.toFixed(3)} ${ownEdge.unit ?? "n/a"} over ${ownEdge.n} tests is significantly negative (t-test p=${ownEdge.pNegative?.toFixed(4) ?? "n/a"}), despite a ${(family.winRate * 100).toFixed(0)}% win rate.`;
         for (const hypothesis of activeFamilyHypotheses) {
           hypothesis.status = "killed";
           hypothesis.promotedToSignal = false;
           hypothesis.postMortem = hypothesis.postMortem ?? killReason;
         }
         observations.push(`💀 Setup family ${family.setupId} KILLED (${(family.winRate * 100).toFixed(0)}% over ${completedCount} tests across ${family.hypotheses.length} variants): ${family.setupLabel}${losesMoney && family.winRate >= KILL_THRESHOLD ? " [negative realized edge]" : ""}`);
-      } else if (completedCount >= PROMOTE_MIN_TESTS) {
+      } else if (gateCount >= PROMOTE_MIN_TESTS) {
         for (const hypothesis of activeFamilyHypotheses) {
-          hypothesis.postMortem = hypothesis.postMortem ?? `Setup family inconclusive after ${completedCount} completed tests: ${(family.winRate * 100).toFixed(0)}% win rate (binomial p=${familyPValue.toFixed(4)}).`;
+          hypothesis.postMortem = hypothesis.postMortem ?? `Setup ${gateScope} inconclusive after ${gateCount} completed tests: ${(gateWinRate * 100).toFixed(0)}% win rate (binomial p=${familyPValue.toFixed(4)}).`;
         }
+      }
+      continue;
+    }
+
+    if (groupStats && groupStats.primarySetupId !== family.setupId) {
+      // The group's pooled record passes, but one primary carries the live
+      // promotion (the member family with the deepest record). Other cuts stay
+      // active and keep testing — their job is localizing the edge, and two
+      // promoted variants would double-enter the same contracts live.
+      for (const hypothesis of activeFamilyHypotheses) {
+        if (hypothesis.status === "promoted") hypothesis.status = "active";
+        hypothesis.promotedToSignal = false;
+        hypothesis.postMortem = hypothesis.postMortem ?? `Covered by promotion group ${groupStats.group.groupId} (pooled ${gateWins}/${gateCount}); live promotion carried by ${groupStats.primarySetupId}.`;
       }
       continue;
     }
@@ -6621,8 +6688,8 @@ function evaluateHypotheses(
     const alreadyPromoted = primary.status === "promoted" && primary.promotedToSignal;
     primary.status = "promoted";
     primary.promotedToSignal = true;
-    primary.winRate = family.winRate;
-    primary.postMortem = primary.postMortem ?? `Setup family promoted: ${(family.winRate * 100).toFixed(0)}% win rate over ${completedCount} completed tests across ${family.hypotheses.length} variants.`;
+    primary.winRate = gateWinRate;
+    primary.postMortem = primary.postMortem ?? `Setup ${gateScope} promoted: ${(gateWinRate * 100).toFixed(0)}% win rate over ${gateCount} completed tests.`;
     for (const sibling of activeFamilyHypotheses) {
       if (sibling.id === primary.id) continue;
       if (sibling.status === "promoted") sibling.status = "active";
@@ -6630,7 +6697,7 @@ function evaluateHypotheses(
       sibling.postMortem = sibling.postMortem ?? `Covered by promoted setup family ${family.setupId} via primary ${primary.id}.`;
     }
     if (!alreadyPromoted) {
-      observations.push(`🎯 Setup family ${family.setupId} PROMOTED via ${primary.id} (${(family.winRate * 100).toFixed(0)}% over ${completedCount} tests across ${family.hypotheses.length} variants): ${family.setupLabel}`);
+      observations.push(`🎯 Setup family ${family.setupId} PROMOTED via ${primary.id} (${gateScope}: ${gateWins}/${gateCount} = ${(gateWinRate * 100).toFixed(0)}%${groupStats ? `, pooled across ${groupStats.group.setupIds.length} sibling families` : ""}): ${family.setupLabel}`);
     }
   }
 
@@ -6645,9 +6712,24 @@ function evaluateHypotheses(
     let skippedCond = 0;
     let skippedUnscorable = 0;
     const unscorableSetupIds: string[] = [];
-    const familiesNeedingTests = hypothesisSetupFamilies(
+    const allSourceFamilies = hypothesisSetupFamilies(
       hypotheses.filter((hypothesis) => sources.has(hypothesis.source)),
-    ).filter((family) => hypothesisSetupNeedsMoreShadowTests(family, sources));
+    );
+    const familiesNeedingTests = allSourceFamilies.filter((family) => hypothesisSetupNeedsMoreShadowTests(family, sources));
+    // Distinct-contract exclusion widened to promotion-group scope: sibling
+    // families pool their evidence at the gate, so two of them holding the
+    // same contract-window would be deduped to one observation anyway —
+    // better to spend the slots on different contracts up front.
+    const groupPendingMarketIds = new Map<string, Set<string>>();
+    for (const family of allSourceFamilies) {
+      const group = promotionGroupForSetup(family.setupId);
+      if (!group) continue;
+      const ids = groupPendingMarketIds.get(group.groupId) ?? new Set<string>();
+      for (const test of family.pending) {
+        if (test.contractEntry?.marketId) ids.add(test.contractEntry.marketId);
+      }
+      groupPendingMarketIds.set(group.groupId, ids);
+    }
     const activeSetupIds = new Set(
       familiesNeedingTests.slice(0, activeLimit).map((family) => family.setupId),
     );
@@ -6672,15 +6754,18 @@ function evaluateHypotheses(
       }
 
       // Contract variants may hold several concurrent tests, but each must
-      // enter a contract no pending family test already holds — concurrent
-      // observations only count when they are of distinct instruments. Spot
-      // variants stay serial: overlapping tests would grade one price path
-      // twice.
-      const pendingMarketIds = new Set(
-        family.pending
-          .map((test) => test.contractEntry?.marketId)
-          .filter((id): id is string => Boolean(id)),
-      );
+      // enter a contract no pending family (or promotion-group sibling) test
+      // already holds — concurrent observations only count when they are of
+      // distinct instruments. Spot variants stay serial: overlapping tests
+      // would grade one price path twice.
+      const familyGroup = promotionGroupForSetup(family.setupId);
+      const pendingMarketIds = familyGroup
+        ? groupPendingMarketIds.get(familyGroup.groupId) ?? new Set<string>()
+        : new Set(
+          family.pending
+            .map((test) => test.contractEntry?.marketId)
+            .filter((id): id is string => Boolean(id)),
+        );
       const candidate = scorableVariants
         .filter((hypothesis) => {
           const pendingCount = pendingHypothesisTests(hypothesis).length;
@@ -6714,6 +6799,9 @@ function evaluateHypotheses(
         actualMove: `Setup ${family.setupId} shadow test ${nextTestNumber}/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened via ${candidate.id} after current row satisfied variant conditions.`,
         contractEntry,
       });
+      // Group siblings processed later in this same run must see the contract
+      // as taken; for grouped families pendingMarketIds is the shared group set.
+      if (contractEntry?.marketId) pendingMarketIds.add(contractEntry.marketId);
       opened++;
     }
 
@@ -6889,9 +6977,14 @@ function verdictTimeRejection(
   const triggersPerWeek = triggerEstimate.unreliableReason
     ? Number.POSITIVE_INFINITY
     : triggerEstimate.triggersPerWeek;
+  // Sibling credit spans the promotion group when the setup belongs to one:
+  // grouped families pool their completed tests at the gate, so every active
+  // variant across the group genuinely contributes to the same verdict.
+  const candidateGroup = promotionGroupForSetup(candidate.setupId);
+  const siblingSetupIds = candidateGroup ? new Set(candidateGroup.setupIds) : null;
   const siblings = candidate.setupId
     ? existing.filter((h) =>
-      h.setupId === candidate.setupId
+      (siblingSetupIds ? siblingSetupIds.has(h.setupId ?? "") : h.setupId === candidate.setupId)
       && h.status !== "killed"
       && h.status !== "archived").length + 1
     : 1;
