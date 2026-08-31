@@ -768,3 +768,37 @@ No open positions, so no discretionary close candidates this run. Reviewed open-
 
 ---
 
+### 2026-08-31 19:28 UTC
+
+**Portfolio:** $103.39 total | Cash $103.39 | 0 open | P&L $6.6293 | 64% win rate (878 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 88.3 is 2.6 std devs from mean (60.68 ± 10.54)
+- [anomaly] hype_hl_oi = 1982225233 is 2.2 std devs from mean (1313474827.03 ± 299145372.20)
+- [anomaly] btc_med_min = 66447 is 2.2 std devs from mean (53465.64 ± 5870.40)
+- [anomaly] amzn_pc_ratio = 0.688 is 2.2 std devs from mean (0.46 ± 0.10)
+- [anomaly] hype_spot = 83.902 is 2.1 std devs from mean (59.94 ± 11.22)
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 986 (504 wins / 482 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=440 (150W/233L/57flat, 39.2% win-rate, sum $-0.2314, avg -0.05%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.50%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.25%)
+- ✅ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit target (+4.04%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+6.12%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 7/12; next scheduled 2026-08-31T21:28:29.472Z). Mechanical cycle ran normally._
+
+---
+
