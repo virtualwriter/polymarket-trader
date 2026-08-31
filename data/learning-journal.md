@@ -588,3 +588,38 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 4/12; ne
 
 ---
 
+### 2026-08-31 13:28 UTC
+
+**Portfolio:** $103.59 total | Cash $101.59 | 2 open | P&L $6.8281 | 64% win rate (876 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 87.77 is 2.6 std devs from mean (60.63 ± 10.48)
+- [anomaly] btc_med_min = 67660 is 2.4 std devs from mean (53439.89 ± 5845.56)
+- [anomaly] hype_med_max = 112.3 is 2.1 std devs from mean (81.41 ± 14.68)
+- [anomaly] hype_hl_oi = 1928900915 is 2.1 std devs from mean (1312254082.76 ± 298086651.38)
+- [anomaly] hype_med_min = 63.1 is 2.0 std devs from mean (37.41 ± 12.71)
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 983 (501 wins / 482 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=438 (148W/233L/57flat, 38.8% win-rate, sum $-0.3151, avg -0.07%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have hit stop (-98.41%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-9.30%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.50%)
+
+**LLM analysis:**
+No discretionary closes are allowed this run: both AMZN and AAPL are policy-gated WEEKEND_HL_FUNDING_REVERSION_LONG positions with LLM close allowed=false, so rule-based exits own them. AMZN is -4.82% with 8h to expiry and spot making a fresh 24h low; its HL funding has normalized from -55.9% to +5.48% annualized, which is a material thesis/carry weakening, but this is context-only and no close may be emitted. AAPL is roughly flat at -0.24%. Structural note for nightly: AMZN is already disabled in FUNDING_EXTREME_LONG, and this weekend reversion instance is underperforming; worth revisiting whether AMZN belongs in the weekend funding reversion family given the current behavior.
+
+---
+
