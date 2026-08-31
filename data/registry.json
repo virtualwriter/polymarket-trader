@@ -659,10 +659,10 @@
         "timeframeDays": 3,
         "testStats": {
           "total": 24,
-          "completed": 23,
-          "wins": 11,
-          "pending": 1,
-          "winRate": 0.3333333333333333
+          "completed": 24,
+          "wins": 12,
+          "pending": 0,
+          "winRate": 0.38461538461538464
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -4455,7 +4455,7 @@
         "created": "2026-04-09",
         "setupId": "cross_asset_iv_compression_vol_expansion",
         "setupLabel": "Cross-asset IV compression / vol expansion",
-        "postMortem": "H-108-style BTC/HYPE confirmation produced only 36% family wins. HYPE spot above SMA with stable OI fired during the same broad risk-on tape and did not provide independent confirmation, leading to losses when BTC was already extended or reversed. | The cross-asset HYPE confirmation family is 9/25 (36% win). Wins cluster in already strong BTC trend windows, while many losses show HYPE risk-on participation fails to add timing value and behaves as a lagging echo. | HYPE risk-on confirmation did not provide independent directional signal; the BTC outcomes were large beta moves in both directions. The family has accumulated multiple learned invalid assumptions that HYPE confirms durable BTC upside. | Cross-asset BTC long with HYPE confirmation is 9/25 (36%) despite several historically strong-looking wins; the losses show BTC pulled back even when HYPE looked risk-on, consistent with HYPE being an echo of the same move rather than an independent confirmation."
+        "postMortem": "The cross-asset HYPE confirmation family is 9/25 (36% win). Wins cluster in already strong BTC trend windows, while many losses show HYPE risk-on participation fails to add timing value and behaves as a lagging echo. | HYPE risk-on confirmation did not provide independent directional signal; the BTC outcomes were large beta moves in both directions. The family has accumulated multiple learned invalid assumptions that HYPE confirms durable BTC upside. | Cross-asset BTC long with HYPE confirmation is 9/25 (36%) despite several historically strong-looking wins; the losses show BTC pulled back even when HYPE looked risk-on, consistent with HYPE being an echo of the same move rather than an independent confirmation. | Cross-asset HYPE confirmation produced only 9/25 wins because HYPE risk-on echoed late-stage BTC strength instead of providing independent confirmation; winners were large but too infrequent."
       },
       "links": {},
       "created": "2026-07-15T19:00:44Z",
@@ -6668,7 +6668,7 @@
         "created": "2026-04-13",
         "setupId": "btc_listed_iv_momentum_confirmation",
         "setupLabel": "BTC listed-IV momentum confirmation",
-        "postMortem": "The BTC listed-IV momentum family is 4/18 (22% win). Rising 30d options IV alongside positive spot momentum repeatedly failed to deliver >2% continuation, and some variants scored as shorts during large rally losses. | Refined by H-688 (2026-08-29): Refinement of H-170: convert the rising-listed-IV momentum setup from a directio | Rising listed IV did not confirm further directional BTC gains; the family is 4/18 and shows large adverse moves when graded directionally. The signal is better treated as volatility expansion than as a long-call. | BTC listed-IV momentum confirmation is 4/18 (22%) and the realized outcomes show the IV signal confirmed volatility or already-priced momentum but did not produce reliable further spot gains in the tested direction."
+        "postMortem": "Refined by H-688 (2026-08-29): Refinement of H-170: convert the rising-listed-IV momentum setup from a directio | Rising listed IV did not confirm further directional BTC gains; the family is 4/18 and shows large adverse moves when graded directionally. The signal is better treated as volatility expansion than as a long-call. | BTC listed-IV momentum confirmation is 4/18 (22%) and the realized outcomes show the IV signal confirmed volatility or already-priced momentum but did not produce reliable further spot gains in the tested direction. | The listed-IV momentum long family is at 22% and the test outputs show direction whipsaw—some variants were graded as short and lost while BTC rallied over 20%. The persistent signal is volatility expansion, not bullish direction."
       },
       "links": {},
       "created": "2026-07-15T19:00:44Z",
@@ -20115,11 +20115,11 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 37,
-          "completed": 33,
+          "total": 38,
+          "completed": 36,
           "wins": 4,
-          "pending": 4,
-          "winRate": 0.5
+          "pending": 2,
+          "winRate": 0.4444444444444444
         },
         "promotedToSignal": false,
         "source": "shadow_mined",
@@ -20184,17 +20184,17 @@
         "timeframeDays": 2,
         "testStats": {
           "total": 70,
-          "completed": 67,
+          "completed": 70,
           "wins": 10,
-          "pending": 3,
-          "winRate": 0.3
+          "pending": 0,
+          "winRate": 0.2857142857142857
         },
         "promotedToSignal": false,
         "source": "shadow_mined",
         "created": "2026-07-16",
         "setupId": "shadow_one_touch_high_edge_no_gold_heatmap_no",
         "setupLabel": "Shadow-mined ONE_TOUCH_HIGH_EDGE_NO GOLD heatmap",
-        "postMortem": "Refined by H-687 (2026-08-29): Refinement of H-534: re-author the gold one-touch cap-edge signal as a contract | The gold one-touch edge is a contract premium phenomenon, not a spot-decline signal. Wins appear as modest NO-contract ticks, losses are flat, and 7 tests were unscorable because the spot-decline prediction did not match the contract instrument. | Refined by H-689 (2026-08-30): Refinement of H-534: re-author the GOLD one-touch high-edge signal as a contract | The GOLD one-touch NO family is not trading a spot-decline thesis. It scored 6/20 and burned 7 unscorable tests because the prediction demanded a >2% GOLD decline, while the contract rows show the actual edge is premium compression on NO contracts."
+        "postMortem": "The gold one-touch edge is a contract premium phenomenon, not a spot-decline signal. Wins appear as modest NO-contract ticks, losses are flat, and 7 tests were unscorable because the spot-decline prediction did not match the contract instrument. | Refined by H-689 (2026-08-30): Refinement of H-534: re-author the GOLD one-touch high-edge signal as a contract | The GOLD one-touch NO family is not trading a spot-decline thesis. It scored 6/20 and burned 7 unscorable tests because the prediction demanded a >2% GOLD decline, while the contract rows show the actual edge is premium compression on NO contracts. | The gold one-touch cap-edge variant is failing because it was scored as a >2% GOLD spot decline over 2 days, while the tradable signal is overpriced NO/YES premium on the contract. The scorable tests are only 29% and 9 tests are unscorable; contract examples show small positive premium decay even when spot does not fall."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20217,18 +20217,18 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 17,
-          "completed": 16,
+          "total": 18,
+          "completed": 17,
           "wins": 5,
           "pending": 1,
-          "winRate": 0.3125
+          "winRate": 0.29411764705882354
         },
         "promotedToSignal": false,
         "source": "shadow_mined",
         "created": "2026-07-16",
         "setupId": "shadow_weekend_hl_funding_reversion_long_mu_weekend_hl_funding_shadow_long",
         "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG MU weekend_hl_funding_shadow",
-        "postMortem": "MU funding < -10 produced only 31% wins. Most failures occurred because funding remained flat at 5.5% or moved from 29.1% to 3.4%, so the condition captured non-extreme or already-normalizing readings rather than deep weekend stress. | MU shadow tests are 5/16 (31% win). Many losses start and finish at the same 5.5% funding value, meaning the signal fired on a flat/default print rather than a tradable stress event. | MU < -10 mostly captures pinned +5.5% funding rows and lacks true weekend timing; the previous lower-tail refinement was rejected as too rare, so this variant should not be re-proposed in that form. | MU failures were dominated by flat funding readings around 5.5% and one rally from +29.1% to +3.4%; the condition did not isolate genuine negative funding stress or reversion."
+        "postMortem": "MU shadow tests are 5/16 (31% win). Many losses start and finish at the same 5.5% funding value, meaning the signal fired on a flat/default print rather than a tradable stress event. | MU < -10 mostly captures pinned +5.5% funding rows and lacks true weekend timing; the previous lower-tail refinement was rejected as too rare, so this variant should not be re-proposed in that form. | MU failures were dominated by flat funding readings around 5.5% and one rally from +29.1% to +3.4%; the condition did not isolate genuine negative funding stress or reversion. | MU < -10% has repeated 'funding moved 5.5% -> 5.5%' observations and then deterioration to -28.6%; the raw threshold captures noise rather than identifying true weekend reversion."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20251,11 +20251,11 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 10,
-          "completed": 9,
+          "total": 11,
+          "completed": 10,
           "wins": 4,
           "pending": 1,
-          "winRate": 0.4444444444444444
+          "winRate": 0.4
         },
         "promotedToSignal": false,
         "source": "shadow_mined",
@@ -20286,17 +20286,17 @@
         "timeframeDays": 2,
         "testStats": {
           "total": 22,
-          "completed": 21,
-          "wins": 10,
-          "pending": 1,
-          "winRate": 0.47619047619047616
+          "completed": 22,
+          "wins": 11,
+          "pending": 0,
+          "winRate": 0.5
         },
         "promotedToSignal": false,
         "source": "shadow_mined",
         "created": "2026-07-16",
         "setupId": "shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long",
         "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG AAPL weekend_hl_funding_shadow",
-        "postMortem": "Refined by H-681 (2026-08-28): Refinement of H-537: require AAPL funding to be in the lower tail and turning hi | AAPL shadow tests are 10/20 (50% win). The losses include multiple starts and ends at 5.5% or starts at 11.2% reverting to 5.5%, showing the static < -10 trigger is too blunt and often captures neutral/default funding states. | AAPL < -10 fires on non-weekend and stale rows; losses show funding already at +5.5% or flattening near +0.6%. The static level does not isolate the overstretched weekend funding state the original shadow mined. | AAPL losses concentrated in flat or already-positive funding readings such as 5.5% and 11.2%; the signal needs actual extreme negative funding and evidence the reversion has begun."
+        "postMortem": "AAPL shadow tests are 10/20 (50% win). The losses include multiple starts and ends at 5.5% or starts at 11.2% reverting to 5.5%, showing the static < -10 trigger is too blunt and often captures neutral/default funding states. | AAPL < -10 fires on non-weekend and stale rows; losses show funding already at +5.5% or flattening near +0.6%. The static level does not isolate the overstretched weekend funding state the original shadow mined. | AAPL losses concentrated in flat or already-positive funding readings such as 5.5% and 11.2%; the signal needs actual extreme negative funding and evidence the reversion has begun. | AAPL < -10% is only 50% and its losses are dominated by flat or positive funding readings that do not normalize; the simple threshold is not a sufficient tail marker."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20319,11 +20319,11 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 12,
-          "completed": 11,
+          "total": 13,
+          "completed": 12,
           "wins": 4,
           "pending": 1,
-          "winRate": 0.36363636363636365
+          "winRate": 0.3333333333333333
         },
         "promotedToSignal": false,
         "source": "shadow_mined",
@@ -20364,7 +20364,7 @@
         "created": "2026-07-16",
         "setupId": "shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long",
         "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG CBRS weekend_hl_funding_shadow",
-        "postMortem": "The CBRS shadow family is 13/28 scorable (46% win), and losses show funding either stuck at 5.5% or continuing lower after the < -10 trigger; only a few genuine reversion starts produced wins. | The any-day standalone CBRS < -10 trigger catches many rows after funding has already normalized or pinned at +5.5%. Wins only cluster when funding is deeply negative and then inflects upward, so the condition lacks timing. | Refined by H-690 (2026-08-30): Refinement of H-539: require confirmation that deeply negative CBRS funding has | CBRS funding below -10 too often stayed pinned or fell further; several losses show funding moving from -4.3 to -33.8 or -6.2 to -33.6 instead of normalizing. A static threshold is not a normalization trigger."
+        "postMortem": "The any-day standalone CBRS < -10 trigger catches many rows after funding has already normalized or pinned at +5.5%. Wins only cluster when funding is deeply negative and then inflects upward, so the condition lacks timing. | Refined by H-690 (2026-08-30): Refinement of H-539: require confirmation that deeply negative CBRS funding has | CBRS funding below -10 too often stayed pinned or fell further; several losses show funding moving from -4.3 to -33.8 or -6.2 to -33.6 instead of normalizing. A static threshold is not a normalization trigger. | CBRS single-limit funding < -10% fails because the trigger is too broad: 45% of tests see funding stay pinned or fall further, including -4.3% to -33.8% and -6.2% to -33.6%, rather than normalize."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -58799,7 +58799,7 @@
           "sumPnl": 2.5147,
           "avgPnl": 0.00994,
           "pnlStd": 0.0435,
-          "pValue": 0.0,
+          "pValue": 0,
           "pnlPValue": 0.00017,
           "qValue": 0.01802
         },
@@ -58808,7 +58808,7 @@
           "wins": 188,
           "winRate": 0.7431,
           "sumPnl": 2.5147,
-          "pValue": 0.0,
+          "pValue": 0,
           "pnlPValue": 0.00017,
           "hasHeatmap": false,
           "sampleIds": [
@@ -60256,10 +60256,10 @@
         "confidence": 0.6,
         "timeframeDays": 7,
         "testStats": {
-          "total": 35,
+          "total": 37,
           "completed": 33,
           "wins": 12,
-          "pending": 2,
+          "pending": 4,
           "winRate": 1
         },
         "promotedToSignal": false,
@@ -63938,9 +63938,9 @@
         "timeframeDays": 7,
         "testStats": {
           "total": 4,
-          "completed": 2,
+          "completed": 3,
           "wins": 0,
-          "pending": 2,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -64987,10 +64987,10 @@
         "confidence": 0.65,
         "timeframeDays": 14,
         "testStats": {
-          "total": 3,
+          "total": 4,
           "completed": 1,
           "wins": 0,
-          "pending": 2,
+          "pending": 3,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -68147,10 +68147,11 @@
           "H-658",
           "H-662",
           "H-678",
-          "H-694"
+          "H-694",
+          "H-696"
         ],
-        "lastLinkedHypothesisId": "H-694",
-        "lastLinkedHypothesisAt": "2026-08-30T07:28:19.413Z"
+        "lastLinkedHypothesisId": "H-696",
+        "lastLinkedHypothesisAt": "2026-08-31T07:28:23.587Z"
       },
       "links": {
         "hypotheses": [
@@ -68168,7 +68169,8 @@
           "H-658",
           "H-662",
           "H-678",
-          "H-694"
+          "H-694",
+          "H-696"
         ]
       },
       "created": "2026-07-28T07:07:14Z",
@@ -69642,9 +69644,9 @@
         "timeframeDays": 30,
         "testStats": {
           "total": 4,
-          "completed": 2,
+          "completed": 3,
           "wins": 0,
-          "pending": 2,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -70009,10 +70011,10 @@
         "confidence": 0.65,
         "timeframeDays": 14,
         "testStats": {
-          "total": 8,
+          "total": 9,
           "completed": 5,
           "wins": 0,
-          "pending": 3,
+          "pending": 4,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -70117,10 +70119,10 @@
         "confidence": 0.66,
         "timeframeDays": 14,
         "testStats": {
-          "total": 4,
+          "total": 6,
           "completed": 2,
           "wins": 0,
-          "pending": 2,
+          "pending": 4,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -74602,9 +74604,9 @@
         "timeframeDays": 14,
         "testStats": {
           "total": 4,
-          "completed": 3,
+          "completed": 4,
           "wins": 0,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -74707,10 +74709,10 @@
         "timeframeDays": 3,
         "testStats": {
           "total": 3,
-          "completed": 2,
-          "wins": 0,
-          "pending": 1,
-          "winRate": 0
+          "completed": 3,
+          "wins": 1,
+          "pending": 0,
+          "winRate": 0.3333333333333333
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -76553,7 +76555,7 @@
         "bucket": "short_blocked_by_positive_trend",
         "evidence": {
           "n": 8,
-          "winRate": 1.0,
+          "winRate": 1,
           "sumPnl": 0.1325,
           "avgPnl": 0.01656,
           "pnlStd": 0.01046,
@@ -76564,7 +76566,7 @@
         "mineStats": {
           "n": 8,
           "wins": 8,
-          "winRate": 1.0,
+          "winRate": 1,
           "sumPnl": 0.1325,
           "pValue": 0.00391,
           "pnlPValue": 0.00144,
@@ -77848,10 +77850,10 @@
         "timeframeDays": 2,
         "testStats": {
           "total": 6,
-          "completed": 5,
-          "wins": 4,
-          "pending": 1,
-          "winRate": 0.8
+          "completed": 6,
+          "wins": 5,
+          "pending": 0,
+          "winRate": 0.8333333333333334
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -81978,10 +81980,10 @@
         "timeframeDays": 5,
         "testStats": {
           "total": 4,
-          "completed": 2,
-          "wins": 0,
-          "pending": 2,
-          "winRate": 0
+          "completed": 4,
+          "wins": 1,
+          "pending": 0,
+          "winRate": 1
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -82157,10 +82159,10 @@
         "timeframeDays": 3,
         "testStats": {
           "total": 7,
-          "completed": 5,
-          "wins": 1,
-          "pending": 2,
-          "winRate": 0.5
+          "completed": 7,
+          "wins": 3,
+          "pending": 0,
+          "winRate": 0.75
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -82264,10 +82266,10 @@
         "timeframeDays": 3,
         "testStats": {
           "total": 2,
-          "completed": 1,
-          "wins": 0,
-          "pending": 1,
-          "winRate": 0
+          "completed": 2,
+          "wins": 1,
+          "pending": 0,
+          "winRate": 0.5
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -82370,10 +82372,10 @@
         "confidence": 0.65,
         "timeframeDays": 2,
         "testStats": {
-          "total": 10,
+          "total": 11,
           "completed": 10,
           "wins": 0,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -84348,8 +84350,8 @@
         "confidence": 0.7,
         "timeframeDays": 30,
         "testStats": {
-          "total": 6,
-          "completed": 2,
+          "total": 7,
+          "completed": 3,
           "wins": 0,
           "pending": 4,
           "winRate": 0
@@ -85973,7 +85975,7 @@
         "created": "2026-08-17",
         "setupId": "find_0024",
         "setupLabel": "FIND-linked FIND-0024",
-        "postMortem": "Refined by H-648 (2026-08-19): Refinement of H-647: do not fade rich OIL above-strike YES premium on IV richnes | find_0024 scored only 5/19 and burned tests on spot proxies. OIL rose 4.30% through the supposed overpriced premium window, indicating that rich PM IV near expiry was marking a real directional move, not dumb YES demand. | Discarded 20 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer. | H-647 is 0% over 29 tests, confirming that rich PM IV on near-expiry OIL above-strike YES is not tradeable richness on its own; the PM IV richness is likely model error or stale pricing rather than overpriced contract premium."
+        "postMortem": "find_0024 scored only 5/19 and burned tests on spot proxies. OIL rose 4.30% through the supposed overpriced premium window, indicating that rich PM IV near expiry was marking a real directional move, not dumb YES demand. | Discarded 20 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer. | H-647 is 0% over 29 tests, confirming that rich PM IV on near-expiry OIL above-strike YES is not tradeable richness on its own; the PM IV richness is likely model error or stale pricing rather than overpriced contract premium. | 0/29 is now conclusive that PM-IV richness alone does not make near-expiry OIL above-strike YES premium decay; rich IV can coincide with continued spot drift toward the barrier."
       },
       "links": {},
       "created": "2026-08-17T14:10:09Z",
@@ -88181,17 +88183,19 @@
           "H-666",
           "H-670",
           "H-682",
-          "H-692"
+          "H-692",
+          "H-697"
         ],
-        "lastLinkedHypothesisId": "H-692",
-        "lastLinkedHypothesisAt": "2026-08-30T07:28:19.247Z"
+        "lastLinkedHypothesisId": "H-697",
+        "lastLinkedHypothesisAt": "2026-08-31T07:28:23.695Z"
       },
       "links": {
         "hypotheses": [
           "H-666",
           "H-670",
           "H-682",
-          "H-692"
+          "H-692",
+          "H-697"
         ]
       },
       "created": "2026-08-24T16:32:31Z",
@@ -89632,10 +89636,11 @@
           "H-668",
           "H-672",
           "H-685",
-          "H-693"
+          "H-693",
+          "H-699"
         ],
-        "lastLinkedHypothesisId": "H-693",
-        "lastLinkedHypothesisAt": "2026-08-30T07:28:19.329Z",
+        "lastLinkedHypothesisId": "H-699",
+        "lastLinkedHypothesisAt": "2026-08-31T07:28:23.856Z",
         "provenanceHistory": [
           {
             "generatedBy": "panel_miner_v1",
@@ -89776,7 +89781,8 @@
           "H-668",
           "H-672",
           "H-685",
-          "H-693"
+          "H-693",
+          "H-699"
         ]
       },
       "created": "2026-08-25T18:18:11Z",
@@ -89994,10 +90000,11 @@
           "H-669",
           "H-673",
           "H-683",
-          "H-691"
+          "H-691",
+          "H-698"
         ],
-        "lastLinkedHypothesisId": "H-691",
-        "lastLinkedHypothesisAt": "2026-08-30T07:28:19.041Z",
+        "lastLinkedHypothesisId": "H-698",
+        "lastLinkedHypothesisAt": "2026-08-31T07:28:23.772Z",
         "provenanceHistory": [
           {
             "generatedBy": "panel_miner_v1",
@@ -90138,7 +90145,8 @@
           "H-669",
           "H-673",
           "H-683",
-          "H-691"
+          "H-691",
+          "H-698"
         ]
       },
       "created": "2026-08-25T18:18:11Z",
@@ -90613,10 +90621,10 @@
         "timeframeDays": 3,
         "testStats": {
           "total": 1,
-          "completed": 0,
-          "wins": 0,
-          "pending": 1,
-          "winRate": 0
+          "completed": 1,
+          "wins": 1,
+          "pending": 0,
+          "winRate": 1
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -90648,9 +90656,9 @@
         "timeframeDays": 3,
         "testStats": {
           "total": 1,
-          "completed": 0,
+          "completed": 1,
           "wins": 0,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -90683,9 +90691,9 @@
         "timeframeDays": 3,
         "testStats": {
           "total": 1,
-          "completed": 0,
+          "completed": 1,
           "wins": 0,
-          "pending": 1,
+          "pending": 0,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -91321,6 +91329,147 @@
       },
       "links": {},
       "created": "2026-08-30T14:10:06Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0703",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-696: BTC-specific one-touch NO premium fade: moderate 3-8pt sell-YES edge on above-strike BTC contracts with a tight spread. Author from ranked shadow FIND...",
+      "body": {
+        "hypothesisId": "H-696",
+        "hypothesisStatus": "active",
+        "description": "BTC-specific one-touch NO premium fade: moderate 3-8pt sell-YES edge on above-strike BTC contracts with a tight spread. Author from ranked shadow FIND-0043.",
+        "prediction": "Selling YES / buying NO on BTC above-strike one-touch contracts is profitable over 3 days as premium decays.",
+        "conditions": {
+          "asset": "BTC",
+          "sell_yes_edge_pts": "between 3 and 8",
+          "touch_direction": ">= 1",
+          "yesSpread": "< 0.02"
+        },
+        "confidence": 0.6,
+        "timeframeDays": 3,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-08-31",
+        "setupId": "find_0043",
+        "setupLabel": "FIND-linked FIND-0043"
+      },
+      "links": {},
+      "created": "2026-08-31T14:10:04Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0704",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-697: Outcome-panel NO edge sharpened with tight spread: sub-point sell-YES edge, mid-priced YES ask, and tight spread. Author from FIND-0065.",
+      "body": {
+        "hypothesisId": "H-697",
+        "hypothesisStatus": "active",
+        "description": "Outcome-panel NO edge sharpened with tight spread: sub-point sell-YES edge, mid-priced YES ask, and tight spread. Author from FIND-0065.",
+        "prediction": "Buying NO / selling YES on these contracts is profitable over 7 days as the YES premium decays.",
+        "conditions": {
+          "sell_yes_edge_pts": "< 1",
+          "yesAsk": "between 0.35 and 0.65",
+          "yesSpread": "< 0.02"
+        },
+        "confidence": 0.65,
+        "timeframeDays": 7,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-08-31",
+        "setupId": "find_0065",
+        "setupLabel": "FIND-linked FIND-0065"
+      },
+      "links": {},
+      "created": "2026-08-31T14:10:04Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0705",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-698: Sharpest outcome-panel NO cut with liquidity guard: sub-point sell-YES edge, mid-priced band, near-dated, and minimum liquidity. Author from FIND-0070.",
+      "body": {
+        "hypothesisId": "H-698",
+        "hypothesisStatus": "active",
+        "description": "Sharpest outcome-panel NO cut with liquidity guard: sub-point sell-YES edge, mid-priced band, near-dated, and minimum liquidity. Author from FIND-0070.",
+        "prediction": "Buying NO / selling YES on liquid, near-dated, mid-priced, sub-point-edge contracts is profitable over 7 days.",
+        "conditions": {
+          "sell_yes_edge_pts": "< 1",
+          "yesAsk": "between 0.35 and 0.65",
+          "days_to_expiry": "< 30",
+          "liquidity": ">= 10000"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 7,
+        "testStats": {
+          "total": 0,
+          "completed": 0,
+          "wins": 0,
+          "pending": 0,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-08-31",
+        "setupId": "find_0070",
+        "setupLabel": "FIND-linked FIND-0070"
+      },
+      "links": {},
+      "created": "2026-08-31T14:10:04Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0706",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-699: Outcome-panel NO edge, near-dated mid-price band: buy NO / sell YES when YES ask is 35-65c and nearest expiry is under 30 days. Author from FIND-0069.",
+      "body": {
+        "hypothesisId": "H-699",
+        "hypothesisStatus": "active",
+        "description": "Outcome-panel NO edge, near-dated mid-price band: buy NO / sell YES when YES ask is 35-65c and nearest expiry is under 30 days. Author from FIND-0069.",
+        "prediction": "Buying NO / selling YES on near-dated mid-priced contracts is profitable over 7 days as YES premium decays.",
+        "conditions": {
+          "yesAsk": "between 0.35 and 0.65",
+          "days_to_expiry": "< 30"
+        },
+        "confidence": 0.6,
+        "timeframeDays": 7,
+        "testStats": {
+          "total": 0,
+          "completed": 0,
+          "wins": 0,
+          "pending": 0,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-08-31",
+        "setupId": "find_0069",
+        "setupLabel": "FIND-linked FIND-0069"
+      },
+      "links": {},
+      "created": "2026-08-31T14:10:04Z",
       "source": "sync_hypotheses_registry"
     }
   ]
