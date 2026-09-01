@@ -20337,7 +20337,7 @@
         }
       }
     ],
-    "winRate": 0.5,
+    "winRate": 0.5833333333333334,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "The no-bias adjusted gap gold short-rich-tail variant went 0/17, with GOLD moving essentially flat to higher after the gap condition. The no-bias gap stayed pinned while spot trended against the short. | 0/19 scorable tests. The rich tail no-bias gap threshold >= 12.3 also failed as gold rallied through the fade window, including 4380 to 4510 and 4519 to 4623. The gap is trend strength, not a mean-reversion sell signal. | H-532 failed every scorable test. Gold spot was flat or rose after the rich tail NO gap, so the no-bias adjusted gap did not predict bearish continuation. | Discarded 20 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer.",
@@ -21035,7 +21035,7 @@
         "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0.2857142857142857,
+    "winRate": 0.34782608695652173,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "The GOLD one-touch NO family is not trading a spot-decline thesis. It scored 6/20 and burned 7 unscorable tests because the prediction demanded a >2% GOLD decline, while the contract rows show the actual edge is premium compression on NO contracts. | The gold one-touch cap-edge variant is failing because it was scored as a >2% GOLD spot decline over 2 days, while the tradable signal is overpriced NO/YES premium on the contract. The scorable tests are only 29% and 9 tests are unscorable; contract examples show small positive premium decay even when spot does not fall. | Refined by H-700 (2026-09-01): Refinement of H-534: replace the spot-decline prediction with a contract-premium | The variant won only on contract marks such as NO 0.935→0.945, but the spot-decline prediction missed the actual mechanism. Nine tests were unscorable because the setup captures overpriced touch premium, not spot direction.",
@@ -29807,7 +29807,7 @@
         "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -29887,7 +29887,7 @@
         "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -29928,7 +29928,7 @@
         "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -30644,7 +30644,7 @@
         }
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
