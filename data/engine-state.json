@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-09-01T17:28:21.688Z",
+  "generatedAt": "2026-09-01T18:28:22.687Z",
   "dataFreshness": {
-    "valuationRows": 2701,
-    "latestValuationAt": "2026-09-01T17",
-    "macroRows": 2699,
+    "valuationRows": 2702,
+    "latestValuationAt": "2026-09-01T18",
+    "macroRows": 2700,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-01T17"
+    "latestInstrumentSnapshotAt": "2026-09-01T18"
   },
   "portfolio": {
     "cash": 103.3898,
@@ -178,10 +178,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 25,
-    "resolvedCount": 988,
+    "openCount": 24,
+    "resolvedCount": 989,
     "wouldHaveWon": 506,
-    "wouldHaveLost": 482,
+    "wouldHaveLost": 483,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -240,35 +240,15 @@
         "avgPnlPct": -0.13
       },
       {
-        "signalType": "MACRO_MOMENTUM_UP",
-        "blocked": 3,
-        "resolved": 2,
-        "wouldHaveWon": 1,
+        "signalType": "PROMOTED_HYPOTHESIS",
+        "blocked": 1,
+        "resolved": 1,
+        "wouldHaveWon": 0,
         "wouldHaveLost": 1,
-        "avgPnlPct": 0.78
+        "avgPnlPct": -3.65
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "stop",
-        "pnlPct": -98.41,
-        "resolvedAt": "2026-08-30T20:28:18.922Z",
-        "marketQuality": {
-          "yesBid": 0.37,
-          "yesAsk": 0.39,
-          "yesSpread": 0.02,
-          "liquidity": 14869.72,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "OIL",
@@ -400,6 +380,21 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "MACRO_MOMENTUM_UP",
+        "asset": "BTC",
+        "venue": "spot",
+        "direction": "long",
+        "blockedReason": "live_entry_not_promoted",
+        "outcome": "loss",
+        "closeReason": "stop",
+        "pnlPct": -1.99,
+        "resolvedAt": "2026-09-01T18:28:21.917Z",
+        "trendMetrics": {
+          "aboveTrendPct": 0.28,
+          "momentumPct": 0.67
         }
       }
     ],
