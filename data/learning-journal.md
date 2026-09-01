@@ -1389,3 +1389,37 @@ No open positions to review, so no discretionary closes are eligible. Market is 
 
 ---
 
+### 2026-09-01 16:29 UTC
+
+**Portfolio:** $103.39 total | Cash $103.39 | 0 open | P&L $6.6293 | 64% win rate (878 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 8.1pp (was -2.8, now -10.9)
+- [anomaly] hype_pm_ev = 87.69 is 2.5 std devs from mean (60.86 ± 10.74)
+- [anomaly] btc_med_min = 66974 is 2.3 std devs from mean (53554.32 ± 5949.94)
+- [anomaly] hype_med_max = 112.4 is 2.1 std devs from mean (81.67 ± 14.89)
+- [anomaly] hype_hl_oi = 1928472142 is 2.0 std devs from mean (1317968662.77 ± 303148111.49)
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 988 (506 wins / 482 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=441 (151W/233L/57flat, 39.3% win-rate, sum $-0.1981, avg -0.04%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit target (+4.04%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+6.12%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+2.04%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+3.33%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 6/12; next scheduled 2026-09-01T18:29:18.808Z). Mechanical cycle ran normally._
+
+---
+
