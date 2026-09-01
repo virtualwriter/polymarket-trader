@@ -1185,3 +1185,37 @@ No open positions, so no discretionary close actions are available. Market is sh
 
 ---
 
+### 2026-09-01 09:28 UTC
+
+**Portfolio:** $103.39 total | Cash $103.39 | 0 open | P&L $6.6293 | 64% win rate (878 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 87.89 is 2.5 std devs from mean (60.80 ± 10.67)
+- [anomaly] btc_med_min = 67027 is 2.3 std devs from mean (53524.42 ± 5922.77)
+- [anomaly] hype_hl_oi = 1966053699 is 2.2 std devs from mean (1316528795.20 ± 301946133.46)
+- [anomaly] hype_spot = 83.323 is 2.1 std devs from mean (60.05 ± 11.31)
+- [anomaly] hype_med_max = 111.7 is 2.0 std devs from mean (81.60 ± 14.83)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 987 (505 wins / 482 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=440 (150W/233L/57flat, 39.2% win-rate, sum $-0.2314, avg -0.05%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.25%)
+- ✅ Blocked: PM_EV_ABOVE_SPOT HYPE long via spot would have hit target (+4.04%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+6.12%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+2.04%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 3/12; next scheduled 2026-09-01T11:28:24.079Z). Mechanical cycle ran normally._
+
+---
+
