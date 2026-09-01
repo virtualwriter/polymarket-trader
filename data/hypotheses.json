@@ -796,6 +796,12 @@
         "actualMove": "BTC moved -1.32% (79928 → 78873) [short needs ≤ -2%] (method=spot_directional_short)",
         "magnitude": 1.3199379441497348,
         "magnitudeUnit": "pct_return"
+      },
+      {
+        "date": "2026-09-01",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup btc_listed_iv_momentum_confirmation shadow test 22/20 opened via H-012 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0.2857142857142857,
@@ -30648,6 +30654,12 @@
         "actualMove": "BTC moved 1.22% (77923 → 78873) [neutral abs needs ≥ 2%] (method=spot_abs_move)",
         "magnitude": -0.7808477599681738,
         "magnitudeUnit": "pct_return"
+      },
+      {
+        "date": "2026-09-01",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup btc_iv_compression_vol_reversion shadow test 13/20 opened via H-688 after current row satisfied variant conditions."
       }
     ],
     "winRate": 0,
@@ -30687,6 +30699,21 @@
           "direction": "above",
           "strike": 4700,
           "entryPrice": 0.9785,
+          "side": "no"
+        }
+      },
+      {
+        "date": "2026-09-01",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup gold_pm_premium_futures_spread_mean_reversion shadow test 28/20 opened via H-689 after current row satisfied variant conditions.",
+        "contractEntry": {
+          "marketId": "3866480",
+          "eventSlug": "what-price-will-xauusd-hit-in-september-2026",
+          "asset": "GOLD",
+          "direction": "above",
+          "strike": 5300,
+          "entryPrice": 0.96,
           "side": "no"
         }
       }
