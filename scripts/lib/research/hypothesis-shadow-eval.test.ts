@@ -298,6 +298,75 @@ describe("polymarket contract scoring", () => {
     expect(result.magnitude).toBeCloseTo(-50, 6);
   });
 
+  it("grades a vanished contract at terminal value from its last archived quote", () => {
+    const h = hyp({
+      direction: "short",
+      prediction: "BTC one-touch NO: the NO sale is profitable over the window",
+      conditions: { asset: "BTC", sell_yes_edge_pts: ">= 3" },
+    });
+    const result = evaluateHypothesisTest(
+      h,
+      row("2026-07-01", { btc_spot: 100 }),
+      row("2026-07-08", { btc_spot: 95 }),
+      {
+        // NO bought at 1 - 0.30 = 0.70; contract expired and vanished with its
+        // last archived YES quote pinned at 0.01 -> NO resolved worth 1.0.
+        entryRows: [contractRow({ marketId: "m1", pmYes: 0.30, sellYesEdgePts: 6 })],
+        exitRows: [],
+        lastArchivedYesQuote: (marketId) => (marketId === "m1" ? 0.01 : null),
+      },
+    );
+
+    expect(result.scorable).toBe(true);
+    expect(result.method).toBe("pm_contract_terminal");
+    expect(result.outcome).toBe("win");
+    expect(result.magnitude).toBeCloseTo(42.857, 2);
+  });
+
+  it("grades a vanished contract as a loss when it resolved against the side held", () => {
+    const h = hyp({
+      direction: "short",
+      prediction: "BTC one-touch NO: the NO sale is profitable over the window",
+      conditions: { asset: "BTC", sell_yes_edge_pts: ">= 3" },
+    });
+    const result = evaluateHypothesisTest(
+      h,
+      row("2026-07-01", { btc_spot: 100 }),
+      row("2026-07-08", { btc_spot: 105 }),
+      {
+        entryRows: [contractRow({ marketId: "m1", pmYes: 0.30, sellYesEdgePts: 6 })],
+        exitRows: [],
+        lastArchivedYesQuote: () => 0.99, // barrier touched: YES resolved
+      },
+    );
+
+    expect(result.scorable).toBe(true);
+    expect(result.method).toBe("pm_contract_terminal");
+    expect(result.outcome).toBe("loss");
+    expect(result.magnitude).toBeCloseTo(-100, 6);
+  });
+
+  it("stays unscorable when a vanished contract's last quote is mid-range", () => {
+    const h = hyp({
+      direction: "short",
+      prediction: "BTC one-touch NO: the NO sale is profitable over the window",
+      conditions: { asset: "BTC", sell_yes_edge_pts: ">= 3" },
+    });
+    const result = evaluateHypothesisTest(
+      h,
+      row("2026-07-01", { btc_spot: 100 }),
+      row("2026-07-08", { btc_spot: 95 }),
+      {
+        entryRows: [contractRow({ marketId: "m1", pmYes: 0.30, sellYesEdgePts: 6 })],
+        exitRows: [],
+        lastArchivedYesQuote: () => 0.55, // delisted mid-range: no honest verdict
+      },
+    );
+
+    expect(result.scorable).toBe(false);
+    expect(result.method).toBe("contract_exit_unavailable");
+  });
+
   it("picks the max sell-YES-edge contract, matching the shadow opener", () => {
     const h = hyp({
       direction: "short",

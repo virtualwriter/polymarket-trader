@@ -10,7 +10,7 @@
  *   npx tsx scripts/trading-engine.ts --dry-run    # show signals without trading
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statSync, openSync, readSync, closeSync, renameSync } from "node:fs";
+import { readFileSync, writeFileSync, existsSync, mkdirSync, appendFileSync, statSync, openSync, readSync, closeSync, renameSync, readdirSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import {
@@ -1304,6 +1304,69 @@ function readCsvFile(path: string): Record<string, string>[] {
 // typical prompt without removing any field the LLM actually reasons about.
 function serializeRelativeValueRowsForLlm(rows: RelativeValueObservation[]): string {
   return JSON.stringify(rows, (key, value) => (key === "rawRow" ? undefined : value));
+}
+
+/**
+ * Archived relative-value snapshots, one directory per day (hourly CSVs
+ * inside). Same sources the outcome panel builds from.
+ */
+const RV_HISTORY_DIRS = [
+  "/var/lib/polymarket-trader/relative-value-history",
+  "relative-value/history",
+];
+const VANISHED_QUOTE_SCAN_DAYS = 60;
+const rvDayQuoteCache = new Map<string, Map<string, number>>();
+const lastArchivedYesQuoteCache = new Map<string, number | null>();
+
+function rvDayQuotes(dayDir: string): Map<string, number> {
+  const cached = rvDayQuoteCache.get(dayDir);
+  if (cached) return cached;
+  const map = new Map<string, number>();
+  const files = readdirSync(dayDir).filter((name) => name.endsWith(".csv")).sort();
+  const latest = files[files.length - 1];
+  if (latest) {
+    for (const row of readCsvFile(join(dayDir, latest))) {
+      const id = (row.market_id ?? "").trim();
+      const price = num(row.pm_yes_price) ?? num(row.pm_best_bid);
+      if (id && price !== null) map.set(id, price);
+    }
+  }
+  rvDayQuoteCache.set(dayDir, map);
+  return map;
+}
+
+/**
+ * Last archived YES quote for a contract that has vanished from the current
+ * snapshot, scanning day archives newest-first. This is what lets the contract
+ * scorer grade expired binaries at terminal value instead of burning the test
+ * as unscorable — expiry inside the horizon is where the P&L realizes, so
+ * dropping those tests biased the family evidence.
+ */
+function lastArchivedYesQuote(marketId: string): number | null {
+  if (!marketId) return null;
+  if (lastArchivedYesQuoteCache.has(marketId)) return lastArchivedYesQuoteCache.get(marketId) ?? null;
+  const dayDirs: { day: string; path: string }[] = [];
+  for (const root of RV_HISTORY_DIRS) {
+    if (!existsSync(root)) continue;
+    for (const name of readdirSync(root)) {
+      if (/^\d{4}-\d{2}-\d{2}$/.test(name)) dayDirs.push({ day: name, path: join(root, name) });
+    }
+  }
+  dayDirs.sort((a, b) => (a.day < b.day ? 1 : a.day > b.day ? -1 : 0));
+  let result: number | null = null;
+  const seenDays = new Set<string>();
+  for (const { day, path } of dayDirs) {
+    if (seenDays.has(day)) continue;
+    seenDays.add(day);
+    if (seenDays.size > VANISHED_QUOTE_SCAN_DAYS) break;
+    const price = rvDayQuotes(path).get(marketId);
+    if (price !== undefined) {
+      result = price;
+      break;
+    }
+  }
+  lastArchivedYesQuoteCache.set(marketId, result);
+  return result;
 }
 
 function readRelativeValueObservations(limit = 30): RelativeValueObservation[] {
@@ -6530,6 +6593,7 @@ function evaluateHypotheses(
       const result = evaluateHypothesisTest(h, startRow, endRow, {
         exitRows: relativeValueRows,
         entryStamp: test.contractEntry,
+        lastArchivedYesQuote,
       });
       test.outcome = result.outcome;
       test.actualMove = `${result.actualMove} (method=${result.method})`;

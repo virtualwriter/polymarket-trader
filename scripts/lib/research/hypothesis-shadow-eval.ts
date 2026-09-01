@@ -435,6 +435,14 @@ export interface ContractScoringContext {
    * contract if the day's quotes shifted.
    */
   entryStamp?: ContractEntryStamp;
+  /**
+   * Last archived YES quote for a contract missing from `exitRows`, so
+   * vanished (usually expired) contracts can be graded at terminal value
+   * instead of burning the test as unscorable. Expiry-in-horizon is where a
+   * binary's P&L actually realizes, so dropping these cases biased the
+   * evidence, and it burned nearly half of recent contract tests.
+   */
+  lastArchivedYesQuote?: (marketId: string) => number | null;
 }
 
 /** The contract and price a Polymarket test entered, recorded at open. */
@@ -469,6 +477,15 @@ function sidePrice(yesPrice: number, side: "yes" | "no"): number {
 }
 
 /**
+ * A contract that vanished from quotes with its last YES price at or beyond
+ * these bounds is treated as resolved to that side. Keep in lockstep with
+ * TERMINAL_YES_PRICE / TERMINAL_NO_PRICE in scripts/lib/panel_common.py — the
+ * outcome panel's evidence was measured under exactly this rule.
+ */
+export const TERMINAL_YES_PRICE = 0.97;
+export const TERMINAL_NO_PRICE = 0.03;
+
+/**
  * Scores a Polymarket thesis on the contract's own P&L.
  *
  * The underlying's percent move gets a touch contract's direction roughly
@@ -499,11 +516,36 @@ export function evaluatePolymarketContractTest(
 
   const exit = ctx.exitRows.find((row) => row.marketId === stamp.marketId && row.pmYes !== null);
   if (!exit) {
+    // Vanished contract: infer terminality from its last archived quote, the
+    // same rule the outcome panel uses (panel_common._terminal_quality). A
+    // binary that disappears pinned at >= 0.97 resolved YES, <= 0.03 resolved
+    // NO; one that vanishes mid-range is genuinely ambiguous (delisted) and
+    // stays unscorable.
+    const lastYes = ctx.lastArchivedYesQuote?.(stamp.marketId) ?? null;
+    const terminalYes = lastYes !== null && lastYes >= TERMINAL_YES_PRICE
+      ? 1
+      : lastYes !== null && lastYes <= TERMINAL_NO_PRICE
+        ? 0
+        : null;
+    if (terminalYes === null || stamp.entryPrice <= 0) {
+      return {
+        outcome: "loss",
+        actualMove: `UNSCORABLE: contract ${stamp.marketId || "?"} has no exit quote at the horizon${lastYes !== null ? ` (vanished mid-range at YES ${lastYes.toFixed(2)})` : ""}`,
+        scorable: false,
+        method: "contract_exit_unavailable",
+      };
+    }
+    const exitPrice = sidePrice(terminalYes, stamp.side);
+    const pnlPct = ((exitPrice - stamp.entryPrice) / stamp.entryPrice) * 100;
     return {
-      outcome: "loss",
-      actualMove: `UNSCORABLE: contract ${stamp.marketId || "?"} has no exit quote at the horizon`,
-      scorable: false,
-      method: "contract_exit_unavailable",
+      outcome: pnlPct > 0 ? "win" : "loss",
+      actualMove: `${stamp.side.toUpperCase()} on ${stamp.asset} ${stamp.direction} ${stamp.strike}`
+        + ` ${stamp.entryPrice.toFixed(3)} → ${exitPrice.toFixed(3)} resolved terminal (last YES ${lastYes!.toFixed(2)})`
+        + ` (${pnlPct >= 0 ? "+" : ""}${pnlPct.toFixed(1)}% on the contract)`,
+      scorable: true,
+      method: "pm_contract_terminal",
+      magnitude: pnlPct,
+      magnitudeUnit: "pct_return",
     };
   }
   if (stamp.entryPrice <= 0) {

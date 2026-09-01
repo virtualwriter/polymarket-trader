@@ -644,8 +644,21 @@ function resolveEligiblePending(
       const exitRows = relativeByDate.get(dayKey(currentDate)) ?? [];
       // A stamped entry beats re-deriving one from the archive: it is the
       // contract the test actually opened on, not the best match on the day.
+      // Vanished (expired) contracts grade at terminal value off their last
+      // archived quote, matching the live scorer and the outcome panel.
+      const lastArchivedYesQuote = (marketId: string): number | null => {
+        const days = [...relativeByDate.keys()]
+          .filter((day) => day > dayKey(test.date) && day <= dayKey(currentDate))
+          .sort()
+          .reverse();
+        for (const day of days) {
+          const row = relativeByDate.get(day)?.find((obs) => obs.marketId === marketId && obs.pmYes !== null);
+          if (row) return row.pmYes as number;
+        }
+        return null;
+      };
       const contractCtx = exitRows.length > 0 && (test.contractEntry || entryRows.length > 0)
-        ? { entryRows, exitRows, entryStamp: test.contractEntry }
+        ? { entryRows, exitRows, entryStamp: test.contractEntry, lastArchivedYesQuote }
         : undefined;
       const result = evaluateHypothesisTest(hypothesis, startRow, currentRow, contractCtx);
       test.outcome = result.outcome;
