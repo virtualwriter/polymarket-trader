@@ -1,120 +1,11 @@
 {
-  "generatedAt": "2026-09-01T23:28:22.060Z",
+  "generatedAt": "2026-09-02T01:28:18.425Z",
   "mechanicalExits": [],
   "signalKillExits": [],
-  "entryCandidates": [
-    {
-      "type": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "strength": 0.35228571428571426,
-      "confidence": 0.16875702205321674,
-      "thesis": "GOLD HL funding 27.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
-      "hypothesisId": null,
-      "entryPrice": 4332,
-      "targetPct": 5,
-      "stopPct": 2,
-      "expiryDays": 3,
-      "leverage": 1
-    }
-  ],
-  "sizingPreviews": [
-    {
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "reason": "unsupported_signal",
-      "entryPrice": 4332,
-      "probabilitySource": "unsupported",
-      "winProbability": null,
-      "probabilitySampleSize": null,
-      "edgePts": null,
-      "rawKellyFraction": null,
-      "adjustedKellyFraction": null,
-      "cappedKellyFraction": null,
-      "notes": [
-        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
-        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
-      ]
-    }
-  ],
-  "portfolioExposurePreviews": [
-    {
-      "candidateId": "FUNDING_EXTREME_LONG:GOLD:0",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "candidateSize": 0,
-      "riskClusters": [
-        "commodity",
-        "funding_reversion",
-        "gold_delta",
-        "hyperliquid_venue"
-      ],
-      "current": {
-        "totalGross": 1,
-        "totalNet": -1,
-        "byAsset": {
-          "GOLD": -1
-        },
-        "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1
-        },
-        "byVenue": {
-          "hyperliquid": -1
-        },
-        "byCluster": {
-          "commodity": -1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": -1,
-        "byAsset": {
-          "GOLD": -1
-        },
-        "bySignalType": {
-          "FUNDING_EXTREME_LONG": -1
-        },
-        "byVenue": {
-          "hyperliquid": -1
-        },
-        "byCluster": {
-          "commodity": -1,
-          "funding_reversion": -1,
-          "gold_delta": -1,
-          "hyperliquid_venue": -1
-        }
-      },
-      "warnings": []
-    }
-  ],
-  "stagedQuantRules": [
-    {
-      "candidateId": "FUNDING_EXTREME_LONG:GOLD:0",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "mode": "observe_uniform",
-      "liveSizingEnabled": false,
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "enforcedLiveSize": 1,
-      "wouldResize": true,
-      "edgePts": null,
-      "alerts": [],
-      "notes": [
-        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
-      ]
-    }
-  ],
+  "entryCandidates": [],
+  "sizingPreviews": [],
+  "portfolioExposurePreviews": [],
+  "stagedQuantRules": [],
   "llmCloseEligibility": [
     {
       "positionId": "T-1788294500159-vldz",
@@ -128,12 +19,12 @@
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 3,
-      "hoursToExpiry": 69,
+      "hoursOpen": 5,
+      "hoursToExpiry": 67,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.0417,
+      "elapsedHoldPct": 0.0694,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
     }
   ]
 }
