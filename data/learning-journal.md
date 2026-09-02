@@ -2028,3 +2028,35 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 4/12; ne
 
 ---
 
+### 2026-09-02 12:28 UTC
+
+**Portfolio:** $103.39 total | Cash $103.39 | 0 open | P&L $6.6339 | 64% win rate (879 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_med_min = 67717 is 2.3 std devs from mean (53650.56 ± 6038.93)
+- [anomaly] hype_pm_ev = 86.12 is 2.3 std devs from mean (61.05 ± 10.93)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.69 to 0.29. Rolling correlation: 24h=-0.78, 7d=-0.87, 30d=0.32. Current 24h corr is at 7th pct of last 30 daily 24h-rolling values (range -0.89 to 0.81).
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 991 (508 wins / 483 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=443 (153W/233L/57flat, 39.6% win-rate, sum $-0.1092, avg -0.02%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+3.33%)
+- ❌ Blocked: MACRO_MOMENTUM_UP BTC long via spot would have hit stop (-1.99%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+5.66%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+3.23%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 2.0h since last call; daily budget 4/12; next scheduled 2026-09-02T14:28:20.561Z). Mechanical cycle ran normally._
+
+---
+
