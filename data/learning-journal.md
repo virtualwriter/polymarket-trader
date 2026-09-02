@@ -1960,3 +1960,39 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 3/12; ne
 
 ---
 
+### 2026-09-02 10:28 UTC
+
+**Portfolio:** $103.39 total | Cash $103.39 | 0 open | P&L $6.6339 | 64% win rate (879 trades)
+
+**Closed 1 trades:**
+- ✅ GOLD short via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG) → llm_decision: +$0.0046 (0.5%, market 0.0044, funding 0.0002)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 86.65 is 2.3 std devs from mean (61.03 ± 10.91)
+- [anomaly] btc_med_min = 67717 is 2.3 std devs from mean (53640.19 ± 6029.06)
+- [anomaly] hype_med_max = 112.1 is 2.0 std devs from mean (81.86 ± 15.03)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.69 to 0.29. Rolling correlation: 24h=-0.85, 7d=-0.87, 30d=0.32. Current 24h corr is at 10th pct of last 30 daily 24h-rolling values (range -0.87 to 0.69).
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 991 (508 wins / 483 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=443 (153W/233L/57flat, 39.6% win-rate, sum $-0.1092, avg -0.02%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+3.33%)
+- ❌ Blocked: MACRO_MOMENTUM_UP BTC long via spot would have hit stop (-1.99%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+5.66%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+3.23%)
+
+**LLM analysis:**
+Reviewed the open GOLD hyperliquid short. Funding extreme-long thesis has invalidated: gold_hl_funding_ann fell from 33.33% at entry to 5.48%, well below the +15% trigger. Position is slightly profitable at +0.46%, but this is a discretionary thesis-invalidated close, not a mechanical target/stop. No other positions or entry candidates required action.
+
+---
+

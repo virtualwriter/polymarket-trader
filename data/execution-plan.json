@@ -1,15 +1,28 @@
 {
-  "generatedAt": "2026-09-02T09:28:21.586Z",
+  "generatedAt": "2026-09-02T10:28:53.387Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [],
+  "llmCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1788294500159-vldz",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_hl_funding_ann"
+      ],
+      "thesis": "FUNDING_EXTREME_LONG short entered on gold_hl_funding_ann > +15%. Since entry, funding has normalized materially from 33.33% to 5.48%, crossing back below the +15% entry threshold and invalidating the crowded-long fade setup."
+    }
+  ],
   "entrySignals": [],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
