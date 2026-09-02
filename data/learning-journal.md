@@ -1854,3 +1854,42 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; ne
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-09-02T07:12:00.206Z, model=deepseek-v4-pro)
+- Hypotheses added: 1 (rejected 5); reviews applied: 6; invalidated assumptions learned: 4; param updates: none.
+- Strategy review: What is working: the Polymarket YES-overpricing edge remains the strongest source of evidence, with PANEL_NO families (FIND-0065/0067/0069/0070) showing 63-81% win rates against a 50% base and positive holdout PnL, while live one-touch/manual IV-touch NO fades continue to pay on the contract. Weekend funding reversion is high win rate but low per-trade edge. What is failing: spot-directional momentum confirmations built on HYPE or listed-IV confirmation are near or below chance, and several funding-shadow families using a single absolute funding threshold are being triggered before the true ex
+- Nightly journal: Tonight's main lesson is that the NO/YES-overpricing edge remains the house edge, but several tests are still being burned by contract-vs-spot mismatches. The gold one-touch cap-edge family (H-534) must be permanently moved to neutral contract P&L, not spot decline; otherwise it will continue to generate unscorable tests. Funding shadow families using a single absolute threshold like `funding < -10` are near chance and need regime-relative extremes plus a turn filter. Momentum confirmation families (HYPE echo, listed IV) are weak and should not be counted as independent confirmation; their OI 
+### 2026-09-02 07:28 UTC
+
+**Portfolio:** $103.39 total | Cash $102.39 | 1 open | P&L $6.6293 | 64% win rate (878 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 88.05 is 2.5 std devs from mean (61.00 ± 10.88)
+- [anomaly] btc_med_min = 67125 is 2.2 std devs from mean (53624.93 ± 6014.90)
+- [anomaly] hype_med_max = 112.1 is 2.0 std devs from mean (81.83 ± 15.01)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.69 to 0.29. Rolling correlation: 24h=-0.90, 7d=-0.86, 30d=0.32. Current 24h corr is at 7th pct of last 30 daily 24h-rolling values (range -0.91 to 0.62).
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 990 (507 wins / 483 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=442 (152W/233L/57flat, 39.5% win-rate, sum $-0.1415, avg -0.03%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+2.04%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+3.33%)
+- ❌ Blocked: MACRO_MOMENTUM_UP BTC long via spot would have hit stop (-1.99%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+5.66%)
+
+**LLM analysis:**
+Reviewed open GOLD short T-1788294500159-vldz: position is at +0.07% and remains ineligible for discretionary close until 12h (currently 11.0h). Signal-family evidence is not invalidated: gold_gc_spot is -0.05% since open and gold_hl_funding_ann fell from 33.33% to 15.67% but has not crossed back through the +15% entry threshold. No close action taken. Re-evaluate after min hold if funding normalizes below threshold or price moves materially against the fade.
+
+---
+
