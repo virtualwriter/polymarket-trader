@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-09-01T07:13:21Z",
+  "generatedAt": "2026-09-02T07:14:22Z",
   "summary": {
-    "generatedAt": "2026-09-01T07:13:21Z",
+    "generatedAt": "2026-09-02T07:14:22Z",
     "findingCounts": {
       "open": 10,
       "strengthened": 40,
@@ -15,7 +15,7 @@
       "rank": 1,
       "id": "FIND-0065",
       "opportunityScore": 0.9999,
-      "confidenceScore": 0.6025,
+      "confidenceScore": 0.609,
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -29,7 +29,7 @@
       "rank": 1,
       "id": "FIND-0065",
       "opportunityScore": 0.9999,
-      "confidenceScore": 0.6025,
+      "confidenceScore": 0.609,
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -39,7 +39,7 @@
       "rank": 2,
       "id": "FIND-0067",
       "opportunityScore": 0.9999,
-      "confidenceScore": 0.5929,
+      "confidenceScore": 0.596,
       "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65,sp<2|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -59,7 +59,7 @@
       "rank": 4,
       "id": "FIND-0070",
       "opportunityScore": 0.9998,
-      "confidenceScore": 0.6982,
+      "confidenceScore": 0.7032,
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65,d<30|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -69,7 +69,7 @@
       "rank": 5,
       "id": "FIND-0069",
       "opportunityScore": 0.9998,
-      "confidenceScore": 0.6448,
+      "confidenceScore": 0.6488,
       "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65,d<30|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -79,7 +79,7 @@
       "rank": 6,
       "id": "FIND-0066",
       "opportunityScore": 0.9998,
-      "confidenceScore": 0.5475,
+      "confidenceScore": 0.552,
       "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -89,7 +89,7 @@
       "rank": 7,
       "id": "FIND-0068",
       "opportunityScore": 0.9997,
-      "confidenceScore": 0.5203,
+      "confidenceScore": 0.5248,
       "clusterKey": "PANEL_NO_7D|ALL|strat:dir=above,p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -98,8 +98,8 @@
     {
       "rank": 8,
       "id": "FIND-0043",
-      "opportunityScore": 0.9958,
-      "confidenceScore": 0.6748,
+      "opportunityScore": 0.9961,
+      "confidenceScore": 0.681,
       "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,e3-8|no",
       "themeId": "THEME-0001",
       "themeSlug": "heatmap_one_touch",
@@ -117,13 +117,13 @@
     },
     {
       "rank": 10,
-      "id": "FIND-0025",
-      "opportunityScore": 0.9361,
-      "confidenceScore": 0.6232,
-      "clusterKey": "USER_PM_IV_TOUCH_RICH_NO|ALL|strat:s?,e3-8|no",
-      "themeId": "THEME-0004",
-      "themeSlug": "other_user_pm_iv_touch_rich_no",
-      "status": "open"
+      "id": "FIND-0054",
+      "opportunityScore": 0.9434,
+      "confidenceScore": 0.6482,
+      "clusterKey": "ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s-1,e3-8|no",
+      "themeId": "THEME-0001",
+      "themeSlug": "heatmap_one_touch",
+      "status": "strengthened"
     }
   ],
   "themesOverview": [
@@ -132,7 +132,7 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 42,
-      "avgOpportunityScore": 0.6239
+      "avgOpportunityScore": 0.626
     },
     {
       "id": "THEME-0002",
@@ -181,32 +181,32 @@
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-534: replace the spot-decline prediction with a contract-premium fade. Enter GOLD above-strike one-touch NO through selling YES when cap edge is >=10 pts, near-dated, and tight-spread; exit as edge decays."
+      "description": "Refinement of H-534: convert the gold cap-edge trade from a spot-decline call to a contract-premium fade. Require a high underlying-cap edge on GOLD, near-dated expiry, and tight spread; take the NO/SELL YES side and let premium decay."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-539: replace the absolute CBRS funding < -10 trigger with a relative 30-day funding extreme that is already turning up, avoiding stale or already-neutral 5.5% triggers."
+      "description": "Refinement of H-539: replace the bare absolute funding threshold with a regime-relative extreme and a turn. The original entered before the actual bottom; requiring the 7d percentile in the low tail and a positive 1-day change should only trigger after an overshoot begins reversing."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-537: use AAPL funding relative extreme plus an upward 24h turn instead of a raw sub -10 absolute level."
+      "description": "Refinement of H-537: same mechanical change as CBRS \u2014 use AAPL funding's low 7d percentile and a positive 1-day turn instead of a single `aapl_hl_funding_ann < -10` reading."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-535: same relative-extreme and turning mechanism for MU funding, avoiding the stale 5.5% or only mildly negative readings."
+      "description": "Refinement of H-535: use a z-score-based extreme and require a positive 1-day turn. The old `mu_hl_funding_ann < -10` fired too early and too frequently; this variant requires a genuine lower-tail reading already reversing."
     },
     {
-      "originFindingId": "FIND-0070",
-      "themeId": "THEME-0007",
-      "description": "Panel-derived NO edge, sharpest cut plus liquidity and tight-spread guard: sub-point sell-YES edge, mid-priced YES ask, near-dated, tight spread and liquid."
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-108: sharpen the HYPE confirmation from near-stable OI to actually expanding OI and tighten the BTC breakout proximity. The original OI filter `> -2` admitted flat/declining OI and produced no genuine confirmation."
     },
     {
-      "originFindingId": "FIND-0068",
-      "themeId": "THEME-0007",
-      "description": "Panel-derived NO edge, above-strike variant: require touch_direction >=1, mid-priced YES ask, near-dated and tight spread."
+      "originFindingId": "FIND-0055",
+      "themeId": "THEME-0001",
+      "description": "Shadow FIND sibling for the one-touch NO edge on BTC: moderate 3-8pt sell-YES edge plus tight spread. The family has strong in-sample BTC premium fade but existing variants often mix assets/expiry; this isolates BTC and a practical spread bound."
     }
   ],
   "negativeFindings": [
@@ -262,9 +262,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-09-01T07:10:58Z",
-    "opportunitiesGeneratedAt": "2026-09-01T07:13:20Z",
-    "themesGeneratedAt": "2026-09-01T07:11:06Z",
-    "adviceGeneratedAt": "2026-09-01T07:10:58.107Z"
+    "findingsExportGeneratedAt": "2026-09-02T07:12:00Z",
+    "opportunitiesGeneratedAt": "2026-09-02T07:14:21Z",
+    "themesGeneratedAt": "2026-09-02T07:12:09Z",
+    "adviceGeneratedAt": "2026-09-02T07:12:00.206Z"
   }
 }
