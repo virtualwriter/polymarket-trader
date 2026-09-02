@@ -2192,3 +2192,35 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 6/12; ne
 
 ---
 
+### 2026-09-02 18:28 UTC
+
+**Portfolio:** $103.39 total | Cash $103.39 | 0 open | P&L $6.6339 | 64% win rate (879 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 87.1 is 2.4 std devs from mean (61.10 ± 10.98)
+- [anomaly] btc_med_min = 67791 is 2.3 std devs from mean (53676.34 ± 6063.20)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.70 to 0.29. Rolling correlation: 24h=-0.19, 7d=-0.87, 30d=0.32. Current 24h corr is at 63th pct of last 30 daily 24h-rolling values (range -0.84 to 0.81).
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 992 (509 wins / 483 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=443 (153W/233L/57flat, 39.6% win-rate, sum $-0.1092, avg -0.02%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ Blocked: MACRO_MOMENTUM_UP BTC long via spot would have hit stop (-1.99%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+5.66%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+3.23%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+No open positions at 18:00 UTC; cash $103.39, realized P&L $6.63. Candidate entry count is 1, but new entries are outside the hourly close-review remit. No discretionary closes required.
+
+---
+

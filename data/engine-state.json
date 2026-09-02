@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-09-02T16:28:27.071Z",
+  "generatedAt": "2026-09-02T18:28:24.196Z",
   "dataFreshness": {
-    "valuationRows": 2723,
-    "latestValuationAt": "2026-09-02T16",
-    "macroRows": 2721,
+    "valuationRows": 2724,
+    "latestValuationAt": "2026-09-02T18",
+    "macroRows": 2722,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-02T16"
+    "latestInstrumentSnapshotAt": "2026-09-02T18"
   },
   "portfolio": {
     "cash": 103.3944,
@@ -178,9 +178,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 26,
-    "resolvedCount": 991,
-    "wouldHaveWon": 508,
+    "openCount": 25,
+    "resolvedCount": 992,
+    "wouldHaveWon": 509,
     "wouldHaveLost": 483,
     "bySignal": [
       {
@@ -249,24 +249,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 2.25,
-        "resolvedAt": "2026-08-31T18:28:25.082Z",
-        "marketQuality": {
-          "yesBid": 0.11,
-          "yesAsk": 0.12,
-          "yesSpread": 0.01,
-          "liquidity": 85393.87,
-          "flags": []
-        }
-      },
       {
         "signalType": "PM_EV_ABOVE_SPOT",
         "asset": "HYPE",
@@ -396,6 +378,26 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 0,
+        "resolvedAt": "2026-09-02T18:28:21.675Z",
+        "marketQuality": {
+          "yesBid": 0.45,
+          "yesAsk": 0.47,
+          "yesSpread": 0.02,
+          "liquidity": 7725.67,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -510,22 +512,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.8pt on ETH, spread 1.0c, liquidity 41468. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "GOLD",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $5,000 by end of December?",
-        "marketQuality": {
-          "yesBid": 0.45,
-          "yesAsk": 0.47,
-          "yesSpread": 0.02,
-          "liquidity": 7725.67,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 15.0pt after haircuts. CBOE gap 16.0pt, CME gap 16.0pt, source agreement both_positive, spread 2.0c, liquidity 7726. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
