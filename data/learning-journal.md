@@ -1753,3 +1753,35 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 1/12; ne
 
 ---
 
+### 2026-09-02 04:29 UTC
+
+**Portfolio:** $103.39 total | Cash $102.39 | 1 open | P&L $6.6293 | 64% win rate (878 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 88.02 is 2.5 std devs from mean (60.97 ± 10.85)
+- [anomaly] btc_med_min = 67195 is 2.3 std devs from mean (53609.96 ± 6001.41)
+- [anomaly] hype_med_max = 112.1 is 2.0 std devs from mean (81.79 ± 14.98)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 989 (506 wins / 483 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=441 (151W/233L/57flat, 39.3% win-rate, sum $-0.1981, avg -0.04%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+6.12%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+2.04%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+3.33%)
+- ❌ Blocked: MACRO_MOMENTUM_UP BTC long via spot would have hit stop (-1.99%)
+
+**LLM analysis:**
+Reviewed GOLD short T-1788294500159-vldz. Discretionary close is not yet allowed: open 8.0h vs 12h minimum. The original funding-extreme-long fade thesis has materially weakened: GOLD HL funding annualized round-tripped from 33.33% at entry to 5.48%, below the +15% entry threshold, while spot has moved favorably -0.65%. If funding stays normalized and spot remains cooperative, a thesis_invalidated close should be considered after the 12h min-hold bar; no action taken this hour.
+
+---
+
