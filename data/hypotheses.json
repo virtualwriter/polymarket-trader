@@ -20337,6 +20337,21 @@
           "entryPrice": 0.495,
           "side": "no"
         }
+      },
+      {
+        "date": "2026-09-02",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "[historical-backfill] Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 15/20 opened via H-532 after historical row satisfied variant conditions.",
+        "contractEntry": {
+          "marketId": "3866490",
+          "eventSlug": "what-price-will-xauusd-hit-in-september-2026",
+          "asset": "GOLD",
+          "direction": "below",
+          "strike": 4300,
+          "entryPrice": 0.0004999999999999449,
+          "side": "no"
+        }
       }
     ],
     "winRate": 0.6153846153846154,
@@ -21182,9 +21197,17 @@
         "actualMove": "Funding moved -28.6% → 5.5% (long reversion needs increase) (method=funding_normalize_up)",
         "magnitude": 34.06,
         "magnitudeUnit": "funding_pts"
+      },
+      {
+        "date": "2026-08-30",
+        "triggered": true,
+        "outcome": "win",
+        "actualMove": "[historical-backfill] Funding moved -317.1% → 5.5% (long reversion needs increase) (resolved 2026-09-01 from 2026-08-30; method=funding_normalize_up)",
+        "magnitude": 322.57,
+        "magnitudeUnit": "funding_pts"
       }
     ],
-    "winRate": 0.3333333333333333,
+    "winRate": 0.3684210526315789,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "MU < -10 mostly captures pinned +5.5% funding rows and lacks true weekend timing; the previous lower-tail refinement was rejected as too rare, so this variant should not be re-proposed in that form. | MU failures were dominated by flat funding readings around 5.5% and one rally from +29.1% to +3.4%; the condition did not isolate genuine negative funding stress or reversion. | MU < -10% has repeated 'funding moved 5.5% -> 5.5%' observations and then deterioration to -28.6%; the raw threshold captures noise rather than identifying true weekend reversion. | MU was the worst of the three funding families at 29% win. Many outcomes were stale 5.5%→5.5% readings, and a single negative funding print did not isolate an extreme stress/reversion setup.",
@@ -21279,9 +21302,17 @@
         "actualMove": "Funding moved -24.3% → 5.5% (long reversion needs increase) (method=funding_normalize_up)",
         "magnitude": 29.73,
         "magnitudeUnit": "funding_pts"
+      },
+      {
+        "date": "2026-08-30",
+        "triggered": true,
+        "outcome": "win",
+        "actualMove": "[historical-backfill] Funding moved -145.1% → 12.7% (long reversion needs increase) (resolved 2026-09-01 from 2026-08-30; method=funding_normalize_up)",
+        "magnitude": 157.79000000000002,
+        "magnitudeUnit": "funding_pts"
       }
     ],
-    "winRate": 0.45454545454545453,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Mined from clean shadows: {\"n\": 12, \"wins\": 11, \"winRate\": 0.9167, \"sumPnl\": 0.1593, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1779661761704-HOOD-66ul\", \"WF-1780158509117-HOOD-8pyf\", \"WF-1780180113914-HOOD-k344\", \"WF-1780223315920-HOOD-j2j0\", \"WF-1780248512606-HOOD-rasn\"]} | HOOD weekend funding reversion long shadow has only 25% win rate (1/4) vs aggregate signal's 74%. The asset may not benefit from the same funding dynamics, possibly due to low liquidity or different perp structure. Continue shadow testing but do not gate the main weekend funding promotion on this weak single-name result.",
@@ -21569,9 +21600,17 @@
         "actualMove": "Funding moved -16.2% → 5.5% (long reversion needs increase) (method=funding_normalize_up)",
         "magnitude": 21.64,
         "magnitudeUnit": "funding_pts"
+      },
+      {
+        "date": "2026-08-30",
+        "triggered": true,
+        "outcome": "win",
+        "actualMove": "[historical-backfill] Funding moved -103.2% → 10.2% (long reversion needs increase) (resolved 2026-09-01 from 2026-08-30; method=funding_normalize_up)",
+        "magnitude": 113.4,
+        "magnitudeUnit": "funding_pts"
       }
     ],
-    "winRate": 0.38461538461538464,
+    "winRate": 0.42857142857142855,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Mined from clean shadows: {\"n\": 9, \"wins\": 8, \"winRate\": 0.8889, \"sumPnl\": 0.1268, \"hasHeatmap\": false, \"sampleIds\": [\"WF-1780090108884-COIN-j1pm\", \"WF-1780115314549-COIN-g0n7\", \"WF-1780180113912-COIN-ctg9\", \"WF-1780205309859-COIN-hei0\", \"WF-1780212512519-COIN-62r1\"]} | COIN funding < -10% produced 3/9; failures include 5.5 → 5.5, 29.1 → 20.6, and 9.7 → 5.5. The condition frequently enters when funding has already normalized or is decaying from positive levels, so there is no funding stress to unwind.",
