@@ -98,6 +98,13 @@ export interface BuildNightlyResearchPromptInputs {
    * without this it resubmitted identical doomed refinements night after night.
    */
   priorRejections?: { ingestedAt?: string; lines?: string[] } | null;
+  /**
+   * Hourly shadow-learning digest (shadow-learning.json): the blocked-signal
+   * observations the hourly engine prints, plus weekend-clustered evidence for
+   * the weekend funding book. Without this the "filter blocks mostly winners"
+   * style insights only ever reached journalctl, never the model.
+   */
+  shadowLearning?: unknown;
 }
 
 function jsonOrUnavailable(value: unknown, indent: number): string {
@@ -303,7 +310,11 @@ ${strugglingLines}
 RECENTLY KILLED HYPOTHESES:
 ${killedLines}
 
-${priorRejectionSection}CURRENT LEARNABLE PARAMETERS:
+${priorRejectionSection}HOURLY SHADOW-LEARNING DIGEST (blocked-signal observations from the live engine):
+These notes compare resolved shadow trades (signals the engine saw but did not take) against their live counterparts. CAUTION on correlation: per-trade "would have won" counts overstate strategies whose losses arrive clustered. For the weekend funding book specifically, use the weekendFunding.live and weekendFunding.shadows blocks, where each weekend is ONE observation (cluster-summed P&L with a one-sided t-test) — only propose a weekendFundingEntryPct change when the weekend-clustered evidence supports it, not on raw per-trade win counts.
+${jsonOrUnavailable(inputs.shadowLearning, 1)}
+
+CURRENT LEARNABLE PARAMETERS:
 ${jsonOrUnavailable(inputs.learningParams, 2)}
 
 ${buildConditionCatalogPromptSection(inputs.valuationColumns ?? [])}
@@ -327,6 +338,7 @@ IMPORTANT RULES:
   - positiveMomentum24hPct: 0 to 10
   - llmTradeExpiryDays: 3 to 30
   - momentumLongExpiryDays: 3 to 45
+  - weekendFundingEntryPct: -0.75 to -0.25 (upper edge of the weekend HL funding entry band, annualized; e.g. -0.50 means enter only when funding <= -50%. Raising it toward -0.25 admits more trades. Move it at most 0.05 per night, and only on weekend-clustered evidence per the SHADOW-LEARNING DIGEST rule above.)
   - signalRisk.<signal>.targetPct: 0.5 to 15, or null for no upside take-profit cap
   - signalRisk.<signal>.stopPct: 0.5 to 10
 - You may update signalRisk when realized wins are too small, losses are too large, or shadow/blocked learning shows a better payoff shape.
@@ -454,6 +466,7 @@ const parameterBoundsSchemas = {
   positiveMomentum24hPct: z.number().min(0).max(10),
   llmTradeExpiryDays: z.number().int().min(3).max(30),
   momentumLongExpiryDays: z.number().int().min(3).max(45),
+  weekendFundingEntryPct: z.number().min(-0.75).max(-0.25),
 } as const;
 
 export interface NightlyAdviceParameterUpdates {
@@ -462,6 +475,7 @@ export interface NightlyAdviceParameterUpdates {
   positiveMomentum24hPct?: number;
   llmTradeExpiryDays?: number;
   momentumLongExpiryDays?: number;
+  weekendFundingEntryPct?: number;
   signalRisk?: Record<string, { targetPct?: number | null; stopPct?: number }>;
 }
 
@@ -799,6 +813,7 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
   const priorRejections = readJsonOrNull(join(opts.dataDir, "nightly-advice-rejections.json")) as
     | { ingestedAt?: string; lines?: string[] }
     | null;
+  const shadowLearning = readJsonOrNull(join(opts.dataDir, "shadow-learning.json"));
 
   const prompt = buildNightlyResearchPrompt({
     truthState,
@@ -811,6 +826,7 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
     retiredSetupIds: opts.retiredSetupIds ?? [],
     valuationColumns,
     priorRejections,
+    shadowLearning,
   });
   console.log(`[nightly-llm] prompt: ${prompt.length} chars (provider=${route.provider}, model=${route.model}, opportunities=${opportunities.length}).`);
 

@@ -87,7 +87,7 @@ import {
   finalizeSetupTruthRecord,
   setupIdForSignalType as setupIdForSignalTypeHelper,
 } from "./lib/trading/setup-family.js";
-import { sampleMoments } from "./lib/research/alpha-stats.js";
+import { oneSidedTPValue, sampleMoments } from "./lib/research/alpha-stats.js";
 import {
   autoPromotedSizeFraction,
   evaluateAutoPromotion,
@@ -699,6 +699,13 @@ interface LearningParams {
   positiveMomentum24hPct: number;
   llmTradeExpiryDays: number;
   momentumLongExpiryDays: number;
+  /**
+   * Upper edge of the weekend HL stock-perp funding entry band (annualized,
+   * e.g. -0.50 = only enter when funding <= -50%). Learnable within
+   * [-0.75, -0.25] so the nightly LLM can widen or tighten the band on
+   * weekend-clustered evidence; the floor stays hardcoded.
+   */
+  weekendFundingEntryPct: number;
   signalRisk: Record<string, SignalRiskParams>;
   updatedAt: string;
 }
@@ -1970,6 +1977,7 @@ function defaultLearningParams(): LearningParams {
     positiveMomentum24hPct: 1.5,
     llmTradeExpiryDays: 14,
     momentumLongExpiryDays: 21,
+    weekendFundingEntryPct: WEEKEND_HL_FUNDING_ENTRY_PCT,
     signalRisk: DEFAULT_SIGNAL_RISK,
     updatedAt: new Date().toISOString(),
   };
@@ -2012,6 +2020,9 @@ function loadLearningParams(): LearningParams {
     positiveMomentum24hPct: typeof raw.positiveMomentum24hPct === "number" ? raw.positiveMomentum24hPct : defaults.positiveMomentum24hPct,
     llmTradeExpiryDays: typeof raw.llmTradeExpiryDays === "number" ? raw.llmTradeExpiryDays : defaults.llmTradeExpiryDays,
     momentumLongExpiryDays: typeof raw.momentumLongExpiryDays === "number" ? raw.momentumLongExpiryDays : defaults.momentumLongExpiryDays,
+    weekendFundingEntryPct: typeof raw.weekendFundingEntryPct === "number"
+      ? Math.min(-0.25, Math.max(-0.75, raw.weekendFundingEntryPct))
+      : defaults.weekendFundingEntryPct,
     signalRisk: normalizeSignalRisk(raw.signalRisk),
     updatedAt: typeof raw.updatedAt === "string" ? raw.updatedAt : defaults.updatedAt,
   };
@@ -3754,6 +3765,7 @@ function recordBlockedSignalShadow(
     marketQuality,
     learningParamsSnapshot: {
       macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+      weekendFundingEntryPct: learningParams.weekendFundingEntryPct,
       contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
       positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
       llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
@@ -3820,6 +3832,7 @@ function recordIVDownsideLegShadow(
     marketQuality: polymarketMarketQuality(position, latestSnapshot),
     learningParamsSnapshot: {
       macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+      weekendFundingEntryPct: learningParams.weekendFundingEntryPct,
       contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
       positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
       llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
@@ -3892,6 +3905,7 @@ function recordPolymarketProxyShortShadow(
     marketQuality: polymarketMarketQuality(position, latestSnapshot),
     learningParamsSnapshot: {
       macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+      weekendFundingEntryPct: learningParams.weekendFundingEntryPct,
       contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
       positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
       llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
@@ -4159,6 +4173,7 @@ async function recordMonotonicArbShadows(
             },
             learningParamsSnapshot: {
               macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+              weekendFundingEntryPct: learningParams.weekendFundingEntryPct,
               contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
               positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
               llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
@@ -4354,6 +4369,7 @@ function recordOneTouchHighEdgeShadows(
       marketQuality: polymarketMarketQuality(position, latestSnapshot),
       learningParamsSnapshot: {
         macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+        weekendFundingEntryPct: learningParams.weekendFundingEntryPct,
         contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
         positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
         llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
@@ -4475,6 +4491,7 @@ function recordNoBiasAdjustedGapShadows(
       marketQuality: polymarketMarketQuality(position, latestSnapshot),
       learningParamsSnapshot: {
         macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+        weekendFundingEntryPct: learningParams.weekendFundingEntryPct,
         contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
         positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
         llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
@@ -4588,6 +4605,7 @@ function recordStaleLotteryTicketNoShadows(
       marketQuality: polymarketMarketQuality(position, latestSnapshot),
       learningParamsSnapshot: {
         macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+        weekendFundingEntryPct: learningParams.weekendFundingEntryPct,
         contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
         positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
         llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
@@ -4609,7 +4627,7 @@ function recordStaleLotteryTicketNoShadows(
   return recorded;
 }
 
-function weekendHyperliquidFundingCandidates(latestSnapshot: InstrumentSnapshotFile | null): Position[] {
+function weekendHyperliquidFundingCandidates(latestSnapshot: InstrumentSnapshotFile | null, entryPct: number): Position[] {
   // Entry gate (no Mon pre-open) — exits still use the full window through Mon 9:30 ET.
   if (!latestSnapshot || !isWeekendFundingEntryAllowed()) return [];
   const openedAt = new Date().toISOString();
@@ -4623,7 +4641,7 @@ function weekendHyperliquidFundingCandidates(latestSnapshot: InstrumentSnapshotF
     const fundingAnnualized = quote?.fundingAnnualized;
     if (!(typeof markPx === "number" && markPx > 0)) continue;
     if (!(typeof fundingAnnualized === "number"
-          && fundingAnnualized <= WEEKEND_HL_FUNDING_ENTRY_PCT
+          && fundingAnnualized <= entryPct
           && fundingAnnualized >= WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT)) continue;
 
     positions.push({
@@ -4640,7 +4658,7 @@ function weekendHyperliquidFundingCandidates(latestSnapshot: InstrumentSnapshotF
       leverage: WEEKEND_HL_FUNDING_LEVERAGE,
       signalType: WEEKEND_HL_FUNDING_LIVE_SIGNAL,
       hypothesisId: null,
-      thesis: `[WEEKEND HL FUNDING LIVE] ${asset} Builder DEX stock perp funding ${(fundingAnnualized * 100).toFixed(1)}% annualized in mid band [${(WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT * 100).toFixed(0)}%, ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}%] during US-equity-closed entry window (Fri 4:00pm ET → Sun; no Mon pre-open entries). Live tracked long at ${WEEKEND_HL_FUNDING_LEVERAGE}x; exit when margin P&L >= ${WEEKEND_HL_FUNDING_TARGET_PCT}%, funding >= ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}%, Mon 9:30am ET window close, or held ${WEEKEND_HL_FUNDING_MAX_HOLD_HOURS}h.`,
+      thesis: `[WEEKEND HL FUNDING LIVE] ${asset} Builder DEX stock perp funding ${(fundingAnnualized * 100).toFixed(1)}% annualized in mid band [${(WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT * 100).toFixed(0)}%, ${(entryPct * 100).toFixed(0)}%] during US-equity-closed entry window (Fri 4:00pm ET → Sun; no Mon pre-open entries). Live tracked long at ${WEEKEND_HL_FUNDING_LEVERAGE}x; exit when margin P&L >= ${WEEKEND_HL_FUNDING_TARGET_PCT}%, funding >= ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}%, Mon 9:30am ET window close, or held ${WEEKEND_HL_FUNDING_MAX_HOLD_HOURS}h.`,
       targetPct: WEEKEND_HL_FUNDING_TARGET_PCT,
       stopPct: 100,
       expiryDate: expiryDate.toISOString(),
@@ -4660,11 +4678,12 @@ function recordWeekendHyperliquidFundingLiveTrades(
   latestSnapshot: InstrumentSnapshotFile | null,
   portfolio: Portfolio,
   blockedSignals: BlockedSignalShadow[],
+  learningParams: LearningParams,
 ): number {
   if (!ENABLE_WEEKEND_HL_FUNDING_LIVE) return 0;
   let recorded = 0;
 
-  for (const position of weekendHyperliquidFundingCandidates(latestSnapshot)) {
+  for (const position of weekendHyperliquidFundingCandidates(latestSnapshot, learningParams.weekendFundingEntryPct)) {
     if (portfolio.positions.length >= MAX_OPEN_POSITIONS) break;
     if (portfolio.cash < TRADE_SIZE) break;
     if (portfolio.positions.some((p) =>
@@ -4748,7 +4767,7 @@ function recordWeekendHyperliquidFundingShadows(
   if (ENABLE_WEEKEND_HL_FUNDING_LIVE) return 0;
   let recorded = 0;
 
-  for (const position of weekendHyperliquidFundingCandidates(latestSnapshot)) {
+  for (const position of weekendHyperliquidFundingCandidates(latestSnapshot, learningParams.weekendFundingEntryPct)) {
     if (blockedSignals.some((shadow) =>
       shadow.status === "open" &&
       shadow.blockedReason === WEEKEND_HL_FUNDING_SHADOW_REASON &&
@@ -4770,6 +4789,7 @@ function recordWeekendHyperliquidFundingShadows(
       thesis: position.thesis,
       learningParamsSnapshot: {
         macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+        weekendFundingEntryPct: learningParams.weekendFundingEntryPct,
         contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
         positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
         llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
@@ -4782,6 +4802,40 @@ function recordWeekendHyperliquidFundingShadows(
   }
 
   return recorded;
+}
+
+/**
+ * Weekend-clustered evidence for the weekend HL funding strategy. Losses in
+ * this book arrive correlated — many 5x crypto-beta longs in the same Sunday
+ * risk-off window — so per-trade win rates flatter it badly. Treat each
+ * Fri-anchored weekend as ONE observation: sum P&L across the cluster and
+ * test the cluster means instead.
+ */
+function weekendClusteredEvidence(entries: Array<{ at: string; pnlPct: number }>): {
+  trades: number;
+  weekends: number;
+  weekendsPositive: number;
+  meanWeekendPnlPct: number;
+  /** One-sided t-test that mean weekend-cluster P&L exceeds zero. */
+  pPositive: number | null;
+} {
+  const clusters = new Map<string, number>();
+  for (const entry of entries) {
+    const ms = Date.parse(entry.at);
+    if (!Number.isFinite(ms) || !Number.isFinite(entry.pnlPct)) continue;
+    const daysSinceFriday = (new Date(ms).getUTCDay() + 2) % 7;
+    const friday = new Date(ms - daysSinceFriday * 86_400_000).toISOString().slice(0, 10);
+    clusters.set(friday, (clusters.get(friday) ?? 0) + entry.pnlPct);
+  }
+  const sums = [...clusters.values()];
+  const { n, mean, std } = sampleMoments(sums);
+  return {
+    trades: entries.length,
+    weekends: n,
+    weekendsPositive: sums.filter((s) => s > 0).length,
+    meanWeekendPnlPct: Number(mean.toFixed(2)),
+    pPositive: oneSidedTPValue(mean, std, n),
+  };
 }
 
 function relativeValueDteDays(row: RelativeValueObservation): number | null {
@@ -7589,6 +7643,7 @@ function recordUnpromotedLlmEntryShadows(
       marketQuality: polymarketMarketQuality(position, latestSnapshot),
       learningParamsSnapshot: {
         macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+        weekendFundingEntryPct: learningParams.weekendFundingEntryPct,
         contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
         positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
         llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
@@ -7670,6 +7725,7 @@ function recordObservationOnlySignalShadows(
       marketQuality: polymarketMarketQuality(position, latestSnapshot),
       learningParamsSnapshot: {
         macroMomentum24hThresholdPts: learningParams.macroMomentum24hThresholdPts,
+        weekendFundingEntryPct: learningParams.weekendFundingEntryPct,
         contrarianTrendMarginPct: learningParams.contrarianTrendMarginPct,
         positiveMomentum24hPct: learningParams.positiveMomentum24hPct,
         llmTradeExpiryDays: learningParams.llmTradeExpiryDays,
@@ -7779,6 +7835,7 @@ const llmParameterUpdatesSchema = z.object({
   positiveMomentum24hPct: z.number().min(0).max(10).optional(),
   llmTradeExpiryDays: z.number().int().min(3).max(30).optional(),
   momentumLongExpiryDays: z.number().int().min(3).max(45).optional(),
+  weekendFundingEntryPct: z.number().min(-0.75).max(-0.25).optional(),
   signalRisk: z.record(z.string(), llmSignalRiskUpdateSchema).optional(),
 }).optional();
 
@@ -8809,7 +8866,7 @@ function applyLearningParamUpdates(
   const next = { ...current };
   const notes: string[] = [];
   const candidates: Array<{
-    key: "macroMomentum24hThresholdPts" | "contrarianTrendMarginPct" | "positiveMomentum24hPct" | "llmTradeExpiryDays" | "momentumLongExpiryDays";
+    key: "macroMomentum24hThresholdPts" | "contrarianTrendMarginPct" | "positiveMomentum24hPct" | "llmTradeExpiryDays" | "momentumLongExpiryDays" | "weekendFundingEntryPct";
     min: number;
     max: number;
     digits: number;
@@ -8819,6 +8876,7 @@ function applyLearningParamUpdates(
     { key: "positiveMomentum24hPct", min: 0, max: 10, digits: 2 },
     { key: "llmTradeExpiryDays", min: 3, max: 30, digits: 0 },
     { key: "momentumLongExpiryDays", min: 3, max: 45, digits: 0 },
+    { key: "weekendFundingEntryPct", min: -0.75, max: -0.25, digits: 2 },
   ];
 
   for (const candidate of candidates) {
@@ -9070,19 +9128,47 @@ async function main() {
   if (newStaleLotteryTicketNoShadows > 0) {
     console.log(`\n  Opened ${newStaleLotteryTicketNoShadows} stale-lottery-ticket NO shadow trades.`);
   }
-  const newWeekendFundingLiveTrades = recordWeekendHyperliquidFundingLiveTrades(latestSnapshot, portfolio, blockedSignals);
+  const newWeekendFundingLiveTrades = recordWeekendHyperliquidFundingLiveTrades(latestSnapshot, portfolio, blockedSignals, learningParams);
   if (newWeekendFundingLiveTrades > 0) {
-    console.log(`\n  Opened ${newWeekendFundingLiveTrades} weekend HL stock funding LIVE trades (mid-band entry [${(WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT * 100).toFixed(0)}%, ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}%], ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}% funding exit, ${WEEKEND_HL_FUNDING_LEVERAGE}x tracked).`);
+    console.log(`\n  Opened ${newWeekendFundingLiveTrades} weekend HL stock funding LIVE trades (mid-band entry [${(WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT * 100).toFixed(0)}%, ${(learningParams.weekendFundingEntryPct * 100).toFixed(0)}%], ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}% funding exit, ${WEEKEND_HL_FUNDING_LEVERAGE}x tracked).`);
   }
   const newWeekendFundingShadows = recordWeekendHyperliquidFundingShadows(latestSnapshot, learningParams, blockedSignals);
   if (newWeekendFundingShadows > 0) {
-    console.log(`\n  Opened ${newWeekendFundingShadows} weekend HL stock funding shadow trades (mid-band entry [${(WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT * 100).toFixed(0)}%, ${(WEEKEND_HL_FUNDING_ENTRY_PCT * 100).toFixed(0)}%], ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}% exit, ${WEEKEND_HL_FUNDING_LEVERAGE}x).`);
+    console.log(`\n  Opened ${newWeekendFundingShadows} weekend HL stock funding shadow trades (mid-band entry [${(WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT * 100).toFixed(0)}%, ${(learningParams.weekendFundingEntryPct * 100).toFixed(0)}%], ${(WEEKEND_HL_FUNDING_EXIT_PCT * 100).toFixed(0)}% exit, ${WEEKEND_HL_FUNDING_LEVERAGE}x).`);
   }
-  let proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, [...readClosedTradeCsv(), ...closedTrades]);
+  const allClosedTradesForLearning = [...readClosedTradeCsv(), ...closedTrades];
+  let proxyComparisonObs = updateProxyShortShadowComparisons(blockedSignals, allClosedTradesForLearning);
   let blockedSummary = summarizeBlockedSignals(blockedSignals);
   let oneTouchBucketObs = oneTouchBucketObservations(blockedSignals);
   let blockedObs = [...buildBlockedSignalObservations(blockedSummary, BLOCKED_SIGNAL_OBSERVATION_CONFIG), ...proxyComparisonObs, ...oneTouchBucketObs];
   for (const note of blockedObs) console.log(`  Shadow learning: ${note}`);
+
+  // Persist the hourly shadow-learning digest for the nightly LLM. Before
+  // this, these notes only reached the hourly console log — a message to the
+  // operator, not to the system — so insights like "the weekend-funding
+  // filter blocks mostly winners" could never be acted on automatically.
+  if (!MUTATION_DISABLED) {
+    const weekendLive = allClosedTradesForLearning
+      .filter((trade) => trade.signalType === WEEKEND_HL_FUNDING_LIVE_SIGNAL)
+      .map((trade) => ({ at: trade.openedAt, pnlPct: trade.pnlPct }));
+    const weekendShadows = blockedSignals
+      .filter((shadow) => shadow.blockedReason === WEEKEND_HL_FUNDING_SHADOW_REASON
+        && shadow.status === "resolved" && !shadow.learningExcluded && shadow.hypotheticalResult)
+      .map((shadow) => ({
+        at: shadow.position?.openedAt ?? shadow.blockedAt ?? "",
+        pnlPct: shadow.hypotheticalResult?.pnlPct ?? Number.NaN,
+      }));
+    writeJson("shadow-learning.json", {
+      generatedAt: new Date().toISOString(),
+      notes: blockedObs,
+      weekendFunding: {
+        entryPct: learningParams.weekendFundingEntryPct,
+        entryFloorPct: WEEKEND_HL_FUNDING_ENTRY_FLOOR_PCT,
+        live: weekendClusteredEvidence(weekendLive),
+        shadows: weekendClusteredEvidence(weekendShadows),
+      },
+    });
+  }
 
   // Step 2: Update signal weights
   let weightObs = updateWeights(weights, closedTrades);

@@ -104,6 +104,20 @@ describe("buildNightlyResearchPrompt", () => {
     expect(prompt).not.toContain("PREVIOUS RUN'S INGEST REJECTIONS");
   });
 
+  it("shows the hourly shadow-learning digest with the weekend-clustering caution", () => {
+    const prompt = buildNightlyResearchPrompt({
+      ...emptyInputs,
+      shadowLearning: {
+        notes: ["WEEKEND_HL_FUNDING_REVERSION_LONG: trend filter may be too strict (188/253 blocked would have won)"],
+        weekendFunding: { entryPct: -0.5, live: { weekends: 14, meanWeekendPnlPct: -0.4 } },
+      },
+    });
+    expect(prompt).toContain("HOURLY SHADOW-LEARNING DIGEST");
+    expect(prompt).toContain("188/253 blocked would have won");
+    expect(prompt).toContain("each weekend is ONE observation");
+    expect(prompt).toContain("weekendFundingEntryPct: -0.75 to -0.25");
+  });
+
   it("marks the valuation column list unavailable when columns are missing", () => {
     const prompt = buildNightlyResearchPrompt(emptyInputs);
     expect(prompt).toContain("valuation columns unavailable this run");
