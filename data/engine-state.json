@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-09-02T08:28:52.917Z",
+  "generatedAt": "2026-09-02T09:28:21.269Z",
   "dataFreshness": {
-    "valuationRows": 2715,
-    "latestValuationAt": "2026-09-02T08",
-    "macroRows": 2713,
+    "valuationRows": 2716,
+    "latestValuationAt": "2026-09-02T09",
+    "macroRows": 2714,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-02T08"
+    "latestInstrumentSnapshotAt": "2026-09-02T09"
   },
   "portfolio": {
     "cash": 102.3898,
@@ -13,7 +13,7 @@
     "realizedPnl": 6.6293,
     "totalTrades": 878,
     "winRatePct": 64,
-    "unrealizedPnl": 0.0016
+    "unrealizedPnl": 0.0063
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 0.16,
-      "currentPrice": 4326,
-      "underlyingPrice": 4326,
+      "pnlPct": 0.63,
+      "currentPrice": 4306,
+      "underlyingPrice": 4306,
       "targetPct": 5,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -197,8 +197,8 @@
   ],
   "blockedSummary": {
     "openCount": 26,
-    "resolvedCount": 990,
-    "wouldHaveWon": 507,
+    "resolvedCount": 991,
+    "wouldHaveWon": 508,
     "wouldHaveLost": 483,
     "bySignal": [
       {
@@ -267,26 +267,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "loss",
-        "closeReason": "thesis_compressed_loss",
-        "pnlPct": -2.5,
-        "resolvedAt": "2026-08-31T02:28:21.653Z",
-        "marketQuality": {
-          "yesBid": 0.6,
-          "yesAsk": 0.61,
-          "yesSpread": 0.01,
-          "liquidity": 19289.78,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -414,9 +394,45 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 3.23,
+        "resolvedAt": "2026-09-02T09:28:20.451Z",
+        "marketQuality": {
+          "yesBid": 0.38,
+          "yesAsk": 0.39,
+          "yesSpread": 0.01,
+          "liquidity": 23455.75,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $6,500 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.017,
+          "yesAsk": 0.03,
+          "yesSpread": 0.013,
+          "liquidity": 49863.46,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.4pt on ETH, spread 1.3c, liquidity 49863. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
+      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
@@ -512,22 +528,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.8pt on ETH, spread 1.0c, liquidity 41468. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-wti-hit-in-september-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $100 in September?",
-        "marketQuality": {
-          "yesBid": 0.38,
-          "yesAsk": 0.39,
-          "yesSpread": 0.01,
-          "liquidity": 23455.75,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 5.0pt on OIL, spread 1.0c, liquidity 23456. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       },
       {
         "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
