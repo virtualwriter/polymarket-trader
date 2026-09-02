@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-09-02T19:28:21.318Z",
+  "generatedAt": "2026-09-02T20:28:19.174Z",
   "dataFreshness": {
-    "valuationRows": 2725,
-    "latestValuationAt": "2026-09-02T19",
-    "macroRows": 2723,
+    "valuationRows": 2726,
+    "latestValuationAt": "2026-09-02T20",
+    "macroRows": 2724,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-02T19"
+    "latestInstrumentSnapshotAt": "2026-09-02T20"
   },
   "portfolio": {
     "cash": 103.3944,
@@ -178,7 +178,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 25,
+    "openCount": 28,
     "resolvedCount": 992,
     "wouldHaveWon": 509,
     "wouldHaveLost": 483,
@@ -403,38 +403,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $6,500 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.017,
-          "yesAsk": 0.03,
-          "yesSpread": 0.013,
-          "liquidity": 49863.46,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.4pt on ETH, spread 1.3c, liquidity 49863. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $5,000 by end of December?",
-        "marketQuality": {
-          "yesBid": 0.62,
-          "yesAsk": 0.63,
-          "yesSpread": 0.01,
-          "liquidity": 20268.36,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.4pt on GOLD, spread 1.0c, liquidity 20268. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $6,000 by end of December?",
@@ -512,6 +480,54 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.8pt on ETH, spread 1.0c, liquidity 41468. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-wti-hit-in-september-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $95 in September?",
+        "marketQuality": {
+          "yesBid": 0.65,
+          "yesAsk": 0.67,
+          "yesSpread": 0.02,
+          "liquidity": 19998.41,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 8.1pt on OIL, spread 2.0c, liquidity 19998. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-wti-hit-in-september-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $105 in September?",
+        "marketQuality": {
+          "yesBid": 0.159,
+          "yesAsk": 0.169,
+          "yesSpread": 0.01,
+          "liquidity": 26781.42,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.8pt on OIL, spread 1.0c, liquidity 26781. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-wti-hit-in-september-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $110 in September?",
+        "marketQuality": {
+          "yesBid": 0.08,
+          "yesAsk": 0.1,
+          "yesSpread": 0.02,
+          "liquidity": 32133.23,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.1pt on OIL, spread 2.0c, liquidity 32133. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
