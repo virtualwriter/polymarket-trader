@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-09-03T19:28:29.056Z",
+  "generatedAt": "2026-09-03T20:28:23.396Z",
   "dataFreshness": {
-    "valuationRows": 2747,
-    "latestValuationAt": "2026-09-03T19",
-    "macroRows": 2745,
+    "valuationRows": 2748,
+    "latestValuationAt": "2026-09-03T20",
+    "macroRows": 2746,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-03T19"
+    "latestInstrumentSnapshotAt": "2026-09-03T20"
   },
   "portfolio": {
-    "cash": 102.3944,
-    "openPositions": 1,
+    "cash": 101.3944,
+    "openPositions": 2,
     "realizedPnl": 6.6339,
     "totalTrades": 879,
     "winRatePct": 64.1,
-    "unrealizedPnl": -0.0088
+    "unrealizedPnl": -0.0067
   },
   "openPositions": [
     {
@@ -22,15 +22,32 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.88,
-      "currentPrice": 91.32,
-      "underlyingPrice": 91.32,
+      "pnlPct": -0.61,
+      "currentPrice": 91.57,
+      "underlyingPrice": 91.57,
       "targetPct": 4,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "oil_wti_spot",
         "oil_cl_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1788463729849-eri0",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": -0.07,
+      "currentPrice": 4471,
+      "underlyingPrice": 4471,
+      "targetPct": 3,
+      "stopPct": 1.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_gld_pc_ratio"
       ]
     }
   ],

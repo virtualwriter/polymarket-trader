@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-03T19:28:29.221Z",
+  "generatedAt": "2026-09-03T20:28:23.538Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "GOLD",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.6637500000000002,
-      "confidence": 0.3375455405384366,
-      "thesis": "GOLD P/C ratio 1.73 — heavy put buying → contrarian long.",
+      "strength": 0.49875,
+      "confidence": 0.253635914641876,
+      "thesis": "GOLD P/C ratio 1.60 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4474,
+      "entryPrice": 4471,
       "targetPct": 6,
       "stopPct": 1.5,
       "expiryDays": 21
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4474,
+      "entryPrice": 4471,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,43 +56,45 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": 1,
+        "totalGross": 2,
+        "totalNet": 2,
         "byAsset": {
-          "OIL": 1
+          "OIL": 1,
+          "GOLD": 1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 1
+          "PC_RATIO_EXTREME_HIGH": 2
         },
         "byVenue": {
-          "spot": 1
+          "spot": 2
         },
         "byCluster": {
-          "commodity": 1,
+          "commodity": 2,
           "oil_delta": 1,
-          "options_sentiment": 1,
-          "spot_venue": 1
+          "options_sentiment": 2,
+          "spot_venue": 2,
+          "gold_delta": 1
         }
       },
       "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": 1,
+        "totalGross": 2,
+        "totalNet": 2,
         "byAsset": {
           "OIL": 1,
-          "GOLD": 0
+          "GOLD": 1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 1
+          "PC_RATIO_EXTREME_HIGH": 2
         },
         "byVenue": {
-          "spot": 1
+          "spot": 2
         },
         "byCluster": {
-          "commodity": 1,
+          "commodity": 2,
           "oil_delta": 1,
-          "options_sentiment": 1,
-          "spot_venue": 1,
-          "gold_delta": 0
+          "options_sentiment": 2,
+          "spot_venue": 2,
+          "gold_delta": 1
         }
       },
       "warnings": []
@@ -129,12 +131,31 @@
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 5,
-      "hoursToExpiry": 499,
+      "hoursOpen": 6,
+      "hoursToExpiry": 498,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0099,
+      "elapsedHoldPct": 0.0119,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 6.0h, requires at least 12h."
+    },
+    {
+      "positionId": "T-1788463729849-eri0",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_gld_pc_ratio"
+      ],
+      "hoursOpen": 0.99,
+      "hoursToExpiry": 503.01,
+      "plannedHoldHours": 504,
+      "elapsedHoldPct": 0.002,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     }
   ]
 }
