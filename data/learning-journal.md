@@ -2914,3 +2914,36 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-09-03 17:28 UTC
+
+**Portfolio:** $103.39 total | Cash $102.39 | 1 open | P&L $6.6339 | 64% win rate (879 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_med_min = 74950 is 3.4 std devs from mean (53790.76 ± 6174.79)
+- [anomaly] hype_pm_ev = 86.95 is 2.3 std devs from mean (61.30 ± 11.16)
+- [anomaly] btc_pm_iv = 23.8 is -2.3 std devs from mean (38.92 ± 6.62)
+- [anomaly] hype_hl_oi = 1956431823 is 2.0 std devs from mean (1327414309.54 ± 309191282.05)
+- [anomaly] hype_spot = 83.95 is 2.0 std devs from mean (60.47 ± 11.61)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 999 (511 wins / 488 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-2.94%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.72%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+31.58%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+
+**LLM analysis:**
+Reviewed open OIL long (T-1788445719770-2kej). Discretionary close not eligible: open only 3.0h vs 12h minimum. The signal P/C ratio has cooled from 2.141 at entry to 1.305, while WTI is slightly lower; this is worth monitoring for thesis invalidation after the min hold if P/C continues normalizing. No mechanical exits or hard risk breaches present.
+
+---
+
