@@ -2812,3 +2812,40 @@ Close review found no open positions and no eligible discretionary closes. Marke
 
 ---
 
+### 2026-09-03 14:28 UTC
+
+**Portfolio:** $103.39 total | Cash $102.39 | 1 open | P&L $6.6339 | 64% win rate (879 trades)
+
+**Opened 1 positions:**
+- OIL long @ $92.13 via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_cl_pc_ratio = 2.141 is 2.7 std devs from mean since 2026-04-28 (0.94 ± 0.44)
+- [anomaly] amzn_pc_ratio = 0.226 is -2.3 std devs from mean (0.46 ± 0.10)
+- [anomaly] hype_pm_ev = 86.36 is 2.3 std devs from mean (61.27 ± 11.14)
+- [anomaly] btc_med_min = 66528 is 2.1 std devs from mean (53771.16 ± 6147.79)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.70 to 0.29. Rolling correlation: 24h=0.54, 7d=-0.77, 30d=0.34. Current 24h corr is at 93th pct of last 30 daily 24h-rolling values (range -0.89 to 0.81).
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 997 (510 wins / 487 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=448 (154W/237L/57flat, 39.4% win-rate, sum $-0.1596, avg -0.04%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.07%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-2.17%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-2.94%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.72%)
+
+**LLM analysis:**
+No open positions to review and the discretionary close surface is empty, so no close actions taken. BTC's sharp rally alongside a drop in BTC ibit put/call ratio to 0.286 is notable context but not actionable here. Oil funding remains very negative near -52% with CL put/call elevated, but oil signals are currently disabled or shadowed; leave any hypothesis work to the nightly research run.
+
+---
+
