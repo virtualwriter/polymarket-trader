@@ -2583,3 +2583,40 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; ne
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-09-03T07:10:55.823Z, model=deepseek-v4-pro)
+- Hypotheses added: 0 (rejected 5); reviews applied: 6; invalidated assumptions learned: 3; param updates: none.
+- Strategy review: What is working: the Polymarket YES-overpricing edge continues to show up where it is measured correctly as contract premium decay — manual IV-touch rich NO (9/10 shadows, +5.86%/trade), XAU tail NO (8/11 shadows), weekend HL funding shadow book (188/253, +0.99%/trade), and live one-touch high-edge NO (4/4, +4.49%/trade). What is failing: the system is still burning tests on contract signals written as spot-direction bets, especially gold one-touch heatmap (35% win), broad one-touch NO shadows (47% win, negative net P&L), single-threshold funding reversion variants (37-48% win across MU/COIN/A
+- Nightly journal: Tonight focused on diagnosing the failing shadow-mined families. The recurring failure mode is category error: contract-premium signals are being tested as spot-direction bets, and static funding thresholds are being treated as timing triggers. Refined the weekend funding clones toward weekend + lower-tail + turn-higher conditions, and re-authored gold one-touch cap-edge as a neutral contract-premium fade. No parameter changes were made: weekendFundingEntryPct stays at -0.50 because the live weekend-clustered evidence is not significant, and the shadow weekend block only has 3 weekends, too fe
+### 2026-09-03 07:28 UTC
+
+**Portfolio:** $103.39 total | Cash $103.39 | 0 open | P&L $6.6339 | 64% win rate (879 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 86.14 is 2.3 std devs from mean (61.21 ± 11.08)
+- [anomaly] btc_med_min = 67024 is 2.2 std devs from mean (53737.20 ± 6118.89)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.70 to 0.29. Rolling correlation: 24h=0.29, 7d=-0.83, 30d=0.32. Current 24h corr is at 83th pct of last 30 daily 24h-rolling values (range -0.93 to 0.65).
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 997 (510 wins / 487 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=448 (154W/237L/57flat, 39.4% win-rate, sum $-0.1596, avg -0.04%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.07%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-2.17%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-2.94%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.72%)
+
+**LLM analysis:**
+No open positions were available for discretionary close review, and the allowed action surface is empty. Recent ONE_TOUCH_HIGH_EDGE_NO shadow warnings and the latest ETH/OIL losses are noted as a quality/edge-decay concern for future monitoring, but no close action is appropriate this run.
+
+---
+
