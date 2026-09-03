@@ -2389,3 +2389,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 8/12; ne
 
 ---
 
+### 2026-09-03 00:28 UTC
+
+**Portfolio:** $103.39 total | Cash $103.39 | 0 open | P&L $6.6339 | 64% win rate (879 trades)
+
+**Hypothesis lifecycle:**
+- 💀 Setup family btc_listed_iv_momentum_confirmation KILLED (25% over 20 tests across 3 variants): BTC listed-IV momentum confirmation
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 86.8 is 2.3 std devs from mean (61.15 ± 11.03)
+- [anomaly] btc_med_min = 67766 is 2.3 std devs from mean (53707.24 ± 6092.15)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.70 to 0.29. Rolling correlation: 24h=0.07, 7d=-0.86, 30d=0.32. Current 24h corr is at 67th pct of last 30 daily 24h-rolling values (range -0.93 to 0.70).
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 995 (510 wins / 485 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- one-touch abs_edge_bin="abs_edge<15" n=446 (154W/235L/57flat, 39.6% win-rate, sum $-0.1130, avg -0.03%) — calibration weak; consider excluding this slice from the live opening gate or tightening edge requirement.
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have closed with thesis validated profitably (+2.86%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-1.07%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-2.17%)
+
+**LLM analysis:**
+No open positions to review this cycle. Shadow one-touch NO flow remains visible in the open quality warnings, but none are live portfolio positions. Recent WTI one-touch NO exits were mixed, with a few thesis-compressed losses after earlier wins. No close actions required.
+
+---
+

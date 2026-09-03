@@ -805,7 +805,7 @@
       }
     ],
     "winRate": 0.2857142857142857,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "PARTIALLY VALIDATED - BTC +2.4% move occurred but IV stayed flat at 49.1%. Momentum confirmed by OI expansion instead | Split 2026-05-26 by operator from BTC PM-IV compression family into btc_listed_iv_momentum_confirmation; adjacent listed-IV/momentum/P-C setup must earn its own promotion. | No BTC listed-IV momentum signal triggered; BTC spot is not near a recent 7d high and the options term spread is inverted, contrary to the breakout-confirmation setup. | BTC listed-IV momentum confirmation variant (btc_spot_pct_vs_24h_sma>0, near 7d high, spot up >0.75% and IV up) returned 43% win. Losses occurred when the spot gain was modest and the IV uptick reflected hedging rather than momentum; no funding context was used, so the signal struggled in range-bound conditions.",
     "source": "llm",
@@ -7188,12 +7188,14 @@
       {
         "date": "2026-08-27",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup btc_listed_iv_momentum_confirmation shadow test 20/20 opened via H-170 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "BTC moved -2.29% (78834 → 77026) [short needs ≤ -2%] (method=spot_directional_short)",
+        "magnitude": 2.293426694066012,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0.16666666666666666,
-    "status": "active",
+    "winRate": 0.2857142857142857,
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "BTC listed-IV momentum confirmation is 4/18 (22%) and the realized outcomes show the IV signal confirmed volatility or already-priced momentum but did not produce reliable further spot gains in the tested direction. | The listed-IV momentum long family is at 22% and the test outputs show direction whipsaw—some variants were graded as short and lost while BTC rallied over 20%. The persistent signal is volatility expansion, not bullish direction. | Long call underperformed at 21% family win. Tests show entry after spot is already above the short-term SMA near the 7d high and IV has risen, which is often the exhaustion zone. The test record also contains directionally opposite short losses during the Aug 18 BTC rally, adding noise. | btc_listed_iv_momentum_confirmation has 4/19 scorable wins (21%). Spot above 24h SMA plus near 7d high and rising 30d IV is a coincident rally signature, not a continuation signal; tests repeatedly fail the +2% exam and some variants appear to have been enforced in the wrong direction.",
     "source": "llm",
@@ -9170,7 +9172,7 @@
       }
     ],
     "winRate": 0.16666666666666666,
-    "status": "active",
+    "status": "killed",
     "promotedToSignal": false,
     "postMortem": "Setup family inconclusive after 29 completed tests: 62% win rate. | Split 2026-05-26 by operator from BTC PM-IV compression family into btc_listed_iv_momentum_confirmation; adjacent listed-IV/momentum/P-C setup must earn its own promotion. | Refined by H-640 (2026-08-12): BTC spot momentum without IV confirmation. Remove the rising options‑IV conditio",
     "source": "llm",
@@ -20326,8 +20328,8 @@
       {
         "date": "2026-09-01",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 12/20 opened via H-532 after historical row satisfied variant conditions.",
+        "outcome": "win",
+        "actualMove": "NO on GOLD above 5000 0.495 → 0.560 (+13.1% on the contract) (method=pm_contract_pnl)",
         "contractEntry": {
           "marketId": "3224927",
           "eventSlug": "what-will-gold-gc-hit-by-end-of-december",
@@ -20336,7 +20338,9 @@
           "strike": 5000,
           "entryPrice": 0.495,
           "side": "no"
-        }
+        },
+        "magnitude": 13.131313131313144,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-09-02",
@@ -20384,7 +20388,7 @@
         }
       }
     ],
-    "winRate": 0.6153846153846154,
+    "winRate": 0.6428571428571429,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "The no-bias adjusted gap gold short-rich-tail variant went 0/17, with GOLD moving essentially flat to higher after the gap condition. The no-bias gap stayed pinned while spot trended against the short. | 0/19 scorable tests. The rich tail no-bias gap threshold >= 12.3 also failed as gold rallied through the fade window, including 4380 to 4510 and 4519 to 4623. The gap is trend strength, not a mean-reversion sell signal. | H-532 failed every scorable test. Gold spot was flat or rose after the rich tail NO gap, so the no-bias adjusted gap did not predict bearish continuation. | Discarded 20 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer.",
@@ -23051,8 +23055,8 @@
       {
         "date": "2026-08-27",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup find_0018 shadow test 5/20 opened via H-551 after current row satisfied variant conditions.",
+        "outcome": "loss",
+        "actualMove": "NO on OIL above 85 0.465 → 0.000 resolved terminal (last YES 1.00) (-100.0% on the contract) (method=pm_contract_terminal)",
         "contractEntry": {
           "marketId": "3903827",
           "eventSlug": "what-price-will-wti-hit-in-august-2026",
@@ -23061,7 +23065,9 @@
           "strike": 85,
           "entryPrice": 0.46499999999999997,
           "side": "no"
-        }
+        },
+        "magnitude": -100,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-08-28",
@@ -23109,7 +23115,7 @@
         }
       }
     ],
-    "winRate": 1,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "The >2pt sell-YES edge on OIL above-strike contracts repeatedly lost in rising tape; OIL spot rose 2.8–10.0%, pushing YES prices up rather than decaying. | Discarded 19 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer. | OIL one-touch NO heatmap cluster is the correct contract-native framing: 35 tests at 100% win in active hypotheses. Continue treating it as a gated OIL NO premium fade rather than a spot-decline call. | H-551's OIL one-touch NO edge on the heatmap cluster is 100% over 33 scorable tests. This supports keeping the family alive when stated as contract P&L, not spot decline.",
@@ -23923,8 +23929,10 @@
       {
         "date": "2026-08-20",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup find_0021 shadow test 4/20 opened via H-562 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: no matching contract quote at trigger (method=contract_entry_unavailable)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_entry_unavailable"
       }
     ],
     "winRate": 0,
@@ -31197,8 +31205,8 @@
       {
         "date": "2026-08-31",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "outcome": "win",
+        "actualMove": "NO on BTC above 82500 0.983 → 1.000 resolved terminal (last YES 0.00) (+1.7% on the contract) (method=pm_contract_terminal)",
         "contractEntry": {
           "marketId": "3257336",
           "eventSlug": "what-price-will-bitcoin-hit-in-august-2026",
@@ -31207,10 +31215,12 @@
           "strike": 82500,
           "entryPrice": 0.983,
           "side": "no"
-        }
+        },
+        "magnitude": 1.729399796541202,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
