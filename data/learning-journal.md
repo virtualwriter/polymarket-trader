@@ -2947,3 +2947,39 @@ Reviewed open OIL long (T-1788445719770-2kej). Discretionary close not eligible:
 
 ---
 
+### 2026-09-03 19:28 UTC
+
+**Portfolio:** $103.39 total | Cash $101.39 | 2 open | P&L $6.6339 | 64% win rate (879 trades)
+
+**Opened 1 positions:**
+- GOLD long @ $4474 via spot/spot [GOLD spot] (PC_RATIO_EXTREME_HIGH)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_med_min = 74902 is 3.4 std devs from mean (53798.46 ± 6186.81)
+- [anomaly] gold_gld_pc_ratio = 1.731 is 2.4 std devs from mean (0.72 ± 0.42)
+- [anomaly] hype_pm_ev = 87.16 is 2.3 std devs from mean (61.31 ± 11.17)
+- [anomaly] btc_pm_iv = 23.8 is -2.3 std devs from mean (38.91 ± 6.62)
+- [anomaly] hype_hl_oi = 1981184011 is 2.1 std devs from mean (1327652650.66 ± 309386748.61)
+
+**Blocked signal learning:**
+- Open blocked shadows: 24
+- Resolved blocked shadows: 1001 (512 wins / 489 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+31.58%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.21%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.38%)
+
+**LLM analysis:**
+Reviewed the open OIL long T-1788445719770-2kej. No discretionary close action is allowed because the position is only 5.0h old versus the 12h minimum hold. That said, the PC_RATIO_EXTREME_HIGH evidence has already normalized sharply: oil_cl_pc_ratio fell from 2.141 at entry to 0.904, which would likely qualify as thesis_invalidated once the position becomes eligible. Mechanical stop/target rules remain in force; will re-evaluate after the minimum hold.
+
+---
+
