@@ -20351,8 +20351,8 @@
       {
         "date": "2026-09-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 15/20 opened via H-532 after historical row satisfied variant conditions.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: contract 3866490 has no exit quote at the horizon (method=contract_exit_unavailable)",
         "contractEntry": {
           "marketId": "3866490",
           "eventSlug": "what-price-will-xauusd-hit-in-september-2026",
@@ -20361,13 +20361,15 @@
           "strike": 4300,
           "entryPrice": 0.0004999999999999449,
           "side": "no"
-        }
+        },
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_exit_unavailable"
       },
       {
         "date": "2026-09-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 16/20 opened via H-532 after current row satisfied variant conditions.",
+        "outcome": "loss",
+        "actualMove": "NO on GOLD above 6000 0.885 → 0.885 (+0.0% on the contract) (method=pm_contract_pnl)",
         "contractEntry": {
           "marketId": "1294368",
           "eventSlug": "what-will-gold-gc-hit-by-end-of-december",
@@ -20376,13 +20378,15 @@
           "strike": 6000,
           "entryPrice": 0.885,
           "side": "no"
-        }
+        },
+        "magnitude": 0,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-09-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 17/20 opened via H-532 after current row satisfied variant conditions.",
+        "outcome": "win",
+        "actualMove": "NO on GOLD above 7000 0.945 → 0.955 (+1.1% on the contract) (method=pm_contract_pnl)",
         "contractEntry": {
           "marketId": "1294367",
           "eventSlug": "what-will-gold-gc-hit-by-end-of-december",
@@ -20391,7 +20395,9 @@
           "strike": 7000,
           "entryPrice": 0.945,
           "side": "no"
-        }
+        },
+        "magnitude": 1.0582010582010593,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-09-03",
@@ -20407,9 +20413,24 @@
           "entryPrice": 0.55,
           "side": "no"
         }
+      },
+      {
+        "date": "2026-09-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 18/20 opened via H-532 after current row satisfied variant conditions.",
+        "contractEntry": {
+          "marketId": "1294366",
+          "eventSlug": "what-will-gold-gc-hit-by-end-of-december",
+          "asset": "GOLD",
+          "direction": "above",
+          "strike": 8000,
+          "entryPrice": 0.964,
+          "side": "no"
+        }
       }
     ],
-    "winRate": 0.6428571428571429,
+    "winRate": 0.625,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "The no-bias adjusted gap gold short-rich-tail variant went 0/17, with GOLD moving essentially flat to higher after the gap condition. The no-bias gap stayed pinned while spot trended against the short. | 0/19 scorable tests. The rich tail no-bias gap threshold >= 12.3 also failed as gold rallied through the fade window, including 4380 to 4510 and 4519 to 4623. The gap is trend strength, not a mean-reversion sell signal. | H-532 failed every scorable test. Gold spot was flat or rose after the rich tail NO gap, so the no-bias adjusted gap did not predict bearish continuation. | Discarded 20 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer.",
@@ -21546,11 +21567,13 @@
       {
         "date": "2026-09-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long shadow test 24/20 opened via H-537 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "Funding moved -3.2% → -0.3% (long reversion needs increase) (method=funding_normalize_up)",
+        "magnitude": 2.97,
+        "magnitudeUnit": "funding_pts"
       }
     ],
-    "winRate": 0.4782608695652174,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "AAPL < -10% is only 50% and its losses are dominated by flat or positive funding readings that do not normalize; the simple threshold is not a sufficient tail marker. | AAPL < -10 behaved similarly: many triggers occurred around 5.5% or neutral rates, and wins were mostly small normalization events rather than >2% spot moves. | H-537 shows 11/23 scorable wins (48%). The single-threshold `aapl_hl_funding_ann < -10` entry produces losses when funding is already near neutral (5.5%) and gives back gains; it lacks a true extreme or turn filter. | AAPL funding reversion is 11/23 with many losses showing funding stuck at 5.5% or drifting lower, not a sharp normalization. The static `aapl_hl_funding_ann < -10` condition does not isolate genuine funding capitulation or the turning point.",
@@ -23099,8 +23122,8 @@
       {
         "date": "2026-08-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup find_0018 shadow test 5/20 opened via H-551 after current row satisfied variant conditions.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: contract 3096413 has no exit quote at the horizon (vanished mid-range at YES 0.04) (method=contract_exit_unavailable)",
         "contractEntry": {
           "marketId": "3096413",
           "eventSlug": "what-price-will-wti-hit-in-august-2026",
@@ -23109,7 +23132,9 @@
           "strike": 90,
           "entryPrice": 0.9410000000000001,
           "side": "no"
-        }
+        },
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_exit_unavailable"
       },
       {
         "date": "2026-08-31",
@@ -24805,8 +24830,8 @@
       {
         "date": "2026-08-25",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup find_0022 shadow test 6/20 opened via H-579 after current row satisfied variant conditions.",
+        "outcome": "win",
+        "actualMove": "NO on OIL above 150 0.998 → 1.000 resolved terminal (last YES 0.00) (+0.3% on the contract) (method=pm_contract_terminal)",
         "contractEntry": {
           "marketId": "3096407",
           "eventSlug": "what-price-will-wti-hit-in-august-2026",
@@ -24815,13 +24840,15 @@
           "strike": 150,
           "entryPrice": 0.9975,
           "side": "no"
-        }
+        },
+        "magnitude": 0.25062656641603476,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-08-25",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup find_0022 shadow test 7/20 opened via H-579 after current row satisfied variant conditions.",
+        "outcome": "win",
+        "actualMove": "NO on OIL above 115 0.994 → 1.000 resolved terminal (last YES 0.00) (+0.7% on the contract) (method=pm_contract_terminal)",
         "contractEntry": {
           "marketId": "3102466",
           "eventSlug": "what-price-will-wti-hit-in-august-2026",
@@ -24830,13 +24857,15 @@
           "strike": 115,
           "entryPrice": 0.9935,
           "side": "no"
-        }
+        },
+        "magnitude": 0.6542526421741268,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-08-25",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup find_0022 shadow test 8/20 opened via H-579 after current row satisfied variant conditions.",
+        "outcome": "win",
+        "actualMove": "NO on OIL above 105 0.989 → 1.000 resolved terminal (last YES 0.00) (+1.1% on the contract) (method=pm_contract_terminal)",
         "contractEntry": {
           "marketId": "3102464",
           "eventSlug": "what-price-will-wti-hit-in-august-2026",
@@ -24845,7 +24874,9 @@
           "strike": 105,
           "entryPrice": 0.989,
           "side": "no"
-        }
+        },
+        "magnitude": 1.1122345803842275,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-08-28",
@@ -24863,7 +24894,7 @@
         }
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Discarded 2 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer.",
@@ -24898,8 +24929,10 @@
       {
         "date": "2026-08-21",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup find_0021 shadow test 5/20 opened via H-580 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: no matching contract quote at trigger (method=contract_entry_unavailable)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_entry_unavailable"
       }
     ],
     "winRate": 0,
@@ -25013,8 +25046,10 @@
       {
         "date": "2026-08-21",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup find_0036 shadow test 26/20 opened via H-582 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: no GOLD contract quote at trigger (method=contract_entry_unavailable)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_entry_unavailable"
       },
       {
         "date": "2026-08-11",
@@ -26505,8 +26540,8 @@
       {
         "date": "2026-08-28",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup find_0036 shadow test 8/20 opened via H-606 after current row satisfied variant conditions.",
+        "outcome": "win",
+        "actualMove": "NO on GOLD above 4900 0.982 → 1.000 resolved terminal (last YES 0.00) (+1.9% on the contract) (method=pm_contract_terminal)",
         "contractEntry": {
           "marketId": "3933983",
           "eventSlug": "what-price-will-xauusd-hit-in-august-2026",
@@ -26515,7 +26550,9 @@
           "strike": 4900,
           "entryPrice": 0.9815,
           "side": "no"
-        }
+        },
+        "magnitude": 1.8848700967906227,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-09-02",
@@ -26533,7 +26570,7 @@
         }
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Setup family killed: 0% win rate over 20 completed tests across 7 variants. | Discarded 1 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer.",
@@ -28386,8 +28423,8 @@
       {
         "date": "2026-09-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup gold_pm_premium_futures_spread_mean_reversion shadow test 31/20 opened via H-639 after current row satisfied variant conditions.",
+        "outcome": "loss",
+        "actualMove": "NO on GOLD above 5100 0.955 → 0.925 (-3.1% on the contract) (method=pm_contract_pnl)",
         "contractEntry": {
           "marketId": "3866482",
           "eventSlug": "what-price-will-xauusd-hit-in-september-2026",
@@ -28396,13 +28433,15 @@
           "strike": 5100,
           "entryPrice": 0.955,
           "side": "no"
-        }
+        },
+        "magnitude": -3.141361256544494,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-09-02",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup gold_pm_premium_futures_spread_mean_reversion shadow test 33/20 opened via H-639 after current row satisfied variant conditions.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: contract 4063374 has no exit quote at the horizon (vanished mid-range at YES 0.47) (method=contract_exit_unavailable)",
         "contractEntry": {
           "marketId": "4063374",
           "eventSlug": "what-price-will-xauusd-hit-in-september-2026",
@@ -28411,10 +28450,12 @@
           "strike": 4600,
           "entryPrice": 0.6699999999999999,
           "side": "no"
-        }
+        },
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_exit_unavailable"
       }
     ],
-    "winRate": 1,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Discarded 2 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer.",
@@ -30901,11 +30942,19 @@
       {
         "date": "2026-09-01",
         "triggered": true,
+        "outcome": "win",
+        "actualMove": "BTC moved 2.86% (78873 → 81128) [neutral abs needs ≥ 2%] (method=spot_abs_move)",
+        "magnitude": 0.8590265363305565,
+        "magnitudeUnit": "pct_return"
+      },
+      {
+        "date": "2026-09-04",
+        "triggered": true,
         "outcome": "pending",
-        "actualMove": "Setup btc_iv_compression_vol_reversion shadow test 13/20 opened via H-688 after current row satisfied variant conditions."
+        "actualMove": "Setup btc_iv_compression_vol_reversion shadow test 16/20 opened via H-688 after current row satisfied variant conditions."
       }
     ],
-    "winRate": 0,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -31383,8 +31432,8 @@
       {
         "date": "2026-09-01",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: contract 3866490 has no exit quote at the horizon (method=contract_exit_unavailable)",
         "contractEntry": {
           "marketId": "3866490",
           "eventSlug": "what-price-will-xauusd-hit-in-september-2026",
@@ -31393,7 +31442,9 @@
           "strike": 4300,
           "entryPrice": 0.38,
           "side": "no"
-        }
+        },
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_exit_unavailable"
       },
       {
         "date": "2026-09-02",
@@ -31407,6 +31458,21 @@
           "direction": "above",
           "strike": 5000,
           "entryPrice": 0.95,
+          "side": "no"
+        }
+      },
+      {
+        "date": "2026-09-04",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup gold_pm_premium_futures_spread_mean_reversion shadow test 32/20 opened via H-700 after current row satisfied variant conditions.",
+        "contractEntry": {
+          "marketId": "3866482",
+          "eventSlug": "what-price-will-xauusd-hit-in-september-2026",
+          "asset": "GOLD",
+          "direction": "above",
+          "strike": 5100,
+          "entryPrice": 0.925,
           "side": "no"
         }
       }
