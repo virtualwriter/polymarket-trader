@@ -3362,3 +3362,36 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.9h s
 
 ---
 
+### 2026-09-04 08:30 UTC
+
+**Portfolio:** $103.39 total | Cash $102.39 | 1 open | P&L $6.6300 | 64% win rate (880 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_med_min = 74902 is 3.3 std devs from mean (53886.94 ± 6318.69)
+- [anomaly] hype_pm_ev = 90.16 is 2.5 std devs from mean (61.43 ± 11.30)
+- [anomaly] hype_med_max = 120.6 is 2.5 std devs from mean (82.29 ± 15.33)
+- [anomaly] hype_hl_oi = 2055707877 is 2.3 std devs from mean (1330825699.40 ± 312419940.69)
+- [anomaly] btc_pm_iv = 24 is -2.2 std devs from mean (38.85 ± 6.67)
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 1001 (512 wins / 489 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+31.58%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.21%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.38%)
+
+**LLM analysis:**
+Reviewed the open GOLD long (T-1788463729849-eri0, PC_RATIO_EXTREME_HIGH). The signal evidence metric gold_gld_pc_ratio has eased from 1.731 to 1.599 (-7.63%), but its current level still sits in elevated rolling percentiles (24h 96, 7d 98, 30d 100) and gold price is slightly positive (+0.16%). This is not yet a confirmed round-trip through the entry threshold, and no data-quality or hard portfolio risk breach is evident. Holding; will revisit if the P/C ratio continues normalizing materially lower or price action fails against the thesis.
+
+---
+
