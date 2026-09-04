@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-04T03:30:55.569Z",
+  "generatedAt": "2026-09-04T04:29:38.126Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -9,7 +9,7 @@
       "venue": "spot",
       "direction": "long",
       "strength": 0.49875,
-      "confidence": 0.253635914641876,
+      "confidence": 0.25299677744559457,
       "thesis": "GOLD P/C ratio 1.60 — heavy put buying → contrarian long.",
       "hypothesisId": null,
       "entryPrice": 4471,
@@ -56,45 +56,41 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 2,
-        "totalNet": 2,
+        "totalGross": 1,
+        "totalNet": 1,
         "byAsset": {
-          "OIL": 1,
           "GOLD": 1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 2
+          "PC_RATIO_EXTREME_HIGH": 1
         },
         "byVenue": {
-          "spot": 2
+          "spot": 1
         },
         "byCluster": {
-          "commodity": 2,
-          "oil_delta": 1,
-          "options_sentiment": 2,
-          "spot_venue": 2,
-          "gold_delta": 1
+          "commodity": 1,
+          "gold_delta": 1,
+          "options_sentiment": 1,
+          "spot_venue": 1
         }
       },
       "afterCandidate": {
-        "totalGross": 2,
-        "totalNet": 2,
+        "totalGross": 1,
+        "totalNet": 1,
         "byAsset": {
-          "OIL": 1,
           "GOLD": 1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 2
+          "PC_RATIO_EXTREME_HIGH": 1
         },
         "byVenue": {
-          "spot": 2
+          "spot": 1
         },
         "byCluster": {
-          "commodity": 2,
-          "oil_delta": 1,
-          "options_sentiment": 2,
-          "spot_venue": 2,
-          "gold_delta": 1
+          "commodity": 1,
+          "gold_delta": 1,
+          "options_sentiment": 1,
+          "spot_venue": 1
         }
       },
       "warnings": []
@@ -120,29 +116,6 @@
   ],
   "llmCloseEligibility": [
     {
-      "positionId": "T-1788445719770-2kej",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": true,
-      "allowedCategories": [
-        "thesis_invalidated",
-        "data_quality_issue",
-        "hard_portfolio_risk"
-      ],
-      "evidenceColumns": [
-        "oil_wti_spot",
-        "oil_cl_pc_ratio"
-      ],
-      "hoursOpen": 13.04,
-      "hoursToExpiry": 490.96,
-      "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0259,
-      "minHoldHours": 12,
-      "reason": "Mechanical PC_RATIO_EXTREME_HIGH setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
-    },
-    {
       "positionId": "T-1788463729849-eri0",
       "signalType": "PC_RATIO_EXTREME_HIGH",
       "asset": "GOLD",
@@ -154,12 +127,12 @@
         "gold_gc_spot",
         "gold_gld_pc_ratio"
       ],
-      "hoursOpen": 8.03,
-      "hoursToExpiry": 495.97,
+      "hoursOpen": 9.01,
+      "hoursToExpiry": 494.99,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0159,
+      "elapsedHoldPct": 0.0179,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 8.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 9.0h, requires at least 12h."
     }
   ]
 }

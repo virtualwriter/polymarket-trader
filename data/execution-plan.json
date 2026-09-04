@@ -1,23 +1,10 @@
 {
-  "generatedAt": "2026-09-04T03:31:31.966Z",
+  "generatedAt": "2026-09-04T04:29:38.203Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1788445719770-2kej",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "oil_cl_pc_ratio"
-      ],
-      "thesis": "OIL P/C ratio round-tripped from 2.141 at entry to 0.862, well back through the extreme-high contrarian threshold and beyond. The heavy put-buying setup that justified the long has normalized, so the signal-family input no longer supports the position."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -25,7 +12,7 @@
       "venue": "spot",
       "direction": "long",
       "strength": 0.49875,
-      "confidence": 0.253635914641876,
+      "confidence": 0.25299677744559457,
       "thesis": "GOLD P/C ratio 1.60 — heavy put buying → contrarian long.",
       "hypothesisId": null,
       "entryPrice": 4471,
@@ -38,6 +25,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
