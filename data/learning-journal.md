@@ -3569,3 +3569,39 @@ No open positions and no eligible discretionary closes this run. Monitoring the 
 
 ---
 
+### 2026-09-04 14:28 UTC
+
+**Portfolio:** $103.38 total | Cash $100.38 | 3 open | P&L $6.6147 | 64% win rate (881 trades)
+
+**Opened 1 positions:**
+- OIL long @ $89.44 via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_cl_pc_ratio = 3.405 is 5.6 std devs from mean since 2026-04-28 (0.94 ± 0.44)
+- [divergence] OIL PM-Options IV gap moved wider by 5.3pp (was -6.0, now -0.7)
+- [anomaly] hype_med_max = 120.8 is 2.5 std devs from mean (82.37 ± 15.42)
+- [anomaly] hype_pm_ev = 89.53 is 2.5 std devs from mean (61.50 ± 11.37)
+- [anomaly] hype_hl_oi = 2024484234 is 2.2 std devs from mean (1332441559.25 ± 313998127.20)
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 1003 (512 wins / 491 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.21%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.38%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.24%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-9.37%)
+
+**LLM analysis:**
+No discretionary closes taken: both open positions are under the 12-hour minimum hold and allowed=false. GOLD long is notable because gold_gld_pc_ratio collapsed from 1.599 to 1.131 since open, which may become a thesis_invalidated candidate once eligible; monitor at the 12-hour mark. BTC short thesis remains intact with btc_ibit_pc_ratio still extreme low at 0.357 and price roughly flat. No hypothesis or parameter changes this run.
+
+---
+

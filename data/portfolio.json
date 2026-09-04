@@ -1,5 +1,5 @@
 {
-  "cash": 101.37519904613931,
+  "cash": 100.37519904613931,
   "positions": [
     {
       "id": "T-1788528527132-10c1",
@@ -8,8 +8,8 @@
       "venue": "spot",
       "direction": "long",
       "entryPrice": 4407,
-      "currentPrice": 4407,
-      "currentUnderlyingPrice": 4407,
+      "currentPrice": 4431,
+      "currentUnderlyingPrice": 4431,
       "entryUnderlyingPrice": 4407,
       "size": 1,
       "leverage": 1,
@@ -21,7 +21,9 @@
       "expiryDate": "2026-09-09T13:28:47.132Z",
       "entryConfidence": 0.2516901179716125,
       "instrumentType": "spot",
-      "instrumentLabel": "GOLD spot"
+      "instrumentLabel": "GOLD spot",
+      "peakPnlPct": 0.6013160880417517,
+      "fundingPnlAccrued": 0
     },
     {
       "id": "T-1788528527133-ujr1",
@@ -30,8 +32,8 @@
       "venue": "spot",
       "direction": "short",
       "entryPrice": 79341,
-      "currentPrice": 79341,
-      "currentUnderlyingPrice": 79341,
+      "currentPrice": 79376,
+      "currentUnderlyingPrice": 79376,
       "entryUnderlyingPrice": 79341,
       "size": 1,
       "leverage": 1,
@@ -43,12 +45,36 @@
       "expiryDate": "2026-09-09T13:28:47.133Z",
       "entryConfidence": 0.23757117546431292,
       "instrumentType": "spot",
-      "instrumentLabel": "BTC spot"
+      "instrumentLabel": "BTC spot",
+      "peakPnlPct": 0.318876747205102,
+      "fundingPnlAccrued": 0
+    },
+    {
+      "id": "T-1788532119843-wbit",
+      "openedAt": "2026-09-04T14:28:39.843Z",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "entryPrice": 89.44,
+      "currentPrice": 89.44,
+      "currentUnderlyingPrice": 89.44,
+      "entryUnderlyingPrice": 89.44,
+      "size": 1,
+      "leverage": 1,
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "hypothesisId": null,
+      "thesis": "OIL P/C ratio 3.40 — heavy put buying → contrarian long.",
+      "targetPct": 4,
+      "stopPct": 2,
+      "expiryDate": "2026-09-09T14:28:39.843Z",
+      "entryConfidence": 0.5046418405445865,
+      "instrumentType": "spot",
+      "instrumentLabel": "OIL spot"
     }
   ],
-  "totalRealizedPnl": 6.629999999999991,
-  "totalTrades": 880,
+  "totalRealizedPnl": 6.614699999999991,
+  "totalTrades": 881,
   "winCount": 563,
-  "lossCount": 317,
-  "lastUpdated": "2026-09-04T13:28:47.136Z"
+  "lossCount": 318,
+  "lastUpdated": "2026-09-04T14:28:39.846Z"
 }
