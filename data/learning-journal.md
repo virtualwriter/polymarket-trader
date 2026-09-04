@@ -3185,3 +3185,38 @@ No discretionary closes permitted this hour: OIL is 11.0h open and GOLD is 6.0h 
 
 ---
 
+### 2026-09-04 02:31 UTC
+
+**Portfolio:** $103.39 total | Cash $101.39 | 2 open | P&L $6.6339 | 64% win rate (879 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 Opened 1 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] gold_opt_iv_30d = 40.2 is 4.2 std devs from mean (23.98 ± 3.86)
+- [anomaly] btc_med_min = 74854 is 3.4 std devs from mean (53848.72 ± 6260.45)
+- [anomaly] hype_pm_ev = 90.53 is 2.6 std devs from mean (61.38 ± 11.24)
+- [anomaly] hype_med_max = 120.6 is 2.5 std devs from mean (82.22 ± 15.26)
+- [anomaly] hype_hl_oi = 2080131807 is 2.4 std devs from mean (1329493560.43 ± 311136044.51)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 1001 (512 wins / 489 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+31.58%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.21%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.38%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 1/12; next scheduled 2026-09-04T04:31:25.418Z). Mechanical cycle ran normally._
+
+---
+

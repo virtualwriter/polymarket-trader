@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-04T01:28:54.373Z",
+  "generatedAt": "2026-09-04T02:31:25.414Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.253635914641876,
       "thesis": "GOLD P/C ratio 1.60 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4470,
+      "entryPrice": 4475,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4470,
+      "entryPrice": 4475,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -125,18 +125,22 @@
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
       "evidenceColumns": [
         "oil_wti_spot",
         "oil_cl_pc_ratio"
       ],
-      "hoursOpen": 11,
-      "hoursToExpiry": 493,
+      "hoursOpen": 12.05,
+      "hoursToExpiry": 491.95,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0218,
+      "elapsedHoldPct": 0.0239,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 11.0h, requires at least 12h."
+      "reason": "Mechanical PC_RATIO_EXTREME_HIGH setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
     {
       "positionId": "T-1788463729849-eri0",
@@ -150,12 +154,12 @@
         "gold_gc_spot",
         "gold_gld_pc_ratio"
       ],
-      "hoursOpen": 6,
-      "hoursToExpiry": 498,
+      "hoursOpen": 7.04,
+      "hoursToExpiry": 496.96,
       "plannedHoldHours": 504,
-      "elapsedHoldPct": 0.0119,
+      "elapsedHoldPct": 0.014,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 6.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 7.0h, requires at least 12h."
     }
   ]
 }
