@@ -3672,3 +3672,36 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-09-04 17:28 UTC
+
+**Portfolio:** $103.38 total | Cash $100.38 | 3 open | P&L $6.6147 | 64% win rate (881 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 120.8 is 2.5 std devs from mean (82.41 ± 15.46)
+- [anomaly] hype_pm_ev = 89.75 is 2.5 std devs from mean (61.53 ± 11.40)
+- [anomaly] hype_hl_oi = 2022157382 is 2.2 std devs from mean (1333186741.18 ± 314640872.85)
+- [anomaly] hype_spot = 85.188 is 2.1 std devs from mean (60.67 ± 11.79)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.71 to 0.31. Rolling correlation: 24h=0.67, 7d=-0.54, 30d=0.46. Current 24h corr is at 97th pct of last 30 daily 24h-rolling values (range -0.90 to 0.82).
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 1004 (513 wins / 491 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.38%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.24%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+13.33%)
+
+**LLM analysis:**
+Reviewed open positions: GOLD long PC_RATIO_EXTREME_HIGH, BTC short PC_RATIO_EXTREME_LOW, and OIL long PC_RATIO_EXTREME_HIGH. All are only 3-4h old and below the 12h minimum hold, so no discretionary close instructions were emitted. P/C ratios have already partially normalized in all three: GLD 1.599→0.677, IBIT 0.363→0.575, CL 3.405→1.458. If those normalizations persist through the min hold, thesis_invalidated closes may become relevant at the next review, especially for BTC. Current P&L is small: GOLD +0.50%, BTC -0.25%, OIL +1.46%.
+
+---
+
