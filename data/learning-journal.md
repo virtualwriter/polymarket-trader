@@ -3771,3 +3771,37 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 8/12; ne
 
 ---
 
+### 2026-09-04 20:28 UTC
+
+**Portfolio:** $103.38 total | Cash $99.38 | 4 open | P&L $6.6147 | 64% win rate (881 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 121 is 2.5 std devs from mean (82.46 ± 15.50)
+- [anomaly] hype_pm_ev = 89.56 is 2.4 std devs from mean (61.56 ± 11.43)
+- [anomaly] hype_hl_oi = 2002864186 is 2.1 std devs from mean (1333921442.11 ± 315260052.58)
+- [anomaly] hype_spot = 84.699 is 2.0 std devs from mean (60.70 ± 11.81)
+- [correlation_flip] GOLD-OIL correlation shifted from 0.71 to 0.31. Rolling correlation: 24h=0.49, 7d=-0.52, 30d=0.46. Current 24h corr is at 87th pct of last 30 daily 24h-rolling values (range -0.83 to 0.82).
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 1004 (513 wins / 491 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.38%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.24%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+13.33%)
+
+**LLM analysis:**
+Reviewed 4 open positions; no discretionary closes are allowed this run. The three P/C-ratio trades are all under the 12h min hold (GOLD 7.0h, BTC 7.0h, OIL 6.0h), so despite visible thesis-invalidation evidence—GOLD gld_pc_ratio 1.599 to 0.686, OIL cl_pc_ratio 3.405 to 0.993, BTC ibit_pc_ratio 0.363 to 0.541—no close instructions can be emitted yet. CBRS WEEKEND_HL_FUNDING_REVERSION_LONG is mechanical-only and 0h old. No hard portfolio risk breach observed; will reassess after min hold elapses.
+
+---
+
