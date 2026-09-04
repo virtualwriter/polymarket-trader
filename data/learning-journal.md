@@ -3805,3 +3805,35 @@ Reviewed 4 open positions; no discretionary closes are allowed this run. The thr
 
 ---
 
+### 2026-09-04 21:28 UTC
+
+**Portfolio:** $103.38 total | Cash $99.38 | 4 open | P&L $6.6147 | 64% win rate (881 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 25 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 120.6 is 2.5 std devs from mean (82.47 ± 15.52)
+- [anomaly] hype_pm_ev = 89.33 is 2.4 std devs from mean (61.57 ± 11.44)
+- [anomaly] hype_hl_oi = 1987169129 is 2.1 std devs from mean (1334157442.00 ± 315447467.96)
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 1004 (513 wins / 491 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.38%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.24%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+13.33%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 9/12; next scheduled 2026-09-04T23:28:18.494Z). Mechanical cycle ran normally._
+
+---
+
