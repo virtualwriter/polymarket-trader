@@ -3869,3 +3869,36 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 9/12; ne
 
 ---
 
+### 2026-09-04 23:29 UTC
+
+**Portfolio:** $103.38 total | Cash $97.38 | 6 open | P&L $6.6147 | 64% win rate (881 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 25 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 120.6 is 2.5 std devs from mean (82.50 ± 15.55)
+- [anomaly] hype_pm_ev = 89.46 is 2.4 std devs from mean (61.59 ± 11.46)
+- [anomaly] hype_hl_oi = 1969133421 is 2.0 std devs from mean (1334614910.99 ± 315792496.30)
+- [anomaly] hype_spot = 84.4111 is 2.0 std devs from mean (60.73 ± 11.83)
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 1004 (513 wins / 491 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.38%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.24%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+13.33%)
+
+**LLM analysis:**
+No discretionary closes emitted this hour: all PC-ratio positions remain below the 12h min hold, and the weekend HL funding trades are mechanical-only. However, signal-family evidence for the PC-ratio positions shows rapid invalidation: GOLD gld_pc_ratio 1.599 -> 0.686, OIL cl_pc_ratio 3.405 -> 0.993, and BTC ibit_pc_ratio 0.363 -> 0.541. If these levels persist at the 12h mark, the GOLD and OIL long theses and the BTC short thesis should be reviewed for thesis_invalidated closes. Weekend HL positions are within mechanical expectations: CBRS +1.60%, EBAY +0.29%, DKNG -0.33%.
+
+---
+
