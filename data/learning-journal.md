@@ -3220,3 +3220,39 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-09-04 03:31 UTC
+
+**Portfolio:** $103.39 total | Cash $102.39 | 1 open | P&L $6.6300 | 64% win rate (880 trades)
+
+**Closed 1 trades:**
+- ❌ OIL long via spot/spot [OIL spot] (PC_RATIO_EXTREME_HIGH) → llm_decision: $-0.0039 (-0.4%, market -0.0039, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_med_min = 74950 is 3.4 std devs from mean (53856.39 ± 6272.22)
+- [anomaly] gold_opt_iv_30d = 35.2 is 2.9 std devs from mean (23.98 ± 3.86)
+- [anomaly] hype_pm_ev = 90.48 is 2.6 std devs from mean (61.39 ± 11.26)
+- [anomaly] hype_med_max = 120.6 is 2.5 std devs from mean (82.23 ± 15.27)
+- [anomaly] hype_hl_oi = 2076476927 is 2.4 std devs from mean (1329765092.01 ± 311405209.94)
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 1001 (512 wins / 489 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+31.58%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.21%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.38%)
+
+**LLM analysis:**
+Closed OIL long after its P/C ratio normalized from 2.14 to 0.86, invalidating the PC_RATIO_EXTREME_HIGH contrarian thesis; price never followed through. GOLD is not eligible for discretionary close yet (8h < 12h), but its GLD P/C remains elevated at 1.599 with 24h percentile 96, so no invalidation signal yet. No mechanical exits, data-quality issues, or hard portfolio-risk breaches observed.
+
+---
+
