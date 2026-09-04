@@ -1,6 +1,6 @@
 # Nightly Research Report
 
-_Generated 2026-09-03T07:13:22Z_
+_Generated 2026-09-04T07:12:16Z_
 
 ## 1. Summary
 - FIND records: 71 total (open 10, strengthened 40, weakened 0, negative 8)
@@ -13,14 +13,14 @@ _Generated 2026-09-03T07:13:22Z_
 - #3 **FIND-0020** opp=0.9999 conf=0.5715 | `INFORMED_FLOW|TOUCH|DIRECTION_ASYMMETRY|no` | theme other_informed_flow
 - #4 **FIND-0070** opp=0.9998 conf=0.7032 | `PANEL_NO_7D|ALL|strat:e<1,p35-65,d<30|no` | theme outcome_panel
 - #5 **FIND-0069** opp=0.9998 conf=0.6565 | `PANEL_NO_7D|ALL|strat:p35-65,d<30|no` | theme outcome_panel
-- #6 **FIND-0066** opp=0.9998 conf=0.5587 | `PANEL_NO_7D|ALL|strat:p35-65|no` | theme outcome_panel
+- #6 **FIND-0066** opp=0.9998 conf=0.564 | `PANEL_NO_7D|ALL|strat:p35-65|no` | theme outcome_panel
 - #7 **FIND-0068** opp=0.9997 conf=0.538 | `PANEL_NO_7D|ALL|strat:dir=above,p35-65|no` | theme outcome_panel
 - #8 **FIND-0043** opp=0.9961 conf=0.681 | `ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:dir=above,e3-8|no` | theme heatmap_one_touch
 - #9 **FIND-0055** opp=0.9831 conf=0.5298 | `ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s?,e3-8|no` | theme heatmap_one_touch
 - #10 **FIND-0054** opp=0.9434 conf=0.6482 | `ONE_TOUCH_HIGH_EDGE_NO|BTC|strat:s-1,e3-8|no` | theme heatmap_one_touch
 
 ## 3. Themes overview
-- **THEME-0001** (heatmap_one_touch): 42 findings, avg opp 0.6252
+- **THEME-0001** (heatmap_one_touch): 42 findings, avg opp 0.6216
 - **THEME-0002** (weekend_hl_funding): 15 findings, avg opp 0.7675
 - **THEME-0007** (outcome_panel): 6 findings, avg opp 0.9998
 - **THEME-0004** (other_user_pm_iv_touch_rich_no): 5 findings, avg opp 0.8626
@@ -29,11 +29,11 @@ _Generated 2026-09-03T07:13:22Z_
 - **THEME-0005** (other_pc_ratio_extreme_low): 1 findings, avg opp 0.9986
 
 ## 4. Newly authored hypotheses
-- `—` / —: Refinement of H-539: instead of any CBRS funding reading below -10%, require true weekend timing, bottom-decile funding over the last 7 days, still deeply negative, and a 24h turn higher. This targets actual capitulation that has started t…
-- `—` / —: Refinement of H-537: AAPL funding below -10% on any day was not predictive. Require weekend observation, 7-day funding percentile in the bottom decile, still below -20, and funding already turning higher. This changes the mechanism from a…
-- `—` / —: Refinement of H-535: the single MU funding < -10 condition captured many non-events. Require weekend timing, bottom-decile 7-day funding percentile, still below -20, and a 24h turn higher before entering long.
-- `—` / —: Refinement of H-538: the single COIN funding < -10 condition was weak. Require weekend timing, bottom-decile 7-day funding percentile, still below -20, and a 24h turn higher. This aims to buy actual weekend capitulation that is already rev…
-- `—` / —: Refinement of H-534: re-author the gold one-touch cap-edge signal as a contract premium fade rather than a spot-decline prediction. Require above-strike contracts, moderate 3-8pt underlying-cap edge, near-dated expiry, and tight spread; se…
+- `—` / —: Refinement of H-539: replace the single absolute CBRS funding reading below -10% with a relative lower-tail condition plus a normalization confirmation. The failed variant entered on one-shot readings that often stayed pinned negative or r…
+- `—` / —: Refinement of H-537: use a relative lower-tail AAPL funding condition plus a confirmed upward 24h change. The original absolute < -10% condition was too late and too weak, producing many entries when funding was already mild/positive or st…
+- `—` / —: Refinement of H-535: use a relative lower-tail MU funding condition plus a confirmed upward 24h change. The original single < -10% trigger admitted noisy readings and historical backfill artifacts that did not normalize fast enough.
+- `—` / —: Refinement of H-534: re-author the gold one-touch cap-edge signal as a contract premium fade, not a spot-decline call. Keep the cap-edge trigger but require above-strike, liquid, tight-spread contracts so the P&L is measured on the NO/YES…
+- `—` / —: Refinement of H-108: drop the weak HYPE-confirmation mechanism and require actual HYPE open-interest expansion plus already-positive BTC 24h momentum. The failed variant treated HYPE above its 24h SMA with OI change > -2% as independent co…
 
 ## 5. Negative / suppressed findings
 - **FIND-0003** (negative): `ONE_TOUCH_HIGH_EDGE_NO|GOLD|heatmap|no`
@@ -48,7 +48,7 @@ _Generated 2026-09-03T07:13:22Z_
 ## 6. Provenance
 - Scoring version: research_score_v3
 - Miner model: shadow_miner_v1
-- Opportunities export: 2026-09-03T07:13:22Z
-- Findings export: 2026-09-03T07:10:56Z
-- Themes export: 2026-09-03T07:11:04Z
-- LLM advice: 2026-09-03T07:10:55.823Z
+- Opportunities export: 2026-09-04T07:12:15Z
+- Findings export: 2026-09-04T07:09:41Z
+- Themes export: 2026-09-04T07:09:49Z
+- LLM advice: 2026-09-04T07:09:41.135Z
