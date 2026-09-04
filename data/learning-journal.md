@@ -3528,3 +3528,44 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.9h s
 
 ---
 
+### 2026-09-04 13:28 UTC
+
+**Portfolio:** $103.38 total | Cash $101.38 | 2 open | P&L $6.6300 | 64% win rate (880 trades)
+
+**Closed 1 trades:**
+- ❌ GOLD long via spot/spot [GOLD spot] (PC_RATIO_EXTREME_HIGH) → stop: $-0.0153 (-1.5%, market -0.0153, funding 0.0000)
+
+**Opened 2 positions:**
+- GOLD long @ $4407 via spot/spot [GOLD spot] (PC_RATIO_EXTREME_HIGH)
+- BTC short @ $79341 via spot/spot [BTC spot] (PC_RATIO_EXTREME_LOW)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved wider by 9.7pp (was -12.3, now -2.6)
+- [anomaly] hype_pm_ev = 90.14 is 2.5 std devs from mean (61.49 ± 11.36)
+- [anomaly] hype_med_max = 120.2 is 2.5 std devs from mean (82.36 ± 15.40)
+- [anomaly] hype_hl_oi = 2048273691 is 2.3 std devs from mean (1332190819.16 ± 313778522.09)
+- [anomaly] hype_spot = 85.457 is 2.1 std devs from mean (60.64 ± 11.76)
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 1002 (512 wins / 490 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.21%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.38%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.24%)
+
+**LLM analysis:**
+No open positions and no eligible discretionary closes this run. Monitoring the sharp BTC downside break and vol repricing for potential promoted-signal follow-through, but no action is warranted here.
+
+---
+

@@ -1,39 +1,21 @@
 {
-  "generatedAt": "2026-09-04T12:28:32.660Z",
+  "generatedAt": "2026-09-04T13:28:34.827Z",
   "dataFreshness": {
-    "valuationRows": 2763,
-    "latestValuationAt": "2026-09-04T12",
-    "macroRows": 2761,
+    "valuationRows": 2764,
+    "latestValuationAt": "2026-09-04T13",
+    "macroRows": 2762,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-04T12"
+    "latestInstrumentSnapshotAt": "2026-09-04T13"
   },
   "portfolio": {
-    "cash": 102.3905,
-    "openPositions": 1,
+    "cash": 103.3752,
+    "openPositions": 0,
     "realizedPnl": 6.63,
     "totalTrades": 880,
     "winRatePct": 64,
-    "unrealizedPnl": -0.0007
+    "unrealizedPnl": 0
   },
-  "openPositions": [
-    {
-      "positionId": "T-1788463729849-eri0",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.07,
-      "currentPrice": 4471,
-      "underlyingPrice": 4471,
-      "targetPct": 3,
-      "stopPct": 1.5,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_gld_pc_ratio"
-      ]
-    }
-  ],
+  "openPositions": [],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -133,10 +115,10 @@
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "enabled": true,
-      "weight": 0.5073,
-      "trades": 48,
+      "weight": 0.5046,
+      "trades": 49,
       "wins": 24,
-      "avgPnlPct": 0.1927,
+      "avgPnlPct": 0.1575,
       "disabledAssets": [
         "BTC"
       ]
@@ -196,7 +178,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 26,
+    "openCount": 27,
     "resolvedCount": 1002,
     "wouldHaveWon": 512,
     "wouldHaveLost": 490,
@@ -531,6 +513,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.3pt on ETH, spread 1.0c, liquidity 26324. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $120,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.12,
+          "yesAsk": 0.13,
+          "yesSpread": 0.01,
+          "liquidity": 69816.53,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.2pt on BTC, spread 1.0c, liquidity 69817. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
