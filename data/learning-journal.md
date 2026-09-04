@@ -3428,3 +3428,36 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-09-04 10:32 UTC
+
+**Portfolio:** $103.39 total | Cash $102.39 | 1 open | P&L $6.6300 | 64% win rate (880 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_med_min = 74902 is 3.3 std devs from mean (53902.19 ± 6341.68)
+- [anomaly] hype_pm_ev = 90.9 is 2.6 std devs from mean (61.45 ± 11.33)
+- [anomaly] hype_med_max = 120.6 is 2.5 std devs from mean (82.32 ± 15.36)
+- [anomaly] hype_hl_oi = 2095649314 is 2.4 std devs from mean (1331373319.42 ± 312967378.58)
+- [anomaly] hype_spot = 86.884 is 2.2 std devs from mean (60.61 ± 11.73)
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 1002 (512 wins / 490 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.21%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.38%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.24%)
+
+**LLM analysis:**
+Reviewed GOLD long T-1788463729849-eri0. The P/C ratio signal has cooled modestly from 1.731 to 1.599 but remains at the 96th percentile of the 24h range and 99-100th percentile on 7d/30d, so it has not normalized back through any plausible extreme-high entry threshold. Spot is essentially flat (-0.07%) and the position is only ~3% through its planned hold. No thesis_invalidated, data_quality_issue, or hard_portfolio_risk close; leave mechanical target/stop/expiry in control. Context note: PC_RATIO_EXTREME_HIGH/GOLD remains thin (6 live trades) and should stay sample-size sensitive in nightly reviews.
+
+---
+
