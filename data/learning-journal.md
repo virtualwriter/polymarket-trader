@@ -3324,3 +3324,41 @@ Hourly close review: only open position is GOLD long via PC_RATIO_EXTREME_HIGH. 
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-09-04T07:09:41.135Z, model=deepseek-v4-pro)
+- Hypotheses added: 0 (rejected 5); reviews applied: 6; invalidated assumptions learned: 1; param updates: none.
+- Strategy review: The weekend HL funding-reversion live book remains the core positive: 381/551 live wins, +0.13% avg per trade, with shadows at 188/253 and +0.99% avg, so this family is still working in both live and blocked-shadow evidence. One-touch NO is strong only when gated (clean live 4/4, +18.42%; FIND-0020 gated shadows 107/175, +0.89%) and manual IV-touch rich NO / gold XAU tail NO shadows remain promising. The main failures are: broad/ungated one-touch NO and proxy-short variants, several single-threshold shadow-mined funding reversion families, contract-edge theses scored as spot-direction bets, an
+- Nightly journal: The recurring failure across struggling setups is bad instrument framing or too-weak triggers. Gold one-touch NO wins are contract premium wins, not spot-decline wins, so H-534-class signals must be scored on the contract and should not demand a spot move. The shadow-mined funding families fail because a single < -10% reading is noise; refinements now require a relative lower-tail reading and a positive 24h normalization confirmation. The cross-asset BTC momentum family fails because HYPE above SMA is a lagging risk echo, not an independent signal; the refinement requires OI expansion and alre
+### 2026-09-04 07:29 UTC
+
+**Portfolio:** $103.39 total | Cash $102.39 | 1 open | P&L $6.6300 | 64% win rate (880 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_med_min = 74902 is 3.3 std devs from mean (53879.31 ± 6307.13)
+- [anomaly] hype_pm_ev = 90.16 is 2.5 std devs from mean (61.42 ± 11.29)
+- [anomaly] hype_med_max = 120.6 is 2.5 std devs from mean (82.28 ± 15.32)
+- [anomaly] hype_hl_oi = 2051587993 is 2.3 std devs from mean (1330562488.73 ± 312171098.85)
+- [anomaly] hype_spot = 86.13 is 2.2 std devs from mean (60.58 ± 11.71)
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 1001 (512 wins / 489 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO GOLD short via polymarket would have closed with thesis validated profitably (+31.58%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-20.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+0.21%)
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.38%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.9h since last call; daily budget 3/12; next scheduled 2026-09-04T09:29:09.204Z). Mechanical cycle ran normally._
+
+---
+
