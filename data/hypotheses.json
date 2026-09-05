@@ -24432,6 +24432,21 @@
         "actualMove": "UNSCORABLE: no GOLD contract quote at trigger (method=contract_entry_unavailable)",
         "excludedFromSetupStats": true,
         "exclusionReason": "unscorable_scorer_v2:contract_entry_unavailable"
+      },
+      {
+        "date": "2026-08-29",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "[historical-backfill] Setup find_0036 shadow test 5/20 opened via H-567 after historical row satisfied variant conditions.",
+        "contractEntry": {
+          "marketId": "3933979",
+          "eventSlug": "what-price-will-xauusd-hit-in-august-2026",
+          "asset": "GOLD",
+          "direction": "above",
+          "strike": 4800,
+          "entryPrice": 0.997,
+          "side": "no"
+        }
       }
     ],
     "winRate": 0,
@@ -24673,8 +24688,10 @@
       {
         "date": "2026-08-06",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup find_0036 shadow test 17/20 opened via H-572 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "[historical-backfill] UNSCORABLE: no GOLD contract quote at trigger (resolved 2026-09-05 from 2026-08-06; method=contract_entry_unavailable)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_entry_unavailable"
       }
     ],
     "winRate": 0,
