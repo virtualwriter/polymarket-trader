@@ -4184,3 +4184,43 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; ne
 
 ---
 
+### 2026-09-05 09:28 UTC
+
+**Portfolio:** $103.47 total | Cash $99.47 | 4 open | P&L $6.7145 | 64% win rate (900 trades)
+
+**Closed 2 trades:**
+- ✅ MSTR long via hyperliquid/hl_perp [HL MSTR Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0076 (0.8%, market 0.0077, funding -0.0001)
+- ✅ DKNG long via hyperliquid/hl_perp [HL DKNG Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0051 (0.5%, market 0.0050, funding 0.0001)
+
+**Signal weight changes:**
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00257/trade over 213 trades (p=0.140).
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00254/trade over 214 trades (p=0.143).
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 89.14 is 2.4 std devs from mean (61.67 ± 11.54)
+- [anomaly] hype_spot = 84.867 is 2.0 std devs from mean (60.79 ± 11.88)
+- [anomaly] hype_hl_oi = 1976075033 is 2.0 std devs from mean (1336418404.15 ± 317118597.95)
+
+**Blocked signal learning:**
+- Open blocked shadows: 28
+- Resolved blocked shadows: 1004 (513 wins / 491 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.38%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.24%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+13.33%)
+
+**LLM analysis:**
+No discretionary closes are eligible this hour: all four open positions are WEEKEND_HL_FUNDING_REVERSION_LONG and are policy-gated to mechanical exits. TSM and GME funding has normalized/flipped positive, and SKHX funding normalized from roughly -50% to -2%, which weakens the entry thesis, but these are early holds below the 12h minimum and the rule-based scanner owns exits. EBAY opened flat with funding still negative. No hard portfolio risk breach; SKHX at -2.34% remains well inside its stop.
+
+---
+
