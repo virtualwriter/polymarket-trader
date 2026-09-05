@@ -4286,3 +4286,40 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 3/12; ne
 
 ---
 
+### 2026-09-05 12:28 UTC
+
+**Portfolio:** $103.48 total | Cash $99.48 | 4 open | P&L $6.7215 | 64% win rate (901 trades)
+
+**Closed 1 trades:**
+- ✅ EBAY long via hyperliquid/hl_perp [HL EBAY Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0070 (0.7%, market 0.0068, funding 0.0002)
+
+**Signal weight changes:**
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00249/trade over 215 trades (p=0.146).
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 89.26 is 2.4 std devs from mean (61.70 ± 11.57)
+- [anomaly] hype_hl_oi = 1986791109 is 2.0 std devs from mean (1337111310.14 ± 317648162.47)
+- [anomaly] hype_spot = 85.139 is 2.0 std devs from mean (60.82 ± 11.90)
+
+**Blocked signal learning:**
+- Open blocked shadows: 28
+- Resolved blocked shadows: 1004 (513 wins / 491 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.38%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.24%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+13.33%)
+
+**LLM analysis:**
+Reviewed 4 open positions; none are eligible for discretionary close because all are policy-gated WEEKEND_HL_FUNDING_REVERSION_LONG trades with allowed=false. TSM and SKHX funding have normalized to +5.48, which weakens their funding-reversion thesis, but mechanical exits own those positions. GME is -1.25% and SKHX -1.56%, still inside target/stop; COST is fresh and near flat. No hard portfolio risk breach observed. Nightly research may want to track fast funding normalization in TSM/SKHX as signal-family context.
+
+---
+
