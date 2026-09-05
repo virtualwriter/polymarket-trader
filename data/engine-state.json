@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-09-05T16:28:18.815Z",
+  "generatedAt": "2026-09-05T17:28:28.657Z",
   "dataFreshness": {
-    "valuationRows": 2788,
-    "latestValuationAt": "2026-09-05T16",
-    "macroRows": 2786,
+    "valuationRows": 2789,
+    "latestValuationAt": "2026-09-05T17",
+    "macroRows": 2787,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-05T16"
+    "latestInstrumentSnapshotAt": "2026-09-05T17"
   },
   "portfolio": {
-    "cash": 98.4818,
-    "openPositions": 5,
-    "realizedPnl": 6.7215,
-    "totalTrades": 901,
-    "winRatePct": 64.2,
-    "unrealizedPnl": -0.0451
+    "cash": 99.4601,
+    "openPositions": 4,
+    "realizedPnl": 6.6998,
+    "totalTrades": 902,
+    "winRatePct": 64.1,
+    "unrealizedPnl": -0.0086
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.23,
-      "currentPrice": 426.99,
+      "pnlPct": 0.48,
+      "currentPrice": 427.21,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -36,22 +36,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -1.16,
-      "currentPrice": 19.084,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "WF-1788589706424-SKHX-1y2u",
-      "asset": "SKHX",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -3.42,
-      "currentPrice": 1274.4,
+      "pnlPct": -0.94,
+      "currentPrice": 19.092,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -64,8 +50,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.16,
-      "currentPrice": 917.71,
+      "pnlPct": -0.71,
+      "currentPrice": 916.66,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -78,8 +64,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0,
-      "currentPrice": 210.4,
+      "pnlPct": 0.31,
+      "currentPrice": 210.53,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -230,10 +216,10 @@
     {
       "type": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "enabled": true,
-      "weight": 0.6688,
-      "trades": 215,
+      "weight": 0.6691,
+      "trades": 216,
       "wins": 145,
-      "avgPnlPct": -0.2491,
+      "avgPnlPct": -0.258,
       "disabledAssets": [
         "ZM"
       ]
@@ -249,9 +235,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 27,
-    "resolvedCount": 1005,
-    "wouldHaveWon": 514,
+    "openCount": 26,
+    "resolvedCount": 1006,
+    "wouldHaveWon": 515,
     "wouldHaveLost": 491,
     "bySignal": [
       {
@@ -320,26 +306,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 31.58,
-        "resolvedAt": "2026-09-03T15:28:22.940Z",
-        "marketQuality": {
-          "yesBid": 0.62,
-          "yesAsk": 0.63,
-          "yesSpread": 0.01,
-          "liquidity": 20268.36,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -476,6 +442,24 @@
           "flags": [
             "wide_pm_spread"
           ]
+        }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "thesis_validated_profitable",
+        "pnlPct": 0,
+        "resolvedAt": "2026-09-05T17:28:27.827Z",
+        "marketQuality": {
+          "yesBid": 0.069,
+          "yesAsk": 0.07,
+          "yesSpread": 0.001,
+          "liquidity": 45982.76,
+          "flags": []
         }
       }
     ],
