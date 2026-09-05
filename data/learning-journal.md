@@ -4453,3 +4453,42 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 5/12; ne
 
 ---
 
+### 2026-09-05 18:28 UTC
+
+**Portfolio:** $103.48 total | Cash $101.48 | 2 open | P&L $6.7183 | 64% win rate (904 trades)
+
+**Closed 2 trades:**
+- ✅ TSM long via hyperliquid/hl_perp [HL TSM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0098 (1.0%, market 0.0101, funding -0.0003)
+- ✅ GME long via hyperliquid/hl_perp [HL GME Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0087 (0.9%, market 0.0068, funding 0.0019)
+
+**Signal weight changes:**
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00252/trade over 217 trades (p=0.141).
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00247/trade over 218 trades (p=0.145).
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 89.54 is 2.4 std devs from mean (61.75 ± 11.62)
+- [anomaly] hype_hl_oi = 2023973453 is 2.2 std devs from mean (1338331228.54 ± 318664576.43)
+- [anomaly] hype_spot = 85.669 is 2.1 std devs from mean (60.86 ± 11.93)
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 1006 (515 wins / 491 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+13.33%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.14%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+No discretionary closes: both open positions are WEEKEND_HL_FUNDING_REVERSION_LONG and are policy-gated to mechanical exits only. COST is open 7.0h at -0.50% PnL; CBRS is early at 2.0h and +0.35% PnL. Latest funding prints appear to have normalized materially for both COST and CBRS from their extreme negative entry reads, but this is not actionable here under the allowed action surface. Continue monitoring mechanical target/stop/expiry behavior.
+
+---
+
