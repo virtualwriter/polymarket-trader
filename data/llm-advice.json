@@ -1,5 +1,42 @@
 {
-  "acceptedCloses": [],
+  "acceptedCloses": [
+    {
+      "action": "close",
+      "positionId": "T-1788528527132-10c1",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "gold_gld_pc_ratio"
+      ],
+      "thesis": "GOLD P/C ratio collapsed from 1.599 at entry to 0.686, normalizing back below the contrarian high threshold; heavy put buying thesis is no longer present."
+    },
+    {
+      "action": "close",
+      "positionId": "T-1788528527133-ujr1",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "btc_ibit_pc_ratio"
+      ],
+      "thesis": "BTC P/C ratio rose from 0.363 at entry to 0.541, normalizing beyond the contrarian extreme-low trigger; heavy call buying thesis is no longer present."
+    },
+    {
+      "action": "close",
+      "positionId": "T-1788532119843-wbit",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "closeReasonCategory": "thesis_invalidated",
+      "evidenceColumns": [
+        "oil_cl_pc_ratio"
+      ],
+      "thesis": "OIL P/C ratio dropped from 3.405 at entry to 0.993, fully normalizing below the contrarian high threshold; heavy put buying thesis is no longer present."
+    }
+  ],
   "rejectedCloses": [],
   "skippedTrades": []
 }
