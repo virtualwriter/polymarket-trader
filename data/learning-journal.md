@@ -4141,3 +4141,46 @@ Reviewed all six open WEEKEND_HL_FUNDING_REVERSION_LONG positions. No discretion
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-09-05T07:12:21.582Z, model=deepseek-v4-pro)
+- Hypotheses added: 6 (rejected 3); reviews applied: 6; invalidated assumptions learned: 2; param updates: none.
+- Strategy review: The Polymarket NO/YES-fade edge remains the strongest part of the book: live one-touch NO is 4/4 with +18.42% avg, USER_PM_IV_TOUCH_RICH_NO is 2/3 with huge contract P&L, and the weekend funding family is 393/567 live with shadows 188/253. The bleeding is concentrated in proxy-short expressions and in forcing contract-priced edge into spot-move tests; single-name weekend funding reverts and HYPE-confirmation momentum are also failing, mostly because their triggering conditions do not reliably produce the predicted move.
+- Nightly journal: Tonight's main lesson is instrumentation: contract-priced edge must be scored as contract P&L rather than forced into spot-move tests. The panel NO cut remains the strongest edge, so I added tighter near-dated, liquidity, and spread siblings from the ranked PANEL findings. I also re-authored the GOLD one-touch NO edge as a contract premium fade. Single-name funding reverts only merit another test with a relative extreme plus upward-inflection mechanism. No parameter changes: weekend-clustered and per-family evidence did not support moving entry or risk parameters.
+### 2026-09-05 08:28 UTC
+
+**Portfolio:** $103.46 total | Cash $98.46 | 5 open | P&L $6.7018 | 64% win rate (898 trades)
+
+**Closed 1 trades:**
+- ✅ HIMS long via hyperliquid/hl_perp [HL HIMS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0065 (0.6%, market 0.0061, funding 0.0004)
+
+**Signal weight changes:**
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00262/trade over 212 trades (p=0.137).
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 89.75 is 2.4 std devs from mean (61.66 ± 11.53)
+- [anomaly] hype_med_max = 120.6 is 2.4 std devs from mean (82.59 ± 15.64)
+- [anomaly] hype_spot = 84.5303 is 2.0 std devs from mean (60.78 ± 11.87)
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 1004 (513 wins / 491 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit stop (-2.38%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.24%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+13.33%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 2.0h since last call; daily budget 2/12; next scheduled 2026-09-05T10:28:26.595Z). Mechanical cycle ran normally._
+
+---
+
