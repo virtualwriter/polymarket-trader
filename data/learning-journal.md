@@ -4354,3 +4354,34 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 4/12; ne
 
 ---
 
+### 2026-09-05 15:28 UTC
+
+**Portfolio:** $103.48 total | Cash $99.48 | 4 open | P&L $6.7215 | 64% win rate (901 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 89.39 is 2.4 std devs from mean (61.72 ± 11.59)
+- [anomaly] hype_hl_oi = 2003734444 is 2.1 std devs from mean (1337593608.53 ± 318042928.44)
+- [anomaly] hype_spot = 85.248 is 2.0 std devs from mean (60.84 ± 11.91)
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 1005 (514 wins / 491 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have edge compressed but trade lost money (-0.24%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-9.37%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+13.33%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.14%)
+
+**LLM analysis:**
+No discretionary closes emitted: all four open positions are WEEKEND_HL_FUNDING_REVERSION_LONG and policy-gated to mechanical scanner exits. TSM, GME, and COST are small negative PnL; SKHX is the weakest at -3.2% and its funding has normalized from roughly -50% toward -29%, but it is still below min hold and LLM close is not allowed. Watching SKHX for further deterioration; if the mechanical path does not handle it and weakness persists, a nightly review of SKHX-specific signal behavior would be useful.
+
+---
+
