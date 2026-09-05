@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-09-04T07:12:16Z",
+  "generatedAt": "2026-09-05T07:14:51Z",
   "summary": {
-    "generatedAt": "2026-09-04T07:12:16Z",
+    "generatedAt": "2026-09-05T07:14:51Z",
     "findingCounts": {
       "open": 10,
       "strengthened": 40,
@@ -15,13 +15,13 @@
       "rank": 1,
       "id": "FIND-0065",
       "opportunityScore": 0.9999,
-      "confidenceScore": 0.6122,
+      "confidenceScore": 0.6154,
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
       "status": "strengthened"
     },
-    "authoredHypothesisCount": 5,
+    "authoredHypothesisCount": 9,
     "advicePresent": true
   },
   "topOpportunities": [
@@ -29,7 +29,7 @@
       "rank": 1,
       "id": "FIND-0065",
       "opportunityScore": 0.9999,
-      "confidenceScore": 0.6122,
+      "confidenceScore": 0.6154,
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -79,7 +79,7 @@
       "rank": 6,
       "id": "FIND-0066",
       "opportunityScore": 0.9998,
-      "confidenceScore": 0.564,
+      "confidenceScore": 0.5662,
       "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -89,7 +89,7 @@
       "rank": 7,
       "id": "FIND-0068",
       "opportunityScore": 0.9997,
-      "confidenceScore": 0.538,
+      "confidenceScore": 0.5422,
       "clusterKey": "PANEL_NO_7D|ALL|strat:dir=above,p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -132,7 +132,7 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 42,
-      "avgOpportunityScore": 0.6216
+      "avgOpportunityScore": 0.6256
     },
     {
       "id": "THEME-0002",
@@ -179,29 +179,49 @@
   ],
   "authoredHypotheses": [
     {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-539: replace the single absolute CBRS funding reading below -10% with a relative lower-tail condition plus a normalization confirmation. The failed variant entered on one-shot readings that often stayed pinned negative or re-tightened; waiting for a positive 24h change from a bottom-quartile reading only enters when reversion is already underway."
+      "originFindingId": "FIND-0070",
+      "themeId": "THEME-0007",
+      "description": "Panel NO edge sibling: sub-point sell-YES model edge, mid-priced YES ask, and very near expiry (<=14 days), targeting the strongest YES-premium decay window."
+    },
+    {
+      "originFindingId": "FIND-0065",
+      "themeId": "THEME-0007",
+      "description": "Panel NO edge sibling: sub-point sell-YES model edge and mid-priced YES ask, with a high order-book liquidity guard to avoid thin Polymarket quotes."
+    },
+    {
+      "originFindingId": "FIND-0069",
+      "themeId": "THEME-0007",
+      "description": "Panel NO edge sibling: mid-priced YES ask and near expiry, tightened further by a sub-1c YES spread quality guard."
+    },
+    {
+      "originFindingId": "FIND-0068",
+      "themeId": "THEME-0007",
+      "description": "Panel NO edge sibling on above-strike one-touch contracts: mid-priced YES ask plus sub-point sell-YES model edge, localizing the NO edge to touch-high contracts."
+    },
+    {
+      "originFindingId": "FIND-0067",
+      "themeId": "THEME-0007",
+      "description": "Panel NO edge sibling: tight-spread mid-priced YES ask with an additional minimum order-book liquidity guard, sharpening the quote-quality cut from FIND-0067."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-537: use a relative lower-tail AAPL funding condition plus a confirmed upward 24h change. The original absolute < -10% condition was too late and too weak, producing many entries when funding was already mild/positive or still rolling over."
+      "description": "Refinement of H-534: re-author the GOLD one-touch cap-edge as a moderate 3-8pt above-strike contract premium fade with near expiry and tight spread, explicitly avoiding the spot-decline formulation."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-535: use a relative lower-tail MU funding condition plus a confirmed upward 24h change. The original single < -10% trigger admitted noisy readings and historical backfill artifacts that did not normalize fast enough."
+      "description": "Refinement of H-539: replace any raw CBRS funding reading below -10% with a two-part mechanism \u2014 funding in an extreme 30d z-score tail and already inflecting higher over the prior 24h."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-534: re-author the gold one-touch cap-edge signal as a contract premium fade, not a spot-decline call. Keep the cap-edge trigger but require above-strike, liquid, tight-spread contracts so the P&L is measured on the NO/YES premium, where the observed wins actually occurred."
+      "description": "Refinement of H-537: require AAPL funding to be in an extreme 30d z-score tail and already rising off the extreme, rather than merely below -10%."
     },
     {
       "originFindingId": null,
       "themeId": null,
-      "description": "Refinement of H-108: drop the weak HYPE-confirmation mechanism and require actual HYPE open-interest expansion plus already-positive BTC 24h momentum. The failed variant treated HYPE above its 24h SMA with OI change > -2% as independent confirmation; it was mostly a lagging risk-on echo."
+      "description": "Refinement of H-535: require MU funding to be in an extreme 30d z-score tail and already inflecting higher, rather than entering on the first sub -10% print."
     }
   ],
   "negativeFindings": [
@@ -257,9 +277,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-09-04T07:09:41Z",
-    "opportunitiesGeneratedAt": "2026-09-04T07:12:15Z",
-    "themesGeneratedAt": "2026-09-04T07:09:49Z",
-    "adviceGeneratedAt": "2026-09-04T07:09:41.135Z"
+    "findingsExportGeneratedAt": "2026-09-05T07:12:21Z",
+    "opportunitiesGeneratedAt": "2026-09-05T07:14:51Z",
+    "themesGeneratedAt": "2026-09-05T07:12:30Z",
+    "adviceGeneratedAt": "2026-09-05T07:12:21.582Z"
   }
 }
