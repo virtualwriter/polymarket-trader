@@ -1,5 +1,5 @@
 {
-  "cash": 100.48095373522541,
+  "cash": 99.48095373522541,
   "positions": [
     {
       "id": "WF-1788625698013-CBRS-yau2",
@@ -8,7 +8,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 210.4,
-      "currentPrice": 210.05,
+      "currentPrice": 210.07,
       "entryUnderlyingPrice": 210.4,
       "size": 1,
       "leverage": 5,
@@ -21,7 +21,7 @@
       "instrumentType": "hl_perp",
       "instrumentId": "CBRS",
       "instrumentLabel": "HL CBRS Builder DEX stock perp",
-      "fundingPnlAccrued": 0.00008286700913242006,
+      "fundingPnlAccrued": 0.00012857762557077622,
       "entryConfidence": 0.5,
       "peakPnlPct": 0.3533388783270097
     },
@@ -45,9 +45,9 @@
       "instrumentType": "hl_perp",
       "instrumentId": "DKNG",
       "instrumentLabel": "HL DKNG Builder DEX stock perp",
-      "fundingPnlAccrued": 0.0006223287671232876,
+      "fundingPnlAccrued": 0.0011684377853881278,
       "entryConfidence": 0.5,
-      "peakPnlPct": -0.4966807607804472
+      "peakPnlPct": -0.4420698589539631
     },
     {
       "id": "WF-1788636507205-HIMS-6uik",
@@ -56,7 +56,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 27.811,
-      "currentPrice": 27.678,
+      "currentPrice": 27.741,
       "entryUnderlyingPrice": 27.811,
       "size": 1,
       "leverage": 5,
@@ -69,14 +69,38 @@
       "instrumentType": "hl_perp",
       "instrumentId": "HIMS",
       "instrumentLabel": "HL HIMS Builder DEX stock perp",
-      "fundingPnlAccrued": 0.0003234457762557077,
+      "fundingPnlAccrued": 0.0008937619863013698,
       "entryConfidence": 0.5,
       "peakPnlPct": -0.5932904246521385
+    },
+    {
+      "id": "WF-1788647305709-GME-gvaw",
+      "openedAt": "2026-09-05T22:28:25.709Z",
+      "asset": "GME",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 19.212,
+      "currentPrice": 19.212,
+      "currentUnderlyingPrice": 19.212,
+      "entryUnderlyingPrice": 19.212,
+      "size": 1,
+      "leverage": 5,
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "hypothesisId": null,
+      "thesis": "[WEEKEND HL FUNDING LIVE] GME Builder DEX stock perp funding -55.2% annualized in mid band [-100%, -50%] during US-equity-closed entry window (Fri 4:00pm ET → Sun; no Mon pre-open entries). Live tracked long at 5x; exit when margin P&L >= 3%, funding >= 10%, Mon 9:30am ET window close, or held 24h.",
+      "targetPct": 3,
+      "stopPct": 100,
+      "expiryDate": "2026-09-06T22:28:25.709Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "GME",
+      "instrumentLabel": "HL GME Builder DEX stock perp",
+      "fundingPnlAccrued": 0,
+      "entryConfidence": 0.5
     }
   ],
   "totalRealizedPnl": 6.72059999999999,
   "totalTrades": 905,
   "winCount": 581,
   "lossCount": 324,
-  "lastUpdated": "2026-09-05T21:28:59.484Z"
+  "lastUpdated": "2026-09-05T22:28:26.720Z"
 }
