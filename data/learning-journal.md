@@ -4653,3 +4653,35 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 7/12; ne
 
 ---
 
+### 2026-09-06 00:28 UTC
+
+**Portfolio:** $103.48 total | Cash $99.48 | 4 open | P&L $6.7206 | 64% win rate (905 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 3 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 88.98 is 2.3 std devs from mean (61.81 ± 11.68)
+- [anomaly] hype_hl_oi = 2015347472 is 2.1 std devs from mean (1339795288.68 ± 319881684.04)
+- [anomaly] hype_spot = 85.451 is 2.0 std devs from mean (60.92 ± 11.97)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 1007 (515 wins / 492 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+13.33%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.14%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.00%)
+
+**LLM analysis:**
+Reviewed 4 open WEEKEND_HL_FUNDING_REVERSION_LONG positions; all are policy-gated mechanical exits with LLM close disallowed, so no discretionary closes emitted. CBRS, HIMS, and GME funding has normalized toward roughly +4-5% annualized, suggesting the funding-leg of the reversion thesis is partly spent even though P&L remains slightly negative; DKNG still shows -91.6% annualized, so its funding reversion signal remains live. All positions are within normal drawdown and none breach hard portfolio risk limits, so mechanical targets/stops/expiry should continue to manage exits.
+
+---
+

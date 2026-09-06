@@ -187,11 +187,13 @@
       {
         "date": "2026-09-03",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup btc_pm_iv_expansion_reversion shadow test 14/20 opened via H-001 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "BTC moved 3.72% (77026 → 79890) [neutral abs needs ≥ 2%] (method=spot_abs_move)",
+        "magnitude": 1.7182250149300238,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0.38461538461538464,
+    "winRate": 0.42857142857142855,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "BTC PM‑IV expansion reversion lost 7 of 10 recent tests, with spot moves frequently failing to reach 2% absolute. The IV spread proved to be a weak volatility predictor in calm markets, and multiple refinements that tightened thresholds did not rescue it. | Refined by H-638 (2026-08-11): Refinement of H‑001: replace absolute PM‑IV thresholds with a regime‑relative co | The absolute IV thresholds (PM IV <46, opt IV >49) are no longer effective in the current lower‑IV environment; many triggers produced sub‑2% spot moves, indicating the regime has shifted. | Only 3/10 passed. The two wins came from large down moves, while eight entries produced absolute moves <2%. PM IV below 46 vs options IV above 49 is a persistent structural discount, not a short-horizon timing condition; it can stay pinned while BTC drifts.",
@@ -8993,11 +8995,19 @@
       {
         "date": "2026-09-01",
         "triggered": true,
+        "outcome": "win",
+        "actualMove": "OIL moved 5.88% (86.62 → 91.71) [long needs ≥ +2%] (method=spot_directional_long)",
+        "magnitude": 5.876241052874612,
+        "magnitudeUnit": "pct_return"
+      },
+      {
+        "date": "2026-09-06",
+        "triggered": true,
         "outcome": "pending",
-        "actualMove": "Setup oil_pm_spot_divergence_mean_reversion shadow test 8/20 opened via H-215 after current row satisfied variant conditions."
+        "actualMove": "Setup oil_pm_spot_divergence_mean_reversion shadow test 10/20 opened via H-215 after current row satisfied variant conditions."
       }
     ],
-    "winRate": 0.42857142857142855,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Historical tests excluded from setup-family lifecycle due to known contaminated Oil/Gold data; retesting starts from corrected data. | OIL P/C ratio spiked to 1.495 at T14 (the trigger for the PC_RATIO_EXTREME_HIGH trade T-1779114618102-igou), then normalized to 1.387 at T15. The trade is +1.46% as oil recovered from 99.52 to 102.78. The P/C normalization from extreme is consistent with the thesis — heavy put buying exhausted and oil bounced. The PC_RATIO_EXTREME_HIGH signal family has 8/10 wins and 1.32% avg PnL, supporting this setup. | Oil P/C ratio spiked from 0.782 to 1.495 (T14) then 1.387 (T15) then 1.455 (T16) — a sustained extreme. The PC_RATIO_EXTREME_HIGH OIL long (T-1779114618102-igou) opened at $101.30 is now at $103.28, up +1.95% and approaching the +4% target. The P/C ratio has partially normalized from 1.495 to 1.455 but remains elevated. Thesis is intact — the contrarian long is working as oil bounced from the $99.52 low. | Oil P/C ratio spiked to 1.495 at T-14 and has since normalized to 1.255 then further declining. The panic exhaustion reversal thesis (P/C spike above 1.0 then reversal) appears to be playing out — the existing OIL long (T-1779114618102-igou) is +1.15% and the P/C ratio is declining as predicted. The hypothesis is showing early confirmation. | Oil P/C ratio panic exhaustion reversal (H-215) has 25% win rate over 5 variant tests. The oil_cl_pc_ratio spiked to 1.495 at T-14 entry and has since normalized to 0.984 — a 34% decline. The PC_RATIO_EXTREME_HIGH OIL long (T-1779114618102-igou) is up +1.27% and approaching its +4% target. The P/C normalization is the expected thesis behavior. | Oil P/C ratio panic exhaustion reversal from extreme above 1.5 to below 1.0: The oil_cl_pc_ratio spiked to 1.495 at T-14 entry and has since normalized to 1.040. The OIL long (T-1779114618102-igou) is +0.25% with a peak of +3.66%. The P/C normalization is occurring as predicted, but spot has pulled back from the $104 peak to $101.55. The thesis is partially validated — the P/C signal fired correctly but spot has not sustained the bounce. Still within the mechanical window. | Oil P/C ratio panic exhaustion reversal: The oil_cl_pc_ratio spiked to 1.495 at T14 (the extreme that triggered the PC_RATIO_EXTREME_HIGH long), then declined to 1.04. The contrarian long (T-1779114618102-igou) is up +1.0% with peak of +3.66%. The P/C ratio has normalized significantly from the extreme, suggesting the thesis is partially played out but the position is still within its mechanical target window. | Oil P/C ratio panic exhaustion: oil_cl_pc_ratio spiked to 1.495 at T-14 entry, triggering the PC_RATIO_EXTREME_HIGH long (T-1779114618102-igou). Ratio has since normalized to 1.04 and spot is +1.06% from entry. The reversal pattern is working as expected — put-heavy positioning at 1.495 was exhausted and spot bounced. Position is tracking toward its 4% target. | Oil P/C ratio panic exhaustion reversal: The oil_cl_pc_ratio spiked to 1.495 at T-1779114618102-igou entry and has since normalized to 1.04 — a 30% decline in 10 hours. This is exactly the thesis: heavy put buying exhausted, ratio normalizing. WTI spot moved from 101.3 to 102.52 (+1.2%). The PC_RATIO_EXTREME_HIGH signal family has 8/10 wins (80%) and avg P&L +1.32%. Trade is at +1.2% with 110h remaining and 4% target. Thesis intact. | Oil P/C ratio panic exhaustion reversal (H-215) — the oil_cl_pc_ratio has normalized to 1.04 from the extreme 1.50 that triggered the PC_RATIO_EXTREME_HIGH long (T-1779114618102-igou). The long is up +1.93% and approaching the +4% target. The P/C ratio signal has largely played out (ratio normalized), but oil spot continues to trend up. The mechanical scanner will handle the exit. 25% win rate over 5 tests is weak but the current trade is profitable. | Oil P/C ratio panic exhaustion reversal: oil_cl_pc_ratio has been stuck at 1.04 for the entire observation window — no variation detected. This metric appears frozen/stale in the data feed. Cannot evaluate H-215 conditions without valid P/C ratio movement data. | Oil P/C ratio panic exhaustion reversal: The oil_cl_pc_ratio dropped from 1.495 at entry of T-1779114618102-igou to 1.04 currently. The PC_RATIO_EXTREME_HIGH long is up +3.03% and approaching its +4% target. The reversal thesis is playing out well — oil spot has moved from 101.3 to 104.37. The P/C ratio normalization confirms the contrarian long thesis was correct. | Oil P/C ratio panic exhaustion reversal: oil_cl_pc_ratio spiked from 1.04 to 1.58 and has since normalized to 1.479. The PC_RATIO_EXTREME_HIGH long (T-1779114618102-igou) is up +2.37% and approaching target. The reversal from extreme put buying is playing out as predicted. 25% win rate over 5 tests suggests the signal is real but noisy — the current live trade is a positive data point. | Oil P/C ratio panic exhaustion reversal: The oil_cl_pc_ratio has declined from 1.58 peak to 1.40 over the session, while WTI spot has rallied from ~101.3 to 104.49. The PC_RATIO_EXTREME_HIGH live trade is working (+3.15%). The P/C ratio is normalizing as the contrarian long thesis plays out — put buyers are being squeezed. 25% win rate over 5 tests historically, but the current live instance is performing well. The normalization of P/C from 1.58 toward 1.40 is consistent with the thesis. | Oil P/C ratio panic exhaustion reversal: The oil_cl_pc_ratio has normalized from 1.58 at trade entry to 1.22 currently — a -18% decline in the ratio over 30h. The live OIL long (T-1779114618102-igou) is +2.90% with peak +3.66%, approaching the +4% mechanical target. The P/C normalization is exactly what the thesis predicted: put-heavy positioning was exhausted and spot has rallied. The hypothesis is performing as expected. No action needed; mechanical target handles exit. | Oil P/C ratio panic exhaustion reversal: The oil_cl_pc_ratio has declined from 1.58 peak to 1.222 over the session window, while WTI spot has risen from ~$101 to $104. The PC_RATIO_EXTREME_HIGH signal triggered the live OIL long (T-1779114618102-igou) which is now +2.69% and approaching the +4% target. The P/C ratio normalization (from 1.58 to 1.222) is consistent with the exhaustion reversal thesis — put buyers are covering as spot rallies. The hypothesis is performing as expected in this instance. | Oil P/C ratio panic exhaustion reversal: The oil P/C ratio has declined from 1.58 peak to 1.222 over the session window, consistent with put exhaustion. The open OIL long (T-1779114618102-igou) is +2.64% with peak at +3.66%, approaching the +4% target. The P/C ratio normalization is the thesis working as expected. 25% win rate over 5 variant tests remains weak but the current live trade is performing. | Oil P/C ratio panic exhaustion reversal: The oil_cl_pc_ratio has declined from 1.58 at entry of the OIL long to 1.222 currently (-18% decline), which is thesis continuation — the put-heavy positioning is unwinding as oil rallies. The OIL long (T-1779114618102-igou) is at +2.39% with peak at +3.66%, approaching the +4% target. The P/C normalization is proceeding as expected. 25% win rate over 5 tests is weak but the current instance is working. | H-215 (Oil P/C ratio panic exhaustion reversal): Oil P/C ratio has declined from 1.58 at peak to 1.222 currently (25% decline from extreme), while WTI spot has rallied from $101.3 to $103.8. The live OIL long (T-1779114618102-igou) is at +2.48% approaching the +4% target. This is a 25% win rate over 5 variant tests — below the family average for PC_RATIO_EXTREME_HIGH (80% win rate). The current trade is working but the hypothesis variant specifically about P/C ratio 'panic exhaustion reversal' has weak standalone evidence. The broader PC_RATIO_EXTREME_HIGH signal is the stronger vehicle. | Oil P/C ratio panic exhaustion reversal: 25% win rate over 5 tests. The oil_cl_pc_ratio has declined from 1.58 at trade open to 1.222 (a -18% decline), which is the thesis working as expected for the open long T-igou. The P/C ratio normalization from extreme levels is proceeding. The open position is +2.63% and approaching the +4% target. The hypothesis is performing in line with expectations for this instance. | Oil P/C ratio panic exhaustion reversal: oil_cl_pc_ratio dropped from 1.495 at trade open to 1.222 and has been locked there for 8+ snapshots — the ratio normalized rapidly after entry, consistent with the thesis. The live OIL long (T-1779114618102-igou) is +2.18% with peak at +3.66%, approaching the +4% target. The P/C normalization is complete; the remaining upside is pure spot momentum. 25% win rate over 5 tests is weak but the live trade is performing. | Oil P/C ratio panic exhaustion reversal: The oil_cl_pc_ratio has declined from 1.495 at trade open to 1.222 and has been flat at 1.222 for the last 8 snapshots — the panic exhaustion signal has normalized. The open OIL long (T-1779114618102-igou) is +2.39% with peak +3.66%, approaching the +4% target. The P/C normalization is consistent with the thesis playing out. 25% win rate over 5 tests remains weak but the current live trade is performing. | Oil P/C ratio panic exhaustion reversal: The oil_cl_pc_ratio has dropped sharply from 1.495 at trade open to 1.222 (locked there for 10+ snapshots), suggesting the put-buying panic has fully normalized. The live OIL long (T-1779114618102-igou) is at +1.61% with peak +3.66% and target at +4%. The PC ratio normalization is thesis confirmation — the contrarian long is working. The ratio is now at the 73rd percentile of the 7d range, no longer extreme. Mechanical scanner should close at target. | Oil P/C ratio panic exhaustion reversal (H-215): The oil_cl_pc_ratio has dropped sharply from 1.495 at entry to 1.222 and has been flat at 1.222 for 11 consecutive snapshots — the panic exhaustion has clearly resolved. The live PC_RATIO_EXTREME_HIGH trade (T-1779114618102-igou) is up +1.68% with 79h remaining. The signal thesis (heavy put buying → contrarian long) has played out directionally. The ratio normalization is thesis confirmation, not invalidation. No close action — mechanical scanner owns this. | Oil P/C ratio panic exhaustion reversal from extreme above 30 to below 3: Current oil_cl_pc_ratio is 1.222, which is in a normal range (not extreme above 30, not collapsed below 3). The panic exhaustion condition is not active. The live OIL long (T-1779114618102-igou) was entered on P/C at 1.495 (PC_RATIO_EXTREME_HIGH signal), which has since normalized to 1.222. The PC_RATIO_EXTREME_HIGH signal family has 80% win rate — this normalization is consistent with thesis completion. The position is up +1.22% with target at +4%. | Oil P/C ratio panic exhaustion reversal from extreme above 30 to below 3: The oil_cl_pc_ratio has been stable at 1.222 throughout the entire 14-snapshot window, showing no sign of the extreme panic exhaustion pattern described. The ratio is in a normal range. This variant's specific trigger condition (ratio above 30 then collapsing below 3) has not been observed in the current data. The existing OIL long (T-1779114618102-igou) via PC_RATIO_EXTREME_HIGH at 1.495 entry is performing at +0.88% with the ratio now at 1.222 — the signal has partially normalized but the trade is still open and approaching its +4% target. | Oil P/C ratio panic exhaustion reversal from extreme above 30 to below 3: oil_cl_pc_ratio has been stable at 1.222 throughout the entire 14-snapshot window (no movement). The P/C ratio is not showing the extreme oscillation this hypothesis requires. The live OIL long (T-1779114618102-igou) is +0.68% but the P/C signal has normalized from the 1.495 entry level to 1.222 — the thesis trigger has partially resolved. Oil spot is declining from 104.02 to 101.99, which is adverse for the long but within the stop range. The P/C normalization is the expected outcome of the contrarian long thesis. | Oil P/C ratio panic exhaustion reversal: oil_cl_pc_ratio has been elevated at 1.595 for the last 6 snapshots (96th percentile 7d). The open OIL long (T-1779312544292-h6fz) is at -0.16% with spot at $98.75 vs entry $98.91. The thesis is intact — heavy put buying has not yet resolved into a bounce. Oil HL funding normalized from -60.75% to -7.57%, which is thesis-supportive (shorts covering). No close warranted; mechanical stop at -2% handles downside. | H-215 (Oil P/C ratio panic exhaustion reversal) is the basis for the live OIL long T-1779312544292-h6fz. Oil P/C ratio has been locked at 1.595 for 10+ consecutive snapshots (88th percentile of 24h range, 96th percentile of 7d range), which is the extreme put-buying signal. WTI spot has been range-bound 98.75-99.63 since entry, with the position at +0.06%. The thesis is intact but not yet resolving — the contrarian bounce has not materialized strongly. Oil macro score is 68 (DECLINING signal) and Iran peace probability at 60.5% creates a mild headwind. Monitoring. | Oil P/C ratio panic exhaustion reversal: The oil_cl_pc_ratio dropped from 1.595 to 1.487 in the latest snapshot, which is the first meaningful normalization after 12 consecutive readings at 1.595. This is consistent with the thesis that extreme put-buying exhausts and reverses. The OIL long position (T-1779312544292-h6fz) is currently +1.60% with WTI at $100.49. The P/C ratio normalization is the first evidence of thesis progression. 25% win rate over 5 tests is weak but the current live trade is performing. Monitor for continued P/C normalization toward 1.0-1.2 range as the target zone. | Oil P/C ratio panic exhaustion reversal (H-215): oil_cl_pc_ratio at 2.404 is 3.6σ above its 30d mean — this is the exact extreme the hypothesis targets. The existing PC_RATIO_EXTREME_HIGH long (T-1779388148375-mzu8) is already capturing this signal and is up +0.66%. The hypothesis has 25% win rate over 5 tests, which is weak. The current trade is the live test of this thesis. Oil HL funding at -235.7% annualized is an extreme anomaly (-2.8σ) that adds confirmation — shorts are paying heavily to maintain positions. The contrarian long thesis remains intact for now. | Oil P/C ratio panic exhaustion reversal: Oil P/C ratio has been elevated at 2.4x for multiple snapshots (from a peak of 2.497 at T19). The current OIL long (T-1779388148375-mzu8) is up +1.41% from entry at $96.64. The hypothesis has 20% win rate over 6 tests — weak but the current live trade is performing. The P/C ratio has not yet collapsed back toward 1.0, suggesting the contrarian signal is still active. The HL funding has been persistently negative (-15.96% at T00), which is consistent with crowded shorts supporting the long thesis. | Oil PC ratio remains at 2.404, a 3.1σ anomaly. The existing OIL long (T-1779388148375-mzu8) is up +1.47% and the thesis is intact. The PC ratio has been sticky at 2.404 for 10+ consecutive snapshots, suggesting the put-heavy positioning is structural rather than transient. The contrarian long thesis continues to hold as spot has moved from 96.64 to 98.06. No change needed. | Oil P/C ratio panic exhaustion reversal: The oil_cl_pc_ratio remains at 2.404, a 2.9σ anomaly. The existing OIL long (T-1779388148375-mzu8) was entered on this signal at 96.64. Spot has pulled back sharply to 96.46 in the latest snapshot after reaching 98.82 intraday — a -2.4% pullback from the intraday high. The P/C ratio has not normalized (still 2.404 across all snapshots), suggesting the put-buying thesis has not resolved. The mechanical stop is at -2% from entry (94.71), and current PnL is -0.19%. The thesis remains intact — extreme put buying has not reversed, and the contrarian long is still within its risk window. 20% win rate over 6 tests is weak but the current live trade is within normal variance. | Oil P/C ratio panic exhaustion reversal: oil_cl_pc_ratio has collapsed from 2.404 to 1.276 over the session — a 46% decline. This is a significant normalization from the extreme put-buying that triggered the existing OIL long position. The 20% win rate over 6 tests is weak. The rapid P/C normalization is actually thesis-supportive for the existing OIL long (T-1779388148375-mzu8) — the put-buying panic is unwinding as expected. However, the weak win rate suggests this family needs more evidence before promotion. | Oil P/C ratio panic exhaustion reversal: The oil_cl_pc_ratio collapsed dramatically from 2.404 at open to 0.840 at T16, then partially recovered to 1.241. This is exactly the pattern the hypothesis tests — extreme P/C above 2.0 collapsing toward normal. The open OIL spot long (T-1779388148375-mzu8) was entered on this signal at 96.64. OIL spot has drifted to 96.22 (-0.43%), near the stop. The P/C ratio normalization is well underway (from 2.4 to 1.24, -47%), which is thesis continuation — the crowded put positioning has unwound. However, spot has not bounced meaningfully. 6 variant tests at 20% win rate suggests this pattern has weak follow-through on spot. Monitoring. | Oil P/C ratio has collapsed from 2.404 to 1.241 over the window — a dramatic normalization from the extreme put-buying that triggered the OIL long (T-1779388148375-mzu8). The P/C ratio is now in the middle of its 7d range (0.627-2.497, currently at 67th percentile). The contrarian bounce thesis has been working: oil spot is up +1.92% from entry. The P/C exhaustion reversal pattern appears to be playing out as expected, with the ratio normalizing as the contrarian long gains. The mechanical target at +4% is the appropriate exit; no LLM close needed. | Oil P/C ratio panic exhaustion reversal: The oil_cl_pc_ratio dropped sharply from 2.36 at the open to 1.24 and has stayed there for 10+ snapshots. The reversal already occurred and the existing PC_RATIO_EXTREME_HIGH long captured it (+1.96% PnL). The ratio is no longer at an extreme — it has normalized. This hypothesis variant is resolved for this episode. | Oil P/C ratio panic exhaustion reversal: The oil_cl_pc_ratio has been stable at 1.241 throughout the entire 14-snapshot window — no panic exhaustion signal present. The extreme oil HL funding anomaly (-373.19 annualized, -4.6 std devs) is notable but belongs to a different setup family. The P/C ratio is not showing the extreme above-30 to below-3 collapse pattern this hypothesis requires. Conditions not met. | Oil P/C ratio panic exhaustion reversal has underperformed (2/10 wins) despite current extreme move. The thesis may be overly simplistic; the recent oil sell-off is accompanied by PM IV dislocations (151.8) that are not captured by the original 'panic exhaustion' narrative. The hypothesis needs refinement before further promotion. | Oil P/C ratio extreme high (2.39) combined with extreme PM IV (105.9) and Brent/WTI spread (3.6) suggests panic exhaustion. Historical tests show 20% win rate over 10 variants, low confidence. If oil rebounds, this could improve, but insufficient clean tests. | Oil P/C ratio panic exhaustion reversal: 100% win over 12 shadow tests. This suggests extreme P/C ratio above 30 fading to below 3 is a reliable contrarian bounce signal. The hypothesis should be re-evaluated for promotion to a live signal family once the contamination rules are fully resolved for Oil. | Oil P/C ratio panic exhaustion reversal has won all 12 shadow tests so far. The thesis (contrarian bounce after extreme P/C) aligns with PC_RATIO_EXTREME_HIGH logic on OIL but with a more aggressive entry. Worth accelerating shadow tests to reach 20 minimum for potential promotion.",
@@ -19197,11 +19207,13 @@
       {
         "date": "2026-08-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup hype_relative_oi_breakout_continuation shadow test 12/20 opened via H-521 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "HYPE moved 2.74% (83.173 → 85.451) [long needs ≥ +2%] (method=spot_directional_long)",
+        "magnitude": 2.738869585081687,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0.8,
+    "winRate": 0.8181818181818182,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "HYPE breakout continuation showing early signs but needs more shadow tests. HYPE OI stable above 1.4B, funding normalized, price near 65.4; hypothesis holds. | Current HYPE conditions: spot 65.9 (within 6% of 7d high ~66), OI at record levels, funding at 10.95% (normalized from recent highs). The breakout continuation thesis is holding, but no clear acceleration yet. Shadow tests needed for the promoted family, but conditions are being recorded. | Hypothesis triggered a HYPE long (current open position) and is -0.39%. The thesis of breakout continuation after OI record is plausible, but the family win-rate is only 43% and recent sub-tests have been weak. No immediate invalidation, but the edge is thin. | HYPE relative OI breakout continuation remains viable in its own family: 12 active tests at 75% win and the setup-family has 19/45 live trades with positive average PnL. Keep it as a HYPE-specific continuation signal, not as a cross-asset BTC confirmation.",
@@ -20419,8 +20431,8 @@
       {
         "date": "2026-09-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 18/20 opened via H-532 after current row satisfied variant conditions.",
+        "outcome": "loss",
+        "actualMove": "NO on GOLD above 8000 0.964 → 0.962 (-0.3% on the contract) (method=pm_contract_pnl)",
         "contractEntry": {
           "marketId": "1294366",
           "eventSlug": "what-will-gold-gc-hit-by-end-of-december",
@@ -20429,13 +20441,15 @@
           "strike": 8000,
           "entryPrice": 0.964,
           "side": "no"
-        }
+        },
+        "magnitude": -0.2593360995850567,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-09-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 19/20 opened via H-532 after current row satisfied variant conditions.",
+        "outcome": "win",
+        "actualMove": "NO on GOLD above 6000 0.885 → 0.900 (+1.7% on the contract) (method=pm_contract_pnl)",
         "contractEntry": {
           "marketId": "1294368",
           "eventSlug": "what-will-gold-gc-hit-by-end-of-december",
@@ -20444,13 +20458,15 @@
           "strike": 6000,
           "entryPrice": 0.885,
           "side": "no"
-        }
+        },
+        "magnitude": 1.6949152542372896,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-09-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 20/20 opened via H-532 after current row satisfied variant conditions.",
+        "outcome": "loss",
+        "actualMove": "NO on GOLD above 7000 0.955 → 0.955 (+0.0% on the contract) (method=pm_contract_pnl)",
         "contractEntry": {
           "marketId": "1294367",
           "eventSlug": "what-will-gold-gc-hit-by-end-of-december",
@@ -20459,7 +20475,9 @@
           "strike": 7000,
           "entryPrice": 0.955,
           "side": "no"
-        }
+        },
+        "magnitude": 0,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-09-05",
@@ -20477,7 +20495,7 @@
         }
       }
     ],
-    "winRate": 0.5882352941176471,
+    "winRate": 0.55,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "The no-bias adjusted gap gold short-rich-tail variant went 0/17, with GOLD moving essentially flat to higher after the gap condition. The no-bias gap stayed pinned while spot trended against the short. | 0/19 scorable tests. The rich tail no-bias gap threshold >= 12.3 also failed as gold rallied through the fade window, including 4380 to 4510 and 4519 to 4623. The gap is trend strength, not a mean-reversion sell signal. | H-532 failed every scorable test. Gold spot was flat or rose after the rich tail NO gap, so the no-bias adjusted gap did not predict bearish continuation. | Discarded 20 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer.",
@@ -21634,11 +21652,13 @@
       {
         "date": "2026-09-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long shadow test 25/20 opened via H-537 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "Funding moved -0.3% → 5.5% (long reversion needs increase) (method=funding_normalize_up)",
+        "magnitude": 5.73,
+        "magnitudeUnit": "funding_pts"
       }
     ],
-    "winRate": 0.5,
+    "winRate": 0.52,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "H-537 shows 11/23 scorable wins (48%). The single-threshold `aapl_hl_funding_ann < -10` entry produces losses when funding is already near neutral (5.5%) and gives back gains; it lacks a true extreme or turn filter. | AAPL funding reversion is 11/23 with many losses showing funding stuck at 5.5% or drifting lower, not a sharp normalization. The static `aapl_hl_funding_ann < -10` condition does not isolate genuine funding capitulation or the turning point. | 12/24 scorable tests (50%). Many losses occurred when funding was already mild or positive and failed to rise further, e.g. 5.5% → 5.5% and 2.7% → -3.2%. | AAPL funding below -10% does not predict a 2-day rebound; it often prints inert readings such as 5.5→5.5 or moves the wrong way like 2.7→-3.2. The threshold marks neither a reliable weekend effect nor a genuine overshoot extreme.",
@@ -23248,8 +23268,8 @@
       {
         "date": "2026-08-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup find_0018 shadow test 4/20 opened via H-551 after historical row satisfied variant conditions.",
+        "outcome": "loss",
+        "actualMove": "NO on OIL above 85 0.000 → 0.000 resolved terminal (last YES 1.00) (-100.0% on the contract) (method=pm_contract_terminal)",
         "contractEntry": {
           "marketId": "3903827",
           "eventSlug": "what-price-will-wti-hit-in-august-2026",
@@ -23258,7 +23278,9 @@
           "strike": 85,
           "entryPrice": 0.0004999999999999449,
           "side": "no"
-        }
+        },
+        "magnitude": -100,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-09-04",
@@ -23276,7 +23298,7 @@
         }
       }
     ],
-    "winRate": 0.5,
+    "winRate": 0.3333333333333333,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "The >2pt sell-YES edge on OIL above-strike contracts repeatedly lost in rising tape; OIL spot rose 2.8–10.0%, pushing YES prices up rather than decaying. | Discarded 19 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer. | OIL one-touch NO heatmap cluster is the correct contract-native framing: 35 tests at 100% win in active hypotheses. Continue treating it as a gated OIL NO premium fade rather than a spot-decline call. | H-551's OIL one-touch NO edge on the heatmap cluster is 100% over 33 scorable tests. This supports keeping the family alive when stated as contract P&L, not spot decline.",
@@ -24043,8 +24065,8 @@
       {
         "date": "2026-08-23",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup find_0022 shadow test 5/20 opened via H-561 after current row satisfied variant conditions.",
+        "outcome": "win",
+        "actualMove": "NO on OIL above 95 0.775 → 1.000 resolved terminal (last YES 0.01) (+29.0% on the contract) (method=pm_contract_terminal)",
         "contractEntry": {
           "marketId": "3102462",
           "eventSlug": "what-price-will-wti-hit-in-august-2026",
@@ -24053,7 +24075,9 @@
           "strike": 95,
           "entryPrice": 0.775,
           "side": "no"
-        }
+        },
+        "magnitude": 29.032258064516125,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-08-27",
@@ -24099,9 +24123,24 @@
           "entryPrice": 0.765,
           "side": "no"
         }
+      },
+      {
+        "date": "2026-09-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup find_0022 shadow test 14/20 opened via H-561 after current row satisfied variant conditions.",
+        "contractEntry": {
+          "marketId": "3866521",
+          "eventSlug": "what-price-will-wti-hit-in-september-2026",
+          "asset": "OIL",
+          "direction": "below",
+          "strike": 20,
+          "entryPrice": 0.9995,
+          "side": "no"
+        }
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Discarded 1 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer.",
@@ -25696,8 +25735,8 @@
       {
         "date": "2026-08-27",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup find_0023 shadow test 4/20 opened via H-586 after current row satisfied variant conditions.",
+        "outcome": "win",
+        "actualMove": "NO on ETH above 2600 0.439 → 1.000 resolved terminal (last YES 0.01) (+127.8% on the contract) (method=pm_contract_terminal)",
         "contractEntry": {
           "marketId": "3257386",
           "eventSlug": "what-price-will-ethereum-hit-in-august-2026",
@@ -25706,7 +25745,9 @@
           "strike": 2600,
           "entryPrice": 0.43899999999999995,
           "side": "no"
-        }
+        },
+        "magnitude": 127.79043280182236,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-08-28",
@@ -25752,9 +25793,24 @@
           "entryPrice": 0.948,
           "side": "no"
         }
+      },
+      {
+        "date": "2026-09-06",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup find_0023 shadow test 5/20 opened via H-586 after current row satisfied variant conditions.",
+        "contractEntry": {
+          "marketId": "4052471",
+          "eventSlug": "what-price-will-solana-hit-in-september-2026",
+          "asset": "SOL",
+          "direction": "above",
+          "strike": 130,
+          "entryPrice": 0.86,
+          "side": "no"
+        }
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Retired unscorable: burned 1 tests that could never be graded. The thesis states no direction, no funding reversion, and no move magnitude, so the scorer has nothing to measure. Re-author with an explicit direction or a measurable move before retesting. | Retirement reversed: this is a Polymarket contract thesis, and the spot scorer cannot grade a contract trade regardless of how the thesis is worded. The limitation is the scorer's, not this thesis's, so it was reinstated rather than re-authored. Its evidence has to come from the shadow record.",
@@ -26852,11 +26908,13 @@
       {
         "date": "2026-09-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup other_mixed shadow test 35/20 opened via H-607 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "Funding moved -58.0% → 5.5% (long reversion needs increase) (method=funding_normalize_up)",
+        "magnitude": 63.44,
+        "magnitudeUnit": "funding_pts"
       }
     ],
-    "winRate": 0.8333333333333334,
+    "winRate": 0.8571428571428571,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -27170,11 +27228,13 @@
       {
         "date": "2026-09-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup other_mixed shadow test 36/20 opened via H-611 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "Funding moved -58.0% → 5.5% (long reversion needs increase) (method=funding_normalize_up)",
+        "magnitude": 63.44,
+        "magnitudeUnit": "funding_pts"
       }
     ],
-    "winRate": 0.6,
+    "winRate": 0.6363636363636364,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -28563,11 +28623,13 @@
       {
         "date": "2026-09-03",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup btc_iv_compression_vol_reversion shadow test 15/20 opened via H-638 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "BTC moved 3.72% (77026 → 79890) [neutral abs needs ≥ 2%] (method=spot_abs_move)",
+        "magnitude": 1.7182250149300238,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0,
+    "winRate": 0.16666666666666666,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "BTC PM IV z-score < -1.5 does not force a quick 2% snapback; the family is 3/14 with many examples under the bar such as 1.22% and -1.24%. Compression can persist longer than the 3-day window, so the absolute-move criterion is not being triggered.",
@@ -31219,8 +31281,8 @@
       {
         "date": "2026-08-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "outcome": "win",
+        "actualMove": "NO on GOLD above 4700 0.979 → 1.000 resolved terminal (last YES 0.01) (+2.2% on the contract) (method=pm_contract_terminal)",
         "contractEntry": {
           "marketId": "3096357",
           "eventSlug": "what-price-will-xauusd-hit-in-august-2026",
@@ -31229,7 +31291,9 @@
           "strike": 4700,
           "entryPrice": 0.9785,
           "side": "no"
-        }
+        },
+        "magnitude": 2.1972406745017845,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-09-01",
@@ -31277,7 +31341,7 @@
         }
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -31310,8 +31374,10 @@
       {
         "date": "2026-09-04",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup other_mixed shadow test 34/20 opened via H-690 after current row satisfied variant conditions."
+        "outcome": "win",
+        "actualMove": "Funding moved -58.0% → 5.5% (long reversion needs increase) (method=funding_normalize_up)",
+        "magnitude": 63.44,
+        "magnitudeUnit": "funding_pts"
       }
     ],
     "winRate": 1,
@@ -31342,8 +31408,8 @@
       {
         "date": "2026-08-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: contract 3976291 has no exit quote at the horizon (vanished mid-range at YES 0.60) (method=contract_exit_unavailable)",
         "contractEntry": {
           "marketId": "3976291",
           "eventSlug": "what-price-will-xauusd-hit-in-august-2026",
@@ -31352,7 +31418,9 @@
           "strike": 4500,
           "entryPrice": 0.395,
           "side": "no"
-        }
+        },
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_exit_unavailable"
       }
     ],
     "winRate": 0,
@@ -31382,8 +31450,8 @@
       {
         "date": "2026-08-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "outcome": "win",
+        "actualMove": "NO on BTC above 95000 0.645 → 0.650 (+0.8% on the contract) (method=pm_contract_pnl)",
         "contractEntry": {
           "marketId": "2467206",
           "eventSlug": "what-price-will-bitcoin-hit-before-2027",
@@ -31392,10 +31460,12 @@
           "strike": 95000,
           "entryPrice": 0.645,
           "side": "no"
-        }
+        },
+        "magnitude": 0.7751937984496131,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -31422,8 +31492,8 @@
       {
         "date": "2026-08-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: contract 3975968 has no exit quote at the horizon (vanished mid-range at YES 0.70) (method=contract_exit_unavailable)",
         "contractEntry": {
           "marketId": "3975968",
           "eventSlug": "what-price-will-bitcoin-hit-in-august-2026",
@@ -31432,7 +31502,9 @@
           "strike": 77500,
           "entryPrice": 0.405,
           "side": "no"
-        }
+        },
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_exit_unavailable"
       }
     ],
     "winRate": 0,
@@ -31463,8 +31535,8 @@
       {
         "date": "2026-08-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "outcome": "win",
+        "actualMove": "NO on BTC above 82500 0.956 → 1.000 resolved terminal (last YES 0.00) (+4.7% on the contract) (method=pm_contract_terminal)",
         "contractEntry": {
           "marketId": "3257336",
           "eventSlug": "what-price-will-bitcoin-hit-in-august-2026",
@@ -31473,10 +31545,12 @@
           "strike": 82500,
           "entryPrice": 0.9555,
           "side": "no"
-        }
+        },
+        "magnitude": 4.657247514390369,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -31504,8 +31578,8 @@
       {
         "date": "2026-08-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "outcome": "win",
+        "actualMove": "NO on ETH above 2600 0.910 → 1.000 resolved terminal (last YES 0.01) (+9.8% on the contract) (method=pm_contract_terminal)",
         "contractEntry": {
           "marketId": "3257386",
           "eventSlug": "what-price-will-ethereum-hit-in-august-2026",
@@ -31514,10 +31588,12 @@
           "strike": 2600,
           "entryPrice": 0.9105,
           "side": "no"
-        }
+        },
+        "magnitude": 9.829763866007692,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,

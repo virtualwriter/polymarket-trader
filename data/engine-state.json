@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-09-05T23:28:24.835Z",
+  "generatedAt": "2026-09-06T00:28:19.369Z",
   "dataFreshness": {
-    "valuationRows": 2795,
-    "latestValuationAt": "2026-09-05T23",
-    "macroRows": 2793,
+    "valuationRows": 2796,
+    "latestValuationAt": "2026-09-06T00",
+    "macroRows": 2794,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-05T23"
+    "latestInstrumentSnapshotAt": "2026-09-06T00"
   },
   "portfolio": {
     "cash": 99.481,
@@ -13,7 +13,7 @@
     "realizedPnl": 6.7206,
     "totalTrades": 905,
     "winRatePct": 64.2,
-    "unrealizedPnl": -0.0144
+    "unrealizedPnl": -0.0247
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.11,
-      "currentPrice": 210.35,
+      "pnlPct": -0.71,
+      "currentPrice": 210.1,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -36,7 +36,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.42,
+      "pnlPct": -0.38,
       "currentPrice": 24.127,
       "underlyingPrice": null,
       "targetPct": 3,
@@ -50,8 +50,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -1.09,
-      "currentPrice": 27.744,
+      "pnlPct": -1.15,
+      "currentPrice": 27.741,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -64,8 +64,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.18,
-      "currentPrice": 19.219,
+      "pnlPct": -0.24,
+      "currentPrice": 19.203,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -235,10 +235,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 26,
-    "resolvedCount": 1006,
+    "openCount": 25,
+    "resolvedCount": 1007,
     "wouldHaveWon": 515,
-    "wouldHaveLost": 491,
+    "wouldHaveLost": 492,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -306,26 +306,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "loss",
-        "closeReason": "stop",
-        "pnlPct": -20,
-        "resolvedAt": "2026-09-03T17:28:22.780Z",
-        "marketQuality": {
-          "yesBid": 0.7,
-          "yesAsk": 0.71,
-          "yesSpread": 0.01,
-          "liquidity": 41468.31,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -461,6 +441,26 @@
           "liquidity": 45982.76,
           "flags": []
         }
+      },
+      {
+        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "no_bias_adjusted_gap_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -2,
+        "resolvedAt": "2026-09-06T00:28:18.134Z",
+        "marketQuality": {
+          "yesBid": 0.5,
+          "yesAsk": 0.51,
+          "yesSpread": 0.01,
+          "liquidity": 6932.9,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -559,22 +559,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.0pt on GOLD, spread 2.0c, liquidity 9149. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "GOLD",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $5,000 by end of December?",
-        "marketQuality": {
-          "yesBid": 0.5,
-          "yesAsk": 0.51,
-          "yesSpread": 0.01,
-          "liquidity": 6932.9,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[NO-BIAS ADJUSTED GAP SHADOW] Buy NO where adjusted NO gap is 9.4pt after haircuts. CBOE gap 10.4pt, CME gap 10.4pt, source agreement both_positive, spread 1.0c, liquidity 6933. Shadow-only calibration trade; hold 7d or exit if adjusted gap disappears."
       }
     ]
   },
