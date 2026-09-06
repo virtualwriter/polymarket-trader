@@ -5041,3 +5041,34 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 4/12; ne
 
 ---
 
+### 2026-09-06 13:28 UTC
+
+**Portfolio:** $103.53 total | Cash $92.53 | 11 open | P&L $6.7683 | 64% win rate (911 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 90.76 is 2.4 std devs from mean (61.92 ± 11.79)
+- [anomaly] hype_hl_oi = 2129720615 is 2.4 std devs from mean (1342674413.51 ± 322540720.29)
+- [anomaly] hype_spot = 88.9401 is 2.3 std devs from mean (61.02 ± 12.06)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 1008 (516 wins / 492 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.14%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.37%)
+
+**LLM analysis:**
+No discretionary closes emitted: ALLOWED ACTION SURFACE has all open positions either mechanical-only or below the 12h LLM close minimum. AMZN FUNDING_EXTREME_SHORT funding has normalized from -25.6% to +5.48%, which would likely be thesis-invalidated at the next eligible review, but the position is only ~10h old and not yet closable. The 13:00 WEEKEND_HL_FUNDING_REVERSION_LONG batch opened with zero PnL and remains policy-gated to mechanical exits only; no action taken.
+
+---
+
