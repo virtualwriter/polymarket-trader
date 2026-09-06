@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-09-06T04:28:20.992Z",
+  "generatedAt": "2026-09-06T05:28:13.416Z",
   "dataFreshness": {
-    "valuationRows": 2799,
-    "latestValuationAt": "2026-09-06T04",
-    "macroRows": 2797,
+    "valuationRows": 2800,
+    "latestValuationAt": "2026-09-06T05",
+    "macroRows": 2798,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-06T04"
+    "latestInstrumentSnapshotAt": "2026-09-06T05"
   },
   "portfolio": {
-    "cash": 98.4976,
+    "cash": 98.5058,
     "openPositions": 5,
-    "realizedPnl": 6.7372,
-    "totalTrades": 906,
-    "winRatePct": 64.2,
-    "unrealizedPnl": -0.011
+    "realizedPnl": 6.7455,
+    "totalTrades": 907,
+    "winRatePct": 64.3,
+    "unrealizedPnl": -0.0398
   },
   "openPositions": [
     {
@@ -22,7 +22,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.24,
+      "pnlPct": -0.18,
       "currentPrice": 24.127,
       "underlyingPrice": null,
       "targetPct": 3,
@@ -36,8 +36,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -2.35,
-      "currentPrice": 27.674,
+      "pnlPct": -3.77,
+      "currentPrice": 27.594,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -50,22 +50,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.81,
-      "currentPrice": 19.243,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "WF-1788665296914-EBAY-5ymn",
-      "asset": "EBAY",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.72,
-      "currentPrice": 103.78,
+      "pnlPct": 0.02,
+      "currentPrice": 19.213,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -78,8 +64,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": -0.04,
-      "currentPrice": 259.7,
+      "pnlPct": -0.05,
+      "currentPrice": 259.67,
       "underlyingPrice": 258.3,
       "targetPct": 4,
       "stopPct": 2,
@@ -89,6 +75,20 @@
         "amzn_hl_perp",
         "amzn_hl_funding_ann"
       ]
+    },
+    {
+      "positionId": "WF-1788672492774-CBRS-2orj",
+      "asset": "CBRS",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 210.42,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
     }
   ],
   "signalHealth": [
@@ -234,10 +234,10 @@
     {
       "type": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "enabled": true,
-      "weight": 0.6721,
-      "trades": 220,
-      "wins": 149,
-      "avgPnlPct": -0.2363,
+      "weight": 0.6731,
+      "trades": 221,
+      "wins": 150,
+      "avgPnlPct": -0.2315,
       "disabledAssets": [
         "ZM"
       ]
