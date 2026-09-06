@@ -1,5 +1,5 @@
 {
-  "cash": 102.5720922226385,
+  "cash": 101.5720922226385,
   "positions": [
     {
       "id": "WF-1788690505003-RIVN-8m3h",
@@ -8,7 +8,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 16.01,
-      "currentPrice": 15.941,
+      "currentPrice": 15.942,
       "entryUnderlyingPrice": 16.01,
       "size": 1,
       "leverage": 5,
@@ -21,14 +21,38 @@
       "instrumentType": "hl_perp",
       "instrumentId": "RIVN",
       "instrumentLabel": "HL RIVN Builder DEX stock perp",
-      "fundingPnlAccrued": 0.00309226198630137,
+      "fundingPnlAccrued": 0.0035106689497716895,
       "entryConfidence": 0.5,
       "peakPnlPct": 0.18539418257425078
+    },
+    {
+      "id": "WF-1788730099695-GME-rpzp",
+      "openedAt": "2026-09-06T21:28:19.694Z",
+      "asset": "GME",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 19.248,
+      "currentPrice": 19.248,
+      "currentUnderlyingPrice": 19.248,
+      "entryUnderlyingPrice": 19.248,
+      "size": 1,
+      "leverage": 5,
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "hypothesisId": null,
+      "thesis": "[WEEKEND HL FUNDING LIVE] GME Builder DEX stock perp funding -52.9% annualized in mid band [-100%, -50%] during US-equity-closed entry window (Fri 4:00pm ET → Sun; no Mon pre-open entries). Live tracked long at 5x; exit when margin P&L >= 3%, funding >= 10%, Mon 9:30am ET window close, or held 24h.",
+      "targetPct": 3,
+      "stopPct": 100,
+      "expiryDate": "2026-09-07T21:28:19.694Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "GME",
+      "instrumentLabel": "HL GME Builder DEX stock perp",
+      "fundingPnlAccrued": 0,
+      "entryConfidence": 0.5
     }
   ],
-  "totalRealizedPnl": 6.811690857050117,
+  "totalRealizedPnl": 6.811799999999992,
   "totalTrades": 927,
   "winCount": 594,
   "lossCount": 333,
-  "lastUpdated": "2026-09-06T20:28:28.105Z"
+  "lastUpdated": "2026-09-06T21:28:20.811Z"
 }
