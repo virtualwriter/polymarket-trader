@@ -5103,3 +5103,52 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 5/12; ne
 
 ---
 
+### 2026-09-06 16:28 UTC
+
+**Portfolio:** $103.50 total | Cash $93.50 | 10 open | P&L $6.7378 | 64% win rate (918 trades)
+
+**Closed 7 trades:**
+- ❌ COIN long via hyperliquid/hl_perp [HL COIN Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0081 (-0.8%, market -0.0083, funding 0.0002)
+- ❌ HOOD long via hyperliquid/hl_perp [HL HOOD Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0155 (-1.6%, market -0.0155, funding 0.0000)
+- ❌ LITE long via hyperliquid/hl_perp [HL LITE Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0007 (-0.1%, market -0.0008, funding 0.0001)
+- ❌ MSTR long via hyperliquid/hl_perp [HL MSTR Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0222 (-2.2%, market -0.0229, funding 0.0007)
+- ✅ CRCL long via hyperliquid/hl_perp [HL CRCL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0199 (2.0%, market 0.0199, funding 0.0000)
+- ✅ ZM long via hyperliquid/hl_perp [HL ZM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → signal_killed: +$0.0000 (0.0%, market 0.0000, funding 0.0000)
+- ❌ AMZN long via hyperliquid/hl_perp [HL AMZN perp] (FUNDING_EXTREME_SHORT) → llm_decision: $-0.0038 (-0.4%, market -0.0038, funding -0.0000)
+
+**Signal weight changes:**
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00220/trade over 226 trades (p=0.166).
+- 🛑 WEEKEND_HL_FUNDING_REVERSION_LONG on COIN DISABLED — 3/8 wins is below per-asset kill threshold.
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00226/trade over 227 trades (p=0.159).
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00225/trade over 228 trades (p=0.158).
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00234/trade over 229 trades (p=0.148).
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00224/trade over 230 trades (p=0.157).
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00223/trade over 231 trades (p=0.157).
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 90.86 is 2.4 std devs from mean (61.94 ± 11.81)
+- [anomaly] hype_hl_oi = 2105737985 is 2.4 std devs from mean (1343228610.62 ± 323092761.32)
+- [anomaly] hype_spot = 88.147 is 2.2 std devs from mean (61.04 ± 12.08)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 1008 (516 wins / 492 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.14%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.37%)
+
+**LLM analysis:**
+Closed AMZN funding-extreme long after its funding input round-tripped into positive territory. Weekend HL funding reversion positions remain mechanical and not LLM-close eligible; several are slightly underwater but within planned hold/expiry windows. No hard portfolio risk observed.
+
+---
+
