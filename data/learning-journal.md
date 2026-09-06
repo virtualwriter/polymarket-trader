@@ -5230,3 +5230,42 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 6/12; ne
 
 ---
 
+### 2026-09-06 19:28 UTC
+
+**Portfolio:** $103.52 total | Cash $99.52 | 4 open | P&L $6.7597 | 64% win rate (924 trades)
+
+**Closed 2 trades:**
+- ✅ COST long via hyperliquid/hl_perp [HL COST Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0076 (0.8%, market 0.0070, funding 0.0006)
+- ❌ EBAY long via hyperliquid/hl_perp [HL EBAY Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0024 (-0.2%, market -0.0029, funding 0.0005)
+
+**Signal weight changes:**
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00208/trade over 236 trades (p=0.169).
+- ⚠ WEEKEND_HL_FUNDING_REVERSION_LONG trending unprofitable — mean $-0.00208/trade over 237 trades (p=0.168).
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 90.99 is 2.5 std devs from mean (61.97 ± 11.84)
+- [anomaly] hype_hl_oi = 2081419574 is 2.3 std devs from mean (1344028514.43 ± 323845213.76)
+- [anomaly] hype_spot = 87.345 is 2.2 std devs from mean (61.07 ± 12.10)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 1008 (516 wins / 492 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.14%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.37%)
+
+**LLM analysis:**
+Reviewed open WEEKEND_HL_FUNDING_REVERSION_LONG positions: DKNG is at 100% elapsed with 0h to expiry and should be handled mechanically; RIVN is -1.53% but still inside normal risk window and below min hold; HIMS and GME are near flat. No LLM closes are permitted per policy, so no close instructions emitted. RIVN funding has normalized materially from entry, but this is context only and not actionable in this review; no structural concern to escalate.
+
+---
+
