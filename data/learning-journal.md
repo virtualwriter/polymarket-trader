@@ -4757,3 +4757,34 @@ No discretionary closes are allowed for the four open WEEKEND_HL_FUNDING_REVERSI
 
 ---
 
+### 2026-09-06 04:28 UTC
+
+**Portfolio:** $103.50 total | Cash $98.50 | 5 open | P&L $6.7372 | 64% win rate (906 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 6 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 89.62 is 2.4 std devs from mean (61.84 ± 11.71)
+- [anomaly] hype_hl_oi = 2044989712 is 2.2 std devs from mean (1340542547.26 ± 320521744.74)
+- [anomaly] hype_spot = 86.12 is 2.1 std devs from mean (60.94 ± 11.99)
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 1007 (515 wins / 492 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+13.33%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.14%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.00%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 2/12; next scheduled 2026-09-06T06:28:21.133Z). Mechanical cycle ran normally._
+
+---
+

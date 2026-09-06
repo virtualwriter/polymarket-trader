@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-09-06T03:28:17.512Z",
+  "generatedAt": "2026-09-06T04:28:20.992Z",
   "dataFreshness": {
-    "valuationRows": 2798,
-    "latestValuationAt": "2026-09-06T03",
-    "macroRows": 2796,
+    "valuationRows": 2799,
+    "latestValuationAt": "2026-09-06T04",
+    "macroRows": 2797,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-06T03"
+    "latestInstrumentSnapshotAt": "2026-09-06T04"
   },
   "portfolio": {
-    "cash": 99.4976,
-    "openPositions": 4,
+    "cash": 98.4976,
+    "openPositions": 5,
     "realizedPnl": 6.7372,
     "totalTrades": 906,
     "winRatePct": 64.2,
-    "unrealizedPnl": -0.0162
+    "unrealizedPnl": -0.011
   },
   "openPositions": [
     {
@@ -22,7 +22,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.29,
+      "pnlPct": -0.24,
       "currentPrice": 24.127,
       "underlyingPrice": null,
       "targetPct": 3,
@@ -36,8 +36,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -1.48,
-      "currentPrice": 27.723,
+      "pnlPct": -2.35,
+      "currentPrice": 27.674,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -50,8 +50,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0.14,
-      "currentPrice": 19.218,
+      "pnlPct": 0.81,
+      "currentPrice": 19.243,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -64,13 +64,31 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": 0,
-      "currentPrice": 103.63,
+      "pnlPct": 0.72,
+      "currentPrice": 103.78,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
       "closeReasonIfMechanical": null,
       "evidenceColumns": []
+    },
+    {
+      "positionId": "T-1788665324907-o8f8",
+      "asset": "AMZN",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "FUNDING_EXTREME_SHORT",
+      "pnlPct": -0.04,
+      "currentPrice": 259.7,
+      "underlyingPrice": 258.3,
+      "targetPct": 4,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "amzn_stock",
+        "amzn_hl_perp",
+        "amzn_hl_funding_ann"
+      ]
     }
   ],
   "signalHealth": [
