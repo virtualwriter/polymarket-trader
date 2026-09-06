@@ -23332,6 +23332,23 @@
           "entryPrice": 0.645,
           "side": "no"
         }
+      },
+      {
+        "date": "2026-08-29",
+        "triggered": true,
+        "outcome": "loss",
+        "actualMove": "[historical-backfill] UNSCORABLE: contract 3096413 has no exit quote at the horizon (vanished mid-range at YES 0.04) (resolved 2026-09-05 from 2026-08-29; method=contract_exit_unavailable)",
+        "contractEntry": {
+          "marketId": "3096413",
+          "eventSlug": "what-price-will-wti-hit-in-august-2026",
+          "asset": "OIL",
+          "direction": "above",
+          "strike": 90,
+          "entryPrice": 0.9765,
+          "side": "no"
+        },
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_exit_unavailable"
       }
     ],
     "winRate": 0.3333333333333333,
@@ -29078,6 +29095,21 @@
           "direction": "above",
           "strike": 65000,
           "entryPrice": 0.385,
+          "side": "no"
+        }
+      },
+      {
+        "date": "2026-08-28",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "[historical-backfill] Setup find_0043 shadow test 10/20 opened via H-642 after historical row satisfied variant conditions.",
+        "contractEntry": {
+          "marketId": "3257336",
+          "eventSlug": "what-price-will-bitcoin-hit-in-august-2026",
+          "asset": "BTC",
+          "direction": "above",
+          "strike": 82500,
+          "entryPrice": 0.9345,
           "side": "no"
         }
       }
