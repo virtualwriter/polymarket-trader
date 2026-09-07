@@ -6044,3 +6044,36 @@ Only open position is AMZN long via hyperliquid perp under FUNDING_EXTREME_SHORT
 
 ---
 
+### 2026-09-07 20:28 UTC
+
+**Portfolio:** $103.78 total | Cash $102.78 | 1 open | P&L $7.0208 | 64% win rate (946 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_funding_ann = 79.93 is 4.0 std devs from mean (9.03 ± 17.63)
+- [anomaly] hype_pm_ev = 90.58 is 2.3 std devs from mean (62.21 ± 12.09)
+- [anomaly] hype_med_max = 120.4 is 2.3 std devs from mean (83.19 ± 16.09)
+- [anomaly] btc_hl_funding_ann = -8.81 is -2.2 std devs from mean (6.23 ± 6.99)
+- [anomaly] hype_hl_oi = 2036054406 is 2.1 std devs from mean (1350028075.01 ± 328940861.10)
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 1011 (518 wins / 493 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.37%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+2.00%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit target (+3.30%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.16%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 8/12; next scheduled 2026-09-07T22:28:12.473Z). Mechanical cycle ran normally._
+
+---
+
