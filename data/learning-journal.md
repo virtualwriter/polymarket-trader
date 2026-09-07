@@ -5418,3 +5418,48 @@ _LLM call skipped (no trigger fired; 1.0h since last call; daily budget 8/12; ne
 
 ---
 
+### 2026-09-07 00:28 UTC
+
+**Portfolio:** $103.77 total | Cash $96.77 | 7 open | P&L $7.0127 | 64% win rate (936 trades)
+
+**Closed 6 trades:**
+- ✅ GME long via hyperliquid/hl_perp [HL GME Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0045 (0.4%, market 0.0044, funding 0.0001)
+- ✅ ARM long via hyperliquid/hl_perp [HL ARM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0073 (0.7%, market 0.0071, funding 0.0002)
+- ✅ HIMS long via hyperliquid/hl_perp [HL HIMS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0431 (4.3%, market 0.0432, funding -0.0000)
+- ✅ HOOD long via hyperliquid/hl_perp [HL HOOD Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0428 (4.3%, market 0.0428, funding 0.0000)
+- ✅ CBRS long via hyperliquid/hl_perp [HL CBRS Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0095 (0.9%, market 0.0095, funding 0.0000)
+- ✅ ORCL long via hyperliquid/hl_perp [HL ORCL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0106 (1.1%, market 0.0106, funding 0.0000)
+
+**Signal weight changes:**
+- 🛑 WEEKEND_HL_FUNDING_REVERSION_LONG on HOOD DISABLED — 1/5 wins is below per-asset kill threshold.
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 3 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 Opened 1 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_med_max = 122.9 is 2.5 std devs from mean (82.94 ± 15.84)
+- [anomaly] hype_pm_ev = 91.51 is 2.5 std devs from mean (62.02 ± 11.89)
+- [anomaly] hype_hl_oi = 2073301683 is 2.2 std devs from mean (1345328282.28 ± 325020430.83)
+- [anomaly] hype_spot = 87.714 is 2.2 std devs from mean (61.11 ± 12.14)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 1008 (516 wins / 492 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.14%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.37%)
+
+**LLM analysis:**
+No discretionary closes taken: all 7 open positions are WEEKEND_HL_FUNDING_REVERSION_LONG with LLM close allowed=false; mechanical scanner owns exits. RIVN is the notable laggard at -3.51% after 14h despite deeply negative funding, but no policy-gated LLM close is possible. The fresh 2h cohort is mixed near flat; AMZN funding has already normalized from roughly -52% to -10.5%, which may be worth flagging in nightly review as signal-family behavior rather than acting on here.
+
+---
+
