@@ -7132,9 +7132,25 @@ function verdictTimeRejection(
 function stampInitialContractTest(
   hypothesis: Hypothesis,
   relativeValueRows: RelativeValueObservation[],
+  allHypotheses: Hypothesis[],
 ): void {
   if (!isPolymarketExpression(hypothesis)) return;
-  const stamp = deriveContractEntry(hypothesis, relativeValueRows);
+  // Distinct-contract rule, group-scoped: never stamp a contract that already
+  // has a pending test anywhere in this family or its promotion group. Without
+  // this, ingest-time stamping piled siblings onto the same contract and the
+  // pooled gate later discarded the duplicates — burned slots, zero evidence.
+  const group = promotionGroupForSetup(hypothesis.setupId);
+  const scopeSetupIds = new Set(group ? group.setupIds : [hypothesis.setupId]);
+  const pendingMarketIds = new Set<string>();
+  for (const other of allHypotheses) {
+    if (other.status === "killed" || other.status === "archived") continue;
+    if (!scopeSetupIds.has(other.setupId)) continue;
+    for (const test of other.tests ?? []) {
+      const marketId = test.outcome === "pending" ? test.contractEntry?.marketId : undefined;
+      if (marketId) pendingMarketIds.add(marketId);
+    }
+  }
+  const stamp = deriveContractEntry(hypothesis, relativeValueRows, pendingMarketIds);
   if (stamp) {
     for (const test of hypothesis.tests) {
       if (test.outcome === "pending") test.contractEntry = stamp;
@@ -8160,7 +8176,7 @@ function ingestNightlyLlmAdvice(
       bumpReject("duplicate_description");
       continue;
     }
-    stampInitialContractTest(hypothesis, relativeValueRows);
+    stampInitialContractTest(hypothesis, relativeValueRows, hypotheses);
     hypotheses.push(hypothesis);
     added++;
     if (isRefinement && refinementParent) {
@@ -8413,7 +8429,7 @@ function ingestShadowMinedHypotheses(
       bumpReject(slowReason.startsWith("horizon") ? "horizon_too_long" : "verdict_too_slow");
       continue;
     }
-    stampInitialContractTest(hypothesis, relativeValueRows);
+    stampInitialContractTest(hypothesis, relativeValueRows, hypotheses);
     hypotheses.push(hypothesis);
     added++;
     notes.push(`Shadow-mined hypothesis ${id} (${hypothesis.setupId}): ${description.slice(0, 80)}`);
