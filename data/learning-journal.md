@@ -6109,3 +6109,36 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-09-07 22:28 UTC
+
+**Portfolio:** $103.78 total | Cash $102.78 | 1 open | P&L $7.0208 | 64% win rate (946 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] amzn_hl_funding_ann = -92.47 is -5.7 std devs from mean (9.00 ± 17.73)
+- [anomaly] hype_pm_ev = 90.54 is 2.3 std devs from mean (62.23 ± 12.11)
+- [anomaly] hype_med_max = 120.4 is 2.3 std devs from mean (83.22 ± 16.12)
+- [anomaly] hype_hl_oi = 2024375650 is 2.0 std devs from mean (1350506686.28 ± 329317630.71)
+- [anomaly] btc_hl_funding_ann = -7.96 is -2.0 std devs from mean (6.22 ± 6.99)
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 1011 (518 wins / 493 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.37%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+2.00%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit target (+3.30%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.16%)
+
+**LLM analysis:**
+Reviewed open AMZN Funding Extreme Short long; it is not eligible for discretionary close because it is only 7.0h into a 12h minimum hold. The signal evidence has not invalidated: funding has become more negative (-32% to -92% annualized), which is thesis intensification rather than normalization, and AMZN price/perp is essentially flat. No action taken.
+
+---
+
