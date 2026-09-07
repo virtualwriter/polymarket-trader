@@ -5680,3 +5680,35 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-09-07 09:28 UTC
+
+**Portfolio:** $103.83 total | Cash $99.83 | 4 open | P&L $7.0693 | 64% win rate (942 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 91.1 is 2.4 std devs from mean (62.10 ± 11.98)
+- [anomaly] hype_med_max = 120.4 is 2.3 std devs from mean (83.04 ± 15.95)
+- [anomaly] hype_hl_oi = 2063963593 is 2.2 std devs from mean (1347307674.64 ± 326675304.92)
+- [anomaly] hype_spot = 87.441 is 2.2 std devs from mean (61.19 ± 12.20)
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 1008 (516 wins / 492 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.14%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.37%)
+
+**LLM analysis:**
+Reviewed all 4 open positions; ALLOWED_ACTION_SURFACE has allowed=false for every one, so no discretionary closes were emitted. RIVN is 23h into a 24h hold and expires in ~1h with PnL -4.36% after funding normalized (-27.3% vs entry ~-99.8%); mechanical expiry owns it. MSFT, NFLX, and PLTR are 11h open, below min-hold. NFLX funding has flipped positive (5.48% vs entry ~-59%), while MSFT (-29.2% vs ~-51%) and PLTR (-9.8% vs ~-72.5%) have normalized materially; these are thesis-weakening but not actionable under current policy. Worth flagging for nightly research whether fast funding normalization should tighten mechanical exits.
+
+---
+
