@@ -5500,3 +5500,39 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 1.0h 
 
 ---
 
+### 2026-09-07 03:28 UTC
+
+**Portfolio:** $103.80 total | Cash $95.80 | 8 open | P&L $7.0360 | 64% win rate (938 trades)
+
+**Closed 1 trades:**
+- ✅ MRVL long via hyperliquid/hl_perp [HL MRVL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0233 (2.3%, market 0.0230, funding 0.0003)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 90.88 is 2.4 std devs from mean (62.04 ± 11.92)
+- [anomaly] hype_med_max = 120.4 is 2.4 std devs from mean (82.97 ± 15.87)
+- [anomaly] hype_hl_oi = 2033074112 is 2.1 std devs from mean (1345825318.60 ± 325439387.66)
+- [anomaly] hype_spot = 86.3859 is 2.1 std devs from mean (61.13 ± 12.16)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 1008 (516 wins / 492 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+1.14%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-2.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.37%)
+
+**LLM analysis:**
+No discretionary closes were eligible this run: all eight open positions are WEEKEND_HL_FUNDING_REVERSION_LONG and are policy-gated to mechanical exits only. RIVN is the main concern, down 4.14% with only ~7 hours to expiry and funding normalization; however, since LLM closes are not permitted on this signal family, I am logging it for structural review. AMD is near target and armed for breakeven protection; the newer entries appear consistent with negative weekend funding reversion and are still within normal hold windows.
+
+---
+
