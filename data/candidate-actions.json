@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-07T13:28:17.984Z",
+  "generatedAt": "2026-09-07T14:28:22.569Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.11232341076139858,
       "thesis": "OIL P/C ratio 1.38 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 92.08,
+      "entryPrice": 92.52,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 92.08,
+      "entryPrice": 92.52,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,46 +56,26 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 10,
-        "totalNet": 10,
-        "byAsset": {
-          "MSFT": 5,
-          "NFLX": 5
-        },
-        "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10
-        },
-        "byVenue": {
-          "hyperliquid": 10
-        },
-        "byCluster": {
-          "funding_reversion": 10,
-          "hyperliquid_venue": 10,
-          "msft_delta": 5,
-          "nflx_delta": 5
-        }
+        "totalGross": 0,
+        "totalNet": 0,
+        "byAsset": {},
+        "bySignalType": {},
+        "byVenue": {},
+        "byCluster": {}
       },
       "afterCandidate": {
-        "totalGross": 10,
-        "totalNet": 10,
+        "totalGross": 0,
+        "totalNet": 0,
         "byAsset": {
-          "MSFT": 5,
-          "NFLX": 5,
           "OIL": 0
         },
         "bySignalType": {
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 10,
           "PC_RATIO_EXTREME_HIGH": 0
         },
         "byVenue": {
-          "hyperliquid": 10,
           "spot": 0
         },
         "byCluster": {
-          "funding_reversion": 10,
-          "hyperliquid_venue": 10,
-          "msft_delta": 5,
-          "nflx_delta": 5,
           "commodity": 0,
           "oil_delta": 0,
           "options_sentiment": 0,
@@ -117,46 +97,11 @@
       "enforcedLiveSize": 1,
       "wouldResize": true,
       "edgePts": null,
-      "alerts": [
-        "cluster exposure 10.00 > alert cap 5.00"
-      ],
+      "alerts": [],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
       ]
     }
   ],
-  "llmCloseEligibility": [
-    {
-      "positionId": "WF-1788733701019-MSFT-fq02",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "MSFT",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 15,
-      "hoursToExpiry": 9,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.625,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "WF-1788733701019-NFLX-w0g7",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "NFLX",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 15,
-      "hoursToExpiry": 9,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.625,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    }
-  ]
+  "llmCloseEligibility": []
 }
