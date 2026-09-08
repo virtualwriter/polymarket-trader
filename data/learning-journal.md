@@ -6208,3 +6208,36 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-09-08 01:28 UTC
+
+**Portfolio:** $103.78 total | Cash $102.78 | 1 open | P&L $7.0208 | 64% win rate (946 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 Opened 1 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] hype_pm_ev = 90.52 is 2.3 std devs from mean (62.26 ± 12.14)
+- [anomaly] hype_med_max = 120.4 is 2.3 std devs from mean (83.26 ± 16.15)
+- [anomaly] hype_hl_oi = 2021670601 is 2.0 std devs from mean (1351214555.11 ± 329861775.86)
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 1011 (518 wins / 493 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+1.37%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+2.00%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit target (+3.30%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.16%)
+
+**LLM analysis:**
+Reviewed AMZN FUNDING_EXTREME_SHORT long. The signal input has round-tripped: amzn_hl_funding_ann moved from -32.37% at open to +7.07%, crossing back through the -15% entry threshold and flipping positive. This is thesis-invalidated evidence for the funding-extreme-short family, but the position is still below the 12h discretionary-close min hold, so no close instruction is emitted this run. If funding remains normalized/positive at the next eligible review, a thesis_invalidated close should be considered. PnL is flat and price has not confirmed any directional edge since entry.
+
+---
+
