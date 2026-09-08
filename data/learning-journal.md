@@ -6341,3 +6341,35 @@ Reviewed the single open AMZN FUNDING_EXTREME_SHORT long. Its signal-family evid
 
 ---
 
+### 2026-09-08 05:28 UTC
+
+**Portfolio:** $103.79 total | Cash $103.79 | 0 open | P&L $7.0247 | 64% win rate (947 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_hl_funding_ann = -10.34 is -2.4 std devs from mean (6.19 ± 7.01)
+- [anomaly] hype_pm_ev = 90.46 is 2.3 std devs from mean (62.30 ± 12.17)
+- [anomaly] hype_med_max = 120.2 is 2.3 std devs from mean (83.31 ± 16.20)
+- [anomaly] oil_hl_funding_ann = -158.78 is -2.2 std devs from mean since 2026-04-28 (-9.95 ± 67.80)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 1012 (518 wins / 494 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+2.00%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit target (+3.30%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.16%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-4.00%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 2/12; next scheduled 2026-09-08T07:28:16.539Z). Mechanical cycle ran normally._
+
+---
+
