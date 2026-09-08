@@ -6406,3 +6406,39 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-09-08T07:09:47.248Z, model=deepseek-v4-pro)
+- Hypotheses added: 6 (rejected 4); reviews applied: 6; invalidated assumptions learned: 3; param updates: none.
+- Strategy review: The weekend HL funding reversion book remains the workhorse: 612 clean live trades at 69% wins and +$1.10 total, with 253 shadow trades at 74% wins and +$2.51, though per-trade edge is small. The Polymarket YES-overpricing edge is sharpening best in the ranked panel cuts: NO 7d mid-price, sub-point sell-YES edge, near-dated, and tight-spread variants all show strong holdout returns. One-touch NO live is 4/4, and manual IV-touch rich NO shadows are 9/10. Failing areas are loose absolute funding-tail variants (CBRS/AAPL/MU), the HYPE-confirmed BTC long family, and contract edge families that wer
+- Nightly journal: Tonight confirmed the YES-overpricing edge remains the strongest house edge. I authored four panel-derived NO siblings from FIND-0065, FIND-0067, FIND-0069, and FIND-0070, plus one BTC-specific one-touch NO sibling from FIND-0043. The struggling funding variants all share a common failure: a single absolute threshold near -10 is not a tail signal. I refined CBRS, AAPL, and MU variants to require lower-tail percentile plus deeper absolute floors. The GOLD no-bias and one-touch contract families were misfiled as spot-decline predictions; I re-authored both as neutral contract premium fades with 
+### 2026-09-08 07:28 UTC
+
+**Portfolio:** $103.79 total | Cash $103.79 | 0 open | P&L $7.0247 | 64% win rate (947 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -179.31 is -2.5 std devs from mean since 2026-04-28 (-10.07 ± 67.92)
+- [anomaly] hype_pm_ev = 90.31 is 2.3 std devs from mean (62.32 ± 12.19)
+- [anomaly] hype_med_max = 120.4 is 2.3 std devs from mean (83.34 ± 16.23)
+
+**Blocked signal learning:**
+- Open blocked shadows: 27
+- Resolved blocked shadows: 1012 (518 wins / 494 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+2.00%)
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit target (+3.30%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.16%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-4.00%)
+
+**LLM analysis:**
+No open positions to review, so no discretionary close actions are warranted. Market tone is risk-off/cautious with a bearish macro composite, hawkish Fed, and firm crude oil; noted negative BTC funding and soft gold, but no promoted entries are currently in the portfolio. Continue monitoring only.
+
+---
+

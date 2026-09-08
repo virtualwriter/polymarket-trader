@@ -5002,7 +5002,7 @@
     "winRate": 0,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "36% win rate across the cross-asset IV compression family. BTC repeatedly failed to reach +2% despite BTC and HYPE being above their 24h SMAs near 7d highs, indicating HYPE participation was not an independent leading signal. | The cross-asset HYPE-confirmation setup has 9/25 wins across many near-duplicate variants and includes losses such as BTC -3.47% despite spot being above the 24h SMA and HYPE risk-on participation. HYPE acts as a late echo, not a reliable BTC confirmer. | The HYPE-confirmed BTC long family is 9/25. Near 7d highs with HYPE above its SMA, BTC frequently failed to make >2% and sometimes reversed. | The family has 9/25 scorable wins. Many entries fired after BTC had already rallied to within 4% of its 7d high, and HYPE risk-on participation acted as a confirmation echo rather than independent timing, leaving long BTC exposed to consolidation or pullback.",
+    "postMortem": "The cross-asset HYPE-confirmation setup has 9/25 wins across many near-duplicate variants and includes losses such as BTC -3.47% despite spot being above the 24h SMA and HYPE risk-on participation. HYPE acts as a late echo, not a reliable BTC confirmer. | The HYPE-confirmed BTC long family is 9/25. Near 7d highs with HYPE above its SMA, BTC frequently failed to make >2% and sometimes reversed. | The family has 9/25 scorable wins. Many entries fired after BTC had already rallied to within 4% of its 7d high, and HYPE risk-on participation acted as a confirmation echo rather than independent timing, leaving long BTC exposed to consolidation or pullback. | H-108 buys BTC near its 7d high when HYPE is also above its 24h SMA. The family is 9/25 and losses cluster when BTC is extended; HYPE is behaving as a late-stage risk-on echo rather than independent confirmation of durable BTC upside.",
     "source": "llm",
     "setupId": "cross_asset_iv_compression_vol_expansion",
     "setupLabel": "Cross-asset IV compression / vol expansion"
@@ -20633,7 +20633,7 @@
     "winRate": 0.5416666666666666,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "H-532 failed every scorable test. Gold spot was flat or rose after the rich tail NO gap, so the no-bias adjusted gap did not predict bearish continuation. | Discarded 20 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer. | Refined by H-716 (2026-09-07): Refinement of H-532: re-author the no-bias adjusted gap rich-tail signal as a co | 11/21 scorable tests won but 5 burned unscorable. Representative outcomes show NO contracts moving favorably in premium terms while the >2% spot decline criterion failed, so the rich-tail gap signal is being graded on the wrong instrument.",
+    "postMortem": "Discarded 20 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer. | Refined by H-716 (2026-09-07): Refinement of H-532: re-author the no-bias adjusted gap rich-tail signal as a co | 11/21 scorable tests won but 5 burned unscorable. Representative outcomes show NO contracts moving favorably in premium terms while the >2% spot decline criterion failed, so the rich-tail gap signal is being graded on the wrong instrument. | H-532 was scored as a GOLD spot-decline call, but the actual examples are pm_contract_pnl outcomes with small gains/losses on the NO contract. The setup is a rich premium fade and loses test power by being attached to a 2% spot move criterion.",
     "source": "shadow_mined",
     "setupId": "shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no",
     "setupLabel": "Shadow-mined NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short-rich-tail"
@@ -21331,7 +21331,7 @@
     "winRate": 0.34782608695652173,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "The 35% win rate is misleading because 7 tests cannot be scored; the examples that do score show the edge pays as contract NO premium, while the authored spot-decline prediction is what fails or becomes unscorable. The family was testing the wrong instrument. | Refined by H-715 (2026-09-06): Refinement of H-534: re-author the GOLD one-touch cap-edge trade as a contract p | H-534 burns unscorable tests and its scorable losses show the issue is instrument choice: the contract edge can be profitable as premium decay, but the test demands a >2% GOLD spot decline. | Only 8/23 scorable tests won and 7 tests were burned unscorable. The winning examples often show positive contract P&L on the NO side, while the spot-decline exam missed, proving the trade is a premium fade, not a short spot call.",
+    "postMortem": "H-534 burns unscorable tests and its scorable losses show the issue is instrument choice: the contract edge can be profitable as premium decay, but the test demands a >2% GOLD spot decline. | Only 8/23 scorable tests won and 7 tests were burned unscorable. The winning examples often show positive contract P&L on the NO side, while the spot-decline exam missed, proving the trade is a premium fade, not a short spot call. | Refined by H-722 (2026-09-08): Refinement of H-534: re-author the GOLD one-touch high-edge as a contract premiu | H-534 has only 8/23 scorable tests because the prediction was a spot decline while the actual strategy is a one-touch NO premium fade. The observed wins and losses are contract price moves, not spot moves, so the thesis must be re-authored as a contract P&L prediction.",
     "source": "shadow_mined",
     "setupId": "shadow_one_touch_high_edge_no_gold_heatmap_no",
     "setupLabel": "Shadow-mined ONE_TOUCH_HIGH_EDGE_NO GOLD heatmap"
@@ -21500,7 +21500,7 @@
     "winRate": 0.4,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "7/19 scorable tests (37%). The only clear wins came after extreme negative readings such as -317.1% → 5.5%; ordinary < -10% triggers repeatedly failed, including 5.5% → -28.6%. | MU funding below -10% is usually not the start of normalization; multiple losses show funding staying benign or collapsing further such as 5.5→-28.6. The original condition lacks any confirmation that the extreme is being repaired. | MU is the weakest of the weekend funding shadow singles at 7/19; most triggers were not in a truly extreme funding state and the >2% spot claim did not materialize. | 8/20 scorable tests won. The losing examples include funding moving from 5.5% to -28.6% and 29.1% to 3.4%, showing the threshold is not tight enough to identify a real stressed tail or a reversal of a deeply negative funding regime.",
+    "postMortem": "MU funding below -10% is usually not the start of normalization; multiple losses show funding staying benign or collapsing further such as 5.5→-28.6. The original condition lacks any confirmation that the extreme is being repaired. | MU is the weakest of the weekend funding shadow singles at 7/19; most triggers were not in a truly extreme funding state and the >2% spot claim did not materialize. | 8/20 scorable tests won. The losing examples include funding moving from 5.5% to -28.6% and 29.1% to 3.4%, showing the threshold is not tight enough to identify a real stressed tail or a reversal of a deeply negative funding regime. | H-535 is failing for the same reason as the other weekend funding shadow variants: it enters on shallow negative prints rather than true extremes. Wins come from very deep negative readings like -317% or -48.8%, while losses come from minor or already-normalized funding prints.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_mu_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG MU weekend_hl_funding_shadow"
@@ -21820,7 +21820,7 @@
     "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "12/24 scorable tests (50%). Many losses occurred when funding was already mild or positive and failed to rise further, e.g. 5.5% → 5.5% and 2.7% → -3.2%. | AAPL funding below -10% does not predict a 2-day rebound; it often prints inert readings such as 5.5→5.5 or moves the wrong way like 2.7→-3.2. The threshold marks neither a reliable weekend effect nor a genuine overshoot extreme. | AAPL tests show poor timing: many entries started around 5.5% funding and failed to normalize; 13/25 wins is not enough for promotion. | 13/25 scorable tests won. The losses are mostly near-normal readings where the threshold fires but funding has not actually reached a tail (e.g. 5.5% -> 0.6%), so the signal is not reliably capturing a reversion setup.",
+    "postMortem": "AAPL funding below -10% does not predict a 2-day rebound; it often prints inert readings such as 5.5→5.5 or moves the wrong way like 2.7→-3.2. The threshold marks neither a reliable weekend effect nor a genuine overshoot extreme. | AAPL tests show poor timing: many entries started around 5.5% funding and failed to normalize; 13/25 wins is not enough for promotion. | 13/25 scorable tests won. The losses are mostly near-normal readings where the threshold fires but funding has not actually reached a tail (e.g. 5.5% -> 0.6%), so the signal is not reliably capturing a reversion setup. | H-537's single threshold is firing on noise. The failing tests include AAPL funding around +5.5 and small negative prints that do not represent capitulation, so the variant is effectively a coin flip.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG AAPL weekend_hl_funding_shadow"
@@ -22202,7 +22202,7 @@
     "winRate": 0.46875,
     "status": "active",
     "promotedToSignal": false,
-    "postMortem": "14/30 scorable tests (47%). Losses show CBRS funding moving from -4.3% to -33.8% and from -6.2% to -33.6%, so a single CBRS funding reading below -10% does not reliably start normalization. | The raw single-threshold CBRS entry fails because deeply negative funding often continues lower or oscillates instead of normalizing within two days; examples show funding moving -4.3→-33.8 and -1.0→-98.5. The signal is a funding-squeeze marker, not an entry trigger. | H-539 fired on CBRS funding readings that were only mildly negative or already positive and then often worsened; the spot-decline/higher funding criterion won only 14/31. | 15/32 scorable tests won, but losing examples show the fixed < -10 threshold fires on CBRS funding that is only mildly negative and can immediately resume its decline (-6.2% -> -33.6%), so the setup is not isolating genuine extreme/reversal conditions.",
+    "postMortem": "The raw single-threshold CBRS entry fails because deeply negative funding often continues lower or oscillates instead of normalizing within two days; examples show funding moving -4.3→-33.8 and -1.0→-98.5. The signal is a funding-squeeze marker, not an entry trigger. | H-539 fired on CBRS funding readings that were only mildly negative or already positive and then often worsened; the spot-decline/higher funding criterion won only 14/31. | 15/32 scorable tests won, but losing examples show the fixed < -10 threshold fires on CBRS funding that is only mildly negative and can immediately resume its decline (-6.2% -> -33.6%), so the setup is not isolating genuine extreme/reversal conditions. | H-539 only requires cbrs_hl_funding_ann < -10. The wins tend to follow genuinely deep negatives and sharp normalization, while losses occur when funding is only mildly negative or already positive and then continues down. The trigger is too loose to isolate a tail or turnaround.",
     "source": "shadow_mined",
     "setupId": "shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long",
     "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG CBRS weekend_hl_funding_shadow"
@@ -32930,6 +32930,228 @@
           "direction": "above",
           "strike": 10000,
           "entryPrice": 0.9725,
+          "side": "no"
+        }
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "gold_pm_premium_futures_spread_mean_reversion",
+    "setupLabel": "Gold PM premium / futures spread mean reversion"
+  },
+  {
+    "id": "H-717",
+    "created": "2026-09-08",
+    "description": "Panel NO edge: buy NO / sell YES across all assets when the best sell-YES edge is below 1 point and the cheapest YES ask is in the mid-priced band. This is the FIND-0065 panel cut and isolates sub-point model edge in 35-65c contracts.",
+    "conditions": {
+      "sell_yes_edge_pts": "< 1",
+      "yesAsk": "between 0.35 and 0.65"
+    },
+    "prediction": "Buying NO / selling YES on the qualifying contract is profitable over 7 days as the YES premium decays.",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "direction": "neutral",
+    "originFindingId": "FIND-0065",
+    "themeId": "THEME-0007",
+    "tests": [
+      {
+        "date": "2026-09-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "contractEntry": {
+          "marketId": "4052420",
+          "eventSlug": "what-price-will-bitcoin-hit-in-september-2026",
+          "asset": "BTC",
+          "direction": "above",
+          "strike": 82500,
+          "entryPrice": 0.43500000000000005,
+          "side": "no"
+        }
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0065",
+    "setupLabel": "FIND-linked FIND-0065"
+  },
+  {
+    "id": "H-718",
+    "created": "2026-09-08",
+    "description": "Panel NO edge sharpest near-dated cut: buy NO / sell YES when the best sell-YES edge is below 1 point, the cheapest YES ask is 35-65c, and the nearest expiry is under 30 days. This formalizes the strongest FIND-0070 panel bucket.",
+    "conditions": {
+      "sell_yes_edge_pts": "< 1",
+      "yesAsk": "between 0.35 and 0.65",
+      "days_to_expiry": "< 30"
+    },
+    "prediction": "Buying NO / selling YES on the qualifying near-dated contract is profitable over 7 days as the YES premium decays.",
+    "timeframeDays": 7,
+    "confidence": 0.75,
+    "direction": "neutral",
+    "originFindingId": "FIND-0070",
+    "themeId": "THEME-0007",
+    "tests": [
+      {
+        "date": "2026-09-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "contractEntry": {
+          "marketId": "4052451",
+          "eventSlug": "what-price-will-ethereum-hit-in-september-2026",
+          "asset": "ETH",
+          "direction": "above",
+          "strike": 2700,
+          "entryPrice": 0.5349999999999999,
+          "side": "no"
+        }
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0070",
+    "setupLabel": "FIND-linked FIND-0070"
+  },
+  {
+    "id": "H-719",
+    "created": "2026-09-08",
+    "description": "Panel NO edge tight-spread variant: buy NO / sell YES when the cheapest YES ask is 35-65c and the tightest YES bid-ask spread is under 2c. This is the FIND-0067 panel bucket and guards against paying wide spreads on the fade.",
+    "conditions": {
+      "yesAsk": "between 0.35 and 0.65",
+      "yesSpread": "< 0.02"
+    },
+    "prediction": "Buying NO / selling YES on the qualifying tight-spread contract is profitable over 7 days as the YES premium decays.",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "direction": "neutral",
+    "originFindingId": "FIND-0067",
+    "themeId": "THEME-0007",
+    "tests": [
+      {
+        "date": "2026-09-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "contractEntry": {
+          "marketId": "4063373",
+          "eventSlug": "what-price-will-wti-hit-in-september-2026",
+          "asset": "OIL",
+          "direction": "below",
+          "strike": 85,
+          "entryPrice": 0.495,
+          "side": "no"
+        }
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0067",
+    "setupLabel": "FIND-linked FIND-0067"
+  },
+  {
+    "id": "H-720",
+    "created": "2026-09-08",
+    "description": "Panel NO edge near-dated mid-price band: buy NO / sell YES when the cheapest YES ask is 35-65c and the nearest expiry is under 30 days. This is the FIND-0069 panel bucket.",
+    "conditions": {
+      "yesAsk": "between 0.35 and 0.65",
+      "days_to_expiry": "< 30"
+    },
+    "prediction": "Buying NO / selling YES on the qualifying mid-priced near-dated contract is profitable over 7 days as the YES premium decays.",
+    "timeframeDays": 7,
+    "confidence": 0.7,
+    "direction": "neutral",
+    "originFindingId": "FIND-0069",
+    "themeId": "THEME-0007",
+    "tests": [
+      {
+        "date": "2026-09-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "contractEntry": {
+          "marketId": "4052423",
+          "eventSlug": "what-price-will-bitcoin-hit-in-september-2026",
+          "asset": "BTC",
+          "direction": "below",
+          "strike": 75000,
+          "entryPrice": 0.365,
+          "side": "no"
+        }
+      }
+    ],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0069",
+    "setupLabel": "FIND-linked FIND-0069"
+  },
+  {
+    "id": "H-721",
+    "created": "2026-09-08",
+    "description": "Shadow FIND sibling from FIND-0043: BTC-specific one-touch NO premium fade on above-strike contracts with moderate 3-8pt sell-YES edge and tight spread. This narrows the broad one-touch NO family to the best BTC shadow bucket.",
+    "conditions": {
+      "asset": "BTC",
+      "touch_direction": ">= 1",
+      "sell_yes_edge_pts": "between 3 and 8",
+      "yesSpread": "< 0.02"
+    },
+    "prediction": "Selling YES / buying NO on qualifying BTC above-strike one-touch contracts is profitable over 3 days as the rich premium decays.",
+    "timeframeDays": 3,
+    "confidence": 0.6,
+    "direction": "neutral",
+    "originFindingId": "FIND-0043",
+    "themeId": "THEME-0001",
+    "tests": [],
+    "winRate": 0,
+    "status": "active",
+    "promotedToSignal": false,
+    "postMortem": null,
+    "source": "llm",
+    "setupId": "find_0043",
+    "setupLabel": "FIND-linked FIND-0043"
+  },
+  {
+    "id": "H-722",
+    "created": "2026-09-08",
+    "description": "Refinement of H-534: re-author the GOLD one-touch high-edge as a contract premium fade on moderate 3-8pt edge, near-dated contracts, with tight spreads. The original spot-decline prediction burned 7 unscorable tests and misrepresented the payoff.",
+    "conditions": {
+      "asset": "GOLD",
+      "gold_pm_underlying_cap_edge_pts_max": "between 3 and 8",
+      "days_to_expiry": "< 30",
+      "yesSpread": "< 0.02"
+    },
+    "prediction": "Selling YES / buying NO on qualifying GOLD one-touch contracts is profitable over 3 days as the premium decays.",
+    "timeframeDays": 3,
+    "confidence": 0.55,
+    "direction": "neutral",
+    "refinesHypothesisId": "H-534",
+    "tests": [
+      {
+        "date": "2026-09-08",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "contractEntry": {
+          "marketId": "4339210",
+          "eventSlug": "what-price-will-xauusd-hit-in-september-2026",
+          "asset": "GOLD",
+          "direction": "below",
+          "strike": 4400,
+          "entryPrice": 0.0004999999999999449,
           "side": "no"
         }
       }
