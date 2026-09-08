@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-09-08T01:28:15.061Z",
+  "generatedAt": "2026-09-08T02:28:19.496Z",
   "dataFreshness": {
-    "valuationRows": 2841,
-    "latestValuationAt": "2026-09-08T01",
-    "macroRows": 2839,
+    "valuationRows": 2842,
+    "latestValuationAt": "2026-09-08T02",
+    "macroRows": 2840,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-08T01"
+    "latestInstrumentSnapshotAt": "2026-09-08T02"
   },
   "portfolio": {
     "cash": 102.7811,
@@ -13,7 +13,7 @@
     "realizedPnl": 7.0208,
     "totalTrades": 946,
     "winRatePct": 64.4,
-    "unrealizedPnl": 0
+    "unrealizedPnl": 0.0019
   },
   "openPositions": [
     {
@@ -22,8 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "FUNDING_EXTREME_SHORT",
-      "pnlPct": 0,
-      "currentPrice": 257.66,
+      "pnlPct": 0.19,
+      "currentPrice": 258.17,
       "underlyingPrice": 258.3,
       "targetPct": 4,
       "stopPct": 2,
@@ -199,10 +199,10 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 26,
-    "resolvedCount": 1011,
+    "openCount": 25,
+    "resolvedCount": 1012,
     "wouldHaveWon": 518,
-    "wouldHaveLost": 493,
+    "wouldHaveLost": 494,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -270,26 +270,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 13.33,
-        "resolvedAt": "2026-09-04T15:28:26.751Z",
-        "marketQuality": {
-          "yesBid": 0.55,
-          "yesAsk": 0.56,
-          "yesSpread": 0.01,
-          "liquidity": 26324.37,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "BTC",
@@ -420,6 +400,26 @@
           "liquidity": 87050.6,
           "flags": []
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "loss",
+        "closeReason": "thesis_compressed_loss",
+        "pnlPct": -4,
+        "resolvedAt": "2026-09-08T02:28:18.814Z",
+        "marketQuality": {
+          "yesBid": 0.5,
+          "yesAsk": 0.52,
+          "yesSpread": 0.02,
+          "liquidity": 22452.02,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -534,22 +534,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.2pt on ETH, spread 1.0c, liquidity 20842. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $3,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.5,
-          "yesAsk": 0.52,
-          "yesSpread": 0.02,
-          "liquidity": 22452.02,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.1pt on ETH, spread 2.0c, liquidity 22452. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
