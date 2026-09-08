@@ -19393,9 +19393,23 @@
         "actualMove": "BTC moved 0.21% (78873 → 79036) [neutral abs needs ≥ 2%] (method=spot_abs_move)",
         "magnitude": -1.7933386583494986,
         "magnitudeUnit": "pct_return"
+      },
+      {
+        "date": "2026-08-26",
+        "triggered": true,
+        "outcome": "win",
+        "actualMove": "[historical-backfill] BTC moved -2.15% (78865 → 77172) [neutral abs needs ≥ 2%] (resolved 2026-09-02 from 2026-08-26; method=spot_abs_move)",
+        "magnitude": 0.14670639700754462,
+        "magnitudeUnit": "pct_return"
+      },
+      {
+        "date": "2026-09-02",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "[historical-backfill] Setup btc_pm_iv_regime_relative_compression shadow test 10/20 opened via H-523 after historical row satisfied variant conditions."
       }
     ],
-    "winRate": 0.5,
+    "winRate": 0.5555555555555556,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "BTC PM IV regime-relative compression signal (using percentile-based conditions) is showing promise with a 67% win rate over 16 tests, supporting the shift away from absolute thresholds. | BTC PM IV regime-relative compression (H-523) using z-score bottom 20% has 67% win rate over 16 tests, a significant improvement over absolute threshold variants. The regime-relative approach is proving much more reliable and should replace H-001 entirely. | This regime‑relative compression variant (PM IV in bottom 20% of 30d range) is performing well at 67% win, supporting the idea that percentile‑based compression triggers are more reliable than absolute IV thresholds for BTC vol expansion. | H‑523 (BTC PM IV regime‑relative compression) is working: 67% win rate (4/6) in recent tests, successfully capturing large absolute moves when PM IV is in the bottom 20th percentile. This validates regime‑relative over static thresholds and should become the primary BTC vol expansion signal.",
@@ -31684,9 +31698,17 @@
         "actualMove": "[historical-backfill] BTC moved 11.39% (69176 → 77058) [neutral abs needs ≥ 2%] (resolved 2026-08-22 from 2026-08-19; method=spot_abs_move)",
         "magnitude": 9.394125130102926,
         "magnitudeUnit": "pct_return"
+      },
+      {
+        "date": "2026-08-21",
+        "triggered": true,
+        "outcome": "loss",
+        "actualMove": "[historical-backfill] BTC moved 0.46% (78569 → 78928) [neutral abs needs ≥ 2%] (resolved 2026-08-24 from 2026-08-21; method=spot_abs_move)",
+        "magnitude": -1.5430767860097494,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0.5,
+    "winRate": 0.4,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
