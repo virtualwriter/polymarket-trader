@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T14:28:24.399Z",
+  "generatedAt": "2026-09-08T16:28:22.378Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "OIL",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.4475000000000001,
-      "confidence": 0.22590888231786918,
-      "thesis": "OIL P/C ratio 1.56 — heavy put buying → contrarian long.",
+      "strength": 0.6875,
+      "confidence": 0.347066718644771,
+      "thesis": "OIL P/C ratio 1.75 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 92.86,
+      "entryPrice": 91.77,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 92.86,
+      "entryPrice": 91.77,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,30 +56,41 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 0,
-        "totalNet": 0,
-        "byAsset": {},
-        "bySignalType": {},
-        "byVenue": {},
-        "byCluster": {}
-      },
-      "afterCandidate": {
-        "totalGross": 0,
-        "totalNet": 0,
+        "totalGross": 1,
+        "totalNet": 1,
         "byAsset": {
-          "OIL": 0
+          "OIL": 1
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 0
+          "PC_RATIO_EXTREME_HIGH": 1
         },
         "byVenue": {
-          "spot": 0
+          "spot": 1
         },
         "byCluster": {
-          "commodity": 0,
-          "oil_delta": 0,
-          "options_sentiment": 0,
-          "spot_venue": 0
+          "commodity": 1,
+          "oil_delta": 1,
+          "options_sentiment": 1,
+          "spot_venue": 1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 1,
+        "totalNet": 1,
+        "byAsset": {
+          "OIL": 1
+        },
+        "bySignalType": {
+          "PC_RATIO_EXTREME_HIGH": 1
+        },
+        "byVenue": {
+          "spot": 1
+        },
+        "byCluster": {
+          "commodity": 1,
+          "oil_delta": 1,
+          "options_sentiment": 1,
+          "spot_venue": 1
         }
       },
       "warnings": []
@@ -103,5 +114,25 @@
       ]
     }
   ],
-  "llmCloseEligibility": []
+  "llmCloseEligibility": [
+    {
+      "positionId": "T-1788877726863-svcd",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "oil_wti_spot",
+        "oil_cl_pc_ratio"
+      ],
+      "hoursOpen": 1.99,
+      "hoursToExpiry": 118.01,
+      "plannedHoldHours": 120,
+      "elapsedHoldPct": 0.0166,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
+    }
+  ]
 }
