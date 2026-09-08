@@ -6660,3 +6660,33 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-09-08 18:28 UTC
+
+**Portfolio:** $103.79 total | Cash $102.79 | 1 open | P&L $7.0247 | 64% win rate (947 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -354.64 is -5.0 std devs from mean since 2026-04-28 (-10.79 ± 69.14)
+- [anomaly] hype_pm_ev = 89.16 is 2.2 std devs from mean (62.40 ± 12.26)
+
+**Blocked signal learning:**
+- Open blocked shadows: 26
+- Resolved blocked shadows: 1013 (519 wins / 494 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ Blocked: PC_RATIO_EXTREME_LOW BTC short via spot would have hit target (+3.30%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-1.16%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-4.00%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+2.00%)
+
+**LLM analysis:**
+Reviewed the sole open OIL long (PC_RATIO_EXTREME_HIGH). It is only ~4h into a 120h planned hold and ALLOWED ACTION SURFACE has allowed=false, so no discretionary close is permitted. The P/C ratio has declined from 1.558 to 1.346 since open (-13.6%) and sits at 4th percentile of its 24h range, which may indicate the contrarian put-buying signal is normalizing; I will re-check after the 12h min hold. WTI spot is -0.65% since entry, still well inside its -2% stop. No hard portfolio risk or data quality issue observed.
+
+---
+
