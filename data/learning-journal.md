@@ -7482,3 +7482,35 @@ _LLM call skipped (duplicate-signals (2 recurring signals seen within 6h); 2.0h 
 
 ---
 
+### 2026-09-09 22:28 UTC
+
+**Portfolio:** $103.79 total | Cash $102.79 | 1 open | P&L $7.0317 | 64% win rate (948 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 25 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] btc_hl_funding_ann = -11.4 is -2.5 std devs from mean (6.20 ± 7.00)
+- [anomaly] hype_med_max = 122.4 is 2.3 std devs from mean (83.74 ± 16.55)
+- [anomaly] hype_pm_ev = 89.39 is 2.1 std devs from mean (62.65 ± 12.48)
+
+**Blocked signal learning:**
+- Open blocked shadows: 25
+- Resolved blocked shadows: 1017 (520 wins / 497 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+3.45%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-1.89%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-3.64%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-3.64%)
+
+**LLM analysis:**
+Reviewed the open GOLD short (FUNDING_EXTREME_LONG) but it is only 2.0h into a 72h hold and below the 12h discretionary close minimum, so no close action is permitted. The thesis is not invalidated: gold HL funding remains elevated at 31.51% annualized and spot is only +0.14% since entry; the move from 36.02% to 31.51% funding is cooling but still deep in crowded-long territory. PnL is roughly flat at -0.13%. Will re-evaluate after the min hold window if funding normalizes materially or price action breaks the signal premise.
+
+---
+
