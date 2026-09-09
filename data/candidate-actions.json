@@ -1,32 +1,18 @@
 {
-  "generatedAt": "2026-09-09T16:28:23.296Z",
+  "generatedAt": "2026-09-09T17:28:27.828Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
-    {
-      "type": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "strength": 0.10000000000000009,
-      "confidence": 0.05153652553817685,
-      "thesis": "BTC P/C ratio 0.47 — heavy call buying → contrarian short.",
-      "hypothesisId": null,
-      "entryPrice": 78603,
-      "targetPct": 5,
-      "stopPct": 1.5,
-      "expiryDays": 5
-    },
     {
       "type": "FUNDING_EXTREME_LONG",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.012857142857142836,
-      "confidence": 0.006221874056346901,
-      "thesis": "GOLD HL funding 15.4% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.04457142857142853,
+      "confidence": 0.021569163395335936,
+      "thesis": "GOLD HL funding 16.6% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4404,
+      "entryPrice": 4421,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 3,
@@ -35,27 +21,6 @@
   ],
   "sizingPreviews": [
     {
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "reason": "unsupported_signal",
-      "entryPrice": 78603,
-      "probabilitySource": "unsupported",
-      "winProbability": null,
-      "probabilitySampleSize": null,
-      "edgePts": null,
-      "rawKellyFraction": null,
-      "adjustedKellyFraction": null,
-      "cappedKellyFraction": null,
-      "notes": [
-        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
-        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
-      ]
-    },
-    {
       "signalType": "FUNDING_EXTREME_LONG",
       "asset": "GOLD",
       "venue": "hyperliquid",
@@ -63,7 +28,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4404,
+      "entryPrice": 4421,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -79,49 +44,7 @@
   ],
   "portfolioExposurePreviews": [
     {
-      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "candidateSize": 0,
-      "riskClusters": [
-        "btc_delta",
-        "options_sentiment",
-        "risk_on",
-        "spot_venue"
-      ],
-      "current": {
-        "totalGross": 0,
-        "totalNet": 0,
-        "byAsset": {},
-        "bySignalType": {},
-        "byVenue": {},
-        "byCluster": {}
-      },
-      "afterCandidate": {
-        "totalGross": 0,
-        "totalNet": 0,
-        "byAsset": {
-          "BTC": 0
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_LOW": 0
-        },
-        "byVenue": {
-          "spot": 0
-        },
-        "byCluster": {
-          "btc_delta": 0,
-          "options_sentiment": 0,
-          "risk_on": 0,
-          "spot_venue": 0
-        }
-      },
-      "warnings": []
-    },
-    {
-      "candidateId": "FUNDING_EXTREME_LONG:GOLD:1",
+      "candidateId": "FUNDING_EXTREME_LONG:GOLD:0",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
@@ -165,23 +88,7 @@
   ],
   "stagedQuantRules": [
     {
-      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
-      "signalType": "PC_RATIO_EXTREME_LOW",
-      "asset": "BTC",
-      "mode": "observe_uniform",
-      "liveSizingEnabled": false,
-      "currentFlatSize": 1,
-      "previewSize": 0,
-      "enforcedLiveSize": 1,
-      "wouldResize": true,
-      "edgePts": null,
-      "alerts": [],
-      "notes": [
-        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
-      ]
-    },
-    {
-      "candidateId": "FUNDING_EXTREME_LONG:GOLD:1",
+      "candidateId": "FUNDING_EXTREME_LONG:GOLD:0",
       "signalType": "FUNDING_EXTREME_LONG",
       "asset": "GOLD",
       "mode": "observe_uniform",
