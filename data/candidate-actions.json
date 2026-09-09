@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-09T18:28:20.041Z",
+  "generatedAt": "2026-09-09T19:28:20.026Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,15 +8,29 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.21599999999999997,
-      "confidence": 0.10452748414662809,
-      "thesis": "GOLD HL funding 22.6% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.2634285714285714,
+      "confidence": 0.12747928622115223,
+      "thesis": "GOLD HL funding 24.2% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4420,
+      "entryPrice": 4406,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 3,
       "leverage": 1
+    },
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.1075000000000001,
+      "confidence": 0.05450091821372395,
+      "thesis": "GOLD P/C ratio 1.29 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 4406,
+      "targetPct": 4,
+      "stopPct": 1.5,
+      "expiryDays": 5
     }
   ],
   "sizingPreviews": [
@@ -28,7 +42,28 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4420,
+      "entryPrice": 4406,
+      "probabilitySource": "unsupported",
+      "winProbability": null,
+      "probabilitySampleSize": null,
+      "edgePts": null,
+      "rawKellyFraction": null,
+      "adjustedKellyFraction": null,
+      "cappedKellyFraction": null,
+      "notes": [
+        "Preview only: live entries still use TRADE_SIZE until an intentional fixture-gated sizing change is accepted.",
+        "Unsupported by binary Kelly preview because the candidate is not a probability-priced Polymarket entry."
+      ]
+    },
+    {
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "reason": "unsupported_signal",
+      "entryPrice": 4406,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -84,12 +119,70 @@
         }
       },
       "warnings": []
+    },
+    {
+      "candidateId": "PC_RATIO_EXTREME_HIGH:GOLD:1",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "candidateSize": 0,
+      "riskClusters": [
+        "commodity",
+        "gold_delta",
+        "options_sentiment",
+        "spot_venue"
+      ],
+      "current": {
+        "totalGross": 0,
+        "totalNet": 0,
+        "byAsset": {},
+        "bySignalType": {},
+        "byVenue": {},
+        "byCluster": {}
+      },
+      "afterCandidate": {
+        "totalGross": 0,
+        "totalNet": 0,
+        "byAsset": {
+          "GOLD": 0
+        },
+        "bySignalType": {
+          "PC_RATIO_EXTREME_HIGH": 0
+        },
+        "byVenue": {
+          "spot": 0
+        },
+        "byCluster": {
+          "commodity": 0,
+          "gold_delta": 0,
+          "options_sentiment": 0,
+          "spot_venue": 0
+        }
+      },
+      "warnings": []
     }
   ],
   "stagedQuantRules": [
     {
       "candidateId": "FUNDING_EXTREME_LONG:GOLD:0",
       "signalType": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "mode": "observe_uniform",
+      "liveSizingEnabled": false,
+      "currentFlatSize": 1,
+      "previewSize": 0,
+      "enforcedLiveSize": 1,
+      "wouldResize": true,
+      "edgePts": null,
+      "alerts": [],
+      "notes": [
+        "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
+      ]
+    },
+    {
+      "candidateId": "PC_RATIO_EXTREME_HIGH:GOLD:1",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
       "asset": "GOLD",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
