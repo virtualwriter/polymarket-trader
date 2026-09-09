@@ -1,21 +1,39 @@
 {
-  "generatedAt": "2026-09-09T20:28:21.208Z",
+  "generatedAt": "2026-09-09T21:28:26.803Z",
   "dataFreshness": {
-    "valuationRows": 2879,
-    "latestValuationAt": "2026-09-09T20",
-    "macroRows": 2877,
+    "valuationRows": 2880,
+    "latestValuationAt": "2026-09-09T21",
+    "macroRows": 2878,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-09T20"
+    "latestInstrumentSnapshotAt": "2026-09-09T21"
   },
   "portfolio": {
-    "cash": 103.792,
-    "openPositions": 0,
+    "cash": 102.792,
+    "openPositions": 1,
     "realizedPnl": 7.0317,
     "totalTrades": 948,
     "winRatePct": 64.5,
-    "unrealizedPnl": 0
+    "unrealizedPnl": -0.002
   },
-  "openPositions": [],
+  "openPositions": [
+    {
+      "positionId": "T-1788985701424-wtmc",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "pnlPct": -0.2,
+      "currentPrice": 4408,
+      "underlyingPrice": 4408,
+      "targetPct": 5,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
+      ]
+    }
+  ],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -181,9 +199,9 @@
   ],
   "blockedSummary": {
     "openCount": 25,
-    "resolvedCount": 1016,
+    "resolvedCount": 1017,
     "wouldHaveWon": 520,
-    "wouldHaveLost": 496,
+    "wouldHaveLost": 497,
     "bySignal": [
       {
         "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
@@ -251,26 +269,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "NO_BIAS_ADJUSTED_GAP_SHADOW",
-        "asset": "GOLD",
-        "venue": "polymarket",
-        "direction": "short",
-        "blockedReason": "no_bias_adjusted_gap_shadow",
-        "outcome": "win",
-        "closeReason": "thesis_validated_profitable",
-        "pnlPct": 2,
-        "resolvedAt": "2026-09-07T12:28:19.069Z",
-        "marketQuality": {
-          "yesBid": 0.5,
-          "yesAsk": 0.51,
-          "yesSpread": 0.01,
-          "liquidity": 6689.32,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        }
-      },
       {
         "signalType": "PC_RATIO_EXTREME_LOW",
         "asset": "BTC",
@@ -399,6 +397,26 @@
           "yesAsk": 0.47,
           "yesSpread": 0.02,
           "liquidity": 5847.21,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
+      },
+      {
+        "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
+        "asset": "GOLD",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "polymarket_proxy_short",
+        "outcome": "loss",
+        "closeReason": "stop",
+        "pnlPct": -3.64,
+        "resolvedAt": "2026-09-09T21:28:25.933Z",
+        "marketQuality": {
+          "yesBid": 0.45,
+          "yesAsk": 0.47,
+          "yesSpread": 0.02,
+          "liquidity": 5849.02,
           "flags": [
             "wide_pm_spread"
           ]
