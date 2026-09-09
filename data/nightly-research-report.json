@@ -1,7 +1,7 @@
 {
-  "generatedAt": "2026-09-08T07:12:02Z",
+  "generatedAt": "2026-09-09T07:14:22Z",
   "summary": {
-    "generatedAt": "2026-09-08T07:12:02Z",
+    "generatedAt": "2026-09-09T07:14:22Z",
     "findingCounts": {
       "open": 10,
       "strengthened": 40,
@@ -15,13 +15,13 @@
       "rank": 1,
       "id": "FIND-0065",
       "opportunityScore": 1.0,
-      "confidenceScore": 0.6052,
+      "confidenceScore": 0.5935,
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
       "status": "strengthened"
     },
-    "authoredHypothesisCount": 10,
+    "authoredHypothesisCount": 9,
     "advicePresent": true
   },
   "topOpportunities": [
@@ -29,7 +29,7 @@
       "rank": 1,
       "id": "FIND-0065",
       "opportunityScore": 1.0,
-      "confidenceScore": 0.6052,
+      "confidenceScore": 0.5935,
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -39,7 +39,7 @@
       "rank": 2,
       "id": "FIND-0067",
       "opportunityScore": 1.0,
-      "confidenceScore": 0.5985,
+      "confidenceScore": 0.5867,
       "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65,sp<2|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -49,7 +49,7 @@
       "rank": 3,
       "id": "FIND-0066",
       "opportunityScore": 1.0,
-      "confidenceScore": 0.5623,
+      "confidenceScore": 0.5567,
       "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -59,7 +59,7 @@
       "rank": 4,
       "id": "FIND-0070",
       "opportunityScore": 0.9999,
-      "confidenceScore": 0.6797,
+      "confidenceScore": 0.6689,
       "clusterKey": "PANEL_NO_7D|ALL|strat:e<1,p35-65,d<30|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -69,7 +69,7 @@
       "rank": 5,
       "id": "FIND-0069",
       "opportunityScore": 0.9999,
-      "confidenceScore": 0.6433,
+      "confidenceScore": 0.6385,
       "clusterKey": "PANEL_NO_7D|ALL|strat:p35-65,d<30|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -88,8 +88,8 @@
     {
       "rank": 7,
       "id": "FIND-0068",
-      "opportunityScore": 0.9998,
-      "confidenceScore": 0.524,
+      "opportunityScore": 0.9999,
+      "confidenceScore": 0.5084,
       "clusterKey": "PANEL_NO_7D|ALL|strat:dir=above,p35-65|no",
       "themeId": "THEME-0007",
       "themeSlug": "outcome_panel",
@@ -132,7 +132,7 @@
       "slug": "heatmap_one_touch",
       "title": "Heatmap one-touch / no-bias / relative-value shadows",
       "findingCount": 42,
-      "avgOpportunityScore": 0.6236
+      "avgOpportunityScore": 0.6252
     },
     {
       "id": "THEME-0002",
@@ -146,7 +146,7 @@
       "slug": "outcome_panel",
       "title": "Outcome-panel mined (unconditioned contract history)",
       "findingCount": 6,
-      "avgOpportunityScore": 0.9999
+      "avgOpportunityScore": 1.0
     },
     {
       "id": "THEME-0004",
@@ -179,54 +179,49 @@
   ],
   "authoredHypotheses": [
     {
-      "originFindingId": "FIND-0065",
-      "themeId": "THEME-0007",
-      "description": "Panel NO edge: buy NO / sell YES across all assets when the best sell-YES edge is below 1 point and the cheapest YES ask is in the mid-priced band. This is the FIND-0065 panel cut and isolates sub-point model edge in 35-65c contracts."
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-539: replace the any-day -10% CBRS funding trigger with a true-weekend relative extreme. This avoids noisy weekday readings and only fires when CBRS funding is in the tail of its own recent range."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-537: shift AAPL funding reversion to true weekends and require a relative 30-day tail reading rather than any day below -10%."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-534: re-author the gold one-touch cap-edge signal as a contract premium fade instead of a spot-decline call. Use a moderate 3-8pt edge on near-dated liquid above-strike contracts."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-638: require PM IV to be both deeply compressed and already turning higher before betting on a vol snapback. This avoids entries where cheap IV stays cheap."
+    },
+    {
+      "originFindingId": null,
+      "themeId": null,
+      "description": "Refinement of H-535: restrict MU funding reversion to weekends and replace the absolute -10% trigger with a relative 30-day tail reading."
     },
     {
       "originFindingId": "FIND-0070",
       "themeId": "THEME-0007",
-      "description": "Panel NO edge sharpest near-dated cut: buy NO / sell YES when the best sell-YES edge is below 1 point, the cheapest YES ask is 35-65c, and the nearest expiry is under 30 days. This formalizes the strongest FIND-0070 panel bucket."
+      "description": "Panel-derived NO edge sibling from FIND-0070: sub-point sell-YES edge, mid-priced YES ask, near-dated and tight spread. This tests whether the strongest cut survives a tight executable market filter."
     },
     {
-      "originFindingId": "FIND-0067",
+      "originFindingId": "FIND-0065",
       "themeId": "THEME-0007",
-      "description": "Panel NO edge tight-spread variant: buy NO / sell YES when the cheapest YES ask is 35-65c and the tightest YES bid-ask spread is under 2c. This is the FIND-0067 panel bucket and guards against paying wide spreads on the fade."
+      "description": "Panel-derived NO edge sibling from FIND-0065: sub-point sell-YES edge and mid-priced YES ask with an order-book liquidity floor. If the edge survives liquid markets, it is more executable than the raw panel cut."
     },
     {
       "originFindingId": "FIND-0069",
       "themeId": "THEME-0007",
-      "description": "Panel NO edge near-dated mid-price band: buy NO / sell YES when the cheapest YES ask is 35-65c and the nearest expiry is under 30 days. This is the FIND-0069 panel bucket."
+      "description": "Panel-derived NO edge sibling from FIND-0069: mid-priced band and near expiry restricted to above-strike one-touch contracts."
     },
     {
-      "originFindingId": "FIND-0043",
-      "themeId": "THEME-0001",
-      "description": "Shadow FIND sibling from FIND-0043: BTC-specific one-touch NO premium fade on above-strike contracts with moderate 3-8pt sell-YES edge and tight spread. This narrows the broad one-touch NO family to the best BTC shadow bucket."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-539: require CBRS funding to be a true lower-tail event, not just below -10. Adds a 48h percentile cap and a deeper absolute floor so the signal avoids noisy near-zero prints that continue lower."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-537: require AAPL funding to be in the lower tail of its recent range, not merely below -10. Uses a 48h percentile cap plus a deeper absolute threshold to isolate genuine funding capitulation."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-535: require MU funding to be a true lower-tail event rather than a single reading below -10. Adds a 48h percentile cap and deeper absolute floor so the signal fires only on extreme lows."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-532: re-author the no-bias GOLD tail signal as a contract NO premium decay instead of a GOLD spot decline. Keeps the rich cap-edge trigger but adds tight-spread and liquidity guards."
-    },
-    {
-      "originFindingId": null,
-      "themeId": null,
-      "description": "Refinement of H-534: re-author the GOLD one-touch high-edge as a contract premium fade on moderate 3-8pt edge, near-dated contracts, with tight spreads. The original spot-decline prediction burned 7 unscorable tests and misrepresented the payoff."
+      "originFindingId": "FIND-0067",
+      "themeId": "THEME-0007",
+      "description": "Panel-derived NO edge sibling from FIND-0067: tight-spread mid-priced YES ask with a liquidity floor."
     }
   ],
   "negativeFindings": [
@@ -282,9 +277,9 @@
   "provenance": {
     "scoringVersion": "research_score_v3",
     "minerModel": "shadow_miner_v1",
-    "findingsExportGeneratedAt": "2026-09-08T07:09:47Z",
-    "opportunitiesGeneratedAt": "2026-09-08T07:12:01Z",
-    "themesGeneratedAt": "2026-09-08T07:09:56Z",
-    "adviceGeneratedAt": "2026-09-08T07:09:47.248Z"
+    "findingsExportGeneratedAt": "2026-09-09T07:11:37Z",
+    "opportunitiesGeneratedAt": "2026-09-09T07:14:22Z",
+    "themesGeneratedAt": "2026-09-09T07:11:47Z",
+    "adviceGeneratedAt": "2026-09-09T07:11:36.682Z"
   }
 }
